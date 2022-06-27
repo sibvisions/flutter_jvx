@@ -32,61 +32,88 @@ class FlGaugeModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlGaugeModel get defaultModel => FlGaugeModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonTitle = pJson[ApiObjectProperty.xAxisTitle];
-    if (jsonTitle != null) {
-      title = jsonTitle;
-    }
+    title = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.title,
+      pDefault: title,
+      pCurrent: title,
+    );
 
-    var jsonMaxValue = pJson[ApiObjectProperty.maxValue];
-    if (jsonMaxValue != null) {
-      maxValue = jsonMaxValue;
-    }
+    maxValue = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.maxValue,
+      pDefault: maxValue,
+      pCurrent: maxValue,
+    );
 
-    var jsonMinValue = pJson[ApiObjectProperty.minValue];
-    if (jsonMinValue != null) {
-      minValue = jsonMinValue;
-    }
+    minValue = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.minValue,
+      pDefault: minValue,
+      pCurrent: minValue,
+    );
 
-    var jsonMaxErrorValue = pJson[ApiObjectProperty.maxErrorValue];
-    if (jsonMaxErrorValue != null) {
-      maxErrorValue = jsonMaxErrorValue;
-    }
+    maxErrorValue = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.maxErrorValue,
+      pDefault: maxErrorValue,
+      pCurrent: maxErrorValue,
+    );
 
-    var jsonMinErrorValue = pJson[ApiObjectProperty.minErrorValue];
-    if (jsonMinErrorValue != null) {
-      minErrorValue = jsonMinErrorValue;
-    }
+    minErrorValue = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.minErrorValue,
+      pDefault: minErrorValue,
+      pCurrent: minErrorValue,
+    );
 
-    var jsonMaxWarningValue = pJson[ApiObjectProperty.maxWarningValue];
-    if (jsonMaxWarningValue != null) {
-      maxWarningValue = jsonMaxWarningValue;
-    }
+    maxWarningValue = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.maxWarningValue,
+      pDefault: maxWarningValue,
+      pCurrent: maxWarningValue,
+    );
 
-    var jsonMinWarningValue = pJson[ApiObjectProperty.minWarningValue];
-    if (jsonMinWarningValue != null) {
-      minWarningValue = jsonMinWarningValue;
-    }
+    minWarningValue = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.minWarningValue,
+      pDefault: minWarningValue,
+      pCurrent: minWarningValue,
+    );
 
-    var jsonDataProvider = pJson[ApiObjectProperty.dataRow];
-    if (jsonDataProvider != null) {
-      dataProvider = jsonDataProvider;
-    }
+    dataProvider = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.dataRow,
+      pDefault: dataProvider,
+      pCurrent: dataProvider,
+    );
 
-    var jsonGaugeStyle = pJson[ApiObjectProperty.gaugeStyle];
-    if (jsonGaugeStyle != null) {
-      gaugeStyle = jsonGaugeStyle;
-    }
-    var jsonValue = pJson[ApiObjectProperty.data];
-    if (jsonValue != null) {
-      value = jsonValue.toDouble();
-    }
+    gaugeStyle = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.gaugeStyle,
+      pDefault: gaugeStyle,
+      pCurrent: gaugeStyle,
+    );
 
-    var jsonColumnLabel = pJson[ApiObjectProperty.columnLabel];
-    if (jsonColumnLabel != null) {
-      columnLabel = jsonColumnLabel;
-    }
+    value = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.data,
+      pDefault: value,
+      pCurrent: value,
+      pConversion: (conv) => conv.toDouble(),
+    );
+
+    columnLabel = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.columnLabel,
+      pDefault: columnLabel,
+      pCurrent: columnLabel,
+    );
   }
 }

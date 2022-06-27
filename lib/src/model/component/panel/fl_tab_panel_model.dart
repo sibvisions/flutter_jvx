@@ -34,28 +34,46 @@ class FlTabPanelModel extends FlPanelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlTabPanelModel get defaultModel => FlTabPanelModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonEventTabClosed = pJson[ApiObjectProperty.eventTabClosed];
-    if (jsonEventTabClosed != null) {
-      eventTabClosed = jsonEventTabClosed;
-    }
-    var jsonEventTabMoved = pJson[ApiObjectProperty.eventTabMoved];
-    if (jsonEventTabMoved != null) {
-      eventTabMoved = jsonEventTabMoved;
-    }
-    var jsonSelectedIndex = pJson[ApiObjectProperty.selectedIndex];
-    if (jsonSelectedIndex != null) {
-      selectedIndex = jsonSelectedIndex;
-    }
-    var jsonDraggable = pJson[ApiObjectProperty.draggable];
-    if (jsonDraggable != null) {
-      draggable = jsonDraggable;
-    }
-    var jsonTabPlacement = pJson[ApiObjectProperty.tabPlacement];
-    if (jsonTabPlacement != null) {
-      tabPlacement = TabPlacements.values[jsonTabPlacement];
-    }
+    eventTabClosed = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.eventTabClosed,
+      pDefault: defaultModel.eventTabClosed,
+      pCurrent: eventTabClosed,
+    );
+
+    eventTabMoved = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.eventTabMoved,
+      pDefault: defaultModel.eventTabMoved,
+      pCurrent: eventTabMoved,
+    );
+
+    selectedIndex = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.selectedIndex,
+      pDefault: defaultModel.selectedIndex,
+      pCurrent: selectedIndex,
+    );
+
+    draggable = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.draggable,
+      pDefault: defaultModel.draggable,
+      pCurrent: draggable,
+    );
+
+    tabPlacement = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.tabPlacement,
+      pDefault: defaultModel.tabPlacement,
+      pCurrent: tabPlacement,
+      pConversion: (value) => TabPlacements.values[value],
+    );
   }
 }

@@ -30,24 +30,37 @@ class FlIconModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlIconModel get defaultModel => FlIconModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonImage = pJson[ApiObjectProperty.image];
-    if (jsonImage != null) {
-      image = jsonImage;
+    _parseImage(pJson, defaultModel);
 
-      // Set the original size of the image.
-      List<String> arr = jsonImage.split(',');
+    preserveAspectRatio = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.preserveAspectRatio,
+      pDefault: defaultModel.preserveAspectRatio,
+      pCurrent: preserveAspectRatio,
+    );
+  }
 
-      if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {
-        originalSize = Size(double.parse(arr[1]), double.parse(arr[2]));
+  _parseImage(Map<String, dynamic> pJson, FlIconModel pDefaultModel) {
+    if (pJson.containsKey(ApiObjectProperty.image)) {
+      dynamic value = pJson[ApiObjectProperty.image];
+      if (value != null) {
+        // Set the original size of the image.
+        List<String> arr = value.split(',');
+        image = arr[0];
+
+        if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {
+          originalSize = Size(double.parse(arr[1]), double.parse(arr[2]));
+        }
+      } else {
+        image = pDefaultModel.image;
+        originalSize = pDefaultModel.originalSize;
       }
-    }
-
-    var jsonPreserveAspectRatio = pJson[ApiObjectProperty.preserveAspectRatio];
-    if (jsonPreserveAspectRatio != null) {
-      preserveAspectRatio = jsonPreserveAspectRatio;
     }
   }
 }

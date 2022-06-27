@@ -25,6 +25,9 @@ class FlPopupMenuItemModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlPopupMenuItemModel get defaultModel => FlPopupMenuItemModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 

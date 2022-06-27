@@ -1,6 +1,5 @@
-import 'fl_button_model.dart';
-
 import '../../api/api_object_property.dart';
+import 'fl_button_model.dart';
 
 /// The model for [FlToggleButtonWidget]
 class FlToggleButtonModel extends FlButtonModel {
@@ -24,6 +23,9 @@ class FlToggleButtonModel extends FlButtonModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  FlToggleButtonModel get defaultModel => FlToggleButtonModel();
 
   @override
   void applyFromJson(Map<String, dynamic> pJson) {

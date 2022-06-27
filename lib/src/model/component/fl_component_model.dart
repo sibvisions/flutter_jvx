@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
 import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../../util/constants/i_font.dart';
@@ -115,6 +114,13 @@ abstract class FlComponentModel {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The default model to reset values to.
+  FlComponentModel get defaultModel;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -122,145 +128,143 @@ abstract class FlComponentModel {
   /// Only applies properties if they exist in the json,
   /// otherwise uses their initiated default values.
   void applyFromJson(Map<String, dynamic> pJson) {
-    FlComponentModel defaultModel = FlLabelModel();
-
-    id = _valueToSet(
+    id = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.id,
       pDefault: defaultModel.id,
       pCurrent: id,
     );
-    name = _valueToSet(
+    name = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.name,
       pDefault: defaultModel.name,
       pCurrent: name,
     );
-    className = _valueToSet(
+    className = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.className,
       pDefault: defaultModel.className,
       pCurrent: className,
     );
-    parent = _valueToSet(
+    parent = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.parent,
       pDefault: defaultModel.parent,
       pCurrent: parent,
     );
-    isRemoved = _valueToSet(
+    isRemoved = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.remove,
       pDefault: defaultModel.isRemoved,
       pCurrent: isRemoved,
       pConversion: ParseUtil.parseBool,
     );
-    isVisible = _valueToSet(
+    isVisible = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.visible,
       pDefault: defaultModel.isVisible,
       pCurrent: isVisible,
     );
-    isEnabled = _valueToSet(
+    isEnabled = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.enabled,
       pDefault: defaultModel.isEnabled,
       pCurrent: isEnabled,
     );
-    isFocusable = _valueToSet(
+    isFocusable = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.focusable,
       pDefault: defaultModel.isFocusable,
       pCurrent: isFocusable,
     );
-    constraints = _valueToSet(
+    constraints = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.constraints,
       pDefault: defaultModel.constraints,
       pCurrent: constraints,
     );
-    indexOf = _valueToSet(
+    indexOf = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.indexOf,
       pDefault: defaultModel.indexOf,
       pCurrent: indexOf,
     );
-    tabIndex = _valueToSet(
+    tabIndex = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.tabIndex,
       pDefault: defaultModel.tabIndex,
       pCurrent: tabIndex,
     );
-    preferredSize = _valueToSet(
+    preferredSize = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.preferredSize,
       pDefault: defaultModel.preferredSize,
       pCurrent: preferredSize,
       pConversion: ParseUtil.parseSize,
     );
-    minimumSize = _valueToSet(
+    minimumSize = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.minimumSize,
       pDefault: defaultModel.minimumSize,
       pCurrent: minimumSize,
       pConversion: ParseUtil.parseSize,
     );
-    maximumSize = _valueToSet(
+    maximumSize = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.maximumSize,
       pDefault: defaultModel.maximumSize,
       pCurrent: maximumSize,
       pConversion: ParseUtil.parseSize,
     );
-    bounds = _valueToSet(
+    bounds = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.bounds,
       pDefault: defaultModel.bounds,
       pCurrent: bounds,
       pConversion: ParseUtil.parseBounds,
     );
-    background = _valueToSet(
+    background = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.background,
       pDefault: defaultModel.background,
       pCurrent: background,
       pConversion: ParseUtil.parseServerColor,
     );
-    foreground = _valueToSet(
+    foreground = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.foreground,
       pDefault: defaultModel.foreground,
       pCurrent: foreground,
       pConversion: ParseUtil.parseServerColor,
     );
-    verticalAlignment = _valueToSet(
+    verticalAlignment = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.verticalAlignment,
       pDefault: defaultModel.verticalAlignment,
       pCurrent: verticalAlignment,
       pConversion: VerticalAlignmentE.fromDynamic,
     );
-    horizontalAlignment = _valueToSet(
+    horizontalAlignment = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.horizontalAlignment,
       pDefault: defaultModel.horizontalAlignment,
       pCurrent: horizontalAlignment,
       pConversion: HorizontalAlignmentE.fromDynamic,
     );
-    toolTipText = _valueToSet(
+    toolTipText = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.toolTipText,
       pDefault: defaultModel.toolTipText,
       pCurrent: toolTipText,
     );
-    classNameEventSourceRef = _valueToSet(
+    classNameEventSourceRef = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.classNameEventSourceRef,
       pDefault: defaultModel.classNameEventSourceRef,
       pCurrent: classNameEventSourceRef,
     );
 
-    _parseFont(pJson, ApiObjectProperty.font, defaultModel);
+    _parseFont(pJson, defaultModel);
   }
 
   /// If this component is used in a cell editor, some values are overriden.
@@ -309,7 +313,7 @@ abstract class FlComponentModel {
     );
   }
 
-  dynamic _valueToSet({
+  dynamic getPropertyValue({
     required Map<String, dynamic> pJson,
     required String pKey,
     required dynamic pDefault,
@@ -331,9 +335,9 @@ abstract class FlComponentModel {
     return pCurrent;
   }
 
-  void _parseFont(Map<String, dynamic> pJson, String pKey, FlComponentModel pDefaultModel) {
-    if (pJson.containsKey(pKey)) {
-      dynamic value = pJson[pKey];
+  void _parseFont(Map<String, dynamic> pJson, FlComponentModel pDefaultModel) {
+    if (pJson.containsKey(ApiObjectProperty.font)) {
+      dynamic value = pJson[ApiObjectProperty.font];
       if (value != null) {
         var fontValuesList = (value as String).split(",");
         if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {

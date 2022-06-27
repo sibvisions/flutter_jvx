@@ -1,5 +1,4 @@
 import '../../../components/panel/fl_panel_widget.dart';
-
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
 
@@ -30,19 +29,31 @@ class FlPanelModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlPanelModel get defaultModel => FlPanelModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
-    var jsonLayout = pJson[ApiObjectProperty.layout];
-    if (jsonLayout != null) {
-      layout = jsonLayout;
-    }
-    var jsonLayoutData = pJson[ApiObjectProperty.layoutData];
-    if (jsonLayoutData != null) {
-      layoutData = jsonLayoutData;
-    }
-    var jsonScreenClassName = pJson[ApiObjectProperty.screenClassName];
-    if (jsonScreenClassName != null) {
-      screenClassName = jsonScreenClassName;
-    }
+
+    layout = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.layout,
+      pDefault: defaultModel.layout,
+      pCurrent: layout,
+    );
+
+    layoutData = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.layoutData,
+      pDefault: defaultModel.layoutData,
+      pCurrent: layoutData,
+    );
+
+    screenClassName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.screenClassName,
+      pDefault: defaultModel.screenClassName,
+      pCurrent: screenClassName,
+    );
   }
 }

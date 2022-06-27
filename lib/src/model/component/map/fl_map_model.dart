@@ -66,78 +66,120 @@ class FlMapModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlMapModel get defaultModel => FlMapModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonFillColor = pJson[ApiObjectProperty.fillColor];
-    if (jsonFillColor != null) {
-      fillColor = ParseUtil.parseServerColor(jsonFillColor)!;
-    }
+    fillColor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.fillColor,
+      pDefault: defaultModel.fillColor,
+      pCurrent: fillColor,
+      pConversion: ParseUtil.parseServerColor,
+    );
 
-    var jsonTileProvider = pJson[ApiObjectProperty.tileProvider];
-    if (jsonTileProvider != null) {
-      tileProvider = jsonTileProvider;
-    }
+    tileProvider = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.tileProvider,
+      pDefault: defaultModel.tileProvider,
+      pCurrent: tileProvider,
+    );
 
-    var jsonlineColor = pJson[ApiObjectProperty.lineColor];
-    if (jsonlineColor != null) {
-      lineColor = ParseUtil.parseServerColor(jsonlineColor)!;
-    }
+    lineColor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.lineColor,
+      pDefault: defaultModel.lineColor,
+      pCurrent: lineColor,
+      pConversion: ParseUtil.parseServerColor,
+    );
 
-    var jsonGroupDataBook = pJson[ApiObjectProperty.groupDataBook];
-    if (jsonGroupDataBook != null) {
-      groupDataBook = jsonGroupDataBook;
-    }
+    groupDataBook = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.groupDataBook,
+      pDefault: defaultModel.groupDataBook,
+      pCurrent: groupDataBook,
+    );
 
-    var jsonMarker = pJson[ApiObjectProperty.marker];
-    if (jsonMarker != null) {
-      markerImage = jsonMarker;
-    }
+    markerImage = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.marker,
+      pDefault: defaultModel.markerImage,
+      pCurrent: markerImage,
+    );
 
-    var jsonCenter = pJson[ApiObjectProperty.center];
-    if (jsonCenter != null) {
-      List<String> centerStrings = jsonCenter.split(';');
-      center = LatLng(double.tryParse(centerStrings.first) ?? 0, double.tryParse(centerStrings.last) ?? 0);
-    }
+    center = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.center,
+      pDefault: defaultModel.center,
+      pCurrent: center,
+      pConversion: _parseLatLng,
+    );
 
-    var jsonPointsDataBook = pJson[ApiObjectProperty.pointsDataBook];
-    if (jsonPointsDataBook != null) {
-      pointsDataBook = jsonPointsDataBook;
-    }
+    pointsDataBook = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.pointsDataBook,
+      pDefault: defaultModel.pointsDataBook,
+      pCurrent: pointsDataBook,
+    );
 
-    var jsonGroupColumnName = pJson[ApiObjectProperty.groupColumnName];
-    if (jsonGroupColumnName != null) {
-      groupColumnName = jsonGroupColumnName;
-    }
+    groupColumnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.groupColumnName,
+      pDefault: defaultModel.groupColumnName,
+      pCurrent: groupColumnName,
+    );
 
-    var jsonLatitudeColumnName = pJson[ApiObjectProperty.latitudeColumnName];
-    if (jsonLatitudeColumnName != null) {
-      latitudeColumnName = jsonLatitudeColumnName;
-    }
+    latitudeColumnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.latitudeColumnName,
+      pDefault: defaultModel.latitudeColumnName,
+      pCurrent: latitudeColumnName,
+    );
 
-    var jsonLongitudeColumnName = pJson[ApiObjectProperty.longitudeColumnName];
-    if (jsonLongitudeColumnName != null) {
-      longitudeColumnName = jsonLongitudeColumnName;
-    }
+    longitudeColumnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.longitudeColumnName,
+      pDefault: defaultModel.longitudeColumnName,
+      pCurrent: longitudeColumnName,
+    );
 
-    var jsonMarkerImageColumnName = pJson[ApiObjectProperty.markerImageColumnName];
-    if (jsonMarkerImageColumnName != null) {
-      markerImageColumnName = jsonMarkerImageColumnName;
-    }
+    markerImageColumnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.markerImageColumnName,
+      pDefault: defaultModel.markerImageColumnName,
+      pCurrent: markerImageColumnName,
+    );
 
-    var jsonPointSelectionEnabled = pJson[ApiObjectProperty.pointSelectionEnabled];
-    if (jsonPointSelectionEnabled != null) {
-      pointSelectionEnabled = jsonPointSelectionEnabled;
-    }
+    pointSelectionEnabled = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.pointSelectionEnabled,
+      pDefault: defaultModel.pointSelectionEnabled,
+      pCurrent: pointSelectionEnabled,
+    );
 
-    var jsonPointSelectionLockedOnCenter = pJson[ApiObjectProperty.pointSelectionLockedOnCenter];
-    if (jsonPointSelectionLockedOnCenter != null) {
-      pointSelectionLockedOnCenter = jsonPointSelectionLockedOnCenter;
-    }
+    pointSelectionLockedOnCenter = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.pointSelectionLockedOnCenter,
+      pDefault: defaultModel.pointSelectionLockedOnCenter,
+      pCurrent: pointSelectionLockedOnCenter,
+    );
 
-    var jsonZoomLevel = pJson[ApiObjectProperty.zoomLevel];
-    if (jsonZoomLevel != null) {
-      zoomLevel = (jsonZoomLevel as int).toDouble();
+    zoomLevel = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.zoomLevel,
+      pDefault: defaultModel.zoomLevel,
+      pCurrent: zoomLevel,
+      pConversion: (value) => value.toDouble(),
+    );
+  }
+
+  LatLng? _parseLatLng(dynamic pValue) {
+    if (pValue != null && pValue is String) {
+      List<String> centerStrings = pValue.split(';');
+      return LatLng(double.tryParse(centerStrings.first) ?? 0, double.tryParse(centerStrings.last) ?? 0);
     }
+    return null;
   }
 }

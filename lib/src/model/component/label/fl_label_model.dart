@@ -29,11 +29,18 @@ class FlLabelModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlLabelModel get defaultModel => FlLabelModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
-    var jsonText = pJson[ApiObjectProperty.text];
-    if (jsonText != null) {
-      text = utf8.decode((jsonText as String).runes.toList());
-    }
+
+    text = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.text,
+      pDefault: defaultModel.text,
+      pCurrent: text,
+      pConversion: (value) => utf8.decode((value as String).runes.toList()),
+    );
   }
 }

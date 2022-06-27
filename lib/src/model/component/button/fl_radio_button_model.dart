@@ -23,4 +23,11 @@ class FlRadioButtonModel extends FlToggleButtonModel {
   // Radiobutton never draws a border.
   @override
   bool get borderPainted => false;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  FlRadioButtonModel get defaultModel => FlRadioButtonModel();
 }

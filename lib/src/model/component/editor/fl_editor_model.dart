@@ -1,5 +1,4 @@
 import '../../api/api_object_property.dart';
-
 import '../fl_component_model.dart';
 
 class FlEditorModel extends FlComponentModel {
@@ -9,11 +8,14 @@ class FlEditorModel extends FlComponentModel {
 
   late String columnName;
 
-  Map<String, dynamic> json;
+  Map<String, dynamic> json = {};
 
   //ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
 
-  FlEditorModel({required this.json});
+  FlEditorModel();
+
+  @override
+  FlEditorModel get defaultModel => FlEditorModel();
 
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
@@ -21,14 +23,19 @@ class FlEditorModel extends FlComponentModel {
     super.applyFromJson(pJson);
     applyJsonToJson(pJson, json);
 
-    var jsonColumnName = pJson[ApiObjectProperty.columnName];
-    if (jsonColumnName != null) {
-      columnName = jsonColumnName;
-    }
-    var jsonDataRow = pJson[ApiObjectProperty.dataRow];
-    if (jsonDataRow != null) {
-      dataRow = jsonDataRow;
-    }
+    columnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.columnName,
+      pDefault: defaultModel.columnName,
+      pCurrent: columnName,
+    );
+
+    dataRow = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.dataRow,
+      pDefault: defaultModel.dataRow,
+      pCurrent: dataRow,
+    );
 
     changedCellEditor = pJson.keys.contains(ApiObjectProperty.cellEditor);
   }

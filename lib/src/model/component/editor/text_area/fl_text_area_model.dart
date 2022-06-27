@@ -10,4 +10,11 @@ class FlTextAreaModel extends FlTextFieldModel {
     rows = 5;
     verticalAlignment = VerticalAlignment.TOP;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  FlTextAreaModel get defaultModel => FlTextAreaModel();
 }

@@ -98,6 +98,9 @@ class FlButtonModel extends FlComponentModel {
   }
 
   @override
+  FlButtonModel get defaultModel => FlButtonModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 

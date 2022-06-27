@@ -83,7 +83,7 @@ abstract class ModelFactory {
 
       // Cell editors:
       case FlComponentClassname.EDITOR:
-        return FlEditorModel(json: pJson);
+        return FlEditorModel();
 
       alsoDefault:
       default:

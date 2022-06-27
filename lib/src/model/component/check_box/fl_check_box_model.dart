@@ -21,4 +21,11 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   // Checkbox never draws a border.
   @override
   bool get borderPainted => false;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  FlCheckBoxModel get defaultModel => FlCheckBoxModel();
 }

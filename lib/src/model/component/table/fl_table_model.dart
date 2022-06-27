@@ -8,8 +8,10 @@ class FlTableModel extends FlComponentModel {
 
   List<String>? columnLabels = [];
 
-  bool autoResize = true;
+  /// If the table should reduce every column to fit into the available space
+  bool autoResize = false;
 
+  /// If the table as a whole should be editable.
   bool editable = true;
 
   /// the show table header flag
@@ -30,75 +32,103 @@ class FlTableModel extends FlComponentModel {
   /// if the tables sorts on header tab
   bool sortOnHeaderEnabled = true;
 
+  /// Word wrap
   bool wordWrapEnabled = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  FlTableModel() : super();
+  FlTableModel();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void applyFromJson(dynamic pJson) {
+  FlTableModel get defaultModel => FlTableModel();
+
+  @override
+  void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonDataBook = pJson[ApiObjectProperty.dataBook];
-    if (jsonDataBook != null) {
-      dataBook = jsonDataBook;
-    }
+    dataBook = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.dataBook,
+      pDefault: defaultModel.dataBook,
+      pCurrent: dataBook,
+    );
 
-    var jsonColumnNames = pJson[ApiObjectProperty.columnNames];
-    if (jsonColumnNames != null) {
-      columnNames = List<String>.from(jsonColumnNames);
-    }
+    columnNames = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.columnNames,
+      pDefault: defaultModel.columnNames,
+      pCurrent: columnNames,
+      pConversion: (value) => List<String>.from(value),
+    );
 
-    var jsonColumnLabels = pJson[ApiObjectProperty.columnLabels];
-    if (jsonColumnLabels != null) {
-      columnLabels = List<String>.from(jsonColumnLabels);
-    }
+    columnLabels = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.columnLabels,
+      pDefault: defaultModel.columnLabels,
+      pCurrent: columnLabels,
+      pConversion: (value) => List<String>.from(value),
+    );
 
-    var jsonAutoResize = pJson[ApiObjectProperty.autoResize];
-    if (jsonAutoResize != null) {
-      autoResize = jsonAutoResize;
-    }
+    autoResize = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.autoResize,
+      pDefault: defaultModel.autoResize,
+      pCurrent: autoResize,
+    );
 
-    var jsonShowVerticalLines = pJson[ApiObjectProperty.showVerticalLines];
-    if (jsonShowVerticalLines != null) {
-      showVerticalLines = jsonShowVerticalLines;
-    }
+    showVerticalLines = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.showVerticalLines,
+      pDefault: defaultModel.showVerticalLines,
+      pCurrent: showVerticalLines,
+    );
 
-    var jsonShowHorizontalLines = pJson[ApiObjectProperty.showHorizontalLines];
-    if (jsonShowHorizontalLines != null) {
-      showHorizontalLines = jsonShowHorizontalLines;
-    }
+    showHorizontalLines = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.showHorizontalLines,
+      pDefault: defaultModel.showHorizontalLines,
+      pCurrent: showHorizontalLines,
+    );
 
-    var jsonShowSelection = pJson[ApiObjectProperty.showSelection];
-    if (jsonShowSelection != null) {
-      showSelection = jsonShowSelection;
-    }
+    showSelection = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.showSelection,
+      pDefault: defaultModel.showSelection,
+      pCurrent: showSelection,
+    );
 
-    var jsonTableHeaderVisible = pJson[ApiObjectProperty.tableHeaderVisible];
-    if (jsonTableHeaderVisible != null) {
-      tableHeaderVisible = jsonTableHeaderVisible;
-    }
+    tableHeaderVisible = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.tableHeaderVisible,
+      pDefault: defaultModel.tableHeaderVisible,
+      pCurrent: tableHeaderVisible,
+    );
 
-    var jsonShowFocusRect = pJson[ApiObjectProperty.showFocusRect];
-    if (jsonShowFocusRect != null) {
-      showFocusRect = jsonShowFocusRect;
-    }
+    showFocusRect = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.showFocusRect,
+      pDefault: defaultModel.showFocusRect,
+      pCurrent: showFocusRect,
+    );
 
-    var jsonSortOnHeaderEnabled = pJson[ApiObjectProperty.sortOnHeaderEnabled];
-    if (jsonSortOnHeaderEnabled != null) {
-      sortOnHeaderEnabled = jsonSortOnHeaderEnabled;
-    }
+    sortOnHeaderEnabled = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.sortOnHeaderEnabled,
+      pDefault: defaultModel.sortOnHeaderEnabled,
+      pCurrent: sortOnHeaderEnabled,
+    );
 
-    var jsonWordWrapEnabled = pJson[ApiObjectProperty.wordWrapEnabled];
-    if (jsonWordWrapEnabled != null) {
-      wordWrapEnabled = jsonWordWrapEnabled;
-    }
+    wordWrapEnabled = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.wordWrapEnabled,
+      pDefault: defaultModel.wordWrapEnabled,
+      pCurrent: wordWrapEnabled,
+    );
   }
 
   int getColumnCount() {

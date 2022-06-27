@@ -11,9 +11,14 @@ class FlCustomContainerModel extends FlComponentModel {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  FlCustomContainerModel();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  FlCustomContainerModel get defaultModel => FlCustomContainerModel();
 
   @override
   void applyFromJson(Map<String, dynamic> pJson) {

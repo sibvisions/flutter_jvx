@@ -7,4 +7,11 @@ class FlSeperatorModel extends FlComponentModel {
 
   /// Initializes the [FlSeperatorModel]
   FlSeperatorModel() : super();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  FlSeperatorModel get defaultModel => FlSeperatorModel();
 }

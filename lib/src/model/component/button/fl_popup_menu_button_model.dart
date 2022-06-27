@@ -18,4 +18,6 @@ class FlPopupMenuButtonModel extends FlToggleButtonModel {
   // Overridden widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  @override
+  FlPopupMenuButtonModel get defaultModel => FlPopupMenuButtonModel();
 }

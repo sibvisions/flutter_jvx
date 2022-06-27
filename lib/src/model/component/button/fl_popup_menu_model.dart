@@ -17,4 +17,6 @@ class FlPopupMenuModel extends FlComponentModel {
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  @override
+  FlPopupMenuModel get defaultModel => FlPopupMenuModel();
 }
