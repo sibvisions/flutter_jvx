@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Card to be displayed in app-login for resetting the password
 class LostPasswordCard extends StatelessWidget with UiServiceMixin {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,8 +33,8 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin {
         child: Column(
           children: [
             Text(
-                "Please enter Email",
-                style: Theme.of(context).textTheme.headline5,
+              "Please enter Email",
+              style: Theme.of(context).textTheme.headline5,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
@@ -56,6 +55,7 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin {
                     ],
                   ),
                 ),
+                const Padding(padding: EdgeInsets.all(2)),
                 ElevatedButton(
                   onPressed: () => context.beamBack(),
                   child: Row(
@@ -78,14 +78,10 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
   /// Sends [ResetPasswordCommand]
   void _sendRequest() {
-    ResetPasswordCommand resetPasswordCommand = ResetPasswordCommand(
-      reason: "User resets password",
-      identifier: identifierController.text
-    );
+    ResetPasswordCommand resetPasswordCommand =
+        ResetPasswordCommand(reason: "User resets password", identifier: identifierController.text);
     uiService.sendCommand(resetPasswordCommand);
   }
-
 }

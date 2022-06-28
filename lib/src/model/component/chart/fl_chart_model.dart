@@ -34,44 +34,60 @@ class FlChartModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonXAxisTitle = pJson[ApiObjectProperty.xAxisTitle];
-    if (jsonXAxisTitle != null) {
-      xAxisTitle = jsonXAxisTitle;
-    }
+    xAxisTitle = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.xAxisTitle,
+      pDefault: defaultModel.xAxisTitle,
+      pCurrent: xAxisTitle,
+    );
 
-    var jsonYAxisTitle = pJson[ApiObjectProperty.yAxisTitle];
-    if (jsonYAxisTitle != null) {
-      yAxisTitle = jsonYAxisTitle;
-    }
+    yAxisTitle = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.yAxisTitle,
+      pDefault: defaultModel.yAxisTitle,
+      pCurrent: yAxisTitle,
+    );
+    xColumnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.xColumnName,
+      pDefault: defaultModel.xColumnName,
+      pCurrent: xColumnName,
+    );
 
-    var jsonXColumnName = pJson[ApiObjectProperty.xColumnName];
-    if (jsonXColumnName != null) {
-      xColumnName = jsonXColumnName;
-    }
+    yColumnNames = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.yColumnNames,
+      pDefault: defaultModel.yColumnNames,
+      pCurrent: yColumnNames,
+      pConversion: (value) => List<String>.from(value),
+    );
 
-    var jsonYColumnNames = pJson[ApiObjectProperty.yColumnNames];
-    if (jsonYColumnNames != null) {
-      yColumnNames = List<String>.from(jsonYColumnNames);
-    }
+    title = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.title,
+      pDefault: defaultModel.title,
+      pCurrent: title,
+    );
 
-    var jsonTitle = pJson[ApiObjectProperty.title];
-    if (jsonTitle != null) {
-      title = jsonTitle;
-    }
+    yColumnLabels = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.yColumnLabels,
+      pDefault: defaultModel.yColumnLabels,
+      pCurrent: yColumnLabels,
+      pConversion: (value) => List<String>.from(value),
+    );
 
-    var jsonYColumnLabels = pJson[ApiObjectProperty.yColumnLabels];
-    if (jsonYColumnNames != null) {
-      yColumnLabels = jsonYColumnLabels;
-    }
-
-    var jsonXColumnLabel = pJson[ApiObjectProperty.xColumnLabel];
-    if (jsonXColumnLabel != null) {
-      xColumnLabel = jsonXColumnLabel;
-    }
-
-    var jsonDataBook = pJson[ApiObjectProperty.dataBook];
-    if (jsonDataBook != null) {
-      dataProvider = jsonDataBook;
-    }
+    xColumnLabel = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.xColumnLabel,
+      pDefault: defaultModel.xColumnLabel,
+      pCurrent: xColumnLabel,
+    );
+    dataProvider = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.dataBook,
+      pDefault: defaultModel.dataProvider,
+      pCurrent: dataProvider,
+    );
   }
 }

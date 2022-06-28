@@ -104,50 +104,68 @@ class FlButtonModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonBorderOnMouseEntered = pJson[ApiObjectProperty.borderOnMouseEntered];
-    if (jsonBorderOnMouseEntered != null) {
-      borderOnMouseEntered = jsonBorderOnMouseEntered;
-    }
+    borderOnMouseEntered = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.borderOnMouseEntered,
+      pDefault: defaultModel.borderOnMouseEntered,
+      pCurrent: borderOnMouseEntered,
+    );
+    borderPainted = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.borderPainted,
+      pDefault: defaultModel.borderPainted,
+      pCurrent: borderPainted,
+    );
 
-    var jsonBorderPainted = pJson[ApiObjectProperty.borderPainted];
-    if (jsonBorderPainted != null) {
-      borderPainted = jsonBorderPainted;
-    }
+    ariaLabel = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.ariaLabel,
+      pDefault: defaultModel.ariaLabel,
+      pCurrent: ariaLabel,
+    );
 
-    var jsonAriaLabel = pJson[ApiObjectProperty.ariaLabel];
-    if (jsonAriaLabel != null) {
-      ariaLabel = jsonAriaLabel;
-    }
+    image = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.image,
+      pDefault: defaultModel.image,
+      pCurrent: image,
+    );
+    imageTextGap = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.imageTextGap,
+      pDefault: defaultModel.imageTextGap,
+      pCurrent: imageTextGap,
+    );
+    mousePressedImage = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.mousePressedImage,
+      pDefault: defaultModel.mousePressedImage,
+      pCurrent: mousePressedImage,
+    );
 
-    var jsonImage = pJson[ApiObjectProperty.image];
-    if (jsonImage != null) {
-      image = jsonImage;
-    }
+    mouseOverImage = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.mouseOverImage,
+      pDefault: defaultModel.mouseOverImage,
+      pCurrent: mouseOverImage,
+    );
+    paddings = getPropertyValue(
+        pJson: pJson,
+        pKey: ApiObjectProperty.margins,
+        pDefault: defaultModel.paddings,
+        pCurrent: paddings,
+        pConversion: (value) => ParseUtil.parseMargins(value));
 
-    var jsonImageTextGap = pJson[ApiObjectProperty.imageTextGap];
-    if (jsonImageTextGap != null) {
-      imageTextGap = jsonImageTextGap;
-    }
-
-    var jsonMousePressedImage = pJson[ApiObjectProperty.mousePressedImage];
-    if (jsonMousePressedImage != null) {
-      mousePressedImage = jsonMousePressedImage;
-    }
-
-    var jsonMouseOverImage = pJson[ApiObjectProperty.mouseOverImage];
-    if (jsonMouseOverImage != null) {
-      mouseOverImage = jsonMouseOverImage;
-    }
-
-    var jsonMargins = ParseUtil.parseMargins(pJson[ApiObjectProperty.margins]);
-    if (jsonMargins != null) {
-      paddings = jsonMargins;
-    }
-
-    var jsonStyle = pJson[ApiObjectProperty.style];
-    if (jsonStyle != null) {
-      style = jsonStyle;
-    }
+    // var jsonMargins = ParseUtil.parseMargins(pJson[ApiObjectProperty.margins]);
+    // if (jsonMargins != null) {
+    //   paddings = jsonMargins;
+    // }
+    style = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.style,
+      pDefault: defaultModel.style,
+      pCurrent: style,
+    );
 
     // Label parsing
     // Label alignment gets sent in 2 different keys than when sending a label directly.
@@ -158,6 +176,7 @@ class FlButtonModel extends FlComponentModel {
     }
 
     Map<String, dynamic> labelJson = <String, dynamic>{};
+
     labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
     labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalTextPosition];
     labelJson[ApiObjectProperty.text] = pJson[ApiObjectProperty.text];

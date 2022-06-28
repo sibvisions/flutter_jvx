@@ -37,22 +37,31 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlLinkedCellEditorModel get defaultModel => FlLinkedCellEditorModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonLinkReference = pJson[ApiObjectProperty.linkReference];
-    if (jsonLinkReference != null) {
-      linkReference = LinkReference.fromJson(jsonLinkReference);
-    }
+    linkReference = getPropertyValue(
+        pJson: pJson,
+        pKey: ApiObjectProperty.linkReference,
+        pDefault: defaultModel.linkReference,
+        pCurrent: linkReference,
+        pConversion: (value) => LinkReference.fromJson(value));
 
-    var jsonColumnView = pJson[ApiObjectProperty.columnView];
-    if (jsonColumnView != null) {
-      columnView = ColumnView.fromJson(jsonColumnView);
-    }
+    columnView = getPropertyValue(
+        pJson: pJson,
+        pKey: ApiObjectProperty.columnView,
+        pDefault: defaultModel.columnView,
+        pCurrent: columnView,
+        pConversion: (value) => ColumnView.fromJson(value));
 
-    var jsonDisplayReferencedColumnName = pJson[ApiObjectProperty.displayReferencedColumnName];
-    if (jsonDisplayReferencedColumnName != null) {
-      displayReferencedColumnName = jsonDisplayReferencedColumnName;
-    }
+    displayReferencedColumnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.displayReferencedColumnName,
+      pDefault: defaultModel.displayReferencedColumnName,
+      pCurrent: displayReferencedColumnName,
+    );
   }
 }

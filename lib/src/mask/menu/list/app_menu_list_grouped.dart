@@ -5,7 +5,6 @@ import '../../../model/menu/menu_model.dart';
 import '../app_menu.dart';
 
 class AppMenuListGrouped extends StatelessWidget {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,9 +32,11 @@ class AppMenuListGrouped extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-        slivers: menuModel.menuGroups
-            .map((e) => AppMenuListGroup(menuGroupModel: e, onClick: onClick))
-            .toList(),
+      slivers: menuModel.menuGroups
+          .map(
+            (e) => AppMenuListGroup(menuGroupModel: e, onClick: onClick),
+          )
+          .toList(),
     );
   }
 }

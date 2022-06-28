@@ -12,8 +12,8 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController repeatPasswordController = TextEditingController();
 
-  String? username;
-  String? password;
+  final String? username;
+  final String? password;
 
   ChangePassword({
     Key? key,

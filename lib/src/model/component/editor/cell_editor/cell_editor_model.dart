@@ -44,45 +44,95 @@ class ICellEditorModel {
   /// Initializes a [ICellEditorModel] with default values
   ICellEditorModel();
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Method definitions
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ICellEditorModel get defaultModel => ICellEditorModel();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void applyFromJson(Map<String, dynamic> pJson) {
     // ClassName
-    var jsonClassName = pJson[ApiObjectProperty.className];
-    if (jsonClassName != null) {
-      className = jsonClassName;
-    }
+    className = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.className,
+      pDefault: defaultModel.className,
+      pCurrent: className,
+    );
+
     // ContentType
-    var jsonContentType = pJson[ApiObjectProperty.contentType];
-    if (jsonContentType != null) {
-      contentType = jsonContentType;
-    }
+    contentType = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.contentType,
+      pDefault: defaultModel.contentType,
+      pCurrent: contentType,
+    );
+
     // HorizontalAlignment
-    var jsonHorizontalAlignment = pJson[ApiObjectProperty.horizontalAlignment];
-    if (jsonHorizontalAlignment != null) {
-      horizontalAlignment = HorizontalAlignment.values[jsonHorizontalAlignment];
-    }
+    horizontalAlignment = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.horizontalAlignment,
+      pDefault: defaultModel.horizontalAlignment,
+      pCurrent: horizontalAlignment,
+      pConversion: HorizontalAlignmentE.fromDynamic,
+    );
+
     // VerticalAlignment
-    var jsonVerticalAlignment = pJson[ApiObjectProperty.verticalAlignment];
-    if (jsonVerticalAlignment != null) {
-      verticalAlignment = VerticalAlignment.values[jsonVerticalAlignment];
-    }
+    verticalAlignment = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.verticalAlignment,
+      pDefault: defaultModel.verticalAlignment,
+      pCurrent: verticalAlignment,
+      pConversion: VerticalAlignmentE.fromDynamic,
+    );
+
     // DirectCellEditor
-    var jsonDirectCellEditor = pJson[ApiObjectProperty.directCellEditor];
-    if (jsonDirectCellEditor != null) {
-      directCellEditor = jsonDirectCellEditor;
-    }
+    directCellEditor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.directCellEditor,
+      pDefault: defaultModel.directCellEditor,
+      pCurrent: directCellEditor,
+    );
+
     // PreferredEditorMode
-    var jsonPreferredEditorMode = pJson[ApiObjectProperty.preferredEditorMode];
-    if (jsonPreferredEditorMode != null) {
-      preferredEditorMode = jsonPreferredEditorMode;
-    }
+    preferredEditorMode = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.preferredEditorMode,
+      pDefault: defaultModel.preferredEditorMode,
+      pCurrent: preferredEditorMode,
+    );
+
     // AutoOpenPopup
-    var jsonAutoOpenPopup = pJson[ApiObjectProperty.autoOpenPopup];
-    if (jsonAutoOpenPopup != null) {
-      autoOpenPopup = jsonAutoOpenPopup;
+    autoOpenPopup = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.autoOpenPopup,
+      pDefault: defaultModel.autoOpenPopup,
+      pCurrent: autoOpenPopup,
+    );
+  }
+
+  dynamic getPropertyValue({
+    required Map<String, dynamic> pJson,
+    required String pKey,
+    required dynamic pDefault,
+    required dynamic pCurrent,
+    dynamic Function(dynamic)? pConversion,
+  }) {
+    if (pJson.containsKey(pKey)) {
+      dynamic value = pJson[pKey];
+      if (value != null) {
+        if (pConversion != null) {
+          return pConversion.call(value);
+        } else {
+          return value;
+        }
+      } else {
+        return pDefault;
+      }
     }
+    return pCurrent;
   }
 }

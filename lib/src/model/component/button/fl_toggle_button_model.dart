@@ -31,14 +31,17 @@ class FlToggleButtonModel extends FlButtonModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonSelected = pJson[ApiObjectProperty.selected];
-    if (jsonSelected != null) {
-      selected = jsonSelected;
-    }
-
-    var jsonAriaPressed = pJson[ApiObjectProperty.ariaPressed];
-    if (jsonAriaPressed != null) {
-      ariaPressed = jsonAriaPressed;
-    }
+    selected = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.selected,
+      pDefault: defaultModel.selected,
+      pCurrent: selected,
+    );
+    ariaPressed = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.ariaPressed,
+      pDefault: defaultModel.ariaPressed,
+      pCurrent: ariaPressed,
+    );
   }
 }

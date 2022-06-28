@@ -11,14 +11,18 @@ class FlNumberCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  @override
+  FlNumberCellEditorModel get defaultModel => FlNumberCellEditorModel();
 
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonNumberFormat = pJson[ApiObjectProperty.numberFormat];
-    if (jsonNumberFormat != null) {
-      numberFormat = jsonNumberFormat;
-    }
+    numberFormat = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.numberFormat,
+      pDefault: defaultModel.numberFormat,
+      pCurrent: numberFormat,
+    );
   }
 }

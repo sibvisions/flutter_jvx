@@ -31,14 +31,19 @@ class FlPopupMenuItemModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonText = pJson[ApiObjectProperty.text];
-    if (jsonText != null) {
-      text = utf8.decode((jsonText as String).runes.toList());
-    }
+    text = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.text,
+      pDefault: defaultModel.text,
+      pCurrent: text,
+      pConversion: (value) => utf8.decode((value as String).runes.toList()),
+    );
 
-    var jsonIcon = pJson[ApiObjectProperty.image];
-    if (jsonIcon != null) {
-      icon = jsonIcon;
-    }
+    icon = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.image,
+      pDefault: defaultModel.icon,
+      pCurrent: icon,
+    );
   }
 }

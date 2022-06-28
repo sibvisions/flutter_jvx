@@ -43,45 +43,59 @@ class FlTextFieldModel extends FlLabelModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonPlaceholder = pJson[ApiObjectProperty.placeholder];
-    if (jsonPlaceholder != null) {
-      placeholder = jsonPlaceholder;
-    }
+    placeholder = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.placeholder,
+      pDefault: defaultModel.placeholder,
+      pCurrent: placeholder,
+    );
 
-    var jsonRows = pJson[ApiObjectProperty.rows];
-    if (jsonRows != null) {
-      rows = jsonRows;
-    }
+    rows = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.rows,
+      pDefault: defaultModel.rows,
+      pCurrent: rows,
+    );
 
-    var jsonColumns = pJson[ApiObjectProperty.columns];
-    if (jsonColumns != null) {
-      columns = jsonColumns;
-    }
+    columns = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.columns,
+      pDefault: defaultModel.columns,
+      pCurrent: columns,
+    );
 
-    var jsonBorder = pJson[ApiObjectProperty.border];
-    if (jsonBorder != null) {
-      isBorderVisible = jsonBorder;
-    }
+    isBorderVisible = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.border,
+      pDefault: defaultModel.isBorderVisible,
+      pCurrent: isBorderVisible,
+    );
 
-    var jsonEditable = pJson[ApiObjectProperty.editable];
-    if (jsonEditable != null) {
-      isEditable = jsonEditable;
-    }
+    isEditable = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.editable,
+      pDefault: defaultModel.isEditable,
+      pCurrent: isEditable,
+    );
   }
 
   @override
   void applyCellEditorOverrides(Map<String, dynamic> pJson) {
     super.applyCellEditorOverrides(pJson);
 
-    var jsonCellEditorEditable = pJson[ApiObjectProperty.cellEditorEditable];
-    if (jsonCellEditorEditable != null) {
-      isEditable = jsonCellEditorEditable;
-    }
+    isEditable = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.cellEditorEditable,
+      pDefault: defaultModel.isEditable,
+      pCurrent: isEditable,
+    );
 
-    var jsonCellEditorPlaceholder = pJson[ApiObjectProperty.cellEditorPlaceholder];
-    if (jsonCellEditorPlaceholder != null) {
-      placeholder = jsonCellEditorPlaceholder;
-    }
+    placeholder = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.cellEditorPlaceholder,
+      pDefault: defaultModel.placeholder,
+      pCurrent: placeholder,
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

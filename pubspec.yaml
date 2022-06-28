@@ -50,5 +50,6 @@ dependencies:
 flutter:
   assets:
     - assets/config/app.conf.json
+    - assets/images/
 
   uses-material-design: true

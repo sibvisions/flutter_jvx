@@ -25,42 +25,58 @@ class FlDateCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FlDateCellEditorModel get defaultModel => FlDateCellEditorModel();
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonDateFormat = pJson[ApiObjectProperty.dateFormat];
-    if (jsonDateFormat != null) {
-      dateFormat = jsonDateFormat.replaceAll('Y', 'y');
-    }
+    dateFormat = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.dateFormat,
+      pDefault: defaultModel.dateFormat,
+      pCurrent: dateFormat,
+      pConversion: (value) => value.replaceAll('Y', 'y'),
+    );
 
-    var jsonIsDateEditor = pJson[ApiObjectProperty.isDateEditor];
-    if (jsonIsDateEditor != null) {
-      isDateEditor = jsonIsDateEditor;
-    }
+    isDateEditor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.isDateEditor,
+      pDefault: defaultModel.isDateEditor,
+      pCurrent: isDateEditor,
+    );
+    isTimeEditor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.isTimeEditor,
+      pDefault: defaultModel.isTimeEditor,
+      pCurrent: isTimeEditor,
+    );
 
-    var jsonIsTimeEditor = pJson[ApiObjectProperty.isTimeEditor];
-    if (jsonIsTimeEditor != null) {
-      isTimeEditor = jsonIsTimeEditor;
-    }
+    isHourEditor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.isHourEditor,
+      pDefault: defaultModel.isHourEditor,
+      pCurrent: isHourEditor,
+    );
 
-    var jsonIsHourEditor = pJson[ApiObjectProperty.isHourEditor];
-    if (jsonIsHourEditor != null) {
-      isHourEditor = jsonIsHourEditor;
-    }
+    isMinuteEditor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.isMinuteEditor,
+      pDefault: defaultModel.isMinuteEditor,
+      pCurrent: isMinuteEditor,
+    );
 
-    var jsonIsMinuteEditor = pJson[ApiObjectProperty.isMinuteEditor];
-    if (jsonIsMinuteEditor != null) {
-      isMinuteEditor = jsonIsMinuteEditor;
-    }
-
-    var jsonIsSecondEditor = pJson[ApiObjectProperty.isSecondEditor];
-    if (jsonIsSecondEditor != null) {
-      isSecondEditor = jsonIsSecondEditor;
-    }
-
-    var jsonIsAmPmEditor = pJson[ApiObjectProperty.isAmPmEditor];
-    if (jsonIsAmPmEditor != null) {
-      isAmPmEditor = jsonIsAmPmEditor;
-    }
+    isSecondEditor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.isSecondEditor,
+      pDefault: defaultModel.isSecondEditor,
+      pCurrent: isSecondEditor,
+    );
+    isAmPmEditor = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.isAmPmEditor,
+      pDefault: defaultModel.isAmPmEditor,
+      pCurrent: isAmPmEditor,
+    );
   }
 }

@@ -92,89 +92,176 @@ class ColumnDefinition {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Writes all data present in the json into the objects properties.
-  void applyFromJson({required Map<String, dynamic> pJson}) {
+  void applyFromJson({required Map<String, dynamic> pJson, ColumnDefinition? pDefaultModel}) {
+    ColumnDefinition defaultModel = pDefaultModel ?? ColumnDefinition();
+
     // Name
     var jsonName = pJson[ApiObjectProperty.name];
+    if (pJson.containsKey(ApiObjectProperty.name)) {
+      if (jsonName == null) {
+        name = defaultModel.name;
+      }
+    }
     if (jsonName != null) {
       name = jsonName;
     }
     // Label
     var jsonLabel = pJson[ApiObjectProperty.label];
+    if (pJson.containsKey(ApiObjectProperty.label)) {
+      if (jsonLabel == null) {
+        label = defaultModel.label;
+      }
+    }
     if (jsonLabel != null) {
       label = jsonLabel;
     }
     // DataTypeIdentifier
     var jsonDataTypeIdentifier = pJson[ApiObjectProperty.dataTypeIdentifier];
+    if (pJson.containsKey(ApiObjectProperty.dataTypeIdentifier)) {
+      if (jsonDataTypeIdentifier == null) {
+        dataTypeIdentifier = defaultModel.dataTypeIdentifier;
+      }
+    }
     if (jsonDataTypeIdentifier != null) {
       dataTypeIdentifier = jsonDataTypeIdentifier;
     }
     // Width
     var jsonWidth = pJson[ApiObjectProperty.width];
+    if (pJson.containsKey(ApiObjectProperty.width)) {
+      if (jsonWidth == null) {
+        width = defaultModel.width;
+      }
+    }
     if (jsonWidth != null) {
       width = (jsonWidth as int).toDouble();
     }
     // Readonly
     var jsonReadonly = pJson[ApiObjectProperty.readOnly];
+    if (pJson.containsKey(ApiObjectProperty.readOnly)) {
+      if (jsonReadonly == null) {
+        readonly = defaultModel.readonly;
+      }
+    }
     if (jsonReadonly != null) {
       readonly = jsonReadonly;
     }
     // Nullable
     var jsonNullable = pJson[ApiObjectProperty.nullable];
+    if (pJson.containsKey(ApiObjectProperty.nullable)) {
+      if (jsonNullable == null) {
+        nullable = defaultModel.nullable;
+      }
+    }
     if (jsonNullable != null) {
       nullable = jsonNullable;
     }
     // Resizable
     var jsonResizable = pJson[ApiObjectProperty.resizable];
+    if (pJson.containsKey(ApiObjectProperty.resizable)) {
+      if (jsonResizable == null) {
+        resizable = defaultModel.resizable;
+      }
+    }
     if (jsonResizable != null) {
       resizable = jsonResizable;
     }
     // Sortable
     var jsonSortable = pJson[ApiObjectProperty.sortable];
+    if (pJson.containsKey(ApiObjectProperty.sortable)) {
+      if (jsonSortable == null) {
+        sortable = defaultModel.sortable;
+      }
+    }
     if (jsonSortable != null) {
       sortable = jsonSortable;
     }
     // Movable
     var jsonMovable = pJson[ApiObjectProperty.movable];
+    if (pJson.containsKey(ApiObjectProperty.movable)) {
+      if (jsonMovable == null) {
+        movable = defaultModel.movable;
+      }
+    }
     if (jsonMovable != null) {
       movable = jsonMovable;
     }
 
     var jsonLength = pJson[ApiObjectProperty.length];
+    if (pJson.containsKey(ApiObjectProperty.length)) {
+      if (jsonLength == null) {
+        length = defaultModel.length;
+      }
+    }
     if (jsonLength != null) {
       length = jsonLength;
     }
 
     var jsonScale = pJson[ApiObjectProperty.scale];
+    if (pJson.containsKey(ApiObjectProperty.scale)) {
+      if (jsonScale == null) {
+        scale = defaultModel.scale;
+      }
+    }
     if (jsonScale != null) {
       scale = jsonScale;
     }
 
     var jsonPrecision = pJson[ApiObjectProperty.precision];
+    if (pJson.containsKey(ApiObjectProperty.precision)) {
+      if (jsonPrecision == null) {
+        precision = defaultModel.precision;
+      }
+    }
     if (jsonPrecision != null) {
       precision = jsonPrecision;
     }
 
     var jsonSigned = pJson[ApiObjectProperty.signed];
+    if (pJson.containsKey(ApiObjectProperty.signed)) {
+      if (jsonSigned == null) {
+        signed = defaultModel.signed;
+      }
+    }
     if (jsonSigned != null) {
       signed = jsonSigned;
     }
 
     var jsonAutoTrim = pJson[ApiObjectProperty.autoTrim];
+    if (pJson.containsKey(ApiObjectProperty.autoTrim)) {
+      if (jsonAutoTrim == null) {
+        autoTrim = defaultModel.autoTrim;
+      }
+    }
     if (jsonAutoTrim != null) {
       autoTrim = jsonAutoTrim;
     }
 
     var jsonEncoding = pJson[ApiObjectProperty.encoding];
+    if (pJson.containsKey(ApiObjectProperty.encoding)) {
+      if (jsonEncoding == null) {
+        encoding = defaultModel.encoding;
+      }
+    }
     if (jsonEncoding != null) {
       encoding = jsonEncoding;
     }
 
     var jsonFractionalSecondsPrecision = pJson[ApiObjectProperty.fractionalSecondsPrecision];
+    if (pJson.containsKey(ApiObjectProperty.fractionalSecondsPrecision)) {
+      if (jsonFractionalSecondsPrecision == null) {
+        iFractionalSecondsPrecision = defaultModel.iFractionalSecondsPrecision;
+      }
+    }
     if (jsonFractionalSecondsPrecision != null) {
       iFractionalSecondsPrecision = jsonFractionalSecondsPrecision;
     }
 
     var jsonCellEditor = pJson[ApiObjectProperty.cellEditor];
+    if (pJson.containsKey(ApiObjectProperty.cellEditor)) {
+      if (jsonCellEditor == null) {
+        cellEditorJson = defaultModel.cellEditorJson;
+      }
+    }
     if (jsonCellEditor != null) {
       cellEditorJson = jsonCellEditor;
     }

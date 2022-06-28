@@ -24,14 +24,18 @@ class FlCustomContainerModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsondataProvider = pJson[ApiObjectProperty.dataRow];
-    if (jsondataProvider != null) {
-      dataProvider = jsondataProvider;
-    }
+    dataProvider = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.dataProvider,
+      pDefault: defaultModel.dataProvider,
+      pCurrent: dataProvider,
+    );
 
-    var jsonColumnName = pJson[ApiObjectProperty.columnName];
-    if (jsonColumnName != null) {
-      columnName = jsonColumnName;
-    }
+    columnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.columnName,
+      pDefault: defaultModel.columnName,
+      pCurrent: columnName,
+    );
   }
 }

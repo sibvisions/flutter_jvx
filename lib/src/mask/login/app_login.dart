@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/mask/login/arc_clipper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 /// Login page of the app, also used for reset/change password
@@ -25,11 +27,31 @@ class AppLogin extends StatelessWidget with UiServiceMixin {
     // uiService.setRouteContext(pContext: context);
     return (Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Expanded(child: Container()),
+      body: Column(children: [
         Expanded(
-          flex: 8,
-          child: Row(children: [
+          child: ClipPath(
+            clipper: ArcClipper(),
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: themeData.backgroundColor,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Center(
+                    child: Image.asset('assets/images/logo.png', fit: BoxFit.fitHeight),
+                  ),
+                )
+              ],
+            ),
+          ),
+          flex: 4,
+        ),
+        Expanded(
+          flex: 6,
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(child: Container()),
             Expanded(
               flex: 8,
@@ -38,7 +60,10 @@ class AppLogin extends StatelessWidget with UiServiceMixin {
             Expanded(child: Container())
           ]),
         ),
-        Expanded(child: Container()),
+        Expanded(
+          child: Container(),
+          flex: 1,
+        ),
       ]),
     ));
   }

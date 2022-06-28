@@ -20,24 +20,33 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  @override
+  FlCheckBoxCellEditorModel get defaultModel => FlCheckBoxCellEditorModel();
 
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
     // ContentType
-    var jsonSelectedValue = pJson[ApiObjectProperty.selectedValue];
-    if (jsonSelectedValue != null) {
-      selectedValue = jsonSelectedValue;
-    }
-    var jsonDeselectedValue = pJson[ApiObjectProperty.deselectedValue];
-    if (jsonDeselectedValue != null) {
-      deselectedValue = jsonDeselectedValue;
-    }
+    selectedValue = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.selectedValue,
+      pDefault: defaultModel.selectedValue,
+      pCurrent: selectedValue,
+    );
 
-    var jsonText = pJson[ApiObjectProperty.text];
-    if (jsonText != null) {
-      text = utf8.decode((jsonText as String).runes.toList());
-    }
+    deselectedValue = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.deselectedValue,
+      pDefault: defaultModel.deselectedValue,
+      pCurrent: deselectedValue,
+    );
+
+    text = getPropertyValue(
+        pJson: pJson,
+        pKey: ApiObjectProperty.text,
+        pDefault: defaultModel.text,
+        pCurrent: text,
+        pConversion: (value) => utf8.decode((value as String).runes.toList()));
   }
 }
