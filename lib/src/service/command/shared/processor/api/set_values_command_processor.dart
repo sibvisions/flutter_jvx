@@ -7,7 +7,6 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class SetValuesProcessor with ConfigServiceMixin, ApiServiceMixin implements ICommandProcessor<SetValuesCommand> {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,13 +16,13 @@ class SetValuesProcessor with ConfigServiceMixin, ApiServiceMixin implements ICo
     String? clientId = configService.getClientId();
 
     if (clientId != null) {
-
       ApiSetValuesRequest setValuesRequest = ApiSetValuesRequest(
-          componentId: command.componentId,
-          clientId: clientId,
-          dataProvider: command.dataProvider,
-          columnNames: command.columnNames,
-          values: command.values
+        componentId: command.componentId,
+        clientId: clientId,
+        dataProvider: command.dataProvider,
+        columnNames: command.columnNames,
+        values: command.values,
+        filter: command.filter,
       );
 
       return apiService.sendRequest(request: setValuesRequest);

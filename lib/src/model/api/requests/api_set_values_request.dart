@@ -1,10 +1,10 @@
+import 'package:flutter_client/src/model/api/requests/api_filter_model.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 
 import '../api_object_property.dart';
 
 /// Request to set the value of a data-bound component
 class ApiSetValuesRequest extends IApiRequest {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,6 +24,9 @@ class ApiSetValuesRequest extends IApiRequest {
   /// List of values, order of which corresponds to order of [columnNames] list
   final List<dynamic> values;
 
+  /// Filter of this setValues, used in table to edit non selected rows.
+  final ApiFilterModel? filter;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +36,8 @@ class ApiSetValuesRequest extends IApiRequest {
     required this.clientId,
     required this.dataProvider,
     required this.columnNames,
-    required this.values
+    required this.values,
+    this.filter,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +50,7 @@ class ApiSetValuesRequest extends IApiRequest {
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.componentId: componentId,
         ApiObjectProperty.columnNames: columnNames,
-        ApiObjectProperty.values: values
+        ApiObjectProperty.values: values,
+        ApiObjectProperty.filter: filter?.toJson(),
       };
 }
