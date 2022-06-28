@@ -126,7 +126,7 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   @override
-  Widget createTableWidget(BuildContext pContext) {
-    return createWidget(pContext);
+  Widget? createTableWidget(BuildContext pContext) {
+    return null;
   }
 }

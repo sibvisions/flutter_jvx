@@ -259,19 +259,15 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void recreateCellEditor(T pModel) {
     oldCellEditor = cellEditor;
 
-    var jsonCellEditor = pModel.json[ApiObjectProperty.cellEditor];
-    if (jsonCellEditor != null) {
-      cellEditor = ICellEditor.getCellEditor(
-          pId: pModel.id,
-          pName: pModel.name,
-          pColumnName: pModel.columnName,
-          pCellEditorJson: jsonCellEditor,
-          onChange: onChange,
-          onEndEditing: onEndEditing,
-          pRecalculateSizeCallback: recalculateSize,
-          pUiService: uiService);
-      subscribe(pModel);
-    }
+    var jsonCellEditor = Map<String, dynamic>.from(pModel.json[ApiObjectProperty.cellEditor]);
+    cellEditor = ICellEditor.getCellEditor(
+        pName: pModel.name,
+        pCellEditorJson: jsonCellEditor,
+        onChange: onChange,
+        onEndEditing: onEndEditing,
+        pRecalculateSizeCallback: recalculateSize,
+        pUiService: uiService);
+    subscribe(pModel);
   }
 
   /// Logs the cell editor for debug purposes.

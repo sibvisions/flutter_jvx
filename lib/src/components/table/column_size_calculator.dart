@@ -96,12 +96,10 @@ class ColumnSizeCalculator {
 
     dev.log("calculated ${tableSize.columnWidths}");
 
-    if (tableModel.autoResize && tableSize.calculatedSize.width < availableWidth) {
-      dev.log("redistribute ${tableSize.calculatedSize.width}");
-      dev.log("redistribute ${tableSize.size.width}");
-
+    if (tableModel.autoResize && tableSize.calculatedSize.width > availableWidth) {
       tableSize.redistributeRemainingWidth(availableWidth - tableSize.calculatedSize.width);
-      dev.log("after redis ${tableSize.size.width}");
+    } else if (tableSize.calculatedSize.width < availableWidth) {
+      tableSize.redistributeRemainingWidth(availableWidth - tableSize.calculatedSize.width);
     }
 
     return tableSize;

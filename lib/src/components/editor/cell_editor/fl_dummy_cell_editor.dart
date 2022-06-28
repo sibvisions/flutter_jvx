@@ -11,9 +11,6 @@ import 'i_cell_editor.dart';
 class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   FlDummyCellEditor()
       : super(
-          id: "",
-          name: "",
-          columnName: "",
           model: ICellEditorModel(),
           pCellEditorJson: {},
           onValueChange: (_) {},
@@ -58,7 +55,7 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  Widget createTableWidget(BuildContext pContext) {
-    return createWidget(pContext);
+  Widget? createTableWidget(BuildContext pContext) {
+    return null;
   }
 }

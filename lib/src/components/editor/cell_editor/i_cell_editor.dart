@@ -24,14 +24,8 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The id of the component this cell editor is part of.
-  String? id;
-
   /// The name of the component this cell editor is part of.
   String? name;
-
-  /// The column name of the column this cell editor represents.
-  String? columnName;
 
   /// The cell editor model
   T model;
@@ -51,9 +45,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
     required Map<String, dynamic> pCellEditorJson,
     required this.onValueChange,
     required this.onEndEditing,
-    this.id,
     this.name,
-    this.columnName,
     this.columnDefinition,
   }) {
     model.applyFromJson(pCellEditorJson);
@@ -92,9 +84,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   /// Returns a [ICellEditor] based on the cell editor class name
   static ICellEditor getCellEditor({
-    String? pId,
-    String? pName,
-    String? pColumnName,
+    required String pName,
     ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
@@ -149,9 +139,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
             uiService: pUiService);
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
-            id: pId,
             name: pName,
-            columnName: pColumnName,
             columnDefinition: columnDefinition,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,

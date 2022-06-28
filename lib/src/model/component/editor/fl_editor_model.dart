@@ -4,9 +4,9 @@ import '../fl_component_model.dart';
 class FlEditorModel extends FlComponentModel {
   bool changedCellEditor = false;
 
-  late String dataRow;
+  String dataRow = "";
 
-  late String columnName;
+  String columnName = "";
 
   Map<String, dynamic> json = {};
 

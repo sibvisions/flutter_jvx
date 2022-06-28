@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
@@ -45,6 +43,10 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
   /// The meta data of the table.
   final DalMetaDataResponse? metaData;
 
+  final Function(dynamic value, int row, String column)? onEndEditing;
+
+  final Function(dynamic value, int row, String column)? onValueChanged;
+
   FlTableWidget({
     Key? key,
     required FlTableModel model,
@@ -58,6 +60,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
     this.onEndScroll,
     this.itemScrollController,
     this.metaData,
+    this.onEndEditing,
+    this.onValueChanged,
   }) : super(key: key, model: model);
 
   @override
@@ -107,9 +111,10 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
       int columnIndex = chunkData.columnDefinitions.indexWhere((e) => e.name == columnName);
 
       ICellEditor cellEditor = ICellEditor.getCellEditor(
+        pName: model.name,
         pCellEditorJson: chunkData.columnDefinitions[columnIndex].cellEditorJson,
-        onChange: (value) => log("change $value for $columnName in row $columnIndex"),
-        onEndEditing: (value) => log("end editing $value for $columnName in row $columnIndex"),
+        onChange: (value) => onValueChanged?.call(value, pIndex, columnName),
+        onEndEditing: (value) => onEndEditing?.call(value, pIndex, columnName),
         pUiService: uiService,
       );
 
@@ -149,7 +154,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
               : Theme.of(context).primaryColor.withOpacity(opacity),
           border: Border(
             bottom: BorderSide(
-              color: Theme.of(context).primaryColor.withOpacity(0.25),
+              color: Theme.of(context).primaryColor,
               width: 1.0,
             ),
           ),

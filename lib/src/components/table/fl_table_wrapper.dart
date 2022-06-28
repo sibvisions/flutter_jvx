@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -101,6 +102,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       chunkData: chunkData,
       tableSize: tableSize,
       selectedRow: selectedRow,
+      onEndEditing: setValueEnd,
+      onValueChanged: setValueChanged,
       onEndScroll: loadMore,
       onLongPress: showContextMenu,
       onRowSwipe: deleteRecord,
@@ -310,11 +313,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     }
 
     showMenu(
-            position: RelativeRect.fromRect(
-                _lastDragDownDetails!.globalPosition & const Size(40, 40), Offset.zero & MediaQuery.of(context).size),
-            context: context,
-            items: popupMenuEntries)
-        .then((val) {
+      position: RelativeRect.fromRect(
+        _lastDragDownDetails!.globalPosition & const Size(40, 40),
+        Offset.zero & MediaQuery.of(context).size,
+      ),
+      context: context,
+      items: popupMenuEntries,
+    ).then((val) {
       WidgetsBinding.instance!.focusManager.primaryFocus?.unfocus();
 
       if (val == ContextMenuCommand.INSERT) {
@@ -325,9 +330,48 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     });
   }
 
+  void setValueEnd(dynamic pValue, int pRow, String pColumnName) {
+    int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
+
+    if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
+      if (pValue is HashMap<String, dynamic>) {
+        sendRow(pRow, pValue.keys.toList(), pValue.values.toList());
+      } else {
+        sendRow(pRow, [pColumnName], [pValue]);
+      }
+    }
+  }
+
+  void setValueChanged(dynamic pValue, int pRow, String pColumnName) {
+    // Do nothing
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void sendRow(int? pRowIndex, List<String>? pColumnNames, List<dynamic> pValues) {
+    int rowIndex = pRowIndex ?? selectedRow;
+    if (rowIndex < 0 || rowIndex >= chunkData.data.length) {
+      return;
+    }
+
+    if (rowIndex != selectedRow) {
+      // selectRecord(rowIndex);
+    }
+
+    List<String> columnNames = pColumnNames ?? metaData!.columns.map((e) => e.name).toList();
+
+    uiService.sendCommand(
+      SetValuesCommand(
+        componentId: model.id,
+        dataProvider: model.dataBook,
+        columnNames: columnNames,
+        values: pValues,
+        reason: "Values changed in table",
+      ),
+    );
+  }
 
   /// Inserts a new record.
   void insertRecord() {
@@ -337,13 +381,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   dynamic getValue({required String pColumnName, int? pRowIndex}) {
     int rowIndex = pRowIndex ?? selectedRow;
     if (rowIndex == -1) {
-      return null;
+      return;
     }
 
     int colIndex = chunkData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
     if (colIndex == -1) {
-      return null;
+      return;
     }
 
     return chunkData.data[rowIndex]![colIndex];

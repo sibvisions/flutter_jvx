@@ -122,6 +122,12 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
 
   @override
   Widget createTableWidget(BuildContext pContext) {
-    return createWidget(pContext);
+    return ConstrainedBox(
+      child: createWidget(pContext),
+      constraints: const BoxConstraints(
+        maxHeight: 35,
+        maxWidth: 35,
+      ),
+    );
   }
 }

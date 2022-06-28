@@ -10,13 +10,11 @@ import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
-  final String id;
-
   final String name;
 
   final FlLinkedCellEditorModel model;
 
-  const FlLinkedCellPicker({required this.id, required this.name, required this.model, Key? key}) : super(key: key);
+  const FlLinkedCellPicker({required this.name, required this.model, Key? key}) : super(key: key);
 
   @override
   _FlLinkedCellPickerState createState() => _FlLinkedCellPickerState();
@@ -191,11 +189,31 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void onTextFieldValueChanged() {
-    uiService.sendCommand(FilterCommand(
-        editorId: widget.name,
-        value: lastChangedFilter,
-        dataProvider: widget.model.linkReference.dataProvider,
-        reason: "Filtered the linked cell picker"));
+    List<String> columnOrder = columnNamesToSubscribe();
+
+    List<String> filterColumns = [];
+
+    if (model.linkReference.columnNames.isEmpty) {
+      filterColumns.add(columnOrder.firstWhere(((element) => element == model.linkReference.referencedColumnNames[0])));
+    } else {
+      for (int i = 0; i < model.linkReference.columnNames.length; i++) {
+        String referencedColumnName = model.linkReference.referencedColumnNames[i];
+        String columnName = model.linkReference.columnNames[i];
+
+        if (model.columnView == null || model.columnView!.columnNames.contains(referencedColumnName)) {
+          filterColumns.add(columnName);
+        }
+      }
+    }
+
+    uiService.sendCommand(
+      FilterCommand(
+          editorId: widget.name,
+          value: lastChangedFilter,
+          columnNames: filterColumns,
+          dataProvider: widget.model.linkReference.dataProvider,
+          reason: "Filtered the linked cell picker"),
+    );
   }
 
   Widget itemBuilder(BuildContext ctxt, int index) {
@@ -307,7 +325,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   List<String> columnNamesToShow() {
     if (model.displayReferencedColumnName != null) {
       return [model.displayReferencedColumnName!];
-    } else if ((model.columnView?.columnCount ?? 0) > 1) {
+    } else if ((model.columnView?.columnCount ?? 0) >= 1) {
       return model.columnView!.columnNames;
     } else {
       return model.linkReference.referencedColumnNames;

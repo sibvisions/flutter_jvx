@@ -43,9 +43,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlLinkedCellEditor({
-    String? id,
-    String? name,
-    String? columnName,
+    required String name,
     ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
@@ -53,9 +51,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
     this.recalculateSizeCallback,
     required this.uiService,
   }) : super(
-          id: id,
           name: name,
-          columnName: columnName,
           model: FlLinkedCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -111,7 +107,6 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
         .openDialog(
             pDialogWidget: FlLinkedCellPicker(
               model: model,
-              id: id!,
               name: name!,
             ),
             pIsDismissible: true)
@@ -228,6 +223,22 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
     }
 
     recalculateSizeCallback?.call(false);
+  }
+
+  void receiveNull(dynamic pValue) {
+    if (model.linkReference.columnNames.isEmpty) {
+      onEndEditing(pValue);
+    } else {
+      HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
+
+      for (int i = 0; i < model.linkReference.columnNames.length; i++) {
+        String columnName = model.linkReference.columnNames[i];
+
+        dataMap[columnName] = pValue;
+      }
+
+      onEndEditing(dataMap);
+    }
   }
 
   //TODO: implement this method
