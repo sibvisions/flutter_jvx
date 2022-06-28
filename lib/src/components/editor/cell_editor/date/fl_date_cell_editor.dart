@@ -77,7 +77,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  FlDateEditorWidget createWidget(BuildContext pContext) {
+  FlDateEditorWidget createWidget(BuildContext pContext, [bool pInTable = false]) {
     FlDateEditorModel widgetModel = FlDateEditorModel();
 
     return FlDateEditorWidget(
@@ -85,6 +85,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
       textController: textController,
       focusNode: focusNode,
       onPress: () => openDatePicker(),
+      inTable: pInTable,
     );
   }
 
@@ -247,6 +248,6 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
 
   @override
   Widget createTableWidget(BuildContext pContext) {
-    return createWidget(pContext);
+    return createWidget(pContext, true);
   }
 }

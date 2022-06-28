@@ -15,6 +15,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
     required Function(String) endEditing,
     required FocusNode focusNode,
     required TextEditingController textController,
+    bool inTable = false,
   }) : super(
             key: key,
             model: model,
@@ -22,7 +23,8 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
             endEditing: endEditing,
             focusNode: focusNode,
             textController: textController,
-            keyboardType: TextInputType.none);
+            keyboardType: TextInputType.none,
+            inTable: inTable);
 
   @override
   Widget build(BuildContext context) {

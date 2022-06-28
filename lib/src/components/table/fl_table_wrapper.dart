@@ -177,7 +177,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
         subbedObj: this,
         dataProvider: model.dataBook,
         from: 0,
-        to: FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount,
+        to: (FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount) - 1,
         onSelectedRecord: receiveSelectedRecord,
         onDataChunk: receiveTableData,
         onMetaData: receiveMetaData,
@@ -350,24 +350,24 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void sendRow(int? pRowIndex, List<String>? pColumnNames, List<dynamic> pValues) {
+  void sendRow(int? pRowIndex, List<String> pColumnNames, List<dynamic> pValues) {
     int rowIndex = pRowIndex ?? selectedRow;
     if (rowIndex < 0 || rowIndex >= chunkData.data.length) {
       return;
     }
 
-    if (rowIndex != selectedRow) {
-      // selectRecord(rowIndex);
+    List<dynamic> listPrimaryKeyValues = [];
+    for (String primaryKeyColumn in metaData!.primaryKeyColumns) {
+      listPrimaryKeyValues.add(_getValue(pColumnName: primaryKeyColumn, pRowIndex: rowIndex));
     }
-
-    List<String> columnNames = pColumnNames ?? metaData!.columns.map((e) => e.name).toList();
 
     uiService.sendCommand(
       SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataBook,
-        columnNames: columnNames,
+        columnNames: pColumnNames,
         values: pValues,
+        filter: createPrimaryFilter(pRowIndex: rowIndex),
         reason: "Values changed in table",
       ),
     );
@@ -378,7 +378,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     uiService.sendCommand(InsertRecordCommand(dataProvider: model.dataBook, reason: "Inserted"));
   }
 
-  dynamic getValue({required String pColumnName, int? pRowIndex}) {
+  dynamic _getValue({required String pColumnName, int? pRowIndex}) {
     int rowIndex = pRowIndex ?? selectedRow;
     if (rowIndex == -1) {
       return;
@@ -399,21 +399,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       return null;
     }
 
-    List<String> listColsToMap = metaData!.primaryKeyColumns;
-    List<int> listColIndex = [];
-
-    for (int i = 0; i < chunkData.columnDefinitions.length; i++) {
-      if (listColsToMap.contains(chunkData.columnDefinitions[i].name)) {
-        listColIndex.add(i);
-      }
+    List<dynamic> listPrimaryKeyValues = [];
+    for (String primaryKeyColumn in metaData!.primaryKeyColumns) {
+      listPrimaryKeyValues.add(_getValue(pColumnName: primaryKeyColumn, pRowIndex: rowIndex));
     }
 
-    List<dynamic> listValues = [];
-    for (int i = 0; i < listColIndex.length; i++) {
-      listValues.add(chunkData.data[rowIndex]![listColIndex[i]]);
-    }
-
-    return ApiFilterModel(values: listValues, columnNames: listColsToMap);
+    return ApiFilterModel(values: listPrimaryKeyValues, columnNames: metaData!.primaryKeyColumns);
   }
 
   PopupMenuItem<ContextMenuCommand> _getContextMenuItem(IconData icon, String text, ContextMenuCommand value) {

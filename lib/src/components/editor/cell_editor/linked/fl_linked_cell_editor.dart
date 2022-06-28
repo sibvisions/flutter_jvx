@@ -79,7 +79,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   }
 
   @override
-  FlLinkedEditorWidget createWidget(BuildContext pContext) {
+  FlLinkedEditorWidget createWidget(BuildContext pContext, [bool pInTable = false]) {
     FlLinkedEditorModel widgetModel = FlLinkedEditorModel();
 
     return FlLinkedEditorWidget(
@@ -88,6 +88,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
       valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
+      inTable: pInTable,
       onPress: openLinkedCellPicker,
     );
   }
@@ -249,6 +250,6 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
 
   @override
   Widget createTableWidget(BuildContext pContext) {
-    return createWidget(pContext);
+    return createWidget(pContext, true);
   }
 }

@@ -126,12 +126,19 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
       tableWidget ??= Text(
         (value ?? '').toString(),
         style: model.getTextStyle(),
+        overflow: TextOverflow.ellipsis,
       );
 
       rowWidgets.add(
         SizedBox(
           width: tableSize.columnWidths[model.columnNames.indexOf(columnName)].toDouble(),
-          child: tableWidget,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: TableSize.cellPadding,
+              right: TableSize.cellPadding,
+            ),
+            child: tableWidget,
+          ),
         ),
       );
     }
@@ -175,8 +182,11 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
       rowWidgets.add(
         SizedBox(
           width: tableSize.columnWidths[headerList.indexOf(columnName)].toDouble(),
-          child: Align(
-            alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: TableSize.cellPadding,
+              right: TableSize.cellPadding,
+            ),
             child: Text(
               columnName,
               style: model.getTextStyle(pFontWeight: FontWeight.bold),
@@ -212,7 +222,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
     if (notification.metrics.pixels > 0 && notification.metrics.atEdge) {
       if (notification.metrics.axis == Axis.horizontal) {
         /// Scrolled all the way to the left.
-        onRowSwipe?.call();
+        // onRowSwipe?.call();
       } else {
         /// Scrolled to the bottom
         onEndScroll?.call();
@@ -224,7 +234,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
 
   onInternalEndSwipe(DragEndDetails pDragEndDetails) {
     if (pDragEndDetails.primaryVelocity != null && pDragEndDetails.primaryVelocity! < 0.0) {
-      onRowSwipe?.call();
+      // onRowSwipe?.call();
     }
   }
 }

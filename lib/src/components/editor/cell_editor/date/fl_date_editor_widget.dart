@@ -14,13 +14,15 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
     required T model,
     required FocusNode focusNode,
     required TextEditingController textController,
+    bool inTable = false,
   }) : super(
             key: key,
             model: model,
             valueChanged: doNothing,
             endEditing: doNothing,
             focusNode: focusNode,
-            textController: textController);
+            textController: textController,
+            inTable: inTable);
 
   @override
   Widget build(BuildContext context) {

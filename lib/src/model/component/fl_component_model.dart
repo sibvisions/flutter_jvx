@@ -310,6 +310,7 @@ abstract class FlComponentModel {
       fontStyle: pFontStyle ?? (isItalic ? FontStyle.italic : FontStyle.normal),
       fontWeight: pFontWeight ?? (isBold ? FontWeight.bold : FontWeight.normal),
       fontFamily: pFontFamily ?? fontName,
+      overflow: TextOverflow.ellipsis,
     );
   }
 

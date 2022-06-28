@@ -87,6 +87,9 @@ class ColumnSizeCalculator {
         }
         // }
 
+        // Add padding and add right border
+        colWidth = adjustValue(colWidth, colWidth + (2 * TableSize.cellPadding) + TableSize.borderWidth);
+
         tableSize.calculatedColumnWidths[showIndex] =
             adjustValue(tableSize.calculatedColumnWidths[showIndex], colWidth);
 
@@ -131,6 +134,8 @@ class TableSize {
 
   /// The default border width
   static double borderWidth = 1.0;
+
+  static double cellPadding = 2.0;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

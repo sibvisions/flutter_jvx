@@ -28,7 +28,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return ParseUtil.getTextHeight(text: "I", style: model.getTextStyle());
   }
 
-  EdgeInsets? get textPadding => null;
+  EdgeInsets? get textPadding => const EdgeInsets.only(left: 5.0);
   EdgeInsetsDirectional get iconPadding => const EdgeInsetsDirectional.only(end: 15);
 
   int? get minLines => null;

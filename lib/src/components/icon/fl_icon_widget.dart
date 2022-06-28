@@ -19,18 +19,21 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   final Function(Size, bool)? imageStreamListener;
 
+  final bool inTable;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlIconWidget(
-      {Key? key,
-      required T model,
-      this.imageInBinary = false,
-      this.imageStreamListener,
-      this.directImage,
-      this.onPress})
-      : super(key: key, model: model);
+  const FlIconWidget({
+    Key? key,
+    required T model,
+    this.imageInBinary = false,
+    this.imageStreamListener,
+    this.directImage,
+    this.onPress,
+    this.inTable = false,
+  }) : super(key: key, model: model);
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +46,18 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     return GestureDetector(
       onTap: onPress,
       child: Container(
-        child: FittedBox(
-          child: child,
-          fit: getBoxFit(),
-          alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-        ),
+        child: child,
+        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
         decoration: BoxDecoration(color: model.background),
       ),
     );
   }
 
   BoxFit getBoxFit() {
+    if (inTable) {
+      return BoxFit.scaleDown;
+    }
+
     if (model.horizontalAlignment == HorizontalAlignment.STRETCH &&
         model.verticalAlignment == VerticalAlignment.STRETCH) {
       if (model.preserveAspectRatio) {
@@ -75,9 +79,12 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   }
 
   Widget? getImage() {
-    return ImageLoader.loadImage(model.image,
-        pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
-        pImageStreamListener: imageStreamListener,
-        imageInBinary: imageInBinary);
+    return ImageLoader.loadImage(
+      model.image,
+      pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
+      pImageStreamListener: imageStreamListener,
+      imageInBinary: imageInBinary,
+      fit: getBoxFit(),
+    );
   }
 }

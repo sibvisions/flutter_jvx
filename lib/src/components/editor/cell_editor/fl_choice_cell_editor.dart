@@ -57,7 +57,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget createWidget(BuildContext pContext) {
+  FlStatelessWidget createWidget(BuildContext pContext, [bool inTable = false]) {
     FlIconModel widgetModel = FlIconModel();
 
     Widget image;
@@ -72,6 +72,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
     return FlIconWidget(
       model: widgetModel,
       directImage: image,
+      inTable: inTable,
       onPress: onPress,
     );
   }
@@ -121,12 +122,6 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
 
   @override
   Widget createTableWidget(BuildContext pContext) {
-    return ConstrainedBox(
-      child: createWidget(pContext),
-      constraints: const BoxConstraints(
-        maxHeight: 35,
-        maxWidth: 35,
-      ),
-    );
+    return createWidget(pContext, true);
   }
 }
