@@ -34,7 +34,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: themeData.backgroundColor.withOpacity(opacitySideMenu),
       child: Column(
         children: [
           _buildDrawerHeader(context),
@@ -52,7 +52,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
       margin: EdgeInsets.zero,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+      decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(opacitySideMenu)),
       child: Row(
         children: [
           Expanded(
@@ -107,7 +107,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   List<Widget> _buildDrawerFooter(BuildContext context) {
     return [
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -118,7 +118,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         onTap: () => uiService.routeToSettings(),
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -135,7 +135,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         },
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -157,7 +157,8 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
       child: FittedBox(
         child: Text(
           text,
-          style: TextStyle(color: themeData.colorScheme.onPrimary.withOpacity(0.7), fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu), fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -171,12 +172,12 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
     required VoidCallback onTap,
   }) {
     return ListTile(
-      tileColor: Theme.of(context).primaryColor,
-      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
+      tileColor: Theme.of(context).primaryColor.withOpacity(opacitySideMenu),
+      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
       onTap: onTap,
       leading: FaIcon(
         leadingIcon,
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
       ),
       title: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mask/menu/app_menu.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/menu/menu_item_model.dart';
 import 'package:flutter_client/util/font_awesome_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class AppMenuListItem extends StatelessWidget {
+class AppMenuListItem extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,7 +24,7 @@ class AppMenuListItem extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuListItem({Key? key, required this.model, required this.onClick, this.backgroundOverride}) : super(key: key);
+  AppMenuListItem({Key? key, required this.model, required this.onClick, this.backgroundOverride}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -34,7 +36,7 @@ class AppMenuListItem extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.zero,
         height: 50,
-        color: backgroundOverride ?? Theme.of(context).backgroundColor,
+        color: backgroundOverride ?? Theme.of(context).backgroundColor.withOpacity(opacitySideMenu),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -45,21 +47,14 @@ class AppMenuListItem extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   model.label,
-                  style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onPrimary),
+                  style: TextStyle(
+                      fontSize: 16, color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu)),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
               ),
             ),
-            // Container(
-            //     alignment: Alignment.center,
-            //     width: 75,
-            //     //color: Colors.black.withOpacity(0.2),
-            //     child: FaIcon(
-            //       FontAwesomeIcons.chevronRight,
-            //       color: Theme.of(context).colorScheme.onPrimary,
-            //     )),
           ],
         ),
       ),
@@ -87,8 +82,13 @@ class AppMenuListItem extends StatelessWidget {
 
     if (imageName != null) {
       icon = CircleAvatar(
-          backgroundColor: Colors.transparent,
-          child: IFontAwesome.getFontAwesomeIcon(pText: imageName, pIconSize: 25, pColor: Theme.of(pContext).primaryColor));
+        backgroundColor: Colors.transparent,
+        child: IFontAwesome.getFontAwesomeIcon(
+          pText: imageName,
+          pIconSize: 25,
+          pColor: Theme.of(pContext).primaryColor.withOpacity(opacitySideMenu),
+        ),
+      );
     }
     return icon;
   }

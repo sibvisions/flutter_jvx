@@ -1,14 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
-class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
-
+class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Text to be displayed
   final String headerText;
+
   /// The height of the header
   final double height;
 
@@ -16,10 +17,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppMenuGridHeader({
-    required this.height,
-    required this.headerText
-  });
+  AppMenuGridHeader({required this.height, required this.headerText});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -39,7 +37,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Theme.of(context).bottomAppBarColor,
+      color: Theme.of(context).bottomAppBarColor.withOpacity(opacitySideMenu),
       child: Padding(
           padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
           child: ListTile(
@@ -48,12 +46,11 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,
               style: TextStyle(
-                  color: Theme.of(context).textTheme.headline5?.color,
+                  color: themeData.textTheme.headline5?.color?.withOpacity(opacitySideMenu),
                   fontWeight: FontWeight.bold,
                   fontSize: 18),
             ),
-          )
-      ),
+          )),
     );
   }
 }

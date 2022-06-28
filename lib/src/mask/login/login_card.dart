@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mask/login/remember_me_checkbox.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
@@ -32,13 +33,17 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
 
   @override
   Widget build(BuildContext context) {
+    String? loginTitle = configService.getAppStyle()?['login.title'];
+
     return Card(
+      color: themeData.backgroundColor.withOpacity(0.9),
+      elevation: 10,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             Text(
-              configService.getAppName().toUpperCase(),
+              loginTitle ?? configService.getAppName().toUpperCase(),
               style: Theme.of(context).textTheme.headline6,
               textAlign: TextAlign.center,
             ),
@@ -62,10 +67,9 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
               child: const Text("Login"),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              TextButton.icon(
+              TextButton(
                 onPressed: () => context.beamToNamed("/login/lostPassword"),
-                icon: const FaIcon(FontAwesomeIcons.question),
-                label: const Text("Reset password"),
+                child: const Text("Reset password?"),
               ),
               TextButton.icon(
                 onPressed: () => _onSettingsPressed(context: context),

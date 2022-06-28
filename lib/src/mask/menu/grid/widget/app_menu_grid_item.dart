@@ -1,12 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../util/font_awesome_util.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../app_menu.dart';
 
-class AppMenuGridItem extends StatelessWidget {
+class AppMenuGridItem extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +23,7 @@ class AppMenuGridItem extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuGridItem({
+  AppMenuGridItem({
     Key? key,
     required this.menuItemModel,
     required this.onClick,
@@ -38,7 +40,7 @@ class AppMenuGridItem extends StatelessWidget {
         onClick(componentId: menuItemModel.screenId);
       },
       child: Container(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColor.withOpacity(opacityMenu),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

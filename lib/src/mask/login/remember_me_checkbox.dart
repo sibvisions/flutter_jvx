@@ -25,13 +25,13 @@ class _RememberMeCheckboxState extends State<RememberMeCheckbox> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        TextButton(
-          onPressed: () => _onPress(),
-          child: const Text("Remember me?"),
-        ),
         Checkbox(
           value: widget.checkHolder.isChecked,
           onChanged: (value) => _onPress(),
+        ),
+        TextButton(
+          onPressed: () => _onPress(),
+          child: const Text("Remember me?"),
         ),
       ],
     );

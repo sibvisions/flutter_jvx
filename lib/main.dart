@@ -15,10 +15,13 @@ void main() {
   initApp().then((value) => runApp(MyApp()));
 }
 
+double opacityMenu = 1;
+double opacitySideMenu = 1;
+
 ThemeData themeData = ThemeData.from(
   colorScheme: ColorScheme.fromSwatch(
     primarySwatch: Colors.amber,
-    backgroundColor: const Color(0xFFFFFFFF),
+    backgroundColor: Colors.grey.shade200,
   ),
   // const ColorScheme.light(
   //   primary: Colors.amber,
