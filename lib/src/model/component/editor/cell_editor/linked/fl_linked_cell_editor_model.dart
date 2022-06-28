@@ -9,7 +9,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  late LinkReference linkReference;
+  LinkReference linkReference = LinkReference();
 
   ColumnView? columnView;
 

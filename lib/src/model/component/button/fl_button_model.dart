@@ -176,10 +176,15 @@ class FlButtonModel extends FlComponentModel {
     }
 
     Map<String, dynamic> labelJson = <String, dynamic>{};
-
-    labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
-    labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalTextPosition];
-    labelJson[ApiObjectProperty.text] = pJson[ApiObjectProperty.text];
+    if (pJson.containsKey(ApiObjectProperty.horizontalAlignment)) {
+      labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
+    }
+    if (pJson.containsKey(ApiObjectProperty.verticalAlignment)) {
+      labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalAlignment];
+    }
+    if (pJson.containsKey(ApiObjectProperty.text)) {
+      labelJson[ApiObjectProperty.text] = pJson[ApiObjectProperty.text];
+    }
 
     labelModel.applyFromJson(labelJson);
   }
