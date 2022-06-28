@@ -1,3 +1,5 @@
+import 'package:flutter_client/util/parse_util.dart';
+
 import '../../../api/api_object_property.dart';
 import '../../../layout/alignments.dart';
 
@@ -121,18 +123,12 @@ class ICellEditorModel {
     required dynamic pCurrent,
     dynamic Function(dynamic)? pConversion,
   }) {
-    if (pJson.containsKey(pKey)) {
-      dynamic value = pJson[pKey];
-      if (value != null) {
-        if (pConversion != null) {
-          return pConversion.call(value);
-        } else {
-          return value;
-        }
-      } else {
-        return pDefault;
-      }
-    }
-    return pCurrent;
+    ParseUtil.getPropertyValue(
+      pJson: pJson,
+      pKey: pKey,
+      pDefault: pDefault,
+      pCurrent: pCurrent,
+      pConversion: pConversion,
+    );
   }
 }

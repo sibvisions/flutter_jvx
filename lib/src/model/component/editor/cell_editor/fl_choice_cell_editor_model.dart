@@ -34,23 +34,12 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
 
     // ContentType
     defaultImage = getPropertyValue(
-        pJson: pJson,
-        pKey: ApiObjectProperty.defaultImageName,
-        pDefault: defaultModel.defaultImage,
-        pCurrent: defaultImage,
-        pConversion: (value) => ImageLoader.loadImage(value, pImageStreamListener: newMaxSize));
-    // var jsonDefaultImageName = pJson[ApiObjectProperty.defaultImageName];
-    // if (pJson.containsKey(ApiObjectProperty.defaultImageName)) {
-    //   if (jsonDefaultImageName == null) {
-    //     defaultImage = defaultModel.defaultImage;
-    //   }
-    // }
-    // if (jsonDefaultImageName != null) {
-    //   defaultImage = ImageLoader.loadImage(
-    //     jsonDefaultImageName,
-    //     pImageStreamListener: newMaxSize,
-    //   );
-    // }
+      pJson: pJson,
+      pKey: ApiObjectProperty.defaultImageName,
+      pDefault: defaultModel.defaultImage,
+      pCurrent: defaultImage,
+      pConversion: (value) => ImageLoader.loadImage(value, pImageStreamListener: newMaxSize),
+    );
 
     listValues = getPropertyValue(
         pJson: pJson,
@@ -59,16 +48,6 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
         pCurrent: listValues,
         pConversion: (value) => List<dynamic>.from(value));
 
-    // var jsonAllowedValues = pJson[ApiObjectProperty.allowedValues];
-    // if (pJson.containsKey(ApiObjectProperty.defaultImageName)) {
-    //   if (jsonAllowedValues == null) {
-    //     listValues = defaultModel.listValues;
-    //   }
-    // }
-    // if (jsonAllowedValues != null) {
-    //   listValues = List<dynamic>.from(jsonAllowedValues);
-    // }
-
     listImages = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.imageNames,
@@ -76,25 +55,6 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
       pCurrent: listImages,
       pConversion: _parseImgList,
     );
-
-    // var jsonImageNames = pJson[ApiObjectProperty.imageNames];
-    // if (pJson.containsKey(ApiObjectProperty.imageNames)) {
-    //   if (jsonImageNames == null) {
-    //     listImages = defaultModel.listImages;
-    //   }
-    // }
-    // if (jsonImageNames != null) {
-    //   for (var jsonValueDynamic in jsonImageNames) {
-    //     String jsonValue = jsonValueDynamic as String;
-
-    //     listImages.add(
-    //       ImageLoader.loadImage(
-    //         jsonValue,
-    //         pImageStreamListener: newMaxSize,
-    //       ),
-    //     );
-    //   }
-    // }
   }
 
   List<Widget>? _parseImgList(dynamic pValue) {

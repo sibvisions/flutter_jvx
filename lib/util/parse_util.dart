@@ -209,4 +209,26 @@ abstract class ParseUtil {
             maxLines: maxLines)
         .width;
   }
+
+  static dynamic getPropertyValue({
+    required Map<String, dynamic> pJson,
+    required String pKey,
+    required dynamic pDefault,
+    required dynamic pCurrent,
+    dynamic Function(dynamic)? pConversion,
+  }) {
+    if (pJson.containsKey(pKey)) {
+      dynamic value = pJson[pKey];
+      if (value != null) {
+        if (pConversion != null) {
+          return pConversion.call(value);
+        } else {
+          return value;
+        }
+      } else {
+        return pDefault;
+      }
+    }
+    return pCurrent;
+  }
 }

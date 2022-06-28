@@ -320,19 +320,13 @@ abstract class FlComponentModel {
     required dynamic pCurrent,
     dynamic Function(dynamic)? pConversion,
   }) {
-    if (pJson.containsKey(pKey)) {
-      dynamic value = pJson[pKey];
-      if (value != null) {
-        if (pConversion != null) {
-          return pConversion.call(value);
-        } else {
-          return value;
-        }
-      } else {
-        return pDefault;
-      }
-    }
-    return pCurrent;
+    return ParseUtil.getPropertyValue(
+      pJson: pJson,
+      pKey: pKey,
+      pDefault: pDefault,
+      pCurrent: pCurrent,
+      pConversion: pConversion,
+    );
   }
 
   void _parseFont(Map<String, dynamic> pJson, FlComponentModel pDefaultModel) {

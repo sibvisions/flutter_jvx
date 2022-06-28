@@ -5,7 +5,12 @@ class FlDateEditorModel extends FlTextFieldModel {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlDateEditorModel() : super() {
-    // TODO
-  }
+  FlDateEditorModel() : super();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  FlDateEditorModel get defaultModel => FlDateEditorModel();
 }

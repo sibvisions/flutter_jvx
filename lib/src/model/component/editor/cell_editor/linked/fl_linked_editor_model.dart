@@ -5,7 +5,12 @@ class FlLinkedEditorModel extends FlTextFieldModel {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlLinkedEditorModel() : super() {
-    // TODO
-  }
+  FlLinkedEditorModel() : super();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  FlLinkedEditorModel get defaultModel => FlLinkedEditorModel();
 }
