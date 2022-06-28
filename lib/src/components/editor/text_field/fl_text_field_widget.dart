@@ -19,6 +19,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   final TextEditingController textController;
 
+  final bool inTable;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +61,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     required this.focusNode,
     required this.textController,
     this.keyboardType = TextInputType.text,
+    this.inTable = false,
   }) : super(key: key, model: model, valueChanged: valueChanged, endEditing: endEditing);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,9 +76,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         hintText: model.placeholder,
         contentPadding: textPadding,
         border: const OutlineInputBorder(),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: model.isEnabled ? themeData.primaryColor : IColorConstants.COMPONENT_DISABLED),
-        ),
+        enabledBorder: createBorder(),
         suffixIcon: createSuffixIcon(),
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
@@ -152,6 +152,17 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: createSuffixItems(),
+    );
+  }
+
+  OutlineInputBorder createBorder() {
+    if (inTable) {
+      return const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.transparent),
+      );
+    }
+    return OutlineInputBorder(
+      borderSide: BorderSide(color: model.isEnabled ? themeData.primaryColor : IColorConstants.COMPONENT_DISABLED),
     );
   }
 }
