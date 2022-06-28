@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
@@ -53,6 +54,17 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   /// Will process all Commands with superclass [DataCommand]
   final ICommandProcessor _dataProcessor = DataProcessor();
 
+  /// New api commands will be added to this list and
+  /// will only be executed if the previous command and all of its follow-ups
+  /// have finished execution (excluding layout-ing)
+  final Queue<BaseCommand> _apiCommandsQueue = Queue();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  CommandService();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +72,16 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   @override
   Future<List<BaseCommand>> sendCommand(BaseCommand command) async {
     List<BaseCommand> commands = [];
+
+    // Same Command cant  be added twice, a previously added command will end up here when its called
+    if (command is ApiCommand && !_apiCommandsQueue.contains(command)) {
+      _apiCommandsQueue.add(command);
+      // If there is already a command in queue don't execute it
+      if (_apiCommandsQueue.length > 1) {
+        return [];
+      }
+    }
+
     // Switch-Case doesn't work with types
     try {
       if (command is ApiCommand) {
@@ -112,6 +134,15 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
         return sendCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
       }
     });
+
+    if (command is ApiCommand) {
+      // Remove current command after execution is complete
+      // and call the next one in queue
+      _apiCommandsQueue.remove(command);
+      if (_apiCommandsQueue.isNotEmpty) {
+        _waitTillFinished(pCommands: [_apiCommandsQueue.first]);
+      }
+    }
 
     command.callback?.call();
     return commands;
