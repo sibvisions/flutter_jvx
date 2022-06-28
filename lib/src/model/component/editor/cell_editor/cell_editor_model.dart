@@ -123,7 +123,7 @@ class ICellEditorModel {
     required dynamic pCurrent,
     dynamic Function(dynamic)? pConversion,
   }) {
-    ParseUtil.getPropertyValue(
+    return ParseUtil.getPropertyValue(
       pJson: pJson,
       pKey: pKey,
       pDefault: pDefault,
