@@ -116,12 +116,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         padding: iconPadding,
         child: GestureDetector(
           onTap: () {
-            textController.clear();
-
             if (focusNode.hasFocus) {
-              valueChanged(textController.text);
+              valueChanged("");
             } else {
-              endEditing(textController.text);
+              endEditing("");
             }
           },
           child: Icon(

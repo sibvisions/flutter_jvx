@@ -50,7 +50,7 @@ class DalFetchResponse extends ApiResponse {
         to = pJson[ApiObjectProperty.to],
         from = pJson[ApiObjectProperty.from],
         columnNames = pJson[ApiObjectProperty.columnNames].cast<String>(),
-        isAllFetched = pJson[ApiObjectProperty.isAllFetched] ?? true,
+        isAllFetched = pJson[ApiObjectProperty.isAllFetched] ?? false,
         selectedRow = pJson[ApiObjectProperty.selectedRow],
         dataProvider = pJson[ApiObjectProperty.dataProvider],
         super.fromJson(pJson: pJson, originalRequest: originalRequest);
