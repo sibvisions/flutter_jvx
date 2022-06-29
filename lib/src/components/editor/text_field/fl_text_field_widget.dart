@@ -82,6 +82,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
       textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
       readOnly: model.isReadOnly,
+      enabled: model.isEnabled,
       style: model.getTextStyle(),
       onChanged: valueChanged,
       onEditingComplete: () {
