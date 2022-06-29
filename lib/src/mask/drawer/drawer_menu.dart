@@ -52,7 +52,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
       margin: EdgeInsets.zero,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(opacitySideMenu)),
+      decoration: BoxDecoration(color: themeData.primaryColor.withOpacity(opacitySideMenu)),
       child: Row(
         children: [
           Expanded(
@@ -62,7 +62,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
               children: [
                 _buildHeaderText(flex: 7, text: configService.getAppName()),
                 const Padding(padding: EdgeInsets.all(4)),
-                _buildHeaderText(flex: 3, text: "Logged in as: "),
+                _buildHeaderText(flex: 3, text: configService.translateText("Logged in as: ")),
                 const Padding(padding: EdgeInsets.all(10)),
                 _buildHeaderText(flex: 5, text: configService.getUserInfo()?.displayName ?? ""),
                 const Expanded(flex: 2, child: Text(""))
@@ -77,12 +77,12 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
               children: [
                 Expanded(
                   child: CircleAvatar(
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: themeData.backgroundColor,
                     backgroundImage: configService.getUserInfo()?.profileImage?.image,
                     child: configService.getUserInfo()?.profileImage == null
                         ? FaIcon(
                             FontAwesomeIcons.solidUser,
-                            color: Theme.of(context).primaryColor,
+                            color: themeData.primaryColor,
                             size: 36,
                           )
                         : null,
@@ -107,24 +107,24 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   List<Widget> _buildDrawerFooter(BuildContext context) {
     return [
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
       _buildFooterEntry(
         context: context,
-        text: "Settings",
+        text: configService.translateText("Settings"),
         leadingIcon: FontAwesomeIcons.cogs,
         onTap: () => uiService.routeToSettings(),
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
       _buildFooterEntry(
         context: context,
-        text: "Change password",
+        text: configService.translateText("Change password"),
         leadingIcon: FontAwesomeIcons.save,
         onTap: () => {
           uiService.openDialog(
@@ -135,13 +135,13 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         },
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
       _buildFooterEntry(
         context: context,
-        text: "Logout",
+        text: configService.translateText("Logout"),
         leadingIcon: FontAwesomeIcons.signOutAlt,
         onTap: _logout,
       ),
@@ -172,12 +172,12 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
     required VoidCallback onTap,
   }) {
     return ListTile(
-      tileColor: Theme.of(context).primaryColor.withOpacity(opacitySideMenu),
-      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+      tileColor: themeData.primaryColor.withOpacity(opacitySideMenu),
+      textColor: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
       onTap: onTap,
       leading: FaIcon(
         leadingIcon,
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
       ),
       title: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );

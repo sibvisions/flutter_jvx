@@ -27,7 +27,11 @@ class SplashLocation extends BeamLocation<BeamState> {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     return [
-      const BeamPage(child: SplashWidget()),
+      BeamPage(
+          child: SplashWidget(
+        languageCallbacks: languageCallbacks,
+        styleCallbacks: styleCallbacks,
+      )),
     ];
   }
 

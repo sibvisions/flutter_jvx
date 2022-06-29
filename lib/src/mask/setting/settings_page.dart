@@ -100,13 +100,13 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     uiService.setRouteContext(pContext: context);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: themeData.backgroundColor,
       appBar: AppBar(
         leading: IconButton(
           icon: const FaIcon(FontAwesomeIcons.arrowLeft),
           onPressed: () => context.beamBack(),
         ),
-        title: const Text("Settings"),
+        title: Text(configService.translateText("Settings")),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -127,9 +127,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
                         onTap: () => context.beamBack(),
                         child: Container(
                           alignment: Alignment.center,
-                          child: const Text(
-                            "CLOSE",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          child: Text(
+                            configService.translateText("CLOSE"),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: themeData.colorScheme.onPrimary),
                           ),
                         ),
                       )
@@ -137,27 +137,27 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
               ),
               Expanded(
                 child: InkWell(
-                  onTap: _saveClicked,
+                  onTap: () => _saveClicked(),
                   child: Container(
                     alignment: Alignment.center,
                     child: configService.getUserInfo() != null
-                        ? const Text(
-                            "SAVE",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                        ? Text(
+                            configService.translateText("SAVE"),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: themeData.colorScheme.onPrimary),
                           )
-                        : const Text(
-                            "OPEN",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                        : Text(
+                            configService.translateText("OPEN"),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: themeData.colorScheme.onPrimary),
                           ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: themeData.primaryColor,
         child: const FaIcon(FontAwesomeIcons.qrcode),
         onPressed: () => _openQRScanner(),
       ),
@@ -176,7 +176,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: appNameNotifier,
-      title: "App name",
+      title: configService.translateText("App Name"),
       onPressed: () {
         TextEditingController controller = TextEditingController(text: appNameNotifier.value);
         Widget editor = AppNameEditor(controller: controller);
@@ -187,7 +187,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
             FontAwesomeIcons.server,
             color: themeData.primaryColor,
           ),
-          pTitleText: "AppName",
+          pTitleText: configService.translateText("App Name"),
         ).then((value) {
           if (value) {
             appNameNotifier.value = controller.text;
@@ -204,7 +204,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
         ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
         value: baseUrlNotifier,
-        title: "URL",
+        title: configService.translateText("URL"),
         onPressed: () {
           TextEditingController controller = TextEditingController(text: baseUrlNotifier.value);
           Widget editor = UrlEditor(controller: controller);
@@ -215,7 +215,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
               FontAwesomeIcons.globe,
               color: themeData.primaryColor,
             ),
-            pTitleText: "URL",
+            pTitleText: configService.translateText("URL"),
           ).then((value) {
             if (value) {
               try {
@@ -223,9 +223,11 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
                 baseUrlNotifier.value = config.getBasePath();
                 configService.getApiConfig().urlConfig = config;
-                uiService.sendCommand(SetApiConfigCommand(apiConfig: configService.getApiConfig(), reason: "Settings url editor"));
+                uiService.sendCommand(
+                    SetApiConfigCommand(apiConfig: configService.getApiConfig(), reason: "Settings url editor"));
               } catch (e) {
-                uiService.sendCommand(OpenErrorDialogCommand(reason: "parseURl", message: "URL text could not be parsed"));
+                uiService.sendCommand(OpenErrorDialogCommand(
+                    reason: "parseURl", message: configService.translateText("URL text could not be parsed")));
               }
             }
           });
@@ -238,7 +240,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: languageNotifier,
-      title: "Language",
+      title: configService.translateText("Language"),
       onPressed: () {
         Picker picker = Picker(
             confirmTextStyle: const TextStyle(fontSize: 14),
@@ -260,7 +262,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: pictureSizeNotifier,
-      title: "Big",
+      title: configService.translateText("Big"),
       onPressed: () {
         Picker picker = Picker(
             adapter: PickerDataAdapter<int>(data: [
@@ -284,11 +286,11 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     );
 
     return SettingGroup(
-      groupHeader: const Padding(
-        padding: EdgeInsets.all(10),
+      groupHeader: Padding(
+        padding: const EdgeInsets.all(10),
         child: Text(
-          "Application",
-          style: TextStyle(
+          configService.translateText("Application"),
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -302,27 +304,27 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
       value: commitNotifier,
-      title: "Github commit",
+      title: configService.translateText("Github commit"),
     );
 
     SettingItem appVersionSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.github),
       value: appVersionNotifier,
-      title: "App version",
+      title: configService.translateText("App version"),
     );
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
       value: buildDateNotifier,
-      title: "Build date",
+      title: configService.translateText("Build date"),
     );
 
     SettingGroup group = SettingGroup(
-        groupHeader: const Padding(
-          padding: EdgeInsets.all(10),
+        groupHeader: Padding(
+          padding: const EdgeInsets.all(10),
           child: Text(
-            "Version Info",
-            style: TextStyle(
+            configService.translateText("Version Info"),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -333,7 +335,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     return group;
   }
 
-  Future<bool?> _settingItemClicked<bool>({required Widget pEditor, required FaIcon pTitleIcon, required String pTitleText}) {
+  Future<bool?> _settingItemClicked<bool>(
+      {required Widget pEditor, required FaIcon pTitleIcon, required String pTitleText}) {
     return showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
@@ -376,12 +379,14 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   /// Will send a [StartupCommand] with current values
   void _saveClicked() {
     StartupCommand startupCommand = StartupCommand(
-        reason: "QR-Code-Scanned",
-        password: password,
-        username: username,
-        language: configService.getLanguage(),
-        authKey: configService.getAuthCode());
+      reason: "QR-Code-Scanned",
+      password: password,
+      username: username,
+      language: configService.getLanguage(),
+      authKey: configService.getAuthCode(),
+    );
     uiService.sendCommand(startupCommand);
+
     password = null;
     username = null;
   }

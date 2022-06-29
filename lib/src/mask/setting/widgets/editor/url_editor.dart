@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
-class UrlEditor extends StatelessWidget {
+class UrlEditor extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,7 +13,7 @@ class UrlEditor extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const UrlEditor({
+  UrlEditor({
     required this.controller,
     Key? key,
   }) : super(key: key);
@@ -26,8 +27,8 @@ class UrlEditor extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: 'URL',
-        hintText: 'Enter new URL',
+        labelText: configService.translateText('URL'),
+        hintText: configService.translateText('Enter new URL'),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );

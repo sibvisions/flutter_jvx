@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
@@ -84,7 +85,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
         body: Scaffold(
           appBar: header,
           bottomNavigationBar: footer,
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: themeData.backgroundColor,
           body: LayoutBuilder(builder: (context, constraints) {
             final viewInsets = EdgeInsets.fromWindowPadding(
               WidgetsBinding.instance!.window.viewInsets,

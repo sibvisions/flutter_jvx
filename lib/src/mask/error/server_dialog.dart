@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
 /// This is a standard template for a server side message.
-class ServerDialog extends StatelessWidget {
+class ServerDialog extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,7 +15,7 @@ class ServerDialog extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const ServerDialog({
+  ServerDialog({
     required this.message,
     Key? key,
   }) : super(key: key);
@@ -25,15 +27,15 @@ class ServerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: const Text("MESSAGE"),
+      backgroundColor: themeData.cardColor.withAlpha(255),
+      title: Text(configService.translateText("MESSAGE")),
       content: Text(message),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text(
-            "OK",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          child: Text(
+            configService.translateText("OK"),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
       ],

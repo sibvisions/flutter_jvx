@@ -26,7 +26,7 @@ class FlCustomContainerModel extends FlComponentModel {
 
     dataProvider = getPropertyValue(
       pJson: pJson,
-      pKey: ApiObjectProperty.dataProvider,
+      pKey: ApiObjectProperty.dataRow,
       pDefault: defaultModel.dataProvider,
       pCurrent: dataProvider,
     );

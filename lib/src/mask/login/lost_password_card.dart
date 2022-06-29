@@ -1,17 +1,19 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Card to be displayed in app-login for resetting the password
-class LostPasswordCard extends StatelessWidget with UiServiceMixin {
+class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Controller for Email/Username text field
-  final TextEditingController identifierController = TextEditingController(text: "features");
+  final TextEditingController identifierController = TextEditingController(text: "");
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -33,12 +35,12 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin {
         child: Column(
           children: [
             Text(
-              "Please enter Email",
-              style: Theme.of(context).textTheme.headline5,
+              configService.translateText("Please enter Email"),
+              style: themeData.textTheme.headline5,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: const InputDecoration(labelText: "Email: "),
+              decoration: InputDecoration(labelText: configService.translateText("Email: ")),
               controller: identifierController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
@@ -48,10 +50,10 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin {
                 ElevatedButton(
                   onPressed: () => _sendRequest(),
                   child: Row(
-                    children: const [
-                      FaIcon(FontAwesomeIcons.paperPlane),
-                      Padding(padding: EdgeInsets.all(5)),
-                      Text("Reset password"),
+                    children: [
+                      const FaIcon(FontAwesomeIcons.paperPlane),
+                      const Padding(padding: EdgeInsets.all(5)),
+                      Text(configService.translateText("Reset password")),
                     ],
                   ),
                 ),
@@ -59,10 +61,10 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin {
                 ElevatedButton(
                   onPressed: () => context.beamBack(),
                   child: Row(
-                    children: const [
-                      FaIcon(FontAwesomeIcons.arrowLeft),
-                      Padding(padding: EdgeInsets.all(5)),
-                      Text("Cancel"),
+                    children: [
+                      const FaIcon(FontAwesomeIcons.arrowLeft),
+                      const Padding(padding: EdgeInsets.all(5)),
+                      Text(configService.translateText("Cancel")),
                     ],
                   ),
                 ),
@@ -81,7 +83,7 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin {
   /// Sends [ResetPasswordCommand]
   void _sendRequest() {
     ResetPasswordCommand resetPasswordCommand =
-        ResetPasswordCommand(reason: "User resets password", identifier: identifierController.text);
+        ResetPasswordCommand(reason: "User reset password", identifier: identifierController.text);
     uiService.sendCommand(resetPasswordCommand);
   }
 }

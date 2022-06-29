@@ -34,7 +34,6 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    // uiService.setRouteContext(pContext: context);
     loginBackground = configService.getAppStyle()?['login.icon'];
     loginLogo = configService.getAppStyle()?['login.logo'];
 
@@ -52,6 +51,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
     return (Scaffold(
       backgroundColor: botColor ?? Colors.white,
       body: Stack(
+        clipBehavior: Clip.none,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

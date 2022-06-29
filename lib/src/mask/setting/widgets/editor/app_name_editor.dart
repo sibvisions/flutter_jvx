@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
-import '../../settings_page.dart';
-
-class AppNameEditor extends StatelessWidget {
-
+class AppNameEditor extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,11 +13,7 @@ class AppNameEditor extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppNameEditor({
-    required this.controller,
-    Key? key
-  }) :
-      super(key: key);
+  AppNameEditor({required this.controller, Key? key}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -31,10 +24,9 @@ class AppNameEditor extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: 'App name',
-        hintText: 'Enter new App Name',
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20)),
+        labelText: configService.translateText('App name'),
+        hintText: configService.translateText('Enter new App Name'),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
   }

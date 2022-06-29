@@ -30,7 +30,7 @@ class SplashWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: FutureBuilder(
-        future: initApp(initContext: context),
+        future: initApp(initContext: context, languageCallbacks: languageCallbacks, styleCallbacks: styleCallbacks),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return const LoadingWidget();
         },

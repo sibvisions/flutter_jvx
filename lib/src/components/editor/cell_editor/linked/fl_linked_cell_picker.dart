@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
 import '../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/command/api/filter_command.dart';
@@ -20,7 +22,7 @@ class FlLinkedCellPicker extends StatefulWidget {
   _FlLinkedCellPickerState createState() => _FlLinkedCellPickerState();
 }
 
-class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceMixin {
+class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceMixin, ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +49,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+    ThemeData theme = themeData;
     ColorScheme colorScheme = theme.colorScheme;
 
     return Dialog(
@@ -66,12 +68,12 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
+                  color: themeData.primaryColor,
                   borderRadius: const BorderRadius.only(topLeft: Radius.circular(5.0), topRight: Radius.circular(5.0))),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: Text(
-                  "SELECT ITEM",
+                  configService.translateText("SELECT ITEM"),
                   style: TextStyle(
                     color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
                   ),
@@ -86,11 +88,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                   maxLines: 1,
                   keyboardType: TextInputType.text,
                   onChanged: startTimerValueChanged,
-                  style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
-                  decoration: const InputDecoration(
-                      hintStyle: TextStyle(color: Colors.green),
-                      labelText: "Search",
-                      labelStyle: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
+                  style: TextStyle(fontSize: 14.0, color: themeData.colorScheme.onPrimary),
+                  decoration: InputDecoration(
+                      hintStyle: const TextStyle(color: Colors.green),
+                      labelText: configService.translateText("Search"),
+                      labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
                 )),
             Expanded(
               child: Padding(
@@ -107,8 +109,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
             ),
             ButtonBar(alignment: MainAxisAlignment.center, children: <Widget>[
               ElevatedButton(
-                child: const Text(
-                  "CANCEL",
+                child: Text(
+                  configService.translateText("CANCEL"),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -230,7 +232,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                       children: [
                         Text(
                           e,
-                          style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
+                          style: TextStyle(fontSize: 14.0, color: themeData.colorScheme.onPrimary),
                         ),
                         const Divider(
                           color: Colors.grey,
@@ -251,10 +253,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       }
     }
     if (_chunkData == null) {
-      return const SizedBox(
+      return SizedBox(
         height: 50,
         child: Center(
-          child: Text("Loading..."),
+          child: Text(configService.translateText("Loading...")),
         ),
       );
     }
@@ -275,7 +277,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
               alignment: Alignment.center,
               child: Text(
                 (data[columnIndex] ?? '').toString(),
-                style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
+                style: TextStyle(fontSize: 14.0, color: themeData.colorScheme.onPrimary),
               ),
             ),
           ),
@@ -287,8 +289,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       onTap: () => _onRowTapped(dataIndex),
       child: Container(
         decoration: dataIndex % 2 == 0
-            ? BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.05))
-            : BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.15)),
+            ? BoxDecoration(color: themeData.primaryColor.withOpacity(0.05))
+            : BoxDecoration(color: themeData.primaryColor.withOpacity(0.15)),
         height: 50,
         child: Row(
           children: rowWidgets,

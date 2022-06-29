@@ -27,22 +27,22 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
     passwordController.text = password ?? "";
 
     return AlertDialog(
-      title: const Text('Change Password'),
+      title: Text(configService.translateText('Change Password')),
       content: SingleChildScrollView(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-              child: Text('Please enter and confirm the new password.'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+              child: Text(configService.translateText('Please enter and confirm the new password.')),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
               child: TextField(
                 controller: usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'Username:',
+                decoration: InputDecoration(
+                  labelText: configService.translateText('Username:'),
                   enabled: false,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ),
@@ -52,10 +52,10 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
                 enabled: password == null,
                 obscureText: true,
                 controller: passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter Password',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: configService.translateText('Password'),
+                  hintText: configService.translateText('Enter Password'),
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ),
@@ -64,10 +64,10 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
               child: TextField(
                 obscureText: true,
                 controller: newPasswordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password (new)',
-                  hintText: 'Password (new)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: configService.translateText('Password (new)'),
+                  hintText: configService.translateText('Password (new)'),
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ),
@@ -76,9 +76,9 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
               child: TextField(
                 obscureText: true,
                 controller: repeatPasswordController,
-                decoration: const InputDecoration(
-                  hintText: 'Password (confirm)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  hintText: configService.translateText('Password (confirm)'),
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ),
@@ -90,9 +90,9 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
   }
 
   Widget passwordError() {
-    return const AlertDialog(
-      title: Text('Error'),
-      content: Text("The new passwords dont match!"),
+    return AlertDialog(
+      title: Text(configService.translateText('Error')),
+      content: Text(configService.translateText("The new passwords dont match!")),
     );
   }
 
@@ -126,13 +126,13 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
             uiService.openDialog(pDialogWidget: passwordError(), pIsDismissible: true),
           }
       },
-      child: const Text('Change Password'),
+      child: Text(configService.translateText('Change Password')),
     ));
 
     if (configService.getUserInfo() == null) {
       widgetList.add(TextButton(
         onPressed: () => {context.beamBack()},
-        child: const Text('Cancel'),
+        child: Text(configService.translateText('Cancel')),
       ));
     }
     return widgetList;

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_client/src/model/config/config_file/last_run_config.dart';
@@ -154,6 +155,7 @@ class ConfigService implements IConfigService {
   @override
   void setLanguage(String pLanguage) {
     lastRunConfig.language = pLanguage;
+    translation.translations.clear();
     _saveRunConfigToFile();
 
     File? defaultTranslationFile = fileManager.getFileSync(pPath: "languages/translation.json");
@@ -165,7 +167,8 @@ class ConfigService implements IConfigService {
     }
 
     if (langTransFile == null) {
-      LOGGER.logW(pType: LOG_TYPE.CONFIG, pMessage: "Translation file for code ${lastRunConfig.language} could not be found");
+      LOGGER.logW(
+          pType: LOG_TYPE.CONFIG, pMessage: "Translation file for code ${lastRunConfig.language} could not be found");
     } else {
       Translation langTrans = Translation.fromFile(pFile: langTransFile);
       translation.translations.addAll(langTrans.translations);
@@ -202,6 +205,8 @@ class ConfigService implements IConfigService {
 
   @override
   void setAppStyle(Map<String, String>? pAppStyle) {
+    log(pAppStyle.toString());
+
     if (pAppStyle == null) {
       applicationStyle.clear();
     } else {
@@ -217,7 +222,9 @@ class ConfigService implements IConfigService {
   String translateText(String pText) {
     String? translatedText = translation.translations[pText];
     if (translatedText == null) {
-      LOGGER.logD(pType: LOG_TYPE.CONFIG, pMessage: "Translation for text: $pText was not found for language ${lastRunConfig.language}");
+      LOGGER.logD(
+          pType: LOG_TYPE.CONFIG,
+          pMessage: "Translation for text: $pText was not found for language ${lastRunConfig.language}");
       return pText;
     }
     return translatedText;
@@ -263,6 +270,7 @@ class ConfigService implements IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _saveRunConfigToFile() {
-    fileManager.saveIndependentFile(pContent: jsonEncode(lastRunConfig).runes.toList(), pPath: "$appName/lastRunConfig.json");
+    fileManager.saveIndependentFile(
+        pContent: jsonEncode(lastRunConfig).runes.toList(), pPath: "$appName/lastRunConfig.json");
   }
 }

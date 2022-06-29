@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mask/menu/list/widget/app_menu_list_item.dart';
 import 'package:flutter_client/src/model/menu/menu_item_model.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
@@ -32,7 +33,7 @@ class AppMenuListUngroup extends StatelessWidget {
               .map((e) => AppMenuListItem(
                     onClick: onClick,
                     model: e,
-                    backgroundOverride: Theme.of(context).primaryColor,
+                    backgroundOverride: themeData.primaryColor,
                   ))
               .toList()),
         )

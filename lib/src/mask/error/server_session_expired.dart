@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
 
-class ServerSessionExpired extends StatelessWidget with UiServiceMixin {
+class ServerSessionExpired extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,15 +24,15 @@ class ServerSessionExpired extends StatelessWidget with UiServiceMixin {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: const Text("SESSION EXPIRED"),
+      backgroundColor: themeData.cardColor.withAlpha(255),
+      title: Text(configService.translateText("SESSION EXPIRED")),
       content: Text(message),
       actions: [
         TextButton(
           onPressed: () => _restartApp(context: context),
-          child: const Text(
-            "RESTART APP",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          child: Text(
+            configService.translateText("RESTART APP"),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
       ],

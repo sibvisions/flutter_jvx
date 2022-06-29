@@ -1,8 +1,10 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
 /// This is a standard template for a server side error message.
-class ServerErrorDialog extends StatelessWidget {
+class ServerErrorDialog extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +19,7 @@ class ServerErrorDialog extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const ServerErrorDialog({
+  ServerErrorDialog({
     required this.message,
     this.isTimeout = false,
     Key? key,
@@ -30,8 +32,8 @@ class ServerErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: const Text("SERVER ERROR"),
+      backgroundColor: themeData.cardColor.withAlpha(255),
+      title: Text(configService.translateText("SERVER ERROR")),
       content: Text(message),
       actions: _getButtons(context),
     );
@@ -53,9 +55,9 @@ class ServerErrorDialog extends StatelessWidget {
             context.beamingHistory.clear();
             context.beamToNamed("/setting");
           },
-          child: const Text(
-            "Go To Settings",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          child: Text(
+            configService.translateText("Go To Settings"),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
       );

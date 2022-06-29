@@ -36,7 +36,8 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceMixin {
       child: Container(
         margin: EdgeInsets.zero,
         height: 50,
-        color: backgroundOverride ?? Theme.of(context).backgroundColor.withOpacity(opacitySideMenu),
+        color:
+            backgroundOverride?.withOpacity(opacitySideMenu) ?? themeData.backgroundColor.withOpacity(opacitySideMenu),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -47,8 +48,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceMixin {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   model.label,
-                  style: TextStyle(
-                      fontSize: 16, color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu)),
+                  style: TextStyle(fontSize: 16, color: themeData.textTheme.headline6?.color),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,

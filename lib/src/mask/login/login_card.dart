@@ -44,16 +44,16 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
           children: [
             Text(
               loginTitle ?? configService.getAppName().toUpperCase(),
-              style: Theme.of(context).textTheme.headline6,
+              style: themeData.textTheme.headline6,
               textAlign: TextAlign.center,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               controller: usernameController,
-              decoration: const InputDecoration(labelText: "Username: "),
+              decoration: InputDecoration(labelText: configService.translateText("Username: ")),
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: "Password: "),
+              decoration: InputDecoration(labelText: configService.translateText("Password: ")),
               controller: passwordController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
@@ -64,17 +64,17 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
             ),
             ElevatedButton(
               onPressed: _onLoginPressed,
-              child: const Text("Login"),
+              child: Text(configService.translateText("Login")),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               TextButton(
                 onPressed: () => context.beamToNamed("/login/lostPassword"),
-                child: const Text("Reset password?"),
+                child: Text(configService.translateText("Reset password?")),
               ),
               TextButton.icon(
                 onPressed: () => _onSettingsPressed(context: context),
                 icon: const FaIcon(FontAwesomeIcons.cogs),
-                label: const Text("Settings"),
+                label: Text(configService.translateText("Settings")),
               ),
             ]),
           ],

@@ -62,12 +62,13 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
         endDrawerEnableOpenDragGesture: false,
         endDrawer: DrawerMenu(),
         appBar: AppBar(
-          title: const Text("Menu"),
+          title: Text(configService.translateText("Menu")),
           centerTitle: false,
           actions: [
             Builder(
-              builder: (context) =>
-                  IconButton(onPressed: () => Scaffold.of(context).openEndDrawer(), icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
+              builder: (context) => IconButton(
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
             ),
           ],
         ),

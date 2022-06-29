@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
 import 'package:flutter_client/src/components/table/column_size_calculator.dart';
@@ -71,8 +72,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
     return Container(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        border: Border.all(width: TableSize.borderWidth, color: Theme.of(context).primaryColor),
-        color: Theme.of(context).backgroundColor,
+        border: Border.all(width: TableSize.borderWidth, color: themeData.primaryColor),
+        color: themeData.backgroundColor,
       ),
       child: ClipRRect(
         // The clip rect is there to stop the rendering of the children.
@@ -156,12 +157,10 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
       child: Container(
         height: tableSize.rowHeight,
         decoration: BoxDecoration(
-          color: pIndex == selectedRow
-              ? Colors.blue.withOpacity(opacity)
-              : Theme.of(context).primaryColor.withOpacity(opacity),
+          color: pIndex == selectedRow ? Colors.blue.withOpacity(opacity) : themeData.primaryColor.withOpacity(opacity),
           border: Border(
             bottom: BorderSide(
-              color: Theme.of(context).primaryColor,
+              color: themeData.primaryColor,
               width: 1.0,
             ),
           ),
@@ -198,7 +197,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
+        color: themeData.backgroundColor,
         border: const Border(
           bottom: BorderSide(color: Colors.black),
         ),

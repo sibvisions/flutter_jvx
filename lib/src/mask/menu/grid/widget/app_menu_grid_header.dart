@@ -37,7 +37,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServic
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Theme.of(context).bottomAppBarColor.withOpacity(opacitySideMenu),
+      color: themeData.bottomAppBarColor.withOpacity(opacitySideMenu),
       child: Padding(
           padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
           child: ListTile(
