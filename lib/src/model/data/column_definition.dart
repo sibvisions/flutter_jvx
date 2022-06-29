@@ -34,10 +34,10 @@ class ColumnDefinition {
   /// If this column is readonly
   bool readonly = true;
 
-  /// If this column is readonly
+  /// If this column is writeable
   bool writeable = true;
 
-  /// If this column is readonly
+  /// If this column is filterable
   bool filterable = true;
 
   /// Width of the column in a table

@@ -3,7 +3,10 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_client/main.dart';
+import 'package:flutter_client/src/components/table/fl_table_widget.dart';
+import 'package:flutter_client/src/components/table/table_size.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
 
 import '../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/command/api/filter_command.dart';
@@ -26,6 +29,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final FlTableModel tableModel = FlTableModel();
 
   final TextEditingController _controller = TextEditingController();
 
@@ -95,17 +100,33 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                       labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
                 )),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: NotificationListener<ScrollEndNotification>(
-                  onNotification: onNotification,
-                  child: ListView.builder(
-                    itemBuilder: itemBuilder,
-                    itemCount: (_chunkData?.data.length ?? 1) + (hasHeader() ? 1 : 0),
-                    scrollDirection: Axis.vertical,
-                  ),
-                ),
-              ),
+              child: _chunkData != null
+                  ? LayoutBuilder(
+                      builder: ((context, constraints) => FlTableWidget(
+                            chunkData: _chunkData!,
+                            onEndScroll: increasePageLoad,
+                            model: tableModel,
+                            disableEditors: true,
+                            onRowTap: _onRowTapped,
+                            tableSize: TableSize.direct(
+                              tableModel: tableModel,
+                              dataChunk: _chunkData,
+                              availableWidth: constraints.maxWidth,
+                            ),
+                          )),
+                    )
+                  : Container(),
+              // child: Padding(
+              //   padding: const EdgeInsets.only(top: 10),
+              //   child: NotificationListener<ScrollEndNotification>(
+              //     onNotification: onNotification,
+              //     child: ListView.builder(
+              //       itemBuilder: itemBuilder,
+              //       itemCount: (_chunkData?.data.length ?? 1) + (hasHeader() ? 1 : 0),
+              //       scrollDirection: Axis.vertical,
+              //     ),
+              //   ),
+              // ),
             ),
             ButtonBar(alignment: MainAxisAlignment.center, children: <Widget>[
               ElevatedButton(
@@ -153,6 +174,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
     } else {
       _chunkData = pChunkData;
     }
+
+    tableModel.columnNames = _chunkData!.columnDefinitions.map((e) => e.name).toList();
+    tableModel.columnLabels = _chunkData!.columnDefinitions.map((e) => e.label).toList();
 
     if (mounted) {
       setState(() {});
@@ -218,93 +242,97 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
     );
   }
 
-  Widget itemBuilder(BuildContext ctxt, int index) {
-    int dataIndex = index;
-    if (hasHeader()) {
-      if (index == 0) {
-        return SizedBox(
-          height: 50,
-          child: Row(
-            children: columnNamesToSubscribe()
-                .map(
-                  (e) => Expanded(
-                    child: Column(
-                      children: [
-                        Text(
-                          e,
-                          style: TextStyle(fontSize: 14.0, color: themeData.colorScheme.onPrimary),
-                        ),
-                        const Divider(
-                          color: Colors.grey,
-                          indent: 10,
-                          endIndent: 10,
-                          thickness: 0.5,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        );
-      } else {
-        //Decrease by one because of the header
-        dataIndex--;
-      }
-    }
-    if (_chunkData == null) {
-      return SizedBox(
-        height: 50,
-        child: Center(
-          child: Text(configService.translateText("Loading...")),
-        ),
-      );
-    }
+  // Widget itemBuilder(BuildContext ctxt, int index) {
+  //   int dataIndex = index;
+  //   if (hasHeader()) {
+  //     if (index == 0) {
+  //       return SizedBox(
+  //         height: 50,
+  //         child: Row(
+  //           children: columnNamesToSubscribe()
+  //               .map(
+  //                 (e) => Expanded(
+  //                   child: Column(
+  //                     children: [
+  //                       Text(
+  //                         e,
+  //                         style: TextStyle(fontSize: 14.0, color: themeData.colorScheme.onPrimary),
+  //                       ),
+  //                       const Divider(
+  //                         color: Colors.grey,
+  //                         indent: 10,
+  //                         endIndent: 10,
+  //                         thickness: 0.5,
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               )
+  //               .toList(),
+  //         ),
+  //       );
+  //     } else {
+  //       //Decrease by one because of the header
+  //       dataIndex--;
+  //     }
+  //   }
+  //   if (_chunkData == null) {
+  //     return SizedBox(
+  //       height: 50,
+  //       child: Center(
+  //         child: Text(configService.translateText("Loading...")),
+  //       ),
+  //     );
+  //   }
 
-    List<dynamic> data = _chunkData!.data[dataIndex]!;
+  //   List<dynamic> data = _chunkData!.data[dataIndex]!;
 
-    List<Widget> rowWidgets = [];
+  //   List<Widget> rowWidgets = [];
 
-    List<String> columnNamesOrder = columnNamesToSubscribe();
+  //   List<String> columnNamesOrder = columnNamesToSubscribe();
 
-    for (String columnName in columnNamesToShow()) {
-      int columnIndex = columnNamesOrder.indexOf(columnName);
-      rowWidgets.add(
-        Expanded(
-          child: SizedBox(
-            height: double.infinity,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                (data[columnIndex] ?? '').toString(),
-                style: TextStyle(fontSize: 14.0, color: themeData.colorScheme.onPrimary),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
+  //   for (String columnName in columnNamesToShow()) {
+  //     int columnIndex = columnNamesOrder.indexOf(columnName);
+  //     rowWidgets.add(
+  //       Expanded(
+  //         child: SizedBox(
+  //           height: double.infinity,
+  //           child: Align(
+  //             alignment: Alignment.center,
+  //             child: Text(
+  //               (data[columnIndex] ?? '').toString(),
+  //               style: TextStyle(fontSize: 14.0, color: themeData.colorScheme.onPrimary),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   }
 
-    return GestureDetector(
-      onTap: () => _onRowTapped(dataIndex),
-      child: Container(
-        decoration: dataIndex % 2 == 0
-            ? BoxDecoration(color: themeData.primaryColor.withOpacity(0.05))
-            : BoxDecoration(color: themeData.primaryColor.withOpacity(0.15)),
-        height: 50,
-        child: Row(
-          children: rowWidgets,
-        ),
-      ),
-    );
-  }
+  //   return GestureDetector(
+  //     onTap: () => _onRowTapped(dataIndex),
+  //     child: Container(
+  //       decoration: dataIndex % 2 == 0
+  //           ? BoxDecoration(color: themeData.primaryColor.withOpacity(0.05))
+  //           : BoxDecoration(color: themeData.primaryColor.withOpacity(0.15)),
+  //       height: 50,
+  //       child: Row(
+  //         children: rowWidgets,
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  bool onNotification(ScrollEndNotification t) {
-    if (t.metrics.pixels > 0 && t.metrics.atEdge) {
-      scrollingPage++;
-      subscribe();
-    }
-    return true;
+  // bool onNotification(ScrollEndNotification t) {
+  //   if (t.metrics.pixels > 0 && t.metrics.atEdge) {
+  //     increasePageLoad();
+  //   }
+  //   return true;
+  // }
+
+  void increasePageLoad() {
+    scrollingPage++;
+    subscribe();
   }
 
   void subscribe() {

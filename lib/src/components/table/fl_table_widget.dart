@@ -4,6 +4,7 @@ import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.d
 import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
 import 'package:flutter_client/src/components/table/table_size.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
 import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
 import 'package:flutter_client/src/model/data/column_definition.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
@@ -56,6 +57,9 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
   /// The scroll controller for the headers if they are set to sticky.
   final ScrollController? headerHorizontalController;
 
+  /// The meta data of the data book.
+  final DalMetaDataResponse? metaData;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,6 +87,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
     this.itemScrollController,
     this.onEndEditing,
     this.onValueChanged,
+    this.metaData,
     this.disableEditors = false,
   }) : super(key: key, model: model);
 
@@ -191,11 +196,15 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
 
     List<Widget> rowWidgets = [];
 
-    for (ColumnDefinition colDef in chunkData.columnDefinitions) {
-      int columnIndex = chunkData.columnDefinitions.indexOf(colDef);
+    List<ColumnDefinition> columnsToShow =
+        model.columnNames.map((e) => chunkData.columnDefinitions.firstWhere((element) => element.name == e)).toList();
+
+    for (ColumnDefinition colDef in columnsToShow) {
+      int columnIndex = columnsToShow.indexOf(colDef);
+      int dataIndex = chunkData.columnDefinitions.indexOf(colDef);
 
       Widget? widget;
-      var value = data[columnIndex];
+      var value = data[dataIndex];
 
       if (!disableEditors) {
         ICellEditor cellEditor = ICellEditor.getCellEditor(
@@ -225,11 +234,14 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
       );
 
       rowWidgets.add(
-        SizedBox(
-          width: tableSize.columnWidths[columnIndex].toDouble(),
-          child: Padding(
-            padding: tableSize.cellPadding,
-            child: widget,
+        IgnorePointer(
+          ignoring: colDef.readonly || (metaData?.readOnly ?? false),
+          child: SizedBox(
+            width: tableSize.columnWidths[columnIndex].toDouble(),
+            child: Padding(
+              padding: tableSize.cellPadding,
+              child: widget,
+            ),
           ),
         ),
       );

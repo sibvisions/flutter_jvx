@@ -9,7 +9,7 @@ class FlTableModel extends FlComponentModel {
 
   List<String> columnNames = [];
 
-  List<String>? columnLabels = [];
+  List<String>? columnLabels;
 
   /// If the table should reduce every column to fit into the available space
   bool autoResize = false;

@@ -113,6 +113,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       itemScrollController: itemScrollController,
       tableHorizontalController: tableHorizontalController,
       model: model,
+      metaData: metaData,
       chunkData: chunkData,
       tableSize: tableSize,
       selectedRow: selectedRow,
@@ -197,7 +198,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
         onSelectedRecord: receiveSelectedRecord,
         onDataChunk: receiveTableData,
         onMetaData: receiveMetaData,
-        dataColumns: model.columnNames,
+        dataColumns: null,
       ),
     );
   }
