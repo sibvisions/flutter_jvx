@@ -98,7 +98,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  Widget createTableWidget(BuildContext pContext) {
+  FlStatelessWidget? createTableWidget(BuildContext pContext) {
     return createWidget(pContext);
   }
 }

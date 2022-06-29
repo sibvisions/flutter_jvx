@@ -46,6 +46,7 @@ dependencies:
   url_launcher: ^6.1.2
   signature: ^5.0.1
   flutter_picker: ^2.0.3
+  linked_scroll_controller: ^0.2.0
 
 flutter:
   assets:

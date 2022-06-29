@@ -231,4 +231,20 @@ abstract class ParseUtil {
     }
     return pCurrent;
   }
+
+  static applyJsonToJson(Map<String, dynamic> pSource, Map<String, dynamic> pDestination) {
+    for (String sourceKey in pSource.keys) {
+      dynamic value = pSource[sourceKey];
+
+      if (value is Map<String, dynamic>) {
+        if (pDestination[sourceKey] == null) {
+          pDestination[sourceKey] = Map.from(value);
+        } else {
+          applyJsonToJson(value, pDestination[sourceKey]);
+        }
+      } else {
+        pDestination[sourceKey] = value;
+      }
+    }
+  }
 }

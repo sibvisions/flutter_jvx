@@ -1,7 +1,10 @@
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import 'package:flutter_client/util/parse_util.dart';
 
 class FlTableModel extends FlComponentModel {
+  Map<String, dynamic> json = {};
+
   String dataBook = "";
 
   List<String> columnNames = [];
@@ -32,6 +35,9 @@ class FlTableModel extends FlComponentModel {
   /// if the tables sorts on header tab
   bool sortOnHeaderEnabled = true;
 
+  /// if the table headers are sticky
+  bool stickyHeaders = true;
+
   /// Word wrap
   bool wordWrapEnabled = false;
 
@@ -50,6 +56,7 @@ class FlTableModel extends FlComponentModel {
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
+    ParseUtil.applyJsonToJson(pJson, json);
 
     dataBook = getPropertyValue(
       pJson: pJson,

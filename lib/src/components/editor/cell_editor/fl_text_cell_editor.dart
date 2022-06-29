@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
@@ -157,7 +158,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  Widget? createTableWidget(BuildContext pContext) {
+  FlStatelessWidget? createTableWidget(BuildContext pContext) {
     return null;
   }
 }

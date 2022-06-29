@@ -69,7 +69,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   FlStatelessWidget createWidget(BuildContext pContext);
 
   /// Returns the widget for the table.
-  Widget? createTableWidget(BuildContext pContext);
+  FlStatelessWidget? createTableWidget(BuildContext pContext);
 
   /// Returns the model of the widget representing the cell editor.
   FlComponentModel createWidgetModel();

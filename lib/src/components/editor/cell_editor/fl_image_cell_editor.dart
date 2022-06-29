@@ -71,7 +71,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget createWidget(BuildContext pContext) {
+  FlStatelessWidget createWidget(BuildContext pContext, [bool pInTable = false]) {
     FlIconModel widgetModel = FlIconModel();
     widgetModel.image = _value ?? '';
 
@@ -79,6 +79,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
       model: widgetModel,
       imageStreamListener: imageStreamListener,
       imageInBinary: _columnDefinition?.dataTypeIdentifier == Types.BINARY,
+      inTable: pInTable,
     );
   }
 
@@ -121,13 +122,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  Widget createTableWidget(BuildContext pContext) {
-    return ConstrainedBox(
-      child: createWidget(pContext),
-      constraints: const BoxConstraints(
-        maxHeight: 35,
-        maxWidth: 35,
-      ),
-    );
+  FlStatelessWidget? createTableWidget(BuildContext pContext) {
+    return createWidget(pContext, true);
   }
 }

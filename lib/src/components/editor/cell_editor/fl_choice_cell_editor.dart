@@ -121,7 +121,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  Widget createTableWidget(BuildContext pContext) {
+  FlStatelessWidget? createTableWidget(BuildContext pContext) {
     return createWidget(pContext, true);
   }
 }

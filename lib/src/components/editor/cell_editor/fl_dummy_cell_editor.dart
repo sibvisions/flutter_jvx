@@ -55,7 +55,7 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  Widget? createTableWidget(BuildContext pContext) {
+  FlStatelessWidget? createTableWidget(BuildContext pContext) {
     return null;
   }
 }

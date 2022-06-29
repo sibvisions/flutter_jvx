@@ -1,3 +1,5 @@
+import 'package:flutter_client/util/parse_util.dart';
+
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
 
@@ -21,7 +23,7 @@ class FlEditorModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     // We have to give the editor wrapper all the necessary informations for the layout.
     super.applyFromJson(pJson);
-    applyJsonToJson(pJson, json);
+    ParseUtil.applyJsonToJson(pJson, json);
 
     columnName = getPropertyValue(
       pJson: pJson,
@@ -45,21 +47,5 @@ class FlEditorModel extends FlComponentModel {
     preferredSize ??= pComponentModel.preferredSize;
     minimumSize ??= pComponentModel.minimumSize;
     maximumSize ??= pComponentModel.maximumSize;
-  }
-
-  applyJsonToJson(Map<String, dynamic> pSource, Map<String, dynamic> pDestination) {
-    for (String sourceKey in pSource.keys) {
-      dynamic value = pSource[sourceKey];
-
-      if (value is Map<String, dynamic>) {
-        if (pDestination[sourceKey] == null) {
-          pDestination[sourceKey] = Map.from(value);
-        } else {
-          applyJsonToJson(value, pDestination[sourceKey]);
-        }
-      } else {
-        pDestination[sourceKey] = value;
-      }
-    }
   }
 }

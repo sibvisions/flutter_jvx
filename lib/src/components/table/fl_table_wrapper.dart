@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../util/logging/flutter_logger.dart';
@@ -21,8 +22,8 @@ import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import 'column_size_calculator.dart';
 import 'fl_table_widget.dart';
+import 'table_size.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
@@ -68,9 +69,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   /// The sizes of the table.
   late TableSize tableSize;
 
-  /// The item scroll controller.
-  ItemScrollController itemScrollController = ItemScrollController();
+  /// The scroll controller for the table.
+  late final ScrollController tableHorizontalController;
 
+  /// The scroll controller for the headers if they are set to sticky.
+  late final ScrollController headerHorizontalController;
+
+  /// The item scroll controller.
+  final ItemScrollController itemScrollController = ItemScrollController();
+
+  /// The scroll group to synchronize sticky header scrolling.
+  final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,7 +91,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
     layoutData.isFixedSize = true;
 
-    tableSize = TableSize.initial((model.columnLabels ?? model.columnNames).length);
+    tableSize = TableSize.direct(tableModel: model);
+
+    tableHorizontalController = linkedScrollGroup.addAndGet();
+    headerHorizontalController = linkedScrollGroup.addAndGet();
 
     subscribe();
   }
@@ -97,8 +109,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     }
 
     widget ??= FlTableWidget(
+      headerHorizontalController: headerHorizontalController,
+      itemScrollController: itemScrollController,
+      tableHorizontalController: tableHorizontalController,
       model: model,
-      metaData: metaData,
       chunkData: chunkData,
       tableSize: tableSize,
       selectedRow: selectedRow,
@@ -122,6 +136,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   void dispose() {
     dev.log("dispose this: $hashCode");
     unsubscribe();
+
+    tableHorizontalController.dispose();
+    headerHorizontalController.dispose();
     super.dispose();
   }
 
@@ -152,8 +169,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   /// Recalculates the size of the table.
   void recalculateTableSize([bool pSetState = false]) {
-    dev.log("recalculateTableSize this: $hashCode");
-    tableSize = ColumnSizeCalculator.calculateTableSize(
+    tableSize.calculateTableSize(
       tableModel: model,
       dataChunk: chunkData,
       availableWidth: layoutData.layoutPosition?.width,
@@ -181,7 +197,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
         onSelectedRecord: receiveSelectedRecord,
         onDataChunk: receiveTableData,
         onMetaData: receiveMetaData,
-        dataColumns: null,
+        dataColumns: model.columnNames,
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
@@ -247,7 +248,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  Widget createTableWidget(BuildContext pContext) {
+  FlStatelessWidget? createTableWidget(BuildContext pContext) {
     return createWidget(pContext, true);
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:developer' as dev;
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
@@ -8,23 +7,106 @@ import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 
-class ColumnSizeCalculator {
-  static TableSize calculateTableSize({
+/// Represents a table size
+class TableSize {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The border width outside.
+  double borderWidth;
+
+  /// The border width between columns.
+  double columnDividerWidth;
+
+  /// The minimum width of a column
+  double minColumnWidth;
+
+  /// The maximum width of a column
+  double maxColumnWidth;
+
+  /// The table header heigth
+  double tableHeaderHeight;
+
+  /// The row height
+  double rowHeight;
+
+  /// The cell padding
+  EdgeInsets cellPadding;
+
+  /// The calculated size of the columns
+  List<double> calculatedColumnWidths = [];
+
+  /// The size of the columns
+  List<double> columnWidths = [];
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  TableSize({
+    this.borderWidth = 1.0,
+    this.columnDividerWidth = 1.0,
+    this.minColumnWidth = 50,
+    this.maxColumnWidth = 200,
+    this.tableHeaderHeight = 50,
+    this.rowHeight = 50,
+    this.cellPadding = const EdgeInsets.only(left: 2.0, right: 2.0),
+  });
+
+  /// Always calculates the table size.
+  TableSize.direct({
+    this.borderWidth = 1.0,
+    this.columnDividerWidth = 1.0,
+    this.minColumnWidth = 50,
+    this.maxColumnWidth = 200,
+    this.tableHeaderHeight = 50,
+    this.rowHeight = 50,
+    this.cellPadding = const EdgeInsets.only(left: 2.0, right: 2.0),
+    required FlTableModel tableModel,
+    DataChunk? dataChunk,
+    double? availableWidth,
+  }) {
+    calculateTableSize(tableModel: tableModel, availableWidth: availableWidth, dataChunk: dataChunk);
+  }
+
+  Size get calculatedSize {
+    double tableWidth = 0;
+    for (int i = 0; i < calculatedColumnWidths.length; i++) {
+      tableWidth += calculatedColumnWidths[i];
+    }
+    return Size(tableWidth, tableHeaderHeight + (rowHeight * 10));
+  }
+
+  Size get size {
+    double tableWidth = 0;
+    for (int i = 0; i < columnWidths.length; i++) {
+      tableWidth += columnWidths[i];
+    }
+    return Size(tableWidth, tableHeaderHeight + (rowHeight * 10));
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  calculateTableSize({
     required FlTableModel tableModel,
     DataChunk? dataChunk,
     double textScaleFactor = 1.0,
     int calculateForRecordCount = 10,
     double? availableWidth,
   }) {
-    TableSize tableSize = TableSize();
+    columnWidths.clear();
+    calculatedColumnWidths.clear();
 
-    availableWidth = (availableWidth ?? 0.0) - (TableSize.borderWidth * 2);
+    availableWidth = (availableWidth ?? 0.0) - (borderWidth * 2);
 
     List<String> columnHeaders = tableModel.columnLabels ?? tableModel.columnNames;
 
     for (String columnHeader in columnHeaders) {
       double columnWidth = adjustValue(
-        TableSize.defaultMinWidth,
+        minColumnWidth,
         ParseUtil.getTextWidth(
               text: columnHeader,
               style: tableModel.getTextStyle(pFontWeight: FontWeight.bold),
@@ -34,8 +116,8 @@ class ColumnSizeCalculator {
         // because the calculated width is too small. Still not sure why, but it works. TODO: investigate
       );
 
-      tableSize.columnWidths.add(columnWidth);
-      tableSize.calculatedColumnWidths.add(columnWidth);
+      columnWidths.add(columnWidth);
+      calculatedColumnWidths.add(columnWidth);
     }
 
     // get preferred data widths
@@ -56,7 +138,7 @@ class ColumnSizeCalculator {
           showIndex = tableModel.columnNames.indexOf(colDef.name);
         }
 
-        double colWidth = TableSize.defaultMinWidth;
+        double colWidth = minColumnWidth;
 
         if (colDef.width != null) {
           colWidth = adjustValue(colWidth, colDef.width!);
@@ -88,99 +170,19 @@ class ColumnSizeCalculator {
         // }
 
         // Add padding and add right border
-        colWidth = adjustValue(colWidth, colWidth + (2 * TableSize.cellPadding) + TableSize.borderWidth);
+        colWidth = adjustValue(colWidth, colWidth + (cellPadding.left + cellPadding.right) + columnDividerWidth);
 
-        tableSize.calculatedColumnWidths[showIndex] =
-            adjustValue(tableSize.calculatedColumnWidths[showIndex], colWidth);
+        calculatedColumnWidths[showIndex] = adjustValue(calculatedColumnWidths[showIndex], colWidth);
 
-        tableSize.columnWidths[showIndex] = tableSize.calculatedColumnWidths[showIndex];
+        columnWidths[showIndex] = calculatedColumnWidths[showIndex];
       }
     }
 
-    dev.log("calculated ${tableSize.columnWidths}");
-
-    if (tableModel.autoResize && tableSize.calculatedSize.width > availableWidth) {
-      tableSize.redistributeRemainingWidth(availableWidth - tableSize.calculatedSize.width);
-    } else if (tableSize.calculatedSize.width < availableWidth) {
-      tableSize.redistributeRemainingWidth(availableWidth - tableSize.calculatedSize.width);
+    if (tableModel.autoResize && calculatedSize.width > availableWidth) {
+      redistributeRemainingWidth(availableWidth - calculatedSize.width);
+    } else if (calculatedSize.width < availableWidth) {
+      redistributeRemainingWidth(availableWidth - calculatedSize.width);
     }
-
-    return tableSize;
-  }
-
-  static double adjustValue(double currentWidth, double wantedWith) {
-    if (wantedWith > currentWidth) {
-      return math.min(math.max(wantedWith, TableSize.defaultMinWidth), TableSize.defaultMaxWidth);
-    } else {
-      return currentWidth;
-    }
-  }
-}
-
-/// Represents a table size
-class TableSize {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// The default minimum width of a column
-  static double defaultMinWidth = 15;
-
-  /// The default maximum width of a column
-  static double defaultMaxWidth = 200;
-
-  /// The default row height
-  static double defaultRowHeight = 50.0;
-
-  /// The default border width
-  static double borderWidth = 1.0;
-
-  static double cellPadding = 2.0;
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// The calculated size of the columns
-  List<double> calculatedColumnWidths;
-
-  /// The size of the columns
-  List<double> columnWidths;
-
-  /// The table header heigth
-  double tableHeaderHeight;
-
-  /// The individual row height
-  double rowHeight;
-
-  TableSize({
-    List<double>? columnWidths,
-    double? tableHeaderHeight,
-    double? rowHeight,
-  })  : calculatedColumnWidths = columnWidths ?? [],
-        columnWidths = columnWidths ?? [],
-        tableHeaderHeight = tableHeaderHeight ?? defaultRowHeight,
-        rowHeight = rowHeight ?? defaultRowHeight;
-
-  TableSize.initial(int columnCount)
-      : calculatedColumnWidths = List.filled(columnCount, defaultMinWidth),
-        columnWidths = List.filled(columnCount, defaultMinWidth),
-        tableHeaderHeight = defaultRowHeight,
-        rowHeight = defaultRowHeight;
-
-  Size get calculatedSize {
-    double tableWidth = 0;
-    for (int i = 0; i < calculatedColumnWidths.length; i++) {
-      tableWidth += calculatedColumnWidths[i];
-    }
-    return Size(tableWidth, tableHeaderHeight + (rowHeight * 10));
-  }
-
-  Size get size {
-    double tableWidth = 0;
-    for (int i = 0; i < columnWidths.length; i++) {
-      tableWidth += columnWidths[i];
-    }
-    return Size(tableWidth, tableHeaderHeight + (rowHeight * 10));
   }
 
   redistributeRemainingWidth(double pRemainingWidth) {
@@ -206,6 +208,14 @@ class TableSize {
       width = (width / currentWidth) * pWidth;
 
       columnWidths[i] = width;
+    }
+  }
+
+  double adjustValue(double currentWidth, double wantedWith) {
+    if (wantedWith > currentWidth) {
+      return math.min(math.max(wantedWith, minColumnWidth), maxColumnWidth);
+    } else {
+      return currentWidth;
     }
   }
 }
