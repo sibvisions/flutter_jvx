@@ -57,7 +57,7 @@ abstract class IConfigService {
   /// Set instance of [IFileManager]
   void setFileManger(IFileManager pFileManger);
 
-  /// Set current display language
+  /// Set current display language, app will need to restart to take effect (new Startup)
   void setLanguage(String pLangCode);
 
   /// Returns language code of current language
@@ -83,6 +83,18 @@ abstract class IConfigService {
 
   /// Set app style, usually only called after download
   void setAppStyle(Map<String, String>? pAppStyle);
+
+  /// Callback will be called when style has been set
+  void registerStyleCallback({required Function(Map<String, String> style) pCallback});
+
+  /// Removes the callback
+  void disposeStyleCallback({required Function(Map<String, String> style) pCallback});
+
+  /// Callback will be called when language has been set
+  void registerLanguageCallback({required Function(String language) pCallback});
+
+  /// Removes the callback
+  void disposeLanguageCallback({required Function(String language) pCallBack});
 }
 
 enum MENU_MODE {

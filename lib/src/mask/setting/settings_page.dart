@@ -223,11 +223,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
                 baseUrlNotifier.value = config.getBasePath();
                 configService.getApiConfig().urlConfig = config;
-                uiService.sendCommand(
-                    SetApiConfigCommand(apiConfig: configService.getApiConfig(), reason: "Settings url editor"));
+                uiService.sendCommand(SetApiConfigCommand(apiConfig: configService.getApiConfig(), reason: "Settings url editor"));
               } catch (e) {
-                uiService
-                    .sendCommand(OpenErrorDialogCommand(reason: "parseURl", message: "URL text could not be parsed"));
+                uiService.sendCommand(OpenErrorDialogCommand(reason: "parseURl", message: "URL text could not be parsed"));
               }
             }
           });
@@ -335,8 +333,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     return group;
   }
 
-  Future<bool?> _settingItemClicked<bool>(
-      {required Widget pEditor, required FaIcon pTitleIcon, required String pTitleText}) {
+  Future<bool?> _settingItemClicked<bool>({required Widget pEditor, required FaIcon pTitleIcon, required String pTitleText}) {
     return showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
@@ -378,7 +375,12 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
   /// Will send a [StartupCommand] with current values
   void _saveClicked() {
-    StartupCommand startupCommand = StartupCommand(reason: "QR-Code-Scanned", password: password, username: username);
+    StartupCommand startupCommand = StartupCommand(
+        reason: "QR-Code-Scanned",
+        password: password,
+        username: username,
+        language: configService.getLanguage(),
+        authKey: configService.getAuthCode());
     uiService.sendCommand(startupCommand);
     password = null;
     username = null;

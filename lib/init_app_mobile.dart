@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -36,7 +35,12 @@ import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
-Future<bool> initApp({CustomScreenManager? pCustomManager, required BuildContext initContext}) async {
+Future<bool> initApp({
+  CustomScreenManager? pCustomManager,
+  required BuildContext initContext,
+  List<Function>? languageCallbacks,
+  List<Function>? styleCallbacks,
+}) async {
   // Needed to avoid CORS issues
   // ToDo find way to not do this
   HttpOverrides.global = MyHttpOverrides();
@@ -125,6 +129,8 @@ Future<bool> initApp({CustomScreenManager? pCustomManager, required BuildContext
     apiConfig: apiConfig,
     fileManager: fileMangerMobile,
     supportedLanguages: supportedLang,
+    pStyleCallbacks: styleCallbacks,
+    pLanguageCallbacks: languageCallbacks,
   );
   services.registerSingleton(configService, signalsReady: true);
 
@@ -147,7 +153,6 @@ Future<bool> initApp({CustomScreenManager? pCustomManager, required BuildContext
   // UI
   IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);
   services.registerSingleton(uiService, signalsReady: true);
-  log("add UI-Service");
 
   // Send startup to server
   Size phoneSize = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size;

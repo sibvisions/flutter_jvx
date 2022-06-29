@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_client/src/model/config/config_file/last_run_config.dart';
@@ -26,6 +25,12 @@ class ConfigService implements IConfigService {
 
   /// Parameters which will get added to every startup
   final Map<String, dynamic> startupParameters = {};
+
+  /// List of all active styleCallbacks
+  final List<Function> styleCallbacks = [];
+
+  /// List of all active languageStyleCallbacks
+  final List<Function> languageCallbacks = [];
 
   String appName;
 
@@ -57,7 +62,16 @@ class ConfigService implements IConfigService {
     required this.fileManager,
     required this.supportedLanguages,
     required String langCode,
+    List<Function>? pStyleCallbacks,
+    List<Function>? pLanguageCallbacks,
   }) {
+    if (pStyleCallbacks != null) {
+      styleCallbacks.addAll(pStyleCallbacks);
+    }
+    if (pLanguageCallbacks != null) {
+      languageCallbacks.addAll(pLanguageCallbacks);
+    }
+
     fileManager.setAppName(pName: appName);
     lastRunConfig.language = langCode;
   }
@@ -156,6 +170,8 @@ class ConfigService implements IConfigService {
       Translation langTrans = Translation.fromFile(pFile: langTransFile);
       translation.translations.addAll(langTrans.translations);
     }
+
+    languageCallbacks.forEach((element) => element.call(pLanguage));
   }
 
   @override
@@ -186,13 +202,13 @@ class ConfigService implements IConfigService {
 
   @override
   void setAppStyle(Map<String, String>? pAppStyle) {
-    log("asdasd");
-
     if (pAppStyle == null) {
       applicationStyle.clear();
     } else {
       applicationStyle = pAppStyle;
     }
+
+    styleCallbacks.forEach((element) => element.call(pAppStyle));
   }
 
   // ------------------------------
@@ -220,6 +236,26 @@ class ConfigService implements IConfigService {
   @override
   void addStartupParameter({required String pKey, required dynamic pValue}) {
     startupParameters[pKey] = pValue;
+  }
+
+  @override
+  void disposeLanguageCallback({required Function(String language) pCallBack}) {
+    languageCallbacks.remove(pCallBack);
+  }
+
+  @override
+  void disposeStyleCallback({required Function(Map<String, String> style) pCallback}) {
+    styleCallbacks.remove(pCallback);
+  }
+
+  @override
+  void registerLanguageCallback({required Function(String language) pCallback}) {
+    languageCallbacks.add(pCallback);
+  }
+
+  @override
+  void registerStyleCallback({required Function(Map<String, String> style) pCallback}) {
+    styleCallbacks.add(pCallback);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

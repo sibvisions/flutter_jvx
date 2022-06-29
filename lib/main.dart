@@ -30,7 +30,10 @@ ThemeData themeData = ThemeData.from(
 );
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key) {
+    WidgetsFlutterBinding.ensureInitialized();
+    _routerDelegate.setNewRoutePath(const RouteInformation(location: "/splash"));
+  }
 
   final _routerDelegate = BeamerDelegate(
     initialPath: "/splash",

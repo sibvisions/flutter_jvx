@@ -28,7 +28,12 @@ import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
-Future<bool> initApp({CustomScreenManager? pCustomManager, required BuildContext initContext}) {
+Future<bool> initApp({
+  CustomScreenManager? pCustomManager,
+  required BuildContext initContext,
+  List<Function>? languageCallbacks,
+  List<Function>? styleCallbacks,
+}) {
   // API
   UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8090);
 
@@ -46,6 +51,8 @@ Future<bool> initApp({CustomScreenManager? pCustomManager, required BuildContext
     fileManager: FileManagerWeb(),
     langCode: 'en',
     supportedLanguages: ["en"],
+    pLanguageCallbacks: languageCallbacks,
+    pStyleCallbacks: styleCallbacks,
   );
   services.registerSingleton(configService, signalsReady: true);
 
