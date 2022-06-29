@@ -7,12 +7,11 @@ import 'package:flutter_client/src/routing/fl_back_button_dispatcher.dart';
 import 'package:flutter_client/src/routing/locations/login_location.dart';
 import 'package:flutter_client/src/routing/locations/menu_location.dart';
 import 'package:flutter_client/src/routing/locations/setting_location.dart';
+import 'package:flutter_client/src/routing/locations/splash_location.dart';
 import 'package:flutter_client/src/routing/locations/work_screen_location.dart';
 
-import 'init_app_mobile.dart' if (dart.library.html) 'init_app_web.dart';
-
 void main() {
-  initApp().then((value) => runApp(MyApp()));
+  runApp(MyApp());
 }
 
 double opacityMenu = 1;
@@ -34,9 +33,10 @@ class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   final _routerDelegate = BeamerDelegate(
-    initialPath: "/login/manual",
+    initialPath: "/splash",
     locationBuilder: BeamerLocationBuilder(
       beamLocations: [
+        SplashLocation(),
         LoginLocation(),
         MenuLocation(),
         SettingLocation(),

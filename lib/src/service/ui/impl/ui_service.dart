@@ -23,6 +23,8 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_model.dart';
+import '../../../routing/locations/menu_location.dart';
+import '../../../routing/locations/work_screen_location.dart';
 import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
@@ -60,8 +62,11 @@ class UiService with CommandServiceMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   UiService({
+    required BuildContext pContext,
     this.customManager,
-  });
+  }) {
+    _currentBuildContext = pContext;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -92,6 +97,11 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
+    var last = _currentBuildContext!.beamingHistory.last;
+
+    if (last.runtimeType == WorkScreenLocation || last.runtimeType == MenuLocation) {
+      _currentBuildContext!.beamingHistory.clear();
+    }
     _currentBuildContext!.beamToNamed("/login/$mode", data: pLoginProps);
   }
 

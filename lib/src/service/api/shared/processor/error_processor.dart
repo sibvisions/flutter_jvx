@@ -4,18 +4,14 @@ import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.da
 import 'package:flutter_client/src/service/api/shared/i_processor.dart';
 
 class ErrorProcessor implements IProcessor<ErrorResponse> {
-
-
   @override
   List<BaseCommand> processResponse({required ErrorResponse pResponse}) {
-
-
     OpenErrorDialogCommand command = OpenErrorDialogCommand(
-        reason: "Server sent error in response",
-        message: pResponse.message
+      reason: "Server sent error in response",
+      message: pResponse.message,
+      isTimeout: pResponse.isTimeout,
     );
 
     return [command];
   }
-
 }

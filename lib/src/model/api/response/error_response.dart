@@ -16,6 +16,8 @@ class ErrorResponse extends ApiResponse {
   /// The error object.
   final Object? error;
 
+  final bool isTimeout;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,6 +26,7 @@ class ErrorResponse extends ApiResponse {
     required this.message,
     required String name,
     required Object originalRequest,
+    this.isTimeout = false,
     this.stacktrace,
     this.error,
   }) : super(name: name, originalRequest: originalRequest) {
@@ -34,6 +37,7 @@ class ErrorResponse extends ApiResponse {
       : message = pJson[ApiObjectProperty.message],
         stacktrace = null,
         error = null,
+        isTimeout = false,
         super.fromJson(originalRequest: originalRequest, pJson: pJson) {
     LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
   }

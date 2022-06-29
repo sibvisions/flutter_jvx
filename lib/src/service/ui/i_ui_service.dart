@@ -23,6 +23,12 @@ typedef ComponentCallback = Function({FlComponentModel? newModel, LayoutData? da
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
 abstract class IUiService {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  IUiService({required BuildContext pContext});
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

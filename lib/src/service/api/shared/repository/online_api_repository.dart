@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -106,19 +107,21 @@ class OnlineApiRepository implements IRepository {
     Uri? uri = apiConfig.uriMap[pRequest.runtimeType]?.call();
 
     if (uri != null) {
-      var response = _sendPostRequest(uri, jsonEncode(pRequest));
+      try {
+        var response = await _sendPostRequest(uri, jsonEncode(pRequest)).timeout(const Duration(seconds: 10));
 
-      if (pRequest is IApiDownloadRequest) {
-        return response
-            .then((response) => response.bodyBytes)
-            .then((responseBody) => _handleDownload(pBody: responseBody, pRequest: pRequest));
+        // Download Request need different handling
+        if (pRequest is IApiDownloadRequest) {
+          var parsedDownloadObject = _handleDownload(pBody: response.bodyBytes, pRequest: pRequest);
+          return parsedDownloadObject;
+        }
+
+        var formattedResponses = _formatResponse(response.body);
+        var parsedResponseObjects = _responseParser(pJsonList: formattedResponses, originalRequest: pRequest);
+        return parsedResponseObjects;
+      } catch (e) {
+        return _handleError(e, pRequest);
       }
-
-      return response
-          .then((response) => response.body)
-          .then(_checkResponse)
-          .then((jsonResponses) => _responseParser(pJsonList: jsonResponses, originalRequest: pRequest))
-          .onError((error, stackTrace) => _handleError(error, stackTrace, pRequest));
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
@@ -141,15 +144,17 @@ class OnlineApiRepository implements IRepository {
         (client as BrowserClient).withCredentials = true;
       }
     }
-    Future<Response> res = client.post(uri, headers: _headers, body: body);
+
+    Response res = await client.post(uri, headers: _headers, body: body);
+
     if (!kIsWeb) {
-      res.then(_extractCookie);
+      _extractCookie(res);
     }
-    return res.timeout(const Duration(seconds: 10));
+    return res;
   }
 
   /// Extract the session-id cookie to be sent in future
-  void _extractCookie(Response res) {
+  Response _extractCookie(Response res) {
     String? rawCookie = res.headers["set-cookie"];
 
     if (rawCookie != null) {
@@ -160,11 +165,12 @@ class OnlineApiRepository implements IRepository {
         _headers.update("Cookie", (value) => cookie);
       }
     }
+    return res;
   }
 
   /// Check if response is an error, an error does not come as array, returns
   /// the error in an error.
-  Future<List<dynamic>> _checkResponse(String pBody) async {
+  List<dynamic> _formatResponse(String pBody) {
     var response = jsonDecode(pBody);
 
     if (response is List<dynamic>) {
@@ -217,24 +223,36 @@ class OnlineApiRepository implements IRepository {
     return parsedResponse;
   }
 
-  Future<List<ApiResponse>> _handleError(Object? error, StackTrace stackTrace, Object originalRequest) async {
+  Future<List<ApiResponse>> _handleError(Object? error, Object originalRequest) async {
     if (error is TimeoutException) {
       return [
         ErrorResponse(
-            message: "Message timed out",
-            name: ApiResponseNames.error,
-            error: error,
-            stacktrace: stackTrace,
-            originalRequest: originalRequest)
+          message: "Message timed out",
+          name: ApiResponseNames.error,
+          error: error,
+          originalRequest: originalRequest,
+          isTimeout: true,
+        )
+      ];
+    }
+    if (error is SocketException) {
+      return [
+        ErrorResponse(
+          message: "Could not connect to remote server",
+          name: ApiResponseNames.error,
+          error: error,
+          originalRequest: originalRequest,
+          isTimeout: true,
+        ),
       ];
     }
     return [
       ErrorResponse(
-          message: "Repository error : $error}",
-          name: ApiResponseNames.error,
-          error: error,
-          stacktrace: stackTrace,
-          originalRequest: originalRequest)
+        message: "Repository error : $error}",
+        name: ApiResponseNames.error,
+        error: error,
+        originalRequest: originalRequest,
+      )
     ];
   }
 }

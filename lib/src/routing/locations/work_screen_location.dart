@@ -2,16 +2,16 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/components_factory.dart';
 import 'package:flutter_client/src/mask/work_screen/work_screen.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
 import 'package:flutter_client/src/model/custom/custom_header.dart';
 import 'package:flutter_client/src/model/custom/custom_screen.dart';
 
-class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceMixin {
+class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     final String workScreenName = state.pathParameters['workScreenName']!;
-    FlPanelModel? model = uiService.getOpenScreen(pScreenName: workScreenName);
+    FlPanelModel? model = getUiService().getOpenScreen(pScreenName: workScreenName);
 
     // Header
     CustomHeader? header;
@@ -30,7 +30,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceMixin {
     }
 
     // Custom Config for this screen
-    CustomScreen? customScreen = uiService.getCustomScreen(pScreenName: workScreenName);
+    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: workScreenName);
 
     if (customScreen != null) {
       header = customScreen.headerFactory?.call();

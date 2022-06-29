@@ -5,21 +5,18 @@ import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
 
-class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogCommand>
-    with UiServiceGetterMixin {
-
+class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogCommand> with UiServiceGetterMixin {
   @override
   Future<List<BaseCommand>> processCommand(OpenErrorDialogCommand command) async {
-
     Widget errorWidget = ServerErrorDialog(
-        message: command.message
+      message: command.message,
+      isTimeout: command.isTimeout,
     );
 
     getUiService().openDialog(
-        pDialogWidget: errorWidget,
-        pIsDismissible: false
+      pDialogWidget: errorWidget,
+      pIsDismissible: false,
     );
-
 
     return [];
   }

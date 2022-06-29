@@ -2,12 +2,12 @@ import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
 import 'package:flutter_client/src/model/command/api/navigation_command.dart';
 import 'package:flutter_client/src/model/custom/custom_screen.dart';
 import 'package:flutter_client/src/routing/locations/work_screen_location.dart';
 
-class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceMixin {
+class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,12 +36,12 @@ class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceMixi
 
     if (delegate.beamingHistory.last.runtimeType == WorkScreenLocation) {
       String location = delegate.configuration.location!.split("/")[2];
-      CustomScreen? screen = uiService.getCustomScreen(pScreenName: location);
+      CustomScreen? screen = getUiService().getCustomScreen(pScreenName: location);
 
       if (screen != null && screen.isOfflineScreen) {
         return delegate.beamBack();
       } else {
-        uiService.sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: location));
+        getUiService().sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: location));
         return true;
       }
     } else {

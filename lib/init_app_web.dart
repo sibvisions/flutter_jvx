@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
+import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
 import 'package:flutter_client/util/file/file_manager_web.dart';
 
 import 'data/config/config_generator.dart';
@@ -26,7 +28,7 @@ import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
-Future<bool> initApp() {
+Future<bool> initApp({CustomScreenManager? pCustomManager, required BuildContext initContext}) {
   // API
   UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8090);
 
@@ -64,7 +66,7 @@ Future<bool> initApp() {
   services.registerSingleton(commandService, signalsReady: true);
 
   // UI
-  IUiService uiService = UiService();
+  IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);
   services.registerSingleton(uiService, signalsReady: true);
 
   StartupCommand startupCommand = StartupCommand(reason: "InitApp", language: "de");
