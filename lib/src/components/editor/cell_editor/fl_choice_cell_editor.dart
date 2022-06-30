@@ -57,7 +57,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget createWidget(BuildContext pContext, [bool inTable = false]) {
+  FlStatelessWidget createWidget([bool inTable = false]) {
     FlIconModel widgetModel = FlIconModel();
 
     Widget image;
@@ -121,7 +121,10 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget? createTableWidget(BuildContext pContext) {
-    return createWidget(pContext, true);
+  FlStatelessWidget? createTableWidget() {
+    return createWidget(true);
   }
+
+  @override
+  double get additionalTablePadding => 0.0;
 }

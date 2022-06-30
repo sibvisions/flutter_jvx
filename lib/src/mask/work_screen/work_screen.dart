@@ -17,7 +17,7 @@ import '../drawer/drawer_menu.dart';
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for
 /// custom header/footer
-class WorkScreen extends StatelessWidget with UiServiceMixin {
+class WorkScreen extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,14 +40,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
   /// Footer will be sticky displayed on top - footer size will shrink space for screen
   final Widget? footer;
 
-  /// Debounce re-layouts if keyboard opens.
-  final Debounce debounce = Debounce(delay: const Duration(milliseconds: 500));
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  WorkScreen({
+  const WorkScreen({
     required this.screenTitle,
     required this.screenWidget,
     required this.isCustomScreen,
@@ -58,8 +51,18 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
   }) : super(key: key);
 
   @override
+  State<WorkScreen> createState() => _WorkScreenState();
+}
+
+class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
+  /// Debounce re-layouts if keyboard opens.
+  final Debounce debounce = Debounce(delay: const Duration(milliseconds: 500));
+
+  @override
   Widget build(BuildContext context) {
-    uiService.setRouteContext(pContext: context);
+    if (mounted) {
+      uiService.setRouteContext(pContext: context);
+    }
 
     return GestureDetector(
       onTap: () {
@@ -78,13 +81,13 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
               ),
             ),
           ),
-          title: Text(screenTitle),
+          title: Text(widget.screenTitle),
         ),
         endDrawerEnableOpenDragGesture: false,
         endDrawer: DrawerMenu(),
         body: Scaffold(
-          appBar: header,
-          bottomNavigationBar: footer,
+          appBar: widget.header,
+          bottomNavigationBar: widget.footer,
           backgroundColor: themeData.backgroundColor,
           body: LayoutBuilder(builder: (context, constraints) {
             final viewInsets = EdgeInsets.fromWindowPadding(
@@ -92,7 +95,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
               WidgetsBinding.instance!.window.devicePixelRatio,
             );
 
-            if (!isCustomScreen) {
+            if (!widget.isCustomScreen) {
               // debounce to not re-layout multiple times when opening the keyboard
               debounce.call(() {
                 _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
@@ -107,7 +110,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
                     height: constraints.maxHeight + viewInsets.bottom,
                     width: constraints.maxWidth,
                   ),
-                  screenWidget
+                  widget.screenWidget
                 ],
               ),
             );
@@ -137,7 +140,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
 
   _setScreenSize({required double pWidth, required double pHeight}) {
     SetComponentSizeCommand command = SetComponentSizeCommand(
-      componentId: (screenWidget as FlPanelWrapper).id,
+      componentId: (widget.screenWidget as FlPanelWrapper).id,
       size: Size(pWidth, pHeight),
       reason: "Opened Work Screen",
     );
@@ -154,19 +157,19 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
   }
 
   _onBackTab(BuildContext context) {
-    if (isCustomScreen) {
+    if (widget.isCustomScreen) {
       context.beamToNamed("/menu");
     } else {
-      uiService.sendCommand(NavigationCommand(reason: "Work screen back", openScreen: screenName));
+      uiService.sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
     }
   }
 
   _onDoubleTab(BuildContext context) {
-    if (isCustomScreen) {
+    if (widget.isCustomScreen) {
       context.beamToNamed("/menu");
     } else {
-      uiService.sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: screenName));
-      uiService.sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: screenName));
+      uiService.sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
+      uiService.sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
     }
   }
 }

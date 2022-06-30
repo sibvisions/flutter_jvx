@@ -7,6 +7,7 @@ import 'package:flutter_client/src/components/table/fl_table_widget.dart';
 import 'package:flutter_client/src/components/table/table_size.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/command/api/filter_command.dart';
@@ -48,6 +49,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   @override
   void initState() {
     super.initState();
+
+    tableModel.columnLabels = [];
 
     subscribe();
   }
@@ -175,8 +178,13 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       _chunkData = pChunkData;
     }
 
-    tableModel.columnNames = _chunkData!.columnDefinitions.map((e) => e.name).toList();
-    tableModel.columnLabels = _chunkData!.columnDefinitions.map((e) => e.label).toList();
+    tableModel.columnNames.clear();
+    tableModel.columnLabels!.clear();
+    for (ColumnDefinition colDef
+        in _chunkData!.columnDefinitions.where((element) => columnNamesToShow().contains(element.name))) {
+      tableModel.columnNames.add(colDef.name);
+      tableModel.columnLabels!.add(colDef.label);
+    }
 
     if (mounted) {
       setState(() {});

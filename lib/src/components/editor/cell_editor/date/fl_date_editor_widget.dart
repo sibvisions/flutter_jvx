@@ -14,6 +14,8 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
     required T model,
     required FocusNode focusNode,
     required TextEditingController textController,
+    required Function(String) valueChanged,
+    required Function(String) endEditing,
     bool inTable = false,
   }) : super(
             key: key,

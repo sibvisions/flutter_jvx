@@ -223,6 +223,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       chunkData = pChunkData;
     }
 
+    dev.log("receives data but must calc?: $hasToCalc");
+
     if (hasToCalc) {
       recalculateTableSize(true);
     }

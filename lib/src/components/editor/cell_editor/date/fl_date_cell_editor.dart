@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
@@ -78,13 +77,15 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  FlDateEditorWidget createWidget(BuildContext pContext, [bool pInTable = false]) {
+  FlDateEditorWidget createWidget([bool pInTable = false]) {
     FlDateEditorModel widgetModel = FlDateEditorModel();
 
     return FlDateEditorWidget(
       model: widgetModel,
       textController: textController,
       focusNode: focusNode,
+      endEditing: onEndEditing,
+      valueChanged: onValueChange,
       onPress: () => openDatePicker(),
       inTable: pInTable,
     );
@@ -248,7 +249,21 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget? createTableWidget(BuildContext pContext) {
-    return createWidget(pContext, true);
+  FlDateEditorWidget? createTableWidget() {
+    return createWidget(true);
+  }
+
+  @override
+  double get additionalTablePadding {
+    FlDateEditorWidget? widget = createTableWidget();
+
+    double width = 0.0;
+    if (widget != null) {
+      width += (widget.iconSize * 2);
+      width += widget.iconPadding.end;
+      width += (widget.textPadding?.left ?? 0.0) + (widget.textPadding?.right ?? 0.0);
+    }
+
+    return width;
   }
 }

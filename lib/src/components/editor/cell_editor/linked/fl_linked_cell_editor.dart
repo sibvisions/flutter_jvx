@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
@@ -80,12 +79,12 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   }
 
   @override
-  FlLinkedEditorWidget createWidget(BuildContext pContext, [bool pInTable = false]) {
+  FlLinkedEditorWidget createWidget([bool pInTable = false]) {
     FlLinkedEditorModel widgetModel = FlLinkedEditorModel();
 
     return FlLinkedEditorWidget(
       model: widgetModel,
-      endEditing: onEndEditing,
+      endEditing: receiveNull,
       valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
@@ -227,7 +226,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
     recalculateSizeCallback?.call(false);
   }
 
-  void receiveNull(dynamic pValue) {
+  dynamic receiveNull(dynamic pValue) {
     if (model.linkReference.columnNames.isEmpty) {
       onEndEditing(pValue);
     } else {
@@ -243,14 +242,27 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
     }
   }
 
-  //TODO: implement this method
   @override
   String formatValue(Object pValue) {
     return pValue.toString();
   }
 
   @override
-  FlStatelessWidget? createTableWidget(BuildContext pContext) {
-    return createWidget(pContext, true);
+  FlLinkedEditorWidget? createTableWidget() {
+    return createWidget(true);
+  }
+
+  @override
+  double get additionalTablePadding {
+    FlLinkedEditorWidget? widget = createTableWidget();
+
+    double width = 0.0;
+    if (widget != null) {
+      width += (widget.iconSize * 2);
+      width += widget.iconPadding.end;
+      width += (widget.textPadding?.left ?? 0.0) + (widget.textPadding?.right ?? 0.0);
+    }
+
+    return width;
   }
 }

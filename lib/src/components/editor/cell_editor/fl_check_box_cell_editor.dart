@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -43,7 +41,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  FlStatelessWidget createWidget(BuildContext pContext) {
+  FlStatelessWidget createWidget() {
     FlCheckBoxModel widgetModel = FlCheckBoxModel();
     widgetModel.labelModel.text = model.text;
     widgetModel.selected = model.selectedValue == _value;
@@ -91,14 +89,16 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
     }
   }
 
-//TODO: implement this method
   @override
   String formatValue(Object pValue) {
     return pValue.toString();
   }
 
   @override
-  FlStatelessWidget? createTableWidget(BuildContext pContext) {
-    return createWidget(pContext);
+  FlStatelessWidget? createTableWidget() {
+    return createWidget();
   }
+
+  @override
+  double get additionalTablePadding => 0.0;
 }

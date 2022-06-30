@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
@@ -37,6 +39,7 @@ class UiService with CommandServiceMixin implements IUiService {
   MenuModel? _menuModel;
 
   /// Build context of the current location, used for routing and pop-ups
+
   BuildContext? _currentBuildContext;
 
   /// The name of the current work screen
@@ -117,6 +120,8 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void setRouteContext({required BuildContext pContext}) {
+    log(pContext.toString());
+    log(StackTrace.current.toString());
     _currentBuildContext = pContext;
   }
 
@@ -161,7 +166,8 @@ class UiService with CommandServiceMixin implements IUiService {
             screenId: customModel.screenId,
             icon: customModel.icon,
           );
-          MenuGroupModel? menuGroupModel = pMenuModel.menuGroups.firstWhereOrNull((element) => element.name == customModel.group);
+          MenuGroupModel? menuGroupModel =
+              pMenuModel.menuGroups.firstWhereOrNull((element) => element.name == customModel.group);
           if (menuGroupModel != null) {
             // Remove menu items that open the same screen
             menuGroupModel.items.removeWhere((element) => element.screenId == customModel.screenId);
@@ -327,7 +333,8 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void disposeDataSubscription({required Object pSubscriber, required String pDataProvider}) {
-    _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber && element.dataProvider == pDataProvider);
+    _dataSubscriptions
+        .removeWhere((element) => element.subbedObj == pSubscriber && element.dataProvider == pDataProvider);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -420,7 +427,9 @@ class UiService with CommandServiceMixin implements IUiService {
     required String pDataProvider,
     required DalMetaDataResponse pMetaData,
   }) {
-    _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null).forEach((element) {
+    _dataSubscriptions
+        .where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null)
+        .forEach((element) {
       element.onMetaData!(pMetaData);
     });
   }

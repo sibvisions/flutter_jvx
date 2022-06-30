@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 
 import '../../../model/component/editor/cell_editor/fl_number_cell_editor_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -66,7 +65,7 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   @override
-  FlTextFieldWidget createWidget(BuildContext pContext) {
+  FlTextFieldWidget createWidget() {
     return FlTextFieldWidget(
       model: FlTextFieldModel(),
       valueChanged: onValueChange, //(value) => onValueChange(numberFormatter.convertToNumber(value)),
@@ -127,7 +126,21 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   @override
-  FlStatelessWidget? createTableWidget(BuildContext pContext) {
+  FlTextFieldWidget? createTableWidget() {
     return null;
+  }
+
+  @override
+  double get additionalTablePadding {
+    FlTextFieldWidget? widget = createTableWidget();
+
+    double width = 0.0;
+    if (widget != null) {
+      width += (widget.iconSize * 2);
+      width += widget.iconPadding.end;
+      width += (widget.textPadding?.left ?? 0.0) + (widget.textPadding?.right ?? 0.0);
+    }
+
+    return width;
   }
 }

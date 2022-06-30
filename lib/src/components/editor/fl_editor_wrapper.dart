@@ -98,7 +98,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     // Celleditors always return a fresh new widget.
     // We must apply the universal editor components onto the widget.
-    FlStatelessWidget editorWidget = cellEditor.createWidget(context);
+    FlStatelessWidget editorWidget = cellEditor.createWidget();
     editorWidget.model.applyFromJson(model.json);
     // Some parts of a json have to take priority.
     // As they override the properties.

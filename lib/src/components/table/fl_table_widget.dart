@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
@@ -128,7 +130,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: tableSize.size.width,
+              maxWidth: max(tableSize.size.width, 0),
             ),
             child: ScrollablePositionedList.builder(
               itemScrollController: itemScrollController,
@@ -144,7 +146,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
       return table;
     }
 
-    Widget headerRow = buildHeaderRow(pContext);
+    Widget headerRow = buildHeaderRow();
 
     return LayoutBuilder(
       builder: ((context, constraints) {
@@ -152,12 +154,12 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
           children: [
             SizedBox(
               height: tableSize.tableHeaderHeight,
-              width: constraints.maxWidth,
+              width: max(constraints.maxWidth, 0),
               child: headerRow,
             ),
             SizedBox(
-              height: constraints.maxHeight - tableSize.tableHeaderHeight,
-              width: constraints.maxWidth,
+              height: max(constraints.maxHeight - tableSize.tableHeaderHeight, 0),
+              width: max(constraints.maxWidth, constraints.maxWidth),
               child: table,
             ),
           ],
@@ -167,16 +169,16 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
   }
 
   /// The item builder of the scrollable positioned list.
-  Widget itemBuilder(BuildContext pContext, int pIndex) {
+  Widget itemBuilder(BuildContext? pContext, int pIndex) {
     int index = pIndex;
     if (buildHeadersInList) {
       index--;
       if (pIndex == 0) {
-        return buildHeaderRow(pContext);
+        return buildHeaderRow();
       }
     }
 
-    return buildDataRow(pContext, index);
+    return buildDataRow(index);
   }
 
   /// How many items the scrollable list should build.
@@ -191,7 +193,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
   }
 
   /// Builds a data row.
-  Widget buildDataRow(BuildContext context, int pIndex) {
+  Widget buildDataRow(int pIndex) {
     List<dynamic> data = chunkData.data[pIndex]!;
 
     List<Widget> rowWidgets = [];
@@ -217,7 +219,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
 
         cellEditor.setValue(value);
 
-        FlStatelessWidget? tableWidget = cellEditor.createTableWidget(context);
+        FlStatelessWidget? tableWidget = cellEditor.createTableWidget();
 
         tableWidget?.model.applyFromJson(model.json);
         // Some parts of a json have to take priority.
@@ -274,7 +276,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
     );
   }
 
-  Widget buildHeaderRow(BuildContext context) {
+  Widget buildHeaderRow() {
     List<Widget> rowWidgets = [];
 
     List<String> headerList = (model.columnLabels ?? model.columnNames);

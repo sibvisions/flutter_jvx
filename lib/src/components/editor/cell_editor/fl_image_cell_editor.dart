@@ -71,7 +71,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget createWidget(BuildContext pContext, [bool pInTable = false]) {
+  FlStatelessWidget createWidget([bool pInTable = false]) {
     FlIconModel widgetModel = FlIconModel();
     widgetModel.image = _value ?? '';
 
@@ -122,7 +122,10 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget? createTableWidget(BuildContext pContext) {
-    return createWidget(pContext, true);
+  FlStatelessWidget? createTableWidget() {
+    return createWidget(true);
   }
+
+  @override
+  double get additionalTablePadding => 0.0;
 }

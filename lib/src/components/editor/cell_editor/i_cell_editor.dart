@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -66,10 +64,10 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   ColumnDefinition? getColumnDefinition();
 
   /// Returns the widget representing the cell editor.
-  FlStatelessWidget createWidget(BuildContext pContext);
+  FlStatelessWidget createWidget();
 
   /// Returns the widget for the table.
-  FlStatelessWidget? createTableWidget(BuildContext pContext);
+  FlStatelessWidget? createTableWidget();
 
   /// Returns the model of the widget representing the cell editor.
   FlComponentModel createWidgetModel();
@@ -78,6 +76,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   String formatValue(Object pValue);
 
+  double get additionalTablePadding;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

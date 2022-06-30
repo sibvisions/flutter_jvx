@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 import '../../../util/parse_util.dart';
 import '../../model/component/table/fl_table_model.dart';
@@ -8,7 +10,7 @@ import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 
 /// Represents a table size
-class TableSize {
+class TableSize with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +50,7 @@ class TableSize {
     this.borderWidth = 1.0,
     this.columnDividerWidth = 1.0,
     this.minColumnWidth = 50,
-    this.maxColumnWidth = 200,
+    this.maxColumnWidth = 300,
     this.tableHeaderHeight = 50,
     this.rowHeight = 50,
     this.cellPadding = const EdgeInsets.only(left: 2.0, right: 2.0),
@@ -59,7 +61,7 @@ class TableSize {
     this.borderWidth = 1.0,
     this.columnDividerWidth = 1.0,
     this.minColumnWidth = 50,
-    this.maxColumnWidth = 200,
+    this.maxColumnWidth = 300,
     this.tableHeaderHeight = 50,
     this.rowHeight = 50,
     this.cellPadding = const EdgeInsets.only(left: 2.0, right: 2.0),
@@ -141,40 +143,43 @@ class TableSize {
         double colWidth = minColumnWidth;
 
         if (colDef.width != null) {
-          colWidth = adjustValue(colWidth, colDef.width!);
-        }
+          calculatedColumnWidths[showIndex] = colDef.width!;
+          columnWidths[showIndex] = colDef.width!;
+        } else {
+          ICellEditor cellEditor = ICellEditor.getCellEditor(
+            pName: "",
+            pCellEditorJson: colDef.cellEditorJson,
+            onChange: (_) => null,
+            onEndEditing: (_) => null,
+            pUiService: uiService,
+          );
 
-        // if (colDef.cellEditor.model.directCellEditor) {
-        //   // Calculate width of this column with formattings of this cell editor
-        //   double? width = colDef.cellEditor.createWidgetModel().preferredSize?.width;
-        //   if (width != null) {
-        //     colWidth = adjustValue(colWidth, width);
-        //   }
-        // } else {
-        for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {
-          dynamic value = dataChunk.data[rowIndex]![colIndex];
+          for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {
+            dynamic value = dataChunk.data[rowIndex]![colIndex];
 
-          if (value == null) {
-            continue;
+            if (value == null) {
+              continue;
+            }
+
+            String formattedText = cellEditor.formatValue(value);
+            double width = ParseUtil.getTextWidth(
+                text: formattedText, style: tableModel.getTextStyle(), textScaleFactor: textScaleFactor);
+
+            width *= 1.3; // Value is multiplied by 1.4 to make sure that the text is not cut off
+            // because the calculated width is too small. Still not sure why, but it works.
+
+            width += cellEditor.additionalTablePadding;
+
+            colWidth = adjustValue(colWidth, width);
           }
 
-          String formattedText = "$value"; // colDef.cellEditor.formatValue(value);
-          double width = ParseUtil.getTextWidth(
-              text: formattedText, style: tableModel.getTextStyle(), textScaleFactor: textScaleFactor);
+          // Add padding and add right border
+          colWidth = adjustValue(colWidth, colWidth + (cellPadding.left + cellPadding.right) + columnDividerWidth);
 
-          width *= 1.3; // Value is multiplied by 1.3 to make sure that the text is not cut off
-          // because the calculated width is too small. Still not sure why, but it works.
+          calculatedColumnWidths[showIndex] = adjustValue(calculatedColumnWidths[showIndex], colWidth);
 
-          colWidth = adjustValue(colWidth, width);
+          columnWidths[showIndex] = calculatedColumnWidths[showIndex];
         }
-        // }
-
-        // Add padding and add right border
-        colWidth = adjustValue(colWidth, colWidth + (cellPadding.left + cellPadding.right) + columnDividerWidth);
-
-        calculatedColumnWidths[showIndex] = adjustValue(calculatedColumnWidths[showIndex], colWidth);
-
-        columnWidths[showIndex] = calculatedColumnWidths[showIndex];
       }
     }
 
@@ -192,7 +197,11 @@ class TableSize {
       double width = columnWidths[i];
       // Every width gets equal share of remaining width
       // Ignores max width, as we have to fill it!
-      width += (width / currentWidth) * pRemainingWidth;
+      if (currentWidth > 0.0) {
+        width += (width / currentWidth) * pRemainingWidth;
+      } else {
+        width += pRemainingWidth / columnWidths.length;
+      }
 
       columnWidths[i] = width;
     }

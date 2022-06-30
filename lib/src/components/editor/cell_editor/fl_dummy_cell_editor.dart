@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../../../model/component/dummy/fl_dummy_model.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -21,7 +19,7 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   void dispose() {}
 
   @override
-  FlStatelessWidget createWidget(BuildContext pContext) {
+  FlStatelessWidget createWidget() {
     return FlDummyWidget(model: FlDummyModel());
   }
 
@@ -55,7 +53,10 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget? createTableWidget(BuildContext pContext) {
+  FlStatelessWidget? createTableWidget() {
     return null;
   }
+
+  @override
+  double get additionalTablePadding => 0.0;
 }

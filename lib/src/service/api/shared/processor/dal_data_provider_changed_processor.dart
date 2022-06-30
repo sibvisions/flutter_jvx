@@ -46,7 +46,7 @@ class DalDataProviderChangedProcessor extends IProcessor<DalDataProviderChangedR
         reason: "Data provider changed - server response",
       );
       commands.add(deleteRowCommand);
-    } else if (pResponse.selectedRow != null && pResponse.reload == -1) {
+    } else if (pResponse.selectedRow != null && pResponse.reload != -1) {
       ChangeSelectedRowCommand changeSelectedRowCommand = ChangeSelectedRowCommand(
         dataProvider: pResponse.dataProvider,
         newSelectedRow: pResponse.selectedRow!,
