@@ -168,7 +168,8 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
     double width = 0.0;
     if (widget != null) {
       width += (widget.iconSize * 2);
-      width += widget.iconPadding.end;
+      width += widget.iconPadding.right * 2;
+      width += widget.iconToTextPadding;
       width += (widget.textPadding?.left ?? 0.0) + (widget.textPadding?.right ?? 0.0);
     }
 

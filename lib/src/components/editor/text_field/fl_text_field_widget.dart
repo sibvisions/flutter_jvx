@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_client/main.dart';
-import 'package:flutter_client/util/parse_util.dart';
 
 import '../../../../util/constants/i_color.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -24,12 +23,13 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  double get iconSize {
-    return ParseUtil.getTextHeight(text: "I", style: model.getTextStyle());
-  }
+  double get iconSize => 16;
 
   EdgeInsets? get textPadding => EdgeInsets.only(left: (inTable ? 0.0 : 5.0));
-  EdgeInsetsDirectional get iconPadding => const EdgeInsetsDirectional.only(end: 15);
+
+  EdgeInsets get iconPadding => const EdgeInsets.only(right: 15);
+
+  double get iconToTextPadding => 5;
 
   int? get minLines => null;
 
@@ -149,10 +149,13 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       return null;
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.min,
-      children: createSuffixItems(),
+    return Padding(
+      padding: EdgeInsets.only(left: iconToTextPadding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: createSuffixItems(),
+      ),
     );
   }
 

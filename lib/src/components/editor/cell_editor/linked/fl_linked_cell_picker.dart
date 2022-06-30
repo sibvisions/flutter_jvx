@@ -62,10 +62,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
 
     return Dialog(
       insetPadding: EdgeInsets.fromLTRB(
-        MediaQuery.of(context).size.width / 8,
-        MediaQuery.of(context).size.height / 8,
-        MediaQuery.of(context).size.width / 8,
-        MediaQuery.of(context).size.height / 8,
+        MediaQuery.of(context).size.width / 16,
+        MediaQuery.of(context).size.height / 16,
+        MediaQuery.of(context).size.width / 16,
+        MediaQuery.of(context).size.height / 16,
       ),
       elevation: 10.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -104,19 +104,26 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                 )),
             Expanded(
               child: _chunkData != null
-                  ? LayoutBuilder(
-                      builder: ((context, constraints) => FlTableWidget(
-                            chunkData: _chunkData!,
-                            onEndScroll: increasePageLoad,
-                            model: tableModel,
-                            disableEditors: true,
-                            onRowTap: _onRowTapped,
-                            tableSize: TableSize.direct(
-                              tableModel: tableModel,
-                              dataChunk: _chunkData,
-                              availableWidth: constraints.maxWidth,
-                            ),
-                          )),
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: LayoutBuilder(builder: ((context, constraints) {
+                        TableSize tableSize = TableSize.direct(
+                          tableModel: tableModel,
+                          dataChunk: _chunkData,
+                          availableWidth: constraints.maxWidth,
+                        );
+                        tableModel.stickyHeaders =
+                            constraints.maxHeight > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
+
+                        return FlTableWidget(
+                          chunkData: _chunkData!,
+                          onEndScroll: increasePageLoad,
+                          model: tableModel,
+                          disableEditors: true,
+                          onRowTap: _onRowTapped,
+                          tableSize: tableSize,
+                        );
+                      })),
                     )
                   : Container(),
               // child: Padding(

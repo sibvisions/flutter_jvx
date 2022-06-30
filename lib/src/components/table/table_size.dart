@@ -53,7 +53,7 @@ class TableSize with UiServiceMixin {
     this.maxColumnWidth = 300,
     this.tableHeaderHeight = 50,
     this.rowHeight = 50,
-    this.cellPadding = const EdgeInsets.only(left: 2.0, right: 2.0),
+    this.cellPadding = const EdgeInsets.only(left: 4.0, right: 4.0),
   });
 
   /// Always calculates the table size.
@@ -64,7 +64,7 @@ class TableSize with UiServiceMixin {
     this.maxColumnWidth = 300,
     this.tableHeaderHeight = 50,
     this.rowHeight = 50,
-    this.cellPadding = const EdgeInsets.only(left: 2.0, right: 2.0),
+    this.cellPadding = const EdgeInsets.only(left: 4.0, right: 4.0),
     required FlTableModel tableModel,
     DataChunk? dataChunk,
     double? availableWidth,

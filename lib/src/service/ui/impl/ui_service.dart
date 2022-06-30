@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
@@ -120,8 +118,8 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void setRouteContext({required BuildContext pContext}) {
-    log(pContext.toString());
-    log(StackTrace.current.toString());
+    //log(pContext.toString());
+    //log(StackTrace.current.toString());
     _currentBuildContext = pContext;
   }
 

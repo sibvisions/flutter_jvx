@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -86,7 +85,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   @override
   void initState() {
-    dev.log("initState this: $hashCode");
     super.initState();
 
     layoutData.isFixedSize = true;
@@ -101,8 +99,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   @override
   Widget build(BuildContext context) {
-    dev.log("build this: $hashCode");
-
     Widget? widget;
     if (currentState != (LOADED_META_DATA | LOADED_SELECTED_RECORD | LOADED_DATA | CALCULATION_COMPLETE)) {
       widget = const CircularProgressIndicator();
@@ -135,7 +131,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   @override
   void dispose() {
-    dev.log("dispose this: $hashCode");
     unsubscribe();
 
     tableHorizontalController.dispose();
@@ -145,7 +140,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   @override
   void receiveNewLayoutData({required LayoutData newLayoutData, bool pSetState = true}) {
-    dev.log("receiveNewLayoutData this: $hashCode");
     super.receiveNewLayoutData(newLayoutData: newLayoutData, pSetState: false);
 
     recalculateTableSize(pSetState);
@@ -153,14 +147,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   @override
   receiveNewModel({required FlTableModel newModel}) {
-    dev.log("receiveNewModel this: $hashCode");
     super.receiveNewModel(newModel: newModel);
     subscribe();
   }
 
   @override
   Size calculateSize(BuildContext context) {
-    dev.log("calculateSize this: $hashCode");
     return tableSize.calculatedSize;
   }
 
@@ -218,12 +210,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
         chunkData.data[index] = pChunkData.data[index]!;
       }
     } else {
-      hasToCalc = chunkData.columnDefinitions.isEmpty && chunkData.data.isEmpty && pChunkData.to == 0;
+      hasToCalc = chunkData.columnDefinitions.isEmpty && chunkData.data.isEmpty && chunkData.to == 0;
 
       chunkData = pChunkData;
     }
-
-    dev.log("receives data but must calc?: $hasToCalc");
 
     if (hasToCalc) {
       recalculateTableSize(true);
@@ -313,7 +303,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
     _lastDragDownDetails = pDetails;
     lastTouchedIndex = pRowIndex;
-    dev.log('onRowDown: $pRowIndex');
   }
 
   showContextMenu() {

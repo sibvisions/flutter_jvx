@@ -132,7 +132,7 @@ class ColumnDefinition {
         width = defaultModel.width;
       }
     }
-    if (jsonWidth != null) {
+    if (jsonWidth != null && jsonWidth != 0) {
       width = (jsonWidth as int).toDouble();
     }
     // Readonly
