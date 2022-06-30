@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mask/drawer/drawer_menu.dart';
 import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_grouped.dart';
@@ -56,6 +58,7 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
 
   @override
   Widget build(BuildContext context) {
+    log("setting Route Context from Menu");
     uiService.setRouteContext(pContext: context);
 
     return Scaffold(
@@ -66,9 +69,8 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
           centerTitle: false,
           actions: [
             Builder(
-              builder: (context) => IconButton(
-                  onPressed: () => Scaffold.of(context).openEndDrawer(),
-                  icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
+              builder: (context) =>
+                  IconButton(onPressed: () => Scaffold.of(context).openEndDrawer(), icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
             ),
           ],
         ),

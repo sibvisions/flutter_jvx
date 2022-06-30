@@ -8,7 +8,10 @@ import 'package:flutter_client/src/service/command/shared/i_command_processor.da
 class OpenMessageDialogCommandProcessor extends ICommandProcessor<OpenMessageDialogCommand> with UiServiceGetterMixin {
   @override
   Future<List<BaseCommand>> processCommand(OpenMessageDialogCommand command) async {
-    Widget messageWidget = ServerDialog(message: command.message);
+    Widget messageWidget = ServerDialog(
+      message: command.message,
+      messageScreenName: command.messageScreenName,
+    );
 
     getUiService().openDialog(pDialogWidget: messageWidget, pIsDismissible: false);
 

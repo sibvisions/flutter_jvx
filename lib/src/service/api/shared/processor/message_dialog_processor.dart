@@ -6,6 +6,12 @@ import 'package:flutter_client/src/service/api/shared/i_processor.dart';
 class MessageDialogProcessor implements IProcessor<MessageDialogResponse> {
   @override
   List<BaseCommand> processResponse({required MessageDialogResponse pResponse}) {
-    return [OpenMessageDialogCommand(reason: "Message.dialog from server", message: pResponse.message)];
+    return [
+      OpenMessageDialogCommand(
+        reason: "Message.dialog from server",
+        message: pResponse.message,
+        messageScreenName: pResponse.messageScreenName,
+      )
+    ];
   }
 }

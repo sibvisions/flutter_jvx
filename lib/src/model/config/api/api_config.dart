@@ -1,4 +1,5 @@
 import 'package:flutter_client/src/model/api/requests/api_change_password_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_close_frame_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_close_screen_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_close_tab_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
@@ -67,6 +68,7 @@ class ApiConfig {
       ApiDownloadImagesRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
       ApiDownloadTranslationRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
       ApiDownloadStyleRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
+      ApiCloseFrameRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.closeFrame),
     };
   }
 }

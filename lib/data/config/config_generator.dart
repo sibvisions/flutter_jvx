@@ -24,6 +24,7 @@ class ConfigGenerator {
       selectRecord: "/api/dal/selectRecord",
       closeScreen: "/api/closeScreen",
       deleteRecord: "/api/dal/deleteRecord",
+      closeFrame: "/api/closeFrame",
     );
   }
 

@@ -1,29 +1,24 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
+import 'package:flutter_client/src/model/command/api/api_command.dart';
 
-/// This command will open a popup containing the provided message
-class OpenMessageDialogCommand extends UiCommand {
+class CloseFrameCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// This message will be displayed.
-  final String message;
-
-  /// Name of the message screen used for closing the message
-  final String messageScreenName;
+  /// Name of the frame(messages) to close
+  final String frameName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  OpenMessageDialogCommand({
+  CloseFrameCommand({
     required String reason,
-    required this.message,
-    required this.messageScreenName,
+    required this.frameName,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
+  // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override

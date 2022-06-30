@@ -24,6 +24,8 @@ import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../routing/locations/menu_location.dart';
+import '../../../routing/locations/setting_location.dart';
+import '../../../routing/locations/splash_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
 import '../i_ui_service.dart';
 
@@ -85,14 +87,25 @@ class UiService with CommandServiceMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Beaming history will be cleared when it should not be possible to go back,
+  // as you should not be able to go back to the splash screen or back to menu when u logged out
 
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
+    var last = _currentBuildContext!.beamingHistory.last;
+    if (last.runtimeType == SettingLocation || last.runtimeType == SplashLocation) {
+      _currentBuildContext!.beamingHistory.clear();
+    }
     _currentBuildContext!.beamToNamed("/menu");
   }
 
   @override
   void routeToWorkScreen({required String pScreenName}) {
+    var last = _currentBuildContext!.beamingHistory.last;
+
+    if (last.runtimeType == SettingLocation || last.runtimeType == SplashLocation) {
+      _currentBuildContext!.beamingHistory.clear();
+    }
     _currentBuildContext!.beamToNamed("/workScreen/$pScreenName");
   }
 
@@ -100,7 +113,7 @@ class UiService with CommandServiceMixin implements IUiService {
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
     var last = _currentBuildContext!.beamingHistory.last;
 
-    if (last.runtimeType == WorkScreenLocation || last.runtimeType == MenuLocation) {
+    if (last.runtimeType == WorkScreenLocation || last.runtimeType == MenuLocation || last.runtimeType == SplashLocation) {
       _currentBuildContext!.beamingHistory.clear();
     }
     _currentBuildContext!.beamToNamed("/login/$mode", data: pLoginProps);
@@ -164,8 +177,7 @@ class UiService with CommandServiceMixin implements IUiService {
             screenId: customModel.screenId,
             icon: customModel.icon,
           );
-          MenuGroupModel? menuGroupModel =
-              pMenuModel.menuGroups.firstWhereOrNull((element) => element.name == customModel.group);
+          MenuGroupModel? menuGroupModel = pMenuModel.menuGroups.firstWhereOrNull((element) => element.name == customModel.group);
           if (menuGroupModel != null) {
             // Remove menu items that open the same screen
             menuGroupModel.items.removeWhere((element) => element.screenId == customModel.screenId);
@@ -331,8 +343,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void disposeDataSubscription({required Object pSubscriber, required String pDataProvider}) {
-    _dataSubscriptions
-        .removeWhere((element) => element.subbedObj == pSubscriber && element.dataProvider == pDataProvider);
+    _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber && element.dataProvider == pDataProvider);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -425,9 +436,7 @@ class UiService with CommandServiceMixin implements IUiService {
     required String pDataProvider,
     required DalMetaDataResponse pMetaData,
   }) {
-    _dataSubscriptions
-        .where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null)
-        .forEach((element) {
+    _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null).forEach((element) {
       element.onMetaData!(pMetaData);
     });
   }
