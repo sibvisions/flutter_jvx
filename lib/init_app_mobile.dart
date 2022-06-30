@@ -8,6 +8,7 @@ import 'package:flutter_client/src/model/config/config_file/last_run_config.dart
 import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
 import 'package:flutter_client/src/service/layout/impl/isolate/isolate_layout_service.dart';
 import 'package:flutter_client/util/file/file_manager_mobile.dart';
+import 'package:flutter_client/util/loading_handler/loading_progress.dart';
 import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import 'data/config/config_generator.dart';
@@ -22,7 +23,6 @@ import 'src/service/api/shared/controller/api_controller.dart';
 import 'src/service/api/shared/i_controller.dart';
 import 'src/service/api/shared/i_repository.dart';
 import 'src/service/api/shared/repository/online_api_repository.dart';
-import 'src/service/command/i_command_service.dart';
 import 'src/service/command/impl/command_service.dart';
 import 'src/service/config/i_config_service.dart';
 import 'src/service/config/impl/config_service.dart';
@@ -147,8 +147,10 @@ Future<bool> initApp({
   services.registerSingleton(dataService, signalsReady: true);
 
   // Command
-  ICommandService commandService = CommandService();
+  CommandService commandService = CommandService();
   services.registerSingleton(commandService, signalsReady: true);
+
+  commandService.progressHandler.add(DefaultLoadingProgressHandler());
 
   // UI
   IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);

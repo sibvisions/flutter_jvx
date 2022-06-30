@@ -121,8 +121,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
 
   Widget createTable(BuildContext pContext) {
     Widget table = GestureDetector(
-      onLongPress: onLongPress,
-      onPanDown: (DragDownDetails? pDragDetails) => onRowTapDown?.call(-1, pDragDetails),
+      onLongPress: model.isEnabled ? onLongPress : null,
+      onPanDown: model.isEnabled ? ((DragDownDetails? pDragDetails) => onRowTapDown?.call(-1, pDragDetails)) : null,
       child: NotificationListener<ScrollEndNotification>(
         onNotification: onInternalEndScroll,
         child: SingleChildScrollView(
@@ -255,22 +255,26 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
       opacity += 0.15;
     }
 
-    return GestureDetector(
-      onPanDown: (DragDownDetails? pDragDetails) => onRowTapDown?.call(pIndex, pDragDetails),
-      onTap: () => onRowTap?.call(pIndex),
-      child: Container(
-        height: tableSize.rowHeight,
-        decoration: BoxDecoration(
-          color: pIndex == selectedRow ? Colors.blue.withOpacity(opacity) : themeData.primaryColor.withOpacity(opacity),
-          border: Border(
-            bottom: BorderSide(
-              color: themeData.primaryColor,
-              width: 1.0,
+    return IgnorePointer(
+      ignoring: !model.isEnabled,
+      child: GestureDetector(
+        onPanDown: (DragDownDetails? pDragDetails) => onRowTapDown?.call(pIndex, pDragDetails),
+        onTap: () => onRowTap?.call(pIndex),
+        child: Container(
+          height: tableSize.rowHeight,
+          decoration: BoxDecoration(
+            color:
+                pIndex == selectedRow ? Colors.blue.withOpacity(opacity) : themeData.primaryColor.withOpacity(opacity),
+            border: Border(
+              bottom: BorderSide(
+                color: themeData.primaryColor,
+                width: 1.0,
+              ),
             ),
           ),
-        ),
-        child: Row(
-          children: rowWidgets,
+          child: Row(
+            children: rowWidgets,
+          ),
         ),
       ),
     );
@@ -279,16 +283,24 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
   Widget buildHeaderRow() {
     List<Widget> rowWidgets = [];
 
-    List<String> headerList = (model.columnLabels ?? model.columnNames);
+    for (String columnName in model.columnNames) {
+      int colIndex = model.columnNames.indexOf(columnName);
 
-    for (String columnName in headerList) {
+      String headerText = (model.columnLabels?.isNotEmpty ?? false) ? model.columnLabels![colIndex] : columnName;
+
+      ColumnDefinition? colDef = metaData?.columns.firstWhere((element) => element.name == columnName);
+
+      if (colDef != null && colDef.nullable == true) {
+        headerText += "*";
+      }
+
       rowWidgets.add(
         SizedBox(
-          width: tableSize.columnWidths[headerList.indexOf(columnName)].toDouble(),
+          width: tableSize.columnWidths[colIndex].toDouble(),
           child: Padding(
             padding: tableSize.cellPadding,
             child: Text(
-              columnName,
+              headerText,
               style: model.getTextStyle(pFontWeight: FontWeight.bold),
             ),
           ),

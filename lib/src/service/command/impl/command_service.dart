@@ -67,11 +67,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  CommandService({List<ICommandProgressHandler>? pProgressHandler}) {
-    if (pProgressHandler != null) {
-      progressHandler.addAll(pProgressHandler);
-    }
-  }
+  CommandService();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -125,7 +121,8 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
 
     // Isolate possible route commands
     var routeCommands = commands
-        .where((element) => element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
+        .where((element) =>
+            element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
         .toList();
 
     var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
