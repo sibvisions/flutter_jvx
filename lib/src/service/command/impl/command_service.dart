@@ -5,6 +5,7 @@ import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.da
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
+import 'package:flutter_client/util/loading_handler/i_command_progress_handler.dart';
 import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../../mixin/api_service_mixin.dart';
@@ -59,11 +60,18 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   /// have finished execution (excluding layout-ing)
   final Queue<BaseCommand> _apiCommandsQueue = Queue();
 
+  /// List of all progress handler for commands
+  final List<ICommandProgressHandler> progressHandler = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  CommandService();
+  CommandService({List<ICommandProgressHandler>? pProgressHandler}) {
+    if (pProgressHandler != null) {
+      progressHandler.addAll(pProgressHandler);
+    }
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -81,6 +89,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
         return [];
       }
     }
+    progressHandler.forEach((element) => element.notifyCommandProgressStart(command));
 
     // Switch-Case doesn't work with types
     try {
@@ -135,16 +144,17 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
       }
     });
 
+    command.callback?.call();
+    progressHandler.forEach((element) => element.notifyCommandProgressEnd(command));
+
     if (command is ApiCommand) {
       // Remove current command after execution is complete
       // and call the next one in queue
       _apiCommandsQueue.remove(command);
       if (_apiCommandsQueue.isNotEmpty) {
-        _waitTillFinished(pCommands: [_apiCommandsQueue.first]);
+        await _waitTillFinished(pCommands: [_apiCommandsQueue.first]);
       }
     }
-
-    command.callback?.call();
     return commands;
   }
 
