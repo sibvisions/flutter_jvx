@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
@@ -73,10 +72,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void changeStyle(Map<String, String> styleMap) {
-    log('hello');
-    log(styleMap.toString());
-
+  Future<void> changeStyle(Map<String, String> styleMap) async {
     opacityMenu = double.parse(styleMap['opacity.menu'] ?? '1');
     opacitySideMenu = double.parse(styleMap['opacity.sidemenu'] ?? '1');
 
@@ -95,15 +91,16 @@ class _MyAppState extends State<MyApp> {
         900: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 1),
       };
 
-      MaterialColor newTemeColor = MaterialColor(styleColor.value, color);
+      MaterialColor styleMaterialColor = MaterialColor(styleColor.value, color);
 
       themeData = ThemeData.from(
           colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: newTemeColor,
+        primarySwatch: styleMaterialColor,
         backgroundColor: Colors.grey.shade200,
       ));
     }
-    setState(() {});
+    //When setting new Theme on poor performance devices, setState gets called before context can be resolved --> Workaround for this case
+    Future.delayed(const Duration(seconds: 1), () => setState(() {}));
   }
 }
 

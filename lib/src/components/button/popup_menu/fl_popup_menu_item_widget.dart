@@ -5,6 +5,7 @@ import 'package:flutter_client/util/image/image_loader.dart';
 abstract class FlPopupMenuItemWidget {
   static PopupMenuEntry<String> withModel(FlPopupMenuItemModel pModel, bool pForceIconSlot) {
     return PopupMenuItem<String>(
+      enabled: pModel.isEnabled,
       value: pModel.name,
       child: pForceIconSlot
           ? Row(
