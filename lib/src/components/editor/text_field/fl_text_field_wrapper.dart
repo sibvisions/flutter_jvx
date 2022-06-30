@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/util/parse_util.dart';
@@ -97,14 +95,10 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void valueChanged(String pValue) {
-    log("Value changed to: " + pValue + " | Length: " + pValue.characters.length.toString());
-
     setState(() {});
   }
 
   void endEditing(String pValue) {
-    log("Editing ended with: " + pValue + " | Length: " + pValue.characters.length.toString());
-
     SetValueCommand setValue =
         SetValueCommand(componentName: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
     uiService.sendCommand(setValue);
