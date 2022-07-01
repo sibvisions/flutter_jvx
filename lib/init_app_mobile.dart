@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_client/src/model/config/config_file/app_config.dart';
 import 'package:flutter_client/src/model/config/config_file/last_run_config.dart';
 import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
+import 'package:flutter_client/src/service/command/i_command_service.dart';
 import 'package:flutter_client/src/service/layout/impl/isolate/isolate_layout_service.dart';
 import 'package:flutter_client/util/file/file_manager_mobile.dart';
 import 'package:flutter_client/util/loading_handler/loading_progress.dart';
@@ -147,10 +148,12 @@ Future<bool> initApp({
   services.registerSingleton(dataService, signalsReady: true);
 
   // Command
-  CommandService commandService = CommandService();
+  ICommandService commandService = CommandService();
   services.registerSingleton(commandService, signalsReady: true);
 
-  commandService.progressHandler.add(DefaultLoadingProgressHandler());
+  DefaultLoadingProgressHandler loadingProgressHandler = DefaultLoadingProgressHandler();
+  loadingProgressHandler.isEnabled = false;
+  (commandService as CommandService).progressHandler.add(DefaultLoadingProgressHandler());
 
   // UI
   IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);
