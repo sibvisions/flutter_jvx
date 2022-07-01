@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditorDialog extends StatelessWidget {
@@ -35,7 +34,7 @@ class EditorDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: themeData.dialogBackgroundColor.withAlpha(255),
+        backgroundColor: Theme.of(context).dialogBackgroundColor.withAlpha(255),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

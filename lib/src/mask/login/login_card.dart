@@ -1,6 +1,5 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mask/login/remember_me_checkbox.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
@@ -36,7 +35,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
     String? loginTitle = configService.getAppStyle()?['login.title'];
 
     return Card(
-      color: themeData.backgroundColor.withOpacity(0.9),
+      color: Theme.of(context).backgroundColor.withOpacity(0.9),
       elevation: 10,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -44,7 +43,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
           children: [
             Text(
               loginTitle ?? configService.getAppName().toUpperCase(),
-              style: themeData.textTheme.headline6,
+              style: Theme.of(context).textTheme.headline6,
               textAlign: TextAlign.center,
             ),
             const Padding(padding: EdgeInsets.all(5)),

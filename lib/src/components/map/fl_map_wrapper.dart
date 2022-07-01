@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/components/map/fl_map_widget.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/set_values_command.dart';
@@ -200,7 +199,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
       img = FaIcon(
         FontAwesomeIcons.mapMarker,
         size: 64,
-        color: themeData.primaryColor,
+        color: Theme.of(context).primaryColor,
       );
     }
     return (Marker(

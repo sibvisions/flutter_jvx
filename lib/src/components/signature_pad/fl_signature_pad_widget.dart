@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/model/component/custom/fl_custom_container_model.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
 import 'package:flutter_client/util/image/image_loader.dart';
@@ -64,7 +63,7 @@ class FlSignaturePadWidget<T extends FlCustomContainerModel> extends FlStateless
         onLongPressDown: (details) => {this.details = details},
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: themeData.colorScheme.onPrimary),
+            border: Border.all(color: Theme.of(context).colorScheme.onPrimary),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Padding(
@@ -79,14 +78,14 @@ class FlSignaturePadWidget<T extends FlCustomContainerModel> extends FlStateless
       onLongPressDown: (details) => {this.details = details},
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: themeData.colorScheme.onPrimary),
+          border: Border.all(color: Theme.of(context).colorScheme.onPrimary),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Signature(
             controller: controller,
-            backgroundColor: model.background ?? themeData.backgroundColor,
+            backgroundColor: model.background ?? Theme.of(context).backgroundColor,
           ),
         ),
       ),

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
 import 'package:flutter_client/src/components/table/table_size.dart';
@@ -146,7 +145,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
       return table;
     }
 
-    Widget headerRow = buildHeaderRow();
+    Widget headerRow = buildHeaderRow(pContext);
 
     return LayoutBuilder(
       builder: ((context, constraints) {
@@ -169,16 +168,16 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
   }
 
   /// The item builder of the scrollable positioned list.
-  Widget itemBuilder(BuildContext? pContext, int pIndex) {
+  Widget itemBuilder(BuildContext pContext, int pIndex) {
     int index = pIndex;
     if (buildHeadersInList) {
       index--;
       if (pIndex == 0) {
-        return buildHeaderRow();
+        return buildHeaderRow(pContext);
       }
     }
 
-    return buildDataRow(index);
+    return buildDataRow(index, pContext);
   }
 
   /// How many items the scrollable list should build.
@@ -193,7 +192,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
   }
 
   /// Builds a data row.
-  Widget buildDataRow(int pIndex) {
+  Widget buildDataRow(int pIndex, BuildContext context) {
     List<dynamic> data = chunkData.data[pIndex]!;
 
     List<Widget> rowWidgets = [];
@@ -263,11 +262,12 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
         child: Container(
           height: tableSize.rowHeight,
           decoration: BoxDecoration(
-            color:
-                pIndex == selectedRow ? Colors.blue.withOpacity(opacity) : themeData.primaryColor.withOpacity(opacity),
+            color: pIndex == selectedRow
+                ? Colors.blue.withOpacity(opacity)
+                : Theme.of(context).primaryColor.withOpacity(opacity),
             border: Border(
               bottom: BorderSide(
-                color: themeData.primaryColor,
+                color: Theme.of(context).primaryColor,
                 width: 1.0,
               ),
             ),
@@ -280,7 +280,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
     );
   }
 
-  Widget buildHeaderRow() {
+  Widget buildHeaderRow(BuildContext context) {
     List<Widget> rowWidgets = [];
 
     for (String columnName in model.columnNames) {
@@ -310,7 +310,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
 
     Widget header = Container(
       decoration: BoxDecoration(
-        color: themeData.backgroundColor,
+        color: Theme.of(context).backgroundColor,
         border: const Border(
           bottom: BorderSide(color: Colors.black),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mask/login/arc_clipper.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
@@ -16,7 +15,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   final Widget loginCard;
 
   Color? topColor;
-  Color? botColor;
+  Color? bottomColor;
   Color? backgroundColor;
   String? loginLogo;
   String? loginBackground;
@@ -41,15 +40,15 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
     inverseColor = ParseUtil.parseBool(configService.getAppStyle()?['login.inverseColor']) ?? false;
 
     if (inverseColor) {
-      topColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.botColor']);
-      botColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.topColor']);
+      topColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.bottomColor']);
+      bottomColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.topColor']);
     } else {
       topColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.topColor']);
-      botColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.botColor']);
+      bottomColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.bottomColor']);
     }
 
     return (Scaffold(
-      backgroundColor: botColor ?? Colors.white,
+      backgroundColor: bottomColor ?? Colors.white,
       body: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -61,17 +60,17 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
                   clipper: ArcClipper(),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: topColor ?? themeData.primaryColor,
+                      color: topColor ?? Theme.of(context).primaryColor,
                     ),
-                    child: loginLogo != null ? ImageLoader.loadImage(loginLogo!, fit: BoxFit.contain) : null,
+                    child: loginLogo != null ? ImageLoader.loadImage(loginLogo!, fit: BoxFit.scaleDown) : null,
                   ),
                 ),
                 flex: 4,
               ),
               Expanded(
                 child: Container(
-                  child: loginBackground != null ? ImageLoader.loadImage(loginBackground!, fit: BoxFit.none) : null,
-                  color: botColor ?? Colors.transparent,
+                  child: loginBackground != null ? ImageLoader.loadImage(loginBackground!, fit: BoxFit.fill) : null,
+                  color: bottomColor ?? Colors.transparent,
                 ),
                 flex: 6,
               ),

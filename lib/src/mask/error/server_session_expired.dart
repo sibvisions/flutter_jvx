@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
@@ -24,7 +23,7 @@ class ServerSessionExpired extends StatelessWidget with UiServiceMixin, ConfigSe
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: themeData.cardColor.withAlpha(255),
+      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
       title: Text(configService.translateText("SESSION EXPIRED")),
       content: Text(message),
       actions: [

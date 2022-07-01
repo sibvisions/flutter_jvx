@@ -100,6 +100,7 @@ class _MyAppState extends State<MyApp> {
       ));
     }
     //When setting new Theme on poor performance devices, setState gets called before context can be resolved --> Workaround for this case
+    //TODO find a better solution
     Future.delayed(const Duration(seconds: 1), () => setState(() {}));
   }
 }

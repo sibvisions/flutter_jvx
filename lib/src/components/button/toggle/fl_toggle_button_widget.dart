@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../main.dart';
 import '../../../../util/constants/i_color.dart';
 import '../../../model/component/button/fl_toggle_button_model.dart';
 import '../../../model/layout/alignments.dart';
@@ -29,16 +28,16 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
         decoration: getBoxDecoration(context),
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       ),
-      style: getButtonStyle(),
+      style: getButtonStyle(context),
     );
   }
 
   @override
-  ButtonStyle getButtonStyle() {
+  ButtonStyle getButtonStyle(context) {
     return ButtonStyle(
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
       backgroundColor: model.selected
-          ? MaterialStateProperty.all(IColor.toggleColor(model.background ?? themeData.primaryColor))
+          ? MaterialStateProperty.all(IColor.toggleColor(model.background ?? Theme.of(context).primaryColor))
           : model.background != null
               ? MaterialStateProperty.all(model.background)
               : null,

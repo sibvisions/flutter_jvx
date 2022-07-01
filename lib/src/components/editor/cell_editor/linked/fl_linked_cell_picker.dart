@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/components/table/fl_table_widget.dart';
 import 'package:flutter_client/src/components/table/table_size.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
@@ -57,7 +56,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = themeData;
+    ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
 
     return Dialog(
@@ -76,7 +75,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                  color: themeData.primaryColor,
+                  color: Theme.of(context).primaryColor,
                   borderRadius: const BorderRadius.only(topLeft: Radius.circular(5.0), topRight: Radius.circular(5.0))),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
@@ -96,7 +95,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                   maxLines: 1,
                   keyboardType: TextInputType.text,
                   onChanged: startTimerValueChanged,
-                  style: TextStyle(fontSize: 14.0, color: themeData.colorScheme.onPrimary),
+                  style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
                   decoration: InputDecoration(
                       hintStyle: const TextStyle(color: Colors.green),
                       labelText: configService.translateText("Search"),

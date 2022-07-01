@@ -53,7 +53,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     return ElevatedButton(
       onPressed: getOnPressed(),
       child: createDirectButtonChild(context),
-      style: getButtonStyle(),
+      style: getButtonStyle(context),
     );
   }
 
@@ -145,7 +145,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   /// Gets the button style.
-  ButtonStyle getButtonStyle() {
+  ButtonStyle getButtonStyle(context) {
     return ButtonStyle(
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
       backgroundColor: model.background != null ? MaterialStateProperty.all(model.background) : null,

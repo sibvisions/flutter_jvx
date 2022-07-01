@@ -1,6 +1,5 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
@@ -88,7 +87,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
         body: Scaffold(
           appBar: widget.header,
           bottomNavigationBar: widget.footer,
-          backgroundColor: themeData.backgroundColor,
+          backgroundColor: Theme.of(context).backgroundColor,
           body: LayoutBuilder(builder: (context, constraints) {
             final viewInsets = EdgeInsets.fromWindowPadding(
               WidgetsBinding.instance!.window.viewInsets,

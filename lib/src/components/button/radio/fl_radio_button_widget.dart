@@ -41,7 +41,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   }
 
   @override
-  ButtonStyle getButtonStyle() {
+  ButtonStyle getButtonStyle(context) {
     return ButtonStyle(
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
       backgroundColor: MaterialStateProperty.all(model.background ?? Colors.transparent),

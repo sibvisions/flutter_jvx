@@ -34,7 +34,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: themeData.backgroundColor.withOpacity(opacitySideMenu),
+      backgroundColor: Theme.of(context).backgroundColor.withOpacity(opacitySideMenu),
       child: Column(
         children: [
           _buildDrawerHeader(context),
@@ -52,7 +52,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
       margin: EdgeInsets.zero,
-      decoration: BoxDecoration(color: themeData.primaryColor.withOpacity(opacitySideMenu)),
+      decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(opacitySideMenu)),
       child: Row(
         children: [
           Expanded(
@@ -60,11 +60,11 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeaderText(flex: 7, text: configService.getAppName()),
+                _buildHeaderText(flex: 7, text: configService.getAppName(), context: context),
                 const Padding(padding: EdgeInsets.all(4)),
-                _buildHeaderText(flex: 3, text: configService.translateText("Logged in as: ")),
+                _buildHeaderText(flex: 3, text: configService.translateText("Logged in as: "), context: context),
                 const Padding(padding: EdgeInsets.all(10)),
-                _buildHeaderText(flex: 5, text: configService.getUserInfo()?.displayName ?? ""),
+                _buildHeaderText(flex: 5, text: configService.getUserInfo()?.displayName ?? "", context: context),
                 const Expanded(flex: 2, child: Text(""))
               ],
             ),
@@ -77,12 +77,12 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
               children: [
                 Expanded(
                   child: CircleAvatar(
-                    backgroundColor: themeData.backgroundColor,
+                    backgroundColor: Theme.of(context).backgroundColor,
                     backgroundImage: configService.getUserInfo()?.profileImage?.image,
                     child: configService.getUserInfo()?.profileImage == null
                         ? FaIcon(
                             FontAwesomeIcons.solidUser,
-                            color: themeData.primaryColor,
+                            color: Theme.of(context).primaryColor,
                             size: 36,
                           )
                         : null,
@@ -107,7 +107,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   List<Widget> _buildDrawerFooter(BuildContext context) {
     return [
       Divider(
-        color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -118,7 +118,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         onTap: () => uiService.routeToSettings(),
       ),
       Divider(
-        color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -135,7 +135,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         },
       ),
       Divider(
-        color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -151,14 +151,18 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   /// Build a text used in the header of the drawer.
   /// Flex value changes size according to all other header texts(Expanded).
   /// Text will size itself to fill available space(Fitted-Box).
-  Widget _buildHeaderText({required int flex, required String text}) {
+  Widget _buildHeaderText({
+    required int flex,
+    required String text,
+    required BuildContext context,
+  }) {
     return Expanded(
       flex: flex,
       child: FittedBox(
         child: Text(
           text,
           style: TextStyle(
-              color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu), fontWeight: FontWeight.bold),
+              color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu), fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -172,12 +176,12 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
     required VoidCallback onTap,
   }) {
     return ListTile(
-      tileColor: themeData.primaryColor.withOpacity(opacitySideMenu),
-      textColor: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
+      tileColor: Theme.of(context).primaryColor.withOpacity(opacitySideMenu),
+      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
       onTap: onTap,
       leading: FaIcon(
         leadingIcon,
-        color: themeData.colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
       ),
       title: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );

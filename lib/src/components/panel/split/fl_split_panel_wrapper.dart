@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../../layout/split_layout.dart';
@@ -83,7 +82,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
           onHorizontalDragUpdate: model.orientation == SPLIT_ORIENTATION.VERTICAL ? _horizontalDrag : null,
           onHorizontalDragEnd: model.orientation == SPLIT_ORIENTATION.VERTICAL ? _horizontalDragEnd : null,
           child: Container(
-            color: themeData.backgroundColor,
+            color: Theme.of(context).backgroundColor,
             child: Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5.0),

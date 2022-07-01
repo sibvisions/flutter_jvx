@@ -40,7 +40,7 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceMixin {
         onClick(componentId: menuItemModel.screenId);
       },
       child: Container(
-        color: themeData.primaryColor.withOpacity(opacityMenu),
+        color: Theme.of(context).primaryColor.withOpacity(opacityMenu),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

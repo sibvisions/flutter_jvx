@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/close_frame_command.dart';
@@ -33,7 +32,7 @@ class ServerDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMix
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: themeData.cardColor.withAlpha(255),
+      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
       title: Text(configService.translateText("MESSAGE")),
       content: Text(message),
       actions: [
@@ -49,7 +48,8 @@ class ServerDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMix
   }
 
   _closeScreen(BuildContext context) {
-    CloseFrameCommand closeScreenCommand = CloseFrameCommand(frameName: messageScreenName, reason: "Message Dialog was dismissed");
+    CloseFrameCommand closeScreenCommand =
+        CloseFrameCommand(frameName: messageScreenName, reason: "Message Dialog was dismissed");
     uiService.sendCommand(closeScreenCommand);
 
     Navigator.of(context).pop();

@@ -1,6 +1,5 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
@@ -36,7 +35,7 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServic
           children: [
             Text(
               configService.translateText("Please enter Email"),
-              style: themeData.textTheme.headline5,
+              style: Theme.of(context).textTheme.headline5,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(

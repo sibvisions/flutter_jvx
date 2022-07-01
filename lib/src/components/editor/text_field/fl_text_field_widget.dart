@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_client/main.dart';
 
 import '../../../../util/constants/i_color.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -76,7 +75,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         hintText: model.placeholder,
         contentPadding: textPadding,
         border: const OutlineInputBorder(),
-        enabledBorder: createBorder(),
+        enabledBorder: createBorder(context),
         suffixIcon: createSuffixIcon(),
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
@@ -118,6 +117,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         child: GestureDetector(
           onTap: () {
             if (focusNode.hasFocus) {
+              textController.clear();
               valueChanged("");
             } else {
               endEditing("");
@@ -159,14 +159,15 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     );
   }
 
-  OutlineInputBorder createBorder() {
+  OutlineInputBorder createBorder(context) {
     if (inTable) {
       return const OutlineInputBorder(
         borderSide: BorderSide(color: Colors.transparent),
       );
     }
     return OutlineInputBorder(
-      borderSide: BorderSide(color: model.isEnabled ? themeData.primaryColor : IColorConstants.COMPONENT_DISABLED),
+      borderSide:
+          BorderSide(color: model.isEnabled ? Theme.of(context).primaryColor : IColorConstants.COMPONENT_DISABLED),
     );
   }
 }

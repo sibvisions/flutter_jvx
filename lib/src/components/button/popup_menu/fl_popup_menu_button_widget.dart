@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../model/component/button/fl_popup_menu_button_model.dart';
@@ -47,7 +46,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
       padding: const EdgeInsets.only(bottom: 8),
       icon: FaIcon(
         FontAwesomeIcons.sortDown,
-        color: themeData.buttonTheme.colorScheme?.onPrimary,
+        color: Theme.of(context).buttonTheme.colorScheme?.onPrimary,
       ),
     );
   }

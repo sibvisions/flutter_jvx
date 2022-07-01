@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 
 import '../../model/component/dummy/fl_dummy_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
@@ -16,8 +15,9 @@ class FlDummyWidget extends FlStatelessWidget<FlDummyModel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color:
-          kDebugMode ? Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0) : themeData.backgroundColor,
+      color: kDebugMode
+          ? Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0)
+          : Theme.of(context).backgroundColor,
       child: Text(
         "Dummy for ${model.id}",
         textAlign: TextAlign.end,

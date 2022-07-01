@@ -1,6 +1,5 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/login_command.dart';
@@ -42,7 +41,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, Con
           children: [
             Text(
               configService.translateText("Welcome"),
-              style: themeData.textTheme.headline5,
+              style: Theme.of(context).textTheme.headline5,
             ),
             Text(
               configService.translateText("Please enter and confirm the new password"),
