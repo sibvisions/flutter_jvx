@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mask/drawer/drawer_menu.dart';
 import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_grouped.dart';
@@ -23,22 +21,7 @@ typedef MenuFactory = Widget Function({required MenuModel menuModel, required Bu
 
 /// Menu Widget - will display menu items accordingly to the menu mode set in
 /// [IConfigService]
-class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  late final Map<MENU_MODE, MenuFactory> menuFactory = {
-    MENU_MODE.GRID_GROUPED: _getGroupedGridMenu,
-    MENU_MODE.GRID: _getGridMenuUngrouped,
-    MENU_MODE.LIST: _getListMenuUngrouped,
-    MENU_MODE.TABS: _getTabMenu
-  };
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+class AppMenu extends StatefulWidget with UiServiceMixin {
   /// Menu model, contains all menuGroups and items
   late final MenuModel menuModel;
 
@@ -52,14 +35,25 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
     menuModel = uiService.getMenuModel();
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  @override
+  State<AppMenu> createState() => _AppMenuState();
+}
 
+class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMixin {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  late final Map<MENU_MODE, MenuFactory> menuFactory = {
+    MENU_MODE.GRID_GROUPED: _getGroupedGridMenu,
+    MENU_MODE.GRID: _getGridMenuUngrouped,
+    MENU_MODE.LIST: _getListMenuUngrouped,
+    MENU_MODE.TABS: _getTabMenu
+  };
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
-    log("setting Route Context from Menu");
-    uiService.setRouteContext(pContext: context);
+    if (mounted) {
+      uiService.setRouteContext(pContext: context);
+    }
 
     return Scaffold(
         endDrawerEnableOpenDragGesture: false,
@@ -69,8 +63,9 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
           centerTitle: false,
           actions: [
             Builder(
-              builder: (context) =>
-                  IconButton(onPressed: () => Scaffold.of(context).openEndDrawer(), icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
+              builder: (context) => IconButton(
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
             ),
           ],
         ),
@@ -78,9 +73,6 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   void menuItemPressed({required String componentId}) {
     CustomScreen? customScreen = uiService.getCustomScreen(pScreenName: componentId);
 
@@ -97,9 +89,9 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
     MenuFactory? menuBuilder = menuFactory[menuMode];
 
     if (menuBuilder != null) {
-      return menuBuilder(menuModel: menuModel, onClick: menuItemPressed);
+      return menuBuilder(menuModel: widget.menuModel, onClick: menuItemPressed);
     } else {
-      return _getGroupedGridMenu(menuModel: menuModel, onClick: menuItemPressed);
+      return _getGroupedGridMenu(menuModel: widget.menuModel, onClick: menuItemPressed);
     }
   }
 

@@ -15,7 +15,9 @@ class MenuLocation extends BeamLocation<BeamState> with UiServiceGetterMixin, Co
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    getUiService().setRouteContext(pContext: context);
+    if (mounted) {
+      getUiService().setRouteContext(pContext: context);
+    }
 
     DefaultLoadingProgressHandler? loadingProgressHandler = (getICommandService() as CommandService)
         .progressHandler

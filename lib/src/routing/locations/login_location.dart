@@ -16,7 +16,11 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     Map<String, String?>? dataMap = data as Map<String, String?>?;
-    getUiService().setRouteContext(pContext: context);
+
+    if (mounted) {
+      getUiService().setRouteContext(pContext: context);
+    }
+
     return [
       BeamPage(
         child: AppLogin(loginCard: LoginCard()),
@@ -46,5 +50,6 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
   }
 
   @override
-  List<Pattern> get pathPatterns => ["/login/manual", "/login/lostPassword", "/login/changeOneTimePassword", "/login/changePassword"];
+  List<Pattern> get pathPatterns =>
+      ["/login/manual", "/login/lostPassword", "/login/changeOneTimePassword", "/login/changePassword"];
 }

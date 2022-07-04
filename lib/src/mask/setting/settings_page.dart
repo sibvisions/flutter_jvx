@@ -97,7 +97,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
   @override
   Widget build(BuildContext context) {
-    uiService.setRouteContext(pContext: context);
+    if (mounted) {
+      uiService.setRouteContext(pContext: context);
+    }
+
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Theme.of(context).backgroundColor,
