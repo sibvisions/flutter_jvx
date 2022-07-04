@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mask/camera/qr_parser.dart';
 import 'package:flutter_client/src/mask/camera/qr_scanner_mask.dart';
 import 'package:flutter_client/src/mask/setting/widgets/editor/app_name_editor.dart';
@@ -174,7 +175,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     SettingItem appNameSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.server,
-        color: Theme.of(context).primaryColor,
+        color: themeData.primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: appNameNotifier,
@@ -187,7 +188,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
           pEditor: editor,
           pTitleIcon: FaIcon(
             FontAwesomeIcons.server,
-            color: Theme.of(context).primaryColor,
+            color: themeData.primaryColor,
           ),
           pTitleText: configService.translateText("App Name"),
         ).then((value) {
@@ -202,7 +203,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     SettingItem baseUrlSetting = SettingItem(
         frontIcon: FaIcon(
           FontAwesomeIcons.globe,
-          color: Theme.of(context).primaryColor,
+          color: themeData.primaryColor,
         ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
         value: baseUrlNotifier,
@@ -215,7 +216,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
             pEditor: editor,
             pTitleIcon: FaIcon(
               FontAwesomeIcons.globe,
-              color: Theme.of(context).primaryColor,
+              color: themeData.primaryColor,
             ),
             pTitleText: configService.translateText("URL"),
           ).then((value) {
@@ -238,7 +239,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     SettingItem languageSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.language,
-        color: Theme.of(context).primaryColor,
+        color: themeData.primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: languageNotifier,
@@ -253,14 +254,14 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
               languageNotifier.value = picker.getSelectedValues()[0];
               configService.setLanguage(picker.getSelectedValues()[0]);
             });
-        picker.showModal(context, themeData: Theme.of(context));
+        picker.showModal(context, themeData: themeData);
       },
     );
 
     SettingItem pictureSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.image,
-        color: Theme.of(context).primaryColor,
+        color: themeData.primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: pictureSizeNotifier,
@@ -283,7 +284,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
               print(size.toString());
               //TODO Set the Size
             });
-        picker.showModal(context, themeData: Theme.of(context));
+        picker.showModal(context, themeData: themeData);
       },
     );
 

@@ -74,9 +74,10 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
             child: GestureDetector(
               onTap: () => _onBackTab(context),
               onDoubleTap: () => _onDoubleTab(context),
-              child: const CircleAvatar(
-                backgroundColor: Colors.green,
-                child: FaIcon(FontAwesomeIcons.arrowLeft),
+              child: CircleAvatar(
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                backgroundColor: Theme.of(context).primaryColor,
+                child: const FaIcon(FontAwesomeIcons.arrowLeft),
               ),
             ),
           ),
