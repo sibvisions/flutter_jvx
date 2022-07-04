@@ -8,7 +8,7 @@ import 'package:flutter_client/util/extensions/list_extensions.dart';
 import 'package:flutter_client/util/loading_handler/loading_progress.dart';
 
 /// Displays all possible screens of the menu
-class MenuLocation extends BeamLocation<BeamState> with UiServiceGetterMixin, CommandServiceMixin {
+class MenuLocation extends BeamLocation<BeamState> with UiServiceGetterMixin, CommandServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +17,7 @@ class MenuLocation extends BeamLocation<BeamState> with UiServiceGetterMixin, Co
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     getUiService().setRouteContext(pContext: context);
 
-    DefaultLoadingProgressHandler? loadingProgressHandler = (commandService as CommandService)
+    DefaultLoadingProgressHandler? loadingProgressHandler = (getICommandService() as CommandService)
         .progressHandler
         .firstWhereOrNull((element) => element is DefaultLoadingProgressHandler) as DefaultLoadingProgressHandler?;
     loadingProgressHandler?.isEnabled = true;
