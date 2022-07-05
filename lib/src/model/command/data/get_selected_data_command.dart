@@ -33,6 +33,6 @@ class GetSelectedDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => "IMPLEMENT GET_DATA LOG";
+  String get logString =>
+      "GetSelectedDataCommand: dataProvider: $dataProvider, subId: $subId, columnNames: $columnNames, reason: $reason";
 }

@@ -22,6 +22,5 @@ class SaveApplicationStyleCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "SaveApplicationStyleCommand: style: $style, reason: $reason";
 }

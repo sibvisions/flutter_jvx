@@ -22,6 +22,5 @@ class SaveApplicationTranslationCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "SaveApplicationTranslationCommand: translations: $translations, reason: $reason";
 }

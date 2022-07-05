@@ -31,6 +31,5 @@ class ChangePasswordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "ChangePasswordCommand: username: $username, reason: $reason";
 }

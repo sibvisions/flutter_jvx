@@ -22,6 +22,5 @@ class OpenTabCommand extends ApiCommand {
   }) : super(reason: reason);
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "OpenTabCommand: componentName: $componentName, index: $index,  reason: $reason";
 }

@@ -34,6 +34,6 @@ class DeleteRecordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "DeleteRecordCommand: dataProvider: $dataProvider, selectedRow: $selectedRow, fetch: $fetch, filter: $filter, reason: $reason";
 }

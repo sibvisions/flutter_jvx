@@ -2,7 +2,6 @@ import 'package:flutter_client/src/model/command/ui/ui_command.dart';
 
 /// Opens a dialog, telling the user that the session has expired
 class OpenSessionExpiredDialogCommand extends UiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +15,7 @@ class OpenSessionExpiredDialogCommand extends UiCommand {
 
   OpenSessionExpiredDialogCommand({
     required this.message,
-    required String reason
+    required String reason,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +23,5 @@ class OpenSessionExpiredDialogCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
-
+  String get logString => "OpenSessionExpiredDialogCommand: message: $message, reason: $reason";
 }

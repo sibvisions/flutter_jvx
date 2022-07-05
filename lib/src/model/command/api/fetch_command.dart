@@ -33,6 +33,6 @@ class FetchCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "FetchCommand: fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, includeMetaData: $includeMetaData, columnNames: $columnNames, reason: $reason";
 }

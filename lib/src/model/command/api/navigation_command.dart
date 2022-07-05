@@ -26,6 +26,5 @@ class NavigationCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "NavigationCommand: openscreen: $openScreen, reason: $reason";
 }

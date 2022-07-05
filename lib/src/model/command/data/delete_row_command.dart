@@ -30,6 +30,6 @@ class DeleteRowCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "DeleteRowCommand: dataProvider: $dataProvider, deletedRow: $deletedRow, newSelectedRow: $newSelectedRow, reason: $reason";
 }

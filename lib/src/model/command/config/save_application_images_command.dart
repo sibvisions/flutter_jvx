@@ -22,6 +22,5 @@ class SaveApplicationImagesCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "SaveApplicationImagesCommand: images: $images, reason: $reason";
 }

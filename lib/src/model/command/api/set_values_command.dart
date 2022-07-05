@@ -42,6 +42,6 @@ class SetValuesCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "SetValuesCommand: componentId: $componentId, dataProvider: $dataProvider, columnNames: $columnNames, values: $values, reason: $reason";
 }

@@ -14,6 +14,5 @@ class DownloadStyleCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "DownloadStyleCommand: reason: $reason";
 }

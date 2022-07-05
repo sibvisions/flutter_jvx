@@ -4,13 +4,13 @@ import 'api_command.dart';
 
 /// Command to set off remote request [ApiSetValueRequest] from components
 class SetValueCommand extends ApiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Name of the component from which the value is set
   final String componentName;
+
   /// Value to be set
   final dynamic value;
 
@@ -21,7 +21,7 @@ class SetValueCommand extends ApiCommand {
   SetValueCommand({
     required this.componentName,
     required this.value,
-    required String reason
+    required String reason,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,6 +29,5 @@ class SetValueCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "SetValueCommand: componentName: $componentName, value: $value,   reason: $reason";
 }

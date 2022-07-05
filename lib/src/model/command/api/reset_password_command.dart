@@ -1,9 +1,7 @@
 import 'package:flutter_client/src/model/command/api/api_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
 
 /// Command to reset the password of the current user
 class ResetPasswordCommand extends ApiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +14,7 @@ class ResetPasswordCommand extends ApiCommand {
 
   ResetPasswordCommand({
     required String reason,
-    required this.identifier
+    required this.identifier,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +22,5 @@ class ResetPasswordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
-
+  String get logString => "ResetPasswordCommand: identifier: $identifier, reason: $reason";
 }

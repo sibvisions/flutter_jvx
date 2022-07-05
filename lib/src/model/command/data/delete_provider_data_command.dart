@@ -35,6 +35,6 @@ class DeleteProviderDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "DeleteProviderDataCommand: dataProvider: $dataProvider, deleteAll: $deleteAll, fromIndex: $fromIndex, toIndex: $toIndex, reason: $reason";
 }

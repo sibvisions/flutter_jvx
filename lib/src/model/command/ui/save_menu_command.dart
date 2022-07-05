@@ -4,7 +4,6 @@ import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 
 /// Command to save the given menu in the [IUiService]
 class SaveMenuCommand extends UiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +17,7 @@ class SaveMenuCommand extends UiCommand {
 
   SaveMenuCommand({
     required this.menuModel,
-    required String reason
+    required String reason,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +25,5 @@ class SaveMenuCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
-
+  String get logString => "SaveMenuCommand: menuModel: $menuModel, reason: $reason";
 }

@@ -3,7 +3,6 @@ import 'package:flutter_client/src/model/command/ui/ui_command.dart';
 /// Will Route to menu, may be ignored if other commands in a batch take routing
 /// priority.
 class RouteToMenuCommand extends UiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +16,7 @@ class RouteToMenuCommand extends UiCommand {
 
   RouteToMenuCommand({
     this.replaceRoute = false,
-    required String reason
+    required String reason,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,7 +24,5 @@ class RouteToMenuCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
-
+  String get logString => "RouteToMenuCommand: replaceRoute: $replaceRoute, reason: $reason";
 }

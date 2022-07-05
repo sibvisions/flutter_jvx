@@ -5,9 +5,11 @@ class SaveFetchDataCommand extends DataCommand {
   /// Server response
   final DalFetchResponse response;
 
-  SaveFetchDataCommand({required this.response, required String reason}) : super(reason: reason);
+  SaveFetchDataCommand({
+    required this.response,
+    required String reason,
+  }) : super(reason: reason);
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "SaveFetchDataCommand: response: $response, reason: $reason";
 }

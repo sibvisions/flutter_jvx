@@ -27,6 +27,5 @@ class GetMetaDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "GetDataChunkCommand: dataProvider: $dataProvider, subId: $subId, reason: $reason";
 }

@@ -3,7 +3,6 @@ import 'package:flutter_client/src/model/config/user/user_info.dart';
 
 /// Command to save userData
 class SaveUserDataCommand extends ConfigCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +16,7 @@ class SaveUserDataCommand extends ConfigCommand {
 
   SaveUserDataCommand({
     required this.userInfo,
-    required String reason
+    required String reason,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,7 +24,5 @@ class SaveUserDataCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
-
+  String get logString => "SaveUserDataCommand: userInfo: $userInfo, reason: $reason";
 }

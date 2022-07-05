@@ -24,6 +24,5 @@ class InsertRecordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "InsertRecordCommand: dataProvider: $dataProvider, reason: $reason";
 }

@@ -22,6 +22,5 @@ class CloseTabCommand extends ApiCommand {
   }) : super(reason: reason);
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "CloseTabCommand: componentName: $componentName, index: $index, reason: $reason";
 }

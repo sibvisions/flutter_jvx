@@ -1,22 +1,24 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingItem extends StatelessWidget {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Icon displayed at the front
   final FaIcon? frontIcon;
+
   /// Icon displayed at the end
   final FaIcon? endIcon;
+
   /// Title of the setting
   final String title;
+
   /// Value to be displayed
   final ValueListenable<String> value;
+
   /// Will be called when item was pressed
   final VoidCallback? onPressed;
 
@@ -24,14 +26,8 @@ class SettingItem extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const SettingItem({
-    Key? key,
-    required this.value,
-    required this.title,
-    this.frontIcon,
-    this.endIcon,
-    this.onPressed
-  }) : super(key: key);
+  const SettingItem({Key? key, required this.value, required this.title, this.frontIcon, this.endIcon, this.onPressed})
+      : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -54,6 +50,5 @@ class SettingItem extends StatelessWidget {
         onTap: onPressed,
       ),
     );
-
   }
 }

@@ -27,6 +27,6 @@ class OpenMessageDialogCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "OpenMessageDialogCommand: message: $message, messageScreenName: $messageScreenName, reason: $reason";
 }

@@ -18,6 +18,5 @@ class SaveAuthKeyCommand extends ConfigCommand {
   }) : super(reason: reason);
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "SaveAuthKeyCommand: authKey: $authKey, reason: $reason";
 }

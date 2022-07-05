@@ -22,6 +22,5 @@ class RouteToWorkCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "RouteToWorkCommand: screenName: $screenName, reason: $reason";
 }

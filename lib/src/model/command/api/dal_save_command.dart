@@ -24,6 +24,5 @@ class DalSaveCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "DalSaveCommand: dataProvider: $dataProvider, onlySelected: $onlySelected, reason: $reason";
 }

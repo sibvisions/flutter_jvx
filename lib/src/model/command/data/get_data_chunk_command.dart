@@ -44,6 +44,6 @@ class GetDataChunkCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "GetDataChunkCommand: dataProvider: $dataProvider, from: $from, subId: $subId, isUpdate: $isUpdate, to: $to, dataColumns: $dataColumns,  reason: $reason";
 }

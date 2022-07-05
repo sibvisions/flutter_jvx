@@ -27,6 +27,5 @@ class OpenErrorDialogCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "OpenErrorDialogCommand: message: $message, isTimeout: $isTimeout, reason: $reason";
 }

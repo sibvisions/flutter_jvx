@@ -6,7 +6,6 @@ import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate
 
 /// Used to send [IApiRequest] to the APIs isolate to be executed
 class ApiIsolateRequestMessage extends ApiIsolateMessage<List<BaseCommand>> {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,11 +17,8 @@ class ApiIsolateRequestMessage extends ApiIsolateMessage<List<BaseCommand>> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiIsolateRequestMessage({
-    required this.request
-  });
+  ApiIsolateRequestMessage({required this.request});
 
-  @override
   sendResponse({required List<BaseCommand> pResponse, required SendPort pSendPort}) {
     pSendPort.send(pResponse);
   }

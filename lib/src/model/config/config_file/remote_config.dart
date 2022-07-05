@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter_client/src/model/config/api/url_config.dart';
 
 class RemoteConfig {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,9 +18,9 @@ class RemoteConfig {
     required this.devUrlConfigs,
   });
 
-  RemoteConfig.fromJson({required Map<String, dynamic> json}) :
-    indexOfUsingUrlConfig = json["indexOfUsingUrlConfig"] ?? 0,
-    devUrlConfigs = json["devUrlConfigs"] != null ? parseUrlConfigsFromJson(json: json["devUrlConfigs"]) : null;
+  RemoteConfig.fromJson({required Map<String, dynamic> json})
+      : indexOfUsingUrlConfig = json["indexOfUsingUrlConfig"] ?? 0,
+        devUrlConfigs = json["devUrlConfigs"] != null ? parseUrlConfigsFromJson(json: json["devUrlConfigs"]) : null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -32,5 +29,4 @@ class RemoteConfig {
   static List<UrlConfig> parseUrlConfigsFromJson({required List<dynamic> json}) {
     return json.map((e) => UrlConfig.fromJson(json: e)).toList();
   }
-
 }

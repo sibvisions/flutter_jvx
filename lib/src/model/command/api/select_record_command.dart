@@ -36,6 +36,6 @@ class SelectRecordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "SelectRecordCommand: dataProvider: $dataProvider, slectedRecord: $selectedRecord, reload: $reload, fetch: $fetch, filter: $filter,  reason: $reason";
 }

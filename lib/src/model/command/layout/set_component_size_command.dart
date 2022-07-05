@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'layout_command.dart';
 
 class SetComponentSizeCommand extends LayoutCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,6 +28,5 @@ class SetComponentSizeCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "SetComponentSizeCommand: componentId: $componentId, size: $size, reason: $reason";
 }

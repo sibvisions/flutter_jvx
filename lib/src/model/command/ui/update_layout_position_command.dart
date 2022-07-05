@@ -11,6 +11,5 @@ class UpdateLayoutPositionCommand extends UiCommand {
   }) : super(reason: reason);
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "UpdateLayoutPositionCommand: layoutDataList: $layoutDataList, reason: $reason";
 }

@@ -3,7 +3,6 @@ import 'package:flutter_client/src/mask/menu/app_menu.dart';
 import 'package:flutter_client/src/mask/menu/grid/widget/app_menu_grid_item.dart';
 import 'package:flutter_client/src/model/menu/menu_group_model.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/util/font_awesome_util.dart';
 
 class AppMenuTab extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,8 +17,7 @@ class AppMenuTab extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuTab({required this.menuModel, required this.onClick, Key? key})
-      : super(key: key);
+  const AppMenuTab({required this.menuModel, required this.onClick, Key? key}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -34,9 +32,7 @@ class AppMenuTab extends StatelessWidget {
             tabs: menuModel.menuGroups.map((e) => Tab(text: e.name)).toList(),
           ),
           body: TabBarView(
-            children: menuModel.menuGroups
-                .map((e) => _getMenuGrid(model: e))
-                .toList(),
+            children: menuModel.menuGroups.map((e) => _getMenuGrid(model: e)).toList(),
           ),
         ));
   }
@@ -55,9 +51,7 @@ class AppMenuTab extends StatelessWidget {
               crossAxisSpacing: 5,
             ),
             delegate: SliverChildListDelegate.fixed(
-              model.items
-                  .map((e) => AppMenuGridItem(menuItemModel: e, onClick: onClick))
-                  .toList(),
+              model.items.map((e) => AppMenuGridItem(menuItemModel: e, onClick: onClick)).toList(),
             )),
       ],
     );

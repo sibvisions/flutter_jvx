@@ -22,6 +22,5 @@ class CloseFrameCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "CloseFrameCommand: frameName: $frameName, reason: $reason";
 }

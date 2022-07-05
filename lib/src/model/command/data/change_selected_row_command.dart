@@ -26,6 +26,6 @@ class ChangeSelectedRowCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString =>
+      "ChangeSelectedRowCommand: dataProvider: $dataProvider, newSelectedRow: $newSelectedRow, reason: $reason";
 }

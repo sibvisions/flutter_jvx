@@ -20,6 +20,5 @@ class SaveMetaDataCommand extends DataCommand {
   }) : super(reason: reason);
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "SaveMetaDataCommand: response: $response, reason: $reason";
 }
