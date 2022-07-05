@@ -13,6 +13,7 @@ import 'package:flutter_client/src/model/command/api/set_api_config_command.dart
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/model/config/api/url_config.dart';
+import 'package:flutter_client/src/routing/locations/setting_location.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -97,7 +98,12 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
   @override
   Widget build(BuildContext context) {
-    if (mounted) {
+    //If the style changes, for unknown reasons to us, this page gets built when calling
+    //setState directly in the changeStyle method of main.dart.
+    //A delayed future solved it, but it only happened on some devices.
+    //This is the only widget not having a working "mounted" state for route context.
+    //TODO investigate low prio
+    if (mounted && context.currentBeamLocation.runtimeType == SettingLocation) {
       uiService.setRouteContext(pContext: context);
     }
 

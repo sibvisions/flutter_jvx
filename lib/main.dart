@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
@@ -42,6 +43,8 @@ class _MyAppState extends State<MyApp> {
   late BeamerDelegate _routerDelegate;
   @override
   void initState() {
+    super.initState();
+
     WidgetsFlutterBinding.ensureInitialized();
     _routerDelegate = BeamerDelegate(
       initialPath: "/splash",
@@ -55,14 +58,14 @@ class _MyAppState extends State<MyApp> {
         ],
       ),
     );
-
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     //_routerDelegate.setNewRoutePath(const RouteInformation(location: "/splash"));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    log(_routerDelegate.currentPages.length.toString());
     return MaterialApp.router(
       theme: themeData,
       routeInformationParser: BeamerParser(),
@@ -72,7 +75,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<void> changeStyle(Map<String, String> styleMap) async {
+  void changeStyle(Map<String, String> styleMap) {
     opacityMenu = double.parse(styleMap['opacity.menu'] ?? '1');
     opacitySideMenu = double.parse(styleMap['opacity.sidemenu'] ?? '1');
 
@@ -99,9 +102,8 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.grey.shade200,
       ));
     }
-    //When setting new Theme on poor performance devices, setState gets called before context can be resolved --> Workaround for this case
-    //TODO find a better solution
-    Future.delayed(const Duration(seconds: 1), () => setState(() {}));
+
+    setState(() {});
   }
 }
 

@@ -28,10 +28,11 @@ class SplashLocation extends BeamLocation<BeamState> {
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     return [
       BeamPage(
-          child: SplashWidget(
-        languageCallbacks: languageCallbacks,
-        styleCallbacks: styleCallbacks,
-      )),
+        child: SplashWidget(
+          languageCallbacks: languageCallbacks,
+          styleCallbacks: styleCallbacks,
+        ),
+      ),
     ];
   }
 
