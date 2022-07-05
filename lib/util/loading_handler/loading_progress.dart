@@ -2,19 +2,20 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/api/change_password_command.dart';
-import 'package:flutter_client/src/model/command/api/device_status_command.dart';
-import 'package:flutter_client/src/model/command/api/download_images_command.dart';
-import 'package:flutter_client/src/model/command/api/download_style_command.dart';
-import 'package:flutter_client/src/model/command/api/download_translation_command.dart';
-import 'package:flutter_client/src/model/command/api/login_command.dart';
-import 'package:flutter_client/src/model/command/api/logout_command.dart';
-import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
-import 'package:flutter_client/src/model/command/api/startup_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/service.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
-import 'package:flutter_client/util/loading_handler/i_command_progress_handler.dart';
+
+import '../../src/model/command/api/api_command.dart';
+import '../../src/model/command/api/delete_record_command.dart';
+import '../../src/model/command/api/fetch_command.dart';
+import '../../src/model/command/api/filter_command.dart';
+import '../../src/model/command/api/insert_record_command.dart';
+import '../../src/model/command/api/press_button_command.dart';
+import '../../src/model/command/api/select_record_command.dart';
+import '../../src/model/command/api/set_value_command.dart';
+import '../../src/model/command/api/set_values_command.dart';
+import '../../src/model/command/base_command.dart';
+import '../../src/service/service.dart';
+import '../../src/service/ui/i_ui_service.dart';
+import 'i_command_progress_handler.dart';
 
 /// The [DefaultLoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
 class DefaultLoadingProgressHandler implements ICommandProgressHandler {
@@ -41,6 +42,7 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   @override
   void notifyCommandProgressStart(BaseCommand pCommand) async {
     if (isSupported(pCommand)) {
+      log("Start: ${pCommand.runtimeType} + ${pCommand.hashCode}");
       Duration duration = durationForCommand(pCommand);
       _commandTimerMap[pCommand] = Timer(duration, _showLoadingProgress);
     }
@@ -50,10 +52,9 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   void notifyCommandProgressEnd(BaseCommand pCommand) async {
     Timer? timer = _commandTimerMap.remove(pCommand);
     if (timer != null) {
-      log("found timer");
+      log("End: ${pCommand.runtimeType} + ${pCommand.hashCode}");
       if (timer.isActive) {
         timer.cancel();
-        log("cancel timer");
       } else {
         _closeLoadingProgress();
       }
@@ -65,13 +66,12 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _showLoadingProgress() {
+    log("showLoadingProgress | $_loadingCommandAmount");
     if (_loadingCommandAmount == 0) {
-      log("showLoadingProgress | $_loadingCommandAmount");
       services<IUiService>().openDialog(
         pDialogWidget: _createLoadingProgressIndicator(),
         pIsDismissible: false,
         pContextCallback: (context) {
-          log("set context | $_loadingCommandAmount");
           if (_loadingCommandAmount == 0) {
             Navigator.pop(context);
           } else {
@@ -85,9 +85,8 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
 
   void _closeLoadingProgress() {
     _loadingCommandAmount--;
+    log("closeLoadingProgress | $_loadingCommandAmount");
     if (_loadingCommandAmount == 0 && _dialogContext != null) {
-      log("closeLoadingProgress | $_loadingCommandAmount");
-
       Navigator.pop(_dialogContext!);
       _dialogContext = null;
     }
@@ -116,19 +115,31 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
       return false;
     }
 
-    if (pCommand is StartupCommand ||
-        pCommand is LoginCommand ||
-        pCommand is LogoutCommand ||
-        pCommand is ChangePasswordCommand ||
-        pCommand is DeviceStatusCommand ||
-        pCommand is DownloadImagesCommand ||
-        pCommand is DownloadStyleCommand ||
-        pCommand is DownloadTranslationCommand ||
-        pCommand is ResetPasswordCommand) {
-      return false;
+    if (pCommand is ApiCommand) {
+      // if (pCommand is StartupCommand ||
+      //     pCommand is LoginCommand ||
+      //     pCommand is LogoutCommand ||
+      //     pCommand is ChangePasswordCommand ||
+      //     pCommand is DeviceStatusCommand ||
+      //     pCommand is DownloadImagesCommand ||
+      //     pCommand is DownloadStyleCommand ||
+      //     pCommand is DownloadTranslationCommand ||
+      //     pCommand is ResetPasswordCommand) {
+      //   return false;
+      // }
+      if (pCommand is DeleteRecordCommand ||
+          pCommand is FetchCommand ||
+          pCommand is FilterCommand ||
+          pCommand is InsertRecordCommand ||
+          pCommand is PressButtonCommand ||
+          pCommand is SelectRecordCommand ||
+          pCommand is SetValueCommand ||
+          pCommand is SetValuesCommand) {
+        return true;
+      }
     }
 
-    return true;
+    return false;
   }
 
   Duration durationForCommand(BaseCommand pCommand) {
