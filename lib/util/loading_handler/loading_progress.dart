@@ -54,7 +54,6 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
       _commandTimerMap[pCommand] = Timer(pCommand.loadingDelay, () {
         if (_commandTimerMap[pCommand] != null) {
           _showLoadingProgress(pCommand);
-          log("Timer activated: ${pCommand.runtimeType} + ${pCommand.hashCode}");
         }
       });
     }
