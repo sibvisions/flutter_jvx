@@ -42,4 +42,7 @@ abstract class BaseCommand {
 
   /// Returns a string to be used for potential logging outputs.
   String get logString;
+
+  /// Returns the delay until the loading progress gets shown.
+  Duration get loadingDelay => const Duration(milliseconds: 250);
 }

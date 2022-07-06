@@ -45,7 +45,6 @@ class GetDataChunkCommandProcessor
     );
 
     List<BaseCommand> commands = await apiService.sendRequest(request: request);
-    commands.add(command);
 
     return commands;
   }

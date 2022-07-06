@@ -2,16 +2,22 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/command/api/change_password_command.dart';
+import 'package:flutter_client/src/model/command/api/device_status_command.dart';
+import 'package:flutter_client/src/model/command/api/download_images_command.dart';
+import 'package:flutter_client/src/model/command/api/download_style_command.dart';
+import 'package:flutter_client/src/model/command/api/download_translation_command.dart';
+import 'package:flutter_client/src/model/command/api/login_command.dart';
+import 'package:flutter_client/src/model/command/api/logout_command.dart';
+import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
+import 'package:flutter_client/src/model/command/api/startup_command.dart';
+import 'package:flutter_client/src/model/command/config/config_command.dart';
+import 'package:flutter_client/src/model/command/data/data_command.dart';
+import 'package:flutter_client/src/model/command/layout/layout_command.dart';
+import 'package:flutter_client/src/model/command/ui/ui_command.dart';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../src/model/command/api/api_command.dart';
-import '../../src/model/command/api/delete_record_command.dart';
-import '../../src/model/command/api/fetch_command.dart';
-import '../../src/model/command/api/filter_command.dart';
-import '../../src/model/command/api/insert_record_command.dart';
-import '../../src/model/command/api/press_button_command.dart';
-import '../../src/model/command/api/select_record_command.dart';
-import '../../src/model/command/api/set_value_command.dart';
-import '../../src/model/command/api/set_values_command.dart';
 import '../../src/model/command/base_command.dart';
 import '../../src/service/service.dart';
 import '../../src/service/ui/i_ui_service.dart';
@@ -42,9 +48,15 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   @override
   void notifyCommandProgressStart(BaseCommand pCommand) async {
     if (isSupported(pCommand)) {
-      log("Start: ${pCommand.runtimeType} + ${pCommand.hashCode}");
-      Duration duration = durationForCommand(pCommand);
-      _commandTimerMap[pCommand] = Timer(duration, _showLoadingProgress);
+      LOGGER.logD(
+          pType: LOG_TYPE.COMMAND,
+          pMessage: "notifyCommandProgressStart: ${pCommand.runtimeType} + ${pCommand.hashCode}");
+      _commandTimerMap[pCommand] = Timer(pCommand.loadingDelay, () {
+        if (_commandTimerMap[pCommand] != null) {
+          _showLoadingProgress(pCommand);
+          log("Timer activated: ${pCommand.runtimeType} + ${pCommand.hashCode}");
+        }
+      });
     }
   }
 
@@ -52,11 +64,11 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   void notifyCommandProgressEnd(BaseCommand pCommand) async {
     Timer? timer = _commandTimerMap.remove(pCommand);
     if (timer != null) {
-      log("End: ${pCommand.runtimeType} + ${pCommand.hashCode}");
       if (timer.isActive) {
         timer.cancel();
+        LOGGER.logD(pType: LOG_TYPE.COMMAND, pMessage: "Timer cancel: ${pCommand.runtimeType} + ${pCommand.hashCode}");
       } else {
-        _closeLoadingProgress();
+        _closeLoadingProgress(pCommand);
       }
     }
   }
@@ -65,15 +77,26 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _showLoadingProgress() {
-    log("showLoadingProgress | $_loadingCommandAmount");
+  void _showLoadingProgress(BaseCommand pCommand) {
+    if (_commandTimerMap[pCommand] == null) {
+      return;
+    }
+
+    LOGGER.logD(
+      pType: LOG_TYPE.COMMAND,
+      pMessage: "showLoadingProgress | $_loadingCommandAmount | ${pCommand.runtimeType} + ${pCommand.hashCode}",
+    );
     if (_loadingCommandAmount == 0) {
       services<IUiService>().openDialog(
         pDialogWidget: _createLoadingProgressIndicator(),
         pIsDismissible: false,
         pContextCallback: (context) {
           if (_loadingCommandAmount == 0) {
-            Navigator.pop(context);
+            try {
+              Navigator.pop(context);
+            } catch (exception) {
+              log(exception.toString());
+            }
           } else {
             _dialogContext = context;
           }
@@ -83,9 +106,12 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
     _loadingCommandAmount++;
   }
 
-  void _closeLoadingProgress() {
+  void _closeLoadingProgress(BaseCommand pCommand) {
     _loadingCommandAmount--;
-    log("closeLoadingProgress | $_loadingCommandAmount");
+    LOGGER.logD(
+      pType: LOG_TYPE.COMMAND,
+      pMessage: "closeLoadingProgress | $_loadingCommandAmount |  ${pCommand.runtimeType} + ${pCommand.hashCode}",
+    );
     if (_loadingCommandAmount == 0 && _dialogContext != null) {
       Navigator.pop(_dialogContext!);
       _dialogContext = null;
@@ -115,34 +141,47 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
       return false;
     }
 
-    if (pCommand is ApiCommand) {
-      // if (pCommand is StartupCommand ||
-      //     pCommand is LoginCommand ||
-      //     pCommand is LogoutCommand ||
-      //     pCommand is ChangePasswordCommand ||
-      //     pCommand is DeviceStatusCommand ||
-      //     pCommand is DownloadImagesCommand ||
-      //     pCommand is DownloadStyleCommand ||
-      //     pCommand is DownloadTranslationCommand ||
-      //     pCommand is ResetPasswordCommand) {
-      //   return false;
-      // }
-      if (pCommand is DeleteRecordCommand ||
-          pCommand is FetchCommand ||
-          pCommand is FilterCommand ||
-          pCommand is InsertRecordCommand ||
-          pCommand is PressButtonCommand ||
-          pCommand is SelectRecordCommand ||
-          pCommand is SetValueCommand ||
-          pCommand is SetValuesCommand) {
-        return true;
-      }
+    if (pCommand is LayoutCommand) {
+      return false;
     }
 
-    return false;
-  }
+    if (pCommand is ConfigCommand) {
+      return false;
+    }
 
-  Duration durationForCommand(BaseCommand pCommand) {
-    return const Duration(milliseconds: 250);
+    if (pCommand is UiCommand) {
+      return false;
+    }
+
+    if (pCommand is DataCommand) {
+      return true;
+    }
+
+    if (pCommand is ApiCommand) {
+      if (pCommand is StartupCommand ||
+          pCommand is LoginCommand ||
+          pCommand is LogoutCommand ||
+          pCommand is ChangePasswordCommand ||
+          pCommand is DeviceStatusCommand ||
+          pCommand is DownloadImagesCommand ||
+          pCommand is DownloadStyleCommand ||
+          pCommand is DownloadTranslationCommand ||
+          pCommand is ResetPasswordCommand) {
+        return false;
+      }
+      // if (pCommand is DeleteRecordCommand ||
+      //     pCommand is FetchCommand ||
+      //     pCommand is FilterCommand ||
+      //     pCommand is InsertRecordCommand ||
+      //     pCommand is PressButtonCommand ||
+      //     pCommand is SelectRecordCommand ||
+      //     pCommand is SetValueCommand ||
+      //     pCommand is SetValuesCommand) {
+      //   return true;
+      // }
+      return true;
+    }
+
+    return true;
   }
 }
