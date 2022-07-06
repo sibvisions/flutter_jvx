@@ -3,6 +3,7 @@ import 'package:flutter_client/src/mask/menu/app_menu.dart';
 import 'package:flutter_client/src/mask/menu/grid/widget/app_menu_grid_item.dart';
 import 'package:flutter_client/src/model/menu/menu_item_model.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
+import 'package:flutter_client/util/image/image_loader.dart';
 
 class AppMenuGridUnGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,11 +16,23 @@ class AppMenuGridUnGroup extends StatelessWidget {
   /// Callback when a button was pressed
   final ButtonCallback onClick;
 
+  ///ImageString of Background Image if Set
+  final String? backgroundImageString;
+
+  ///Background Color if Set
+  final Color? backgroundColor;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuGridUnGroup({Key? key, required this.menuModel, required this.onClick}) : super(key: key);
+  const AppMenuGridUnGroup({
+    Key? key,
+    required this.menuModel,
+    required this.onClick,
+    this.backgroundImageString,
+    this.backgroundColor,
+  }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -27,16 +40,26 @@ class AppMenuGridUnGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(slivers: [
-      SliverGrid(
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          mainAxisSpacing: 1,
-          crossAxisSpacing: 1,
+    return Stack(children: [
+      SizedBox.expand(
+        child: Container(
+          child: Center(
+            child: backgroundImageString != null ? ImageLoader.loadImage(backgroundImageString!) : null,
+          ),
+          color: backgroundColor,
         ),
-        delegate: SliverChildListDelegate.fixed(
-            _getAllMenuItems().map((e) => AppMenuGridItem(onClick: onClick, menuItemModel: e)).toList()),
       ),
+      CustomScrollView(slivers: [
+        SliverGrid(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 200,
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
+          ),
+          delegate: SliverChildListDelegate.fixed(
+              _getAllMenuItems().map((e) => AppMenuGridItem(onClick: onClick, menuItemModel: e)).toList()),
+        ),
+      ]),
     ]);
   }
 

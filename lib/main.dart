@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
@@ -16,6 +15,7 @@ void main() {
   runApp(const MyApp());
 }
 
+//Mobile Style Properties
 double opacityMenu = 1;
 double opacitySideMenu = 1;
 
@@ -65,7 +65,6 @@ class _MyAppState extends State<MyApp> {
     //_routerDelegate.setNewRoutePath(const RouteInformation(location: "/splash"));
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-    log(_routerDelegate.currentPages.length.toString());
     return MaterialApp.router(
       theme: themeData,
       routeInformationParser: BeamerParser(),
@@ -102,7 +101,6 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.grey.shade200,
       ));
     }
-
     setState(() {});
   }
 }

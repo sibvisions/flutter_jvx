@@ -25,7 +25,7 @@ class MenuLocation extends BeamLocation<BeamState> with UiServiceGetterMixin, Co
     loadingProgressHandler?.isEnabled = true;
 
     return [
-      BeamPage(child: AppMenu(), key: const ValueKey("menu")),
+      BeamPage(child: AppMenu(), key: UniqueKey()),
     ];
   }
 

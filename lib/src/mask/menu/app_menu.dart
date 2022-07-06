@@ -7,6 +7,7 @@ import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/model/custom/custom_screen.dart';
 import 'package:flutter_client/src/service/config/i_config_service.dart';
+import 'package:flutter_client/util/parse_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../mixin/ui_service_mixin.dart';
@@ -17,7 +18,12 @@ import 'list/app_menu_list_ungroup.dart';
 typedef ButtonCallback = void Function({required String componentId});
 
 /// Used for menuFactory map
-typedef MenuFactory = Widget Function({required MenuModel menuModel, required ButtonCallback onClick});
+typedef MenuFactory = Widget Function({
+  required MenuModel menuModel,
+  required ButtonCallback onClick,
+  Color? menuBackgroundColor,
+  String? backgroundImageString,
+});
 
 /// Menu Widget - will display menu items accordingly to the menu mode set in
 /// [IConfigService]
@@ -56,20 +62,22 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
     }
 
     return Scaffold(
-        endDrawerEnableOpenDragGesture: false,
-        endDrawer: DrawerMenu(),
-        appBar: AppBar(
-          title: Text(configService.translateText("Menu")),
-          centerTitle: false,
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                  onPressed: () => Scaffold.of(context).openEndDrawer(),
-                  icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
+      endDrawerEnableOpenDragGesture: false,
+      endDrawer: DrawerMenu(),
+      appBar: AppBar(
+        title: Text(configService.translateText("Menu")),
+        centerTitle: false,
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+              icon: const FaIcon(FontAwesomeIcons.ellipsisV),
             ),
-          ],
-        ),
-        body: _getMenu());
+          ),
+        ],
+      ),
+      body: _getMenu(),
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,26 +96,79 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
     MENU_MODE menuMode = configService.getMenuMode();
     MenuFactory? menuBuilder = menuFactory[menuMode];
 
+    Color? menuBackgroundColor = ParseUtil.parseHexColor(configService.getAppStyle()?['desktop.color']);
+    String? menuBackgroundImage = configService.getAppStyle()?['desktop.icon'];
+
     if (menuBuilder != null) {
-      return menuBuilder(menuModel: widget.menuModel, onClick: menuItemPressed);
+      return menuBuilder(
+        menuModel: widget.menuModel,
+        onClick: menuItemPressed,
+        backgroundImageString: menuBackgroundImage,
+        menuBackgroundColor: menuBackgroundColor,
+      );
     } else {
-      return _getGroupedGridMenu(menuModel: widget.menuModel, onClick: menuItemPressed);
+      return _getGroupedGridMenu(
+        menuModel: widget.menuModel,
+        onClick: menuItemPressed,
+        menuBackgroundColor: menuBackgroundColor,
+        backgroundImageString: menuBackgroundImage,
+      );
     }
   }
 
-  Widget _getGroupedGridMenu({required MenuModel menuModel, required ButtonCallback onClick}) {
-    return AppMenuGridGrouped(onClick: onClick, menuModel: menuModel);
+  Widget _getGroupedGridMenu({
+    required MenuModel menuModel,
+    required ButtonCallback onClick,
+    Color? menuBackgroundColor,
+    String? backgroundImageString,
+  }) {
+    return AppMenuGridGrouped(
+      onClick: onClick,
+      menuModel: menuModel,
+      backgroundColor: menuBackgroundColor,
+      backgroundImageString: backgroundImageString,
+    );
   }
 
-  Widget _getGridMenuUngrouped({required MenuModel menuModel, required ButtonCallback onClick}) {
-    return AppMenuGridUnGroup(menuModel: menuModel, onClick: onClick);
+  Widget _getGridMenuUngrouped({
+    required MenuModel menuModel,
+    required ButtonCallback onClick,
+    Color? menuBackgroundColor,
+    String? backgroundImageString,
+  }) {
+    return AppMenuGridUnGroup(
+      menuModel: menuModel,
+      onClick: onClick,
+      backgroundColor: menuBackgroundColor,
+      backgroundImageString: backgroundImageString,
+    );
   }
 
-  Widget _getListMenuUngrouped({required MenuModel menuModel, required ButtonCallback onClick}) {
-    return AppMenuListUngroup(menuModel: menuModel, onClick: onClick);
+  Widget _getListMenuUngrouped({
+    required MenuModel menuModel,
+    required ButtonCallback onClick,
+    Color? menuBackgroundColor,
+    String? backgroundImageString,
+  }) {
+    return AppMenuListUngroup(
+      menuModel: menuModel,
+      onClick: onClick,
+      backgroundColor: menuBackgroundColor,
+      backgroundImageString: backgroundImageString,
+    );
   }
 
-  Widget _getTabMenu({required MenuModel menuModel, required ButtonCallback onClick}) {
-    return AppMenuTab(menuModel: menuModel, onClick: onClick);
+  Widget _getTabMenu({
+    required MenuModel menuModel,
+    required ButtonCallback onClick,
+    Color? menuBackgroundColor,
+    String? backgroundImageString,
+  }) {
+    return AppMenuTab(
+      menuModel: menuModel,
+      onClick: onClick,
+      backgroundColor: menuBackgroundColor,
+      backgroundImageString: backgroundImageString,
+    );
   }
 }

@@ -85,7 +85,6 @@ abstract class ModelFactory {
       case FlComponentClassname.EDITOR:
         return FlEditorModel();
 
-      alsoDefault:
       default:
         return FlDummyModel();
     }

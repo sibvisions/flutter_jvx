@@ -141,13 +141,20 @@ class UiService with CommandServiceMixin implements IUiService {
     required Widget pDialogWidget,
     required bool pIsDismissible,
     Function(BuildContext context)? pContextCallback,
+    Locale? pLocale,
   }) {
     return showDialog(
         context: _currentBuildContext!,
         barrierDismissible: pIsDismissible,
         builder: (BuildContext context) {
           pContextCallback?.call(context);
-          return pDialogWidget;
+          Widget child = pDialogWidget;
+
+          if (pLocale != null) {
+            child = Localizations.override(context: context, child: child, locale: pLocale);
+          }
+
+          return child;
         });
   }
 

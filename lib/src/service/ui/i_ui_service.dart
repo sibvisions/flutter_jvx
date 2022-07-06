@@ -71,6 +71,7 @@ abstract class IUiService {
     required Widget pDialogWidget,
     required bool pIsDismissible,
     Function(BuildContext context)? pContextCallback,
+    Locale? pLocale,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

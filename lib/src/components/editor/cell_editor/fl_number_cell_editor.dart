@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
 import '../../../model/component/editor/cell_editor/fl_number_cell_editor_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -7,7 +8,7 @@ import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
+class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,13 +111,13 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   void _recreateNumericFormatter() {
-    // TODO locale
     numberFormatter = NumericTextFormatter(
       numberFormat: model.numberFormat,
       length: _columnDefinition?.length,
       precision: _columnDefinition?.precision,
       scale: _columnDefinition?.scale,
       signed: _columnDefinition?.signed,
+      locale: configService.getLanguage(),
     );
   }
 

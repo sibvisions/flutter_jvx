@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
@@ -9,7 +10,7 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../i_cell_editor.dart';
 import 'fl_date_editor_widget.dart';
 
-class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
+class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,11 +109,14 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
     bool cancelled = false;
     dynamic originalValue = _value;
 
+    Locale locale = Locale.fromSubtags(languageCode: configService.getLanguage());
+
     uiService
         .openDialog(
+            pLocale: locale,
             pDialogWidget: DatePickerDialog(
               initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
-              firstDate: DateTime(1970),
+              firstDate: DateTime(1900),
               lastDate: DateTime(2100),
             ),
             pIsDismissible: true)
@@ -154,13 +158,13 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
         .openDialog(
             pDialogWidget: DatePickerDialog(
               initialDate: DateTime.fromMillisecondsSinceEpoch(_value),
-              firstDate: DateTime(1970),
-              lastDate: DateTime(2100),
+              firstDate: DateTime.fromMillisecondsSinceEpoch(_value).subtract(const Duration(days: 36525)),
+              lastDate: DateTime.fromMillisecondsSinceEpoch(_value).add(const Duration(days: 36525)),
             ),
             pIsDismissible: true)
         .then((value) {
       if (value != null) {
-        _setDatePart(value ?? DateTime(1970));
+        _setDatePart(value ?? DateTime.fromMillisecondsSinceEpoch(_value));
         onEndEditing(_value);
       }
     });
