@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/model/component/component_subscription.dart';
 
 import '../../../util/logging/flutter_logger.dart';
@@ -15,7 +16,8 @@ import 'base_comp_wrapper_widget.dart';
 /// Model and layout init
 /// Subscription handling in UiService
 /// Getters for componentSize
-abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget> with UiServiceMixin {
+abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget>
+    with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,7 +103,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       left: getLeftForPositioned(),
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
-      child: child,
+      child: Opacity(opacity: opacityControls, child: child),
     );
   }
 
@@ -154,14 +156,18 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
       // Constraint by width
       if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-        double newHeight = (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionWidth)).ceilToDouble();
+        double newHeight = (lastContext!.findRenderObject() as RenderBox)
+            .getMaxIntrinsicHeight(max(0.0, positionWidth))
+            .ceilToDouble();
 
         layoutData.widthConstrains[positionWidth] = newHeight;
       }
 
       // Constraint by height
       if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-        double? newWidth = (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionHeight)).ceilToDouble();
+        double? newWidth = (lastContext!.findRenderObject() as RenderBox)
+            .getMaxIntrinsicWidth(max(0.0, positionHeight))
+            .ceilToDouble();
 
         layoutData.heightConstrains[positionHeight] = newWidth;
       }

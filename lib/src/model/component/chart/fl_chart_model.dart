@@ -20,7 +20,7 @@ class FlChartModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlChartModel() : super() {
-    preferredSize = const Size(300, 300);
+    preferredSize = const Size(100, 100);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

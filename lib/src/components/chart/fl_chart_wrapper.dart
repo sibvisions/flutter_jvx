@@ -1,8 +1,8 @@
+import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/chart/fl_chart_widget.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/component/chart/fl_chart_model.dart';
@@ -76,28 +76,25 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
     return [model.xColumnName, ...model.yColumnNames];
   }
 
-  List<ChartSeries> getChartSeries() {
+  List<Series<dynamic, num>> getChartSeries() {
     if (_chunkData == null) {
       return [];
     }
 
     DataChunk chunkData = _chunkData!;
 
-    List<ChartSeries> seriesList = [];
+    List<Series<dynamic, num>> seriesList = [];
     int xColumnIndex = chunkData.columnDefinitions.indexWhere((element) => element.name == model.xColumnName);
 
     for (String column in model.yColumnNames) {
       int yColumnIndex = chunkData.columnDefinitions.indexWhere((element) => element.name == column);
 
       seriesList.add(
-        AreaSeries<dynamic, num>(
-          opacity: 0.5,
-          dataSource: chunkData.data.keys.toList(),
-          xValueMapper: (_, index) => chunkData.data[index]![xColumnIndex],
-          yValueMapper: (_, index) => chunkData.data[index]![yColumnIndex],
-          legendItemText: model.yColumnLabels[model.yColumnNames.indexOf(column)],
-          xAxisName: model.xAxisTitle,
-          yAxisName: model.yAxisTitle,
+        Series<dynamic, num>(
+          id: model.name,
+          data: chunkData.data.keys.toList(),
+          domainFn: (_, index) => chunkData.data[index]![xColumnIndex],
+          measureFn: (_, index) => chunkData.data[index]![yColumnIndex],
         ),
       );
     }

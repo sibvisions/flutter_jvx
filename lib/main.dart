@@ -20,6 +20,7 @@ void main() {
 //Mobile Style Properties
 double opacityMenu = 1;
 double opacitySideMenu = 1;
+double opacityControls = 1;
 
 ThemeData themeData = ThemeData.from(
   colorScheme: ColorScheme.fromSwatch(
@@ -92,6 +93,7 @@ class _MyAppState extends State<MyApp> {
   void changeStyle(Map<String, String> styleMap) {
     opacityMenu = double.parse(styleMap['opacity.menu'] ?? '1');
     opacitySideMenu = double.parse(styleMap['opacity.sidemenu'] ?? '1');
+    opacityControls = double.parse(styleMap['opacity.controls'] ?? '1');
 
     Color? styleColor = ParseUtil.parseHexColor(styleMap['theme.color']);
     if (styleColor != null) {

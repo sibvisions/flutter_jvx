@@ -51,6 +51,8 @@ dependencies:
   signature: ^5.0.1
   flutter_picker: ^2.0.3
   linked_scroll_controller: ^0.2.0
+  charts_flutter: ^0.12.0
+  gauges: ^1.0.0
 
 flutter:
   assets:

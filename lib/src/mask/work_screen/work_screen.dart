@@ -1,13 +1,16 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
 import 'package:flutter_client/src/model/command/api/close_screen_command.dart';
 import 'package:flutter_client/src/model/command/api/navigation_command.dart';
 import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
 import 'package:flutter_client/src/model/command/storage/delete_screen_command.dart';
+import 'package:flutter_client/util/image/image_loader.dart';
 import 'package:flutter_client/util/misc/debouncer.dart';
+import 'package:flutter_client/util/parse_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../model/command/api/device_status_command.dart';
@@ -53,7 +56,7 @@ class WorkScreen extends StatefulWidget {
   State<WorkScreen> createState() => _WorkScreenState();
 }
 
-class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
+class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServiceMixin {
   /// Debounce re-layouts if keyboard opens.
   final Debounce debounce = Debounce(delay: const Duration(milliseconds: 500));
 
@@ -64,6 +67,8 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
     if (mounted) {
       uiService.setRouteContext(pContext: context);
     }
+    Color? backgroundColor = ParseUtil.parseHexColor(configService.getAppStyle()?['desktop.color']);
+    String? backgroundImageString = configService.getAppStyle()?['desktop.icon'];
 
     return GestureDetector(
       onTap: () {
@@ -90,33 +95,46 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
         body: Scaffold(
           appBar: widget.header,
           bottomNavigationBar: widget.footer,
-          backgroundColor: Theme.of(context).backgroundColor,
-          body: LayoutBuilder(builder: (context, constraints) {
-            final viewInsets = EdgeInsets.fromWindowPadding(
-              WidgetsBinding.instance!.window.viewInsets,
-              WidgetsBinding.instance!.window.devicePixelRatio,
-            );
+          backgroundColor: Colors.transparent,
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final viewInsets = EdgeInsets.fromWindowPadding(
+                WidgetsBinding.instance!.window.viewInsets,
+                WidgetsBinding.instance!.window.devicePixelRatio,
+              );
 
-            if (!widget.isCustomScreen) {
-              // debounce to not re-layout multiple times when opening the keyboard
-              debounce.call(() {
-                _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
-                _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
-              });
-            }
-            return SingleChildScrollView(
-              physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
-              child: Stack(
+              if (!widget.isCustomScreen) {
+                // debounce to not re-layout multiple times when opening the keyboard
+                debounce.call(() {
+                  _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+                  _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+                });
+              }
+              return Stack(
                 children: [
-                  SizedBox(
-                    height: constraints.maxHeight + viewInsets.bottom,
-                    width: constraints.maxWidth,
+                  SingleChildScrollView(
+                    physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: constraints.maxHeight + viewInsets.bottom,
+                          width: constraints.maxWidth,
+                          child: backgroundImageString != null
+                              ? ImageLoader.loadImage(
+                                  backgroundImageString,
+                                  fit: BoxFit.scaleDown,
+                                )
+                              : null,
+                          color: backgroundColor,
+                        ),
+                        widget.screenWidget
+                      ],
+                    ),
                   ),
-                  widget.screenWidget
                 ],
-              ),
-            );
-          }),
+              );
+            },
+          ),
           //resizeToAvoidBottomInset: false,
         ),
       ),
