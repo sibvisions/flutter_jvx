@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/main.dart';
@@ -290,7 +292,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
               if (value.isNotEmpty) {
                 size = picker.getSelectedValues()[0];
               }
-              print(size.toString());
+              log(size.toString());
               //TODO Set the Size
             });
         picker.showModal(context, themeData: themeData);
