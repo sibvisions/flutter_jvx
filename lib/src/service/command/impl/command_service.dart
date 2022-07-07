@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
@@ -74,87 +75,42 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> sendCommand(BaseCommand command) async {
-    List<BaseCommand> commands = [];
-
+  Future<void> sendCommand(BaseCommand pCommand) async {
     // Same Command cant  be added twice, a previously added command will end up here when its called
-    if (command is ApiCommand && !_apiCommandsQueue.contains(command)) {
-      _apiCommandsQueue.add(command);
+    if (pCommand is ApiCommand && !_apiCommandsQueue.contains(pCommand)) {
+      _apiCommandsQueue.add(pCommand);
       // If there is already a command in queue don't execute it
       if (_apiCommandsQueue.length > 1) {
-        return [];
+        return;
       }
     }
-    progressHandler.forEach((element) => element.notifyCommandProgressStart(command));
+    progressHandler.forEach((element) => element.notifyCommandProgressStart(pCommand));
 
     try {
-      // Switch-Case doesn't work with types
-      try {
-        if (command is ApiCommand) {
-          commands = await _apiProcessor.processCommand(command);
-        } else if (command is ConfigCommand) {
-          commands = await _configProcessor.processCommand(command);
-        } else if (command is StorageCommand) {
-          commands = await _storageProcessor.processCommand(command);
-        } else if (command is UiCommand) {
-          commands = await _uiProcessor.processCommand(command);
-        } else if (command is LayoutCommand) {
-          commands = await _layoutProcessor.processCommand(command);
-        } else if (command is DataCommand) {
-          commands = await _dataProcessor.processCommand(command);
-        } else {
-          LOGGER.logW(
-            pType: LOG_TYPE.COMMAND,
-            pMessage: "Command (${command.runtimeType}) without Processor found",
-          );
-          return [];
-        }
-      } catch (error, stacktrace) {
-        LOGGER.logE(
-          pType: LOG_TYPE.COMMAND,
-          pMessage: "Error processing (${command.runtimeType}): ${error.toString()}",
-          pStacktrace: stacktrace,
-        );
+      await processCommand(pCommand);
+    } catch (error, stacktrace) {
+      LOGGER.logE(
+        pType: LOG_TYPE.COMMAND,
+        pMessage: "Error processing (${pCommand.runtimeType}): ${error.toString()}",
+        pStacktrace: stacktrace,
+      );
+
+      if (pCommand is OpenScreenCommand) {
+        rethrow;
       }
-
-      // Executes Commands resulting from incoming command.
-      // Call routing commands last, all other actions must take priority.
-
-      // Isolate possible route commands
-      var routeCommands = commands
-          .where((element) =>
-              element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
-          .toList();
-
-      var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
-      // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));
-
-      // When all commands are finished execute routing commands sorted by priority
-      await _waitTillFinished(pCommands: nonRouteCommands).then((_) {
-        if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
-          // Don't route if there is a server error
-        } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
-          sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
-        } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-          sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
-        } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-          sendCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
-        }
-      });
     } finally {
-      command.callback?.call();
-      progressHandler.forEach((element) => element.notifyCommandProgressEnd(command));
-    }
+      pCommand.callback?.call();
+      progressHandler.forEach((element) => element.notifyCommandProgressEnd(pCommand));
 
-    if (command is ApiCommand) {
-      // Remove current command after execution is complete
-      // and call the next one in queue
-      _apiCommandsQueue.remove(command);
-      if (_apiCommandsQueue.isNotEmpty) {
-        sendCommand(_apiCommandsQueue.first);
+      if (pCommand is ApiCommand) {
+        // Remove current command after execution is complete
+        // and call the next one in queue
+        _apiCommandsQueue.remove(pCommand);
+        if (_apiCommandsQueue.isNotEmpty) {
+          await sendCommand(_apiCommandsQueue.first);
+        }
       }
     }
-    return commands;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -165,7 +121,68 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   _waitTillFinished({required List<BaseCommand> pCommands}) async {
     // Execute incoming commands
     for (BaseCommand command in pCommands) {
-      await sendCommand(command);
+      await processCommand(command);
+    }
+  }
+
+  processCommand(BaseCommand pCommand) async {
+    List<BaseCommand> commands = [];
+    // Switch-Case doesn't work with types
+    if (pCommand is ApiCommand) {
+      commands = await _apiProcessor.processCommand(pCommand);
+    } else if (pCommand is ConfigCommand) {
+      commands = await _configProcessor.processCommand(pCommand);
+    } else if (pCommand is StorageCommand) {
+      commands = await _storageProcessor.processCommand(pCommand);
+    } else if (pCommand is UiCommand) {
+      commands = await _uiProcessor.processCommand(pCommand);
+    } else if (pCommand is LayoutCommand) {
+      commands = await _layoutProcessor.processCommand(pCommand);
+    } else if (pCommand is DataCommand) {
+      commands = await _dataProcessor.processCommand(pCommand);
+    } else {
+      LOGGER.logW(
+        pType: LOG_TYPE.COMMAND,
+        pMessage: "Command (${pCommand.runtimeType}) without Processor found",
+      );
+      return [];
+    }
+
+    // Executes Commands resulting from incoming command.
+    // Call routing commands last, all other actions must take priority.
+
+    // Isolate possible route commands
+    var routeCommands = commands
+        .where((element) =>
+            element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
+        .toList();
+
+    var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
+    // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));
+
+    Object? exceptionObject;
+    // When all commands are finished execute routing commands sorted by priority
+    await _waitTillFinished(pCommands: nonRouteCommands).then(
+      (_) async {
+        try {
+          // Ignored value
+          if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+            // Don't route if there is a server error
+          } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
+            await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+          } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
+            await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+          } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
+            await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+          }
+        } catch (exception) {
+          exceptionObject = exception;
+        }
+      },
+    );
+
+    if (exceptionObject != null) {
+      throw exceptionObject!;
     }
   }
 }

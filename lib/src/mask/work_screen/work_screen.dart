@@ -4,13 +4,13 @@ import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
 import 'package:flutter_client/src/model/command/api/close_screen_command.dart';
+import 'package:flutter_client/src/model/command/api/navigation_command.dart';
 import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
 import 'package:flutter_client/src/model/command/storage/delete_screen_command.dart';
 import 'package:flutter_client/util/misc/debouncer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../model/command/api/device_status_command.dart';
-import '../../model/command/api/navigation_command.dart';
 import '../drawer/drawer_menu.dart';
 
 /// Screen used to show workScreens either custom or from the server,
@@ -56,6 +56,8 @@ class WorkScreen extends StatefulWidget {
 class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
   /// Debounce re-layouts if keyboard opens.
   final Debounce debounce = Debounce(delay: const Duration(milliseconds: 500));
+
+  FocusNode? currentObjectFocused;
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +159,21 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
   }
 
   _onBackTab(BuildContext context) {
+    currentObjectFocused = FocusManager.instance.primaryFocus;
+    if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
+      _navigateBack();
+    } else {
+      currentObjectFocused!.addListener(_navigateBack);
+      currentObjectFocused!.unfocus();
+    }
+  }
+
+  _navigateBack() {
+    if (currentObjectFocused != null) {
+      currentObjectFocused!.removeListener(_navigateBack);
+      currentObjectFocused = null;
+    }
+
     if (widget.isCustomScreen) {
       context.beamToNamed("/menu");
     } else {
@@ -165,6 +182,21 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin {
   }
 
   _onDoubleTab(BuildContext context) {
+    currentObjectFocused = FocusManager.instance.primaryFocus;
+    if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
+      _navigateBackForcefully();
+    } else {
+      currentObjectFocused!.addListener(_navigateBackForcefully);
+      currentObjectFocused!.unfocus();
+    }
+  }
+
+  _navigateBackForcefully() {
+    if (currentObjectFocused != null) {
+      currentObjectFocused!.removeListener(_navigateBackForcefully);
+      currentObjectFocused = null;
+    }
+
     if (widget.isCustomScreen) {
       context.beamToNamed("/menu");
     } else {

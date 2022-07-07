@@ -99,7 +99,6 @@ class TableSize with UiServiceMixin {
     int calculateForRecordCount = 10,
     double? availableWidth,
   }) {
-    columnWidths.clear();
     calculatedColumnWidths.clear();
 
     availableWidth = (availableWidth ?? 0.0) - (borderWidth * 2);
@@ -118,7 +117,6 @@ class TableSize with UiServiceMixin {
         // because the calculated width is too small. Still not sure why, but it works. TODO: investigate
       );
 
-      columnWidths.add(columnWidth);
       calculatedColumnWidths.add(columnWidth);
     }
 
@@ -144,7 +142,6 @@ class TableSize with UiServiceMixin {
 
         if (colDef.width != null) {
           calculatedColumnWidths[showIndex] = colDef.width!;
-          columnWidths[showIndex] = colDef.width!;
         } else {
           ICellEditor cellEditor = ICellEditor.getCellEditor(
             pName: "",
@@ -174,14 +171,19 @@ class TableSize with UiServiceMixin {
           }
 
           // Add padding and add right border
-          colWidth = adjustValue(colWidth, colWidth + (cellPadding.left + cellPadding.right) + columnDividerWidth);
+          colWidth = adjustValue(colWidth, colWidth);
 
           calculatedColumnWidths[showIndex] = adjustValue(calculatedColumnWidths[showIndex], colWidth);
-
-          columnWidths[showIndex] = calculatedColumnWidths[showIndex];
         }
       }
     }
+
+    for (int i = 0; i < calculatedColumnWidths.length; i++) {
+      calculatedColumnWidths[i] += (cellPadding.left + cellPadding.right) + columnDividerWidth;
+    }
+
+    columnWidths.clear();
+    columnWidths.addAll(calculatedColumnWidths);
 
     if (tableModel.autoResize && calculatedSize.width > availableWidth) {
       redistributeRemainingWidth(availableWidth - calculatedSize.width);
