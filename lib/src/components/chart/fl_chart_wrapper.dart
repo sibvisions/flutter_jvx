@@ -49,15 +49,19 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
   }
 
   void subscribe() {
-    uiService.registerDataSubscription(
-      pDataSubscription: DataSubscription(
-        subbedObj: this,
-        from: 0,
-        dataProvider: model.dataProvider,
-        onDataChunk: receiveChartData,
-        dataColumns: getDataColumns(),
-      ),
-    );
+    var columnNames = getDataColumns();
+
+    if (columnNames.isNotEmpty) {
+      uiService.registerDataSubscription(
+        pDataSubscription: DataSubscription(
+          subbedObj: this,
+          from: 0,
+          dataProvider: model.dataProvider,
+          onDataChunk: receiveChartData,
+          dataColumns: getDataColumns(),
+        ),
+      );
+    }
   }
 
   void receiveChartData(DataChunk pChunkData) {
@@ -73,7 +77,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
   }
 
   List<String> getDataColumns() {
-    return [model.xColumnName, ...model.yColumnNames];
+    return [model.xColumnName, ...model.yColumnNames]..removeWhere((element) => element.isEmpty);
   }
 
   List<Series<dynamic, num>> getChartSeries() {
