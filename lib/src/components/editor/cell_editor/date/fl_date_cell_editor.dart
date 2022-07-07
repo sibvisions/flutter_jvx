@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
@@ -10,7 +9,7 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../i_cell_editor.dart';
 import 'fl_date_editor_widget.dart';
 
-class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with ConfigServiceMixin {
+class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,7 +94,6 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
   void openDatePicker() {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    // TODO locale
     if (model.isDateEditor && model.isTimeEditor) {
       _openDateAndTimeEditors();
     } else if (model.isDateEditor) {
@@ -109,11 +107,8 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     bool cancelled = false;
     dynamic originalValue = _value;
 
-    Locale locale = Locale.fromSubtags(languageCode: configService.getLanguage());
-
     uiService
         .openDialog(
-            pLocale: locale,
             pDialogWidget: DatePickerDialog(
               initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
               firstDate: DateTime(1900),

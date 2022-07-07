@@ -93,6 +93,24 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
   }
 
   Widget _getMenu() {
+    String? menuModeString = configService.getAppStyle()?["menu.mode"];
+    switch (menuModeString) {
+      case 'grid_grouped':
+        configService.setMenuMode(MENU_MODE.GRID_GROUPED);
+        break;
+      case 'grid':
+        configService.setMenuMode(MENU_MODE.GRID);
+        break;
+      case 'list':
+        configService.setMenuMode(MENU_MODE.LIST);
+        break;
+      case 'tabs':
+        configService.setMenuMode(MENU_MODE.TABS);
+        break;
+      default:
+        configService.setMenuMode(MENU_MODE.GRID_GROUPED);
+    }
+
     MENU_MODE menuMode = configService.getMenuMode();
     MenuFactory? menuBuilder = menuFactory[menuMode];
 

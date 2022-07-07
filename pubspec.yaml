@@ -13,6 +13,8 @@ dependencies:
   flutter_lints: ^1.0.0
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # IOS Dep
   cupertino_icons: ^1.0.2

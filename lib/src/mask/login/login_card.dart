@@ -35,7 +35,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
     String? loginTitle = configService.getAppStyle()?['login.title'];
 
     return Card(
-      color: Theme.of(context).backgroundColor.withOpacity(0.9),
+      color: Colors.white.withOpacity(0.9),
       elevation: 10,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -68,7 +68,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               TextButton(
                 onPressed: () => context.beamToNamed("/login/lostPassword"),
-                child: Text(configService.translateText("Reset password?")),
+                child: Text(configService.translateText("Reset password") + "?"),
               ),
               TextButton.icon(
                 onPressed: () => _onSettingsPressed(context: context),

@@ -42,6 +42,8 @@ class AppMenuTab extends StatelessWidget {
         length: menuModel.menuGroups.length,
         child: Scaffold(
           appBar: TabBar(
+            labelColor: Theme.of(context).primaryColor,
+            indicatorColor: Theme.of(context).primaryColor,
             tabs: menuModel.menuGroups.map((e) => Tab(text: e.name)).toList(),
           ),
           body: TabBarView(

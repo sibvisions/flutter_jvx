@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_client/src/routing/locations/setting_location.dart';
 import 'package:flutter_client/src/routing/locations/splash_location.dart';
 import 'package:flutter_client/src/routing/locations/work_screen_location.dart';
 import 'package:flutter_client/util/parse_util.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,6 +33,8 @@ ThemeData themeData = ThemeData.from(
   // ),
 );
 
+Locale locale = const Locale.fromSubtags(languageCode: "en");
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
@@ -50,7 +54,7 @@ class _MyAppState extends State<MyApp> {
       initialPath: "/splash",
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
-          SplashLocation(styleCallbacks: [changeStyle]),
+          SplashLocation(styleCallbacks: [changeStyle], languageCallbacks: [changeLanguage]),
           LoginLocation(),
           MenuLocation(),
           SettingLocation(),
@@ -71,6 +75,17 @@ class _MyAppState extends State<MyApp> {
       routerDelegate: _routerDelegate,
       backButtonDispatcher: FlBackButtonDispatcher(delegate: _routerDelegate),
       title: "Flutter Demo",
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // English, no country code
+        Locale('de', ''), // German, no country code
+        Locale('fr', ''), // French, no country code
+      ],
+      locale: locale,
     );
   }
 
@@ -101,6 +116,12 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.grey.shade200,
       ));
     }
+    setState(() {});
+  }
+
+  void changeLanguage(String pLanguage) {
+    locale = Locale.fromSubtags(languageCode: pLanguage);
+    log("setLanguage");
     setState(() {});
   }
 }

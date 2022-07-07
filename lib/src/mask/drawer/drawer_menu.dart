@@ -62,7 +62,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
               children: [
                 _buildHeaderText(flex: 7, text: configService.getAppName(), context: context),
                 const Padding(padding: EdgeInsets.all(4)),
-                _buildHeaderText(flex: 3, text: configService.translateText("Logged in as: "), context: context),
+                _buildHeaderText(flex: 3, text: configService.translateText("Logged in as") + ":", context: context),
                 const Padding(padding: EdgeInsets.all(10)),
                 _buildHeaderText(flex: 5, text: configService.getUserInfo()?.displayName ?? "", context: context),
                 const Expanded(flex: 2, child: Text(""))
