@@ -9,6 +9,7 @@ import 'package:flutter_client/src/model/command/api/download_style_command.dart
 import 'package:flutter_client/src/model/command/api/download_translation_command.dart';
 import 'package:flutter_client/src/model/command/api/login_command.dart';
 import 'package:flutter_client/src/model/command/api/logout_command.dart';
+import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
 import 'package:flutter_client/src/model/command/config/config_command.dart';
@@ -86,21 +87,25 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
       pMessage: "showLoadingProgress | $_loadingCommandAmount | ${pCommand.runtimeType} + ${pCommand.hashCode}",
     );
     if (_loadingCommandAmount == 0) {
-      services<IUiService>().openDialog(
-        pDialogWidget: _createLoadingProgressIndicator(),
-        pIsDismissible: false,
-        pContextCallback: (context) {
-          if (_loadingCommandAmount == 0) {
-            try {
-              Navigator.pop(context);
-            } catch (exception) {
-              log(exception.toString());
+      try {
+        services<IUiService>().openDialog(
+          pDialogWidget: _createLoadingProgressIndicator(),
+          pIsDismissible: false,
+          pContextCallback: (context) {
+            if (_loadingCommandAmount == 0) {
+              try {
+                Navigator.pop(context);
+              } catch (exception) {
+                log(exception.toString());
+              }
+            } else {
+              _dialogContext = context;
             }
-          } else {
-            _dialogContext = context;
-          }
-        },
-      );
+          },
+        );
+      } catch (exception) {
+        //Ignore
+      }
     }
     _loadingCommandAmount++;
   }
@@ -112,8 +117,13 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
       pMessage: "closeLoadingProgress | $_loadingCommandAmount |  ${pCommand.runtimeType} + ${pCommand.hashCode}",
     );
     if (_loadingCommandAmount == 0 && _dialogContext != null) {
-      Navigator.pop(_dialogContext!);
-      _dialogContext = null;
+      try {
+        Navigator.pop(_dialogContext!);
+      } catch (_) {
+        //Ignore
+      } finally {
+        _dialogContext = null;
+      }
     }
   }
 
@@ -165,7 +175,8 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
           pCommand is DownloadImagesCommand ||
           pCommand is DownloadStyleCommand ||
           pCommand is DownloadTranslationCommand ||
-          pCommand is ResetPasswordCommand) {
+          pCommand is ResetPasswordCommand ||
+          pCommand is OpenScreenCommand) {
         return false;
       }
       // if (pCommand is DeleteRecordCommand ||
