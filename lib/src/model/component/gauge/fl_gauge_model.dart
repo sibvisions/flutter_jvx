@@ -15,7 +15,7 @@ class FlGaugeModel extends FlComponentModel {
   double? minErrorValue;
   double? maxWarningValue;
   double? minWarningValue;
-  int gaugeStyle = 1;
+  int gaugeStyle = 0;
   double value = 0;
   String? columnLabel = "";
 
