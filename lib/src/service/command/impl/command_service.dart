@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
@@ -95,9 +94,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
         pStacktrace: stacktrace,
       );
 
-      if (pCommand is OpenScreenCommand) {
-        rethrow;
-      }
+      rethrow;
     } finally {
       pCommand.callback?.call();
       progressHandler.forEach((element) => element.notifyCommandProgressEnd(pCommand));

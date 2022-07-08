@@ -80,8 +80,8 @@ class UiService with CommandServiceMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void sendCommand(BaseCommand command) {
-    commandService.sendCommand(command);
+  void sendCommand(BaseCommand command, [VoidCallback? onError]) {
+    commandService.sendCommand(command).catchError((_) => onError?.call());
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
