@@ -87,6 +87,8 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
   void menuItemPressed({required String componentId}) {
     CustomScreen? customScreen = uiService.getCustomScreen(pScreenName: componentId);
 
+    uiService.setRouteContext(pContext: context);
+
     // Offline screens no not require the server to know that they are open
     if (customScreen != null && customScreen.isOfflineScreen) {
       uiService.routeToCustom(pFullPath: "/workScreen/$componentId");
