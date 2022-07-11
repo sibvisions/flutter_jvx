@@ -20,8 +20,8 @@
         "https": false
       },
       {
-        "name": "Severing : 1",
-        "host": "172.16.0.40",
+        "name": "Severin : 1",
+        "host": "172.16.0.137",
         "port": 8888,
         "path": "/JVx.mobile/services/mobile",
         "https": false
