@@ -10,24 +10,17 @@
   },
 
   "remoteConfig": {
-    "indexOfUsingUrlConfig": 1,
+    "indexOfUsingUrlConfig": 0,
     "devUrlConfigs" : [
       {
-        "name": "Schober : 0",
-        "host": "172.16.0.59",
-        "port": 8090,
-        "path": "/JVx.mobile/services/mobile",
-        "https": false
-      },
-      {
-        "name": "Toni : 1",
+        "name": "Toni : 0",
         "host": "172.16.0.34",
         "port": 8888,
         "path": "/JVx.mobile/services/mobile",
         "https": false
       },
       {
-        "name": "Angelo : 2",
+        "name": "Severing : 1",
         "host": "172.16.0.40",
         "port": 8888,
         "path": "/JVx.mobile/services/mobile",
