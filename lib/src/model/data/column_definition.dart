@@ -16,9 +16,6 @@ class ColumnDefinition {
   /// Label of the column
   String label = "";
 
-  /// The default label of the ColumnDefinition
-  String sDefaultLabel = "";
-
   /// If this column is nullable
   bool nullable = true;
 
