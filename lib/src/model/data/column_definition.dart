@@ -25,12 +25,6 @@ class ColumnDefinition {
   /// The comment of this ColumnDefinition
   String comment = "";
 
-  /// The default value of this ColumnDefinition
-  dynamic defaultObject;
-
-  /// The default value of this ColumnDefinition
-  List<dynamic> defaultValues = [];
-
   /// If this column is readonly
   bool readonly = true;
 
