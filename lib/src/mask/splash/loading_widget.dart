@@ -25,7 +25,7 @@ class LoadingWidget extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: const <Widget>[
-              Padding(padding: EdgeInsets.only(top: 100), child: CircularProgressIndicator()),
+              Padding(padding: EdgeInsets.only(top: 100), child: CircularProgressIndicator.adaptive()),
               Padding(padding: EdgeInsets.only(top: 100), child: Text('Loading...'))
             ],
           )

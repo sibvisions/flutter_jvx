@@ -36,12 +36,9 @@ class ApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> sendRequest({required IApiRequest request}) async {
-    List<BaseCommand> commands = [];
-
-    var response = await repository.sendRequest(pRequest: request);
-    commands = controller.processResponse(responses: response);
-    return commands;
+  Future<List<BaseCommand>> sendRequest({required IApiRequest request}) {
+    return repository.sendRequest(pRequest: request)
+        .then((value) => controller.processResponse(responses: value));
   }
 
   @override

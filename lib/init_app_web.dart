@@ -24,7 +24,7 @@ import 'src/service/layout/i_layout_service.dart';
 import 'src/service/layout/impl/layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
-import 'src/service/storage/impl/default/storage_service.dart';
+import 'src/service/storage/impl/default/default_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 

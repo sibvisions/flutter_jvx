@@ -142,7 +142,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
         pType: LOG_TYPE.COMMAND,
         pMessage: "Command (${pCommand.runtimeType}) without Processor found",
       );
-      return [];
+      return;
     }
 
     // Executes Commands resulting from incoming command.

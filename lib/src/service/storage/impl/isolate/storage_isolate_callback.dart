@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import '../../shared/component_store.dart';
+import '../../shared/storage_service.dart';
 import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
 import 'message/endpoint/storage_isolate_update_components_message.dart';

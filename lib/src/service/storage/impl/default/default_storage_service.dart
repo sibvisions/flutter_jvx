@@ -1,7 +1,7 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../i_storage_service.dart';
-import '../../shared/component_store.dart';
+import '../../shared/storage_service.dart';
 
 /// Manages all component data received from remote server
 class DefaultStorageService implements IStorageService {
