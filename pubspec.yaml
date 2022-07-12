@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=2.16.0 <3.0.0"
 
 
 dependencies:
@@ -41,7 +41,8 @@ dependencies:
     # Used for routing with navigator 2.0
   beamer: ^1.4.0+1
     # Used for offline mode
-  sqflite: ^2.0.2+1
+  sqflite: ^2.0.3
+  path: ^1.8.2
   flutter_map: ^0.14.0
   latlong2: ^0.8.1
   scrollable_positioned_list: ^0.3.1
