@@ -38,6 +38,7 @@ Locale locale = const Locale.fromSubtags(languageCode: "en");
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 
@@ -46,6 +47,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late BeamerDelegate _routerDelegate;
+
   @override
   void initState() {
     super.initState();
@@ -68,7 +70,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     //_routerDelegate.setNewRoutePath(const RouteInformation(location: "/splash"));
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     return MaterialApp.router(
       theme: themeData,
