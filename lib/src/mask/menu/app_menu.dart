@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mask/drawer/drawer_menu.dart';
 import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_grouped.dart';
@@ -60,7 +58,6 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
   @override
   Widget build(BuildContext context) {
     if (mounted) {
-      log("Setting menu");
       uiService.setRouteContext(pContext: context);
     }
 
