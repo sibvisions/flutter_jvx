@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import 'package:flutter_client/src/model/component/interface/i_data_model.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/command_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
@@ -12,10 +17,10 @@ class GoOfflineCommandProcessor
     with
         ConfigServiceGetterMixin,
         UiServiceGetterMixin,
-        ApiServiceMixin,
-        DataServiceMixin,
-        StorageServiceMixin,
-        CommandServiceMixin
+        ApiServiceGetterMixin,
+        DataServiceGetterMixin,
+        StorageServiceGetterMixin,
+        CommandServiceGetterMixin
     implements ICommandProcessor<GoOfflineCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -23,17 +28,30 @@ class GoOfflineCommandProcessor
 
   @override
   Future<List<BaseCommand>> processCommand(GoOfflineCommand command) async {
-    // FlComponentModel workscreenModel = uiService.getComponentByName(pComponentName: command.workscreen)!;
-    // List<FlComponentModel> activeComponents = [workscreenModel, ...uiService.getChildrenModels(workscreenModel.id)];
+    FlComponentModel workscreenModel = getUiService().getComponentByName(pComponentName: command.workscreen)!;
+    List<FlComponentModel> activeComponents = [
+      workscreenModel,
+      ...getUiService().getAllComponentsBelow(workscreenModel.id)
+    ];
 
-    // List<String> activeDataProvider = [];
-    // for (FlComponentModel model in activeComponents) {
-    //   if (model is IDataModel) {
-    //     activeDataProvider.add((model as IDataModel).dataProvider);
-    //   }
-    // }
+    Set<String> activeDataProviders = {};
 
-    // log(activeDataProvider.toString());
+    for (FlComponentModel model in activeComponents) {
+      if (model is IDataModel) {
+        String dataProvider = (model as IDataModel).dataProvider;
+
+        if (dataProvider.isNotEmpty) {
+          activeDataProviders.add(dataProvider);
+        }
+      }
+    }
+
+    log(activeDataProviders.toString());
+
+    List<BaseCommand> commands = [];
+    for (String dataProvider in activeDataProviders) {
+      //commands.add(GetDataChunkCommand(reason: "Going offline", fromRow: 0, dataProvider: dataProvider));
+    }
 
     return [];
   }
