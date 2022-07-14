@@ -1,8 +1,7 @@
-import 'package:flutter_client/src/model/config/api/api_config.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_message.dart';
+import '../../../../../model/config/api/api_config.dart';
+import 'api_isolate_message.dart';
 
 class ApiIsolateApiConfigMessage extends ApiIsolateMessage {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,8 +12,5 @@ class ApiIsolateApiConfigMessage extends ApiIsolateMessage {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiIsolateApiConfigMessage({
-    required this.apiConfig
-  });
-
+  ApiIsolateApiConfigMessage({required this.apiConfig});
 }

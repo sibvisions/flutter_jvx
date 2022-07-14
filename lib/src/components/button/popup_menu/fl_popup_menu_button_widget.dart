@@ -22,7 +22,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   const FlPopupMenuButtonWidget(
       {Key? key,
       required FlPopupMenuButtonModel model,
-      required Function() onPress,
+      required Function()? onPress,
       this.onItemPress,
       required this.popupItems})
       : super(key: key, model: model, onPress: onPress);

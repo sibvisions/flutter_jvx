@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'package:flutter_client/src/service/data/i_data_service.dart';
+import '../../../service/data/i_data_service.dart';
+import '../column_definition.dart';
 
 /// Used as return value when getting subscriptions data from [IDataService]
 class DataChunk {

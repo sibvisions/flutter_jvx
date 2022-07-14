@@ -1,5 +1,4 @@
-import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
-
+import '../../data/subscriptions/data_subscription.dart';
 import 'data_command.dart';
 
 /// Command to get data of a specific column of the selectedRow of an dataBook(dataProvider)

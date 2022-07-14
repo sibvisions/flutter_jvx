@@ -1,8 +1,7 @@
-import 'package:flutter_client/src/model/command/api/download_images_command.dart';
-import 'package:flutter_client/src/model/command/api/download_style_command.dart';
-import 'package:flutter_client/src/model/command/api/download_translation_command.dart';
-
 import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../model/command/api/download_images_command.dart';
+import '../../../../../model/command/api/download_style_command.dart';
+import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_app_meta_data_command.dart';
 import '../../i_command_processor.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
 
+import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_auth_key_command.dart';
+import '../../i_command_processor.dart';
 
 class SaveAuthKeyCommandProcessor with ConfigServiceMixin implements ICommandProcessor<SaveAuthKeyCommand> {
   @override

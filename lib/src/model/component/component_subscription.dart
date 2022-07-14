@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
+import '../../service/ui/i_ui_service.dart';
 
 class ComponentSubscription {
   /// The object that subscribed, used for deletion

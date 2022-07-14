@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/data/data_command.dart';
+import 'data_command.dart';
 
 class DeleteProviderDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

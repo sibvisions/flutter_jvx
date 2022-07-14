@@ -1,18 +1,17 @@
-import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
-import 'package:flutter_client/src/model/model_factory.dart';
-
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
+import '../../../../model/command/ui/route_to_work_command.dart';
 import '../../../../model/component/fl_component_model.dart';
-import '../i_processor.dart';
+import '../../../../model/model_factory.dart';
+import '../i_response_processor.dart';
 
 /// Processes [ScreenGenericResponse], will separate (and parse) new and changed components, can also open screens
 /// based on the 'update' property of the request.
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
+class ScreenGenericProcessor implements IResponseProcessor<ScreenGenericResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

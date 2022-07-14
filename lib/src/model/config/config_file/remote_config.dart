@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/config/api/url_config.dart';
+import '../api/url_config.dart';
 
 class RemoteConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

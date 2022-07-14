@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
+import '../../../service/ui/i_ui_service.dart';
+import '../../api/response/dal_meta_data_response.dart';
+import 'data_chunk.dart';
+import 'data_record.dart';
 
 typedef OnSelectedRecordCallback = void Function(DataRecord? dataRecord);
 typedef OnDataChunkCallback = void Function(DataChunk dataChunk);

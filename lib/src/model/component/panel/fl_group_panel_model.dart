@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_client/src/model/layout/alignments.dart';
-
 import '../../../components/panel/group/fl_group_panel_wrapper.dart';
 import '../../api/api_object_property.dart';
+import '../../layout/alignments.dart';
 import '../label/fl_label_model.dart';
 import 'fl_panel_model.dart';
 

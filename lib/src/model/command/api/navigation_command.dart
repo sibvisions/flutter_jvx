@@ -1,6 +1,6 @@
-import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
-import 'package:flutter_client/src/model/command/api/api_command.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
+import '../../../service/ui/i_ui_service.dart';
+import '../../api/requests/api_navigation_request.dart';
+import 'api_command.dart';
 
 /// Command to send [ApiNavigationRequest] to remote server, will get screenName
 /// from [IUiService]

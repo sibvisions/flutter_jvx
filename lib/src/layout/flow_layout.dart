@@ -1,13 +1,12 @@
-import 'dart:ui';
 import 'dart:math';
+import 'dart:ui';
 
+import '../../util/extensions/string_extensions.dart';
 import '../model/layout/alignments.dart';
 import '../model/layout/gaps.dart';
+import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import '../model/layout/margins.dart';
-import '../../util/extensions/string_extensions.dart';
-
-import '../model/layout/layout_data.dart';
 import 'i_layout.dart';
 
 class FlowLayout extends ILayout {

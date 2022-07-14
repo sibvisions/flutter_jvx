@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/image/image_loader.dart';
 
 import '../../../../util/constants/i_color.dart';
+import '../../../../util/image/image_loader.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';

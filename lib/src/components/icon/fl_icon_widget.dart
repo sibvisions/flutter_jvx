@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
-import 'package:flutter_client/util/image/image_loader.dart';
 
+import '../../../util/constants/i_color.dart';
+import '../../../util/image/image_loader.dart';
+import '../../model/component/icon/fl_icon_model.dart';
 import '../../model/layout/alignments.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 

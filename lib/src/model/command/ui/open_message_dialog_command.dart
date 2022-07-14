@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
+import 'ui_command.dart';
 
 /// This command will open a popup containing the provided message
 class OpenMessageDialogCommand extends UiCommand {

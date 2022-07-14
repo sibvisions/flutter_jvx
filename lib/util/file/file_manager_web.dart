@@ -2,8 +2,9 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_client/util/file/fake_file.dart';
-import 'package:flutter_client/util/file/file_manager.dart';
+
+import 'fake_file.dart';
+import 'file_manager.dart';
 
 /// File manger for web
 class FileManagerWeb implements IFileManager {

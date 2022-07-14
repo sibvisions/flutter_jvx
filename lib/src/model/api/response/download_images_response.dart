@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:flutter_client/src/model/api/response/api_response.dart';
+import 'api_response.dart';
 
 /// Used when downloading application images archive
 class DownloadImagesResponse extends ApiResponse {

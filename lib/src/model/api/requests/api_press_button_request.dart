@@ -1,16 +1,15 @@
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
-
 import '../api_object_property.dart';
+import 'i_api_request.dart';
 
 /// Request to send when a button has been pressed.
 class ApiPressButtonRequest extends IApiRequest {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Session id
   final String clientId;
+
   /// Component name of the button clicked
   final String componentName;
 
@@ -29,7 +28,7 @@ class ApiPressButtonRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-    ApiObjectProperty.clientId: clientId,
-    ApiObjectProperty.componentId: componentName,
-  };
+        ApiObjectProperty.clientId: clientId,
+        ApiObjectProperty.componentId: componentName,
+      };
 }

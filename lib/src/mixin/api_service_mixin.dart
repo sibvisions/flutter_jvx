@@ -7,3 +7,9 @@ import '../service/service.dart';
 mixin ApiServiceMixin {
   final IApiService apiService = services<IApiService>();
 }
+
+mixin ApiServiceGetterMixin {
+  IApiService getApiService() {
+    return services<IApiService>();
+  }
+}

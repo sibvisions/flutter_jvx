@@ -1,6 +1,6 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
+import '../../../service/ui/i_ui_service.dart';
+import '../../menu/menu_model.dart';
+import 'ui_command.dart';
 
 /// Command to save the given menu in the [IUiService]
 class SaveMenuCommand extends UiCommand {

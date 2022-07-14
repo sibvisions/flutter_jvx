@@ -1,19 +1,18 @@
-import 'package:flutter_client/src/model/command/config/save_application_images_command.dart';
-import 'package:flutter_client/src/model/command/config/save_application_style_command.dart';
-import 'package:flutter_client/src/model/command/config/save_application_translation_command.dart';
-import 'package:flutter_client/src/model/command/config/save_auth_key_command.dart';
-import 'package:flutter_client/src/model/command/config/save_user_data_command.dart';
-import 'package:flutter_client/src/service/command/shared/processor/config/save_application_images_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/config/save_application_translation_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/config/save_applicaton_style_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/config/save_auth_key_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/config/save_user_data_command_processor.dart';
-
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/config_command.dart';
 import '../../../../../model/command/config/save_app_meta_data_command.dart';
+import '../../../../../model/command/config/save_application_images_command.dart';
+import '../../../../../model/command/config/save_application_style_command.dart';
+import '../../../../../model/command/config/save_application_translation_command.dart';
+import '../../../../../model/command/config/save_auth_key_command.dart';
+import '../../../../../model/command/config/save_user_data_command.dart';
 import '../../i_command_processor.dart';
 import 'save_app_meta_data_processor.dart';
+import 'save_application_images_command_processor.dart';
+import 'save_application_translation_command_processor.dart';
+import 'save_applicaton_style_command_processor.dart';
+import 'save_auth_key_command_processor.dart';
+import 'save_user_data_command_processor.dart';
 
 ///
 /// Processes [ConfigCommand], delegates them to their respective [ICommandProcessor]
@@ -25,9 +24,11 @@ class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
 
   final SaveAuthKeyCommandProcessor _authKeyCommandProcessor = SaveAuthKeyCommandProcessor();
 
-  final SaveApplicationImagesCommandProcessor _applicationImagesCommandProcessor = SaveApplicationImagesCommandProcessor();
+  final SaveApplicationImagesCommandProcessor _applicationImagesCommandProcessor =
+      SaveApplicationImagesCommandProcessor();
 
-  final SaveApplicationTranslationCommandProcessor _applicationTranslationCommandProcessor = SaveApplicationTranslationCommandProcessor();
+  final SaveApplicationTranslationCommandProcessor _applicationTranslationCommandProcessor =
+      SaveApplicationTranslationCommandProcessor();
 
   final SaveApplicationStyleCommandProcessor _applicationStyleCommandProcessor = SaveApplicationStyleCommandProcessor();
 

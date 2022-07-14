@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
-import 'package:flutter_client/src/mask/menu/app_menu.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/menu/menu_item_model.dart';
-import 'package:flutter_client/util/font_awesome_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../../../../main.dart';
+import '../../../../../util/font_awesome_util.dart';
+import '../../../../mixin/config_service_mixin.dart';
+import '../../../../model/menu/menu_item_model.dart';
+import '../../app_menu.dart';
 
 class AppMenuListItem extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

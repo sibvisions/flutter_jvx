@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/mixin/data_service_mixin.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/data/delete_provider_data_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
+import '../../../../../mixin/data_service_mixin.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/data/delete_provider_data_command.dart';
+import '../../i_command_processor.dart';
 
 class DeleteProviderDataCommandProcessor extends ICommandProcessor<DeleteProviderDataCommand> with DataServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

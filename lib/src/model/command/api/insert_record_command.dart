@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/api/requests/api_insert_record_request.dart';
-import 'package:flutter_client/src/model/command/api/api_command.dart';
+import '../../api/requests/api_insert_record_request.dart';
+import 'api_command.dart';
 
 /// Sends [ApiInsertRecordRequest]
 class InsertRecordCommand extends ApiCommand {

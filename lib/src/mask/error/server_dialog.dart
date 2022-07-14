@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/close_frame_command.dart';
+
+import '../../mixin/config_service_mixin.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/command/api/close_frame_command.dart';
 
 /// This is a standard template for a server side message.
 class ServerDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {

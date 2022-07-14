@@ -1,13 +1,12 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/api/impl/default/api_service.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_api_config_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_request_message.dart';
-
+import '../default/api_service.dart';
+import 'messages/api_isolate_api_config_message.dart';
 import 'messages/api_isolate_controller_message.dart';
 import 'messages/api_isolate_message.dart';
 import 'messages/api_isolate_message_wrapper.dart';
 import 'messages/api_isolate_repository_message.dart';
+import 'messages/api_isolate_request_message.dart';
 
 void apiCallback(SendPort callerSendPort) {
   // Instantiate a SendPort to receive message from the caller

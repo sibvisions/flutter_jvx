@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/service/api/shared/repository/offline/offline_filter.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'offline_filter.dart';
 
 class OfflineDatabase {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,7 +86,8 @@ class OfflineDatabase {
   }
 
   /// Returns rows of [pTableName] with supplied conditions ([pWhere], [pOrderBy], [pLimit])
-  Future<List<Map<String, dynamic>>> selectRows({required String pTableName, String? pWhere, String? pOrderBy, String? pLimit}) async {
+  Future<List<Map<String, dynamic>>> selectRows(
+      {required String pTableName, String? pWhere, String? pOrderBy, String? pLimit}) async {
     // Build sql statement
     String sql = "SELECT * FROM [$pTableName]";
     if (pWhere != null) {
@@ -171,7 +173,7 @@ class OfflineDatabase {
   /// Executes a List of sql statements in a bulk statement (single atomic operation)
   /// Will complete return future when all statements have been processed
   Future<void> batch({required List<String> pSqlStatements}) async {
-    database.transaction((txn) async {
+    await database.transaction((txn) async {
       var batch = txn.batch();
       pSqlStatements.forEach((sql) {
         batch.execute(sql);

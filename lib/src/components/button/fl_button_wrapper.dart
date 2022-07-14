@@ -1,16 +1,18 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/mask/camera/qr_scanner_mask.dart';
-import 'package:flutter_client/src/model/command/api/set_values_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../util/logging/flutter_logger.dart';
+import '../../mask/camera/qr_scanner_mask.dart';
+import '../../model/command/api/go_offline_command.dart';
 import '../../model/command/api/press_button_command.dart';
+import '../../model/command/api/set_values_command.dart';
+import '../../model/command/base_command.dart';
 import '../../model/component/button/fl_button_model.dart';
+import '../../model/data/subscriptions/data_record.dart';
+import '../../model/data/subscriptions/data_subscription.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_button_widget.dart';
@@ -37,7 +39,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void initState() {
     super.initState();
 
-    onPress = sendButtonPressed;
+    // onPress = sendButtonPressed;
+    onPress = goOffline;
 
     if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
       onPress = goOffline;
@@ -134,5 +137,11 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     launchUrlString("tel://$tel");
   }
 
-  void goOffline() {}
+  void goOffline() {
+    BeamState state = context.currentBeamLocation.state as BeamState;
+
+    String workscreenName = state.pathParameters['workScreenName']!;
+
+    uiService.sendCommand(GoOfflineCommand(workscreen: workscreenName, reason: "Going offline"));
+  }
 }

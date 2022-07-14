@@ -1,11 +1,12 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/components_factory.dart';
-import 'package:flutter_client/src/mask/work_screen/work_screen.dart';
-import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
-import 'package:flutter_client/src/model/custom/custom_header.dart';
-import 'package:flutter_client/src/model/custom/custom_screen.dart';
+
+import '../../components/components_factory.dart';
+import '../../mask/work_screen/work_screen.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/component/panel/fl_panel_model.dart';
+import '../../model/custom/custom_header.dart';
+import '../../model/custom/custom_screen.dart';
 
 class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
   @override

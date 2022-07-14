@@ -6,10 +6,11 @@ import '../../../components/button/fl_button_widget.dart';
 import '../../api/api_object_property.dart';
 import '../../layout/alignments.dart';
 import '../fl_component_model.dart';
+import '../interface/i_data_model.dart';
 import '../label/fl_label_model.dart';
 
 /// The model for [FlButtonWidget]
-class FlButtonModel extends FlComponentModel {
+class FlButtonModel extends FlComponentModel implements IDataModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,6 +49,7 @@ class FlButtonModel extends FlComponentModel {
   String style = "";
 
   /// Dataprovider for QR-Code buttons or telephone button
+  @override
   String dataProvider = "";
 
   /// Columnname for QR-Code buttons or telephone button

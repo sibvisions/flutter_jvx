@@ -1,13 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 import '../../../util/parse_util.dart';
+import '../../mixin/ui_service_mixin.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
+import '../editor/cell_editor/i_cell_editor.dart';
 
 /// Represents a table size
 class TableSize with UiServiceMixin {

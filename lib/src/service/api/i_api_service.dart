@@ -1,12 +1,10 @@
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
-import 'package:flutter_client/src/model/config/api/api_config.dart';
-import 'package:flutter_client/src/service/api/shared/i_controller.dart';
-import 'package:flutter_client/src/service/api/shared/i_repository.dart';
-
+import '../../model/api/requests/i_api_request.dart';
 import '../../model/command/base_command.dart';
+import '../../model/config/api/api_config.dart';
+import 'shared/i_controller.dart';
+import 'shared/i_repository.dart';
 
 abstract class IApiService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/util/parse_util.dart';
 
+import '../../../../util/parse_util.dart';
 import '../../../mixin/data_service_mixin.dart';
 import '../../../model/command/api/set_value_command.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';

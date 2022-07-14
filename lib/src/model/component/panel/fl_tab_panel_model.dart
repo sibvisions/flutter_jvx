@@ -1,6 +1,5 @@
-import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.dart';
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-
+import '../../../components/panel/tabset/fl_tab_panel_wrapper.dart';
+import '../../api/api_object_property.dart';
 import 'fl_panel_model.dart';
 
 class FlTabPanelModel extends FlPanelModel {

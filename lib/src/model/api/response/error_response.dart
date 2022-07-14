@@ -1,6 +1,6 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/api/response/api_response.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
+import '../../../../util/logging/flutter_logger.dart';
+import '../api_object_property.dart';
+import 'api_response.dart';
 
 class ErrorResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,7 +30,8 @@ class ErrorResponse extends ApiResponse {
     this.stacktrace,
     this.error,
   }) : super(name: name, originalRequest: originalRequest) {
-    LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
+    LOGGER.logW(
+        pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
   }
 
   ErrorResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
@@ -39,6 +40,7 @@ class ErrorResponse extends ApiResponse {
         error = null,
         isTimeout = false,
         super.fromJson(originalRequest: originalRequest, pJson: pJson) {
-    LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
+    LOGGER.logW(
+        pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
   }
 }

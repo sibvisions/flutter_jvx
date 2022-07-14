@@ -8,3 +8,9 @@ import '../service/ui/i_ui_service.dart';
 mixin UiServiceMixin {
   final IUiService uiService = services<IUiService>();
 }
+
+mixin UiServiceGetterMixin {
+  IUiService getUiService() {
+    return services<IUiService>();
+  }
+}

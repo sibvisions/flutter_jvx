@@ -3,10 +3,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/model/command/api/set_values_command.dart';
-import 'package:flutter_client/src/model/component/custom/fl_custom_container_model.dart';
 import 'package:signature/signature.dart';
 
+import '../../model/command/api/set_values_command.dart';
+import '../../model/component/custom/fl_custom_container_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';

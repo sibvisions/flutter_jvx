@@ -1,12 +1,13 @@
-import 'package:flutter_client/util/parse_util.dart';
-
+import '../../../../util/parse_util.dart';
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
+import '../interface/i_data_model.dart';
 
-class FlEditorModel extends FlComponentModel {
+class FlEditorModel extends FlComponentModel implements IDataModel {
   bool changedCellEditor = false;
 
-  String dataRow = "";
+  @override
+  String dataProvider = "";
 
   String columnName = "";
 
@@ -32,11 +33,11 @@ class FlEditorModel extends FlComponentModel {
       pCurrent: columnName,
     );
 
-    dataRow = getPropertyValue(
+    dataProvider = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.dataRow,
-      pDefault: defaultModel.dataRow,
-      pCurrent: dataRow,
+      pDefault: defaultModel.dataProvider,
+      pCurrent: dataProvider,
     );
 
     changedCellEditor = pJson.keys.contains(ApiObjectProperty.cellEditor);

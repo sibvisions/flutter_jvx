@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_client/src/mixin/api_service_mixin.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/api/requests/api_insert_record_request.dart';
-import 'package:flutter_client/src/model/command/api/insert_record_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
 
-class InsertRecordCommandProcessor with ConfigServiceMixin, ApiServiceMixin implements ICommandProcessor<InsertRecordCommand> {
+import '../../../../../mixin/api_service_mixin.dart';
+import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../model/api/requests/api_insert_record_request.dart';
+import '../../../../../model/command/api/insert_record_command.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../i_command_processor.dart';
+
+class InsertRecordCommandProcessor
+    with ConfigServiceMixin, ApiServiceMixin
+    implements ICommandProcessor<InsertRecordCommand> {
   @override
   Future<List<BaseCommand>> processCommand(InsertRecordCommand command) {
     String? clientId = configService.getClientId();

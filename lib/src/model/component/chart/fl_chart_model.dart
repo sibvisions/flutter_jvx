@@ -2,8 +2,9 @@ import 'dart:ui';
 
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
+import '../interface/i_data_model.dart';
 
-class FlChartModel extends FlComponentModel {
+class FlChartModel extends FlComponentModel implements IDataModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,6 +15,8 @@ class FlChartModel extends FlComponentModel {
   List yColumnLabels = [];
   String xColumnLabel = "";
   String title = "";
+
+  @override
   String dataProvider = "";
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

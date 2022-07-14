@@ -2,13 +2,15 @@ import 'dart:async';
 
 import '../../../../../../util/logging/flutter_logger.dart';
 import '../../../../../mixin/layout_service_mixin.dart';
-import '../../../../../mixin/ui_service_getter_mixin.dart';
+import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class UpdateComponentsProcessor with UiServiceGetterMixin, LayoutServiceMixin implements ICommandProcessor<UpdateComponentsCommand> {
+class UpdateComponentsProcessor
+    with UiServiceGetterMixin, LayoutServiceMixin
+    implements ICommandProcessor<UpdateComponentsCommand> {
   static bool isOpenScreen = false;
   static bool _secondRun = false;
 
@@ -19,7 +21,7 @@ class UpdateComponentsProcessor with UiServiceGetterMixin, LayoutServiceMixin im
     LOGGER.logD(pType: LOG_TYPE.COMMAND, pMessage: "------------------- Components are updating");
 
     if (!isOpenScreen && !_secondRun) {
-      layoutService.setValid(isValid: false);
+      await layoutService.setValid(isValid: false);
     }
 
     // Check to see if layout is currently busy
@@ -36,7 +38,7 @@ class UpdateComponentsProcessor with UiServiceGetterMixin, LayoutServiceMixin im
     // Update components when current layout run is finished
     await isLegal.then((_) async {
       if (!isOpenScreen && !_secondRun) {
-        layoutService.setValid(isValid: true);
+        await layoutService.setValid(isValid: true);
 
         _secondRun = isOpenScreen;
         isOpenScreen = false;

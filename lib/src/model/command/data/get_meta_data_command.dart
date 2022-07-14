@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/data/data_command.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
+import '../../data/subscriptions/data_subscription.dart';
+import 'data_command.dart';
 
 class GetMetaDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

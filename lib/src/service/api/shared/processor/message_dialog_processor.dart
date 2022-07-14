@@ -1,9 +1,9 @@
-import 'package:flutter_client/src/model/api/response/message_dialog_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/ui/open_message_dialog_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
+import '../../../../model/api/response/message_dialog_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/ui/open_message_dialog_command.dart';
+import '../i_response_processor.dart';
 
-class MessageDialogProcessor implements IProcessor<MessageDialogResponse> {
+class MessageDialogProcessor implements IResponseProcessor<MessageDialogResponse> {
   @override
   List<BaseCommand> processResponse({required MessageDialogResponse pResponse}) {
     return [

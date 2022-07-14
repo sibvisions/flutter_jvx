@@ -7,3 +7,9 @@ import '../service/service.dart';
 mixin ConfigServiceMixin {
   final IConfigService configService = services<IConfigService>();
 }
+
+mixin ConfigServiceGetterMixin {
+  IConfigService getConfigService() {
+    return services<IConfigService>();
+  }
+}

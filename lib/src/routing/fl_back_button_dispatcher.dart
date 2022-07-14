@@ -2,10 +2,11 @@ import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
-import 'package:flutter_client/src/model/command/api/navigation_command.dart';
-import 'package:flutter_client/src/model/custom/custom_screen.dart';
-import 'package:flutter_client/src/routing/locations/work_screen_location.dart';
+
+import '../mixin/ui_service_mixin.dart';
+import '../model/command/api/navigation_command.dart';
+import '../model/custom/custom_screen.dart';
+import 'locations/work_screen_location.dart';
 
 class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,6 +1,5 @@
-import 'package:flutter_client/src/model/api/api_response_names.dart';
-
 import '../api_object_property.dart';
+import '../api_response_names.dart';
 
 class ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

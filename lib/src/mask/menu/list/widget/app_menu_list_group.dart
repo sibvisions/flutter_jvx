@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mask/menu/list/widget/app_menu_list_item.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../model/menu/menu_group_model.dart';
 import '../../app_menu.dart';
 import '../../grid/widget/app_menu_grid_header.dart';
+import 'app_menu_list_item.dart';
 
 class AppMenuListGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

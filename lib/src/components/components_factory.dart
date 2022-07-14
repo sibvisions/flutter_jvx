@@ -1,10 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/custom/fl_custom_wrapper.dart';
-import 'package:flutter_client/src/components/icon/fl_icon_wrapper.dart';
-import 'package:flutter_client/src/components/map/fl_map_wrapper.dart';
-import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.dart';
-import 'package:flutter_client/src/components/signature_pad/fl_signature_pad_wrapper.dart';
-import 'package:flutter_client/src/components/table/fl_table_wrapper.dart';
 
 //import 'package:flutter_client/src/components/table/fl_table_wrapper.dart';
 
@@ -16,17 +10,23 @@ import 'button/radio/fl_radio_button_wrapper.dart';
 import 'button/toggle/fl_toggle_button_wrapper.dart';
 import 'chart/fl_chart_wrapper.dart';
 import 'check_box/fl_check_box_wrapper.dart';
+import 'custom/fl_custom_wrapper.dart';
 import 'dummy/fl_dummy_wrapper.dart';
 import 'editor/fl_editor_wrapper.dart';
 import 'editor/password_field/fl_password_wrapper.dart';
 import 'editor/text_area/fl_text_area_wrapper.dart';
 import 'editor/text_field/fl_text_field_wrapper.dart';
 import 'gauge/fl_gauge_wrapper.dart';
+import 'icon/fl_icon_wrapper.dart';
 import 'label/fl_label_wrapper.dart';
+import 'map/fl_map_wrapper.dart';
 import 'panel/fl_panel_wrapper.dart';
 import 'panel/group/fl_group_panel_wrapper.dart';
 import 'panel/scroll/fl_scroll_panel_wrapper.dart';
 import 'panel/split/fl_split_panel_wrapper.dart';
+import 'panel/tabset/fl_tab_panel_wrapper.dart';
+import 'signature_pad/fl_signature_pad_wrapper.dart';
+import 'table/fl_table_wrapper.dart';
 
 //GlobalKey()
 abstract class ComponentsFactory {

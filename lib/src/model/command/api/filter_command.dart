@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/api/requests/api_filter_model.dart';
-import 'package:flutter_client/src/model/command/api/api_command.dart';
+import '../../api/requests/api_filter_model.dart';
+import 'api_command.dart';
 
 class FilterCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

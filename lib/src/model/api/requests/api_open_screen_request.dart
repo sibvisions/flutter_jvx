@@ -1,18 +1,18 @@
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
-
 import '../api_object_property.dart';
+import 'i_api_request.dart';
 
 /// Request to open a new work screen
 class ApiOpenScreenRequest extends IApiRequest {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Session id
   final String clientId;
+
   /// Id of the menuItem clicked
   final String componentId;
+
   /// If the screen should only be closed manually
   final bool manualClose;
 
@@ -20,11 +20,7 @@ class ApiOpenScreenRequest extends IApiRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiOpenScreenRequest({
-    required this.componentId,
-    required this.clientId,
-    required this.manualClose
-  });
+  ApiOpenScreenRequest({required this.componentId, required this.clientId, required this.manualClose});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -32,8 +28,8 @@ class ApiOpenScreenRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-    ApiObjectProperty.clientId: clientId,
-    ApiObjectProperty.componentId: componentId,
-    ApiObjectProperty.manualClose: manualClose
-  };
+        ApiObjectProperty.clientId: clientId,
+        ApiObjectProperty.componentId: componentId,
+        ApiObjectProperty.manualClose: manualClose
+      };
 }

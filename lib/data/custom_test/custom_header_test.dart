@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/custom/custom_header.dart';
+
+import '../../src/model/custom/custom_header.dart';
 
 class CustomHeaderTest extends CustomHeader {
   const CustomHeaderTest({

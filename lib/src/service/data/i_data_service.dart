@@ -1,9 +1,8 @@
-import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-
 import '../../model/api/response/dal_fetch_response.dart';
 import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/base_command.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/data/subscriptions/data_record.dart';
 
 /// Interface for a dataService meant to handle all dataBook related tasks,
 abstract class IDataService {

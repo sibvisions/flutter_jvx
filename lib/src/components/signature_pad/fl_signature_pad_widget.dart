@@ -2,13 +2,13 @@ import 'dart:typed_data';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/component/custom/fl_custom_container_model.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-import 'package:flutter_client/util/image/image_loader.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:signature/signature.dart';
 
+import '../../../util/image/image_loader.dart';
+import '../../../util/logging/flutter_logger.dart';
+import '../../model/component/custom/fl_custom_container_model.dart';
+import '../../model/data/subscriptions/data_record.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlSignaturePadWidget<T extends FlCustomContainerModel> extends FlStatelessWidget<T> {

@@ -1,5 +1,4 @@
-import 'package:flutter_client/src/model/api/response/application_meta_data_response.dart';
-
+import '../../api/response/application_meta_data_response.dart';
 import 'config_command.dart';
 
 class SaveAppMetaDataCommand extends ConfigCommand {
@@ -14,10 +13,7 @@ class SaveAppMetaDataCommand extends ConfigCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveAppMetaDataCommand({
-    required this.metaData,
-    required String reason
-  }): super(reason: reason);
+  SaveAppMetaDataCommand({required this.metaData, required String reason}) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

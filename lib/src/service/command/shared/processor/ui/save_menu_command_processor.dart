@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/ui/save_menu_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
+
+import '../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/ui/save_menu_command.dart';
+import '../../i_command_processor.dart';
 
 class SaveMenuCommandProcessor with UiServiceGetterMixin implements ICommandProcessor<SaveMenuCommand> {
   @override

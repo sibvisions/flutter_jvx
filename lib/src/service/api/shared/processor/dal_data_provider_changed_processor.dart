@@ -1,12 +1,12 @@
-import 'package:flutter_client/src/model/api/response/dal_data_provider_changed_response.dart';
-import 'package:flutter_client/src/model/command/api/fetch_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/data/change_selected_row_command.dart';
-import 'package:flutter_client/src/model/command/data/delete_provider_data_command.dart';
-import 'package:flutter_client/src/model/command/data/delete_row_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
+import '../../../../model/api/response/dal_data_provider_changed_response.dart';
+import '../../../../model/command/api/fetch_command.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/data/change_selected_row_command.dart';
+import '../../../../model/command/data/delete_provider_data_command.dart';
+import '../../../../model/command/data/delete_row_command.dart';
+import '../i_response_processor.dart';
 
-class DalDataProviderChangedProcessor extends IProcessor<DalDataProviderChangedResponse> {
+class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProviderChangedResponse> {
   @override
   List<BaseCommand> processResponse({required DalDataProviderChangedResponse pResponse}) {
     List<BaseCommand> commands = [];

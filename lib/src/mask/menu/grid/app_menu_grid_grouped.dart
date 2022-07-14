@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mask/menu/app_menu.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/util/image/image_loader.dart';
 
+import '../../../../util/image/image_loader.dart';
+import '../../../model/menu/menu_model.dart';
+import '../app_menu.dart';
 import 'widget/app_menu_grid_group.dart';
 
 class AppMenuGridGrouped extends StatelessWidget {

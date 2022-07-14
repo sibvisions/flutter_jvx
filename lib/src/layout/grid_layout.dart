@@ -3,13 +3,13 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+
+import '../model/layout/gaps.dart';
 import '../model/layout/grid_layout/cell_constraints.dart';
 import '../model/layout/grid_layout/grid_size.dart';
+import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import '../model/layout/margins.dart';
-
-import '../model/layout/layout_data.dart';
-import '../model/layout/gaps.dart';
 import 'i_layout.dart';
 
 class GridLayout extends ILayout {

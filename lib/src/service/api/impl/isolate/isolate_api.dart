@@ -1,14 +1,13 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
-import 'package:flutter_client/src/model/config/api/api_config.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_api_config_message.dart';
-
+import '../../../../model/api/requests/i_api_request.dart';
 import '../../../../model/command/base_command.dart';
+import '../../../../model/config/api/api_config.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
 import '../../shared/i_repository.dart';
 import 'api_isolate_callback.dart';
+import 'messages/api_isolate_api_config_message.dart';
 import 'messages/api_isolate_controller_message.dart';
 import 'messages/api_isolate_message.dart';
 import 'messages/api_isolate_message_wrapper.dart';
@@ -17,7 +16,6 @@ import 'messages/api_isolate_request_message.dart';
 
 /// Executes [IApiRequest] in a separate isolate
 class IsolateApi implements IApiService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,7 +53,6 @@ class IsolateApi implements IApiService {
 
   @override
   Future<List<BaseCommand>> sendRequest({required IApiRequest request}) async {
-
     ApiIsolateRequestMessage message = ApiIsolateRequestMessage(request: request);
 
     return await _sendRequest(pMessage: message);
@@ -113,13 +110,7 @@ class IsolateApi implements IApiService {
   void setApiConfig({required ApiConfig apiConfig}) {
     ReceivePort receivePort = ReceivePort();
 
-    _apiSendPort!.send(
-        ApiIsolateMessageWrapper(
-            sendPort: receivePort.sendPort,
-            message: ApiIsolateApiConfigMessage(
-                apiConfig: apiConfig
-            )
-        )
-    );
+    _apiSendPort!.send(ApiIsolateMessageWrapper(
+        sendPort: receivePort.sendPort, message: ApiIsolateApiConfigMessage(apiConfig: apiConfig)));
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
-import 'package:flutter_client/src/mask/menu/list/app_menu_list_grouped.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/logout_command.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../main.dart';
+import '../../mixin/config_service_mixin.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/command/api/logout_command.dart';
 import '../../model/command/api/open_screen_command.dart';
+import '../../model/menu/menu_model.dart';
+import '../menu/list/app_menu_list_grouped.dart';
 import '../setting/widgets/change_password.dart';
 
 class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {

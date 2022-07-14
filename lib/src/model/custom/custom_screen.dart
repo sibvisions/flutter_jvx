@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/custom/custom_component.dart';
 
+import 'custom_component.dart';
 import 'custom_header.dart';
 import 'custom_menu_item.dart';
 

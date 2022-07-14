@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+
+import '../../mixin/config_service_mixin.dart';
 
 /// This is a standard template for a server side error message.
 class ServerErrorDialog extends StatelessWidget with ConfigServiceMixin {

@@ -1,7 +1,6 @@
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
-import 'package:flutter_client/src/model/config/api/api_config.dart';
-
+import '../../../../model/api/requests/i_api_request.dart';
 import '../../../../model/command/base_command.dart';
+import '../../../../model/config/api/api_config.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
 import '../../shared/i_repository.dart';
@@ -37,8 +36,7 @@ class ApiService implements IApiService {
 
   @override
   Future<List<BaseCommand>> sendRequest({required IApiRequest request}) {
-    return repository.sendRequest(pRequest: request)
-        .then((value) => controller.processResponse(responses: value));
+    return repository.sendRequest(pRequest: request).then((value) => controller.processResponse(responses: value));
   }
 
   @override

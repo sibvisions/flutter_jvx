@@ -1,11 +1,10 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-
 import '../api/response/dal_fetch_response.dart';
+import '../api/response/dal_meta_data_response.dart';
 import 'column_definition.dart';
+import 'subscriptions/data_record.dart';
 
 /// Holds all data and column definitions of a data provider
 class DataBook {

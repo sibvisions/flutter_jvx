@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
+import '../interface/i_data_model.dart';
 
-class FlGaugeModel extends FlComponentModel {
+class FlGaugeModel extends FlComponentModel implements IDataModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   String title = "";
+  @override
   String dataProvider = "";
   double maxValue = 1;
   double minValue = 0;

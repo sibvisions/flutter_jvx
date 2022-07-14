@@ -32,7 +32,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlRadioButtonWidget({Key? key, required FlRadioButtonModel model, required Function() onPress})
+  const FlRadioButtonWidget({Key? key, required FlRadioButtonModel model, required Function()? onPress})
       : super(key: key, model: model, onPress: onPress);
 
   @override

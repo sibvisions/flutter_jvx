@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
+import '../api_object_property.dart';
+import 'i_api_request.dart';
 
 class ApiFetchRequest implements IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

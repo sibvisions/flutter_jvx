@@ -1,8 +1,7 @@
-import 'package:flutter_client/src/model/component/editor/cell_editor/linked/column_view.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/linked/link_reference.dart';
-
 import '../../../../api/api_object_property.dart';
 import '../cell_editor_model.dart';
+import 'column_view.dart';
+import 'link_reference.dart';
 
 class FlLinkedCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

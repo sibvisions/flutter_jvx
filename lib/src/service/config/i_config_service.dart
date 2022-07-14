@@ -1,14 +1,12 @@
-import 'package:flutter_client/src/model/config/api/api_config.dart';
-import 'package:flutter_client/src/model/config/user/user_info.dart';
-
 import '../../../util/file/file_manager.dart';
+import '../../model/config/api/api_config.dart';
+import '../../model/config/user/user_info.dart';
 
 /// Defines the base construct of a [IConfigService]
 /// Config service is used to store & access all configurable data,
 /// also stores session based data such as clientId and userData.
 // Author: Michael Schober
 abstract class IConfigService {
-
   static final RegExp langRegex = RegExp("_(?<name>[a-z]+)");
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

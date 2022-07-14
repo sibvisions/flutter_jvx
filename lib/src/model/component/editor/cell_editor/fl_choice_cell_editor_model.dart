@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/util/image/image_loader.dart';
 
+import '../../../../../util/image/image_loader.dart';
 import '../../../api/api_object_property.dart';
 import 'cell_editor_model.dart';
 

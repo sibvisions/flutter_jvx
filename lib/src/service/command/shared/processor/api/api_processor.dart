@@ -1,54 +1,57 @@
-import 'package:flutter_client/src/model/command/api/change_password_command.dart';
-import 'package:flutter_client/src/model/command/api/close_frame_command.dart';
-import 'package:flutter_client/src/model/command/api/close_screen_command.dart';
-import 'package:flutter_client/src/model/command/api/dal_save_command.dart';
-import 'package:flutter_client/src/model/command/api/delete_record_command.dart';
-import 'package:flutter_client/src/model/command/api/download_style_command.dart';
-import 'package:flutter_client/src/model/command/api/fetch_command.dart';
-import 'package:flutter_client/src/model/command/api/filter_command.dart';
-import 'package:flutter_client/src/model/command/api/insert_record_command.dart';
-import 'package:flutter_client/src/model/command/api/logout_command.dart';
-import 'package:flutter_client/src/model/command/api/navigation_command.dart';
-import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
-import 'package:flutter_client/src/model/command/api/select_record_command.dart';
-import 'package:flutter_client/src/model/command/api/set_api_config_command.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/change_password_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/close_frame_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/close_screen_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/dal_save_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/delete_record_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/download_style_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/download_translation_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/fetch_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/filter_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/insert_record_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/logout_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/navigation_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/reset_password_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/select_record_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/set_api_config_command_processor.dart';
-
 import '../../../../../model/command/api/api_command.dart';
+import '../../../../../model/command/api/change_password_command.dart';
+import '../../../../../model/command/api/close_frame_command.dart';
+import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/api/close_tab_command.dart';
+import '../../../../../model/command/api/dal_save_command.dart';
+import '../../../../../model/command/api/delete_record_command.dart';
 import '../../../../../model/command/api/device_status_command.dart';
 import '../../../../../model/command/api/download_images_command.dart';
+import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
+import '../../../../../model/command/api/fetch_command.dart';
+import '../../../../../model/command/api/filter_command.dart';
+import '../../../../../model/command/api/go_offline_command.dart';
+import '../../../../../model/command/api/go_online_command.dart';
+import '../../../../../model/command/api/insert_record_command.dart';
 import '../../../../../model/command/api/login_command.dart';
+import '../../../../../model/command/api/logout_command.dart';
+import '../../../../../model/command/api/navigation_command.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/api/open_tab_command.dart';
 import '../../../../../model/command/api/press_button_command.dart';
+import '../../../../../model/command/api/reset_password_command.dart';
+import '../../../../../model/command/api/select_record_command.dart';
+import '../../../../../model/command/api/set_api_config_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
+import 'change_password_command_processor.dart';
+import 'close_frame_command_processor.dart';
+import 'close_screen_command_processor.dart';
 import 'close_tab_processor.dart';
+import 'dal_save_command_processor.dart';
+import 'delete_record_command_processor.dart';
 import 'device_status_processor.dart';
 import 'download_images_command_processor.dart';
+import 'download_style_command_processor.dart';
+import 'download_translation_command_processor.dart';
+import 'fetch_command_processor.dart';
+import 'filter_command_processor.dart';
+import 'go_offline_command_processor.dart';
+import 'go_online_command_processor.dart';
+import 'insert_record_command_processor.dart';
 import 'login_command_processor.dart';
+import 'logout_command_processor.dart';
+import 'navigation_command_processor.dart';
 import 'open_screen_command_processor.dart';
 import 'open_tab_processor.dart';
 import 'press_button_processor.dart';
+import 'reset_password_command_processor.dart';
+import 'select_record_command_processor.dart';
+import 'set_api_config_command_processor.dart';
 import 'set_value_command_processor.dart';
 import 'set_values_command_processor.dart';
 import 'start_up_command_processor.dart';
@@ -130,6 +133,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _closeFrameProcessor = CloseFrameCommandProcessor();
 
+  final ICommandProcessor _goOfflineProcessor = GoOfflineCommandProcessor();
+
+  final ICommandProcessor _goOnlineProcessor = GoOnlineCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -187,6 +194,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _downloadStyleProcessor.processCommand(command);
     } else if (command is CloseFrameCommand) {
       return _closeFrameProcessor.processCommand(command);
+    } else if (command is GoOfflineCommand) {
+      return _goOfflineProcessor.processCommand(command);
+    } else if (command is GoOnlineCommand) {
+      return _goOnlineProcessor.processCommand(command);
     }
 
     return [];

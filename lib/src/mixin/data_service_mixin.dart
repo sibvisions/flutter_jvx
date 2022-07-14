@@ -7,3 +7,9 @@ import '../service/service.dart';
 mixin DataServiceMixin {
   final IDataService dataService = services<IDataService>();
 }
+
+mixin DataServiceGetterMixin {
+  IDataService getDataService() {
+    return services<IDataService>();
+  }
+}

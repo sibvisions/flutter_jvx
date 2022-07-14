@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/api/api_command.dart';
-import 'package:flutter_client/src/model/config/api/api_config.dart';
+import '../../config/api/api_config.dart';
+import 'api_command.dart';
 
 class SetApiConfigCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

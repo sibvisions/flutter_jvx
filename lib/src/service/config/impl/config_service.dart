@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter_client/src/model/config/translation/translation.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../util/file/file_manager.dart';
+import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/config/api/api_config.dart';
+import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
 import '../i_config_service.dart';
 
@@ -221,7 +221,8 @@ class ConfigService implements IConfigService {
   String translateText(String pText) {
     String? translatedText = translation.translations[pText];
     if (translatedText == null) {
-      LOGGER.logD(pType: LOG_TYPE.CONFIG, pMessage: "Translation for text: $pText was not found for language ${getLanguage()}");
+      LOGGER.logD(
+          pType: LOG_TYPE.CONFIG, pMessage: "Translation for text: $pText was not found for language ${getLanguage()}");
       return pText;
     }
     return translatedText;

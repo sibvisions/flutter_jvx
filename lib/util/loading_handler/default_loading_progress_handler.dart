@@ -2,26 +2,26 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/api/change_password_command.dart';
-import 'package:flutter_client/src/model/command/api/device_status_command.dart';
-import 'package:flutter_client/src/model/command/api/download_images_command.dart';
-import 'package:flutter_client/src/model/command/api/download_style_command.dart';
-import 'package:flutter_client/src/model/command/api/download_translation_command.dart';
-import 'package:flutter_client/src/model/command/api/login_command.dart';
-import 'package:flutter_client/src/model/command/api/logout_command.dart';
-import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
-import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
-import 'package:flutter_client/src/model/command/api/startup_command.dart';
-import 'package:flutter_client/src/model/command/config/config_command.dart';
-import 'package:flutter_client/src/model/command/data/data_command.dart';
-import 'package:flutter_client/src/model/command/layout/layout_command.dart';
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../src/model/command/api/api_command.dart';
+import '../../src/model/command/api/change_password_command.dart';
+import '../../src/model/command/api/device_status_command.dart';
+import '../../src/model/command/api/download_images_command.dart';
+import '../../src/model/command/api/download_style_command.dart';
+import '../../src/model/command/api/download_translation_command.dart';
+import '../../src/model/command/api/login_command.dart';
+import '../../src/model/command/api/logout_command.dart';
+import '../../src/model/command/api/open_screen_command.dart';
+import '../../src/model/command/api/reset_password_command.dart';
+import '../../src/model/command/api/startup_command.dart';
 import '../../src/model/command/base_command.dart';
+import '../../src/model/command/config/config_command.dart';
+import '../../src/model/command/data/data_command.dart';
+import '../../src/model/command/layout/layout_command.dart';
+import '../../src/model/command/ui/ui_command.dart';
 import '../../src/service/service.dart';
 import '../../src/service/ui/i_ui_service.dart';
+import '../logging/flutter_logger.dart';
 import 'i_command_progress_handler.dart';
 
 /// The [DefaultLoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.

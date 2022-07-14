@@ -1,10 +1,11 @@
 import 'package:archive/archive.dart';
-import 'package:flutter_client/src/model/api/response/download_images_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/config/save_application_images_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
 
-class DownloadImagesProcessor extends IProcessor<DownloadImagesResponse> {
+import '../../../../model/api/response/download_images_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/config/save_application_images_command.dart';
+import '../i_response_processor.dart';
+
+class DownloadImagesProcessor extends IResponseProcessor<DownloadImagesResponse> {
   ZipDecoder zipDecoder = ZipDecoder();
 
   @override

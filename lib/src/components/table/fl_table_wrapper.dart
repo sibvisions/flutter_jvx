@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -14,6 +13,7 @@ import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/api/delete_record_command.dart';
 import '../../model/command/api/insert_record_command.dart';
 import '../../model/command/api/select_record_command.dart';
+import '../../model/command/api/set_values_command.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -184,9 +184,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     uiService.registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
-        dataProvider: model.dataBook,
+        dataProvider: model.dataProvider,
         from: 0,
-        to: (FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount) - 1,
+        to: FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount,
         onSelectedRecord: receiveSelectedRecord,
         onDataChunk: receiveTableData,
         onMetaData: receiveMetaData,
@@ -197,7 +197,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   /// Unsubscribes from the data service.
   void unsubscribe() {
-    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataBook);
+    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
   /// Loads data from the server.
@@ -269,7 +269,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       }
 
       uiService.sendCommand(DeleteRecordCommand(
-          dataProvider: model.dataBook, selectedRow: lastTouchedIndex, reason: "Swiped", filter: filter));
+          dataProvider: model.dataProvider, selectedRow: lastTouchedIndex, reason: "Swiped", filter: filter));
 
       lastTouchedIndex = -1;
       setState(() {});
@@ -286,8 +286,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       return;
     }
 
-    uiService.sendCommand(
-        SelectRecordCommand(dataProvider: model.dataBook, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
+    uiService.sendCommand(SelectRecordCommand(
+        dataProvider: model.dataProvider, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
     setState(() {});
     // }
   }
@@ -372,7 +372,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     uiService.sendCommand(
       SetValuesCommand(
         componentId: model.id,
-        dataProvider: model.dataBook,
+        dataProvider: model.dataProvider,
         columnNames: pColumnNames,
         values: pValues,
         filter: createPrimaryFilter(pRowIndex: rowIndex),
@@ -383,7 +383,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   /// Inserts a new record.
   void insertRecord() {
-    uiService.sendCommand(InsertRecordCommand(dataProvider: model.dataBook, reason: "Inserted"));
+    uiService.sendCommand(InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted"));
   }
 
   dynamic _getValue({required String pColumnName, int? pRowIndex}) {

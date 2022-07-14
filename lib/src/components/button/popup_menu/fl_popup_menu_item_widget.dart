@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/component/button/fl_popup_menu_items_model.dart';
-import 'package:flutter_client/util/image/image_loader.dart';
+
+import '../../../../util/image/image_loader.dart';
+import '../../../model/component/button/fl_popup_menu_items_model.dart';
 
 abstract class FlPopupMenuItemWidget {
   static PopupMenuEntry<String> withModel(FlPopupMenuItemModel pModel, bool pForceIconSlot) {

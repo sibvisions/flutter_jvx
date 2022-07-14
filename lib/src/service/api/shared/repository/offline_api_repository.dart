@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
-import 'package:flutter_client/src/model/api/response/api_response.dart';
-import 'package:flutter_client/src/model/config/api/api_config.dart';
-import 'package:flutter_client/src/service/api/shared/i_repository.dart';
+import '../../../../model/api/requests/i_api_request.dart';
+import '../../../../model/api/response/api_response.dart';
+import '../../../../model/config/api/api_config.dart';
+import '../i_repository.dart';
 
 class OfflineApiRepository implements IRepository {
   @override

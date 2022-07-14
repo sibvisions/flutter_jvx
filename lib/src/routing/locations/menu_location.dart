@@ -5,7 +5,7 @@ import '../../../util/extensions/list_extensions.dart';
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../mask/menu/app_menu.dart';
 import '../../mixin/command_service_mixin.dart';
-import '../../mixin/ui_service_getter_mixin.dart';
+import '../../mixin/ui_service_mixin.dart';
 import '../../service/command/impl/command_service.dart';
 
 /// Displays all possible screens of the menu

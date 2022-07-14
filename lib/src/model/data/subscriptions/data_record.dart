@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/data/column_definition.dart';
+import '../column_definition.dart';
 
 class DataRecord {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

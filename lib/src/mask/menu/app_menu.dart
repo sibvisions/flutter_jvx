@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mask/drawer/drawer_menu.dart';
-import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_grouped.dart';
-import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_ungroup.dart';
-import 'package:flutter_client/src/mask/menu/tab/app_menu_tab.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
-import 'package:flutter_client/src/model/custom/custom_screen.dart';
-import 'package:flutter_client/src/service/config/i_config_service.dart';
-import 'package:flutter_client/util/parse_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../util/parse_util.dart';
+import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
+import '../../model/command/api/open_screen_command.dart';
+import '../../model/custom/custom_screen.dart';
 import '../../model/menu/menu_model.dart';
+import '../../service/config/i_config_service.dart';
+import '../drawer/drawer_menu.dart';
+import 'grid/app_menu_grid_grouped.dart';
+import 'grid/app_menu_grid_ungroup.dart';
 import 'list/app_menu_list_ungroup.dart';
+import 'tab/app_menu_tab.dart';
 
 /// Each menu item does get this callback
 typedef ButtonCallback = void Function({required String componentId});

@@ -1,12 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter_client/src/model/api/response/download_style_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
-
+import '../../../../model/api/response/download_style_response.dart';
+import '../../../../model/command/base_command.dart';
 import '../../../../model/command/config/save_application_style_command.dart';
+import '../i_response_processor.dart';
 
-class DownloadStyleProcessor extends IProcessor<DownloadStyleResponse> {
+class DownloadStyleProcessor extends IResponseProcessor<DownloadStyleResponse> {
   @override
   List<BaseCommand> processResponse({required DownloadStyleResponse pResponse}) {
     String decoded = utf8.decode(pResponse.bodyBytes);

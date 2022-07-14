@@ -7,3 +7,9 @@ import '../service/service.dart';
 mixin LayoutServiceMixin {
   final ILayoutService layoutService = services<ILayoutService>();
 }
+
+mixin LayoutServiceGetterMixin {
+  ILayoutService getLayoutService() {
+    return services<ILayoutService>();
+  }
+}

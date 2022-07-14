@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -43,6 +44,8 @@ Future<bool> initApp({
   List<Function>? languageCallbacks,
   List<Function>? styleCallbacks,
 }) async {
+  log("init app");
+
   // Needed to avoid CORS issues
   // ToDo find way to not do this
   HttpOverrides.global = MyHttpOverrides();

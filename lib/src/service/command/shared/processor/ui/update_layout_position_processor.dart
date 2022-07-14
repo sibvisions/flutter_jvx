@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../../mixin/ui_service_getter_mixin.dart';
+import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_layout_position_command.dart';
 import '../../../../../model/layout/layout_data.dart';

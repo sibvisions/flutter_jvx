@@ -1,5 +1,4 @@
-import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
-
+import '../../data/subscriptions/data_subscription.dart';
 import 'data_command.dart';
 
 class GetDataChunkCommand extends DataCommand {

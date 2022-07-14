@@ -1,7 +1,6 @@
-import 'package:flutter_client/src/model/api/requests/api_filter_model.dart';
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
-
 import '../api_object_property.dart';
+import 'api_filter_model.dart';
+import 'i_api_request.dart';
 
 /// Request to set the value of a data-bound component
 class ApiSetValuesRequest extends IApiRequest {

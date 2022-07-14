@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
+import 'ui_command.dart';
 
 /// Opens a dialog, telling the user that the session has expired
 class OpenSessionExpiredDialogCommand extends UiCommand {

@@ -2,24 +2,24 @@ import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/main.dart';
-import 'package:flutter_client/src/mask/camera/qr_parser.dart';
-import 'package:flutter_client/src/mask/camera/qr_scanner_mask.dart';
-import 'package:flutter_client/src/mask/setting/widgets/editor/app_name_editor.dart';
-import 'package:flutter_client/src/mask/setting/widgets/editor/editor_dialog.dart';
-import 'package:flutter_client/src/mask/setting/widgets/editor/url_editor.dart';
-import 'package:flutter_client/src/mask/setting/widgets/setting_group.dart';
-import 'package:flutter_client/src/mask/setting/widgets/setting_item.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/set_api_config_command.dart';
-import 'package:flutter_client/src/model/command/api/startup_command.dart';
-import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
-import 'package:flutter_client/src/model/config/api/url_config.dart';
-import 'package:flutter_client/src/routing/locations/setting_location.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../main.dart';
+import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
+import '../../model/command/api/set_api_config_command.dart';
+import '../../model/command/api/startup_command.dart';
+import '../../model/command/ui/open_error_dialog_command.dart';
+import '../../model/config/api/url_config.dart';
+import '../../routing/locations/setting_location.dart';
+import '../camera/qr_parser.dart';
+import '../camera/qr_scanner_mask.dart';
+import 'widgets/editor/app_name_editor.dart';
+import 'widgets/editor/editor_dialog.dart';
+import 'widgets/editor/url_editor.dart';
+import 'widgets/setting_group.dart';
+import 'widgets/setting_item.dart';
 
 /// Displays all settings of the app
 class SettingsPage extends StatefulWidget {
@@ -259,7 +259,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
         Picker picker = Picker(
             confirmTextStyle: const TextStyle(fontSize: 14),
             cancelTextStyle: const TextStyle(fontSize: 14),
-            adapter: PickerDataAdapter<String>(pickerdata: configService.getSupportedLanguages().toList(growable: false)),
+            adapter:
+                PickerDataAdapter<String>(pickerdata: configService.getSupportedLanguages().toList(growable: false)),
             columnPadding: const EdgeInsets.all(8),
             onConfirm: (Picker picker, List value) {
               languageNotifier.value = picker.getSelectedValues()[0];

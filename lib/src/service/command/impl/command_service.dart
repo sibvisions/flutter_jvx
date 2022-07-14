@@ -1,13 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
-import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
-import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
-import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
-import 'package:flutter_client/util/loading_handler/i_command_progress_handler.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
-
+import '../../../../util/loading_handler/i_command_progress_handler.dart';
+import '../../../../util/logging/flutter_logger.dart';
 import '../../../mixin/api_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/storage_service_mixin.dart';
@@ -17,6 +12,10 @@ import '../../../model/command/config/config_command.dart';
 import '../../../model/command/data/data_command.dart';
 import '../../../model/command/layout/layout_command.dart';
 import '../../../model/command/storage/storage_command.dart';
+import '../../../model/command/ui/open_error_dialog_command.dart';
+import '../../../model/command/ui/route_to_login_command.dart';
+import '../../../model/command/ui/route_to_menu_command.dart';
+import '../../../model/command/ui/route_to_work_command.dart';
 import '../../../model/command/ui/ui_command.dart';
 import '../i_command_service.dart';
 import '../shared/i_command_processor.dart';

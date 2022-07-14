@@ -1,18 +1,15 @@
 import 'dart:isolate';
 
-import 'message/endpoint/remove_layout_message.dart';
-
+import '../layout_service.dart';
 import 'message/endpoint/layout_in_process_message.dart';
 import 'message/endpoint/layout_valid_message.dart';
-
 import 'message/endpoint/mark_as_dirty_message.dart';
+import 'message/endpoint/remove_layout_message.dart';
 import 'message/endpoint/report_layout_message.dart';
 import 'message/endpoint/report_preferred_size_message.dart';
 import 'message/endpoint/set_screen_size_message.dart';
-import 'message/layout_message_wrapper.dart';
-import '../layout_service.dart';
-
 import 'message/layout_message.dart';
+import 'message/layout_message_wrapper.dart';
 
 void layoutIsolate(SendPort callerSendPort) {
   // Instantiate a SendPort to receive message from the caller

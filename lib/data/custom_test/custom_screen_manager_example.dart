@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../src/model/custom/custom_menu_item.dart';
 import '../../src/model/custom/custom_screen.dart';
+import '../../src/model/custom/custom_screen_manager.dart';
 
 class CustomScreenManagerExample extends CustomScreenManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

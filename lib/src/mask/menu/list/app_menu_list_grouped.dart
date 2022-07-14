@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mask/menu/list/widget/app_menu_list_group.dart';
 
 import '../../../model/menu/menu_model.dart';
 import '../app_menu.dart';
+import 'widget/app_menu_list_group.dart';
 
 class AppMenuListGrouped extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

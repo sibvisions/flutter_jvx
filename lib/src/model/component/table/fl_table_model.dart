@@ -1,11 +1,13 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/util/parse_util.dart';
+import '../../../../util/parse_util.dart';
+import '../../api/api_object_property.dart';
+import '../fl_component_model.dart';
+import '../interface/i_data_model.dart';
 
-class FlTableModel extends FlComponentModel {
+class FlTableModel extends FlComponentModel implements IDataModel {
   Map<String, dynamic> json = {};
 
-  String dataBook = "";
+  @override
+  String dataProvider = "";
 
   List<String> columnNames = [];
 
@@ -58,11 +60,11 @@ class FlTableModel extends FlComponentModel {
     super.applyFromJson(pJson);
     ParseUtil.applyJsonToJson(pJson, json);
 
-    dataBook = getPropertyValue(
+    dataProvider = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.dataBook,
-      pDefault: defaultModel.dataBook,
-      pCurrent: dataBook,
+      pDefault: defaultModel.dataProvider,
+      pCurrent: dataProvider,
     );
 
     columnNames = getPropertyValue(

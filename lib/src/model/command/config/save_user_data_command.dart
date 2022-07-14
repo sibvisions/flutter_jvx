@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/config/config_command.dart';
-import 'package:flutter_client/src/model/config/user/user_info.dart';
+import '../../config/user/user_info.dart';
+import 'config_command.dart';
 
 /// Command to save userData
 class SaveUserDataCommand extends ConfigCommand {

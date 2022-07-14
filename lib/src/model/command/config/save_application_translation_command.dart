@@ -1,5 +1,6 @@
 import 'package:archive/archive.dart';
-import 'package:flutter_client/src/model/command/config/config_command.dart';
+
+import 'config_command.dart';
 
 class SaveApplicationTranslationCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

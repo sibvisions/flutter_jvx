@@ -1,16 +1,15 @@
-import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
-import 'package:flutter_client/src/model/command/ui/save_menu_command.dart';
-
 import '../../../../model/api/response/menu_response.dart';
 import '../../../../model/command/base_command.dart';
+import '../../../../model/command/ui/route_to_menu_command.dart';
+import '../../../../model/command/ui/save_menu_command.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
-import '../i_processor.dart';
+import '../i_response_processor.dart';
 
 /// Processes the menu response into a [MenuModel], will try to route to menu,
 /// if no other routing actions take precedent.
-class MenuProcessor implements IProcessor<MenuResponse> {
+class MenuProcessor implements IResponseProcessor<MenuResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,8 +52,8 @@ class MenuProcessor implements IProcessor<MenuResponse> {
     List<MenuItemModel> menuItems = [];
     for (MenuEntryResponse responseMenuEntry in entries) {
       if (responseMenuEntry.group == groupName) {
-        MenuItemModel menuItem =
-            MenuItemModel(screenId: responseMenuEntry.componentId, label: responseMenuEntry.text, image: responseMenuEntry.image);
+        MenuItemModel menuItem = MenuItemModel(
+            screenId: responseMenuEntry.componentId, label: responseMenuEntry.text, image: responseMenuEntry.image);
         menuItems.add(menuItem);
       }
     }

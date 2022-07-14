@@ -1,6 +1,5 @@
-import 'package:flutter_client/src/model/api/requests/i_api_download_request.dart';
-
 import '../api_object_property.dart';
+import 'i_api_download_request.dart';
 
 /// Request to download all images the app needs
 class ApiDownloadImagesRequest implements IApiDownloadRequest {

@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
+import 'ui_command.dart';
 
 /// Will Route to menu, may be ignored if other commands in a batch take routing
 /// priority.

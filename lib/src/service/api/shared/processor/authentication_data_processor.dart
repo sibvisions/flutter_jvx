@@ -1,10 +1,9 @@
-import 'package:flutter_client/src/model/api/response/api_authentication_data_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
-
+import '../../../../model/api/response/api_authentication_data_response.dart';
+import '../../../../model/command/base_command.dart';
 import '../../../../model/command/config/save_auth_key_command.dart';
+import '../i_response_processor.dart';
 
-class AuthenticationDataProcessor extends IProcessor<ApiAuthenticationDataResponse> {
+class AuthenticationDataProcessor extends IResponseProcessor<ApiAuthenticationDataResponse> {
   @override
   List<BaseCommand> processResponse({required ApiAuthenticationDataResponse pResponse}) {
     SaveAuthKeyCommand saveAuthKeyCommand = SaveAuthKeyCommand(

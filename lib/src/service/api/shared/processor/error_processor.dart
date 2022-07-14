@@ -1,9 +1,9 @@
-import 'package:flutter_client/src/model/api/response/error_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
+import '../../../../model/api/response/error_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/ui/open_error_dialog_command.dart';
+import '../i_response_processor.dart';
 
-class ErrorProcessor implements IProcessor<ErrorResponse> {
+class ErrorProcessor implements IResponseProcessor<ErrorResponse> {
   @override
   List<BaseCommand> processResponse({required ErrorResponse pResponse}) {
     OpenErrorDialogCommand command = OpenErrorDialogCommand(

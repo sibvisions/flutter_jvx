@@ -1,8 +1,8 @@
 import '../../../../model/api/response/application_parameter_response.dart';
 import '../../../../model/command/base_command.dart';
-import '../i_processor.dart';
+import '../i_response_processor.dart';
 
-class ApplicationParametersProcessor implements IProcessor<ApplicationParametersResponse> {
+class ApplicationParametersProcessor implements IResponseProcessor<ApplicationParametersResponse> {
   @override
   List<BaseCommand> processResponse({required ApplicationParametersResponse pResponse}) {
     List<BaseCommand> commands = [];

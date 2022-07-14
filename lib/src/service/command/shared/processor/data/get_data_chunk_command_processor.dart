@@ -1,12 +1,11 @@
-import 'package:flutter_client/src/mixin/api_service_mixin.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
-import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
-
+import '../../../../../mixin/api_service_mixin.dart';
+import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/data_service_mixin.dart';
+import '../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../model/api/requests/api_fetch_request.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/get_data_chunk_command.dart';
+import '../../../../../model/data/subscriptions/data_chunk.dart';
 import '../../i_command_processor.dart';
 
 class GetDataChunkCommandProcessor

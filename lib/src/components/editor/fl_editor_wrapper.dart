@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/util/extensions/list_extensions.dart';
 
+import '../../../util/extensions/list_extensions.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../../util/parse_util.dart';
 import '../../model/api/api_object_property.dart';
@@ -168,7 +168,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     uiService.registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
-        dataProvider: pModel.dataRow,
+        dataProvider: pModel.dataProvider,
         from: -1,
         onSelectedRecord: setValue,
         onMetaData: setColumnDefinition,
@@ -179,7 +179,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Unsubscribes the callback of the cell editor from value changes.
   void unsubscribe() {
-    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataRow);
+    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
@@ -235,7 +235,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Values of ${model.id} set to $_toSendValue");
       uiService.sendCommand(SetValuesCommand(
           componentId: model.id,
-          dataProvider: model.dataRow,
+          dataProvider: model.dataProvider,
           columnNames: map.keys.toList(),
           values: map.values.toList(),
           reason: "Value of ${model.id} set to $_toSendValue"));
@@ -243,7 +243,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
       uiService.sendCommand(SetValuesCommand(
           componentId: model.id,
-          dataProvider: model.dataRow,
+          dataProvider: model.dataProvider,
           columnNames: [model.columnName],
           values: [_toSendValue],
           reason: "Value of ${model.id} set to $_toSendValue"));

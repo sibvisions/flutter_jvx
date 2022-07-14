@@ -1,10 +1,11 @@
 import 'package:archive/archive.dart';
-import 'package:flutter_client/src/model/api/response/download_translation_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/config/save_application_translation_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
 
-class DownloadTranslationProcessor implements IProcessor<DownloadTranslationResponse> {
+import '../../../../model/api/response/download_translation_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/config/save_application_translation_command.dart';
+import '../i_response_processor.dart';
+
+class DownloadTranslationProcessor implements IResponseProcessor<DownloadTranslationResponse> {
   ZipDecoder zipDecoder = ZipDecoder();
   @override
   List<BaseCommand> processResponse({required DownloadTranslationResponse pResponse}) {

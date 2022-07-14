@@ -1,15 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
-import 'package:flutter_client/src/components/table/table_size.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/api/response/dal_meta_data_response.dart';
+import '../../model/component/table/fl_table_model.dart';
+import '../../model/data/column_definition.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
+import '../editor/cell_editor/i_cell_editor.dart';
+import 'table_size.dart';
 
 class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/custom/custom_component.dart';
 
 import '../../model/command/layout/register_parent_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
+import '../../model/custom/custom_component.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../components_factory.dart';
 import 'base_comp_wrapper_state.dart';

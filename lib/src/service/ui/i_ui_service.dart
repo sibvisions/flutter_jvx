@@ -1,19 +1,19 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/component/component_subscription.dart';
-import 'package:flutter_client/src/model/custom/custom_screen.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/base_command.dart';
+import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import '../../model/custom/custom_component.dart';
+import '../../model/custom/custom_screen.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
+import '../../model/menu/menu_model.dart';
 import '../command/i_command_service.dart';
 
 /// Definition of the callback for the QR-scanner
@@ -107,6 +107,9 @@ abstract class IUiService {
 
   /// Called when the current workScreen is closed, will delete all relevant data(models, subscriptions,...) from [IUiService]
   void closeScreen({required String pScreenName});
+
+  /// Gets all children and the children below recursively.
+  List<FlComponentModel> getAllComponentsBelow(String id);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // LayoutData management

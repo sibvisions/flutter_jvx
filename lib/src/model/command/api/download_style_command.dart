@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/api/api_command.dart';
+import 'api_command.dart';
 
 class DownloadStyleCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

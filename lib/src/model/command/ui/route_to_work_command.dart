@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
+import 'ui_command.dart';
 
 /// Command to route to the currently active workScreen
 class RouteToWorkCommand extends UiCommand {

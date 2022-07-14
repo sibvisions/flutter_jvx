@@ -1,27 +1,27 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
-import 'package:flutter_client/src/model/command/data/get_meta_data_command.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
-import 'package:flutter_client/src/model/custom/custom_component.dart';
-import 'package:flutter_client/src/model/custom/custom_menu_item.dart';
-import 'package:flutter_client/src/model/custom/custom_screen.dart';
-import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-import 'package:flutter_client/src/model/menu/menu_group_model.dart';
-import 'package:flutter_client/src/model/menu/menu_item_model.dart';
-import 'package:flutter_client/util/extensions/list_extensions.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
 
+import '../../../../util/extensions/list_extensions.dart';
+import '../../../../util/logging/flutter_logger.dart';
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
+import '../../../model/command/data/get_data_chunk_command.dart';
+import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../model/component/panel/fl_panel_model.dart';
+import '../../../model/custom/custom_component.dart';
+import '../../../model/custom/custom_menu_item.dart';
+import '../../../model/custom/custom_screen.dart';
+import '../../../model/custom/custom_screen_manager.dart';
+import '../../../model/data/subscriptions/data_chunk.dart';
+import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
+import '../../../model/menu/menu_group_model.dart';
+import '../../../model/menu/menu_item_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../routing/locations/menu_location.dart';
 import '../../../routing/locations/setting_location.dart';
@@ -39,14 +39,10 @@ class UiService with CommandServiceMixin implements IUiService {
   MenuModel? _menuModel;
 
   /// Build context of the current location, used for routing and pop-ups
-
   BuildContext? _currentBuildContext;
 
-  /// The name of the current work screen
-  List<String> openWorkScreens = [];
-
   /// List of all models currently active
-  final List<FlComponentModel> _currentScreen = [];
+  final List<FlComponentModel> _activeComponentModels = [];
 
   /// Live component registration
   final List<ComponentSubscription> _registeredComponents = [];
@@ -211,35 +207,36 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   List<FlComponentModel> getChildrenModels(String id) {
-    var children = _currentScreen.where((element) => (element.parent == id)).toList();
+    var children = _activeComponentModels.where((element) => (element.parent == id)).toList();
     return children;
   }
 
   @override
   FlComponentModel? getComponentModel({required String pComponentId}) {
-    return _currentScreen.firstWhereOrNull((element) => element.id == pComponentId);
+    return _activeComponentModels.firstWhereOrNull((element) => element.id == pComponentId);
   }
 
   @override
   FlComponentModel? getComponentByName({required String pComponentName}) {
-    return _currentScreen.firstWhereOrNull((element) => element.name == pComponentName);
+    return _activeComponentModels.firstWhereOrNull((element) => element.name == pComponentName);
   }
 
   @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Save new components: " + newModels.map((e) => e.id).toList().toString());
-    _currentScreen.addAll(newModels);
+    _activeComponentModels.addAll(newModels);
   }
 
   @override
   void closeScreen({required String pScreenName}) {
-    FlComponentModel screenModel = _currentScreen.firstWhere((element) => element.name == pScreenName);
+    FlComponentModel screenModel = _activeComponentModels.firstWhere((element) => element.name == pScreenName);
 
-    List<FlComponentModel> children = _getAllComponentsBelow(screenModel.id);
+    List<FlComponentModel> children = getAllComponentsBelow(screenModel.id);
 
     // Remove all children and itself
-    _currentScreen.removeWhere((currentComp) => children.any((compToDelete) => compToDelete.id == currentComp.id));
-    _currentScreen.remove(screenModel);
+    _activeComponentModels
+        .removeWhere((currentComp) => children.any((compToDelete) => compToDelete.id == currentComp.id));
+    _activeComponentModels.remove(screenModel);
 
     // clear lists that get filled when new screen opens anyway
     _registeredComponents.clear();
@@ -251,17 +248,18 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   FlPanelModel? getOpenScreen({required String pScreenName}) {
-    return _currentScreen.firstWhereOrNull((element) => element.name == pScreenName) as FlPanelModel?;
+    return _activeComponentModels.firstWhereOrNull((element) => element.name == pScreenName) as FlPanelModel?;
   }
 
-  List<FlComponentModel> _getAllComponentsBelow(String id) {
+  @override
+  List<FlComponentModel> getAllComponentsBelow(String id) {
     List<FlComponentModel> children = [];
 
-    for (FlComponentModel componentModel in _currentScreen) {
+    for (FlComponentModel componentModel in _activeComponentModels) {
       String? parentId = componentModel.parent;
       if (parentId != null && parentId == id) {
         children.add(componentModel);
-        children.addAll(_getAllComponentsBelow(componentModel.id));
+        children.addAll(getAllComponentsBelow(componentModel.id));
       }
     }
     return children;
@@ -339,7 +337,7 @@ class UiService with CommandServiceMixin implements IUiService {
     // remove subscription for removed components
     for (String inactiveId in inactiveIds) {
       _layoutDataList.remove(inactiveId);
-      _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
+      _activeComponentModels.removeWhere((screenComponent) => screenComponent.id == inactiveId);
     }
   }
 
@@ -372,9 +370,9 @@ class UiService with CommandServiceMixin implements IUiService {
   void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
-      int index = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
+      int index = _activeComponentModels.indexWhere((element) => element.id == updatedModel.id);
       if (index != -1) {
-        _currentScreen[index] = updatedModel;
+        _activeComponentModels[index] = updatedModel;
       }
 
       // Notify active component

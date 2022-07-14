@@ -1,10 +1,12 @@
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
+import '../interface/i_data_model.dart';
 
-class FlCustomContainerModel extends FlComponentModel {
+class FlCustomContainerModel extends FlComponentModel implements IDataModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  @override
   String dataProvider = "";
   String columnName = "";
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

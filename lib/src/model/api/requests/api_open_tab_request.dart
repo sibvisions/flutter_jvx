@@ -1,10 +1,8 @@
-import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
-
 import '../api_object_property.dart';
+import 'i_api_request.dart';
 
 /// Request to notify the server which tab on a tab-set panel is now selected
 class ApiOpenTabRequest extends IApiRequest {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,11 +20,7 @@ class ApiOpenTabRequest extends IApiRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiOpenTabRequest({
-    required this.index,
-    required this.componentName,
-    required this.clientId
-  });
+  ApiOpenTabRequest({required this.index, required this.componentName, required this.clientId});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

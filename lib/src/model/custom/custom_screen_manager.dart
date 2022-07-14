@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/custom/custom_screen.dart';
+import 'custom_screen.dart';
 
 class CustomScreenManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

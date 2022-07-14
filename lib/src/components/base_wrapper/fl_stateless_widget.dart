@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../model/component/fl_component_model.dart';
 
 abstract class FlStatelessWidget<T extends FlComponentModel> extends StatelessWidget {

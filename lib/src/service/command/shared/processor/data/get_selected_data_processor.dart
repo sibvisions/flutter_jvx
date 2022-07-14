@@ -1,12 +1,13 @@
-import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-
 import '../../../../../mixin/data_service_mixin.dart';
+import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/get_selected_data_command.dart';
+import '../../../../../model/data/subscriptions/data_record.dart';
 import '../../i_command_processor.dart';
 
-class GetSelectedDataCommandProcessor with DataServiceMixin, UiServiceGetterMixin implements ICommandProcessor<GetSelectedDataCommand> {
+class GetSelectedDataCommandProcessor
+    with DataServiceMixin, UiServiceGetterMixin
+    implements ICommandProcessor<GetSelectedDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(GetSelectedDataCommand command) async {
     // Get Data record - is null if databook has -1 as selected row

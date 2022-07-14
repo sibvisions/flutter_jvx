@@ -1,19 +1,19 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
-import 'package:flutter_client/src/model/command/api/close_screen_command.dart';
-import 'package:flutter_client/src/model/command/api/navigation_command.dart';
-import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
-import 'package:flutter_client/src/model/command/storage/delete_screen_command.dart';
-import 'package:flutter_client/util/image/image_loader.dart';
-import 'package:flutter_client/util/misc/debouncer.dart';
-import 'package:flutter_client/util/parse_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../util/image/image_loader.dart';
+import '../../../util/misc/debouncer.dart';
+import '../../../util/parse_util.dart';
+import '../../components/panel/fl_panel_wrapper.dart';
+import '../../mixin/config_service_mixin.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/api/requests/api_navigation_request.dart';
+import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/device_status_command.dart';
+import '../../model/command/api/navigation_command.dart';
+import '../../model/command/layout/set_component_size_command.dart';
+import '../../model/command/storage/delete_screen_command.dart';
 import '../drawer/drawer_menu.dart';
 
 /// Screen used to show workScreens either custom or from the server,

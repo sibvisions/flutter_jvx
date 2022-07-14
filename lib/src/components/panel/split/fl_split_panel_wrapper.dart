@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
 
+import '../../../../util/constants/i_color.dart';
 import '../../../layout/split_layout.dart';
 import '../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../model/layout/layout_position.dart';

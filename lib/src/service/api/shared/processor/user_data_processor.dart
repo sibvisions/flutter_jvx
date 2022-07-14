@@ -1,10 +1,10 @@
-import 'package:flutter_client/src/model/api/response/user_data_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/config/save_user_data_command.dart';
-import 'package:flutter_client/src/model/config/user/user_info.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
+import '../../../../model/api/response/user_data_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/config/save_user_data_command.dart';
+import '../../../../model/config/user/user_info.dart';
+import '../i_response_processor.dart';
 
-class UserDataProcessor implements IProcessor<UserDataResponse> {
+class UserDataProcessor implements IResponseProcessor<UserDataResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,8 +1,6 @@
 import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/chart/fl_chart_widget.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/component/chart/fl_chart_model.dart';
@@ -10,6 +8,7 @@ import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import 'fl_chart_widget.dart';
 
 class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
   FlChartWrapper({Key? key, required String id}) : super(key: key, id: id);
