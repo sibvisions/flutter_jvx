@@ -28,6 +28,7 @@ import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'util/file/file_manager_web.dart';
+import 'util/logging/flutter_logger.dart';
 
 Future<bool> initApp({
   CustomScreenManager? pCustomManager,
@@ -35,6 +36,8 @@ Future<bool> initApp({
   List<Function>? languageCallbacks,
   List<Function>? styleCallbacks,
 }) async {
+  LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
+
   // Load config
   var sharedPrefs = await SharedPreferences.getInstance();
 

@@ -44,7 +44,7 @@ Future<bool> initApp({
   List<Function>? languageCallbacks,
   List<Function>? styleCallbacks,
 }) async {
-  log("init app");
+  LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
 
   // Needed to avoid CORS issues
   // ToDo find way to not do this

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 
 import '../../../init_app_mobile.dart' if (dart.library.html) '../../../init_app_web.dart';
+import '../../../util/logging/flutter_logger.dart';
 import 'loading_widget.dart';
 
 class SplashWidget extends StatefulWidget {
@@ -42,8 +43,8 @@ class _SplashWidgetState extends State<SplashWidget> {
   @override
   void initState() {
     super.initState();
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initState");
 
-    log("initstate");
     initAppFuture = initApp(
       initContext: context,
       languageCallbacks: widget.languageCallbacks,
@@ -53,7 +54,8 @@ class _SplashWidgetState extends State<SplashWidget> {
 
   @override
   Widget build(BuildContext context) {
-    log("build");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "build");
+
     return FutureBuilder(
       future: initAppFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
