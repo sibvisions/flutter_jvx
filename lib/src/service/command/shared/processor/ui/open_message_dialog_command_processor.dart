@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../../../mask/error/server_dialog.dart';
@@ -14,7 +16,7 @@ class OpenMessageDialogCommandProcessor extends ICommandProcessor<OpenMessageDia
       messageScreenName: command.messageScreenName,
     );
 
-    await getUiService().openDialog(pDialogWidget: messageWidget, pIsDismissible: false);
+    unawaited(getUiService().openDialog(pDialogWidget: messageWidget, pIsDismissible: false));
 
     return [];
   }

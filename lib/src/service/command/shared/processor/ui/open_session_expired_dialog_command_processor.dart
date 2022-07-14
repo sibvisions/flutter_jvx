@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../../../mask/error/server_session_expired.dart';
@@ -12,7 +14,7 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
   Future<List<BaseCommand>> processCommand(OpenSessionExpiredDialogCommand command) async {
     Widget dialog = ServerSessionExpired(message: command.message);
 
-    await getUiService().openDialog(pDialogWidget: dialog, pIsDismissible: false);
+    unawaited(getUiService().openDialog(pDialogWidget: dialog, pIsDismissible: false));
 
     return [];
   }
