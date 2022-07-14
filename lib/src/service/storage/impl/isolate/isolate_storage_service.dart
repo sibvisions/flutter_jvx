@@ -78,6 +78,7 @@ class IsolateStorageService implements IStorageService {
 
   /// Sends the [message] to the api Isolate and returns a Future containing the first answer.
   Future _sendMessage(StorageIsolateMessage message) async {
+    //TODO fix async awaits and remove every wrapper message and co&kg
     SendPort? apiPort = _apiSendPort;
     if (apiPort != null) {
       // Response will come to this receivePort
