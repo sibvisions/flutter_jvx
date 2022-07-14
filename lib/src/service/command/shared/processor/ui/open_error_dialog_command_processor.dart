@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mask/error/server_error_dialog.dart';
 import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
@@ -13,10 +15,10 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
       isTimeout: command.isTimeout,
     );
 
-    getUiService().openDialog(
+    unawaited(getUiService().openDialog(
       pDialogWidget: errorWidget,
       pIsDismissible: false,
-    );
+    ));
 
     return [];
   }

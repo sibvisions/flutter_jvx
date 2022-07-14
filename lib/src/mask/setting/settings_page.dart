@@ -396,7 +396,6 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       reason: "QR-Code-Scanned",
       password: password,
       username: username,
-      language: configService.getLanguage(),
       authKey: configService.getAuthCode(),
     );
     uiService.sendCommand(startupCommand);

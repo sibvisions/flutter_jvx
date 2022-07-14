@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import '../../shared/storage_service.dart';
+import '../default/storage_service.dart';
 import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
 import 'message/endpoint/storage_isolate_update_components_message.dart';
@@ -22,14 +22,13 @@ void storageCallback(SendPort callerSendPort) {
     StorageIsolateMessage isolateMessage = isolateMessageWrapper.message;
     dynamic response;
 
-
     if (isolateMessage is StorageIsolateGetScreenMessage) {
       response = await componentStore.getScreenByScreenClassName(isolateMessage.screenClassName);
     } else if (isolateMessage is StorageIsolateUpdateComponentsMessage) {
       response = await componentStore.updateComponents(
           isolateMessage.componentsToUpdate, isolateMessage.newComponents, isolateMessage.screenClassName);
     } else if (isolateMessage is StorageIsolateDeleteScreenMessage) {
-      componentStore.deleteScreen(screenName: isolateMessage.screenName);
+      await componentStore.deleteScreen(screenName: isolateMessage.screenName);
     }
 
     if (response != null) {

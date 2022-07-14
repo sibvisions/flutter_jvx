@@ -163,7 +163,6 @@ Future<bool> initApp({
   Size phoneSize = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size;
 
   StartupCommand startupCommand = StartupCommand(
-    language: lastRunConfig.language,
     reason: "InitApp",
     username: userName,
     password: password,

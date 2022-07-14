@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_client/src/model/command/api/startup_command.dart';
-import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
-import 'package:flutter_client/util/file/file_manager_web.dart';
 
 import 'data/config/config_generator.dart';
+import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
 import 'src/model/config/api/url_config.dart';
+import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
 import 'src/service/api/impl/default/api_service.dart';
 import 'src/service/api/shared/controller/api_controller.dart';
@@ -24,9 +23,10 @@ import 'src/service/layout/i_layout_service.dart';
 import 'src/service/layout/impl/layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
-import 'src/service/storage/impl/default/default_storage_service.dart';
+import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
+import 'util/file/file_manager_web.dart';
 
 Future<bool> initApp({
   CustomScreenManager? pCustomManager,
@@ -61,7 +61,7 @@ Future<bool> initApp({
   services.registerSingleton(layoutService, signalsReady: true);
 
   // Storage
-  IStorageService storageService = DefaultStorageService();
+  IStorageService storageService = StorageService();
   services.registerSingleton(storageService, signalsReady: true);
 
   // Data
@@ -76,7 +76,7 @@ Future<bool> initApp({
   IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);
   services.registerSingleton(uiService, signalsReady: true);
 
-  StartupCommand startupCommand = StartupCommand(reason: "InitApp", language: "de");
+  StartupCommand startupCommand = StartupCommand(reason: "InitApp");
   commandService.sendCommand(startupCommand);
 
   return SynchronousFuture(true);
