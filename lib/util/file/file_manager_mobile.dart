@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_client/util/file/file_manager.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileMangerMobile implements IFileManager {
@@ -87,7 +88,7 @@ class FileMangerMobile implements IFileManager {
 
   @override
   Future<File?> getIndependentFile({required String pPath}) async {
-    File file = File("${directory.path}/${_preparePath(pPath: pPath)}");
+    File file = File(join(directory.path, pPath));
 
     if (await file.exists()) {
       return file;
@@ -97,7 +98,7 @@ class FileMangerMobile implements IFileManager {
 
   @override
   File? getIndependentFileSync({required String pPath}) {
-    File file = File("${directory.path}/${_preparePath(pPath: pPath)}");
+    File file = File(join(directory.path, pPath));
 
     if (file.existsSync()) {
       return file;
@@ -107,7 +108,7 @@ class FileMangerMobile implements IFileManager {
 
   @override
   Future<File> saveIndependentFile({required List<int> pContent, required String pPath}) async {
-    File file = File("${directory.path}/${_preparePath(pPath: pPath)}");
+    File file = File(join(directory.path, pPath));
     File created = await file.create(recursive: true);
     return created.writeAsBytes(pContent);
   }
@@ -136,16 +137,6 @@ class FileMangerMobile implements IFileManager {
     if (_appVersion == null || _appName == null) {
       throw Exception("App Version/Name was not set while trying to save/read files!");
     }
-    return "${directory.path}/$_appName/$_appVersion${_preparePath(pPath: pPath)}";
-  }
-
-  /// Will prepare the path to be uniform (always have a leading "/")
-  /// "example.txt" -> "/example.txt"
-  /// "/example.txt" -> "/example.txt"
-  String _preparePath({required String pPath}) {
-    if (!pPath.startsWith("/")) {
-      pPath = "/$pPath";
-    }
-    return pPath;
+    return join(directory.path, _appName, _appVersion, pPath);
   }
 }
