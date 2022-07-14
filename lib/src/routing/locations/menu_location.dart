@@ -20,7 +20,7 @@ class MenuLocation extends BeamLocation<BeamState> with UiServiceGetterMixin, Co
       getUiService().setRouteContext(pContext: context);
     }
 
-    DefaultLoadingProgressHandler? loadingProgressHandler = (getICommandService() as CommandService)
+    DefaultLoadingProgressHandler? loadingProgressHandler = (getCommandService() as CommandService)
         .progressHandler
         .firstWhereOrNull((element) => element is DefaultLoadingProgressHandler) as DefaultLoadingProgressHandler?;
     loadingProgressHandler?.isEnabled = true;

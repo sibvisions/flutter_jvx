@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter_client/src/model/command/api/fetch_command.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/component/interface/i_data_model.dart';
 
@@ -48,9 +49,16 @@ class GoOfflineCommandProcessor
 
     log(activeDataProviders.toString());
 
-    List<BaseCommand> commands = [];
     for (String dataProvider in activeDataProviders) {
-      //commands.add(GetDataChunkCommand(reason: "Going offline", fromRow: 0, dataProvider: dataProvider));
+      await getCommandService().sendCommand(
+        FetchCommand(
+          reason: "Going offline",
+          dataProvider: dataProvider,
+          fromRow: 0,
+          rowCount: -1,
+          includeMetaData: true,
+        ),
+      );
     }
 
     return [];

@@ -9,7 +9,7 @@ mixin CommandServiceMixin {
 }
 
 mixin CommandServiceGetterMixin {
-  ICommandService getICommandService() {
+  ICommandService getCommandService() {
     return services<ICommandService>();
   }
 }
