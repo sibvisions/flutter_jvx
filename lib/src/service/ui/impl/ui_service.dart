@@ -350,9 +350,9 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void disposeDataSubscription({required Object pSubscriber, required String pDataProvider}) {
-    _dataSubscriptions
-        .removeWhere((element) => element.subbedObj == pSubscriber && element.dataProvider == pDataProvider);
+  void disposeDataSubscription({required Object pSubscriber, String? pDataProvider}) {
+    _dataSubscriptions.removeWhere((element) =>
+        element.subbedObj == pSubscriber && (pDataProvider != null || element.dataProvider == pDataProvider));
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

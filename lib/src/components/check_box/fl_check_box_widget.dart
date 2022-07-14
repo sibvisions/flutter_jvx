@@ -15,7 +15,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
       value: model.selected,
       onChanged: (_) {
         if (model.isEnabled) {
-          onPress();
+          onPress?.call();
         }
       },
     );

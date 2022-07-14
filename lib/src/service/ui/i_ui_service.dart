@@ -135,7 +135,7 @@ abstract class IUiService {
   void disposeSubscriptions({required Object pSubscriber});
 
   /// Removes [DataSubscription] from [IUiService]
-  void disposeDataSubscription({required Object pSubscriber, required String pDataProvider});
+  void disposeDataSubscription({required Object pSubscriber, String? pDataProvider});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves

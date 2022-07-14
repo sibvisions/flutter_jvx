@@ -29,7 +29,7 @@ class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlButtonWrapperS
   Widget build(BuildContext context) {
     FlCheckBoxWidget checkboxWidget = FlCheckBoxWidget(
       model: model,
-      onPress: buttonPressed,
+      onPress: sendButtonPressed,
     );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {

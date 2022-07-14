@@ -84,6 +84,12 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   @override
+  void dispose() {
+    uiService.disposeSubscriptions(pSubscriber: this);
+    super.dispose();
+  }
+
+  @override
   void setState(VoidCallback fn) {
     if (mounted) {
       super.setState(fn);

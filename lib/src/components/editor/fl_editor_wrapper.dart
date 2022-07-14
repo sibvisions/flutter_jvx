@@ -120,7 +120,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   void dispose() {
-    uiService.disposeSubscriptions(pSubscriber: this);
     cellEditor.dispose();
     super.dispose();
   }

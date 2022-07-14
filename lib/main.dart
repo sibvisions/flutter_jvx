@@ -3,15 +3,15 @@ import 'dart:io';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_client/src/routing/fl_back_button_dispatcher.dart';
-import 'package:flutter_client/src/routing/locations/login_location.dart';
-import 'package:flutter_client/src/routing/locations/menu_location.dart';
-import 'package:flutter_client/src/routing/locations/setting_location.dart';
-import 'package:flutter_client/src/routing/locations/splash_location.dart';
-import 'package:flutter_client/src/routing/locations/work_screen_location.dart';
-import 'package:flutter_client/util/parse_util.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'src/routing/fl_back_button_dispatcher.dart';
+import 'src/routing/locations/login_location.dart';
+import 'src/routing/locations/menu_location.dart';
+import 'src/routing/locations/setting_location.dart';
+import 'src/routing/locations/splash_location.dart';
+import 'src/routing/locations/work_screen_location.dart';
+import 'util/parse_util.dart';
 
 void main() {
   runApp(const MyApp());

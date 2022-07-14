@@ -11,11 +11,19 @@ import '../label/fl_label_widget.dart';
 /// The widget representing a button.
 class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String OFFLINE_BUTTON = "OfflineButton";
+  static const String QR_SCANNER_BUTTON = "QRScannerButton";
+  static const String CALL_BUTTON = "CallButton";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // The function to call on the press of the button.
-  final VoidCallback onPress;
+  final VoidCallback? onPress;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults

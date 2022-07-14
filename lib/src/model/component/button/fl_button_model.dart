@@ -47,6 +47,12 @@ class FlButtonModel extends FlComponentModel {
   /// The style of the Button.
   String style = "";
 
+  /// Dataprovider for QR-Code buttons or telephone button
+  String dataProvider = "";
+
+  /// Columnname for QR-Code buttons or telephone button
+  String columnName = "";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -165,6 +171,20 @@ class FlButtonModel extends FlComponentModel {
       pKey: ApiObjectProperty.style,
       pDefault: defaultModel.style,
       pCurrent: style,
+    );
+
+    dataProvider = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.dataProvider,
+      pDefault: defaultModel.dataProvider,
+      pCurrent: dataProvider,
+    );
+
+    columnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.columnName,
+      pDefault: defaultModel.columnName,
+      pCurrent: columnName,
     );
 
     // Label parsing

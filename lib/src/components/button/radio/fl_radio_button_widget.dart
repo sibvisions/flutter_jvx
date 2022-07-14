@@ -16,7 +16,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
       groupValue: model.selected,
       onChanged: (_) {
         if (model.isEnabled) {
-          onPress();
+          onPress?.call();
         }
       },
       toggleable: true,
