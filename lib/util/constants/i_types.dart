@@ -74,4 +74,48 @@ class Types {
   static const int NCLOB = 2011;
 
   static const int SQLXML = 2009;
+
+  static String convertToSQLite(int dataType) {
+    switch (dataType) {
+      case NULL:
+        return "NULL";
+      case BIT:
+      case TINYINT:
+      case SMALLINT:
+      case INTEGER:
+      case BIGINT:
+      case BOOLEAN:
+        return "INTEGER";
+      case FLOAT:
+      case REAL:
+      case DOUBLE:
+      case NUMERIC:
+      case DECIMAL:
+        return "REAL";
+      case BINARY:
+      case VARBINARY:
+      case LONGVARBINARY:
+      case JAVA_OBJECT:
+      case BLOB:
+        return "BLOB";
+
+      //Date/Time
+      case DATE:
+      case TIME:
+      case TIMESTAMP:
+      //Text
+      case CHAR:
+      case VARCHAR:
+      case LONGVARCHAR:
+      case CLOB:
+      case NCHAR:
+      case NVARCHAR:
+      case LONGNVARCHAR:
+      case NCLOB:
+      case SQLXML:
+      //Fallback
+      default:
+        return "TEXT";
+    }
+  }
 }
