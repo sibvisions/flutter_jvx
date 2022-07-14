@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:signature/signature.dart';
 
 import '../../model/command/api/set_values_command.dart';
@@ -32,10 +34,22 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   DataRecord? _dataRecord;
   late final SignatureController signatureController;
   bool showImage = false;
+  LongPressDownDetails? details;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Overridden methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void initState() {
+    super.initState();
+    signatureController = SignatureController();
+
+    showImage = _dataRecord?.values[0] != null;
+    layoutData.isFixedSize = true;
+
+    subscribe();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +60,8 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       sendSignature: sendSignature,
       deleteSignature: deleteSignature,
       dataRecord: _dataRecord,
+      onLongPress: showContextMenu,
+      onLongPressDown: (details) => this.details = details,
     );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
@@ -58,16 +74,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   @override
   Size calculateSize(BuildContext context) {
     return const Size.square(300);
-  }
-
-  @override
-  void initState() {
-    signatureController = SignatureController();
-
-    super.initState();
-    subscribe();
-    showImage = _dataRecord?.values[0] != null;
-    layoutData.isFixedSize = true;
   }
 
   @override
@@ -85,12 +91,8 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
     log("Sending Signature");
 
-    SetValuesCommand setValues = SetValuesCommand(
-        componentId: model.id,
-        dataProvider: model.dataProvider,
-        columnNames: getDataColumns(),
-        values: values,
-        reason: "Drawing has ended on ${model.id}");
+    SetValuesCommand setValues =
+        SetValuesCommand(componentId: model.id, dataProvider: model.dataProvider, columnNames: getDataColumns(), values: values, reason: "Drawing has ended on ${model.id}");
     uiService.sendCommand(setValues);
   }
 
@@ -98,12 +100,8 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     log("Deleting Signature");
     signatureController.clear();
 
-    SetValuesCommand setValues = SetValuesCommand(
-        componentId: model.id,
-        dataProvider: model.dataProvider,
-        columnNames: getDataColumns(),
-        values: [],
-        reason: "Drawing has ended on ${model.id}");
+    SetValuesCommand setValues =
+        SetValuesCommand(componentId: model.id, dataProvider: model.dataProvider, columnNames: getDataColumns(), values: [], reason: "Drawing has ended on ${model.id}");
     uiService.sendCommand(setValues);
   }
 
@@ -131,5 +129,49 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
   List<String> getDataColumns() {
     return [model.columnName];
+  }
+
+  showContextMenu() {
+    if (details == null) {
+      return;
+    }
+
+    List<PopupMenuEntry<SignatureContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<SignatureContextMenuCommand>>[];
+
+    if (_dataRecord?.values[0] == null) {
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare, 'Done', SignatureContextMenuCommand.DONE));
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Clear', SignatureContextMenuCommand.CLEAR));
+    } else {
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Clear', SignatureContextMenuCommand.CLEAR));
+    }
+
+    showMenu(position: RelativeRect.fromRect(details!.globalPosition & const Size(40, 40), Offset.zero & MediaQuery.of(context).size), context: context, items: popupMenuEntries)
+        .then((val) {
+      WidgetsBinding.instance!.focusManager.primaryFocus?.unfocus();
+      if (val != null) {
+        if (val == SignatureContextMenuCommand.DONE) {
+          sendSignature();
+        } else if (val == SignatureContextMenuCommand.CLEAR) {
+          deleteSignature();
+        }
+      }
+    });
+  }
+
+  PopupMenuItem<SignatureContextMenuCommand> _getContextMenuItem(IconData icon, String text, SignatureContextMenuCommand value) {
+    return PopupMenuItem<SignatureContextMenuCommand>(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          FaIcon(
+            icon,
+            color: Colors.grey[600],
+          ),
+          Padding(padding: const EdgeInsets.only(left: 5), child: Text(text)),
+        ],
+      ),
+      enabled: true,
+      value: value,
+    );
   }
 }
