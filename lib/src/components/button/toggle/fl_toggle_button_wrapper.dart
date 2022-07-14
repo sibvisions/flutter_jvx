@@ -17,7 +17,7 @@ class FlToggleButtonWrapperState<T extends FlToggleButtonModel> extends FlButton
   Widget build(BuildContext context) {
     final FlToggleButtonWidget buttonWidget = FlToggleButtonWidget(
       model: model,
-      onPress: sendButtonPressed,
+      onPress: onPress,
     );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {

@@ -29,7 +29,7 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
   Widget build(BuildContext context) {
     FlRadioButtonWidget radioButtonWidget = FlRadioButtonWidget(
       model: model,
-      onPress: sendButtonPressed,
+      onPress: onPress,
     );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
