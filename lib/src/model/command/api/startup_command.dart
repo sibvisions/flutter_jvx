@@ -11,9 +11,6 @@ class StartupCommand extends ApiCommand {
   /// The username
   final String? username;
 
-  /// Auth key from previous auto-login
-  final String? authKey;
-
   /// Width of the screen (display area)
   final double? screenWidth;
 
@@ -28,7 +25,6 @@ class StartupCommand extends ApiCommand {
     required String reason,
     this.password,
     this.username,
-    this.authKey,
     this.screenHeight,
     this.screenWidth,
   }) : super(reason: reason);

@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter_client/src/model/command/api/download_images_command.dart';
 import 'package:flutter_client/src/model/command/api/download_style_command.dart';
 import 'package:flutter_client/src/model/command/api/download_translation_command.dart';
-import 'package:flutter_client/src/model/config/config_file/last_run_config.dart';
 
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
@@ -19,21 +16,10 @@ class SaveAppMetaDataProcessor with ConfigServiceMixin implements ICommandProces
     configService.setClientId(command.metaData.clientId);
     configService.setVersion(version);
 
-    LastRunConfig lastRunConfig = LastRunConfig(
-      language: configService.getLanguage(),
-      version: version,
-    );
-
-    configService.getFileManager().saveIndependentFile(
-          pContent: jsonEncode(lastRunConfig).runes.toList(),
-          pPath: "lastRunConfig.json",
-        );
-
     bool doLangExits = configService.getFileManager().getDirectory(pPath: "languages/")?.existsSync() ?? false;
     bool doImgExits = configService.getFileManager().getDirectory(pPath: "images/")?.existsSync() ?? false;
 
     List<BaseCommand> commands = [];
-
     if (!doLangExits) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
     }

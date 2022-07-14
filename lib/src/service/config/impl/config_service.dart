@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter_client/src/model/config/config_file/last_run_config.dart';
 import 'package:flutter_client/src/model/config/translation/translation.dart';
 import 'package:flutter_client/util/logging/flutter_logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../util/file/file_manager.dart';
 import '../../../model/config/api/api_config.dart';
@@ -17,9 +16,9 @@ class ConfigService implements IConfigService {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  List<String> supportedLanguages;
+  final Set<String> supportedLanguages = {"en"};
 
-  final LastRunConfig lastRunConfig = LastRunConfig();
+  final SharedPreferences sharedPrefs;
 
   /// Config of the api
   final ApiConfig apiConfig;
@@ -61,8 +60,7 @@ class ConfigService implements IConfigService {
     required this.appName,
     required this.apiConfig,
     required this.fileManager,
-    required this.supportedLanguages,
-    required String langCode,
+    required this.sharedPrefs,
     List<Function>? pStyleCallbacks,
     List<Function>? pLanguageCallbacks,
   }) {
@@ -74,7 +72,12 @@ class ConfigService implements IConfigService {
     }
 
     fileManager.setAppName(pName: appName);
-    lastRunConfig.language = langCode;
+    var success = _loadVersion();
+
+    // Only load if version is set in FileManager
+    if (success) {
+      reloadSupportedLanguages();
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,16 +96,17 @@ class ConfigService implements IConfigService {
 
   @override
   String? getVersion() {
-    return lastRunConfig.version;
+    return sharedPrefs.getString("$appName.version");
   }
 
   @override
-  void setVersion(String? pVersion) {
+  void setVersion(String? pVersion) async {
     if (pVersion != null) {
       fileManager.setAppVersion(pVersion: pVersion);
+      await sharedPrefs.setString("$appName.version", pVersion);
+    } else {
+      await sharedPrefs.remove("$appName.version");
     }
-    lastRunConfig.version = pVersion;
-    _saveRunConfigToFile();
   }
 
   @override
@@ -121,10 +125,10 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void setAppName(String pAppName) {
+  void setAppName(String pAppName) async {
     appName = pAppName;
     fileManager.setAppName(pName: pAppName);
-    _saveRunConfigToFile();
+    await sharedPrefs.setString(appName, pAppName);
   }
 
   @override
@@ -149,53 +153,48 @@ class ConfigService implements IConfigService {
 
   @override
   String getLanguage() {
-    return lastRunConfig.language!;
+    return sharedPrefs.getString("$appName.language") ?? "en";
   }
 
   @override
-  void setLanguage(String pLanguage) {
-    lastRunConfig.language = pLanguage;
-    translation.translations.clear();
-    _saveRunConfigToFile();
-
-    File? defaultTranslationFile = fileManager.getFileSync(pPath: "languages/translation.json");
-    File? langTransFile = fileManager.getFileSync(pPath: "languages/translation_$pLanguage.json");
-
-    if (defaultTranslationFile != null) {
-      Translation defaultTrans = Translation.fromFile(pFile: defaultTranslationFile);
-      translation.translations.addAll(defaultTrans.translations);
-    }
-
-    if (langTransFile == null) {
-      LOGGER.logW(
-          pType: LOG_TYPE.CONFIG, pMessage: "Translation file for code ${lastRunConfig.language} could not be found");
-    } else {
-      Translation langTrans = Translation.fromFile(pFile: langTransFile);
-      translation.translations.addAll(langTrans.translations);
-    }
-
-    languageCallbacks.forEach((element) => element.call(pLanguage));
+  void setLanguage(String pLanguage) async {
+    await sharedPrefs.setString("$appName.language", pLanguage);
+    _loadLanguage(pLanguage);
   }
 
   @override
   String? getAuthCode() {
-    return lastRunConfig.authCode;
+    return sharedPrefs.getString("$appName.authKey");
   }
 
   @override
-  void setAuthCode(String? pAuthCode) {
-    lastRunConfig.authCode = pAuthCode;
-    _saveRunConfigToFile();
+  void setAuthCode(String? pAuthCode) async {
+    if (pAuthCode != null) {
+      await sharedPrefs.setString("$appName.authKey", pAuthCode);
+    } else {
+      await sharedPrefs.remove("$appName.authKey");
+    }
   }
 
   @override
-  List<String> getSupportedLang() {
+  Set<String> getSupportedLanguages() {
     return supportedLanguages;
   }
 
   @override
-  void setSupportedLang({required List<String> languages}) {
-    supportedLanguages = languages;
+  void reloadSupportedLanguages() {
+    // Add supported languages by parsing all translation file names
+    Directory? langDir = fileManager.getDirectory(pPath: "languages/");
+    if (langDir != null && langDir.existsSync()) {
+      List<String> fileNames = langDir.listSync().map((e) => e.path.split("/").last).toList();
+
+      fileNames.forEach((element) {
+        RegExpMatch? match = IConfigService.langRegex.firstMatch(element);
+        if (match != null) {
+          supportedLanguages.add(match.namedGroup("name")!);
+        }
+      });
+    }
   }
 
   @override
@@ -222,9 +221,7 @@ class ConfigService implements IConfigService {
   String translateText(String pText) {
     String? translatedText = translation.translations[pText];
     if (translatedText == null) {
-      LOGGER.logD(
-          pType: LOG_TYPE.CONFIG,
-          pMessage: "Translation for text: $pText was not found for language ${lastRunConfig.language}");
+      LOGGER.logD(pType: LOG_TYPE.CONFIG, pMessage: "Translation for text: $pText was not found for language ${getLanguage()}");
       return pText;
     }
     return translatedText;
@@ -269,8 +266,35 @@ class ConfigService implements IConfigService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  _saveRunConfigToFile() {
-    fileManager.saveIndependentFile(
-        pContent: jsonEncode(lastRunConfig).runes.toList(), pPath: "$appName/lastRunConfig.json");
+  // Returns [bool] if version was loaded successfully
+  bool _loadVersion() {
+    // Load version
+    if (sharedPrefs.containsKey("$appName.version")) {
+      var version = sharedPrefs.getString("$appName.version");
+      // Set app version so version specific files can be get
+      fileManager.setAppVersion(pVersion: version);
+      return true;
+    }
+    return false;
+  }
+
+  void _loadLanguage(String pLanguage) {
+    translation.translations.clear();
+    File? defaultTranslationFile = fileManager.getFileSync(pPath: "languages/translation.json");
+    File? langTransFile = fileManager.getFileSync(pPath: "languages/translation_$pLanguage.json");
+
+    if (defaultTranslationFile != null) {
+      Translation defaultTrans = Translation.fromFile(pFile: defaultTranslationFile);
+      translation.translations.addAll(defaultTrans.translations);
+    }
+
+    if (langTransFile == null) {
+      LOGGER.logW(pType: LOG_TYPE.CONFIG, pMessage: "Translation file for code $pLanguage could not be found");
+    } else {
+      Translation langTrans = Translation.fromFile(pFile: langTransFile);
+      translation.translations.addAll(langTrans.translations);
+    }
+
+    languageCallbacks.forEach((element) => element.call(pLanguage));
   }
 }

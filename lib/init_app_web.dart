@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/config_generator.dart';
 import 'src/model/command/api/startup_command.dart';
@@ -33,28 +34,41 @@ Future<bool> initApp({
   required BuildContext initContext,
   List<Function>? languageCallbacks,
   List<Function>? styleCallbacks,
-}) {
+}) async {
+  // Load config
+  var sharedPrefs = await SharedPreferences.getInstance();
+
+  // Init values, should be possible to provide to initApp
+  // TODO Get app name!
+  String appName = sharedPrefs.getString("appName") ?? (kDebugMode ? "demo" : "");
+
+  await sharedPrefs.setString("appName", appName);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Service init
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   // API
   UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8090);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer2, endpointConfig: endpointConfig);
+
+  // Config
+  IConfigService configService = ConfigService(
+    appName: appName,
+    apiConfig: apiConfig,
+    fileManager: FileManagerWeb(),
+    sharedPrefs: sharedPrefs,
+    pStyleCallbacks: styleCallbacks,
+    pLanguageCallbacks: languageCallbacks,
+  );
+  services.registerSingleton(configService, signalsReady: true);
+
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();
   IApiService apiService = ApiService(repository: repository, controller: controller);
   services.registerSingleton(apiService, signalsReady: true);
-
-  // Config
-  IConfigService configService = ConfigService(
-    appName: "demo",
-    apiConfig: apiConfig,
-    fileManager: FileManagerWeb(),
-    langCode: 'en',
-    supportedLanguages: ["en"],
-    pLanguageCallbacks: languageCallbacks,
-    pStyleCallbacks: styleCallbacks,
-  );
-  services.registerSingleton(configService, signalsReady: true);
 
   // Layout
   ILayoutService layoutService = LayoutService();
@@ -77,7 +91,7 @@ Future<bool> initApp({
   services.registerSingleton(uiService, signalsReady: true);
 
   StartupCommand startupCommand = StartupCommand(reason: "InitApp");
-  commandService.sendCommand(startupCommand);
+  await commandService.sendCommand(startupCommand);
 
-  return SynchronousFuture(true);
+  return true;
 }

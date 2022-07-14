@@ -23,7 +23,7 @@ class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implement
       screenHeight: command.screenHeight,
       screenWidth: command.screenWidth,
       langCode: configService.getLanguage(),
-      authKey: command.authKey,
+      authKey: configService.getAuthCode(),
     );
 
     return apiService.sendRequest(request: startUpRequest);

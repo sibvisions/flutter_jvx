@@ -259,7 +259,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
         Picker picker = Picker(
             confirmTextStyle: const TextStyle(fontSize: 14),
             cancelTextStyle: const TextStyle(fontSize: 14),
-            adapter: PickerDataAdapter<String>(pickerdata: configService.getSupportedLang()),
+            adapter: PickerDataAdapter<String>(pickerdata: configService.getSupportedLanguages().toList(growable: false)),
             columnPadding: const EdgeInsets.all(8),
             onConfirm: (Picker picker, List value) {
               languageNotifier.value = picker.getSelectedValues()[0];
@@ -396,7 +396,6 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       reason: "QR-Code-Scanned",
       password: password,
       username: username,
-      authKey: configService.getAuthCode(),
     );
     uiService.sendCommand(startupCommand);
 

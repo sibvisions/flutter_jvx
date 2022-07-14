@@ -8,6 +8,9 @@ import '../../../util/file/file_manager.dart';
 /// also stores session based data such as clientId and userData.
 // Author: Michael Schober
 abstract class IConfigService {
+
+  static final RegExp langRegex = RegExp("_(?<name>[a-z]+)");
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,11 +75,10 @@ abstract class IConfigService {
   /// Get auth code if one has been set
   String? getAuthCode();
 
-  /// Return a list of all supported languages codes
-  List<String> getSupportedLang();
+  /// Returns a modifiable list of all supported languages codes
+  Set<String> getSupportedLanguages();
 
-  /// Return a list of all supported languages codes
-  void setSupportedLang({required List<String> languages});
+  void reloadSupportedLanguages();
 
   /// Get app style sent from server
   Map<String, String>? getAppStyle();

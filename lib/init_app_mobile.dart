@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/config_generator.dart';
 import 'main.dart';
@@ -11,7 +13,6 @@ import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
 import 'src/model/config/api/url_config.dart';
 import 'src/model/config/config_file/app_config.dart';
-import 'src/model/config/config_file/last_run_config.dart';
 import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
 import 'src/service/api/impl/isolate/isolate_api.dart';
@@ -53,15 +54,16 @@ Future<bool> initApp({
   // If not called will throw error when trying to access any files
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load config
+  var sharedPrefs = await SharedPreferences.getInstance();
+
   // Init values, should be possible to provide to initApp
-  String appName = "demo";
-  String langCode = "en";
-  String? auth;
+  // TODO Get app name!
+  String appName = sharedPrefs.getString("appName") ?? (kDebugMode ? "demo" : "");
   String? userName;
   String? password;
 
-  FileMangerMobile fileMangerMobile = await FileMangerMobile.create();
-  fileMangerMobile.setAppName(pName: appName);
+  await sharedPrefs.setString("appName", appName);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Load config files
@@ -84,56 +86,30 @@ Future<bool> initApp({
     LOGGER.logD(pType: LOG_TYPE.GENERAL, pMessage: "No Dev Config found");
   }
 
-  // Load last running config
-  LastRunConfig lastRunConfig = LastRunConfig();
-  List<String> supportedLang = ["en"];
-  File? lastRunConfigFile = await fileMangerMobile.getIndependentFile(pPath: "$appName/lastRunConfig.json");
-  if (lastRunConfigFile != null) {
-    lastRunConfig = LastRunConfig.fromJson(pJson: jsonDecode(lastRunConfigFile.readAsStringSync()));
-    // Set app version so version specific files can be get
-    fileMangerMobile.setAppVersion(pVersion: lastRunConfig.version!);
-
-    // Add supported languages by parsing all translation file names
-    Directory? lang = fileMangerMobile.getDirectory(pPath: "languages/");
-    if (lang != null && lang.existsSync()) {
-      List<String> fileNames = lang.listSync().map((e) => e.path.split("/").last).toList();
-      RegExp regExp = RegExp("_(?<name>[a-z]*)");
-
-      fileNames.forEach((element) {
-        RegExpMatch? match = regExp.firstMatch(element);
-        if (match != null) {
-          supportedLang.add(match.namedGroup("name")!);
-        }
-      });
-    }
-  }
-
-  auth = lastRunConfig.authCode;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Service init
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Api
+  // API
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
   UrlConfig urlConfig = urlConfigServer;
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
-  IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
-  IController controller = ApiController();
-  IApiService apiService = await IsolateApi.create(controller: controller, repository: repository);
-  services.registerSingleton(apiService, signalsReady: true);
 
   // Config
   IConfigService configService = ConfigService(
-    langCode: lastRunConfig.language ?? langCode,
     appName: appName,
     apiConfig: apiConfig,
-    fileManager: fileMangerMobile,
-    supportedLanguages: supportedLang,
+    fileManager: await FileMangerMobile.create(),
+    sharedPrefs: sharedPrefs,
     pStyleCallbacks: styleCallbacks,
     pLanguageCallbacks: languageCallbacks,
   );
   services.registerSingleton(configService, signalsReady: true);
+
+  IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
+  IController controller = ApiController();
+  IApiService apiService = await IsolateApi.create(controller: controller, repository: repository);
+  services.registerSingleton(apiService, signalsReady: true);
 
   // Layout
   ILayoutService layoutService = await IsolateLayoutService.create();
@@ -168,7 +144,6 @@ Future<bool> initApp({
     password: password,
     screenWidth: phoneSize.width,
     screenHeight: phoneSize.height,
-    authKey: auth,
   );
   await commandService.sendCommand(startupCommand);
 
