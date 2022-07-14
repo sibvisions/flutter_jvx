@@ -7,7 +7,6 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.16.0 <3.0.0"
 
-
 dependencies:
   # Flutter Dep
   flutter_lints: ^1.0.0
@@ -20,27 +19,27 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   # Custom  Dep
-    # REST handling
+  # REST handling
   http: ^0.13.4
-    # Icons
+  # Icons
   font_awesome_flutter: ^9.2.0
-    # Translations capability
+  # Translations capability
   intl: ^0.17.0
-    # Managing different persistent classes
+  # Managing different persistent classes
   get_it: ^7.2.0
-    # QR Scanner
+  # QR Scanner
   mobile_scanner: ^1.0.0
-    # Saving files on system
+  # Saving files on system
   path_provider: ^2.0.9
-    # handling zip files
+  # handling zip files
   archive: ^3.2.2
-    # Special Slivers for lists and grids
+  # Special Slivers for lists and grids
   sliver_tools: ^0.2.5
-    # Auto resizing text widget
+  # Auto resizing text widget
   auto_size_text: ^3.0.0
-    # Used for routing with navigator 2.0
+  # Used for routing with navigator 2.0
   beamer: ^1.4.0+1
-    # Used for offline mode
+  # Used for offline mode
   sqflite: ^2.0.2+1
   path: ^1.8.0
   flutter_map: ^0.14.0
@@ -54,6 +53,7 @@ dependencies:
   linked_scroll_controller: ^0.2.0
   charts_flutter: ^0.12.0
   gauges: ^1.0.0
+  shared_preferences: ^2.0.15
 
 flutter:
   assets:
