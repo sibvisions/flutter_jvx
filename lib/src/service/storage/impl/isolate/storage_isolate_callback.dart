@@ -31,8 +31,6 @@ void storageCallback(SendPort callerSendPort) {
       await componentStore.deleteScreen(screenName: isolateMessage.screenName);
     }
 
-    if (response != null) {
-      isolateMessage.sendResponse(response: response, sendPort: isolateMessageWrapper.sendPort);
-    }
+    isolateMessage.sendResponse(response: response, sendPort: isolateMessageWrapper.sendPort);
   });
 }

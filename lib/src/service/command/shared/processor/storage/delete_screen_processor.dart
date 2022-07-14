@@ -11,7 +11,7 @@ class DeleteScreenProcessor
     implements ICommandProcessor<DeleteScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DeleteScreenCommand command) async {
-    unawaited(storageService.deleteScreen(screenName: command.screenName));
+    await storageService.deleteScreen(screenName: command.screenName);
     getUiService().closeScreen(pScreenName: command.screenName);
 
     return [];
