@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
@@ -13,7 +15,7 @@ class SaveAppMetaDataProcessor with ConfigServiceMixin implements ICommandProces
     String version = command.metaData.version.replaceAll(".", "_");
 
     configService.setClientId(command.metaData.clientId);
-    configService.setVersion(version);
+    await configService.setVersion(version);
 
     bool doLangExits = configService.getFileManager().getDirectory(pPath: "languages/")?.existsSync() ?? false;
     bool doImgExits = configService.getFileManager().getDirectory(pPath: "images/")?.existsSync() ?? false;

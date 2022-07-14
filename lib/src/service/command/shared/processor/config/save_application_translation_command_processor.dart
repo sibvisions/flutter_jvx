@@ -24,7 +24,7 @@ class SaveApplicationTranslationCommandProcessor
     configService.reloadSupportedLanguages();
 
     // Trigger load language
-    configService.setLanguage(configService.getLanguage());
+    await configService.setLanguage(configService.getLanguage());
 
     return [];
   }

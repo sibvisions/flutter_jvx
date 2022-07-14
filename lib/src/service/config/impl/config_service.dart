@@ -100,12 +100,12 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void setVersion(String? pVersion) async {
+  setVersion(String? pVersion) {
     if (pVersion != null) {
       fileManager.setAppVersion(pVersion: pVersion);
-      await sharedPrefs.setString("$appName.version", pVersion);
+      return sharedPrefs.setString("$appName.version", pVersion);
     } else {
-      await sharedPrefs.remove("$appName.version");
+      return sharedPrefs.remove("$appName.version");
     }
   }
 
@@ -125,10 +125,10 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void setAppName(String pAppName) async {
+  Future<bool> setAppName(String pAppName) {
     appName = pAppName;
     fileManager.setAppName(pName: pAppName);
-    await sharedPrefs.setString(appName, pAppName);
+    return sharedPrefs.setString(appName, pAppName);
   }
 
   @override
@@ -157,9 +157,10 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void setLanguage(String pLanguage) async {
-    await sharedPrefs.setString("$appName.language", pLanguage);
+  Future<bool> setLanguage(String pLanguage) async {
+    bool success = await sharedPrefs.setString("$appName.language", pLanguage);
     _loadLanguage(pLanguage);
+    return success;
   }
 
   @override
@@ -168,11 +169,11 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void setAuthCode(String? pAuthCode) async {
+  Future<bool> setAuthCode(String? pAuthCode) {
     if (pAuthCode != null) {
-      await sharedPrefs.setString("$appName.authKey", pAuthCode);
+      return sharedPrefs.setString("$appName.authKey", pAuthCode);
     } else {
-      await sharedPrefs.remove("$appName.authKey");
+      return sharedPrefs.remove("$appName.authKey");
     }
   }
 

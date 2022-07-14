@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/api/requests/api_logout_request.dart';
@@ -16,7 +18,7 @@ class LogoutCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements
       configService.getFileManager().deleteFile(pPath: "/auth.txt");
     }
     configService.setUserInfo(null);
-    configService.setAuthCode(null);
+    unawaited(configService.setAuthCode(null));
 
     return apiService.sendRequest(request: logoutRequest);
   }

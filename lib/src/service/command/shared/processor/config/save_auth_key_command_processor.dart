@@ -7,8 +7,8 @@ import '../../i_command_processor.dart';
 
 class SaveAuthKeyCommandProcessor with ConfigServiceMixin implements ICommandProcessor<SaveAuthKeyCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveAuthKeyCommand command) {
-    configService.setAuthCode(command.authKey);
-    return SynchronousFuture([]);
+  Future<List<BaseCommand>> processCommand(SaveAuthKeyCommand command) async {
+    await configService.setAuthCode(command.authKey);
+    return [];
   }
 }

@@ -23,16 +23,16 @@ abstract class IConfigService {
   String getAppName();
 
   /// Set appName
-  void setAppName(String pAppName);
+  Future<bool> setAppName(String pAppName);
 
   /// Returns current apiConfig
   ApiConfig getApiConfig();
 
-  /// Set version
-  void setVersion(String? pVersion);
-
   /// Return version
   String? getVersion();
+
+  /// Set version
+  Future<bool> setVersion(String? pVersion);
 
   /// Return menuMode
   MENU_MODE getMenuMode();
@@ -58,17 +58,17 @@ abstract class IConfigService {
   /// Set instance of [IFileManager]
   void setFileManger(IFileManager pFileManger);
 
-  /// Set current display language, app will need to restart to take effect (new Startup)
-  void setLanguage(String pLangCode);
-
   /// Returns language code of current language
   String getLanguage();
+
+  /// Set current display language, app will need to restart to take effect (new Startup)
+  Future<bool> setLanguage(String pLanguage);
 
   /// Translates text in current translation, will return the original text if not translation was found
   String translateText(String pText);
 
   /// Set auth code for future auto-login
-  void setAuthCode(String? pAuthCode);
+  Future<bool> setAuthCode(String? pAuthCode);
 
   /// Get auth code if one has been set
   String? getAuthCode();
