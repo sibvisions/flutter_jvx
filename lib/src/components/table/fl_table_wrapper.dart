@@ -1,7 +1,10 @@
 import 'dart:collection';
 
+import 'package:beamer/beamer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/model/command/api/go_offline_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -79,6 +82,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   /// The scroll group to synchronize sticky header scrolling.
   final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -316,6 +320,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Delete', ContextMenuCommand.DELETE));
     }
 
+    if (kDebugMode) {
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.powerOff, 'Offline', ContextMenuCommand.OFFLINE));
+    }
+
     if (_lastDragDownDetails == null) {
       return;
     }
@@ -334,6 +342,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
         insertRecord();
       } else if (val == ContextMenuCommand.DELETE) {
         deleteRecord();
+      } else if (val == ContextMenuCommand.OFFLINE) {
+        goOffline();
       }
     });
   }
@@ -431,6 +441,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       value: value,
     );
   }
+
+  void goOffline() {
+    BeamState state = context.currentBeamLocation.state as BeamState;
+    uiService
+        .sendCommand(GoOfflineCommand(workscreen: state.pathParameters['workScreenName']!, reason: "Test Offline"));
+  }
 }
 
-enum ContextMenuCommand { INSERT, DELETE }
+enum ContextMenuCommand { INSERT, DELETE, OFFLINE }
