@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:signature/signature.dart';
 
 import '../../../util/image/image_loader.dart';
@@ -24,7 +23,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
   final VoidCallback? onLongPress;
   final Function(LongPressDownDetails?)? onLongPressDown;
 
-  FlSignaturePadWidget({
+  const FlSignaturePadWidget({
     Key? key,
     required FlCustomContainerModel model,
     required this.controller,
@@ -51,7 +50,8 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
           }
 
           if (imageValue is Uint8List) {
-            image = ImageLoader.loadImage(String.fromCharCodes(imageValue), imageInBinary: true, imageInBase64: false, fit: BoxFit.scaleDown);
+            image = ImageLoader.loadImage(String.fromCharCodes(imageValue),
+                imageInBinary: true, imageInBase64: false, fit: BoxFit.scaleDown);
           }
         } catch (error, stacktrace) {
           LOGGER.logE(pType: LOG_TYPE.UI, pMessage: error.toString(), pStacktrace: stacktrace);

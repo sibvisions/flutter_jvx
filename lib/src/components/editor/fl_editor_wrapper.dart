@@ -69,8 +69,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     (widget.model as FlEditorModel).applyComponentInformation(cellEditor.createWidgetModel());
 
-    subscribe(widget.model as T);
-
     super.initState();
   }
 
@@ -266,6 +264,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         onEndEditing: onEndEditing,
         pRecalculateSizeCallback: recalculateSize,
         pUiService: uiService);
+
     subscribe(pModel);
   }
 

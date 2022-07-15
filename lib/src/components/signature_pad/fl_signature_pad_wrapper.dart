@@ -91,8 +91,12 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
     log("Sending Signature");
 
-    SetValuesCommand setValues =
-        SetValuesCommand(componentId: model.id, dataProvider: model.dataProvider, columnNames: getDataColumns(), values: values, reason: "Drawing has ended on ${model.id}");
+    SetValuesCommand setValues = SetValuesCommand(
+        componentId: model.id,
+        dataProvider: model.dataProvider,
+        columnNames: getDataColumns(),
+        values: values,
+        reason: "Drawing has ended on ${model.id}");
     uiService.sendCommand(setValues);
   }
 
@@ -100,8 +104,12 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     log("Deleting Signature");
     signatureController.clear();
 
-    SetValuesCommand setValues =
-        SetValuesCommand(componentId: model.id, dataProvider: model.dataProvider, columnNames: getDataColumns(), values: [], reason: "Drawing has ended on ${model.id}");
+    SetValuesCommand setValues = SetValuesCommand(
+        componentId: model.id,
+        dataProvider: model.dataProvider,
+        columnNames: getDataColumns(),
+        values: [],
+        reason: "Drawing has ended on ${model.id}");
     uiService.sendCommand(setValues);
   }
 
@@ -136,16 +144,23 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       return;
     }
 
-    List<PopupMenuEntry<SignatureContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<SignatureContextMenuCommand>>[];
+    List<PopupMenuEntry<SignatureContextMenuCommand>> popupMenuEntries =
+        <PopupMenuEntry<SignatureContextMenuCommand>>[];
 
     if (_dataRecord?.values[0] == null) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare, 'Done', SignatureContextMenuCommand.DONE));
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Clear', SignatureContextMenuCommand.CLEAR));
+      popupMenuEntries
+          .add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Clear', SignatureContextMenuCommand.CLEAR));
     } else {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Clear', SignatureContextMenuCommand.CLEAR));
+      popupMenuEntries
+          .add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Clear', SignatureContextMenuCommand.CLEAR));
     }
 
-    showMenu(position: RelativeRect.fromRect(details!.globalPosition & const Size(40, 40), Offset.zero & MediaQuery.of(context).size), context: context, items: popupMenuEntries)
+    showMenu(
+            position: RelativeRect.fromRect(
+                details!.globalPosition & const Size(40, 40), Offset.zero & MediaQuery.of(context).size),
+            context: context,
+            items: popupMenuEntries)
         .then((val) {
       WidgetsBinding.instance!.focusManager.primaryFocus?.unfocus();
       if (val != null) {
@@ -158,7 +173,8 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     });
   }
 
-  PopupMenuItem<SignatureContextMenuCommand> _getContextMenuItem(IconData icon, String text, SignatureContextMenuCommand value) {
+  PopupMenuItem<SignatureContextMenuCommand> _getContextMenuItem(
+      IconData icon, String text, SignatureContextMenuCommand value) {
     return PopupMenuItem<SignatureContextMenuCommand>(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
