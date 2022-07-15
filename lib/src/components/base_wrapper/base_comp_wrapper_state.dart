@@ -219,38 +219,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     uiService.sendCommand(preferredSizeCommand);
   }
 
-  double? getWidthForComponent() {
-    if (layoutData.hasPreferredSize) {
-      return layoutData.preferredSize!.width;
-    } else if (layoutData.hasCalculatedSize) {
-      if (layoutData.calculatedSize!.height == double.infinity) {
-        return layoutData.calculatedSize!.width;
-      } else if (layoutData.calculatedSize!.width == double.infinity) {
-        return null;
-      } else if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
-        return layoutData.layoutPosition!.width;
-      }
-    }
-
-    return null;
-  }
-
-  double? getHeightForComponent() {
-    if (layoutData.hasPreferredSize) {
-      return layoutData.preferredSize!.height;
-    } else if (layoutData.hasCalculatedSize) {
-      if (layoutData.calculatedSize!.width == double.infinity) {
-        return layoutData.calculatedSize!.height;
-      } else if (layoutData.calculatedSize!.height == double.infinity) {
-        return null;
-      } else if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
-        return layoutData.layoutPosition!.height;
-      }
-    }
-
-    return null;
-  }
-
   double getTopForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.top : 0.0;
   }
@@ -265,9 +233,5 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   double? getHeightForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.height : 0.0;
-  }
-
-  bool isNewCalcSize() {
-    return getHeightForComponent() == null || getWidthForComponent() == null;
   }
 }

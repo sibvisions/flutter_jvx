@@ -7,10 +7,7 @@ import '../../model/component/dummy/fl_dummy_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlDummyWidget extends FlStatelessWidget<FlDummyModel> {
-  const FlDummyWidget({Key? key, this.width, this.height, required FlDummyModel model}) : super(key: key, model: model);
-
-  final double? height;
-  final double? width;
+  const FlDummyWidget({Key? key, required FlDummyModel model}) : super(key: key, model: model);
 
   @override
   Widget build(BuildContext context) {
