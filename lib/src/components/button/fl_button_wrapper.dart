@@ -39,8 +39,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void initState() {
     super.initState();
 
-    // onPress = sendButtonPressed;
-    onPress = goOffline;
+    onPress = sendButtonPressed;
 
     if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
       onPress = goOffline;
