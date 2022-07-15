@@ -57,13 +57,6 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
           onValueChange: onChange,
           onEndEditing: onEndEditing,
         ) {
-    focusNode.addListener(
-      () {
-        if (focusNode.hasFocus) {
-          focusNode.unfocus();
-        }
-      },
-    );
     subscribe();
   }
 
