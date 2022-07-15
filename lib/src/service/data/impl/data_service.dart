@@ -238,4 +238,14 @@ class DataService implements IDataService {
 
     return true;
   }
+
+  @override
+  void clearData() {
+    dataBooks.clear();
+  }
+
+  @override
+  List<DataBook> getDataBooks() {
+    return dataBooks.values.toList();
+  }
 }

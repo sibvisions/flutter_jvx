@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/data/data_book.dart';
+
 import '../../model/api/response/dal_fetch_response.dart';
 import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/base_command.dart';
@@ -58,4 +60,10 @@ abstract class IDataService {
     required int pDeletedRow,
     required int pNewSelectedRow,
   });
+
+  /// Clears all the databooks
+  void clearData();
+
+  /// Gets all databooks
+  List<DataBook> getDataBooks();
 }
