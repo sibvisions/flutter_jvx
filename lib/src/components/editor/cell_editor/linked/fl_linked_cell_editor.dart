@@ -60,7 +60,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
     focusNode.addListener(
       () {
         if (focusNode.hasFocus) {
-          openLinkedCellPicker();
+          focusNode.unfocus();
         }
       },
     );

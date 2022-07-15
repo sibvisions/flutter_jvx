@@ -45,7 +45,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
     focusNode.addListener(
       () {
         if (focusNode.hasFocus) {
-          openDatePicker();
+          focusNode.unfocus();
         }
       },
     );
