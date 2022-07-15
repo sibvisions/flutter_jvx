@@ -71,7 +71,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         borderRadius: BorderRadius.circular(5),
       ),
       margin: const EdgeInsets.all(4),
-      child: GestureDetector(
+      child: InkWell(
         onTap: hyperlinkOnTap,
         child: SizedBox(
           height: 40,

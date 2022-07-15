@@ -5,11 +5,9 @@ import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_m
 import '../../text_field/fl_text_field_widget.dart';
 
 class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWidget<T> {
-  final VoidCallback? onPress;
-
   const FlLinkedEditorWidget({
     Key? key,
-    this.onPress,
+    required VoidCallback? onPress,
     required T model,
     required Function(String) valueChanged,
     required Function(String) endEditing,
@@ -18,6 +16,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
     bool inTable = false,
   }) : super(
             key: key,
+            onPress: onPress,
             model: model,
             valueChanged: valueChanged,
             endEditing: endEditing,
@@ -25,11 +24,6 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
             textController: textController,
             keyboardType: TextInputType.none,
             inTable: inTable);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(onTap: onPress, child: super.build(context));
-  }
 
   @override
   List<Widget> createSuffixItems() {

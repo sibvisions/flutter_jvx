@@ -78,7 +78,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServ
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           leading: Center(
-            child: GestureDetector(
+            child: InkWell(
               onTap: () => _onBackTab(context),
               onDoubleTap: () => _onDoubleTab(context),
               child: CircleAvatar(

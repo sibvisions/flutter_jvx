@@ -35,11 +35,9 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onClick(componentId: menuItemModel.screenId);
-      },
-      child: Container(
+    return InkWell(
+      onTap: () => onClick(componentId: menuItemModel.screenId),
+      child: Ink(
         color: Theme.of(context).primaryColor.withOpacity(opacityMenu),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

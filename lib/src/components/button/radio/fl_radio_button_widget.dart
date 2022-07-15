@@ -56,8 +56,8 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
     Widget? child = super.getButtonChild();
 
     if (child != null) {
-      child = GestureDetector(
-        child: Container(
+      child = InkWell(
+        child: Ink(
           padding: const EdgeInsets.only(right: 10),
           child: child,
         ),

@@ -368,7 +368,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                 const SizedBox(width: 5),
                 textChild,
                 const SizedBox(width: 5),
-                GestureDetector(
+                InkWell(
                   onTap: enabled
                       ? () {
                           closeTab(pIndex);
