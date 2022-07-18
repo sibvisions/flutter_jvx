@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_client/src/model/component/editor/cell_editor/fl_image_cell_editor_model.dart';
 
 import '../../../../util/constants/i_types.dart';
-import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/icon/fl_icon_model.dart';
 import '../../../model/data/column_definition.dart';
@@ -11,7 +11,7 @@ import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
+class FlImageCellEditor extends ICellEditor<FlImageCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +41,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
     this.recalculateSizeCallback,
   }) : super(
           columnDefinition: columnDefinition,
-          model: ICellEditorModel(),
+          model: FlImageCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
@@ -75,10 +75,16 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
     FlIconModel widgetModel = FlIconModel();
     widgetModel.image = _value ?? '';
 
+    bool pDefaultImageUsed = false;
+    if (widgetModel.image.isEmpty) {
+      widgetModel.image = model.defaultImageName;
+      pDefaultImageUsed = true;
+    }
+
     return FlIconWidget(
       model: widgetModel,
       imageStreamListener: imageStreamListener,
-      imageInBinary: _columnDefinition?.dataTypeIdentifier == Types.BINARY,
+      imageInBinary: !pDefaultImageUsed && _columnDefinition?.dataTypeIdentifier == Types.BINARY,
       inTable: pInTable,
     );
   }
