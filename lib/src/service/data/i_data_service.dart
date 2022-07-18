@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_client/src/model/data/data_book.dart';
 
 import '../../model/api/response/dal_fetch_response.dart';
@@ -61,9 +63,9 @@ abstract class IDataService {
     required int pNewSelectedRow,
   });
 
-  /// Clears all the databooks
-  void clearData();
+  /// Clears all the databooks of this workscreen and application
+  void clearData(String pAppname, String pWorkscreen);
 
   /// Gets all databooks
-  List<DataBook> getDataBooks();
+  HashMap<String, DataBook> getDataBooks();
 }

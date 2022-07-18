@@ -1,4 +1,7 @@
 import 'dart:collection';
+import 'dart:developer';
+
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../../model/api/response/dal_fetch_response.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
@@ -34,6 +37,7 @@ class DataService implements IDataService {
     if (dataBook == null) {
       dataBook = DataBook.empty();
       dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
+      log("databook inserted: ${pFetch.dataProvider}");
       dataBooks[pFetch.dataProvider] = dataBook;
     } else {
       dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
@@ -240,12 +244,16 @@ class DataService implements IDataService {
   }
 
   @override
-  void clearData() {
-    dataBooks.clear();
+  void clearData(String pAppName, String pWorkscreen) {
+    String prefix = pAppName + "/" + pWorkscreen;
+    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Clearing all data books of prefix: $prefix");
+    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Pre clearing" + dataBooks.toString());
+    dataBooks.removeWhere((key, value) => key.startsWith(prefix));
+    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Post clearing: " + dataBooks.toString());
   }
 
   @override
-  List<DataBook> getDataBooks() {
-    return dataBooks.values.toList();
+  HashMap<String, DataBook> getDataBooks() {
+    return HashMap.from(dataBooks);
   }
 }
