@@ -5,7 +5,7 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route_to_login_command.dart';
 import '../i_response_processor.dart';
 
-class LoginProcessor implements IResponseProcessor<LoginResponse> {
+class ApiLoginProcessor implements IResponseProcessor<LoginResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
