@@ -12,7 +12,7 @@ import '../../model/command/api/set_api_config_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/config/api/url_config.dart';
-import '../../routing/locations/setting_location.dart';
+import '../../routing/locations/settings_location.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_mask.dart';
 import 'widgets/editor/app_name_editor.dart';
@@ -105,7 +105,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     //A delayed future solved it, but it only happened on some devices.
     //This is the only widget not having a working "mounted" state for route context.
     //TODO investigate low prio
-    if (mounted && context.currentBeamLocation.runtimeType == SettingLocation) {
+    if (mounted && context.currentBeamLocation.runtimeType == SettingsLocation) {
       uiService.setRouteContext(pContext: context);
     }
 

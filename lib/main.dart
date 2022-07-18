@@ -8,7 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
-import 'src/routing/locations/setting_location.dart';
+import 'src/routing/locations/settings_location.dart';
 import 'src/routing/locations/splash_location.dart';
 import 'src/routing/locations/work_screen_location.dart';
 import 'util/parse_util.dart';
@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
           SplashLocation(styleCallbacks: [changeStyle], languageCallbacks: [changeLanguage]),
           LoginLocation(),
           MenuLocation(),
-          SettingLocation(),
+          SettingsLocation(),
           WorkScreenLocation(),
         ],
       ),

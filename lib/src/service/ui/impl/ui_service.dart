@@ -24,7 +24,7 @@ import '../../../model/menu/menu_group_model.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../routing/locations/menu_location.dart';
-import '../../../routing/locations/setting_location.dart';
+import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/splash_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
 import '../i_ui_service.dart';
@@ -89,7 +89,7 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
     var last = _currentBuildContext!.beamingHistory.last;
-    if (last.runtimeType == SettingLocation || last.runtimeType == SplashLocation) {
+    if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
       _currentBuildContext!.beamingHistory.clear();
     }
     _currentBuildContext!.beamToNamed("/menu");
@@ -99,7 +99,7 @@ class UiService with CommandServiceMixin implements IUiService {
   void routeToWorkScreen({required String pScreenName}) {
     var last = _currentBuildContext!.beamingHistory.last;
 
-    if (last.runtimeType == SettingLocation || last.runtimeType == SplashLocation) {
+    if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
       _currentBuildContext!.beamingHistory.clear();
     }
     _currentBuildContext!.beamToNamed("/workScreen/$pScreenName");
