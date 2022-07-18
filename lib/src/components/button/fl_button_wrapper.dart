@@ -1,12 +1,12 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/service/api/i_api_service.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../mask/camera/qr_scanner_mask.dart';
-import '../../model/command/api/go_offline_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
@@ -141,6 +141,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
     String workscreenName = state.pathParameters['workScreenName']!;
 
-    uiService.sendCommand(GoOfflineCommand(workscreen: workscreenName, reason: "Going offline"));
+    IApiService.initOffline(workscreenName);
   }
 }

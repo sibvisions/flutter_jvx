@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/command/api/go_offline_command.dart';
-
 import '../../../../util/loading_handler/i_command_progress_handler.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../mixin/api_service_mixin.dart';
@@ -77,7 +75,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   @override
   Future<void> sendCommand(BaseCommand pCommand) async {
     // Same Command cant  be added twice, a previously added command will end up here when its called
-    if (pCommand is ApiCommand && !_apiCommandsQueue.contains(pCommand) && pCommand is! GoOfflineCommand) {
+    if (pCommand is ApiCommand && !_apiCommandsQueue.contains(pCommand)) {
       _apiCommandsQueue.add(pCommand);
       // If there is already a command in queue don't execute it
       if (_apiCommandsQueue.length > 1) {
