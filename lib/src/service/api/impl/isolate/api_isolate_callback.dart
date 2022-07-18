@@ -34,6 +34,8 @@ void apiCallback(SendPort callerSendPort) {
       messageWrapper.sendPort.send(response);
     } else if (apiMessage is ApiIsolateApiConfigMessage) {
       apiService.setApiConfig(apiConfig: apiMessage.apiConfig);
+    } else if (apiMessage is ApiIsolateRepositoryMessage) {
+      apiService.setRepository(apiMessage.repository);
     }
   });
 }

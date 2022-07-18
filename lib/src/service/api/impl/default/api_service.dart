@@ -43,4 +43,9 @@ class ApiService implements IApiService {
   void setApiConfig({required ApiConfig apiConfig}) {
     repository.setApiConfig(config: apiConfig);
   }
+
+  @override
+  void setRepository(IRepository pRepository) {
+    repository = pRepository;
+  }
 }

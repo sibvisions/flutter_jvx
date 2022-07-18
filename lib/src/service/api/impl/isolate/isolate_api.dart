@@ -58,6 +58,13 @@ class IsolateApi implements IApiService {
     return await _sendRequest(pMessage: message);
   }
 
+  @override
+  void setRepository(IRepository pRepository)async  {
+    var message = ApiIsolateRepositoryMessage(repository: repository);
+
+    await _sendRequest(pMessage: message);
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
