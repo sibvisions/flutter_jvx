@@ -10,27 +10,22 @@ import '../../model/menu/menu_model.dart';
 import '../menu/list/app_menu_list_grouped.dart';
 import '../setting/widgets/change_password.dart';
 
-class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class DrawerMenu extends StatefulWidget {
+  const DrawerMenu({
+    Key? key,
+  }) : super(key: key);
 
+  @override
+  State<DrawerMenu> createState() => _DrawerMenuState();
+}
+
+class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServiceMixin {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   final TextStyle boldStyle = const TextStyle(
     fontWeight: FontWeight.bold,
   );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  DrawerMenu({
-    Key? key,
-  }) : super(key: key);
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -46,9 +41,6 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
       margin: EdgeInsets.zero,
@@ -115,7 +107,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         context: context,
         text: configService.translateText("Settings"),
         leadingIcon: FontAwesomeIcons.cogs,
-        onTap: () => uiService.routeToSettings(),
+        onTap: _settings,
       ),
       Divider(
         color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
@@ -126,13 +118,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         context: context,
         text: configService.translateText("Change password"),
         leadingIcon: FontAwesomeIcons.save,
-        onTap: () => {
-          uiService.openDialog(
-              pDialogWidget: ChangePassword(
-                username: configService.getUserInfo()?.userName,
-              ),
-              pIsDismissible: true),
-        },
+        onTap: _changePassword,
       ),
       Divider(
         color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
@@ -187,12 +173,31 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
     );
   }
 
+  void _settings() {
+    uiService.setRouteContext(pContext: context);
+    uiService.routeToSettings();
+  }
+
+  void _changePassword() {
+    uiService.setRouteContext(pContext: context);
+    uiService.openDialog(
+      pDialogWidget: ChangePassword(
+        username: configService.getUserInfo()?.userName,
+      ),
+      pIsDismissible: true,
+    );
+  }
+
   void _menuItemPressed({required String componentId}) {
+    uiService.setRouteContext(pContext: context);
+
     OpenScreenCommand command = OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed");
     uiService.sendCommand(command);
   }
 
   void _logout() {
+    uiService.setRouteContext(pContext: context);
+
     LogoutCommand logoutCommand = LogoutCommand(reason: "Drawer menu logout");
     uiService.sendCommand(logoutCommand);
   }
