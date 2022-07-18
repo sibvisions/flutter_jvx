@@ -26,7 +26,7 @@ abstract class IConfigService {
   Future<bool> setAppName(String pAppName);
 
   /// Returns current apiConfig
-  ApiConfig getApiConfig();
+  ApiConfig? getApiConfig();
 
   /// Return version
   String? getVersion();
@@ -83,6 +83,14 @@ abstract class IConfigService {
 
   /// Set app style, usually only called after download
   void setAppStyle(Map<String, String>? pAppStyle);
+
+  bool isOffline();
+
+  Future<bool> setOffline(bool pOffline);
+
+  String? getOfflineScreen();
+
+  Future<bool> setOfflineScreen(String pWorkscreen);
 
   /// Callback will be called when style has been set
   void registerStyleCallback({required Function(Map<String, String> style) pCallback});

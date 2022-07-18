@@ -31,7 +31,7 @@ import '../shared/processor/ui/ui_processor.dart';
 /// contents, resulting in potentially more commands.
 ///
 // Author: Michael Schober
-class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMixin implements ICommandService {
+class CommandService implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

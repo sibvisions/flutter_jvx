@@ -12,8 +12,6 @@ import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../model/api/requests/i_api_request.dart';
 import '../../model/command/api/fetch_command.dart';
 import '../../model/command/base_command.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/component/interface/i_data_model.dart';
 import '../../model/config/api/api_config.dart';
 import '../command/i_command_service.dart';
 import '../config/i_config_service.dart';
@@ -47,12 +45,11 @@ abstract class IApiService {
 
     //TODO re-sync
 
-    apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()));
-    offline = false;
+    apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
+    await configService.setOffline(false);
     DefaultLoadingProgressHandler.setEnabled(true);
 
-    var sharedPrefs = await SharedPreferences.getInstance();
-    String lastWorkscreen = sharedPrefs.getString("${configService.getAppName()}.offlineScreen")!;
+    String lastWorkscreen = configService.getOfflineScreen()!;
     await commandService.sendCommand(RouteToWorkCommand(screenName: lastWorkscreen, reason: "We are back online"));
   }
 
@@ -98,10 +95,8 @@ abstract class IApiService {
     await apiRep.startDatabase(context);
 
     apiService.setRepository(apiRep);
-    offline = true;
-
-    var sharedPrefs = await SharedPreferences.getInstance();
-    await sharedPrefs.setString("${configService.getAppName()}.offlineScreen", pWorkscreen);
+    await configService.setOffline(true);
+    await configService.setOfflineScreen( pWorkscreen);
 
     await commandService.sendCommand(RouteToMenuCommand(reason: "We are going offline"));
   }

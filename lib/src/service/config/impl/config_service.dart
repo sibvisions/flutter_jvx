@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../util/file/file_manager.dart';
@@ -20,9 +21,6 @@ class ConfigService implements IConfigService {
 
   final SharedPreferences sharedPrefs;
 
-  /// Config of the api
-  final ApiConfig apiConfig;
-
   /// Parameters which will get added to every startup
   final Map<String, dynamic> startupParameters = {};
 
@@ -32,7 +30,10 @@ class ConfigService implements IConfigService {
   /// List of all active languageStyleCallbacks
   final List<Function> languageCallbacks = [];
 
-  String appName;
+  /// Config of the api
+  ApiConfig? apiConfig;
+
+  String? appName;
 
   /// Current clientId (sessionId)
   String? clientId;
@@ -57,8 +58,7 @@ class ConfigService implements IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ConfigService({
-    required this.appName,
-    required this.apiConfig,
+    this.appName,
     required this.fileManager,
     required this.sharedPrefs,
     List<Function>? pStyleCallbacks,
@@ -71,11 +71,11 @@ class ConfigService implements IConfigService {
       languageCallbacks.addAll(pLanguageCallbacks);
     }
 
-    fileManager.setAppName(pName: appName);
-    var success = _loadVersion();
-
-    // Only load if version is set in FileManager
-    if (success) {
+    fileManager.setAppName(pName: getAppName());
+    String? version = getVersion();
+    if (version != null) {
+      fileManager.setAppVersion(pVersion: version);
+      // Only load if version is set in FileManager
       reloadSupportedLanguages();
     }
   }
@@ -121,14 +121,14 @@ class ConfigService implements IConfigService {
 
   @override
   String getAppName() {
-    return appName;
+    return sharedPrefs.getString("appName") ?? (kDebugMode ? "demo" : "");
   }
 
   @override
   Future<bool> setAppName(String pAppName) {
     appName = pAppName;
     fileManager.setAppName(pName: pAppName);
-    return sharedPrefs.setString(appName, pAppName);
+    return sharedPrefs.setString("appName", pAppName);
   }
 
   @override
@@ -216,6 +216,26 @@ class ConfigService implements IConfigService {
     styleCallbacks.forEach((element) => element.call(pAppStyle));
   }
 
+  @override
+  bool isOffline() {
+    return sharedPrefs.getBool("$appName.offline") ?? false;
+  }
+
+  @override
+  Future<bool> setOffline(bool pOffline) {
+    return sharedPrefs.setBool("$appName.offline", pOffline);
+  }
+
+  @override
+  String? getOfflineScreen() {
+    return sharedPrefs.getString("$appName.offlineScreen");
+  }
+
+  @override
+  Future<bool> setOfflineScreen(String pWorkscreen) {
+    return sharedPrefs.setString("$appName.offlineScreen", pWorkscreen);
+  }
+
   // ------------------------------
 
   @override
@@ -230,8 +250,13 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  ApiConfig getApiConfig() {
+  ApiConfig? getApiConfig() {
     return apiConfig;
+  }
+
+  ///Only call if you know what you do!
+  void setApiConfig(ApiConfig pApiConfig) {
+    apiConfig = pApiConfig;
   }
 
   @override
@@ -267,18 +292,6 @@ class ConfigService implements IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // Returns [bool] if version was loaded successfully
-  bool _loadVersion() {
-    // Load version
-    if (sharedPrefs.containsKey("$appName.version")) {
-      var version = sharedPrefs.getString("$appName.version");
-      // Set app version so version specific files can be get
-      fileManager.setAppVersion(pVersion: version);
-      return true;
-    }
-    return false;
-  }
 
   void _loadLanguage(String pLanguage) {
     translation.translations.clear();

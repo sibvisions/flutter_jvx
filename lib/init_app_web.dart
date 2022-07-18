@@ -39,15 +39,14 @@ Future<bool> initApp({
 }) async {
   LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
 
-  // Load config
-  var sharedPrefs = await SharedPreferences.getInstance();
-
-  // Init values, should be possible to provide to initApp
-  // TODO Get app name!
-  String appName = sharedPrefs.getString("appName") ?? (kDebugMode ? "demo" : "");
-
-  await sharedPrefs.setString("appName", appName);
-  offline = sharedPrefs.getBool("$appName.offline") ?? offline;
+  // Config
+  IConfigService configService = ConfigService(
+    sharedPrefs: await SharedPreferences.getInstance(),
+    fileManager: FileManagerWeb(),
+    pStyleCallbacks: styleCallbacks,
+    pLanguageCallbacks: languageCallbacks,
+  );
+  services.registerSingleton(configService, signalsReady: true);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Service init
@@ -58,17 +57,7 @@ Future<bool> initApp({
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer2, endpointConfig: endpointConfig);
-
-  // Config
-  IConfigService configService = ConfigService(
-    appName: appName,
-    apiConfig: apiConfig,
-    fileManager: FileManagerWeb(),
-    sharedPrefs: sharedPrefs,
-    pStyleCallbacks: styleCallbacks,
-    pLanguageCallbacks: languageCallbacks,
-  );
-  services.registerSingleton(configService, signalsReady: true);
+  (configService as ConfigService).setApiConfig(apiConfig);
 
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();

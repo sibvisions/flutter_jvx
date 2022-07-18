@@ -40,7 +40,7 @@ class ImageLoader with ConfigServiceMixin {
     bool imageInBase64 = false,
     BoxFit fit = BoxFit.none,
   }) {
-    String baseUrl = configService.getApiConfig().urlConfig.getBasePath();
+    String baseUrl = configService.getApiConfig()!.urlConfig.getBasePath();
     String appName = configService.getAppName();
     IFileManager fileManager = configService.getFileManager();
 

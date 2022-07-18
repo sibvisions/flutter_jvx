@@ -49,69 +49,21 @@ Future<bool> initApp({
   // ToDo find way to not do this
   HttpOverrides.global = MyHttpOverrides();
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Init values
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   // If not called will throw error when trying to access any files
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Load config
-  var sharedPrefs = await SharedPreferences.getInstance();
-
-  // Init values, should be possible to provide to initApp
-  // TODO Get app name!
-  String appName = sharedPrefs.getString("appName") ?? (kDebugMode ? "demo" : "");
-  String? userName;
-  String? password;
-
-  await sharedPrefs.setString("appName", appName);
-  offline = sharedPrefs.getBool("$appName.offline") ?? offline;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Load config files
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // Load Dev config
-  UrlConfig urlConfigServer = UrlConfig.empty();
-  try {
-    String rawConfig = await rootBundle.loadString('assets/config/app.conf.json');
-    AppConfig? appConfig = AppConfig.fromJson(json: jsonDecode(rawConfig));
-
-    userName = appConfig.startupParameters?.username;
-    password = appConfig.startupParameters?.password;
-
-    if (appConfig.remoteConfig != null && appConfig.remoteConfig!.devUrlConfigs != null) {
-      urlConfigServer = appConfig.remoteConfig!.devUrlConfigs![appConfig.remoteConfig!.indexOfUsingUrlConfig];
-    }
-  } catch (e) {
-    LOGGER.logD(pType: LOG_TYPE.GENERAL, pMessage: "No Dev Config found");
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Service init
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // API
-  EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = urlConfigServer;
-  ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
-
   // Config
   IConfigService configService = ConfigService(
-    appName: appName,
-    apiConfig: apiConfig,
+    sharedPrefs: await SharedPreferences.getInstance(),
     fileManager: await FileMangerMobile.create(),
-    sharedPrefs: sharedPrefs,
     pStyleCallbacks: styleCallbacks,
     pLanguageCallbacks: languageCallbacks,
   );
   services.registerSingleton(configService, signalsReady: true);
-
-  IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
-  IController controller = ApiController();
-  IApiService apiService = await IsolateApi.create(controller: controller, repository: repository);
-  services.registerSingleton(apiService, signalsReady: true);
 
   // Layout
   ILayoutService layoutService = await IsolateLayoutService.create();
@@ -129,21 +81,50 @@ Future<bool> initApp({
   ICommandService commandService = CommandService();
   services.registerSingleton(commandService, signalsReady: true);
 
-  DefaultLoadingProgressHandler loadingProgressHandler = DefaultLoadingProgressHandler();
-  loadingProgressHandler.isEnabled = false;
-  (commandService as CommandService).progressHandler.add(DefaultLoadingProgressHandler());
+  (commandService as CommandService).progressHandler.add(DefaultLoadingProgressHandler()..isEnabled = false);
 
   // UI
   IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);
   services.registerSingleton(uiService, signalsReady: true);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Load config files
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Load Dev config
+  UrlConfig urlConfigServer = UrlConfig.empty();
+  AppConfig? appConfig;
+  try {
+    String rawConfig = await rootBundle.loadString('assets/config/app.conf.json');
+    appConfig = AppConfig.fromJson(json: jsonDecode(rawConfig));
+
+    if (appConfig.remoteConfig != null && appConfig.remoteConfig!.devUrlConfigs != null) {
+      urlConfigServer = appConfig.remoteConfig!.devUrlConfigs![appConfig.remoteConfig!.indexOfUsingUrlConfig];
+    }
+  } catch (e) {
+    LOGGER.logD(pType: LOG_TYPE.GENERAL, pMessage: "No Dev Config found");
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // API init
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // API
+  ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer, endpointConfig: ConfigGenerator.generateFixedEndpoints());
+  (configService as ConfigService).setApiConfig(apiConfig);
+
+  IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
+  IController controller = ApiController();
+  IApiService apiService = await IsolateApi.create(controller: controller, repository: repository);
+  services.registerSingleton(apiService, signalsReady: true);
 
   // Send startup to server
   Size phoneSize = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size;
 
   StartupCommand startupCommand = StartupCommand(
     reason: "InitApp",
-    username: userName,
-    password: password,
+    username: appConfig?.startupParameters?.username,
+    password: appConfig?.startupParameters?.password,
     screenWidth: phoneSize.width,
     screenHeight: phoneSize.height,
   );

@@ -30,7 +30,7 @@ import '../../../routing/locations/work_screen_location.dart';
 import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
-class UiService with CommandServiceMixin implements IUiService {
+class UiService with CommandServiceGetterMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +77,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void sendCommand(BaseCommand command, [VoidCallback? onError]) {
-    commandService.sendCommand(command).catchError((_) => onError?.call());
+    getCommandService().sendCommand(command).catchError((_) => onError?.call());
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

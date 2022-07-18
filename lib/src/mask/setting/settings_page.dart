@@ -74,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   @override
   void initState() {
     // Application setting
-    baseUrlNotifier = ValueNotifier(configService.getApiConfig().urlConfig.getBasePath());
+    baseUrlNotifier = ValueNotifier(configService.getApiConfig()!.urlConfig.getBasePath());
     appNameNotifier = ValueNotifier(configService.getAppName());
     languageNotifier = ValueNotifier(configService.getLanguage());
     pictureSizeNotifier = ValueNotifier("ToDo");
@@ -236,9 +236,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
                 UrlConfig config = UrlConfig.fromFullString(fullPath: controller.text);
 
                 baseUrlNotifier.value = config.getBasePath();
-                configService.getApiConfig().urlConfig = config;
+                configService.getApiConfig()!.urlConfig = config;
                 uiService.sendCommand(
-                    SetApiConfigCommand(apiConfig: configService.getApiConfig(), reason: "Settings url editor"));
+                    SetApiConfigCommand(apiConfig: configService.getApiConfig()!, reason: "Settings url editor"));
               } catch (e) {
                 uiService.sendCommand(OpenErrorDialogCommand(
                     reason: "parseURl", message: configService.translateText("URL text could not be parsed")));
@@ -375,7 +375,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
           var a = UrlConfig.fromFullString(fullPath: code.url);
 
-          configService.getApiConfig().urlConfig = a;
+          configService.getApiConfig()!.urlConfig = a;
 
           // set local display values
           appNameNotifier.value = code.appName;
@@ -385,7 +385,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
           password = code.password;
 
           SetApiConfigCommand apiConfigCommand =
-              SetApiConfigCommand(apiConfig: configService.getApiConfig(), reason: "QR Scan replaced url");
+              SetApiConfigCommand(apiConfig: configService.getApiConfig()!, reason: "QR Scan replaced url");
           uiService.sendCommand(apiConfigCommand);
         }),
         pIsDismissible: false);
