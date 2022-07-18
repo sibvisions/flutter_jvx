@@ -41,7 +41,15 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
-        );
+        ) {
+    focusNode.addListener(
+          () {
+        if (focusNode.hasFocus) {
+          openDatePicker();
+        }
+      },
+    );
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

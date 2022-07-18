@@ -7,7 +7,6 @@ import '../../text_field/fl_text_field_widget.dart';
 class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<T> {
   const FlDateEditorWidget({
     Key? key,
-    required VoidCallback? onPress,
     required T model,
     required FocusNode focusNode,
     required TextEditingController textController,
@@ -16,7 +15,6 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
     bool inTable = false,
   }) : super(
             key: key,
-            onPress: onPress,
             model: model,
             valueChanged: valueChanged,
             endEditing: endEditing,

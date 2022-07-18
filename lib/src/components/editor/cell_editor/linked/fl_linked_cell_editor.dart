@@ -57,6 +57,13 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
           onValueChange: onChange,
           onEndEditing: onEndEditing,
         ) {
+    focusNode.addListener(
+          () {
+        if (focusNode.hasFocus) {
+          openLinkedCellPicker();
+        }
+      },
+    );
     subscribe();
   }
 
@@ -81,8 +88,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
       valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
-      inTable: pInTable,
-      onPress: openLinkedCellPicker,
+      inTable: pInTable
     );
   }
 

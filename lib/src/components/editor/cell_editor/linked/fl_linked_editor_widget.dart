@@ -7,7 +7,6 @@ import '../../text_field/fl_text_field_widget.dart';
 class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWidget<T> {
   const FlLinkedEditorWidget({
     Key? key,
-    required VoidCallback? onPress,
     required T model,
     required Function(String) valueChanged,
     required Function(String) endEditing,
@@ -16,7 +15,6 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
     bool inTable = false,
   }) : super(
             key: key,
-            onPress: onPress,
             model: model,
             valueChanged: valueChanged,
             endEditing: endEditing,

@@ -11,8 +11,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final VoidCallback? onPress;
-
   final TextInputType keyboardType;
 
   final FocusNode focusNode;
@@ -57,7 +55,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   const FlTextFieldWidget({
     Key? key,
-    this.onPress,
     required T model,
     required Function(String) valueChanged,
     required Function(String) endEditing,
@@ -87,7 +84,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       readOnly: model.isReadOnly,
       enabled: model.isEnabled,
       style: model.getTextStyle(),
-      onTap: onPress,
       onChanged: valueChanged,
       onEditingComplete: () {
         focusNode.unfocus();
