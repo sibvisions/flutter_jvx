@@ -79,7 +79,6 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   @override
   FlDateEditorWidget createWidget([bool pInTable = false]) {
     FlDateEditorModel widgetModel = FlDateEditorModel();
-    widgetModel.isEditable = false;
 
     return FlDateEditorWidget(
       model: widgetModel,
