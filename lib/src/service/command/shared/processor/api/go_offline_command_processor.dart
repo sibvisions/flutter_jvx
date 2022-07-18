@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter_client/src/model/command/api/fetch_command.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/component/interface/i_data_model.dart';
+import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
 
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/command_service_mixin.dart';
@@ -60,6 +61,11 @@ class GoOfflineCommandProcessor
         ),
       );
     }
+
+    await Future.delayed(const Duration(seconds: 10));
+
+    var apiRep = OfflineApiRepository();
+    await apiRep.startDatabase();
 
     return [];
   }
