@@ -248,7 +248,7 @@ class OnlineApiRepository implements IRepository {
     }
     return [
       ErrorResponse(
-        message: "Repository error : $error}",
+        message: "Repository error: $error",
         name: ApiResponseNames.error,
         error: error,
         originalRequest: originalRequest,
