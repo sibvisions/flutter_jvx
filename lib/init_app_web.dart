@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/config_generator.dart';
+import 'main.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
@@ -46,6 +47,7 @@ Future<bool> initApp({
   String appName = sharedPrefs.getString("appName") ?? (kDebugMode ? "demo" : "");
 
   await sharedPrefs.setString("appName", appName);
+  offline = sharedPrefs.getBool("$appName.offline") ?? offline;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Service init

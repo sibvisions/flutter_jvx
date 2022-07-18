@@ -444,10 +444,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   void goOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
-
     String workscreenName = state.pathParameters['workScreenName']!;
-
-    IApiService.initOffline(workscreenName);
+    IApiService.initOffline(context, workscreenName);
   }
 }
 

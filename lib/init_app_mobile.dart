@@ -66,6 +66,7 @@ Future<bool> initApp({
   String? password;
 
   await sharedPrefs.setString("appName", appName);
+  offline = sharedPrefs.getBool("$appName.offline") ?? offline;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Load config files

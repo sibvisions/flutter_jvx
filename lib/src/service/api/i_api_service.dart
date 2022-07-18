@@ -1,5 +1,14 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
+import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
+import 'package:flutter_client/src/service/api/shared/repository/online_api_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
+import '../../../main.dart';
+import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../model/api/requests/i_api_request.dart';
 import '../../model/command/api/fetch_command.dart';
 import '../../model/command/base_command.dart';
@@ -29,10 +38,6 @@ abstract class IApiService {
   void setRepository(IRepository pRepository);
 
   static initOnline() async {
-    //TODO re-sync
-  }
-
-  static initOffline(String pWorkscreen) async {
     IConfigService configService = services<IConfigService>();
     IUiService uiService = services<IUiService>();
     IApiService apiService = services<IApiService>();
@@ -40,22 +45,42 @@ abstract class IApiService {
     IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
-    FlComponentModel workscreenModel = uiService.getComponentByName(pComponentName: pWorkscreen)!;
-    List<FlComponentModel> activeComponents = [workscreenModel, ...uiService.getAllComponentsBelow(workscreenModel.id)];
+    //TODO re-sync
 
-    Set<String> activeDataProviders = {};
+    apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()));
+    offline = false;
+    DefaultLoadingProgressHandler.setEnabled(true);
 
-    for (FlComponentModel model in activeComponents) {
-      if (model is IDataModel) {
-        String dataProvider = (model as IDataModel).dataProvider;
+    var sharedPrefs = await SharedPreferences.getInstance();
+    String lastWorkscreen = sharedPrefs.getString("${configService.getAppName()}.offlineScreen")!;
+    await commandService.sendCommand(RouteToWorkCommand(screenName: lastWorkscreen, reason: "We are back online"));
+  }
 
-        if (dataProvider.isNotEmpty) {
-          activeDataProviders.add(dataProvider);
-        }
-      }
-    }
+  static initOffline(BuildContext context, String pWorkscreen) async {
+    DefaultLoadingProgressHandler.setEnabled(false);
 
+    IConfigService configService = services<IConfigService>();
+    IUiService uiService = services<IUiService>();
+    IApiService apiService = services<IApiService>();
+    IDataService dataService = services<IDataService>();
+    IStorageService storageService = services<IStorageService>();
+    ICommandService commandService = services<ICommandService>();
+
+    String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
+    Set<String> activeDataProviders =
+        dataService.getDataBooks().keys.toList().where((element) => element.startsWith(databookPrefix)).toSet();
+
+    ProgressDialog pd = ProgressDialog(context: context);
+    pd.show(
+      msg: "Fetching offline data...",
+      max: activeDataProviders.length,
+      progressType: ProgressType.valuable,
+      barrierDismissible: false,
+    );
+    int fetchCounter = 1;
     for (String dataProvider in activeDataProviders) {
+      pd.update(msg: "Fetching offline data...", value: fetchCounter);
+
       await commandService.sendCommand(
         FetchCommand(
           reason: "Going offline",
@@ -65,11 +90,19 @@ abstract class IApiService {
           includeMetaData: true,
         ),
       );
+      fetchCounter++;
     }
+    pd.close();
 
     var apiRep = OfflineApiRepository();
-    await apiRep.startDatabase();
+    await apiRep.startDatabase(context);
 
     apiService.setRepository(apiRep);
+    offline = true;
+
+    var sharedPrefs = await SharedPreferences.getInstance();
+    await sharedPrefs.setString("${configService.getAppName()}.offlineScreen", pWorkscreen);
+
+    await commandService.sendCommand(RouteToMenuCommand(reason: "We are going offline"));
   }
 }
