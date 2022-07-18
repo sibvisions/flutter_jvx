@@ -9,7 +9,7 @@ import '../../../../../model/data/subscriptions/data_chunk.dart';
 import '../../i_command_processor.dart';
 
 class GetDataChunkCommandProcessor
-    with DataServiceMixin, UiServiceGetterMixin, ApiServiceMixin, ConfigServiceMixin
+    with DataServiceMixin, UiServiceGetterMixin, ApiServiceGetterMixin, ConfigServiceMixin
     implements ICommandProcessor<GetDataChunkCommand> {
   @override
   Future<List<BaseCommand>> processCommand(GetDataChunkCommand command) async {
@@ -43,7 +43,7 @@ class GetDataChunkCommandProcessor
       rowCount: command.to != null ? command.to! - command.from : -1,
     );
 
-    List<BaseCommand> commands = await apiService.sendRequest(request: request);
+    List<BaseCommand> commands = await getApiService().sendRequest(request: request);
 
     return commands;
   }

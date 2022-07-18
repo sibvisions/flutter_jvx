@@ -6,7 +6,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class ChangePasswordCommandProcessor
-    with ApiServiceMixin, ConfigServiceMixin
+    with ApiServiceGetterMixin, ConfigServiceMixin
     implements ICommandProcessor<ChangePasswordCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -23,7 +23,7 @@ class ChangePasswordCommandProcessor
         newPassword: command.newPassword,
         username: command.username,
       );
-      return apiService.sendRequest(request: changePasswordRequest);
+      return getApiService().sendRequest(request: changePasswordRequest);
     }
     return [];
   }

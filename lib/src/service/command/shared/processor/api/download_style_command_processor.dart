@@ -7,7 +7,7 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class DownloadStyleCommandProcessor
-    with ConfigServiceMixin, ApiServiceMixin
+    with ConfigServiceMixin, ApiServiceGetterMixin
     implements ICommandProcessor<DownloadStyleCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadStyleCommand command) async {
@@ -18,6 +18,6 @@ class DownloadStyleCommandProcessor
     }
 
     ApiDownloadStyleRequest downloadTranslationRequest = ApiDownloadStyleRequest(clientId: clientId);
-    return apiService.sendRequest(request: downloadTranslationRequest);
+    return getApiService().sendRequest(request: downloadTranslationRequest);
   }
 }

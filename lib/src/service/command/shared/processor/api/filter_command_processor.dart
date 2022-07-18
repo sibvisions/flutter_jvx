@@ -5,7 +5,7 @@ import '../../../../../model/command/api/filter_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class FilterCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements ICommandProcessor<FilterCommand> {
+class FilterCommandProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<FilterCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +24,7 @@ class FilterCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements
         filterCondition: command.filterCondition,
       );
 
-      return apiService.sendRequest(request: apiFilterRequest);
+      return getApiService().sendRequest(request: apiFilterRequest);
     }
 
     return [];

@@ -7,7 +7,7 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class CloseFrameCommandProcessor
-    with ConfigServiceMixin, ApiServiceMixin
+    with ConfigServiceMixin, ApiServiceGetterMixin
     implements ICommandProcessor<CloseFrameCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseFrameCommand command) async {
@@ -15,7 +15,7 @@ class CloseFrameCommandProcessor
 
     if (clientId != null) {
       ApiCloseFrameRequest closeFrameRequest = ApiCloseFrameRequest(clientId: clientId, frameName: command.frameName);
-      return apiService.sendRequest(request: closeFrameRequest);
+      return getApiService().sendRequest(request: closeFrameRequest);
     }
 
     return [

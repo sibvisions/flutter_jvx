@@ -5,7 +5,7 @@ import '../../../../../model/command/api/close_tab_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class CloseTabProcessor with ApiServiceMixin, ConfigServiceMixin implements ICommandProcessor<CloseTabCommand> {
+class CloseTabProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<CloseTabCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +17,7 @@ class CloseTabProcessor with ApiServiceMixin, ConfigServiceMixin implements ICom
     if (clientId != null) {
       ApiCloseTabRequest closeTabRequest =
           ApiCloseTabRequest(index: command.index, componentName: command.componentName, clientId: clientId);
-      return apiService.sendRequest(request: closeTabRequest);
+      return getApiService().sendRequest(request: closeTabRequest);
     }
 
     return [];

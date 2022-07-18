@@ -5,7 +5,7 @@ import '../../../../../model/command/api/dal_save_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class DalSaveCommandProcessor with ConfigServiceMixin, ApiServiceMixin implements ICommandProcessor<DalSaveCommand> {
+class DalSaveCommandProcessor with ConfigServiceMixin, ApiServiceGetterMixin implements ICommandProcessor<DalSaveCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DalSaveCommand command) {
     ApiDalSaveRequest dalSaveRequest = ApiDalSaveRequest(
@@ -14,6 +14,6 @@ class DalSaveCommandProcessor with ConfigServiceMixin, ApiServiceMixin implement
       onlySelected: command.onlySelected,
     );
 
-    return apiService.sendRequest(request: dalSaveRequest);
+    return getApiService().sendRequest(request: dalSaveRequest);
   }
 }

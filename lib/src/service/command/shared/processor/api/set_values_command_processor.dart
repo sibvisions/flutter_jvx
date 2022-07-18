@@ -5,7 +5,7 @@ import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class SetValuesProcessor with ConfigServiceMixin, ApiServiceMixin implements ICommandProcessor<SetValuesCommand> {
+class SetValuesProcessor with ConfigServiceMixin, ApiServiceGetterMixin implements ICommandProcessor<SetValuesCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +24,7 @@ class SetValuesProcessor with ConfigServiceMixin, ApiServiceMixin implements ICo
         filter: command.filter,
       );
 
-      return apiService.sendRequest(request: setValuesRequest);
+      return getApiService().sendRequest(request: setValuesRequest);
     } else {
       throw Exception("NO CLIENT ID FOUND while trying to send setValues request. CommandID: " + command.id.toString());
     }

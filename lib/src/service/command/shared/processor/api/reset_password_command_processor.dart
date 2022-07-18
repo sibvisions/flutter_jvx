@@ -6,7 +6,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class ResetPasswordCommandProcessor
-    with ConfigServiceMixin, ApiServiceMixin
+    with ConfigServiceMixin, ApiServiceGetterMixin
     implements ICommandProcessor<ResetPasswordCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -20,7 +20,7 @@ class ResetPasswordCommandProcessor
       ApiResetPasswordRequest passwordRequest =
           ApiResetPasswordRequest(identifier: command.identifier, clientId: clientId);
 
-      return apiService.sendRequest(request: passwordRequest);
+      return getApiService().sendRequest(request: passwordRequest);
     } else {
       throw Exception("No clientId found while trying to sent ResetPasswordRequest");
     }

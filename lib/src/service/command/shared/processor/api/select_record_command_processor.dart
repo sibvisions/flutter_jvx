@@ -7,7 +7,7 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class SelectRecordCommandProcessor
-    with ApiServiceMixin, ConfigServiceMixin
+    with ApiServiceGetterMixin, ConfigServiceMixin
     implements ICommandProcessor<SelectRecordCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SelectRecordCommand command) async {
@@ -23,7 +23,7 @@ class SelectRecordCommandProcessor
         reload: command.reload,
       );
 
-      return apiService.sendRequest(request: apiSelectRecordRequest);
+      return getApiService().sendRequest(request: apiSelectRecordRequest);
     } else {
       return [
         OpenErrorDialogCommand(reason: "NO CLIENT ID", message: "NO CLIENT ID FOUND WHILE TRYING TO SEND SELECT RECORD")

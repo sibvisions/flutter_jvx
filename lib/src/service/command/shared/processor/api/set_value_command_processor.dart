@@ -5,7 +5,7 @@ import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class SetValueProcessor with ConfigServiceMixin, ApiServiceMixin implements ICommandProcessor<SetValueCommand> {
+class SetValueProcessor with ConfigServiceMixin, ApiServiceGetterMixin implements ICommandProcessor<SetValueCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetValueCommand command) {
     String? clientId = configService.getClientId();
@@ -14,7 +14,7 @@ class SetValueProcessor with ConfigServiceMixin, ApiServiceMixin implements ICom
       ApiSetValueRequest setValueRequest =
           ApiSetValueRequest(componentName: command.componentName, value: command.value, clientId: clientId);
 
-      return apiService.sendRequest(request: setValueRequest);
+      return getApiService().sendRequest(request: setValueRequest);
     } else {
       throw Exception("NO CLIENT ID FOUND, while trying to send setValue request. CommandID: " + command.id.toString());
     }

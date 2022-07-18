@@ -5,7 +5,7 @@ import '../../../../../model/command/api/press_button_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class PressButtonProcessor with ApiServiceMixin, ConfigServiceMixin implements ICommandProcessor<PressButtonCommand> {
+class PressButtonProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<PressButtonCommand> {
   @override
   Future<List<BaseCommand>> processCommand(PressButtonCommand command) async {
     String? clientId = configService.getClientId();
@@ -14,7 +14,7 @@ class PressButtonProcessor with ApiServiceMixin, ConfigServiceMixin implements I
       ApiPressButtonRequest pressButtonRequest =
           ApiPressButtonRequest(componentName: command.componentName, clientId: clientId);
 
-      return apiService.sendRequest(request: pressButtonRequest);
+      return getApiService().sendRequest(request: pressButtonRequest);
     } else {
       throw Exception("Cant find Client id, while trying to send PressButton request!");
     }

@@ -7,7 +7,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class DownloadTranslationCommandProcessor
-    with ConfigServiceMixin, ApiServiceMixin
+    with ConfigServiceMixin, ApiServiceGetterMixin
     implements ICommandProcessor<DownloadTranslationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadTranslationCommand command) {
@@ -20,6 +20,6 @@ class DownloadTranslationCommandProcessor
     }
 
     ApiDownloadTranslationRequest request = ApiDownloadTranslationRequest(clientId: clientId);
-    return apiService.sendRequest(request: request);
+    return getApiService().sendRequest(request: request);
   }
 }

@@ -7,7 +7,7 @@ import '../../../../../model/command/api/logout_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class LogoutCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements ICommandProcessor<LogoutCommand> {
+class LogoutCommandProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<LogoutCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LogoutCommand command) async {
     ApiLogoutRequest logoutRequest = ApiLogoutRequest(
@@ -20,6 +20,6 @@ class LogoutCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements
     configService.setUserInfo(null);
     unawaited(configService.setAuthCode(null));
 
-    return apiService.sendRequest(request: logoutRequest);
+    return getApiService().sendRequest(request: logoutRequest);
   }
 }

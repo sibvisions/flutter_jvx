@@ -5,7 +5,7 @@ import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class FetchCommandProcessor extends ICommandProcessor<FetchCommand> with ApiServiceMixin, ConfigServiceMixin {
+class FetchCommandProcessor extends ICommandProcessor<FetchCommand> with ApiServiceGetterMixin, ConfigServiceMixin {
   @override
   Future<List<BaseCommand>> processCommand(FetchCommand command) async {
     ApiFetchRequest request = ApiFetchRequest(
@@ -17,6 +17,6 @@ class FetchCommandProcessor extends ICommandProcessor<FetchCommand> with ApiServ
       includeMetaData: command.includeMetaData,
     );
 
-    return apiService.sendRequest(request: request);
+    return getApiService().sendRequest(request: request);
   }
 }

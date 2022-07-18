@@ -11,7 +11,7 @@ import '../../i_command_processor.dart';
 
 /// Will send [ApiNavigationRequest] to remote server
 class NavigationCommandProcessor
-    with UiServiceGetterMixin, ConfigServiceMixin, ApiServiceMixin
+    with UiServiceGetterMixin, ConfigServiceMixin, ApiServiceGetterMixin
     implements ICommandProcessor<NavigationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(NavigationCommand command) async {
@@ -20,7 +20,7 @@ class NavigationCommandProcessor
     if (clientId != null) {
       ApiNavigationRequest request = ApiNavigationRequest(screenName: command.openScreen, clientId: clientId);
 
-      List<BaseCommand> commands = await apiService.sendRequest(request: request);
+      List<BaseCommand> commands = await getApiService().sendRequest(request: request);
 
       if (commands.isEmpty) {
         commands.add(CloseScreenCommand(screenName: command.openScreen, reason: "Navigation response was empty"));
