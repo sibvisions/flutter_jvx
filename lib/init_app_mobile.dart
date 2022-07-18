@@ -74,10 +74,9 @@ Future<bool> initApp({
 
   // Load Dev config
   UrlConfig urlConfigServer = UrlConfig.empty();
-  AppConfig? appConfig;
   try {
     String rawConfig = await rootBundle.loadString('assets/config/app.conf.json');
-    appConfig = AppConfig.fromJson(json: jsonDecode(rawConfig));
+    AppConfig? appConfig = AppConfig.fromJson(json: jsonDecode(rawConfig));
 
     userName = appConfig.startupParameters?.username;
     password = appConfig.startupParameters?.password;
