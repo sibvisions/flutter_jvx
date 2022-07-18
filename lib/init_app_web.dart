@@ -52,7 +52,7 @@ Future<bool> initApp({
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // API
-  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8090);
+  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8888);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer2, endpointConfig: endpointConfig);
