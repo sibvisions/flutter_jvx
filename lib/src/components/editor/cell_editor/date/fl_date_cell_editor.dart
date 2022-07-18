@@ -43,7 +43,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
           onEndEditing: onEndEditing,
         ) {
     focusNode.addListener(
-          () {
+      () {
         if (focusNode.hasFocus) {
           openDatePicker();
         }
@@ -79,6 +79,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   @override
   FlDateEditorWidget createWidget([bool pInTable = false]) {
     FlDateEditorModel widgetModel = FlDateEditorModel();
+    widgetModel.isEditable = false;
 
     return FlDateEditorWidget(
       model: widgetModel,
@@ -86,7 +87,6 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
       focusNode: focusNode,
       endEditing: onEndEditing,
       valueChanged: onValueChange,
-      onPress: () => openDatePicker(),
       inTable: pInTable,
     );
   }
