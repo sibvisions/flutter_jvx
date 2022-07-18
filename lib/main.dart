@@ -17,6 +17,8 @@ void main() {
   runApp(const MyApp());
 }
 
+bool offline = false;
+
 //Mobile Style Properties
 double opacityMenu = 1;
 double opacitySideMenu = 1;

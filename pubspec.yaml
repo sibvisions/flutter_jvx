@@ -54,6 +54,7 @@ dependencies:
   charts_flutter: ^0.12.0
   gauges: ^1.0.0
   shared_preferences: ^2.0.15
+  sn_progress_dialog: ^1.0.8
 
 flutter:
   assets:
