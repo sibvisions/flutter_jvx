@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/config_generator.dart';
@@ -29,6 +27,7 @@ import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
+import 'util/config_util.dart';
 import 'util/file/file_manager_mobile.dart';
 import 'util/loading_handler/default_loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
@@ -88,18 +87,12 @@ Future<bool> initApp({
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Load Dev config
-  UrlConfig urlConfigServer = UrlConfig.empty();
-  AppConfig? appConfig;
-  try {
-    String rawConfig = await rootBundle.loadString('assets/config/app.conf.json');
-    appConfig = AppConfig.fromJson(json: jsonDecode(rawConfig));
+  AppConfig? appConfig = await ConfigUtil.readAppConfig();
 
-    if (appConfig.remoteConfig != null && appConfig.remoteConfig!.devUrlConfigs != null) {
-      urlConfigServer = appConfig.remoteConfig!.devUrlConfigs![appConfig.remoteConfig!.indexOfUsingUrlConfig];
-    }
-  } catch (e) {
-    LOGGER.logD(pType: LOG_TYPE.GENERAL, pMessage: "No Dev Config found");
-  }
+  UrlConfig urlConfigServer = ConfigUtil.createUrlConfig(
+    pAppConfig: appConfig,
+    pUrlConfig: UrlConfig.empty(),
+  );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // API init

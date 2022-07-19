@@ -1,5 +1,4 @@
 import '../../src/model/config/api/endpoint_config.dart';
-import '../../src/model/config/api/url_config.dart';
 
 class ConfigGenerator {
   static EndpointConfig generateFixedEndpoints() {
@@ -26,13 +25,5 @@ class ConfigGenerator {
       deleteRecord: "/api/dal/deleteRecord",
       closeFrame: "/api/closeFrame",
     );
-  }
-
-  static UrlConfig generateMobileServerUrl(String host, int port) {
-    return UrlConfig(host: host, path: "/JVx.mobile/services/mobile", https: false, port: port);
-  }
-
-  static UrlConfig generateVisionX(String host) {
-    return UrlConfig(host: host, path: "/services/mobile", https: false);
   }
 }

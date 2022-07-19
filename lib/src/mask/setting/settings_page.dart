@@ -61,6 +61,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   /// Build date notifier
   late ValueNotifier<String> buildDateNotifier;
 
+  /// app name of a scanned QR-Code
+  String? appName;
+
   /// Username of a scanned QR-Code
   String? username;
 
@@ -371,7 +374,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
         pDialogWidget: QRScannerMask(callBack: (barcode, _) {
           QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
           // set service values
-          getConfigService().setAppName(code.appName);
+          appName = code.appName;
 
           var a = UrlConfig.fromFullString(fullPath: code.url);
 
@@ -395,12 +398,14 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   void _saveClicked() {
     StartupCommand startupCommand = StartupCommand(
       reason: "QR-Code-Scanned",
-      password: password,
+      appName: appName,
       username: username,
+      password: password,
     );
     getUiService().sendCommand(startupCommand);
 
-    password = null;
+    appName = null;
     username = null;
+    password = null;
   }
 }

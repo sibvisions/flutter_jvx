@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'data/config/config_generator.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';
+import 'src/model/config/api/url_config.dart';
+import 'src/model/config/config_file/app_config.dart';
 import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
 import 'src/service/api/impl/default/api_service.dart';
@@ -22,6 +24,7 @@ import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
+import 'util/config_util.dart';
 import 'util/file/file_manager_web.dart';
 import 'util/logging/flutter_logger.dart';
 
@@ -70,7 +73,13 @@ Future<bool> initApp({
   // Load config files
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  //TODO Load Dev config
+  // Load Dev config
+  AppConfig? appConfig = await ConfigUtil.readAppConfig();
+
+  UrlConfig urlConfigServer = ConfigUtil.createUrlConfig(
+    pAppConfig: appConfig,
+    pUrlConfig: UrlConfig.empty(),
+  );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // API init
@@ -78,7 +87,7 @@ Future<bool> initApp({
 
   // API
   ApiConfig apiConfig = ApiConfig(
-    urlConfig: ConfigGenerator.generateMobileServerUrl("localhost", 8888),
+    urlConfig: urlConfigServer,
     endpointConfig: ConfigGenerator.generateFixedEndpoints(),
   );
   (configService as ConfigService).setApiConfig(apiConfig);
@@ -89,7 +98,11 @@ Future<bool> initApp({
   );
   services.registerSingleton(apiService, signalsReady: true);
 
-  StartupCommand startupCommand = StartupCommand(reason: "InitApp");
+  StartupCommand startupCommand = StartupCommand(
+    reason: "InitApp",
+    username: appConfig?.startupParameters?.username,
+    password: appConfig?.startupParameters?.password,
+  );
   await commandService.sendCommand(startupCommand);
 
   return true;

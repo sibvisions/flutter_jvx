@@ -5,11 +5,14 @@ class StartupCommand extends ApiCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The password
-  final String? password;
+  /// The app name
+  final String? appName;
 
   /// The username
   final String? username;
+
+  /// The password
+  final String? password;
 
   /// Width of the screen (display area)
   final double? screenWidth;
@@ -23,8 +26,9 @@ class StartupCommand extends ApiCommand {
 
   StartupCommand({
     required String reason,
-    this.password,
+    this.appName,
     this.username,
+    this.password,
     this.screenHeight,
     this.screenWidth,
   }) : super(reason: reason);

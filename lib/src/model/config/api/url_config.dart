@@ -5,17 +5,17 @@ class UrlConfig {
 
   /// Domain part of the url
   /// http://_HOST_/bar/foo
-  final String host;
+  String host;
 
   /// Additional path needs to always end with 'services/mobile/
   /// http://host/BAR/FOO/SERVICES/MOBILE
-  final String path;
+  String path;
 
   /// 'true' if path should be 'https'
-  final bool https;
+  bool https;
 
   /// Port
-  final int? port;
+  int? port;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
