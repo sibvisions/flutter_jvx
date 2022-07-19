@@ -39,6 +39,10 @@ Future<bool> initApp({
 }) async {
   LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Service init
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   // Config
   IConfigService configService = ConfigService(
     sharedPrefs: await SharedPreferences.getInstance(),
@@ -47,22 +51,6 @@ Future<bool> initApp({
     pLanguageCallbacks: languageCallbacks,
   );
   services.registerSingleton(configService, signalsReady: true);
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Service init
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // API
-  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8888);
-
-  EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer2, endpointConfig: endpointConfig);
-  (configService as ConfigService).setApiConfig(apiConfig);
-
-  IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
-  IController controller = ApiController();
-  IApiService apiService = ApiService(repository: repository, controller: controller);
-  services.registerSingleton(apiService, signalsReady: true);
 
   // Layout
   ILayoutService layoutService = LayoutService();
@@ -83,6 +71,29 @@ Future<bool> initApp({
   // UI
   IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);
   services.registerSingleton(uiService, signalsReady: true);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Load config files
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //TODO Load Dev config
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // API init
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // API
+  ApiConfig apiConfig = ApiConfig(
+    urlConfig: ConfigGenerator.generateMobileServerUrl("localhost", 8888),
+    endpointConfig: ConfigGenerator.generateFixedEndpoints(),
+  );
+  (configService as ConfigService).setApiConfig(apiConfig);
+
+  IApiService apiService = ApiService(
+    repository: OnlineApiRepository(apiConfig: apiConfig),
+    controller: ApiController(),
+  );
+  services.registerSingleton(apiService, signalsReady: true);
 
   StartupCommand startupCommand = StartupCommand(reason: "InitApp");
   await commandService.sendCommand(startupCommand);

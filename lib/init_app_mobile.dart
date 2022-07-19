@@ -110,12 +110,16 @@ Future<bool> initApp({
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // API
-  ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer, endpointConfig: ConfigGenerator.generateFixedEndpoints());
+  ApiConfig apiConfig = ApiConfig(
+    urlConfig: urlConfigServer,
+    endpointConfig: ConfigGenerator.generateFixedEndpoints(),
+  );
   (configService as ConfigService).setApiConfig(apiConfig);
 
-  IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
-  IController controller = ApiController();
-  IApiService apiService = await IsolateApi.create(controller: controller, repository: repository);
+  IApiService apiService = await IsolateApi.create(
+    repository: OnlineApiRepository(apiConfig: apiConfig),
+    controller: ApiController(),
+  );
   services.registerSingleton(apiService, signalsReady: true);
 
   // Send startup to server
