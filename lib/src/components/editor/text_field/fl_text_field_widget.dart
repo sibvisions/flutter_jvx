@@ -137,7 +137,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   List<Widget> createSuffixItems([bool pForceAll = false]) {
     List<Widget> icons = [];
 
-    Widget? clearIcon = createClearIcon();
+    Widget? clearIcon = createClearIcon(pForceAll);
     if (clearIcon != null) {
       icons.add(clearIcon);
     }
