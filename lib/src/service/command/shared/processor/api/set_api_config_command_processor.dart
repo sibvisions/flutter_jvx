@@ -11,7 +11,7 @@ class SetApiConfigCommandProcessor
     implements ICommandProcessor<SetApiConfigCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetApiConfigCommand command) async {
-    (getConfigService() as ConfigService).setApiConfig(command.apiConfig); //TODO evaluate
+    (getConfigService() as ConfigService).setApiConfig(command.apiConfig);
     getApiService().setApiConfig(apiConfig: command.apiConfig);
 
     return [];

@@ -11,6 +11,7 @@ import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/set_api_config_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
+import '../../model/config/api/api_config.dart';
 import '../../model/config/api/url_config.dart';
 import '../../routing/locations/settings_location.dart';
 import '../camera/qr_parser.dart';
@@ -236,12 +237,12 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           ).then((value) {
             if (value) {
               try {
-                UrlConfig config = UrlConfig.fromFullString(fullPath: controller.text);
+                ApiConfig apiConfig = getConfigService().getApiConfig()!;
+                apiConfig.urlConfig = UrlConfig.fromFullString(fullPath: controller.text);
 
-                baseUrlNotifier.value = config.getBasePath();
-                getConfigService().getApiConfig()!.urlConfig = config;
-                getUiService().sendCommand(
-                    SetApiConfigCommand(apiConfig: getConfigService().getApiConfig()!, reason: "Settings url editor"));
+                baseUrlNotifier.value = apiConfig.urlConfig.getBasePath();
+
+                getUiService().sendCommand(SetApiConfigCommand(apiConfig: apiConfig, reason: "Settings url editor"));
               } catch (e) {
                 getUiService().sendCommand(OpenErrorDialogCommand(
                     reason: "parseURl", message: getConfigService().translateText("URL text could not be parsed")));
@@ -376,9 +377,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           // set service values
           appName = code.appName;
 
-          var a = UrlConfig.fromFullString(fullPath: code.url);
-
-          getConfigService().getApiConfig()!.urlConfig = a;
+          ApiConfig apiConfig = getConfigService().getApiConfig()!;
+          apiConfig.urlConfig = UrlConfig.fromFullString(fullPath: code.url);
 
           // set local display values
           appNameNotifier.value = code.appName;
@@ -388,7 +388,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           password = code.password;
 
           SetApiConfigCommand apiConfigCommand =
-              SetApiConfigCommand(apiConfig: getConfigService().getApiConfig()!, reason: "QR Scan replaced url");
+              SetApiConfigCommand(apiConfig: apiConfig, reason: "QR Scan replaced url");
           getUiService().sendCommand(apiConfigCommand);
         }),
         pIsDismissible: false);
