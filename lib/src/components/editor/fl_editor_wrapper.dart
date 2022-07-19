@@ -2,7 +2,12 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/date/fl_date_cell_editor.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/fl_number_cell_editor.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/linked/fl_linked_cell_editor.dart';
+import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/component/editor/text_field/fl_text_field_model.dart';
 
 import '../../../util/extensions/list_extensions.dart';
 import '../../../util/logging/flutter_logger.dart';
@@ -134,13 +139,20 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       FlImageCellEditor imageCellEditor = cellEditor as FlImageCellEditor;
 
       newCalcSize = imageCellEditor.imageSize;
-    } else if (cellEditor is FlTextCellEditor && pLayoutData.hasCalculatedSize) {
-      FlTextCellEditor textCellEditor = cellEditor as FlTextCellEditor;
+    } else if (pLayoutData.hasCalculatedSize) {
+      if (cellEditor is FlTextCellEditor ||
+          cellEditor is FlLinkedCellEditor ||
+          cellEditor is FlDateCellEditor ||
+          cellEditor is FlNumberCellEditor) {
+        double extraWidth = (cellEditor.createWidget() as FlTextFieldWidget).extraWidthPaddings();
 
-      double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
+        double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
 
-      newCalcSize =
-          Size(averageColumnWidth * textCellEditor.createWidgetModel().columns + 2, layoutData.calculatedSize!.height);
+        newCalcSize = Size(
+          (averageColumnWidth * (cellEditor.createWidgetModel() as FlTextFieldModel).columns) + extraWidth,
+          layoutData.calculatedSize!.height,
+        );
+      }
     }
 
     if (newCalcSize != null) {

@@ -23,8 +23,8 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
             inTable: inTable);
 
   @override
-  List<Widget> createSuffixItems() {
-    List<Widget> oldSuffixItems = super.createSuffixItems();
+  List<Widget> createSuffixItems([bool pForceAll = false]) {
+    List<Widget> oldSuffixItems = super.createSuffixItems(pForceAll);
 
     oldSuffixItems.add(Align(
       widthFactor: 1,

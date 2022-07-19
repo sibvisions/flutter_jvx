@@ -4,7 +4,6 @@ import 'package:flutter/scheduler.dart';
 import '../../../../util/parse_util.dart';
 import '../../../model/command/api/set_value_command.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
-import '../../../model/layout/layout_data.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_text_field_widget.dart';
@@ -32,26 +31,21 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
   final FocusNode focusNode = FocusNode();
 
+  late FlTextFieldWidget _lastBuiltTextfield;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget build(BuildContext context) {
-    FlTextFieldWidget textFieldWidget = FlTextFieldWidget(
-      key: Key("${model.id}_Widget"),
-      model: model,
-      endEditing: endEditing,
-      valueChanged: valueChanged,
-      focusNode: focusNode,
-      textController: textController,
-    );
+    _lastBuiltTextfield = createWidget();
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: textFieldWidget);
+    return getPositioned(child: _lastBuiltTextfield);
   }
 
   @override
@@ -77,21 +71,33 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   @override
-  void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
-    if (pLayoutData.hasCalculatedSize) {
-      pLayoutData = pLayoutData.clone();
+  Size calculateSize(BuildContext context) {
+    Size size = super.calculateSize(context);
 
-      double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
+    double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
 
-      layoutData.calculatedSize = Size(averageColumnWidth * model.columns + 2, layoutData.calculatedSize!.height);
-    }
+    double width = averageColumnWidth * model.columns;
 
-    super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);
+    width += _lastBuiltTextfield.extraWidthPaddings();
+
+    return Size(width, size.height);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  FlTextFieldWidget<FlTextFieldModel> createWidget() {
+    FlTextFieldWidget textFieldWidget = FlTextFieldWidget(
+      key: Key("${model.id}_Widget"),
+      model: model,
+      endEditing: endEditing,
+      valueChanged: valueChanged,
+      focusNode: focusNode,
+      textController: textController,
+    );
+    return textFieldWidget;
+  }
 
   void valueChanged(String pValue) {
     setState(() {});

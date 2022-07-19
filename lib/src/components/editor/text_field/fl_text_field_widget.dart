@@ -104,8 +104,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Widget? createClearIcon() {
-    if (textController.text.isEmpty) {
+  Widget? createClearIcon([bool pForce = false]) {
+    if (textController.text.isEmpty && !pForce) {
       return null;
     }
 
@@ -134,7 +134,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     );
   }
 
-  List<Widget> createSuffixItems() {
+  List<Widget> createSuffixItems([bool pForceAll = false]) {
     List<Widget> icons = [];
 
     Widget? clearIcon = createClearIcon();
@@ -170,5 +170,17 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       borderSide:
           BorderSide(color: model.isEnabled ? Theme.of(context).primaryColor : IColorConstants.COMPONENT_DISABLED),
     );
+  }
+
+  /// Returns all extra paddings this text field has in sum apart from the text size itself.
+  double extraWidthPaddings() {
+    int iconAmount = createSuffixItems(true).length;
+
+    double width = iconSize * iconAmount;
+    width += (iconPadding.right + iconPadding.left) * iconAmount;
+    width += iconToTextPadding;
+    width += (textPadding?.left ?? 0.0) + (textPadding?.right ?? 0.0);
+
+    return width;
   }
 }

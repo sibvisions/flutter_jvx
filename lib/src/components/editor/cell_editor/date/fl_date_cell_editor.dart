@@ -247,22 +247,12 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  FlDateEditorWidget? createTableWidget() {
+  FlDateEditorWidget createTableWidget() {
     return createWidget(true);
   }
 
   @override
   double get additionalTablePadding {
-    FlDateEditorWidget? widget = createTableWidget();
-
-    double width = 0.0;
-    if (widget != null) {
-      width += (widget.iconSize * 2);
-      width += widget.iconPadding.right * 2;
-      width += widget.iconToTextPadding;
-      width += (widget.textPadding?.left ?? 0.0) + (widget.textPadding?.right ?? 0.0);
-    }
-
-    return width;
+    return createTableWidget().extraWidthPaddings();
   }
 }
