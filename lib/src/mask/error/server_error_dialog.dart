@@ -56,7 +56,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceMixin {
             context.beamToNamed("/setting");
           },
           child: Text(
-            configService.translateText("Go To Settings"),
+            configService.translateText("Go to Settings"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
