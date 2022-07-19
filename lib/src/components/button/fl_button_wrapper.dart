@@ -1,4 +1,5 @@
 import 'package:beamer/beamer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/service/api/i_api_service.dart';
@@ -41,12 +42,14 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
     onPress = sendButtonPressed;
 
-    if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
-      onPress = goOffline;
-    } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
-      onPress = openQrCodeScanner;
-    } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
-      onPress = callNumber;
+    if (kIsWeb) {
+      if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
+        onPress = goOffline;
+      } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
+        onPress = openQrCodeScanner;
+      } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
+        onPress = callNumber;
+      }
     }
 
     if (model.columnName.isNotEmpty && model.dataProvider.isNotEmpty) {
