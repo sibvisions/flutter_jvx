@@ -8,6 +8,8 @@ class DalMetaDataResponse extends ApiResponse {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  final Map<String, dynamic> originalJson;
+
   /// All column definitions in this dataBook
   final List<ColumnDefinition> columns;
 
@@ -36,21 +38,9 @@ class DalMetaDataResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DalMetaDataResponse({
-    required this.dataProvider,
-    required this.columns,
-    required this.columnViewTable,
-    required this.readOnly,
-    required this.deleteEnabled,
-    required this.updateEnabled,
-    required this.insertEnabled,
-    required this.primaryKeyColumns,
-    required String name,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
-
   DalMetaDataResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : columnViewTable = pJson[ApiObjectProperty.columnViewTable].cast<String>(),
+      : originalJson = pJson,
+        columnViewTable = pJson[ApiObjectProperty.columnViewTable].cast<String>(),
         columns = ParseUtil.parseColumnDefinitions(pJson[ApiObjectProperty.columns]),
         dataProvider = pJson[ApiObjectProperty.dataProvider],
         readOnly = pJson[ApiObjectProperty.readOnly] ?? false,

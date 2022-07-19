@@ -27,10 +27,10 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
     var dalMetaData = dataBooks.map((e) => e.metaData!).toList(growable: false);
     //Drop old data + possible old scheme
-    _offlineDatabase.dropTables(dalMetaData);
+    await _offlineDatabase.dropTables(dalMetaData);
     _offlineDatabase.createTables(dalMetaData);
 
-    log("Sum of all databooks: " +
+    log("Sum of all databook entries: " +
         dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element).toString());
 
     await _offlineDatabase.db.transaction((txn) async {

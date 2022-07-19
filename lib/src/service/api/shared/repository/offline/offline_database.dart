@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/model/data/column_definition.dart';
@@ -20,8 +22,11 @@ class OfflineDatabase with ConfigServiceGetterMixin {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static const OFFLINE_APPS_TABLE = "jvx_offline_apps";
+  static const OFFLINE_METADATA_TABLE = "jvx_offline_metadata";
+
   static const COLUMN_PREFIX = "\$OLD\$_";
-  static const STATE_COLUMN = '\$state\$';
+  static const STATE_COLUMN = '\$STATE\$';
   static const ROW_STATE_INSERTED = "I";
   static const ROW_STATE_UPDATED = "U";
   static const ROW_STATE_DELETED = "D";
@@ -57,7 +62,8 @@ class OfflineDatabase with ConfigServiceGetterMixin {
     db = await openDatabase(
       // Set the path to the database.
       join(await getDatabasesPath(), 'jvx_offline_data.sqlite'),
-      // Set the version. This executes the onCreate function and provides a
+      onUpgrade: (db, oldVersion, newVersion) => _initStructTables(db),
+      // Set the version. This executes the onCreate/onUpgrade function and provides a
       // path to perform database upgrades and downgrades.
       //TODO check version (sync with app_version?)
       version: 1,
@@ -65,24 +71,79 @@ class OfflineDatabase with ConfigServiceGetterMixin {
   }
 
   createTables(List<DalMetaDataResponse> dalMetaData, {bool onlyIfNotExists = false}) {
-    return Future.wait(dalMetaData.map((table) async {
-      if (onlyIfNotExists && (await tableExists(table.dataProvider))) {
-        return SynchronousFuture(null);
-      }
+    return Future.wait([
+      _createStructTables(getConfigService().getAppName(), dalMetaData),
+      ...dalMetaData.map((table) async {
+        if (onlyIfNotExists && (await tableExists(table.dataProvider))) {
+          return SynchronousFuture(null);
+        }
 
-      String createTableSQL = _createTable(table);
-      if (kDebugMode) print("Create Table SQL:\n" + createTableSQL);
-      // Run the CREATE TABLE statement on the database.
-      return db.execute(createTableSQL);
-    }));
+        String createTableSQL = _createTable(table);
+        if (kDebugMode) print("Create Table SQL:\n" + createTableSQL);
+        // Run the CREATE TABLE statement on the database.
+        return db.execute(createTableSQL);
+      })
+    ]);
+  }
+
+  _initStructTables(Database db) async {
+    String createAppsTableSQL = """
+CREATE TABLE IF NOT EXISTS $OFFLINE_APPS_TABLE (
+   ID INTEGER PRIMARY KEY,
+   APP TEXT NOT NULL UNIQUE
+);""";
+    await db.execute(createAppsTableSQL);
+
+    String createMetaDataTablesSQL = """
+CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
+   ID INTEGER PRIMARY KEY,
+   APP_ID INTEGER NOT NULL,
+   DATA_PROVIDER TEXT NOT NULL,
+   TABLE_NAME TEXT NOT NULL,
+   META_DATA TEXT NOT NULL,
+   FOREIGN KEY(APP_ID) REFERENCES $OFFLINE_APPS_TABLE(ID) ON UPDATE CASCADE ON DELETE CASCADE
+);""";
+    await db.execute(createMetaDataTablesSQL);
+  }
+
+  Future<dynamic> _createStructTables(String appName, List<DalMetaDataResponse> dalMetaData) async {
+    var appId = await db.insert(OFFLINE_APPS_TABLE, {"APP": appName});
+
+    return Future.wait(dalMetaData.map((metaData) => db.insert(OFFLINE_METADATA_TABLE, {
+          "APP_ID": appId,
+          "DATA_PROVIDER": metaData.dataProvider,
+          "TABLE_NAME": formatOfflineTableName(metaData.dataProvider),
+          "META_DATA": jsonEncode(metaData.originalJson),
+        })));
   }
 
   ///Convenience method for [dropTable]
-  dropTables(List<DalMetaDataResponse> dalMetaData) {
-    return Future.wait(dalMetaData.map((table) => dropTable(table.dataProvider)));
+  Future<dynamic> dropTables(List<DalMetaDataResponse> dalMetaData) {
+    return Future.wait([
+      ...dalMetaData.map((table) => dropTable(table.dataProvider)),
+      _dropStructTables(getConfigService().getAppName()),
+    ]);
   }
 
-  close() {
+  Future<int> _dropStructTables(String appName) {
+    return db.delete(OFFLINE_APPS_TABLE, where: "APP LIKE ?", whereArgs: [appName]);
+  }
+
+  Future<DalMetaDataResponse> getMetaData({required String pDataProvider}) async {
+    String appName = getConfigService().getAppName();
+    return db
+        .query(
+          OFFLINE_METADATA_TABLE,
+          columns: ["META_DATA"],
+          where: "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?) AND DATA_PROVIDER LIKE ?",
+          whereArgs: [appName, pDataProvider],
+          limit: 1,
+        )
+        .then((value) =>
+            DalMetaDataResponse.fromJson(pJson: jsonDecode(value[0]["META_DATA"] as String), originalRequest: ""));
+  }
+
+  Future<void> close() {
     return db.close();
   }
 
@@ -153,7 +214,7 @@ class OfflineDatabase with ConfigServiceGetterMixin {
   }
 
   /// Drops table with name [pTableName]
-  dropTable(String pTableName) {
+  Future<void> dropTable(String pTableName) {
     return db.execute('DROP TABLE IF EXISTS "${formatOfflineTableName(pTableName)}";');
   }
 
