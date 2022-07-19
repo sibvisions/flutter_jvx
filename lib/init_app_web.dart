@@ -1,19 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/config_generator.dart';
-import 'main.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';
-import 'src/model/config/api/endpoint_config.dart';
-import 'src/model/config/api/url_config.dart';
 import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
 import 'src/service/api/impl/default/api_service.dart';
 import 'src/service/api/shared/controller/api_controller.dart';
-import 'src/service/api/shared/i_controller.dart';
-import 'src/service/api/shared/i_repository.dart';
 import 'src/service/api/shared/repository/online_api_repository.dart';
 import 'src/service/command/i_command_service.dart';
 import 'src/service/command/impl/command_service.dart';

@@ -6,7 +6,6 @@ import '../../../../../../util/logging/flutter_logger.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
-import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class UpdateComponentsProcessor
@@ -17,8 +16,6 @@ class UpdateComponentsProcessor
 
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
-    IUiService uiService = getUiService();
-
     LOGGER.logD(pType: LOG_TYPE.COMMAND, pMessage: "------------------- Components are updating");
 
     if (!isOpenScreen && !_secondRun) {

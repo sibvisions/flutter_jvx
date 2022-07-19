@@ -11,8 +11,6 @@ class UpdateLayoutPositionProcessor
     implements ICommandProcessor<UpdateLayoutPositionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UpdateLayoutPositionCommand command) {
-    var uiService = getUiService();
-
     for (LayoutData element in command.layoutDataList) {
       getUiService().setLayoutPosition(layoutData: element);
     }

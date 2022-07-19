@@ -484,10 +484,10 @@ class FormLayout extends ILayout {
       required LayoutData pParent,
       required FormLayoutSize pMinPrefSize}) {
     /// Get Border- and Margin Anchors for calculation
-    FormLayoutAnchor lba = pAnchors["l"]!;
-    FormLayoutAnchor rba = pAnchors["r"]!;
-    FormLayoutAnchor tba = pAnchors["t"]!;
-    FormLayoutAnchor bba = pAnchors["b"]!;
+    // FormLayoutAnchor lba = pAnchors["l"]!;
+    // FormLayoutAnchor rba = pAnchors["r"]!;
+    // FormLayoutAnchor tba = pAnchors["t"]!;
+    // FormLayoutAnchor bba = pAnchors["b"]!;
 
     FormLayoutAnchor tma = pAnchors["tm"]!;
     FormLayoutAnchor bma = pAnchors["bm"]!;
@@ -499,8 +499,8 @@ class FormLayout extends ILayout {
         FormLayoutConstraints(bottomAnchor: bma, leftAnchor: lma, rightAnchor: rma, topAnchor: tma);
 
     /// Used for layoutSize
-    FormLayoutConstraints borderConstraints =
-        FormLayoutConstraints(bottomAnchor: bba, leftAnchor: lba, rightAnchor: rba, topAnchor: tba);
+    // FormLayoutConstraints borderConstraints =
+    //     FormLayoutConstraints(bottomAnchor: bba, leftAnchor: lba, rightAnchor: rba, topAnchor: tba);
 
     // This layout has additional margins to add.
     double additionalLeft = marginConstraints.leftAnchor.getAbsolutePosition();
