@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../../util/parse_util.dart';
-import '../../../mixin/data_service_mixin.dart';
 import '../../../model/command/api/set_value_command.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/layout_data.dart';
@@ -25,7 +24,7 @@ class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
   FlTextFieldWrapperState createState() => FlTextFieldWrapperState();
 }
 
-class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrapperState<T> with DataServiceMixin {
+class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,7 +100,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   void endEditing(String pValue) {
     SetValueCommand setValue =
         SetValueCommand(componentName: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
-    uiService.sendCommand(setValue);
+    getUiService().sendCommand(setValue);
 
     setState(() {});
   }

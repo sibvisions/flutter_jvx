@@ -7,11 +7,11 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class SelectRecordCommandProcessor
-    with ApiServiceGetterMixin, ConfigServiceMixin
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<SelectRecordCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SelectRecordCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiSelectRecordRequest apiSelectRecordRequest = ApiSelectRecordRequest(

@@ -1,6 +1,7 @@
+import 'package:flutter_client/src/mixin/data_service_mixin.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../mixin/data_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/api/requests/api_fetch_request.dart';
 import '../../../../../model/command/base_command.dart';
@@ -9,18 +10,18 @@ import '../../../../../model/data/subscriptions/data_chunk.dart';
 import '../../i_command_processor.dart';
 
 class GetDataChunkCommandProcessor
-    with DataServiceMixin, UiServiceGetterMixin, ApiServiceGetterMixin, ConfigServiceMixin
+    with DataServiceGetterMixin, UiServiceGetterMixin, ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<GetDataChunkCommand> {
   @override
   Future<List<BaseCommand>> processCommand(GetDataChunkCommand command) async {
-    bool needFetch = await dataService.checkIfFetchPossible(
+    bool needFetch = await getDataService().checkIfFetchPossible(
       pFrom: command.from,
       pTo: command.to,
       pDataProvider: command.dataProvider,
     );
 
     if (!needFetch) {
-      DataChunk dataChunk = await dataService.getDataChunk(
+      DataChunk dataChunk = await getDataService().getDataChunk(
         pColumnNames: command.dataColumns,
         pFrom: command.from,
         pTo: command.to,
@@ -38,7 +39,7 @@ class GetDataChunkCommandProcessor
 
     ApiFetchRequest request = ApiFetchRequest(
       dataProvider: command.dataProvider,
-      clientId: configService.getClientId()!,
+      clientId: getConfigService().getClientId()!,
       fromRow: command.from,
       rowCount: command.to != null ? command.to! - command.from : -1,
     );

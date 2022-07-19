@@ -6,11 +6,13 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
-class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceGetterMixin implements ICommandProcessor<StartupCommand> {
+class StartUpCommandProcessor
+    with ConfigServiceGetterMixin, ApiServiceGetterMixin
+    implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
-    String appName = configService.getAppName();
-    Map<String, dynamic> parameters = configService.getStartUpParameters();
+    String appName = getConfigService().getAppName();
+    Map<String, dynamic> parameters = getConfigService().getStartUpParameters();
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
       appMode: "full",
@@ -21,8 +23,8 @@ class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceGetterMixin imp
       startUpParameters: parameters,
       screenHeight: command.screenHeight,
       screenWidth: command.screenWidth,
-      langCode: configService.getLanguage(),
-      authKey: configService.getAuthCode(),
+      langCode: getConfigService().getLanguage(),
+      authKey: getConfigService().getAuthCode(),
     );
 
     return getApiService().sendRequest(request: startUpRequest);

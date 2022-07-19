@@ -9,11 +9,11 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class CloseScreenCommandProcessor
-    with ApiServiceGetterMixin, ConfigServiceMixin
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<CloseScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command) {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       return getApiService().sendRequest(

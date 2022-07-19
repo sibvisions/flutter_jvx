@@ -8,11 +8,11 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class InsertRecordCommandProcessor
-    with ConfigServiceMixin, ApiServiceGetterMixin
+    with ConfigServiceGetterMixin, ApiServiceGetterMixin
     implements ICommandProcessor<InsertRecordCommand> {
   @override
   Future<List<BaseCommand>> processCommand(InsertRecordCommand command) {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       return getApiService().sendRequest(

@@ -7,11 +7,11 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class DownloadStyleCommandProcessor
-    with ConfigServiceMixin, ApiServiceGetterMixin
+    with ConfigServiceGetterMixin, ApiServiceGetterMixin
     implements ICommandProcessor<DownloadStyleCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadStyleCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId == null) {
       return [OpenErrorDialogCommand(reason: "Could not read clientId", message: "Could not read clientId")];

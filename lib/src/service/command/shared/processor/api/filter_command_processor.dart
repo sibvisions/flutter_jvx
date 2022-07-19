@@ -5,14 +5,16 @@ import '../../../../../model/command/api/filter_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class FilterCommandProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<FilterCommand> {
+class FilterCommandProcessor
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
+    implements ICommandProcessor<FilterCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Future<List<BaseCommand>> processCommand(FilterCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiFilterRequest apiFilterRequest = ApiFilterRequest(

@@ -5,14 +5,16 @@ import '../../../../../model/command/api/close_tab_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class CloseTabProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<CloseTabCommand> {
+class CloseTabProcessor
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
+    implements ICommandProcessor<CloseTabCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Future<List<BaseCommand>> processCommand(CloseTabCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiCloseTabRequest closeTabRequest =

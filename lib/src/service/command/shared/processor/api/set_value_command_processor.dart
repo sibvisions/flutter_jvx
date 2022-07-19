@@ -5,10 +5,12 @@ import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class SetValueProcessor with ConfigServiceMixin, ApiServiceGetterMixin implements ICommandProcessor<SetValueCommand> {
+class SetValueProcessor
+    with ConfigServiceGetterMixin, ApiServiceGetterMixin
+    implements ICommandProcessor<SetValueCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetValueCommand command) {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiSetValueRequest setValueRequest =

@@ -6,10 +6,10 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class DeleteRecordCommandProcessor extends ICommandProcessor<DeleteRecordCommand>
-    with ApiServiceGetterMixin, ConfigServiceMixin {
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin {
   @override
   Future<List<BaseCommand>> processCommand(DeleteRecordCommand command) {
-    String clientId = configService.getClientId()!;
+    String clientId = getConfigService().getClientId()!;
 
     ApiDeleteRecordRequest deleteRecordRequest = ApiDeleteRecordRequest(
       clientId: clientId,

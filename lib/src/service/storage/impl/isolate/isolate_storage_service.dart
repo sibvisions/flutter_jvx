@@ -2,12 +2,9 @@ import 'dart:isolate';
 
 import '../../../../model/command/base_command.dart';
 import '../../../../model/component/fl_component_model.dart';
-import '../../../../model/menu/menu_model.dart';
 import '../../i_storage_service.dart';
 import 'message/endpoint/storage_isolate_delete_screen_message.dart';
-import 'message/endpoint/storage_isolate_get_menu_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
-import 'message/endpoint/storage_isolate_save_menu_message.dart';
 import 'message/endpoint/storage_isolate_update_components_message.dart';
 import 'message/storage_isolate_message.dart';
 import 'message/storage_isolate_message_wrapper.dart';
@@ -41,21 +38,9 @@ class IsolateStorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<MenuModel> getMenu() async {
-    StorageIsolateGetMenuMessage getMenuMessage = StorageIsolateGetMenuMessage();
-    return await _sendMessage(getMenuMessage);
-  }
-
-  @override
   Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) async {
     StorageIsolateGetScreenMessage getScreenMessage = StorageIsolateGetScreenMessage(screenClassName: screenClassName);
     return await _sendMessage(getScreenMessage);
-  }
-
-  @override
-  Future<bool> saveMenu(MenuModel menuModel) async {
-    StorageIsolateSaveMenuMessage saveMenuMessage = StorageIsolateSaveMenuMessage(menuModel: menuModel);
-    return await _sendMessage(saveMenuMessage);
   }
 
   @override

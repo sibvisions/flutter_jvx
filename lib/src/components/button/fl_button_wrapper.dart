@@ -50,7 +50,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     }
 
     if (model.columnName.isNotEmpty && model.dataProvider.isNotEmpty) {
-      uiService.registerDataSubscription(
+      getUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider,
@@ -87,7 +87,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Button pressed");
-      uiService.sendCommand(_createButtonCommand());
+      getUiService().sendCommand(_createButtonCommand());
     } else {
       LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Button will be pressed");
       currentObjectFocused!.addListener(delayedSendButtonPressed);
@@ -97,7 +97,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void delayedSendButtonPressed() {
     LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Delayed button pressed");
-    uiService.sendCommand(_createButtonCommand());
+    getUiService().sendCommand(_createButtonCommand());
     currentObjectFocused!.removeListener(delayedSendButtonPressed);
     currentObjectFocused = null;
   }
@@ -110,14 +110,14 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   void openQrCodeScanner() {
-    uiService.openDialog(
+    getUiService().openDialog(
       pIsDismissible: false,
       pDialogWidget: QRScannerMask(callBack: sendQrCodeResult),
     );
   }
 
   void sendQrCodeResult(Barcode pBarcode, MobileScannerArguments? pArguments) {
-    uiService.sendCommand(
+    getUiService().sendCommand(
       SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataProvider,

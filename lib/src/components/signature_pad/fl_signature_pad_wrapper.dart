@@ -97,7 +97,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         columnNames: getDataColumns(),
         values: values,
         reason: "Drawing has ended on ${model.id}");
-    uiService.sendCommand(setValues);
+    getUiService().sendCommand(setValues);
   }
 
   Future<void> deleteSignature() async {
@@ -110,11 +110,11 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         columnNames: getDataColumns(),
         values: [],
         reason: "Drawing has ended on ${model.id}");
-    uiService.sendCommand(setValues);
+    getUiService().sendCommand(setValues);
   }
 
   void subscribe() {
-    uiService.registerDataSubscription(
+    getUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
         from: -1,
@@ -126,7 +126,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
   void receiveSignatureData(DataRecord? pDataRecord) {

@@ -19,7 +19,7 @@ class DrawerMenu extends StatefulWidget {
   State<DrawerMenu> createState() => _DrawerMenuState();
 }
 
-class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServiceMixin {
+class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   final TextStyle boldStyle = const TextStyle(
     fontWeight: FontWeight.bold,
@@ -52,11 +52,12 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeaderText(flex: 7, text: configService.getAppName(), context: context),
+                _buildHeaderText(flex: 7, text: getConfigService().getAppName(), context: context),
                 const Padding(padding: EdgeInsets.all(4)),
-                _buildHeaderText(flex: 3, text: configService.translateText("Logged in as") + ":", context: context),
+                _buildHeaderText(
+                    flex: 3, text: getConfigService().translateText("Logged in as") + ":", context: context),
                 const Padding(padding: EdgeInsets.all(10)),
-                _buildHeaderText(flex: 5, text: configService.getUserInfo()?.displayName ?? "", context: context),
+                _buildHeaderText(flex: 5, text: getConfigService().getUserInfo()?.displayName ?? "", context: context),
                 const Expanded(flex: 2, child: Text(""))
               ],
             ),
@@ -70,8 +71,8 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
                 Expanded(
                   child: CircleAvatar(
                     backgroundColor: Theme.of(context).backgroundColor,
-                    backgroundImage: configService.getUserInfo()?.profileImage?.image,
-                    child: configService.getUserInfo()?.profileImage == null
+                    backgroundImage: getConfigService().getUserInfo()?.profileImage?.image,
+                    child: getConfigService().getUserInfo()?.profileImage == null
                         ? FaIcon(
                             FontAwesomeIcons.solidUser,
                             color: Theme.of(context).primaryColor,
@@ -89,7 +90,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
   }
 
   Widget _buildMenu(BuildContext context) {
-    MenuModel menuModel = uiService.getMenuModel();
+    MenuModel menuModel = getUiService().getMenuModel();
     return AppMenuListGrouped(
       menuModel: menuModel,
       onClick: _menuItemPressed,
@@ -105,7 +106,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
       ),
       _buildFooterEntry(
         context: context,
-        text: configService.translateText("Settings"),
+        text: getConfigService().translateText("Settings"),
         leadingIcon: FontAwesomeIcons.cogs,
         onTap: _settings,
       ),
@@ -116,7 +117,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
       ),
       _buildFooterEntry(
         context: context,
-        text: configService.translateText("Change password"),
+        text: getConfigService().translateText("Change password"),
         leadingIcon: FontAwesomeIcons.save,
         onTap: _changePassword,
       ),
@@ -127,7 +128,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
       ),
       _buildFooterEntry(
         context: context,
-        text: configService.translateText("Logout"),
+        text: getConfigService().translateText("Logout"),
         leadingIcon: FontAwesomeIcons.signOutAlt,
         onTap: _logout,
       ),
@@ -174,31 +175,31 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
   }
 
   void _settings() {
-    uiService.setRouteContext(pContext: context);
-    uiService.routeToSettings();
+    getUiService().setRouteContext(pContext: context);
+    getUiService().routeToSettings();
   }
 
   void _changePassword() {
-    uiService.setRouteContext(pContext: context);
-    uiService.openDialog(
+    getUiService().setRouteContext(pContext: context);
+    getUiService().openDialog(
       pDialogWidget: ChangePassword(
-        username: configService.getUserInfo()?.userName,
+        username: getConfigService().getUserInfo()?.userName,
       ),
       pIsDismissible: true,
     );
   }
 
   void _menuItemPressed({required String componentId}) {
-    uiService.setRouteContext(pContext: context);
+    getUiService().setRouteContext(pContext: context);
 
     OpenScreenCommand command = OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed");
-    uiService.sendCommand(command);
+    getUiService().sendCommand(command);
   }
 
   void _logout() {
-    uiService.setRouteContext(pContext: context);
+    getUiService().setRouteContext(pContext: context);
 
     LogoutCommand logoutCommand = LogoutCommand(reason: "Drawer menu logout");
-    uiService.sendCommand(logoutCommand);
+    getUiService().sendCommand(logoutCommand);
   }
 }

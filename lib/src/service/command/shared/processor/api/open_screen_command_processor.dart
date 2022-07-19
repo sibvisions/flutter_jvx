@@ -7,11 +7,11 @@ import '../../i_command_processor.dart';
 import '../ui/update_components_processor.dart';
 
 class OpenScreenCommandProcessor
-    with ApiServiceGetterMixin, ConfigServiceMixin
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<OpenScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(OpenScreenCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
     if (clientId != null) {
       UpdateComponentsProcessor.isOpenScreen = true;
 

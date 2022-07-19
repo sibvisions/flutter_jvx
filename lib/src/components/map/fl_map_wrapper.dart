@@ -21,7 +21,7 @@ class FlMapWrapper extends BaseCompWrapperWidget<FlMapModel> {
   _FlMapWrapperState createState() => _FlMapWrapperState();
 }
 
-class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiServiceMixin {
+class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiServiceGetterMixin {
   DataChunk? _chunkData;
 
   List<Marker> markers = [];
@@ -68,7 +68,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void subscribe() {
     if (model.pointsDataBook != null) {
-      uiService.registerDataSubscription(
+      getUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
@@ -84,7 +84,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     }
 
     if (model.groupDataBook != null) {
-      uiService.registerDataSubscription(
+      getUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
@@ -102,11 +102,11 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void unsubscribe() {
     if (model.groupDataBook != null) {
-      uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.groupDataBook!);
+      getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.groupDataBook!);
     }
 
     if (model.pointsDataBook != null) {
-      uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.pointsDataBook!);
+      getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.pointsDataBook!);
     }
   }
 
@@ -172,7 +172,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void onPointSelection(LatLng latLng) {
     if (model.pointSelectionEnabled && model.pointsDataBook != null) {
-      uiService.sendCommand(
+      getUiService().sendCommand(
         SetValuesCommand(
             componentId: model.id,
             dataProvider: model.pointsDataBook!,

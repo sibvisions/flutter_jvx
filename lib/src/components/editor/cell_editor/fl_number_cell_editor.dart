@@ -8,7 +8,7 @@ import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> with ConfigServiceMixin {
+class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,7 +117,7 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> wi
       precision: _columnDefinition?.precision,
       scale: _columnDefinition?.scale,
       signed: _columnDefinition?.signed,
-      locale: configService.getLanguage(),
+      locale: getConfigService().getLanguage(),
     );
   }
 

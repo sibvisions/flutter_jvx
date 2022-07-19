@@ -25,7 +25,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     super.initState();
 
     layoutData.layout = SplitLayout(splitAlignment: model.orientation, leftTopRatio: model.dividerPosition);
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
     buildChildren(pSetStateOnChange: false);
     registerParent();
@@ -34,7 +34,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
   @override
   receiveNewModel({required FlSplitPanelModel newModel}) {
     layoutData.layout = SplitLayout(splitAlignment: newModel.orientation, leftTopRatio: newModel.dividerPosition);
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
     buildChildren();

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
-import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/close_frame_command.dart';
 
 /// This is a standard template for a server side message.
-class ServerDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
+class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,13 +34,13 @@ class ServerDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMix
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(configService.translateText("MESSAGE")),
+      title: Text(getConfigService().translateText("MESSAGE")),
       content: Text(message),
       actions: [
         TextButton(
           onPressed: () => _closeScreen(context),
           child: Text(
-            configService.translateText("OK"),
+            getConfigService().translateText("OK"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
@@ -51,7 +51,7 @@ class ServerDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMix
   _closeScreen(BuildContext context) {
     CloseFrameCommand closeScreenCommand =
         CloseFrameCommand(frameName: messageScreenName, reason: "Message Dialog was dismissed");
-    uiService.sendCommand(closeScreenCommand);
+    getUiService().sendCommand(closeScreenCommand);
 
     Navigator.of(context).pop();
   }

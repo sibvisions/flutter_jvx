@@ -6,12 +6,12 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class ChangeSelectedRowCommandProcessor
-    with UiServiceGetterMixin, DataServiceMixin
+    with UiServiceGetterMixin, DataServiceGetterMixin
     implements ICommandProcessor<ChangeSelectedRowCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ChangeSelectedRowCommand command) async {
     // set selected row of databook
-    bool success = await dataService.setSelectedRow(
+    bool success = await getDataService().setSelectedRow(
       pDataProvider: command.dataProvider,
       pNewSelectedRow: command.newSelectedRow,
     );

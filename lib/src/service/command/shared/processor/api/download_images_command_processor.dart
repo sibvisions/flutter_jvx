@@ -6,11 +6,11 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class DownloadImagesCommandProcessor
-    with ApiServiceGetterMixin, ConfigServiceMixin
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<DownloadImagesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadImagesCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiDownloadImagesRequest downloadImagesRequest = ApiDownloadImagesRequest(

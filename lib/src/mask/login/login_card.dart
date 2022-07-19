@@ -7,7 +7,7 @@ import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/login_command.dart';
 import 'remember_me_checkbox.dart';
 
-class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
+class LoginCard extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +33,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
 
   @override
   Widget build(BuildContext context) {
-    String? loginTitle = configService.getAppStyle()?['login.title'];
+    String? loginTitle = getConfigService().getAppStyle()?['login.title'];
 
     return Card(
       color: Colors.white.withOpacity(0.9),
@@ -43,17 +43,17 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
         child: Column(
           children: [
             Text(
-              loginTitle ?? configService.getAppName().toUpperCase(),
+              loginTitle ?? getConfigService().getAppName().toUpperCase(),
               style: Theme.of(context).textTheme.headline6,
               textAlign: TextAlign.center,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               controller: usernameController,
-              decoration: InputDecoration(labelText: configService.translateText("Username: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Username: ")),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: configService.translateText("Password: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Password: ")),
               controller: passwordController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
@@ -64,17 +64,17 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
             ),
             ElevatedButton(
               onPressed: _onLoginPressed,
-              child: Text(configService.translateText("Login")),
+              child: Text(getConfigService().translateText("Login")),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               TextButton(
                 onPressed: () => context.beamToNamed("/login/lostPassword"),
-                child: Text(configService.translateText("Reset password") + "?"),
+                child: Text(getConfigService().translateText("Reset password") + "?"),
               ),
               TextButton.icon(
                 onPressed: () => _onSettingsPressed(context: context),
                 icon: const FaIcon(FontAwesomeIcons.cogs),
-                label: Text(configService.translateText("Settings")),
+                label: Text(getConfigService().translateText("Settings")),
               ),
             ]),
           ],
@@ -97,7 +97,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
       reason: "LoginButton",
       createAuthKey: checkHolder.isChecked,
     );
-    uiService.sendCommand(loginCommand);
+    getUiService().sendCommand(loginCommand);
   }
 
   void _onSettingsPressed({required BuildContext context}) {

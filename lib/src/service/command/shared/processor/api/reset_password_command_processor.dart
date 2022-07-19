@@ -6,7 +6,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class ResetPasswordCommandProcessor
-    with ConfigServiceMixin, ApiServiceGetterMixin
+    with ConfigServiceGetterMixin, ApiServiceGetterMixin
     implements ICommandProcessor<ResetPasswordCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -14,7 +14,7 @@ class ResetPasswordCommandProcessor
 
   @override
   Future<List<BaseCommand>> processCommand(ResetPasswordCommand command) {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiResetPasswordRequest passwordRequest =

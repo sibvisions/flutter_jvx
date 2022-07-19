@@ -9,7 +9,7 @@ import '../../src/mixin/config_service_mixin.dart';
 import '../file/file_manager.dart';
 import '../font_awesome_util.dart';
 
-class ImageLoader with ConfigServiceMixin {
+class ImageLoader with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,9 +40,9 @@ class ImageLoader with ConfigServiceMixin {
     bool imageInBase64 = false,
     BoxFit fit = BoxFit.none,
   }) {
-    String baseUrl = configService.getApiConfig()!.urlConfig.getBasePath();
-    String appName = configService.getAppName();
-    IFileManager fileManager = configService.getFileManager();
+    String baseUrl = getConfigService().getApiConfig()!.urlConfig.getBasePath();
+    String appName = getConfigService().getAppName();
+    IFileManager fileManager = getConfigService().getFileManager();
 
     Image image;
 

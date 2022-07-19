@@ -5,12 +5,13 @@ import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class FetchCommandProcessor extends ICommandProcessor<FetchCommand> with ApiServiceGetterMixin, ConfigServiceMixin {
+class FetchCommandProcessor extends ICommandProcessor<FetchCommand>
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin {
   @override
   Future<List<BaseCommand>> processCommand(FetchCommand command) async {
     ApiFetchRequest request = ApiFetchRequest(
       dataProvider: command.dataProvider,
-      clientId: configService.getClientId()!,
+      clientId: getConfigService().getClientId()!,
       fromRow: command.fromRow,
       rowCount: command.rowCount,
       columnNames: command.columnNames,

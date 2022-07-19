@@ -1,13 +1,13 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/reset_password_command.dart';
 
 /// Card to be displayed in app-login for resetting the password
-class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
+class LostPasswordCard extends StatelessWidget with UiServiceGetterMixin, ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,12 +35,12 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServic
         child: Column(
           children: [
             Text(
-              configService.translateText("Please enter Email"),
+              getConfigService().translateText("Please enter Email"),
               style: Theme.of(context).textTheme.headline5,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: configService.translateText("Email: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Email: ")),
               controller: identifierController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
@@ -53,7 +53,7 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServic
                     children: [
                       const FaIcon(FontAwesomeIcons.paperPlane),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(configService.translateText("Reset password")),
+                      Text(getConfigService().translateText("Reset password")),
                     ],
                   ),
                 ),
@@ -64,7 +64,7 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServic
                     children: [
                       const FaIcon(FontAwesomeIcons.arrowLeft),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(configService.translateText("Cancel")),
+                      Text(getConfigService().translateText("Cancel")),
                     ],
                   ),
                 ),
@@ -84,6 +84,6 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServic
   void _sendRequest() {
     ResetPasswordCommand resetPasswordCommand =
         ResetPasswordCommand(reason: "User reset password", identifier: identifierController.text);
-    uiService.sendCommand(resetPasswordCommand);
+    getUiService().sendCommand(resetPasswordCommand);
   }
 }

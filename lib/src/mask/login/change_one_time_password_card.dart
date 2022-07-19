@@ -6,7 +6,7 @@ import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/login_command.dart';
 
-class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
+class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceGetterMixin, ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,30 +41,30 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, Con
         child: Column(
           children: [
             Text(
-              configService.translateText("Welcome"),
+              getConfigService().translateText("Welcome"),
               style: Theme.of(context).textTheme.headline5,
             ),
             Text(
-              configService.translateText("Please enter and confirm the new password"),
+              getConfigService().translateText("Please enter and confirm the new password"),
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: configService.translateText("Username: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Username: ")),
               controller: userNameController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: configService.translateText("One time password: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("One time password: ")),
               controller: oneTimeController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: configService.translateText("New password: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("New password: ")),
               controller: newPasswordController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: configService.translateText("Confirm new password: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Confirm new password: ")),
               controller: newPasswordConfController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
@@ -77,7 +77,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, Con
                     children: [
                       const FaIcon(FontAwesomeIcons.arrowLeft),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(configService.translateText("Cancel")),
+                      Text(getConfigService().translateText("Cancel")),
                     ],
                   ),
                 ),
@@ -87,7 +87,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, Con
                     children: [
                       const FaIcon(FontAwesomeIcons.paperPlane),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(configService.translateText("Send Request")),
+                      Text(getConfigService().translateText("Send Request")),
                     ],
                   ),
                 ),
@@ -105,8 +105,9 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, Con
 
   void _sendRequest() {
     if (newPasswordController.text != newPasswordConfController.text) {
-      uiService.openDialog(
-          pDialogWidget: Text(configService.translateText("The new Passwords do not match!")), pIsDismissible: true);
+      getUiService().openDialog(
+          pDialogWidget: Text(getConfigService().translateText("The new Passwords do not match!")),
+          pIsDismissible: true);
     }
     LoginCommand loginCommand = LoginCommand(
       loginMode: LoginMode.CHANGE_ONE_TIME_PASSWORD,
@@ -116,6 +117,6 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, Con
       reason: "Password reset",
     );
 
-    uiService.sendCommand(loginCommand);
+    getUiService().sendCommand(loginCommand);
   }
 }

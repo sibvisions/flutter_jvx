@@ -6,12 +6,12 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class DeleteRowCommandProcessor
-    with UiServiceGetterMixin, DataServiceMixin
+    with UiServiceGetterMixin, DataServiceGetterMixin
     implements ICommandProcessor<DeleteRowCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DeleteRowCommand command) async {
     // set selected row of databook
-    bool success = await dataService.deleteRow(
+    bool success = await getDataService().deleteRow(
       pDataProvider: command.dataProvider,
       pDeletedRow: command.deletedRow,
       pNewSelectedRow: command.newSelectedRow,

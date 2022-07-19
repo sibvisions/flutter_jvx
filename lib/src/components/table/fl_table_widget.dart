@@ -12,7 +12,7 @@ import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'table_size.dart';
 
-class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin {
+class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -214,7 +214,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
           pCellEditorJson: colDef.cellEditorJson,
           onChange: (value) => onValueChanged?.call(value, pIndex, colDef.name),
           onEndEditing: (value) => onEndEditing?.call(value, pIndex, colDef.name),
-          pUiService: uiService,
+          pUiService: getUiService(),
         );
 
         cellEditor.setValue(value);

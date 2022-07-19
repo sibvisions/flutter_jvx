@@ -5,14 +5,14 @@ import '../../../../../model/command/storage/save_components_command.dart';
 import '../../i_command_processor.dart';
 
 class SaveComponentsProcessor
-    with StorageServiceMixin, UiServiceGetterMixin
+    with StorageServiceGetterMixin, UiServiceGetterMixin
     implements ICommandProcessor<SaveComponentsCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveComponentsCommand command) async {
     List<BaseCommand> commands = [];
 
     commands.addAll(
-      await storageService.updateComponents(
+      await getStorageService().updateComponents(
         command.updatedComponent,
         command.componentsToSave,
         command.screenName,

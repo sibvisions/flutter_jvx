@@ -22,7 +22,7 @@ class RememberMeCheckbox extends StatefulWidget {
   State<RememberMeCheckbox> createState() => _RememberMeCheckboxState();
 }
 
-class _RememberMeCheckboxState extends State<RememberMeCheckbox> with ConfigServiceMixin {
+class _RememberMeCheckboxState extends State<RememberMeCheckbox> with ConfigServiceGetterMixin {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -33,7 +33,7 @@ class _RememberMeCheckboxState extends State<RememberMeCheckbox> with ConfigServ
         ),
         TextButton(
           onPressed: () => _onPress(),
-          child: Text(configService.translateText("Remember me?")),
+          child: Text(getConfigService().translateText("Remember me?")),
         ),
       ],
     );

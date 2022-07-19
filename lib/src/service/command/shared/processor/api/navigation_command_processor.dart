@@ -11,11 +11,11 @@ import '../../i_command_processor.dart';
 
 /// Will send [ApiNavigationRequest] to remote server
 class NavigationCommandProcessor
-    with UiServiceGetterMixin, ConfigServiceMixin, ApiServiceGetterMixin
+    with UiServiceGetterMixin, ConfigServiceGetterMixin, ApiServiceGetterMixin
     implements ICommandProcessor<NavigationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(NavigationCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiNavigationRequest request = ApiNavigationRequest(screenName: command.openScreen, clientId: clientId);

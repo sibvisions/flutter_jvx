@@ -5,10 +5,12 @@ import '../../../../../model/command/api/press_button_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class PressButtonProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<PressButtonCommand> {
+class PressButtonProcessor
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
+    implements ICommandProcessor<PressButtonCommand> {
   @override
   Future<List<BaseCommand>> processCommand(PressButtonCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiPressButtonRequest pressButtonRequest =

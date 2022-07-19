@@ -7,7 +7,7 @@ import '../../../../mixin/config_service_mixin.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../app_menu.dart';
 
-class AppMenuListItem extends StatelessWidget with ConfigServiceMixin {
+class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

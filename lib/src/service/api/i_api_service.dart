@@ -4,10 +4,8 @@ import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
 import 'package:flutter_client/src/service/api/shared/repository/online_api_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
-import '../../../main.dart';
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../model/api/requests/i_api_request.dart';
 import '../../model/command/api/fetch_command.dart';
@@ -96,7 +94,7 @@ abstract class IApiService {
 
     apiService.setRepository(apiRep);
     await configService.setOffline(true);
-    await configService.setOfflineScreen( pWorkscreen);
+    await configService.setOfflineScreen(pWorkscreen);
 
     await commandService.sendCommand(RouteToMenuCommand(reason: "We are going offline"));
   }

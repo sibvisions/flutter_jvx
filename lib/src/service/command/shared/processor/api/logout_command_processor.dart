@@ -7,18 +7,20 @@ import '../../../../../model/command/api/logout_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class LogoutCommandProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<LogoutCommand> {
+class LogoutCommandProcessor
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
+    implements ICommandProcessor<LogoutCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LogoutCommand command) async {
     ApiLogoutRequest logoutRequest = ApiLogoutRequest(
-      clientId: configService.getClientId()!,
+      clientId: getConfigService().getClientId()!,
     );
 
-    if (await configService.getFileManager().doesFileExist(pPath: "auth.txt")) {
-      configService.getFileManager().deleteFile(pPath: "/auth.txt");
+    if (await getConfigService().getFileManager().doesFileExist(pPath: "auth.txt")) {
+      getConfigService().getFileManager().deleteFile(pPath: "/auth.txt");
     }
-    configService.setUserInfo(null);
-    unawaited(configService.setAuthCode(null));
+    getConfigService().setUserInfo(null);
+    unawaited(getConfigService().setAuthCode(null));
 
     return getApiService().sendRequest(request: logoutRequest);
   }

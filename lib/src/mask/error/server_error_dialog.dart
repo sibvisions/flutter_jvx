@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../mixin/config_service_mixin.dart';
 
 /// This is a standard template for a server side error message.
-class ServerErrorDialog extends StatelessWidget with ConfigServiceMixin {
+class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +33,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceMixin {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(configService.translateText("SERVER ERROR")),
+      title: Text(getConfigService().translateText("SERVER ERROR")),
       content: Text(message),
       actions: _getButtons(context),
     );
@@ -56,7 +56,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceMixin {
             context.beamToNamed("/setting");
           },
           child: Text(
-            configService.translateText("Go To Settings"),
+            getConfigService().translateText("Go To Settings"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

@@ -7,7 +7,7 @@ import '../../mixin/ui_service_mixin.dart';
 import 'arc_clipper.dart';
 
 /// Login page of the app, also used for reset/change password
-class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
+class AppLogin extends StatelessWidget with UiServiceGetterMixin, ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,18 +34,18 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    loginBackground = configService.getAppStyle()?['login.icon'];
-    loginLogo = configService.getAppStyle()?['login.logo'];
+    loginBackground = getConfigService().getAppStyle()?['login.icon'];
+    loginLogo = getConfigService().getAppStyle()?['login.logo'];
 
-    backgroundColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.background']);
-    inverseColor = ParseUtil.parseBool(configService.getAppStyle()?['login.inverseColor']) ?? false;
+    backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.background']);
+    inverseColor = ParseUtil.parseBool(getConfigService().getAppStyle()?['login.inverseColor']) ?? false;
 
     if (inverseColor) {
-      topColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.bottomColor']);
-      bottomColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.topColor']);
+      topColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.bottomColor']);
+      bottomColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.topColor']);
     } else {
-      topColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.topColor']);
-      bottomColor = ParseUtil.parseHexColor(configService.getAppStyle()?['login.bottomColor']);
+      topColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.topColor']);
+      bottomColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.bottomColor']);
     }
 
     return (Scaffold(

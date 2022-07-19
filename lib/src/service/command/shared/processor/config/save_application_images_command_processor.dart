@@ -10,11 +10,11 @@ import '../../../../../model/command/config/save_application_images_command.dart
 import '../../i_command_processor.dart';
 
 class SaveApplicationImagesCommandProcessor
-    with ConfigServiceMixin
+    with ConfigServiceGetterMixin
     implements ICommandProcessor<SaveApplicationImagesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationImagesCommand command) {
-    IFileManager fileManager = configService.getFileManager();
+    IFileManager fileManager = getConfigService().getFileManager();
 
     Uint8List content;
 

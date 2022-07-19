@@ -10,7 +10,7 @@ import '../../model/data/subscriptions/data_chunk.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
 /// Represents a table size
-class TableSize with UiServiceMixin {
+class TableSize with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -148,7 +148,7 @@ class TableSize with UiServiceMixin {
             pCellEditorJson: colDef.cellEditorJson,
             onChange: (_) => null,
             onEndEditing: (_) => null,
-            pUiService: uiService,
+            pUiService: getUiService(),
           );
 
           for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {

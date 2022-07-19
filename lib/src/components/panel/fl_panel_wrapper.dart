@@ -23,7 +23,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     super.initState();
 
     layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
     buildChildren(pSetStateOnChange: false);
     registerParent();
@@ -32,7 +32,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   @override
   receiveNewModel({required FlPanelModel newModel}) {
     layoutData.layout = ILayout.getLayout(newModel.layout, newModel.layoutData);
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
     super.receiveNewModel(newModel: newModel);
 

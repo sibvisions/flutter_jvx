@@ -29,7 +29,7 @@ class SettingsPage extends StatefulWidget {
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, ConfigServiceMixin {
+class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,9 +74,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   @override
   void initState() {
     // Application setting
-    baseUrlNotifier = ValueNotifier(configService.getApiConfig()!.urlConfig.getBasePath());
-    appNameNotifier = ValueNotifier(configService.getAppName());
-    languageNotifier = ValueNotifier(configService.getLanguage());
+    baseUrlNotifier = ValueNotifier(getConfigService().getApiConfig()!.urlConfig.getBasePath());
+    appNameNotifier = ValueNotifier(getConfigService().getAppName());
+    languageNotifier = ValueNotifier(getConfigService().getLanguage());
     pictureSizeNotifier = ValueNotifier("ToDo");
 
     // Version Info
@@ -106,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     //This is the only widget not having a working "mounted" state for route context.
     //TODO investigate low prio
     if (mounted && context.currentBeamLocation.runtimeType == SettingsLocation) {
-      uiService.setRouteContext(pContext: context);
+      getUiService().setRouteContext(pContext: context);
     }
 
     return Scaffold(
@@ -117,7 +117,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
           icon: const FaIcon(FontAwesomeIcons.arrowLeft),
           onPressed: () => context.beamBack(),
         ),
-        title: Text(configService.translateText("Settings")),
+        title: Text(getConfigService().translateText("Settings")),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -133,13 +133,13 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
-                child: configService.getUserInfo() != null
+                child: getConfigService().getUserInfo() != null
                     ? InkWell(
                         onTap: () => context.beamBack(),
                         child: Container(
                           alignment: Alignment.center,
                           child: Text(
-                            configService.translateText("CLOSE"),
+                            getConfigService().translateText("CLOSE"),
                             style:
                                 TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                           ),
@@ -152,14 +152,14 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
                   onTap: () => _saveClicked(),
                   child: Container(
                     alignment: Alignment.center,
-                    child: configService.getUserInfo() != null
+                    child: getConfigService().getUserInfo() != null
                         ? Text(
-                            configService.translateText("SAVE"),
+                            getConfigService().translateText("SAVE"),
                             style:
                                 TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                           )
                         : Text(
-                            configService.translateText("OPEN"),
+                            getConfigService().translateText("OPEN"),
                             style:
                                 TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                           ),
@@ -190,7 +190,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: appNameNotifier,
-      title: configService.translateText("App Name"),
+      title: getConfigService().translateText("App Name"),
       onPressed: () {
         TextEditingController controller = TextEditingController(text: appNameNotifier.value);
         Widget editor = AppNameEditor(controller: controller);
@@ -201,11 +201,11 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
             FontAwesomeIcons.server,
             color: themeData.primaryColor,
           ),
-          pTitleText: configService.translateText("App Name"),
+          pTitleText: getConfigService().translateText("App Name"),
         ).then((value) {
           if (value) {
             appNameNotifier.value = controller.text;
-            configService.setAppName(controller.text);
+            getConfigService().setAppName(controller.text);
           }
         });
       },
@@ -218,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
         ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
         value: baseUrlNotifier,
-        title: configService.translateText("URL"),
+        title: getConfigService().translateText("URL"),
         onPressed: () {
           TextEditingController controller = TextEditingController(text: baseUrlNotifier.value);
           Widget editor = UrlEditor(controller: controller);
@@ -229,19 +229,19 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
               FontAwesomeIcons.globe,
               color: themeData.primaryColor,
             ),
-            pTitleText: configService.translateText("URL"),
+            pTitleText: getConfigService().translateText("URL"),
           ).then((value) {
             if (value) {
               try {
                 UrlConfig config = UrlConfig.fromFullString(fullPath: controller.text);
 
                 baseUrlNotifier.value = config.getBasePath();
-                configService.getApiConfig()!.urlConfig = config;
-                uiService.sendCommand(
-                    SetApiConfigCommand(apiConfig: configService.getApiConfig()!, reason: "Settings url editor"));
+                getConfigService().getApiConfig()!.urlConfig = config;
+                getUiService().sendCommand(
+                    SetApiConfigCommand(apiConfig: getConfigService().getApiConfig()!, reason: "Settings url editor"));
               } catch (e) {
-                uiService.sendCommand(OpenErrorDialogCommand(
-                    reason: "parseURl", message: configService.translateText("URL text could not be parsed")));
+                getUiService().sendCommand(OpenErrorDialogCommand(
+                    reason: "parseURl", message: getConfigService().translateText("URL text could not be parsed")));
               }
             }
           });
@@ -254,17 +254,17 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: languageNotifier,
-      title: configService.translateText("Language"),
+      title: getConfigService().translateText("Language"),
       onPressed: () {
         Picker picker = Picker(
             confirmTextStyle: const TextStyle(fontSize: 14),
             cancelTextStyle: const TextStyle(fontSize: 14),
-            adapter:
-                PickerDataAdapter<String>(pickerdata: configService.getSupportedLanguages().toList(growable: false)),
+            adapter: PickerDataAdapter<String>(
+                pickerdata: getConfigService().getSupportedLanguages().toList(growable: false)),
             columnPadding: const EdgeInsets.all(8),
             onConfirm: (Picker picker, List value) {
               languageNotifier.value = picker.getSelectedValues()[0];
-              configService.setLanguage(picker.getSelectedValues()[0]);
+              getConfigService().setLanguage(picker.getSelectedValues()[0]);
             });
         picker.showModal(context, themeData: themeData);
       },
@@ -277,7 +277,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: pictureSizeNotifier,
-      title: configService.translateText("Big"),
+      title: getConfigService().translateText("Big"),
       onPressed: () {
         Picker picker = Picker(
             adapter: PickerDataAdapter<int>(data: [
@@ -304,7 +304,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          configService.translateText("Application"),
+          getConfigService().translateText("Application"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -319,26 +319,26 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
       value: commitNotifier,
-      title: configService.translateText("Github commit"),
+      title: getConfigService().translateText("Github commit"),
     );
 
     SettingItem appVersionSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.github),
       value: appVersionNotifier,
-      title: configService.translateText("App version"),
+      title: getConfigService().translateText("App version"),
     );
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
       value: buildDateNotifier,
-      title: configService.translateText("Build date"),
+      title: getConfigService().translateText("Build date"),
     );
 
     SettingGroup group = SettingGroup(
         groupHeader: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            configService.translateText("Version Info"),
+            getConfigService().translateText("Version Info"),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -367,15 +367,15 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   /// Opens the QR-Scanner,
   /// parses scanned code and saves values to config service
   void _openQRScanner() {
-    uiService.openDialog(
+    getUiService().openDialog(
         pDialogWidget: QRScannerMask(callBack: (barcode, _) {
           QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
           // set service values
-          configService.setAppName(code.appName);
+          getConfigService().setAppName(code.appName);
 
           var a = UrlConfig.fromFullString(fullPath: code.url);
 
-          configService.getApiConfig()!.urlConfig = a;
+          getConfigService().getApiConfig()!.urlConfig = a;
 
           // set local display values
           appNameNotifier.value = code.appName;
@@ -385,8 +385,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
           password = code.password;
 
           SetApiConfigCommand apiConfigCommand =
-              SetApiConfigCommand(apiConfig: configService.getApiConfig()!, reason: "QR Scan replaced url");
-          uiService.sendCommand(apiConfigCommand);
+              SetApiConfigCommand(apiConfig: getConfigService().getApiConfig()!, reason: "QR Scan replaced url");
+          getUiService().sendCommand(apiConfigCommand);
         }),
         pIsDismissible: false);
   }
@@ -398,7 +398,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       password: password,
       username: username,
     );
-    uiService.sendCommand(startupCommand);
+    getUiService().sendCommand(startupCommand);
 
     password = null;
     username = null;

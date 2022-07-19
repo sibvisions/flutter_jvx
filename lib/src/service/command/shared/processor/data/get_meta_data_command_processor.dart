@@ -6,10 +6,10 @@ import '../../../../../model/command/data/get_meta_data_command.dart';
 import '../../i_command_processor.dart';
 
 class GetMetaDataCommandProcessor extends ICommandProcessor<GetMetaDataCommand>
-    with UiServiceGetterMixin, DataServiceMixin {
+    with UiServiceGetterMixin, DataServiceGetterMixin {
   @override
   Future<List<BaseCommand>> processCommand(GetMetaDataCommand command) async {
-    DalMetaDataResponse meta = await dataService.getMetaData(pDataProvider: command.dataProvider);
+    DalMetaDataResponse meta = await getDataService().getMetaData(pDataProvider: command.dataProvider);
 
     getUiService().setMetaData(
       pSubId: command.subId,

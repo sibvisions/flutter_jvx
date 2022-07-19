@@ -1,11 +1,12 @@
-import '../../../../../mixin/layout_service_mixin.dart';
+import 'package:flutter_client/src/mixin/layout_service_mixin.dart';
+
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/layout/preferred_size_command.dart';
 import '../../i_command_processor.dart';
 
-class PreferredSizeProcessor with LayoutServiceMixin implements ICommandProcessor<PreferredSizeCommand> {
+class PreferredSizeProcessor with LayoutServiceGetterMixin implements ICommandProcessor<PreferredSizeCommand> {
   @override
   Future<List<BaseCommand>> processCommand(PreferredSizeCommand command) {
-    return layoutService.reportPreferredSize(pLayoutData: command.layoutData);
+    return getLayoutService().reportPreferredSize(pLayoutData: command.layoutData);
   }
 }

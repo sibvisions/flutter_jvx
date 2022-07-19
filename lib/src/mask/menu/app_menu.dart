@@ -27,7 +27,7 @@ typedef MenuFactory = Widget Function({
 
 /// Menu Widget - will display menu items accordingly to the menu mode set in
 /// [IConfigService]
-class AppMenu extends StatefulWidget with UiServiceMixin {
+class AppMenu extends StatefulWidget with UiServiceGetterMixin {
   /// Menu model, contains all menuGroups and items
   late final MenuModel menuModel;
 
@@ -38,14 +38,14 @@ class AppMenu extends StatefulWidget with UiServiceMixin {
   AppMenu({
     Key? key,
   }) : super(key: key) {
-    menuModel = uiService.getMenuModel();
+    menuModel = getUiService().getMenuModel();
   }
 
   @override
   State<AppMenu> createState() => _AppMenuState();
 }
 
-class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMixin {
+class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   late final Map<MENU_MODE, MenuFactory> menuFactory = {
     MENU_MODE.GRID_GROUPED: _getGroupedGridMenu,
@@ -58,14 +58,14 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
   @override
   Widget build(BuildContext context) {
     if (mounted) {
-      uiService.setRouteContext(pContext: context);
+      getUiService().setRouteContext(pContext: context);
     }
 
     return Scaffold(
       endDrawerEnableOpenDragGesture: false,
-      endDrawer: DrawerMenu(),
+      endDrawer: const DrawerMenu(),
       appBar: AppBar(
-        title: Text(configService.translateText("Menu")),
+        title: Text(getConfigService().translateText("Menu")),
         centerTitle: false,
         actions: [
           Builder(
@@ -82,42 +82,42 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   void menuItemPressed({required String componentId}) {
-    CustomScreen? customScreen = uiService.getCustomScreen(pScreenName: componentId);
+    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: componentId);
 
-    uiService.setRouteContext(pContext: context);
+    getUiService().setRouteContext(pContext: context);
 
     // Offline screens no not require the server to know that they are open
     if (customScreen != null && customScreen.isOfflineScreen) {
-      uiService.routeToCustom(pFullPath: "/workScreen/$componentId");
+      getUiService().routeToCustom(pFullPath: "/workScreen/$componentId");
     } else {
-      uiService.sendCommand(OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed"));
+      getUiService().sendCommand(OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed"));
     }
   }
 
   Widget _getMenu() {
-    String? menuModeString = configService.getAppStyle()?["menu.mode"];
+    String? menuModeString = getConfigService().getAppStyle()?["menu.mode"];
     switch (menuModeString) {
       case 'grid_grouped':
-        configService.setMenuMode(MENU_MODE.GRID_GROUPED);
+        getConfigService().setMenuMode(MENU_MODE.GRID_GROUPED);
         break;
       case 'grid':
-        configService.setMenuMode(MENU_MODE.GRID);
+        getConfigService().setMenuMode(MENU_MODE.GRID);
         break;
       case 'list':
-        configService.setMenuMode(MENU_MODE.LIST);
+        getConfigService().setMenuMode(MENU_MODE.LIST);
         break;
       case 'tabs':
-        configService.setMenuMode(MENU_MODE.TABS);
+        getConfigService().setMenuMode(MENU_MODE.TABS);
         break;
       default:
-        configService.setMenuMode(MENU_MODE.GRID_GROUPED);
+        getConfigService().setMenuMode(MENU_MODE.GRID_GROUPED);
     }
 
-    MENU_MODE menuMode = configService.getMenuMode();
+    MENU_MODE menuMode = getConfigService().getMenuMode();
     MenuFactory? menuBuilder = menuFactory[menuMode];
 
-    Color? menuBackgroundColor = ParseUtil.parseHexColor(configService.getAppStyle()?['desktop.color']);
-    String? menuBackgroundImage = configService.getAppStyle()?['desktop.icon'];
+    Color? menuBackgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
+    String? menuBackgroundImage = getConfigService().getAppStyle()?['desktop.icon'];
 
     if (menuBuilder != null) {
       return menuBuilder(

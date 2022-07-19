@@ -23,7 +23,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
     ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData)!;
     layoutData.layout = ScrollLayout(originalLayout);
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
     buildChildren(pSetStateOnChange: false);
     registerParent();
@@ -33,7 +33,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   receiveNewModel({required FlPanelModel newModel}) {
     ILayout originalLayout = ILayout.getLayout(newModel.layout, newModel.layoutData)!;
     layoutData.layout = ScrollLayout(originalLayout);
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
     buildChildren();

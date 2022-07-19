@@ -6,7 +6,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class ChangePasswordCommandProcessor
-    with ApiServiceGetterMixin, ConfigServiceMixin
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<ChangePasswordCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -14,7 +14,7 @@ class ChangePasswordCommandProcessor
 
   @override
   Future<List<BaseCommand>> processCommand(ChangePasswordCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiChangePasswordRequest changePasswordRequest = ApiChangePasswordRequest(

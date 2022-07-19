@@ -17,7 +17,7 @@ import 'base_comp_wrapper_widget.dart';
 /// Subscription handling in UiService
 /// Getters for componentSize
 abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget>
-    with UiServiceMixin {
+    with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,7 +44,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   void initState() {
     super.initState();
     // Models need to be same type, dart doesn't see that both extend [FlComponentModel]
-    model = uiService.getComponentModel(pComponentId: widget.id)! as T;
+    model = getUiService().getComponentModel(pComponentId: widget.id)! as T;
 
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(
@@ -80,12 +80,12 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         }
       },
     );
-    uiService.registerAsLiveComponent(pComponentSubscription: componentSubscription);
+    getUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
   }
 
   @override
   void dispose() {
-    uiService.disposeSubscriptions(pSubscriber: this);
+    getUiService().disposeSubscriptions(pSubscriber: this);
     super.dispose();
   }
 
@@ -216,7 +216,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
     PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(layoutData: pLayoutData, reason: pReason);
 
-    uiService.sendCommand(preferredSizeCommand);
+    getUiService().sendCommand(preferredSizeCommand);
   }
 
   double getTopForPositioned() {

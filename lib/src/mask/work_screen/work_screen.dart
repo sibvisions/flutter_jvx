@@ -56,7 +56,7 @@ class WorkScreen extends StatefulWidget {
   State<WorkScreen> createState() => _WorkScreenState();
 }
 
-class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServiceMixin {
+class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, ConfigServiceGetterMixin {
   /// Debounce re-layouts if keyboard opens.
   final Debounce debounce = Debounce(delay: const Duration(milliseconds: 500));
 
@@ -65,10 +65,10 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServ
   @override
   Widget build(BuildContext context) {
     if (mounted) {
-      uiService.setRouteContext(pContext: context);
+      getUiService().setRouteContext(pContext: context);
     }
-    Color? backgroundColor = ParseUtil.parseHexColor(configService.getAppStyle()?['desktop.color']);
-    String? backgroundImageString = configService.getAppStyle()?['desktop.icon'];
+    Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
+    String? backgroundImageString = getConfigService().getAppStyle()?['desktop.icon'];
 
     return GestureDetector(
       onTap: () {
@@ -91,7 +91,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServ
           title: Text(widget.screenTitle),
         ),
         endDrawerEnableOpenDragGesture: false,
-        endDrawer: DrawerMenu(),
+        endDrawer: const DrawerMenu(),
         body: Scaffold(
           appBar: widget.header,
           bottomNavigationBar: widget.footer,
@@ -164,7 +164,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServ
       size: Size(pWidth, pHeight),
       reason: "Opened Work Screen",
     );
-    uiService.sendCommand(command);
+    getUiService().sendCommand(command);
   }
 
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
@@ -173,7 +173,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServ
       screenHeight: pHeight,
       reason: "Device was rotated",
     );
-    uiService.sendCommand(deviceStatusCommand);
+    getUiService().sendCommand(deviceStatusCommand);
   }
 
   _onBackTab(BuildContext context) {
@@ -195,7 +195,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServ
     if (widget.isCustomScreen) {
       context.beamToNamed("/menu");
     } else {
-      uiService.sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
+      getUiService().sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
     }
   }
 
@@ -218,8 +218,8 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceMixin, ConfigServ
     if (widget.isCustomScreen) {
       context.beamToNamed("/menu");
     } else {
-      uiService.sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
-      uiService.sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
+      getUiService().sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
+      getUiService().sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
     }
   }
 }

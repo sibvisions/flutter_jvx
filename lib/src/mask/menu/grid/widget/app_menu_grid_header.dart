@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../main.dart';
 import '../../../../mixin/config_service_mixin.dart';
 
-class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServiceMixin {
+class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

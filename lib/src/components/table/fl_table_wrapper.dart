@@ -36,7 +36,7 @@ class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   _FlTableWrapperState createState() => _FlTableWrapperState();
 }
 
-class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiServiceMixin {
+class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiServiceGetterMixin {
   static const int LOADED_META_DATA = 1;
   static const int LOADED_SELECTED_RECORD = 2;
   static const int LOADED_DATA = 4;
@@ -185,7 +185,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   /// Subscribes to the data service.
   void subscribe() {
-    uiService.registerDataSubscription(
+    getUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
         dataProvider: model.dataProvider,
@@ -201,7 +201,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   /// Unsubscribes from the data service.
   void unsubscribe() {
-    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
   /// Loads data from the server.
@@ -272,7 +272,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
         return;
       }
 
-      uiService.sendCommand(DeleteRecordCommand(
+      getUiService().sendCommand(DeleteRecordCommand(
           dataProvider: model.dataProvider, selectedRow: lastTouchedIndex, reason: "Swiped", filter: filter));
 
       lastTouchedIndex = -1;
@@ -290,7 +290,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       return;
     }
 
-    uiService.sendCommand(SelectRecordCommand(
+    getUiService().sendCommand(SelectRecordCommand(
         dataProvider: model.dataProvider, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
     setState(() {});
     // }
@@ -379,7 +379,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       listPrimaryKeyValues.add(_getValue(pColumnName: primaryKeyColumn, pRowIndex: rowIndex));
     }
 
-    uiService.sendCommand(
+    getUiService().sendCommand(
       SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataProvider,
@@ -393,7 +393,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   /// Inserts a new record.
   void insertRecord() {
-    uiService.sendCommand(InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted"));
+    getUiService().sendCommand(InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted"));
   }
 
   dynamic _getValue({required String pColumnName, int? pRowIndex}) {

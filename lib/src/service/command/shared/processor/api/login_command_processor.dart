@@ -6,10 +6,12 @@ import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class LoginCommandProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<LoginCommand> {
+class LoginCommandProcessor
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
+    implements ICommandProcessor<LoginCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LoginCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiLoginRequest loginRequest = ApiLoginRequest(

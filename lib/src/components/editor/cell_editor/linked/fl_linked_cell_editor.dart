@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
@@ -13,7 +14,7 @@ import '../i_cell_editor.dart';
 import 'fl_linked_cell_picker.dart';
 import 'fl_linked_editor_widget.dart';
 
-class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
+class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,7 +59,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
           onEndEditing: onEndEditing,
         ) {
     focusNode.addListener(
-          () {
+      () {
         if (focusNode.hasFocus) {
           openLinkedCellPicker();
         }
@@ -83,19 +84,18 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
     FlLinkedEditorModel widgetModel = FlLinkedEditorModel();
 
     return FlLinkedEditorWidget(
-      model: widgetModel,
-      endEditing: receiveNull,
-      valueChanged: onValueChange,
-      textController: textController,
-      focusNode: focusNode,
-      inTable: pInTable
-    );
+        model: widgetModel,
+        endEditing: receiveNull,
+        valueChanged: onValueChange,
+        textController: textController,
+        focusNode: focusNode,
+        inTable: pInTable);
   }
 
   void openLinkedCellPicker() {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    uiService.sendCommand(
+    getUiService().sendCommand(
       FilterCommand(
           editorId: name!,
           value: "",
@@ -175,7 +175,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
     if (model.displayReferencedColumnName != null) {
       lastCallbackIntentional = true;
       if (!isAllFetched) {
-        uiService.registerDataSubscription(
+        getUiService().registerDataSubscription(
           pDataSubscription: DataSubscription(
             subbedObj: this,
             dataProvider: model.linkReference.dataProvider,
@@ -189,7 +189,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.referencedDataBook);
+    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.referencedDataBook);
   }
 
   void increaseValueMap() {

@@ -6,12 +6,12 @@ import '../../../../../model/data/subscriptions/data_record.dart';
 import '../../i_command_processor.dart';
 
 class GetSelectedDataCommandProcessor
-    with DataServiceMixin, UiServiceGetterMixin
+    with DataServiceGetterMixin, UiServiceGetterMixin
     implements ICommandProcessor<GetSelectedDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(GetSelectedDataCommand command) async {
     // Get Data record - is null if databook has -1 as selected row
-    DataRecord? record = await dataService.getSelectedRowData(
+    DataRecord? record = await getDataService().getSelectedRowData(
       pColumnNames: command.columnNames,
       pDataProvider: command.dataProvider,
     );

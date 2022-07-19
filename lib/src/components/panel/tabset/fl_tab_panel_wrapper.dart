@@ -57,7 +57,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     super.initState();
 
     layoutData.layout = TabLayout(tabHeaderHeight: 0.0); //, selectedIndex: model.selectedIndex);
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
     layoutAfterBuild = true;
     tabController = FlTabController(tabs: [], vsync: this, changedIndexTo: changedIndexTo);
@@ -67,7 +67,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   @override
   receiveNewModel({required FlTabPanelModel newModel}) {
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
     // Performance optimization.
@@ -312,7 +312,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     //   model.selectedIndex = pValue;
     // });
 
-    uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
+    getUiService().sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
   }
 
   double get widthOfTabPanel {
@@ -391,7 +391,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   void closeTab(int index) {
     LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Closing tab $index");
     lastDeletedTab = index;
-    uiService.sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
+    getUiService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }
 }
 

@@ -37,13 +37,13 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
       layoutData: layoutData.clone(),
       reason: "parent register",
     );
-    uiService.sendCommand(registerParentCommand);
+    getUiService().sendCommand(registerParentCommand);
   }
 
   /// Will contact [IUiService] to get its children [FlComponentModel], will only call setState if
   /// children were either added or removed.
   bool buildChildren({bool pSetStateOnChange = true}) {
-    List<FlComponentModel> models = uiService.getChildrenModels(model.id);
+    List<FlComponentModel> models = getUiService().getChildrenModels(model.id);
     Map<String, Widget> newChildrenList = {};
 
     bool changeDetected = false;
@@ -52,7 +52,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
     for (FlComponentModel model in models) {
       if (!children.containsKey(model.id)) {
         // If Custom component with name exits create a custom widget instead of a normal one
-        CustomComponent? customComp = uiService.getCustomComponent(pComponentName: model.name);
+        CustomComponent? customComp = getUiService().getCustomComponent(pComponentName: model.name);
         if (customComp != null) {
           newChildrenList[model.id] = ComponentsFactory.buildCustomWidget(model);
         } else {

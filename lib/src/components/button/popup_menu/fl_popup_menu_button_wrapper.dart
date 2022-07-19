@@ -52,12 +52,12 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       List<FlComponentModel> menuItems = [];
 
       // Get all children models
-      List<FlComponentModel> listOfPopupMenuModels = uiService.getChildrenModels(model.id);
+      List<FlComponentModel> listOfPopupMenuModels = getUiService().getChildrenModels(model.id);
       // Remove all non popup menu models
       listOfPopupMenuModels.removeWhere((element) => element is! FlPopupMenuModel);
 
       for (FlComponentModel popupMenuModel in listOfPopupMenuModels) {
-        List<FlComponentModel> listOfPopupMenuItems = uiService.getChildrenModels(popupMenuModel.id);
+        List<FlComponentModel> listOfPopupMenuItems = getUiService().getChildrenModels(popupMenuModel.id);
         // Remove all non popup menu item models
         listOfPopupMenuItems.removeWhere((element) => element is! FlPopupMenuItemModel && element is! FlSeperatorModel);
 

@@ -5,10 +5,12 @@ import '../../../../../model/command/api/open_tab_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class OpenTabProcessor with ApiServiceGetterMixin, ConfigServiceMixin implements ICommandProcessor<OpenTabCommand> {
+class OpenTabProcessor
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin
+    implements ICommandProcessor<OpenTabCommand> {
   @override
   Future<List<BaseCommand>> processCommand(OpenTabCommand command) async {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
       ApiOpenTabRequest openTabRequest =

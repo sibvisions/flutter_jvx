@@ -14,7 +14,7 @@ class UpdateLayoutPositionProcessor
     var uiService = getUiService();
 
     for (LayoutData element in command.layoutDataList) {
-      uiService.setLayoutPosition(layoutData: element);
+      getUiService().setLayoutPosition(layoutData: element);
     }
 
     return SynchronousFuture([]);

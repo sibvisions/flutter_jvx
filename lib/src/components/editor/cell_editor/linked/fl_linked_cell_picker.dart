@@ -25,7 +25,7 @@ class FlLinkedCellPicker extends StatefulWidget {
   _FlLinkedCellPickerState createState() => _FlLinkedCellPickerState();
 }
 
-class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceMixin, ConfigServiceMixin {
+class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceGetterMixin, ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +80,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: Text(
-                  configService.translateText("SELECT ITEM"),
+                  getConfigService().translateText("SELECT ITEM"),
                   style: TextStyle(
                     color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
                   ),
@@ -98,7 +98,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                   style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
                   decoration: InputDecoration(
                       hintStyle: const TextStyle(color: Colors.green),
-                      labelText: configService.translateText("Search"),
+                      labelText: getConfigService().translateText("Search"),
                       labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
                 )),
             Expanded(
@@ -140,7 +140,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
             ButtonBar(alignment: MainAxisAlignment.center, children: <Widget>[
               ElevatedButton(
                 child: Text(
-                  configService.translateText("CANCEL"),
+                  getConfigService().translateText("CANCEL"),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -155,11 +155,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
 
   @override
   void dispose() {
-    uiService.disposeSubscriptions(
+    getUiService().disposeSubscriptions(
       pSubscriber: this,
     );
 
-    uiService.sendCommand(FilterCommand(
+    getUiService().sendCommand(FilterCommand(
         editorId: widget.name,
         value: "",
         dataProvider: widget.model.linkReference.dataProvider,
@@ -246,7 +246,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       }
     }
 
-    uiService.sendCommand(
+    getUiService().sendCommand(
       FilterCommand(
           editorId: widget.name,
           value: lastChangedFilter,
@@ -294,7 +294,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   //     return SizedBox(
   //       height: 50,
   //       child: Center(
-  //         child: Text(configService.translateText("Loading...")),
+  //         child: Text(getConfigService().translateText("Loading...")),
   //       ),
   //     );
   //   }
@@ -350,7 +350,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void subscribe() {
-    uiService.registerDataSubscription(
+    getUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
         dataProvider: model.linkReference.dataProvider,
@@ -363,7 +363,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.dataProvider);
+    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.dataProvider);
   }
 
   List<String> columnNamesToShow() {

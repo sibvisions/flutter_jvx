@@ -3,10 +3,10 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/save_meta_data_command.dart';
 import '../../i_command_processor.dart';
 
-class SaveMetaDataProcessor with DataServiceMixin implements ICommandProcessor<SaveMetaDataCommand> {
+class SaveMetaDataProcessor with DataServiceGetterMixin implements ICommandProcessor<SaveMetaDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveMetaDataCommand command) async {
-    await dataService.updateMetaData(pMetaData: command.response);
+    await getDataService().updateMetaData(pMetaData: command.response);
 
     return [];
   }

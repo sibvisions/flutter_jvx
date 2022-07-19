@@ -7,11 +7,11 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 class DownloadTranslationCommandProcessor
-    with ConfigServiceMixin, ApiServiceGetterMixin
+    with ConfigServiceGetterMixin, ApiServiceGetterMixin
     implements ICommandProcessor<DownloadTranslationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadTranslationCommand command) {
-    String? clientId = configService.getClientId();
+    String? clientId = getConfigService().getClientId();
 
     if (clientId == null) {
       LOGGER.logE(

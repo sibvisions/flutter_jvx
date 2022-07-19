@@ -6,7 +6,7 @@ import '../../../mixin/ui_service_mixin.dart';
 import '../../../model/command/api/change_password_command.dart';
 import '../../../model/command/api/login_command.dart';
 
-class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
+class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
@@ -27,20 +27,20 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
     passwordController.text = password ?? "";
 
     return AlertDialog(
-      title: Text(configService.translateText('Change Password')),
+      title: Text(getConfigService().translateText('Change Password')),
       content: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-              child: Text(configService.translateText('Please enter and confirm the new password.')),
+              child: Text(getConfigService().translateText('Please enter and confirm the new password.')),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
               child: TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
-                  labelText: configService.translateText('Username:'),
+                  labelText: getConfigService().translateText('Username:'),
                   enabled: false,
                   border: const OutlineInputBorder(),
                 ),
@@ -53,8 +53,8 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
                 obscureText: true,
                 controller: passwordController,
                 decoration: InputDecoration(
-                  labelText: configService.translateText('Password'),
-                  hintText: configService.translateText('Enter Password'),
+                  labelText: getConfigService().translateText('Password'),
+                  hintText: getConfigService().translateText('Enter Password'),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -65,8 +65,8 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
                 obscureText: true,
                 controller: newPasswordController,
                 decoration: InputDecoration(
-                  labelText: configService.translateText('Password (new)'),
-                  hintText: configService.translateText('Password (new)'),
+                  labelText: getConfigService().translateText('Password (new)'),
+                  hintText: getConfigService().translateText('Password (new)'),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -77,7 +77,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
                 obscureText: true,
                 controller: repeatPasswordController,
                 decoration: InputDecoration(
-                  hintText: configService.translateText('Password (confirm)'),
+                  hintText: getConfigService().translateText('Password (confirm)'),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -91,8 +91,8 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
 
   Widget passwordError() {
     return AlertDialog(
-      title: Text(configService.translateText('Error')),
-      content: Text(configService.translateText("The new passwords dont match!")),
+      title: Text(getConfigService().translateText('Error')),
+      content: Text(getConfigService().translateText("The new passwords dont match!")),
     );
   }
 
@@ -103,9 +103,9 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
       onPressed: () => {
         if (newPasswordController.text == repeatPasswordController.text)
           {
-            if (configService.getUserInfo() == null)
+            if (getConfigService().getUserInfo() == null)
               {
-                uiService.sendCommand(LoginCommand(
+                getUiService().sendCommand(LoginCommand(
                     userName: usernameController.text,
                     password: passwordController.text,
                     loginMode: LoginMode.CHANGE_PASSWORD,
@@ -114,7 +114,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
               }
             else
               {
-                uiService.sendCommand(ChangePasswordCommand(
+                getUiService().sendCommand(ChangePasswordCommand(
                     username: usernameController.text,
                     newPassword: newPasswordController.text,
                     password: passwordController.text,
@@ -123,16 +123,16 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
           }
         else
           {
-            uiService.openDialog(pDialogWidget: passwordError(), pIsDismissible: true),
+            getUiService().openDialog(pDialogWidget: passwordError(), pIsDismissible: true),
           }
       },
-      child: Text(configService.translateText('Change Password')),
+      child: Text(getConfigService().translateText('Change Password')),
     ));
 
-    if (configService.getUserInfo() == null) {
+    if (getConfigService().getUserInfo() == null) {
       widgetList.add(TextButton(
         onPressed: () => {context.beamBack()},
-        child: Text(configService.translateText('Cancel')),
+        child: Text(getConfigService().translateText('Cancel')),
       ));
     }
     return widgetList;

@@ -17,7 +17,7 @@ class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
   _FlChartWrapperState createState() => _FlChartWrapperState();
 }
 
-class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiServiceMixin {
+class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiServiceGetterMixin {
   DataChunk? _chunkData;
 
   @override
@@ -51,7 +51,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
     var columnNames = getDataColumns();
 
     if (columnNames.isNotEmpty) {
-      uiService.registerDataSubscription(
+      getUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
@@ -106,6 +106,6 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 }
