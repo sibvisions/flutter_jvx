@@ -17,6 +17,8 @@ class MenuItemModel {
   /// Icon to be used when creating a custom menu item
   final Widget? icon;
 
+  final bool custom;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,5 +28,6 @@ class MenuItemModel {
     required this.label,
     this.image,
     this.icon,
+    this.custom = false,
   });
 }

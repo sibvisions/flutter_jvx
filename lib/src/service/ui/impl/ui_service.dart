@@ -179,6 +179,7 @@ class UiService with CommandServiceGetterMixin implements IUiService {
             label: customModel.label,
             screenId: customModel.screenId,
             icon: customModel.icon,
+            custom: true,
           );
           MenuGroupModel? menuGroupModel =
               pMenuModel.menuGroups.firstWhereOrNull((element) => element.name == customModel.group);
