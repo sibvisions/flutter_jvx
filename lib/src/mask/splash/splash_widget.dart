@@ -1,6 +1,6 @@
-import 'dart:developer';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../init_app_mobile.dart' if (dart.library.html) '../../../init_app_web.dart';
 import '../../../util/logging/flutter_logger.dart';
@@ -49,7 +49,27 @@ class _SplashWidgetState extends State<SplashWidget> {
       initContext: context,
       languageCallbacks: widget.languageCallbacks,
       styleCallbacks: widget.styleCallbacks,
-    );
+    ).catchError((error, stackTrace) {
+      LOGGER.logE(pType: LOG_TYPE.GENERAL, pMessage: error.toString(), pStacktrace: stackTrace);
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: () async {
+              await SystemNavigator.pop();
+              return false;
+            },
+            child: AlertDialog(
+              backgroundColor: Theme.of(context).cardColor.withAlpha(255),
+              title: const Text("FATAL ERROR"),
+              content: Text(error.toString()),
+              actions: _getButtons(context),
+            ),
+          );
+        },
+      );
+    });
   }
 
   @override
@@ -62,5 +82,30 @@ class _SplashWidgetState extends State<SplashWidget> {
         return const LoadingWidget();
       },
     );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Get all possible actions
+  List<Widget> _getButtons(BuildContext context) {
+    List<Widget> actions = [];
+
+    if (!kIsWeb) {
+      actions.add(
+        TextButton(
+          onPressed: () {
+            SystemNavigator.pop();
+          },
+          child: const Text(
+            "Exit App",
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
+    return actions;
   }
 }
