@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../../mixin/config_service_mixin.dart';
-import '../../mixin/ui_service_mixin.dart';
 import 'arc_clipper.dart';
 
 /// Login page of the app, also used for reset/change password
-class AppLogin extends StatelessWidget with UiServiceGetterMixin, ConfigServiceGetterMixin {
+class AppLogin extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,23 +14,26 @@ class AppLogin extends StatelessWidget with UiServiceGetterMixin, ConfigServiceG
   /// The Widget displayed in the middle of the screen
   final Widget loginCard;
 
+  const AppLogin({Key? key, required this.loginCard}) : super(key: key);
+
+  @override
+  State<AppLogin> createState() => _AppLoginState();
+}
+
+class _AppLoginState extends State<AppLogin> with ConfigServiceGetterMixin {
   Color? topColor;
+
   Color? bottomColor;
+
   Color? backgroundColor;
+
   String? loginLogo;
+
   String? loginBackground;
+
   bool inverseColor = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  AppLogin({Key? key, required this.loginCard}) : super(key: key);
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   @override
   Widget build(BuildContext context) {
     loginBackground = getConfigService().getAppStyle()?['login.icon'];
@@ -80,7 +82,7 @@ class AppLogin extends StatelessWidget with UiServiceGetterMixin, ConfigServiceG
           Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width / 10 * 8,
-              child: SingleChildScrollView(child: loginCard),
+              child: SingleChildScrollView(child: widget.loginCard),
             ),
           ),
         ],
