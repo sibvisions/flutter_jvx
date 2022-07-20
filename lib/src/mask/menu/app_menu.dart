@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/service/api/i_api_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../util/config_util.dart';
@@ -62,20 +63,35 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
       getUiService().setRouteContext(pContext: context);
     }
 
+    List<Widget> actions = [];
+
+    actions.add(
+      Builder(
+        builder: (context) => IconButton(
+          onPressed: () => Scaffold.of(context).openEndDrawer(),
+          icon: const FaIcon(FontAwesomeIcons.ellipsisV),
+        ),
+      ),
+    );
+
+    if (getConfigService().isOffline()) {
+      actions.add(
+        Builder(
+          builder: (context) => IconButton(
+            onPressed: IApiService.initOnline(context),
+            icon: const FaIcon(FontAwesomeIcons.broadcastTower),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       endDrawerEnableOpenDragGesture: false,
       endDrawer: const DrawerMenu(),
       appBar: AppBar(
         title: Text(getConfigService().translateText("Menu")),
         centerTitle: false,
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () => Scaffold.of(context).openEndDrawer(),
-              icon: const FaIcon(FontAwesomeIcons.ellipsisV),
-            ),
-          ),
-        ],
+        actions: const [],
       ),
       body: _getMenu(),
     );
