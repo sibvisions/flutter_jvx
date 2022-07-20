@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../src/model/config/api/url_config.dart';
 import '../src/model/config/config_file/app_config.dart';
+import '../src/service/config/i_config_service.dart';
 import 'logging/flutter_logger.dart';
 
 abstract class ConfigUtil {
@@ -32,5 +33,24 @@ abstract class ConfigUtil {
       urlConfig.host = "localhost";
     }
     return urlConfig;
+  }
+
+  static MenuMode getMenuMode(String? menuModeString) {
+    MenuMode menuMode;
+    switch (menuModeString) {
+      case 'grid':
+        menuMode = MenuMode.GRID;
+        break;
+      case 'list':
+        menuMode = MenuMode.LIST;
+        break;
+      case 'tabs':
+        menuMode = MenuMode.TABS;
+        break;
+      case 'grid_grouped':
+      default:
+        menuMode = MenuMode.GRID_GROUPED;
+    }
+    return menuMode;
   }
 }

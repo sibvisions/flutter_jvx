@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../util/config_util.dart';
 import '../../../util/parse_util.dart';
 import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
@@ -47,11 +48,11 @@ class AppMenu extends StatefulWidget with UiServiceGetterMixin {
 
 class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  late final Map<MENU_MODE, MenuFactory> menuFactory = {
-    MENU_MODE.GRID_GROUPED: _getGroupedGridMenu,
-    MENU_MODE.GRID: _getGridMenuUngrouped,
-    MENU_MODE.LIST: _getListMenuUngrouped,
-    MENU_MODE.TABS: _getTabMenu
+  late final Map<MenuMode, MenuFactory> menuFactory = {
+    MenuMode.GRID_GROUPED: _getGroupedGridMenu,
+    MenuMode.GRID: _getGridMenuUngrouped,
+    MenuMode.LIST: _getListMenuUngrouped,
+    MenuMode.TABS: _getTabMenu
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,45 +96,20 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
   }
 
   Widget _getMenu() {
-    String? menuModeString = getConfigService().getAppStyle()?["menu.mode"];
-    switch (menuModeString) {
-      case 'grid_grouped':
-        getConfigService().setMenuMode(MENU_MODE.GRID_GROUPED);
-        break;
-      case 'grid':
-        getConfigService().setMenuMode(MENU_MODE.GRID);
-        break;
-      case 'list':
-        getConfigService().setMenuMode(MENU_MODE.LIST);
-        break;
-      case 'tabs':
-        getConfigService().setMenuMode(MENU_MODE.TABS);
-        break;
-      default:
-        getConfigService().setMenuMode(MENU_MODE.GRID_GROUPED);
-    }
+    MenuMode menuMode = ConfigUtil.getMenuMode(getConfigService().getAppStyle()?["menu.mode"]);
+    getConfigService().setMenuMode(menuMode);
 
-    MENU_MODE menuMode = getConfigService().getMenuMode();
-    MenuFactory? menuBuilder = menuFactory[menuMode];
+    MenuFactory menuBuilder = menuFactory[menuMode]!;
 
     Color? menuBackgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
     String? menuBackgroundImage = getConfigService().getAppStyle()?['desktop.icon'];
 
-    if (menuBuilder != null) {
-      return menuBuilder(
-        menuModel: widget.menuModel,
-        onClick: menuItemPressed,
-        backgroundImageString: menuBackgroundImage,
-        menuBackgroundColor: menuBackgroundColor,
-      );
-    } else {
-      return _getGroupedGridMenu(
-        menuModel: widget.menuModel,
-        onClick: menuItemPressed,
-        menuBackgroundColor: menuBackgroundColor,
-        backgroundImageString: menuBackgroundImage,
-      );
-    }
+    return menuBuilder(
+      menuModel: widget.menuModel,
+      onClick: menuItemPressed,
+      backgroundImageString: menuBackgroundImage,
+      menuBackgroundColor: menuBackgroundColor,
+    );
   }
 
   Widget _getGroupedGridMenu({

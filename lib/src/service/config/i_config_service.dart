@@ -35,10 +35,10 @@ abstract class IConfigService {
   Future<bool> setVersion(String? pVersion);
 
   /// Return menuMode
-  MENU_MODE getMenuMode();
+  MenuMode getMenuMode();
 
   /// Set MenuMode
-  void setMenuMode(MENU_MODE pMenuMode);
+  void setMenuMode(MenuMode pMenuMode);
 
   /// Returns info about the current user
   UserInfo? getUserInfo();
@@ -105,7 +105,7 @@ abstract class IConfigService {
   void disposeLanguageCallback({required Function(String language) pCallBack});
 }
 
-enum MENU_MODE {
+enum MenuMode {
   GRID,
   GRID_GROUPED,
   LIST,

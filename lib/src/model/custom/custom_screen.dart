@@ -26,7 +26,7 @@ class CustomScreen {
   final CustomHeader Function()? headerFactory;
 
   /// The menu item to access this screen, if this is left null, will use the
-  final CustomMenuItem? menuItemModel;
+  final CustomMenuItem menuItemModel;
 
   /// List with components that should be replaced in this screen
   final List<CustomComponent> replaceComponents;
@@ -44,7 +44,7 @@ class CustomScreen {
     this.screenFactory,
     this.headerFactory,
     this.footerFactory,
-    this.menuItemModel,
+    required this.menuItemModel,
     this.screenTitle,
     this.replaceComponents = const [],
   });

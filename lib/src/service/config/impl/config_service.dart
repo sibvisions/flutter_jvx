@@ -39,7 +39,7 @@ class ConfigService implements IConfigService {
   String? clientId;
 
   /// Display options for menu
-  MENU_MODE menuMode = MENU_MODE.GRID_GROUPED;
+  MenuMode menuMode = MenuMode.GRID_GROUPED;
 
   /// Stores all info about current user
   UserInfo? userInfo;
@@ -132,12 +132,12 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  MENU_MODE getMenuMode() {
+  MenuMode getMenuMode() {
     return menuMode;
   }
 
   @override
-  void setMenuMode(MENU_MODE pMenuMode) {
+  void setMenuMode(MenuMode pMenuMode) {
     menuMode = pMenuMode;
   }
 
