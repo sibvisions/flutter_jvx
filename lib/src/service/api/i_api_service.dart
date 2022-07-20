@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
@@ -75,9 +77,14 @@ abstract class IApiService {
     IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
-    String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
-    Set<String> activeDataProviders =
-        dataService.getDataBooks().keys.toList().where((element) => element.startsWith(databookPrefix)).toSet();
+    //String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
+    Set<String> activeDataProviders = dataService.getDataBooks().keys.toList().where((element) {
+      var prefixes = element.split("/");
+      if (prefixes.length >= 2) {
+        return prefixes[1] == pWorkscreen;
+      }
+      return false;
+    }).toSet();
 
     ProgressDialog pd = ProgressDialog(context: context);
     pd.show(
@@ -90,7 +97,7 @@ abstract class IApiService {
     int fetchCounter = 1;
     for (String dataProvider in activeDataProviders) {
       pd.update(msg: "Fetching offline data...", value: fetchCounter);
-
+      log("Start fetching $dataProvider");
       await commandService.sendCommand(
         FetchCommand(
           reason: "Going offline",
@@ -104,6 +111,8 @@ abstract class IApiService {
     }
 
     pd.close();
+
+    log("finished fetching data");
 
     var apiRep = OfflineApiRepository();
     await apiRep.startDatabase(context);
