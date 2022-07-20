@@ -114,7 +114,7 @@ class OnlineApiRepository implements IRepository {
         // Download Request needs different handling
         if (pRequest is IApiDownloadRequest) {
           var parsedDownloadObject =
-              _handleDownload(pBody: Uint8List.fromList(await response.first), pRequest: pRequest);
+              _handleDownload(pBody: Uint8List.fromList(await response.expand((element) => element).toList()), pRequest: pRequest);
           return parsedDownloadObject;
         }
 
