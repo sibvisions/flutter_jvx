@@ -52,7 +52,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    WidgetsFlutterBinding.ensureInitialized();
     _routerDelegate = BeamerDelegate(
       initialPath: "/splash",
       locationBuilder: BeamerLocationBuilder(

@@ -44,9 +44,6 @@ Future<bool> initApp({
   // ToDo find way to not do this
   HttpOverrides.global = MyHttpOverrides();
 
-  // If not called will throw error when trying to access any files
-  WidgetsFlutterBinding.ensureInitialized();
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Service init
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
