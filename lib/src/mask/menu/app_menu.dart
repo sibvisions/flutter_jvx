@@ -78,7 +78,13 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
       actions.add(
         Builder(
           builder: (context) => IconButton(
-            onPressed: IApiService.initOnline(context),
+            onPressed: () => showSyncDialog(context).then(
+              (value) {
+                if (value == true) {
+                  IApiService.initOnline(context);
+                }
+              },
+            ),
             icon: const FaIcon(FontAwesomeIcons.broadcastTower),
           ),
         ),
@@ -91,9 +97,41 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
       appBar: AppBar(
         title: Text(getConfigService().translateText("Menu")),
         centerTitle: false,
-        actions: const [],
+        actions: actions,
       ),
       body: _getMenu(),
+    );
+  }
+
+  Future<bool?> showSyncDialog(BuildContext context) {
+    return getUiService().openDialog<bool>(
+      pDialogWidget: AlertDialog(
+        title: Text(
+          getConfigService().translateText(
+            "Synchronization",
+          ),
+        ),
+        content: Text(
+          getConfigService().translateText(
+            "Do you want to switch back online and synchronize all the data?",
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            child: Text(getConfigService().translateText("Yes")),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          ElevatedButton(
+            child: Text(getConfigService().translateText("No")),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+        ],
+      ),
+      pIsDismissible: true,
     );
   }
 
