@@ -44,11 +44,7 @@ Future<void> initApp({
 }) async {
   LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
 
-  if (!kIsWeb) {
-    // Needed to avoid CORS issues
-    // ToDo find way to not do this
-    HttpOverrides.global = MyHttpOverrides();
-  }
+  HttpOverrides.global = MyHttpOverrides();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Service init

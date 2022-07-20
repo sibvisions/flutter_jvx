@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart';
+import 'package:universal_io/io.dart';
 
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/api_response_names.dart';
@@ -33,7 +32,6 @@ import '../../../../model/api/response/session_expired_response.dart';
 import '../../../../model/api/response/user_data_response.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../i_repository.dart';
-import 'browser_client.dart' if (dart.library.html) 'package:http/browser_client.dart';
 
 typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson, required Object originalRequest});
 
@@ -82,10 +80,13 @@ class OnlineApiRepository implements IRepository {
   ApiConfig apiConfig;
 
   /// Http client for outside connection
-  final Client client = Client();
+  final HttpClient client = HttpClient();
 
   /// Header fields, used for sessionId
-  final Map<String, String> _headers = {};
+  final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
+
+  /// Cookies used for sessionId
+  final Set<Cookie> _cookies = {};
 
   /// Maps response names with a corresponding factory
   late final Map<String, ResponseFactory> responseFactoryMap = Map.from(maps);
@@ -108,15 +109,16 @@ class OnlineApiRepository implements IRepository {
 
     if (uri != null) {
       try {
-        var response = await _sendPostRequest(uri, jsonEncode(pRequest)).timeout(const Duration(seconds: 10));
+        var response = await _sendPostRequest(uri, jsonEncode(pRequest));
 
-        // Download Request need different handling
+        // Download Request needs different handling
         if (pRequest is IApiDownloadRequest) {
-          var parsedDownloadObject = _handleDownload(pBody: response.bodyBytes, pRequest: pRequest);
+          var parsedDownloadObject =
+              _handleDownload(pBody: Uint8List.fromList(await response.first), pRequest: pRequest);
           return parsedDownloadObject;
         }
 
-        var formattedResponses = _formatResponse(response.body);
+        var formattedResponses = _formatResponse(await response.transform(utf8.decoder).join());
         var parsedResponseObjects = _responseParser(pJsonList: formattedResponses, originalRequest: pRequest);
         return parsedResponseObjects;
       } catch (e) {
@@ -137,33 +139,25 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Send post request to remote server, applies timeout.
-  Future<Response> _sendPostRequest(Uri uri, String body) async {
-    _headers["Access-Control_Allow_Origin"] = "*";
+  Future<HttpClientResponse> _sendPostRequest(Uri uri, String body) async {
+    HttpClientRequest request = await client.postUrl(uri);
+
     if (kIsWeb) {
-      if (client is BrowserClient) {
-        (client as BrowserClient).withCredentials = true;
+      if (request is BrowserHttpClientRequest) {
+        //Handles cookies in browser
+        request.browserCredentialsMode = true;
       }
+    } else {
+      _cookies.forEach((value) => request.cookies.add(value));
     }
 
-    Response res = await client.post(uri, headers: _headers, body: body);
+    _headers.forEach((key, value) => request.headers.set(key, value));
+    request.write(body);
+    HttpClientResponse res = await request.close();
 
     if (!kIsWeb) {
-      _extractCookie(res);
-    }
-    return res;
-  }
-
-  /// Extract the session-id cookie to be sent in future
-  Response _extractCookie(Response res) {
-    String? rawCookie = res.headers["set-cookie"];
-
-    if (rawCookie != null) {
-      String cookie = rawCookie.substring(0, rawCookie.indexOf(";"));
-
-      _headers.putIfAbsent("Cookie", () => cookie);
-      if (_headers.containsKey("Cookie")) {
-        _headers.update("Cookie", (value) => cookie);
-      }
+      //Extract the session-id cookie to be sent in future
+      _cookies.addAll(res.cookies);
     }
     return res;
   }

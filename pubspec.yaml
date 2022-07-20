@@ -15,12 +15,14 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # IOS Dep
+  # REST handling
+  universal_io: ^2.0.4
+
+  # iOS Dep
   cupertino_icons: ^1.0.2
 
   # Custom  Dep
-  # REST handling
-  http: ^0.13.4
+
   # Icons
   font_awesome_flutter: ^9.2.0
   # Translations capability

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -131,12 +132,16 @@ class _MyAppState extends State<MyApp> {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    var httpclient = super.createHttpClient(context);
-    httpclient.badCertificateCallback = ignoreSecure;
-    return httpclient;
-  }
+    var client = super.createHttpClient(context);
+    client.connectionTimeout = const Duration(seconds: 10);
+    if (!kIsWeb) {
+      // TODO check weird port handling
+      // client.findProxy = null;
 
-  static bool ignoreSecure(X509Certificate cert, String host, int port) {
-    return true;
+      // Needed to avoid CORS issues
+      // TODO find way to not do this
+      client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    }
+    return client;
   }
 }
