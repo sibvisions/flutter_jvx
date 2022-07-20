@@ -65,15 +65,6 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
 
     List<Widget> actions = [];
 
-    actions.add(
-      Builder(
-        builder: (context) => IconButton(
-          onPressed: () => Scaffold.of(context).openEndDrawer(),
-          icon: const FaIcon(FontAwesomeIcons.ellipsisV),
-        ),
-      ),
-    );
-
     if (getConfigService().isOffline()) {
       actions.add(
         Builder(
@@ -90,6 +81,15 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
         ),
       );
     }
+
+    actions.add(
+      Builder(
+        builder: (context) => IconButton(
+          onPressed: () => Scaffold.of(context).openEndDrawer(),
+          icon: const FaIcon(FontAwesomeIcons.ellipsisV),
+        ),
+      ),
+    );
 
     return Scaffold(
       endDrawerEnableOpenDragGesture: false,
