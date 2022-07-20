@@ -6,6 +6,7 @@ import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../model/command/api/open_screen_command.dart';
+import '../../model/custom/custom_screen.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/list/app_menu_list_grouped.dart';
 import '../setting/widgets/change_password.dart';
@@ -190,10 +191,16 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
   }
 
   void _menuItemPressed({required String componentId}) {
+    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: componentId);
+
     getUiService().setRouteContext(pContext: context);
 
-    OpenScreenCommand command = OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed");
-    getUiService().sendCommand(command);
+    // Offline screens no not require the server to know that they are open
+    if (customScreen != null && customScreen.isOfflineScreen) {
+      getUiService().routeToCustom(pFullPath: "/workScreen/$componentId");
+    } else {
+      getUiService().sendCommand(OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed"));
+    }
   }
 
   void _logout() {
