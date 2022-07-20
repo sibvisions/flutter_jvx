@@ -5,13 +5,13 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route_to_login_command.dart';
 import '../i_response_processor.dart';
 
-class ApiLoginProcessor implements IResponseProcessor<LoginResponse> {
+class ApiLoginProcessor implements IResponseProcessor<LoginViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse({required LoginResponse pResponse}) {
+  List<BaseCommand> processResponse({required LoginViewResponse pResponse}) {
     Map<String, String?> loginProps = {
       ApiObjectProperty.username: pResponse.username,
     };

@@ -3,9 +3,9 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/open_error_dialog_command.dart';
 import '../i_response_processor.dart';
 
-class ErrorProcessor implements IResponseProcessor<ErrorResponse> {
+class ErrorProcessor implements IResponseProcessor<ErrorViewResponse> {
   @override
-  List<BaseCommand> processResponse({required ErrorResponse pResponse}) {
+  List<BaseCommand> processResponse({required ErrorViewResponse pResponse}) {
     OpenErrorDialogCommand command = OpenErrorDialogCommand(
       reason: "Server sent error in response",
       message: pResponse.message,

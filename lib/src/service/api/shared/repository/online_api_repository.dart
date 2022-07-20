@@ -53,17 +53,17 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         DalFetchResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.menu: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
-        MenuResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+        MenuViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.screenGeneric: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
-        ScreenGenericResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+        GenericScreenViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.dalMetaData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         DalMetaDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.userData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         UserDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.login: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
-        LoginResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+        LoginViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.error: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
-        ErrorResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+        ErrorViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         SessionExpiredResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
@@ -226,7 +226,7 @@ class OnlineApiRepository implements IRepository {
   Future<List<ApiResponse>> _handleError(Object? error, Object originalRequest) async {
     if (error is TimeoutException) {
       return [
-        ErrorResponse(
+        ErrorViewResponse(
           message: "Message timed out",
           name: ApiResponseNames.error,
           error: error,
@@ -237,7 +237,7 @@ class OnlineApiRepository implements IRepository {
     }
     if (error is SocketException) {
       return [
-        ErrorResponse(
+        ErrorViewResponse(
           message: "Could not connect to remote server",
           name: ApiResponseNames.error,
           error: error,
@@ -247,7 +247,7 @@ class OnlineApiRepository implements IRepository {
       ];
     }
     return [
-      ErrorResponse(
+      ErrorViewResponse(
         message: "Repository error: $error",
         name: ApiResponseNames.error,
         error: error,

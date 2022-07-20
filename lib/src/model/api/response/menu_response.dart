@@ -3,7 +3,7 @@ import 'dart:convert';
 import '../api_object_property.dart';
 import 'api_response.dart';
 
-class MenuResponse extends ApiResponse {
+class MenuViewResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +18,7 @@ class MenuResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  MenuResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+  MenuViewResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : componentId = pJson[ApiObjectProperty.componentId],
         responseMenuItems = (pJson[ApiObjectProperty.entries] as List<dynamic>).map((e) => MenuEntryResponse.fromJson(e)).toList(),
         super.fromJson(originalRequest: originalRequest, pJson: pJson);

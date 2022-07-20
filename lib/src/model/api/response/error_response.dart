@@ -2,7 +2,7 @@ import '../../../../util/logging/flutter_logger.dart';
 import '../api_object_property.dart';
 import 'api_response.dart';
 
-class ErrorResponse extends ApiResponse {
+class ErrorViewResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,7 +22,7 @@ class ErrorResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ErrorResponse({
+  ErrorViewResponse({
     required this.message,
     required String name,
     required Object originalRequest,
@@ -34,7 +34,7 @@ class ErrorResponse extends ApiResponse {
         pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
   }
 
-  ErrorResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+  ErrorViewResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : message = pJson[ApiObjectProperty.message],
         stacktrace = null,
         error = null,

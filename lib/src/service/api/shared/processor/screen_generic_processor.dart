@@ -7,19 +7,19 @@ import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/model_factory.dart';
 import '../i_response_processor.dart';
 
-/// Processes [ScreenGenericResponse], will separate (and parse) new and changed components, can also open screens
+/// Processes [GenericScreenViewResponse], will separate (and parse) new and changed components, can also open screens
 /// based on the 'update' property of the request.
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class ScreenGenericProcessor implements IResponseProcessor<ScreenGenericResponse> {
+class ScreenGenericProcessor implements IResponseProcessor<GenericScreenViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse({required ScreenGenericResponse pResponse}) {
+  List<BaseCommand> processResponse({required GenericScreenViewResponse pResponse}) {
     List<BaseCommand> commands = [];
-    ScreenGenericResponse screenGenericResponse = pResponse;
+    GenericScreenViewResponse screenGenericResponse = pResponse;
 
     // Handle New & Changed Components
     // Get new full components

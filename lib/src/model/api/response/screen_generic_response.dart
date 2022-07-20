@@ -1,7 +1,7 @@
 import '../api_object_property.dart';
 import 'api_response.dart';
 
-class ScreenGenericResponse extends ApiResponse {
+class GenericScreenViewResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,7 +20,7 @@ class ScreenGenericResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ScreenGenericResponse({
+  GenericScreenViewResponse({
     required this.componentId,
     required this.changedComponents,
     required this.home,
@@ -29,7 +29,7 @@ class ScreenGenericResponse extends ApiResponse {
     required Object originalRequest,
   }) : super(name: name, originalRequest: originalRequest);
 
-  ScreenGenericResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+  GenericScreenViewResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : componentId = pJson[ApiObjectProperty.componentId],
         changedComponents = pJson[ApiObjectProperty.changedComponents],
         update = pJson[ApiObjectProperty.update],

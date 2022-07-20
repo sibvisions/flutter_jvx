@@ -9,15 +9,15 @@ import '../i_response_processor.dart';
 
 /// Processes the menu response into a [MenuModel], will try to route to menu,
 /// if no other routing actions take precedent.
-class MenuProcessor implements IResponseProcessor<MenuResponse> {
+class MenuProcessor implements IResponseProcessor<MenuViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse({required MenuResponse pResponse}) {
+  List<BaseCommand> processResponse({required MenuViewResponse pResponse}) {
     List<BaseCommand> commands = [];
-    MenuResponse response = pResponse;
+    MenuViewResponse response = pResponse;
 
     List<MenuGroupModel> groups = _isolateGroups(response);
     for (MenuGroupModel group in groups) {
@@ -38,7 +38,7 @@ class MenuProcessor implements IResponseProcessor<MenuResponse> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  List<MenuGroupModel> _isolateGroups(MenuResponse menu) {
+  List<MenuGroupModel> _isolateGroups(MenuViewResponse menu) {
     List<MenuGroupModel> groups = [];
     for (MenuEntryResponse entry in menu.responseMenuItems) {
       if (!groups.any((element) => element.name == entry.group)) {
