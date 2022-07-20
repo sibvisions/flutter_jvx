@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'api_command.dart';
 
 class StartupCommand extends ApiCommand {
@@ -14,11 +16,8 @@ class StartupCommand extends ApiCommand {
   /// The password
   final String? password;
 
-  /// Width of the screen (display area)
-  final double? screenWidth;
-
-  /// Height of the screen (display area)
-  final double? screenHeight;
+  /// Size of the screen (display area)
+  final Size? phoneSize;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -29,8 +28,7 @@ class StartupCommand extends ApiCommand {
     this.appName,
     this.username,
     this.password,
-    this.screenHeight,
-    this.screenWidth,
+    this.phoneSize
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

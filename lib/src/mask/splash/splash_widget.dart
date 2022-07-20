@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../init_app_mobile.dart' if (dart.library.html) '../../../init_app_web.dart';
+import '../../../init_app.dart';
 import '../../../util/logging/flutter_logger.dart';
 import 'loading_widget.dart';
 
@@ -34,7 +34,7 @@ class _SplashWidgetState extends State<SplashWidget> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  late Future<bool> initAppFuture;
+  late Future<void> initAppFuture;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

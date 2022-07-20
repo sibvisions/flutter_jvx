@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_client/util/file/file_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/config_generator.dart';
@@ -11,6 +13,7 @@ import 'src/model/config/api/url_config.dart';
 import 'src/model/config/config_file/app_config.dart';
 import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
+import 'src/service/api/impl/default/api_service.dart';
 import 'src/service/api/impl/isolate/isolate_api_service.dart';
 import 'src/service/api/shared/controller/api_controller.dart';
 import 'src/service/api/shared/repository/online_api_repository.dart';
@@ -22,17 +25,18 @@ import 'src/service/data/i_data_service.dart';
 import 'src/service/data/impl/data_service.dart';
 import 'src/service/layout/i_layout_service.dart';
 import 'src/service/layout/impl/isolate/isolate_layout_service.dart';
+import 'src/service/layout/impl/layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
+import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
-import 'util/file/file_manager_mobile.dart';
 import 'util/loading_handler/default_loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
 
-Future<bool> initApp({
+Future<void> initApp({
   CustomScreenManager? pCustomManager,
   required BuildContext initContext,
   List<Function>? languageCallbacks,
@@ -40,9 +44,11 @@ Future<bool> initApp({
 }) async {
   LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
 
-  // Needed to avoid CORS issues
-  // ToDo find way to not do this
-  HttpOverrides.global = MyHttpOverrides();
+  if (!kIsWeb) {
+    // Needed to avoid CORS issues
+    // ToDo find way to not do this
+    HttpOverrides.global = MyHttpOverrides();
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Service init
@@ -51,33 +57,33 @@ Future<bool> initApp({
   // Config
   IConfigService configService = ConfigService(
     sharedPrefs: await SharedPreferences.getInstance(),
-    fileManager: await FileMangerMobile.create(),
+    fileManager: await IFileManager.getFileManager(),
     pStyleCallbacks: styleCallbacks,
     pLanguageCallbacks: languageCallbacks,
   );
-  services.registerSingleton(configService, signalsReady: true);
+  services.registerSingleton(configService);
 
   // Layout
-  ILayoutService layoutService = await IsolateLayoutService.create();
-  services.registerSingleton(layoutService, signalsReady: true);
+  ILayoutService layoutService = kIsWeb ? LayoutService() : await IsolateLayoutService.create();
+  services.registerSingleton(layoutService);
 
   // Storage
-  IStorageService storageService = await IsolateStorageService.create();
-  services.registerSingleton(storageService, signalsReady: true);
+  IStorageService storageService = kIsWeb ? StorageService() : await IsolateStorageService.create();
+  services.registerSingleton(storageService);
 
   // Data
   IDataService dataService = DataService();
-  services.registerSingleton(dataService, signalsReady: true);
+  services.registerSingleton(dataService);
 
   // Command
   ICommandService commandService = CommandService();
-  services.registerSingleton(commandService, signalsReady: true);
+  services.registerSingleton(commandService);
 
   (commandService as CommandService).progressHandler.add(DefaultLoadingProgressHandler()..isEnabled = false);
 
   // UI
   IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);
-  services.registerSingleton(uiService, signalsReady: true);
+  services.registerSingleton(uiService);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Load config files
@@ -102,23 +108,21 @@ Future<bool> initApp({
   );
   (configService as ConfigService).setApiConfig(apiConfig);
 
-  IApiService apiService = await IsolateApiService.create(
-    repository: OnlineApiRepository(apiConfig: apiConfig),
-    controller: ApiController(),
-  );
-  services.registerSingleton(apiService, signalsReady: true);
+  var controller = ApiController();
+  var repository = OnlineApiRepository(apiConfig: apiConfig);
+  IApiService apiService = kIsWeb
+      ? ApiService(controller: controller, repository: repository)
+      : await IsolateApiService.create(controller: controller, repository: repository);
+  services.registerSingleton(apiService);
 
   // Send startup to server
-  Size phoneSize = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size;
+  Size? phoneSize = !kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null;
 
   StartupCommand startupCommand = StartupCommand(
     reason: "InitApp",
     username: appConfig?.startupParameters?.username,
     password: appConfig?.startupParameters?.password,
-    screenWidth: phoneSize.width,
-    screenHeight: phoneSize.height,
+    phoneSize: phoneSize,
   );
   await commandService.sendCommand(startupCommand);
-
-  return true;
 }
