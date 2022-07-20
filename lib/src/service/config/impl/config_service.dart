@@ -121,7 +121,7 @@ class ConfigService implements IConfigService {
 
   @override
   String getAppName() {
-    return sharedPrefs.getString("appName") ?? (kDebugMode ? "demo" : "");
+    return (kDebugMode ? "demo" : sharedPrefs.getString("appName")) ?? "";
   }
 
   @override
