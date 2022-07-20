@@ -13,6 +13,14 @@ import '../i_repository.dart';
 class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   late OfflineDatabase _offlineDatabase;
 
+  OfflineApiRepository._();
+
+  static Future<OfflineApiRepository> create() async {
+    var offlineApiRepository = OfflineApiRepository._();
+    offlineApiRepository._offlineDatabase = await OfflineDatabase.open();
+    return offlineApiRepository;
+  }
+
   startDatabase(BuildContext context) async {
     var pd = ProgressDialog(context: context);
     pd.show(
@@ -23,7 +31,6 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     );
 
     var dataBooks = getDataService().getDataBooks().values.toList(growable: false);
-    _offlineDatabase = await OfflineDatabase.open();
 
     var dalMetaData = dataBooks.map((e) => e.metaData!).toList(growable: false);
     //Drop old data + possible old scheme

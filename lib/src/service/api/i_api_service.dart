@@ -114,7 +114,7 @@ abstract class IApiService {
 
     log("finished fetching data");
 
-    var apiRep = OfflineApiRepository();
+    var apiRep = await OfflineApiRepository.create();
     await apiRep.startDatabase(context);
 
     await apiService.setRepository(apiRep);

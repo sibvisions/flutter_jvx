@@ -93,7 +93,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
       _currentBuildContext!.beamingHistory.clear();
     }
-    _currentBuildContext!.beamToNamed("/menu");
+    _currentBuildContext!.beamToNamed("/menu", replaceRouteInformation: pReplaceRoute);
   }
 
   @override
@@ -161,36 +161,32 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   MenuModel getMenuModel() {
-    if (_menuModel != null) {
-      List<MenuGroupModel> menuGroupModels =
-          !getConfigService().isOffline() ? [..._menuModel!.menuGroups.map((e) => e.copy())] : [];
+    List<MenuGroupModel> menuGroupModels =
+        !getConfigService().isOffline() ? [...?_menuModel?.menuGroups.map((e) => e.copy())] : [];
 
-      // Add all custom menuItems
-      if (customManager != null) {
-        customManager!.customScreens.forEach((element) {
-          CustomMenuItem customModel = element.menuItemModel;
-          // Create standard model
-          MenuGroupModel? menuGroupModel =
-              menuGroupModels.firstWhereOrNull((element) => element.name == customModel.group);
-          if (menuGroupModel != null) {
-            // Remove menu items that open the same screen
-            menuGroupModel.items.removeWhere((element) => element.screenId == customModel.screenId);
-            menuGroupModel.items.add(customModel);
-          } else {
-            // Make new group if it didn't exist
-            MenuGroupModel newGroup = MenuGroupModel(
-              name: customModel.group,
-              items: [customModel],
-            );
-            menuGroupModels.add(newGroup);
-          }
-        });
-      }
-
-      return MenuModel(menuGroups: menuGroupModels);
-    } else {
-      throw Exception("Menu model was not set, needs to be set before opening menu");
+    // Add all custom menuItems
+    if (customManager != null) {
+      customManager!.customScreens.forEach((element) {
+        CustomMenuItem customModel = element.menuItemModel;
+        // Create standard model
+        MenuGroupModel? menuGroupModel =
+            menuGroupModels.firstWhereOrNull((element) => element.name == customModel.group);
+        if (menuGroupModel != null) {
+          // Remove menu items that open the same screen
+          menuGroupModel.items.removeWhere((element) => element.screenId == customModel.screenId);
+          menuGroupModel.items.add(customModel);
+        } else {
+          // Make new group if it didn't exist
+          MenuGroupModel newGroup = MenuGroupModel(
+            name: customModel.group,
+            items: [customModel],
+          );
+          menuGroupModels.add(newGroup);
+        }
+      });
     }
+
+    return MenuModel(menuGroups: menuGroupModels);
   }
 
   @override

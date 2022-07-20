@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
 import 'package:flutter_client/util/file/file_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -105,20 +106,25 @@ Future<void> initApp({
   (configService as ConfigService).setApiConfig(apiConfig);
 
   var controller = ApiController();
-  var repository = OnlineApiRepository(apiConfig: apiConfig);
+  var repository =
+      configService.isOffline() ? await OfflineApiRepository.create() : OnlineApiRepository(apiConfig: apiConfig);
   IApiService apiService = kIsWeb
       ? ApiService(controller: controller, repository: repository)
       : await IsolateApiService.create(controller: controller, repository: repository);
   services.registerSingleton(apiService);
 
-  // Send startup to server
-  Size? phoneSize = !kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null;
+  if (!configService.isOffline()) {
+    // Send startup to server
+    Size? phoneSize = !kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null;
 
-  StartupCommand startupCommand = StartupCommand(
-    reason: "InitApp",
-    username: appConfig?.startupParameters?.username,
-    password: appConfig?.startupParameters?.password,
-    phoneSize: phoneSize,
-  );
-  await commandService.sendCommand(startupCommand);
+    StartupCommand startupCommand = StartupCommand(
+      reason: "InitApp",
+      username: appConfig?.startupParameters?.username,
+      password: appConfig?.startupParameters?.password,
+      phoneSize: phoneSize,
+    );
+    await commandService.sendCommand(startupCommand);
+  } else {
+    uiService.routeToMenu();
+  }
 }

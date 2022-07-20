@@ -130,14 +130,17 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   Future<List<DalMetaDataResponse>> getMetaData({String? pDataProvider}) async {
-    String appName = getConfigService().getAppName();
+    List<String> whereArgs = [getConfigService().getAppName()];
+    if (pDataProvider != null) {
+      whereArgs.add(pDataProvider);
+    }
     return db
         .query(
           OFFLINE_METADATA_TABLE,
           columns: ["META_DATA"],
-          where:
-              "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?) AND (? IS NULL OR DATA_PROVIDER LIKE ?)",
-          whereArgs: [appName, pDataProvider],
+          where: "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)" +
+              (pDataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""),
+          whereArgs: whereArgs,
         )
         .then((result) => result
             .map((e) => DalMetaDataResponse.fromJson(pJson: jsonDecode(e["META_DATA"] as String), originalRequest: ""))
