@@ -11,7 +11,7 @@ import 'message/endpoint/set_screen_size_message.dart';
 import 'message/layout_message.dart';
 import 'message/layout_message_wrapper.dart';
 
-void layoutIsolate(SendPort callerSendPort) {
+void layoutCallback(SendPort callerSendPort) {
   // Instantiate a SendPort to receive message from the caller
   ReceivePort isolateReceivePort = ReceivePort();
 

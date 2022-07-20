@@ -29,11 +29,13 @@ abstract class IApiService {
   /// after which it will be processed to [BaseCommand]s in an [IController]
   Future<List<BaseCommand>> sendRequest({required IApiRequest request});
 
-  void setApiConfig({required ApiConfig apiConfig});
+  Future<IRepository> getRepository();
 
   void setRepository(IRepository pRepository);
 
-  static initOnline() async {
+  void setApiConfig({required ApiConfig apiConfig});
+
+  static initOnline(BuildContext context) async {
     IConfigService configService = services<IConfigService>();
     IUiService uiService = services<IUiService>();
     IApiService apiService = services<IApiService>();
@@ -41,9 +43,21 @@ abstract class IApiService {
     IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
+    ProgressDialog pd = ProgressDialog(context: context);
+    pd.show(
+      msg: "Re-syncing offline data...",
+      max: 100,
+      progressType: ProgressType.normal,
+      barrierDismissible: false,
+    );
+
+    var repository = apiService.getRepository() as OfflineApiRepository;
+    apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
     //TODO re-sync
 
-    apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
+    await repository.stopDatabase(context);
+    pd.close();
+
     await configService.setOffline(false);
     DefaultLoadingProgressHandler.setEnabled(true);
 
@@ -72,6 +86,7 @@ abstract class IApiService {
       progressType: ProgressType.valuable,
       barrierDismissible: false,
     );
+
     int fetchCounter = 1;
     for (String dataProvider in activeDataProviders) {
       pd.update(msg: "Fetching offline data...", value: fetchCounter);
@@ -87,6 +102,7 @@ abstract class IApiService {
       );
       fetchCounter++;
     }
+
     pd.close();
 
     var apiRep = OfflineApiRepository();

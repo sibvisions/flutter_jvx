@@ -11,7 +11,7 @@ import 'src/model/config/api/url_config.dart';
 import 'src/model/config/config_file/app_config.dart';
 import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
-import 'src/service/api/impl/isolate/isolate_api.dart';
+import 'src/service/api/impl/isolate/isolate_api_service.dart';
 import 'src/service/api/shared/controller/api_controller.dart';
 import 'src/service/api/shared/repository/online_api_repository.dart';
 import 'src/service/command/i_command_service.dart';
@@ -105,7 +105,7 @@ Future<bool> initApp({
   );
   (configService as ConfigService).setApiConfig(apiConfig);
 
-  IApiService apiService = await IsolateApi.create(
+  IApiService apiService = await IsolateApiService.create(
     repository: OnlineApiRepository(apiConfig: apiConfig),
     controller: ApiController(),
   );

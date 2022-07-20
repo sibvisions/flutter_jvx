@@ -62,6 +62,11 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     print("done inserting offline data");
   }
 
+  stopDatabase(BuildContext context) async {
+    await _offlineDatabase.getMetaData().then((value) => _offlineDatabase.dropTables(value));
+    await _offlineDatabase.close();
+  }
+
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) {
     // TODO: implement sendRequest

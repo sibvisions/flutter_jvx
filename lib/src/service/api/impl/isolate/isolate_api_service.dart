@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_get_repository_message.dart';
+
 import '../../../../model/api/requests/i_api_request.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/config/api/api_config.dart';
@@ -11,11 +13,11 @@ import 'messages/api_isolate_api_config_message.dart';
 import 'messages/api_isolate_controller_message.dart';
 import 'messages/api_isolate_message.dart';
 import 'messages/api_isolate_message_wrapper.dart';
-import 'messages/api_isolate_repository_message.dart';
+import 'messages/api_isolate_set_repository_message.dart';
 import 'messages/api_isolate_request_message.dart';
 
 /// Executes [IApiRequest] in a separate isolate
-class IsolateApi implements IApiService {
+class IsolateApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,13 +38,13 @@ class IsolateApi implements IApiService {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  IsolateApi({
+  IsolateApiService({
     required this.controller,
     required this.repository,
   });
 
-  static Future<IsolateApi> create({required IController controller, required IRepository repository}) async {
-    IsolateApi isolateApi = IsolateApi(controller: controller, repository: repository);
+  static Future<IsolateApiService> create({required IController controller, required IRepository repository}) async {
+    IsolateApiService isolateApi = IsolateApiService(controller: controller, repository: repository);
     await isolateApi.initApiIsolate();
     return isolateApi;
   }
@@ -54,15 +56,27 @@ class IsolateApi implements IApiService {
   @override
   Future<List<BaseCommand>> sendRequest({required IApiRequest request}) async {
     ApiIsolateRequestMessage message = ApiIsolateRequestMessage(request: request);
-
     return await _sendRequest(pMessage: message);
   }
 
   @override
-  void setRepository(IRepository pRepository) async {
-    var message = ApiIsolateRepositoryMessage(repository: repository);
+  Future<IRepository> getRepository() async {
+    var message = ApiIsolateGetRepositoryMessage();
+    return await _sendRequest(pMessage: message);
+  }
 
+  @override
+  Future<void> setRepository(IRepository pRepository) async {
+    var message = ApiIsolateSetRepositoryMessage(repository: repository);
     await _sendRequest(pMessage: message);
+  }
+
+  @override
+  void setApiConfig({required ApiConfig apiConfig}) {
+    ReceivePort receivePort = ReceivePort();
+
+    _apiSendPort!.send(ApiIsolateMessageWrapper(
+        sendPort: receivePort.sendPort, message: ApiIsolateApiConfigMessage(apiConfig: apiConfig)));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,7 +113,7 @@ class IsolateApi implements IApiService {
     // init. controller & repository
     SendPort? apiSendPort = _apiSendPort;
     if (apiSendPort != null) {
-      ApiIsolateRepositoryMessage repositoryMessage = ApiIsolateRepositoryMessage(repository: repository);
+      ApiIsolateSetRepositoryMessage repositoryMessage = ApiIsolateSetRepositoryMessage(repository: repository);
       ApiIsolateControllerMessage controllerMessage = ApiIsolateControllerMessage(controller: controller);
 
       ApiIsolateMessageWrapper repositoryWrapper =
@@ -111,13 +125,5 @@ class IsolateApi implements IApiService {
       apiSendPort.send(controllerWrapper);
     }
     return true;
-  }
-
-  @override
-  void setApiConfig({required ApiConfig apiConfig}) {
-    ReceivePort receivePort = ReceivePort();
-
-    _apiSendPort!.send(ApiIsolateMessageWrapper(
-        sendPort: receivePort.sendPort, message: ApiIsolateApiConfigMessage(apiConfig: apiConfig)));
   }
 }

@@ -6,7 +6,7 @@ import '../../../../../model/command/base_command.dart';
 import 'api_isolate_message.dart';
 
 /// Used to send [IRepository] to the APIs isolate to be executed
-class ApiIsolateRepositoryMessage extends ApiIsolateMessage<List<BaseCommand>> {
+class ApiIsolateSetRepositoryMessage extends ApiIsolateMessage<List<BaseCommand>> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +18,7 @@ class ApiIsolateRepositoryMessage extends ApiIsolateMessage<List<BaseCommand>> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiIsolateRepositoryMessage({required this.repository});
+  ApiIsolateSetRepositoryMessage({required this.repository});
 
   sendResponse({required List<BaseCommand> pResponse, required SendPort pSendPort}) {
     pSendPort.send(pResponse);
