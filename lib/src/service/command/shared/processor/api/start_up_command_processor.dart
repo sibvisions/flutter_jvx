@@ -25,8 +25,8 @@ class StartUpCommandProcessor
       password: command.password,
       authKey: getConfigService().getAuthCode(),
       langCode: getConfigService().getLanguage(),
-      screenHeight: command.screenHeight,
-      screenWidth: command.screenWidth,
+      screenHeight: command.phoneSize?.height,
+      screenWidth: command.phoneSize?.width,
       startUpParameters: parameters,
     );
 

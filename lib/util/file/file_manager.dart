@@ -1,7 +1,18 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
+import 'file_manager_mobile.dart';
+import 'file_manager_web.dart';
+
 /// File manager used to manage all file interaction (different implementations for web and mobile)
 abstract class IFileManager {
+
+  ///Constructs a FileManager depending on the platform
+  static Future<IFileManager> getFileManager() async {
+    return kIsWeb ? FileManagerWeb() : await FileMangerMobile.create();
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
