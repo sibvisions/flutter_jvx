@@ -1,18 +1,17 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_get_repository_message.dart';
-
+import 'messages/api_isolate_get_repository_message.dart';
 import '../../../../model/api/requests/i_api_request.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/config/api/api_config.dart';
+import '../../../isolate/isolate_message.dart';
+import '../../../isolate/isolate_message_wrapper.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
 import '../../shared/i_repository.dart';
 import 'api_isolate_callback.dart';
 import 'messages/api_isolate_api_config_message.dart';
 import 'messages/api_isolate_controller_message.dart';
-import 'messages/api_isolate_message.dart';
-import 'messages/api_isolate_message_wrapper.dart';
 import 'messages/api_isolate_set_repository_message.dart';
 import 'messages/api_isolate_request_message.dart';
 
@@ -73,10 +72,7 @@ class IsolateApiService implements IApiService {
 
   @override
   void setApiConfig({required ApiConfig apiConfig}) {
-    ReceivePort receivePort = ReceivePort();
-
-    _apiSendPort!.send(ApiIsolateMessageWrapper(
-        sendPort: receivePort.sendPort, message: ApiIsolateApiConfigMessage(apiConfig: apiConfig)));
+    _sendRequest(pMessage: ApiIsolateApiConfigMessage(apiConfig: apiConfig));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,13 +80,13 @@ class IsolateApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Sends the [message] to the api isolate and returns a future containing the first answer.
-  Future _sendRequest({required ApiIsolateMessage pMessage}) async {
+  Future _sendRequest({required IsolateMessage pMessage}) async {
     SendPort? apiPort = _apiSendPort;
     if (apiPort != null) {
       // Response will come to this receivePort
       ReceivePort receivePort = ReceivePort();
       // Wrap message
-      ApiIsolateMessageWrapper wrapper = ApiIsolateMessageWrapper(sendPort: receivePort.sendPort, message: pMessage);
+      IsolateMessageWrapper wrapper = IsolateMessageWrapper(sendPort: receivePort.sendPort, message: pMessage);
       // send message to isolate
       apiPort.send(wrapper);
       // Needs to be casted, response type is assured by message itself (sendResponse method)
@@ -111,18 +107,9 @@ class IsolateApiService implements IApiService {
     _apiSendPort = await receivePort.first;
 
     // init. controller & repository
-    SendPort? apiSendPort = _apiSendPort;
-    if (apiSendPort != null) {
-      ApiIsolateSetRepositoryMessage repositoryMessage = ApiIsolateSetRepositoryMessage(repository: repository);
-      ApiIsolateControllerMessage controllerMessage = ApiIsolateControllerMessage(controller: controller);
-
-      ApiIsolateMessageWrapper repositoryWrapper =
-          ApiIsolateMessageWrapper(sendPort: apiSendPort, message: repositoryMessage);
-      ApiIsolateMessageWrapper controllerWrapper =
-          ApiIsolateMessageWrapper(sendPort: apiSendPort, message: controllerMessage);
-
-      apiSendPort.send(repositoryWrapper);
-      apiSendPort.send(controllerWrapper);
+    if (_apiSendPort != null) {
+      await _sendRequest(pMessage: ApiIsolateSetRepositoryMessage(repository: repository));
+      await _sendRequest(pMessage: ApiIsolateControllerMessage(controller: controller));
     }
     return true;
   }

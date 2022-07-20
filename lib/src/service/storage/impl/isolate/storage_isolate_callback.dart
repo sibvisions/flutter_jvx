@@ -1,11 +1,11 @@
 import 'dart:isolate';
 
+import '../../../isolate/isolate_message.dart';
+import '../../../isolate/isolate_message_wrapper.dart';
 import '../default/storage_service.dart';
 import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
 import 'message/endpoint/storage_isolate_update_components_message.dart';
-import 'message/storage_isolate_message.dart';
-import 'message/storage_isolate_message_wrapper.dart';
 
 void storageCallback(SendPort callerSendPort) {
   // Instantiate a SendPort to receive message from the caller
@@ -17,9 +17,11 @@ void storageCallback(SendPort callerSendPort) {
   // Storage instance holds all data.
   final StorageService componentStore = StorageService();
 
+  // Handle incoming requests
   isolateReceivePort.listen((message) async {
-    StorageIsolateMessageWrapper isolateMessageWrapper = (message as StorageIsolateMessageWrapper);
-    StorageIsolateMessage isolateMessage = isolateMessageWrapper.message;
+    // Extract message
+    IsolateMessageWrapper isolateMessageWrapper = message as IsolateMessageWrapper;
+    IsolateMessage isolateMessage = isolateMessageWrapper.message;
     dynamic response;
 
     if (isolateMessage is StorageIsolateGetScreenMessage) {
@@ -31,6 +33,6 @@ void storageCallback(SendPort callerSendPort) {
       await componentStore.deleteScreen(screenName: isolateMessage.screenName);
     }
 
-    isolateMessage.sendResponse(response: response, sendPort: isolateMessageWrapper.sendPort);
+    isolateMessage.sendResponse(pResponse: response, pSendPort: isolateMessageWrapper.sendPort);
   });
 }

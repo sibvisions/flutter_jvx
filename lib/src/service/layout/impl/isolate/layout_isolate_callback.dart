@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import '../../../isolate/isolate_message_wrapper.dart';
+import '../../../isolate/isolate_message.dart';
 import '../layout_service.dart';
 import 'message/endpoint/layout_in_process_message.dart';
 import 'message/endpoint/layout_valid_message.dart';
@@ -8,8 +10,6 @@ import 'message/endpoint/remove_layout_message.dart';
 import 'message/endpoint/report_layout_message.dart';
 import 'message/endpoint/report_preferred_size_message.dart';
 import 'message/endpoint/set_screen_size_message.dart';
-import 'message/layout_message.dart';
-import 'message/layout_message_wrapper.dart';
 
 void layoutCallback(SendPort callerSendPort) {
   // Instantiate a SendPort to receive message from the caller
@@ -20,10 +20,11 @@ void layoutCallback(SendPort callerSendPort) {
 
   final LayoutService layoutStorage = LayoutService();
 
+  // Handle incoming requests
   isolateReceivePort.listen((message) async {
-    LayoutMessageWrapper messageWrapper = (message as LayoutMessageWrapper);
-    LayoutMessage isolateMessage = messageWrapper.message;
-
+    // Extract message
+    IsolateMessageWrapper isolateMessageWrapper = message as IsolateMessageWrapper;
+    IsolateMessage isolateMessage = isolateMessageWrapper.message;
     dynamic response;
 
     if (isolateMessage is MarkAsDirtyMessage) {
@@ -47,8 +48,6 @@ void layoutCallback(SendPort callerSendPort) {
       response = await layoutStorage.removeLayout(pComponentId: isolateMessage.componentId);
     }
 
-    if (response != null) {
-      isolateMessage.sendResponse(response: response, sendPort: messageWrapper.sendPort);
-    }
+    isolateMessage.sendResponse(pResponse: response, pSendPort: isolateMessageWrapper.sendPort);
   });
 }

@@ -2,12 +2,12 @@ import 'dart:isolate';
 
 import '../../../../model/command/base_command.dart';
 import '../../../../model/component/fl_component_model.dart';
+import '../../../isolate/isolate_message.dart';
+import '../../../isolate/isolate_message_wrapper.dart';
 import '../../i_storage_service.dart';
 import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
 import 'message/endpoint/storage_isolate_update_components_message.dart';
-import 'message/storage_isolate_message.dart';
-import 'message/storage_isolate_message_wrapper.dart';
 import 'storage_isolate_callback.dart';
 
 class IsolateStorageService implements IStorageService {
@@ -62,15 +62,13 @@ class IsolateStorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Sends the [message] to the api Isolate and returns a Future containing the first answer.
-  Future _sendMessage(StorageIsolateMessage message) async {
-    //TODO fix async awaits and remove every wrapper message and co&kg
+  Future _sendMessage(IsolateMessage message) async {
     SendPort? apiPort = _apiSendPort;
     if (apiPort != null) {
       // Response will come to this receivePort
       ReceivePort receivePort = ReceivePort();
       // Wrap message
-      StorageIsolateMessageWrapper wrapper =
-          StorageIsolateMessageWrapper(sendPort: receivePort.sendPort, message: message);
+      IsolateMessageWrapper wrapper = IsolateMessageWrapper(sendPort: receivePort.sendPort, message: message);
       // send message to isolate
       apiPort.send(wrapper);
       // Needs to be casted, response type is assured by message itself (sendResponse method)

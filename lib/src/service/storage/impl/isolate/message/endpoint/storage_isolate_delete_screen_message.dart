@@ -1,14 +1,7 @@
-import 'dart:isolate';
+import '../../../../../isolate/isolate_message.dart';
 
-import '../storage_isolate_message.dart';
-
-class StorageIsolateDeleteScreenMessage extends StorageIsolateMessage<bool> {
+class StorageIsolateDeleteScreenMessage extends IsolateMessage {
   final String screenName;
 
   StorageIsolateDeleteScreenMessage({required this.screenName});
-
-  @override
-  sendResponse({required void response, required SendPort sendPort}) {
-    sendPort.send(null);
-  }
 }

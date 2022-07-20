@@ -1,11 +1,11 @@
 import 'dart:isolate';
 
+import '../../../isolate/isolate_message_wrapper.dart';
+import '../../../isolate/isolate_message.dart';
 import '../default/api_service.dart';
 import 'messages/api_isolate_api_config_message.dart';
 import 'messages/api_isolate_controller_message.dart';
 import 'messages/api_isolate_get_repository_message.dart';
-import 'messages/api_isolate_message.dart';
-import 'messages/api_isolate_message_wrapper.dart';
 import 'messages/api_isolate_set_repository_message.dart';
 import 'messages/api_isolate_request_message.dart';
 
@@ -22,21 +22,25 @@ void apiCallback(SendPort callerSendPort) {
   // Handle incoming requests
   isolateReceivePort.listen((message) async {
     // Extract message
-    ApiIsolateMessageWrapper messageWrapper = message as ApiIsolateMessageWrapper;
-    ApiIsolateMessage apiMessage = messageWrapper.message;
+    IsolateMessageWrapper isolateMessageWrapper = message as IsolateMessageWrapper;
+    IsolateMessage isolateMessage = isolateMessageWrapper.message;
+    dynamic response;
 
     // Handle setup messages
-    if (apiMessage is ApiIsolateControllerMessage) {
-      apiService.controller = apiMessage.controller;
-    } else if (apiMessage is ApiIsolateSetRepositoryMessage) {
-      apiService.setRepository(apiMessage.repository);
-    } else if (apiMessage is ApiIsolateApiConfigMessage) {
-      apiService.setApiConfig(apiConfig: apiMessage.apiConfig);
-    } else if (apiMessage is ApiIsolateGetRepositoryMessage) {
-      messageWrapper.sendPort.send(await apiService.getRepository());
-    } else if (apiMessage is ApiIsolateRequestMessage) {
-      var response = await apiService.sendRequest(request: apiMessage.request);
-      messageWrapper.sendPort.send(response);
+    if (isolateMessage is ApiIsolateControllerMessage) {
+      apiService.controller = isolateMessage.controller;
+    } else if (isolateMessage is ApiIsolateSetRepositoryMessage) {
+      await apiService.setRepository(isolateMessage.repository);
+    } else {
+      if (isolateMessage is ApiIsolateApiConfigMessage) {
+        apiService.setApiConfig(apiConfig: isolateMessage.apiConfig);
+      } else if (isolateMessage is ApiIsolateGetRepositoryMessage) {
+        response = await apiService.getRepository();
+      } else if (isolateMessage is ApiIsolateRequestMessage) {
+        response = await apiService.sendRequest(request: isolateMessage.request);
+      }
     }
+
+    isolateMessage.sendResponse(pResponse: response, pSendPort: isolateMessageWrapper.sendPort);
   });
 }

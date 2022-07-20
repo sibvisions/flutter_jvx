@@ -1,7 +1,7 @@
+import '../../../../isolate/isolate_message.dart';
 import '../../../../../model/config/api/api_config.dart';
-import 'api_isolate_message.dart';
 
-class ApiIsolateApiConfigMessage extends ApiIsolateMessage {
+class ApiIsolateApiConfigMessage extends IsolateMessage {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

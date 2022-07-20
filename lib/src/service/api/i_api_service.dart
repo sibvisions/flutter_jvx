@@ -31,7 +31,7 @@ abstract class IApiService {
 
   Future<IRepository> getRepository();
 
-  void setRepository(IRepository pRepository);
+  Future<void> setRepository(IRepository pRepository);
 
   void setApiConfig({required ApiConfig apiConfig});
 
@@ -51,8 +51,8 @@ abstract class IApiService {
       barrierDismissible: false,
     );
 
-    var repository = apiService.getRepository() as OfflineApiRepository;
-    apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
+    var repository = (await apiService.getRepository()) as OfflineApiRepository;
+    await apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
     //TODO re-sync
 
     await repository.stopDatabase(context);
@@ -108,7 +108,7 @@ abstract class IApiService {
     var apiRep = OfflineApiRepository();
     await apiRep.startDatabase(context);
 
-    apiService.setRepository(apiRep);
+    await apiService.setRepository(apiRep);
     await configService.setOffline(true);
     await configService.setOfflineScreen(pWorkscreen);
 

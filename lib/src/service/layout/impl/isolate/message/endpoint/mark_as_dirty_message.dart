@@ -1,14 +1,7 @@
-import 'dart:isolate';
+import 'package:flutter_client/src/service/isolate/isolate_message.dart';
 
-import '../layout_message.dart';
-
-class MarkAsDirtyMessage extends LayoutMessage<bool> {
+class MarkAsDirtyMessage extends IsolateMessage {
   final String id;
 
   MarkAsDirtyMessage({required this.id});
-
-  @override
-  sendResponse({required bool response, required SendPort sendPort}) {
-    sendPort.send(response);
-  }
 }

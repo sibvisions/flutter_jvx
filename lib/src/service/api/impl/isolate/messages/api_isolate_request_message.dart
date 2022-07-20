@@ -1,11 +1,9 @@
-import 'dart:isolate';
-
 import '../../../../../model/api/requests/i_api_request.dart';
 import '../../../../../model/command/base_command.dart';
-import 'api_isolate_message.dart';
+import '../../../../isolate/isolate_message.dart';
 
 /// Used to send [IApiRequest] to the APIs isolate to be executed
-class ApiIsolateRequestMessage extends ApiIsolateMessage<List<BaseCommand>> {
+class ApiIsolateRequestMessage extends IsolateMessage<List<BaseCommand>> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,8 +16,4 @@ class ApiIsolateRequestMessage extends ApiIsolateMessage<List<BaseCommand>> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiIsolateRequestMessage({required this.request});
-
-  sendResponse({required List<BaseCommand> pResponse, required SendPort pSendPort}) {
-    pSendPort.send(pResponse);
-  }
 }
