@@ -58,9 +58,9 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext pContext) {
     if (mounted) {
-      getUiService().setRouteContext(pContext: context);
+      getUiService().setRouteContext(pContext: pContext);
     }
 
     List<Widget> actions = [];
@@ -69,13 +69,16 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
       actions.add(
         Builder(
           builder: (context) => IconButton(
-            onPressed: () => showSyncDialog(context).then(
-              (value) {
-                if (value == true) {
-                  IApiService.initOnline(context);
-                }
-              },
-            ),
+            onPressed: () {
+              getUiService().setRouteContext(pContext: pContext);
+              showSyncDialog().then(
+                (value) {
+                  if (value == true) {
+                    IApiService.initOnline(context);
+                  }
+                },
+              );
+            },
             icon: const FaIcon(FontAwesomeIcons.broadcastTower),
           ),
         ),
@@ -103,7 +106,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
     );
   }
 
-  Future<bool?> showSyncDialog(BuildContext context) {
+  Future<bool?> showSyncDialog() {
     return getUiService().openDialog<bool>(
       pDialogWidget: AlertDialog(
         title: Text(
