@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
 import '../../../../util/extensions/list_extensions.dart';
 import '../../../../util/logging/flutter_logger.dart';
@@ -30,7 +31,7 @@ import '../../../routing/locations/work_screen_location.dart';
 import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
-class UiService with CommandServiceGetterMixin implements IUiService {
+class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,7 +162,8 @@ class UiService with CommandServiceGetterMixin implements IUiService {
   @override
   MenuModel getMenuModel() {
     if (_menuModel != null) {
-      List<MenuGroupModel> menuGroupModels = [..._menuModel!.menuGroups.map((e) => e.copy())];
+      List<MenuGroupModel> menuGroupModels =
+          !getConfigService().isOffline() ? [..._menuModel!.menuGroups.map((e) => e.copy())] : [];
 
       // Add all custom menuItems
       if (customManager != null) {
