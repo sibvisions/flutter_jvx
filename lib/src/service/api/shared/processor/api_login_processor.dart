@@ -1,6 +1,6 @@
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/requests/api_login_request.dart';
-import '../../../../model/api/response/login_response.dart';
+import '../../../../model/api/response/login_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route_to_login_command.dart';
 import '../i_response_processor.dart';

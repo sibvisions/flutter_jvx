@@ -1,4 +1,4 @@
-import '../../../../model/api/response/menu_response.dart';
+import '../../../../model/api/response/menu_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route_to_menu_command.dart';
 import '../../../../model/command/ui/save_menu_command.dart';

@@ -1,5 +1,5 @@
 import '../../../../model/api/api_object_property.dart';
-import '../../../../model/api/response/screen_generic_response.dart';
+import '../../../../model/api/response/generic_screen_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route_to_work_command.dart';
