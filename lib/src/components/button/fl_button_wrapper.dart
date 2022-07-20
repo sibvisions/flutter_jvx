@@ -42,7 +42,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
     onPress = sendButtonPressed;
 
-    if (kIsWeb) {
+    if (!kIsWeb) {
       if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
         onPress = goOffline;
       } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
