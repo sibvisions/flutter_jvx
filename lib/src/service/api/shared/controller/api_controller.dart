@@ -5,7 +5,7 @@ import '../../../../model/api/response/api_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../i_controller.dart';
 import '../i_response_processor.dart';
-import '../processor/api_login_processor.dart';
+import '../processor/login_view_processor.dart';
 import '../processor/application_meta_data_processor.dart';
 import '../processor/application_parameters_processor.dart';
 import '../processor/authentication_data_processor.dart';
@@ -16,8 +16,8 @@ import '../processor/dal_meta_data_processor.dart';
 import '../processor/download_images_processor.dart';
 import '../processor/download_style_processor.dart';
 import '../processor/download_translation_processor.dart';
-import '../processor/error_processor.dart';
-import '../processor/menu_processor.dart';
+import '../processor/error_view_processor.dart';
+import '../processor/menu_view_processor.dart';
 import '../processor/message_dialog_processor.dart';
 import '../processor/screen_generic_processor.dart';
 import '../processor/session_expired_processor.dart';
@@ -30,14 +30,14 @@ class ApiController implements IController {
 
   final IResponseProcessor _applicationParameterProcessor = ApplicationParametersProcessor();
   final IResponseProcessor _applicationMetaDataProcessor = ApplicationMetaDataProcessor();
-  final IResponseProcessor _menuProcessor = MenuProcessor();
+  final IResponseProcessor _menuViewProcessor = MenuViewProcessor();
   final IResponseProcessor _closeScreenProcessor = CloseScreenProcessor();
-  final IResponseProcessor _screenGenericProcessor = ScreenGenericProcessor();
+  final IResponseProcessor _genericScreenViewProcessor = GenericScreenViewProcessor();
   final IResponseProcessor _dalMetaDataProcessor = DalMetaDataProcessor();
   final IResponseProcessor _dalFetchProcessor = DalFetchProcessor();
   final IResponseProcessor _userDataProcessor = UserDataProcessor();
-  final IResponseProcessor _loginProcessor = ApiLoginProcessor();
-  final IResponseProcessor _errorProcessor = ErrorProcessor();
+  final IResponseProcessor _loginViewProcessor = LoginViewProcessor();
+  final IResponseProcessor _errorViewProcessor = ErrorViewProcessor();
   final IResponseProcessor _sessionExpiredProcessor = SessionExpiredProcessor();
   final IResponseProcessor _dalDataProviderChangedProcessor = DalDataProviderChangedProcessor();
   final IResponseProcessor _authenticationDataProcessor = AuthenticationDataProcessor();
@@ -57,14 +57,14 @@ class ApiController implements IController {
     responseToProcessorMap = HashMap.from({
       ApiResponseNames.applicationParameters: _applicationParameterProcessor,
       ApiResponseNames.applicationMetaData: _applicationMetaDataProcessor,
-      ApiResponseNames.menu: _menuProcessor,
-      ApiResponseNames.screenGeneric: _screenGenericProcessor,
+      ApiResponseNames.menu: _menuViewProcessor,
+      ApiResponseNames.screenGeneric: _genericScreenViewProcessor,
       ApiResponseNames.closeScreen: _closeScreenProcessor,
       ApiResponseNames.dalMetaData: _dalMetaDataProcessor,
       ApiResponseNames.dalFetch: _dalFetchProcessor,
       ApiResponseNames.userData: _userDataProcessor,
-      ApiResponseNames.login: _loginProcessor,
-      ApiResponseNames.error: _errorProcessor,
+      ApiResponseNames.login: _loginViewProcessor,
+      ApiResponseNames.error: _errorViewProcessor,
       ApiResponseNames.sessionExpired: _sessionExpiredProcessor,
       ApiResponseNames.dalDataProviderChanged: _dalDataProviderChangedProcessor,
       ApiResponseNames.authenticationData: _authenticationDataProcessor,

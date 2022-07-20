@@ -9,7 +9,7 @@ import '../i_response_processor.dart';
 
 /// Processes the menu response into a [MenuModel], will try to route to menu,
 /// if no other routing actions take precedent.
-class MenuProcessor implements IResponseProcessor<MenuViewResponse> {
+class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

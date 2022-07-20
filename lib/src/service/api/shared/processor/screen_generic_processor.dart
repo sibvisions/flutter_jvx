@@ -11,7 +11,7 @@ import '../i_response_processor.dart';
 /// based on the 'update' property of the request.
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class ScreenGenericProcessor implements IResponseProcessor<GenericScreenViewResponse> {
+class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

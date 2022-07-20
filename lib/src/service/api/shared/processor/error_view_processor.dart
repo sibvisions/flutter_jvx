@@ -3,7 +3,7 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/open_error_dialog_command.dart';
 import '../i_response_processor.dart';
 
-class ErrorProcessor implements IResponseProcessor<ErrorViewResponse> {
+class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
   @override
   List<BaseCommand> processResponse({required ErrorViewResponse pResponse}) {
     OpenErrorDialogCommand command = OpenErrorDialogCommand(
