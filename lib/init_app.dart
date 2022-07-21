@@ -108,9 +108,7 @@ Future<void> initApp({
   var controller = ApiController();
   var repository =
       configService.isOffline() ? await OfflineApiRepository.create() : OnlineApiRepository(apiConfig: apiConfig);
-  IApiService apiService = kIsWeb
-      ? ApiService(controller: controller, repository: repository)
-      : await IsolateApiService.create(controller: controller, repository: repository);
+  IApiService apiService = ApiService(controller: controller, repository: repository);
   services.registerSingleton(apiService);
 
   if (!configService.isOffline()) {

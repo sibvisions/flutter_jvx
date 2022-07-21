@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return db.delete(OFFLINE_APPS_TABLE, where: "APP LIKE ?", whereArgs: [appName]);
   }
 
-  Future<List<DalMetaDataResponse>> getMetaData({String? pDataProvider}) async {
+  Future<List<DalMetaDataResponse>> getMetaData({String? pDataProvider}) {
     List<String> whereArgs = [getConfigService().getAppName()];
     if (pDataProvider != null) {
       whereArgs.add(pDataProvider);
