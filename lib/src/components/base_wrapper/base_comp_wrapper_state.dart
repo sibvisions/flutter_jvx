@@ -227,11 +227,11 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     return layoutData.hasPosition ? layoutData.layoutPosition!.left : 0.0;
   }
 
-  double? getWidthForPositioned() {
+  double getWidthForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.width : 0.0;
   }
 
-  double? getHeightForPositioned() {
+  double getHeightForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.height : 0.0;
   }
 }
