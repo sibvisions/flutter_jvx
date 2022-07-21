@@ -69,6 +69,10 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     print("done inserting offline data");
   }
 
+  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {
+    return _offlineDatabase.getChangedRows(pDataProvider);
+  }
+
   stopDatabase(BuildContext context) async {
     await _offlineDatabase.getMetaData().then((value) => _offlineDatabase.dropTables(value));
     await _offlineDatabase.close();

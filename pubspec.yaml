@@ -43,6 +43,7 @@ dependencies:
   beamer: ^1.4.0+1
   # Used for offline mode
   sqflite: ^2.0.2+1
+  collection: ^1.15.0
   path: ^1.8.0
   flutter_map: ^0.14.0
   latlong2: ^0.8.1

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/model/data/column_definition.dart';
@@ -8,7 +9,6 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_client/util/constants/i_types.dart';
-import 'package:flutter_client/util/extensions/list_extensions.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -227,6 +227,12 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Row Management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {
+    return db
+        .query(formatOfflineTableName(pDataProvider), where: "$STATE_COLUMN IS NOT NULL")
+        .then((value) => groupBy(value, (p0) => p0[STATE_COLUMN] as String));
+  }
 
   /// Checks if any row exists in [pTableName]
   /// if [pWhere] is not null, check with [pWhere] applied.

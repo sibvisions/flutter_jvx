@@ -6,6 +6,7 @@ import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 import 'package:flutter_client/src/model/data/data_book.dart';
+import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
 import 'package:flutter_client/src/service/api/shared/repository/online_api_repository.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
@@ -81,6 +82,16 @@ abstract class IApiService {
 
     for (DataBook dataBook in dataService.getDataBooks().values) {
       log("Databook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
+
+      Map<String, List<Map<String, Object?>>> groupedRows =
+          await offlineRepository.getChangedRows(dataBook.dataProvider);
+
+      log("Inserted rows: " + groupedRows[OfflineDatabase.ROW_STATE_INSERTED].toString());
+      log("Changed rows: " + groupedRows[OfflineDatabase.ROW_STATE_UPDATED].toString());
+      log("Deleted rows: " + groupedRows[OfflineDatabase.ROW_STATE_DELETED].toString());
+      // ApiInsertRecordRequest();
+      // ApiSetValuesRequest();
+      // ApiDeleteRecordRequest();
     }
 
     await offlineRepository.stopDatabase(context);
