@@ -35,6 +35,7 @@ class IsolateLayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// [Isolate] instance of the separate Isolate
+  // ignore: unused_field
   Isolate? _isolate;
 
   /// [SendPort] used to send & receive messages from the isolate.
