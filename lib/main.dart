@@ -135,9 +135,6 @@ class MyHttpOverrides extends HttpOverrides {
     var client = super.createHttpClient(context);
     client.connectionTimeout = const Duration(seconds: 10);
     if (!kIsWeb) {
-      // TODO check weird port handling
-      // client.findProxy = null;
-
       // Needed to avoid CORS issues
       // TODO find way to not do this
       client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
