@@ -6,7 +6,7 @@ import '../../i_command_processor.dart';
 class RouteToWorkCommandProcessor extends ICommandProcessor<RouteToWorkCommand> with UiServiceGetterMixin {
   @override
   Future<List<BaseCommand>> processCommand(RouteToWorkCommand command) async {
-    getUiService().routeToWorkScreen(pScreenName: command.screenName);
+    getUiService().routeToWorkScreen(pScreenName: command.screenName, pReplaceRoute: command.replaceRoute);
 
     return [];
   }

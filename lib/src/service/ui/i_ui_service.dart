@@ -50,7 +50,7 @@ abstract class IUiService {
   void routeToMenu({bool pReplaceRoute = false});
 
   /// Route to work screen page
-  void routeToWorkScreen({required String pScreenName});
+  void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false});
 
   /// Route to settings page
   void routeToSettings();

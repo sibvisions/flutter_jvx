@@ -64,7 +64,8 @@ abstract class IApiService {
     DefaultLoadingProgressHandler.setEnabled(true);
 
     String lastWorkscreen = configService.getOfflineScreen()!;
-    await commandService.sendCommand(RouteToWorkCommand(screenName: lastWorkscreen, reason: "We are back online"));
+    await commandService
+        .sendCommand(RouteToWorkCommand(screenName: lastWorkscreen, replaceRoute: true, reason: "We are back online"));
   }
 
   static initOffline(BuildContext context, String pWorkscreen) async {
@@ -121,6 +122,6 @@ abstract class IApiService {
     await configService.setOffline(true);
     await configService.setOfflineScreen(pWorkscreen);
 
-    await commandService.sendCommand(RouteToMenuCommand(reason: "We are going offline"));
+    await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
   }
 }

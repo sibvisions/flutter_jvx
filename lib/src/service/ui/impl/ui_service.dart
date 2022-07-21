@@ -92,17 +92,25 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
       _currentBuildContext!.beamingHistory.clear();
     }
-    _currentBuildContext!.beamToNamed("/menu", replaceRouteInformation: pReplaceRoute);
+    if (pReplaceRoute) {
+      _currentBuildContext!.beamToReplacementNamed("/menu");
+    } else {
+      _currentBuildContext!.beamToNamed("/menu");
+    }
   }
 
   @override
-  void routeToWorkScreen({required String pScreenName}) {
+  void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     var last = _currentBuildContext!.beamingHistory.last;
 
     if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
       _currentBuildContext!.beamingHistory.clear();
     }
-    _currentBuildContext!.beamToNamed("/workScreen/$pScreenName");
+    if (pReplaceRoute) {
+      _currentBuildContext!.beamToReplacementNamed("/workScreen/$pScreenName");
+    } else {
+      _currentBuildContext!.beamToNamed("/workScreen/$pScreenName");
+    }
   }
 
   @override
