@@ -114,7 +114,6 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
     return null;
   }
 
-  //TODO: implement this method
   @override
   String formatValue(Object pValue) {
     return pValue.toString();

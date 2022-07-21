@@ -14,8 +14,7 @@ class FlTextFieldModel extends FlLabelModel {
   int rows = 1;
 
   /// The average amount of characters to be seen when unconstrained.
-  /// (average character length * columns = wanted width of field in non constrained layouts)#
-  // TODO character length into widget size
+  /// (average character length * columns = wanted width of field in non constrained layouts)
   int columns = 10;
 
   /// If the textfield has a drawn border.
