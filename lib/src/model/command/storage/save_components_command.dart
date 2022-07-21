@@ -3,7 +3,6 @@ import '../../component/fl_component_model.dart';
 import 'storage_command.dart';
 
 class SaveComponentsCommand extends StorageCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,15 +13,14 @@ class SaveComponentsCommand extends StorageCommand {
   /// List of maps representing the changes done to a component.
   final List<dynamic>? updatedComponent;
 
-  /// Name of Screen to Update
-  final String screenName;
+  /// Id of Screen to Update
+  final String screenId;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveComponentsCommand(
-      {this.updatedComponent, this.componentsToSave, required this.screenName, required String reason})
+  SaveComponentsCommand({this.updatedComponent, this.componentsToSave, required this.screenId, required String reason})
       : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

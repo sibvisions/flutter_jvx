@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
+import 'package:flutter_client/src/model/command/api/startup_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
-import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
+import 'package:flutter_client/src/model/data/data_book.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
 import 'package:flutter_client/src/service/api/shared/repository/online_api_repository.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
@@ -49,23 +51,66 @@ abstract class IApiService {
     pd.show(
       msg: "Re-syncing offline data...",
       max: 100,
-      progressType: ProgressType.normal,
+      progressType: ProgressType.valuable,
       barrierDismissible: false,
     );
 
-    var repository = (await apiService.getRepository()) as OfflineApiRepository;
-    await apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
-    //TODO re-sync
+    /// TODO insert the saved username and password out of the config service
+    String offlineWorkscreen = configService.getOfflineScreen()!;
+    String offlineAppname = configService.getAppName();
+    String offlineUsername = configService.getUsername()!;
+    String offlinePassword = configService.getPassword()!;
 
-    await repository.stopDatabase(context);
+    var offlineRepository = (await apiService.getRepository()) as OfflineApiRepository;
+    await apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
+
+    await commandService.sendCommand(
+      StartupCommand(
+        reason: "Going online",
+        appName: offlineAppname,
+        username: offlineUsername,
+        password: offlinePassword,
+      ),
+    );
+
+    await commandService.sendCommand(
+      OpenScreenCommand(componentId: offlineWorkscreen, reason: "We are back online"),
+    );
+
+    await fetchDataProvider(dataService, offlineWorkscreen, commandService);
+
+    for (DataBook dataBook in dataService.getDataBooks().values) {
+      log("Databook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
+    }
+
+    await offlineRepository.stopDatabase(context);
     pd.close();
 
     await configService.setOffline(false);
     DefaultLoadingProgressHandler.setEnabled(true);
+  }
 
-    String lastWorkscreen = configService.getOfflineScreen()!;
-    await commandService
-        .sendCommand(RouteToWorkCommand(screenName: lastWorkscreen, replaceRoute: true, reason: "We are back online"));
+  static Future<void> fetchDataProvider(
+      IDataService dataService, String offlineWorkscreen, ICommandService commandService) async {
+    Set<String> activeDataProviders = dataService.getDataBooks().keys.toList().where((element) {
+      var prefixes = element.split("/");
+      if (prefixes.length >= 2) {
+        return prefixes[1] == offlineWorkscreen;
+      }
+      return false;
+    }).toSet();
+
+    for (String dataProvider in activeDataProviders) {
+      await commandService.sendCommand(
+        FetchCommand(
+          reason: "Going offline",
+          dataProvider: dataProvider,
+          fromRow: 0,
+          rowCount: -1,
+          includeMetaData: true,
+        ),
+      );
+    }
   }
 
   static initOffline(BuildContext context, String pWorkscreen) async {
@@ -120,7 +165,8 @@ abstract class IApiService {
 
     await apiService.setRepository(apiRep);
     await configService.setOffline(true);
-    await configService.setOfflineScreen(pWorkscreen);
+
+    await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenName!);
 
     await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
   }

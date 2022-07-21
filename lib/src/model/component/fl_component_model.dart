@@ -95,6 +95,9 @@ abstract class FlComponentModel {
   /// Class Name Reference
   String? classNameEventSourceRef;
 
+  /// Screen long name
+  String? screenName;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/api/requests/api_open_screen_request.dart';
+
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/generic_screen_view_response.dart';
 import '../../../../model/command/base_command.dart';
@@ -31,11 +33,22 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
       List<dynamic>? updatedComponent = _getChangedComponents(changedComponents);
 
       if (componentsToSave != null || updatedComponent != null) {
+        if (screenGenericResponse.originalRequest is ApiOpenScreenRequest) {
+          ApiOpenScreenRequest originalRequest = screenGenericResponse.originalRequest as ApiOpenScreenRequest;
+          componentsToSave
+              ?.where(
+                (element) => element.name == screenGenericResponse.componentId,
+              )
+              .forEach(
+                (element) => element.screenName = originalRequest.componentId,
+              );
+        }
+
         SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
           reason: "Api received screen.generic response",
           componentsToSave: componentsToSave,
           updatedComponent: updatedComponent,
-          screenName: screenGenericResponse.componentId,
+          screenId: screenGenericResponse.componentId,
         );
         commands.add(saveComponentsCommand);
       }
