@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -7,6 +8,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_client/util/constants/i_types.dart';
+import 'package:flutter_client/util/extensions/list_extensions.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -265,26 +267,37 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// Executes a SQL UPDATE query and returns the number of changes made.
   update({required String pTableName, required Map<String, dynamic> pUpdate, Map<String, dynamic>? pFilter}) {
     //TODO test solution
-    //Constructs "$OLD$_age = age"
-    Map<String, dynamic> updateColumns = {'"$STATE_COLUMN"': ROW_STATE_UPDATED};
-    pUpdate.keys.forEach((key) => updateColumns[formatOfflineColumnName(key)] = key);
-    updateColumns.addAll(pUpdate);
-
-    //age = 5
-    //UPDATE AGE = 10
-    //$OLD$_age = 5, age = 10
     var where = _getWhere(pFilter);
-    return db.update(formatOfflineTableName(pTableName), updateColumns, where: where?[0], whereArgs: where?[1]);
+    var offlineTableName = formatOfflineTableName(pTableName);
+
+    return db.transaction((txn) async {
+      String? state = await _getState(offlineTableName, where: where, txn: txn);
+      if (state == null) {
+        //Hasn't been touched yet, copy values to $OLD$ columns
+
+        List<String> columns = await _getColumns(pTableName, txn: txn);
+        log("Value columns: " + columns.toString());
+
+        Map<String, dynamic> updateColumns = {'"$STATE_COLUMN"': ROW_STATE_UPDATED};
+        //Constructs "$OLD$_age = age"
+        columns.forEach((column) => updateColumns[formatOfflineColumnName(column)] = column);
+        updateColumns.addAll(pUpdate);
+        await txn.update(offlineTableName, updateColumns, where: where?[0], whereArgs: where?[1]);
+      }
+
+      //age = 5
+      //UPDATE AGE = 10
+      //$OLD$_age = 5, age = 10
+      return txn.update(offlineTableName, pUpdate, where: where?[0], whereArgs: where?[1]);
+    });
   }
 
   /// Executes a SQL DELETE query and returns the number of changes made.
   delete({required String pTableName, Map<String, dynamic>? pFilter}) {
     var where = _getWhere(pFilter);
     //Just set state to Deleted (D)
-    return db.transaction((txn) {
-      return txn.update(formatOfflineTableName(pTableName), {'"$STATE_COLUMN"': ROW_STATE_DELETED},
-          where: where?[0], whereArgs: where?[1]);
-    });
+    return db.update(formatOfflineTableName(pTableName), {'"$STATE_COLUMN"': ROW_STATE_DELETED},
+        where: where?[0], whereArgs: where?[1]);
   }
 
   List<dynamic>? _getWhere(Map<String, dynamic>? pFilter) {
@@ -328,5 +341,16 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         }
       });
     });
+  }
+
+  Future<String?> _getState(String pTableName, {List<dynamic>? where, Transaction? txn}) {
+    return (txn ?? db)
+        .query(pTableName, columns: [STATE_COLUMN], where: where?[0], whereArgs: where?[1])
+        .then((value) => value.firstOrNull?[STATE_COLUMN] as String?);
+  }
+
+  Future<List<String>> _getColumns(String pTableName, {Transaction? txn}) {
+    return (txn ?? db).rawQuery("SELECT NAME FROM PRAGMA_TABLE_INFO('$pTableName') WHERE NAME NOT LIKE ?;",
+        [COLUMN_PREFIX]).then((value) => value.map((e) => e['NAME'] as String).toList(growable: false));
   }
 }
