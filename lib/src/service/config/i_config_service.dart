@@ -69,11 +69,23 @@ abstract class IConfigService {
   /// Translates text in current translation, will return the original text if not translation was found
   String translateText(String pText);
 
-  /// Set auth code for future auto-login
-  Future<bool> setAuthCode(String? pAuthCode);
+  /// Gets the last used username
+  String? getUsername();
+
+  /// Sets the last used username
+  Future<bool> setUsername(String username);
+
+  /// Gets the last used password
+  String? getPassword();
+
+  /// Sets the last used password
+  Future<bool> setPassword(String password);
 
   /// Get auth code if one has been set
   String? getAuthCode();
+
+  /// Set auth code for future auto-login
+  Future<bool> setAuthCode(String? pAuthCode);
 
   /// Returns a modifiable list of all supported languages codes
   Set<String> getSupportedLanguages();
@@ -90,9 +102,23 @@ abstract class IConfigService {
 
   Future<bool> setOffline(bool pOffline);
 
+  /// Gets the last screen before going offline
   String? getOfflineScreen();
 
+  /// Sets the last screen before going offline
   Future<bool> setOfflineScreen(String pWorkscreen);
+
+  /// Gets the phone size for the startup command
+  Size? getPhoneSize();
+
+  /// Sets the phone size for the startup command
+  void setPhoneSize(Size? pPhoneSize);
+
+  /// Get a general app setting
+  String? getString(String key);
+
+  /// Set a general app setting
+  Future<bool> setString(String key, String? value);
 
   /// Callback will be called when style has been set
   void registerStyleCallback({required Function(Map<String, String> style) pCallback});
@@ -105,12 +131,6 @@ abstract class IConfigService {
 
   /// Removes the callback
   void disposeLanguageCallback({required Function(String language) pCallBack});
-
-  /// Sets the phone size for the startup command
-  void setPhoneSize(Size? pPhoneSize);
-
-  /// Gets the phone size for the startup command
-  Size? getPhoneSize();
 }
 
 enum MenuMode {

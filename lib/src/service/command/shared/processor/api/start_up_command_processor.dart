@@ -14,6 +14,12 @@ class StartUpCommandProcessor
     if (command.appName != null) {
       await getConfigService().setAppName(command.appName!);
     }
+    if (command.username != null) {
+      await getConfigService().setUsername(command.username!);
+    }
+    if (command.password != null) {
+      await getConfigService().setPassword(command.password!);
+    }
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
       appMode: "full",

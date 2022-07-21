@@ -99,17 +99,15 @@ class ConfigService implements IConfigService {
 
   @override
   String? getVersion() {
-    return sharedPrefs.getString("$appName.version");
+    return getString("version");
   }
 
   @override
   setVersion(String? pVersion) {
     if (pVersion != null) {
       fileManager.setAppVersion(pVersion: pVersion);
-      return sharedPrefs.setString("$appName.version", pVersion);
-    } else {
-      return sharedPrefs.remove("$appName.version");
     }
+    return setString("version", pVersion);
   }
 
   @override
@@ -156,28 +154,44 @@ class ConfigService implements IConfigService {
 
   @override
   String getLanguage() {
-    return sharedPrefs.getString("$appName.language") ?? "en";
+    return getString("language") ?? "en";
   }
 
   @override
   Future<bool> setLanguage(String pLanguage) async {
-    bool success = await sharedPrefs.setString("$appName.language", pLanguage);
+    bool success = await setString("language", pLanguage);
     _loadLanguage(pLanguage);
     return success;
   }
 
   @override
+  String? getUsername() {
+    return getString("username");
+  }
+
+  @override
+  Future<bool> setUsername(String username) {
+    return setString("username", username);
+  }
+
+  @override
+  String? getPassword() {
+    return getString("password");
+  }
+
+  @override
+  Future<bool> setPassword(String password) {
+    return setString("password", password);
+  }
+
+  @override
   String? getAuthCode() {
-    return sharedPrefs.getString("$appName.authKey");
+    return getString("authKey");
   }
 
   @override
   Future<bool> setAuthCode(String? pAuthCode) {
-    if (pAuthCode != null) {
-      return sharedPrefs.setString("$appName.authKey", pAuthCode);
-    } else {
-      return sharedPrefs.remove("$appName.authKey");
-    }
+    return setString("authKey", pAuthCode);
   }
 
   @override
@@ -231,12 +245,26 @@ class ConfigService implements IConfigService {
 
   @override
   String? getOfflineScreen() {
-    return sharedPrefs.getString("$appName.offlineScreen");
+    return getString("offlineScreen");
   }
 
   @override
   Future<bool> setOfflineScreen(String pWorkscreen) {
-    return sharedPrefs.setString("$appName.offlineScreen", pWorkscreen);
+    return setString("offlineScreen", pWorkscreen);
+  }
+
+  @override
+  String? getString(String key) {
+    return sharedPrefs.getString("$appName.$key");
+  }
+
+  @override
+  Future<bool> setString(String key, String? value) {
+    if (value != null) {
+      return sharedPrefs.setString("$appName.$key", value);
+    } else {
+      return sharedPrefs.remove("$appName.$key");
+    }
   }
 
   // ------------------------------

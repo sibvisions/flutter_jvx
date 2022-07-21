@@ -14,6 +14,9 @@ class LoginCommandProcessor
     String? clientId = getConfigService().getClientId();
 
     if (clientId != null) {
+      await getConfigService().setUsername(command.userName);
+      await getConfigService().setPassword(command.password);
+
       ApiLoginRequest loginRequest = ApiLoginRequest(
         createAuthKey: command.createAuthKey,
         loginMode: command.loginMode,
