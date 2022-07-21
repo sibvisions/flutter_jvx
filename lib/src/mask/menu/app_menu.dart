@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/service/api/i_api_service.dart';
+import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../util/config_util.dart';
@@ -17,7 +18,8 @@ import 'list/app_menu_list_ungroup.dart';
 import 'tab/app_menu_tab.dart';
 
 /// Each menu item does get this callback
-typedef ButtonCallback = void Function({required String componentId});
+typedef ButtonCallback = void Function(
+    {required String componentId, required IUiService pUiService, required BuildContext pContext});
 
 /// Used for menuFactory map
 typedef MenuFactory = Widget Function({
@@ -45,6 +47,24 @@ class AppMenu extends StatefulWidget with UiServiceGetterMixin {
 
   @override
   State<AppMenu> createState() => _AppMenuState();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static void menuItemPressed(
+      {required String componentId, required IUiService pUiService, required BuildContext pContext}) {
+    CustomScreen? customScreen = pUiService.getCustomScreen(pScreenName: componentId);
+
+    pUiService.setRouteContext(pContext: pContext);
+
+    // Offline screens no not require the server to know that they are open
+    if (customScreen != null && customScreen.isOfflineScreen) {
+      pUiService.routeToCustom(pFullPath: "/workScreen/$componentId");
+    } else {
+      pUiService.sendCommand(OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed"));
+    }
+  }
 }
 
 class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServiceGetterMixin {
@@ -138,20 +158,6 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
     );
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  void menuItemPressed({required String componentId}) {
-    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: componentId);
-
-    getUiService().setRouteContext(pContext: context);
-
-    // Offline screens no not require the server to know that they are open
-    if (customScreen != null && customScreen.isOfflineScreen) {
-      getUiService().routeToCustom(pFullPath: "/workScreen/$componentId");
-    } else {
-      getUiService().sendCommand(OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed"));
-    }
-  }
-
   Widget _getMenu() {
     MenuMode menuMode = ConfigUtil.getMenuMode(getConfigService().getAppStyle()?["menu.mode"]);
     getConfigService().setMenuMode(menuMode);
@@ -163,7 +169,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
 
     return menuBuilder(
       menuModel: widget.menuModel,
-      onClick: menuItemPressed,
+      onClick: AppMenu.menuItemPressed,
       backgroundImageString: menuBackgroundImage,
       menuBackgroundColor: menuBackgroundColor,
     );

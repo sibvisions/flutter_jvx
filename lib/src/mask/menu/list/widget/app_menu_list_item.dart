@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../main.dart';
@@ -7,7 +8,7 @@ import '../../../../mixin/config_service_mixin.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../app_menu.dart';
 
-class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin {
+class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,9 +60,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin {
           ],
         ),
       ),
-      onTap: () {
-        onClick(componentId: model.screenId);
-      },
+      onTap: () => onClick(componentId: model.screenId, pUiService: getUiService(), pContext: context),
     );
   }
 

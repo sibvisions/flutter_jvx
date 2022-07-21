@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mask/menu/app_menu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../main.dart';
@@ -94,7 +95,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
     MenuModel menuModel = getUiService().getMenuModel();
     return AppMenuListGrouped(
       menuModel: menuModel,
-      onClick: _menuItemPressed,
+      onClick: AppMenu.menuItemPressed,
     );
   }
 
