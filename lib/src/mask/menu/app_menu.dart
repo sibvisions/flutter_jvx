@@ -130,9 +130,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
     return getUiService().openDialog<bool>(
       pDialogWidget: AlertDialog(
         title: Text(
-          getConfigService().translateText(
-            "Synchronization",
-          ),
+          getConfigService().translateText("Synchronization"),
         ),
         content: Text(
           getConfigService().translateText(
@@ -140,17 +138,13 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
           ),
         ),
         actions: [
-          ElevatedButton(
-            child: Text(getConfigService().translateText("Yes")),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
-          ElevatedButton(
+          TextButton(
             child: Text(getConfigService().translateText("No")),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+          TextButton(
+            child: Text(getConfigService().translateText("Yes")),
+            onPressed: () => Navigator.of(context).pop(true),
           ),
         ],
       ),
