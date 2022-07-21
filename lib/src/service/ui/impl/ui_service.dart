@@ -173,7 +173,9 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
     // Add all custom menuItems
     if (customManager != null) {
-      customManager!.customScreens.forEach((element) {
+      customManager!.customScreens
+          .where((element) => !getConfigService().isOffline() || element.isOfflineScreen)
+          .forEach((element) {
         CustomMenuItem customModel = element.menuItemModel;
         // Create standard model
         MenuGroupModel? menuGroupModel =
