@@ -66,7 +66,7 @@ class IsolateApiService implements IApiService {
 
   @override
   Future<void> setRepository(IRepository pRepository) async {
-    var message = ApiIsolateSetRepositoryMessage(repository: repository);
+    var message = ApiIsolateSetRepositoryMessage(repository: pRepository);
     await _sendRequest(pMessage: message);
   }
 
