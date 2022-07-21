@@ -31,21 +31,19 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
   final FocusNode focusNode = FocusNode();
 
-  late FlTextFieldWidget _lastBuiltTextfield;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget build(BuildContext context) {
-    _lastBuiltTextfield = createWidget();
+    FlTextFieldWidget widget = createWidget();
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: _lastBuiltTextfield);
+    return getPositioned(child: widget);
   }
 
   @override
@@ -78,7 +76,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
     double width = averageColumnWidth * model.columns;
 
-    width += _lastBuiltTextfield.extraWidthPaddings();
+    width += createWidget().extraWidthPaddings();
 
     return Size(width, size.height);
   }
