@@ -1,3 +1,4 @@
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_open_screen_request.dart';
 
 import '../../../../model/api/api_object_property.dart';
@@ -13,7 +14,7 @@ import '../i_response_processor.dart';
 /// based on the 'update' property of the request.
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenViewResponse> {
+class GenericScreenViewProcessor with ConfigServiceGetterMixin implements IResponseProcessor<GenericScreenViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +57,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
 
     // Handle Screen Opening
     // if update == false => new screen that should be routed to
-    if (!screenGenericResponse.update) {
+    if (!screenGenericResponse.update && !getConfigService().isOffline()) {
       RouteToWorkCommand workCommand = RouteToWorkCommand(
         screenName: screenGenericResponse.componentId,
         reason: "Server sent screen.generic response with update = 'false'",
