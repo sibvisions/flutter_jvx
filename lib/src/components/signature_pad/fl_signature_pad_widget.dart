@@ -16,6 +16,8 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final SignatureController controller;
+  final double? width;
+  final double? height;
   final bool showImage;
   final DataRecord? dataRecord;
   final VoidCallback sendSignature;
@@ -27,6 +29,8 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
     Key? key,
     required FlCustomContainerModel model,
     required this.controller,
+    this.width,
+    this.height,
     required this.sendSignature,
     required this.deleteSignature,
     required this.showImage,
@@ -86,6 +90,10 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Signature(
+            key: UniqueKey(),
+            //TODO Remove after initState fix for width and height
+            width: width,
+            height: height,
             controller: controller,
             backgroundColor: model.background ?? Theme.of(context).backgroundColor,
           ),
