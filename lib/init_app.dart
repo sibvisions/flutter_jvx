@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
-import 'package:flutter_client/util/file/file_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/config_generator.dart';
@@ -15,8 +13,8 @@ import 'src/model/config/config_file/app_config.dart';
 import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
 import 'src/service/api/impl/default/api_service.dart';
-import 'src/service/api/impl/isolate/isolate_api_service.dart';
 import 'src/service/api/shared/controller/api_controller.dart';
+import 'src/service/api/shared/repository/offline_api_repository.dart';
 import 'src/service/api/shared/repository/online_api_repository.dart';
 import 'src/service/command/i_command_service.dart';
 import 'src/service/command/impl/command_service.dart';
@@ -34,6 +32,7 @@ import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
+import 'util/file/file_manager.dart';
 import 'util/loading_handler/default_loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
 
@@ -111,15 +110,15 @@ Future<void> initApp({
   IApiService apiService = ApiService(controller: controller, repository: repository);
   services.registerSingleton(apiService);
 
+  configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null);
+
   if (!configService.isOffline()) {
     // Send startup to server
-    Size? phoneSize = !kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null;
 
     StartupCommand startupCommand = StartupCommand(
       reason: "InitApp",
       username: appConfig?.startupParameters?.username,
       password: appConfig?.startupParameters?.password,
-      phoneSize: phoneSize,
     );
     await commandService.sendCommand(startupCommand);
   } else {

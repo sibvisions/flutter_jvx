@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,6 +54,8 @@ class ConfigService implements IConfigService {
   /// Application style sent from server
   Map<String, String> applicationStyle = {};
 
+  /// The phone size
+  Size? phoneSize;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -287,6 +290,16 @@ class ConfigService implements IConfigService {
   @override
   void registerStyleCallback({required Function(Map<String, String> style) pCallback}) {
     styleCallbacks.add(pCallback);
+  }
+
+  @override
+  Size? getPhoneSize() {
+    return phoneSize;
+  }
+
+  @override
+  void setPhoneSize(Size? pPhoneSize) {
+    phoneSize = phoneSize;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

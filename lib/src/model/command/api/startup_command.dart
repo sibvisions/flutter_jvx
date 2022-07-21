@@ -23,13 +23,8 @@ class StartupCommand extends ApiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  StartupCommand({
-    required String reason,
-    this.appName,
-    this.username,
-    this.password,
-    this.phoneSize
-  }) : super(reason: reason);
+  StartupCommand({required String reason, this.appName, this.username, this.password, this.phoneSize})
+      : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

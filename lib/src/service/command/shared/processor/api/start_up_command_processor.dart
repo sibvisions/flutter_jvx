@@ -11,8 +11,6 @@ class StartUpCommandProcessor
     implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
-    Map<String, dynamic> parameters = getConfigService().getStartUpParameters();
-
     if (command.appName != null) {
       await getConfigService().setAppName(command.appName!);
     }
@@ -25,9 +23,9 @@ class StartUpCommandProcessor
       password: command.password,
       authKey: getConfigService().getAuthCode(),
       langCode: getConfigService().getLanguage(),
-      screenHeight: command.phoneSize?.height,
-      screenWidth: command.phoneSize?.width,
-      startUpParameters: parameters,
+      screenHeight: command.phoneSize?.height ?? getConfigService().getPhoneSize()?.height,
+      screenWidth: command.phoneSize?.width ?? getConfigService().getPhoneSize()?.width,
+      startUpParameters: getConfigService().getStartUpParameters(),
     );
 
     return getApiService().sendRequest(request: startUpRequest);

@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../../../util/file/file_manager.dart';
 import '../../model/config/api/api_config.dart';
 import '../../model/config/user/user_info.dart';
@@ -103,6 +105,12 @@ abstract class IConfigService {
 
   /// Removes the callback
   void disposeLanguageCallback({required Function(String language) pCallBack});
+
+  /// Sets the phone size for the startup command
+  void setPhoneSize(Size? pPhoneSize);
+
+  /// Gets the phone size for the startup command
+  Size? getPhoneSize();
 }
 
 enum MenuMode {
