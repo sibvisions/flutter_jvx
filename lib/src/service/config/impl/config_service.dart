@@ -34,8 +34,6 @@ class ConfigService implements IConfigService {
   /// Config of the api
   ApiConfig? apiConfig;
 
-  String? appName;
-
   /// Current clientId (sessionId)
   String? clientId;
 
@@ -56,12 +54,13 @@ class ConfigService implements IConfigService {
 
   /// The phone size
   Size? phoneSize;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ConfigService({
-    this.appName,
+    String? appName,
     required this.fileManager,
     required this.sharedPrefs,
     List<Function>? pStyleCallbacks,
@@ -74,7 +73,8 @@ class ConfigService implements IConfigService {
       languageCallbacks.addAll(pLanguageCallbacks);
     }
 
-    fileManager.setAppName(pName: getAppName());
+    setAppName(appName ?? getAppName());
+
     String? version = getVersion();
     if (version != null) {
       fileManager.setAppVersion(pVersion: version);
@@ -127,7 +127,6 @@ class ConfigService implements IConfigService {
 
   @override
   Future<bool> setAppName(String pAppName) {
-    appName = pAppName;
     fileManager.setAppName(pName: pAppName);
     return sharedPrefs.setString("appName", pAppName);
   }
@@ -235,12 +234,12 @@ class ConfigService implements IConfigService {
 
   @override
   bool isOffline() {
-    return sharedPrefs.getBool("$appName.offline") ?? false;
+    return sharedPrefs.getBool("$getAppName.offline") ?? false;
   }
 
   @override
   Future<bool> setOffline(bool pOffline) {
-    return sharedPrefs.setBool("$appName.offline", pOffline);
+    return sharedPrefs.setBool("$getAppName.offline", pOffline);
   }
 
   @override
@@ -255,15 +254,15 @@ class ConfigService implements IConfigService {
 
   @override
   String? getString(String key) {
-    return sharedPrefs.getString("$appName.$key");
+    return sharedPrefs.getString("$getAppName.$key");
   }
 
   @override
   Future<bool> setString(String key, String? value) {
     if (value != null) {
-      return sharedPrefs.setString("$appName.$key", value);
+      return sharedPrefs.setString("$getAppName.$key", value);
     } else {
-      return sharedPrefs.remove("$appName.$key");
+      return sharedPrefs.remove("$getAppName.$key");
     }
   }
 
