@@ -1,9 +1,16 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/mixin/data_service_mixin.dart';
+import 'package:flutter_client/src/model/api/requests/api_dal_save_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_filter_model.dart';
+import 'package:flutter_client/src/model/api/requests/api_filter_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_insert_record_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_select_record_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
-import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 import '../../../../model/api/requests/i_api_request.dart';
 import '../../../../model/api/response/api_response.dart';
@@ -81,12 +88,71 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) {
     if (isStopped()) throw Exception("Repository not initialized");
-    // TODO: implement sendRequest
-    throw UnimplementedError();
+
+    if (pRequest is ApiDalSaveRequest) {
+      // Does nothing but is supported as api
+    } else if (pRequest is ApiDeleteRecordRequest) {
+      return _delete(pRequest);
+    } else if (pRequest is ApiFetchRequest) {
+      return _fetch(pRequest);
+    } else if (pRequest is ApiFilterRequest) {
+      return _filter(pRequest);
+    } else if (pRequest is ApiInsertRecordRequest) {
+      return _insert(pRequest);
+    } else if (pRequest is ApiSelectRecordRequest) {
+      return _select(pRequest);
+    } else if (pRequest is ApiSetValuesRequest) {
+      return _setValues(pRequest);
+    }
+
+    throw Exception("${pRequest.runtimeType} is not supported while offline");
   }
 
   @override
   void setApiConfig({required ApiConfig config}) {
-    // TODO: implement setApiConfig
+    // Do nothing
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Future<List<ApiResponse>> _delete(ApiDeleteRecordRequest pRequest) {
+    Map<String, dynamic> filter = {};
+    if (pRequest.filter != null) {
+      ApiFilterModel requestFilter = pRequest.filter!;
+
+      for (int i = 0; i < requestFilter.columnNames.length; i++) {
+        filter[requestFilter.columnNames[i]] = requestFilter.values[i];
+      }
+    } else {
+      filter["ROWID"] = pRequest.selectedRow;
+    }
+
+    _offlineDatabase!.delete(pTableName: pRequest.dataProvider, pFilter: filter);
+
+    if (pRequest.fetch) {}
+
+    return SynchronousFuture([]);
+  }
+
+  Future<List<ApiResponse>> _fetch(ApiFetchRequest pRequest) {
+    return SynchronousFuture([]);
+  }
+
+  Future<List<ApiResponse>> _filter(ApiFilterRequest pRequest) {
+    return SynchronousFuture([]);
+  }
+
+  Future<List<ApiResponse>> _insert(ApiInsertRecordRequest pRequest) {
+    return SynchronousFuture([]);
+  }
+
+  Future<List<ApiResponse>> _select(ApiSelectRecordRequest pRequest) {
+    return SynchronousFuture([]);
+  }
+
+  Future<List<ApiResponse>> _setValues(ApiSetValuesRequest pRequest) {
+    return SynchronousFuture([]);
   }
 }
