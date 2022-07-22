@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
@@ -101,6 +103,8 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
+    log("routing to workscreen: $pScreenName");
+
     var last = _currentBuildContext!.beamingHistory.last;
 
     if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {

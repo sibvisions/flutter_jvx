@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+
 import '../../../../model/api/response/menu_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route_to_menu_command.dart';
@@ -9,7 +11,7 @@ import '../i_response_processor.dart';
 
 /// Processes the menu response into a [MenuModel], will try to route to menu,
 /// if no other routing actions take precedent.
-class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
+class MenuViewProcessor with ConfigServiceGetterMixin implements IResponseProcessor<MenuViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,10 +28,12 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     MenuModel menuModel = MenuModel(menuGroups: groups);
 
     SaveMenuCommand saveMenuCommand = SaveMenuCommand(menuModel: menuModel, reason: "Server sent menu items");
+    commands.add(saveMenuCommand);
 
-    RouteToMenuCommand routeToMenuCommand = RouteToMenuCommand(reason: "Server sent a menu, likely on login");
-
-    commands.addAll([saveMenuCommand, routeToMenuCommand]);
+    if (!getConfigService().isOffline()) {
+      RouteToMenuCommand routeToMenuCommand = RouteToMenuCommand(reason: "Server sent a menu, likely on login");
+      commands.add(routeToMenuCommand);
+    }
 
     return commands;
   }
