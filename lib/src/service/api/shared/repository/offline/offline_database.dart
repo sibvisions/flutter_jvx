@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<bool> rowExists({required String pTableName, Map<String, dynamic>? pFilter}) {
     String sql = 'SELECT COUNT(*) AS COUNT FROM "${formatOfflineTableName(pTableName)}"';
     if (pFilter != null) {
-      sql += _buildWhere(pFilter.keys);
+      sql += " WHERE " + _buildWhere(pFilter.keys);
     }
 
     return db.rawQuery(sql, [...?pFilter?.values])
@@ -277,7 +277,6 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// Executes a SQL UPDATE query and returns the number of changes made.
   Future<int> update(
       {required String pTableName, required Map<String, dynamic> pUpdate, Map<String, dynamic>? pFilter}) {
-    //TODO test solution
     var where = _getWhere(pFilter);
     var offlineTableName = formatOfflineTableName(pTableName);
 
@@ -306,9 +305,17 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// Executes a SQL DELETE query and returns the number of changes made.
   Future<int> delete({required String pTableName, Map<String, dynamic>? pFilter}) {
     var where = _getWhere(pFilter);
-    //Just set state to Deleted (D)
-    return db.update(formatOfflineTableName(pTableName), {'"$STATE_COLUMN"': ROW_STATE_DELETED},
-        where: where?[0], whereArgs: where?[1]);
+    var offlineTableName = formatOfflineTableName(pTableName);
+
+    //If inserted locally, delete row else set state to Deleted (D)
+    return db.transaction((txn) async {
+      String? state = await _getState(offlineTableName, where: where, txn: txn);
+      if (state != null && state == ROW_STATE_INSERTED) {
+        return db.delete(offlineTableName, where: where?[0], whereArgs: where?[1]);
+      }
+      return db.update(offlineTableName, {'"$STATE_COLUMN"': ROW_STATE_DELETED},
+          where: where?[0], whereArgs: where?[1]);
+    });
   }
 
   List<dynamic>? _getWhere(Map<String, dynamic>? pFilter) {
@@ -322,9 +329,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   ///Build where string and exclude all "deleted" columns
   String _buildWhere(Iterable<String> pFilter) {
-    return " WHERE " +
-        pFilter.map((key) => '"$key" = ?').join("AND ") +
-        ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
+    return pFilter.map((key) => '"$key" = ?').join("AND ") + ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

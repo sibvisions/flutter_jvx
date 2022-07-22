@@ -19,7 +19,7 @@ import '../processor/download_translation_processor.dart';
 import '../processor/error_view_processor.dart';
 import '../processor/menu_view_processor.dart';
 import '../processor/message_dialog_processor.dart';
-import '../processor/screen_generic_processor.dart';
+import '../processor/generic_screen_view_processor.dart';
 import '../processor/session_expired_processor.dart';
 import '../processor/user_data_processor.dart';
 
