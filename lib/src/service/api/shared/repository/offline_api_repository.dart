@@ -21,6 +21,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     return offlineApiRepository;
   }
 
+  /// Init database with currently available dataBooks
   startDatabase(void Function(int value, int max, {int? progress})? progressUpdate) async {
     var dataBooks = getDataService().getDataBooks().values.toList(growable: false);
 
@@ -61,6 +62,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     return _offlineDatabase.getChangedRows(pDataProvider);
   }
 
+  /// Closes and deletes all currently used dataBooks
   stopDatabase() async {
     await _offlineDatabase.getMetaData().then((value) => _offlineDatabase.dropTables(value));
     await _offlineDatabase.close();
@@ -68,7 +70,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
   bool isStopped() {
     return _offlineDatabase.isClosed();
-}
+  }
 
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) {
