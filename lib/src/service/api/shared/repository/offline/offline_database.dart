@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<bool> rowExists({required String pTableName, Map<String, dynamic>? pFilter}) {
     String sql = 'SELECT COUNT(*) AS COUNT FROM "${formatOfflineTableName(pTableName)}"';
     if (pFilter != null) {
-      sql += _buildWhere(pFilter.keys);
+      sql += " WHERE " + _buildWhere(pFilter.keys);
     }
 
     return db.rawQuery(sql, [...?pFilter?.values])
@@ -329,9 +329,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   ///Build where string and exclude all "deleted" columns
   String _buildWhere(Iterable<String> pFilter) {
-    return " WHERE " +
-        pFilter.map((key) => '"$key" = ?').join("AND ") +
-        ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
+    return pFilter.map((key) => '"$key" = ?').join("AND ") + ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
