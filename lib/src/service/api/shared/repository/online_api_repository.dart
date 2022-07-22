@@ -80,7 +80,7 @@ class OnlineApiRepository implements IRepository {
   ApiConfig apiConfig;
 
   /// Http client for outside connection
-  final HttpClient client = HttpClient();
+  HttpClient? client;
 
   /// Header fields, used for sessionId
   final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
@@ -99,12 +99,32 @@ class OnlineApiRepository implements IRepository {
     required this.apiConfig,
   });
 
+  @override
+  Future<void> start() async {
+    if (isStopped()) {
+      client = HttpClient();
+    }
+  }
+
+  @override
+  Future<void> stop() async {
+    client?.close();
+    client = null;
+  }
+
+  @override
+  bool isStopped() {
+    return client == null;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
+    if (isStopped()) throw Exception("Repository not initialized");
+
     Uri? uri = apiConfig.uriMap[pRequest.runtimeType]?.call();
 
     if (uri != null) {
@@ -113,8 +133,8 @@ class OnlineApiRepository implements IRepository {
 
         // Download Request needs different handling
         if (pRequest is IApiDownloadRequest) {
-          var parsedDownloadObject =
-              _handleDownload(pBody: Uint8List.fromList(await response.expand((element) => element).toList()), pRequest: pRequest);
+          var parsedDownloadObject = _handleDownload(
+              pBody: Uint8List.fromList(await response.expand((element) => element).toList()), pRequest: pRequest);
           return parsedDownloadObject;
         }
 
@@ -140,7 +160,7 @@ class OnlineApiRepository implements IRepository {
 
   /// Send post request to remote server, applies timeout.
   Future<HttpClientResponse> _sendPostRequest(Uri uri, String body) async {
-    HttpClientRequest request = await client.postUrl(uri);
+    HttpClientRequest request = await client!.postUrl(uri);
 
     if (kIsWeb) {
       if (request is BrowserHttpClientRequest) {

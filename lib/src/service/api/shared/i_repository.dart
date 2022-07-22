@@ -8,6 +8,15 @@ abstract class IRepository {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Initializes the repository, has to be closed with [stop]
+  Future<void> start();
+
+  /// Stops the repository
+  Future<void> stop();
+
+  /// Returns if the repository has already been closed with [stop]
+  bool isStopped();
+
   /// Executes [pRequest],
   /// will throw an exception if request fails to be executed
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest});

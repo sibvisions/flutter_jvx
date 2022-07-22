@@ -48,8 +48,9 @@ abstract class IApiService {
     IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
-    OfflineApiRepository? offlineRepository;
     ProgressDialog? pd;
+    OnlineApiRepository? onlineApiRepository;
+    OfflineApiRepository? offlineApiRepository;
     try {
       String offlineWorkscreen = configService.getOfflineScreen()!;
       String offlineAppName = configService.getAppName();
@@ -64,8 +65,11 @@ abstract class IApiService {
         barrierDismissible: false,
       );
 
-      offlineRepository = (await apiService.getRepository()) as OfflineApiRepository;
-      await apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
+      offlineApiRepository = (await apiService.getRepository()) as OfflineApiRepository;
+      //Set online api repository to handle commands
+      onlineApiRepository = OnlineApiRepository(apiConfig: configService.getApiConfig()!);
+      await onlineApiRepository.start();
+      await apiService.setRepository(onlineApiRepository);
 
       await commandService.sendCommand(
         StartupCommand(
@@ -93,7 +97,7 @@ abstract class IApiService {
         log("DataBook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
 
         Map<String, List<Map<String, Object?>>> groupedRows =
-            await offlineRepository.getChangedRows(dataBook.dataProvider);
+            await offlineApiRepository.getChangedRows(dataBook.dataProvider);
 
         log("Inserted rows: " + groupedRows[OfflineDatabase.ROW_STATE_INSERTED].toString());
         log("Changed rows: " + groupedRows[OfflineDatabase.ROW_STATE_UPDATED].toString());
@@ -103,17 +107,18 @@ abstract class IApiService {
         // ApiDeleteRecordRequest();
       }
 
-      await offlineRepository.stopDatabase();
+      await offlineApiRepository.deleteDatabase();
 
       await configService.setOffline(false);
       DefaultLoadingProgressHandler.setEnabled(true);
+      await offlineApiRepository.stop();
 
       pd.close();
       //TODO route
     } catch (e) {
       //Revert all changes in case we have an in-tact offline state
-      if (offlineRepository != null && !offlineRepository.isStopped()) {
-        await apiService.setRepository(offlineRepository);
+      if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
+        await apiService.setRepository(offlineApiRepository);
         await configService.setOffline(true);
         DefaultLoadingProgressHandler.setEnabled(false);
       }
@@ -166,6 +171,7 @@ abstract class IApiService {
 
     ProgressDialog? pd;
     OnlineApiRepository? onlineApiRepository;
+    OfflineApiRepository? offlineApiRepository;
     try {
       DefaultLoadingProgressHandler.setEnabled(false);
 
@@ -195,8 +201,9 @@ abstract class IApiService {
         barrierDismissible: false,
       );
 
-      var apiRep = await OfflineApiRepository.create();
-      await apiRep.startDatabase((value, max, {progress}) {
+      offlineApiRepository = OfflineApiRepository();
+      await offlineApiRepository.start();
+      await offlineApiRepository.initDatabase((value, max, {progress}) {
         pd?.update(
           value: progress ?? 0,
           msg: "Loading data ($value / $max)...",
@@ -204,9 +211,10 @@ abstract class IApiService {
       });
 
       onlineApiRepository = (await apiService.getRepository()) as OnlineApiRepository;
-      await apiService.setRepository(apiRep);
+      await apiService.setRepository(offlineApiRepository);
       await configService.setOffline(true);
       await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenName!);
+      await onlineApiRepository.stop();
 
       pd.close();
       await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));

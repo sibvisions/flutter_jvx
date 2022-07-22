@@ -106,7 +106,8 @@ Future<void> initApp({
 
   var controller = ApiController();
   var repository =
-      configService.isOffline() ? await OfflineApiRepository.create() : OnlineApiRepository(apiConfig: apiConfig);
+      configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository(apiConfig: apiConfig);
+  await repository.start();
   IApiService apiService = ApiService(controller: controller, repository: repository);
   services.registerSingleton(apiService);
 
