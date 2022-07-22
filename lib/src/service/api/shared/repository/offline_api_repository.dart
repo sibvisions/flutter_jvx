@@ -21,15 +21,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     return offlineApiRepository;
   }
 
-  startDatabase(BuildContext context) async {
-    var pd = ProgressDialog(context: context);
-    pd.show(
-      msg: "Loading data...",
-      max: 100,
-      progressType: ProgressType.valuable,
-      barrierDismissible: false,
-    );
-
+  startDatabase(void Function(int value, int max, {int? progress})? progressUpdate) async {
     var dataBooks = getDataService().getDataBooks().values.toList(growable: false);
 
     var dalMetaData = dataBooks.map((e) => e.metaData!).toList(growable: false);
@@ -37,15 +29,12 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     await _offlineDatabase.dropTables(dalMetaData);
     _offlineDatabase.createTables(dalMetaData);
 
-    log("Sum of all databook entries: " +
+    log("Sum of all dataBook entries: " +
         dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element).toString());
 
     await _offlineDatabase.db.transaction((txn) async {
       for (var dataBook in dataBooks) {
-        pd.update(
-          value: 0,
-          msg: "Loading data (${dataBooks.indexOf(dataBook) + 1} / ${dataBooks.length})...",
-        );
+        progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length);
 
         for (var entry in dataBook.records.entries) {
           Map<String, dynamic> rowData = {};
@@ -58,25 +47,28 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
           if (rowData.isNotEmpty) {
             await _offlineDatabase.rawInsert(pTableName: dataBook.dataProvider, pInsert: rowData, txn: txn);
           }
-          pd.update(
-            value: (entry.key / dataBook.records.length * 100).toInt(),
-          );
+
+          progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length,
+              progress: (entry.key / dataBook.records.length * 100).toInt());
         }
       }
     });
-    pd.close();
 
-    print("done inserting offline data");
+    log("done inserting offline data");
   }
 
   Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {
     return _offlineDatabase.getChangedRows(pDataProvider);
   }
 
-  stopDatabase(BuildContext context) async {
+  stopDatabase() async {
     await _offlineDatabase.getMetaData().then((value) => _offlineDatabase.dropTables(value));
     await _offlineDatabase.close();
   }
+
+  bool isStopped() {
+    return _offlineDatabase.isClosed();
+}
 
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) {

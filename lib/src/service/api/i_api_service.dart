@@ -48,61 +48,86 @@ abstract class IApiService {
     IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
-    ProgressDialog pd = ProgressDialog(context: context);
-    pd.show(
-      msg: "Re-syncing offline data...",
-      max: 100,
-      progressType: ProgressType.valuable,
-      barrierDismissible: false,
-    );
+    OfflineApiRepository? offlineRepository;
+    ProgressDialog? pd;
+    try {
+      String offlineWorkscreen = configService.getOfflineScreen()!;
+      String offlineAppName = configService.getAppName();
+      String offlineUsername = configService.getUsername()!;
+      String offlinePassword = configService.getPassword()!;
 
-    /// TODO insert the saved username and password out of the config service
-    String offlineWorkscreen = configService.getOfflineScreen()!;
-    String offlineAppname = configService.getAppName();
-    String offlineUsername = configService.getUsername()!;
-    String offlinePassword = configService.getPassword()!;
+      pd = ProgressDialog(context: context);
+      pd.show(
+        msg: "Re-syncing offline data...",
+        max: 100,
+        progressType: ProgressType.normal,
+        barrierDismissible: false,
+      );
 
-    var offlineRepository = (await apiService.getRepository()) as OfflineApiRepository;
-    await apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
+      offlineRepository = (await apiService.getRepository()) as OfflineApiRepository;
+      await apiService.setRepository(OnlineApiRepository(apiConfig: configService.getApiConfig()!));
 
-    await commandService.sendCommand(
-      StartupCommand(
-        reason: "Going online",
-        appName: offlineAppname,
-        username: offlineUsername,
-        password: offlinePassword,
-      ),
-    );
+      await commandService.sendCommand(
+        StartupCommand(
+          reason: "Going online",
+          appName: offlineAppName,
+          username: offlineUsername,
+          password: offlinePassword,
+        ),
+      );
 
-    await commandService.sendCommand(
-      OpenScreenCommand(componentId: offlineWorkscreen, reason: "We are back online"),
-    );
+      await commandService.sendCommand(
+        OpenScreenCommand(componentId: offlineWorkscreen, reason: "We are back online"),
+      );
 
-    await fetchDataProvider(dataService, offlineWorkscreen, commandService);
+      await fetchDataProvider(
+        dataService,
+        offlineWorkscreen,
+        commandService,
+        progressUpdate: (value, max) {
+          pd?.update(msg: "Fetching online data... ($value / $max)", value: 0);
+        },
+      );
 
-    for (DataBook dataBook in dataService.getDataBooks().values) {
-      log("Databook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
+      for (DataBook dataBook in dataService.getDataBooks().values) {
+        log("DataBook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
 
-      Map<String, List<Map<String, Object?>>> groupedRows =
-          await offlineRepository.getChangedRows(dataBook.dataProvider);
+        Map<String, List<Map<String, Object?>>> groupedRows =
+            await offlineRepository.getChangedRows(dataBook.dataProvider);
 
-      log("Inserted rows: " + groupedRows[OfflineDatabase.ROW_STATE_INSERTED].toString());
-      log("Changed rows: " + groupedRows[OfflineDatabase.ROW_STATE_UPDATED].toString());
-      log("Deleted rows: " + groupedRows[OfflineDatabase.ROW_STATE_DELETED].toString());
-      // ApiInsertRecordRequest();
-      // ApiSetValuesRequest();
-      // ApiDeleteRecordRequest();
+        log("Inserted rows: " + groupedRows[OfflineDatabase.ROW_STATE_INSERTED].toString());
+        log("Changed rows: " + groupedRows[OfflineDatabase.ROW_STATE_UPDATED].toString());
+        log("Deleted rows: " + groupedRows[OfflineDatabase.ROW_STATE_DELETED].toString());
+        // ApiInsertRecordRequest();
+        // ApiSetValuesRequest();
+        // ApiDeleteRecordRequest();
+      }
+
+      await offlineRepository.stopDatabase();
+
+      await configService.setOffline(false);
+      DefaultLoadingProgressHandler.setEnabled(true);
+
+      pd.close();
+      //TODO route
+    } catch (e) {
+      //Revert all changes in case we have an in-tact offline state
+      if (offlineRepository != null && !offlineRepository.isStopped()) {
+        await apiService.setRepository(offlineRepository);
+        await configService.setOffline(true);
+        DefaultLoadingProgressHandler.setEnabled(false);
+      }
+      rethrow;
+    } finally {
+      //In case it hasn't been closed
+      pd?.close();
     }
-
-    await offlineRepository.stopDatabase(context);
-    pd.close();
-
-    await configService.setOffline(false);
-    DefaultLoadingProgressHandler.setEnabled(true);
   }
 
   static Future<void> fetchDataProvider(
-      IDataService dataService, String offlineWorkscreen, ICommandService commandService) async {
+      IDataService dataService, String offlineWorkscreen, ICommandService commandService,
+      {void Function(int value, int max)? progressUpdate}) async {
+    //String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
     Set<String> activeDataProviders = dataService.getDataBooks().keys.toList().where((element) {
       var prefixes = element.split("/");
       if (prefixes.length >= 2) {
@@ -111,10 +136,15 @@ abstract class IApiService {
       return false;
     }).toSet();
 
+    int fetchCounter = 1;
     for (String dataProvider in activeDataProviders) {
+      log("Start fetching $dataProvider");
+
+      progressUpdate?.call(fetchCounter, activeDataProviders.length);
+
       await commandService.sendCommand(
         FetchCommand(
-          reason: "Going offline",
+          reason: "Fetching data for offline/online switch",
           dataProvider: dataProvider,
           fromRow: 0,
           rowCount: -1,
@@ -122,11 +152,11 @@ abstract class IApiService {
         ),
       );
     }
+
+    log("finished fetching data");
   }
 
   static initOffline(BuildContext context, String pWorkscreen) async {
-    DefaultLoadingProgressHandler.setEnabled(false);
-
     IConfigService configService = services<IConfigService>();
     IUiService uiService = services<IUiService>();
     IApiService apiService = services<IApiService>();
@@ -134,51 +164,62 @@ abstract class IApiService {
     IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
-    //String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
-    Set<String> activeDataProviders = dataService.getDataBooks().keys.toList().where((element) {
-      var prefixes = element.split("/");
-      if (prefixes.length >= 2) {
-        return prefixes[1] == pWorkscreen;
-      }
-      return false;
-    }).toSet();
+    ProgressDialog? pd;
+    OnlineApiRepository? onlineApiRepository;
+    try {
+      DefaultLoadingProgressHandler.setEnabled(false);
 
-    ProgressDialog pd = ProgressDialog(context: context);
-    pd.show(
-      msg: "Fetching offline data...",
-      max: activeDataProviders.length,
-      progressType: ProgressType.valuable,
-      barrierDismissible: false,
-    );
-
-    int fetchCounter = 1;
-    for (String dataProvider in activeDataProviders) {
-      pd.update(msg: "Fetching offline data...", value: fetchCounter);
-      log("Start fetching $dataProvider");
-      await commandService.sendCommand(
-        FetchCommand(
-          reason: "Going offline",
-          dataProvider: dataProvider,
-          fromRow: 0,
-          rowCount: -1,
-          includeMetaData: true,
-        ),
+      pd = ProgressDialog(context: context);
+      pd.show(
+        msg: "Fetching offline data...",
+        max: 100,
+        progressType: ProgressType.normal,
+        barrierDismissible: false,
       );
-      fetchCounter++;
+
+      await fetchDataProvider(
+        dataService,
+        pWorkscreen,
+        commandService,
+        progressUpdate: (value, max) {
+          pd?.update(msg: "Fetching offline data... ($value / $max)", value: 0);
+        },
+      );
+
+      pd.close();
+      pd = ProgressDialog(context: context);
+      pd.show(
+        msg: "Loading data...",
+        max: 100,
+        progressType: ProgressType.valuable,
+        barrierDismissible: false,
+      );
+
+      var apiRep = await OfflineApiRepository.create();
+      await apiRep.startDatabase((value, max, {progress}) {
+        pd?.update(
+          value: progress ?? 0,
+          msg: "Loading data ($value / $max)...",
+        );
+      });
+
+      onlineApiRepository = (await apiService.getRepository()) as OnlineApiRepository;
+      await apiService.setRepository(apiRep);
+      await configService.setOffline(true);
+      await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenName!);
+
+      pd.close();
+      await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
+    } catch (e) {
+      //Revert all changes in case we have an in-tact online state
+      if (onlineApiRepository != null) {
+        await apiService.setRepository(onlineApiRepository);
+        await configService.setOffline(false);
+        DefaultLoadingProgressHandler.setEnabled(true);
+      }
+      rethrow;
+    } finally {
+      pd?.close();
     }
-
-    pd.close();
-
-    log("finished fetching data");
-
-    var apiRep = await OfflineApiRepository.create();
-    await apiRep.startDatabase(context);
-
-    await apiService.setRepository(apiRep);
-    await configService.setOffline(true);
-
-    await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenName!);
-
-    await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
   }
 }

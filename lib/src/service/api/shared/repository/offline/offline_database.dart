@@ -153,6 +153,10 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return db.close();
   }
 
+  bool isClosed() {
+    return !db.isOpen;
+  }
+
   ///Constructs the identifier for the offline table.
   String formatOfflineTableName(String tableName) {
     return tableName.replaceAll(RegExp(r"[^\w_]"), "_");
