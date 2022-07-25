@@ -253,10 +253,15 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Executes a SQL SELECT query and returns a list of the rows that were found.
-  select({required String pTableName, Map<String, dynamic>? pFilter, String? pOrderBy, int? pLimit}) {
+  select(
+      {required String pTableName,
+      List<String>? pColumns,
+      Map<String, dynamic>? pFilter,
+      String? pOrderBy,
+      int? pLimit}) {
     var where = _getWhere(pFilter);
     return db.query(formatOfflineTableName(pTableName),
-        where: where?[0], whereArgs: where?[1], orderBy: pOrderBy, limit: pLimit);
+        columns: pColumns, where: where?[0], whereArgs: where?[1], orderBy: pOrderBy, limit: pLimit);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
