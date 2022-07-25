@@ -335,9 +335,9 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return db.transaction((txn) async {
       String? state = await _getState(offlineTableName, where: where, txn: txn);
       if (state != null && state == ROW_STATE_INSERTED) {
-        return db.delete(offlineTableName, where: where?[0], whereArgs: where?[1]);
+        return txn.delete(offlineTableName, where: where?[0], whereArgs: where?[1]);
       }
-      return db.update(offlineTableName, {'"$STATE_COLUMN"': ROW_STATE_DELETED},
+      return txn.update(offlineTableName, {'"$STATE_COLUMN"': ROW_STATE_DELETED},
           where: where?[0], whereArgs: where?[1]);
     });
   }
