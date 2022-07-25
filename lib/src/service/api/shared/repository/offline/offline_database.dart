@@ -252,6 +252,15 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         .then((results) => results[0]['COUNT'] as int > 0);
   }
 
+  /// Executes a SQL SELECT COUNT query and returns the number of rows found.
+  Future<int> getCount({required String pTableName, Map<String, dynamic>? pFilter}) {
+    var where = _getWhere(pFilter);
+    return db
+        .query(formatOfflineTableName(pTableName),
+            columns: ["COUNT(*) AS COUNT"], where: where?[0], whereArgs: where?[1])
+        .then((results) => results[0]['COUNT'] as int);
+  }
+
   /// Executes a SQL SELECT query and returns a list of the rows that were found.
   Future<List<Map<String, dynamic>>> select(
       {required String pTableName,
