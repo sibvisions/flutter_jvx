@@ -25,8 +25,11 @@ dependencies:
   # iOS Dep
   cupertino_icons: ^1.0.2
 
-  # Custom  Dep
+  # Custom Dep
 
+  # SVG Support
+  flutter_svg: ^1.0.3
+  flutter_svg_provider: ^1.0.3
   # Icons
   font_awesome_flutter: ^9.2.0
   # Translations capability

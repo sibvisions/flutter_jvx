@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({Key? key}) : super(key: key);
@@ -6,29 +7,44 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: //Center(child: CircularProgressIndicator.adaptive()),
-            Stack(
+        body: Stack(
       children: [
         Container(
           decoration:
-              const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg.png'), fit: BoxFit.cover)),
+              const BoxDecoration(image: DecorationImage(image: Svg('assets/images/JVx_Bg.svg'), fit: BoxFit.cover)),
         ),
-        Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-          Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: Center(
-                child: Image.asset(
-                  'assets/images/ss.png',
-                  width: 135,
+        Column(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: <Widget>[
+          const Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(top: 100),
+              child: Image(
+                image: Svg(
+                  'assets/images/JVx_SS.svg',
+                  size: Size(138, 145),
                 ),
-              )),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const <Widget>[
-              Padding(padding: EdgeInsets.only(top: 100), child: CircularProgressIndicator.adaptive()),
-              Padding(padding: EdgeInsets.only(top: 100), child: Text('Loading...'))
-            ],
-          )
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const <Widget>[
+                CircularProgressIndicator.adaptive(),
+                Padding(padding: EdgeInsets.only(top: 50), child: Text('Loading...'))
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 50),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 200,
+              ),
+            ),
+          ),
         ])
       ],
     ));
