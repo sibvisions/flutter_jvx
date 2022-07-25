@@ -189,9 +189,9 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     columnDef.write(Types.convertToSQLite(pColumn.dataTypeIdentifier));
 
     //Check overridden value first, then column spec
-    if (!(nullable ?? pColumn.nullable)) {
-      columnDef.write(" NOT NULL");
-    }
+    // if (!(nullable ?? pColumn.nullable)) {
+    //   columnDef.write(" NOT NULL");
+    // }
 
     //TODO Check default value
 
