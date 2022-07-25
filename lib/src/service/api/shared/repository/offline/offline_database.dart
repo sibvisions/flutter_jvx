@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Executes a SQL SELECT query and returns a list of the rows that were found.
-  select(
+  Future<List<Map<String, dynamic>>> select(
       {required String pTableName,
       List<String>? pColumns,
       Map<String, dynamic>? pFilter,
