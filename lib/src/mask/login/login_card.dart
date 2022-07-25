@@ -1,17 +1,24 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../mixin/config_service_mixin.dart';
-import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/login_command.dart';
 import 'remember_me_checkbox.dart';
 
-class LoginCard extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class LoginCard extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  const LoginCard({Key? key}) : super(key: key);
+
+  @override
+  State<LoginCard> createState() => _LoginCardState();
+}
+
+class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, UiServiceGetterMixin {
   /// Controller for username text field
   final TextEditingController usernameController = TextEditingController();
 
@@ -22,15 +29,6 @@ class LoginCard extends StatelessWidget with ConfigServiceGetterMixin, UiService
   final CheckHolder checkHolder = CheckHolder(isChecked: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  LoginCard({Key? key}) : super(key: key);
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   @override
   Widget build(BuildContext context) {
     String? loginTitle = getConfigService().getAppStyle()?['login.title'];
@@ -86,10 +84,9 @@ class LoginCard extends StatelessWidget with ConfigServiceGetterMixin, UiService
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   void _onLoginPressed() {
+    getUiService().setRouteContext(pContext: context);
+
     LoginCommand loginCommand = LoginCommand(
       loginMode: LoginMode.MANUAL,
       userName: usernameController.text,
