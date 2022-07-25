@@ -257,11 +257,21 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       {required String pTableName,
       List<String>? pColumns,
       Map<String, dynamic>? pFilter,
+      String? pGroupBy,
+      String? pHaving,
       String? pOrderBy,
-      int? pLimit}) {
+      int? pLimit,
+      int? pOffset}) {
     var where = _getWhere(pFilter);
     return db.query(formatOfflineTableName(pTableName),
-        columns: pColumns, where: where?[0], whereArgs: where?[1], orderBy: pOrderBy, limit: pLimit);
+        columns: pColumns,
+        where: where?[0],
+        whereArgs: where?[1],
+        groupBy: pGroupBy,
+        having: pHaving,
+        orderBy: pOrderBy,
+        limit: pLimit,
+        offset: pOffset);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
