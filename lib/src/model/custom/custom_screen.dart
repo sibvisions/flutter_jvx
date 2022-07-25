@@ -34,6 +34,8 @@ class CustomScreen {
   /// True if this screen is independent from JVx
   final bool isOfflineScreen;
 
+  //TODO: with server property => screen holds data automatically.
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
