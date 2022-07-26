@@ -17,7 +17,7 @@ void apiCallback(SendPort callerSendPort) {
   callerSendPort.send(isolateReceivePort.sendPort);
 
   // Api service to handle all incoming requests
-  final ApiService apiService = ApiService.empty();
+  final ApiService apiService = ApiService();
 
   // Handle incoming requests
   isolateReceivePort.listen((message) async {

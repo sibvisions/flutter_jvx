@@ -22,10 +22,10 @@ class IsolateApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// [IRepository] instance
-  IRepository repository;
+  IRepository? repository;
 
   /// [IController] instance
-  IController controller;
+  IController? controller;
 
   /// [Isolate] instance of the separate Isolate
   Isolate? _isolate;
@@ -37,13 +37,8 @@ class IsolateApiService implements IApiService {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  IsolateApiService({
-    required this.controller,
-    required this.repository,
-  });
-
-  static Future<IsolateApiService> create({required IController controller, required IRepository repository}) async {
-    IsolateApiService isolateApi = IsolateApiService(controller: controller, repository: repository);
+  static Future<IsolateApiService> create() async {
+    IsolateApiService isolateApi = IsolateApiService();
     await isolateApi.initApiIsolate();
     return isolateApi;
   }
@@ -67,6 +62,12 @@ class IsolateApiService implements IApiService {
   @override
   Future<void> setRepository(IRepository pRepository) async {
     var message = ApiIsolateSetRepositoryMessage(repository: pRepository);
+    await _sendRequest(pMessage: message);
+  }
+
+  @override
+  Future<void> setController(IController pController) async {
+    var message = ApiIsolateControllerMessage(controller: pController);
     await _sendRequest(pMessage: message);
   }
 
@@ -106,11 +107,6 @@ class IsolateApiService implements IApiService {
     // Retrieve the port to be used for further communication
     _apiSendPort = await receivePort.first;
 
-    // init. controller & repository
-    if (_apiSendPort != null) {
-      await _sendRequest(pMessage: ApiIsolateSetRepositoryMessage(repository: repository));
-      await _sendRequest(pMessage: ApiIsolateControllerMessage(controller: controller));
-    }
     return true;
   }
 }

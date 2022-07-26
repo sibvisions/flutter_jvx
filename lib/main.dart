@@ -13,6 +13,8 @@ import 'src/routing/locations/menu_location.dart';
 import 'src/routing/locations/settings_location.dart';
 import 'src/routing/locations/splash_location.dart';
 import 'src/routing/locations/work_screen_location.dart';
+import 'src/service/api/i_api_service.dart';
+import 'src/service/api/impl/default/api_service.dart';
 import 'src/service/command/i_command_service.dart';
 import 'src/service/command/impl/command_service.dart';
 import 'src/service/config/i_config_service.dart';
@@ -69,6 +71,9 @@ abstract class FlutterClient {
     // UI
     IUiService uiService = UiService();
     services.registerSingleton(uiService);
+
+    IApiService apiService = ApiService();
+    services.registerSingleton(apiService);
 
     runApp(pAppToRun);
   }

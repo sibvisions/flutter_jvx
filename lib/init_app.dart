@@ -38,10 +38,9 @@ Future<void> initApp({
   HttpOverrides.global = MyHttpOverrides();
 
   IConfigService configService = services<IConfigService>();
-  IUiService uiService = services<IUiService>();
-  IDataService dataService = services<IDataService>();
-  IStorageService storageService = services<IStorageService>();
   ICommandService commandService = services<ICommandService>();
+  IUiService uiService = services<IUiService>();
+  IApiService apiService = services<IApiService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Load config files
@@ -80,8 +79,8 @@ Future<void> initApp({
   var controller = ApiController();
   var repository = configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository(apiConfig: apiConfig);
   await repository.start();
-  IApiService apiService = ApiService(controller: controller, repository: repository);
-  services.registerSingleton(apiService);
+  await apiService.setController(controller);
+  await apiService.setRepository(repository);
 
   configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null);
 
