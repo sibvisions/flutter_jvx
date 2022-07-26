@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {
     return db
-        .query(formatOfflineTableName(pDataProvider), where: "$STATE_COLUMN IS NOT NULL")
+        .query(formatOfflineTableName(pDataProvider), where: '"$STATE_COLUMN" IS NOT NULL')
         .then((value) => groupBy(value, (p0) => p0[STATE_COLUMN] as String));
   }
 

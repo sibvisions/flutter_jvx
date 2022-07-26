@@ -18,25 +18,25 @@ import '../../../../model/config/api/api_config.dart';
 import '../i_repository.dart';
 
 class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
-  OfflineDatabase? _offlineDatabase;
+  OfflineDatabase? offlineDatabase;
 
   @override
   Future<void> start() async {
     if (isStopped()) {
-      _offlineDatabase = await OfflineDatabase.open();
+      offlineDatabase = await OfflineDatabase.open();
     }
   }
 
   @override
   Future<void> stop() async {
     if (!isStopped()) {
-      await _offlineDatabase!.close();
+      await offlineDatabase!.close();
     }
   }
 
   @override
   bool isStopped() {
-    return _offlineDatabase?.isClosed() ?? true;
+    return offlineDatabase?.isClosed() ?? true;
   }
 
   /// Init database with currently available dataBooks
@@ -45,13 +45,13 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
     var dalMetaData = dataBooks.map((e) => e.metaData!).toList(growable: false);
     //Drop old data + possible old scheme
-    await _offlineDatabase!.dropTables(dalMetaData);
-    _offlineDatabase!.createTables(dalMetaData);
+    await offlineDatabase!.dropTables(dalMetaData);
+    offlineDatabase!.createTables(dalMetaData);
 
     log("Sum of all dataBook entries: " +
         dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element).toString());
 
-    await _offlineDatabase!.db.transaction((txn) async {
+    await offlineDatabase!.db.transaction((txn) async {
       for (var dataBook in dataBooks) {
         progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length);
 
@@ -64,7 +64,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
             }
           });
           if (rowData.isNotEmpty) {
-            await _offlineDatabase!.rawInsert(pTableName: dataBook.dataProvider, pInsert: rowData, txn: txn);
+            await offlineDatabase!.rawInsert(pTableName: dataBook.dataProvider, pInsert: rowData, txn: txn);
           }
 
           progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length,
@@ -78,11 +78,11 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
   /// Deletes all currently used dataBooks
   Future<void> deleteDatabase() {
-    return _offlineDatabase!.getMetaData().then((value) => _offlineDatabase!.dropTables(value));
+    return offlineDatabase!.getMetaData().then((value) => offlineDatabase!.dropTables(value));
   }
 
   Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {
-    return _offlineDatabase!.getChangedRows(pDataProvider);
+    return offlineDatabase!.getChangedRows(pDataProvider);
   }
 
   @override
@@ -129,7 +129,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       filter["ROWID"] = pRequest.selectedRow;
     }
 
-    _offlineDatabase!.delete(pTableName: pRequest.dataProvider, pFilter: filter);
+    offlineDatabase!.delete(pTableName: pRequest.dataProvider, pFilter: filter);
 
     if (pRequest.fetch) {}
 
