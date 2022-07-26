@@ -16,14 +16,14 @@ class CustomScreen {
   /// Title displayed on the top of the screen
   final String? screenTitle;
 
+  /// Factory for custom header
+  final CustomHeader Function(BuildContext)? headerFactory;
+
   /// Factory which returns the custom screen
-  final Widget Function()? screenFactory;
+  final Widget Function(BuildContext)? screenFactory;
 
   /// Factory for custom footer
-  final Widget Function()? footerFactory;
-
-  /// Factory for custom header
-  final CustomHeader Function()? headerFactory;
+  final Widget Function(BuildContext)? footerFactory;
 
   /// The menu item to access this screen, if this is left null, will use the
   final CustomMenuItem menuItemModel;

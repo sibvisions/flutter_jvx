@@ -34,10 +34,10 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
     CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: workScreenName);
 
     if (customScreen != null) {
-      header = customScreen.headerFactory?.call();
-      footer = customScreen.footerFactory?.call();
+      header = customScreen.headerFactory?.call(context);
+      footer = customScreen.footerFactory?.call(context);
 
-      Widget? replaceScreen = customScreen.screenFactory?.call();
+      Widget? replaceScreen = customScreen.screenFactory?.call(context);
       if (replaceScreen != null) {
         isCustomScreen = true;
         screen = replaceScreen;

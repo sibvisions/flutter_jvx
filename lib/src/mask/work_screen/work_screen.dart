@@ -103,12 +103,22 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
                 WidgetsBinding.instance!.window.devicePixelRatio,
               );
 
+              Widget screenWidget = widget.screenWidget;
               if (!widget.isCustomScreen) {
                 // debounce to not re-layout multiple times when opening the keyboard
                 debounce.call(() {
                   _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
                   _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
                 });
+              } else {
+                // Wrap custom screen in Positioned
+                screenWidget = Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: screenWidget,
+                );
               }
               return Stack(
                 children: [
@@ -127,7 +137,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
                               : null,
                           color: backgroundColor,
                         ),
-                        widget.screenWidget
+                        screenWidget
                       ],
                     ),
                   ),

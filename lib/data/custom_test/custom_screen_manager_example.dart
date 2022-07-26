@@ -10,29 +10,52 @@ class CustomScreenManagerExample extends CustomScreenManager {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  CustomScreen customScreen1 = CustomScreen(
-    isOfflineScreen: true,
-    screenName: "Fir-N7_CUSTOM",
-    screenTitle: "Title THIS",
-    menuItemModel: CustomMenuItem(
-      screenId: "Fir-N7_CUSTOM",
-      label: "CUSTOM FEATURE",
-      group: "Features",
-      icon: const FaIcon(FontAwesomeIcons.airbnb),
-    ),
-    screenFactory: () => const Text("asd"),
-    footerFactory: () => SizedBox(
-        height: 50,
-        child: Container(
-          color: Colors.black,
-        )),
-  );
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CustomScreenManagerExample() {
-    registerScreen(pCustomScreen: customScreen1);
+    registerScreen(
+        pCustomScreen: CustomScreen(
+      isOfflineScreen: true,
+      screenName: "Fir-N7_CUSTOM",
+      screenTitle: "Title THIS",
+      menuItemModel: CustomMenuItem(
+        screenId: "Fir-N7_CUSTOM",
+        label: "CUSTOM FEATURE",
+        group: "Features",
+        icon: const FaIcon(FontAwesomeIcons.airbnb),
+      ),
+      screenFactory: (context) => Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const Expanded(
+            child: Align(
+              alignment: Alignment.center,
+              child: Text("Example Label"),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                onPressed: () {
+                  const snackBar = SnackBar(
+                    content: Text("Yay! A SnackBar!"),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                },
+                child: const Text("Example Button"),
+              ),
+            ),
+          ),
+        ],
+      ),
+      footerFactory: (context) => SizedBox(
+          height: 50,
+          child: Container(
+            color: Colors.blue,
+          )),
+    ));
   }
 }
