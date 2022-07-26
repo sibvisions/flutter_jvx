@@ -121,16 +121,22 @@ abstract class IConfigService {
   Future<bool> setString(String key, String? value);
 
   /// Callback will be called when style has been set
-  void registerStyleCallback({required Function(Map<String, String> style) pCallback});
+  void registerStyleCallback(Function(Map<String, String> style) pCallback);
 
   /// Removes the callback
-  void disposeStyleCallback({required Function(Map<String, String> style) pCallback});
+  void disposeStyleCallback(Function(Map<String, String> style) pCallback);
+
+  /// Removes all style callbacks
+  void disposeStyleCallbacks();
 
   /// Callback will be called when language has been set
-  void registerLanguageCallback({required Function(String language) pCallback});
+  void registerLanguageCallback(Function(String language) pCallback);
 
   /// Removes the callback
-  void disposeLanguageCallback({required Function(String language) pCallBack});
+  void disposeLanguageCallback(Function(String language) pCallBack);
+
+  /// Removes all language callbacks
+  void disposeLanguageCallbacks();
 }
 
 enum MenuMode {

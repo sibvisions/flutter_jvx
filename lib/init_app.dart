@@ -39,8 +39,8 @@ import 'util/logging/flutter_logger.dart';
 Future<void> initApp({
   CustomScreenManager? pCustomManager,
   required BuildContext initContext,
-  List<Function>? languageCallbacks,
-  List<Function>? styleCallbacks,
+  List<Function(Map<String, String> style)>? styleCallbacks,
+  List<Function(String language)>? languageCallbacks,
 }) async {
   LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
 
@@ -54,8 +54,6 @@ Future<void> initApp({
   IConfigService configService = ConfigService(
     sharedPrefs: await SharedPreferences.getInstance(),
     fileManager: await IFileManager.getFileManager(),
-    pStyleCallbacks: styleCallbacks,
-    pLanguageCallbacks: languageCallbacks,
   );
   services.registerSingleton(configService);
 
@@ -75,15 +73,19 @@ Future<void> initApp({
   ICommandService commandService = CommandService();
   services.registerSingleton(commandService);
 
-  (commandService as CommandService).progressHandler.add(DefaultLoadingProgressHandler()..isEnabled = false);
-
   // UI
-  IUiService uiService = UiService(customManager: pCustomManager, pContext: initContext);
+  IUiService uiService = UiService();
   services.registerSingleton(uiService);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Load config files
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  (commandService as CommandService).progressHandler.clear();
+  (commandService as CommandService).progressHandler.add(DefaultLoadingProgressHandler()..isEnabled = false);
+
+  uiService.setCustomManager(pCustomManager);
+  uiService.setRouteContext(pContext: initContext);
 
   // Load Dev config
   AppConfig? appConfig = await ConfigUtil.readAppConfig();
@@ -92,6 +94,11 @@ Future<void> initApp({
     pAppConfig: appConfig,
     pUrlConfig: UrlConfig.empty(),
   );
+
+  configService.disposeStyleCallbacks();
+  styleCallbacks?.forEach((element) => configService.registerStyleCallback(element));
+  configService.disposeLanguageCallbacks();
+  languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // API init
@@ -105,8 +112,7 @@ Future<void> initApp({
   (configService as ConfigService).setApiConfig(apiConfig);
 
   var controller = ApiController();
-  var repository =
-      configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository(apiConfig: apiConfig);
+  var repository = configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository(apiConfig: apiConfig);
   await repository.start();
   IApiService apiService = ApiService(controller: controller, repository: repository);
   services.registerSingleton(apiService);

@@ -56,18 +56,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   final Map<String, LayoutData> _layoutDataList = {};
 
   /// Holds all custom screen modifications
-  final CustomScreenManager? customManager;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  UiService({
-    required BuildContext pContext,
-    this.customManager,
-  }) {
-    _currentBuildContext = pContext;
-  }
+  CustomScreenManager? customManager;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -142,6 +131,11 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   @override
   void setRouteContext({required BuildContext pContext}) {
     _currentBuildContext = pContext;
+  }
+
+  @override
+  void setCustomManager(CustomScreenManager? pCustomManager) {
+    customManager = pCustomManager;
   }
 
   @override

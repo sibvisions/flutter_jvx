@@ -63,16 +63,7 @@ class ConfigService implements IConfigService {
     String? appName,
     required this.fileManager,
     required this.sharedPrefs,
-    List<Function>? pStyleCallbacks,
-    List<Function>? pLanguageCallbacks,
   }) {
-    if (pStyleCallbacks != null) {
-      styleCallbacks.addAll(pStyleCallbacks);
-    }
-    if (pLanguageCallbacks != null) {
-      languageCallbacks.addAll(pLanguageCallbacks);
-    }
-
     setAppName(appName ?? getAppName());
 
     String? version = getVersion();
@@ -300,23 +291,33 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void disposeLanguageCallback({required Function(String language) pCallBack}) {
-    languageCallbacks.remove(pCallBack);
-  }
-
-  @override
-  void disposeStyleCallback({required Function(Map<String, String> style) pCallback}) {
-    styleCallbacks.remove(pCallback);
-  }
-
-  @override
-  void registerLanguageCallback({required Function(String language) pCallback}) {
+  void registerLanguageCallback(Function(String language) pCallback) {
     languageCallbacks.add(pCallback);
   }
 
   @override
-  void registerStyleCallback({required Function(Map<String, String> style) pCallback}) {
+  void disposeLanguageCallback(Function(String language) pCallBack) {
+    languageCallbacks.remove(pCallBack);
+  }
+
+  @override
+  void disposeLanguageCallbacks() {
+    languageCallbacks.clear();
+  }
+
+  @override
+  void registerStyleCallback(Function(Map<String, String> style) pCallback) {
     styleCallbacks.add(pCallback);
+  }
+
+  @override
+  void disposeStyleCallback(Function(Map<String, String> style) pCallback) {
+    styleCallbacks.remove(pCallback);
+  }
+
+  @override
+  void disposeStyleCallbacks() {
+    styleCallbacks.clear();
   }
 
   @override

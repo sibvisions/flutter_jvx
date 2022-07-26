@@ -8,9 +8,9 @@ class SplashLocation extends BeamLocation<BeamState> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final List<Function>? styleCallbacks;
+  final List<Function(Map<String, String> style)>? styleCallbacks;
 
-  final List<Function>? languageCallbacks;
+  final List<Function(String language)>? languageCallbacks;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

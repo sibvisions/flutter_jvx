@@ -9,6 +9,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import '../../model/custom/custom_component.dart';
 import '../../model/custom/custom_screen.dart';
+import '../../model/custom/custom_screen_manager.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
@@ -64,6 +65,9 @@ abstract class IUiService {
   /// Sets the buildContext from the current [BeamLocation],
   /// used when server dictates location
   void setRouteContext({required BuildContext pContext});
+
+  /// Sets the current custom manager
+  void setCustomManager(CustomScreenManager? pCustomManager);
 
   /// Opens a [Dialog], the future will complete if the dialog is closed by an
   /// action
