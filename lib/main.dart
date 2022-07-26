@@ -32,42 +32,46 @@ import 'util/file/file_manager.dart';
 import 'util/parse_util.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await setUp();
-  runApp(const MyApp());
+  await FlutterClient.setUp(const MyApp());
 }
 
-setUp() async {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Service init
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+abstract class FlutterClient {
+  static setUp(Widget pAppToRun) async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Config
-  IConfigService configService = ConfigService(
-    sharedPrefs: await SharedPreferences.getInstance(),
-    fileManager: await IFileManager.getFileManager(),
-  );
-  services.registerSingleton(configService);
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Service init
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Layout
-  ILayoutService layoutService = kIsWeb ? LayoutService() : await IsolateLayoutService.create();
-  services.registerSingleton(layoutService);
+    // Config
+    IConfigService configService = ConfigService(
+      sharedPrefs: await SharedPreferences.getInstance(),
+      fileManager: await IFileManager.getFileManager(),
+    );
+    services.registerSingleton(configService);
 
-  // Storage
-  IStorageService storageService = kIsWeb ? StorageService() : await IsolateStorageService.create();
-  services.registerSingleton(storageService);
+    // Layout
+    ILayoutService layoutService = kIsWeb ? LayoutService() : await IsolateLayoutService.create();
+    services.registerSingleton(layoutService);
 
-  // Data
-  IDataService dataService = DataService();
-  services.registerSingleton(dataService);
+    // Storage
+    IStorageService storageService = kIsWeb ? StorageService() : await IsolateStorageService.create();
+    services.registerSingleton(storageService);
 
-  // Command
-  ICommandService commandService = CommandService();
-  services.registerSingleton(commandService);
+    // Data
+    IDataService dataService = DataService();
+    services.registerSingleton(dataService);
 
-  // UI
-  IUiService uiService = UiService();
-  services.registerSingleton(uiService);
+    // Command
+    ICommandService commandService = CommandService();
+    services.registerSingleton(commandService);
+
+    // UI
+    IUiService uiService = UiService();
+    services.registerSingleton(uiService);
+
+    runApp(pAppToRun);
+  }
 }
 
 //Mobile Style Properties
