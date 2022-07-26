@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/config_generator.dart';
 import 'main.dart';
@@ -21,18 +20,10 @@ import 'src/service/command/impl/command_service.dart';
 import 'src/service/config/i_config_service.dart';
 import 'src/service/config/impl/config_service.dart';
 import 'src/service/data/i_data_service.dart';
-import 'src/service/data/impl/data_service.dart';
-import 'src/service/layout/i_layout_service.dart';
-import 'src/service/layout/impl/isolate/isolate_layout_service.dart';
-import 'src/service/layout/impl/layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
-import 'src/service/storage/impl/default/storage_service.dart';
-import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
-import 'src/service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
-import 'util/file/file_manager.dart';
 import 'util/loading_handler/default_loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
 
@@ -46,36 +37,11 @@ Future<void> initApp({
 
   HttpOverrides.global = MyHttpOverrides();
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Service init
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // Config
-  IConfigService configService = ConfigService(
-    sharedPrefs: await SharedPreferences.getInstance(),
-    fileManager: await IFileManager.getFileManager(),
-  );
-  services.registerSingleton(configService);
-
-  // Layout
-  ILayoutService layoutService = kIsWeb ? LayoutService() : await IsolateLayoutService.create();
-  services.registerSingleton(layoutService);
-
-  // Storage
-  IStorageService storageService = kIsWeb ? StorageService() : await IsolateStorageService.create();
-  services.registerSingleton(storageService);
-
-  // Data
-  IDataService dataService = DataService();
-  services.registerSingleton(dataService);
-
-  // Command
-  ICommandService commandService = CommandService();
-  services.registerSingleton(commandService);
-
-  // UI
-  IUiService uiService = UiService();
-  services.registerSingleton(uiService);
+  IConfigService configService = services<IConfigService>();
+  IUiService uiService = services<IUiService>();
+  IDataService dataService = services<IDataService>();
+  IStorageService storageService = services<IStorageService>();
+  ICommandService commandService = services<ICommandService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Load config files

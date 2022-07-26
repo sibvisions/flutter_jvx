@@ -5,6 +5,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
@@ -12,10 +13,61 @@ import 'src/routing/locations/menu_location.dart';
 import 'src/routing/locations/settings_location.dart';
 import 'src/routing/locations/splash_location.dart';
 import 'src/routing/locations/work_screen_location.dart';
+import 'src/service/command/i_command_service.dart';
+import 'src/service/command/impl/command_service.dart';
+import 'src/service/config/i_config_service.dart';
+import 'src/service/config/impl/config_service.dart';
+import 'src/service/data/i_data_service.dart';
+import 'src/service/data/impl/data_service.dart';
+import 'src/service/layout/i_layout_service.dart';
+import 'src/service/layout/impl/isolate/isolate_layout_service.dart';
+import 'src/service/layout/impl/layout_service.dart';
+import 'src/service/service.dart';
+import 'src/service/storage/i_storage_service.dart';
+import 'src/service/storage/impl/default/storage_service.dart';
+import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
+import 'src/service/ui/i_ui_service.dart';
+import 'src/service/ui/impl/ui_service.dart';
+import 'util/file/file_manager.dart';
 import 'util/parse_util.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setUp();
   runApp(const MyApp());
+}
+
+setUp() async {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Service init
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Config
+  IConfigService configService = ConfigService(
+    sharedPrefs: await SharedPreferences.getInstance(),
+    fileManager: await IFileManager.getFileManager(),
+  );
+  services.registerSingleton(configService);
+
+  // Layout
+  ILayoutService layoutService = kIsWeb ? LayoutService() : await IsolateLayoutService.create();
+  services.registerSingleton(layoutService);
+
+  // Storage
+  IStorageService storageService = kIsWeb ? StorageService() : await IsolateStorageService.create();
+  services.registerSingleton(storageService);
+
+  // Data
+  IDataService dataService = DataService();
+  services.registerSingleton(dataService);
+
+  // Command
+  ICommandService commandService = CommandService();
+  services.registerSingleton(commandService);
+
+  // UI
+  IUiService uiService = UiService();
+  services.registerSingleton(uiService);
 }
 
 //Mobile Style Properties
