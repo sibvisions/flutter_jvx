@@ -27,7 +27,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
 
     if (model != null) {
       screen = ComponentsFactory.buildWidget(model);
-      screenTitle = model.name;
+      screenTitle = model.screenTitle!;
     }
 
     // Custom Config for this screen

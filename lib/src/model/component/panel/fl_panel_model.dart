@@ -14,6 +14,9 @@ class FlPanelModel extends FlComponentModel {
   /// The layout data.
   String? layoutData;
 
+  /// The screen title.
+  String? screenTitle;
+
   /// The screen class name.
   String? screenClassName;
 
@@ -47,6 +50,13 @@ class FlPanelModel extends FlComponentModel {
       pKey: ApiObjectProperty.layoutData,
       pDefault: defaultModel.layoutData,
       pCurrent: layoutData,
+    );
+
+    screenTitle = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.screenTitle,
+      pDefault: defaultModel.screenTitle,
+      pCurrent: screenTitle,
     );
 
     screenClassName = getPropertyValue(
