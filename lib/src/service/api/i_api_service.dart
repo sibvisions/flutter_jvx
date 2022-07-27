@@ -13,9 +13,10 @@ import 'package:flutter_client/src/model/data/data_book.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
 import 'package:flutter_client/src/service/api/shared/repository/online_api_repository.dart';
-import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
+import '../../../main.dart';
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
+import '../../../util/loading_handler/progress_dialog.dart';
 import '../../model/api/requests/i_api_request.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/fetch_command.dart';
@@ -70,6 +71,8 @@ abstract class IApiService {
         max: 100,
         progressType: ProgressType.normal,
         barrierDismissible: false,
+        progressValueColor: themeData.primaryColor,
+        progressBgColor: themeData.backgroundColor,
       );
 
       offlineApiRepository = (await apiService.getRepository()) as OfflineApiRepository;
@@ -302,6 +305,8 @@ abstract class IApiService {
         max: 100,
         progressType: ProgressType.normal,
         barrierDismissible: false,
+        progressValueColor: themeData.primaryColor,
+        progressBgColor: themeData.backgroundColor,
       );
 
       await fetchDataProvider(
@@ -320,6 +325,8 @@ abstract class IApiService {
         max: 100,
         progressType: ProgressType.valuable,
         barrierDismissible: false,
+        progressValueColor: themeData.primaryColor,
+        progressBgColor: themeData.backgroundColor,
       );
 
       offlineApiRepository = OfflineApiRepository();
