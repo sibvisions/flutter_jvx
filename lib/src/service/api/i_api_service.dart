@@ -2,7 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/api/requests/filter.dart';
+import 'package:flutter_client/src/model/command/api/delete_record_command.dart';
+import 'package:flutter_client/src/model/command/api/insert_record_command.dart';
 import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
+import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 import 'package:flutter_client/src/model/data/data_book.dart';
@@ -13,6 +17,7 @@ import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../model/api/requests/i_api_request.dart';
+import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/fetch_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/config/api/api_config.dart';
@@ -95,31 +100,136 @@ abstract class IApiService {
         },
       );
 
+      bool successfulSync = true;
       for (DataBook dataBook in dataService.getDataBooks().values) {
         log("DataBook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
 
         Map<String, List<Map<String, Object?>>> groupedRows =
             await offlineApiRepository.getChangedRows(dataBook.dataProvider);
 
-        log("Inserted rows: " + groupedRows[OfflineDatabase.ROW_STATE_INSERTED].toString());
-        log("Changed rows: " + groupedRows[OfflineDatabase.ROW_STATE_UPDATED].toString());
-        log("Deleted rows: " + groupedRows[OfflineDatabase.ROW_STATE_DELETED].toString());
-        // ApiInsertRecordRequest();
-        // ApiSetValuesRequest();
-        // ApiDeleteRecordRequest();
+        List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
+        try {
+          List<Map<String, Object?>>? insertedRows = groupedRows[OfflineDatabase.ROW_STATE_INSERTED];
+          log("Syncing inserted rows: " + insertedRows.toString());
+          if (insertedRows != null) {
+            for (var row in insertedRows) {
+              Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
+              await commandService.sendCommand(InsertRecordCommand(
+                reason: "Re-sync: Insert",
+                dataProvider: dataBook.dataProvider,
+              ));
+
+              // Remove all $OLD$ columns
+              var newColumns = {
+                for (var entry in row.entries.where((rowColumn) =>
+                    !(rowColumn.key.startsWith(OfflineDatabase.COLUMN_PREFIX) ||
+                        rowColumn.key == OfflineDatabase.STATE_COLUMN)))
+                  entry.key: entry.value
+              };
+              await commandService.sendCommand(SetValuesCommand(
+                reason: "Re-sync: Insert",
+                componentId: "",
+                dataProvider: dataBook.dataProvider,
+                columnNames: newColumns.keys.toList(growable: false),
+                values: newColumns.values.toList(growable: false),
+                //TODO evaluate filter
+              ));
+              successfulSyncedPrimaryKeys.add(primaryColumns);
+            }
+          }
+        } catch (e, stackTrace) {
+          log("Error while syncing inserted rows: ", error: e, stackTrace: stackTrace);
+          successfulSync = false;
+        }
+
+        try {
+          List<Map<String, Object?>>? updatedRows = groupedRows[OfflineDatabase.ROW_STATE_UPDATED];
+          log("Syncing changed rows: " + updatedRows.toString());
+          if (updatedRows != null) {
+            for (var row in updatedRows) {
+              var newColumns = {
+                for (var entry in row.entries.where((rowColumn) =>
+                    !(rowColumn.key.startsWith(OfflineDatabase.COLUMN_PREFIX) ||
+                        rowColumn.key == OfflineDatabase.STATE_COLUMN)))
+                  entry.key: entry.value
+              };
+              var oldColumns = {
+                for (var entry
+                    in row.entries.where((rowColumn) => rowColumn.key.startsWith(OfflineDatabase.COLUMN_PREFIX)))
+                  entry.key: entry.value
+              };
+              Map<String, Object?> primaryColumns = _getPrimaryColumns(oldColumns, dataBook);
+
+              await commandService.sendCommand(SetValuesCommand(
+                reason: "Re-sync: Update",
+                componentId: "",
+                dataProvider: dataBook.dataProvider,
+                columnNames: newColumns.keys.toList(growable: false),
+                values: newColumns.values.toList(growable: false),
+                filter: Filter(
+                  columnNames: primaryColumns.keys.toList(growable: false),
+                  values: primaryColumns.values.toList(growable: false),
+                ),
+              ));
+              successfulSyncedPrimaryKeys.add(primaryColumns);
+            }
+          }
+        } catch (e, stackTrace) {
+          log("Error while syncing changed rows: ", error: e, stackTrace: stackTrace);
+          successfulSync = false;
+        }
+
+        try {
+          List<Map<String, Object?>>? deletedRows = groupedRows[OfflineDatabase.ROW_STATE_DELETED];
+          log("Syncing deleted rows: " + deletedRows.toString());
+          if (deletedRows != null) {
+            for (var row in deletedRows) {
+              Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
+              await commandService.sendCommand(DeleteRecordCommand(
+                reason: "Re-sync: Delete",
+                dataProvider: dataBook.dataProvider,
+                selectedRow: -1,
+                filter: Filter(
+                  columnNames: primaryColumns.keys.toList(growable: false),
+                  values: primaryColumns.values.toList(growable: false),
+                ),
+              ));
+              successfulSyncedPrimaryKeys.add(primaryColumns);
+            }
+          }
+        } catch (e, stackTrace) {
+          log("Error while syncing deleted rows: ", error: e, stackTrace: stackTrace);
+          successfulSync = false;
+        }
+
+        await offlineApiRepository.resetStates(dataBook.dataProvider, pResetRows: successfulSyncedPrimaryKeys);
       }
 
-      await offlineApiRepository.deleteDatabase();
+      if (successfulSync) {
+        log("Sync successful");
+        await offlineApiRepository.deleteDatabase();
 
-      await configService.setOffline(false);
-      DefaultLoadingProgressHandler.setEnabled(true);
-      await offlineApiRepository.stop();
+        await configService.setOffline(false);
+        DefaultLoadingProgressHandler.setEnabled(true);
+        await offlineApiRepository.stop();
 
-      pd.close();
-      //TODO route
+        pd.close();
+
+        await commandService.sendCommand(
+          CloseScreenCommand(screenName: offlineWorkscreen, reason: "We have synced"),
+        );
+
+        uiService.routeToMenu();
+      } else {
+        log("Sync failed");
+        await onlineApiRepository.stop();
+        await apiService.setRepository(offlineApiRepository);
+        pd.close();
+      }
     } catch (e) {
       //Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
+        await onlineApiRepository?.stop();
         await apiService.setRepository(offlineApiRepository);
         await configService.setOffline(true);
         DefaultLoadingProgressHandler.setEnabled(false);
@@ -129,6 +239,15 @@ abstract class IApiService {
       //In case it hasn't been closed
       pd?.close();
     }
+  }
+
+  static Map<String, Object?> _getPrimaryColumns(Map<String, Object?> row, DataBook dataBook) {
+    var primaryColumns = {
+      for (var entry in row.entries.where(
+          (rowColumn) => dataBook.metaData!.primaryKeyColumns.any((primaryColumn) => primaryColumn == rowColumn.key)))
+        entry.key: entry.value
+    };
+    return primaryColumns;
   }
 
   static Future<void> fetchDataProvider(

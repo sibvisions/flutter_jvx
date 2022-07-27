@@ -94,6 +94,10 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     return offlineDatabase!.getChangedRows(pDataProvider);
   }
 
+  Future<int> resetStates(String pDataProvider, {required List<Map<String, Object?>> pResetRows}) {
+    return offlineDatabase!.resetStates(pDataProvider, pResetRows);
+  }
+
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) {
     if (isStopped()) throw Exception("Repository not initialized");

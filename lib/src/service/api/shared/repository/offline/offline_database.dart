@@ -237,6 +237,31 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         .then((value) => groupBy(value, (p0) => p0[STATE_COLUMN] as String));
   }
 
+  Future<int> resetStates(String pDataProvider, List<Map<String, Object?>> pResetRows) {
+    String where = "1 = 0";
+    for (var row in pResetRows) {
+      where += " OR (";
+      List<String> columns = [];
+      for (var column in row.entries) {
+        String s = '"${column.key}"';
+        if (column.value != null) {
+          s += " = ?";
+        } else {
+          s += " IS NULL";
+        }
+        columns.add(s);
+      }
+      where += columns.join(" AND ") + ")";
+    }
+
+    return db.update(
+      formatOfflineTableName(pDataProvider),
+      {'"$STATE_COLUMN"': null},
+      where: where,
+      whereArgs: pResetRows.expand((e) => e.values).whereType<Object>().toList(growable: false),
+    );
+  }
+
   /// Checks if any row exists in [pTableName]
   /// if [pWhere] is not null, check with [pWhere] applied.
   /// Returns true if at least one row is returned.
