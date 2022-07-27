@@ -1,4 +1,4 @@
-import '../../api/requests/api_filter_model.dart';
+import '../../api/requests/filter.dart';
 import 'api_command.dart';
 
 class SelectRecordCommand extends ApiCommand {

@@ -1,5 +1,5 @@
 import '../api_object_property.dart';
-import 'api_filter_model.dart';
+import 'filter.dart';
 import 'i_api_request.dart';
 
 class ApiSelectRecordRequest implements IApiRequest {

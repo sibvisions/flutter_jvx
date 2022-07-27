@@ -11,7 +11,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../mixin/ui_service_mixin.dart';
-import '../../model/api/requests/api_filter_model.dart';
+import '../../model/api/requests/filter.dart';
 import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/api/delete_record_command.dart';
 import '../../model/command/api/insert_record_command.dart';

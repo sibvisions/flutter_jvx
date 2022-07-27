@@ -5,10 +5,10 @@ import 'package:flutter_client/src/mixin/data_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_dal_save_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
-import 'package:flutter_client/src/model/api/requests/api_filter_model.dart';
 import 'package:flutter_client/src/model/api/requests/api_filter_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_insert_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
+import 'package:flutter_client/src/model/api/requests/filter.dart';
 import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
 
