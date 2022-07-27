@@ -265,7 +265,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   /// Deletes the selected record.
   void deleteRecord() {
     if (lastTouchedIndex != -1) {
-      Filter? fiFilter createPrimaryFilter(pRowIndex: lastTouchedIndex);
+      Filter? filter = createPrimaryFilter(pRowIndex: lastTouchedIndex);
 
       if (filter == null) {
         LOGGER.logW(pType: LOG_TYPE.DATA, pMessage: "Filter of table(${model.id}) null");
@@ -283,7 +283,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   /// Selects the record.
   void selectRecord(int pRowIndex) {
     // if (selectedRow != pRowIndex) {
-    Filter? fiFilter createPrimaryFilter(pRowIndex: pRowIndex);
+    Filter? filter = createPrimaryFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
       LOGGER.logW(pType: LOG_TYPE.DATA, pMessage: "Filter of table(${model.id}) null");
@@ -411,7 +411,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     return chunkData.data[rowIndex]![colIndex];
   }
 
-  Filter? crFilterimaryFilter({int? pRowIndex}) {
+  Filter? createPrimaryFilter({int? pRowIndex}) {
     int rowIndex = pRowIndex ?? selectedRow;
     if (rowIndex == -1 || metaData == null) {
       return null;
@@ -422,7 +422,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       listPrimaryKeyValues.add(_getValue(pColumnName: primaryKeyColumn, pRowIndex: rowIndex));
     }
 
-    return Filter(valFilteristPrimaryKeyValues, columnNames: metaData!.primaryKeyColumns);
+    return Filter(values: listPrimaryKeyValues, columnNames: metaData!.primaryKeyColumns);
   }
 
   PopupMenuItem<ContextMenuCommand> _getContextMenuItem(IconData icon, String text, ContextMenuCommand value) {
