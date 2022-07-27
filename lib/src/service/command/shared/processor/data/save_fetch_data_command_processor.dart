@@ -4,7 +4,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/save_fetch_data_command.dart';
 import '../../i_command_processor.dart';
 
-class SaveFetchDataProcessor
+class SaveFetchDataCommandProcessor
     with DataServiceGetterMixin, UiServiceGetterMixin
     implements ICommandProcessor<SaveFetchDataCommand> {
   @override

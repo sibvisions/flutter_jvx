@@ -5,7 +5,7 @@ import '../../../../../model/command/api/press_button_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class PressButtonProcessor
+class PressButtonCommandProcessor
     with ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<PressButtonCommand> {
   @override

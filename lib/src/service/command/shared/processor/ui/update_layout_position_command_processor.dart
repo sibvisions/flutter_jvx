@@ -6,7 +6,7 @@ import '../../../../../model/command/ui/update_layout_position_command.dart';
 import '../../../../../model/layout/layout_data.dart';
 import '../../i_command_processor.dart';
 
-class UpdateLayoutPositionProcessor
+class UpdateLayoutPositionCommandProcessor
     with UiServiceGetterMixin
     implements ICommandProcessor<UpdateLayoutPositionCommand> {
   @override

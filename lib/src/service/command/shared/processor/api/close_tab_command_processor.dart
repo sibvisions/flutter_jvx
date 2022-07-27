@@ -5,7 +5,7 @@ import '../../../../../model/command/api/close_tab_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class CloseTabProcessor
+class CloseTabCommandProcessor
     with ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<CloseTabCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

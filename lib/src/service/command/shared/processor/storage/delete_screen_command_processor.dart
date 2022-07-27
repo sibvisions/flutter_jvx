@@ -9,7 +9,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../i_command_processor.dart';
 
-class DeleteScreenProcessor
+class DeleteScreenCommandProcessor
     with StorageServiceGetterMixin, UiServiceGetterMixin, DataServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<DeleteScreenCommand> {
   @override

@@ -27,7 +27,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final ICommandProcessor _updateComponentsProcessor = UpdateComponentsProcessor();
-  final ICommandProcessor _updateLayoutPositionProcessor = UpdateLayoutPositionProcessor();
+  final ICommandProcessor _updateLayoutPositionProcessor = UpdateLayoutPositionCommandProcessor();
   final ICommandProcessor _routeToMenuProcessor = RouteToMenuCommandProcessor();
   final ICommandProcessor _routeToWorkProcessor = RouteToWorkCommandProcessor();
   final ICommandProcessor _saveMenuProcessor = SaveMenuCommandProcessor();

@@ -14,17 +14,17 @@ import 'delete_provider_data_command_processor.dart';
 import 'delete_row_command_processor.dart';
 import 'get_data_chunk_command_processor.dart';
 import 'get_meta_data_command_processor.dart';
-import 'get_selected_data_processor.dart';
-import 'save_fetch_data_processor.dart';
+import 'get_selected_data_command_processor.dart';
+import 'save_fetch_data_command_processor.dart';
 import 'save_meta_data_processor.dart';
 
 /// Sends [DataCommand] to their respective processor
 class DataProcessor extends ICommandProcessor<DataCommand> {
   /// Processes [SaveMetaDataCommand]
-  final SaveMetaDataProcessor _metaDataProcessor = SaveMetaDataProcessor();
+  final SaveMetaDataCommandProcessor _metaDataProcessor = SaveMetaDataCommandProcessor();
 
   /// Processes [SaveFetchDataCommand]
-  final SaveFetchDataProcessor _fetchDataProcessor = SaveFetchDataProcessor();
+  final SaveFetchDataCommandProcessor _fetchDataProcessor = SaveFetchDataCommandProcessor();
 
   /// Processes [GetSelectedDataCommand]
   final GetSelectedDataCommandProcessor _getSelectedDataProcessor = GetSelectedDataCommandProcessor();

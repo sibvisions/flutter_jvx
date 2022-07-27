@@ -5,7 +5,7 @@ import '../../../../../model/command/api/open_tab_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class OpenTabProcessor
+class OpenTabCommandProcessor
     with ApiServiceGetterMixin, ConfigServiceGetterMixin
     implements ICommandProcessor<OpenTabCommand> {
   @override

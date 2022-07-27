@@ -29,10 +29,10 @@ import '../../i_command_processor.dart';
 import 'change_password_command_processor.dart';
 import 'close_frame_command_processor.dart';
 import 'close_screen_command_processor.dart';
-import 'close_tab_processor.dart';
+import 'close_tab_command_processor.dart';
 import 'dal_save_command_processor.dart';
 import 'delete_record_command_processor.dart';
-import 'device_status_processor.dart';
+import 'device_status_command_processor.dart';
 import 'download_images_command_processor.dart';
 import 'download_style_command_processor.dart';
 import 'download_translation_command_processor.dart';
@@ -43,7 +43,7 @@ import 'login_command_processor.dart';
 import 'logout_command_processor.dart';
 import 'navigation_command_processor.dart';
 import 'open_screen_command_processor.dart';
-import 'open_tab_processor.dart';
+import 'open_tab_command_processor.dart';
 import 'press_button_processor.dart';
 import 'reset_password_command_processor.dart';
 import 'select_record_command_processor.dart';
@@ -71,10 +71,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   final ICommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
 
   /// Processes [DeviceStatusCommand]
-  final ICommandProcessor _deviceStatusProcessor = DeviceStatusProcessor();
+  final ICommandProcessor _deviceStatusProcessor = DeviceStatusCommandProcessor();
 
   /// Processes [PressButtonCommand]
-  final ICommandProcessor _pressButtonProcessor = PressButtonProcessor();
+  final ICommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
 
   /// Processes [SetValueCommand]
   final ICommandProcessor _setValueProcessor = SetValueProcessor();
@@ -86,10 +86,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   final ICommandProcessor _downloadImagesProcessor = DownloadImagesCommandProcessor();
 
   /// Processes [CloseTabCommand]
-  final ICommandProcessor _tabCloseProcessor = CloseTabProcessor();
+  final ICommandProcessor _tabCloseProcessor = CloseTabCommandProcessor();
 
   /// Processes [OpenTabCommand]
-  final ICommandProcessor _tabOpenProcessor = OpenTabProcessor();
+  final ICommandProcessor _tabOpenProcessor = OpenTabCommandProcessor();
 
   /// Processes [ChangePasswordCommand]
   final ICommandProcessor _changePasswordProcessor = ChangePasswordCommandProcessor();
