@@ -106,7 +106,7 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
               try {
                 Navigator.pop(context);
               } catch (exception) {
-                log(exception.toString());
+                log("Error while popping loading progress handler", error: exception);
               }
             } else {
               _dialogContext = context;

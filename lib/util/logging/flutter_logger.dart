@@ -59,10 +59,7 @@ class LOGGER {
     }
 
     if (canLog) {
-      dev.log("$pLevel: " + pMessage.toString());
-      if (pStacktrace != null) {
-        dev.log(pStacktrace.toString());
-      }
+      dev.log("$pLevel: " + pMessage.toString(), stackTrace: pStacktrace);
     }
   }
 
@@ -99,10 +96,7 @@ class LOGGER {
     }
 
     if (canLog) {
-      dev.log("$pLevel: " + pMessage.toString());
-      if (pStacktrace != null) {
-        dev.log(pStacktrace.toString());
-      }
+      dev.log("$pLevel: " + pMessage.toString(), stackTrace: pStacktrace);
     }
   }
 

@@ -80,7 +80,7 @@ class OfflineDatabase with ConfigServiceGetterMixin {
         }
 
         String createTableSQL = _createTable(table);
-        if (kDebugMode) print("Create Table SQL:\n" + createTableSQL);
+        if (kDebugMode) log("Create Table SQL:\n" + createTableSQL);
         // Run the CREATE TABLE statement on the database.
         return db.execute(createTableSQL);
       })
