@@ -44,7 +44,7 @@ import 'logout_command_processor.dart';
 import 'navigation_command_processor.dart';
 import 'open_screen_command_processor.dart';
 import 'open_tab_command_processor.dart';
-import 'press_button_processor.dart';
+import 'press_button_command_processor.dart';
 import 'reset_password_command_processor.dart';
 import 'select_record_command_processor.dart';
 import 'set_api_config_command_processor.dart';
@@ -77,10 +77,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   final ICommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
 
   /// Processes [SetValueCommand]
-  final ICommandProcessor _setValueProcessor = SetValueProcessor();
+  final ICommandProcessor _setValueProcessor = SetValueCommandProcessor();
 
   /// Processes [SetValuesCommand]
-  final ICommandProcessor _setValuesProcessor = SetValuesProcessor();
+  final ICommandProcessor _setValuesProcessor = SetValuesCommandProcessor();
 
   /// Processes [DownloadImagesCommand]
   final ICommandProcessor _downloadImagesProcessor = DownloadImagesCommandProcessor();

@@ -18,7 +18,7 @@ import 'route_to_menu_command_processor.dart';
 import 'route_to_work_command_processor.dart';
 import 'save_menu_command_processor.dart';
 import 'update_components_processor.dart';
-import 'update_layout_position_processor.dart';
+import 'update_layout_position_command_processor.dart';
 
 /// Process all sub-types of [UiCommand], delegates commands to specific sub [ICommandProcessor]
 class UiProcessor implements ICommandProcessor<UiCommand> {

@@ -5,7 +5,7 @@ import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class SetValueProcessor
+class SetValueCommandProcessor
     with ConfigServiceGetterMixin, ApiServiceGetterMixin
     implements ICommandProcessor<SetValueCommand> {
   @override

@@ -5,7 +5,7 @@ import '../../../../../model/command/layout/set_component_size_command.dart';
 import '../../i_command_processor.dart';
 import 'preferred_size_command_processor.dart';
 import 'register_parent_command_processor.dart';
-import 'set_component_size_processor.dart';
+import 'set_component_size_command_processor.dart';
 
 class LayoutProcessor implements ICommandProcessor {
   final PreferredSizeCommandProcessor _preferredSizeProcessor = PreferredSizeCommandProcessor();

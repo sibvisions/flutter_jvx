@@ -8,7 +8,9 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_app_meta_data_command.dart';
 import '../../i_command_processor.dart';
 
-class SaveAppMetaDataProcessor with ConfigServiceGetterMixin implements ICommandProcessor<SaveAppMetaDataCommand> {
+class SaveAppMetaDataCommandProcessor
+    with ConfigServiceGetterMixin
+    implements ICommandProcessor<SaveAppMetaDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveAppMetaDataCommand command) async {
     // Remove '.' to allow easy saving of images in filesystem

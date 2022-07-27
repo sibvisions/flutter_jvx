@@ -16,7 +16,7 @@ import 'get_data_chunk_command_processor.dart';
 import 'get_meta_data_command_processor.dart';
 import 'get_selected_data_command_processor.dart';
 import 'save_fetch_data_command_processor.dart';
-import 'save_meta_data_processor.dart';
+import 'save_meta_data_command_processor.dart';
 
 /// Sends [DataCommand] to their respective processor
 class DataProcessor extends ICommandProcessor<DataCommand> {

@@ -18,7 +18,7 @@ import 'save_user_data_command_processor.dart';
 /// Processes [ConfigCommand], delegates them to their respective [ICommandProcessor]
 ///
 class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
-  final SaveAppMetaDataProcessor _saveAppMetaDataProcessor = SaveAppMetaDataProcessor();
+  final SaveAppMetaDataCommandProcessor _saveAppMetaDataProcessor = SaveAppMetaDataCommandProcessor();
 
   final SaveUserDataCommandProcessor _saveUserDataCommandProcessor = SaveUserDataCommandProcessor();
 

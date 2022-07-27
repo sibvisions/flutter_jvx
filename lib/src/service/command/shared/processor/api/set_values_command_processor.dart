@@ -5,7 +5,7 @@ import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class SetValuesProcessor
+class SetValuesCommandProcessor
     with ConfigServiceGetterMixin, ApiServiceGetterMixin
     implements ICommandProcessor<SetValuesCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
