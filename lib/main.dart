@@ -137,7 +137,7 @@ class _MyAppState extends State<MyApp> {
       routeInformationParser: BeamerParser(),
       routerDelegate: _routerDelegate,
       backButtonDispatcher: FlBackButtonDispatcher(delegate: _routerDelegate),
-      title: "Flutter Demo",
+      title: "JVx Mobile",
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
