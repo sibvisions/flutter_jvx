@@ -8,7 +8,7 @@ class FilterCommand extends ApiCommand {
 
   final String editorId;
 
-  final String value;
+  final String? value;
 
   final List<String>? columnNames;
 
@@ -22,8 +22,8 @@ class FilterCommand extends ApiCommand {
 
   FilterCommand({
     required this.editorId,
-    required this.value,
     required this.dataProvider,
+    this.value,
     this.columnNames,
     this.filterCondition,
     required String reason,

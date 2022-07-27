@@ -16,7 +16,7 @@ class ApiDeleteRecordRequest extends IApiRequest {
   /// Filter
   final Filter? filter;
 
-  final int selectedRow;
+  final int? selectedRow;
 
   final bool fetch;
 
@@ -27,7 +27,7 @@ class ApiDeleteRecordRequest extends IApiRequest {
   ApiDeleteRecordRequest({
     required this.clientId,
     required this.dataProvider,
-    required this.selectedRow,
+    this.selectedRow,
     this.filter,
     this.fetch = false,
   });

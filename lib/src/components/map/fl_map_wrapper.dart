@@ -174,11 +174,12 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     if (model.pointSelectionEnabled && model.pointsDataBook != null) {
       getUiService().sendCommand(
         SetValuesCommand(
-            componentId: model.id,
-            dataProvider: model.pointsDataBook!,
-            columnNames: [model.latitudeColumnName, model.longitudeColumnName],
-            values: [latLng.latitude, latLng.longitude],
-            reason: "Clicked on Map"),
+          componentId: model.id,
+          dataProvider: model.pointsDataBook!,
+          columnNames: [model.latitudeColumnName, model.longitudeColumnName],
+          values: [latLng.latitude, latLng.longitude],
+          reason: "Clicked on Map",
+        ),
       );
     }
   }

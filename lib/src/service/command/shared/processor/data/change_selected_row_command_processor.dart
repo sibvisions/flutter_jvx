@@ -11,7 +11,7 @@ class ChangeSelectedRowCommandProcessor
   @override
   Future<List<BaseCommand>> processCommand(ChangeSelectedRowCommand command) async {
     // set selected row of databook
-    bool success = await getDataService().setSelectedRow(
+    bool success = getDataService().setSelectedRow(
       pDataProvider: command.dataProvider,
       pNewSelectedRow: command.newSelectedRow,
     );

@@ -10,7 +10,7 @@ class ApiFilterRequest implements IApiRequest {
   /// Session id
   final String clientId;
 
-  final String value;
+  final String? value;
 
   final String editorComponentId;
 
@@ -26,11 +26,11 @@ class ApiFilterRequest implements IApiRequest {
 
   ApiFilterRequest({
     required this.clientId,
-    required this.columnNames,
-    required this.value,
     required this.editorComponentId,
-    required this.filter,
     required this.dataProvider,
+    this.columnNames,
+    this.value,
+    this.filter,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

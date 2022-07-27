@@ -12,7 +12,7 @@ class DeleteRecordCommand extends ApiCommand {
   /// Filter
   final Filter? filter;
 
-  final int selectedRow;
+  final int? selectedRow;
 
   final bool fetch;
 
@@ -23,7 +23,7 @@ class DeleteRecordCommand extends ApiCommand {
   DeleteRecordCommand({
     required String reason,
     required this.dataProvider,
-    required this.selectedRow,
+    this.selectedRow,
     this.fetch = false,
     this.filter,
   }) : super(reason: reason);
