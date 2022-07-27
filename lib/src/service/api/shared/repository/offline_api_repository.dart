@@ -10,6 +10,7 @@ import 'package:flutter_client/src/model/api/requests/api_insert_record_request.
 import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
 import 'package:flutter_client/src/model/api/requests/filter.dart';
 import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
+import 'package:flutter_client/src/model/data/data_book.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
 
 import '../../../../model/api/requests/i_api_request.dart';
@@ -143,45 +144,62 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     //}
   }
 
-  Future<List<ApiResponse>> _refetchMaximum(String pDataProvider) async {
-    int? maxFetch = _databookFetchMap[pDataProvider];
-    if (maxFetch != null) {
-      return _fetch(
-        ApiFetchRequest(
-          clientId: "",
-          fromRow: 0,
-          rowCount: maxFetch,
-          dataProvider: pDataProvider,
-        ),
-      );
+  Future<List<ApiResponse>> _fetch(ApiFetchRequest pRequest) async {
+    int fromRow = pRequest.fromRow > -1 ? pRequest.fromRow : 0;
+
+    int rowCount = pRequest.rowCount;
+
+    int maximumFetch = _databookFetchMap[pRequest.dataProvider] ?? 0;
+
+    if (maximumFetch < (fromRow + rowCount)) {
+      _databookFetchMap[pRequest.dataProvider] = (fromRow + rowCount);
     }
 
-    return [];
-  }
+    Filter? lastFilter = _databookLastFilter[pRequest.dataProvider];
 
-  Future<List<ApiResponse>> _fetch(ApiFetchRequest pRequest) async {
-    int? fromRow = pRequest.fromRow > -1 ? pRequest.fromRow : null;
+    Map<String, dynamic>? filter = lastFilter != null ? _createSQLFilter(lastFilter) : null;
 
-    int rowCount;
+    DataBook dataBook = getDataService().getDataBook(pRequest.dataProvider)!;
+
+    List<String> columnNames = pRequest.columnNames ?? dataBook.columnDefinitions.map((e) => e.name).toList();
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
       pTableName: pRequest.dataProvider,
-      pColumns: pRequest.columnNames,
+      pOffset: fromRow,
+      pLimit: rowCount,
+      pFilter: filter,
     );
 
-    int currentSelectedRow = getDataService().getSelectedRow(pRequest.dataProvider);
+    List<List<dynamic>> sortedMap = [];
+    for (Map<String, dynamic> map in selectionResult) {
+      List<dynamic> valueList = [];
+      for (String columnName in columnNames) {
+        valueList.add(map[columnName]);
+      }
 
-    return DalFetchResponse(
-      dataProvider: pRequest.dataProvider,
-      from: fromRow,
-      selectedRow: currentSelectedRow,
-      isAllFetched: false,
-      columnNames: columnNames,
-      to: fromRow + rowCount,
-      records: records,
-      name: "dal",
-      originalResponse: pRequest,
-    );
+      sortedMap.add(valueList);
+    }
+
+    int rowCountDatabase = await offlineDatabase!.getCount(pTableName: pRequest.dataProvider, pFilter: filter);
+
+    bool isAllFetched = false;
+    if (fromRow == 0 && rowCountDatabase <= rowCount) {
+      isAllFetched = true;
+    }
+
+    return [
+      DalFetchResponse(
+        dataProvider: pRequest.dataProvider,
+        from: fromRow,
+        selectedRow: dataBook.selectedRow,
+        isAllFetched: isAllFetched,
+        columnNames: columnNames,
+        to: fromRow + rowCount,
+        records: sortedMap,
+        name: "dal",
+        originalResponse: pRequest,
+      )
+    ];
   }
 
   Future<List<ApiResponse>> _filter(ApiFilterRequest pRequest) async {
@@ -201,7 +219,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   Future<List<ApiResponse>> _insert(ApiInsertRecordRequest pRequest) async {
     await offlineDatabase!.insert(pTableName: pRequest.dataProvider, pInsert: {});
 
-    return SynchronousFuture([]);
+    return _refetchMaximum(pRequest.dataProvider);
   }
 
   Future<List<ApiResponse>> _setValues(ApiSetValuesRequest pRequest) async {
@@ -223,5 +241,33 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     /// Filter of this setValues, used in table to edit non selected rows.
     final Filter? filter;
     return SynchronousFuture([]);
+  }
+
+  Future<List<ApiResponse>> _refetchMaximum(String pDataProvider) async {
+    int? maxFetch = _databookFetchMap[pDataProvider];
+    if (maxFetch != null) {
+      return _fetch(
+        ApiFetchRequest(
+          clientId: "",
+          fromRow: 0,
+          rowCount: maxFetch,
+          dataProvider: pDataProvider,
+        ),
+      );
+    }
+
+    return [];
+  }
+
+  Map<String, dynamic> _createSQLFilter(Filter pFilter) {
+    Map<String, dynamic> filterMap = {};
+
+    for (int i = 0; i < pFilter.columnNames.length; i++) {
+      String columnName = pFilter.columnNames[i];
+      dynamic value = pFilter.values[i];
+      filterMap[columnName] = value;
+    }
+
+    return filterMap;
   }
 }

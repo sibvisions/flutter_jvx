@@ -263,4 +263,9 @@ class DataService implements IDataService {
   HashMap<String, DataBook> getDataBooks() {
     return HashMap.from(dataBooks);
   }
+
+  @override
+  DataBook? getDataBook(String pDataProvider) {
+    return dataBooks[pDataProvider];
+  }
 }

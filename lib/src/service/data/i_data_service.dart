@@ -71,4 +71,7 @@ abstract class IDataService {
 
   /// Gets all databooks
   HashMap<String, DataBook> getDataBooks();
+
+  /// Gets a databook
+  DataBook? getDataBook(String pDataProvider);
 }
