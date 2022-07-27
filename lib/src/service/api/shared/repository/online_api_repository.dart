@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../model/api/api_object_property.dart';
@@ -24,10 +25,10 @@ import '../../../../model/api/response/download_images_response.dart';
 import '../../../../model/api/response/download_style_response.dart';
 import '../../../../model/api/response/download_translation_response.dart';
 import '../../../../model/api/response/error_view_response.dart';
+import '../../../../model/api/response/generic_screen_view_response.dart';
 import '../../../../model/api/response/login_view_response.dart';
 import '../../../../model/api/response/menu_view_response.dart';
 import '../../../../model/api/response/message_dialog_response.dart';
-import '../../../../model/api/response/generic_screen_view_response.dart';
 import '../../../../model/api/response/session_expired_response.dart';
 import '../../../../model/api/response/user_data_response.dart';
 import '../../../../model/config/api/api_config.dart';
@@ -36,7 +37,7 @@ import '../i_repository.dart';
 typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson, required Object originalRequest});
 
 /// Handles all possible requests to the mobile server.
-class OnlineApiRepository implements IRepository {
+class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,6 +143,9 @@ class OnlineApiRepository implements IRepository {
         var parsedResponseObjects = _responseParser(pJsonList: formattedResponses, originalRequest: pRequest);
         return parsedResponseObjects;
       } catch (e) {
+        if (getConfigService().isOffline()) {
+          rethrow;
+        }
         return _handleError(e, pRequest);
       }
     } else {
