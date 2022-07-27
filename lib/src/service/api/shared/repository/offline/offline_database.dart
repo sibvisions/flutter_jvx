@@ -1,13 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
 import 'package:flutter_client/util/constants/i_types.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -331,12 +330,22 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     var where = _getWhere(pFilter);
     var offlineTableName = formatOfflineTableName(pTableName);
 
-    //If inserted locally, delete row else set state to Deleted (D)
     return db.transaction((txn) async {
       String? state = await _getState(offlineTableName, where: where, txn: txn);
-      if (state != null && state == ROW_STATE_INSERTED) {
-        return txn.delete(offlineTableName, where: where?[0], whereArgs: where?[1]);
+      if (state != null) {
+        if (state == ROW_STATE_INSERTED) {
+          // Delete row and return
+          return txn.delete(offlineTableName, where: where?[0], whereArgs: where?[1]);
+        } else if (state == ROW_STATE_UPDATED) {
+          // Reset column to preserve primary key columns and then set Deleted
+          Map<String, dynamic> columns = {};
+          List<String> tableColumns = await _getColumns(pTableName, txn: txn);
+          // Constructs "age = $OLD$_age"
+          tableColumns.forEach((column) => columns[column] = formatOfflineColumnName(column));
+          await txn.update(offlineTableName, columns, where: where?[0], whereArgs: where?[1]);
+        }
       }
+      // Set state to Deleted (D)
       return txn.update(offlineTableName, {'"$STATE_COLUMN"': ROW_STATE_DELETED},
           where: where?[0], whereArgs: where?[1]);
     });
