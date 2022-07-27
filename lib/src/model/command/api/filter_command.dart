@@ -12,7 +12,7 @@ class FilterCommand extends ApiCommand {
 
   final List<String>? columnNames;
 
-  final ApiFilterModel? filterCondition;
+  final Filter? filterCondition;
 
   final String dataProvider;
 

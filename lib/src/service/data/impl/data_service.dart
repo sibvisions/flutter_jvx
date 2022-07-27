@@ -206,10 +206,10 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<bool> setSelectedRow({
+  bool setSelectedRow({
     required String pDataProvider,
     required int pNewSelectedRow,
-  }) async {
+  }) {
     // get databook, if null return false
     DataBook? dataBook = dataBooks[pDataProvider];
     if (dataBook == null) {
@@ -218,6 +218,13 @@ class DataService implements IDataService {
     // set selected row
     dataBook.selectedRow = pNewSelectedRow;
     return true;
+  }
+
+  @override
+  int getSelectedRow(String pDataProvider) {
+    DataBook? dataBook = dataBooks[pDataProvider];
+
+    return dataBook?.selectedRow ?? -1;
   }
 
   @override

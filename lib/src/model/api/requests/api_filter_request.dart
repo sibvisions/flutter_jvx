@@ -14,7 +14,7 @@ class ApiFilterRequest implements IApiRequest {
 
   final String editorComponentId;
 
-  final ApiFilterModel? filterCondition;
+  final Filter? filter;
 
   final List<String>? columnNames;
 
@@ -29,7 +29,7 @@ class ApiFilterRequest implements IApiRequest {
     required this.columnNames,
     required this.value,
     required this.editorComponentId,
-    required this.filterCondition,
+    required this.filter,
     required this.dataProvider,
   });
 
@@ -42,7 +42,7 @@ class ApiFilterRequest implements IApiRequest {
         ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.value: value,
-        ApiObjectProperty.filterCondition: filterCondition?.toJson(),
+        ApiObjectProperty.filter: filter?.toJson(),
         ApiObjectProperty.editorComponentId: editorComponentId,
         ApiObjectProperty.dataProvider: dataProvider,
       };

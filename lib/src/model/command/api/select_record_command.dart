@@ -12,7 +12,7 @@ class SelectRecordCommand extends ApiCommand {
   /// Data provider to change the selected row of
   final String dataProvider;
 
-  final ApiFilterModel? filter;
+  final Filter? filter;
 
   final bool reload;
 

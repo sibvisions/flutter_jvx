@@ -10,7 +10,7 @@ class DeleteRecordCommand extends ApiCommand {
   final String dataProvider;
 
   /// Filter
-  final ApiFilterModel? filter;
+  final Filter? filter;
 
   final int selectedRow;
 

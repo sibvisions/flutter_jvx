@@ -21,7 +21,7 @@ class SetValuesCommand extends ApiCommand {
   final List<dynamic> values;
 
   /// Filter of this setValues, used in table to edit non selected rows.
-  final ApiFilterModel? filter;
+  final Filter? filter;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

@@ -51,10 +51,13 @@ abstract class IDataService {
   });
 
   /// Returns true when row selection was successful (dataProvider and dataRow exist)
-  Future<bool> setSelectedRow({
+  bool setSelectedRow({
     required String pDataProvider,
     required int pNewSelectedRow,
   });
+
+  /// Returns the index of the selected row.
+  int getSelectedRow(String pDataProvider);
 
   /// Returns true when row selection was successful (dataProvider and dataRow exist)
   Future<bool> deleteRow({

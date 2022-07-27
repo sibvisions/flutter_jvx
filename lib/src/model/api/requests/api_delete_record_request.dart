@@ -14,7 +14,7 @@ class ApiDeleteRecordRequest extends IApiRequest {
   final String dataProvider;
 
   /// Filter
-  final ApiFilterModel? filter;
+  final Filter? filter;
 
   final int selectedRow;
 

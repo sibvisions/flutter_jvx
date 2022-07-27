@@ -23,7 +23,7 @@ class FilterCommandProcessor
         columnNames: command.columnNames,
         value: command.value,
         editorComponentId: command.editorId,
-        filterCondition: command.filterCondition,
+        filter: command.filterCondition,
       );
 
       return getApiService().sendRequest(request: apiFilterRequest);

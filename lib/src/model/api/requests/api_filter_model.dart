@@ -1,6 +1,6 @@
 import '../api_object_property.dart';
 
-class ApiFilterModel {
+class Filter {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,7 +14,7 @@ class ApiFilterModel {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiFilterModel({
+  Filter({
     required this.values,
     required this.columnNames,
   });

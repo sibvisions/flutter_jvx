@@ -8,8 +8,8 @@ import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_filter_model.dart';
 import 'package:flutter_client/src/model/api/requests/api_filter_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_insert_record_request.dart';
-import 'package:flutter_client/src/model/api/requests/api_select_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
+import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
 
 import '../../../../model/api/requests/i_api_request.dart';
@@ -19,6 +19,14 @@ import '../i_repository.dart';
 
 class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   OfflineDatabase? offlineDatabase;
+
+  /// Every databook saves the maximum fetch registered, that way unspezified fetch responses don't
+  /// contain all the data we have available.
+  final Map<String, int> _databookFetchMap = {};
+
+  /// Every databook saves the last fetch registered, that way unspezified fetch responses don't
+  /// contain all the data we have available.
+  final Map<String, Filter> _databookLastFilter = {};
 
   @override
   Future<void> start() async {
@@ -99,8 +107,6 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       return _filter(pRequest);
     } else if (pRequest is ApiInsertRecordRequest) {
       return _insert(pRequest);
-    } else if (pRequest is ApiSelectRecordRequest) {
-      return _select(pRequest);
     } else if (pRequest is ApiSetValuesRequest) {
       return _setValues(pRequest);
     }
@@ -117,10 +123,10 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<List<ApiResponse>> _delete(ApiDeleteRecordRequest pRequest) {
+  Future<List<ApiResponse>> _delete(ApiDeleteRecordRequest pRequest) async {
     Map<String, dynamic> filter = {};
     if (pRequest.filter != null) {
-      ApiFilterModel requestFilter = pRequest.filter!;
+      Filter requestFilter = pRequest.filter!;
 
       for (int i = 0; i < requestFilter.columnNames.length; i++) {
         filter[requestFilter.columnNames[i]] = requestFilter.values[i];
@@ -129,30 +135,93 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       filter["ROWID"] = pRequest.selectedRow;
     }
 
-    offlineDatabase!.delete(pTableName: pRequest.dataProvider, pFilter: filter);
+    await offlineDatabase!.delete(pTableName: pRequest.dataProvider, pFilter: filter);
 
-    if (pRequest.fetch) {}
+    // JVx Server does also ignore fetch and always fetches.
+    //if (pRequest.fetch) {
+    return _refetchMaximum(pRequest.dataProvider);
+    //}
+  }
+
+  Future<List<ApiResponse>> _refetchMaximum(String pDataProvider) async {
+    int? maxFetch = _databookFetchMap[pDataProvider];
+    if (maxFetch != null) {
+      return _fetch(
+        ApiFetchRequest(
+          clientId: "",
+          fromRow: 0,
+          rowCount: maxFetch,
+          dataProvider: pDataProvider,
+        ),
+      );
+    }
+
+    return [];
+  }
+
+  Future<List<ApiResponse>> _fetch(ApiFetchRequest pRequest) async {
+    int? fromRow = pRequest.fromRow > -1 ? pRequest.fromRow : null;
+
+    int rowCount;
+
+    List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
+      pTableName: pRequest.dataProvider,
+      pColumns: pRequest.columnNames,
+    );
+
+    int currentSelectedRow = getDataService().getSelectedRow(pRequest.dataProvider);
+
+    return DalFetchResponse(
+      dataProvider: pRequest.dataProvider,
+      from: fromRow,
+      selectedRow: currentSelectedRow,
+      isAllFetched: false,
+      columnNames: columnNames,
+      to: fromRow + rowCount,
+      records: records,
+      name: "dal",
+      originalResponse: pRequest,
+    );
+  }
+
+  Future<List<ApiResponse>> _filter(ApiFilterRequest pRequest) async {
+    final String value;
+
+    final String editorComponentId;
+
+    final Filter? filter;
+
+    final List<String>? columnNames;
+
+    final String dataProvider;
 
     return SynchronousFuture([]);
   }
 
-  Future<List<ApiResponse>> _fetch(ApiFetchRequest pRequest) {
+  Future<List<ApiResponse>> _insert(ApiInsertRecordRequest pRequest) async {
+    await offlineDatabase!.insert(pTableName: pRequest.dataProvider, pInsert: {});
+
     return SynchronousFuture([]);
   }
 
-  Future<List<ApiResponse>> _filter(ApiFilterRequest pRequest) {
-    return SynchronousFuture([]);
-  }
+  Future<List<ApiResponse>> _setValues(ApiSetValuesRequest pRequest) async {
+    /// Id of the current session
+    final String clientId;
 
-  Future<List<ApiResponse>> _insert(ApiInsertRecordRequest pRequest) {
-    return SynchronousFuture([]);
-  }
+    /// DataRow or DataProvider of the component
+    final String dataProvider;
 
-  Future<List<ApiResponse>> _select(ApiSelectRecordRequest pRequest) {
-    return SynchronousFuture([]);
-  }
+    /// Id of the component
+    final String componentId;
 
-  Future<List<ApiResponse>> _setValues(ApiSetValuesRequest pRequest) {
+    /// List of columns, order of which corresponds to order of [values] list
+    final List<String> columnNames;
+
+    /// List of values, order of which corresponds to order of [columnNames] list
+    final List<dynamic> values;
+
+    /// Filter of this setValues, used in table to edit non selected rows.
+    final Filter? filter;
     return SynchronousFuture([]);
   }
 }

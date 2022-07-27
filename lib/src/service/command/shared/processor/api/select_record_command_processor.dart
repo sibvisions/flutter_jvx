@@ -1,3 +1,7 @@
+import 'package:flutter_client/src/mixin/data_service_mixin.dart';
+import 'package:flutter_client/src/model/command/data/change_selected_row_command.dart';
+import 'package:flutter_client/src/service/config/i_config_service.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/api/requests/api_select_record_request.dart';
@@ -7,11 +11,19 @@ import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class SelectRecordCommandProcessor
-    with ApiServiceGetterMixin, ConfigServiceGetterMixin
+    with ApiServiceGetterMixin, ConfigServiceGetterMixin, DataServiceGetterMixin
     implements ICommandProcessor<SelectRecordCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SelectRecordCommand command) async {
-    String? clientId = getConfigService().getClientId();
+    IConfigService configService = getConfigService();
+
+    if (configService.isOffline()) {
+      return [
+        ChangeSelectedRowCommand(
+            dataProvider: command.dataProvider, newSelectedRow: command.selectedRecord, reason: command.reason)
+      ];
+    }
+    String? clientId = configService.getClientId();
 
     if (clientId != null) {
       ApiSelectRecordRequest apiSelectRecordRequest = ApiSelectRecordRequest(
