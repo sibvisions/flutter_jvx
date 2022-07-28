@@ -4,12 +4,12 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/service/api/i_api_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../util/logging/flutter_logger.dart';
+import '../../../util/offline_util.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/api/requests/filter.dart';
 import '../../model/api/response/dal_meta_data_response.dart';
@@ -445,7 +445,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   void goOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workscreenName = state.pathParameters['workScreenName']!;
-    IApiService.initOffline(context, workscreenName);
+    OfflineUtil.initOffline(context, workscreenName);
   }
 }
 

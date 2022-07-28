@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/service/api/i_api_service.dart';
 import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../util/config_util.dart';
+import '../../../util/offline_util.dart';
 import '../../../util/parse_util.dart';
 import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
@@ -94,7 +94,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
               showSyncDialog().then(
                 (value) {
                   if (value == true) {
-                    IApiService.initOnline(context);
+                    OfflineUtil.initOnline(context);
                   }
                 },
               );

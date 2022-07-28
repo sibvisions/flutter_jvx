@@ -2,7 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/service/api/i_api_service.dart';
+import 'package:flutter_client/util/offline_util.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -142,6 +142,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void goOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workscreenName = state.pathParameters['workScreenName']!;
-    IApiService.initOffline(context, workscreenName);
+    OfflineUtil.initOffline(context, workscreenName);
   }
 }
