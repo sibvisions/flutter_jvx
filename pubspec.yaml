@@ -27,6 +27,8 @@ dependencies:
 
   # Custom Dep
 
+  package_info_plus: ^1.4.2
+
   # SVG Support
   flutter_svg: ^1.0.3
   flutter_svg_provider: ^1.0.3

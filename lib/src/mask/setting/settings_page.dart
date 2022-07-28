@@ -4,6 +4,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../main.dart';
 import '../../mixin/config_service_mixin.dart';
@@ -85,9 +86,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
 
     // Version Info
     // ToDo get real version info
-    appVersionNotifier = ValueNotifier("0.5");
+    appVersionNotifier = ValueNotifier("-");
     commitNotifier = ValueNotifier("akV83k5");
     buildDateNotifier = ValueNotifier("16.03.2022");
+    PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value = packageInfo.version);
 
     baseSettings = _buildApplicationSettings();
     versionInfo = _buildVersionInfo();
