@@ -92,9 +92,6 @@ abstract class IUiService {
   // Management of component models
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Returns the top-most panel if a work screen is open
-  FlPanelModel? getOpenScreen({required String pScreenName});
-
   /// Returns all [FlComponentModel] children of provided id.
   List<FlComponentModel> getChildrenModels(String id);
 
@@ -104,6 +101,9 @@ abstract class IUiService {
 
   /// Get the screen (top-most-parent)
   FlComponentModel? getComponentByName({required String pComponentName});
+
+  /// Returns the top-most panel if a work screen is open
+  FlPanelModel? getComponentByScreenName({required String pScreenName});
 
   /// Save new components to active components,
   /// used for saving components which have not been previously been rendered.

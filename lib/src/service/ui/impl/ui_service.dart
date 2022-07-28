@@ -223,6 +223,11 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   }
 
   @override
+  FlPanelModel? getComponentByScreenName({required String pScreenName}) {
+    return _activeComponentModels.firstWhereOrNull((element) => element.screenName == pScreenName) as FlPanelModel?;
+  }
+
+  @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Save new components: " + newModels.map((e) => e.id).toList().toString());
     _activeComponentModels.addAll(newModels);
@@ -249,11 +254,6 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     if (pBeamBack) {
       _currentBuildContext!.beamBack();
     }
-  }
-
-  @override
-  FlPanelModel? getOpenScreen({required String pScreenName}) {
-    return _activeComponentModels.firstWhereOrNull((element) => element.name == pScreenName) as FlPanelModel?;
   }
 
   @override

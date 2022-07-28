@@ -9,6 +9,7 @@ import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
+import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/data/data_book.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
@@ -56,11 +57,13 @@ abstract class IApiService {
     IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
+    FlComponentModel? workscreenModel;
+
     ProgressDialog? pd;
     OnlineApiRepository? onlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
     try {
-      String offlineWorkscreen = configService.getOfflineScreen()!;
+      String offlineWorkscreenLongName = configService.getOfflineScreen()!;
       String offlineAppName = configService.getAppName();
       String offlineUsername = configService.getUsername()!;
       String offlinePassword = configService.getPassword()!;
@@ -94,12 +97,14 @@ abstract class IApiService {
       );
 
       await commandService.sendCommand(
-        OpenScreenCommand(componentId: offlineWorkscreen, reason: "We are back online"),
+        OpenScreenCommand(componentId: offlineWorkscreenLongName, reason: "We are back online"),
       );
+
+      workscreenModel = uiService.getComponentByScreenName(pScreenName: offlineWorkscreenLongName)!;
 
       await fetchDataProvider(
         dataService,
-        offlineWorkscreen,
+        workscreenModel.name,
         commandService,
         progressUpdate: (value, max) {
           pd?.update(msg: "Fetching online data... ($value / $max)", value: 0);
@@ -222,7 +227,7 @@ abstract class IApiService {
         pd.close();
 
         await commandService.sendCommand(
-          CloseScreenCommand(screenName: offlineWorkscreen, reason: "We have synced"),
+          CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
         );
 
         configService.resumeStyleCallbacks();
@@ -236,8 +241,6 @@ abstract class IApiService {
             password: offlinePassword,
           ),
         );
-
-        uiService.routeToMenu();
       } else {
         log("Sync failed");
         await onlineApiRepository.stop();
