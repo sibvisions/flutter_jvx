@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../mask/menu/app_menu.dart';
@@ -7,7 +8,8 @@ import '../../mixin/command_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 
 /// Displays all possible screens of the menu
-class MenuLocation extends BeamLocation<BeamState> with UiServiceGetterMixin, CommandServiceGetterMixin {
+class MenuLocation extends BeamLocation<BeamState>
+    with ConfigServiceGetterMixin, UiServiceGetterMixin, CommandServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +20,7 @@ class MenuLocation extends BeamLocation<BeamState> with UiServiceGetterMixin, Co
       getUiService().setRouteContext(pContext: context);
     }
 
-    DefaultLoadingProgressHandler.setEnabled(true);
+    DefaultLoadingProgressHandler.setEnabled(!getConfigService().isOffline());
 
     return [
       BeamPage(child: AppMenu(), key: UniqueKey()),
