@@ -38,8 +38,8 @@ class ProgressDialog {
   /// Closes the progress dialog.
   void close() {
     if (_dialogIsOpen) {
-      Navigator.pop(_context);
       _dialogIsOpen = false;
+      Navigator.pop(_context);
     }
   }
 
