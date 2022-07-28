@@ -13,6 +13,7 @@ import 'package:flutter_client/src/model/data/data_book.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
 import 'package:flutter_client/src/service/api/shared/repository/offline_api_repository.dart';
 import 'package:flutter_client/src/service/api/shared/repository/online_api_repository.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../../../main.dart';
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
@@ -43,6 +44,7 @@ abstract class OfflineUtil {
     OnlineApiRepository? onlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
     try {
+      await Wakelock.enable();
       String offlineWorkscreenLongName = configService.getOfflineScreen()!;
       String offlineAppName = configService.getAppName();
       String offlineUsername = configService.getUsername()!;
@@ -186,6 +188,7 @@ abstract class OfflineUtil {
       }
       rethrow;
     } finally {
+      await Wakelock.disable();
       //In case it hasn't been closed yet
       ProgressDialogWidget.safeClose(dialogKey);
     }
@@ -362,6 +365,7 @@ abstract class OfflineUtil {
     OnlineApiRepository? onlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
     try {
+      await Wakelock.enable();
       DefaultLoadingProgressHandler.setEnabled(false);
       //Set already here to receive errors from api responses
       await configService.setOffline(true);
@@ -430,6 +434,7 @@ abstract class OfflineUtil {
       }
       rethrow;
     } finally {
+      await Wakelock.disable();
       //In case it hasn't been closed yet
       ProgressDialogWidget.safeClose(dialogKey);
     }

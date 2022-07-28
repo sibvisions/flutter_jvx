@@ -52,6 +52,7 @@ dependencies:
   sqflite: ^2.0.2+1
   collection: ^1.15.0
   path: ^1.8.0
+  wakelock: ^0.6.2
   flutter_map: ^0.14.0
   latlong2: ^0.8.1
   scrollable_positioned_list: ^0.3.1
