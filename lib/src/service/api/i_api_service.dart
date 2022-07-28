@@ -81,6 +81,9 @@ abstract class IApiService {
       await onlineApiRepository.start();
       await apiService.setRepository(onlineApiRepository);
 
+      configService.pauseStyleCallbacks();
+      configService.pauseLanguageCallbacks();
+
       await commandService.sendCommand(
         StartupCommand(
           reason: "Going online",
@@ -220,6 +223,18 @@ abstract class IApiService {
 
         await commandService.sendCommand(
           CloseScreenCommand(screenName: offlineWorkscreen, reason: "We have synced"),
+        );
+
+        configService.resumeStyleCallbacks();
+        configService.resumeLanguageCallbacks();
+
+        await commandService.sendCommand(
+          StartupCommand(
+            reason: "Going online",
+            appName: offlineAppName,
+            username: offlineUsername,
+            password: offlinePassword,
+          ),
         );
 
         uiService.routeToMenu();

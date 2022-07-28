@@ -129,6 +129,12 @@ abstract class IConfigService {
   /// Removes all style callbacks
   void disposeStyleCallbacks();
 
+  /// Pauses all style callbacks.
+  void pauseStyleCallbacks();
+
+  /// Resumes all style callbacks.
+  void resumeStyleCallbacks();
+
   /// Callback will be called when language has been set
   void registerLanguageCallback(Function(String language) pCallback);
 
@@ -137,6 +143,12 @@ abstract class IConfigService {
 
   /// Removes all language callbacks
   void disposeLanguageCallbacks();
+
+  /// Pauses all language callbacks.
+  void pauseLanguageCallbacks();
+
+  /// Resumes all language callbacks.
+  void resumeLanguageCallbacks();
 }
 
 enum MenuMode {

@@ -31,6 +31,12 @@ class ConfigService implements IConfigService {
   /// List of all active languageStyleCallbacks
   final List<Function> languageCallbacks = [];
 
+  /// If the style callbacks are active
+  bool activeStyleCallbacks = true;
+
+  /// If the language callbacks are active
+  bool activeLanguageCallbacks = true;
+
   /// Config of the api
   ApiConfig? apiConfig;
 
@@ -220,7 +226,9 @@ class ConfigService implements IConfigService {
       applicationStyle = pAppStyle;
     }
 
-    styleCallbacks.forEach((element) => element.call(pAppStyle));
+    if (activeStyleCallbacks) {
+      styleCallbacks.forEach((element) => element.call(pAppStyle));
+    }
   }
 
   @override
@@ -306,6 +314,16 @@ class ConfigService implements IConfigService {
   }
 
   @override
+  void pauseLanguageCallbacks() {
+    activeLanguageCallbacks = false;
+  }
+
+  @override
+  void resumeLanguageCallbacks() {
+    activeLanguageCallbacks = true;
+  }
+
+  @override
   void registerStyleCallback(Function(Map<String, String> style) pCallback) {
     styleCallbacks.add(pCallback);
   }
@@ -318,6 +336,16 @@ class ConfigService implements IConfigService {
   @override
   void disposeStyleCallbacks() {
     styleCallbacks.clear();
+  }
+
+  @override
+  void pauseStyleCallbacks() {
+    activeStyleCallbacks = false;
+  }
+
+  @override
+  void resumeStyleCallbacks() {
+    activeStyleCallbacks = true;
   }
 
   @override
@@ -351,6 +379,8 @@ class ConfigService implements IConfigService {
       translation.translations.addAll(langTrans.translations);
     }
 
-    languageCallbacks.forEach((element) => element.call(pLanguage));
+    if (activeLanguageCallbacks) {
+      languageCallbacks.forEach((element) => element.call(pLanguage));
+    }
   }
 }
