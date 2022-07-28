@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/model/component/editor/cell_editor/fl_image_cell_editor_model.dart';
 
@@ -96,10 +94,8 @@ class FlImageCellEditor extends ICellEditor<FlImageCellEditorModel, dynamic> {
     bool newSize = false;
 
     if (imageSize.height.toInt() != pImageInfo.height || imageSize.width.toInt() != pImageInfo.width) {
-      log("new Size");
       imageSize = Size(pImageInfo.width.toDouble(), pImageInfo.height.toDouble());
       newSize = true;
-      log("$imageSize");
     }
 
     if (!pSynchronousCall && newSize) {

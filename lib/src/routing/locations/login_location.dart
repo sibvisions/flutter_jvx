@@ -24,8 +24,8 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
 
     return [
       BeamPage(
-        child: AppLogin(loginCard: LoginCard()),
-        key: const ValueKey("login"),
+        child: const AppLogin(loginCard: LoginCard()),
+        key: UniqueKey(),
       ),
       if (state.uri.pathSegments.contains("lostPassword"))
         BeamPage(

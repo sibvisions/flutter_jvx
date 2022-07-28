@@ -130,6 +130,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   void setRouteContext({required BuildContext pContext}) {
+    log("setting route context: ${pContext.widget.runtimeType}");
     _currentBuildContext = pContext;
   }
 
@@ -228,22 +229,26 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   }
 
   @override
-  void closeScreen({required String pScreenName}) {
+  void closeScreen({required String pScreenName, required bool pBeamBack}) {
     FlComponentModel screenModel = _activeComponentModels.firstWhere((element) => element.name == pScreenName);
 
     List<FlComponentModel> children = getAllComponentsBelow(screenModel.id);
 
     // Remove all children and itself
-    _activeComponentModels
-        .removeWhere((currentComp) => children.any((compToDelete) => compToDelete.id == currentComp.id));
-    _activeComponentModels.remove(screenModel);
+    _activeComponentModels.removeWhere((currentComp) =>
+        currentComp == screenModel || children.any((compToDelete) => compToDelete.id == currentComp.id));
 
     // clear lists that get filled when new screen opens anyway
-    _registeredComponents.clear();
-    _layoutDataList.clear();
-    _dataSubscriptions.clear();
+    _registeredComponents.removeWhere((currentComp) =>
+        currentComp.compId == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.compId));
+    _layoutDataList
+        .removeWhere((key, value) => key == screenModel.id || children.any((compToDelete) => compToDelete.id == key));
+    _dataSubscriptions.removeWhere((currentComp) =>
+        currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
 
-    _currentBuildContext!.beamBack();
+    if (pBeamBack) {
+      _currentBuildContext!.beamBack();
+    }
   }
 
   @override

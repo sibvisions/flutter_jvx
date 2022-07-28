@@ -51,15 +51,16 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
 
     return [
       BeamPage(
-          child: WorkScreen(
-            isCustomScreen: isCustomScreen,
-            screenTitle: screenTitle,
-            screenWidget: screen,
-            footer: footer,
-            header: header,
-            screenName: workScreenName,
-          ),
-          key: ValueKey("Work_$workScreenName}"))
+        child: WorkScreen(
+          isCustomScreen: isCustomScreen,
+          screenTitle: screenTitle,
+          screenWidget: screen,
+          footer: footer,
+          header: header,
+          screenName: workScreenName,
+        ),
+        key: UniqueKey(),
+      )
     ];
   }
 
