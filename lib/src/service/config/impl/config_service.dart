@@ -242,6 +242,16 @@ class ConfigService implements IConfigService {
   }
 
   @override
+  int? getPictureResolution() {
+    return sharedPrefs.getInt("$getAppName.pictureSize");
+  }
+
+  @override
+  Future<bool> setPictureResolution(int pictureResolution) {
+    return sharedPrefs.setInt("$getAppName.pictureSize", pictureResolution);
+  }
+
+  @override
   bool isOffline() {
     return sharedPrefs.getBool("$getAppName.offline") ?? false;
   }

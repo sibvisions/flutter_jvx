@@ -107,6 +107,12 @@ abstract class IConfigService {
   /// Set app style, usually only called after download
   void setAppStyle(Map<String, String>? pAppStyle);
 
+  /// Get configured picture resolution
+  int? getPictureResolution();
+
+  /// Set picture resolution
+  Future<bool> setPictureResolution(int pictureResolution);
+
   bool isOffline();
 
   Future<bool> setOffline(bool pOffline);

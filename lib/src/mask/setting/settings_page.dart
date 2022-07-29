@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
@@ -35,6 +33,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  final List<int> resolutions = [320, 640, 1024];
+
   /// Application settings
   late SettingGroup baseSettings;
 
@@ -51,7 +51,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   late ValueNotifier<String> appNameNotifier;
 
   /// Picture Size notifier, will rebuild the value once changed
-  late ValueNotifier<String> pictureSizeNotifier;
+  late ValueNotifier<int> pictureSizeNotifier;
 
   /// Commit notifier
   late ValueNotifier<String> commitNotifier;
@@ -80,7 +80,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     baseUrlNotifier = ValueNotifier(getConfigService().getBaseUrl() ?? "-");
     appNameNotifier = ValueNotifier(getConfigService().getAppName());
     languageNotifier = ValueNotifier(getConfigService().getLanguage());
-    pictureSizeNotifier = ValueNotifier("TODO");
+    pictureSizeNotifier = ValueNotifier(getConfigService().getPictureResolution() ?? resolutions.last);
 
     // Version Info
     appVersionNotifier = ValueNotifier("Loading...");
@@ -262,18 +262,23 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
         color: themeData.primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-      value: languageNotifier,
       title: getConfigService().translateText("Language"),
+      value: languageNotifier,
       onPressed: () {
+        var supportedLanguages = getConfigService().getSupportedLanguages().toList(growable: false);
         Picker picker = Picker(
-            confirmTextStyle: const TextStyle(fontSize: 14),
-            cancelTextStyle: const TextStyle(fontSize: 14),
+            confirmTextStyle: const TextStyle(fontSize: 16),
+            cancelTextStyle: const TextStyle(fontSize: 16),
+            selecteds: [supportedLanguages.indexOf(languageNotifier.value)],
             adapter: PickerDataAdapter<String>(
-                pickerdata: getConfigService().getSupportedLanguages().toList(growable: false)),
+              pickerdata: supportedLanguages,
+            ),
             columnPadding: const EdgeInsets.all(8),
-            onConfirm: (Picker picker, List value) {
-              languageNotifier.value = picker.getSelectedValues()[0];
-              getConfigService().setLanguage(picker.getSelectedValues()[0]);
+            onConfirm: (Picker picker, List<int> values) {
+              if (values.isNotEmpty) {
+                languageNotifier.value = picker.getSelectedValues()[0];
+                getConfigService().setLanguage(languageNotifier.value);
+              }
             });
         picker.showModal(context, themeData: themeData);
       },
@@ -285,25 +290,22 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
         color: themeData.primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
+      title: getConfigService().translateText("Picture Size"),
       value: pictureSizeNotifier,
-      title: getConfigService().translateText("Big"),
+      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text("$value px"),
       onPressed: () {
         Picker picker = Picker(
-            adapter: PickerDataAdapter<int>(data: [
-              PickerItem(text: const Text('320 px'), value: 320),
-              PickerItem(text: const Text('640 px'), value: 640),
-              PickerItem(text: const Text('1024 px'), value: 1024)
-            ]),
-            confirmTextStyle: const TextStyle(fontSize: 14),
-            cancelTextStyle: const TextStyle(fontSize: 14),
-            onConfirm: (Picker picker, List value) {
-              int? size;
-
-              if (value.isNotEmpty) {
-                size = picker.getSelectedValues()[0];
+            selecteds: [resolutions.indexOf(pictureSizeNotifier.value)],
+            adapter: PickerDataAdapter<int>(
+              data: resolutions.map((e) => PickerItem(text: Text("$e px"), value: e)).toList(growable: false),
+            ),
+            confirmTextStyle: const TextStyle(fontSize: 16),
+            cancelTextStyle: const TextStyle(fontSize: 16),
+            onConfirm: (Picker picker, List<int> values) {
+              if (values.isNotEmpty) {
+                pictureSizeNotifier.value = picker.getSelectedValues()[0];
+                getConfigService().setPictureResolution(pictureSizeNotifier.value);
               }
-              log(size.toString());
-              //TODO Set the Size
             });
         picker.showModal(context, themeData: themeData);
       },
