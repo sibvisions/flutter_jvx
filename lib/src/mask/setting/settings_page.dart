@@ -240,9 +240,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           ).then((value) async {
             if (value) {
               try {
-                await getConfigService().setBaseUrl(controller.text);
-
-                baseUrlNotifier.value = controller.text;
+                // Validate format
+                var uri = Uri.parse(controller.text);
+                await getConfigService().setBaseUrl(uri.toString());
+                baseUrlNotifier.value = uri.toString();
 
                 getUiService().sendCommand(SetApiConfigCommand(
                   apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()!),
