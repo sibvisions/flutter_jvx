@@ -72,7 +72,8 @@ class _AppLoginState extends State<AppLogin> with ConfigServiceGetterMixin {
               ),
               Expanded(
                 child: Container(
-                  child: loginBackground != null ? ImageLoader.loadImage(loginBackground!, fit: BoxFit.fill) : null,
+                  child:
+                      loginBackground != null ? ImageLoader.loadImage(loginBackground!, fit: BoxFit.scaleDown) : null,
                   color: bottomColor ?? Colors.transparent,
                 ),
                 flex: 6,
