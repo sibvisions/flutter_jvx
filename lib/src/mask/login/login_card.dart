@@ -26,7 +26,8 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
   final TextEditingController passwordController = TextEditingController();
 
   /// Value holder for the checkbox
-  final CheckHolder checkHolder = CheckHolder(isChecked: false);
+  late CheckHolder checkHolder =
+      CheckHolder(isChecked: getConfigService().getAppConfig()?.uiConfig.rememberMeChecked ?? false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override

@@ -175,7 +175,7 @@ class _MyAppState extends State<MyApp> {
       routeInformationParser: BeamerParser(),
       routerDelegate: _routerDelegate,
       backButtonDispatcher: FlBackButtonDispatcher(delegate: _routerDelegate),
-      title: "JVx Mobile",
+      title: widget.appConfig?.title ?? "JVx Mobile",
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -232,7 +232,6 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     var client = super.createHttpClient(context);
-    client.connectionTimeout = const Duration(seconds: 10);
     if (!kIsWeb) {
       // Needed to avoid CORS issues
       // TODO find way to not do this

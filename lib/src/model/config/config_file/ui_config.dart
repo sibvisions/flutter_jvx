@@ -15,9 +15,7 @@ class UiConfig {
     this.rememberMeChecked = false,
   });
 
-  const UiConfig.empty()
-      : showRememberMe = true,
-        rememberMeChecked = false;
+  const UiConfig.empty() : this();
 
   UiConfig.fromJson({required Map<String, dynamic> json})
       : showRememberMe = json["showRememberMe"] ?? false,

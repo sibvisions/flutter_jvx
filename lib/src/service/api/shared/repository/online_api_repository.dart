@@ -103,7 +103,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
   @override
   Future<void> start() async {
     if (isStopped()) {
-      client = HttpClient();
+      client = HttpClient()..connectionTimeout = Duration(seconds: getConfigService().getAppConfig()!.requestTimeout);
     }
   }
 
