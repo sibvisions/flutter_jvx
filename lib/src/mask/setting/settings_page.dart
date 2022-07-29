@@ -273,7 +273,6 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
             adapter: PickerDataAdapter<String>(
               pickerdata: supportedLanguages,
             ),
-            columnPadding: const EdgeInsets.all(8),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
                 languageNotifier.value = picker.getSelectedValues()[0];
