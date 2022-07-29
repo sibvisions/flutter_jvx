@@ -19,7 +19,9 @@ class ProgressDialogWidget extends StatefulWidget {
 
   /// Can be used to pop the dialog
   static void close(BuildContext context) {
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
   }
 
   /// Can be used to safely pop the dialog
