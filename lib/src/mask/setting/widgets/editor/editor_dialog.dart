@@ -33,7 +33,7 @@ class EditorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         backgroundColor: Theme.of(context).dialogBackgroundColor.withAlpha(255),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -57,7 +57,7 @@ class EditorDialog extends StatelessWidget {
 
   /// Returns the
   Widget _closeButtons({required BuildContext pContext}) {
-    TextStyle style = const TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+    TextStyle style = const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -89,7 +89,7 @@ class EditorDialog extends StatelessWidget {
         Text(
           titleText,
           style: const TextStyle(
-            fontSize: 25,
+            fontSize: 20,
           ),
         )
       ],

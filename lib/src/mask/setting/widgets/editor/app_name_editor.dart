@@ -27,7 +27,7 @@ class AppNameEditor extends StatelessWidget with ConfigServiceGetterMixin {
       decoration: InputDecoration(
         labelText: getConfigService().translateText('App name'),
         hintText: getConfigService().translateText('Enter new App Name'),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );
   }

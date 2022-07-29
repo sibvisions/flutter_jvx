@@ -30,7 +30,7 @@ class UrlEditor extends StatelessWidget with ConfigServiceGetterMixin {
       decoration: InputDecoration(
         labelText: getConfigService().translateText('URL'),
         hintText: getConfigService().translateText('Enter new URL'),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );
   }
