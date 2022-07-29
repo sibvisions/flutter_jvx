@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/model/config/config_file/app_config.dart';
 import 'src/model/config/config_file/server_config.dart';
+import 'src/model/config/config_file/ui_config.dart';
 import 'src/model/config/config_file/version_config.dart';
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
