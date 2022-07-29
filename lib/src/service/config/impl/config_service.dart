@@ -162,7 +162,7 @@ class ConfigService implements IConfigService {
 
   @override
   String? getBaseUrl() {
-    return getString("baseUrl");
+    return getString("baseUrl") ?? getAppConfig()?.serverConfig.baseUrl;
   }
 
   @override
@@ -172,7 +172,7 @@ class ConfigService implements IConfigService {
 
   @override
   String? getUsername() {
-    return getString("username");
+    return getString("username") ?? getAppConfig()?.serverConfig.username;
   }
 
   @override
@@ -182,7 +182,7 @@ class ConfigService implements IConfigService {
 
   @override
   String? getPassword() {
-    return getString("password");
+    return getString("password") ?? getAppConfig()?.serverConfig.password;
   }
 
   @override
@@ -296,14 +296,6 @@ class ConfigService implements IConfigService {
   ///Only call if you know what you do!
   void setAppConfig(AppConfig? pAppConfig) async {
     appConfig = pAppConfig;
-    if (pAppConfig?.serverConfig != null) {
-      if (getBaseUrl() == null) await setBaseUrl(pAppConfig?.serverConfig.baseUrl);
-      if (getAppName() == "demo" && pAppConfig?.serverConfig.appName != null) {
-        await setAppName(pAppConfig!.serverConfig.appName!);
-      }
-      if (getUsername() == null) await setUsername(pAppConfig?.serverConfig.username);
-      if (getPassword() == null) await setPassword(pAppConfig?.serverConfig.password);
-    }
   }
 
   @override
