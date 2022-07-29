@@ -85,7 +85,7 @@ class EndpointConfig {
   /// For [ApiCloseFrameRequest]
   final String closeFrame;
 
-  EndpointConfig({
+  const EndpointConfig({
     required this.startup,
     required this.login,
     required this.openScreen,

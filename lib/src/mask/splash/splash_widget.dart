@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_client/src/model/config/config_file/app_config.dart';
 
 import '../../../init_app.dart';
 import '../../../util/logging/flutter_logger.dart';
@@ -10,6 +11,8 @@ class SplashWidget extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final AppConfig? appConfig;
 
   final List<Function(Map<String, String> style)>? styleCallbacks;
 
@@ -21,6 +24,7 @@ class SplashWidget extends StatefulWidget {
 
   const SplashWidget({
     Key? key,
+    this.appConfig,
     this.styleCallbacks,
     this.languageCallbacks,
   }) : super(key: key);
@@ -47,6 +51,7 @@ class _SplashWidgetState extends State<SplashWidget> {
 
     initAppFuture = initApp(
       initContext: context,
+      appConfig: widget.appConfig,
       languageCallbacks: widget.languageCallbacks,
       styleCallbacks: widget.styleCallbacks,
     ).catchError((error, stackTrace) {

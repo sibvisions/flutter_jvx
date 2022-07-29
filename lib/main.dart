@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'src/model/config/config_file/app_config.dart';
+import 'src/model/config/config_file/server_config.dart';
+import 'src/model/config/config_file/version_config.dart';
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
@@ -34,7 +37,35 @@ import 'util/file/file_manager.dart';
 import 'util/parse_util.dart';
 
 void main() async {
-  await FlutterClient.setUp(const MyApp());
+  await FlutterClient.setUp(MyApp(
+    appConfig: AppConfig(
+      title: "Sample App",
+      package: true,
+      uiConfig: const UiConfig(
+        showRememberMe: true,
+        rememberMeChecked: false,
+      ),
+      requestTimeout: 10,
+      // serverConfig: const ServerConfig(
+      //   baseUrl: 'http://192.168.0.241:8888/JVx.mobile/services/mobile',
+      //   appMode: AppMode.full,
+      //   appName: 'demo',
+      // ),
+      // Also if you want to run with a Developer Config you can pass one as a parameter
+      serverConfig: const ServerConfig(
+        baseUrl: 'http://172.20.0.119:8888/JVx.mobile/services/mobile',
+        appMode: AppMode.full,
+        appName: 'demo',
+        username: 'features',
+        password: 'features',
+      ),
+      versionConfig: const VersionConfig(
+        commit: "070a55e2",
+        buildDate: "2021-09-26",
+        version: "1.2.3+1",
+      ),
+    ),
+  ));
 }
 
 abstract class FlutterClient {
@@ -99,7 +130,12 @@ ThemeData themeData = ThemeData.from(
 Locale locale = const Locale.fromSubtags(languageCode: "en");
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final AppConfig? appConfig;
+
+  const MyApp({
+    Key? key,
+    this.appConfig,
+  }) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -118,7 +154,8 @@ class _MyAppState extends State<MyApp> {
       initialPath: "/splash",
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
-          SplashLocation(styleCallbacks: [changeStyle], languageCallbacks: [changeLanguage]),
+          SplashLocation(
+              appConfig: widget.appConfig, styleCallbacks: [changeStyle], languageCallbacks: [changeLanguage]),
           LoginLocation(),
           MenuLocation(),
           SettingsLocation(),

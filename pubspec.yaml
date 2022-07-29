@@ -70,7 +70,7 @@ dependencies:
 
 flutter:
   assets:
-    - assets/config/app.conf.json
+    - assets/config/
     - assets/images/
 
   uses-material-design: true

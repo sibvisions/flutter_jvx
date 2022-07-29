@@ -13,7 +13,6 @@ import '../../model/command/api/set_api_config_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/config/api/api_config.dart';
-import '../../model/config/api/url_config.dart';
 import '../../routing/locations/settings_location.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_mask.dart';
@@ -39,6 +38,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   /// Application settings
   late SettingGroup baseSettings;
 
+  /// Version Info
+  late SettingGroup versionInfo;
+
   /// Baseurl notifier, will rebuild the value once changed
   late ValueNotifier<String> baseUrlNotifier;
 
@@ -51,9 +53,6 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   /// Picture Size notifier, will rebuild the value once changed
   late ValueNotifier<String> pictureSizeNotifier;
 
-  /// Version Info
-  late SettingGroup versionInfo;
-
   /// Commit notifier
   late ValueNotifier<String> commitNotifier;
 
@@ -62,9 +61,6 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
 
   /// Build date notifier
   late ValueNotifier<String> buildDateNotifier;
-
-  /// app name of a scanned QR-Code
-  String? appName;
 
   /// Username of a scanned QR-Code
   String? username;
@@ -78,18 +74,23 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
 
   @override
   void initState() {
+    var appConfig = getConfigService().getAppConfig()!;
+
     // Application setting
-    baseUrlNotifier = ValueNotifier(getConfigService().getApiConfig()!.urlConfig.getBasePath());
+    baseUrlNotifier = ValueNotifier(getConfigService().getBaseUrl() ?? "-");
     appNameNotifier = ValueNotifier(getConfigService().getAppName());
     languageNotifier = ValueNotifier(getConfigService().getLanguage());
-    pictureSizeNotifier = ValueNotifier("ToDo");
+    pictureSizeNotifier = ValueNotifier("TODO");
 
     // Version Info
-    // ToDo get real version info
-    appVersionNotifier = ValueNotifier("-");
-    commitNotifier = ValueNotifier("akV83k5");
-    buildDateNotifier = ValueNotifier("16.03.2022");
-    PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value = packageInfo.version);
+    appVersionNotifier = ValueNotifier("Loading...");
+    if (appConfig.versionConfig.version != null) {
+      appVersionNotifier.value = appConfig.versionConfig.version!;
+    } else {
+      PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value = packageInfo.version);
+    }
+    commitNotifier = ValueNotifier(appConfig.versionConfig.commit ?? "-");
+    buildDateNotifier = ValueNotifier(appConfig.versionConfig.buildDate ?? "-");
 
     baseSettings = _buildApplicationSettings();
     versionInfo = _buildVersionInfo();
@@ -236,15 +237,17 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
               color: themeData.primaryColor,
             ),
             pTitleText: getConfigService().translateText("URL"),
-          ).then((value) {
+          ).then((value) async {
             if (value) {
               try {
-                ApiConfig apiConfig = getConfigService().getApiConfig()!;
-                apiConfig.urlConfig = UrlConfig.fromFullString(fullPath: controller.text);
+                await getConfigService().setBaseUrl(controller.text);
 
-                baseUrlNotifier.value = apiConfig.urlConfig.getBasePath();
+                baseUrlNotifier.value = controller.text;
 
-                getUiService().sendCommand(SetApiConfigCommand(apiConfig: apiConfig, reason: "Settings url editor"));
+                getUiService().sendCommand(SetApiConfigCommand(
+                  apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()!),
+                  reason: "Settings url editor",
+                ));
               } catch (e) {
                 getUiService().sendCommand(OpenErrorDialogCommand(
                     reason: "parseURl", message: getConfigService().translateText("URL text could not be parsed")));
@@ -376,11 +379,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     getUiService().openDialog(
         pDialogWidget: QRScannerMask(callBack: (barcode, _) {
           QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
-          // set service values
-          appName = code.appName;
-
-          ApiConfig apiConfig = getConfigService().getApiConfig()!;
-          apiConfig.urlConfig = UrlConfig.fromFullString(fullPath: code.url);
+          getConfigService().setAppName(code.appName);
+          getConfigService().setBaseUrl(code.url);
 
           // set local display values
           appNameNotifier.value = code.appName;
@@ -389,8 +389,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           username = code.username;
           password = code.password;
 
-          SetApiConfigCommand apiConfigCommand =
-              SetApiConfigCommand(apiConfig: apiConfig, reason: "QR Scan replaced url");
+          SetApiConfigCommand apiConfigCommand = SetApiConfigCommand(
+            apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()!),
+            reason: "QR Scan replaced url",
+          );
           getUiService().sendCommand(apiConfigCommand);
         }),
         pIsDismissible: false);
@@ -400,13 +402,12 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   void _saveClicked() {
     StartupCommand startupCommand = StartupCommand(
       reason: "QR-Code-Scanned",
-      appName: appName,
+      appName: appNameNotifier.value,
       username: username,
       password: password,
     );
     getUiService().sendCommand(startupCommand);
 
-    appName = null;
     username = null;
     password = null;
   }

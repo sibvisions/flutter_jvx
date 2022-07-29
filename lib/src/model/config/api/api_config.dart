@@ -1,3 +1,4 @@
+import '../../../../data/config/config_generator.dart';
 import '../../api/requests/api_change_password_request.dart';
 import '../../api/requests/api_close_frame_request.dart';
 import '../../api/requests/api_close_screen_request.dart';
@@ -21,8 +22,8 @@ import '../../api/requests/api_select_record_request.dart';
 import '../../api/requests/api_set_value_request.dart';
 import '../../api/requests/api_set_values_request.dart';
 import '../../api/requests/api_startup_request.dart';
+import '../config_file/server_config.dart';
 import 'endpoint_config.dart';
-import 'url_config.dart';
 
 /// Config for each requests exact endpoint
 class ApiConfig {
@@ -31,10 +32,10 @@ class ApiConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Config for the remote server address
-  UrlConfig urlConfig;
+  final ServerConfig serverConfig;
 
   /// Config for each individual endpoint
-  EndpointConfig endpointConfig;
+  final EndpointConfig endpointConfig;
 
   /// Map of all remote request mapped to their full uri endpoint in [endpointConfig]
   late Map<Type, Uri Function()> uriMap;
@@ -43,31 +44,32 @@ class ApiConfig {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiConfig({required this.urlConfig, required this.endpointConfig}) {
+  ApiConfig({required this.serverConfig, EndpointConfig? endpointConfig})
+      : endpointConfig = endpointConfig ?? ConfigGenerator.generateFixedEndpoints() {
     uriMap = {
-      ApiStartUpRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.startup),
-      ApiLoginRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.login),
-      ApiCloseTabRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.closeTab),
-      ApiDeviceStatusRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.deviceStatus),
-      ApiOpenScreenRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.openScreen),
-      ApiOpenTabRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.openTab),
-      ApiPressButtonRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.pressButton),
-      ApiSetValueRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.setValue),
-      ApiSetValuesRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.setValues),
-      ApiChangePasswordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.changePassword),
-      ApiResetPasswordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.resetPassword),
-      ApiNavigationRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.navigation),
-      ApiFetchRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.fetch),
-      ApiLogoutRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.logout),
-      ApiFilterRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.filter),
-      ApiInsertRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.insertRecord),
-      ApiSelectRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.selectRecord),
-      ApiCloseScreenRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.closeScreen),
-      ApiDeleteRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.deleteRecord),
-      ApiDownloadImagesRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
-      ApiDownloadTranslationRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
-      ApiDownloadStyleRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
-      ApiCloseFrameRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.closeFrame),
+      ApiStartUpRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.startup),
+      ApiLoginRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.login),
+      ApiCloseTabRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.closeTab),
+      ApiDeviceStatusRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.deviceStatus),
+      ApiOpenScreenRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.openScreen),
+      ApiOpenTabRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.openTab),
+      ApiPressButtonRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.pressButton),
+      ApiSetValueRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.setValue),
+      ApiSetValuesRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.setValues),
+      ApiChangePasswordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.changePassword),
+      ApiResetPasswordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.resetPassword),
+      ApiNavigationRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.navigation),
+      ApiFetchRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.fetch),
+      ApiLogoutRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.logout),
+      ApiFilterRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.filter),
+      ApiInsertRecordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.insertRecord),
+      ApiSelectRecordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.selectRecord),
+      ApiCloseScreenRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.closeScreen),
+      ApiDeleteRecordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.deleteRecord),
+      ApiDownloadImagesRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.download),
+      ApiDownloadTranslationRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.download),
+      ApiDownloadStyleRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.download),
+      ApiCloseFrameRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.closeFrame),
     };
   }
 }

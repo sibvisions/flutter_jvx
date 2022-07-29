@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-import 'data/config/config_generator.dart';
 import 'main.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';
-import 'src/model/config/api/url_config.dart';
 import 'src/model/config/config_file/app_config.dart';
 import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
@@ -25,8 +23,9 @@ import 'util/loading_handler/default_loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
 
 Future<void> initApp({
-  CustomScreenManager? pCustomManager,
   required BuildContext initContext,
+  AppConfig? appConfig,
+  CustomScreenManager? pCustomManager,
   List<Function(Map<String, String> style)>? styleCallbacks,
   List<Function(String language)>? languageCallbacks,
 }) async {
@@ -40,7 +39,7 @@ Future<void> initApp({
   IApiService apiService = services<IApiService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Load config files
+  // Load config
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   (commandService as CommandService).progressHandler.clear();
@@ -49,48 +48,59 @@ Future<void> initApp({
   uiService.setCustomManager(pCustomManager);
   uiService.setRouteContext(pContext: initContext);
 
-  // Load Dev config
-  AppConfig? appConfig = await ConfigUtil.readAppConfig();
+  // Load config files
+  appConfig ??= await ConfigUtil.readDevConfig();
+  appConfig ??= await ConfigUtil.readAppConfig();
 
-  UrlConfig urlConfigServer = ConfigUtil.createUrlConfig(
-    pAppConfig: appConfig,
-    pUrlConfig: UrlConfig.empty(),
-  );
+  if (appConfig == null) {
+    LOGGER.logI(pType: LOG_TYPE.CONFIG, pMessage: "No Config found, using default values");
+    appConfig = AppConfig();
+  }
+  (configService as ConfigService).setAppConfig(appConfig);
+
+  if (appConfig.serverConfig.baseUrl != null) {
+    var baseUri = Uri.parse(appConfig.serverConfig.baseUrl!);
+    //If no https on a remote host, you have to use localhost because of secure cookies
+    if (kIsWeb && kDebugMode && baseUri.host != "localhost" && !baseUri.isScheme("https")) {
+      await configService.setBaseUrl(baseUri.replace(host: "localhost").toString());
+    }
+  }
 
   configService.disposeStyleCallbacks();
   styleCallbacks?.forEach((element) => configService.registerStyleCallback(element));
   configService.disposeLanguageCallbacks();
   languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // API init
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (configService.getBaseUrl() != null) {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // API init
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // API
-  ApiConfig apiConfig = ApiConfig(
-    urlConfig: urlConfigServer,
-    endpointConfig: ConfigGenerator.generateFixedEndpoints(),
-  );
-  (configService as ConfigService).setApiConfig(apiConfig);
+    // API
 
-  var controller = ApiController();
-  var repository = configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository(apiConfig: apiConfig);
-  await repository.start();
-  await apiService.setController(controller);
-  await apiService.setRepository(repository);
+    var controller = ApiController();
+    var repository = configService.isOffline()
+        ? OfflineApiRepository()
+        : OnlineApiRepository(apiConfig: ApiConfig(serverConfig: configService.getServerConfig()!));
+    await repository.start();
+    await apiService.setController(controller);
+    await apiService.setRepository(repository);
 
-  configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null);
+    configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null);
 
-  if (!configService.isOffline()) {
-    // Send startup to server
+    if (!configService.isOffline()) {
+      // Send startup to server
 
-    StartupCommand startupCommand = StartupCommand(
-      reason: "InitApp",
-      username: appConfig?.startupParameters?.username,
-      password: appConfig?.startupParameters?.password,
-    );
-    await commandService.sendCommand(startupCommand);
+      StartupCommand startupCommand = StartupCommand(
+        reason: "InitApp",
+        username: configService.getUsername(),
+        password: configService.getPassword(),
+      );
+      await commandService.sendCommand(startupCommand);
+    } else {
+      uiService.routeToMenu();
+    }
   } else {
-    uiService.routeToMenu();
+    uiService.routeToSettings();
   }
 }

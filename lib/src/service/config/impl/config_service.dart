@@ -2,12 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_client/src/model/config/config_file/server_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../util/file/file_manager.dart';
 import '../../../../util/logging/flutter_logger.dart';
-import '../../../model/config/api/api_config.dart';
+import '../../../model/config/config_file/app_config.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
 import '../i_config_service.dart';
@@ -37,8 +37,8 @@ class ConfigService implements IConfigService {
   /// If the language callbacks are active
   bool activeLanguageCallbacks = true;
 
-  /// Config of the api
-  ApiConfig? apiConfig;
+  /// Config of the app
+  AppConfig? appConfig;
 
   /// Current clientId (sessionId)
   String? clientId;
@@ -119,7 +119,7 @@ class ConfigService implements IConfigService {
 
   @override
   String getAppName() {
-    return (kDebugMode ? "demo" : sharedPrefs.getString("appName")) ?? "";
+    return sharedPrefs.getString("appName") ?? getAppConfig()?.serverConfig.appName ?? "demo";
   }
 
   @override
@@ -161,12 +161,22 @@ class ConfigService implements IConfigService {
   }
 
   @override
+  String? getBaseUrl() {
+    return getString("baseUrl");
+  }
+
+  @override
+  Future<bool> setBaseUrl(String? baseUrl) {
+    return setString("baseUrl", baseUrl);
+  }
+
+  @override
   String? getUsername() {
     return getString("username");
   }
 
   @override
-  Future<bool> setUsername(String username) {
+  Future<bool> setUsername(String? username) {
     return setString("username", username);
   }
 
@@ -176,7 +186,7 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  Future<bool> setPassword(String password) {
+  Future<bool> setPassword(String? password) {
     return setString("password", password);
   }
 
@@ -279,13 +289,34 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  ApiConfig? getApiConfig() {
-    return apiConfig;
+  AppConfig? getAppConfig() {
+    return appConfig;
   }
 
   ///Only call if you know what you do!
-  void setApiConfig(ApiConfig pApiConfig) {
-    apiConfig = pApiConfig;
+  void setAppConfig(AppConfig? pAppConfig) async {
+    appConfig = pAppConfig;
+    if (pAppConfig?.serverConfig != null) {
+      if (getBaseUrl() == null) await setBaseUrl(pAppConfig?.serverConfig.baseUrl);
+      if (getAppName() == "demo" && pAppConfig?.serverConfig.appName != null) {
+        await setAppName(pAppConfig!.serverConfig.appName!);
+      }
+      if (getUsername() == null) await setUsername(pAppConfig?.serverConfig.username);
+      if (getPassword() == null) await setPassword(pAppConfig?.serverConfig.password);
+    }
+  }
+
+  @override
+  ServerConfig? getServerConfig() {
+    return getAppConfig() == null
+        ? null
+        : ServerConfig(
+            baseUrl: getBaseUrl(),
+            appMode: getAppConfig()!.serverConfig.appMode,
+            appName: getAppName(),
+            username: getUsername(),
+            password: getPassword(),
+          );
   }
 
   @override

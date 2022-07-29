@@ -21,6 +21,7 @@ import '../../../util/loading_handler/progress_dialog_widget.dart';
 import '../src/model/command/api/close_screen_command.dart';
 import '../src/model/command/api/fetch_command.dart';
 import '../src/model/command/ui/route_to_menu_command.dart';
+import '../src/model/config/api/api_config.dart';
 import '../src/service/api/i_api_service.dart';
 import '../src/service/command/i_command_service.dart';
 import '../src/service/config/i_config_service.dart';
@@ -68,7 +69,7 @@ abstract class OfflineUtil {
 
       offlineApiRepository = (await apiService.getRepository()) as OfflineApiRepository;
       //Set online api repository to handle commands
-      onlineApiRepository = OnlineApiRepository(apiConfig: configService.getApiConfig()!);
+      onlineApiRepository = OnlineApiRepository(apiConfig: ApiConfig(serverConfig: configService.getServerConfig()!));
       await onlineApiRepository.start();
       await apiService.setRepository(onlineApiRepository);
 

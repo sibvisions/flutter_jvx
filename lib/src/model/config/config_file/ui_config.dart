@@ -1,24 +1,25 @@
-class UiConfig{
-
+class UiConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final bool showLoginRememberMe;
-
-  final bool loginRememberMeChecked;
+  final bool showRememberMe;
+  final bool rememberMeChecked;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const UiConfig({
-    this.loginRememberMeChecked = true,
-    this.showLoginRememberMe = true,
+    this.showRememberMe = false,
+    this.rememberMeChecked = false,
   });
 
-  UiConfig.fromJson({required Map<String, dynamic> json}) :
-    showLoginRememberMe = json["showLoginRememberMe"] ?? true,
-    loginRememberMeChecked = json["loginRememberMeChecked"] ?? true;
+  const UiConfig.empty()
+      : showRememberMe = true,
+        rememberMeChecked = false;
 
+  UiConfig.fromJson({required Map<String, dynamic> json})
+      : showRememberMe = json["showRememberMe"] ?? false,
+        rememberMeChecked = json["rememberMeChecked"] ?? false;
 }

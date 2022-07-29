@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_client/src/model/config/config_file/server_config.dart';
 
 import '../../../util/file/file_manager.dart';
-import '../../model/config/api/api_config.dart';
+import '../../model/config/config_file/app_config.dart';
 import '../../model/config/user/user_info.dart';
 
 /// Defines the base construct of a [IConfigService]
@@ -28,7 +29,9 @@ abstract class IConfigService {
   Future<bool> setAppName(String pAppName);
 
   /// Returns current apiConfig
-  ApiConfig? getApiConfig();
+  AppConfig? getAppConfig();
+
+  ServerConfig? getServerConfig();
 
   /// Return version
   String? getVersion();
@@ -69,17 +72,23 @@ abstract class IConfigService {
   /// Translates text in current translation, will return the original text if not translation was found
   String translateText(String pText);
 
+  /// Gets the saved base url
+  String? getBaseUrl();
+
+  /// Gets the saved base url
+  Future<bool> setBaseUrl(String? baseUrl);
+
   /// Gets the last used username
   String? getUsername();
 
   /// Sets the last used username
-  Future<bool> setUsername(String username);
+  Future<bool> setUsername(String? username);
 
   /// Gets the last used password
   String? getPassword();
 
   /// Sets the last used password
-  Future<bool> setPassword(String password);
+  Future<bool> setPassword(String? password);
 
   /// Get auth code if one has been set
   String? getAuthCode();
