@@ -56,11 +56,12 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
               controller: passwordController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
-            Center(
-              child: RememberMeCheckbox(
-                checkHolder: checkHolder,
+            if (getConfigService().getAppConfig()?.uiConfig.showRememberMe ?? false)
+              Center(
+                child: RememberMeCheckbox(
+                  checkHolder: checkHolder,
+                ),
               ),
-            ),
             ElevatedButton(
               onPressed: _onLoginPressed,
               child: Text(getConfigService().translateText("Login")),
