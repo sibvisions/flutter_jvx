@@ -2,7 +2,7 @@ import 'dart:isolate';
 
 import '../../../../model/command/base_command.dart';
 import '../../../../model/config/api/api_config.dart';
-import '../../../../model/request/i_api_requestnfig.dart';
+import '../../../../model/request/i_api_request.dart';
 import '../../../isolate/isolate_message.dart';
 import '../../../isolate/isolate_message_wrapper.dart';
 import '../../i_api_service.dart';
