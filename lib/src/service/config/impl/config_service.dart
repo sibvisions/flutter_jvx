@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../data/config/app_config.dart';
-import '../../../../data/config/server_config.dart';
+import '../../../../config/app_config.dart';
+import '../../../../config/server_config.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';

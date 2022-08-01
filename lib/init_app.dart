@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-import 'data/config/app_config.dart';
+import 'config/app_config.dart';
 import 'main.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';

@@ -1,4 +1,4 @@
-import '../../src/model/config/api/endpoint_config.dart';
+import '../src/model/config/api/endpoint_config.dart';
 
 class ConfigGenerator {
   static EndpointConfig generateFixedEndpoints() {

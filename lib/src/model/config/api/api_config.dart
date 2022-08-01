@@ -1,5 +1,5 @@
-import '../../../../data/config/config_generator.dart';
-import '../../../../data/config/server_config.dart';
+import '../../../../config/config_generator.dart';
+import '../../../../config/server_config.dart';
 import '../../request/api_change_password_request.dart';
 import '../../request/api_close_frame_request.dart';
 import '../../request/api_close_screen_request.dart';

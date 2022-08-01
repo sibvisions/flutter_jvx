@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../data/config/app_config.dart';
+import '../../../config/app_config.dart';
 import '../../../init_app.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/custom/custom_screen_manager.dart';

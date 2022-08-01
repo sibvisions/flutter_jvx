@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../../data/config/app_config.dart';
+import '../../../config/app_config.dart';
 import '../../mask/splash/splash_widget.dart';
 import '../../model/custom/custom_screen_manager.dart';
 

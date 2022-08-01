@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../data/config/app_config.dart';
-import '../../../data/config/server_config.dart';
+import '../../../config/app_config.dart';
+import '../../../config/server_config.dart';
 import '../../model/config/user/user_info.dart';
 import '../file/file_manager.dart';
 
