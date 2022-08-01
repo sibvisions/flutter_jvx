@@ -8,9 +8,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/model/config/config_file/app_config.dart';
-import 'src/model/config/config_file/server_config.dart';
-import 'src/model/config/config_file/ui_config.dart';
-import 'src/model/config/config_file/version_config.dart';
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
@@ -38,35 +35,7 @@ import 'util/file/file_manager.dart';
 import 'util/parse_util.dart';
 
 void main() async {
-  await FlutterClient.setUp(MyApp(
-    appConfig: AppConfig(
-      title: "Sample App",
-      package: true,
-      uiConfig: const UiConfig(
-        showRememberMe: true,
-        rememberMeChecked: false,
-      ),
-      requestTimeout: 10,
-      // serverConfig: const ServerConfig(
-      //   baseUrl: 'http://192.168.0.241:8888/JVx.mobile/services/mobile',
-      //   appMode: AppMode.full,
-      //   appName: 'demo',
-      // ),
-      // Also if you want to run with a Developer Config you can pass one as a parameter
-      serverConfig: const ServerConfig(
-        baseUrl: 'http://172.20.0.119:8888/JVx.mobile/services/mobile',
-        appMode: AppMode.full,
-        appName: 'demo',
-        username: 'features',
-        password: 'features',
-      ),
-      versionConfig: const VersionConfig(
-        commit: "070a55e2",
-        buildDate: "2021-09-26",
-        version: "1.2.3+1",
-      ),
-    ),
-  ));
+  await FlutterClient.setUp(const MyApp());
 }
 
 abstract class FlutterClient {
