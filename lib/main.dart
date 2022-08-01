@@ -92,7 +92,7 @@ class FlutterJVx extends StatefulWidget {
   }
 }
 
-class _FlutterJVxState extends State<FlutterJVx> {
+class FlutterJVxState extends State<FlutterJVx> {
   late BeamerDelegate _routerDelegate;
 
   ThemeData themeData = ThemeData.from(
