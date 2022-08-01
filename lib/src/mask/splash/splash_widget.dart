@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../data/config/app_config.dart';
+import '../../../data/custom_test/custom_screen_manager_example.dart';
 import '../../../init_app.dart';
 import '../../../util/logging/flutter_logger.dart';
-import '../../model/config/config_file/app_config.dart';
-import 'loading_widget.dart';
+import 'loading_widget_example.dart';
 
 class SplashWidget extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

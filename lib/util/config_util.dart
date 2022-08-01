@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-import '../src/model/config/config_file/app_config.dart';
+import '../data/config/app_config.dart';
 import '../src/service/config/i_config_service.dart';
 import 'logging/flutter_logger.dart';
 

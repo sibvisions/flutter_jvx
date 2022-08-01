@@ -1,4 +1,5 @@
 import '../../../../data/config/config_generator.dart';
+import '../../../../data/config/server_config.dart';
 import '../../request/api_change_password_request.dart';
 import '../../request/api_close_frame_request.dart';
 import '../../request/api_close_screen_request.dart';
@@ -22,7 +23,6 @@ import '../../request/api_select_record_request.dart';
 import '../../request/api_set_value_request.dart';
 import '../../request/api_set_values_request.dart';
 import '../../request/api_startup_request.dart';
-import '../config_file/server_config.dart';
 import 'endpoint_config.dart';
 
 /// Config for each requests exact endpoint

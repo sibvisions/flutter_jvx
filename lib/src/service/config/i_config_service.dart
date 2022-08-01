@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
+import '../../../data/config/app_config.dart';
+import '../../../data/config/server_config.dart';
 import '../../../util/file/file_manager.dart';
-import '../../model/config/config_file/app_config.dart';
-import '../../model/config/config_file/server_config.dart';
 import '../../model/config/user/user_info.dart';
 
 /// Defines the base construct of a [IConfigService]
