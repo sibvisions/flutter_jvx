@@ -1,4 +1,4 @@
-Classes
+# Classes
 
  The following rules are defined by this template:
 
@@ -14,7 +14,7 @@ Classes
     Each parameter of a method is marked using the prefix “p”
 
 
-Interfaces
+# Interfaces
 
  The following rules are defined by this template:
 
@@ -22,6 +22,6 @@ Interfaces
     Then interface methods
     Sub/Inner interfaces at the end
 
-    Each interface strats with “I”
+    Each interface starts with “I”
     Important changes are documented in the header, including time stamp and author
     Documentation for the interface declaration, ALL methods and constants
