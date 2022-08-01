@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../util/config_util.dart';
@@ -11,6 +10,7 @@ import '../../model/command/api/open_screen_command.dart';
 import '../../model/custom/custom_screen.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../drawer/drawer_menu.dart';
 import 'grid/app_menu_grid_grouped.dart';
 import 'grid/app_menu_grid_ungroup.dart';

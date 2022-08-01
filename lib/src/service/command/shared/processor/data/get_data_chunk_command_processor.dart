@@ -1,7 +1,6 @@
-import 'package:flutter_client/src/mixin/data_service_mixin.dart';
-
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../mixin/data_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/api/requests/api_fetch_request.dart';
 import '../../../../../model/command/base_command.dart';

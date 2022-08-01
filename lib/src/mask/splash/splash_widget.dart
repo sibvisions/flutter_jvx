@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_client/src/model/config/config_file/app_config.dart';
 
 import '../../../init_app.dart';
 import '../../../util/logging/flutter_logger.dart';
+import '../../model/config/config_file/app_config.dart';
 import 'loading_widget.dart';
 
 class SplashWidget extends StatefulWidget {

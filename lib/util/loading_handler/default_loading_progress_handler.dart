@@ -2,9 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/service/command/i_command_service.dart';
-import 'package:flutter_client/src/service/command/impl/command_service.dart';
-import 'package:flutter_client/util/extensions/list_extensions.dart';
 
 import '../../src/model/command/api/api_command.dart';
 import '../../src/model/command/api/change_password_command.dart';
@@ -22,8 +19,11 @@ import '../../src/model/command/config/config_command.dart';
 import '../../src/model/command/data/data_command.dart';
 import '../../src/model/command/layout/layout_command.dart';
 import '../../src/model/command/ui/ui_command.dart';
+import '../../src/service/command/i_command_service.dart';
+import '../../src/service/command/impl/command_service.dart';
 import '../../src/service/service.dart';
 import '../../src/service/ui/i_ui_service.dart';
+import '../extensions/list_extensions.dart';
 import '../logging/flutter_logger.dart';
 import 'i_command_progress_handler.dart';
 

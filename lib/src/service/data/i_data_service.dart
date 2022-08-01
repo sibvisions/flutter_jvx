@@ -1,10 +1,9 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/data/data_book.dart';
-
 import '../../model/api/response/dal_fetch_response.dart';
 import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/base_command.dart';
+import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 

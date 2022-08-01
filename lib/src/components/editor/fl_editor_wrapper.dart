@@ -2,31 +2,31 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/date/fl_date_cell_editor.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/fl_number_cell_editor.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/linked/fl_linked_cell_editor.dart';
-import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/component/editor/text_field/fl_text_field_model.dart';
 
 import '../../../util/extensions/list_extensions.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../../util/parse_util.dart';
+import '../../mixin/ui_service_mixin.dart';
 import '../../model/api/api_object_property.dart';
 import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
+import '../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
+import 'cell_editor/date/fl_date_cell_editor.dart';
 import 'cell_editor/fl_choice_cell_editor.dart';
 import 'cell_editor/fl_dummy_cell_editor.dart';
 import 'cell_editor/fl_image_cell_editor.dart';
+import 'cell_editor/fl_number_cell_editor.dart';
 import 'cell_editor/fl_text_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
+import 'cell_editor/linked/fl_linked_cell_editor.dart';
+import 'text_field/fl_text_field_widget.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layouting wrapper of various non layouting widgets.

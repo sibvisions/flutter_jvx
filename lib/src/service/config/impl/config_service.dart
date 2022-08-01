@@ -2,12 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/model/config/config_file/server_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../util/file/file_manager.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/config/config_file/app_config.dart';
+import '../../../model/config/config_file/server_config.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
 import '../i_config_service.dart';

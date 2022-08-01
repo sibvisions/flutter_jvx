@@ -1,5 +1,4 @@
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-
+import '../../../../mixin/config_service_mixin.dart';
 import '../../../../model/api/response/menu_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route_to_menu_command.dart';

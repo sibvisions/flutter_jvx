@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:universal_io/io.dart';
 
+import '../../../../mixin/config_service_mixin.dart';
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/api_response_names.dart';
 import '../../../../model/api/requests/api_download_images_request.dart';

@@ -1,8 +1,7 @@
 import 'dart:collection';
 import 'dart:developer';
 
-import 'package:flutter_client/util/logging/flutter_logger.dart';
-
+import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/api/response/dal_fetch_response.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../isolate/isolate_message.dart';
 import '../../../../../../model/command/base_command.dart';
+import '../../../../../isolate/isolate_message.dart';
 
 class SetScreenSizeMessage extends IsolateMessage<List<BaseCommand>> {
   final String componentId;

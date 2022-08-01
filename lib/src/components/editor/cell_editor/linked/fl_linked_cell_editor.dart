@@ -1,8 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
+import '../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';

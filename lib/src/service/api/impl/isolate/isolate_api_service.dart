@@ -1,6 +1,5 @@
 import 'dart:isolate';
 
-import 'messages/api_isolate_get_repository_message.dart';
 import '../../../../model/api/requests/i_api_request.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/config/api/api_config.dart';
@@ -12,8 +11,9 @@ import '../../shared/i_repository.dart';
 import 'api_isolate_callback.dart';
 import 'messages/api_isolate_api_config_message.dart';
 import 'messages/api_isolate_controller_message.dart';
-import 'messages/api_isolate_set_repository_message.dart';
+import 'messages/api_isolate_get_repository_message.dart';
 import 'messages/api_isolate_request_message.dart';
+import 'messages/api_isolate_set_repository_message.dart';
 
 /// Executes [IApiRequest] in a separate isolate
 class IsolateApiService implements IApiService {

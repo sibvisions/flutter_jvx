@@ -1,10 +1,10 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../mask/menu/app_menu.dart';
 import '../../mixin/command_service_mixin.dart';
+import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 
 /// Displays all possible screens of the menu

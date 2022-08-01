@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter_client/src/mixin/layout_service_mixin.dart';
-
 import '../../../../../../util/logging/flutter_logger.dart';
+import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';

@@ -1,7 +1,6 @@
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/api/requests/api_open_screen_request.dart';
-
+import '../../../../mixin/config_service_mixin.dart';
 import '../../../../model/api/api_object_property.dart';
+import '../../../../model/api/requests/api_open_screen_request.dart';
 import '../../../../model/api/response/generic_screen_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
@@ -14,7 +13,9 @@ import '../i_response_processor.dart';
 /// based on the 'update' property of the request.
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class GenericScreenViewProcessor with ConfigServiceGetterMixin implements IResponseProcessor<GenericScreenViewResponse> {
+class GenericScreenViewProcessor
+    with ConfigServiceGetterMixin
+    implements IResponseProcessor<GenericScreenViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

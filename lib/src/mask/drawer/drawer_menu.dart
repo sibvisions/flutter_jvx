@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mask/menu/app_menu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../main.dart';
@@ -7,6 +6,7 @@ import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../model/menu/menu_model.dart';
+import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
 import '../setting/widgets/change_password.dart';
 

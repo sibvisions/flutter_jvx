@@ -1,22 +1,21 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/mixin/data_service_mixin.dart';
-import 'package:flutter_client/src/model/api/requests/api_dal_save_request.dart';
-import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
-import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
-import 'package:flutter_client/src/model/api/requests/api_filter_request.dart';
-import 'package:flutter_client/src/model/api/requests/api_insert_record_request.dart';
-import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
-import 'package:flutter_client/src/model/api/requests/filter.dart';
-import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
-import 'package:flutter_client/src/model/data/data_book.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-import 'package:flutter_client/src/service/api/shared/repository/offline/offline_database.dart';
-
+import '../../../../mixin/data_service_mixin.dart';
+import '../../../../model/api/requests/api_dal_save_request.dart';
+import '../../../../model/api/requests/api_delete_record_request.dart';
+import '../../../../model/api/requests/api_fetch_request.dart';
+import '../../../../model/api/requests/api_filter_request.dart';
+import '../../../../model/api/requests/api_insert_record_request.dart';
+import '../../../../model/api/requests/api_set_values_request.dart';
+import '../../../../model/api/requests/filter.dart';
 import '../../../../model/api/requests/i_api_request.dart';
 import '../../../../model/api/response/api_response.dart';
+import '../../../../model/api/response/dal_fetch_response.dart';
 import '../../../../model/config/api/api_config.dart';
+import '../../../../model/data/data_book.dart';
+import '../../../../model/data/subscriptions/data_record.dart';
 import '../i_repository.dart';
+import 'offline/offline_database.dart';
 
 class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   OfflineDatabase? offlineDatabase;

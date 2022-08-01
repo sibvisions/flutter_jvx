@@ -1,9 +1,9 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../mixin/config_service_mixin.dart';
+import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/login_command.dart';
 import 'remember_me_checkbox.dart';
 

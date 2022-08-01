@@ -6,13 +6,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'package:flutter_client/util/constants/i_types.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../../../../../util/constants/i_types.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/api/response/dal_meta_data_response.dart';
+import '../../../../../model/data/column_definition.dart';
 
 /// Table and column names are escaped via double quotes.<br>
 /// https://www.sqlite.org/lang_keywords.html
