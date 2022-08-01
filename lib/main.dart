@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/config/app_config.dart';
+import 'src/model/custom/custom_screen_manager.dart';
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
@@ -40,10 +41,12 @@ void main() async {
 
 class FlutterJVx extends StatefulWidget {
   final AppConfig? appConfig;
+  final CustomScreenManager? screenManager;
 
   const FlutterJVx({
     Key? key,
     this.appConfig,
+    this.screenManager,
   }) : super(key: key);
 
   @override
@@ -118,7 +121,11 @@ class FlutterJVxState extends State<FlutterJVx> {
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
           SplashLocation(
-              appConfig: widget.appConfig, styleCallbacks: [changeStyle], languageCallbacks: [changeLanguage]),
+            appConfig: widget.appConfig,
+            screenManager: widget.screenManager,
+            styleCallbacks: [changeStyle],
+            languageCallbacks: [changeLanguage],
+          ),
           LoginLocation(),
           MenuLocation(),
           SettingsLocation(),

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../data/config/app_config.dart';
 import '../../mask/splash/splash_widget.dart';
+import '../../model/custom/custom_screen_manager.dart';
 
 class SplashLocation extends BeamLocation<BeamState> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -10,6 +11,8 @@ class SplashLocation extends BeamLocation<BeamState> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final AppConfig? appConfig;
+
+  final CustomScreenManager? screenManager;
 
   final List<Function(Map<String, String> style)>? styleCallbacks;
 
@@ -21,6 +24,7 @@ class SplashLocation extends BeamLocation<BeamState> {
 
   SplashLocation({
     this.appConfig,
+    this.screenManager,
     this.languageCallbacks,
     this.styleCallbacks,
   });
@@ -35,6 +39,7 @@ class SplashLocation extends BeamLocation<BeamState> {
       BeamPage(
         child: SplashWidget(
           appConfig: appConfig,
+          screenManager: screenManager,
           languageCallbacks: languageCallbacks,
           styleCallbacks: styleCallbacks,
         ),

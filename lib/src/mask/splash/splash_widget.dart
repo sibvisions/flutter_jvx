@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../../../data/config/app_config.dart';
 import '../../../init_app.dart';
 import '../../../util/logging/flutter_logger.dart';
+import '../../model/custom/custom_screen_manager.dart';
 import 'loading_widget.dart';
 
 class SplashWidget extends StatefulWidget {
@@ -13,6 +14,8 @@ class SplashWidget extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final AppConfig? appConfig;
+
+  final CustomScreenManager? screenManager;
 
   final List<Function(Map<String, String> style)>? styleCallbacks;
 
@@ -25,6 +28,7 @@ class SplashWidget extends StatefulWidget {
   const SplashWidget({
     Key? key,
     this.appConfig,
+    this.screenManager,
     this.styleCallbacks,
     this.languageCallbacks,
   }) : super(key: key);
@@ -52,6 +56,7 @@ class _SplashWidgetState extends State<SplashWidget> {
     initAppFuture = initApp(
       initContext: context,
       appConfig: widget.appConfig,
+      pCustomManager: widget.screenManager,
       languageCallbacks: widget.languageCallbacks,
       styleCallbacks: widget.styleCallbacks,
     ).catchError((error, stackTrace) {
