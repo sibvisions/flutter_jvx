@@ -18,7 +18,7 @@ class CustomScreenManager {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void registerScreen({required CustomScreen pCustomScreen}) {
+  void registerScreen(CustomScreen pCustomScreen) {
     customScreens.add(pCustomScreen);
   }
 }

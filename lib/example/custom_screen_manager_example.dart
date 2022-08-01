@@ -16,8 +16,7 @@ class CustomScreenManagerExample extends CustomScreenManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CustomScreenManagerExample() {
-    registerScreen(
-        pCustomScreen: CustomScreen(
+    registerScreen(CustomScreen(
       isOfflineScreen: true,
       screenName: "Fir-N7_CUSTOM",
       screenTitle: "Title THIS",
