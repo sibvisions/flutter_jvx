@@ -1,4 +1,4 @@
-import '../../../model/api/requests/i_api_request.dart';
+import '../../../model/api/request/i_api_request.dart';
 import '../../../model/api/response/api_response.dart';
 import '../../../model/config/api/api_config.dart';
 

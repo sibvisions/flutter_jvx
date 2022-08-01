@@ -1,4 +1,4 @@
-import '../../../../../model/api/requests/i_api_request.dart';
+import '../../../../../model/api/request/i_api_request.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../isolate/isolate_message.dart';
 

@@ -1,4 +1,4 @@
-import '../../api/requests/api_set_value_request.dart';
+import '../../api/request/api_set_value_request.dart';
 import 'api_command.dart';
 
 /// Command to set off remote request [ApiSetValueRequest] from components

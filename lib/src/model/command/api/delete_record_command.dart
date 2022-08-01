@@ -1,4 +1,4 @@
-import '../../api/requests/filter.dart';
+import '../../api/request/filter.dart';
 import 'api_command.dart';
 
 /// This is the jvx command to delete a record.

@@ -1,6 +1,6 @@
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../model/api/api_object_property.dart';
-import '../../../../model/api/requests/api_open_screen_request.dart';
+import '../../../../model/api/request/api_open_screen_request.dart';
 import '../../../../model/api/response/generic_screen_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';

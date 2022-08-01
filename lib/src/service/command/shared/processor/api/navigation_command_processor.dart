@@ -1,7 +1,7 @@
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
-import '../../../../../model/api/requests/api_navigation_request.dart';
+import '../../../../../model/api/request/api_navigation_request.dart';
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/api/navigation_command.dart';
 import '../../../../../model/command/base_command.dart';

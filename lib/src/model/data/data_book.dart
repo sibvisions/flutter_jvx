@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import '../../service/service.dart';
 import '../../service/ui/i_ui_service.dart';
-import '../api/requests/filter.dart';
+import '../api/request/filter.dart';
 import '../api/response/dal_fetch_response.dart';
 import '../api/response/dal_meta_data_response.dart';
 import '../command/api/delete_record_command.dart';

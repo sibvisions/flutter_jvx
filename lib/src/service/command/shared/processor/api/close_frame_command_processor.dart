@@ -1,6 +1,6 @@
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../model/api/requests/api_close_frame_request.dart';
+import '../../../../../model/api/request/api_close_frame_request.dart';
 import '../../../../../model/command/api/close_frame_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/open_error_dialog_command.dart';
