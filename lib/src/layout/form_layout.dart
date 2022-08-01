@@ -4,8 +4,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../util/layout/form_layout/fl_calculate_anchors_util.dart';
-import '../../util/layout/form_layout/fl_calculate_dependent_util.dart';
 import '../model/layout/alignments.dart';
 import '../model/layout/form_layout/form_layout_anchor.dart';
 import '../model/layout/form_layout/form_layout_constraints.dart';
@@ -15,6 +13,8 @@ import '../model/layout/gaps.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import '../model/layout/margins.dart';
+import '../util/layout/fl_calculate_anchors_util.dart';
+import '../util/layout/fl_calculate_dependent_util.dart';
 import 'i_layout.dart';
 
 class FormLayout extends ILayout {

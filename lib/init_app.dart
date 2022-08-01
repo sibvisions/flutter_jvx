@@ -18,8 +18,8 @@ import 'src/service/config/i_config_service.dart';
 import 'src/service/config/impl/config_service.dart';
 import 'src/service/service.dart';
 import 'src/service/ui/i_ui_service.dart';
+import 'src/util/loading_handler/default_loading_progress_handler.dart';
 import 'util/config_util.dart';
-import 'util/loading_handler/default_loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
 
 Future<void> initApp({

@@ -4,9 +4,9 @@ import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../../../mixin/config_service_mixin.dart';
-import '../../../../../../util/file/file_manager.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_images_command.dart';
+import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
 class SaveApplicationImagesCommandProcessor

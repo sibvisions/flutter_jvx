@@ -23,6 +23,7 @@ import 'src/service/config/i_config_service.dart';
 import 'src/service/config/impl/config_service.dart';
 import 'src/service/data/i_data_service.dart';
 import 'src/service/data/impl/data_service.dart';
+import 'src/service/file/file_manager.dart';
 import 'src/service/layout/i_layout_service.dart';
 import 'src/service/layout/impl/isolate/isolate_layout_service.dart';
 import 'src/service/layout/impl/layout_service.dart';
@@ -32,7 +33,6 @@ import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
-import 'util/file/file_manager.dart';
 import 'util/parse_util.dart';
 
 void main() async {

@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../data/config/app_config.dart';
 import '../../../data/config/server_config.dart';
-import '../../../util/file/file_manager.dart';
 import '../../model/config/user/user_info.dart';
+import '../file/file_manager.dart';
 
 /// Defines the base construct of a [IConfigService]
 /// Config service is used to store & access all configurable data,

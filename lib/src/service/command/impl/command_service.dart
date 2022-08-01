@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 
-import '../../../../util/loading_handler/i_command_progress_handler.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
@@ -14,6 +13,7 @@ import '../../../model/command/ui/route_to_login_command.dart';
 import '../../../model/command/ui/route_to_menu_command.dart';
 import '../../../model/command/ui/route_to_work_command.dart';
 import '../../../model/command/ui/ui_command.dart';
+import '../../../util/loading_handler/i_command_progress_handler.dart';
 import '../i_command_service.dart';
 import '../shared/i_command_processor.dart';
 import '../shared/processor/api/api_processor.dart';

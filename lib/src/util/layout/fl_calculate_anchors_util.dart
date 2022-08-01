@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import '../../../src/model/layout/form_layout/form_layout_anchor.dart';
+import '../../model/layout/form_layout/form_layout_anchor.dart';
 
 class FLCalculateAnchorsUtil {
   /// Gets all non-calculated auto size anchors between start and end anchor

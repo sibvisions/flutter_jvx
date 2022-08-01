@@ -4,8 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
-import '../../../util/loading_handler/default_loading_progress_handler.dart';
-import '../../../util/loading_handler/progress_dialog_widget.dart';
 import '../src/model/command/api/close_screen_command.dart';
 import '../src/model/command/api/delete_record_command.dart';
 import '../src/model/command/api/fetch_command.dart';
@@ -27,6 +25,8 @@ import '../src/service/config/i_config_service.dart';
 import '../src/service/data/i_data_service.dart';
 import '../src/service/service.dart';
 import '../src/service/ui/i_ui_service.dart';
+import '../src/util/loading_handler/default_loading_progress_handler.dart';
+import '../src/util/loading_handler/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
   static initOnline(BuildContext context) async {

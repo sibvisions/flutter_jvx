@@ -1,4 +1,4 @@
-import '../../../src/model/layout/form_layout/form_layout_anchor.dart';
+import '../../model/layout/form_layout/form_layout_anchor.dart';
 
 class FLCalculateDependentUtil {
   /// Calculates the preferred size of relative anchors.
