@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../config/app_config.dart';
+import '../../../custom/custom_screen_manager.dart';
 import '../../../init_app.dart';
 import '../../../util/logging/flutter_logger.dart';
-import '../../model/custom/custom_screen_manager.dart';
 import 'loading_widget.dart';
 
 class SplashWidget extends StatefulWidget {

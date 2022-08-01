@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../src/model/custom/custom_header.dart';
+import '../custom/custom_header.dart';
 
 class CustomHeaderExample extends CustomHeader {
   const CustomHeaderExample({Key? key}) : super(key: key);

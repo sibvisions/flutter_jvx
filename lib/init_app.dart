@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import 'config/app_config.dart';
+import 'custom/custom_screen_manager.dart';
 import 'main.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';
-import 'src/model/custom/custom_screen_manager.dart';
 import 'src/service/api/i_api_service.dart';
 import 'src/service/api/shared/controller/api_controller.dart';
 import 'src/service/api/shared/repository/offline_api_repository.dart';

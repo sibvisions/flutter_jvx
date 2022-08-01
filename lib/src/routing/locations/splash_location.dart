@@ -2,8 +2,8 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../config/app_config.dart';
+import '../../../custom/custom_screen_manager.dart';
 import '../../mask/splash/splash_widget.dart';
-import '../../model/custom/custom_screen_manager.dart';
 
 class SplashLocation extends BeamLocation<BeamState> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
