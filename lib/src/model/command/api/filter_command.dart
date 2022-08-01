@@ -12,7 +12,7 @@ class FilterCommand extends ApiCommand {
 
   final List<String>? columnNames;
 
-  final Filter? filterCondition;
+  final Filter? filter;
 
   final String dataProvider;
 
@@ -25,7 +25,7 @@ class FilterCommand extends ApiCommand {
     required this.dataProvider,
     this.value,
     this.columnNames,
-    this.filterCondition,
+    this.filter,
     required String reason,
   }) : super(reason: reason);
 
@@ -35,5 +35,5 @@ class FilterCommand extends ApiCommand {
 
   @override
   String get logString =>
-      "FilterCommand: editorId: $editorId, value: $value, dataProvider: $dataProvider, columnNames: $columnNames, filterCondition: $filterCondition, reason: $reason";
+      "FilterCommand: editorId: $editorId, value: $value, dataProvider: $dataProvider, columnNames: $columnNames, filterCondition: $filter, reason: $reason";
 }

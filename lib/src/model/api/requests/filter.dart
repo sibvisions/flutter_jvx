@@ -19,6 +19,10 @@ class Filter {
     required this.columnNames,
   });
 
+  Filter.empty()
+      : columnNames = [],
+        values = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,4 +31,6 @@ class Filter {
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.values: values,
       };
+
+  bool get isEmpty => columnNames.isEmpty && values.isEmpty;
 }

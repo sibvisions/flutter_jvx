@@ -1,9 +1,19 @@
 import 'dart:collection';
 
+import '../../service/service.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../api/requests/filter.dart';
 import '../api/response/dal_fetch_response.dart';
 import '../api/response/dal_meta_data_response.dart';
+import '../command/api/delete_record_command.dart';
+import '../command/api/filter_command.dart';
+import '../command/api/insert_record_command.dart';
+import '../command/api/select_record_command.dart';
+import '../command/api/set_values_command.dart';
 import 'column_definition.dart';
+import 'subscriptions/data_chunk.dart';
 import 'subscriptions/data_record.dart';
+import 'subscriptions/data_subscription.dart';
 
 /// Holds all data and column definitions of a data provider
 class DataBook {
@@ -85,16 +95,22 @@ class DataBook {
     }
   }
 
-  /// Get date of of the selected record,
+  /// Get the selected record,
   /// If no record is currently selected (-1) returns null
   /// If selected row is not found returns null
   DataRecord? getSelectedRecord({required List<String>? pDataColumnNames}) {
-    if (selectedRow == -1) {
+    return getRecord(pDataColumnNames: pDataColumnNames, pRecordIndex: selectedRow);
+  }
+
+  /// Gets a record
+  /// If row is not found returns null
+  DataRecord? getRecord({required List<String>? pDataColumnNames, required int pRecordIndex}) {
+    if (pRecordIndex == -1) {
       return null;
     }
 
     List<ColumnDefinition> definitions = columnDefinitions;
-    List<dynamic> selectedRecord = records[selectedRow]!;
+    List<dynamic> selectedRecord = records[pRecordIndex]!;
 
     if (pDataColumnNames != null) {
       // Get provided column definitions
@@ -104,7 +120,7 @@ class DataBook {
       }
 
       // Get full selected record, then only take requested columns
-      List<dynamic> fullRecord = records[selectedRow]!;
+      List<dynamic> fullRecord = records[pRecordIndex]!;
       selectedRecord = definitions.map((e) {
         int indexOfDef = columnDefinitions.indexOf(e);
         return fullRecord[indexOfDef];
@@ -113,7 +129,7 @@ class DataBook {
 
     return DataRecord(
       columnDefinitions: definitions,
-      index: selectedRow,
+      index: pRecordIndex,
       values: selectedRecord,
     );
   }
@@ -142,5 +158,84 @@ class DataBook {
   /// Deletes all current records
   void clearRecords() {
     records.clear();
+  }
+
+  static void selectRecord({
+    required String pDataProvider,
+    required int pSelectedRecord,
+  }) {
+    IUiService uiService = services<IUiService>();
+    uiService.sendCommand(SelectRecordCommand(
+      reason: "Select record | DataBook selectRecord",
+      dataProvider: pDataProvider,
+      selectedRecord: pSelectedRecord,
+    ));
+  }
+
+  static void filterRecords({
+    required String pDataProvider,
+    required Filter pFilter,
+  }) {
+    IUiService uiService = services<IUiService>();
+    uiService.sendCommand(FilterCommand(
+      editorId: "custom",
+      filter: pFilter,
+      dataProvider: pDataProvider,
+      reason: "Filter record | DataBook filterRecords",
+    ));
+  }
+
+  static void insertRecord({
+    required String pDataProvider,
+  }) {
+    IUiService uiService = services<IUiService>();
+    uiService.sendCommand(InsertRecordCommand(
+      dataProvider: pDataProvider,
+      reason: "Insert record | DataBook insertRecord",
+    ));
+  }
+
+  static void updateRecord({
+    required String pDataProvider,
+    Filter? pFilter,
+  }) {
+    IUiService uiService = services<IUiService>();
+    uiService.sendCommand(SetValuesCommand(
+      componentId: "custom",
+      dataProvider: pDataProvider,
+      columnNames: [],
+      values: [],
+      filter: pFilter,
+      reason: "Update record | DataBook updateRecord",
+    ));
+  }
+
+  static void deleteRecord({
+    required String pDataProvider,
+    Filter? pFilter,
+    int? pRowIndex,
+  }) {
+    IUiService uiService = services<IUiService>();
+    uiService.sendCommand(DeleteRecordCommand(
+      dataProvider: pDataProvider,
+      filter: pFilter,
+      selectedRow: pRowIndex,
+      reason: "Delete record | DataBook deleteRecord",
+    ));
+  }
+
+  static void subscribeToDataBook({
+    required Object subbedObj,
+    required String dataProvider,
+    required int from,
+    void Function(DataRecord?)? onSelectedRecord,
+    void Function(DataChunk)? onDataChunk,
+    void Function(DalMetaDataResponse)? onMetaData,
+    int? to,
+    List<String>? dataColumns,
+  }) {
+    IUiService uiService = services<IUiService>();
+    uiService.registerDataSubscription(
+        pDataSubscription: DataSubscription(subbedObj: subbedObj, dataProvider: dataProvider, from: from));
   }
 }

@@ -219,7 +219,11 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
       _databookLastFilter[pRequest.dataProvider] = filter;
     } else if (pRequest.filter != null) {
-      _databookLastFilter[pRequest.dataProvider] = pRequest.filter!;
+      if (pRequest.filter!.isEmpty) {
+        _databookLastFilter.remove(pRequest.dataProvider);
+      } else {
+        _databookLastFilter[pRequest.dataProvider] = pRequest.filter!;
+      }
     }
 
     return _refetchMaximum(pRequest.dataProvider);
@@ -234,15 +238,12 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   Future<List<ApiResponse>> _setValues(ApiSetValuesRequest pRequest) async {
     Filter filter;
     if (pRequest.filter == null) {
-      DataBook dataBook = getDataService().getDataBook(pRequest.dataProvider)!;
-
-      DataRecord? dataRecord = dataBook.getSelectedRecord(pDataColumnNames: dataBook.metaData!.primaryKeyColumns);
-
-      if (dataRecord == null) {
-        return [];
+      Filter? selectedRowFilter = _createSelectedRowFilter(pDataProvider: pRequest.dataProvider);
+      if (selectedRowFilter == null) {
+        return _refetchMaximum(pRequest.dataProvider);
+      } else {
+        filter = selectedRowFilter;
       }
-
-      filter = Filter(values: dataRecord.values, columnNames: dataRecord.columnDefinitions.map((e) => e.name).toList());
     } else {
       filter = pRequest.filter!;
     }
@@ -284,5 +285,20 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     }
 
     return filterMap;
+  }
+
+  Filter? _createSelectedRowFilter({required String pDataProvider, int? pSelectedRow}) {
+    DataBook dataBook = getDataService().getDataBook(pDataProvider)!;
+
+    DataRecord? dataRecord = dataBook.getRecord(
+      pDataColumnNames: dataBook.metaData!.primaryKeyColumns,
+      pRecordIndex: pSelectedRow ?? dataBook.selectedRow,
+    );
+
+    if (dataRecord == null) {
+      return null;
+    }
+
+    return Filter(values: dataRecord.values, columnNames: dataRecord.columnDefinitions.map((e) => e.name).toList());
   }
 }
