@@ -47,9 +47,9 @@ class FlutterJVx extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FlutterJVxState createState() => _FlutterJVxState();
+  FlutterJVxState createState() => FlutterJVxState();
 
-  static _FlutterJVxState? of(BuildContext context) => context.findAncestorStateOfType<_FlutterJVxState>();
+  static FlutterJVxState? of(BuildContext context) => context.findAncestorStateOfType<FlutterJVxState>();
 
   static start([FlutterJVx pAppToRun = const FlutterJVx()]) async {
     WidgetsFlutterBinding.ensureInitialized();
