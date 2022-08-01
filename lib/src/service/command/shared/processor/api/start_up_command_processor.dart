@@ -22,7 +22,7 @@ class StartUpCommandProcessor
     }
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
-      appMode: "full",
+      appMode: getConfigService().getServerConfig()!.appMode.name,
       deviceMode: "mobile",
       applicationName: getConfigService().getAppName(),
       username: command.username,
