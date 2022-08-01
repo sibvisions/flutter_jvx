@@ -107,6 +107,15 @@ abstract class IConfigService {
   /// Set app style, usually only called after download
   void setAppStyle(Map<String, String>? pAppStyle);
 
+  /// Mobile Style Properties
+  double getOpacityMenu();
+
+  /// Mobile Style Properties
+  double getOpacitySideMenu();
+
+  /// Mobile Style Properties
+  double getOpacityControls();
+
   /// Get configured picture resolution
   int? getPictureResolution();
 

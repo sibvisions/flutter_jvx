@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
-import '../../../main.dart';
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../../util/loading_handler/progress_dialog_widget.dart';
 import '../src/model/api/requests/filter.dart';
@@ -60,8 +59,8 @@ abstract class OfflineUtil {
               message: "Re-syncing offline data...",
               progressType: ProgressType.normal,
               barrierDismissible: false,
-              progressValueColor: themeData.primaryColor,
-              progressBgColor: themeData.backgroundColor,
+              progressValueColor: Theme.of(context).primaryColor,
+              progressBgColor: Theme.of(context).backgroundColor,
             ),
           );
         },
@@ -380,8 +379,8 @@ abstract class OfflineUtil {
               message: "Fetching offline data...",
               progressType: ProgressType.normal,
               barrierDismissible: false,
-              progressValueColor: themeData.primaryColor,
-              progressBgColor: themeData.backgroundColor,
+              progressValueColor: Theme.of(context).primaryColor,
+              progressBgColor: Theme.of(context).backgroundColor,
             ),
           );
         },

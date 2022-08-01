@@ -228,7 +228,7 @@ class ConfigService implements IConfigService {
 
   @override
   void setAppStyle(Map<String, String>? pAppStyle) {
-    log(pAppStyle.toString());
+    log("AppStyle: " + pAppStyle.toString());
 
     if (pAppStyle == null) {
       applicationStyle.clear();
@@ -239,6 +239,21 @@ class ConfigService implements IConfigService {
     if (activeStyleCallbacks) {
       styleCallbacks.forEach((element) => element.call(pAppStyle));
     }
+  }
+
+  @override
+  double getOpacityMenu() {
+    return double.parse(applicationStyle['opacity.menu'] ?? '1');
+  }
+
+  @override
+  double getOpacitySideMenu() {
+    return double.parse(applicationStyle['opacity.sidemenu'] ?? '1');
+  }
+
+  @override
+  double getOpacityControls() {
+    return double.parse(applicationStyle['opacity.controls'] ?? '1');
   }
 
   @override

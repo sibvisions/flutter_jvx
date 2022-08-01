@@ -80,25 +80,6 @@ void main() async {
   await FlutterJVx.setUp(const ApplicationWidget());
 }
 
-//Mobile Style Properties
-double opacityMenu = 1;
-double opacitySideMenu = 1;
-double opacityControls = 1;
-
-ThemeData themeData = ThemeData.from(
-  colorScheme: ColorScheme.fromSwatch(
-    primarySwatch: Colors.amber,
-    backgroundColor: Colors.grey.shade200,
-  ),
-  // const ColorScheme.light(
-  //   primary: Colors.amber,
-  //   background: Color(0xFFEEEEEE),
-  //   onPrimary: Colors.black,
-  // ),
-);
-
-Locale locale = const Locale.fromSubtags(languageCode: "en");
-
 class ApplicationWidget extends StatefulWidget {
   final AppConfig? appConfig;
 
@@ -116,6 +97,20 @@ class ApplicationWidget extends StatefulWidget {
 
 class _ApplicationWidgetState extends State<ApplicationWidget> {
   late BeamerDelegate _routerDelegate;
+
+  ThemeData themeData = ThemeData.from(
+    colorScheme: ColorScheme.fromSwatch(
+      primarySwatch: Colors.amber,
+      backgroundColor: Colors.grey.shade200,
+    ),
+    // const ColorScheme.light(
+    //   primary: Colors.amber,
+    //   background: Color(0xFFEEEEEE),
+    //   onPrimary: Colors.black,
+    // ),
+  );
+
+  Locale locale = const Locale.fromSubtags(languageCode: "en");
 
   @override
   void initState() {
@@ -161,10 +156,6 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   }
 
   void changeStyle(Map<String, String> styleMap) {
-    opacityMenu = double.parse(styleMap['opacity.menu'] ?? '1');
-    opacitySideMenu = double.parse(styleMap['opacity.sidemenu'] ?? '1');
-    opacityControls = double.parse(styleMap['opacity.controls'] ?? '1');
-
     Color? styleColor = ParseUtil.parseHexColor(styleMap['theme.color']);
     if (styleColor != null) {
       Map<int, Color> color = {
@@ -183,10 +174,11 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
       MaterialColor styleMaterialColor = MaterialColor(styleColor.value, color);
 
       themeData = ThemeData.from(
-          colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: styleMaterialColor,
-        backgroundColor: Colors.grey.shade200,
-      ));
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: styleMaterialColor,
+          backgroundColor: Colors.grey.shade200,
+        ),
+      );
     }
     setState(() {});
   }

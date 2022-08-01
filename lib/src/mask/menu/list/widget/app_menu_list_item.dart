@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../main.dart';
 import '../../../../../util/font_awesome_util.dart';
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../mixin/ui_service_mixin.dart';
@@ -38,8 +37,8 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
       child: Container(
         margin: EdgeInsets.zero,
         height: 50,
-        color: backgroundOverride?.withOpacity(opacitySideMenu) ??
-            Theme.of(context).backgroundColor.withOpacity(opacitySideMenu),
+        color: backgroundOverride?.withOpacity(getConfigService().getOpacitySideMenu()) ??
+            Theme.of(context).backgroundColor.withOpacity(getConfigService().getOpacitySideMenu()),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -86,7 +85,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
         child: IFontAwesome.getFontAwesomeIcon(
           pText: imageName,
           pIconSize: 25,
-          pColor: Theme.of(pContext).primaryColor.withOpacity(opacitySideMenu),
+          pColor: Theme.of(pContext).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),
         ),
       );
     }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../main.dart';
 import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/logout_command.dart';
@@ -29,7 +28,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Theme.of(context).backgroundColor.withOpacity(opacitySideMenu),
+      backgroundColor: Theme.of(context).backgroundColor.withOpacity(getConfigService().getOpacitySideMenu()),
       child: Column(
         children: [
           _buildDrawerHeader(context),
@@ -44,7 +43,8 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
   Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
       margin: EdgeInsets.zero,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(opacitySideMenu)),
+      decoration:
+          BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacitySideMenu())),
       child: Row(
         children: [
           Expanded(
@@ -100,7 +100,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
   List<Widget> _buildDrawerFooter(BuildContext context) {
     return [
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -111,7 +111,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
         onTap: _settings,
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -122,7 +122,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
         onTap: _changePassword,
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -149,7 +149,8 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
         child: Text(
           text,
           style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu), fontWeight: FontWeight.bold),
+              color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+              fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -163,12 +164,12 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
     required VoidCallback onTap,
   }) {
     return ListTile(
-      tileColor: Theme.of(context).primaryColor.withOpacity(opacitySideMenu),
-      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+      tileColor: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),
+      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
       onTap: onTap,
       leading: FaIcon(
         leadingIcon,
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(opacitySideMenu),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
       ),
       title: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );

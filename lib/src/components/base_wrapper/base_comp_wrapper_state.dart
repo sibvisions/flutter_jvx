@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_jvx/src/mixin/config_service_mixin.dart';
 
-import '../../../main.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/layout/preferred_size_command.dart';
@@ -17,7 +17,7 @@ import 'base_comp_wrapper_widget.dart';
 /// Subscription handling in UiService
 /// Getters for componentSize
 abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget>
-    with UiServiceGetterMixin {
+    with ConfigServiceGetterMixin, UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,7 +109,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       left: getLeftForPositioned(),
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
-      child: Opacity(opacity: opacityControls, child: child),
+      child: Opacity(opacity: getConfigService().getOpacityControls(), child: child),
     );
   }
 

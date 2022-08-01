@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../main.dart';
 import '../../../../mixin/config_service_mixin.dart';
 
 class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServiceGetterMixin {
@@ -38,7 +37,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServic
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Theme.of(context).bottomAppBarColor.withOpacity(opacitySideMenu),
+      color: Theme.of(context).bottomAppBarColor.withOpacity(getConfigService().getOpacitySideMenu()),
       child: Padding(
           padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
           child: ListTile(
@@ -47,7 +46,11 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServic
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,
               style: TextStyle(
-                  color: Theme.of(context).textTheme.headline5?.color?.withOpacity(opacitySideMenu),
+                  color: Theme.of(context)
+                      .textTheme
+                      .headline5
+                      ?.color
+                      ?.withOpacity(getConfigService().getOpacitySideMenu()),
                   fontWeight: FontWeight.bold,
                   fontSize: 18),
             ),

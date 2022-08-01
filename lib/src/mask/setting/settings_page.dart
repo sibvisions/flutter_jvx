@@ -4,7 +4,6 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../../main.dart';
 import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/set_api_config_command.dart';
@@ -92,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     commitNotifier = ValueNotifier(appConfig.versionConfig.commit ?? "-");
     buildDateNotifier = ValueNotifier(appConfig.versionConfig.buildDate ?? "-");
 
-    baseSettings = _buildApplicationSettings();
+    baseSettings = _buildApplicationSettings(context);
     versionInfo = _buildVersionInfo();
     super.initState();
   }
@@ -189,11 +188,11 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SettingGroup _buildApplicationSettings() {
+  SettingGroup _buildApplicationSettings(BuildContext context) {
     SettingItem appNameSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.server,
-        color: themeData.primaryColor,
+        color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: appNameNotifier,
@@ -206,7 +205,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           pEditor: editor,
           pTitleIcon: FaIcon(
             FontAwesomeIcons.server,
-            color: themeData.primaryColor,
+            color: Theme.of(context).primaryColor,
           ),
           pTitleText: getConfigService().translateText("App Name"),
         ).then((value) {
@@ -221,7 +220,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     SettingItem baseUrlSetting = SettingItem(
         frontIcon: FaIcon(
           FontAwesomeIcons.globe,
-          color: themeData.primaryColor,
+          color: Theme.of(context).primaryColor,
         ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
         value: baseUrlNotifier,
@@ -234,7 +233,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
             pEditor: editor,
             pTitleIcon: FaIcon(
               FontAwesomeIcons.globe,
-              color: themeData.primaryColor,
+              color: Theme.of(context).primaryColor,
             ),
             pTitleText: getConfigService().translateText("URL"),
           ).then((value) async {
@@ -260,7 +259,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     SettingItem languageSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.language,
-        color: themeData.primaryColor,
+        color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: getConfigService().translateText("Language"),
@@ -280,14 +279,14 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
                 getConfigService().setLanguage(languageNotifier.value);
               }
             });
-        picker.showModal(context, themeData: themeData);
+        picker.showModal(context, themeData: Theme.of(context));
       },
     );
 
     SettingItem pictureSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.image,
-        color: themeData.primaryColor,
+        color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: getConfigService().translateText("Picture Size"),
@@ -307,7 +306,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
                 getConfigService().setPictureResolution(pictureSizeNotifier.value);
               }
             });
-        picker.showModal(context, themeData: themeData);
+        picker.showModal(context, themeData: Theme.of(context));
       },
     );
 
@@ -403,7 +402,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   /// Will send a [StartupCommand] with current values
   void _saveClicked() {
     StartupCommand startupCommand = StartupCommand(
-      reason: "QR-Code-Scanned",
+      reason: "Open App from Settings",
       appName: appNameNotifier.value,
       username: username,
       password: password,

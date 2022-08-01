@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../main.dart';
 import '../../../../../util/font_awesome_util.dart';
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../mixin/ui_service_mixin.dart';
@@ -39,7 +38,7 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
     return InkWell(
       onTap: () => onClick(componentId: menuItemModel.screenId, pUiService: getUiService(), pContext: context),
       child: Ink(
-        color: Theme.of(context).primaryColor.withOpacity(opacityMenu),
+        color: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacityMenu()),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
