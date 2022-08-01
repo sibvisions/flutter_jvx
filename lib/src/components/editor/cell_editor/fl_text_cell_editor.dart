@@ -4,7 +4,7 @@ import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/data/column_definition.dart';
-import '../password_field/fl_password_widget.dart';
+import '../password_field/fl_password_field_widget.dart';
 import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';

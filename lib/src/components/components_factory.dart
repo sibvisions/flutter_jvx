@@ -11,7 +11,7 @@ import 'check_box/fl_check_box_wrapper.dart';
 import 'custom/fl_custom_wrapper.dart';
 import 'dummy/fl_dummy_wrapper.dart';
 import 'editor/fl_editor_wrapper.dart';
-import 'editor/password_field/fl_password_wrapper.dart';
+import 'editor/password_field/fl_password_field_wrapper.dart';
 import 'editor/text_area/fl_text_area_wrapper.dart';
 import 'editor/text_field/fl_text_field_wrapper.dart';
 import 'gauge/fl_gauge_wrapper.dart';
