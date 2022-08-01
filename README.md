@@ -18,9 +18,9 @@ We recommend that you use the client as library and create your own app. We have
 
 Following dependency is required in your pubspec.yaml:
 
-    flutterclient:
+    flutter_jvx:
         git:
-        url: https://github.com/sibvisions/flutterclient.git
+            url: https://github.com/sibvisions/flutterclient.git
 
 
 It's also possible to use the app itself - standalone and not as library. You have the choice.

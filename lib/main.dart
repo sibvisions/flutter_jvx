@@ -34,11 +34,7 @@ import 'src/service/ui/impl/ui_service.dart';
 import 'util/file/file_manager.dart';
 import 'util/parse_util.dart';
 
-void main() async {
-  await FlutterClient.setUp(const MyApp());
-}
-
-abstract class FlutterClient {
+abstract class FlutterJVx {
   static setUp(Widget pAppToRun) async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -80,6 +76,10 @@ abstract class FlutterClient {
   }
 }
 
+void main() async {
+  await FlutterJVx.setUp(const ApplicationWidget());
+}
+
 //Mobile Style Properties
 double opacityMenu = 1;
 double opacitySideMenu = 1;
@@ -99,21 +99,22 @@ ThemeData themeData = ThemeData.from(
 
 Locale locale = const Locale.fromSubtags(languageCode: "en");
 
-class MyApp extends StatefulWidget {
+class ApplicationWidget extends StatefulWidget {
   final AppConfig? appConfig;
 
-  const MyApp({
+  const ApplicationWidget({
     Key? key,
     this.appConfig,
   }) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  _ApplicationWidgetState createState() => _ApplicationWidgetState();
 
-  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+  static _ApplicationWidgetState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_ApplicationWidgetState>();
 }
 
-class _MyAppState extends State<MyApp> {
+class _ApplicationWidgetState extends State<ApplicationWidget> {
   late BeamerDelegate _routerDelegate;
 
   @override
