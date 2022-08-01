@@ -4,8 +4,8 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../mixin/config_service_mixin.dart';
-import '../../mixin/ui_service_mixin.dart';
+import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/set_api_config_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';

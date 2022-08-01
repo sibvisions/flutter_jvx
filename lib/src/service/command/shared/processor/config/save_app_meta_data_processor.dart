@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';

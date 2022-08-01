@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/route_to_menu_command.dart';
 import '../../../../ui/i_ui_service.dart';

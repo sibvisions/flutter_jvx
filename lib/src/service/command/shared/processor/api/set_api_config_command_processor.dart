@@ -1,5 +1,5 @@
-import '../../../../../mixin/api_service_mixin.dart';
-import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../../mixin/api_service_mixin.dart';
+import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/set_api_config_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';

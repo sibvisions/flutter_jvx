@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 
+import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/parse_util.dart';
-import '../../mixin/ui_service_mixin.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';

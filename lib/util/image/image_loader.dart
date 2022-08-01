@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../src/mixin/config_service_mixin.dart';
+import '../../mixin/config_service_mixin.dart';
 import '../file/file_manager.dart';
 import '../font_awesome_util.dart';
 

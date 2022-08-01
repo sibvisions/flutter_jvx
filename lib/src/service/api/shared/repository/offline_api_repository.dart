@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import '../../../../mixin/data_service_mixin.dart';
+import '../../../../../mixin/data_service_mixin.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/data/data_book.dart';
 import '../../../../model/data/subscriptions/data_record.dart';

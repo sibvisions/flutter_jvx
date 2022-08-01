@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../mixin/config_service_mixin.dart';
+import '../../../../mixin/config_service_mixin.dart';
 import '../../../model/component/editor/cell_editor/fl_number_cell_editor_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/data/column_definition.dart';

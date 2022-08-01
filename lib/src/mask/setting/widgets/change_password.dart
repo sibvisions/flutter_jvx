@@ -1,8 +1,8 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../../mixin/config_service_mixin.dart';
+import '../../../../mixin/ui_service_mixin.dart';
 import '../../../model/command/api/change_password_command.dart';
 import '../../../model/command/api/login_command.dart';
 

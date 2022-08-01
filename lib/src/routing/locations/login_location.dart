@@ -1,12 +1,12 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
+import '../../../mixin/ui_service_mixin.dart';
 import '../../mask/login/app_login.dart';
 import '../../mask/login/change_one_time_password_card.dart';
 import '../../mask/login/login_card.dart';
 import '../../mask/login/lost_password_card.dart';
 import '../../mask/setting/widgets/change_password.dart';
-import '../../mixin/ui_service_mixin.dart';
 
 /// Displays all possible screens the login can show0
 class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {

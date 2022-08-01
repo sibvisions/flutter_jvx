@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
-import '../../../../mixin/config_service_mixin.dart';
+import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/request/api_download_images_request.dart';
 import '../../../../model/request/api_download_style_request.dart';

@@ -1,6 +1,6 @@
-import '../service/config/i_config_service.dart';
-import '../service/service.dart';
-import '../service/ui/i_ui_service.dart';
+import '../src/service/config/i_config_service.dart';
+import '../src/service/service.dart';
+import '../src/service/ui/i_ui_service.dart';
 
 ///
 ///  Provides an [IConfigService] instance from get.it service

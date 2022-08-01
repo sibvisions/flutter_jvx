@@ -1,9 +1,9 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
+import '../../../mixin/ui_service_mixin.dart';
 import '../../components/components_factory.dart';
 import '../../mask/work_screen/work_screen.dart';
-import '../../mixin/ui_service_mixin.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import '../../model/custom/custom_header.dart';
 import '../../model/custom/custom_screen.dart';

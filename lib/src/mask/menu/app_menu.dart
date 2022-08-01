@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/config_util.dart';
 import '../../../util/offline_util.dart';
 import '../../../util/parse_util.dart';
-import '../../mixin/config_service_mixin.dart';
-import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/custom/custom_screen.dart';
 import '../../model/menu/menu_model.dart';

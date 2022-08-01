@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../mixin/ui_service_mixin.dart';
+import '../../mixin/ui_service_mixin.dart';
 import '../model/command/api/navigation_command.dart';
 import '../model/custom/custom_screen.dart';
 import 'locations/work_screen_location.dart';

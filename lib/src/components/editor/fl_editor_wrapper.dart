@@ -3,10 +3,10 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/extensions/list_extensions.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../../util/parse_util.dart';
-import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
 import '../../model/component/editor/text_field/fl_text_field_model.dart';

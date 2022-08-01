@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/logging/flutter_logger.dart';
-import '../../mixin/config_service_mixin.dart';
-import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';

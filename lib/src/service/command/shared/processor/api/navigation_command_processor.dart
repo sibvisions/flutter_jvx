@@ -1,12 +1,12 @@
-import '../../../../../mixin/api_service_mixin.dart';
-import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../mixin/ui_service_mixin.dart';
-import '../../../../../model/request/api_navigation_request.dart';
+import '../../../../../../mixin/api_service_mixin.dart';
+import '../../../../../../mixin/config_service_mixin.dart';
+import '../../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/api/navigation_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../../../../model/command/ui/open_error_dialog_command.dart';
+import '../../../../../model/request/api_navigation_request.dart';
 import '../../i_command_processor.dart';
 
 /// Will send [ApiNavigationRequest] to remote server

@@ -1,5 +1,5 @@
-import '../service/data/i_data_service.dart';
-import '../service/service.dart';
+import '../src/service/data/i_data_service.dart';
+import '../src/service/service.dart';
 
 ///
 /// Provides an [IDataService] instance from get.it service

@@ -1,7 +1,7 @@
 import 'package:archive/archive.dart';
 
+import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../../util/file/file_manager.dart';
-import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_translation_command.dart';
 import '../../i_command_processor.dart';

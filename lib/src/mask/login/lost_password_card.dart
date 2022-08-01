@@ -2,8 +2,8 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../mixin/config_service_mixin.dart';
-import '../../mixin/ui_service_mixin.dart';
+import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/reset_password_command.dart';
 
 /// Card to be displayed in app-login for resetting the password

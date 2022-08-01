@@ -1,8 +1,8 @@
-import '../../../../../mixin/api_service_mixin.dart';
-import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../model/request/api_startup_request.dart';
+import '../../../../../../mixin/api_service_mixin.dart';
+import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
+import '../../../../../model/request/api_startup_request.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService

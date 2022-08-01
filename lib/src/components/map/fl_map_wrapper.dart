@@ -4,8 +4,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/image/image_loader.dart';
-import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/map/fl_map_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
