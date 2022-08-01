@@ -6,7 +6,6 @@ import 'package:wakelock/wakelock.dart';
 
 import '../../../util/loading_handler/default_loading_progress_handler.dart';
 import '../../../util/loading_handler/progress_dialog_widget.dart';
-import '../src/model/request/filter.dart';
 import '../src/model/command/api/close_screen_command.dart';
 import '../src/model/command/api/delete_record_command.dart';
 import '../src/model/command/api/fetch_command.dart';
@@ -18,6 +17,7 @@ import '../src/model/command/ui/route_to_menu_command.dart';
 import '../src/model/component/fl_component_model.dart';
 import '../src/model/config/api/api_config.dart';
 import '../src/model/data/data_book.dart';
+import '../src/model/request/filter.dart';
 import '../src/service/api/i_api_service.dart';
 import '../src/service/api/shared/repository/offline/offline_database.dart';
 import '../src/service/api/shared/repository/offline_api_repository.dart';
@@ -26,7 +26,6 @@ import '../src/service/command/i_command_service.dart';
 import '../src/service/config/i_config_service.dart';
 import '../src/service/data/i_data_service.dart';
 import '../src/service/service.dart';
-import '../src/service/storage/i_storage_service.dart';
 import '../src/service/ui/i_ui_service.dart';
 
 abstract class OfflineUtil {
@@ -35,7 +34,6 @@ abstract class OfflineUtil {
     IUiService uiService = services<IUiService>();
     IApiService apiService = services<IApiService>();
     IDataService dataService = services<IDataService>();
-    IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
     FlComponentModel? workscreenModel;
@@ -358,7 +356,6 @@ abstract class OfflineUtil {
     IUiService uiService = services<IUiService>();
     IApiService apiService = services<IApiService>();
     IDataService dataService = services<IDataService>();
-    IStorageService storageService = services<IStorageService>();
     ICommandService commandService = services<ICommandService>();
 
     var dialogKey = GlobalKey<ProgressDialogState>();
