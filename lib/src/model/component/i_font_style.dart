@@ -1,4 +1,4 @@
-abstract class IFont {
+abstract class IFontStyle {
   /// The plain style constant.
   static const int TEXT_PLAIN = 0;
 

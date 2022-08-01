@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../util/constants/i_color.dart';
-import '../../../util/constants/i_font.dart';
 import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
+import 'i_font_style.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
@@ -298,8 +298,8 @@ abstract class FlComponentModel {
       if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
         fontName = fontValuesList[0];
         fontSize = int.parse(fontValuesList[2]);
-        isBold = (int.parse(fontValuesList[1]) & IFont.TEXT_BOLD) == IFont.TEXT_BOLD;
-        isItalic = (int.parse(fontValuesList[1]) & IFont.TEXT_ITALIC) == IFont.TEXT_ITALIC;
+        isBold = (int.parse(fontValuesList[1]) & IFontStyle.TEXT_BOLD) == IFontStyle.TEXT_BOLD;
+        isItalic = (int.parse(fontValuesList[1]) & IFontStyle.TEXT_ITALIC) == IFontStyle.TEXT_ITALIC;
       }
     }
   }
@@ -341,8 +341,8 @@ abstract class FlComponentModel {
         if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
           fontName = fontValuesList[0];
           fontSize = int.parse(fontValuesList[2]);
-          isBold = (int.parse(fontValuesList[1]) & IFont.TEXT_BOLD) == IFont.TEXT_BOLD;
-          isItalic = (int.parse(fontValuesList[1]) & IFont.TEXT_ITALIC) == IFont.TEXT_ITALIC;
+          isBold = (int.parse(fontValuesList[1]) & IFontStyle.TEXT_BOLD) == IFontStyle.TEXT_BOLD;
+          isItalic = (int.parse(fontValuesList[1]) & IFontStyle.TEXT_ITALIC) == IFontStyle.TEXT_ITALIC;
         }
       } else {
         fontName = pDefaultModel.fontName;

@@ -2,7 +2,7 @@
 /// SQL types, called JDBC types.
 ///
 /// This class is never instantiated.
-class Types {
+abstract class Types {
   static const int BIT = -7;
 
   static const int TINYINT = -6;
