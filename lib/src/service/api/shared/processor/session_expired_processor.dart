@@ -1,4 +1,4 @@
-import '../../../../model/api/response/session_expired_response.dart';
+import '../../../../model/response/session_expired_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/open_session_expired_dialog_command.dart';
 import '../i_response_processor.dart';

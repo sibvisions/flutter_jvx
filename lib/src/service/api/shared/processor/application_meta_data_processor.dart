@@ -1,4 +1,4 @@
-import '../../../../model/api/response/application_meta_data_response.dart';
+import '../../../../model/response/application_meta_data_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/config/save_app_meta_data_command.dart';
 import '../i_response_processor.dart';

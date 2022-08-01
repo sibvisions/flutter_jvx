@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import '../../../components/panel/group/fl_group_panel_wrapper.dart';
-import '../../api/api_object_property.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import '../../layout/alignments.dart';
 import '../label/fl_label_model.dart';
 import 'fl_panel_model.dart';

@@ -11,7 +11,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../../../../../util/constants/i_types.dart';
 import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../model/api/response/dal_meta_data_response.dart';
+import '../../../../../model/response/dal_meta_data_response.dart';
 import '../../../../../model/data/column_definition.dart';
 
 /// Table and column names are escaped via double quotes.<br>

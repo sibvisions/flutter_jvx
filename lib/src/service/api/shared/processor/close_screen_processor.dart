@@ -1,4 +1,4 @@
-import '../../../../model/api/response/close_screen_response.dart';
+import '../../../../model/response/close_screen_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/delete_screen_command.dart';
 import '../i_response_processor.dart';

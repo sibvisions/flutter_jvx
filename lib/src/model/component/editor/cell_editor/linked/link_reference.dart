@@ -1,4 +1,4 @@
-import '../../../../api/api_object_property.dart';
+import '../../../../../service/api/shared/api_object_property.dart';
 
 class LinkReference {
   List<String> columnNames = <String>[];

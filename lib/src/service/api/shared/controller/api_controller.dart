@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import '../../../../model/api/api_response_names.dart';
-import '../../../../model/api/response/api_response.dart';
 import '../../../../model/command/base_command.dart';
+import '../../../../model/response/api_response.dart';
+import '../api_response_names.dart';
 import '../i_controller.dart';
 import '../i_response_processor.dart';
 import '../processor/application_meta_data_processor.dart';

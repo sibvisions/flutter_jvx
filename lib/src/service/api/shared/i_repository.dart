@@ -1,6 +1,6 @@
-import '../../../model/api/request/i_api_request.dart';
-import '../../../model/api/response/api_response.dart';
 import '../../../model/config/api/api_config.dart';
+import '../../../model/request/i_api_request.dart';
+import '../../../model/response/api_response.dart';
 
 /// The interface declaring all possible requests to the mobile server.
 abstract class IRepository {

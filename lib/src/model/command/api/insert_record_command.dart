@@ -1,4 +1,4 @@
-import '../../api/request/api_insert_record_request.dart';
+import '../../request/api_insert_record_request.dart';
 import 'api_command.dart';
 
 /// Sends [ApiInsertRecordRequest]

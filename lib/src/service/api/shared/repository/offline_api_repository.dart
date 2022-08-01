@@ -1,19 +1,19 @@
 import 'dart:developer';
 
 import '../../../../mixin/data_service_mixin.dart';
-import '../../../../model/api/request/api_dal_save_request.dart';
-import '../../../../model/api/request/api_delete_record_request.dart';
-import '../../../../model/api/request/api_fetch_request.dart';
-import '../../../../model/api/request/api_filter_request.dart';
-import '../../../../model/api/request/api_insert_record_request.dart';
-import '../../../../model/api/request/api_set_values_request.dart';
-import '../../../../model/api/request/filter.dart';
-import '../../../../model/api/request/i_api_request.dart';
-import '../../../../model/api/response/api_response.dart';
-import '../../../../model/api/response/dal_fetch_response.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/data/data_book.dart';
 import '../../../../model/data/subscriptions/data_record.dart';
+import '../../../../model/request/api_dal_save_request.dart';
+import '../../../../model/request/api_delete_record_request.dart';
+import '../../../../model/request/api_fetch_request.dart';
+import '../../../../model/request/api_filter_request.dart';
+import '../../../../model/request/api_insert_record_request.dart';
+import '../../../../model/request/api_set_values_request.dart';
+import '../../../../model/request/filter.dart';
+import '../../../../model/request/i_api_request.dart';
+import '../../../../model/response/api_response.dart';
+import '../../../../model/response/dal_fetch_response.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
 

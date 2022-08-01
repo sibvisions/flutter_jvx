@@ -1,4 +1,4 @@
-import '../../api/response/dal_fetch_response.dart';
+import '../../response/dal_fetch_response.dart';
 import 'data_command.dart';
 
 class SaveFetchDataCommand extends DataCommand {

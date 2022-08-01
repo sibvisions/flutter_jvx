@@ -1,4 +1,4 @@
-import '../../../../model/api/response/error_view_response.dart';
+import '../../../../model/response/error_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/open_error_dialog_command.dart';
 import '../i_response_processor.dart';

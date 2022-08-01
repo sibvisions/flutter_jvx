@@ -7,7 +7,7 @@ import '../../../../util/extensions/list_extensions.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../mixin/command_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
-import '../../../model/api/response/dal_meta_data_response.dart';
+import '../../../model/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';

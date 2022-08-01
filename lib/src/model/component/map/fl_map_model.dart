@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../util/parse_util.dart';
-import '../../api/api_object_property.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import '../fl_component_model.dart';
 
 class FlMapModel extends FlComponentModel {

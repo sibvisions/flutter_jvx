@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../api/api_object_property.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import '../fl_component_model.dart';
 
 class FlIconModel extends FlComponentModel {

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import '../../../service/ui/i_ui_service.dart';
-import '../../api/response/dal_meta_data_response.dart';
+import '../../response/dal_meta_data_response.dart';
 import 'data_chunk.dart';
 import 'data_record.dart';
 

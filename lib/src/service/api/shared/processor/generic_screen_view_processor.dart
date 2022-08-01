@@ -1,12 +1,12 @@
 import '../../../../mixin/config_service_mixin.dart';
-import '../../../../model/api/api_object_property.dart';
-import '../../../../model/api/request/api_open_screen_request.dart';
-import '../../../../model/api/response/generic_screen_view_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route_to_work_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/model_factory.dart';
+import '../../../../model/request/api_open_screen_request.dart';
+import '../../../../model/response/generic_screen_view_response.dart';
+import '../api_object_property.dart';
 import '../i_response_processor.dart';
 
 /// Processes [GenericScreenViewResponse], will separate (and parse) new and changed components, can also open screens

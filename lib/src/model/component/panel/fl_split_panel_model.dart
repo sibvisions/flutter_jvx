@@ -1,4 +1,4 @@
-import '../../api/api_object_property.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import 'fl_panel_model.dart';
 
 enum SPLIT_ORIENTATION { HORIZONTAL, VERTICAL }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../util/constants/i_color.dart';
 import '../../../util/constants/i_font.dart';
 import '../../../util/parse_util.dart';
-import '../api/api_object_property.dart';
+import '../../service/api/shared/api_object_property.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
 

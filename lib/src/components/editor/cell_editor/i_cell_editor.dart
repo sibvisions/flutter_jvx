@@ -1,7 +1,7 @@
-import '../../../model/api/api_object_property.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';

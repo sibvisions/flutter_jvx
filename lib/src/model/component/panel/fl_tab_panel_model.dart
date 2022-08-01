@@ -1,5 +1,5 @@
 import '../../../components/panel/tabset/fl_tab_panel_wrapper.dart';
-import '../../api/api_object_property.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import 'fl_panel_model.dart';
 
 class FlTabPanelModel extends FlPanelModel {

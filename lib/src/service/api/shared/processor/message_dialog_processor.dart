@@ -1,4 +1,4 @@
-import '../../../../model/api/response/message_dialog_response.dart';
+import '../../../../model/response/message_dialog_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/open_message_dialog_command.dart';
 import '../i_response_processor.dart';

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../../util/image/image_loader.dart';
-import '../../../api/api_object_property.dart';
+import '../../../../service/api/shared/api_object_property.dart';
 import 'cell_editor_model.dart';
 
 class FlChoiceCellEditorModel extends ICellEditorModel {

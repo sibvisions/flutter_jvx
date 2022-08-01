@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import '../../api/api_object_property.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import '../fl_component_model.dart';
 import '../interface/i_data_model.dart';
 

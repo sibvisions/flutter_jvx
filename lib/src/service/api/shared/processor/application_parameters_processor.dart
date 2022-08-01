@@ -1,4 +1,4 @@
-import '../../../../model/api/response/application_parameter_response.dart';
+import '../../../../model/response/application_parameter_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../i_response_processor.dart';
 

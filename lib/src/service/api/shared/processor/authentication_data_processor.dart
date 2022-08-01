@@ -1,4 +1,4 @@
-import '../../../../model/api/response/api_authentication_data_response.dart';
+import '../../../../model/response/api_authentication_data_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/config/save_auth_key_command.dart';
 import '../i_response_processor.dart';

@@ -1,4 +1,4 @@
-import '../../api/response/application_meta_data_response.dart';
+import '../../response/application_meta_data_response.dart';
 import 'config_command.dart';
 
 class SaveAppMetaDataCommand extends ConfigCommand {

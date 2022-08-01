@@ -1,6 +1,6 @@
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../model/api/request/api_set_values_request.dart';
+import '../../../../../model/request/api_set_values_request.dart';
 import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';

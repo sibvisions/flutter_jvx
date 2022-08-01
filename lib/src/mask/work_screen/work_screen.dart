@@ -8,7 +8,7 @@ import '../../../util/parse_util.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
 import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
-import '../../model/api/request/api_navigation_request.dart';
+import '../../model/request/api_navigation_request.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/device_status_command.dart';
 import '../../model/command/api/navigation_command.dart';

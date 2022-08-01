@@ -2,14 +2,14 @@ import 'dart:collection';
 
 import '../../service/service.dart';
 import '../../service/ui/i_ui_service.dart';
-import '../api/request/filter.dart';
-import '../api/response/dal_fetch_response.dart';
-import '../api/response/dal_meta_data_response.dart';
 import '../command/api/delete_record_command.dart';
 import '../command/api/filter_command.dart';
 import '../command/api/insert_record_command.dart';
 import '../command/api/select_record_command.dart';
 import '../command/api/set_values_command.dart';
+import '../request/filter.dart';
+import '../response/dal_fetch_response.dart';
+import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
 import 'subscriptions/data_chunk.dart';
 import 'subscriptions/data_record.dart';

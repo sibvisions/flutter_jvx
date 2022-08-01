@@ -1,4 +1,4 @@
-import '../../api/response/dal_meta_data_response.dart';
+import '../../response/dal_meta_data_response.dart';
 import 'data_command.dart';
 
 /// Command to save a [DalMetaDataResponse]

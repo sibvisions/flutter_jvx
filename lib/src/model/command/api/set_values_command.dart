@@ -1,5 +1,5 @@
-import '../../api/request/api_set_values_request.dart';
-import '../../api/request/filter.dart';
+import '../../request/api_set_values_request.dart';
+import '../../request/filter.dart';
 import 'api_command.dart';
 
 /// Command to set off remote request [ApiSetValuesRequest]

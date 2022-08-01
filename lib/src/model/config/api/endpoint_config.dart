@@ -1,24 +1,24 @@
-import '../../api/request/api_change_password_request.dart';
-import '../../api/request/api_close_frame_request.dart';
-import '../../api/request/api_close_screen_request.dart';
-import '../../api/request/api_close_tab_request.dart';
-import '../../api/request/api_delete_record_request.dart';
-import '../../api/request/api_device_status_request.dart';
-import '../../api/request/api_download_images_request.dart';
-import '../../api/request/api_download_translation_request.dart';
-import '../../api/request/api_fetch_request.dart';
-import '../../api/request/api_insert_record_request.dart';
-import '../../api/request/api_login_request.dart';
-import '../../api/request/api_logout_request.dart';
-import '../../api/request/api_navigation_request.dart';
-import '../../api/request/api_open_screen_request.dart';
-import '../../api/request/api_press_button_request.dart';
-import '../../api/request/api_reset_password_request.dart';
-import '../../api/request/api_select_record_request.dart';
-import '../../api/request/api_set_value_request.dart';
-import '../../api/request/api_set_values_request.dart';
-import '../../api/request/api_startup_request.dart';
-import '../../api/request/i_api_request.dart';
+import '../../request/api_change_password_request.dart';
+import '../../request/api_close_frame_request.dart';
+import '../../request/api_close_screen_request.dart';
+import '../../request/api_close_tab_request.dart';
+import '../../request/api_delete_record_request.dart';
+import '../../request/api_device_status_request.dart';
+import '../../request/api_download_images_request.dart';
+import '../../request/api_download_translation_request.dart';
+import '../../request/api_fetch_request.dart';
+import '../../request/api_insert_record_request.dart';
+import '../../request/api_login_request.dart';
+import '../../request/api_logout_request.dart';
+import '../../request/api_navigation_request.dart';
+import '../../request/api_open_screen_request.dart';
+import '../../request/api_press_button_request.dart';
+import '../../request/api_reset_password_request.dart';
+import '../../request/api_select_record_request.dart';
+import '../../request/api_set_value_request.dart';
+import '../../request/api_set_values_request.dart';
+import '../../request/api_startup_request.dart';
+import '../../request/i_api_request.dart';
 
 /// Config for all endpoints for all [IApiRequest]s
 class EndpointConfig {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../mixin/ui_service_mixin.dart';
-import '../../model/api/response/dal_meta_data_response.dart';
+import '../../model/response/dal_meta_data_response.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';

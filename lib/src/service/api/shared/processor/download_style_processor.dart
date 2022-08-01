@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../../../model/api/response/download_style_response.dart';
+import '../../../../model/response/download_style_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/config/save_application_style_command.dart';
 import '../i_response_processor.dart';

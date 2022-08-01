@@ -1,7 +1,7 @@
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/data_service_mixin.dart';
-import '../../../../../model/api/request/api_select_record_request.dart';
+import '../../../../../model/request/api_select_record_request.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/change_selected_row_command.dart';

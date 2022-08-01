@@ -1,5 +1,5 @@
-import '../api/api_object_property.dart';
-import '../api/response/dal_meta_data_response.dart';
+import '../../service/api/shared/api_object_property.dart';
+import '../response/dal_meta_data_response.dart';
 
 /// The definition of a column of a dataBook. Received from the server in a [DalMetaDataResponse]
 class ColumnDefinition {

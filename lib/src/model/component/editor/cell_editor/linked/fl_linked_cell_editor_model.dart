@@ -1,4 +1,4 @@
-import '../../../../api/api_object_property.dart';
+import '../../../../../service/api/shared/api_object_property.dart';
 import '../cell_editor_model.dart';
 import 'column_view.dart';
 import 'link_reference.dart';
