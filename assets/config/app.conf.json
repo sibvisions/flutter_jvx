@@ -1,32 +1,22 @@
 {
-  "startupParameters": {
-    "username" : "features",
-    "password" : "features"
-  },
-
+  "title": "JVx Mobile Demo",
+  "requestTimeout": 25,
   "uiConfig": {
-    "showLoginRememberMe" : true,
-    "loginRememberMeChecked": true
+    "showRememberMe": true,
+    "rememberMeChecked": true
   },
-
-  "remoteConfig": {
-    "indexOfUsingUrlConfig": 0,
-    "devUrlConfigs" : [
-      {
-        "name": "Toni : 0",
-        "host": "172.16.0.34",
-        "port": 8888,
-        "path": "/JVx.mobile/services/mobile",
-        "https": false
-      },
-      {
-        "name": "Severin : 1",
-        "host": "172.16.0.137",
-        "port": 8888,
-        "path": "/JVx.mobile/services/mobile",
-        "https": false
-      }
-    ],
-    "requestTimeoutInSeconds" : 20
+  "serverConfig": {
+    "baseUrl": "http://localhost:8888/JVx.mobile/services/mobile",
+    "appMode": "full",
+    "appName": "demo",
+    "username": "features",
+    "password": "features"
+  },
+  "versionConfig": {
+    "commit": "f63c85b2",
+    "buildDate": 1659080940038,
+    "version": "1.0.1"
+  },
+  "startupParameters": {
   }
 }
