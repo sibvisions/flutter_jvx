@@ -34,8 +34,24 @@ import 'src/service/ui/impl/ui_service.dart';
 import 'util/file/file_manager.dart';
 import 'util/parse_util.dart';
 
-abstract class FlutterJVx {
-  static setUp(Widget pAppToRun) async {
+void main() async {
+  await FlutterJVx.start();
+}
+
+class FlutterJVx extends StatefulWidget {
+  final AppConfig? appConfig;
+
+  const FlutterJVx({
+    Key? key,
+    this.appConfig,
+  }) : super(key: key);
+
+  @override
+  _FlutterJVxState createState() => _FlutterJVxState();
+
+  static _FlutterJVxState? of(BuildContext context) => context.findAncestorStateOfType<_FlutterJVxState>();
+
+  static start([FlutterJVx pAppToRun = const FlutterJVx()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,26 +92,7 @@ abstract class FlutterJVx {
   }
 }
 
-void main() async {
-  await FlutterJVx.setUp(const ApplicationWidget());
-}
-
-class ApplicationWidget extends StatefulWidget {
-  final AppConfig? appConfig;
-
-  const ApplicationWidget({
-    Key? key,
-    this.appConfig,
-  }) : super(key: key);
-
-  @override
-  _ApplicationWidgetState createState() => _ApplicationWidgetState();
-
-  static _ApplicationWidgetState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_ApplicationWidgetState>();
-}
-
-class _ApplicationWidgetState extends State<ApplicationWidget> {
+class _FlutterJVxState extends State<FlutterJVx> {
   late BeamerDelegate _routerDelegate;
 
   ThemeData themeData = ThemeData.from(
