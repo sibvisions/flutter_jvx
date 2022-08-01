@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-//import 'package:flutter_client/src/components/table/fl_table_wrapper.dart';
-
 import '../model/component/fl_component_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'button/fl_button_wrapper.dart';
