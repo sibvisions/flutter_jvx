@@ -34,12 +34,6 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
 
   final List<int> resolutions = [320, 640, 1024];
 
-  /// Application settings
-  late SettingGroup baseSettings;
-
-  /// Version Info
-  late SettingGroup versionInfo;
-
   /// Baseurl notifier, will rebuild the value once changed
   late ValueNotifier<String> baseUrlNotifier;
 
@@ -73,6 +67,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
 
   @override
   void initState() {
+    super.initState();
     var appConfig = getConfigService().getAppConfig()!;
 
     // Application setting
@@ -90,10 +85,6 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     }
     commitNotifier = ValueNotifier(appConfig.versionConfig.commit ?? "-");
     buildDateNotifier = ValueNotifier(appConfig.versionConfig.buildDate ?? "-");
-
-    baseSettings = _buildApplicationSettings(context);
-    versionInfo = _buildVersionInfo();
-    super.initState();
   }
 
   @override
@@ -127,7 +118,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [baseSettings, versionInfo],
+          children: [_buildApplicationSettings(context), _buildVersionInfo()],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
