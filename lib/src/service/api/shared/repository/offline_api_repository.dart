@@ -14,6 +14,7 @@ import '../../../../model/request/filter.dart';
 import '../../../../model/request/i_api_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
+import '../../../../model/response/dal_meta_data_response.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
 
@@ -32,6 +33,8 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   Future<void> start() async {
     if (isStopped()) {
       offlineDatabase = await OfflineDatabase.open();
+      List<DalMetaDataResponse> metaData = await offlineDatabase!.getMetaData();
+      await Future.wait(metaData.map((element) => getDataService().updateMetaData(pMetaData: element)));
     }
   }
 
