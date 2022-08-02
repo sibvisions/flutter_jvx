@@ -39,7 +39,7 @@ dependencies:
   # Managing different persistent classes
   get_it: ^7.2.0
   # QR Scanner
-  mobile_scanner: ^1.0.0
+  mobile_scanner: ^1.1.2
   # Saving files on system
   path_provider: ^2.0.9
   # handling zip files
