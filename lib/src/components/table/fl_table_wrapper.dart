@@ -10,7 +10,6 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/logging/flutter_logger.dart';
-import '../../../util/offline_util.dart';
 import '../../model/command/api/delete_record_command.dart';
 import '../../model/command/api/insert_record_command.dart';
 import '../../model/command/api/select_record_command.dart';
@@ -22,6 +21,7 @@ import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/request/filter.dart';
 import '../../model/response/dal_meta_data_response.dart';
+import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_table_widget.dart';
