@@ -8,7 +8,7 @@ import '../../i_command_processor.dart';
 class SaveMenuCommandProcessor with UiServiceGetterMixin implements ICommandProcessor<SaveMenuCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveMenuCommand command) {
-    getUiService().setMenuModel(pMenuModel: command.menuModel);
+    getUiService().setMenuModel(command.menuModel);
     return SynchronousFuture([]);
   }
 }
