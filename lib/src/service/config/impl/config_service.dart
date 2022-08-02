@@ -329,7 +329,6 @@ class ConfigService implements IConfigService {
         ? null
         : ServerConfig(
             baseUrl: getBaseUrl(),
-            appMode: getAppConfig()!.serverConfig.appMode,
             appName: getAppName(),
             username: getUsername(),
             password: getPassword(),
