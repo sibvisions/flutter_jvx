@@ -1,6 +1,2 @@
+export '../../model/component/panel/fl_panel_model.dart';
 export 'fl_panel_widget.dart';
-export 'fl_panel_wrapper.dart';
-export 'group/fl_group_panel.dart';
-export 'scroll/fl_scroll_panel.dart';
-export 'split/fl_split_panel.dart';
-export 'tabset/fl_tab_panel.dart';
