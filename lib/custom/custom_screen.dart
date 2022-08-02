@@ -13,13 +13,13 @@ class CustomScreen {
   final String? screenTitle;
 
   /// Builder function for custom header
-  final PreferredSizeWidget Function(BuildContext)? buildHeader;
+  final PreferredSizeWidget Function(BuildContext)? headerBuilder;
 
   /// Builder function which returns the custom screen
-  final Widget Function(BuildContext)? buildScreen;
+  final Widget Function(BuildContext)? screenBuilder;
 
   /// Builder function for custom footer
-  final Widget Function(BuildContext)? buildFooter;
+  final Widget Function(BuildContext)? footerBuilder;
 
   /// The menu item to access this screen, if this is left null, will use the
   final CustomMenuItem menuItemModel;
@@ -40,9 +40,9 @@ class CustomScreen {
   const CustomScreen({
     this.showOnline = true,
     this.showOffline = false,
-    this.buildScreen,
-    this.buildHeader,
-    this.buildFooter,
+    this.screenBuilder,
+    this.headerBuilder,
+    this.footerBuilder,
     required this.menuItemModel,
     this.screenTitle,
     this.replaceComponents = const [],

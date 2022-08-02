@@ -25,8 +25,8 @@ class CustomScreenManagerExample extends CustomScreenManager {
         group: "Features",
         icon: const FaIcon(FontAwesomeIcons.airbnb),
       ),
-      buildHeader: (context) => const CustomHeaderExample(),
-      buildScreen: (context) => Column(
+      headerBuilder: (context) => const CustomHeaderExample(),
+      screenBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           const Expanded(
@@ -51,7 +51,7 @@ class CustomScreenManagerExample extends CustomScreenManager {
           ),
         ],
       ),
-      buildFooter: (context) => SizedBox(
+      footerBuilder: (context) => SizedBox(
           height: 50,
           child: Container(
             color: Colors.blue,
