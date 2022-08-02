@@ -59,7 +59,7 @@ class AppMenu extends StatefulWidget with UiServiceGetterMixin {
     pUiService.setRouteContext(pContext: pContext);
 
     // Offline screens no not require the server to know that they are open
-    if (customScreen != null && customScreen.isOfflineScreen) {
+    if (customScreen != null && !pUiService.hasReplaced(pScreenLongName: customScreen.menuItemModel.screenLongName)) {
       pUiService.routeToCustom(pFullPath: "/workScreen/$componentId");
     } else {
       pUiService.sendCommand(OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed"));

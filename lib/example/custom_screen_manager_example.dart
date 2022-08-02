@@ -17,7 +17,7 @@ class CustomScreenManagerExample extends CustomScreenManager {
 
   CustomScreenManagerExample() {
     registerScreen(CustomScreen(
-      isOfflineScreen: true,
+      showOffline: true,
       screenTitle: "Title THIS",
       menuItemModel: CustomMenuItem(
         screenLongName: "Fir-N7_CUSTOM",
@@ -25,8 +25,8 @@ class CustomScreenManagerExample extends CustomScreenManager {
         group: "Features",
         icon: const FaIcon(FontAwesomeIcons.airbnb),
       ),
-      headerFactory: (context) => const CustomHeaderExample(),
-      screenFactory: (context) => Column(
+      buildHeader: (context) => const CustomHeaderExample(),
+      buildScreen: (context) => Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           const Expanded(
@@ -51,7 +51,7 @@ class CustomScreenManagerExample extends CustomScreenManager {
           ),
         ],
       ),
-      footerFactory: (context) => SizedBox(
+      buildFooter: (context) => SizedBox(
           height: 50,
           child: Container(
             color: Colors.blue,

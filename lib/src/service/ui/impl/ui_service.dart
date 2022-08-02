@@ -167,13 +167,14 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   MenuModel getMenuModel() {
-    List<MenuGroupModel> menuGroupModels =
-        !getConfigService().isOffline() ? [...?_menuModel?.menuGroups.map((e) => e.copy())] : [];
+    List<MenuGroupModel> menuGroupModels = [...?_menuModel?.menuGroups.map((e) => e.copy())];
 
     // Add all custom menuItems
     if (customManager != null) {
       customManager!.customScreens
-          .where((element) => !getConfigService().isOffline() || element.isOfflineScreen)
+          .where((element) =>
+              element.showOnline && !getConfigService().isOffline() ||
+              (element.showOffline && getConfigService().isOffline()))
           .forEach((element) {
         CustomMenuItem customModel = element.menuItemModel;
         // Create standard model
@@ -198,7 +199,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   }
 
   @override
-  void setMenuModel({required MenuModel pMenuModel}) {
+  void setMenuModel(MenuModel? pMenuModel) {
     _menuModel = pMenuModel;
   }
 
@@ -458,6 +459,13 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  bool hasReplaced({required String pScreenLongName}) {
+    return _menuModel?.menuGroups
+            .any((element) => element.items.any((element) => element.screenLongName == pScreenLongName)) ??
+        false;
+  }
 
   @override
   CustomScreen? getCustomScreen({required String pScreenName}) {

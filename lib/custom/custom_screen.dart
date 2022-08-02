@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'custom_component.dart';
-import 'custom_header.dart';
 import 'custom_menu_item.dart';
 
 /// Super class for Custom screens
@@ -13,14 +12,14 @@ class CustomScreen {
   /// Title displayed on the top of the screen
   final String? screenTitle;
 
-  /// Factory for custom header
-  final CustomHeader Function(BuildContext)? headerFactory;
+  /// Builder function for custom header
+  final PreferredSizeWidget Function(BuildContext)? buildHeader;
 
-  /// Factory which returns the custom screen
-  final Widget Function(BuildContext)? screenFactory;
+  /// Builder function which returns the custom screen
+  final Widget Function(BuildContext)? buildScreen;
 
-  /// Factory for custom footer
-  final Widget Function(BuildContext)? footerFactory;
+  /// Builder function for custom footer
+  final Widget Function(BuildContext)? buildFooter;
 
   /// The menu item to access this screen, if this is left null, will use the
   final CustomMenuItem menuItemModel;
@@ -28,20 +27,22 @@ class CustomScreen {
   /// List with components that should be replaced in this screen
   final List<CustomComponent> replaceComponents;
 
-  /// True if this screen is independent from JVx
-  final bool isOfflineScreen;
+  /// True if this screen is shown in online mode
+  final bool showOnline;
 
-  //TODO: with server property => screen holds data automatically.
+  /// True if this screen is shown in offline mode
+  final bool showOffline;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const CustomScreen({
-    this.isOfflineScreen = false,
-    this.screenFactory,
-    this.headerFactory,
-    this.footerFactory,
+    this.showOnline = true,
+    this.showOffline = false,
+    this.buildScreen,
+    this.buildHeader,
+    this.buildFooter,
     required this.menuItemModel,
     this.screenTitle,
     this.replaceComponents = const [],

@@ -1,7 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../custom/custom_header.dart';
 import '../../../custom/custom_screen.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../components/components_factory.dart';
@@ -15,7 +14,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
     FlPanelModel? model = getUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
 
     // Header
-    CustomHeader? header;
+    PreferredSizeWidget? header;
     // Footer
     Widget? footer;
     // Title displayed on the top
@@ -34,10 +33,10 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
     CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: workScreenName);
 
     if (customScreen != null) {
-      header = customScreen.headerFactory?.call(context);
-      footer = customScreen.footerFactory?.call(context);
+      header = customScreen.buildHeader?.call(context);
+      footer = customScreen.buildFooter?.call(context);
 
-      Widget? replaceScreen = customScreen.screenFactory?.call(context);
+      Widget? replaceScreen = customScreen.buildScreen?.call(context);
       if (replaceScreen != null) {
         isCustomScreen = true;
         screen = replaceScreen;

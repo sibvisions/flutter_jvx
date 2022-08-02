@@ -419,6 +419,8 @@ abstract class OfflineUtil {
       await apiService.setRepository(offlineApiRepository);
       await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenLongName!);
       await onlineApiRepository.stop();
+      //Clear menu
+      uiService.setMenuModel(null);
 
       ProgressDialogWidget.close(context);
       await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));

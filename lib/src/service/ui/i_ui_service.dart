@@ -86,7 +86,7 @@ abstract class IUiService {
   MenuModel getMenuModel();
 
   /// Set menu model to be used when opening the menu
-  void setMenuModel({required MenuModel pMenuModel});
+  void setMenuModel(MenuModel? pMenuModel);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Management of component models
@@ -187,6 +187,9 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// If this screen long name has been replaced by a custom screen
+  bool hasReplaced({required String pScreenLongName});
 
   /// Gets replace-type screen by screenName
   CustomScreen? getCustomScreen({required String pScreenName});
