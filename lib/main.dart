@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/app_config.dart';
 import 'custom/custom_screen_manager.dart';
+import 'example/custom_screen_manager_example.dart';
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
@@ -38,7 +39,9 @@ import 'util/parse_util.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() async {
-  await FlutterJVx.start();
+  await FlutterJVx.start(FlutterJVx(
+    screenManager: CustomScreenManagerExample(),
+  ));
 }
 
 class FlutterJVx extends StatefulWidget {

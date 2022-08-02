@@ -10,9 +10,6 @@ class CustomScreen {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The name of the screen - used for identification
-  final String screenName;
-
   /// Title displayed on the top of the screen
   final String? screenTitle;
 
@@ -41,7 +38,6 @@ class CustomScreen {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const CustomScreen({
-    required this.screenName,
     this.isOfflineScreen = false,
     this.screenFactory,
     this.headerFactory,

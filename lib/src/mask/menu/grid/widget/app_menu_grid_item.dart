@@ -36,7 +36,7 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onClick(componentId: menuItemModel.screenId, pUiService: getUiService(), pContext: context),
+      onTap: () => onClick(componentId: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),
       child: Ink(
         color: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacityMenu()),
         child: Column(

@@ -181,7 +181,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
             menuGroupModels.firstWhereOrNull((element) => element.name == customModel.group);
         if (menuGroupModel != null) {
           // Remove menu items that open the same screen
-          menuGroupModel.items.removeWhere((element) => element.screenId == customModel.screenId);
+          menuGroupModel.items.removeWhere((element) => element.screenLongName == customModel.screenLongName);
           menuGroupModel.items.add(customModel);
         } else {
           // Make new group if it didn't exist
@@ -224,7 +224,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   FlPanelModel? getComponentByScreenName({required String pScreenName}) {
-    return _activeComponentModels.firstWhereOrNull((element) => element.screenName == pScreenName) as FlPanelModel?;
+    return _activeComponentModels.firstWhereOrNull((element) => element.screenLongName == pScreenName) as FlPanelModel?;
   }
 
   @override
@@ -461,7 +461,8 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   CustomScreen? getCustomScreen({required String pScreenName}) {
-    return customManager?.customScreens.firstWhereOrNull((element) => element.screenName == pScreenName);
+    return customManager?.customScreens
+        .firstWhereOrNull((element) => element.menuItemModel.screenLongName == pScreenName);
   }
 
   @override

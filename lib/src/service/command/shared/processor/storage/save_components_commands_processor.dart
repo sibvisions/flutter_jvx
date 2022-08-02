@@ -15,7 +15,7 @@ class SaveComponentsCommandProcessor
       await getStorageService().updateComponents(
         command.updatedComponent,
         command.componentsToSave,
-        command.screenId,
+        command.screenName,
       ),
     );
 

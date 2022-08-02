@@ -39,10 +39,10 @@ class GenericScreenViewProcessor
           ApiOpenScreenRequest originalRequest = screenGenericResponse.originalRequest as ApiOpenScreenRequest;
           componentsToSave
               ?.where(
-                (element) => element.name == screenGenericResponse.componentId,
+                (element) => element.name == screenGenericResponse.screenName,
               )
               .forEach(
-                (element) => element.screenName = originalRequest.componentId,
+                (element) => element.screenLongName = originalRequest.screenLongName,
               );
         }
 
@@ -50,7 +50,7 @@ class GenericScreenViewProcessor
           reason: "Api received screen.generic response",
           componentsToSave: componentsToSave,
           updatedComponent: updatedComponent,
-          screenId: screenGenericResponse.componentId,
+          screenName: screenGenericResponse.screenName,
         );
         commands.add(saveComponentsCommand);
       }
@@ -60,7 +60,7 @@ class GenericScreenViewProcessor
     // if update == false => new screen that should be routed to
     if (!screenGenericResponse.update && !getConfigService().isOffline()) {
       RouteToWorkCommand workCommand = RouteToWorkCommand(
-        screenName: screenGenericResponse.componentId,
+        screenName: screenGenericResponse.screenName,
         reason: "Server sent screen.generic response with update = 'false'",
       );
       commands.add(workCommand);

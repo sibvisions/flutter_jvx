@@ -417,7 +417,7 @@ abstract class OfflineUtil {
 
       onlineApiRepository = (await apiService.getRepository()) as OnlineApiRepository;
       await apiService.setRepository(offlineApiRepository);
-      await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenName!);
+      await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenLongName!);
       await onlineApiRepository.stop();
 
       ProgressDialogWidget.close(context);

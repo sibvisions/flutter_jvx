@@ -16,7 +16,7 @@ class OpenScreenCommandProcessor
       UpdateComponentsProcessor.isOpenScreen = true;
 
       ApiOpenScreenRequest openScreenRequest =
-          ApiOpenScreenRequest(componentId: command.componentId, clientId: clientId, manualClose: true);
+          ApiOpenScreenRequest(screenLongName: command.componentId, clientId: clientId, manualClose: true);
       return getApiService().sendRequest(request: openScreenRequest);
     } else {
       throw Exception(

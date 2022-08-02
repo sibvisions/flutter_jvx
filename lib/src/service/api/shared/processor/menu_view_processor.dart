@@ -56,7 +56,9 @@ class MenuViewProcessor with ConfigServiceGetterMixin implements IResponseProces
     for (MenuEntryResponse responseMenuEntry in entries) {
       if (responseMenuEntry.group == groupName) {
         MenuItemModel menuItem = MenuItemModel(
-            screenId: responseMenuEntry.componentId, label: responseMenuEntry.text, image: responseMenuEntry.image);
+            screenLongName: responseMenuEntry.componentId,
+            label: responseMenuEntry.text,
+            image: responseMenuEntry.image);
         menuItems.add(menuItem);
       }
     }

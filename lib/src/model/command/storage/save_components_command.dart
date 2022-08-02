@@ -14,13 +14,14 @@ class SaveComponentsCommand extends StorageCommand {
   final List<dynamic>? updatedComponent;
 
   /// Id of Screen to Update
-  final String screenId;
+  final String screenName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveComponentsCommand({this.updatedComponent, this.componentsToSave, required this.screenId, required String reason})
+  SaveComponentsCommand(
+      {this.updatedComponent, this.componentsToSave, required this.screenName, required String reason})
       : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

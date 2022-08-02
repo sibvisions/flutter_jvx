@@ -17,9 +17,9 @@ class CustomMenuItem extends MenuItemModel {
 
   CustomMenuItem({
     required this.group,
-    required String screenId,
+    required String screenLongName,
     required String label,
     String? image,
     Widget? icon,
-  }) : super(label: label, image: image, screenId: screenId, icon: icon, custom: true);
+  }) : super(label: label, image: image, screenLongName: screenLongName, icon: icon, custom: true);
 }

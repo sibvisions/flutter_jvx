@@ -6,7 +6,7 @@ class MenuItemModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Id of the screen to open
-  final String screenId;
+  final String screenLongName;
 
   /// Icon to be displayed in the menu
   final String? image;
@@ -24,7 +24,7 @@ class MenuItemModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   MenuItemModel({
-    required this.screenId,
+    required this.screenLongName,
     required this.label,
     this.image,
     this.icon,
