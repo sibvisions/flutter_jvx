@@ -355,7 +355,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   @override
   void disposeDataSubscription({required Object pSubscriber, String? pDataProvider}) {
     _dataSubscriptions.removeWhere((element) =>
-        element.subbedObj == pSubscriber && (pDataProvider != null || element.dataProvider == pDataProvider));
+        element.subbedObj == pSubscriber && (pDataProvider == null || element.dataProvider == pDataProvider));
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
