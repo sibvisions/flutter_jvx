@@ -167,11 +167,13 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        child: const FaIcon(FontAwesomeIcons.qrcode),
-        onPressed: () => _openQRScanner(),
-      ),
+      floatingActionButton: !getConfigService().isOffline()
+          ? FloatingActionButton(
+              backgroundColor: Theme.of(context).primaryColor,
+              child: const FaIcon(FontAwesomeIcons.qrcode),
+              onPressed: () => _openQRScanner(),
+            )
+          : null,
     );
   }
 
@@ -188,6 +190,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: appNameNotifier,
       title: getConfigService().translateText("App Name"),
+      enabled: !getConfigService().isOffline(),
       onPressed: () {
         TextEditingController controller = TextEditingController(text: appNameNotifier.value);
         Widget editor = AppNameEditor(controller: controller);
@@ -216,6 +219,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
         value: baseUrlNotifier,
         title: getConfigService().translateText("URL"),
+        enabled: !getConfigService().isOffline(),
         onPressed: () {
           TextEditingController controller = TextEditingController(text: baseUrlNotifier.value);
           Widget editor = UrlEditor(controller: controller);

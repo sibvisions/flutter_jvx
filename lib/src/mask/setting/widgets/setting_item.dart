@@ -16,6 +16,9 @@ class SettingItem<T> extends StatelessWidget {
   /// Title of the setting
   final String title;
 
+  /// If this widget is enabled
+  final bool? enabled;
+
   /// Value to be displayed
   final ValueListenable<T> value;
 
@@ -33,6 +36,7 @@ class SettingItem<T> extends StatelessWidget {
     Key? key,
     required this.value,
     required this.title,
+    this.enabled,
     this.frontIcon,
     this.endIcon,
     this.onPressed,
@@ -48,6 +52,7 @@ class SettingItem<T> extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: ListTile(
+        enabled: enabled ?? true,
         leading: frontIcon,
         trailing: endIcon,
         title: Text(title),
