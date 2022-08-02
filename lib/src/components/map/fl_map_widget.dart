@@ -20,14 +20,6 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      layers: [
-        MarkerLayerOptions(
-          markers: markers,
-        ),
-        PolygonLayerOptions(
-          polygons: polygons,
-        ),
-      ],
       mapController: mapController,
       options: MapOptions(
         onTap: (tapPosition, point) {
@@ -41,12 +33,29 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
           }
         },
         zoom: model.zoomLevel,
+        //Seems to be necessary even though it's the fallback
+        minZoom: 0,
+        maxZoom: 18,
         center: model.center,
       ),
       children: [
         TileLayerWidget(
-            options: TileLayerOptions(
-                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c']))
+          options: TileLayerOptions(
+            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            subdomains: ['a', 'b', 'c'],
+          ),
+        ),
+        PolygonLayerWidget(
+          options: PolygonLayerOptions(
+            polygons: polygons,
+          ),
+        ),
+        MarkerLayerWidget(
+          options: MarkerLayerOptions(
+            markers: markers,
+            rotate: true,
+          ),
+        )
       ],
     );
   }

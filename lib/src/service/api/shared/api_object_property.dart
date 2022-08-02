@@ -118,7 +118,7 @@ abstract class ApiObjectProperty {
   static const String conditions = "conditions";
   static const String fillColor = "fillColor";
   static const String tileProvider = "tileProvider";
-  static const String lineColor = "fillColor";
+  static const String lineColor = "lineColor";
   static const String groupDataBook = "groupDataBook";
   static const String pointsDataBook = "pointsDataBook";
   static const String authKey = "authKey";

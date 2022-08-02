@@ -138,8 +138,13 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     }
 
     for (List<LatLng> pointList in polygonPointsGrouped.values) {
-      polygons
-          .add(Polygon(points: pointList, color: model.fillColor, borderColor: model.lineColor, borderStrokeWidth: 1));
+      polygons.add(Polygon(
+        points: pointList,
+        isFilled: true,
+        color: model.fillColor,
+        borderColor: model.lineColor,
+        borderStrokeWidth: 1,
+      ));
     }
 
     setState(() {});
