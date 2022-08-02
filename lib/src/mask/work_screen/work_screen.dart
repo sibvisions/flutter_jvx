@@ -89,6 +89,14 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
             ),
           ),
           title: Text(widget.screenTitle),
+          actions: [
+            Builder(
+              builder: (context) => IconButton(
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+                icon: const FaIcon(FontAwesomeIcons.ellipsisV),
+              ),
+            ),
+          ],
         ),
         endDrawerEnableOpenDragGesture: false,
         endDrawer: const DrawerMenu(),

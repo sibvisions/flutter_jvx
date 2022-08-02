@@ -5,7 +5,6 @@ typedef QRCallback = void Function(Barcode barcode, MobileScannerArguments? argu
 
 /// Displays the QR-Scanner with additional a control bar on top
 class QRScannerMask extends StatefulWidget {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,7 +18,7 @@ class QRScannerMask extends StatefulWidget {
 
   const QRScannerMask({
     Key? key,
-    required this.callBack
+    required this.callBack,
   }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,7 +31,6 @@ class QRScannerMask extends StatefulWidget {
 
 /// State is needed for disposing the controller
 class _QRScannerMaskState extends State<QRScannerMask> {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,20 +49,18 @@ class _QRScannerMaskState extends State<QRScannerMask> {
         title: const Text("QR SCANNER"),
         actions: [
           IconButton(
-              onPressed: () => controller.toggleTorch(),
-              icon: ValueListenableBuilder(
+            onPressed: () => controller.toggleTorch(),
+            icon: ValueListenableBuilder(
                 valueListenable: controller.torchState,
                 builder: (context, state, child) {
-                  switch(state as TorchState){
+                  switch (state as TorchState) {
                     case TorchState.off:
                       return const Icon(Icons.flash_off);
                     case TorchState.on:
                       return const Icon(Icons.flash_on);
                   }
-                }
-              )
+                }),
           ),
-          const Padding(padding: EdgeInsets.fromLTRB(50, 0, 50, 0)),
         ],
       ),
       body: MobileScanner(
@@ -85,10 +81,7 @@ class _QRScannerMaskState extends State<QRScannerMask> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   _onDetect(Barcode barcode, MobileScannerArguments? mobileScannerArguments) {
-
     Navigator.of(context).pop();
     widget.callBack(barcode, mobileScannerArguments);
-
   }
-
 }
