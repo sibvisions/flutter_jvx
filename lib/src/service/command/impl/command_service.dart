@@ -81,8 +81,9 @@ class CommandService implements ICommandService {
     }
     progressHandler.forEach((element) => element.notifyCommandProgressStart(pCommand));
 
+    List<BaseCommand>? routeCommands;
     try {
-      await processCommand(pCommand);
+      routeCommands = await processCommand(pCommand);
     } catch (error, stacktrace) {
       LOGGER.logE(
         pType: LOG_TYPE.COMMAND,
@@ -95,11 +96,21 @@ class CommandService implements ICommandService {
       pCommand.callback?.call();
       progressHandler.forEach((element) => element.notifyCommandProgressEnd(pCommand));
 
+      if (routeCommands != null) {
+        if (routeCommands.any((element) => element is RouteToWorkCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+        } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+        } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+        }
+      }
+
       if (_apiCommandsQueue.remove(pCommand)) {
         // Remove current command after execution is complete
         // and call the next one in queue
         if (_apiCommandsQueue.isNotEmpty) {
-          await sendCommand(_apiCommandsQueue.first);
+          unawaited(sendCommand(_apiCommandsQueue.first));
         }
       }
     }
@@ -117,7 +128,7 @@ class CommandService implements ICommandService {
     }
   }
 
-  processCommand(BaseCommand pCommand) async {
+  Future<List<BaseCommand>> processCommand(BaseCommand pCommand) async {
     List<BaseCommand> commands = [];
     // Switch-Case doesn't work with types
     if (pCommand is ApiCommand) {
@@ -137,7 +148,7 @@ class CommandService implements ICommandService {
         pType: LOG_TYPE.COMMAND,
         pMessage: "Command (${pCommand.runtimeType}) without Processor found",
       );
-      return;
+      return [];
     }
 
     // Executes Commands resulting from incoming command.
@@ -152,29 +163,14 @@ class CommandService implements ICommandService {
     var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
     // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));
 
-    Object? exceptionObject;
     // When all commands are finished execute routing commands sorted by priority
-    await _waitTillFinished(pCommands: nonRouteCommands).then(
-      (_) async {
-        try {
-          // Ignored value
-          if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
-            // Don't route if there is a server error
-          } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
-            await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
-          } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-            await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
-          } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-            await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
-          }
-        } catch (exception) {
-          exceptionObject = exception;
-        }
-      },
-    );
+    await _waitTillFinished(pCommands: nonRouteCommands);
 
-    if (exceptionObject != null) {
-      throw exceptionObject!;
+    if (!nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+      return routeCommands;
+    } else {
+      // Don't route if there is a server error
+      return [];
     }
   }
 }
