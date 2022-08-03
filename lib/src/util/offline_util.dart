@@ -25,7 +25,7 @@ import '../service/config/i_config_service.dart';
 import '../service/data/i_data_service.dart';
 import '../service/service.dart';
 import '../service/ui/i_ui_service.dart';
-import 'loading_handler/default_loading_progress_handler.dart';
+import 'loading_handler/loading_progress_handler.dart';
 import 'loading_handler/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
@@ -150,7 +150,7 @@ abstract class OfflineUtil {
         await offlineApiRepository.deleteDatabase();
 
         await configService.setOffline(false);
-        DefaultLoadingProgressHandler.setEnabled(true);
+        LoadingProgressHandler.setEnabled(true);
         await offlineApiRepository.stop();
 
         ProgressDialogWidget.close(context);
@@ -182,7 +182,7 @@ abstract class OfflineUtil {
         await onlineApiRepository?.stop();
         await apiService.setRepository(offlineApiRepository);
         await configService.setOffline(true);
-        DefaultLoadingProgressHandler.setEnabled(false);
+        LoadingProgressHandler.setEnabled(false);
       }
       rethrow;
     } finally {
@@ -363,7 +363,7 @@ abstract class OfflineUtil {
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
-      DefaultLoadingProgressHandler.setEnabled(false);
+      LoadingProgressHandler.setEnabled(false);
       //Set already here to receive errors from api responses
       await configService.setOffline(true);
 
@@ -429,7 +429,7 @@ abstract class OfflineUtil {
       if (onlineApiRepository != null) {
         await apiService.setRepository(onlineApiRepository);
         await configService.setOffline(false);
-        DefaultLoadingProgressHandler.setEnabled(true);
+        LoadingProgressHandler.setEnabled(true);
       }
       rethrow;
     } finally {

@@ -19,7 +19,7 @@ import 'src/service/config/impl/config_service.dart';
 import 'src/service/service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/util/config_util.dart';
-import 'src/util/loading_handler/default_loading_progress_handler.dart';
+import 'src/util/loading_handler/loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
 
 Future<void> initApp({
@@ -42,8 +42,9 @@ Future<void> initApp({
   // Load config
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  (commandService as CommandService).progressHandler.clear();
-  (commandService).progressHandler.add(DefaultLoadingProgressHandler()..isEnabled = false);
+  (commandService as CommandService).progressHandler
+    ..clear()
+    ..add(LoadingProgressHandler());
 
   uiService.setCustomManager(pCustomManager);
   uiService.setRouteContext(pContext: initContext);

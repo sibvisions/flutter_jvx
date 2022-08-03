@@ -25,8 +25,8 @@ import '../../service/service.dart';
 import '../../service/ui/i_ui_service.dart';
 import 'i_command_progress_handler.dart';
 
-/// The [DefaultLoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
-class DefaultLoadingProgressHandler implements ICommandProgressHandler {
+/// The [LoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
+class LoadingProgressHandler implements ICommandProgressHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,7 +35,7 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   final Map<BaseCommand, Timer> _commandTimerMap = {};
 
   /// If this is enabled
-  bool isEnabled = true;
+  bool isEnabled = false;
 
   /// The context of the popup
   BuildContext? _dialogContext;
@@ -81,10 +81,8 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   static void setEnabled(bool enabled) {
     (services<ICommandService>() as CommandService)
         .progressHandler
-        .whereType<DefaultLoadingProgressHandler>()
-        .forEach((element) {
-      element.isEnabled = enabled;
-    });
+        .whereType<LoadingProgressHandler>()
+        .forEach((element) => element.isEnabled = enabled);
   }
 
   void _showLoadingProgress(BaseCommand pCommand) {

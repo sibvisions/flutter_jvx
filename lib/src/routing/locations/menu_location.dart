@@ -5,7 +5,7 @@ import '../../../mixin/command_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../mask/menu/app_menu.dart';
-import '../../util/loading_handler/default_loading_progress_handler.dart';
+import '../../util/loading_handler/loading_progress_handler.dart';
 
 /// Displays all possible screens of the menu
 class MenuLocation extends BeamLocation<BeamState>
@@ -20,7 +20,7 @@ class MenuLocation extends BeamLocation<BeamState>
       getUiService().setRouteContext(pContext: context);
     }
 
-    DefaultLoadingProgressHandler.setEnabled(!getConfigService().isOffline());
+    LoadingProgressHandler.setEnabled(!getConfigService().isOffline());
 
     return [
       BeamPage(child: AppMenu(), key: UniqueKey()),
