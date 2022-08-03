@@ -102,7 +102,9 @@ class LoadingProgressHandler implements ICommandProgressHandler {
           pContextCallback: (context) {
             if (_loadingCommandAmount == 0) {
               try {
-                Navigator.pop(context);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
               } catch (exception) {
                 log("Error while popping loading progress handler", error: exception);
               }
@@ -126,7 +128,9 @@ class LoadingProgressHandler implements ICommandProgressHandler {
     );
     if (_loadingCommandAmount == 0 && _dialogContext != null) {
       try {
-        Navigator.pop(_dialogContext!);
+        if (Navigator.canPop(_dialogContext!)) {
+          Navigator.pop(_dialogContext!);
+        }
       } catch (_) {
         //Ignore
       } finally {
