@@ -82,7 +82,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
     if (imageName != null) {
       icon = CircleAvatar(
         backgroundColor: Colors.transparent,
-        child: IFontAwesome.getFontAwesomeIcon(
+        child: FontAwesomeUtil.getFontAwesomeIcon(
           pText: imageName,
           pIconSize: 25,
           pColor: Theme.of(pContext).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),

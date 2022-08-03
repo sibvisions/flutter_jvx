@@ -3,8 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'parse_util.dart';
 
-/// This
-abstract class IFontAwesome {
+abstract class FontAwesomeUtil {
   static bool checkFontAwesome(String pText) {
     return pText.contains('FontAwesome');
   }

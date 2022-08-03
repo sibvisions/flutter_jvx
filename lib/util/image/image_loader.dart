@@ -119,8 +119,9 @@ class ImageLoader with ConfigServiceGetterMixin {
       } finally {
         pImageStreamListener?.call(const Size.square(16), true);
       }
-    } else if (IFontAwesome.checkFontAwesome(pImageString)) {
-      return IFontAwesome.getFontAwesomeIcon(pText: pImageString, pIconSize: pWantedSize?.width, pColor: pWantedColor);
+    } else if (FontAwesomeUtil.checkFontAwesome(pImageString)) {
+      return FontAwesomeUtil.getFontAwesomeIcon(
+          pText: pImageString, pIconSize: pWantedSize?.width, pColor: pWantedColor);
     } else {
       String path = pImageString;
       Size? size;
