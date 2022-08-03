@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/save_menu_command.dart';
@@ -9,6 +7,6 @@ class SaveMenuCommandProcessor with UiServiceGetterMixin implements ICommandProc
   @override
   Future<List<BaseCommand>> processCommand(SaveMenuCommand command) {
     getUiService().setMenuModel(command.menuModel);
-    return SynchronousFuture([]);
+    return Future.value([]);
   }
 }

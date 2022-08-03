@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
@@ -29,6 +28,6 @@ class SaveApplicationImagesCommandProcessor
       fileManager.saveFile(pContent: content, pPath: "images/$name");
     }
 
-    return SynchronousFuture([]);
+    return Future.value([]);
   }
 }

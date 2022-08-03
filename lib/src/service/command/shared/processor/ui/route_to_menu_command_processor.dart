@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/route_to_menu_command.dart';
@@ -16,6 +14,6 @@ class RouteToMenuCommandProcessor with UiServiceGetterMixin implements ICommandP
   Future<List<BaseCommand>> processCommand(RouteToMenuCommand command) {
     getUiService().routeToMenu(pReplaceRoute: command.replaceRoute);
 
-    return SynchronousFuture([]);
+    return Future.value([]);
   }
 }

@@ -76,7 +76,7 @@ class OfflineDatabase with ConfigServiceGetterMixin {
       _createStructTables(getConfigService().getAppName()!, dalMetaData),
       ...dalMetaData.map((table) async {
         if (onlyIfNotExists && (await tableExists(table.dataProvider))) {
-          return SynchronousFuture(null);
+          return Future.value(null);
         }
 
         String createTableSQL = _createTable(table);

@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
-
-import '../../../../model/request/i_api_request.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/config/api/api_config.dart';
+import '../../../../model/request/i_api_request.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
 import '../../shared/i_repository.dart';
@@ -42,7 +40,7 @@ class ApiService implements IApiService {
 
   @override
   Future<IRepository?> getRepository() {
-    return SynchronousFuture(repository);
+    return Future.value(repository);
   }
 
   @override

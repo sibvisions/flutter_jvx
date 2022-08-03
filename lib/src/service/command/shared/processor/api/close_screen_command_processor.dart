@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../../../../../../mixin/api_service_mixin.dart';
 import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/close_screen_command.dart';
@@ -23,7 +21,7 @@ class CloseScreenCommandProcessor
         ),
       );
     } else {
-      return SynchronousFuture([
+      return Future.value([
         OpenErrorDialogCommand(
           reason: "NO CLIENT ID FOUND WHILE SENDING CLOSE SCREEN REQUEST",
           message: "NO CLIENT ID FOUND WHILE SENDING CLOSE SCREEN REQUEST",

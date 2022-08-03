@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_style_command.dart';
@@ -11,6 +9,6 @@ class SaveApplicationStyleCommandProcessor
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationStyleCommand command) {
     getConfigService().setAppStyle(command.style);
-    return SynchronousFuture([]);
+    return Future.value([]);
   }
 }

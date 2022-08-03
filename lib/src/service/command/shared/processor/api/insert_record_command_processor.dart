@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../../../../../../mixin/api_service_mixin.dart';
 import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/insert_record_command.dart';
@@ -21,7 +19,7 @@ class InsertRecordCommandProcessor
         clientId: clientId,
       ));
     } else {
-      return SynchronousFuture([]);
+      return Future.value([]);
     }
   }
 }
