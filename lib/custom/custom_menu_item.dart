@@ -11,6 +11,12 @@ class CustomMenuItem extends MenuItemModel {
   /// Group name under which this item should appear
   final String group;
 
+  /// Font Awesome Icon to be used when creating a custom menu item
+  final IconData? faIcon;
+
+  /// Icon to be used when creating a custom menu item
+  final Widget? icon;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,7 +25,7 @@ class CustomMenuItem extends MenuItemModel {
     required this.group,
     required String screenLongName,
     required String label,
-    String? image,
-    Widget? icon,
-  }) : super(label: label, image: image, screenLongName: screenLongName, icon: icon, custom: true);
+    this.faIcon,
+    this.icon,
+  }) : super(label: label, screenLongName: screenLongName, custom: true);
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
-import '../../../../../util/font_awesome_util.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../app_menu.dart';
 
@@ -13,7 +11,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Model of this menu item
-  final MenuItemModel model;
+  final MenuItemModel menuItemModel;
 
   /// Callback to be called when button is pressed
   final ButtonCallback onClick;
@@ -25,7 +23,12 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppMenuListItem({Key? key, required this.model, required this.onClick, this.backgroundOverride}) : super(key: key);
+  AppMenuListItem({
+    Key? key,
+    required this.menuItemModel,
+    required this.onClick,
+    this.backgroundOverride,
+  }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -43,12 +46,20 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            SizedBox(width: 75, child: _getImage(pContext: context)),
+            SizedBox(
+              width: 75,
+              child: MenuItemModel.getImage(
+                pContext: context,
+                pMenuItemModel: menuItemModel,
+                pSize: 25,
+                pColor: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),
+              ),
+            ),
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  model.label,
+                  menuItemModel.label,
                   style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.headline6?.color),
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
@@ -59,36 +70,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
           ],
         ),
       ),
-      onTap: () => onClick(componentId: model.screenLongName, pUiService: getUiService(), pContext: context),
+      onTap: () => onClick(componentId: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),
     );
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Widget _getImage({required BuildContext pContext}) {
-    Widget icon = CircleAvatar(
-      backgroundColor: Colors.transparent,
-      child: FaIcon(
-        FontAwesomeIcons.clone,
-        size: 25,
-        color: Theme.of(pContext).primaryColor,
-      ),
-    );
-
-    String? imageName = model.image;
-
-    if (imageName != null) {
-      icon = CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: FontAwesomeUtil.getFontAwesomeIcon(
-          pText: imageName,
-          pIconSize: 25,
-          pColor: Theme.of(pContext).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),
-        ),
-      );
-    }
-    return icon;
   }
 }

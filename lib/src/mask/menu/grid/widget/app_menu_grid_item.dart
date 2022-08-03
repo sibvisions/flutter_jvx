@@ -1,10 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
-import '../../../../../util/font_awesome_util.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../app_menu.dart';
 
@@ -67,49 +65,17 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
             Expanded(
               child: Container(
                 color: Colors.black.withOpacity(0.1),
-                child: _getImage(pContext: context),
+                child: MenuItemModel.getImage(
+                  pContext: context,
+                  pMenuItemModel: menuItemModel,
+                  pSize: 72,
+                  pColor: Theme.of(context).cardColor,
+                ),
               ),
             )
           ],
         ),
       ),
     );
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  Widget _getImage({required BuildContext pContext}) {
-    var iconColor = Theme.of(pContext).cardColor;
-
-    Widget icon = CircleAvatar(
-      backgroundColor: Colors.transparent,
-      child: FaIcon(
-        FontAwesomeIcons.clone,
-        size: 72,
-        color: iconColor,
-      ),
-    );
-
-    // Server side images
-    String? imageName = menuItemModel.image;
-    if (imageName != null) {
-      return CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: FontAwesomeUtil.getFontAwesomeIcon(
-          pText: imageName,
-          pIconSize: 72,
-          pColor: iconColor,
-        ),
-      );
-    }
-
-    // Custom menu item
-    Widget? imageIcon = menuItemModel.icon;
-    if (imageIcon != null) {
-      return imageIcon;
-    }
-    return icon;
   }
 }

@@ -33,7 +33,7 @@ class AppMenuListGroup extends StatelessWidget {
     List<Widget> listGroupItems = [];
 
     for (int i = 0; i < menuGroupModel.items.length; i++) {
-      listGroupItems.add(AppMenuListItem(model: menuGroupModel.items.elementAt(i), onClick: onClick));
+      listGroupItems.add(AppMenuListItem(menuItemModel: menuGroupModel.items.elementAt(i), onClick: onClick));
 
       // Enable this if to remove the last divider
       //if (i < (menuGroupModel.items.length - 1)) {

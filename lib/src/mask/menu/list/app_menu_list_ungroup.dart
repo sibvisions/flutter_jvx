@@ -53,7 +53,7 @@ class AppMenuListUngroup extends StatelessWidget {
             delegate: SliverChildListDelegate.fixed(_getAllMenuItems()
                 .map((e) => AppMenuListItem(
                       onClick: onClick,
-                      model: e,
+                      menuItemModel: e,
                       backgroundOverride: Theme.of(context).primaryColor,
                     ))
                 .toList()),

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../../custom/custom_menu_item.dart';
+import '../../../util/font_awesome_util.dart';
 
 class MenuItemModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,9 +18,6 @@ class MenuItemModel {
   /// Label text of the menu item in the menu
   final String label;
 
-  /// Icon to be used when creating a custom menu item
-  final Widget? icon;
-
   final bool custom;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,7 +28,47 @@ class MenuItemModel {
     required this.screenLongName,
     required this.label,
     this.image,
-    this.icon,
     this.custom = false,
   });
+
+  static Widget getImage({
+    required BuildContext pContext,
+    required MenuItemModel pMenuItemModel,
+    required double pSize,
+    required Color pColor,
+  }) {
+    Widget icon = FaIcon(
+      FontAwesomeIcons.clone,
+      size: pSize,
+      color: pColor,
+    );
+
+    // Server side images
+    String? imageName = pMenuItemModel.image;
+    if (imageName != null) {
+      icon = FontAwesomeUtil.getFontAwesomeIcon(
+        pText: imageName,
+        pIconSize: pSize,
+        pColor: pColor,
+      );
+    }
+
+    // Custom menu item
+    if (pMenuItemModel is CustomMenuItem) {
+      if (pMenuItemModel.faIcon != null) {
+        icon = FaIcon(
+          pMenuItemModel.faIcon,
+          size: pSize,
+          color: pColor,
+        );
+      } else if (pMenuItemModel.icon != null) {
+        icon = pMenuItemModel.icon!;
+      }
+    }
+
+    return CircleAvatar(
+      backgroundColor: Colors.transparent,
+      child: icon,
+    );
+  }
 }

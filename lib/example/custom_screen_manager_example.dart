@@ -23,7 +23,7 @@ class CustomScreenManagerExample extends CustomScreenManager {
         screenLongName: "Fir-N7_CUSTOM",
         label: "CUSTOM FEATURE",
         group: "Features",
-        icon: const FaIcon(FontAwesomeIcons.airbnb),
+        faIcon: FontAwesomeIcons.airbnb,
       ),
       headerBuilder: (context) => const CustomHeaderExample(),
       screenBuilder: (context, screen) => Column(
