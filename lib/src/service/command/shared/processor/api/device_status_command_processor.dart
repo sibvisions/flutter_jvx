@@ -17,16 +17,27 @@ class DeviceStatusCommandProcessor
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  double? lastSentWidth;
+  double? lastSentHeight;
+
   @override
   Future<List<BaseCommand>> processCommand(DeviceStatusCommand command) async {
     String? clientId = getConfigService().getClientId();
+
     if (clientId != null) {
-      ApiDeviceStatusRequest deviceStatusRequest = ApiDeviceStatusRequest(
-        clientId: clientId,
-        screenWidth: command.screenWidth,
-        screenHeight: command.screenHeight,
-      );
-      return getApiService().sendRequest(request: deviceStatusRequest);
+      if (lastSentWidth != command.screenWidth || lastSentHeight != command.screenHeight) {
+        lastSentWidth = command.screenWidth;
+        lastSentHeight = command.screenHeight;
+
+        ApiDeviceStatusRequest deviceStatusRequest = ApiDeviceStatusRequest(
+          clientId: clientId,
+          screenWidth: command.screenWidth,
+          screenHeight: command.screenHeight,
+        );
+        return getApiService().sendRequest(request: deviceStatusRequest);
+      } else {
+        return [];
+      }
     } else {
       throw Exception("No Client Id found, while trying to send deviceStatus request");
     }
