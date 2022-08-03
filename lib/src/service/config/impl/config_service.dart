@@ -66,19 +66,9 @@ class ConfigService implements IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ConfigService({
-    String? appName,
     required this.fileManager,
     required this.sharedPrefs,
-  }) {
-    setAppName(appName ?? getAppName());
-
-    String? version = getVersion();
-    if (version != null) {
-      fileManager.setAppVersion(pVersion: version);
-      // Only load if version is set in FileManager
-      reloadSupportedLanguages();
-    }
-  }
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation -- GETTER/SETTER
@@ -101,9 +91,6 @@ class ConfigService implements IConfigService {
 
   @override
   setVersion(String? pVersion) {
-    if (pVersion != null) {
-      fileManager.setAppVersion(pVersion: pVersion);
-    }
     return setString("version", pVersion);
   }
 
@@ -118,13 +105,12 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  String getAppName() {
-    return sharedPrefs.getString("appName") ?? getAppConfig()?.serverConfig.appName ?? "demo";
+  String? getAppName() {
+    return sharedPrefs.getString("appName") ?? getAppConfig()?.serverConfig.appName;
   }
 
   @override
   Future<bool> setAppName(String pAppName) {
-    fileManager.setAppName(pName: pAppName);
     return sharedPrefs.setString("appName", pAppName);
   }
 
@@ -324,15 +310,13 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  ServerConfig? getServerConfig() {
-    return getAppConfig() == null
-        ? null
-        : ServerConfig(
-            baseUrl: getBaseUrl(),
-            appName: getAppName(),
-            username: getUsername(),
-            password: getPassword(),
-          );
+  ServerConfig getServerConfig() {
+    return ServerConfig(
+      baseUrl: getBaseUrl(),
+      appName: getAppName(),
+      username: getUsername(),
+      password: getPassword(),
+    );
   }
 
   @override

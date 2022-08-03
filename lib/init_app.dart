@@ -6,10 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'config/app_config.dart';
 import 'custom/custom_screen_manager.dart';
 import 'main.dart';
+import 'src/model/command/api/set_api_config_command.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';
 import 'src/service/api/i_api_service.dart';
-import 'src/service/api/shared/controller/api_controller.dart';
 import 'src/service/api/shared/repository/offline_api_repository.dart';
 import 'src/service/api/shared/repository/online_api_repository.dart';
 import 'src/service/command/i_command_service.dart';
@@ -71,36 +71,33 @@ Future<void> initApp({
   configService.disposeLanguageCallbacks();
   languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
 
-  if (configService.getBaseUrl() != null) {
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // API init
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null);
 
-    // API
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // API init
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    var controller = ApiController();
-    var repository = configService.isOffline()
-        ? OfflineApiRepository()
-        : OnlineApiRepository(apiConfig: ApiConfig(serverConfig: configService.getServerConfig()!));
-    await repository.start();
-    await apiService.setController(controller);
-    await apiService.setRepository(repository);
+  var repository = configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository();
+  await repository.start();
+  await apiService.setRepository(repository);
 
-    configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null);
-
+  if (configService.getAppName() != null && configService.getBaseUrl() != null) {
     if (!configService.isOffline()) {
-      // Send startup to server
+      await commandService.sendCommand(SetApiConfigCommand(
+        apiConfig: ApiConfig(serverConfig: configService.getServerConfig()),
+        reason: "Startup Api Config",
+      ));
 
-      StartupCommand startupCommand = StartupCommand(
+      // Send startup to server
+      await commandService.sendCommand(StartupCommand(
         reason: "InitApp",
         username: configService.getUsername(),
         password: configService.getPassword(),
-      );
-      await commandService.sendCommand(startupCommand);
+      ));
     } else {
-      uiService.routeToMenu();
+      uiService.routeToMenu(pReplaceRoute: true);
     }
   } else {
-    uiService.routeToSettings();
+    uiService.routeToSettings(pReplaceRoute: true);
   }
 }

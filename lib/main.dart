@@ -18,6 +18,7 @@ import 'src/routing/locations/splash_location.dart';
 import 'src/routing/locations/work_screen_location.dart';
 import 'src/service/api/i_api_service.dart';
 import 'src/service/api/impl/default/api_service.dart';
+import 'src/service/api/shared/controller/api_controller.dart';
 import 'src/service/command/i_command_service.dart';
 import 'src/service/command/impl/command_service.dart';
 import 'src/service/config/i_config_service.dart';
@@ -73,6 +74,11 @@ class FlutterJVx extends StatefulWidget {
     );
     services.registerSingleton(configService);
 
+    if (configService.getAppName() != null && configService.getVersion() != null) {
+      // Only load if name and version is available for FileManager
+      configService.reloadSupportedLanguages();
+    }
+
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService() : await IsolateLayoutService.create();
     services.registerSingleton(layoutService);
@@ -93,7 +99,9 @@ class FlutterJVx extends StatefulWidget {
     IUiService uiService = UiService();
     services.registerSingleton(uiService);
 
+    // API
     IApiService apiService = ApiService();
+    await apiService.setController(ApiController());
     services.registerSingleton(apiService);
 
     runApp(pAppToRun);

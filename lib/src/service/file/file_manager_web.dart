@@ -3,23 +3,18 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import '../../../mixin/config_service_mixin.dart';
 import 'fake_file.dart';
 import 'file_manager.dart';
 
 /// File manger for web
-class FileManagerWeb implements IFileManager {
+class FileManagerWeb with ConfigServiceGetterMixin implements IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Contains all files, the file path being the key
   final HashMap<String, File> _files = HashMap();
-
-  /// App name under which all files are stored internally
-  String? _appName;
-
-  /// App version under which all files are stored internally
-  String? _appVersion;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -75,16 +70,6 @@ class FileManagerWeb implements IFileManager {
   }
 
   @override
-  void setAppName({required String pName}) {
-    _appName = pName;
-  }
-
-  @override
-  void setAppVersion({required String? pVersion}) {
-    _appVersion = pVersion;
-  }
-
-  @override
   Directory? getDirectory({required String pPath}) {
     return null;
   }
@@ -95,10 +80,12 @@ class FileManagerWeb implements IFileManager {
 
   /// Checks of version & name are set will return "/appName/appVersion"
   String _getSavePath({required String pPath}) {
-    if (_appVersion == null || _appName == null) {
+    String? appName = getConfigService().getAppName();
+    String? version = getConfigService().getVersion();
+    if (appName == null || version == null) {
       throw Exception("App Version/Name was not set while trying to save/read files!");
     }
-    return "/$_appName/_$_appVersion${_preparePath(pPath: pPath)}";
+    return "/$appName/_$version${_preparePath(pPath: pPath)}";
   }
 
   /// Will prepare the path to be uniform (always have a leading "/")

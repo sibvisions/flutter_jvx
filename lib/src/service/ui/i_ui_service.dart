@@ -54,7 +54,7 @@ abstract class IUiService {
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false});
 
   /// Route to settings page
-  void routeToSettings();
+  void routeToSettings({bool pReplaceRoute = false});
 
   /// Route to Login page
   void routeToLogin({String mode, required Map<String, String?> pLoginProps});

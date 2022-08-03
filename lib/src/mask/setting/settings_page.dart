@@ -71,8 +71,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     var appConfig = getConfigService().getAppConfig()!;
 
     // Application setting
-    baseUrlNotifier = ValueNotifier(getConfigService().getBaseUrl() ?? "-");
-    appNameNotifier = ValueNotifier(getConfigService().getAppName());
+    baseUrlNotifier = ValueNotifier(getConfigService().getBaseUrl() ?? "");
+    appNameNotifier = ValueNotifier(getConfigService().getAppName() ?? "");
     languageNotifier = ValueNotifier(getConfigService().getLanguage());
     pictureSizeNotifier = ValueNotifier(getConfigService().getPictureResolution() ?? resolutions.last);
 
@@ -83,8 +83,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     } else {
       PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value = packageInfo.version);
     }
-    commitNotifier = ValueNotifier(appConfig.versionConfig.commit ?? "-");
-    buildDateNotifier = ValueNotifier(appConfig.versionConfig.buildDate ?? "-");
+    commitNotifier = ValueNotifier(appConfig.versionConfig.commit ?? "");
+    buildDateNotifier = ValueNotifier(appConfig.versionConfig.buildDate ?? "");
   }
 
   @override
@@ -113,10 +113,12 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-          onPressed: () => context.beamBack(),
-        ),
+        leading: context.canBeamBack
+            ? IconButton(
+                icon: const FaIcon(FontAwesomeIcons.arrowLeft),
+                onPressed: () => context.beamBack(),
+              )
+            : null,
         title: Text(getConfigService().translateText("Settings")),
       ),
       body: SingleChildScrollView(
@@ -243,7 +245,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
                 baseUrlNotifier.value = uri.toString();
 
                 getUiService().sendCommand(SetApiConfigCommand(
-                  apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()!),
+                  apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()),
                   reason: "Settings url editor",
                 ));
               } catch (e) {
@@ -389,7 +391,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           password = code.password;
 
           SetApiConfigCommand apiConfigCommand = SetApiConfigCommand(
-            apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()!),
+            apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()),
             reason: "QR Scan replaced url",
           );
           getUiService().sendCommand(apiConfigCommand);
@@ -399,15 +401,34 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
 
   /// Will send a [StartupCommand] with current values
   void _saveClicked() {
-    StartupCommand startupCommand = StartupCommand(
-      reason: "Open App from Settings",
-      appName: appNameNotifier.value,
-      username: username,
-      password: password,
-    );
-    getUiService().sendCommand(startupCommand);
+    if (appNameNotifier.value.isNotEmpty && baseUrlNotifier.value.isNotEmpty) {
+      StartupCommand startupCommand = StartupCommand(
+        reason: "Open App from Settings",
+        appName: appNameNotifier.value,
+        username: username,
+        password: password,
+      );
+      getUiService().sendCommand(startupCommand);
 
-    username = null;
-    password = null;
+      username = null;
+      password = null;
+    } else {
+      getUiService().openDialog(
+        pDialogWidget: AlertDialog(
+          title: Text(getConfigService().translateText("Missing required fields")),
+          content: Text(getConfigService().translateText("You have to provide app name and base url to open an app.")),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                getConfigService().translateText("Ok"),
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        pIsDismissible: true,
+      );
+    }
   }
 }

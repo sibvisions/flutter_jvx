@@ -3,21 +3,16 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../mixin/config_service_mixin.dart';
 import 'file_manager.dart';
 
-class FileMangerMobile implements IFileManager {
+class FileMangerMobile with ConfigServiceGetterMixin implements IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Directory used to store all files internally (.path)
   final Directory directory;
-
-  /// App name under which all files are stored internally
-  String? _appName;
-
-  /// App version under which all files are stored internally
-  String? _appVersion;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -115,16 +110,6 @@ class FileMangerMobile implements IFileManager {
   }
 
   @override
-  void setAppName({required String pName}) {
-    _appName = pName;
-  }
-
-  @override
-  void setAppVersion({required String? pVersion}) {
-    _appVersion = pVersion;
-  }
-
-  @override
   Directory? getDirectory({required String pPath}) {
     return Directory(_getSavePath(pPath: pPath));
   }
@@ -135,9 +120,11 @@ class FileMangerMobile implements IFileManager {
 
   /// Checks of version & name are set will return "directory/appName/appVersion"
   String _getSavePath({required String pPath}) {
-    if (_appVersion == null || _appName == null) {
+    String? appName = getConfigService().getAppName();
+    String? version = getConfigService().getVersion();
+    if (appName == null || version == null) {
       throw Exception("App Version/Name was not set while trying to save/read files!");
     }
-    return join(directory.path, _appName, _appVersion, pPath);
+    return join(directory.path, appName, version, pPath);
   }
 }

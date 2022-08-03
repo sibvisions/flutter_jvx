@@ -119,8 +119,12 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   }
 
   @override
-  void routeToSettings() {
-    _currentBuildContext!.beamToNamed("/setting");
+  void routeToSettings({bool pReplaceRoute = false}) {
+    if (pReplaceRoute) {
+      _currentBuildContext!.beamToReplacementNamed("/setting");
+    } else {
+      _currentBuildContext!.beamToNamed("/setting");
+    }
   }
 
   @override

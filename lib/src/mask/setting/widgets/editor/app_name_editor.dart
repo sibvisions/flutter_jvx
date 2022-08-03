@@ -25,7 +25,7 @@ class AppNameEditor extends StatelessWidget with ConfigServiceGetterMixin {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: getConfigService().translateText('App name'),
+        labelText: getConfigService().translateText('App Name'),
         hintText: getConfigService().translateText('Enter new App Name'),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),

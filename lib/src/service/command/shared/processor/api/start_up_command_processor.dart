@@ -25,7 +25,7 @@ class StartUpCommandProcessor
       //TODO evaluate if needed
       appMode: "full",
       deviceMode: "mobile",
-      applicationName: getConfigService().getAppName(),
+      applicationName: getConfigService().getAppName()!,
       username: command.username,
       password: command.password,
       authKey: getConfigService().getAuthCode(),

@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import '../../../mixin/config_service_mixin.dart';
 import 'file_manager_mobile.dart';
 import 'file_manager_web.dart';
 
 /// File manager used to manage all file interaction (different implementations for web and mobile)
-abstract class IFileManager {
-
+abstract class IFileManager with ConfigServiceGetterMixin {
   ///Constructs a FileManager depending on the platform
   static Future<IFileManager> getFileManager() async {
     return kIsWeb ? FileManagerWeb() : await FileMangerMobile.create();
@@ -40,12 +40,6 @@ abstract class IFileManager {
 
   /// Save a file that does not depend on a version or appName
   Future<File> saveIndependentFile({required List<int> pContent, required String pPath});
-
-  /// Sets the app name under which all files are saved internally
-  void setAppName({required String pName});
-
-  /// Sets the app version under which all files are saved internally
-  void setAppVersion({required String? pVersion});
 
   /// Returns directory, will always return null if in web
   Directory? getDirectory({required String pPath});

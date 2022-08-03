@@ -59,7 +59,8 @@ class SettingItem<T> extends StatelessWidget {
         subtitle: ValueListenableBuilder<T>(
           valueListenable: value,
           builder: (BuildContext buildContext, T value, Widget? widget) {
-            return itemBuilder?.call(buildContext, value, widget) ?? Text(value.toString());
+            return itemBuilder?.call(buildContext, value, widget) ??
+                Text(value.toString().isNotEmpty ? value.toString() : "-");
           },
         ),
         onTap: onPressed,

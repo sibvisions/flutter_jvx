@@ -78,7 +78,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Api config for remote endpoints and url
-  ApiConfig apiConfig;
+  ApiConfig? apiConfig;
 
   /// Http client for outside connection
   HttpClient? client;
@@ -97,7 +97,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OnlineApiRepository({
-    required this.apiConfig,
+    this.apiConfig,
   });
 
   @override
@@ -125,8 +125,9 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
     if (isStopped()) throw Exception("Repository not initialized");
+    if (apiConfig == null) throw Exception("ApiConfig not initialized");
 
-    Uri? uri = apiConfig.uriMap[pRequest.runtimeType]?.call();
+    Uri? uri = apiConfig!.uriMap[pRequest.runtimeType]?.call();
 
     if (uri != null) {
       try {

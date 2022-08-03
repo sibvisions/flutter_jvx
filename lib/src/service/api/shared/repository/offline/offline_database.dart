@@ -73,7 +73,7 @@ class OfflineDatabase with ConfigServiceGetterMixin {
 
   createTables(List<DalMetaDataResponse> dalMetaData, {bool onlyIfNotExists = false}) {
     return Future.wait([
-      _createStructTables(getConfigService().getAppName(), dalMetaData),
+      _createStructTables(getConfigService().getAppName()!, dalMetaData),
       ...dalMetaData.map((table) async {
         if (onlyIfNotExists && (await tableExists(table.dataProvider))) {
           return SynchronousFuture(null);
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<dynamic> dropTables(List<DalMetaDataResponse> dalMetaData) {
     return Future.wait([
       ...dalMetaData.map((table) => dropTable(table.dataProvider)),
-      _dropStructTables(getConfigService().getAppName()),
+      _dropStructTables(getConfigService().getAppName()!),
     ]);
   }
 
@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   Future<List<DalMetaDataResponse>> getMetaData({String? pDataProvider}) {
-    List<String> whereArgs = [getConfigService().getAppName()];
+    List<String> whereArgs = [getConfigService().getAppName()!];
     if (pDataProvider != null) {
       whereArgs.add(pDataProvider);
     }

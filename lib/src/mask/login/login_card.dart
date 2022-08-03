@@ -42,7 +42,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
         child: Column(
           children: [
             Text(
-              loginTitle ?? getConfigService().getAppName().toUpperCase(),
+              loginTitle ?? getConfigService().getAppName()!.toUpperCase(),
               style: Theme.of(context).textTheme.headline6,
               textAlign: TextAlign.center,
             ),

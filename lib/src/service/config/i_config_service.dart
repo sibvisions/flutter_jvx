@@ -23,7 +23,7 @@ abstract class IConfigService {
   void setClientId(String? pClientId);
 
   /// Returns the appName
-  String getAppName();
+  String? getAppName();
 
   /// Set appName
   Future<bool> setAppName(String pAppName);
@@ -31,7 +31,7 @@ abstract class IConfigService {
   /// Returns current apiConfig
   AppConfig? getAppConfig();
 
-  ServerConfig? getServerConfig();
+  ServerConfig getServerConfig();
 
   /// Return version
   String? getVersion();

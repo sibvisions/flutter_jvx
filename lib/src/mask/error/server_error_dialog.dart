@@ -66,9 +66,9 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
     actions.add(
       TextButton(
         onPressed: () => Navigator.of(context).pop(),
-        child: const Text(
-          "OK",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        child: Text(
+          getConfigService().translateText("Ok"),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
       ),
     );

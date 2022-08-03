@@ -44,7 +44,7 @@ abstract class OfflineUtil {
     try {
       await Wakelock.enable();
       String offlineWorkscreenLongName = configService.getOfflineScreen()!;
-      String offlineAppName = configService.getAppName();
+      String offlineAppName = configService.getAppName()!;
       String offlineUsername = configService.getUsername()!;
       String offlinePassword = configService.getPassword()!;
 
@@ -66,7 +66,7 @@ abstract class OfflineUtil {
 
       offlineApiRepository = (await apiService.getRepository()) as OfflineApiRepository;
       //Set online api repository to handle commands
-      onlineApiRepository = OnlineApiRepository(apiConfig: ApiConfig(serverConfig: configService.getServerConfig()!));
+      onlineApiRepository = OnlineApiRepository(apiConfig: ApiConfig(serverConfig: configService.getServerConfig()));
       await onlineApiRepository.start();
       await apiService.setRepository(onlineApiRepository);
 
