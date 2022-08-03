@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../../../components/label/fl_label_widget.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../layout/alignments.dart';
@@ -40,7 +38,6 @@ class FlLabelModel extends FlComponentModel {
       pKey: ApiObjectProperty.text,
       pDefault: defaultModel.text,
       pCurrent: text,
-      pConversion: (value) => utf8.decode((value as String).runes.toList()),
     );
   }
 }
