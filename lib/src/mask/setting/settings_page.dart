@@ -90,8 +90,11 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   @override
   void dispose() {
     baseUrlNotifier.dispose();
-    languageNotifier.dispose();
     appNameNotifier.dispose();
+    languageNotifier.dispose();
+    pictureSizeNotifier.dispose();
+    commitNotifier.dispose();
+    buildDateNotifier.dispose();
     super.dispose();
   }
 
