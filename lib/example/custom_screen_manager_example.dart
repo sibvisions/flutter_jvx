@@ -18,10 +18,10 @@ class CustomScreenManagerExample extends CustomScreenManager {
   CustomScreenManagerExample() {
     registerScreen(CustomScreen(
       showOffline: true,
-      screenTitle: "Title THIS",
+      screenTitle: "Custom Title",
       menuItemModel: CustomMenuItem(
         screenLongName: "Fir-N7_CUSTOM",
-        label: "CUSTOM FEATURE",
+        label: "Custom Screen",
         group: "Features",
         faIcon: FontAwesomeIcons.airbnb,
       ),
