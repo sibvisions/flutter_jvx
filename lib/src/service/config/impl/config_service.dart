@@ -386,7 +386,7 @@ class ConfigService implements IConfigService {
 
   @override
   void setPhoneSize(Size? pPhoneSize) {
-    phoneSize = phoneSize;
+    phoneSize = pPhoneSize;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
