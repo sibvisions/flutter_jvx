@@ -13,7 +13,6 @@ import '../../model/command/api/download_style_command.dart';
 import '../../model/command/api/download_translation_command.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/logout_command.dart';
-import '../../model/command/api/open_screen_command.dart';
 import '../../model/command/api/reset_password_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/base_command.dart';
@@ -139,20 +138,27 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
 
   Widget _createLoadingProgressIndicator() {
     return WillPopScope(
-      onWillPop: _willPop,
-      child: const Align(
+      onWillPop: () => Future.value(false),
+      child: Align(
         alignment: Alignment.center,
-        child: SizedBox(
-          width: 25.0,
-          height: 25.0,
-          child: CircularProgressIndicator.adaptive(),
+        child: Opacity(
+          opacity: 0.7,
+          child: Container(
+            width: 100,
+            height: 100,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [CircularProgressIndicator.adaptive()],
+            ),
+          ),
         ),
       ),
     );
-  }
-
-  Future<bool> _willPop() async {
-    return false;
   }
 
   bool isSupported(BaseCommand pCommand) {
