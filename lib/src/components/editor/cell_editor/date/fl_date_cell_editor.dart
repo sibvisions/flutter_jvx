@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_editor_model.dart';
-import '../../../../model/component/label/fl_label_model.dart';
 import '../../../../model/data/column_definition.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../i_cell_editor.dart';
@@ -180,7 +179,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  FlLabelModel createWidgetModel() => FlLabelModel();
+  FlDateEditorModel createWidgetModel() => FlDateEditorModel();
 
   @override
   void dispose() {
