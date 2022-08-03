@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -70,6 +72,8 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
     String? backgroundImageString = getConfigService().getAppStyle()?['desktop.icon'];
 
+    log("WORKSCREEN Layoutbuilder build: " + MediaQuery.of(context).viewInsets.bottom.toString());
+
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -110,6 +114,8 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
                 WidgetsBinding.instance!.window.viewInsets,
                 WidgetsBinding.instance!.window.devicePixelRatio,
               );
+
+              log("WORKSCREEN Layoutbuilder viewinsets: " + viewInsets.bottom.toString());
 
               Widget screenWidget = widget.screenWidget;
               if (!widget.isCustomScreen) {

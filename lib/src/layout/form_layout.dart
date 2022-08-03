@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:core';
+import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -532,7 +533,7 @@ class FormLayout extends ILayout {
   }
 
   /// Parses all anchors from layoutData and establishes relatedAnchors
-  static HashMap<String, FormLayoutAnchor> _getAnchors(String layoutData) {
+  HashMap<String, FormLayoutAnchor> _getAnchors(String layoutData) {
     HashMap<String, FormLayoutAnchor> anchors = HashMap();
 
     // Parse layoutData to get Anchors
@@ -550,21 +551,33 @@ class FormLayout extends ILayout {
   }
 
   /// Creates [FormLayoutConstraints] for every [LayoutData] (child)
-  static HashMap<String, FormLayoutConstraints> _getComponentConstraints(
+  HashMap<String, FormLayoutConstraints> _getComponentConstraints(
       List<LayoutData> components, HashMap<String, FormLayoutAnchor> anchors) {
     HashMap<String, FormLayoutConstraints> componentConstraints = HashMap();
 
     for (var value in components) {
       List<String> anchorNames = value.constraints!.split(";");
-      // Get Anchors
-      FormLayoutAnchor topAnchor = anchors[anchorNames[0]]!;
-      FormLayoutAnchor leftAnchor = anchors[anchorNames[1]]!;
-      FormLayoutAnchor bottomAnchor = anchors[anchorNames[2]]!;
-      FormLayoutAnchor rightAnchor = anchors[anchorNames[3]]!;
-      // Build Constraint
-      FormLayoutConstraints constraint = FormLayoutConstraints(
-          bottomAnchor: bottomAnchor, leftAnchor: leftAnchor, rightAnchor: rightAnchor, topAnchor: topAnchor);
-      componentConstraints[value.id] = constraint;
+      try {
+        // Get Anchors
+        FormLayoutAnchor topAnchor = anchors[anchorNames[0]]!;
+        FormLayoutAnchor leftAnchor = anchors[anchorNames[1]]!;
+        FormLayoutAnchor bottomAnchor = anchors[anchorNames[2]]!;
+        FormLayoutAnchor rightAnchor = anchors[anchorNames[3]]!;
+        // Build Constraint
+        FormLayoutConstraints constraint = FormLayoutConstraints(
+            bottomAnchor: bottomAnchor, leftAnchor: leftAnchor, rightAnchor: rightAnchor, topAnchor: topAnchor);
+        componentConstraints[value.id] = constraint;
+      } catch (_) {
+        dev.log("Parent id: " + value.parentId!);
+        dev.log("Child id: " + value.id);
+        dev.log("Layoutdata" + layoutData);
+        dev.log("Layout" + layoutString);
+        var keys = anchors.keys.toList()..sort();
+        anchorNames.sort();
+        dev.log(keys.toString());
+        dev.log(anchorNames.toString());
+        dev.log(anchorNames.where((anchorName) => !keys.contains(anchorName)).toString());
+      }
     }
     return componentConstraints;
   }

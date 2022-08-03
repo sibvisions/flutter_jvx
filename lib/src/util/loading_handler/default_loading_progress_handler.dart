@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import '../../../util/extensions/list_extensions.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/api/api_command.dart';
 import '../../model/command/api/change_password_command.dart';
@@ -80,10 +79,12 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static void setEnabled(bool enabled) {
-    DefaultLoadingProgressHandler? loadingProgressHandler = (services<ICommandService>() as CommandService)
+    (services<ICommandService>() as CommandService)
         .progressHandler
-        .firstWhereOrNull((element) => element is DefaultLoadingProgressHandler) as DefaultLoadingProgressHandler?;
-    loadingProgressHandler?.isEnabled = enabled;
+        .whereType<DefaultLoadingProgressHandler>()
+        .forEach((element) {
+      element.isEnabled = enabled;
+    });
   }
 
   void _showLoadingProgress(BaseCommand pCommand) {

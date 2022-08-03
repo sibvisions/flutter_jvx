@@ -49,7 +49,7 @@ class DataSubscription {
   DataSubscription({
     required this.subbedObj,
     required this.dataProvider,
-    required this.from,
+    this.from = -1,
     this.onSelectedRecord,
     this.onDataChunk,
     this.onMetaData,

@@ -13,7 +13,6 @@ import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
 import 'subscriptions/data_chunk.dart';
 import 'subscriptions/data_record.dart';
-import 'subscriptions/data_subscription.dart';
 
 /// Holds all data and column definitions of a data provider
 class DataBook {
@@ -227,15 +226,15 @@ class DataBook {
   static void subscribeToDataBook({
     required Object subbedObj,
     required String dataProvider,
-    required int from,
     void Function(DataRecord?)? onSelectedRecord,
     void Function(DataChunk)? onDataChunk,
     void Function(DalMetaDataResponse)? onMetaData,
+    int? from,
     int? to,
     List<String>? dataColumns,
   }) {
     IUiService uiService = services<IUiService>();
-    uiService.registerDataSubscription(
-        pDataSubscription: DataSubscription(subbedObj: subbedObj, dataProvider: dataProvider, from: from));
+    // uiService.registerDataSubscription(
+    //     pDataSubscription: DataSubscription(subbedObj: subbedObj, dataProvider: dataProvider, from: from));
   }
 }

@@ -43,7 +43,7 @@ Future<void> initApp({
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   (commandService as CommandService).progressHandler.clear();
-  (commandService as CommandService).progressHandler.add(DefaultLoadingProgressHandler()..isEnabled = false);
+  (commandService).progressHandler.add(DefaultLoadingProgressHandler()..isEnabled = false);
 
   uiService.setCustomManager(pCustomManager);
   uiService.setRouteContext(pContext: initContext);
@@ -71,7 +71,7 @@ Future<void> initApp({
   configService.disposeLanguageCallbacks();
   languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
 
-  configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null);
+  configService.setPhoneSize(!kIsWeb ? MediaQuery.of(initContext).size : null);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // API init
@@ -90,6 +90,24 @@ Future<void> initApp({
 
       // Send startup to server
       await commandService.sendCommand(StartupCommand(
+        //   appName: widget.appState.serverConfig!.appName,
+        //   screenWidth: MediaQuery.of(context).size.width.toInt(),
+        //   screenHeight: MediaQuery.of(context).size.height.toInt(),
+        //   appMode: widget.appState.serverConfig!.appMode,
+        //   readAheadLimit: widget.appState.readAheadLimit,
+        //   deviceId: _getDeviceId(),
+        //   language: _startupLanguage,
+        //   clientId: '',
+        //   deviceMode: kIsWeb ? 'desktop' : 'mobile',
+        //   technology: deviceInfo.technology,
+        //   osName: deviceInfo.osName,
+        //   osVersion: deviceInfo.osVersion,
+        //   appVersion: deviceInfo.appVersion,
+        //   deviceType: deviceInfo.deviceType,
+        //   deviceTypeModel: deviceInfo.deviceTypeModel,
+        //   authKey: widget.manager.authKey,
+        //   username: widget.appState.serverConfig!.username,
+        //   password: widget.appState.serverConfig!.password,
         reason: "InitApp",
         username: configService.getUsername(),
         password: configService.getPassword(),
