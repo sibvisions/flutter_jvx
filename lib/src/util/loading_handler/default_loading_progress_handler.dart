@@ -191,8 +191,7 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
           pCommand is DownloadImagesCommand ||
           pCommand is DownloadStyleCommand ||
           pCommand is DownloadTranslationCommand ||
-          pCommand is ResetPasswordCommand ||
-          pCommand is OpenScreenCommand) {
+          pCommand is ResetPasswordCommand) {
         return false;
       }
       // if (pCommand is DeleteRecordCommand ||
