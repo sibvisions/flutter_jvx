@@ -70,27 +70,27 @@ class LOGGER {
   }
 
   static logsF({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.FATAL, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+    logs(pLevel: LOG_LEVEL.FATAL, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logsE({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.ERROR, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+    logs(pLevel: LOG_LEVEL.ERROR, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logsW({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.WARNING, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+    logs(pLevel: LOG_LEVEL.WARNING, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logsI({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.INFO, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+    logs(pLevel: LOG_LEVEL.INFO, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logsD({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.DEBUG, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+    logs(pLevel: LOG_LEVEL.DEBUG, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logsT({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.TRACE, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+    logs(pLevel: LOG_LEVEL.TRACE, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static log(
@@ -108,26 +108,26 @@ class LOGGER {
   }
 
   static logF({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.FATAL, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+    log(pLevel: LOG_LEVEL.FATAL, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logE({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.ERROR, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+    log(pLevel: LOG_LEVEL.ERROR, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logW({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.WARNING, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+    log(pLevel: LOG_LEVEL.WARNING, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logI({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.INFO, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+    log(pLevel: LOG_LEVEL.INFO, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logD({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.DEBUG, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+    log(pLevel: LOG_LEVEL.DEBUG, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static logT({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.TRACE, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+    log(pLevel: LOG_LEVEL.TRACE, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 }
