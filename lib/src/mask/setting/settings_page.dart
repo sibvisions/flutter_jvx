@@ -250,7 +250,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
                 ));
               } catch (e) {
                 getUiService().sendCommand(OpenErrorDialogCommand(
-                    reason: "parseURl", message: getConfigService().translateText("URL text could not be parsed")));
+                  reason: "parseURl",
+                  message: getConfigService().translateText("URL text could not be parsed"),
+                  canBeFixedInSettings: true,
+                ));
               }
             }
           });

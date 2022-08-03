@@ -15,12 +15,16 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   /// True if this error is a timeout
   final bool isTimeout;
 
+  /// True if this error is caused and therefore fixable by the user (e.g. invalid url)
+  final bool canBeFixedInSettings;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ServerErrorDialog({
     required this.message,
+    required this.canBeFixedInSettings,
     this.isTimeout = false,
     Key? key,
   }) : super(key: key);
@@ -47,7 +51,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   List<Widget> _getButtons(BuildContext context) {
     List<Widget> actions = [];
 
-    if (isTimeout) {
+    if (canBeFixedInSettings || isTimeout) {
       actions.add(
         TextButton(
           onPressed: () {
@@ -60,7 +64,9 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
           ),
         ),
       );
-      return actions;
+      if (canBeFixedInSettings) {
+        return actions;
+      }
     }
 
     actions.add(

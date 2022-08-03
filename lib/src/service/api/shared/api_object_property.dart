@@ -157,6 +157,11 @@ abstract class ApiObjectProperty {
   static const String eMail = "email";
   static const String mode = "mode";
   static const String profileImage = "profileImage";
+  // ErrorViewResponse
+  static const String silentAbort = "silentAbort";
+  static const String details = "details";
+  static const String exceptions = "exceptions";
+  static const String exception = "exception";
 
   // Data Properties
   static const String dataTypeIdentifier = "dataTypeIdentifier";

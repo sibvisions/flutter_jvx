@@ -14,6 +14,7 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
     Widget errorWidget = ServerErrorDialog(
       message: command.message,
       isTimeout: command.isTimeout,
+      canBeFixedInSettings: command.canBeFixedInSettings,
     );
 
     unawaited(getUiService().openDialog(

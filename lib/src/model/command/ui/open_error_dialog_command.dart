@@ -12,6 +12,9 @@ class OpenErrorDialogCommand extends UiCommand {
   /// True if this error is a timeout
   final bool isTimeout;
 
+  /// True if this error is caused and therefore fixable by the user (e.g. invalid url)
+  final bool canBeFixedInSettings;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,6 +23,7 @@ class OpenErrorDialogCommand extends UiCommand {
     required String reason,
     required this.message,
     this.isTimeout = false,
+    this.canBeFixedInSettings = false,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

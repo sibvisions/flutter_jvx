@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/request/api_download_images_request.dart';
 import '../../../../model/request/api_download_style_request.dart';
@@ -143,11 +144,11 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
         var formattedResponses = _formatResponse(await response.transform(utf8.decoder).join());
         var parsedResponseObjects = _responseParser(pJsonList: formattedResponses, originalRequest: pRequest);
         return parsedResponseObjects;
-      } catch (e) {
+      } catch (e, stackTrace) {
         if (getConfigService().isOffline()) {
           rethrow;
         }
-        return _handleError(e, pRequest);
+        return _handleError(e, stackTrace, pRequest);
       }
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
@@ -242,36 +243,34 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
     return parsedResponse;
   }
 
-  Future<List<ApiResponse>> _handleError(Object? error, Object originalRequest) async {
+  Future<List<ErrorViewResponse>> _handleError(Object error, StackTrace stackTrace, Object originalRequest) async {
+    ErrorViewResponse errorViewResponse;
     if (error is TimeoutException) {
-      return [
-        ErrorViewResponse(
-          message: "Message timed out",
-          name: ApiResponseNames.error,
-          error: error,
-          originalRequest: originalRequest,
-          isTimeout: true,
-        )
-      ];
-    }
-    if (error is SocketException) {
-      return [
-        ErrorViewResponse(
-          message: "Could not connect to remote server",
-          name: ApiResponseNames.error,
-          error: error,
-          originalRequest: originalRequest,
-          isTimeout: true,
-        ),
-      ];
-    }
-    return [
-      ErrorViewResponse(
+      errorViewResponse = ErrorViewResponse(
+        message: "Message timed out",
+        name: ApiResponseNames.error,
+        exceptions: [ServerException.fromException(error, stackTrace)],
+        originalRequest: originalRequest,
+        isTimeout: true,
+      );
+    } else if (error is SocketException) {
+      errorViewResponse = ErrorViewResponse(
+        message: "Could not connect to remote server",
+        name: ApiResponseNames.error,
+        exceptions: [ServerException.fromException(error, stackTrace)],
+        originalRequest: originalRequest,
+        isTimeout: true,
+      );
+    } else {
+      errorViewResponse = ErrorViewResponse(
         message: "Repository error: $error",
         name: ApiResponseNames.error,
-        error: error,
+        exceptions: [ServerException(error.toString(), stackTrace.toString())],
         originalRequest: originalRequest,
-      )
-    ];
+      );
+    }
+
+    LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: errorViewResponse.message, pError: error, pStacktrace: stackTrace);
+    return [errorViewResponse];
   }
 }
