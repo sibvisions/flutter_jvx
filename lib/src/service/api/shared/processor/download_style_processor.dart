@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import '../../../../model/response/download_style_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/config/save_application_style_command.dart';
+import '../../../../model/response/download_style_response.dart';
 import '../i_response_processor.dart';
 
 class DownloadStyleProcessor extends IResponseProcessor<DownloadStyleResponse> {
@@ -14,20 +14,24 @@ class DownloadStyleProcessor extends IResponseProcessor<DownloadStyleResponse> {
 
     styleWithNull.removeWhere((key, value) => value == null);
 
-    Map<String, String> styleNoNull = {};
-
-    styleWithNull.forEach((key, value) {
-      if (value is Map) {
-        value.forEach((internalKey, internalValue) {
-          styleNoNull["$key.$internalKey"] = internalValue;
-        });
-      } else {
-        styleNoNull[key] = value;
-      }
-    });
+    Map<String, String> styleNoNull = rebuildStylesMap(styleWithNull);
 
     return [
       SaveApplicationStyleCommand(style: styleNoNull, reason: "Downloaded Translations"),
     ];
+  }
+
+  Map<String, String> rebuildStylesMap(Map<String, dynamic> pOgMap) {
+    Map<String, String> rebuiltMap = {};
+
+    pOgMap.forEach((key, value) {
+      if (value is Map) {
+        rebuiltMap.addAll(rebuildStylesMap(value as Map<String, dynamic>));
+      } else {
+        rebuiltMap[key] = value;
+      }
+    });
+
+    return rebuiltMap;
   }
 }

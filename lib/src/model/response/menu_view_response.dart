@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../../service/api/shared/api_object_property.dart';
 import 'api_response.dart';
 
@@ -55,7 +53,7 @@ class MenuEntryResponse {
 
   MenuEntryResponse.fromJson(Map<String, dynamic> json)
       : componentId = json[ApiObjectProperty.componentId],
-        text = utf8.decode((json[ApiObjectProperty.text] as String).runes.toList()),
+        text = json[ApiObjectProperty.text],
         image = json[ApiObjectProperty.image],
         group = json[ApiObjectProperty.group];
 }

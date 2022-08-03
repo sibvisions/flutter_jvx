@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../../../service/api/shared/api_object_property.dart';
 import '../fl_component_model.dart';
 
@@ -36,7 +34,6 @@ class FlPopupMenuItemModel extends FlComponentModel {
       pKey: ApiObjectProperty.text,
       pDefault: defaultModel.text,
       pCurrent: text,
-      pConversion: (value) => utf8.decode((value as String).runes.toList()),
     );
 
     icon = getPropertyValue(

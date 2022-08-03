@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../../../../service/api/shared/api_object_property.dart';
 import 'cell_editor_model.dart';
 
@@ -43,10 +41,10 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
     );
 
     text = getPropertyValue(
-        pJson: pJson,
-        pKey: ApiObjectProperty.text,
-        pDefault: defaultModel.text,
-        pCurrent: text,
-        pConversion: (value) => utf8.decode((value as String).runes.toList()));
+      pJson: pJson,
+      pKey: ApiObjectProperty.text,
+      pDefault: defaultModel.text,
+      pCurrent: text,
+    );
   }
 }
