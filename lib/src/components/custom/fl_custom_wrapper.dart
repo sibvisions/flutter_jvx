@@ -18,7 +18,7 @@ class _FlCustomWrapperState extends BaseCompWrapperState<FlComponentModel> {
   @override
   void initState() {
     super.initState();
-    customWidget = getUiService().getCustomComponent(pComponentName: model.name)!.componentFactory.call();
+    customWidget = getUiService().getCustomComponent(pComponentName: model.name)!.componentBuilder.call();
   }
 
   @override

@@ -10,7 +10,7 @@ class CustomComponent {
   final String componentName;
 
   /// Component that will replace the server sent component with matching name
-  final Widget Function() componentFactory;
+  final Widget Function() componentBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -18,6 +18,6 @@ class CustomComponent {
 
   CustomComponent({
     required this.componentName,
-    required this.componentFactory,
+    required this.componentBuilder,
   });
 }
