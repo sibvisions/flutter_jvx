@@ -96,12 +96,13 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
     String? imageName = menuItemModel.image;
     if (imageName != null) {
       return CircleAvatar(
-          backgroundColor: Colors.transparent,
-          child: IFontAwesome.getFontAwesomeIcon(
-            pText: imageName,
-            pIconSize: 72,
-            pColor: iconColor,
-          ));
+        backgroundColor: Colors.transparent,
+        child: FontAwesomeUtil.getFontAwesomeIcon(
+          pText: imageName,
+          pIconSize: 72,
+          pColor: iconColor,
+        ),
+      );
     }
 
     // Custom menu item
