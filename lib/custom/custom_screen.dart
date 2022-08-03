@@ -15,8 +15,8 @@ class CustomScreen {
   /// Builder function for custom header
   final PreferredSizeWidget Function(BuildContext)? headerBuilder;
 
-  /// Builder function which returns the custom screen
-  final Widget Function(BuildContext)? screenBuilder;
+  /// Builder function which receives a context and the original screen, returns the custom screen
+  final Widget Function(BuildContext, Widget? screen)? screenBuilder;
 
   /// Builder function for custom footer
   final Widget Function(BuildContext)? footerBuilder;

@@ -26,7 +26,7 @@ class CustomScreenManagerExample extends CustomScreenManager {
         icon: const FaIcon(FontAwesomeIcons.airbnb),
       ),
       headerBuilder: (context) => const CustomHeaderExample(),
-      screenBuilder: (context) => Column(
+      screenBuilder: (context, screen) => Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           const Expanded(
