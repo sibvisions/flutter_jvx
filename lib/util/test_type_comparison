@@ -27,7 +27,6 @@ class Person {
 }
 
 class Cyborg extends Person {
-  bool hasBionicDick;
 
-  Cyborg(String name, this.hasBionicDick) : super(name);
+  Cyborg(String name) : super(name);
 }
