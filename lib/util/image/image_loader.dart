@@ -9,6 +9,7 @@ import '../../mixin/config_service_mixin.dart';
 import '../../src/service/file/file_manager.dart';
 import '../font_awesome_util.dart';
 
+//TODO investigate loading delays
 class ImageLoader with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
