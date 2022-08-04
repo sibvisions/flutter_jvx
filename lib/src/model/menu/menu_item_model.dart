@@ -61,8 +61,8 @@ class MenuItemModel {
           size: pSize,
           color: pColor,
         );
-      } else if (pMenuItemModel.icon != null) {
-        icon = pMenuItemModel.icon!;
+      } else if (pMenuItemModel.iconBuilder != null) {
+        return pMenuItemModel.iconBuilder!.call(pSize, pColor);
       }
     }
 

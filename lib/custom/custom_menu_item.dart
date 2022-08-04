@@ -15,7 +15,7 @@ class CustomMenuItem extends MenuItemModel {
   final IconData? faIcon;
 
   /// Icon to be used when creating a custom menu item
-  final Widget? icon;
+  final Widget Function(double size, Color contextColor)? iconBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -26,6 +26,6 @@ class CustomMenuItem extends MenuItemModel {
     required String screenLongName,
     required String label,
     this.faIcon,
-    this.icon,
+    this.iconBuilder,
   }) : super(label: label, screenLongName: screenLongName, custom: true);
 }
