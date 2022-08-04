@@ -32,7 +32,7 @@ class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlButtonWrapperS
       onPress: onPress,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

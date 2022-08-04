@@ -126,7 +126,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       onRowTapDown: onRowDown,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
@@ -336,7 +336,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       context: context,
       items: popupMenuEntries,
     ).then((val) {
-      WidgetsBinding.instance!.focusManager.primaryFocus?.unfocus();
+      WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
 
       if (val == ContextMenuCommand.INSERT) {
         insertRecord();

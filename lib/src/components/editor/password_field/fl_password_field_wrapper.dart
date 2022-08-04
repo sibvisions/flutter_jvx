@@ -35,7 +35,7 @@ class FlPasswordFieldWrapperState extends FlTextFieldWrapperState<FlTextFieldMod
         focusNode: focusNode,
         textController: textController);
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

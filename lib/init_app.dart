@@ -72,7 +72,7 @@ Future<void> initApp({
   configService.disposeLanguageCallbacks();
   languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
 
-  configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size : null);
+  configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance.window).size : null);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // API init
@@ -91,10 +91,6 @@ Future<void> initApp({
 
       // Send startup to server
       await commandService.sendCommand(StartupCommand(
-        //   appName: widget.appState.serverConfig!.appName,
-        //   screenWidth: MediaQuery.of(context).size.width.toInt(),
-        //   screenHeight: MediaQuery.of(context).size.height.toInt(),
-        //   appMode: widget.appState.serverConfig!.appMode,
         //   readAheadLimit: widget.appState.readAheadLimit,
         //   deviceId: _getDeviceId(),
         //   language: _startupLanguage,

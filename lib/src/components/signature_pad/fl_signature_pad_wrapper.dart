@@ -66,7 +66,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       onLongPressDown: (details) => this.details = details,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
@@ -160,7 +160,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
             context: context,
             items: popupMenuEntries)
         .then((val) {
-      WidgetsBinding.instance!.focusManager.primaryFocus?.unfocus();
+      WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
       if (val != null) {
         if (val == SignatureContextMenuCommand.DONE) {
           sendSignature();

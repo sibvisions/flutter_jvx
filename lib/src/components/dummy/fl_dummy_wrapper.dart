@@ -21,7 +21,7 @@ class _FlDummyWrapperState extends BaseCompWrapperState<FlDummyModel> {
       key: Key("${model.id}_Widget"),
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

@@ -46,7 +46,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
       mapController: mapController,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

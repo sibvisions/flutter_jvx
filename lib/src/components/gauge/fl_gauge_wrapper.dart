@@ -18,7 +18,7 @@ class _FlGaugeWrapperState extends BaseCompWrapperState<FlGaugeModel> {
   Widget build(BuildContext context) {
     final FlGaugeWidget widget = FlGaugeWidget(model: model);
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

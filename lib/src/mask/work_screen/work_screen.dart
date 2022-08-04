@@ -111,8 +111,8 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
           body: LayoutBuilder(
             builder: (context, constraints) {
               final viewInsets = EdgeInsets.fromWindowPadding(
-                WidgetsBinding.instance!.window.viewInsets,
-                WidgetsBinding.instance!.window.devicePixelRatio,
+                WidgetsBinding.instance.window.viewInsets,
+                WidgetsBinding.instance.window.devicePixelRatio,
               );
 
               log("WORKSCREEN Layoutbuilder viewinsets: " + viewInsets.bottom.toString());

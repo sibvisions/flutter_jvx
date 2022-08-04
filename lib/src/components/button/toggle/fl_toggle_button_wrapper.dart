@@ -20,7 +20,7 @@ class FlToggleButtonWrapperState<T extends FlToggleButtonModel> extends FlButton
       onPress: onPress,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

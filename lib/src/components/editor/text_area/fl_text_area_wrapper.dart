@@ -37,7 +37,7 @@ class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
       textController: textController,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

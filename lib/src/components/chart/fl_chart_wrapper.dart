@@ -40,7 +40,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
       series: getChartSeries(),
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

@@ -13,7 +13,7 @@ class FlGroupPanelHeaderWidget<T extends FlLabelModel> extends FlStatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

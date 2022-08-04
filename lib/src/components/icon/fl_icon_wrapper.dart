@@ -19,7 +19,7 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
   Widget build(BuildContext context) {
     final FlIconWidget widget = FlIconWidget(model: model);
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

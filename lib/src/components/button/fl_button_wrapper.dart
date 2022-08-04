@@ -72,7 +72,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       onPress: onPress,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 

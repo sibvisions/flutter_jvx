@@ -32,7 +32,7 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
       onPress: onPress,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
