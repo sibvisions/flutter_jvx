@@ -114,16 +114,11 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
                 WidgetsBinding.instance.window.viewInsets,
                 WidgetsBinding.instance.window.devicePixelRatio,
               );
-
-              log("WORKSCREEN Layoutbuilder viewinsets: " + viewInsets.bottom.toString());
-
               Widget screenWidget = widget.screenWidget;
               if (!widget.isCustomScreen) {
                 // debounce to not re-layout multiple times when opening the keyboard
-                debounce.call(() {
-                  _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
-                  _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
-                });
+                _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+                _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
               } else {
                 // Wrap custom screen in Positioned
                 screenWidget = Positioned(
@@ -134,28 +129,24 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
                   child: screenWidget,
                 );
               }
-              return Stack(
-                children: [
-                  SingleChildScrollView(
-                    physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
-                    child: Stack(
-                      children: [
-                        Container(
-                          height: constraints.maxHeight + viewInsets.bottom,
-                          width: constraints.maxWidth,
-                          child: backgroundImageString != null
-                              ? ImageLoader.loadImage(
-                                  backgroundImageString,
-                                  fit: BoxFit.scaleDown,
-                                )
-                              : null,
-                          color: backgroundColor,
-                        ),
-                        screenWidget
-                      ],
+              return SingleChildScrollView(
+                physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: constraints.maxHeight + viewInsets.bottom,
+                      width: constraints.maxWidth,
+                      child: backgroundImageString != null
+                          ? ImageLoader.loadImage(
+                              backgroundImageString,
+                              fit: BoxFit.scaleDown,
+                            )
+                          : null,
+                      color: backgroundColor,
                     ),
-                  ),
-                ],
+                    screenWidget
+                  ],
+                ),
               );
             },
           ),
