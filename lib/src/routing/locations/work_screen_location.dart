@@ -18,7 +18,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
     // Footer
     Widget? footer;
     // Title displayed on the top
-    String screenTitle = "SHOULD NEVER SHOW";
+    String screenTitle = "No Title";
     // Screen Widget
     Widget? screen;
 
@@ -45,6 +45,8 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
       String? customTitle = customScreen.screenTitle;
       if (customTitle != null) {
         screenTitle = customTitle;
+      } else {
+        screenTitle = customScreen.menuItemModel.label;
       }
     }
 
