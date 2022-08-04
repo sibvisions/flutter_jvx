@@ -2,8 +2,8 @@
 import 'dart:ui';
 
 void main() {
-  Object peter = Person("Peter");
-  Object cybob = Cyborg("Bob", true);
+  Object peter = Person();
+  Object cybob = Cyborg();
   Type personType = Person;
   Type cyborgType = Cyborg;
 
@@ -21,12 +21,9 @@ void main() {
 }
 
 class Person {
-  String name;
-
-  Person(this.name);
+  Person();
 }
 
 class Cyborg extends Person {
-
-  Cyborg(String name) : super(name);
+  Cyborg();
 }
