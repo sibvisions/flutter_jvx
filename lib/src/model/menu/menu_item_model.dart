@@ -18,8 +18,6 @@ class MenuItemModel {
   /// Label text of the menu item in the menu
   final String label;
 
-  final bool custom;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +26,6 @@ class MenuItemModel {
     required this.screenLongName,
     required this.label,
     this.image,
-    this.custom = false,
   });
 
   static Widget getImage({

@@ -17,6 +17,7 @@ class CustomScreenManagerExample extends CustomScreenManager {
 
   CustomScreenManagerExample() {
     registerScreen(CustomScreen(
+      screenLongName: "Fir-N7_CUSTOM",
       showOffline: true,
       screenTitle: "Custom Title",
       menuItemModel: CustomMenuItem(

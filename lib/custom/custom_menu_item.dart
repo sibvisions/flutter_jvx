@@ -22,10 +22,10 @@ class CustomMenuItem extends MenuItemModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CustomMenuItem({
-    required this.group,
     required String screenLongName,
+    required this.group,
     required String label,
     this.faIcon,
     this.iconBuilder,
-  }) : super(label: label, screenLongName: screenLongName, custom: true);
+  }) : super(label: label, screenLongName: screenLongName);
 }

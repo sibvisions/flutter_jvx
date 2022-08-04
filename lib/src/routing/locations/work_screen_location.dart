@@ -45,8 +45,8 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
       String? customTitle = customScreen.screenTitle;
       if (customTitle != null) {
         screenTitle = customTitle;
-      } else {
-        screenTitle = customScreen.menuItemModel.label;
+      } else if (customScreen.menuItemModel != null) {
+        screenTitle = customScreen.menuItemModel!.label;
       }
     }
 

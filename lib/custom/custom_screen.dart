@@ -9,6 +9,9 @@ class CustomScreen {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Id of the screen to open
+  final String screenLongName;
+
   /// Title displayed on the top of the screen
   final String? screenTitle;
 
@@ -22,7 +25,7 @@ class CustomScreen {
   final Widget Function(BuildContext)? footerBuilder;
 
   /// The menu item to access this screen, if this is left null, will use the
-  final CustomMenuItem menuItemModel;
+  final CustomMenuItem? menuItemModel;
 
   /// List with components that should be replaced in this screen
   final List<CustomComponent> replaceComponents;
@@ -38,12 +41,13 @@ class CustomScreen {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const CustomScreen({
+    required this.screenLongName,
     this.showOnline = true,
     this.showOffline = false,
     this.screenBuilder,
     this.headerBuilder,
     this.footerBuilder,
-    required this.menuItemModel,
+    this.menuItemModel,
     this.screenTitle,
     this.replaceComponents = const [],
   });

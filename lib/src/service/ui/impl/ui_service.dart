@@ -176,11 +176,12 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     // Add all custom menuItems
     if (customManager != null) {
       customManager!.customScreens
-          .where((element) =>
-              element.showOnline && !getConfigService().isOffline() ||
-              (element.showOffline && getConfigService().isOffline()))
-          .forEach((element) {
-        CustomMenuItem customModel = element.menuItemModel;
+          .where((customScreen) => customScreen.menuItemModel != null)
+          .where((customScreen) =>
+              customScreen.showOnline && !getConfigService().isOffline() ||
+              (customScreen.showOffline && getConfigService().isOffline()))
+          .forEach((customScreen) {
+        CustomMenuItem customModel = customScreen.menuItemModel!;
         // Create standard model
         MenuGroupModel? menuGroupModel =
             menuGroupModels.firstWhereOrNull((element) => element.name == customModel.group);
@@ -473,8 +474,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   CustomScreen? getCustomScreen({required String pScreenName}) {
-    return customManager?.customScreens
-        .firstWhereOrNull((element) => element.menuItemModel.screenLongName == pScreenName);
+    return customManager?.customScreens.firstWhereOrNull((customScreen) => customScreen.screenLongName == pScreenName);
   }
 
   @override
