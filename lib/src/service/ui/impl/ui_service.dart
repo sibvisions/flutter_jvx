@@ -181,19 +181,22 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
               customScreen.showOnline && !getConfigService().isOffline() ||
               (customScreen.showOffline && getConfigService().isOffline()))
           .forEach((customScreen) {
-        CustomMenuItem customModel = customScreen.menuItemModel!;
-        // Create standard model
+        CustomMenuItem customMenuItem = customScreen.menuItemModel!;
+
+        // Remove menu items that open the same screen
+        menuGroupModels.forEach((menuGroup) =>
+            menuGroup.items.removeWhere((menuItem) => menuItem.screenLongName == customMenuItem.screenLongName));
+
+        // Check if group already exists
         MenuGroupModel? menuGroupModel =
-            menuGroupModels.firstWhereOrNull((element) => element.name == customModel.group);
+            menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem.group);
         if (menuGroupModel != null) {
-          // Remove menu items that open the same screen
-          menuGroupModel.items.removeWhere((element) => element.screenLongName == customModel.screenLongName);
-          menuGroupModel.items.add(customModel);
+          menuGroupModel.items.add(customMenuItem);
         } else {
           // Make new group if it didn't exist
           MenuGroupModel newGroup = MenuGroupModel(
-            name: customModel.group,
-            items: [customModel],
+            name: customMenuItem.group,
+            items: [customMenuItem],
           );
           menuGroupModels.add(newGroup);
         }
