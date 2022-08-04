@@ -87,14 +87,17 @@ class LayoutService implements ILayoutService {
 
     LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
     if (existingLayout != null) {
-      existingLayout.calculatedSize = pSize;
-      existingLayout.layoutPosition = position;
+      Size? currentSize = existingLayout.calculatedSize;
+      if (currentSize == null || (currentSize != pSize)) {
+        existingLayout.calculatedSize = pSize;
+        existingLayout.layoutPosition = position;
 
-      existingLayout.widthConstrains = {};
-      existingLayout.heightConstrains = {};
+        existingLayout.widthConstrains = {};
+        existingLayout.heightConstrains = {};
 
-      if (_isLegalState(pParentLayout: existingLayout)) {
-        commands.addAll(_performLayout(pParentLayout: existingLayout));
+        if (_isLegalState(pParentLayout: existingLayout)) {
+          commands.addAll(_performLayout(pParentLayout: existingLayout));
+        }
       }
     } else {
       existingLayout = _layoutDataSet[pScreenComponentId] = LayoutData(
