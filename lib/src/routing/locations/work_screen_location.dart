@@ -20,7 +20,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
     // Title displayed on the top
     String screenTitle = "SHOULD NEVER SHOW";
     // Screen Widget
-    Widget screen = const Text("ERROR");
+    Widget? screen;
 
     bool isCustomScreen = false;
 
@@ -46,6 +46,11 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
       if (customTitle != null) {
         screenTitle = customTitle;
       }
+    }
+
+    if (screen == null) {
+      screen = Container();
+      getUiService().routeToMenu(pReplaceRoute: true);
     }
 
     return [
