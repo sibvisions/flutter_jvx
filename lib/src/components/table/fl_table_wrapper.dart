@@ -313,11 +313,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
 
     if (metaData?.insertEnabled ?? true) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare, 'Insert', ContextMenuCommand.INSERT));
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, 'Insert', ContextMenuCommand.INSERT));
     }
 
     if ((metaData?.deleteEnabled ?? true) && lastTouchedIndex != -1) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Delete', ContextMenuCommand.DELETE));
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squareMinus, 'Delete', ContextMenuCommand.DELETE));
     }
 
     if (kDebugMode) {

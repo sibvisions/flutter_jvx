@@ -97,7 +97,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
             Builder(
               builder: (context) => IconButton(
                 onPressed: () => Scaffold.of(context).openEndDrawer(),
-                icon: const FaIcon(FontAwesomeIcons.ellipsisV),
+                icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
               ),
             ),
           ],

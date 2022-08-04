@@ -203,7 +203,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
       );
     } else {
       img = FaIcon(
-        FontAwesomeIcons.mapMarker,
+        FontAwesomeIcons.locationPin,
         size: 64,
         color: Theme.of(context).primaryColor,
       );

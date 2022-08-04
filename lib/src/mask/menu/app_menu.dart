@@ -99,7 +99,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
                 },
               );
             },
-            icon: const FaIcon(FontAwesomeIcons.broadcastTower),
+            icon: const FaIcon(FontAwesomeIcons.towerBroadcast),
           ),
         ),
       );
@@ -109,7 +109,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
       Builder(
         builder: (context) => IconButton(
           onPressed: () => Scaffold.of(context).openEndDrawer(),
-          icon: const FaIcon(FontAwesomeIcons.ellipsisV),
+          icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
         ),
       ),
     );

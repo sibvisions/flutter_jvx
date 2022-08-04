@@ -15,7 +15,7 @@ class ImageLoader with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static const Widget DEFAULT_IMAGE = FaIcon(
-    FontAwesomeIcons.questionCircle,
+    FontAwesomeIcons.circleQuestion,
     size: 16,
   );
 

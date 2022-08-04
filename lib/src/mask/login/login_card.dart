@@ -73,7 +73,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
               ),
               TextButton.icon(
                 onPressed: () => _onSettingsPressed(context: context),
-                icon: const FaIcon(FontAwesomeIcons.cogs),
+                icon: const FaIcon(FontAwesomeIcons.gears),
                 label: Text(getConfigService().translateText("Settings")),
               ),
             ]),

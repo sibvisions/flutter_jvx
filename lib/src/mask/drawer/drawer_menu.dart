@@ -107,7 +107,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
       _buildFooterEntry(
         context: context,
         text: getConfigService().translateText("Settings"),
-        leadingIcon: FontAwesomeIcons.cogs,
+        leadingIcon: FontAwesomeIcons.gears,
         onTap: _settings,
       ),
       Divider(
@@ -118,7 +118,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
       _buildFooterEntry(
         context: context,
         text: getConfigService().translateText("Change password"),
-        leadingIcon: FontAwesomeIcons.save,
+        leadingIcon: FontAwesomeIcons.floppyDisk,
         onTap: _changePassword,
       ),
       Divider(
@@ -129,7 +129,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
       _buildFooterEntry(
         context: context,
         text: getConfigService().translateText("Logout"),
-        leadingIcon: FontAwesomeIcons.signOutAlt,
+        leadingIcon: FontAwesomeIcons.rightFromBracket,
         onTap: _logout,
       ),
     ];
