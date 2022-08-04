@@ -395,12 +395,19 @@ class ConfigService implements IConfigService {
 
   void _loadLanguage(String pLanguage) {
     translation.translations.clear();
-    File? defaultTranslationFile = fileManager.getFileSync(pPath: "languages/translation.json");
-    File? langTransFile = fileManager.getFileSync(pPath: "languages/translation_$pLanguage.json");
 
-    if (defaultTranslationFile != null) {
-      Translation defaultTrans = Translation.fromFile(pFile: defaultTranslationFile);
-      translation.translations.addAll(defaultTrans.translations);
+    File? langTransFile;
+    if (pLanguage == "en") {
+      langTransFile = fileManager.getFileSync(pPath: "languages/translation.json");
+    } else {
+      // Not sure if english should be loaded all the time
+      // File? defaultTranslationFile = fileManager.getFileSync(pPath: "languages/translation.json");
+      // if (defaultTranslationFile != null) {
+      //   Translation defaultTrans = Translation.fromFile(pFile: defaultTranslationFile);
+      //   translation.translations.addAll(defaultTrans.translations);
+      // }
+
+      langTransFile = fileManager.getFileSync(pPath: "languages/translation_$pLanguage.json");
     }
 
     if (langTransFile == null) {
