@@ -196,14 +196,16 @@ class DataBook {
 
   static void updateRecord({
     required String pDataProvider,
+    required List<String> pColumnNames,
+    required List<dynamic> pValues,
     Filter? pFilter,
   }) {
     IUiService uiService = services<IUiService>();
     uiService.sendCommand(SetValuesCommand(
       componentId: "custom",
       dataProvider: pDataProvider,
-      columnNames: [],
-      values: [],
+      columnNames: pColumnNames,
+      values: pValues,
       filter: pFilter,
       reason: "Update record | DataBook updateRecord",
     ));
