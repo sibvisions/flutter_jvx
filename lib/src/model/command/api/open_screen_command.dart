@@ -1,11 +1,10 @@
 import 'api_command.dart';
 
 class OpenScreenCommand extends ApiCommand {
-  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
   /// Component id.
   final String componentId;
 
@@ -24,4 +23,7 @@ class OpenScreenCommand extends ApiCommand {
 
   @override
   String get logString => "OpenScreenCommand | Component id: $componentId | Reason; $reason";
+
+  @override
+  Duration get loadingDelay => const Duration();
 }
