@@ -50,19 +50,19 @@ abstract class ParseUtil {
 
   /// Parses 6 or 8 digit hex-integers to colors.
   ///
-  /// Starting with 0x or 0X in AARRGGBB or RRGGBB.
-  ///
-  /// Starting with # in RRGGBBAA o RRGGBB
+  /// Server sends the following values:
+  /// 0x or 0X in AARRGGBB or RRGGBB.
+  /// # in RRGGBBAA or RRGGBB.
   static Color? parseHexColor(String? pValue) {
     if (pValue == null) {
       return null;
     } else if (pValue.startsWith("#")) {
       if (pValue.characters.length == 9) {
         return Color.fromARGB(
-          int.parse(pValue.substring(1, 3), radix: 16),
+          int.parse(pValue.substring(7, 9), radix: 16),
           int.parse(pValue.substring(3, 5), radix: 16),
           int.parse(pValue.substring(5, 7), radix: 16),
-          int.parse(pValue.substring(7, 9), radix: 16),
+          int.parse(pValue.substring(1, 3), radix: 16),
         );
       } else if (pValue.characters.length == 7) {
         return Color.fromARGB(
