@@ -48,7 +48,7 @@ class StartUpCommandProcessor
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
       forceNewSession: command.forceNewSession,
-      startUpParameters: getConfigService().getStartUpParameters(),
+      startUpParameters: getConfigService().getStartupParameters(),
     );
 
     return getApiService().sendRequest(request: startUpRequest);

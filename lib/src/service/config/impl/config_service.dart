@@ -320,12 +320,12 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  Map<String, dynamic> getStartUpParameters() {
+  Map<String, dynamic> getStartupParameters() {
     return startupParameters;
   }
 
   @override
-  void addStartupParameter({required String pKey, required dynamic pValue}) {
+  void setStartupParameter({required String pKey, required dynamic pValue}) {
     startupParameters[pKey] = pValue;
   }
 
