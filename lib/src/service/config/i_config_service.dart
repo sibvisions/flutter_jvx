@@ -52,10 +52,10 @@ abstract class IConfigService {
   void setUserInfo(UserInfo? pUserInfo);
 
   /// Returns a map of all added parameters which should be added on every startup
-  Map<String, dynamic> getStartUpParameters();
+  Map<String, dynamic> getStartupParameters();
 
   /// Add a parameter that will get send in the next startup
-  void addStartupParameter({required String pKey, required dynamic pValue});
+  void setStartupParameter({required String pKey, required dynamic pValue});
 
   /// Returns instance of [IFileManager]
   IFileManager getFileManager();

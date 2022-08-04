@@ -32,7 +32,7 @@ class StartUpCommandProcessor
       langCode: getConfigService().getLanguage(),
       screenHeight: command.phoneSize?.height ?? getConfigService().getPhoneSize()?.height,
       screenWidth: command.phoneSize?.width ?? getConfigService().getPhoneSize()?.width,
-      startUpParameters: getConfigService().getStartUpParameters(),
+      startUpParameters: getConfigService().getStartupParameters(),
     );
 
     return getApiService().sendRequest(request: startUpRequest);
