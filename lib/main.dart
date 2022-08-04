@@ -38,7 +38,6 @@ import 'src/service/ui/impl/ui_service.dart';
 import 'util/parse_util.dart';
 
 export 'package:beamer/beamer.dart';
-export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() async {
   await FlutterJVx.start(FlutterJVx(
