@@ -33,7 +33,7 @@ dependencies:
   flutter_svg: ^1.0.3
   flutter_svg_provider: ^1.0.3
   # Icons
-  font_awesome_flutter: ^9.2.0
+  font_awesome_flutter: ^10.1.0
   # Translations capability
   intl: ^0.17.0
   # Managing different persistent classes
