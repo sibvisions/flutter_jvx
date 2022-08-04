@@ -265,4 +265,15 @@ abstract class ApiObjectProperty {
   static const String showVerticalLines = "showVerticalLines";
   static const String sortOnHeaderEnabled = "sortOnHeaderEnabled";
   static const String wordWrapEnabled = "wordWrapEnabled";
+
+  // Startup request
+  static const String readAheadLimit = "readAheadLimit";
+  static const String deviceId = "deviceId";
+  static const String technology = "technology";
+  static const String osName = "osName";
+  static const String osVersion = "osVersion";
+  static const String appVersion = "appVersion";
+  static const String deviceType = "deviceType";
+  static const String deviceTypeModel = "deviceTypeModel";
+  static const String forceNewSession = "forceNewSession";
 }

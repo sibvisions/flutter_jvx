@@ -17,10 +17,10 @@ class ApiStartUpRequest extends IApiRequest {
   final String appMode;
 
   /// Total available (for workscreens) width of the screen
-  final double? screenWidth;
+  final int? screenWidth;
 
   /// Total available (for workscreens) height of the screen
-  final double? screenHeight;
+  final int? screenHeight;
 
   /// Name of the user
   final String? username;
@@ -37,6 +37,32 @@ class ApiStartUpRequest extends IApiRequest {
   /// Custom startup parameters
   final Map<String, dynamic>? startUpParameters;
 
+  /// How many records the app should fetch ahead
+  int? readAheadLimit;
+
+  /// Unique id of this device.
+  String? deviceId;
+
+  /// The technology of this app.
+  String? technology;
+
+  /// The os name this app runs on.
+  String? osName;
+
+  /// The os version this app runs on.
+  String? osVersion;
+
+  /// The app version.
+  String? appVersion;
+
+  /// The type of device this app runs on.
+  String? deviceType;
+
+  /// The device type model this app runs on.
+  String? deviceTypeModel;
+
+  /// If the server must create a new session
+  bool? forceNewSession;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,6 +78,15 @@ class ApiStartUpRequest extends IApiRequest {
     this.password,
     this.authKey,
     this.startUpParameters,
+    this.readAheadLimit,
+    this.deviceId,
+    this.technology,
+    this.osName,
+    this.osVersion,
+    this.appVersion,
+    this.deviceType,
+    this.deviceTypeModel,
+    this.forceNewSession,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,6 +104,15 @@ class ApiStartUpRequest extends IApiRequest {
         ApiObjectProperty.screenHeight: screenHeight,
         ApiObjectProperty.authKey: authKey,
         ApiObjectProperty.langCode: langCode,
+        ApiObjectProperty.readAheadLimit: readAheadLimit,
+        ApiObjectProperty.deviceId: deviceId,
+        ApiObjectProperty.technology: technology,
+        ApiObjectProperty.osName: osName,
+        ApiObjectProperty.osVersion: osVersion,
+        ApiObjectProperty.appVersion: appVersion,
+        ApiObjectProperty.deviceType: deviceType,
+        ApiObjectProperty.deviceTypeModel: deviceTypeModel,
+        ApiObjectProperty.forceNewSession: forceNewSession,
         ...?startUpParameters
       };
 }

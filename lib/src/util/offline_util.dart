@@ -79,6 +79,7 @@ abstract class OfflineUtil {
           appName: offlineAppName,
           username: offlineUsername,
           password: offlinePassword,
+          forceNewSession: true,
         ),
       );
 

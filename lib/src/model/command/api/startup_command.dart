@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'api_command.dart';
 
 class StartupCommand extends ApiCommand {
@@ -16,14 +14,14 @@ class StartupCommand extends ApiCommand {
   /// The password
   final String? password;
 
-  /// Size of the screen (display area)
-  final Size? phoneSize;
+  /// If the server must create a new session
+  bool? forceNewSession;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  StartupCommand({required String reason, this.appName, this.username, this.password, this.phoneSize})
+  StartupCommand({required String reason, this.appName, this.username, this.password, this.forceNewSession})
       : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
