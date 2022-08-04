@@ -30,7 +30,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
     }
 
     // Custom Config for this screen
-    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: workScreenName);
+    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: model?.screenLongName ?? workScreenName);
 
     if (customScreen != null) {
       header = customScreen.headerBuilder?.call(context);
