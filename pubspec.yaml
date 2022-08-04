@@ -13,7 +13,7 @@ environment:
 
 dependencies:
   # Flutter Dep
-  flutter_lints: ^1.0.0
+  flutter_lints: ^1.0.4
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -53,7 +53,7 @@ dependencies:
   # Used for offline mode
   sqflite: ^2.0.2+1
   collection: ^1.15.0
-  path: ^1.8.0
+  path: ^1.8.1
   wakelock: ^0.6.2
   flutter_map: ^1.1.1
   latlong2: ^0.8.1
