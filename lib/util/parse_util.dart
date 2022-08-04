@@ -49,10 +49,12 @@ abstract class ParseUtil {
   }
 
   /// Parses 6 or 8 digit hex-integers to colors.
-  ///
+  /// <br><br>
   /// Server sends the following values:
-  /// 0x or 0X in AARRGGBB or RRGGBB.
-  /// # in RRGGBBAA or RRGGBB.
+  /// <ul>
+  ///   <li>0x or 0X in AARRGGBB or RRGGBB.</li>
+  ///   <li>#RRGGBBAA or #RRGGBB.</li>
+  /// <ul>
   static Color? parseHexColor(String? pValue) {
     if (pValue == null) {
       return null;
