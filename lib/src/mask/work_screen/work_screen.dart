@@ -83,8 +83,8 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
         appBar: AppBar(
           leading: Center(
             child: InkWell(
-              onTap: () => _onBackTab(context),
-              onDoubleTap: () => _onDoubleTab(context),
+              onTap: () => _onBackTab(),
+              onDoubleTap: () => _onDoubleTab(),
               child: CircleAvatar(
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 backgroundColor: Theme.of(context).primaryColor,
@@ -191,7 +191,9 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     getUiService().sendCommand(deviceStatusCommand);
   }
 
-  _onBackTab(BuildContext context) {
+  _onBackTab() {
+    getUiService().setRouteContext(pContext: context);
+
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       _navigateBack();
@@ -214,7 +216,9 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     }
   }
 
-  _onDoubleTab(BuildContext context) {
+  _onDoubleTab() {
+    getUiService().setRouteContext(pContext: context);
+
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       _navigateBackForcefully();
