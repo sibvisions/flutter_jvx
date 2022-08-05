@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
+import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
@@ -67,8 +70,40 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void sendCommand(BaseCommand command, [VoidCallback? onError]) {
-    getCommandService().sendCommand(command).catchError((_) => onError?.call());
+  void sendCommand(BaseCommand command, [Function(Object error, StackTrace stackTrace)? onError]) {
+    getCommandService().sendCommand(command).catchError((error, stackTrace) {
+      if (onError != null) {
+        onError.call(error, stackTrace);
+      } else {
+        _handleError(error, stackTrace);
+      }
+    });
+  }
+
+  _handleError(Object error, StackTrace stackTrace) {
+    LOGGER.logE(pType: LOG_TYPE.COMMAND, pError: error, pStacktrace: stackTrace);
+
+    OpenErrorDialogCommand errorDialogCommand;
+    if (error is TimeoutException) {
+      errorDialogCommand = OpenErrorDialogCommand(
+        reason: "Command error in ui service",
+        message: "Connection to remote server timed out",
+        isTimeout: true,
+      );
+    } else if (error is SocketException) {
+      errorDialogCommand = OpenErrorDialogCommand(
+        reason: "Command error in ui service",
+        message: "Could not connect to remote server",
+        isTimeout: true,
+      );
+    } else {
+      errorDialogCommand = OpenErrorDialogCommand(
+        reason: "Command error in ui service",
+        message: "API Error $error",
+      );
+    }
+
+    getCommandService().sendCommand(errorDialogCommand);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

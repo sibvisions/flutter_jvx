@@ -4,26 +4,34 @@ import 'package:flutter/material.dart';
 import '../../../mixin/config_service_mixin.dart';
 
 /// This is a standard template for a server side error message.
-class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
+class ErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// This title will be displayed in the popup
+  final String? title;
 
   /// This message will be displayed in the popup
   final String message;
 
   /// True if this error is fixable by the user (e.g. invalid url/timeout)
-  final bool goToSettings;
+  final bool gotToSettings;
+
+  /// True if a no action (OK) button should be displayed
+  final bool dismissible;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ServerErrorDialog({
+  ErrorDialog({
     required this.message,
-    this.goToSettings = false,
-    Key? key,
-  }) : super(key: key);
+    this.title,
+    this.gotToSettings = false,
+    this.dismissible = true,
+    super.key,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -33,9 +41,9 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(getConfigService().translateText("Server Error")),
+      title: Text(title ?? getConfigService().translateText("Error")),
       content: Text(message),
-      actions: _getButtons(context),
+      actions: _getActions(context),
     );
   }
 
@@ -44,10 +52,10 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Get all possible actions
-  List<Widget> _getButtons(BuildContext context) {
+  List<Widget> _getActions(BuildContext context) {
     List<Widget> actions = [];
 
-    if (goToSettings) {
+    if (gotToSettings) {
       actions.add(
         TextButton(
           onPressed: () {
@@ -60,18 +68,19 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
           ),
         ),
       );
-      return actions;
     }
 
-    actions.add(
-      TextButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Text(
-          getConfigService().translateText("Ok"),
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    if (dismissible) {
+      actions.add(
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            getConfigService().translateText("Ok"),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     return actions;
   }

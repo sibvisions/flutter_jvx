@@ -141,14 +141,21 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
           return parsedDownloadObject;
         }
 
+        if (response.statusCode == 404) {
+          throw const SocketException("Application not found (404)");
+        }
+        if (response.headers.contentType?.value != ContentType.json.value) {
+          throw FormatException("Invalid server response"
+              "\nType: ${response.headers.contentType?.subType}"
+              "\nStatus: ${response.statusCode}");
+        }
+
         var formattedResponses = _formatResponse(await response.transform(utf8.decoder).join());
         var parsedResponseObjects = _responseParser(pJsonList: formattedResponses, originalRequest: pRequest);
         return parsedResponseObjects;
-      } catch (e, stackTrace) {
-        if (getConfigService().isOffline()) {
-          rethrow;
-        }
-        return _handleError(e, stackTrace, pRequest);
+      } catch (e) {
+        LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Error while sending ${pRequest.runtimeType}");
+        rethrow;
       }
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
@@ -241,36 +248,5 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
     }
 
     return parsedResponse;
-  }
-
-  Future<List<ErrorViewResponse>> _handleError(Object error, StackTrace stackTrace, Object originalRequest) async {
-    ErrorViewResponse errorViewResponse;
-    if (error is TimeoutException) {
-      errorViewResponse = ErrorViewResponse(
-        message: "Message timed out",
-        name: ApiResponseNames.error,
-        exceptions: [ServerException.fromException(error, stackTrace)],
-        originalRequest: originalRequest,
-        isTimeout: true,
-      );
-    } else if (error is SocketException) {
-      errorViewResponse = ErrorViewResponse(
-        message: "Could not connect to remote server",
-        name: ApiResponseNames.error,
-        exceptions: [ServerException.fromException(error, stackTrace)],
-        originalRequest: originalRequest,
-        isTimeout: true,
-      );
-    } else {
-      errorViewResponse = ErrorViewResponse(
-        message: "Repository error: $error",
-        name: ApiResponseNames.error,
-        exceptions: [ServerException(error.toString(), stackTrace.toString())],
-        originalRequest: originalRequest,
-      );
-    }
-
-    LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: errorViewResponse.message, pError: error, pStacktrace: stackTrace);
-    return [errorViewResponse];
   }
 }

@@ -84,13 +84,8 @@ class CommandService implements ICommandService {
     List<BaseCommand>? routeCommands;
     try {
       routeCommands = await processCommand(pCommand);
-    } catch (error, stacktrace) {
-      LOGGER.logE(
-        pType: LOG_TYPE.COMMAND,
-        pMessage: "Error processing (${pCommand.runtimeType}): ${error.toString()}",
-        pStacktrace: stacktrace,
-      );
-
+    } catch (error) {
+      LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Error processing ${pCommand.runtimeType}");
       rethrow;
     } finally {
       pCommand.callback?.call();

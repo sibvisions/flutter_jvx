@@ -28,7 +28,7 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Sends [command] to [ICommandService]
-  void sendCommand(BaseCommand command, [VoidCallback? onError]);
+  void sendCommand(BaseCommand command, [Function(Object error, StackTrace stackTrace)? onError]);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing

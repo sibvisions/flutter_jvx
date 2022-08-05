@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'config/app_config.dart';
 import 'custom/custom_screen_manager.dart';
 import 'main.dart';
+import 'src/mask/error/error_dialog.dart';
 import 'src/model/command/api/set_api_config_command.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/model/config/api/api_config.dart';
@@ -89,12 +91,24 @@ Future<void> initApp({
         reason: "Startup Api Config",
       ));
 
-      // Send startup to server
-      await commandService.sendCommand(StartupCommand(
-        reason: "InitApp",
-        username: configService.getUsername(),
-        password: configService.getPassword(),
-      ));
+      try {
+        // Send startup to server
+        await commandService.sendCommand(StartupCommand(
+          reason: "InitApp",
+          username: configService.getUsername(),
+          password: configService.getPassword(),
+        ));
+      } catch (e, stackTrace) {
+        LOGGER.logE(pType: LOG_TYPE.GENERAL, pError: e, pStacktrace: stackTrace);
+        unawaited(uiService.openDialog(
+          pDialogWidget: ErrorDialog(
+            message: e.toString(),
+            gotToSettings: true,
+            dismissible: false,
+          ),
+          pIsDismissible: false,
+        ));
+      }
     } else {
       uiService.routeToMenu(pReplaceRoute: true);
     }
