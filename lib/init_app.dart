@@ -91,20 +91,6 @@ Future<void> initApp({
 
       // Send startup to server
       await commandService.sendCommand(StartupCommand(
-        //   readAheadLimit: widget.appState.readAheadLimit,
-        //   deviceId: _getDeviceId(),
-        //   language: _startupLanguage,
-        //   clientId: '',
-        //   deviceMode: kIsWeb ? 'desktop' : 'mobile',
-        //   technology: deviceInfo.technology,
-        //   osName: deviceInfo.osName,
-        //   osVersion: deviceInfo.osVersion,
-        //   appVersion: deviceInfo.appVersion,
-        //   deviceType: deviceInfo.deviceType,
-        //   deviceTypeModel: deviceInfo.deviceTypeModel,
-        //   authKey: widget.manager.authKey,
-        //   username: widget.appState.serverConfig!.username,
-        //   password: widget.appState.serverConfig!.password,
         reason: "InitApp",
         username: configService.getUsername(),
         password: configService.getPassword(),
