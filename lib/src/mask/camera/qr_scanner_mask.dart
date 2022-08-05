@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+/// Definition of the callback for the QR-scanner
 typedef QRCallback = void Function(Barcode barcode, MobileScannerArguments? arguments);
 
 /// Displays the QR-Scanner with additional a control bar on top

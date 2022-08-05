@@ -1,4 +1,7 @@
-import '../../service/ui/i_ui_service.dart';
+import '../layout/layout_data.dart';
+import 'fl_component_model.dart';
+
+typedef ComponentCallback = Function({FlComponentModel? newModel, LayoutData? data});
 
 class ComponentSubscription {
   /// The object that subscribed, used for deletion

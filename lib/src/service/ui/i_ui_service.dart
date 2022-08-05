@@ -1,6 +1,5 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../custom/custom_component.dart';
 import '../../../custom/custom_screen.dart';
@@ -16,10 +15,6 @@ import '../../model/layout/layout_data.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/dal_meta_data_response.dart';
 import '../command/i_command_service.dart';
-
-/// Definition of the callback for the QR-scanner
-typedef QRCallback = void Function(Barcode qrValue);
-typedef ComponentCallback = Function({FlComponentModel? newModel, LayoutData? data});
 
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
