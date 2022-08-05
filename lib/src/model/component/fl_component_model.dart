@@ -78,7 +78,7 @@ abstract class FlComponentModel {
   String fontName = "Default";
 
   /// The size of the component.
-  int fontSize = 12;
+  int fontSize = 14;
 
   /// If the component is bold;
   bool isBold = false;

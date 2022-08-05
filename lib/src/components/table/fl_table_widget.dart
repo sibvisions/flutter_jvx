@@ -291,7 +291,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceGetter
 
       ColumnDefinition? colDef = metaData?.columns.firstWhere((element) => element.name == columnName);
 
-      if (colDef != null && colDef.nullable == true) {
+      if (colDef != null && colDef.nullable != true) {
         headerText += "*";
       }
 
