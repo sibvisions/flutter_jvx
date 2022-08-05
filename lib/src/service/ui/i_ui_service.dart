@@ -19,12 +19,6 @@ import '../command/i_command_service.dart';
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
 abstract class IUiService {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  IUiService({required BuildContext pContext});
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,6 +66,8 @@ abstract class IUiService {
     Function(BuildContext context)? pContextCallback,
     Locale? pLocale,
   });
+
+  BuildContext? getBuildContext();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Meta data management

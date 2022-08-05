@@ -165,6 +165,11 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
         });
   }
 
+  @override
+  BuildContext? getBuildContext() {
+    return _currentBuildContext;
+  }
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Meta data management
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
