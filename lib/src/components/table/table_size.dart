@@ -209,19 +209,6 @@ class TableSize with UiServiceGetterMixin {
     }
   }
 
-  autoResizeTo(double pWidth) {
-    double currentWidth = calculatedSize.width;
-
-    for (int i = 0; i < columnWidths.length; i++) {
-      double width = columnWidths[i];
-      // Every width gets equal share of remaining width
-      // Ignores max width, as we have to fill it!
-      width = (width / currentWidth) * pWidth;
-
-      columnWidths[i] = width;
-    }
-  }
-
   double adjustValue(double currentWidth, double wantedWith) {
     if (wantedWith > currentWidth) {
       return math.min(math.max(wantedWith, minColumnWidth), maxColumnWidth);
