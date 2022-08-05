@@ -404,6 +404,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
 
   /// Will send a [StartupCommand] with current values
   void _saveClicked() {
+    getUiService().setRouteContext(pContext: context);
+
     if (appNameNotifier.value.isNotEmpty && baseUrlNotifier.value.isNotEmpty) {
       StartupCommand startupCommand = StartupCommand(
         reason: "Open App from Settings",
