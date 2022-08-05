@@ -52,14 +52,22 @@ Future<void> initApp({
   uiService.setRouteContext(pContext: initContext);
 
   // Load config files
-  appConfig ??= await ConfigUtil.readDevConfig();
+  bool devConfigLoaded = false;
+  if (!kReleaseMode) {
+    AppConfig? devConfig = await ConfigUtil.readDevConfig();
+    if (devConfig != null) {
+      LOGGER.logI(pType: LOG_TYPE.CONFIG, pMessage: "Found dev config, overriding values");
+      appConfig = devConfig;
+      devConfigLoaded = true;
+    }
+  }
   appConfig ??= await ConfigUtil.readAppConfig();
 
   if (appConfig == null) {
-    LOGGER.logI(pType: LOG_TYPE.CONFIG, pMessage: "No Config found, using default values");
+    LOGGER.logI(pType: LOG_TYPE.CONFIG, pMessage: "No config found, using default values");
     appConfig = AppConfig();
   }
-  (configService as ConfigService).setAppConfig(appConfig);
+  await (configService as ConfigService).setAppConfig(appConfig, devConfigLoaded);
 
   if (appConfig.serverConfig.baseUrl != null) {
     var baseUri = Uri.parse(appConfig.serverConfig.baseUrl!);

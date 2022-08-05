@@ -305,8 +305,22 @@ class ConfigService implements IConfigService {
   }
 
   ///Only call if you know what you do!
-  void setAppConfig(AppConfig? pAppConfig) async {
+  setAppConfig(AppConfig? pAppConfig, [bool devConfig = false]) async {
     appConfig = pAppConfig;
+    if (devConfig) {
+      if (pAppConfig?.serverConfig.appName != null) {
+        await setAppName(pAppConfig!.serverConfig.appName!);
+      }
+      if (pAppConfig?.serverConfig.baseUrl != null) {
+        await setBaseUrl(pAppConfig!.serverConfig.baseUrl!);
+      }
+      if (pAppConfig?.serverConfig.username != null) {
+        await setUsername(pAppConfig!.serverConfig.username!);
+      }
+      if (pAppConfig?.serverConfig.password != null) {
+        await setPassword(pAppConfig!.serverConfig.password!);
+      }
+    }
   }
 
   @override
