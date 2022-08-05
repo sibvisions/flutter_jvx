@@ -65,7 +65,12 @@ class LOGGER {
     }
 
     if (canLog) {
-      dev.log("$pLevel: " + pMessage.toString(), error: pError, stackTrace: pStacktrace);
+      _log(
+        pLevel: pLevel,
+        pMessage: pMessage,
+        pError: pError,
+        pStacktrace: pStacktrace,
+      );
     }
   }
 
@@ -93,8 +98,13 @@ class LOGGER {
     logs(pLevel: LOG_LEVEL.TRACE, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static log(
-      {required LOG_TYPE pType, required LOG_LEVEL pLevel, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+  static log({
+    required LOG_TYPE pType,
+    required LOG_LEVEL pLevel,
+    dynamic pMessage,
+    Object? pError,
+    StackTrace? pStacktrace,
+  }) {
     bool canLog = MINIMUM_LOG.index >= pLevel.index;
 
     if (!canLog) {
@@ -103,7 +113,12 @@ class LOGGER {
     }
 
     if (canLog) {
-      dev.log("$pLevel: " + pMessage.toString(), error: pError, stackTrace: pStacktrace);
+      _log(
+        pLevel: pLevel,
+        pMessage: pMessage,
+        pError: pError,
+        pStacktrace: pStacktrace,
+      );
     }
   }
 
@@ -129,5 +144,18 @@ class LOGGER {
 
   static logT({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
     log(pLevel: LOG_LEVEL.TRACE, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  }
+
+  static _log({
+    required LOG_LEVEL pLevel,
+    dynamic pMessage,
+    Object? pError,
+    StackTrace? pStacktrace,
+  }) {
+    dev.log(
+      "${pLevel.name}:" + (pMessage != null ? " " + pMessage.toString() : ""),
+      error: pError,
+      stackTrace: pStacktrace,
+    );
   }
 }
