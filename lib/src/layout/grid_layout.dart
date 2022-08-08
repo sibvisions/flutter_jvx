@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -65,7 +64,7 @@ class GridLayout extends ILayout {
       //  Calculate how wide one single grid would be for the component based on the preferred width and how many grids the component is wide
       int widthOneField = (prefSize.width / componentConstraint.gridWidth).ceil();
       // Calculate how tall one single grid would be for the component based on the preferred height and how many grids the component is tall
-      int heightOneField = (prefSize.width / componentConstraint.gridWidth).ceil();
+      int heightOneField = (prefSize.height / componentConstraint.gridHeight).ceil();
       if (widthOneField > widest) {
         widest = widthOneField;
       }
@@ -89,16 +88,8 @@ class GridLayout extends ILayout {
 
     Size preferredSize = Size(calcWidth, calcHeight);
 
-    double fieldWidth;
-    double fieldHeight;
-
-    if (pParent.layoutPosition!.isComponentSize) {
-      fieldWidth = pParent.layoutPosition!.width;
-      fieldHeight = pParent.layoutPosition!.height;
-    } else {
-      fieldWidth = max(calcWidth, pParent.layoutPosition!.width);
-      fieldHeight = max(calcHeight, pParent.layoutPosition!.height);
-    }
+    double fieldWidth = pParent.layoutPosition?.width ?? calcWidth;
+    double fieldHeight = pParent.layoutPosition?.height ?? calcHeight;
 
     fieldWidth -= pParent.insets.left + pParent.insets.right + margins.marginLeft + margins.marginRight;
     fieldHeight -= pParent.insets.top + pParent.insets.bottom + margins.marginTop + margins.marginBottom;
@@ -120,8 +111,8 @@ class GridLayout extends ILayout {
       data.layoutPosition = LayoutPosition(
           width: calculatedWidth,
           height: calculatedHeight,
-          top: calculatedTop,
-          left: calculatedLeft,
+          top: calculatedTop + (pParent.insets.top + margins.marginTop),
+          left: calculatedLeft + (pParent.insets.left + margins.marginLeft),
           isComponentSize: true);
     }
     pParent.calculatedSize = preferredSize;
