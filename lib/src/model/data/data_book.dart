@@ -225,26 +225,34 @@ class DataBook {
   }
 
   static void subscribeToDataBook({
-    required Object subbedObj,
-    required String dataProvider,
-    List<String>? dataColumns,
-    int from = -1,
-    int? to,
-    void Function(DataChunk)? onDataChunk,
-    void Function(DalMetaDataResponse)? onMetaData,
-    void Function(DataRecord?)? onSelectedRecord,
+    required Object pSubObject,
+    required String pDataProvider,
+    List<String>? pDataColumns,
+    int pFrom = -1,
+    int? pTo,
+    void Function(DataChunk)? pOnDataChunk,
+    void Function(DalMetaDataResponse)? pOnMetaData,
+    void Function(DataRecord?)? pOnSelectedRecord,
   }) {
     IUiService uiService = services<IUiService>();
     uiService.registerDataSubscription(
         pDataSubscription: DataSubscription(
-      subbedObj: subbedObj,
-      dataProvider: dataProvider,
-      dataColumns: dataColumns,
-      from: from,
-      to: to,
-      onDataChunk: onDataChunk,
-      onMetaData: onMetaData,
-      onSelectedRecord: onSelectedRecord,
+      subbedObj: pSubObject,
+      dataProvider: pDataProvider,
+      dataColumns: pDataColumns,
+      from: pFrom,
+      to: pTo,
+      onDataChunk: pOnDataChunk,
+      onMetaData: pOnMetaData,
+      onSelectedRecord: pOnSelectedRecord,
     ));
+  }
+
+  static void unsubscribeToDataBook({
+    required Object pSubObject,
+    String? pDataProvider,
+  }) {
+    IUiService uiService = services<IUiService>();
+    uiService.disposeDataSubscription(pSubscriber: pSubObject, pDataProvider: pDataProvider);
   }
 }
