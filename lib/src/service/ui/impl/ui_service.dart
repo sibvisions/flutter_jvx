@@ -218,7 +218,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
       customManager!.customScreens
           .where((customScreen) => customScreen.menuItemModel != null)
           .where((customScreen) =>
-              customScreen.showOnline && !getConfigService().isOffline() ||
+              (customScreen.showOnline && !getConfigService().isOffline()) ||
               (customScreen.showOffline && getConfigService().isOffline()))
           .forEach((customScreen) {
         CustomMenuItem customMenuItem = customScreen.menuItemModel!;

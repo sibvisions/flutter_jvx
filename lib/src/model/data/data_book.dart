@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import '../../../data.dart';
 import '../../service/service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../command/api/delete_record_command.dart';
@@ -11,8 +12,6 @@ import '../request/filter.dart';
 import '../response/dal_fetch_response.dart';
 import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
-import 'subscriptions/data_chunk.dart';
-import 'subscriptions/data_record.dart';
 
 /// Holds all data and column definitions of a data provider
 class DataBook {
@@ -228,15 +227,24 @@ class DataBook {
   static void subscribeToDataBook({
     required Object subbedObj,
     required String dataProvider,
-    void Function(DataRecord?)? onSelectedRecord,
+    List<String>? dataColumns,
+    int from = -1,
+    int? to,
     void Function(DataChunk)? onDataChunk,
     void Function(DalMetaDataResponse)? onMetaData,
-    int? from,
-    int? to,
-    List<String>? dataColumns,
+    void Function(DataRecord?)? onSelectedRecord,
   }) {
     IUiService uiService = services<IUiService>();
-    // uiService.registerDataSubscription(
-    //     pDataSubscription: DataSubscription(subbedObj: subbedObj, dataProvider: dataProvider, from: from));
+    uiService.registerDataSubscription(
+        pDataSubscription: DataSubscription(
+      subbedObj: subbedObj,
+      dataProvider: dataProvider,
+      dataColumns: dataColumns,
+      from: from,
+      to: to,
+      onDataChunk: onDataChunk,
+      onMetaData: onMetaData,
+      onSelectedRecord: onSelectedRecord,
+    ));
   }
 }

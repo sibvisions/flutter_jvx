@@ -40,7 +40,7 @@ class ErrorViewResponse extends ApiResponse {
   }) : super(name: name, originalRequest: originalRequest);
 
   ErrorViewResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : silentAbort = pJson[ApiObjectProperty.silentAbort],
+      : silentAbort = pJson[ApiObjectProperty.silentAbort] ?? false,
         details = pJson[ApiObjectProperty.details],
         title = pJson[ApiObjectProperty.title],
         message = pJson[ApiObjectProperty.message],

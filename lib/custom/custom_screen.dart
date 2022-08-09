@@ -16,13 +16,13 @@ class CustomScreen {
   final String? screenTitle;
 
   /// Builder function for custom header
-  final PreferredSizeWidget Function(BuildContext)? headerBuilder;
+  final PreferredSizeWidget Function(BuildContext buildContext)? headerBuilder;
 
   /// Builder function which receives a context and the original screen, returns the custom screen
-  final Widget Function(BuildContext, Widget? screen)? screenBuilder;
+  final Widget Function(BuildContext buildContext, Widget? originalScreen)? screenBuilder;
 
   /// Builder function for custom footer
-  final Widget Function(BuildContext)? footerBuilder;
+  final Widget Function(BuildContext buildContext)? footerBuilder;
 
   /// The menu item to access this screen, if this is left null, will use the
   final CustomMenuItem? menuItemModel;
