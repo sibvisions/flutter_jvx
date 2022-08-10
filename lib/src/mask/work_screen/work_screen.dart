@@ -4,6 +4,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../custom/custom_screen.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/image/image_loader.dart';
@@ -32,6 +33,9 @@ class WorkScreen extends StatefulWidget {
   /// ScreenName of an online-screen - used for sending [ApiNavigationRequest]
   final String screenName;
 
+  /// Screen long name of an screen
+  final String? screenLongName;
+
   /// Widget used as workscreen
   final Widget screenWidget;
 
@@ -49,6 +53,7 @@ class WorkScreen extends StatefulWidget {
     required this.screenWidget,
     required this.isCustomScreen,
     required this.screenName,
+    this.screenLongName,
     this.footer,
     this.header,
     Key? key,
@@ -83,8 +88,8 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
         appBar: AppBar(
           leading: Center(
             child: InkWell(
-              onTap: () => _onBackTab(),
-              onDoubleTap: () => _onDoubleTab(),
+              onTap: () => _onBackTap(),
+              onDoubleTap: () => _onDoubleTap(),
               child: CircleAvatar(
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 backgroundColor: Theme.of(context).primaryColor,
@@ -191,7 +196,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     getUiService().sendCommand(deviceStatusCommand);
   }
 
-  _onBackTab() {
+  _onBackTap() {
     getUiService().setRouteContext(pContext: context);
 
     currentObjectFocused = FocusManager.instance.primaryFocus;
@@ -210,13 +215,13 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     }
 
     if (widget.isCustomScreen) {
-      context.beamToNamed("/menu");
+      _customBack();
     } else {
       getUiService().sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
     }
   }
 
-  _onDoubleTab() {
+  _onDoubleTap() {
     getUiService().setRouteContext(pContext: context);
 
     currentObjectFocused = FocusManager.instance.primaryFocus;
@@ -235,10 +240,16 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     }
 
     if (widget.isCustomScreen) {
-      context.beamToNamed("/menu");
+      _customBack();
     } else {
       getUiService().sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
       getUiService().sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
     }
+  }
+
+  _customBack() {
+    CustomScreen? screen = getUiService().getCustomScreen(pScreenName: widget.screenLongName ?? widget.screenName);
+    bool isHandled = screen?.onBack?.call() ?? false;
+    if (!isHandled) context.beamToNamed("/menu");
   }
 }

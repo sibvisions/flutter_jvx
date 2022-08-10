@@ -24,6 +24,9 @@ class CustomScreen {
   /// Builder function for custom footer
   final Widget Function(BuildContext buildContext)? footerBuilder;
 
+  /// onBack function, returns true if the action was handled by the listener
+  final bool Function()? onBack;
+
   /// The menu item to access this screen, if this is left null, will use the
   final CustomMenuItem? menuItemModel;
 
@@ -47,6 +50,7 @@ class CustomScreen {
     this.screenBuilder,
     this.headerBuilder,
     this.footerBuilder,
+    this.onBack,
     this.menuItemModel,
     this.screenTitle,
     this.replaceComponents = const [],
