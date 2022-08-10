@@ -257,4 +257,8 @@ class DataBook {
     IUiService uiService = services<IUiService>();
     uiService.disposeDataSubscription(pSubscriber: pSubObject, pDataProvider: pDataProvider);
   }
+
+  static int getColumnIndex(List<ColumnDefinition> columnDefinitions, String columnName) {
+    return columnDefinitions.indexWhere((colDef) => colDef.name == columnName);
+  }
 }

@@ -1,4 +1,5 @@
 import '../column_definition.dart';
+import '../data_book.dart';
 
 class DataRecord {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,4 +24,12 @@ class DataRecord {
     required this.index,
     required this.values,
   });
+
+  int getColumnIndex(String columnName) {
+    return DataBook.getColumnIndex(columnDefinitions, columnName);
+  }
+
+  dynamic getValue(String columnName) {
+    return values[getColumnIndex(columnName)];
+  }
 }

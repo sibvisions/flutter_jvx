@@ -1,5 +1,6 @@
 import '../../../service/data/i_data_service.dart';
 import '../column_definition.dart';
+import '../data_book.dart';
 
 /// Used as return value when getting subscriptions data from [IDataService]
 class DataChunk {
@@ -38,4 +39,12 @@ class DataChunk {
     required this.to,
     this.update = false,
   });
+
+  int getColumnIndex(String columnName) {
+    return DataBook.getColumnIndex(columnDefinitions, columnName);
+  }
+
+  dynamic getValue(String columnName, int rowIndex) {
+    return data[rowIndex]?[getColumnIndex(columnName)];
+  }
 }
