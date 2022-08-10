@@ -70,6 +70,14 @@ dependencies:
   shared_preferences: ^2.0.15
   uuid: ^3.0.6
 
+dependency_overrides:
+  # add override of charts_flutter
+  charts_flutter:
+    git:
+      url: https://github.com/kennenfromchina/charts.git
+      path: charts_flutter
+      ref: fix_flutter3.0
+
 dev_dependencies:
   flutter_lints: ^1.0.4
 
