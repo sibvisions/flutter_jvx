@@ -64,6 +64,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
           footer: footer,
           header: header,
           screenName: workScreenName,
+          screenLongName: model?.screenLongName,
         ),
         key: UniqueKey(),
       )

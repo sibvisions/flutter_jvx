@@ -40,7 +40,8 @@ class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceGett
       CustomScreen? screen = getUiService().getCustomScreen(pScreenName: location);
 
       if (screen != null && !getUiService().hasReplaced(pScreenLongName: screen.screenLongName)) {
-        return delegate.beamBack();
+        bool isHandled = screen.onBack?.call() ?? false;
+        return isHandled ? isHandled : delegate.beamBack();
       } else {
         getUiService().sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: location));
         return true;
