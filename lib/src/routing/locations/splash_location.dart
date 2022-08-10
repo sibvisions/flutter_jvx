@@ -14,6 +14,8 @@ class SplashLocation extends BeamLocation<BeamState> {
 
   final CustomScreenManager? screenManager;
 
+  final Widget Function(BuildContext context)? loadingBuilder;
+
   final List<Function(Map<String, String> style)>? styleCallbacks;
 
   final List<Function(String language)>? languageCallbacks;
@@ -25,6 +27,7 @@ class SplashLocation extends BeamLocation<BeamState> {
   SplashLocation({
     this.appConfig,
     this.screenManager,
+    this.loadingBuilder,
     this.languageCallbacks,
     this.styleCallbacks,
   });
@@ -40,6 +43,7 @@ class SplashLocation extends BeamLocation<BeamState> {
         child: SplashWidget(
           appConfig: appConfig,
           screenManager: screenManager,
+          loadingBuilder: loadingBuilder,
           languageCallbacks: languageCallbacks,
           styleCallbacks: styleCallbacks,
         ),

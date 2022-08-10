@@ -17,6 +17,9 @@ class SplashWidget extends StatefulWidget {
 
   final CustomScreenManager? screenManager;
 
+  /// Builder function for custom loading widget
+  final Widget Function(BuildContext context)? loadingBuilder;
+
   final List<Function(Map<String, String> style)>? styleCallbacks;
 
   final List<Function(String language)>? languageCallbacks;
@@ -29,6 +32,7 @@ class SplashWidget extends StatefulWidget {
     Key? key,
     this.appConfig,
     this.screenManager,
+    this.loadingBuilder,
     this.styleCallbacks,
     this.languageCallbacks,
   }) : super(key: key);
@@ -89,7 +93,7 @@ class _SplashWidgetState extends State<SplashWidget> {
     return FutureBuilder(
       future: initAppFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return const LoadingWidget();
+        return widget.loadingBuilder?.call(context) ?? const LoadingWidget();
       },
     );
   }

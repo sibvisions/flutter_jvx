@@ -48,11 +48,13 @@ void main() async {
 class FlutterJVx extends StatefulWidget {
   final AppConfig? appConfig;
   final CustomScreenManager? screenManager;
+  final Widget Function(BuildContext context)? loadingBuilder;
 
   const FlutterJVx({
     Key? key,
     this.appConfig,
     this.screenManager,
+    this.loadingBuilder,
   }) : super(key: key);
 
   @override
@@ -136,6 +138,7 @@ class FlutterJVxState extends State<FlutterJVx> {
           SplashLocation(
             appConfig: widget.appConfig,
             screenManager: widget.screenManager,
+            loadingBuilder: widget.loadingBuilder,
             styleCallbacks: [changeStyle],
             languageCallbacks: [changeLanguage],
           ),
