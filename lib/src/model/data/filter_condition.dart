@@ -25,7 +25,7 @@ class FilterCondition {
   CompareType? compareType = CompareType.EQUALS;
   bool? not;
   FilterCondition? condition;
-  List<FilterCondition>? conditions;
+  List<FilterCondition> conditions = [];
 
   FilterCondition({
     this.columnName,
@@ -34,7 +34,7 @@ class FilterCondition {
     this.compareType,
     this.not,
     this.condition,
-    this.conditions,
+    this.conditions = const [],
   });
 
   FilterCondition.fromJson(Map<String, dynamic> pJson) {
@@ -61,7 +61,7 @@ class FilterCondition {
       condition = FilterCondition.fromJson(pJson[ApiObjectProperty.condition]);
     }
     if (pJson.containsKey(ApiObjectProperty.conditions)) {
-      pJson[ApiObjectProperty.conditions].forEach((c) => conditions!.add(FilterCondition.fromJson(c)));
+      pJson[ApiObjectProperty.conditions].forEach((c) => conditions.add(FilterCondition.fromJson(c)));
     }
   }
 
@@ -73,7 +73,7 @@ class FilterCondition {
       ApiObjectProperty.compareType: ParseUtil.propertyAsString(compareType?.toString()),
       ApiObjectProperty.not: value,
       ApiObjectProperty.condition: condition?.toJson(),
-      ApiObjectProperty.conditions: conditions!.map<Map<String, dynamic>>((c) => c.toJson()).toList()
+      ApiObjectProperty.conditions: conditions.map<Map<String, dynamic>>((c) => c.toJson()).toList()
     };
   }
 }
