@@ -103,8 +103,6 @@ Future<void> initApp({
         // Send startup to server
         await commandService.sendCommand(StartupCommand(
           reason: "InitApp",
-          username: configService.getUsername(),
-          password: configService.getPassword(),
         ));
       } catch (e, stackTrace) {
         LOGGER.logE(pType: LOG_TYPE.GENERAL, pError: e, pStacktrace: stackTrace);
