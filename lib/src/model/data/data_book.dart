@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import '../../../data.dart';
 import '../../service/service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../command/api/delete_record_command.dart';
@@ -12,6 +11,8 @@ import '../request/filter.dart';
 import '../response/dal_fetch_response.dart';
 import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
+import 'subscriptions/data_record.dart';
+import 'subscriptions/data_subscription.dart';
 
 /// Holds all data and column definitions of a data provider
 class DataBook {
