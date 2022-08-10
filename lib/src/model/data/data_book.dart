@@ -11,6 +11,7 @@ import '../request/filter.dart';
 import '../response/dal_fetch_response.dart';
 import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
+import 'filter_condition.dart';
 import 'subscriptions/data_chunk.dart';
 import 'subscriptions/data_record.dart';
 import 'subscriptions/data_subscription.dart';
@@ -174,12 +175,14 @@ class DataBook {
 
   static void filterRecords({
     required String pDataProvider,
-    required Filter pFilter,
+    Filter? pFilter,
+    FilterCondition? pFilterCondition,
   }) {
     IUiService uiService = services<IUiService>();
     uiService.sendCommand(FilterCommand(
       editorId: "custom",
       filter: pFilter,
+      filterCondition: pFilterCondition,
       dataProvider: pDataProvider,
       reason: "Filter record | DataBook filterRecords",
     ));
@@ -200,6 +203,7 @@ class DataBook {
     required List<String> pColumnNames,
     required List<dynamic> pValues,
     Filter? pFilter,
+    FilterCondition? pFilterCondition,
   }) {
     IUiService uiService = services<IUiService>();
     uiService.sendCommand(SetValuesCommand(
@@ -208,6 +212,7 @@ class DataBook {
       columnNames: pColumnNames,
       values: pValues,
       filter: pFilter,
+      filterCondition: pFilterCondition,
       reason: "Update record | DataBook updateRecord",
     ));
   }
@@ -215,12 +220,14 @@ class DataBook {
   static void deleteRecord({
     required String pDataProvider,
     Filter? pFilter,
+    FilterCondition? pFilterCondition,
     int? pRowIndex,
   }) {
     IUiService uiService = services<IUiService>();
     uiService.sendCommand(DeleteRecordCommand(
       dataProvider: pDataProvider,
       filter: pFilter,
+      filterCondition: pFilterCondition,
       selectedRow: pRowIndex,
       reason: "Delete record | DataBook deleteRecord",
     ));

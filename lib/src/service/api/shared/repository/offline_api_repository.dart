@@ -142,6 +142,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       filter["ROWID"] = pRequest.selectedRow;
     }
 
+    //TODO use filterCondition
     await offlineDatabase!.delete(pTableName: pRequest.dataProvider, pFilter: filter);
 
     // JVx Server does also ignore fetch and always fetches.
@@ -220,6 +221,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
         columnNames: pRequest.columnNames!,
       );
 
+      //TODO use filterCondition
       _databookLastFilter[pRequest.dataProvider] = filter;
     } else if (pRequest.filter != null) {
       if (pRequest.filter!.isEmpty) {
@@ -256,6 +258,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       updateData[pRequest.columnNames[i]] = pRequest.values[i];
     }
 
+    //TODO use filterCondition
     await offlineDatabase!
         .update(pTableName: pRequest.dataProvider, pUpdate: updateData, pFilter: _createSQLFilter(filter));
 

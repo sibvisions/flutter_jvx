@@ -24,6 +24,7 @@ class SetValuesCommandProcessor
         columnNames: command.columnNames,
         values: command.values,
         filter: command.filter,
+        filterCondition: command.filterCondition,
       );
 
       return getApiService().sendRequest(request: setValuesRequest);

@@ -1,4 +1,5 @@
 import '../../service/api/shared/api_object_property.dart';
+import '../data/filter_condition.dart';
 import 'filter.dart';
 import 'i_api_request.dart';
 
@@ -16,6 +17,8 @@ class ApiFilterRequest implements IApiRequest {
 
   final Filter? filter;
 
+  final FilterCondition? filterCondition;
+
   final List<String>? columnNames;
 
   final String dataProvider;
@@ -31,6 +34,7 @@ class ApiFilterRequest implements IApiRequest {
     this.columnNames,
     this.value,
     this.filter,
+    this.filterCondition,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +47,7 @@ class ApiFilterRequest implements IApiRequest {
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.value: value,
         ApiObjectProperty.filter: filter?.toJson(),
+        ApiObjectProperty.filterCondition: filterCondition?.toJson(),
         ApiObjectProperty.editorComponentId: editorComponentId,
         ApiObjectProperty.dataProvider: dataProvider,
       };

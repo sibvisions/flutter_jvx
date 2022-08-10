@@ -1,4 +1,5 @@
 import '../../service/api/shared/api_object_property.dart';
+import '../data/filter_condition.dart';
 import 'filter.dart';
 import 'i_api_request.dart';
 
@@ -26,6 +27,8 @@ class ApiSetValuesRequest extends IApiRequest {
   /// Filter of this setValues, used in table to edit non selected rows.
   final Filter? filter;
 
+  final FilterCondition? filterCondition;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,6 +40,7 @@ class ApiSetValuesRequest extends IApiRequest {
     required this.columnNames,
     required this.values,
     this.filter,
+    this.filterCondition,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,5 +55,6 @@ class ApiSetValuesRequest extends IApiRequest {
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.values: values,
         ApiObjectProperty.filter: filter?.toJson(),
+        ApiObjectProperty.filterCondition: filterCondition?.toJson(),
       };
 }

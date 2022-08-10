@@ -1,3 +1,4 @@
+import '../../data/filter_condition.dart';
 import '../../request/filter.dart';
 import 'api_command.dart';
 
@@ -13,6 +14,8 @@ class DeleteRecordCommand extends ApiCommand {
   /// Filter
   final Filter? filter;
 
+  final FilterCondition? filterCondition;
+
   final int? selectedRow;
 
   final bool fetch;
@@ -27,6 +30,7 @@ class DeleteRecordCommand extends ApiCommand {
     this.selectedRow,
     this.fetch = false,
     this.filter,
+    this.filterCondition,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,5 +39,5 @@ class DeleteRecordCommand extends ApiCommand {
 
   @override
   String get logString =>
-      "DeleteRecordCommand: dataProvider: $dataProvider, selectedRow: $selectedRow, fetch: $fetch, filter: $filter, reason: $reason";
+      "DeleteRecordCommand: dataProvider: $dataProvider, selectedRow: $selectedRow, fetch: $fetch, filter: $filter, filterCondition: $filterCondition, reason: $reason";
 }

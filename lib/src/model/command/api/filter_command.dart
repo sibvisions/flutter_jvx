@@ -1,3 +1,4 @@
+import '../../data/filter_condition.dart';
 import '../../request/filter.dart';
 import 'api_command.dart';
 
@@ -14,6 +15,8 @@ class FilterCommand extends ApiCommand {
 
   final Filter? filter;
 
+  final FilterCondition? filterCondition;
+
   final String dataProvider;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,6 +29,7 @@ class FilterCommand extends ApiCommand {
     this.value,
     this.columnNames,
     this.filter,
+    this.filterCondition,
     required String reason,
   }) : super(reason: reason);
 
@@ -35,5 +39,5 @@ class FilterCommand extends ApiCommand {
 
   @override
   String get logString =>
-      "FilterCommand: editorId: $editorId, value: $value, dataProvider: $dataProvider, columnNames: $columnNames, filterCondition: $filter, reason: $reason";
+      "FilterCommand: editorId: $editorId, value: $value, dataProvider: $dataProvider, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, reason: $reason";
 }

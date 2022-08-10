@@ -17,6 +17,7 @@ class DeleteRecordCommandProcessor extends ICommandProcessor<DeleteRecordCommand
       selectedRow: command.selectedRow,
       fetch: command.fetch,
       filter: command.filter,
+      filterCondition: command.filterCondition,
     );
     return getApiService().sendRequest(request: deleteRecordRequest);
   }

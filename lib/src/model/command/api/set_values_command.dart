@@ -1,3 +1,4 @@
+import '../../data/filter_condition.dart';
 import '../../request/api_set_values_request.dart';
 import '../../request/filter.dart';
 import 'api_command.dart';
@@ -23,6 +24,8 @@ class SetValuesCommand extends ApiCommand {
   /// Filter of this setValues, used in table to edit non selected rows.
   final Filter? filter;
 
+  final FilterCondition? filterCondition;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,6 +37,7 @@ class SetValuesCommand extends ApiCommand {
     required this.values,
     required String reason,
     this.filter,
+    this.filterCondition,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

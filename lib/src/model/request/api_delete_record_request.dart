@@ -1,4 +1,5 @@
 import '../../service/api/shared/api_object_property.dart';
+import '../data/filter_condition.dart';
 import 'filter.dart';
 import 'i_api_request.dart';
 
@@ -16,6 +17,8 @@ class ApiDeleteRecordRequest extends IApiRequest {
   /// Filter
   final Filter? filter;
 
+  final FilterCondition? filterCondition;
+
   final int? selectedRow;
 
   final bool fetch;
@@ -29,6 +32,7 @@ class ApiDeleteRecordRequest extends IApiRequest {
     required this.dataProvider,
     this.selectedRow,
     this.filter,
+    this.filterCondition,
     this.fetch = false,
   });
 
@@ -41,6 +45,7 @@ class ApiDeleteRecordRequest extends IApiRequest {
         ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.filter: filter?.toJson(),
+        ApiObjectProperty.filterCondition: filterCondition?.toJson(),
         ApiObjectProperty.selectedRow: selectedRow,
         ApiObjectProperty.fetch: fetch,
       };

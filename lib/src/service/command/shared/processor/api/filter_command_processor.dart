@@ -24,6 +24,7 @@ class FilterCommandProcessor
         value: command.value,
         editorComponentId: command.editorId,
         filter: command.filter,
+        filterCondition: command.filterCondition,
       );
 
       return getApiService().sendRequest(request: apiFilterRequest);
