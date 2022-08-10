@@ -11,6 +11,7 @@ import '../request/filter.dart';
 import '../response/dal_fetch_response.dart';
 import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
+import 'subscriptions/data_chunk.dart';
 import 'subscriptions/data_record.dart';
 import 'subscriptions/data_subscription.dart';
 
