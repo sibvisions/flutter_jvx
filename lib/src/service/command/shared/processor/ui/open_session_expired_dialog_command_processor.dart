@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../mask/error/server_session_expired.dart';

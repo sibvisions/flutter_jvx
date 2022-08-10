@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../layout/i_layout.dart';
 import '../../../layout/scroll_layout.dart';

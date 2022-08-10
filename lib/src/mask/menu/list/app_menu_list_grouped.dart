@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../model/menu/menu_model.dart';
 import '../app_menu.dart';

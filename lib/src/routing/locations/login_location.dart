@@ -1,5 +1,5 @@
 import 'package:beamer/beamer.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../mixin/ui_service_mixin.dart';
 import '../../mask/login/app_login.dart';

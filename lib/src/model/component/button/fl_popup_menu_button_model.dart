@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'fl_button_model.dart';
 import 'fl_toggle_button_model.dart';

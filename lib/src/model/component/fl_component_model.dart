@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../util/constants/i_color.dart';
 import '../../../util/parse_util.dart';

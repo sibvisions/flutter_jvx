@@ -2,7 +2,7 @@
 // VerticalAlignment
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 /// Possible Vertical Alignments (TOP=0, CENTER=1, BOTTOM=2, STRETCH=3)
 enum VerticalAlignment { TOP, CENTER, BOTTOM, STRETCH }

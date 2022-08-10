@@ -1,5 +1,5 @@
 import 'package:charts_flutter/flutter.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../mixin/ui_service_mixin.dart';

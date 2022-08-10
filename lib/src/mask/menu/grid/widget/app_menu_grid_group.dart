@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../model/menu/menu_group_model.dart';

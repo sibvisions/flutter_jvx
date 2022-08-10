@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../model/component/editor/cell_editor/fl_number_cell_editor_model.dart';

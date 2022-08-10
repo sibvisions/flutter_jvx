@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class FlSizedPanelWidget extends StatelessWidget {
   const FlSizedPanelWidget({Key? key, required this.children, this.width, this.height}) : super(key: key);

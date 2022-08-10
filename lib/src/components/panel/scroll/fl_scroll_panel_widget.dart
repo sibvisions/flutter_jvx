@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class FlScrollPanelWidget extends StatelessWidget {
   const FlScrollPanelWidget({Key? key, required this.children, this.width, this.height, required this.isScrollable})

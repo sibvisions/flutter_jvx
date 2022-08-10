@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'custom_component.dart';
 import 'custom_menu_item.dart';

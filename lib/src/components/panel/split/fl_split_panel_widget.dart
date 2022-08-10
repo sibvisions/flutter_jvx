@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../layout/split_layout.dart';
 import '../../../model/component/panel/fl_split_panel_model.dart';

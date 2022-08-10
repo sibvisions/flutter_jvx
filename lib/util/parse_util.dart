@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../src/model/data/column_definition.dart';
 import '../src/model/layout/layout_position.dart';

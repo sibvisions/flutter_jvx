@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../model/layout/gaps.dart';
 import '../model/layout/grid_layout/cell_constraints.dart';

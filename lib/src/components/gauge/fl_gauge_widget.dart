@@ -321,136 +321,136 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
 
 //Syncfusion Widget
 // Widget createSpeedometer() {
-  //   return SfRadialGauge(
-  //     axes: [
-  //       RadialAxis(
-  //         maximum: model.maxValue,
-  //         minimum: model.minValue,
-  //         ranges: getRanges(),
-  //         pointers: [
-  //           NeedlePointer(value: model.value),
-  //         ],
-  //         annotations: <GaugeAnnotation>[
-  //           GaugeAnnotation(
-  //               widget: Text(
-  //                 model.columnLabel ?? "",
-  //                 style: model.getTextStyle(),
-  //               ),
-  //               angle: 90,
-  //               positionFactor: 0.5),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
+//   return SfRadialGauge(
+//     axes: [
+//       RadialAxis(
+//         maximum: model.maxValue,
+//         minimum: model.minValue,
+//         ranges: getRanges(),
+//         pointers: [
+//           NeedlePointer(value: model.value),
+//         ],
+//         annotations: <GaugeAnnotation>[
+//           GaugeAnnotation(
+//               widget: Text(
+//                 model.columnLabel ?? "",
+//                 style: model.getTextStyle(),
+//               ),
+//               angle: 90,
+//               positionFactor: 0.5),
+//         ],
+//       ),
+//     ],
+//   );
+// }
 
-  // Widget createMeter() {
-  //   return SfRadialGauge(
-  //     axes: [
-  //       RadialAxis(
-  //         maximum: model.maxValue,
-  //         minimum: model.minValue,
-  //         ranges: getRanges(),
-  //         startAngle: 200,
-  //         endAngle: 340,
-  //         pointers: [
-  //           NeedlePointer(
-  //             value: model.value,
-  //             lengthUnit: GaugeSizeUnit.factor,
-  //             needleLength: 1,
-  //             needleColor: Colors.red,
-  //             needleStartWidth: 2,
-  //             needleEndWidth: 2,
-  //             knobStyle: const KnobStyle(knobRadius: 0),
-  //           ),
-  //         ],
-  //         annotations: <GaugeAnnotation>[
-  //           GaugeAnnotation(
-  //               widget: Text(
-  //                 model.columnLabel ?? "",
-  //                 style: model.getTextStyle(),
-  //               ),
-  //               angle: 90,
-  //               positionFactor: 0.1),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
+// Widget createMeter() {
+//   return SfRadialGauge(
+//     axes: [
+//       RadialAxis(
+//         maximum: model.maxValue,
+//         minimum: model.minValue,
+//         ranges: getRanges(),
+//         startAngle: 200,
+//         endAngle: 340,
+//         pointers: [
+//           NeedlePointer(
+//             value: model.value,
+//             lengthUnit: GaugeSizeUnit.factor,
+//             needleLength: 1,
+//             needleColor: Colors.red,
+//             needleStartWidth: 2,
+//             needleEndWidth: 2,
+//             knobStyle: const KnobStyle(knobRadius: 0),
+//           ),
+//         ],
+//         annotations: <GaugeAnnotation>[
+//           GaugeAnnotation(
+//               widget: Text(
+//                 model.columnLabel ?? "",
+//                 style: model.getTextStyle(),
+//               ),
+//               angle: 90,
+//               positionFactor: 0.1),
+//         ],
+//       ),
+//     ],
+//   );
+// }
 
-  // Widget createRing() {
-  //   return SfRadialGauge(
-  //     axes: [
-  //       RadialAxis(
-  //         showLabels: false,
-  //         showTicks: false,
-  //         startAngle: 270,
-  //         endAngle: 270,
-  //         maximum: model.maxValue,
-  //         minimum: model.minValue,
-  //         axisLineStyle: const AxisLineStyle(
-  //           thickness: 0.25,
-  //           thicknessUnit: GaugeSizeUnit.factor,
-  //         ),
-  //         pointers: [
-  //           RangePointer(
-  //             value: model.value,
-  //             sizeUnit: GaugeSizeUnit.factor,
-  //             width: 0.25,
-  //             color: getRangeColor(),
-  //           )
-  //         ],
-  //         annotations: <GaugeAnnotation>[
-  //           GaugeAnnotation(
-  //             axisValue: 50,
-  //             positionFactor: 0.1,
-  //             widget: Text(
-  //               model.columnLabel ?? "",
-  //               style: model.getTextStyle(),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
+// Widget createRing() {
+//   return SfRadialGauge(
+//     axes: [
+//       RadialAxis(
+//         showLabels: false,
+//         showTicks: false,
+//         startAngle: 270,
+//         endAngle: 270,
+//         maximum: model.maxValue,
+//         minimum: model.minValue,
+//         axisLineStyle: const AxisLineStyle(
+//           thickness: 0.25,
+//           thicknessUnit: GaugeSizeUnit.factor,
+//         ),
+//         pointers: [
+//           RangePointer(
+//             value: model.value,
+//             sizeUnit: GaugeSizeUnit.factor,
+//             width: 0.25,
+//             color: getRangeColor(),
+//           )
+//         ],
+//         annotations: <GaugeAnnotation>[
+//           GaugeAnnotation(
+//             axisValue: 50,
+//             positionFactor: 0.1,
+//             widget: Text(
+//               model.columnLabel ?? "",
+//               style: model.getTextStyle(),
+//             ),
+//           ),
+//         ],
+//       ),
+//     ],
+//   );
+// }
 
-  // Widget createFlat() {
-  //   return SfRadialGauge(
-  //     axes: [
-  //       RadialAxis(
-  //         showLabels: false,
-  //         showTicks: false,
-  //         startAngle: 180,
-  //         endAngle: 360,
-  //         maximum: model.maxValue,
-  //         minimum: model.minValue,
-  //         axisLineStyle: const AxisLineStyle(
-  //           thickness: 0.25,
-  //           thicknessUnit: GaugeSizeUnit.factor,
-  //         ),
-  //         pointers: [
-  //           RangePointer(
-  //             value: model.value,
-  //             sizeUnit: GaugeSizeUnit.factor,
-  //             width: 0.25,
-  //             color: getRangeColor(),
-  //           )
-  //         ],
-  //         annotations: <GaugeAnnotation>[
-  //           GaugeAnnotation(
-  //             axisValue: 50,
-  //             positionFactor: 0.1,
-  //             widget: Text(
-  //               model.columnLabel ?? "",
-  //               style: model.getTextStyle(),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
+// Widget createFlat() {
+//   return SfRadialGauge(
+//     axes: [
+//       RadialAxis(
+//         showLabels: false,
+//         showTicks: false,
+//         startAngle: 180,
+//         endAngle: 360,
+//         maximum: model.maxValue,
+//         minimum: model.minValue,
+//         axisLineStyle: const AxisLineStyle(
+//           thickness: 0.25,
+//           thicknessUnit: GaugeSizeUnit.factor,
+//         ),
+//         pointers: [
+//           RangePointer(
+//             value: model.value,
+//             sizeUnit: GaugeSizeUnit.factor,
+//             width: 0.25,
+//             color: getRangeColor(),
+//           )
+//         ],
+//         annotations: <GaugeAnnotation>[
+//           GaugeAnnotation(
+//             axisValue: 50,
+//             positionFactor: 0.1,
+//             widget: Text(
+//               model.columnLabel ?? "",
+//               style: model.getTextStyle(),
+//             ),
+//           ),
+//         ],
+//       ),
+//     ],
+//   );
+// }
 
 // List<GaugeRange> getRanges() {
 //     List<GaugeRange> ranges = [];

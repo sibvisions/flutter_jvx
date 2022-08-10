@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../custom/custom_screen.dart';
 import '../../mixin/ui_service_mixin.dart';

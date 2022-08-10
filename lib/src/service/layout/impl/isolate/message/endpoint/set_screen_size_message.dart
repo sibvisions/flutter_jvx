@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../../model/command/base_command.dart';
 import '../../../../../isolate/isolate_message.dart';

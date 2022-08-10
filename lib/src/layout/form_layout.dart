@@ -3,7 +3,7 @@ import 'dart:core';
 import 'dart:developer' as dev;
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../model/layout/alignments.dart';
 import '../model/layout/form_layout/form_layout_anchor.dart';

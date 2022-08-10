@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../layout/alignments.dart';
 import 'fl_button_model.dart';

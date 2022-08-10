@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../custom/custom_component.dart';
 import '../../model/command/layout/register_parent_command.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../util/image/image_loader.dart';
 import '../../../model/menu/menu_model.dart';
