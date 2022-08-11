@@ -2,7 +2,6 @@ import 'dart:io';
 
 import '../src/model/menu/menu_model.dart';
 import '../src/model/request/i_api_request.dart';
-import '../src/model/response/api_response.dart';
 import '../src/service/config/i_config_service.dart';
 import 'custom_screen.dart';
 
@@ -43,7 +42,7 @@ abstract class AppManager {
 
   /// Is called when a response is returned, use the [resendRequest] function to resend the original request.
   /// Useful for 2FA or retry.
-  Future<List<ApiResponse>?> handleResponse(
-          IApiRequest request, HttpClientResponse response, Future<HttpClientResponse> Function() resendRequest) =>
+  Future<HttpClientResponse?> handleResponse(
+          IApiRequest request, String responseBody, Future<HttpClientResponse> Function() resendRequest) =>
       Future.value(null);
 }

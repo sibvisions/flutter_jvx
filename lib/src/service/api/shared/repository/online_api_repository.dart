@@ -133,19 +133,8 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
 
     if (uri != null) {
       try {
-        String jsonBody = jsonEncode(pRequest);
-        HttpClientResponse response = await _sendPostRequest(uri, jsonBody);
-
-        if (getUiService().getAppManager() != null) {
-          var responses = await getUiService().getAppManager()?.handleResponse(
-                pRequest,
-                response,
-                () => _sendPostRequest(uri, jsonBody),
-              );
-          if (responses != null) {
-            return responses;
-          }
-        }
+        String jsonRequest = jsonEncode(pRequest);
+        HttpClientResponse response = await _sendPostRequest(uri, jsonRequest);
 
         if (response.statusCode == 404) {
           throw const SocketException("Application not found (404)");
@@ -158,13 +147,22 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
           return parsedDownloadObject;
         }
 
+        String responseBody = await response.transform(utf8.decoder).join();
+
+        if (getUiService().getAppManager() != null) {
+          response = await getUiService().getAppManager()?.handleResponse(
+                    pRequest,
+                    responseBody,
+                    () => _sendPostRequest(uri, jsonRequest),
+                  ) ??
+              response;
+        }
+
         if (response.headers.contentType?.value != ContentType.json.value) {
           throw FormatException("Invalid server response"
               "\nType: ${response.headers.contentType?.subType}"
               "\nStatus: ${response.statusCode}");
         }
-
-        String responseBody = await response.transform(utf8.decoder).join();
 
         List<dynamic> jsonResponse = _parseAndCheckJson(responseBody);
         List<ApiResponse> parsedResponseObjects = _responseParser(pJsonList: jsonResponse, originalRequest: pRequest);
