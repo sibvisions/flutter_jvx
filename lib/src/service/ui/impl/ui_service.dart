@@ -220,30 +220,28 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
     // Add all custom menuItems
     if (appManager != null) {
-      appManager!.customScreens
-          .where((customScreen) => customScreen.menuItemModel != null)
-          .where((customScreen) =>
-              (customScreen.showOnline && !getConfigService().isOffline()) ||
-              (customScreen.showOffline && getConfigService().isOffline()))
-          .forEach((customScreen) {
+      appManager!.customScreens.where((customScreen) => customScreen.menuItemModel != null).forEach((customScreen) {
         CustomMenuItem customMenuItem = customScreen.menuItemModel!;
 
         // Remove menu items that open the same screen
         menuGroupModels.forEach((menuGroup) =>
             menuGroup.items.removeWhere((menuItem) => menuItem.screenLongName == customMenuItem.screenLongName));
 
-        // Check if group already exists
-        MenuGroupModel? menuGroupModel =
-            menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem.group);
-        if (menuGroupModel != null) {
-          menuGroupModel.items.add(customMenuItem);
-        } else {
-          // Make new group if it didn't exist
-          MenuGroupModel newGroup = MenuGroupModel(
-            name: customMenuItem.group,
-            items: [customMenuItem],
-          );
-          menuGroupModels.add(newGroup);
+        if ((customScreen.showOnline && !getConfigService().isOffline()) ||
+            (customScreen.showOffline && getConfigService().isOffline())) {
+          // Check if group already exists
+          MenuGroupModel? menuGroupModel =
+              menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem.group);
+          if (menuGroupModel != null) {
+            menuGroupModel.items.add(customMenuItem);
+          } else {
+            // Make new group if it didn't exist
+            MenuGroupModel newGroup = MenuGroupModel(
+              name: customMenuItem.group,
+              items: [customMenuItem],
+            );
+            menuGroupModels.add(newGroup);
+          }
         }
       });
     }
