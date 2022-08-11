@@ -11,7 +11,7 @@ class QRScannerOverlay extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// This callback will be called with the barcode data
-  final QRCallback callBack;
+  final QRCallback callback;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -19,7 +19,7 @@ class QRScannerOverlay extends StatefulWidget {
 
   const QRScannerOverlay({
     Key? key,
-    required this.callBack,
+    required this.callback,
   }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,6 +83,6 @@ class _QRScannerOverlayState extends State<QRScannerOverlay> {
 
   _onDetect(Barcode barcode, MobileScannerArguments? mobileScannerArguments) {
     Navigator.of(context).pop();
-    widget.callBack(barcode, mobileScannerArguments);
+    widget.callback(barcode, mobileScannerArguments);
   }
 }

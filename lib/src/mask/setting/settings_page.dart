@@ -381,7 +381,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   /// parses scanned code and saves values to config service
   void _openQRScanner() {
     getUiService().openDialog(
-        pDialogWidget: QRScannerOverlay(callBack: (barcode, _) {
+        pDialogWidget: QRScannerOverlay(callback: (barcode, _) {
           QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
           getConfigService().setAppName(code.appName);
           getConfigService().setBaseUrl(code.url);
