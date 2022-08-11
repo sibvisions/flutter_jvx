@@ -10,6 +10,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/data/column_definition.dart';
+import '../../../../../model/data/filter_condition.dart';
 import '../../../../../model/response/dal_meta_data_response.dart';
 import '../../../../../util/i_types.dart';
 
@@ -267,7 +268,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<bool> rowExists({required String pTableName, Map<String, dynamic>? pFilter}) {
     String sql = 'SELECT COUNT(*) AS COUNT FROM "${formatOfflineTableName(pTableName)}"';
     if (pFilter != null) {
-      sql += " WHERE " + _buildWhere(pFilter.keys);
+      sql += " WHERE" + pFilter.keys.map((key) => '"$key" = ?').join(" AND ");
+      sql += ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
     }
 
     return db.rawQuery(sql, [...?pFilter?.values])
@@ -276,8 +278,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Executes a SQL SELECT COUNT query and returns the number of rows found.
-  Future<int> getCount({required String pTableName, Map<String, dynamic>? pFilter}) {
-    var where = _getWhere(pFilter);
+  Future<int> getCount({required String pTableName, List<FilterCondition>? pFilters}) {
+    var where = _getWhere(pFilters);
     return db
         .query(formatOfflineTableName(pTableName),
             columns: ["COUNT(*) AS COUNT"], where: where?[0], whereArgs: where?[1])
@@ -288,13 +290,13 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<List<Map<String, dynamic>>> select(
       {required String pTableName,
       List<String>? pColumns,
-      Map<String, dynamic>? pFilter,
+      List<FilterCondition>? pFilters,
       String? pGroupBy,
       String? pHaving,
       String? pOrderBy,
       int? pLimit,
       int? pOffset}) {
-    var where = _getWhere(pFilter);
+    var where = _getWhere(pFilters);
     return db.query(formatOfflineTableName(pTableName),
         columns: pColumns,
         where: where?[0],
@@ -323,8 +325,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   /// Executes a SQL UPDATE query and returns the number of changes made.
   Future<int> update(
-      {required String pTableName, required Map<String, dynamic> pUpdate, Map<String, dynamic>? pFilter}) {
-    var where = _getWhere(pFilter);
+      {required String pTableName, required Map<String, dynamic> pUpdate, List<FilterCondition>? pFilters}) {
+    var where = _getWhere(pFilters);
     var offlineTableName = formatOfflineTableName(pTableName);
 
     return db.transaction((txn) async {
@@ -350,8 +352,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Executes a SQL DELETE query and returns the number of changes made.
-  Future<int> delete({required String pTableName, Map<String, dynamic>? pFilter}) {
-    var where = _getWhere(pFilter);
+  Future<int> delete({required String pTableName, List<FilterCondition>? pFilters}) {
+    var where = _getWhere(pFilters);
     var offlineTableName = formatOfflineTableName(pTableName);
 
     return db.transaction((txn) async {
@@ -375,18 +377,82 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     });
   }
 
-  List<dynamic>? _getWhere(Map<String, dynamic>? pFilter) {
-    if (pFilter != null) {
-      var where = _buildWhere(pFilter.keys);
-      var whereArgs = pFilter.values.toList(growable: false);
+  ///Build where string and exclude all "deleted" columns
+  List<dynamic>? _getWhere(List<FilterCondition>? pFilters) {
+    if (!(pFilters?.isEmpty ?? true)) {
+      var where = "(" +
+          pFilters!.map((e) => _buildWhereClause(e)).join(") AND (") +
+          ') AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
+      var whereArgs = pFilters.expand((e) => e.getValues()).toList(growable: false);
       return [where, whereArgs];
     }
     return null;
   }
 
-  ///Build where string and exclude all "deleted" columns
-  String _buildWhere(Iterable<String> pFilter) {
-    return pFilter.map((key) => '"$key" = ?').join("AND ") + ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
+  String _buildWhereClause(FilterCondition? condition) {
+    String where = "";
+
+    if (condition != null) {
+      if (condition.columnName != null) {
+        where += "(${_getWhereCondition(condition)})";
+      }
+
+      List<FilterCondition> subConditions = [];
+      if (condition.condition != null) {
+        subConditions.add(condition.condition!);
+      }
+      subConditions.addAll(condition.conditions);
+
+      where += subConditions
+          .map((subCondition) => "(" + _buildWhereClause(subCondition) + ")")
+          .join(" " + condition.operatorType.toString() + " ");
+    }
+    return where;
+  }
+
+  String _getWhereCondition(FilterCondition condition) {
+    if (condition.value != null) {
+      String operator;
+      switch (condition.compareType) {
+        case CompareType.LIKE:
+        case CompareType.LIKE_IGNORE_CASE:
+          operator = "LIKE";
+          break;
+        case CompareType.LESS:
+          operator = "<";
+          break;
+        case CompareType.LESS_EQUALS:
+          operator = "<=";
+          break;
+        case CompareType.GREATER:
+          operator = ">";
+          break;
+        case CompareType.GREATER_EQUALS:
+          operator = ">=";
+          break;
+        case CompareType.EQUALS:
+        default:
+          operator = "=";
+      }
+
+      String clause;
+      if (condition.compareType.toString().toLowerCase().contains("ignore_case")) {
+        clause = "LOWER(${condition.columnName}) $operator LOWER(?)";
+      } else {
+        clause = "${condition.columnName} $operator ?";
+      }
+      if (condition.not == true) {
+        return "NOT ($clause)";
+      } else {
+        return clause;
+      }
+    } else {
+      if (condition.not == true) {
+        return "${condition.columnName} NOT IS NULL";
+      } else {
+        return "${condition.columnName} IS NULL";
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -7,22 +7,22 @@ enum CompareType {
   EQUALS,
   LIKE,
   LIKE_IGNORE_CASE,
-  LIKE_REVERSE,
-  LIKE_REVERSE_IGNORE_CASE,
+  // LIKE_REVERSE,
+  // LIKE_REVERSE_IGNORE_CASE,
   LESS,
   LESS_EQUALS,
   GREATER,
   GREATER_EQUALS,
-  CONTAINS_IGNORE_CASE,
-  STARTS_WITH_IGNORE_CASE,
-  ENDS_WITH_IGNORE_CASE
+  // CONTAINS_IGNORE_CASE,
+  // STARTS_WITH_IGNORE_CASE,
+  // ENDS_WITH_IGNORE_CASE,
 }
 
 class FilterCondition {
   String? columnName;
   dynamic value;
-  OperatorType? operatorType = OperatorType.AND;
-  CompareType? compareType = CompareType.EQUALS;
+  late OperatorType operatorType;
+  late CompareType compareType;
   bool? not;
   FilterCondition? condition;
   List<FilterCondition> conditions = [];
@@ -30,8 +30,8 @@ class FilterCondition {
   FilterCondition({
     this.columnName,
     this.value,
-    this.operatorType,
-    this.compareType,
+    this.operatorType = OperatorType.AND,
+    this.compareType = CompareType.EQUALS,
     this.not,
     this.condition,
     this.conditions = const [],
@@ -69,11 +69,27 @@ class FilterCondition {
     return <String, dynamic>{
       ApiObjectProperty.columnName: columnName,
       ApiObjectProperty.value: value,
-      ApiObjectProperty.operatorType: ParseUtil.propertyAsString(operatorType?.toString()),
-      ApiObjectProperty.compareType: ParseUtil.propertyAsString(compareType?.toString()),
+      ApiObjectProperty.operatorType: ParseUtil.propertyAsString(operatorType.toString()),
+      ApiObjectProperty.compareType: ParseUtil.propertyAsString(compareType.toString()),
       ApiObjectProperty.not: value,
       ApiObjectProperty.condition: condition?.toJson(),
       ApiObjectProperty.conditions: conditions.map<Map<String, dynamic>>((c) => c.toJson()).toList()
     };
+  }
+
+  /// Collects recursively all values
+  List<dynamic> getValues() {
+    //condition.value is only 1 level deep supported
+    return [value, ...?condition?.value, ..._collectSubValues(conditions)];
+  }
+
+  /// Collects the values from the sub conditions recursively
+  static List<dynamic> _collectSubValues(List<FilterCondition> subConditions) {
+    var list = [];
+    for (var subCondition in subConditions) {
+      list.add(subCondition.value);
+      list.addAll(_collectSubValues(subCondition.conditions));
+    }
+    return list;
   }
 }

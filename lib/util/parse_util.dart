@@ -5,6 +5,8 @@ import '../src/model/layout/layout_position.dart';
 import 'constants/i_color.dart';
 
 abstract class ParseUtil {
+  static T? castOrNull<T>(dynamic x) => x is T ? x : null;
+
   /// Will return true if string == "true", false if string == "false"
   /// otherwise returns null.
   static bool? parseBool(dynamic pBool) {

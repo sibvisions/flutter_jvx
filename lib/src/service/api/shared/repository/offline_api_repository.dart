@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import '../../../../../mixin/data_service_mixin.dart';
+import '../../../../../util/parse_util.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/data/data_book.dart';
+import '../../../../model/data/filter_condition.dart';
 import '../../../../model/data/subscriptions/data_record.dart';
 import '../../../../model/request/api_dal_save_request.dart';
 import '../../../../model/request/api_delete_record_request.dart';
@@ -27,7 +29,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
   /// Every databook saves the last fetch registered, that way unspezified fetch responses don't
   /// contain all the data we have available.
-  final Map<String, Filter> _databookLastFilter = {};
+  final Map<String, Object> _databookLastFilter = {};
 
   @override
   Future<void> start() async {
@@ -142,8 +144,25 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       filter["ROWID"] = pRequest.selectedRow;
     }
 
-    //TODO use filterCondition
-    await offlineDatabase!.delete(pTableName: pRequest.dataProvider, pFilter: filter);
+    List<FilterCondition> filters = [...?_getFilter(pRequest.filter, pRequest.filterCondition)];
+    if (filters.isEmpty && pRequest.selectedRow != null) {
+      filters.add(FilterCondition(columnName: "ROWID", value: pRequest.selectedRow));
+    }
+
+    //Fallback
+    if (filters.isEmpty) {
+      Filter? selectedRowFilter = _createSelectedRowFilter(pDataProvider: pRequest.dataProvider);
+      if (selectedRowFilter != null) {
+        filters.addAll(selectedRowFilter.asFilterConditions());
+      } else {
+        //Cancel when no filter
+        return _refetchMaximum(pRequest.dataProvider);
+      }
+    }
+
+    filters.addAll(_getLastFilter(pRequest.dataProvider));
+
+    await offlineDatabase!.delete(pTableName: pRequest.dataProvider, pFilters: filters);
 
     // JVx Server does also ignore fetch and always fetches.
     // if (pRequest.fetch) {
@@ -166,9 +185,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       }
     }
 
-    Filter? lastFilter = _databookLastFilter[pRequest.dataProvider];
-
-    Map<String, dynamic>? filter = lastFilter != null ? _createSQLFilter(lastFilter) : null;
+    List<FilterCondition> filters = _getLastFilter(pRequest.dataProvider);
 
     DataBook dataBook = getDataService().getDataBook(pRequest.dataProvider)!;
 
@@ -178,7 +195,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       pTableName: pRequest.dataProvider,
       pOffset: fromRow,
       pLimit: rowCount,
-      pFilter: filter,
+      pFilters: filters,
     );
 
     List<List<dynamic>> sortedMap = [];
@@ -191,7 +208,10 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       sortedMap.add(valueList);
     }
 
-    int rowCountDatabase = await offlineDatabase!.getCount(pTableName: pRequest.dataProvider, pFilter: filter);
+    int rowCountDatabase = await offlineDatabase!.getCount(
+      pTableName: pRequest.dataProvider,
+      pFilters: filters,
+    );
 
     bool isAllFetched = rowCount == null || rowCount == -1;
 
@@ -221,14 +241,11 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
         columnNames: pRequest.columnNames!,
       );
 
-      //TODO use filterCondition
       _databookLastFilter[pRequest.dataProvider] = filter;
-    } else if (pRequest.filter != null) {
-      if (pRequest.filter!.isEmpty) {
-        _databookLastFilter.remove(pRequest.dataProvider);
-      } else {
-        _databookLastFilter[pRequest.dataProvider] = pRequest.filter!;
-      }
+    } else if ((pRequest.filter?.isEmpty ?? true) && pRequest.filterCondition == null) {
+      _databookLastFilter.remove(pRequest.dataProvider);
+    } else {
+      _databookLastFilter[pRequest.dataProvider] = pRequest.filterCondition ?? pRequest.filter!;
     }
 
     return _refetchMaximum(pRequest.dataProvider);
@@ -241,16 +258,18 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   }
 
   Future<List<ApiResponse>> _setValues(ApiSetValuesRequest pRequest) async {
-    Filter filter;
-    if (pRequest.filter == null) {
+    List<FilterCondition> filters = _getLastFilter(pRequest.dataProvider);
+    filters.addAll([...?_getFilter(pRequest.filter, pRequest.filterCondition)]);
+
+    //Fallback
+    if (filters.isEmpty) {
       Filter? selectedRowFilter = _createSelectedRowFilter(pDataProvider: pRequest.dataProvider);
-      if (selectedRowFilter == null) {
-        return _refetchMaximum(pRequest.dataProvider);
+      if (selectedRowFilter != null) {
+        filters.addAll(selectedRowFilter.asFilterConditions());
       } else {
-        filter = selectedRowFilter;
+        //Cancel when no filter
+        return _refetchMaximum(pRequest.dataProvider);
       }
-    } else {
-      filter = pRequest.filter!;
     }
 
     Map<String, dynamic> updateData = {};
@@ -258,11 +277,18 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       updateData[pRequest.columnNames[i]] = pRequest.values[i];
     }
 
-    //TODO use filterCondition
-    await offlineDatabase!
-        .update(pTableName: pRequest.dataProvider, pUpdate: updateData, pFilter: _createSQLFilter(filter));
+    await offlineDatabase!.update(pTableName: pRequest.dataProvider, pUpdate: updateData, pFilters: filters);
 
     return _refetchMaximum(pRequest.dataProvider);
+  }
+
+  List<FilterCondition> _getLastFilter(String dataProvider) {
+    return [
+      ...?_getFilter(
+        ParseUtil.castOrNull(_databookLastFilter[dataProvider]),
+        ParseUtil.castOrNull(_databookLastFilter[dataProvider]),
+      )
+    ];
   }
 
   Future<List<ApiResponse>> _refetchMaximum(String pDataProvider) async {
@@ -281,16 +307,14 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     return [];
   }
 
-  Map<String, dynamic> _createSQLFilter(Filter pFilter) {
-    Map<String, dynamic> filterMap = {};
-
-    for (int i = 0; i < pFilter.columnNames.length; i++) {
-      String columnName = pFilter.columnNames[i];
-      dynamic value = pFilter.values[i];
-      filterMap[columnName] = value;
+  List<FilterCondition>? _getFilter(Filter? pFilter, FilterCondition? pFilterCondition) {
+    if (pFilterCondition != null) {
+      return [pFilterCondition];
+    } else if (!(pFilter?.isEmpty ?? true)) {
+      //Not null and not empty
+      return pFilter!.asFilterConditions();
     }
-
-    return filterMap;
+    return null;
   }
 
   Filter? _createSelectedRowFilter({required String pDataProvider, int? pSelectedRow}) {
@@ -305,6 +329,9 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       return null;
     }
 
-    return Filter(values: dataRecord.values, columnNames: dataRecord.columnDefinitions.map((e) => e.name).toList());
+    return Filter(
+      columnNames: dataRecord.columnDefinitions.map((e) => e.name).toList(),
+      values: dataRecord.values,
+    );
   }
 }
