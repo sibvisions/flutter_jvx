@@ -268,12 +268,14 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   FlComponentModel? getComponentByName({required String pComponentName}) {
+    log("get component by name $pComponentName");
     return _activeComponentModels.firstWhereOrNull((element) => element.name == pComponentName);
   }
 
   @override
-  FlPanelModel? getComponentByScreenName({required String pScreenName}) {
-    return _activeComponentModels.firstWhereOrNull((element) => element.screenLongName == pScreenName) as FlPanelModel?;
+  FlPanelModel? getComponentByScreenName({required String pScreenLongName}) {
+    return _activeComponentModels.firstWhereOrNull((element) => element.screenLongName == pScreenLongName)
+        as FlPanelModel?;
   }
 
   @override
@@ -509,15 +511,9 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  bool hasReplaced({required String pScreenLongName}) {
-    return _menuModel?.menuGroups
-            .any((element) => element.items.any((element) => element.screenLongName == pScreenLongName)) ??
-        false;
-  }
-
-  @override
-  CustomScreen? getCustomScreen({required String pScreenName}) {
-    return customManager?.customScreens.firstWhereOrNull((customScreen) => customScreen.screenLongName == pScreenName);
+  CustomScreen? getCustomScreen({required String pScreenLongName}) {
+    return customManager?.customScreens
+        .firstWhereOrNull((customScreen) => customScreen.screenLongName == pScreenLongName);
   }
 
   @override
@@ -534,5 +530,34 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
       }
     }
     return null;
+  }
+
+  @override
+  bool usesNativeRouting({required String pScreenLongName}) {
+    CustomScreen? customScreen = getCustomScreen(pScreenLongName: pScreenLongName);
+
+    if (customScreen != null) {
+      if (_hasReplaced(pScreenLongName: pScreenLongName)) {
+        if (getConfigService().isOffline()) {
+          // Offline + Replace => Beam
+          return true;
+        } else {
+          // Online + Replace => can choose
+          return !customScreen.sendOpenScreenRequests;
+        }
+      } else {
+        // No Replace => Beam
+        return true;
+      }
+    }
+
+    // Full VisionX-Screen => Send
+    return false;
+  }
+
+  bool _hasReplaced({required String pScreenLongName}) {
+    return _menuModel?.menuGroups
+            .any((element) => element.items.any((element) => element.screenLongName == pScreenLongName)) ??
+        false;
   }
 }

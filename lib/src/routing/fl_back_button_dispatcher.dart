@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../components.dart';
 import '../../custom/custom_screen.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../model/command/api/navigation_command.dart';
@@ -36,14 +37,19 @@ class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceGett
     }
 
     if (delegate.beamingHistory.last.runtimeType == WorkScreenLocation) {
-      String location = delegate.configuration.location!.split("/")[2];
-      CustomScreen? screen = getUiService().getCustomScreen(pScreenName: location);
+      String workScreenName = delegate.configuration.location!.split("/")[2];
 
-      if (screen != null && !getUiService().hasReplaced(pScreenLongName: screen.screenLongName)) {
+      // workScreenName can be the long name on custom screens, or a short one on replaced custom screens or VisionX screens
+      FlPanelModel? model = getUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
+
+      String screenLongName = model?.screenLongName ?? workScreenName;
+
+      if (getUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
+        CustomScreen screen = getUiService().getCustomScreen(pScreenLongName: screenLongName)!;
         bool isHandled = screen.onBack?.call() ?? false;
-        return isHandled ? isHandled : delegate.beamBack();
+        return isHandled ? true : delegate.beamBack();
       } else {
-        getUiService().sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: location));
+        getUiService().sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName));
         return true;
       }
     } else {

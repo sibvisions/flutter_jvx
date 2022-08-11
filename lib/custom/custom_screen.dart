@@ -39,6 +39,9 @@ class CustomScreen {
   /// True if this screen is shown in offline mode
   final bool showOffline;
 
+  /// If the custom screen sends open screen requests if it has replaced an online screen.
+  final bool sendOpenScreenRequests;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,5 +57,6 @@ class CustomScreen {
     this.menuItemModel,
     this.screenTitle,
     this.replaceComponents = const [],
+    this.sendOpenScreenRequests = true,
   });
 }

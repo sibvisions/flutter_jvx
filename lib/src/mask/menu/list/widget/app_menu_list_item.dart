@@ -70,7 +70,8 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
           ],
         ),
       ),
-      onTap: () => onClick(componentId: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),
+      onTap: () =>
+          onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),
     );
   }
 }

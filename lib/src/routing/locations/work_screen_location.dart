@@ -29,8 +29,10 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
       screenTitle = model.screenTitle!;
     }
 
+    String screenLongName = model?.screenLongName ?? workScreenName;
+
     // Custom Config for this screen
-    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenName: model?.screenLongName ?? workScreenName);
+    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenLongName: screenLongName);
 
     if (customScreen != null) {
       header = customScreen.headerBuilder?.call(context);
@@ -64,7 +66,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
           footer: footer,
           header: header,
           screenName: workScreenName,
-          screenLongName: model?.screenLongName,
+          screenLongName: screenLongName,
         ),
         key: UniqueKey(),
       )

@@ -94,7 +94,7 @@ abstract class IUiService {
   FlComponentModel? getComponentByName({required String pComponentName});
 
   /// Returns the top-most panel if a work screen is open
-  FlPanelModel? getComponentByScreenName({required String pScreenName});
+  FlPanelModel? getComponentByScreenName({required String pScreenLongName});
 
   /// Save new components to active components,
   /// used for saving components which have not been previously been rendered.
@@ -179,11 +179,11 @@ abstract class IUiService {
   // Custom
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// If this screen long name has been replaced by a custom screen
-  bool hasReplaced({required String pScreenLongName});
+  /// If this screen beams or sends an open workscreen command first.
+  bool usesNativeRouting({required String pScreenLongName});
 
   /// Gets replace-type screen by screenName
-  CustomScreen? getCustomScreen({required String pScreenName});
+  CustomScreen? getCustomScreen({required String pScreenLongName});
 
   /// Gets a custom component with given name (ignores screen)
   CustomComponent? getCustomComponent({required String pComponentName});

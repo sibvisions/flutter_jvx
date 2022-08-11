@@ -34,7 +34,7 @@ class WorkScreen extends StatefulWidget {
   final String screenName;
 
   /// Screen long name of an screen
-  final String? screenLongName;
+  final String screenLongName;
 
   /// Widget used as workscreen
   final Widget screenWidget;
@@ -53,7 +53,7 @@ class WorkScreen extends StatefulWidget {
     required this.screenWidget,
     required this.isCustomScreen,
     required this.screenName,
-    this.screenLongName,
+    required this.screenLongName,
     this.footer,
     this.header,
     Key? key,
@@ -214,7 +214,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
       currentObjectFocused = null;
     }
 
-    if (widget.isCustomScreen) {
+    if (getUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
       _customBack();
     } else {
       getUiService().sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
@@ -239,7 +239,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
       currentObjectFocused = null;
     }
 
-    if (widget.isCustomScreen) {
+    if (getUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
       _customBack();
     } else {
       getUiService().sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
@@ -248,7 +248,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
   }
 
   _customBack() {
-    CustomScreen? screen = getUiService().getCustomScreen(pScreenName: widget.screenLongName ?? widget.screenName);
+    CustomScreen? screen = getUiService().getCustomScreen(pScreenLongName: widget.screenLongName);
     bool isHandled = screen?.onBack?.call() ?? false;
     if (!isHandled) context.beamToNamed("/menu");
   }

@@ -87,7 +87,7 @@ abstract class OfflineUtil {
         OpenScreenCommand(componentId: offlineWorkscreenLongName, reason: "We are back online"),
       );
 
-      workscreenModel = uiService.getComponentByScreenName(pScreenName: offlineWorkscreenLongName)!;
+      workscreenModel = uiService.getComponentByScreenName(pScreenLongName: offlineWorkscreenLongName)!;
 
       dialogKey.currentState?.update(
           config: Config(

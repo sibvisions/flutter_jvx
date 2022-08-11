@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../custom/custom_screen.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/parse_util.dart';
@@ -19,7 +18,7 @@ import 'tab/app_menu_tab.dart';
 
 /// Each menu item does get this callback
 typedef ButtonCallback = void Function(
-    {required String componentId, required IUiService pUiService, required BuildContext pContext});
+    {required String pScreenLongName, required IUiService pUiService, required BuildContext pContext});
 
 /// Used for menuFactory map
 typedef MenuFactory = Widget Function({
@@ -53,16 +52,14 @@ class AppMenu extends StatefulWidget with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static void menuItemPressed(
-      {required String componentId, required IUiService pUiService, required BuildContext pContext}) {
-    CustomScreen? customScreen = pUiService.getCustomScreen(pScreenName: componentId);
-
+      {required String pScreenLongName, required IUiService pUiService, required BuildContext pContext}) {
     pUiService.setRouteContext(pContext: pContext);
 
     // Offline screens no not require the server to know that they are open
-    if (customScreen != null && !pUiService.hasReplaced(pScreenLongName: customScreen.screenLongName)) {
-      pUiService.routeToCustom(pFullPath: "/workScreen/$componentId");
+    if (pUiService.usesNativeRouting(pScreenLongName: pScreenLongName)) {
+      pUiService.routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
     } else {
-      pUiService.sendCommand(OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed"));
+      pUiService.sendCommand(OpenScreenCommand(componentId: pScreenLongName, reason: "Menu Item was pressed"));
     }
   }
 }
