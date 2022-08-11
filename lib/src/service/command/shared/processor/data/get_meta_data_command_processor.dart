@@ -9,7 +9,7 @@ class GetMetaDataCommandProcessor extends ICommandProcessor<GetMetaDataCommand>
     with UiServiceGetterMixin, DataServiceGetterMixin {
   @override
   Future<List<BaseCommand>> processCommand(GetMetaDataCommand command) async {
-    DalMetaDataResponse meta = await getDataService().getMetaData(pDataProvider: command.dataProvider);
+    DalMetaDataResponse meta = getDataService().getMetaData(pDataProvider: command.dataProvider);
 
     getUiService().setMetaData(
       pSubId: command.subId,

@@ -1,11 +1,11 @@
 import 'dart:collection';
 
-import '../../model/response/dal_fetch_response.dart';
-import '../../model/response/dal_meta_data_response.dart';
 import '../../model/command/base_command.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
+import '../../model/response/dal_fetch_response.dart';
+import '../../model/response/dal_meta_data_response.dart';
 
 /// Interface for a dataService meant to handle all dataBook related tasks,
 abstract class IDataService {
@@ -32,7 +32,7 @@ abstract class IDataService {
   });
 
   /// Returns the full [DalMetaDataResponse] for this dataProvider
-  Future<DalMetaDataResponse> getMetaData({required String pDataProvider});
+  DalMetaDataResponse getMetaData({required String pDataProvider});
 
   /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
   Future<bool> checkIfFetchPossible({

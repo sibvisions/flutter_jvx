@@ -2,13 +2,13 @@ import 'dart:collection';
 import 'dart:developer';
 
 import '../../../../util/logging/flutter_logger.dart';
-import '../../../model/response/dal_fetch_response.dart';
-import '../../../model/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
+import '../../../model/response/dal_fetch_response.dart';
+import '../../../model/response/dal_meta_data_response.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
@@ -146,7 +146,7 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<DalMetaDataResponse> getMetaData({required String pDataProvider}) async {
+  DalMetaDataResponse getMetaData({required String pDataProvider}) {
     DataBook dataBook = dataBooks[pDataProvider]!;
     return dataBook.metaData!;
   }
