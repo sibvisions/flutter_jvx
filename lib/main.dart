@@ -8,7 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/app_config.dart';
-import 'custom/custom_screen_manager.dart';
+import 'custom/app_manager.dart';
 import 'example/custom_screen_manager_example.dart';
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
@@ -47,7 +47,7 @@ void main() async {
 
 class FlutterJVx extends StatefulWidget {
   final AppConfig? appConfig;
-  final CustomScreenManager? screenManager;
+  final AppManager? screenManager;
   final Widget Function(BuildContext context)? loadingBuilder;
 
   const FlutterJVx({

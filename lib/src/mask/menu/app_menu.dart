@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../custom/custom_screen_manager.dart';
+import '../../../custom/app_manager.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/parse_util.dart';
@@ -150,7 +150,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
     MenuMode menuMode = getConfigService().getMenuMode();
 
     // Overriding menu mode
-    CustomScreenManager? customScreenManager = getUiService().getCustomScreenManager();
+    AppManager? customScreenManager = getUiService().getCustomScreenManager();
     menuMode = customScreenManager?.onMenuMode(menuMode) ?? menuMode;
 
     MenuFactory menuBuilder = menuFactory[menuMode]!;

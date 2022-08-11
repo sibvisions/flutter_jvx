@@ -2,7 +2,7 @@ import '../src/model/menu/menu_model.dart';
 import '../src/service/config/i_config_service.dart';
 import 'custom_screen.dart';
 
-abstract class CustomScreenManager {
+abstract class AppManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,7 +14,7 @@ abstract class CustomScreenManager {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  CustomScreenManager();
+  AppManager();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods

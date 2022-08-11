@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'config/app_config.dart';
-import 'custom/custom_screen_manager.dart';
+import 'custom/app_manager.dart';
 import 'main.dart';
 import 'src/mask/error/error_dialog.dart';
 import 'src/model/command/api/set_api_config_command.dart';
@@ -27,7 +27,7 @@ import 'util/logging/flutter_logger.dart';
 Future<void> initApp({
   required BuildContext initContext,
   AppConfig? appConfig,
-  CustomScreenManager? pCustomManager,
+  AppManager? pCustomManager,
   List<Function(Map<String, String> style)>? styleCallbacks,
   List<Function(String language)>? languageCallbacks,
 }) async {

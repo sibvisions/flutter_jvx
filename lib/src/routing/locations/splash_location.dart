@@ -2,7 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../config/app_config.dart';
-import '../../../custom/custom_screen_manager.dart';
+import '../../../custom/app_manager.dart';
 import '../../mask/splash/splash_widget.dart';
 
 class SplashLocation extends BeamLocation<BeamState> {
@@ -12,7 +12,7 @@ class SplashLocation extends BeamLocation<BeamState> {
 
   final AppConfig? appConfig;
 
-  final CustomScreenManager? screenManager;
+  final AppManager? screenManager;
 
   final Widget Function(BuildContext context)? loadingBuilder;
 

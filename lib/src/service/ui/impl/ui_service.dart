@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../custom/app_manager.dart';
 import '../../../../custom/custom_component.dart';
 import '../../../../custom/custom_menu_item.dart';
 import '../../../../custom/custom_screen.dart';
-import '../../../../custom/custom_screen_manager.dart';
 import '../../../../mixin/command_service_mixin.dart';
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../util/extensions/list_extensions.dart';
@@ -59,7 +59,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   final Map<String, LayoutData> _layoutDataList = {};
 
   /// Holds all custom screen modifications
-  CustomScreenManager? customScreenManager;
+  AppManager? customScreenManager;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -174,12 +174,12 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   }
 
   @override
-  CustomScreenManager? getCustomScreenManager() {
+  AppManager? getCustomScreenManager() {
     return customScreenManager;
   }
 
   @override
-  void setCustomScreenManager(CustomScreenManager? pCustomScreenManager) {
+  void setCustomScreenManager(AppManager? pCustomScreenManager) {
     customScreenManager = pCustomScreenManager;
   }
 

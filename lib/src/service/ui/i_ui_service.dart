@@ -1,9 +1,9 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
 import '../../../custom/custom_screen.dart';
-import '../../../custom/custom_screen_manager.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
@@ -56,10 +56,10 @@ abstract class IUiService {
   void setRouteContext({required BuildContext pContext});
 
   /// Gets the current custom manager
-  CustomScreenManager? getCustomScreenManager();
+  AppManager? getCustomScreenManager();
 
   /// Sets the current custom manager
-  void setCustomScreenManager(CustomScreenManager? pCustomScreenManager);
+  void setCustomScreenManager(AppManager? pCustomScreenManager);
 
   /// Opens a [Dialog], the future will complete if the dialog is closed by an
   /// action
