@@ -28,7 +28,7 @@ dependencies:
   # Custom Dep
 
   package_info_plus: ^1.4.2
-  device_info_plus: ^4.0.1
+  device_info_plus: ^4.1.0
 
   # SVG Support
   flutter_svg: ^1.0.3

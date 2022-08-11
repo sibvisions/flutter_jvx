@@ -43,7 +43,6 @@ class DeviceInfoMobile implements DeviceInfo {
       osVersion = androidInfo.version.sdkInt.toString();
       deviceType = androidInfo.manufacturer;
       deviceTypeModel = androidInfo.model;
-      deviceId = androidInfo.androidId;
     }
 
     if (Platform.isIOS) {
