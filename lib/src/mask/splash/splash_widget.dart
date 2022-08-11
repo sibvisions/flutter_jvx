@@ -15,7 +15,7 @@ class SplashWidget extends StatefulWidget {
 
   final AppConfig? appConfig;
 
-  final AppManager? screenManager;
+  final AppManager? appManager;
 
   /// Builder function for custom loading widget
   final Widget Function(BuildContext context)? loadingBuilder;
@@ -31,7 +31,7 @@ class SplashWidget extends StatefulWidget {
   const SplashWidget({
     Key? key,
     this.appConfig,
-    this.screenManager,
+    this.appManager,
     this.loadingBuilder,
     this.styleCallbacks,
     this.languageCallbacks,
@@ -60,7 +60,7 @@ class _SplashWidgetState extends State<SplashWidget> {
     initAppFuture = initApp(
       initContext: context,
       appConfig: widget.appConfig,
-      pCustomManager: widget.screenManager,
+      pAppManager: widget.appManager,
       languageCallbacks: widget.languageCallbacks,
       styleCallbacks: widget.styleCallbacks,
     ).catchError((error, stackTrace) {

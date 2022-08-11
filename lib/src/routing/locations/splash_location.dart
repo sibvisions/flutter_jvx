@@ -12,7 +12,7 @@ class SplashLocation extends BeamLocation<BeamState> {
 
   final AppConfig? appConfig;
 
-  final AppManager? screenManager;
+  final AppManager? appManager;
 
   final Widget Function(BuildContext context)? loadingBuilder;
 
@@ -26,7 +26,7 @@ class SplashLocation extends BeamLocation<BeamState> {
 
   SplashLocation({
     this.appConfig,
-    this.screenManager,
+    this.appManager,
     this.loadingBuilder,
     this.languageCallbacks,
     this.styleCallbacks,
@@ -42,7 +42,7 @@ class SplashLocation extends BeamLocation<BeamState> {
       BeamPage(
         child: SplashWidget(
           appConfig: appConfig,
-          screenManager: screenManager,
+          appManager: appManager,
           loadingBuilder: loadingBuilder,
           languageCallbacks: languageCallbacks,
           styleCallbacks: styleCallbacks,

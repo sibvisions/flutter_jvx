@@ -6,7 +6,7 @@ import '../custom/custom_menu_item.dart';
 import '../custom/custom_screen.dart';
 import 'custom_header_example.dart';
 
-class CustomScreenManagerExample extends AppManager {
+class AppManagerExample extends AppManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,7 +15,7 @@ class CustomScreenManagerExample extends AppManager {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  CustomScreenManagerExample() {
+  AppManagerExample() {
     registerScreen(CustomScreen(
       screenLongName: "Fir-N7_CUSTOM",
       showOffline: true,

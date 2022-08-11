@@ -56,10 +56,10 @@ abstract class IUiService {
   void setRouteContext({required BuildContext pContext});
 
   /// Gets the current custom manager
-  AppManager? getCustomScreenManager();
+  AppManager? getAppManager();
 
   /// Sets the current custom manager
-  void setCustomScreenManager(AppManager? pCustomScreenManager);
+  void setAppManager(AppManager? pAppManager);
 
   /// Opens a [Dialog], the future will complete if the dialog is closed by an
   /// action

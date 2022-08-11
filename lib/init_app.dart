@@ -27,7 +27,7 @@ import 'util/logging/flutter_logger.dart';
 Future<void> initApp({
   required BuildContext initContext,
   AppConfig? appConfig,
-  AppManager? pCustomManager,
+  AppManager? pAppManager,
   List<Function(Map<String, String> style)>? styleCallbacks,
   List<Function(String language)>? languageCallbacks,
 }) async {
@@ -48,7 +48,7 @@ Future<void> initApp({
     ..clear()
     ..add(LoadingProgressHandler());
 
-  uiService.setCustomScreenManager(pCustomManager);
+  uiService.setAppManager(pAppManager);
   uiService.setRouteContext(pContext: initContext);
 
   // Load config files

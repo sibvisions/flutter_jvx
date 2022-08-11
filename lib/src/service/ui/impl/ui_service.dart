@@ -59,7 +59,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   final Map<String, LayoutData> _layoutDataList = {};
 
   /// Holds all custom screen modifications
-  AppManager? customScreenManager;
+  AppManager? appManager;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -174,13 +174,13 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   }
 
   @override
-  AppManager? getCustomScreenManager() {
-    return customScreenManager;
+  AppManager? getAppManager() {
+    return appManager;
   }
 
   @override
-  void setCustomScreenManager(AppManager? pCustomScreenManager) {
-    customScreenManager = pCustomScreenManager;
+  void setAppManager(AppManager? pAppManager) {
+    appManager = pAppManager;
   }
 
   @override
@@ -219,8 +219,8 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     List<MenuGroupModel> menuGroupModels = [...?_menuModel?.menuGroups.map((e) => e.copy())];
 
     // Add all custom menuItems
-    if (customScreenManager != null) {
-      customScreenManager!.customScreens
+    if (appManager != null) {
+      appManager!.customScreens
           .where((customScreen) => customScreen.menuItemModel != null)
           .where((customScreen) =>
               (customScreen.showOnline && !getConfigService().isOffline()) ||
@@ -250,7 +250,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
     MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
 
-    menuModel = customScreenManager?.onMenuModel(menuModel) ?? menuModel;
+    menuModel = appManager?.onMenuModel(menuModel) ?? menuModel;
 
     return menuModel;
   }
@@ -521,13 +521,12 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   CustomScreen? getCustomScreen({required String pScreenLongName}) {
-    return customScreenManager?.customScreens
-        .firstWhereOrNull((customScreen) => customScreen.screenLongName == pScreenLongName);
+    return appManager?.customScreens.firstWhereOrNull((customScreen) => customScreen.screenLongName == pScreenLongName);
   }
 
   @override
   CustomComponent? getCustomComponent({required String pComponentName}) {
-    List<CustomScreen>? screens = customScreenManager?.customScreens;
+    List<CustomScreen>? screens = appManager?.customScreens;
 
     if (screens != null) {
       for (CustomScreen screen in screens) {
