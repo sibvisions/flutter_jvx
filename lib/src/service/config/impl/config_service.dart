@@ -79,7 +79,8 @@ class ConfigService implements IConfigService {
 
   @override
   String? getClientId() {
-    return clientId;
+    //TODO remove workaround
+    return clientId ?? "";
   }
 
   @override
