@@ -23,7 +23,7 @@ class FilterCondition {
   dynamic value;
   late OperatorType operatorType;
   late CompareType compareType;
-  bool? not;
+  late bool not;
   FilterCondition? condition;
   List<FilterCondition> conditions = [];
 
@@ -32,15 +32,14 @@ class FilterCondition {
     this.value,
     this.operatorType = OperatorType.AND,
     this.compareType = CompareType.EQUALS,
-    this.not,
+    this.not = false,
     this.condition,
-    this.conditions = const [],
   });
 
   FilterCondition.fromJson(Map<String, dynamic> pJson) {
     columnName = pJson[ApiObjectProperty.columnName];
     value = pJson[ApiObjectProperty.value];
-    not = pJson[ApiObjectProperty.not];
+    not = pJson[ApiObjectProperty.not] ?? false;
 
     operatorType = ParseUtil.getPropertyValue(
       pJson: pJson,
