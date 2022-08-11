@@ -9,6 +9,7 @@ import '../../../../config/server_config.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
+import '../../../util/config_util.dart';
 import '../../file/file_manager.dart';
 import '../i_config_service.dart';
 
@@ -42,9 +43,6 @@ class ConfigService implements IConfigService {
 
   /// Current clientId (sessionId)
   String? clientId;
-
-  /// Display options for menu
-  MenuMode menuMode = MenuMode.GRID_GROUPED;
 
   /// Stores all info about current user
   UserInfo? userInfo;
@@ -121,12 +119,7 @@ class ConfigService implements IConfigService {
 
   @override
   MenuMode getMenuMode() {
-    return menuMode;
-  }
-
-  @override
-  void setMenuMode(MenuMode pMenuMode) {
-    menuMode = pMenuMode;
+    return ConfigUtil.getMenuMode(getAppStyle()["menu.mode"]);
   }
 
   @override

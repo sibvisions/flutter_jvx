@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../custom/custom_screen_manager.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/parse_util.dart';
@@ -8,7 +9,6 @@ import '../../model/command/api/open_screen_command.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
-import '../../util/config_util.dart';
 import '../../util/offline_util.dart';
 import '../drawer/drawer_menu.dart';
 import 'grid/app_menu_grid_grouped.dart';
@@ -31,18 +31,15 @@ typedef MenuFactory = Widget Function({
 /// Menu Widget - will display menu items accordingly to the menu mode set in
 /// [IConfigService]
 class AppMenu extends StatefulWidget with UiServiceGetterMixin {
-  /// Menu model, contains all menuGroups and items
-  late final MenuModel menuModel;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppMenu({
-    Key? key,
-  }) : super(key: key) {
-    menuModel = getUiService().getMenuModel();
-  }
+  AppMenu({Key? key}) : super(key: key);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   State<AppMenu> createState() => _AppMenuState();
@@ -150,8 +147,11 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
   }
 
   Widget _getMenu() {
-    MenuMode menuMode = ConfigUtil.getMenuMode(getConfigService().getAppStyle()?["menu.mode"]);
-    getConfigService().setMenuMode(menuMode);
+    MenuMode menuMode = getConfigService().getMenuMode();
+
+    // Overriding menu mode
+    CustomScreenManager? customScreenManager = getUiService().getCustomScreenManager();
+    menuMode = customScreenManager?.onMenuMode(menuMode) ?? menuMode;
 
     MenuFactory menuBuilder = menuFactory[menuMode]!;
 
@@ -159,7 +159,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
     String? menuBackgroundImage = getConfigService().getAppStyle()?['desktop.icon'];
 
     return menuBuilder(
-      menuModel: widget.menuModel,
+      menuModel: getUiService().getMenuModel(),
       onClick: AppMenu.menuItemPressed,
       backgroundImageString: menuBackgroundImage,
       menuBackgroundColor: menuBackgroundColor,

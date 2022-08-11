@@ -45,9 +45,6 @@ abstract class IConfigService {
   /// Return menuMode
   MenuMode getMenuMode();
 
-  /// Set MenuMode
-  void setMenuMode(MenuMode pMenuMode);
-
   /// Returns info about the current user
   UserInfo? getUserInfo();
 

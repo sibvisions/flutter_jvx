@@ -248,7 +248,11 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
       });
     }
 
-    return MenuModel(menuGroups: menuGroupModels);
+    MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
+
+    menuModel = customScreenManager?.onMenuModel(menuModel) ?? menuModel;
+
+    return menuModel;
   }
 
   @override
