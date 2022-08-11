@@ -198,7 +198,7 @@ class FlButtonModel extends FlComponentModel implements IDataModel {
     }
 
     Map<String, dynamic> labelJson = <String, dynamic>{};
-    if (pJson.containsKey(ApiObjectProperty.horizontalAlignment)) {
+    if (pJson.containsKey(ApiObjectProperty.horizontalTextPosition)) {
       labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
     }
     if (pJson.containsKey(ApiObjectProperty.verticalAlignment)) {
