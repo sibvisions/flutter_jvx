@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/extensions/list_extensions.dart';
@@ -71,11 +71,13 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void initState() {
     // Exception where we have to do stuff before we init the sate.
     // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
-    recreateCellEditor(widget.model as T);
+    recreateCellEditor(widget.model as T, false);
 
     (widget.model as FlEditorModel).applyComponentInformation(cellEditor.createWidgetModel());
 
     super.initState();
+
+    subscribe(widget.model as T);
   }
 
   @override
@@ -266,7 +268,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Recreates the cell editor.
-  void recreateCellEditor(T pModel) {
+  void recreateCellEditor(T pModel, [bool pSubscribe = true]) {
     oldCellEditor = cellEditor;
 
     var jsonCellEditor = Map<String, dynamic>.from(pModel.json[ApiObjectProperty.cellEditor]);
@@ -278,7 +280,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         pRecalculateSizeCallback: recalculateSize,
         pUiService: getUiService());
 
-    subscribe(pModel);
+    if (pSubscribe) {
+      subscribe(pModel);
+    }
   }
 
   /// Logs the cell editor for debug purposes.
