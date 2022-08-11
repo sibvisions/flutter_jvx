@@ -32,8 +32,8 @@ abstract class AppManager {
     customScreens.add(pCustomScreen);
   }
 
-  /// Gets called on menu mode selection. Default implementation returns original [pMenuMode]
-  void modifyMenuMode(MenuMode pMenuMode) {}
+  /// Gets called on menu mode selection. Default implementation returns original [pCurrentMode]
+  MenuMode? getMenuMode(MenuMode pCurrentMode) => null;
 
   /// Gets called on menu model selection. Default implementation returns original [pMenuModel]
   void modifyMenuModel(MenuModel pMenuModel) {}
