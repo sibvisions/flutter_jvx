@@ -80,7 +80,7 @@ class ConfigService implements IConfigService {
   @override
   String? getClientId() {
     //TODO remove workaround
-    return clientId ?? "";
+    return clientId ?? (isOffline() ? "" : null);
   }
 
   @override
