@@ -12,7 +12,7 @@ import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/config/api/api_config.dart';
 import '../../routing/locations/settings_location.dart';
 import '../camera/qr_parser.dart';
-import '../camera/qr_scanner_mask.dart';
+import '../camera/qr_scanner_overlay.dart';
 import 'widgets/editor/app_name_editor.dart';
 import 'widgets/editor/editor_dialog.dart';
 import 'widgets/editor/url_editor.dart';
@@ -381,7 +381,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   /// parses scanned code and saves values to config service
   void _openQRScanner() {
     getUiService().openDialog(
-        pDialogWidget: QRScannerMask(callBack: (barcode, _) {
+        pDialogWidget: QRScannerOverlay(callBack: (barcode, _) {
           QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
           getConfigService().setAppName(code.appName);
           getConfigService().setBaseUrl(code.url);

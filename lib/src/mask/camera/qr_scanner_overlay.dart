@@ -5,7 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 typedef QRCallback = void Function(Barcode barcode, MobileScannerArguments? arguments);
 
 /// Displays the QR-Scanner with additional a control bar on top
-class QRScannerMask extends StatefulWidget {
+class QRScannerOverlay extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +17,7 @@ class QRScannerMask extends StatefulWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const QRScannerMask({
+  const QRScannerOverlay({
     Key? key,
     required this.callBack,
   }) : super(key: key);
@@ -27,11 +27,11 @@ class QRScannerMask extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  State<QRScannerMask> createState() => _QRScannerMaskState();
+  State<QRScannerOverlay> createState() => _QRScannerOverlayState();
 }
 
 /// State is needed for disposing the controller
-class _QRScannerMaskState extends State<QRScannerMask> {
+class _QRScannerOverlayState extends State<QRScannerOverlay> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

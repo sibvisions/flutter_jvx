@@ -6,7 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../util/logging/flutter_logger.dart';
-import '../../mask/camera/qr_scanner_mask.dart';
+import '../../mask/camera/qr_scanner_overlay.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
@@ -115,7 +115,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void openQrCodeScanner() {
     getUiService().openDialog(
       pIsDismissible: false,
-      pDialogWidget: QRScannerMask(callBack: sendQrCodeResult),
+      pDialogWidget: QRScannerOverlay(callBack: sendQrCodeResult),
     );
   }
 
