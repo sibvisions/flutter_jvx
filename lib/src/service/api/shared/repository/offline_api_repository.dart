@@ -193,7 +193,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
     int rowCountDatabase = await offlineDatabase!.getCount(pTableName: pRequest.dataProvider, pFilter: filter);
 
-    bool isAllFetched = rowCount == null;
+    bool isAllFetched = rowCount == null || rowCount == -1;
 
     if (!isAllFetched && fromRow == 0 && rowCountDatabase <= rowCount) {
       isAllFetched = true;
