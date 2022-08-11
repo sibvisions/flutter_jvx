@@ -26,7 +26,7 @@ abstract class AppManager {
   /// Gets called on menu model selection. Default implementation returns original [pMenuModel]
   MenuModel onMenuModel(MenuModel pMenuModel) => pMenuModel;
 
-  /// Register a screen too
+  /// Register a screen
   void registerScreen(CustomScreen pCustomScreen) {
     customScreens.add(pCustomScreen);
   }
