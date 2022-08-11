@@ -95,7 +95,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   /// Returns the icon and/or the text of the button.
   Widget? getButtonChild() {
-    if (model.labelModel.text.isNotEmpty && image != null) {
+    if (model.labelModel.text.isNotEmpty && model.image != null) {
       if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
           model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
         return Column(
@@ -121,7 +121,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       }
     } else if (model.labelModel.text.isNotEmpty) {
       return _getTextWidget();
-    } else if (image != null) {
+    } else if (model.image != null) {
       return image!;
     } else {
       return null;
