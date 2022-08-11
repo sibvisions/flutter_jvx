@@ -55,8 +55,11 @@ abstract class IUiService {
   /// used when server dictates location
   void setRouteContext({required BuildContext pContext});
 
+  /// Gets the current custom manager
+  CustomScreenManager? getCustomScreenManager();
+
   /// Sets the current custom manager
-  void setCustomManager(CustomScreenManager? pCustomManager);
+  void setCustomScreenManager(CustomScreenManager? pCustomScreenManager);
 
   /// Opens a [Dialog], the future will complete if the dialog is closed by an
   /// action

@@ -48,7 +48,7 @@ Future<void> initApp({
     ..clear()
     ..add(LoadingProgressHandler());
 
-  uiService.setCustomManager(pCustomManager);
+  uiService.setCustomScreenManager(pCustomManager);
   uiService.setRouteContext(pContext: initContext);
 
   // Load config files

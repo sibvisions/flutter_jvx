@@ -59,7 +59,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   final Map<String, LayoutData> _layoutDataList = {};
 
   /// Holds all custom screen modifications
-  CustomScreenManager? customManager;
+  CustomScreenManager? customScreenManager;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -174,8 +174,13 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   }
 
   @override
-  void setCustomManager(CustomScreenManager? pCustomManager) {
-    customManager = pCustomManager;
+  CustomScreenManager? getCustomScreenManager() {
+    return customScreenManager;
+  }
+
+  @override
+  void setCustomScreenManager(CustomScreenManager? pCustomScreenManager) {
+    customScreenManager = pCustomScreenManager;
   }
 
   @override
@@ -214,8 +219,8 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     List<MenuGroupModel> menuGroupModels = [...?_menuModel?.menuGroups.map((e) => e.copy())];
 
     // Add all custom menuItems
-    if (customManager != null) {
-      customManager!.customScreens
+    if (customScreenManager != null) {
+      customScreenManager!.customScreens
           .where((customScreen) => customScreen.menuItemModel != null)
           .where((customScreen) =>
               (customScreen.showOnline && !getConfigService().isOffline()) ||
@@ -512,13 +517,13 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   CustomScreen? getCustomScreen({required String pScreenLongName}) {
-    return customManager?.customScreens
+    return customScreenManager?.customScreens
         .firstWhereOrNull((customScreen) => customScreen.screenLongName == pScreenLongName);
   }
 
   @override
   CustomComponent? getCustomComponent({required String pComponentName}) {
-    List<CustomScreen>? screens = customManager?.customScreens;
+    List<CustomScreen>? screens = customScreenManager?.customScreens;
 
     if (screens != null) {
       for (CustomScreen screen in screens) {
