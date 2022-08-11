@@ -1,6 +1,13 @@
+import 'dart:io';
+
 import '../src/model/menu/menu_model.dart';
+import '../src/model/request/i_api_request.dart';
+import '../src/model/response/api_response.dart';
 import '../src/service/config/i_config_service.dart';
 import 'custom_screen.dart';
+
+export '../src/model/request/i_api_request.dart';
+export '../src/model/response/api_response.dart';
 
 abstract class AppManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,14 +27,23 @@ abstract class AppManager {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Gets called on menu mode selection. Default implementation returns original [pMenuMode]
-  MenuMode onMenuMode(MenuMode pMenuMode) => pMenuMode;
-
-  /// Gets called on menu model selection. Default implementation returns original [pMenuModel]
-  MenuModel onMenuModel(MenuModel pMenuModel) => pMenuModel;
-
   /// Register a screen
   void registerScreen(CustomScreen pCustomScreen) {
     customScreens.add(pCustomScreen);
   }
+
+  /// Gets called on menu mode selection. Default implementation returns original [pMenuMode]
+  void modifyMenuMode(MenuMode pMenuMode) {}
+
+  /// Gets called on menu model selection. Default implementation returns original [pMenuModel]
+  void modifyMenuModel(MenuModel pMenuModel) {}
+
+  /// Can be used to modify the cookie list for each request
+  void modifyCookies(List<Cookie> cookies) {}
+
+  /// Is called when a response is returned, use the [resendRequest] function to resend the original request.
+  /// Useful for 2FA or retry.
+  Future<List<ApiResponse>?> handleResponse(
+          IApiRequest request, HttpClientResponse response, Future<HttpClientResponse> Function() resendRequest) =>
+      Future.value(null);
 }

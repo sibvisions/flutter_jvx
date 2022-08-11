@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/request/api_download_images_request.dart';
@@ -38,7 +39,7 @@ import '../i_repository.dart';
 typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson, required Object originalRequest});
 
 /// Handles all possible requests to the mobile server.
-class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
+class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,7 +133,23 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
 
     if (uri != null) {
       try {
-        var response = await _sendPostRequest(uri, jsonEncode(pRequest));
+        String jsonBody = jsonEncode(pRequest);
+        HttpClientResponse response = await _sendPostRequest(uri, jsonBody);
+
+        if (getUiService().getAppManager() != null) {
+          var responses = await getUiService().getAppManager()?.handleResponse(
+                pRequest,
+                response,
+                () => _sendPostRequest(uri, jsonBody),
+              );
+          if (responses != null) {
+            return responses;
+          }
+        }
+
+        if (response.statusCode == 404) {
+          throw const SocketException("Application not found (404)");
+        }
 
         // Download Request needs different handling
         if (pRequest is IApiDownloadRequest) {
@@ -141,17 +158,16 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
           return parsedDownloadObject;
         }
 
-        if (response.statusCode == 404) {
-          throw const SocketException("Application not found (404)");
-        }
         if (response.headers.contentType?.value != ContentType.json.value) {
           throw FormatException("Invalid server response"
               "\nType: ${response.headers.contentType?.subType}"
               "\nStatus: ${response.statusCode}");
         }
 
-        var formattedResponses = _formatResponse(await response.transform(utf8.decoder).join());
-        var parsedResponseObjects = _responseParser(pJsonList: formattedResponses, originalRequest: pRequest);
+        String responseBody = await response.transform(utf8.decoder).join();
+
+        List<dynamic> jsonResponse = _parseAndCheckJson(responseBody);
+        List<ApiResponse> parsedResponseObjects = _responseParser(pJsonList: jsonResponse, originalRequest: pRequest);
         return parsedResponseObjects;
       } catch (e) {
         LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Error while sending ${pRequest.runtimeType}");
@@ -184,6 +200,8 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
       _cookies.forEach((value) => request.cookies.add(value));
     }
 
+    getUiService().getAppManager()?.modifyCookies(request.cookies);
+
     _headers.forEach((key, value) => request.headers.set(key, value));
     request.write(body);
     HttpClientResponse res = await request.close();
@@ -197,7 +215,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin implements IRepository {
 
   /// Check if response is an error, an error does not come as array, returns
   /// the error in an error.
-  List<dynamic> _formatResponse(String pBody) {
+  List<dynamic> _parseAndCheckJson(String pBody) {
     var response = jsonDecode(pBody);
 
     if (response is List<dynamic>) {

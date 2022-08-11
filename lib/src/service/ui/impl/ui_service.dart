@@ -249,8 +249,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     }
 
     MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
-
-    menuModel = appManager?.onMenuModel(menuModel) ?? menuModel;
+    appManager?.modifyMenuModel(menuModel);
 
     return menuModel;
   }
