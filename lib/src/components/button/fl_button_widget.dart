@@ -32,7 +32,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget? get image {
     if (model.image != null) {
       return ImageLoader.loadImage(model.image!,
-          pWantedColor: model.isEnabled ? model.foreground : IColorConstants.COMPONENT_DISABLED);
+          pWantedColor: model.isEnabled ? model.getTextStyle().color : IColorConstants.COMPONENT_DISABLED);
     }
     return null;
   }
