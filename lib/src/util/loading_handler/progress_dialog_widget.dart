@@ -78,7 +78,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                         image: _config.completed?.image ??
                             Svg(ImageLoader.getAssetPath(
                               FlutterJVx.package,
-                              'packages/flutter_jvx/assets/images/completed_check.svg',
+                              'assets/images/completed_check.svg',
                             )),
                       )
                     : SizedBox(
