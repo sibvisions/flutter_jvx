@@ -336,7 +336,7 @@ abstract class OfflineUtil {
     for (String dataProvider in activeDataProviders) {
       log("Start fetching $dataProvider");
 
-      progressUpdate?.call(fetchCounter, activeDataProviders.length);
+      progressUpdate?.call(fetchCounter++, activeDataProviders.length);
 
       await commandService.sendCommand(
         FetchCommand(
