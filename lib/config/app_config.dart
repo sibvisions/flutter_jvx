@@ -8,7 +8,6 @@ class AppConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final String title;
-  final bool package;
   final int requestTimeout;
 
   final UiConfig uiConfig;
@@ -26,7 +25,6 @@ class AppConfig {
     this.uiConfig = const UiConfig.empty(),
     this.serverConfig = const ServerConfig.empty(),
     this.versionConfig = const VersionConfig.empty(),
-    this.package = false,
     this.requestTimeout = 10,
     this.startupParameters,
   });
@@ -34,7 +32,6 @@ class AppConfig {
   AppConfig.fromJson({required Map<String, dynamic> json})
       : this(
           title: json["title"] ?? "JVx Mobile",
-          package: json["package"] ?? false,
           requestTimeout: json["requestTimeout"] ?? 10,
           uiConfig: json["uiConfig"] != null ? UiConfig.fromJson(json: json["uiConfig"]) : const UiConfig.empty(),
           serverConfig: json["serverConfig"] != null
