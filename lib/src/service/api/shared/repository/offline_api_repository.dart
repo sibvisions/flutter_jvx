@@ -171,17 +171,21 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   }
 
   Future<List<ApiResponse>> _fetch(ApiFetchRequest pRequest) async {
-    int fromRow = pRequest.fromRow > -1 ? pRequest.fromRow : 0;
+    if (pRequest.fromRow <= -1) {
+      return [];
+    }
 
-    int? rowCount = pRequest.fromRow > -1 ? pRequest.rowCount : null;
+    int? rowCount = pRequest.rowCount >= 0 ? pRequest.rowCount : null;
 
     if (rowCount == null) {
       _databookFetchMap[pRequest.dataProvider] = -1;
     } else {
-      int maximumFetch = _databookFetchMap[pRequest.dataProvider] ?? 0;
+      int currentMaxFetch = _databookFetchMap[pRequest.dataProvider] ?? 0;
 
-      if (maximumFetch != -1 && maximumFetch < (fromRow + rowCount)) {
-        _databookFetchMap[pRequest.dataProvider] = (fromRow + rowCount);
+      int maxFetch = pRequest.fromRow + rowCount;
+
+      if (currentMaxFetch != -1 && currentMaxFetch < maxFetch) {
+        _databookFetchMap[pRequest.dataProvider] = maxFetch;
       }
     }
 
@@ -193,7 +197,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
       pTableName: pRequest.dataProvider,
-      pOffset: fromRow,
+      pOffset: pRequest.fromRow,
       pLimit: rowCount,
       pFilters: filters,
     );
@@ -213,20 +217,16 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       pFilters: filters,
     );
 
-    bool isAllFetched = rowCount == null || rowCount == -1;
-
-    if (!isAllFetched && fromRow == 0 && rowCountDatabase <= rowCount) {
-      isAllFetched = true;
-    }
+    bool isAllFetched = rowCount == null || rowCountDatabase <= sortedMap.length;
 
     return [
       DalFetchResponse(
         dataProvider: pRequest.dataProvider,
-        from: fromRow,
+        from: pRequest.fromRow,
         selectedRow: dataBook.selectedRow,
         isAllFetched: isAllFetched,
         columnNames: columnNames,
-        to: fromRow + rowCountDatabase,
+        to: pRequest.fromRow + sortedMap.length,
         records: sortedMap,
         name: "dal.fetch",
         originalResponse: pRequest,
