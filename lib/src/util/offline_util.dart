@@ -54,7 +54,7 @@ abstract class OfflineUtil {
           return ProgressDialogWidget(
             key: dialogKey,
             config: Config(
-              message: "Re-syncing offline data...",
+              message: configService.translateText("Re-syncing offline data") + "...",
               progressType: ProgressType.normal,
               barrierDismissible: false,
               progressValueColor: Theme.of(context).primaryColor,
@@ -92,7 +92,7 @@ abstract class OfflineUtil {
       dialogKey.currentState?.update(
           config: Config(
         progressType: ProgressType.valuable,
-        message: "Fetching online data...",
+        message: configService.translateText("Fetching online data") + "...",
       ));
 
       await fetchDataProvider(
@@ -121,7 +121,7 @@ abstract class OfflineUtil {
 
         dialogKey.currentState?.update(
             config: Config(
-          message: "Syncing data... ($dataBookCounter / ${dataBooks.length})",
+          message: configService.translateText("Syncing data") + "... ($dataBookCounter / ${dataBooks.length})",
           progress: groupedRows.length - successfulSyncedPrimaryKeys.length,
           maxProgress: groupedRows.length,
         ));
@@ -374,7 +374,7 @@ abstract class OfflineUtil {
           return ProgressDialogWidget(
             key: dialogKey,
             config: Config(
-              message: "Fetching offline data...",
+              message: configService.translateText("Fetching offline data") + "...",
               progressType: ProgressType.normal,
               barrierDismissible: false,
               progressValueColor: Theme.of(context).primaryColor,
@@ -400,7 +400,7 @@ abstract class OfflineUtil {
 
       dialogKey.currentState?.update(
           config: Config(
-        message: "Loading data...",
+        message: configService.translateText("Loading data") + "...",
         progressType: ProgressType.valuable,
         progress: 0,
         maxProgress: 100,
@@ -411,7 +411,7 @@ abstract class OfflineUtil {
       await offlineApiRepository.initDatabase((value, max, {progress}) {
         dialogKey.currentState?.update(
             config: Config(
-          message: "Loading data ($value / $max)...",
+          message: configService.translateText("Loading data") + " ($value / $max)...",
           progress: progress ?? 0,
         ));
       });
