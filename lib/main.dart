@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/app_config.dart';
 import 'custom/app_manager.dart';
-import 'example/app_manager_example.dart';
 import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
@@ -40,9 +39,7 @@ import 'util/parse_util.dart';
 export 'package:beamer/beamer.dart';
 
 void main() async {
-  await FlutterJVx.start(FlutterJVx(
-    appManager: AppManagerExample(),
-  ));
+  await FlutterJVx.start();
 }
 
 class FlutterJVx extends StatefulWidget {
