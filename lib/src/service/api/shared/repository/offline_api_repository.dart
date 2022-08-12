@@ -217,7 +217,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       pFilters: filters,
     );
 
-    bool isAllFetched = rowCount == null || rowCountDatabase <= sortedMap.length;
+    bool isAllFetched = rowCountDatabase <= sortedMap.length;
 
     return [
       DalFetchResponse(
