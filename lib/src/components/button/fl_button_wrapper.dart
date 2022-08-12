@@ -32,25 +32,11 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   String? _overwrittenButtonPressId;
 
-  VoidCallback? onPress;
-
   DataRecord? dataRecord;
 
   @override
   void initState() {
     super.initState();
-
-    onPress = sendButtonPressed;
-
-    if (!kIsWeb) {
-      if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
-        onPress = goOffline;
-      } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
-        onPress = openQrCodeScanner;
-      } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
-        onPress = callNumber;
-      }
-    }
 
     if (model.columnName.isNotEmpty && model.dataProvider.isNotEmpty) {
       getUiService().registerDataSubscription(
@@ -69,7 +55,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   Widget build(BuildContext context) {
     final FlButtonWidget buttonWidget = FlButtonWidget(
       model: model,
-      onPress: onPress,
+      onPress: sendButtonPressed,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -109,6 +95,17 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     return PressButtonCommand(
       componentName: _overwrittenButtonPressId ?? model.name,
       reason: "Button has been pressed",
+      callback: () {
+        if (!kIsWeb) {
+          if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
+            goOffline();
+          } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
+            openQrCodeScanner();
+          } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
+            callNumber();
+          }
+        }
+      },
     );
   }
 
