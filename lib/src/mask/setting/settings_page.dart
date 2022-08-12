@@ -61,6 +61,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   /// Password of a scanned QR-Code
   String? password;
 
+  /// If the settings are currently loading.
+  bool loading = false;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,6 +111,18 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
       getUiService().setRouteContext(pContext: context);
     }
 
+    Widget body = SingleChildScrollView(
+      child: Column(
+        children: [_buildApplicationSettings(context), _buildVersionInfo()],
+      ),
+    );
+
+    if (loading) {
+      body = Column(
+        children: [const LinearProgressIndicator(minHeight: 5), Expanded(child: body)],
+      );
+    }
+
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Theme.of(context).backgroundColor,
@@ -121,11 +135,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
             : null,
         title: Text(getConfigService().translateText("Settings")),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [_buildApplicationSettings(context), _buildVersionInfo()],
-        ),
-      ),
+      body: body,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         color: Theme.of(context).primaryColor,
@@ -186,7 +196,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SettingGroup _buildApplicationSettings(BuildContext context) {
+  Widget _buildApplicationSettings(BuildContext context) {
     SettingItem appNameSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.server,
@@ -313,18 +323,21 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
       },
     );
 
-    return SettingGroup(
-      groupHeader: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Text(
-          getConfigService().translateText("Application"),
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+    return IgnorePointer(
+      ignoring: loading,
+      child: SettingGroup(
+        groupHeader: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            getConfigService().translateText("Application"),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
+        items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
       ),
-      items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
     );
   }
 
@@ -407,12 +420,22 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     getUiService().setRouteContext(pContext: context);
 
     if (appNameNotifier.value.isNotEmpty && baseUrlNotifier.value.isNotEmpty) {
+      setState(() {
+        loading = true;
+      });
+
       StartupCommand startupCommand = StartupCommand(
         reason: "Open App from Settings",
         appName: appNameNotifier.value,
         username: username,
         password: password,
+        callback: () {
+          setState(() {
+            loading = false;
+          });
+        },
       );
+
       getUiService().sendCommand(startupCommand);
 
       username = null;

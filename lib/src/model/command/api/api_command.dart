@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import '../base_command.dart';
 
 ///
@@ -8,6 +6,6 @@ import '../base_command.dart';
 abstract class ApiCommand extends BaseCommand {
   ApiCommand({
     required String reason,
-    VoidCallback? callback,
-  }) : super(reason: reason, callback: callback);
+    super.callback,
+  }) : super(reason: reason);
 }
