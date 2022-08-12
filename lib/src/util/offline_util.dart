@@ -126,14 +126,16 @@ abstract class OfflineUtil {
           maxProgress: groupedRows.length,
         ));
 
-        successfulSync =
-            await _handleInsertedRows(groupedRows, dataBook, commandService, successfulSyncedPrimaryKeys) &&
-                successfulSync;
-
-        successfulSync = await _handleUpdatedRows(groupedRows, dataBook, commandService, successfulSyncedPrimaryKeys) &&
+        successfulSync = await _handleInsertedRows(groupedRows[OfflineDatabase.ROW_STATE_INSERTED], dataBook,
+                commandService, successfulSyncedPrimaryKeys) &&
             successfulSync;
 
-        successfulSync = await _handleDeletedRow(groupedRows, dataBook, commandService, successfulSyncedPrimaryKeys) &&
+        successfulSync = await _handleUpdatedRows(groupedRows[OfflineDatabase.ROW_STATE_UPDATED], dataBook,
+                commandService, successfulSyncedPrimaryKeys) &&
+            successfulSync;
+
+        successfulSync = await _handleDeletedRows(groupedRows[OfflineDatabase.ROW_STATE_DELETED], dataBook,
+                commandService, successfulSyncedPrimaryKeys) &&
             successfulSync;
 
         dataBookCounter++;
@@ -193,32 +195,32 @@ abstract class OfflineUtil {
     }
   }
 
-  static Future<bool> _handleInsertedRows(Map<String, List<Map<String, Object?>>> groupedRows, DataBook dataBook,
+  static Future<bool> _handleInsertedRows(List<Map<String, Object?>>? insertedRows, DataBook dataBook,
       ICommandService commandService, List<Map<String, Object?>> successfulSyncedPrimaryKeys) async {
-    try {
-      List<Map<String, Object?>>? insertedRows = groupedRows[OfflineDatabase.ROW_STATE_INSERTED];
+    bool successful = true;
+    if (insertedRows != null) {
       log("Syncing inserted rows: " + insertedRows.toString());
-      if (insertedRows != null) {
-        for (var row in insertedRows) {
+      for (var row in insertedRows) {
+        try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
           await _insertOfflineRecord(commandService, dataBook, row);
           successfulSyncedPrimaryKeys.add(primaryColumns);
+        } catch (e, stackTrace) {
+          log("Error while syncing inserted row:", error: e, stackTrace: stackTrace);
+          successful = false;
         }
       }
-    } catch (e, stackTrace) {
-      log("Error while syncing inserted rows: ", error: e, stackTrace: stackTrace);
-      return false;
     }
-    return true;
+    return successful;
   }
 
-  static Future<bool> _handleUpdatedRows(Map<String, List<Map<String, Object?>>> groupedRows, DataBook dataBook,
+  static Future<bool> _handleUpdatedRows(List<Map<String, Object?>>? updatedRows, DataBook dataBook,
       ICommandService commandService, List<Map<String, Object?>> successfulSyncedPrimaryKeys) async {
-    try {
-      List<Map<String, Object?>>? updatedRows = groupedRows[OfflineDatabase.ROW_STATE_UPDATED];
+    bool successful = true;
+    if (updatedRows != null) {
       log("Syncing updated rows: " + updatedRows.toString());
-      if (updatedRows != null) {
-        for (var row in updatedRows) {
+      for (var row in updatedRows) {
+        try {
           var oldColumns = {
             for (var entry in row.entries.where((rowColumn) => rowColumn.key.startsWith(OfflineDatabase.COLUMN_PREFIX)))
               entry.key: entry.value
@@ -227,32 +229,32 @@ abstract class OfflineUtil {
 
           await _updateOfflineRecord(row, commandService, dataBook, primaryColumns);
           successfulSyncedPrimaryKeys.add(primaryColumns);
+        } catch (e, stackTrace) {
+          log("Error while syncing updated row:", error: e, stackTrace: stackTrace);
+          successful = false;
         }
       }
-    } catch (e, stackTrace) {
-      log("Error while syncing updated rows: ", error: e, stackTrace: stackTrace);
-      return false;
     }
-    return true;
+    return successful;
   }
 
-  static Future<bool> _handleDeletedRow(Map<String, List<Map<String, Object?>>> groupedRows, DataBook dataBook,
+  static Future<bool> _handleDeletedRows(List<Map<String, Object?>>? deletedRows, DataBook dataBook,
       ICommandService commandService, List<Map<String, Object?>> successfulSyncedPrimaryKeys) async {
-    try {
-      List<Map<String, Object?>>? deletedRows = groupedRows[OfflineDatabase.ROW_STATE_DELETED];
+    bool successful = true;
+    if (deletedRows != null) {
       log("Syncing deleted rows: " + deletedRows.toString());
-      if (deletedRows != null) {
-        for (var row in deletedRows) {
+      for (var row in deletedRows) {
+        try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
           await _deleteOfflineRecord(commandService, dataBook, primaryColumns);
           successfulSyncedPrimaryKeys.add(primaryColumns);
+        } catch (e, stackTrace) {
+          log("Error while syncing deleted row:", error: e, stackTrace: stackTrace);
+          successful = false;
         }
       }
-    } catch (e, stackTrace) {
-      log("Error while syncing deleted rows: ", error: e, stackTrace: stackTrace);
-      return false;
     }
-    return true;
+    return successful;
   }
 
   static Future<void> _insertOfflineRecord(
