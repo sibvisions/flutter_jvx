@@ -197,7 +197,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
       pTableName: pRequest.dataProvider,
-      pOffset: pRequest.fromRow,
+      pOffset: pRequest.fromRow > 0 ? pRequest.fromRow : null,
       pLimit: rowCount,
       pFilters: filters,
     );
