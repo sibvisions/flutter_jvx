@@ -226,7 +226,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
         selectedRow: dataBook.selectedRow,
         isAllFetched: isAllFetched,
         columnNames: columnNames,
-        to: pRequest.fromRow + sortedMap.length,
+        to: pRequest.fromRow + (sortedMap.isNotEmpty ? sortedMap.length - 1 : 0),
         records: sortedMap,
         name: "dal.fetch",
         originalResponse: pRequest,
