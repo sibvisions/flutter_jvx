@@ -29,7 +29,7 @@ class AppMenuGridGroup extends StatelessWidget {
       SliverPersistentHeader(pinned: true, delegate: AppMenuGridHeader(headerText: menuGroupModel.name, height: 48)),
       SliverGrid(
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
+          maxCrossAxisExtent: 210,
           mainAxisSpacing: 1,
           crossAxisSpacing: 1,
         ),
