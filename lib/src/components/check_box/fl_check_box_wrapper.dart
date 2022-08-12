@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../model/component/check_box/fl_check_box_model.dart';
 import '../button/fl_button_wrapper.dart';
@@ -29,7 +29,7 @@ class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlButtonWrapperS
   Widget build(BuildContext context) {
     FlCheckBoxWidget checkboxWidget = FlCheckBoxWidget(
       model: model,
-      onPress: onPress,
+      onPress: sendButtonPressed,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {

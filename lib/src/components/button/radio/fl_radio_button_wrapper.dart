@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../model/component/button/fl_radio_button_model.dart';
 import '../fl_button_wrapper.dart';
@@ -29,7 +29,7 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
   Widget build(BuildContext context) {
     FlRadioButtonWidget radioButtonWidget = FlRadioButtonWidget(
       model: model,
-      onPress: onPress,
+      onPress: sendButtonPressed,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {

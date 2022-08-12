@@ -34,7 +34,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
   Widget build(BuildContext context) {
     FlPopupMenuButtonWidget popupButtonWidget = FlPopupMenuButtonWidget(
       model: model,
-      onPress: onPress,
+      onPress: sendButtonPressed,
       onItemPress: sendButtonPressed,
       popupItems: _createPopupItems(),
     );
