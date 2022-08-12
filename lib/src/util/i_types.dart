@@ -85,6 +85,7 @@ abstract class Types {
       case INTEGER:
       case BIGINT:
       case BOOLEAN:
+      case TIMESTAMP:
         return "INTEGER";
       case FLOAT:
       case REAL:
@@ -102,7 +103,6 @@ abstract class Types {
       //Date/Time
       case DATE:
       case TIME:
-      case TIMESTAMP:
       //Text
       case CHAR:
       case VARCHAR:
