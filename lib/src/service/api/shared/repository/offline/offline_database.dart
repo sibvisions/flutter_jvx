@@ -334,14 +334,19 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       if (state == null) {
         //Hasn't been touched yet, copy values to $OLD$ columns
 
-        List<String> columns = await _getColumns(pTableName, txn: txn);
-        log("Value columns: " + columns.toString());
+        List<String> tableColumns = await _getTableColumns(offlineTableName, txn: txn);
 
-        Map<String, dynamic> updateColumns = {'"$STATE_COLUMN"': ROW_STATE_UPDATED};
+        Map<String, dynamic> updateColumns = {'"$STATE_COLUMN"': null};
         //Constructs "$OLD$_age = age"
-        columns.forEach((column) => updateColumns[formatOfflineColumnName(column)] = column);
-        updateColumns.addAll(pUpdate);
-        await txn.update(offlineTableName, updateColumns, where: where?[0], whereArgs: where?[1]);
+        tableColumns.forEach((column) => updateColumns['"${formatOfflineColumnName(column)}"'] = '"$column"');
+
+        await _updateOfflineColumns(
+          txn,
+          offlineTableName,
+          updateColumns,
+          where,
+          [ROW_STATE_UPDATED, ...?where?[1]],
+        );
       }
 
       //age = 5
@@ -349,6 +354,12 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       //$OLD$_age = 5, age = 10
       return txn.update(offlineTableName, pUpdate, where: where?[0], whereArgs: where?[1]);
     });
+  }
+
+  Future<void> _updateOfflineColumns(Transaction txn, String tableName, Map<String, dynamic> updateColumns,
+      List<dynamic>? where, List<dynamic> whereArgs) async {
+    String updateClause = updateColumns.entries.map((entry) => '${entry.key} = ${entry.value ?? "?"}').join(", ");
+    await txn.rawUpdate('UPDATE "$tableName" SET $updateClause WHERE ${where?[0]}', whereArgs);
   }
 
   /// Executes a SQL DELETE query and returns the number of changes made.
@@ -364,11 +375,20 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
           return txn.delete(offlineTableName, where: where?[0], whereArgs: where?[1]);
         } else if (state == ROW_STATE_UPDATED) {
           // Reset column to preserve primary key columns and then set Deleted
-          Map<String, dynamic> columns = {};
-          List<String> tableColumns = await _getColumns(pTableName, txn: txn);
+
+          List<String> tableColumns = await _getTableColumns(pTableName, txn: txn);
+
+          Map<String, dynamic> updateColumns = {};
           // Constructs "age = $OLD$_age"
-          tableColumns.forEach((column) => columns[column] = formatOfflineColumnName(column));
-          await txn.update(offlineTableName, columns, where: where?[0], whereArgs: where?[1]);
+          tableColumns.forEach((column) => updateColumns['"$column"'] = '"${formatOfflineColumnName(column)}"');
+
+          await _updateOfflineColumns(
+            txn,
+            offlineTableName,
+            updateColumns,
+            where,
+            where?[1],
+          );
         }
       }
       // Set state to Deleted (D)
@@ -379,14 +399,13 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   ///Build where string and exclude all "deleted" columns
   List<dynamic>? _getWhere(List<FilterCondition>? pFilters) {
+    String where = '("$STATE_COLUMN" IS NULL OR "$STATE_COLUMN" != \'$ROW_STATE_DELETED\')';
     if (!(pFilters?.isEmpty ?? true)) {
-      var where = "(" +
-          pFilters!.map((e) => _buildWhereClause(e)).join(") AND (") +
-          ') AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
-      var whereArgs = pFilters.expand((e) => e.getValues()).toList(growable: false);
+      where = "(" + pFilters!.map((e) => _buildWhereClause(e)).join(") AND (") + ') AND $where';
+      var whereArgs = pFilters.expand((e) => e.getValues()).toList();
       return [where, whereArgs];
     }
-    return null;
+    return [where, null];
   }
 
   String _buildWhereClause(FilterCondition? condition) {
@@ -488,8 +507,11 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         .then((value) => value.firstOrNull?[STATE_COLUMN] as String?);
   }
 
-  Future<List<String>> _getColumns(String pTableName, {Transaction? txn}) {
-    return (txn ?? db).rawQuery("SELECT NAME FROM PRAGMA_TABLE_INFO('$pTableName') WHERE NAME NOT LIKE ?;",
-        [COLUMN_PREFIX]).then((value) => value.map((e) => e['NAME'] as String).toList(growable: false));
+  Future<List<String>> _getTableColumns(String pTableName, {Transaction? txn}) {
+    return (txn ?? db)
+        .rawQuery("SELECT NAME FROM PRAGMA_TABLE_INFO('$pTableName') WHERE NAME NOT LIKE ? AND NAME NOT LIKE ?;", [
+      COLUMN_PREFIX + "%",
+      STATE_COLUMN,
+    ]).then((value) => value.map((e) => e['name'] as String).toList(growable: false));
   }
 }
