@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
+import '../../../main.dart';
+import '../../../util/image/image_loader.dart';
+
 enum ValuePosition { center, right }
 
 enum ProgressType { normal, valuable }
@@ -72,7 +75,11 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                     ? Image(
                         width: 40,
                         height: 40,
-                        image: _config.completed?.image ?? const Svg('assets/images/completed_check.svg'),
+                        image: _config.completed?.image ??
+                            Svg(ImageLoader.getAssetPath(
+                              FlutterJVx.package,
+                              'packages/flutter_jvx/assets/images/completed_check.svg',
+                            )),
                       )
                     : SizedBox(
                         width: 35.0,

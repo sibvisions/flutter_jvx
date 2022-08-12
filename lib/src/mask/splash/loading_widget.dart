@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
+import '../../../main.dart';
+import '../../../util/image/image_loader.dart';
+
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({Key? key}) : super(key: key);
 
@@ -10,18 +13,26 @@ class LoadingWidget extends StatelessWidget {
         body: Stack(
       children: [
         Container(
-          decoration:
-              const BoxDecoration(image: DecorationImage(image: Svg('assets/images/JVx_Bg.svg'), fit: BoxFit.cover)),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: Svg(ImageLoader.getAssetPath(
+                    FlutterJVx.package,
+                    'assets/images/JVx_Bg.svg',
+                  )),
+                  fit: BoxFit.cover)),
         ),
         Column(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: <Widget>[
-          const Align(
+          Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.only(top: 100),
+              padding: const EdgeInsets.only(top: 100),
               child: Image(
                 image: Svg(
-                  'assets/images/JVx_SS.svg',
-                  size: Size(138, 145),
+                  ImageLoader.getAssetPath(
+                    FlutterJVx.package,
+                    'assets/images/JVx_SS.svg',
+                  ),
+                  size: const Size(138, 145),
                 ),
               ),
             ),
@@ -40,7 +51,10 @@ class LoadingWidget extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 50),
               child: Image.asset(
-                'assets/images/logo.png',
+                ImageLoader.getAssetPath(
+                  FlutterJVx.package,
+                  'assets/images/logo.png',
+                ),
                 width: 200,
               ),
             ),

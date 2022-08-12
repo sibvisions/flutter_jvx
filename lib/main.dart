@@ -39,10 +39,14 @@ import 'util/parse_util.dart';
 export 'package:beamer/beamer.dart';
 
 void main() async {
+  FlutterJVx.package = false;
   await FlutterJVx.start();
 }
 
 class FlutterJVx extends StatefulWidget {
+  //Loads assets with packages prefix
+  static bool package = true;
+
   final AppConfig? appConfig;
   final AppManager? appManager;
   final Widget Function(BuildContext context)? loadingBuilder;
