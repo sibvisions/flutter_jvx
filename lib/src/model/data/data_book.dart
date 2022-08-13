@@ -106,12 +106,12 @@ class DataBook {
   /// Gets a record
   /// If row is not found returns null
   DataRecord? getRecord({required List<String>? pDataColumnNames, required int pRecordIndex}) {
-    if (pRecordIndex == -1) {
+    if (!records.containsKey(pRecordIndex)) {
       return null;
     }
 
-    List<ColumnDefinition> definitions = columnDefinitions;
     List<dynamic> selectedRecord = records[pRecordIndex]!;
+    List<ColumnDefinition> definitions = columnDefinitions;
 
     if (pDataColumnNames != null) {
       // Get provided column definitions

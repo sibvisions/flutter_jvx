@@ -10,7 +10,7 @@ class GetSelectedDataCommandProcessor
     implements ICommandProcessor<GetSelectedDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(GetSelectedDataCommand command) async {
-    // Get Data record - is null if databook has -1 as selected row
+    // Get Data record - is null if databook has no selected row
     DataRecord? record = await getDataService().getSelectedRowData(
       pColumnNames: command.columnNames,
       pDataProvider: command.dataProvider,
