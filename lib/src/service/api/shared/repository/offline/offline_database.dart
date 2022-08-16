@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -9,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../../../mixin/config_service_mixin.dart';
+import '../../../../../../util/logging/flutter_logger.dart';
 import '../../../../../model/data/column_definition.dart';
 import '../../../../../model/data/filter_condition.dart';
 import '../../../../../model/response/dal_meta_data_response.dart';
@@ -80,7 +80,7 @@ class OfflineDatabase with ConfigServiceGetterMixin {
         }
 
         String createTableSQL = _createTable(table);
-        if (kDebugMode) log("Create Table SQL:\n" + createTableSQL);
+        LOGGER.logD(pType: LOG_TYPE.DATA, pMessage: "Create Table SQL:\n" + createTableSQL);
         // Run the CREATE TABLE statement on the database.
         return db.execute(createTableSQL);
       })

@@ -65,8 +65,15 @@ abstract class IUiService {
   /// action
   Future<T?> openDialog<T>({
     required Widget pDialogWidget,
-    required bool pIsDismissible,
+    bool pIsDismissible = true,
     Function(BuildContext context)? pContextCallback,
+    Locale? pLocale,
+  });
+
+  Future<T?> openDismissibleDialog<T>({
+    bool pIsDismissible = true,
+    BuildContext? pContext,
+    required WidgetBuilder pBuilder,
     Locale? pLocale,
   });
 

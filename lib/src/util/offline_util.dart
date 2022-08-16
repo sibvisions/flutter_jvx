@@ -48,10 +48,11 @@ abstract class OfflineUtil {
       String offlineUsername = configService.getUsername()!;
       String offlinePassword = configService.getPassword()!;
 
-      unawaited(showDialog(
-        context: context,
-        builder: (context) {
-          return ProgressDialogWidget(
+      unawaited(
+        uiService.openDismissibleDialog(
+          pIsDismissible: false,
+          pContext: context,
+          pBuilder: (context) => ProgressDialogWidget(
             key: dialogKey,
             config: Config(
               message: configService.translateText("Re-syncing offline data") + "...",
@@ -60,9 +61,9 @@ abstract class OfflineUtil {
               progressValueColor: Theme.of(context).primaryColor,
               progressBgColor: Theme.of(context).backgroundColor,
             ),
-          );
-        },
-      ));
+          ),
+        ),
+      );
 
       offlineApiRepository = (await apiService.getRepository()) as OfflineApiRepository;
       //Set online api repository to handle commands
@@ -113,17 +114,23 @@ abstract class OfflineUtil {
 
       var dataBooks = dataService.getDataBooks();
       int dataBookCounter = 1;
+      int changedRowsSum = 0;
       for (DataBook dataBook in dataBooks.values) {
         log("DataBook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
 
         Map<String, List<Map<String, Object?>>> groupedRows =
             await offlineApiRepository.getChangedRows(dataBook.dataProvider);
+        int changedRowCount = 0;
+        if (groupedRows.isNotEmpty) {
+          changedRowCount = groupedRows.values.map((e) => e.length).reduce((value, element) => value + element);
+          changedRowsSum += changedRowCount;
+        }
 
         dialogKey.currentState?.update(
             config: Config(
           message: configService.translateText("Syncing data") + "... ($dataBookCounter / ${dataBooks.length})",
-          progress: groupedRows.length - successfulSyncedPrimaryKeys.length,
-          maxProgress: groupedRows.length,
+          progress: changedRowCount - successfulSyncedPrimaryKeys.length,
+          maxProgress: changedRowCount,
         ));
 
         successfulSync = await _handleInsertedRows(groupedRows[OfflineDatabase.ROW_STATE_INSERTED], dataBook,
@@ -142,12 +149,29 @@ abstract class OfflineUtil {
         await offlineApiRepository.resetStates(dataBook.dataProvider, pResetRows: successfulSyncedPrimaryKeys);
       }
 
-      dialogKey.currentState?.update(
-          config: Config(
-        message: "Synced ${successfulSyncedPrimaryKeys.length} rows",
-      ));
-
       log("Synced ${successfulSyncedPrimaryKeys.length} rows");
+      ProgressDialogWidget.close(context);
+
+      String syncResult = successfulSync ? "successful" : "failed";
+      int failedRowCount = successfulSyncedPrimaryKeys.length - changedRowsSum;
+      if (successfulSyncedPrimaryKeys.isNotEmpty || failedRowCount > 0) {
+        await uiService.openDismissibleDialog(
+          pIsDismissible: false,
+          pContext: context,
+          pBuilder: (context) => AlertDialog(
+            title: Text("Sync $syncResult"),
+            content: Text("Successfully synced ${successfulSyncedPrimaryKeys.length} rows" +
+                (failedRowCount > 0 ? "\n$failedRowCount rows failed to sync" : "")),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(configService.translateText("Ok")),
+              ),
+            ],
+          ),
+        );
+      }
+
       if (successfulSync) {
         log("Sync successful");
         await offlineApiRepository.deleteDatabase();
@@ -155,8 +179,6 @@ abstract class OfflineUtil {
         await configService.setOffline(false);
         LoadingProgressHandler.setEnabled(true);
         await offlineApiRepository.stop();
-
-        ProgressDialogWidget.close(context);
 
         await commandService.sendCommand(
           CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
@@ -177,9 +199,10 @@ abstract class OfflineUtil {
         log("Sync failed");
         await onlineApiRepository.stop();
         await apiService.setRepository(offlineApiRepository);
-        ProgressDialogWidget.close(context);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      log("Error while syncing offline data", error: e, stackTrace: stackTrace);
+
       //Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
         await onlineApiRepository?.stop();
@@ -187,6 +210,24 @@ abstract class OfflineUtil {
         await configService.setOffline(true);
         LoadingProgressHandler.setEnabled(false);
       }
+
+      ProgressDialogWidget.safeClose(dialogKey);
+      unawaited(uiService.openDismissibleDialog(
+        pIsDismissible: false,
+        pContext: context,
+        pBuilder: (context) => AlertDialog(
+          title: Text(configService.translateText("Offline Sync Error")),
+          content: Text(configService.translateText("There was an error while trying to sync your data."
+              "\n${e.toString()}")),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(configService.translateText("Ok")),
+            ),
+          ],
+        ),
+      ));
+
       rethrow;
     } finally {
       await Wakelock.disable();
@@ -270,6 +311,7 @@ abstract class OfflineUtil {
           !(rowColumn.key.startsWith(OfflineDatabase.COLUMN_PREFIX) || rowColumn.key == OfflineDatabase.STATE_COLUMN)))
         entry.key: entry.value
     };
+
     return commandService.sendCommand(SetValuesCommand(
       reason: "Re-sync: Insert",
       componentId: "",
@@ -370,9 +412,10 @@ abstract class OfflineUtil {
       //Set already here to receive errors from api responses
       await configService.setOffline(true);
 
-      unawaited(showDialog(
-        context: context,
-        builder: (context) {
+      unawaited(uiService.openDismissibleDialog(
+        pContext: context,
+        pIsDismissible: false,
+        pBuilder: (context) {
           return ProgressDialogWidget(
             key: dialogKey,
             config: Config(
@@ -427,13 +470,33 @@ abstract class OfflineUtil {
 
       ProgressDialogWidget.close(context);
       await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      log("Error while downloading offline data", error: e, stackTrace: stackTrace);
+
       //Revert all changes in case we have an in-tact online state
       if (onlineApiRepository != null) {
         await apiService.setRepository(onlineApiRepository);
         await configService.setOffline(false);
         LoadingProgressHandler.setEnabled(true);
       }
+
+      ProgressDialogWidget.safeClose(dialogKey);
+      unawaited(uiService.openDismissibleDialog(
+        pIsDismissible: false,
+        pContext: context,
+        pBuilder: (context) => AlertDialog(
+          title: Text(configService.translateText("Offline Init Error")),
+          content: Text(configService.translateText("There was an error while trying to download data."
+              "\n${e.toString()}")),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(configService.translateText("Ok")),
+            ),
+          ],
+        ),
+      ));
+
       rethrow;
     } finally {
       await Wakelock.disable();

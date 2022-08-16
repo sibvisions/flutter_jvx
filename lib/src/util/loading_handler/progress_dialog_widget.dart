@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -30,7 +32,11 @@ class ProgressDialogWidget extends StatefulWidget {
   /// Can be used to safely pop the dialog
   static void safeClose(GlobalKey<ProgressDialogState> globalKey) {
     if (globalKey.currentWidget != null && globalKey.currentContext != null) {
-      ProgressDialogWidget.close(globalKey.currentContext!);
+      try {
+        ProgressDialogWidget.close(globalKey.currentContext!);
+      } catch (e, stackTrace) {
+        log("Error while safely closing progress dialog", error: e, stackTrace: stackTrace);
+      }
     }
   }
 }

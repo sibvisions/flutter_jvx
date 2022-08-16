@@ -186,7 +186,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   @override
   Future<T?> openDialog<T>({
     required Widget pDialogWidget,
-    required bool pIsDismissible,
+    bool pIsDismissible = true,
     Function(BuildContext context)? pContextCallback,
     Locale? pLocale,
   }) {
@@ -201,9 +201,35 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
             child = Localizations.override(context: context, child: child, locale: pLocale);
           }
 
-          return child;
+          return WillPopScope(
+            child: pDialogWidget,
+            onWillPop: () async => pIsDismissible,
+          );
         });
   }
+
+  @override
+  Future<T?> openDismissibleDialog<T>({
+    bool pIsDismissible = true,
+    BuildContext? pContext,
+    required WidgetBuilder pBuilder,
+    Locale? pLocale,
+  }) =>
+      showDialog(
+          context: pContext ?? _currentBuildContext!,
+          barrierDismissible: pIsDismissible,
+          builder: (BuildContext context) {
+            Widget child = pBuilder.call(context);
+
+            if (pLocale != null) {
+              child = Localizations.override(context: context, child: child, locale: pLocale);
+            }
+
+            return WillPopScope(
+              child: child,
+              onWillPop: () async => pIsDismissible,
+            );
+          });
 
   @override
   BuildContext? getBuildContext() {

@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../components.dart';
 import '../../custom/custom_screen.dart';
@@ -9,18 +8,12 @@ import '../../mixin/ui_service_mixin.dart';
 import '../model/command/api/navigation_command.dart';
 import 'locations/work_screen_location.dart';
 
-class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceGetterMixin {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  final BeamerDelegate delegate;
-
+class FlBackButtonDispatcher extends BeamerBackButtonDispatcher with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlBackButtonDispatcher({required this.delegate}) : super();
+  FlBackButtonDispatcher({required super.delegate});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~C
   // Overridden methods
