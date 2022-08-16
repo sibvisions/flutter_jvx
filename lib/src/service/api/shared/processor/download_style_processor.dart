@@ -17,7 +17,7 @@ class DownloadStyleProcessor extends IResponseProcessor<DownloadStyleResponse> {
     Map<String, String> styleNoNull = rebuildStylesMap(styleWithNull);
 
     return [
-      SaveApplicationStyleCommand(style: styleNoNull, reason: "Downloaded Translations"),
+      SaveApplicationStyleCommand(style: styleNoNull, reason: "Downloaded Styles"),
     ];
   }
 
