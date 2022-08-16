@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
@@ -22,6 +25,16 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static String getErrorMessage(Object error) {
+    if (error is TimeoutException) {
+      return "Connection to remote server timed out";
+    } else if (error is SocketException) {
+      return "Could not connect to remote server";
+    } else {
+      return "API Error $error";
+    }
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Communication with other services

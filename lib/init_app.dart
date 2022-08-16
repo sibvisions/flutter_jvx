@@ -99,21 +99,27 @@ Future<void> initApp({
         reason: "Startup Api Config",
       ));
 
-      try {
-        // Send startup to server
-        await commandService.sendCommand(StartupCommand(
-          reason: "InitApp",
-        ));
-      } catch (e, stackTrace) {
-        LOGGER.logE(pType: LOG_TYPE.GENERAL, pError: e, pStacktrace: stackTrace);
-        unawaited(uiService.openDialog(
-          pDialogWidget: ErrorDialog(
-            message: e.toString(),
-            gotToSettings: true,
-            dismissible: false,
-          ),
-          pIsDismissible: false,
-        ));
+      bool retry = true;
+      while (retry) {
+        retry = false;
+        try {
+          // Send startup to server
+          await commandService.sendCommand(StartupCommand(
+            reason: "InitApp",
+          ));
+        } catch (e, stackTrace) {
+          LOGGER.logE(pType: LOG_TYPE.GENERAL, pError: e, pStacktrace: stackTrace);
+          bool? dialogResult = await uiService.openDialog(
+            pDialogWidget: ErrorDialog(
+              message: IUiService.getErrorMessage(e),
+              gotToSettings: true,
+              dismissible: false,
+              retry: true,
+            ),
+            pIsDismissible: false,
+          );
+          retry = dialogResult ?? false;
+        }
       }
     } else {
       uiService.routeToMenu(pReplaceRoute: true);

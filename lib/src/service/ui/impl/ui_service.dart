@@ -83,27 +83,12 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   _handleError(Object error, StackTrace stackTrace) {
     LOGGER.logE(pType: LOG_TYPE.COMMAND, pError: error, pStacktrace: stackTrace);
 
-    OpenErrorDialogCommand errorDialogCommand;
-    if (error is TimeoutException) {
-      errorDialogCommand = OpenErrorDialogCommand(
-        reason: "Command error in ui service",
-        message: "Connection to remote server timed out",
-        isTimeout: true,
-      );
-    } else if (error is SocketException) {
-      errorDialogCommand = OpenErrorDialogCommand(
-        reason: "Command error in ui service",
-        message: "Could not connect to remote server",
-        isTimeout: true,
-      );
-    } else {
-      errorDialogCommand = OpenErrorDialogCommand(
-        reason: "Command error in ui service",
-        message: "API Error $error",
-      );
-    }
-
-    getCommandService().sendCommand(errorDialogCommand);
+    bool isTimeout = error is TimeoutException || error is SocketException;
+    getCommandService().sendCommand(OpenErrorDialogCommand(
+      reason: "Command error in ui service",
+      message: IUiService.getErrorMessage(error),
+      isTimeout: isTimeout,
+    ));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
