@@ -63,6 +63,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
 
   /// If the settings are currently loading.
   bool loading = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,7 +146,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
-                child: getConfigService().getUserInfo() != null
+                child: getConfigService().getUserInfo() != null && context.canBeamBack
                     ? InkWell(
                         onTap: () => context.beamBack(),
                         child: Container(
