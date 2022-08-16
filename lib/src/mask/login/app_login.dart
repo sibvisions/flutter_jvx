@@ -6,7 +6,7 @@ import '../../../util/parse_util.dart';
 import 'arc_clipper.dart';
 
 /// Login page of the app, also used for reset/change password
-class AppLogin extends StatefulWidget {
+class AppLogin extends StatelessWidget with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,40 +17,23 @@ class AppLogin extends StatefulWidget {
   const AppLogin({Key? key, required this.loginCard}) : super(key: key);
 
   @override
-  State<AppLogin> createState() => _AppLoginState();
-}
-
-class _AppLoginState extends State<AppLogin> with ConfigServiceGetterMixin {
-  Color? topColor;
-
-  Color? bottomColor;
-
-  Color? backgroundColor;
-
-  String? loginLogo;
-
-  String? loginBackground;
-
-  bool inverseColor = false;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @override
   Widget build(BuildContext context) {
-    loginBackground = getConfigService().getAppStyle()?['login.icon'];
-    loginLogo = getConfigService().getAppStyle()?['login.logo'];
+    String? loginBackground = getConfigService().getAppStyle()?['login.icon'];
+    String? loginLogo = getConfigService().getAppStyle()?['login.logo'];
 
-    backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.background']);
-    inverseColor = ParseUtil.parseBool(getConfigService().getAppStyle()?['login.inverseColor']) ?? false;
+    Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.background']);
+    bool inverseColor = ParseUtil.parseBool(getConfigService().getAppStyle()?['login.inverseColor']) ?? false;
+
+    Color? topColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.topColor']);
+    Color? bottomColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.bottomColor']);
 
     if (inverseColor) {
-      topColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.bottomColor']);
-      bottomColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.topColor']);
-    } else {
-      topColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.topColor']);
-      bottomColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.bottomColor']);
+      var tempTop = topColor;
+      topColor = bottomColor;
+      bottomColor = tempTop;
     }
 
-    return (Scaffold(
+    return Scaffold(
       backgroundColor: bottomColor ?? Colors.white,
       body: Stack(
         clipBehavior: Clip.none,
@@ -65,15 +48,14 @@ class _AppLoginState extends State<AppLogin> with ConfigServiceGetterMixin {
                     decoration: BoxDecoration(
                       color: topColor ?? Theme.of(context).primaryColor,
                     ),
-                    child: loginLogo != null ? ImageLoader.loadImage(loginLogo!, fit: BoxFit.scaleDown) : null,
+                    child: loginLogo != null ? ImageLoader.loadImage(loginLogo, fit: BoxFit.scaleDown) : null,
                   ),
                 ),
                 flex: 4,
               ),
               Expanded(
                 child: Container(
-                  child:
-                      loginBackground != null ? ImageLoader.loadImage(loginBackground!, fit: BoxFit.scaleDown) : null,
+                  child: loginBackground != null ? ImageLoader.loadImage(loginBackground, fit: BoxFit.scaleDown) : null,
                   color: bottomColor ?? Colors.transparent,
                 ),
                 flex: 6,
@@ -83,11 +65,11 @@ class _AppLoginState extends State<AppLogin> with ConfigServiceGetterMixin {
           Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width / 10 * 8,
-              child: SingleChildScrollView(child: widget.loginCard),
+              child: SingleChildScrollView(child: loginCard),
             ),
           ),
         ],
       ),
-    ));
+    );
   }
 }
