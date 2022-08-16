@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -54,7 +55,7 @@ class ConfigService implements IConfigService {
   Translation translation = Translation.empty();
 
   /// Application style sent from server
-  Map<String, String> applicationStyle = {};
+  Map<String, String>? applicationStyle;
 
   /// The phone size
   Size? phoneSize;
@@ -100,12 +101,21 @@ class ConfigService implements IConfigService {
 
   @override
   UserInfo? getUserInfo() {
+    _loadUserInfo();
     return userInfo;
   }
 
   @override
-  void setUserInfo(UserInfo? pUserInfo) {
+  Future<bool> setUserInfo({UserInfo? pUserInfo, Map<String, dynamic>? pJson}) async {
     userInfo = pUserInfo;
+    return setString("userInfo", pJson != null ? jsonEncode(pJson) : null);
+  }
+
+  void _loadUserInfo() {
+    if (userInfo == null) {
+      String? jsonMap = getString("userInfo");
+      userInfo = (jsonMap != null ? UserInfo.fromJson(pJson: jsonDecode(jsonMap)) : null);
+    }
   }
 
   @override
@@ -208,15 +218,16 @@ class ConfigService implements IConfigService {
 
   @override
   Map<String, String> getAppStyle() {
-    return applicationStyle;
+    _loadAppStyle();
+    return applicationStyle!;
   }
 
   @override
-  void setAppStyle(Map<String, String>? pAppStyle) {
+  Future<bool> setAppStyle(Map<String, String>? pAppStyle) {
     log("AppStyle: " + pAppStyle.toString());
 
     if (pAppStyle == null) {
-      applicationStyle.clear();
+      applicationStyle?.clear();
     } else {
       applicationStyle = pAppStyle;
     }
@@ -224,21 +235,32 @@ class ConfigService implements IConfigService {
     if (activeStyleCallbacks) {
       styleCallbacks.forEach((element) => element.call(pAppStyle));
     }
+    return setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
   }
 
   @override
   double getOpacityMenu() {
-    return double.parse(applicationStyle['opacity.menu'] ?? '1');
+    _loadAppStyle();
+    return double.parse(applicationStyle!['opacity.menu'] ?? '1');
   }
 
   @override
   double getOpacitySideMenu() {
-    return double.parse(applicationStyle['opacity.sidemenu'] ?? '1');
+    _loadAppStyle();
+    return double.parse(applicationStyle!['opacity.sidemenu'] ?? '1');
   }
 
   @override
   double getOpacityControls() {
-    return double.parse(applicationStyle['opacity.controls'] ?? '1');
+    _loadAppStyle();
+    return double.parse(applicationStyle!['opacity.controls'] ?? '1');
+  }
+
+  void _loadAppStyle() {
+    if (applicationStyle == null) {
+      String? jsonMap = getString("applicationStyle");
+      applicationStyle = (jsonMap != null ? Map<String, String>.from(jsonDecode(jsonMap)) : null) ?? {};
+    }
   }
 
   @override

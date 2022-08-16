@@ -48,8 +48,8 @@ abstract class IConfigService {
   /// Returns info about the current user
   UserInfo? getUserInfo();
 
-  /// Set user inf
-  void setUserInfo(UserInfo? pUserInfo);
+  /// Set user info
+  Future<bool> setUserInfo({UserInfo? pUserInfo, Map<String, dynamic>? pJson});
 
   /// Returns a map of all added parameters which should be added on every startup
   Map<String, dynamic> getStartupParameters();
@@ -105,7 +105,7 @@ abstract class IConfigService {
   Map<String, String>? getAppStyle();
 
   /// Set app style, usually only called after download
-  void setAppStyle(Map<String, String>? pAppStyle);
+  Future<bool> setAppStyle(Map<String, String>? pAppStyle);
 
   /// Mobile Style Properties
   double getOpacityMenu();

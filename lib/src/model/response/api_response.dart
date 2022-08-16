@@ -9,6 +9,9 @@ class ApiResponse {
   /// Name of response - possible names are listed in [ApiResponseNames]
   final String name;
 
+  /// Raw json from this response
+  final Map<String, dynamic>? json;
+
   /// Original Request that provoked this response
   final Object originalRequest;
 
@@ -18,11 +21,13 @@ class ApiResponse {
 
   ApiResponse({
     required this.name,
+    this.json,
     required this.originalRequest,
   });
 
   ApiResponse.fromJson({
     required Map<String, dynamic> pJson,
     required this.originalRequest,
-  }) : name = pJson[ApiObjectProperty.name];
+  })  : name = pJson[ApiObjectProperty.name],
+        json = pJson;
 }

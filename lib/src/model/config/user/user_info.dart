@@ -1,4 +1,7 @@
-import 'package:flutter/widgets.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+
+import '../../../service/api/shared/api_object_property.dart';
 
 /// Stores all info about the current user
 class UserInfo {
@@ -16,7 +19,7 @@ class UserInfo {
   final String? eMail;
 
   /// Profile image
-  final Image? profileImage;
+  final Uint8List? profileImage;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -26,6 +29,23 @@ class UserInfo {
     required this.userName,
     required this.displayName,
     required this.eMail,
-    required this.profileImage,
-  });
+    required String? profileImage,
+  }) : profileImage = _decode(profileImage);
+
+  UserInfo.fromJson({required Map<String, dynamic> pJson})
+      : userName = pJson[ApiObjectProperty.userName],
+        displayName = pJson[ApiObjectProperty.displayName],
+        eMail = pJson[ApiObjectProperty.eMail],
+        profileImage = _decode(pJson[ApiObjectProperty.profileImage]);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static Uint8List? _decode(String? data) {
+    if (data == null) {
+      return null;
+    }
+    return base64Decode(data);
+  }
 }

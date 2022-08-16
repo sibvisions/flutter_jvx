@@ -41,6 +41,8 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Widget _buildDrawerHeader(BuildContext context) {
+    var profileImage = getConfigService().getUserInfo()?.profileImage;
+
     return DrawerHeader(
       margin: EdgeInsets.zero,
       decoration:
@@ -57,7 +59,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
                 _buildHeaderText(
                     flex: 3, text: getConfigService().translateText("Logged in as") + ":", context: context),
                 const Padding(padding: EdgeInsets.all(10)),
-                _buildHeaderText(flex: 5, text: getConfigService().getUserInfo()?.displayName ?? "", context: context),
+                _buildHeaderText(flex: 5, text: getConfigService().getUserInfo()?.displayName ?? " ", context: context),
                 const Expanded(flex: 2, child: Text(""))
               ],
             ),
@@ -71,8 +73,8 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
                 Expanded(
                   child: CircleAvatar(
                     backgroundColor: Theme.of(context).backgroundColor,
-                    backgroundImage: getConfigService().getUserInfo()?.profileImage?.image,
-                    child: getConfigService().getUserInfo()?.profileImage == null
+                    backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
+                    child: profileImage == null
                         ? FaIcon(
                             FontAwesomeIcons.solidUser,
                             color: Theme.of(context).primaryColor,

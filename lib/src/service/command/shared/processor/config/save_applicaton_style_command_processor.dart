@@ -7,8 +7,8 @@ class SaveApplicationStyleCommandProcessor
     with ConfigServiceGetterMixin
     implements ICommandProcessor<SaveApplicationStyleCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveApplicationStyleCommand command) {
-    getConfigService().setAppStyle(command.style);
-    return Future.value([]);
+  Future<List<BaseCommand>> processCommand(SaveApplicationStyleCommand command) async {
+    await getConfigService().setAppStyle(command.style);
+    return [];
   }
 }

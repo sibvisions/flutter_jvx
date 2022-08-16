@@ -1,4 +1,4 @@
-import '../../config/user/user_info.dart';
+import '../../response/user_data_response.dart';
 import 'config_command.dart';
 
 /// Command to save userData
@@ -8,14 +8,14 @@ class SaveUserDataCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// User info to be saved
-  final UserInfo userInfo;
+  final UserDataResponse userData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SaveUserDataCommand({
-    required this.userInfo,
+    required this.userData,
     required String reason,
   }) : super(reason: reason);
 
@@ -24,5 +24,5 @@ class SaveUserDataCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SaveUserDataCommand: userInfo: $userInfo, reason: $reason";
+  String get logString => "SaveUserDataCommand: userData: $userData, reason: $reason";
 }

@@ -19,8 +19,8 @@ class LogoutCommandProcessor
     if (await getConfigService().getFileManager().doesFileExist(pPath: "auth.txt")) {
       getConfigService().getFileManager().deleteFile(pPath: "/auth.txt");
     }
-    getConfigService().setUserInfo(null);
-    unawaited(getConfigService().setAuthCode(null));
+    await getConfigService().setUserInfo(pUserInfo: null, pJson: null);
+    await getConfigService().setAuthCode(null);
 
     return getApiService().sendRequest(request: logoutRequest);
   }
