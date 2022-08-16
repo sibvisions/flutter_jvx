@@ -212,7 +212,7 @@ abstract class OfflineUtil {
       }
 
       ProgressDialogWidget.safeClose(dialogKey);
-      unawaited(uiService.openDismissibleDialog(
+      await uiService.openDismissibleDialog(
         pIsDismissible: false,
         pContext: context,
         pBuilder: (context) => AlertDialog(
@@ -226,7 +226,7 @@ abstract class OfflineUtil {
             ),
           ],
         ),
-      ));
+      );
 
       rethrow;
     } finally {
@@ -481,7 +481,7 @@ abstract class OfflineUtil {
       }
 
       ProgressDialogWidget.safeClose(dialogKey);
-      unawaited(uiService.openDismissibleDialog(
+      await uiService.openDismissibleDialog(
         pIsDismissible: false,
         pContext: context,
         pBuilder: (context) => AlertDialog(
@@ -495,7 +495,7 @@ abstract class OfflineUtil {
             ),
           ],
         ),
-      ));
+      );
 
       rethrow;
     } finally {
