@@ -21,14 +21,16 @@ class DownloadStyleProcessor extends IResponseProcessor<DownloadStyleResponse> {
     ];
   }
 
-  Map<String, String> rebuildStylesMap(Map<String, dynamic> pOgMap, [String pKeyPrefix = ""]) {
+  Map<String, String> rebuildStylesMap(Map<String, dynamic> pOgMap, [String? pKeyPrefix]) {
     Map<String, String> rebuiltMap = {};
 
     pOgMap.forEach((key, value) {
       if (value is Map) {
         rebuiltMap.addAll(rebuildStylesMap(value as Map<String, dynamic>, key));
-      } else {
+      } else if (pKeyPrefix != null) {
         rebuiltMap["$pKeyPrefix.$key"] = value;
+      } else {
+        rebuiltMap[key] = value;
       }
     });
 
