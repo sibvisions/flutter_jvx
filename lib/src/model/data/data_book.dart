@@ -100,6 +100,7 @@ class DataBook {
   /// If no record is currently selected (-1) returns null
   /// If selected row is not found returns null
   DataRecord? getSelectedRecord({required List<String>? pDataColumnNames}) {
+    //TODO inspect incorrect calls
     return getRecord(pDataColumnNames: pDataColumnNames, pRecordIndex: selectedRow);
   }
 
