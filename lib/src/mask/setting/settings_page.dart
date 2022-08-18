@@ -346,7 +346,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
       value: commitNotifier,
-      title: getConfigService().translateText("Github commit"),
+      title: getConfigService().translateText("RCS"),
     );
 
     SettingItem appVersionSetting = SettingItem(
