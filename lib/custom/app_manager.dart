@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import '../src/model/menu/menu_model.dart';
 import '../src/model/request/i_api_request.dart';
