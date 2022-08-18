@@ -15,7 +15,7 @@ class DeleteScreenCommandProcessor
   Future<List<BaseCommand>> processCommand(DeleteScreenCommand command) async {
     await getStorageService().deleteScreen(screenName: command.screenName);
     getUiService().closeScreen(pScreenName: command.screenName, pBeamBack: command.beamBack);
-    getDataService().clearData(getConfigService().getAppName()!, command.screenName);
+    getDataService().clearData(command.screenName);
 
     return [];
   }

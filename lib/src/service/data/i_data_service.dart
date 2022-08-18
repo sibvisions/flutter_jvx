@@ -65,8 +65,8 @@ abstract class IDataService {
     required int pNewSelectedRow,
   });
 
-  /// Clears all the databooks of this workscreen and application
-  void clearData(String pAppname, String pWorkscreen);
+  /// Clears all the databooks of this workscreen
+  void clearData(String pWorkscreen);
 
   /// Gets all databooks
   HashMap<String, DataBook> getDataBooks();
