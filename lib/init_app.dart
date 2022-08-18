@@ -82,6 +82,12 @@ Future<void> initApp({
   configService.disposeLanguageCallbacks();
   languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
 
+  //Init saved app style
+  var appStyle = configService.getAppStyle();
+  if (appStyle.isNotEmpty) {
+    await configService.setAppStyle(appStyle);
+  }
+
   configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance.window).size : null);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
