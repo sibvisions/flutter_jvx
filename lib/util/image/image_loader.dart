@@ -65,16 +65,7 @@ class ImageLoader with ConfigServiceGetterMixin {
         width: pWidth,
         height: pHeight,
         color: pBlendedColor,
-        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                  : null,
-            ),
-          );
-        },
+        loadingBuilder: _getImageLoadingBuilder(),
       );
     } else {
       image = Image.network(
@@ -83,16 +74,7 @@ class ImageLoader with ConfigServiceGetterMixin {
         width: pWidth,
         height: pHeight,
         color: pBlendedColor,
-        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                  : null,
-            ),
-          );
-        },
+        loadingBuilder: _getImageLoadingBuilder(),
         errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
           return ImageLoader.DEFAULT_IMAGE;
         },
@@ -104,6 +86,19 @@ class ImageLoader with ConfigServiceGetterMixin {
     }
 
     return image;
+  }
+
+  ImageLoadingBuilder _getImageLoadingBuilder() {
+    return (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+      if (loadingProgress == null) return child;
+      return Center(
+        child: CircularProgressIndicator(
+          value: loadingProgress.expectedTotalBytes != null && loadingProgress.expectedTotalBytes! > 0
+              ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes!)
+              : null,
+        ),
+      );
+    };
   }
 
   /// Loads any server sent image string.
