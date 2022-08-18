@@ -79,27 +79,25 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
           children: [
             Row(
               children: [
-                _config.progress == _config.maxProgress
-                    ? Image(
-                        width: 40,
-                        height: 40,
-                        image: _config.completed?.image ??
-                            Svg(ImageLoader.getAssetPath(
-                              FlutterJVx.package,
-                              'assets/images/completed_check.svg',
-                            )),
-                      )
-                    : SizedBox(
-                        width: 35.0,
-                        height: 35.0,
-                        child: CircularProgressIndicator(
+                SizedBox(
+                  width: 40.0,
+                  height: 40.0,
+                  child: _config.progress == _config.maxProgress
+                      ? Image(
+                          image: _config.completed?.image ??
+                              Svg(ImageLoader.getAssetPath(
+                                FlutterJVx.package,
+                                'assets/images/completed_check.svg',
+                              )),
+                        )
+                      : CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color?>(_config.progressValueColor),
                           backgroundColor: _config.progressBgColor,
                           value: (_config.progressType == ProgressType.normal || _config.progress == 0
                               ? null
                               : (_config.progress! / _config.maxProgress!)),
                         ),
-                      ),
+                ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -129,7 +127,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                     child: Text(
                       _config.valueType == ValueType.number
                           ? '${_config.progress}/${_config.maxProgress}'
-                          : "${((_config.progress! / _config.maxProgress!) * 100).round()}%",
+                          : "${(_config.progress! / _config.maxProgress! * 100).round()}%",
                       style: TextStyle(
                         fontSize: _config.valueFontSize,
                         color: _config.valueColor,

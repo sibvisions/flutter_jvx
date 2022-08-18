@@ -81,7 +81,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
           }
 
           progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length,
-              progress: (entry.key / dataBook.records.length * 100).toInt());
+              progress: (entry.key / dataBook.records.length * 100).round());
         }
       }
     });
