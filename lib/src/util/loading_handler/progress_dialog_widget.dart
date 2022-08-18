@@ -147,10 +147,10 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
 }
 
 class ProgressCompleted {
-  /// [message] Assign a completed Message
+  /// The message that will be shown when [progress] = [maxProgress]
   final String? message;
 
-  /// [image] Assign a image which should be displayed when the progress is completed, instead of the progress indicator
+  /// The image which should be displayed when the progress is completed, instead of the progress indicator
   final ImageProvider? image;
 
   ProgressCompleted({
@@ -160,12 +160,33 @@ class ProgressCompleted {
 }
 
 class Config {
+  /// The message in the dialog
   String? message;
+
+  /// The value of the progress.
+  ///
+  /// (Default: 0)
   int? progress;
+
+  /// The maximum value of the progress.
+  ///
+  /// (Default: 100)
   int? maxProgress;
   ProgressCompleted? completed;
+
+  /// The progress bar type.
+  ///
+  /// (Default: [ProgressType.normal])
   ProgressType? progressType;
+
+  /// Type of the value. (None hides the value)
+  ///
+  /// (Default: [ValueType.percentage])
   ValueType? valueType;
+
+  /// Location of progress value
+  ///
+  /// (Default: [ValuePosition.right])
   ValuePosition? valuePosition;
   Color? backgroundColor;
   Color? barrierColor;
@@ -178,33 +199,18 @@ class Config {
   double? messageFontSize;
   FontWeight? valueFontWeight;
   double? valueFontSize;
+
+  /// Will be used for [Text.maxLines]
+  ///
+  /// (Default: [1])
   int? messageMaxLines;
   double? elevation;
   double? borderRadius;
+
+  /// Determines whether the dialog closes when the back button or screen is clicked.
+  ///
+  /// (Default: [false])
   bool? barrierDismissible;
-
-  /// [progress] Assign the value of the progress.
-  // (Default: 0)
-
-  /// [maxProgress] Assign the maximum value of the progress.
-  // (Default: 100)
-
-  /// [message] Show a message
-
-  /// [progressType] Assign the progress bar type.
-  // (Default: normal)
-
-  /// [valueType] Type of the value. (None hides the value)
-  // (Default: percentage)
-
-  /// [valuePosition] Location of progress value
-  // (Default: right)
-
-  /// [barrierDismissible] Determines whether the dialog closes when the back button or screen is clicked.
-  // bool (Default: false)
-
-  /// [messageMaxLines] Use when text value doesn't fit
-  // int (Default: 1)
 
   Config({
     this.message,
