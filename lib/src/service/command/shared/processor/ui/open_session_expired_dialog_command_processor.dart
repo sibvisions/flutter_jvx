@@ -14,7 +14,10 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
   Future<List<BaseCommand>> processCommand(OpenSessionExpiredDialogCommand command) async {
     Widget dialog = ServerSessionExpired(message: command.message);
 
-    unawaited(getUiService().openDialog(pDialogWidget: dialog, pIsDismissible: false));
+    await getUiService().openDialog(
+      pDialogWidget: dialog,
+      pIsDismissible: false,
+    );
 
     return [];
   }

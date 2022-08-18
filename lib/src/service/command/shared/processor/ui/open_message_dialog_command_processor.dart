@@ -11,12 +11,15 @@ import '../../i_command_processor.dart';
 class OpenMessageDialogCommandProcessor extends ICommandProcessor<OpenMessageDialogCommand> with UiServiceGetterMixin {
   @override
   Future<List<BaseCommand>> processCommand(OpenMessageDialogCommand command) async {
-    Widget messageWidget = ServerDialog(
+    Widget dialog = ServerDialog(
       message: command.message,
       messageScreenName: command.messageScreenName,
     );
 
-    unawaited(getUiService().openDialog(pDialogWidget: messageWidget, pIsDismissible: false));
+    await getUiService().openDialog(
+      pDialogWidget: dialog,
+      pIsDismissible: false,
+    );
 
     return [];
   }
