@@ -114,16 +114,8 @@ class FlutterJVx extends StatefulWidget {
 class FlutterJVxState extends State<FlutterJVx> {
   late BeamerDelegate _routerDelegate;
 
-  ThemeData themeData = ThemeData.from(
-    colorScheme: ColorScheme.fromSwatch(
-      primarySwatch: Colors.amber,
-      backgroundColor: Colors.grey.shade200,
-    ),
-    // const ColorScheme.light(
-    //   primary: Colors.amber,
-    //   background: Color(0xFFEEEEEE),
-    //   onPrimary: Colors.black,
-    // ),
+  ThemeData themeData = ThemeData(
+    backgroundColor: Colors.grey.shade200,
   );
 
   Locale locale = const Locale.fromSubtags(languageCode: "en");
@@ -179,24 +171,9 @@ class FlutterJVxState extends State<FlutterJVx> {
   void changeStyle(Map<String, String> styleMap) {
     Color? styleColor = ParseUtil.parseHexColor(styleMap['theme.color']);
     if (styleColor != null) {
-      Map<int, Color> color = {
-        50: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.1),
-        100: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.2),
-        200: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.3),
-        300: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.4),
-        400: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.5),
-        500: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.6),
-        600: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.7),
-        700: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.8),
-        800: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 0.9),
-        900: Color.fromRGBO(styleColor.red, styleColor.green, styleColor.blue, 1),
-      };
-
-      MaterialColor styleMaterialColor = MaterialColor(styleColor.value, color);
-
       themeData = ThemeData.from(
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: styleMaterialColor,
+          primarySwatch: ParseUtil.getMaterialColor(styleColor),
           backgroundColor: Colors.grey.shade200,
         ),
       );
