@@ -1,0 +1,22 @@
+{
+  "title": "JVx Mobile Demo",
+  "requestTimeout": 25,
+  "uiConfig": {
+    "showRememberMe": true,
+    "rememberMeChecked": true
+  },
+  "serverConfig": {
+    "baseUrl": "http://localhost:8888/JVx.mobile/services/mobile",
+    "appMode": "full",
+    "appName": "demo",
+    "username": "features",
+    "password": "features"
+  },
+  "versionConfig": {
+    "commit": "<undefined>",
+    "buildDate": 0,
+    "version": "<undefined>"
+  },
+  "startupParameters": {
+  }
+}

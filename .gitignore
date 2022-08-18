@@ -1,4 +1,6 @@
-assets/config/
+assets/config/dev.conf.json
+creator/
+node_modules/
 
 # Miscellaneous
 *.class
