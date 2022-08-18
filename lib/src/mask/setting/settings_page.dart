@@ -219,7 +219,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           ),
           pTitleText: getConfigService().translateText("App Name"),
         ).then((value) {
-          if (value) {
+          if (value == true) {
             appNameNotifier.value = controller.text;
             getConfigService().setAppName(controller.text);
           }
@@ -248,7 +248,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
             ),
             pTitleText: getConfigService().translateText("URL"),
           ).then((value) async {
-            if (value) {
+            if (value == true) {
               try {
                 // Validate format
                 var uri = Uri.parse(controller.text);
