@@ -6,9 +6,11 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../../main.dart';
 import '../../../util/image/image_loader.dart';
 
-enum ValuePosition { center, right }
-
 enum ProgressType { normal, valuable }
+
+enum ValueType { none, number, percentage }
+
+enum ValuePosition { center, right }
 
 /// Based on https://github.com/emreesen27/Flutter-Progress-Dialog
 class ProgressDialogWidget extends StatefulWidget {
@@ -90,21 +92,13 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                     : SizedBox(
                         width: 35.0,
                         height: 35.0,
-                        child: _config.progressType == ProgressType.normal
-                            ? _normalProgress(
-                                bgColor: _config.progressBgColor,
-                                valueColor: _config.progressValueColor,
-                              )
-                            : _config.progress == 0
-                                ? _normalProgress(
-                                    bgColor: _config.progressBgColor,
-                                    valueColor: _config.progressValueColor,
-                                  )
-                                : _valueProgress(
-                                    valueColor: _config.progressValueColor,
-                                    bgColor: _config.progressBgColor,
-                                    value: (_config.progress! / _config.maxProgress!) * 100,
-                                  ),
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color?>(_config.progressValueColor),
+                          backgroundColor: _config.progressBgColor,
+                          value: (_config.progressType == ProgressType.normal || _config.progress == 0
+                              ? null
+                              : (_config.progress! / _config.maxProgress!)),
+                        ),
                       ),
                 Expanded(
                   child: Padding(
@@ -130,10 +124,12 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                 ),
               ],
             ),
-            _config.hideValue == false && _config.progress! > 0
+            _config.valueType != ValueType.none && _config.progress! > 0
                 ? Align(
                     child: Text(
-                      '${_config.progress}/${_config.maxProgress}',
+                      _config.valueType == ValueType.number
+                          ? '${_config.progress}/${_config.maxProgress}'
+                          : "${((_config.progress! / _config.maxProgress!) * 100).round()}%",
                       style: TextStyle(
                         fontSize: _config.valueFontSize,
                         color: _config.valueColor,
@@ -148,23 +144,6 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
         ),
       ),
       onWillPop: () => Future.value(_config.barrierDismissible),
-    );
-  }
-
-  /// Assigns progress properties and updates the value.
-  _valueProgress({Color? valueColor, Color? bgColor, required double value}) {
-    return CircularProgressIndicator(
-      backgroundColor: bgColor,
-      valueColor: AlwaysStoppedAnimation<Color?>(valueColor),
-      value: value.toDouble() / 100,
-    );
-  }
-
-  /// Assigns progress properties.
-  _normalProgress({Color? valueColor, Color? bgColor}) {
-    return CircularProgressIndicator(
-      backgroundColor: bgColor,
-      valueColor: AlwaysStoppedAnimation<Color?>(valueColor),
     );
   }
 }
@@ -188,6 +167,7 @@ class Config {
   int? maxProgress;
   ProgressCompleted? completed;
   ProgressType? progressType;
+  ValueType? valueType;
   ValuePosition? valuePosition;
   Color? backgroundColor;
   Color? barrierColor;
@@ -204,7 +184,6 @@ class Config {
   double? elevation;
   double? borderRadius;
   bool? barrierDismissible;
-  bool? hideValue;
 
   /// [progress] Assign the value of the progress.
   // (Default: 0)
@@ -214,20 +193,20 @@ class Config {
 
   /// [message] Show a message
 
-  /// [valuePosition] Location of progress value
-  // Center or right. (Default: right)
-
   /// [progressType] Assign the progress bar type.
-  // Normal or valuable.  (Default: normal)
+  // (Default: normal)
+
+  /// [valueType] Type of the value. (None hides the value)
+  // (Default: percentage)
+
+  /// [valuePosition] Location of progress value
+  // (Default: right)
 
   /// [barrierDismissible] Determines whether the dialog closes when the back button or screen is clicked.
-  // True or False (Default: false)
+  // bool (Default: false)
 
   /// [messageMaxLines] Use when text value doesn't fit
-  // Int (Default: 1)
-
-  /// [hideValue] If you are not using the progress value, you can hide it.
-  // Default (Default: false)
+  // int (Default: 1)
 
   Config({
     this.message,
@@ -235,6 +214,7 @@ class Config {
     this.maxProgress,
     this.completed,
     this.progressType,
+    this.valueType,
     this.valuePosition,
     this.backgroundColor,
     this.barrierColor,
@@ -251,13 +231,13 @@ class Config {
     this.elevation,
     this.borderRadius,
     this.barrierDismissible,
-    this.hideValue,
   });
 
   void fillDefaults() {
     progress ??= 0;
     maxProgress ??= 100;
     progressType ??= ProgressType.normal;
+    valueType ??= ValueType.percentage;
     valuePosition ??= ValuePosition.right;
     backgroundColor ??= Colors.white;
     barrierColor ??= Colors.transparent;
@@ -274,7 +254,6 @@ class Config {
     elevation ??= 5.0;
     borderRadius ??= 15.0;
     barrierDismissible ??= false;
-    hideValue ??= false;
   }
 
   void compareAndSet(Config config) {
@@ -283,6 +262,7 @@ class Config {
     if (config.maxProgress != null) maxProgress = config.maxProgress;
     if (config.completed != null) completed = config.completed;
     if (config.progressType != null) progressType = config.progressType;
+    if (config.valueType != null) valueType = config.valueType;
     if (config.valuePosition != null) valuePosition = config.valuePosition;
     if (config.backgroundColor != null) backgroundColor = config.backgroundColor;
     if (config.barrierColor != null) barrierColor = config.barrierColor;
@@ -299,6 +279,5 @@ class Config {
     if (config.elevation != null) elevation = config.elevation;
     if (config.borderRadius != null) borderRadius = config.borderRadius;
     if (config.barrierDismissible != null) barrierDismissible = config.barrierDismissible;
-    if (config.hideValue != null) hideValue = config.hideValue;
   }
 }
