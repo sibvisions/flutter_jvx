@@ -29,7 +29,7 @@ class UrlEditor extends StatelessWidget with ConfigServiceGetterMixin {
       controller: controller,
       decoration: InputDecoration(
         labelText: getConfigService().translateText('URL'),
-        hintText: getConfigService().translateText('Enter new URL'),
+        hintText: 'http://host:port/services/mobile',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );
