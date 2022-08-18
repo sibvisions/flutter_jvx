@@ -1,12 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
+import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../app_menu.dart';
 import 'app_menu_grid_header.dart';
 import 'app_menu_grid_item.dart';
 
-class AppMenuGridGroup extends StatelessWidget {
+class AppMenuGridGroup extends StatelessWidget with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +27,12 @@ class AppMenuGridGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiSliver(pushPinnedChildren: true, children: [
-      SliverPersistentHeader(pinned: true, delegate: AppMenuGridHeader(headerText: menuGroupModel.name, height: 48)),
+      SliverPersistentHeader(
+          pinned: true,
+          delegate: AppMenuGridHeader(
+            headerText: getConfigService().translateText(menuGroupModel.name),
+            height: 48,
+          )),
       SliverGrid(
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 210,
