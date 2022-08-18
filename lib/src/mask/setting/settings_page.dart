@@ -162,7 +162,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
               ),
               Expanded(
                 child: InkWell(
-                  onTap: loading ? null : () => _saveClicked(),
+                  onTap: loading || getConfigService().isOffline() ? null : () => _saveClicked(),
                   child: Container(
                     alignment: Alignment.center,
                     child: getConfigService().getUserInfo() != null
