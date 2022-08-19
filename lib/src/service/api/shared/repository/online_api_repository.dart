@@ -147,15 +147,18 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
           return parsedDownloadObject;
         }
 
-        String responseBody = await response.transform(utf8.decoder).join();
+        String responseBody = await _decodeBody(response);
 
         if (getUiService().getAppManager() != null) {
-          response = await getUiService().getAppManager()?.handleResponse(
-                    pRequest,
-                    responseBody,
-                    () => _sendPostRequest(uri, jsonRequest),
-                  ) ??
-              response;
+          var overrideResponse = await getUiService().getAppManager()?.handleResponse(
+                pRequest,
+                responseBody,
+                () => _sendPostRequest(uri, jsonRequest),
+              );
+          if (overrideResponse != null) {
+            response = overrideResponse;
+            responseBody = await _decodeBody(overrideResponse);
+          }
         }
 
         if (response.headers.contentType?.value != ContentType.json.value) {
@@ -174,6 +177,10 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
+  }
+
+  Future<String> _decodeBody(HttpClientResponse response) {
+    return response.transform(utf8.decoder).join();
   }
 
   @override
