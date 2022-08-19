@@ -100,7 +100,7 @@ the License.
     <!-- get version from yaml -->
     <propertyregex property="appversion"
                    input="${pubspec}"
-                   regexp="version:\s*([0-9\+\.].*)\s*"
+                   regexp="version:\s*([0-9\+\.]*).*"
                    select="\1"
                    casesensitive="true" />
 
@@ -172,6 +172,7 @@ the License.
     </replaceregexp>
 
     <tsnow property="nowmillis" />
+
     <tstamp>
       <format property="nowmillis.format" pattern="yyyy-MM-dd" />
     </tstamp>
@@ -189,7 +190,7 @@ the License.
 
     <!-- as number -->
     <replaceregexp byline="true">
-      <regexp pattern="&quot;buildDate&quot;\s*:\s*(\d*)"/>
+      <regexp pattern="&quot;buildDate&quot;\s*:\s*(\d+)"/>
       <substitution expression="&quot;buildDate&quot;: ${nowmillis}"/>
       <fileset dir="${project.temp}">
         <include name="assets/config/*.json"/>
@@ -207,9 +208,9 @@ the License.
       </fileset>
     </replaceregexp>
 
-    <!-- as number -->
+    <!-- as number -->  
     <replaceregexp byline="true">
-      <regexp pattern="buildDate\s*:\s*(\d*)"/>
+      <regexp pattern="buildDate\s*:\s*(\d+)"/>
       <substitution expression="buildDate: ${nowmillis}"/>
       <fileset dir="${project.temp}">
         <include name="lib/main.dart"/>
