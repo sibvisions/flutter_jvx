@@ -1,0 +1,285 @@
+<!-- 
+Copyright 2009 SIB Visions GmbH
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+ 
+http://www.apache.org/licenses/LICENSE-2.0
+ 
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+
+<project name="App creator" 
+	       default="start.complete" 
+	       xmlns:if="ant:if" 
+         xmlns:unless="ant:unless">
+
+  <!-- 
+  ***************************************************************** 
+	* information   
+	***************************************************************** 
+	-->
+
+	<description>Creates app archives</description>
+
+  <!-- 
+	***************************************************************** 
+	* global properties
+	***************************************************************** 
+	-->
+
+  <!-- 
+	***************************************************************** 
+	* general properties
+	***************************************************************** 
+	-->
+
+	<property name="buildnumber" location="${basedir}/buildnumber/" />
+
+  <property name="project" location="${basedir}/../" />
+
+  <property name="build" location="${basedir}/build" />
+  <property name="install" location="${build}/install" />
+  <property name="project.temp" location="${build}/project" />
+
+  <!--
+	***************************************************************** 
+	* external taskdefinitions   
+	***************************************************************** 
+	-->
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${basedir}/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+
+  <taskdef resource="com/sibvisions/addons/ant/taskdef_min.properties" 
+           classpath="${basedir}/addons.jar"/>
+
+  <!-- 
+	***************************************************************** 
+	* INTERNAL TASKS   
+	***************************************************************** 
+	-->
+
+	<target name="clean">
+		<delete dir="${build}" />
+	</target>
+
+	<target name="prepare">
+
+    <copy todir="${project.temp}">
+      <fileset dir="${project}">
+        <exclude name="creator/**" />
+        <exclude name="build/**" />
+        <exclude name="node_modules/**" />
+        <exclude name=".dart_tool/**" />
+        <exclude name=".idea/**" />
+        <exclude name="ios/.symlinks/**" />
+        <exclude name="ios/Flutter/flutter_export_environment.sh" />
+
+        <exclude name=".flutter-plugins" />
+        <exclude name=".packages" />
+        <exclude name=".flutter-plugins-dependencies" />
+        <exclude name=".metadata" />
+
+        <exclude name="**/*.lock" />
+
+        <exclude name="assets/config/dev.conf.json" />
+      </fileset>
+    </copy>
+
+    <loadfile property="pubspec" srcFile="${project.temp}/pubspec.yaml" />
+
+    <!-- get version from yaml -->
+    <propertyregex property="appversion"
+                   input="${pubspec}"
+                   regexp="version:\s*([0-9\+\.].*)\s*"
+                   select="\1"
+                   casesensitive="true" />
+
+    <!-- replace version in config -->
+    <replaceregexp byline="true">
+      <regexp pattern="&quot;version&quot;\s*:\s*&quot;(.*)&quot;"/>
+      <substitution expression="&quot;version&quot;: &quot;${appversion}&quot;"/>
+      <fileset dir="${project.temp}">
+        <include name="assets/config/*.json"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- replace version in source code -->
+    <replaceregexp byline="true">
+      <regexp pattern="version\s*:\s*&quot;(.*)&quot;"/>
+      <substitution expression="version: &quot;${appversion}&quot;"/>
+      <fileset dir="${project.temp}">
+        <include name="lib/main.dart"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- detect git or svn repo commit identifier -->
+    <exec executable="git" dir="${project}" outputproperty="gitout" resultproperty="gitresult">
+      <arg value="rev-parse" />
+      <arg value="--short" />
+      <arg value="HEAD" />
+    </exec>
+
+    <exec executable="svn" dir="${project}" outputproperty="svnout" resultproperty="svnresult">
+      <arg value="info" />
+      <arg value="--show-item" />
+      <arg value="last-changed-revision" />
+    </exec>
+
+    <if>
+      <equals arg1="${gitresult}" arg2="0" />
+      <then>
+        <property name="rcsvalue" value="${gitout}" />
+      </then>
+      <else>
+        <if>
+          <equals arg1="${svnresult}" arg2="0" />
+          <then>
+            <property name="rcsvalue" value="r${svnout}" />
+          </then>
+          <else>
+            <property name="rcsvalue" value="&lt;undefined&gt;" />
+          </else>
+        </if>
+      </else>
+    </if>
+
+    <!-- replace commit identifier in config -->
+    <replaceregexp byline="true">
+      <regexp pattern="&quot;commit&quot;\s*:\s*&quot;(.*)&quot;"/>
+      <substitution expression="&quot;commit&quot;: &quot;${rcsvalue}&quot;"/>
+      <fileset dir="${project.temp}">
+        <include name="assets/config/*.json"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- replace commit identifier in source code -->
+    <replaceregexp byline="true">
+      <regexp pattern="commit\s*:\s*&quot;(.*)&quot;"/>
+      <substitution expression="commit: &quot;${rcsvalue}&quot;"/>
+      <fileset dir="${project.temp}">
+        <include name="lib/main.dart"/>
+      </fileset>
+    </replaceregexp>
+
+    <tsnow property="nowmillis" />
+    <tstamp>
+      <format property="nowmillis.format" pattern="yyyy-MM-dd" />
+    </tstamp>
+
+    <!-- replace buildDate in config -->
+
+    <!-- as string -->
+    <replaceregexp byline="true">
+      <regexp pattern="&quot;buildDate&quot;\s*:\s*&quot;(.*)&quot;"/>
+      <substitution expression="&quot;buildDate&quot;: &quot;${nowmillis.format}&quot;"/>
+      <fileset dir="${project.temp}">
+        <include name="assets/config/*.json"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- as number -->
+    <replaceregexp byline="true">
+      <regexp pattern="&quot;buildDate&quot;\s*:\s*(\d*)"/>
+      <substitution expression="&quot;buildDate&quot;: ${nowmillis}"/>
+      <fileset dir="${project.temp}">
+        <include name="assets/config/*.json"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- replace buildDate in source code -->
+
+    <!-- as string -->
+    <replaceregexp byline="true">
+      <regexp pattern="buildDate\s*:\s*&quot;(.*)&quot;"/>
+      <substitution expression="buildDate: &quot;${nowmillis.format}&quot;"/>
+      <fileset dir="${project.temp}">
+        <include name="lib/main.dart"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- as number -->
+    <replaceregexp byline="true">
+      <regexp pattern="buildDate\s*:\s*(\d*)"/>
+      <substitution expression="buildDate: ${nowmillis}"/>
+      <fileset dir="${project.temp}">
+        <include name="lib/main.dart"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- file permissions -->
+    <chmod perm="ug+x">
+      <fileset dir="${project.temp}">
+        <include name="**/*.sh"/>
+      </fileset>
+    </chmod>
+
+    <chmod perm="ug+x" file="${basedir}/cleanup.sh" />
+    <exec executable="${basedir}/cleanup.sh" failifexecutionfails="false" />
+
+    <mkdir dir="${install}" />
+	</target>
+
+	<target name="build.ios" depends="prepare">
+
+    <exec executable="flutter" dir="${project.temp}">
+      <arg value="build" />
+      <arg value="ipa" />
+      <arg value="--release" />
+      <arg value="--no-sound-null-safety" />
+    </exec>
+
+    <copy todir="${install}">
+      <fileset dir="${project.temp}/build/ios/ipa">
+        <include name="*.ipa" />
+      </fileset>
+    </copy> 
+
+	</target>
+
+	<target name="build.android" depends="prepare">
+
+    <exec executable="flutter" dir="${project.temp}">
+      <arg value="build" />
+      <arg value="apk" />
+      <arg value="--release" />
+      <arg value="--no-sound-null-safety" />
+      <arg value="--dart-define=PROD=true" />
+    </exec>
+
+    <copy file="${project.temp}/build/app/outputs/flutter-apk/app-release.apk" tofile="${install}/app-release-android.apk" />
+	</target>
+
+	<target name="build.web" depends="prepare">
+
+    <exec executable="flutter" dir="${project.temp}">
+      <arg value="build" />
+      <arg value="web" />
+      <arg value="--release" />
+      <arg value="--no-sound-null-safety" />
+      <arg value="--dart-define=PROD=true" />
+    </exec>
+
+	</target>
+
+  <!-- 
+	***************************************************************** 
+	* PUBLIC START TASKS   
+	***************************************************************** 
+	-->
+
+	<target name="start.complete" depends="clean, build.ios, build.android, build.web" description="Creates application archives for all platforms" />
+  <target name="start.ios" depends="clean, build.ios" description="Creates application archives for ios" />
+  <target name="start.android" depends="clean, build.android" description="Creates application archives for android" />
+  <target name="start.web" depends="clean, build.web" description="Creates application archives for web" />
+
+</project>

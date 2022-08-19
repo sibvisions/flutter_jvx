@@ -25,7 +25,10 @@ class VersionConfig {
       : this(
           commit: json['commit'],
           buildDate: json['buildDate'] != null
-              ? DateFormat('dd.MM.yyyy').format(DateTime.fromMillisecondsSinceEpoch(json['buildDate']))
+              // we support milliseconds and a fixed string
+              ? (json['buildDate'] is String ?
+                   json['buildDate'] :
+                   DateFormat('dd.MM.yyyy').format(DateTime.fromMillisecondsSinceEpoch(json['buildDate'], isUtc: true)))
               : null,
           version: json['version'],
         );

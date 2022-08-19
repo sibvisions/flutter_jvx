@@ -1,5 +1,6 @@
 assets/config/dev.conf.json
-creator/
+creator/build
+creator/android
 node_modules/
 
 # Miscellaneous
