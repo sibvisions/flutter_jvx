@@ -18,7 +18,7 @@ class AppLogin extends StatelessWidget with ConfigServiceGetterMixin {
 
   @override
   Widget build(BuildContext context) {
-    String? loginBackground = getConfigService().getAppStyle()?['login.icon'];
+    String? loginIcon = getConfigService().getAppStyle()?['login.icon'];
     String? loginLogo = getConfigService().getAppStyle()?['login.logo'];
 
     Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.background']);
@@ -55,7 +55,7 @@ class AppLogin extends StatelessWidget with ConfigServiceGetterMixin {
               ),
               Expanded(
                 child: Container(
-                  child: loginBackground != null ? ImageLoader.loadImage(loginBackground, fit: BoxFit.scaleDown) : null,
+                  child: loginIcon != null ? ImageLoader.loadImage(loginIcon, fit: BoxFit.cover) : null,
                   color: bottomColor ?? Colors.transparent,
                 ),
                 flex: 6,
