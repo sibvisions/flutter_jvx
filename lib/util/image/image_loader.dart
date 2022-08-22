@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -75,7 +76,8 @@ abstract class ImageLoader {
         height: pHeight,
         color: pBlendedColor,
         loadingBuilder: _getImageLoadingBuilder(),
-        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+          log("Failed to load network image ($pPath)", error: error, stackTrace: stackTrace);
           return ImageLoader.DEFAULT_IMAGE;
         },
       );
