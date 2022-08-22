@@ -25,7 +25,11 @@ abstract class FontAwesomeUtil {
       iconSize = double.parse(arr[1]);
     }
 
-    Color iconColor = arr.length > 4 ? (ParseUtil.parseHexColor(arr[4]) ?? Colors.black) : Colors.black;
+    Color? iconColor;
+
+    if (arr.length > 4) {
+      iconColor = ParseUtil.parseHexColor(arr[4]);
+    }
 
     if (pColor != null) {
       iconColor = pColor;
