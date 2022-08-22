@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../config/app_config.dart';
 import '../../../config/server_config.dart';
+import '../../mask/menu/menu_mode.dart';
 import '../../model/config/user/user_info.dart';
 import '../file/file_manager.dart';
 
@@ -173,14 +174,4 @@ abstract class IConfigService {
 
   /// Resumes all language callbacks.
   void resumeLanguageCallbacks();
-}
-
-enum MenuMode {
-  GRID,
-  GRID_GROUPED,
-  LIST,
-  LIST_GROUPED,
-  DRAWER,
-  SWIPER,
-  TABS,
 }

@@ -1,10 +1,11 @@
 import 'package:universal_io/io.dart';
 
+import '../src/mask/menu/menu_mode.dart';
 import '../src/model/menu/menu_model.dart';
 import '../src/model/request/i_api_request.dart';
-import '../src/service/config/i_config_service.dart';
 import 'custom_screen.dart';
 
+export '../src/mask/menu/menu_mode.dart';
 export '../src/model/request/i_api_request.dart';
 export '../src/model/response/api_response.dart';
 

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../../config/app_config.dart';
 import '../../util/logging/flutter_logger.dart';
-import '../service/config/i_config_service.dart';
+import '../mask/menu/menu_mode.dart';
 
 abstract class ConfigUtil {
   /// Tries to read app config
