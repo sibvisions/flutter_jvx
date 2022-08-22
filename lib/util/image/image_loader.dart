@@ -160,9 +160,13 @@ class ImageLoader with ConfigServiceGetterMixin {
     });
   }
 
+  static String getPackageName() {
+    return "flutter_jvx";
+  }
+
   static String getAssetPath(bool inPackage, String path) {
     if (inPackage) {
-      return 'packages/flutter_jvx/$path';
+      return 'packages/$getPackageName/$path';
     } else {
       return path;
     }

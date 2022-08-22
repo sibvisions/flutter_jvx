@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../main.dart';
 import '../../../util/image/image_loader.dart';
@@ -83,13 +83,13 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                   width: 40.0,
                   height: 40.0,
                   child: _config.progress == _config.maxProgress
-                      ? Image(
-                          image: _config.completed?.image ??
-                              Svg(ImageLoader.getAssetPath(
-                                FlutterJVx.package,
-                                'assets/images/completed_check.svg',
-                              )),
-                        )
+                      ? (_config.completed?.image != null
+                          ? Image(image: _config.completed!.image!)
+                          : SvgPicture.asset(
+                              'assets/images/completed_check.svg',
+                              theme: SvgTheme(currentColor: _config.progressValueColor!),
+                              package: FlutterJVx.package ? ImageLoader.getPackageName() : null,
+                            ))
                       : CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color?>(_config.progressValueColor),
                           backgroundColor: _config.progressBgColor,
