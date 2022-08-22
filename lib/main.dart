@@ -115,7 +115,7 @@ class FlutterJVxState extends State<FlutterJVx> {
   late BeamerDelegate _routerDelegate;
 
   ThemeData themeData = ThemeData(
-    backgroundColor: Colors.grey.shade200,
+    backgroundColor: Colors.grey.shade50,
   );
 
   Locale locale = const Locale.fromSubtags(languageCode: "en");
@@ -174,7 +174,7 @@ class FlutterJVxState extends State<FlutterJVx> {
       themeData = ThemeData.from(
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: ParseUtil.getMaterialColor(styleColor),
-          backgroundColor: Colors.grey.shade200,
+          backgroundColor: Colors.grey.shade50,
         ),
       );
     }
