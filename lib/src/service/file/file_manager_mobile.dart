@@ -84,7 +84,7 @@ class FileMangerMobile with ConfigServiceGetterMixin implements IFileManager {
 
   @override
   Future<File?> getIndependentFile({required String pPath}) async {
-    File file = File(join(directory.path, pPath));
+    File file = File(join(directory.path, _fixPath(pPath)));
 
     if (await file.exists()) {
       return file;
@@ -94,7 +94,7 @@ class FileMangerMobile with ConfigServiceGetterMixin implements IFileManager {
 
   @override
   File? getIndependentFileSync({required String pPath}) {
-    File file = File(join(directory.path, pPath));
+    File file = File(join(directory.path, _fixPath(pPath)));
 
     if (file.existsSync()) {
       return file;
@@ -104,14 +104,14 @@ class FileMangerMobile with ConfigServiceGetterMixin implements IFileManager {
 
   @override
   Future<File> saveIndependentFile({required List<int> pContent, required String pPath}) async {
-    File file = File(join(directory.path, pPath));
+    File file = File(join(directory.path, _fixPath(pPath)));
     File created = await file.create(recursive: true);
     return created.writeAsBytes(pContent);
   }
 
   @override
   Directory? getDirectory({required String pPath}) {
-    return Directory(_getSavePath(pPath: pPath));
+    return Directory(_getSavePath(pPath: _fixPath(pPath)));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,6 +125,16 @@ class FileMangerMobile with ConfigServiceGetterMixin implements IFileManager {
     if (appName == null || version == null) {
       throw Exception("App Version/Name was not set while trying to save/read files!");
     }
-    return join(directory.path, appName, version, pPath);
+    return join(directory.path, appName, version, _fixPath(pPath));
+  }
+
+  /// Removes leading slashes
+  /// "example.txt" -> "example.txt"
+  /// "/example.txt" -> "example.txt"
+  String _fixPath(String pPath) {
+    while (pPath.startsWith("/")) {
+      pPath = pPath.substring(1);
+    }
+    return pPath;
   }
 }
