@@ -21,6 +21,7 @@ class LogoutCommandProcessor
     }
     await getConfigService().setUserInfo(pUserInfo: null, pJson: null);
     await getConfigService().setAuthCode(null);
+    await getConfigService().setPassword(null);
 
     return getApiService().sendRequest(request: logoutRequest);
   }
