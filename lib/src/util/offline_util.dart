@@ -90,24 +90,6 @@ abstract class OfflineUtil {
 
       workscreenModel = uiService.getComponentByScreenName(pScreenLongName: offlineWorkscreenLongName)!;
 
-      dialogKey.currentState?.update(
-          config: Config(
-        message: configService.translateText("Fetching online data") + "...",
-      ));
-
-      await fetchDataProvider(
-        dataService,
-        workscreenModel.name,
-        commandService,
-        progressUpdate: (value, max) {
-          dialogKey.currentState?.update(
-              config: Config(
-            progress: value,
-            maxProgress: max,
-          ));
-        },
-      );
-
       bool successfulSync = true;
       List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
 
