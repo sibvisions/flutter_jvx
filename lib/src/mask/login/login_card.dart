@@ -20,14 +20,21 @@ class LoginCard extends StatefulWidget {
 
 class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, UiServiceGetterMixin {
   /// Controller for username text field
-  final TextEditingController usernameController = TextEditingController();
+  late TextEditingController usernameController;
 
   /// Controller for password text field
-  final TextEditingController passwordController = TextEditingController();
+  late TextEditingController passwordController;
 
   /// Value holder for the checkbox
-  late CheckHolder checkHolder =
-      CheckHolder(isChecked: getConfigService().getAppConfig()?.uiConfig.rememberMeChecked ?? false);
+  late CheckHolder checkHolder;
+
+  @override
+  void initState() {
+    super.initState();
+    usernameController = TextEditingController(text: getConfigService().getUsername());
+    passwordController = TextEditingController();
+    checkHolder = CheckHolder(isChecked: getConfigService().getAppConfig()?.uiConfig.rememberMeChecked ?? false);
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
@@ -49,10 +56,10 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               controller: usernameController,
-              decoration: InputDecoration(labelText: getConfigService().translateText("Username: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Username:")),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: getConfigService().translateText("Password: ")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Password:")),
               controller: passwordController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
