@@ -56,10 +56,10 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               controller: usernameController,
-              decoration: InputDecoration(labelText: getConfigService().translateText("Username:")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Username") + ":"),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: getConfigService().translateText("Password:")),
+              decoration: InputDecoration(labelText: getConfigService().translateText("Password") + ":"),
               controller: passwordController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
