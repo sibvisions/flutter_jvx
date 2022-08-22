@@ -13,6 +13,7 @@ import '../../util/offline_util.dart';
 import '../drawer/drawer_menu.dart';
 import 'grid/app_menu_grid_grouped.dart';
 import 'grid/app_menu_grid_ungroup.dart';
+import 'list/app_menu_list_grouped.dart';
 import 'list/app_menu_list_ungroup.dart';
 import 'tab/app_menu_tab.dart';
 
@@ -66,6 +67,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
   late final Map<MenuMode, MenuFactory> menuFactory = {
     MenuMode.GRID_GROUPED: _getGroupedGridMenu,
     MenuMode.GRID: _getGridMenuUngrouped,
+    MenuMode.LIST_GROUPED: _getListMenuGrouped,
     MenuMode.LIST: _getListMenuUngrouped,
     MenuMode.TABS: _getTabMenu
   };
@@ -191,6 +193,18 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
       onClick: onClick,
       backgroundColor: menuBackgroundColor,
       backgroundImageString: backgroundImageString,
+    );
+  }
+
+  Widget _getListMenuGrouped({
+    required MenuModel menuModel,
+    required ButtonCallback onClick,
+    Color? menuBackgroundColor,
+    String? backgroundImageString,
+  }) {
+    return AppMenuListGrouped(
+      menuModel: menuModel,
+      onClick: onClick,
     );
   }
 
