@@ -54,7 +54,11 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeaderText(flex: 7, text: getConfigService().getAppName()!, context: context),
+                _buildHeaderText(
+                  flex: 7,
+                  text: getConfigService().getAppStyle()?['login.title'] ?? getConfigService().getAppName()!,
+                  context: context,
+                ),
                 const Padding(padding: EdgeInsets.all(4)),
                 _buildHeaderText(
                     flex: 3, text: getConfigService().translateText("Logged in as") + ":", context: context),
