@@ -5,12 +5,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../mixin/config_service_mixin.dart';
+import '../../src/service/config/i_config_service.dart';
 import '../../src/service/file/file_manager.dart';
+import '../../src/service/service.dart';
 import '../font_awesome_util.dart';
 
 //TODO investigate loading delays
-class ImageLoader with ConfigServiceGetterMixin {
+abstract class ImageLoader {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,14 +25,12 @@ class ImageLoader with ConfigServiceGetterMixin {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ImageLoader();
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Loads an Image from the filesystem.
-  Image _loadImageFiles(
+  static Image _loadImageFiles(
     String pPath, {
     double? pWidth,
     double? pHeight,
@@ -41,9 +40,10 @@ class ImageLoader with ConfigServiceGetterMixin {
     bool imageInBase64 = false,
     BoxFit fit = BoxFit.none,
   }) {
-    String appName = getConfigService().getAppName()!;
-    String baseUrl = getConfigService().getBaseUrl()!;
-    IFileManager fileManager = getConfigService().getFileManager();
+    var configService = services<IConfigService>();
+    String appName = configService.getAppName()!;
+    String baseUrl = configService.getBaseUrl()!;
+    IFileManager fileManager = configService.getFileManager();
 
     Image image;
 
@@ -88,7 +88,7 @@ class ImageLoader with ConfigServiceGetterMixin {
     return image;
   }
 
-  ImageLoadingBuilder _getImageLoadingBuilder() {
+  static ImageLoadingBuilder _getImageLoadingBuilder() {
     return (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
       if (loadingProgress == null) return child;
       return Center(
@@ -135,7 +135,7 @@ class ImageLoader with ConfigServiceGetterMixin {
         }
       }
 
-      return ImageLoader()._loadImageFiles(
+      return _loadImageFiles(
         path,
         pWidth: size?.width,
         pHeight: size?.height,
