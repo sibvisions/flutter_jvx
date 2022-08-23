@@ -412,19 +412,18 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     String where = "";
 
     if (condition != null) {
+      String topWhere = "";
       if (condition.columnName != null) {
-        where += "(${_getWhereCondition(condition)})";
+        topWhere = "(${_getWhereCondition(condition)})";
       }
 
-      List<FilterCondition> subConditions = [];
-      if (condition.condition != null) {
-        subConditions.add(condition.condition!);
-      }
-      subConditions.addAll(condition.conditions);
+      List<FilterCondition> subConditions = [
+        if (condition.condition != null) condition.condition!,
+        ...condition.conditions,
+      ];
 
-      where += subConditions
-          .map((subCondition) => "(" + _buildWhereClause(subCondition) + ")")
-          .join(" " + condition.operatorType.toString() + " ");
+      where += [topWhere, ...subConditions.map((subCondition) => "(" + _buildWhereClause(subCondition) + ")")]
+          .join(" " + condition.operatorType.name + " ");
     }
     return where;
   }

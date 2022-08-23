@@ -68,8 +68,8 @@ class FilterCondition {
     return <String, dynamic>{
       ApiObjectProperty.columnName: columnName,
       ApiObjectProperty.value: value,
-      ApiObjectProperty.operatorType: ParseUtil.propertyAsString(operatorType.toString()),
-      ApiObjectProperty.compareType: ParseUtil.propertyAsString(compareType.toString()),
+      ApiObjectProperty.operatorType: ParseUtil.propertyAsString(operatorType.name),
+      ApiObjectProperty.compareType: ParseUtil.propertyAsString(compareType.name),
       ApiObjectProperty.not: value,
       ApiObjectProperty.condition: condition?.toJson(),
       ApiObjectProperty.conditions: conditions.map<Map<String, dynamic>>((c) => c.toJson()).toList()
@@ -79,7 +79,11 @@ class FilterCondition {
   /// Collects recursively all values
   List<dynamic> getValues() {
     //condition.value is only 1 level deep supported
-    return [value, ...?condition?.value, ..._collectSubValues(conditions)];
+    return [
+      value,
+      if (condition?.value != null) condition?.value,
+      ..._collectSubValues(conditions),
+    ];
   }
 
   /// Collects the values from the sub conditions recursively
