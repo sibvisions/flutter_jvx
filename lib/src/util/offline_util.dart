@@ -31,10 +31,10 @@ import 'loading_handler/progress_dialog_widget.dart';
 abstract class OfflineUtil {
   static Widget getOfflineBar(BuildContext context, {bool useElevation = false}) {
     return Material(
+      color: Colors.grey.shade500,
       elevation: useElevation ? Theme.of(context).appBarTheme.elevation ?? 4.0 : 0.0,
       child: Container(
         height: 20,
-        color: Colors.grey.shade500,
         child: const Text(
           'OFFLINE',
           style: TextStyle(color: Colors.white),
