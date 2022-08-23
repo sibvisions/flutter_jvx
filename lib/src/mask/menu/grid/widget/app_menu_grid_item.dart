@@ -42,27 +42,31 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              color: Colors.black.withOpacity(0.2),
-              padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Center(
-                  child: AutoSizeText(
-                    menuItemModel.label,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
+            Expanded(
+              flex: 25,
+              child: Container(
+                color: Colors.black.withOpacity(0.2),
+                padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Center(
+                    child: AutoSizeText(
+                      menuItemModel.label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                      maxLines: 1,
+                      minFontSize: 16,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
                     ),
-                    maxLines: 1,
-                    minFontSize: 16,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ),
             Expanded(
+              flex: 75,
               child: Container(
                 color: Colors.black.withOpacity(0.1),
                 child: MenuItemModel.getImage(

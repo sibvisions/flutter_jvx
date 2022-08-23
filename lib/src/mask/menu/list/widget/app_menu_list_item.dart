@@ -36,39 +36,16 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Container(
-        margin: EdgeInsets.zero,
-        height: 50,
-        color: backgroundOverride?.withOpacity(getConfigService().getOpacitySideMenu()) ??
-            Theme.of(context).backgroundColor.withOpacity(getConfigService().getOpacitySideMenu()),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            SizedBox(
-              width: 75,
-              child: MenuItemModel.getImage(
-                pContext: context,
-                pMenuItemModel: menuItemModel,
-                pSize: 25,
-                pColor: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),
-              ),
-            ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  menuItemModel.label,
-                  style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.headline6?.color),
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-              ),
-            ),
-          ],
-        ),
+    return ListTile(
+      leading: MenuItemModel.getImage(
+        pContext: context,
+        pMenuItemModel: menuItemModel,
+        pSize: 32,
+        pColor: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),
+      ),
+      title: Text(
+        menuItemModel.label,
+        overflow: TextOverflow.ellipsis,
       ),
       onTap: () =>
           onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),

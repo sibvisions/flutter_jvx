@@ -58,13 +58,22 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
                   flex: 7,
                   text: getConfigService().getAppStyle()?['login.title'] ?? getConfigService().getAppName()!,
                   context: context,
+                  fontWeight: FontWeight.bold,
                 ),
-                const Padding(padding: EdgeInsets.all(4)),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 _buildHeaderText(
-                    flex: 3, text: getConfigService().translateText("Logged in as") + ":", context: context),
-                const Padding(padding: EdgeInsets.all(10)),
-                _buildHeaderText(flex: 5, text: getConfigService().getUserInfo()?.displayName ?? " ", context: context),
-                const Expanded(flex: 2, child: Text(""))
+                  flex: 2,
+                  text: getConfigService().translateText("Logged in as") + ":",
+                  context: context,
+                ),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
+                _buildHeaderText(
+                  flex: 4,
+                  text: getConfigService().getUserInfo()?.displayName ?? " ",
+                  context: context,
+                  fontWeight: FontWeight.bold,
+                ),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 6)),
               ],
             ),
           ),
@@ -82,7 +91,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
                         ? FaIcon(
                             FontAwesomeIcons.solidUser,
                             color: Theme.of(context).primaryColor,
-                            size: 36,
+                            size: 60,
                           )
                         : null,
                   ),
@@ -105,33 +114,21 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
 
   List<Widget> _buildDrawerFooter(BuildContext context) {
     return [
-      Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
-        height: 0.0,
-        thickness: 0.5,
-      ),
+      _buildFooterDivider(context),
       _buildFooterEntry(
         context: context,
         text: getConfigService().translateText("Settings"),
-        leadingIcon: FontAwesomeIcons.gears,
+        leadingIcon: FontAwesomeIcons.gear,
         onTap: _settings,
       ),
-      Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
-        height: 0.0,
-        thickness: 0.5,
-      ),
+      _buildFooterDivider(context),
       _buildFooterEntry(
         context: context,
         text: getConfigService().translateText("Change password"),
-        leadingIcon: FontAwesomeIcons.floppyDisk,
+        leadingIcon: FontAwesomeIcons.key,
         onTap: _changePassword,
       ),
-      Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
-        height: 0.0,
-        thickness: 0.5,
-      ),
+      _buildFooterDivider(context),
       _buildFooterEntry(
         context: context,
         text: getConfigService().translateText("Logout"),
@@ -141,6 +138,13 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
     ];
   }
 
+  Divider _buildFooterDivider(BuildContext context) {
+    return Divider(
+      color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+      height: 1,
+    );
+  }
+
   /// Build a text used in the header of the drawer.
   /// Flex value changes size according to all other header texts(Expanded).
   /// Text will size itself to fill available space(Fitted-Box).
@@ -148,6 +152,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
     required int flex,
     required String text,
     required BuildContext context,
+    FontWeight? fontWeight,
   }) {
     return Expanded(
       flex: flex,
@@ -156,7 +161,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
           text,
           style: TextStyle(
               color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
-              fontWeight: FontWeight.bold),
+              fontWeight: fontWeight),
         ),
       ),
     );
@@ -172,12 +177,18 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
     return ListTile(
       tileColor: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),
       textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
-      onTap: onTap,
-      leading: FaIcon(
-        leadingIcon,
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+      leading: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        child: FaIcon(
+          leadingIcon,
+          color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+        ),
       ),
-      title: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
+      title: Text(
+        text,
+        overflow: TextOverflow.ellipsis,
+      ),
+      onTap: onTap,
     );
   }
 

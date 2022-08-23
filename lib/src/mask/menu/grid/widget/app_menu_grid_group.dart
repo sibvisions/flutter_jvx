@@ -26,23 +26,26 @@ class AppMenuGridGroup extends StatelessWidget with ConfigServiceGetterMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MultiSliver(pushPinnedChildren: true, children: [
-      SliverPersistentHeader(
-          pinned: true,
-          delegate: AppMenuGridHeader(
-            headerText: getConfigService().translateText(menuGroupModel.name),
-            height: 48,
-          )),
-      SliverGrid(
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 210,
-          mainAxisSpacing: 1,
-          crossAxisSpacing: 1,
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: [
+        SliverPersistentHeader(
+            pinned: true,
+            delegate: AppMenuGridHeader(
+              headerText: getConfigService().translateText(menuGroupModel.name),
+              height: 48,
+            )),
+        SliverGrid(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 210,
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
+          ),
+          delegate: SliverChildListDelegate.fixed(
+            menuGroupModel.items.map((e) => AppMenuGridItem(menuItemModel: e, onClick: onClick)).toList(),
+          ),
         ),
-        delegate: SliverChildListDelegate.fixed(
-          menuGroupModel.items.map((e) => AppMenuGridItem(menuItemModel: e, onClick: onClick)).toList(),
-        ),
-      ),
-    ]);
+      ],
+    );
   }
 }

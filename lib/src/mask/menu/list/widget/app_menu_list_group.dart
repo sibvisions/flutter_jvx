@@ -39,26 +39,27 @@ class AppMenuListGroup extends StatelessWidget with ConfigServiceGetterMixin {
       // Enable this if to remove the last divider
       //if (i < (menuGroupModel.items.length - 1)) {
       listGroupItems.add(const Divider(
-        color: Colors.grey,
-        height: 0.0,
-        thickness: 0.5,
+        height: 1,
       ));
       //}
     }
 
-    return MultiSliver(pushPinnedChildren: true, children: [
-      SliverPersistentHeader(
-        pinned: true,
-        delegate: AppMenuGridHeader(
-          headerText: getConfigService().translateText(menuGroupModel.name),
-          height: kIsWeb ? 48 : 50,
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: [
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: AppMenuGridHeader(
+            headerText: getConfigService().translateText(menuGroupModel.name),
+            height: kIsWeb ? 48 : 50,
+          ),
         ),
-      ),
-      SliverList(
-        delegate: SliverChildListDelegate.fixed(
-          listGroupItems,
+        SliverList(
+          delegate: SliverChildListDelegate.fixed(
+            listGroupItems,
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
