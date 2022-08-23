@@ -54,21 +54,22 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Padding(padding: EdgeInsets.only(top: 10)),
                 _buildHeaderText(
-                  flex: 7,
+                  flex: 60,
                   text: getConfigService().getAppStyle()?['login.title'] ?? getConfigService().getAppName()!,
                   context: context,
                   fontWeight: FontWeight.bold,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 _buildHeaderText(
-                  flex: 2,
+                  flex: 20,
                   text: getConfigService().translateText("Logged in as") + ":",
                   context: context,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
                 _buildHeaderText(
-                  flex: 4,
+                  flex: 35,
                   text: getConfigService().getUserInfo()?.displayName ?? " ",
                   context: context,
                   fontWeight: FontWeight.bold,
@@ -90,7 +91,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
                     child: profileImage == null
                         ? FaIcon(
                             FontAwesomeIcons.solidUser,
-                            color: Theme.of(context).primaryColor,
+                            color: Colors.grey.shade400,
                             size: 60,
                           )
                         : null,
@@ -157,11 +158,13 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
     return Expanded(
       flex: flex,
       child: FittedBox(
+        alignment: Alignment.topLeft,
         child: Text(
           text,
           style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
-              fontWeight: fontWeight),
+            color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+            fontWeight: fontWeight,
+          ),
         ),
       ),
     );
