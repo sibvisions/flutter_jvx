@@ -117,8 +117,15 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
         title: Text(getConfigService().translateText("Menu")),
         centerTitle: false,
         actions: actions,
+        backgroundColor: getConfigService().isOffline() ? Colors.grey.shade500 : null,
+        elevation: getConfigService().isOffline() ? 0 : null,
       ),
-      body: _getMenu(),
+      body: Column(
+        children: [
+          if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context, useElevation: true),
+          Expanded(child: _getMenu()),
+        ],
+      ),
     );
   }
 

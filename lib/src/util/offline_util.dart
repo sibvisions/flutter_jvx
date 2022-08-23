@@ -29,6 +29,21 @@ import 'loading_handler/loading_progress_handler.dart';
 import 'loading_handler/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
+  static Widget getOfflineBar(BuildContext context, {bool useElevation = false}) {
+    return Material(
+      elevation: useElevation ? Theme.of(context).appBarTheme.elevation ?? 4.0 : 0.0,
+      child: Container(
+        height: 20,
+        color: Colors.grey.shade500,
+        child: const Text(
+          'OFFLINE',
+          style: TextStyle(color: Colors.white),
+        ),
+        alignment: Alignment.center,
+      ),
+    );
+  }
+
   static initOnline(BuildContext context) async {
     IConfigService configService = services<IConfigService>();
     IUiService uiService = services<IUiService>();
