@@ -114,7 +114,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
   }
 
   List<Widget> _buildDrawerFooter(BuildContext context) {
-    return [
+    var footerEntries = [
       _buildFooterDivider(context),
       _buildFooterEntry(
         context: context,
@@ -122,21 +122,28 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
         leadingIcon: FontAwesomeIcons.gear,
         onTap: _settings,
       ),
-      _buildFooterDivider(context),
-      _buildFooterEntry(
-        context: context,
-        text: getConfigService().translateText("Change password"),
-        leadingIcon: FontAwesomeIcons.key,
-        onTap: _changePassword,
-      ),
-      _buildFooterDivider(context),
-      _buildFooterEntry(
-        context: context,
-        text: getConfigService().translateText("Logout"),
-        leadingIcon: FontAwesomeIcons.rightFromBracket,
-        onTap: _logout,
-      ),
     ];
+
+    if (!getConfigService().isOffline()) {
+      footerEntries.addAll([
+        _buildFooterDivider(context),
+        _buildFooterEntry(
+          context: context,
+          text: getConfigService().translateText("Change password"),
+          leadingIcon: FontAwesomeIcons.key,
+          onTap: _changePassword,
+        ),
+        _buildFooterDivider(context),
+        _buildFooterEntry(
+          context: context,
+          text: getConfigService().translateText("Logout"),
+          leadingIcon: FontAwesomeIcons.rightFromBracket,
+          onTap: _logout,
+        ),
+      ]);
+    }
+
+    return footerEntries;
   }
 
   Divider _buildFooterDivider(BuildContext context) {
