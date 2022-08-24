@@ -82,7 +82,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                 SizedBox(
                   width: 40.0,
                   height: 40.0,
-                  child: _config.progress == _config.maxProgress
+                  child: _config.maxProgress! > 0 && _config.progress == _config.maxProgress
                       ? (_config.completed?.image != null
                           ? Image(image: _config.completed!.image!)
                           : SvgPicture.asset(
@@ -93,9 +93,11 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                       : CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color?>(_config.progressValueColor),
                           backgroundColor: _config.progressBgColor,
-                          value: (_config.progressType == ProgressType.normal || _config.progress == 0
+                          value: (_config.progressType == ProgressType.normal ||
+                                  _config.progress == 0 ||
+                                  _config.maxProgress == 0
                               ? null
-                              : (_config.progress! / _config.maxProgress!)),
+                              : _config.progress! / _config.maxProgress!),
                         ),
                 ),
                 Expanded(
@@ -122,12 +124,15 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                 ),
               ],
             ),
-            _config.valueType != ValueType.none && _config.progress! > 0
+            _config.valueType != ValueType.none &&
+                    (_config.progress! > 0 || _config.progressType == ProgressType.valuable)
                 ? Align(
                     child: Text(
                       _config.valueType == ValueType.number
                           ? '${_config.progress}/${_config.maxProgress}'
-                          : "${(_config.progress! / _config.maxProgress! * 100).round()}%",
+                          : (_config.maxProgress! > 0
+                              ? "${(_config.progress! / _config.maxProgress! * 100).round()}%"
+                              : "0%"),
                       style: TextStyle(
                         fontSize: _config.valueFontSize,
                         color: _config.valueColor,
