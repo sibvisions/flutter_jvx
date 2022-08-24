@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   String _createColumn(String pColumnName, ColumnDefinition pColumn, {bool? nullable}) {
     var columnDef = StringBuffer('"$pColumnName" ');
-    columnDef.write(Types.convertToSQLite(pColumn.dataTypeIdentifier));
+    columnDef.write(Types.convertToSQLite(pColumn.dataTypeIdentifier, scale: pColumn.scale));
 
     //Check overridden value first, then column spec
     // if (!(nullable ?? pColumn.nullable)) {

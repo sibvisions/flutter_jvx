@@ -75,7 +75,7 @@ abstract class Types {
 
   static const int SQLXML = 2009;
 
-  static String convertToSQLite(int dataType) {
+  static String convertToSQLite(int dataType, {int? scale}) {
     switch (dataType) {
       case NULL:
         return "NULL";
@@ -92,6 +92,9 @@ abstract class Types {
       case DOUBLE:
       case NUMERIC:
       case DECIMAL:
+        if (scale == 0) {
+          return "INTEGER";
+        }
         return "REAL";
       case BINARY:
       case VARBINARY:
