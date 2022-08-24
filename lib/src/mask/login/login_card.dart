@@ -75,10 +75,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
               child: Text(getConfigService().translateText("Login")),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              TextButton(
-                onPressed: () => context.beamToNamed("/login/lostPassword"),
-                child: Text(getConfigService().translateText("Reset password") + "?"),
-              ),
+              _getLostPasswordButton(),
               TextButton.icon(
                 onPressed: () => _onSettingsPressed(context: context),
                 icon: const FaIcon(FontAwesomeIcons.gears),
@@ -91,6 +88,17 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
         ),
       ),
     );
+  }
+
+  Widget _getLostPasswordButton() {
+    if (!(getConfigService().getMetaData()?.lostPasswordEnabled == false)) {
+      return TextButton(
+        onPressed: () => context.beamToNamed("/login/lostPassword"),
+        child: Text(getConfigService().translateText("Reset password") + "?"),
+      );
+    } else {
+      return Container();
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

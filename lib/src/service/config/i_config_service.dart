@@ -5,6 +5,7 @@ import '../../../config/app_config.dart';
 import '../../../config/server_config.dart';
 import '../../mask/menu/menu_mode.dart';
 import '../../model/config/user/user_info.dart';
+import '../../model/response/application_meta_data_response.dart';
 import '../file/file_manager.dart';
 
 /// Defines the base construct of a [IConfigService]
@@ -25,6 +26,10 @@ abstract class IConfigService {
 
   /// Set clientId
   void setClientId(String? pClientId);
+
+  ApplicationMetaDataResponse? getMetaData();
+
+  void setMetaData(ApplicationMetaDataResponse? metaData);
 
   /// Returns the appName
   String? getAppName();

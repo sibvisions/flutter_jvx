@@ -11,6 +11,7 @@ import '../../../../util/logging/flutter_logger.dart';
 import '../../../mask/menu/menu_mode.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
+import '../../../model/response/application_meta_data_response.dart';
 import '../../../util/config_util.dart';
 import '../../file/file_manager.dart';
 import '../i_config_service.dart';
@@ -42,6 +43,9 @@ class ConfigService implements IConfigService {
 
   /// Config of the app
   AppConfig? appConfig;
+
+  /// Metadata of the app
+  ApplicationMetaDataResponse? metaData;
 
   /// Current clientId (sessionId)
   String? clientId;
@@ -88,6 +92,16 @@ class ConfigService implements IConfigService {
   @override
   void setClientId(String? pClientId) {
     clientId = pClientId;
+  }
+
+  @override
+  ApplicationMetaDataResponse? getMetaData() {
+    return metaData;
+  }
+
+  @override
+  void setMetaData(ApplicationMetaDataResponse? pMetaData) {
+    metaData = pMetaData;
   }
 
   @override

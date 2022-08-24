@@ -19,6 +19,8 @@ class SaveAppMetaDataCommandProcessor
     getConfigService().setClientId(command.metaData.clientId);
     await getConfigService().setVersion(version);
 
+    getConfigService().setMetaData(command.metaData);
+
     bool doLangExits = getConfigService().getFileManager().getDirectory(pPath: "languages/")?.existsSync() ?? false;
     bool doImgExits = getConfigService().getFileManager().getDirectory(pPath: "images/")?.existsSync() ?? false;
 
