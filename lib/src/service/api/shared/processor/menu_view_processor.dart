@@ -30,7 +30,8 @@ class MenuViewProcessor with ConfigServiceGetterMixin implements IResponseProces
     commands.add(saveMenuCommand);
 
     if (!getConfigService().isOffline()) {
-      RouteToMenuCommand routeToMenuCommand = RouteToMenuCommand(reason: "Server sent a menu, likely on login");
+      RouteToMenuCommand routeToMenuCommand =
+          RouteToMenuCommand(replaceRoute: true, reason: "Server sent a menu, likely on login");
       commands.add(routeToMenuCommand);
     }
 
