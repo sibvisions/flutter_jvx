@@ -1,6 +1,6 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/open_error_dialog_command.dart';
-import '../../../../model/response/error_view_response.dart';
+import '../../../../model/response/view/message/error_view_response.dart';
 import '../i_response_processor.dart';
 
 class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
@@ -8,9 +8,9 @@ class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
   List<BaseCommand> processResponse({required ErrorViewResponse pResponse}) {
     OpenErrorDialogCommand command = OpenErrorDialogCommand(
       reason: "Server sent error in response",
-      message: pResponse.message,
+      message: pResponse.message!,
       isTimeout: pResponse.isTimeout,
-      canBeFixedInSettings: isUserError(pResponse.message),
+      canBeFixedInSettings: isUserError(pResponse.message!),
     );
 
     return [command];

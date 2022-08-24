@@ -1,23 +1,17 @@
-import '../../../../util/logging/flutter_logger.dart';
-import '../../service/api/shared/api_object_property.dart';
-import 'api_response.dart';
+import '../../../../../../util/logging/flutter_logger.dart';
+import '../../../../service/api/shared/api_object_property.dart';
+import 'message_view.dart';
 
-class ErrorViewResponse extends ApiResponse {
+class ErrorViewResponse extends MessageView {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Error Title message
-  final String? title;
 
   /// If we should show this error
   final bool silentAbort;
 
   /// Error details from server
   final String? details;
-
-  /// Error message
-  final String message;
 
   /// The error object.
   final List<ServerException>? exceptions;
@@ -31,19 +25,17 @@ class ErrorViewResponse extends ApiResponse {
   ErrorViewResponse({
     this.silentAbort = false,
     this.details,
-    this.title,
-    required this.message,
+    required super.title,
+    required super.message,
     this.exceptions,
     this.isTimeout = false,
-    required String name,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.name,
+    required super.originalRequest,
+  });
 
   ErrorViewResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : silentAbort = pJson[ApiObjectProperty.silentAbort] ?? false,
         details = pJson[ApiObjectProperty.details],
-        title = pJson[ApiObjectProperty.title],
-        message = pJson[ApiObjectProperty.message],
         exceptions = ServerException.fromJson(pJson[ApiObjectProperty.exceptions]),
         isTimeout = false,
         super.fromJson(pJson: pJson, originalRequest: originalRequest) {
@@ -52,7 +44,7 @@ class ErrorViewResponse extends ApiResponse {
 
   @override
   String toString() {
-    return 'ErrorViewResponse{title: $title, silentAbort: $silentAbort, isTimeout: $isTimeout, exceptions: $exceptions}';
+    return 'ErrorViewResponse{messageView: ${super.toString()}, silentAbort: $silentAbort, isTimeout: $isTimeout, exceptions: $exceptions}';
   }
 }
 

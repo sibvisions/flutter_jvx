@@ -7,6 +7,7 @@ import 'package:universal_io/io.dart';
 
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/request/api_download_images_request.dart';
@@ -25,13 +26,14 @@ import '../../../../model/response/dal_meta_data_response.dart';
 import '../../../../model/response/download_images_response.dart';
 import '../../../../model/response/download_style_response.dart';
 import '../../../../model/response/download_translation_response.dart';
-import '../../../../model/response/error_view_response.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
 import '../../../../model/response/login_view_response.dart';
 import '../../../../model/response/menu_view_response.dart';
-import '../../../../model/response/message_dialog_response.dart';
-import '../../../../model/response/session_expired_response.dart';
 import '../../../../model/response/user_data_response.dart';
+import '../../../../model/response/view/message/error_view_response.dart';
+import '../../../../model/response/view/message/message_dialog_response.dart';
+import '../../../../model/response/view/message/message_view.dart';
+import '../../../../model/response/view/message/session_expired_response.dart';
 import '../api_object_property.dart';
 import '../api_response_names.dart';
 import '../i_repository.dart';
@@ -169,6 +171,15 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
 
         List<dynamic> jsonResponse = _parseAndCheckJson(responseBody);
         List<ApiResponse> parsedResponseObjects = _responseParser(pJsonList: jsonResponse, originalRequest: pRequest);
+
+        if (getConfigService().isOffline()) {
+          var viewResponse = parsedResponseObjects.firstWhereOrNull((element) => element is MessageView);
+          if (viewResponse != null) {
+            var messageViewResponse = viewResponse as MessageView;
+            throw StateError("Server sent error: " + messageViewResponse.toString());
+          }
+        }
+
         return parsedResponseObjects;
       } catch (e) {
         LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Error while sending ${pRequest.runtimeType}");

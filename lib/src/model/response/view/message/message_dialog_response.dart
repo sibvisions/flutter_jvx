@@ -1,13 +1,10 @@
-import '../../service/api/shared/api_object_property.dart';
-import 'api_response.dart';
+import '../../../../service/api/shared/api_object_property.dart';
+import 'message_view.dart';
 
-class MessageDialogResponse extends ApiResponse {
+class MessageDialogResponse extends MessageView {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Displayed message
-  final String message;
 
   /// Name of the message screen used for closing the message
   final String messageScreenName;
@@ -17,14 +14,14 @@ class MessageDialogResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   MessageDialogResponse({
-    required this.message,
+    required super.title,
+    required super.message,
     required this.messageScreenName,
-    required String name,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.name,
+    required super.originalRequest,
+  });
 
   MessageDialogResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : messageScreenName = pJson[ApiObjectProperty.componentId],
-        message = pJson[ApiObjectProperty.message],
         super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

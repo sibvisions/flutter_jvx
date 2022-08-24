@@ -6,6 +6,9 @@ class OpenSessionExpiredDialogCommand extends UiCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Title to display
+  final String? title;
+
   /// Message to display
   final String message;
 
@@ -14,6 +17,7 @@ class OpenSessionExpiredDialogCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenSessionExpiredDialogCommand({
+    this.title,
     required this.message,
     required String reason,
   }) : super(reason: reason);
@@ -23,5 +27,5 @@ class OpenSessionExpiredDialogCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "OpenSessionExpiredDialogCommand: message: $message, reason: $reason";
+  String get logString => "OpenSessionExpiredDialogCommand: title: $title, message: $message, reason: $reason";
 }

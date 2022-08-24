@@ -8,6 +8,7 @@ class ServerSessionExpired extends StatelessWidget with UiServiceGetterMixin, Co
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  final String? title;
 
   final String message;
 
@@ -15,7 +16,11 @@ class ServerSessionExpired extends StatelessWidget with UiServiceGetterMixin, Co
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ServerSessionExpired({required this.message, Key? key}) : super(key: key);
+  ServerSessionExpired({
+    this.title,
+    required this.message,
+    Key? key,
+  }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -25,13 +30,13 @@ class ServerSessionExpired extends StatelessWidget with UiServiceGetterMixin, Co
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(getConfigService().translateText("SESSION EXPIRED")),
+      title: Text(getConfigService().translateText(title ?? "Session Expired")),
       content: Text(message),
       actions: [
         TextButton(
           onPressed: () => _restartApp(context: context),
           child: Text(
-            getConfigService().translateText("RESTART APP"),
+            getConfigService().translateText("Restart App"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
