@@ -51,8 +51,6 @@ abstract class OfflineUtil {
     IDataService dataService = services<IDataService>();
     ICommandService commandService = services<ICommandService>();
 
-    FlComponentModel? workscreenModel;
-
     var dialogKey = GlobalKey<ProgressDialogState>();
     OnlineApiRepository? onlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
@@ -103,16 +101,15 @@ abstract class OfflineUtil {
         OpenScreenCommand(componentId: offlineWorkscreenLongName, reason: "We are back online"),
       );
 
-      workscreenModel = uiService.getComponentByScreenName(pScreenLongName: offlineWorkscreenLongName)!;
-
       bool successfulSync = true;
-      List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
+      int dataBookCounter = 1;
+      int successfulSyncedRows = 0;
+      int changedRowsSum = 0;
 
       var dataBooks = dataService.getDataBooks();
-      int dataBookCounter = 1;
-      int changedRowsSum = 0;
       for (DataBook dataBook in dataBooks.values) {
         log("DataBook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
+        List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
 
         Map<String, List<Map<String, Object?>>> groupedRows =
             await offlineApiRepository.getChangedRows(dataBook.dataProvider);
@@ -141,22 +138,24 @@ abstract class OfflineUtil {
                 commandService, successfulSyncedPrimaryKeys) &&
             successfulSync;
 
-        dataBookCounter++;
         await offlineApiRepository.resetStates(dataBook.dataProvider, pResetRows: successfulSyncedPrimaryKeys);
+        successfulSyncedRows += successfulSyncedPrimaryKeys.length;
+
+        dataBookCounter++;
       }
 
-      log("Synced ${successfulSyncedPrimaryKeys.length} rows");
+      log("Synced $successfulSyncedRows rows");
       ProgressDialogWidget.close(context);
 
       String syncResult = successfulSync ? "successful" : "failed";
-      int failedRowCount = changedRowsSum - successfulSyncedPrimaryKeys.length;
-      if (successfulSyncedPrimaryKeys.isNotEmpty || failedRowCount > 0) {
+      int failedRowCount = changedRowsSum - successfulSyncedRows;
+      if (successfulSyncedRows > 0 || failedRowCount > 0) {
         await uiService.openDismissibleDialog(
           pIsDismissible: false,
           pContext: context,
           pBuilder: (context) => AlertDialog(
             title: Text("Sync $syncResult"),
-            content: Text("Successfully synced ${successfulSyncedPrimaryKeys.length} rows" +
+            content: Text("Successfully synced $successfulSyncedRows rows" +
                 (failedRowCount > 0 ? "\n$failedRowCount rows failed to sync" : "")),
             actions: [
               TextButton(
@@ -177,6 +176,8 @@ abstract class OfflineUtil {
         LoadingProgressHandler.setEnabled(true);
         await offlineApiRepository.stop();
 
+        FlComponentModel? workscreenModel =
+            uiService.getComponentByScreenName(pScreenLongName: offlineWorkscreenLongName)!;
         await commandService.sendCommand(
           CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
         );
