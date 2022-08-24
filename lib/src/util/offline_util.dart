@@ -262,7 +262,7 @@ abstract class OfflineUtil {
         try {
           var oldColumns = {
             for (var entry in row.entries.where((rowColumn) => rowColumn.key.startsWith(OfflineDatabase.COLUMN_PREFIX)))
-              entry.key: entry.value
+              entry.key.replaceAll(OfflineDatabase.COLUMN_PREFIX, ""): entry.value
           };
           Map<String, Object?> primaryColumns = _getPrimaryColumns(oldColumns, dataBook);
 
