@@ -144,11 +144,12 @@ abstract class OfflineUtil {
         dataBookCounter++;
       }
 
-      log("Synced $successfulSyncedRows rows");
-      ProgressDialogWidget.close(context);
-
       String syncResult = successfulSync ? "successful" : "failed";
       int failedRowCount = changedRowsSum - successfulSyncedRows;
+
+      log("Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
+      ProgressDialogWidget.close(context);
+
       if (successfulSyncedRows > 0 || failedRowCount > 0) {
         await uiService.openDismissibleDialog(
           pIsDismissible: false,
@@ -168,7 +169,6 @@ abstract class OfflineUtil {
       }
 
       if (successfulSync) {
-        log("Sync successful");
         await offlineApiRepository.deleteDatabase();
         dataService.clearDataBooks();
 
@@ -194,7 +194,6 @@ abstract class OfflineUtil {
           ),
         );
       } else {
-        log("Sync failed");
         await onlineApiRepository.stop();
         await apiService.setRepository(offlineApiRepository);
       }
@@ -207,6 +206,8 @@ abstract class OfflineUtil {
         await apiService.setRepository(offlineApiRepository);
         await configService.setOffline(true);
         LoadingProgressHandler.setEnabled(false);
+        //Clear menu
+        uiService.setMenuModel(null);
       }
 
       ProgressDialogWidget.safeClose(dialogKey);
@@ -245,7 +246,7 @@ abstract class OfflineUtil {
           await _insertOfflineRecord(commandService, dataBook, row);
           successfulSyncedPrimaryKeys.add(primaryColumns);
         } catch (e, stackTrace) {
-          log("Error while syncing inserted row:", error: e, stackTrace: stackTrace);
+          log("Error while syncing inserted row: $row", error: e, stackTrace: stackTrace);
           successful = false;
         }
       }
@@ -269,7 +270,7 @@ abstract class OfflineUtil {
           await _updateOfflineRecord(row, commandService, dataBook, primaryColumns);
           successfulSyncedPrimaryKeys.add(primaryColumns);
         } catch (e, stackTrace) {
-          log("Error while syncing updated row:", error: e, stackTrace: stackTrace);
+          log("Error while syncing updated row: $row", error: e, stackTrace: stackTrace);
           successful = false;
         }
       }
@@ -288,7 +289,7 @@ abstract class OfflineUtil {
           await _deleteOfflineRecord(commandService, dataBook, primaryColumns);
           successfulSyncedPrimaryKeys.add(primaryColumns);
         } catch (e, stackTrace) {
-          log("Error while syncing deleted row:", error: e, stackTrace: stackTrace);
+          log("Error while syncing deleted row: $row", error: e, stackTrace: stackTrace);
           successful = false;
         }
       }
