@@ -238,20 +238,26 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   Future<int> resetStates(String pDataProvider, List<Map<String, Object?>> pResetRows) {
+    if (pResetRows.isEmpty) {
+      return Future.value(0);
+    }
+
     String where = "1 = 0";
     for (var row in pResetRows) {
-      where += " OR (";
-      List<String> columns = [];
-      for (var column in row.entries) {
-        String s = '"${column.key}"';
-        if (column.value != null) {
-          s += " = ?";
-        } else {
-          s += " IS NULL";
+      if (row.isNotEmpty) {
+        where += " OR (";
+        List<String> columns = [];
+        for (var column in row.entries) {
+          String s = '"${column.key}"';
+          if (column.value != null) {
+            s += " = ?";
+          } else {
+            s += " IS NULL";
+          }
+          columns.add(s);
         }
-        columns.add(s);
+        where += columns.join(" AND ") + ")";
       }
-      where += columns.join(" AND ") + ")";
     }
 
     return db.update(
