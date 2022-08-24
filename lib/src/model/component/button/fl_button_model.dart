@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../util/constants/i_color.dart';
 import '../../../../util/parse_util.dart';
 import '../../../components/button/fl_button_widget.dart';
 import '../../../service/api/shared/api_object_property.dart';
@@ -192,11 +191,6 @@ class FlButtonModel extends FlComponentModel implements IDataModel {
     // Label parsing
     // Label alignment gets sent in 2 different keys than when sending a label directly.
 
-    // If the button is disabled
-    if (_isGrey) {
-      foreground = IColorConstants.COMPONENT_DISABLED;
-    }
-
     Map<String, dynamic> labelJson = <String, dynamic>{};
     if (pJson.containsKey(ApiObjectProperty.horizontalTextPosition)) {
       labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
@@ -209,9 +203,5 @@ class FlButtonModel extends FlComponentModel implements IDataModel {
     }
 
     labelModel.applyFromJson(labelJson);
-  }
-
-  bool get _isGrey {
-    return !(isEnabled && isFocusable);
   }
 }
