@@ -46,7 +46,7 @@ class AppLogin extends StatelessWidget with ConfigServiceGetterMixin {
                   clipper: ArcClipper(),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: topColor ?? Theme.of(context).primaryColor,
+                      color: topColor ?? Colors.white,
                     ),
                     child: loginLogo != null ? ImageLoader.loadImage(loginLogo, fit: BoxFit.scaleDown) : null,
                   ),
@@ -55,7 +55,7 @@ class AppLogin extends StatelessWidget with ConfigServiceGetterMixin {
               ),
               Expanded(
                 child: Container(
-                  child: loginIcon != null ? ImageLoader.loadImage(loginIcon, fit: BoxFit.cover) : null,
+                  child: loginIcon != null ? ImageLoader.loadImage(loginIcon, fit: BoxFit.fitWidth) : null,
                   color: bottomColor ?? Colors.transparent,
                 ),
                 flex: 6,
