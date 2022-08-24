@@ -405,22 +405,23 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   ///Build where string and exclude all "deleted" columns
   List<dynamic>? _getWhere(List<FilterCondition>? pFilters) {
-    String where = '("$STATE_COLUMN" IS NULL OR "$STATE_COLUMN" != \'$ROW_STATE_DELETED\')';
+    String where = '"$STATE_COLUMN" IS NULL OR "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
     if (!(pFilters?.isEmpty ?? true)) {
-      where = "(" + pFilters!.map((e) => _buildWhereClause(e)).join(") AND (") + ') AND $where';
+      where =
+          "((" + pFilters!.map((e) => _buildWhereClause(e)).where((s) => s != null).join(") AND (") + ')) AND ($where)';
       var whereArgs = pFilters.expand((e) => e.getValues()).toList();
       return [where, whereArgs];
     }
     return [where, null];
   }
 
-  String _buildWhereClause(FilterCondition? condition) {
-    String where = "";
+  String? _buildWhereClause(FilterCondition? condition) {
+    String? where;
 
     if (condition != null) {
-      String topWhere = "";
+      String? topWhere;
       if (condition.columnName != null) {
-        topWhere = "(${_getWhereCondition(condition)})";
+        topWhere = _getWhereCondition(condition);
       }
 
       List<FilterCondition> subConditions = [
@@ -428,8 +429,15 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         ...condition.conditions,
       ];
 
-      where += [topWhere, ...subConditions.map((subCondition) => "(" + _buildWhereClause(subCondition) + ")")]
-          .join(" " + condition.operatorType.name + " ");
+      if (topWhere != null || subConditions.isNotEmpty) {
+        where = [
+          if (topWhere != null) topWhere,
+          ...subConditions
+              .map((subCondition) => _buildWhereClause(subCondition))
+              .where((s) => s != null)
+              .map((e) => "($e)")
+        ].join(" " + condition.operatorType.name + " ");
+      }
     }
     return where;
   }

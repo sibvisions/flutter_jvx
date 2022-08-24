@@ -34,6 +34,7 @@ class FilterCondition {
     this.compareType = CompareType.EQUALS,
     this.not = false,
     this.condition,
+    this.conditions = const [],
   });
 
   FilterCondition.fromJson(Map<String, dynamic> pJson) {
@@ -78,20 +79,20 @@ class FilterCondition {
 
   /// Collects recursively all values
   List<dynamic> getValues() {
-    //condition.value is only 1 level deep supported
-    return [
-      value,
-      if (condition?.value != null) condition?.value,
-      ..._collectSubValues(conditions),
-    ];
+    return _collectSubValues([this]);
   }
 
   /// Collects the values from the sub conditions recursively
   static List<dynamic> _collectSubValues(List<FilterCondition> subConditions) {
     var list = [];
     for (var subCondition in subConditions) {
-      list.add(subCondition.value);
-      list.addAll(_collectSubValues(subCondition.conditions));
+      if (subCondition.columnName != null) {
+        list.add(subCondition.value);
+      }
+      list.addAll(_collectSubValues([
+        if (subCondition.condition != null) subCondition.condition!,
+        ...subCondition.conditions,
+      ]));
     }
     return list;
   }
