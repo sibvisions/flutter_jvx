@@ -197,12 +197,14 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
   }
 
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
-    DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(
-      screenWidth: pWidth,
-      screenHeight: pHeight,
-      reason: "Device was rotated",
-    );
-    getUiService().sendCommand(deviceStatusCommand);
+    if (!getConfigService().isOffline()) {
+      DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(
+        screenWidth: pWidth,
+        screenHeight: pHeight,
+        reason: "Device was rotated",
+      );
+      getUiService().sendCommand(deviceStatusCommand);
+    }
   }
 
   _onBackTap() {
