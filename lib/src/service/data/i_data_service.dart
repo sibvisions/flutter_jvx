@@ -68,6 +68,9 @@ abstract class IDataService {
   /// Clears all the databooks of this workscreen
   void clearData(String pWorkscreen);
 
+  /// Clear all databooks
+  void clearDataBooks();
+
   /// Gets all databooks
   HashMap<String, DataBook> getDataBooks();
 

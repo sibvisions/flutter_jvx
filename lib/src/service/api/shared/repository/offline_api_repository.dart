@@ -35,6 +35,8 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   Future<void> start() async {
     if (isStopped()) {
       offlineDatabase = await OfflineDatabase.open();
+
+      //Init all databooks because there is no OpenScreenCommand offline
       List<DalMetaDataResponse> metaData = await offlineDatabase!.getMetaData();
       await Future.wait(metaData.map((element) => getDataService().updateMetaData(pMetaData: element)));
     }

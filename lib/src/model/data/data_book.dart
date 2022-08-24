@@ -71,11 +71,6 @@ class DataBook {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Empties the records list
-  void deleteAllRecords() {
-    records = HashMap();
-  }
-
   /// Saves all data from a fetchRequest
   void saveFromFetchRequest({required DalFetchResponse pFetchResponse}) {
     dataProvider = pFetchResponse.dataProvider;
@@ -153,13 +148,20 @@ class DataBook {
   /// Deletes all records in the specified range, even when they do not exist
   void deleteRecordRange({required int pFrom, required int pTo}) {
     for (int i = pFrom; pFrom <= pTo; i++) {
-      records.remove(i);
+      if (records.remove(i) != null) {
+        isAllFetched = false;
+        if (selectedRow == i) {
+          selectedRow = -1;
+        }
+      }
     }
   }
 
   /// Deletes all current records
   void clearRecords() {
     records.clear();
+    isAllFetched = false;
+    selectedRow = -1;
   }
 
   static void selectRecord({

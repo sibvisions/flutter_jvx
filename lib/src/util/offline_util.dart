@@ -171,6 +171,7 @@ abstract class OfflineUtil {
       if (successfulSync) {
         log("Sync successful");
         await offlineApiRepository.deleteDatabase();
+        dataService.clearDataBooks();
 
         await configService.setOffline(false);
         LoadingProgressHandler.setEnabled(true);
@@ -454,6 +455,9 @@ abstract class OfflineUtil {
           progress: progress ?? 0,
         ));
       });
+
+      //Clear databooks for offline usage
+      dataService.getDataBooks().values.forEach((dataBook) => dataBook.clearRecords());
 
       onlineApiRepository = (await apiService.getRepository()) as OnlineApiRepository;
       await apiService.setRepository(offlineApiRepository);

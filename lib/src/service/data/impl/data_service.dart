@@ -258,6 +258,11 @@ class DataService implements IDataService {
   }
 
   @override
+  void clearDataBooks() {
+    return dataBooks.clear();
+  }
+
+  @override
   HashMap<String, DataBook> getDataBooks() {
     return HashMap.from(dataBooks);
   }
