@@ -70,17 +70,18 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void sendCommand(BaseCommand command, [Function(Object error, StackTrace stackTrace)? onError]) {
+  void sendCommand(BaseCommand command, {Function(Object error, StackTrace stackTrace)? onError}) {
     getCommandService().sendCommand(command).catchError((error, stackTrace) {
       if (onError != null) {
         onError.call(error, stackTrace);
       } else {
-        _handleError(error, stackTrace);
+        handleAsyncError(error, stackTrace);
       }
     });
   }
 
-  _handleError(Object error, StackTrace stackTrace) {
+  @override
+  void handleAsyncError(Object error, StackTrace stackTrace) {
     LOGGER.logE(pType: LOG_TYPE.COMMAND, pError: error, pStacktrace: stackTrace);
 
     bool isTimeout = error is TimeoutException || error is SocketException;

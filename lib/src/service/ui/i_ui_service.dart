@@ -41,7 +41,10 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Sends [command] to [ICommandService]
-  void sendCommand(BaseCommand command, [Function(Object error, StackTrace stackTrace)? onError]);
+  void sendCommand(BaseCommand command, {Function(Object error, StackTrace stackTrace)? onError});
+
+  ///Can be used to handle an async error
+  void handleAsyncError(Object error, StackTrace stackTrace);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing

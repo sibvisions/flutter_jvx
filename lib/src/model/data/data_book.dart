@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import '../../service/command/i_command_service.dart';
 import '../../service/service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../command/api/delete_record_command.dart';
@@ -164,52 +165,55 @@ class DataBook {
     selectedRow = -1;
   }
 
-  static void selectRecord({
+  static Future<void> selectRecord({
     required String pDataProvider,
     required int pSelectedRecord,
+    bool asyncErrorHandling = true,
   }) {
-    IUiService uiService = services<IUiService>();
-    uiService.sendCommand(SelectRecordCommand(
+    var future = services<ICommandService>().sendCommand(SelectRecordCommand(
       reason: "Select record | DataBook selectRecord",
       dataProvider: pDataProvider,
       selectedRecord: pSelectedRecord,
     ));
+    return _handleCommandFuture(future, asyncErrorHandling);
   }
 
-  static void filterRecords({
+  static Future<void> filterRecords({
     required String pDataProvider,
     Filter? pFilter,
     FilterCondition? pFilterCondition,
+    bool asyncErrorHandling = true,
   }) {
-    IUiService uiService = services<IUiService>();
-    uiService.sendCommand(FilterCommand(
+    var future = services<ICommandService>().sendCommand(FilterCommand(
       editorId: "custom",
       filter: pFilter,
       filterCondition: pFilterCondition,
       dataProvider: pDataProvider,
       reason: "Filter record | DataBook filterRecords",
     ));
+    return _handleCommandFuture(future, asyncErrorHandling);
   }
 
-  static void insertRecord({
+  static Future<void> insertRecord({
     required String pDataProvider,
+    bool asyncErrorHandling = true,
   }) {
-    IUiService uiService = services<IUiService>();
-    uiService.sendCommand(InsertRecordCommand(
+    var future = services<ICommandService>().sendCommand(InsertRecordCommand(
       dataProvider: pDataProvider,
       reason: "Insert record | DataBook insertRecord",
     ));
+    return _handleCommandFuture(future, asyncErrorHandling);
   }
 
-  static void updateRecord({
+  static Future<void> updateRecord({
     required String pDataProvider,
     required List<String> pColumnNames,
     required List<dynamic> pValues,
     Filter? pFilter,
     FilterCondition? pFilterCondition,
+    bool asyncErrorHandling = true,
   }) {
-    IUiService uiService = services<IUiService>();
-    uiService.sendCommand(SetValuesCommand(
+    var future = services<ICommandService>().sendCommand(SetValuesCommand(
       componentId: "custom",
       dataProvider: pDataProvider,
       columnNames: pColumnNames,
@@ -218,22 +222,33 @@ class DataBook {
       filterCondition: pFilterCondition,
       reason: "Update record | DataBook updateRecord",
     ));
+    return _handleCommandFuture(future, asyncErrorHandling);
   }
 
-  static void deleteRecord({
+  static Future<void> deleteRecord({
     required String pDataProvider,
     Filter? pFilter,
     FilterCondition? pFilterCondition,
     int? pRowIndex,
+    bool asyncErrorHandling = true,
   }) {
-    IUiService uiService = services<IUiService>();
-    uiService.sendCommand(DeleteRecordCommand(
+    var future = services<ICommandService>().sendCommand(DeleteRecordCommand(
       dataProvider: pDataProvider,
       filter: pFilter,
       filterCondition: pFilterCondition,
       selectedRow: pRowIndex,
       reason: "Delete record | DataBook deleteRecord",
     ));
+    return _handleCommandFuture(future, asyncErrorHandling);
+  }
+
+  static Future<T> _handleCommandFuture<T>(Future<T> future, bool asyncErrorHandling) {
+    if (asyncErrorHandling) {
+      return future.catchError((error, stackTrace) {
+        services<IUiService>().handleAsyncError(error, stackTrace);
+      });
+    }
+    return future;
   }
 
   static void subscribeToDataBook({
