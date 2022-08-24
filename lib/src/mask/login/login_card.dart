@@ -61,6 +61,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
             TextFormField(
               decoration: InputDecoration(labelText: getConfigService().translateText("Password") + ":"),
               controller: passwordController,
+              obscureText: true,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             if (getConfigService().getAppConfig()?.uiConfig.showRememberMe ?? false)
