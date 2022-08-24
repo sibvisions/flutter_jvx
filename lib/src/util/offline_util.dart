@@ -149,7 +149,7 @@ abstract class OfflineUtil {
       ProgressDialogWidget.close(context);
 
       String syncResult = successfulSync ? "successful" : "failed";
-      int failedRowCount = successfulSyncedPrimaryKeys.length - changedRowsSum;
+      int failedRowCount = changedRowsSum - successfulSyncedPrimaryKeys.length;
       if (successfulSyncedPrimaryKeys.isNotEmpty || failedRowCount > 0) {
         await uiService.openDismissibleDialog(
           pIsDismissible: false,
