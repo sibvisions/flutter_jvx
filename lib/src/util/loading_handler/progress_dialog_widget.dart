@@ -91,7 +91,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                               package: FlutterJVx.package ? ImageLoader.getPackageName() : null,
                             ))
                       : CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color?>(_config.progressValueColor),
+                          color: _config.progressValueColor,
                           backgroundColor: _config.progressBgColor,
                           value: (_config.progressType == ProgressType.normal ||
                                   _config.progress == 0 ||
@@ -113,12 +113,12 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                           : _config.message!,
                       textAlign: _config.messageTextAlign,
                       maxLines: _config.messageMaxLines,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: _config.messageFontSize,
-                        color: _config.messageColor,
-                        fontWeight: _config.messageFontWeight,
-                      ),
+                      overflow: _config.messageOverflow,
+                      style: const TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ).merge(_config.messageTextStyle),
                     ),
                   ),
                 ),
@@ -135,16 +135,19 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                           : (_config.maxProgress! > 0
                               ? "${(_config.progress! / _config.maxProgress! * 100).round()}%"
                               : "0%"),
-                      style: TextStyle(
-                        fontSize: _config.valueFontSize,
-                        color: _config.valueColor,
-                        fontWeight: _config.valueFontWeight,
-                      ),
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.normal,
+                      ).merge(_config.valueTextStyle),
                     ),
                   )
                 : Container()
           ],
         ),
+        actions: _config.actions,
+        actionsPadding: _config.actionsPadding!,
+        actionsAlignment: _config.actionsAlignment,
       ),
       onWillPop: () => Future.value(_config.barrierDismissible),
     );
@@ -197,18 +200,14 @@ class Config {
   Color? barrierColor;
   Color? progressValueColor;
   Color? progressBgColor;
-  Color? valueColor;
-  Color? messageColor;
   TextAlign? messageTextAlign;
-  FontWeight? messageFontWeight;
-  double? messageFontSize;
-  FontWeight? valueFontWeight;
-  double? valueFontSize;
+  TextStyle? messageTextStyle;
+  TextStyle? valueTextStyle;
 
   /// Will be used for [Text.maxLines]
-  ///
-  /// (Default: [1])
   int? messageMaxLines;
+
+  TextOverflow? messageOverflow;
   double? elevation;
   double? borderRadius;
 
@@ -216,6 +215,9 @@ class Config {
   ///
   /// (Default: [false])
   bool? barrierDismissible;
+  List<Widget>? actions;
+  EdgeInsetsGeometry? actionsPadding;
+  MainAxisAlignment? actionsAlignment;
 
   Config({
     this.message,
@@ -229,17 +231,17 @@ class Config {
     this.barrierColor,
     this.progressValueColor,
     this.progressBgColor,
-    this.valueColor,
-    this.messageColor,
     this.messageTextAlign,
-    this.messageFontWeight,
-    this.messageFontSize,
-    this.valueFontWeight,
-    this.valueFontSize,
     this.messageMaxLines,
+    this.messageOverflow,
+    this.messageTextStyle,
+    this.valueTextStyle,
     this.elevation,
     this.borderRadius,
     this.barrierDismissible,
+    this.actions,
+    this.actionsPadding,
+    this.actionsAlignment,
   });
 
   void fillDefaults() {
@@ -252,17 +254,11 @@ class Config {
     barrierColor ??= Colors.transparent;
     progressValueColor ??= Colors.blueAccent;
     progressBgColor ??= Colors.blueGrey;
-    valueColor ??= Colors.black87;
-    messageColor ??= Colors.black87;
     messageTextAlign ??= TextAlign.center;
-    messageFontWeight ??= FontWeight.bold;
-    valueFontWeight ??= FontWeight.normal;
-    valueFontSize ??= 15.0;
-    messageFontSize ??= 17.0;
-    messageMaxLines ??= 1;
     elevation ??= 5.0;
     borderRadius ??= 15.0;
     barrierDismissible ??= false;
+    actionsPadding ??= EdgeInsets.zero;
   }
 
   void compareAndSet(Config config) {
@@ -277,16 +273,16 @@ class Config {
     if (config.barrierColor != null) barrierColor = config.barrierColor;
     if (config.progressValueColor != null) progressValueColor = config.progressValueColor;
     if (config.progressBgColor != null) progressBgColor = config.progressBgColor;
-    if (config.valueColor != null) valueColor = config.valueColor;
-    if (config.messageColor != null) messageColor = config.messageColor;
     if (config.messageTextAlign != null) messageTextAlign = config.messageTextAlign;
-    if (config.messageFontWeight != null) messageFontWeight = config.messageFontWeight;
-    if (config.messageFontSize != null) messageFontSize = config.messageFontSize;
     if (config.messageMaxLines != null) messageMaxLines = config.messageMaxLines;
-    if (config.valueFontWeight != null) valueFontWeight = config.valueFontWeight;
-    if (config.valueFontSize != null) valueFontSize = config.valueFontSize;
+    if (config.messageOverflow != null) messageOverflow = config.messageOverflow;
+    if (config.messageTextStyle != null) messageTextStyle = config.messageTextStyle;
+    if (config.valueTextStyle != null) valueTextStyle = config.valueTextStyle;
     if (config.elevation != null) elevation = config.elevation;
     if (config.borderRadius != null) borderRadius = config.borderRadius;
     if (config.barrierDismissible != null) barrierDismissible = config.barrierDismissible;
+    if (config.actions != null) actions = config.actions;
+    if (config.actionsPadding != null) actionsPadding = config.actionsPadding;
+    if (config.actionsAlignment != null) actionsAlignment = config.actionsAlignment;
   }
 }
