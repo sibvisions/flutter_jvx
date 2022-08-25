@@ -226,6 +226,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
     getUiService().getAppManager()?.modifyCookies(request.cookies);
 
     _headers.forEach((key, value) => request.headers.set(key, value));
+    request.headers.contentType = ContentType("application", "json", charset: "utf-8");
     request.write(body);
     HttpClientResponse res = await request.close();
 
