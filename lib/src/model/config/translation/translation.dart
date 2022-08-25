@@ -21,6 +21,12 @@ class Translation {
   Translation({
     required this.translations,
   });
+
+  void merge(File? pFile) {
+    if (pFile != null) {
+      translations.addAll(_getTranslationsFromFile(pFile));
+    }
+  }
 }
 
 /// Extract translations from file

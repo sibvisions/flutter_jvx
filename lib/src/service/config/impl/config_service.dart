@@ -158,7 +158,7 @@ class ConfigService implements IConfigService {
 
   @override
   String getLanguage() {
-    return getString("language") ?? "en";
+    return getString("language") ?? Platform.localeName;
   }
 
   @override
@@ -474,28 +474,19 @@ class ConfigService implements IConfigService {
   }
 
   void _loadLanguage(String pLanguage) {
-    translation.translations.clear();
+    Translation langTrans = Translation.empty();
 
-    File? langTransFile;
-    if (pLanguage == "en") {
-      langTransFile = fileManager.getFileSync(pPath: "languages/translation.json");
-    } else {
-      // Not sure if english should be loaded all the time
-      // File? defaultTranslationFile = fileManager.getFileSync(pPath: "languages/translation.json");
-      // if (defaultTranslationFile != null) {
-      //   Translation defaultTrans = Translation.fromFile(pFile: defaultTranslationFile);
-      //   translation.translations.addAll(defaultTrans.translations);
-      // }
-
-      langTransFile = fileManager.getFileSync(pPath: "languages/translation_$pLanguage.json");
-    }
-
+    File? langTransFile = fileManager.getFileSync(pPath: "languages/translation_$pLanguage.json");
     if (langTransFile == null) {
       LOGGER.logW(pType: LOG_TYPE.CONFIG, pMessage: "Translation file for code $pLanguage could not be found");
     } else {
-      Translation langTrans = Translation.fromFile(pFile: langTransFile);
-      translation.translations.addAll(langTrans.translations);
+      langTrans.merge(langTransFile);
     }
+
+    langTransFile = fileManager.getFileSync(pPath: "languages/translation.json");
+    langTrans.merge(langTransFile);
+
+    translation = langTrans;
 
     if (activeLanguageCallbacks) {
       callbacks["language"]?.forEach((element) => element.call(pLanguage));

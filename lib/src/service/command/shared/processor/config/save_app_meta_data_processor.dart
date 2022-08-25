@@ -20,6 +20,8 @@ class SaveAppMetaDataCommandProcessor
     getConfigService().setClientId(command.metaData.clientId);
     await getConfigService().setVersion(version);
 
+    await getConfigService().setLanguage(command.metaData.langCode);
+
     getConfigService().setMetaData(command.metaData);
 
     bool doLangExits = getConfigService().getFileManager().getDirectory(pPath: "languages/")?.existsSync() ?? false;

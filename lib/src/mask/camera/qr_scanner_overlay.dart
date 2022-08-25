@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../mixin/config_service_mixin.dart';
+
 /// Definition of the callback for the QR-scanner
 typedef QRCallback = void Function(Barcode barcode, MobileScannerArguments? arguments);
 
@@ -31,7 +33,7 @@ class QRScannerOverlay extends StatefulWidget {
 }
 
 /// State is needed for disposing the controller
-class _QRScannerOverlayState extends State<QRScannerOverlay> {
+class _QRScannerOverlayState extends State<QRScannerOverlay> with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +49,7 @@ class _QRScannerOverlayState extends State<QRScannerOverlay> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("QR SCANNER"),
+        title: Text(getConfigService().translateText("QR Scanner")),
         actions: [
           IconButton(
             onPressed: () => controller.toggleTorch(),

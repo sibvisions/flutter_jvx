@@ -118,8 +118,6 @@ class FlutterJVxState extends State<FlutterJVx> {
     backgroundColor: Colors.grey.shade50,
   );
 
-  Locale locale = const Locale.fromSubtags(languageCode: "en");
-
   @override
   void initState() {
     super.initState();
@@ -160,12 +158,9 @@ class FlutterJVxState extends State<FlutterJVx> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en', ''), // English, no country code
-        Locale('de', ''), // German, no country code
-        Locale('fr', ''), // French, no country code
-      ],
-      locale: locale,
+      supportedLocales:
+          services<IConfigService>().getSupportedLanguages().map((e) => Locale.fromSubtags(languageCode: e)),
+      locale: Locale.fromSubtags(languageCode: services<IConfigService>().getLanguage()),
     );
   }
 
@@ -183,7 +178,6 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   void changeLanguage(String pLanguage) {
-    locale = Locale.fromSubtags(languageCode: pLanguage);
     log("setLanguage");
     setState(() {});
   }

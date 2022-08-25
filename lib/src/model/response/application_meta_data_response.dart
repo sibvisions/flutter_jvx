@@ -12,6 +12,9 @@ class ApplicationMetaDataResponse extends ApiResponse {
   /// Version of the remote app
   String version;
 
+  /// Lang code of the app
+  String langCode;
+
   /// Whether lost password feature is enabled.
   bool lostPasswordEnabled;
 
@@ -22,6 +25,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
   ApplicationMetaDataResponse({
     required this.clientId,
     required this.version,
+    required this.langCode,
     required this.lostPasswordEnabled,
     required super.originalRequest,
     required super.name,
@@ -30,6 +34,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
   ApplicationMetaDataResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : clientId = pJson[ApiObjectProperty.clientId],
         version = pJson[ApiObjectProperty.version],
+        langCode = pJson[ApiObjectProperty.langCode],
         lostPasswordEnabled = pJson[ApiObjectProperty.lostPasswordEnabled],
         super.fromJson(originalRequest: originalRequest, pJson: pJson);
 }
