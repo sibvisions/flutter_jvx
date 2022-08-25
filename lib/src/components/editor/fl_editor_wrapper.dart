@@ -207,6 +207,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     } else {
       cellEditor.setValue(null);
     }
+    setState(() {});
   }
 
   void setColumnDefinition(DalMetaDataResponse pMetaData) {
