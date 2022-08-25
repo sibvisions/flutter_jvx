@@ -152,7 +152,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
                         child: Container(
                           alignment: Alignment.center,
                           child: Text(
-                            getConfigService().translateText("CLOSE"),
+                            getConfigService().translateText("Close"),
                             style:
                                 TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                           ),
@@ -167,12 +167,12 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
                     alignment: Alignment.center,
                     child: getConfigService().getUserInfo() != null
                         ? Text(
-                            getConfigService().translateText("SAVE"),
+                            getConfigService().translateText("Save"),
                             style:
                                 TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                           )
                         : Text(
-                            getConfigService().translateText("OPEN"),
+                            getConfigService().translateText("Open"),
                             style:
                                 TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                           ),
