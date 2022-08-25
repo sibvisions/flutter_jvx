@@ -84,11 +84,11 @@ class CommandService implements ICommandService {
     List<BaseCommand>? routeCommands;
     try {
       routeCommands = await processCommand(pCommand);
+      pCommand.callback?.call();
     } catch (error) {
       LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Error processing ${pCommand.runtimeType}");
       rethrow;
     } finally {
-      pCommand.callback?.call();
       progressHandler.forEach((element) => element.notifyCommandProgressEnd(pCommand));
 
       if (routeCommands != null) {
