@@ -109,9 +109,8 @@ Future<void> initApp({
         reason: "Startup Api Config",
       ));
 
-      bool retry = true;
-      while (retry) {
-        retry = false;
+      bool retry = false;
+      do {
         try {
           // Send startup to server
           await commandService.sendCommand(StartupCommand(
@@ -130,7 +129,7 @@ Future<void> initApp({
           );
           retry = dialogResult ?? false;
         }
-      }
+      } while (retry);
     } else {
       uiService.routeToMenu(pReplaceRoute: true);
     }
