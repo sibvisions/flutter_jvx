@@ -49,7 +49,11 @@ class ServerSessionExpired extends StatelessWidget with UiServiceGetterMixin, Co
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _restartApp({required BuildContext context}) {
-    StartupCommand startupCommand = StartupCommand(reason: "Session expired dialog");
+    StartupCommand startupCommand = StartupCommand(
+      reason: "Session expired dialog",
+      username: getConfigService().getUsername(),
+      password: getConfigService().getPassword(),
+    );
     getUiService().sendCommand(startupCommand);
 
     //close popup
