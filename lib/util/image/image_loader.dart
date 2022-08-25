@@ -168,7 +168,7 @@ abstract class ImageLoader {
 
   static String getAssetPath(bool inPackage, String path) {
     if (inPackage) {
-      return 'packages/$getPackageName/$path';
+      return 'packages/${getPackageName()}/$path';
     } else {
       return path;
     }
