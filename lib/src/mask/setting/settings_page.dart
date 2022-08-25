@@ -131,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
         leading: context.canBeamBack
             ? IconButton(
                 icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                onPressed: () => context.beamBack(),
+                onPressed: context.beamBack,
               )
             : null,
         title: Text(getConfigService().translateText("Settings")),
@@ -148,7 +148,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
               Expanded(
                 child: getConfigService().getUserInfo() != null && context.canBeamBack
                     ? InkWell(
-                        onTap: loading ? null : () => context.beamBack(),
+                        onTap: loading ? null : context.beamBack,
                         child: Container(
                           alignment: Alignment.center,
                           child: Text(
@@ -162,7 +162,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
               ),
               Expanded(
                 child: InkWell(
-                  onTap: loading || getConfigService().isOffline() ? null : () => _saveClicked(),
+                  onTap: loading || getConfigService().isOffline() ? null : _saveClicked,
                   child: Container(
                     alignment: Alignment.center,
                     child: getConfigService().getUserInfo() != null
@@ -187,7 +187,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
           ? FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
               child: const FaIcon(FontAwesomeIcons.qrcode),
-              onPressed: loading ? null : () => _openQRScanner(),
+              onPressed: loading ? null : _openQRScanner,
             )
           : null,
     );
