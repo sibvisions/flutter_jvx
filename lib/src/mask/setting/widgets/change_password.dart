@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../mixin/config_service_mixin.dart';
@@ -40,7 +39,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
               child: TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
-                  labelText: getConfigService().translateText('Username:'),
+                  labelText: "${getConfigService().translateText('Username')}:",
                   enabled: false,
                   border: const OutlineInputBorder(),
                 ),
@@ -92,49 +91,46 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
   Widget passwordError() {
     return AlertDialog(
       title: Text(getConfigService().translateText('Error')),
-      content: Text(getConfigService().translateText("The new passwords dont match!")),
+      content: Text(getConfigService().translateText("The passwords don't match!")),
     );
   }
 
   List<Widget>? actionsList(BuildContext context) {
     List<Widget>? widgetList = [];
 
+    if (getConfigService().getUserInfo() != null) {
+      widgetList.add(TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: Text(getConfigService().translateText('Cancel')),
+      ));
+    }
+
     widgetList.add(TextButton(
-      onPressed: () => {
-        if (newPasswordController.text == repeatPasswordController.text)
-          {
-            if (getConfigService().getUserInfo() == null)
-              {
-                getUiService().sendCommand(LoginCommand(
-                    userName: usernameController.text,
-                    password: passwordController.text,
-                    loginMode: LoginMode.CHANGE_PASSWORD,
-                    newPassword: newPasswordController.text,
-                    reason: 'Password Expired'))
-              }
-            else
-              {
-                getUiService().sendCommand(ChangePasswordCommand(
-                    username: usernameController.text,
-                    newPassword: newPasswordController.text,
-                    password: passwordController.text,
-                    reason: 'Change Password Request'))
-              }
+      onPressed: () {
+        if (newPasswordController.text == repeatPasswordController.text) {
+          if (getConfigService().getUserInfo() == null) {
+            getUiService().sendCommand(LoginCommand(
+              userName: usernameController.text,
+              password: passwordController.text,
+              loginMode: LoginMode.CHANGE_PASSWORD,
+              newPassword: newPasswordController.text,
+              reason: 'Password Expired',
+            ));
+          } else {
+            getUiService().sendCommand(ChangePasswordCommand(
+              username: usernameController.text,
+              newPassword: newPasswordController.text,
+              password: passwordController.text,
+              reason: 'Change Password Request',
+            ));
           }
-        else
-          {
-            getUiService().openDialog(pDialogWidget: passwordError(), pIsDismissible: true),
-          }
+        } else {
+          getUiService().openDialog(pDialogWidget: passwordError(), pIsDismissible: true);
+        }
       },
       child: Text(getConfigService().translateText('Change Password')),
     ));
 
-    if (getConfigService().getUserInfo() == null) {
-      widgetList.add(TextButton(
-        onPressed: () => {context.beamBack()},
-        child: Text(getConfigService().translateText('Cancel')),
-      ));
-    }
     return widgetList;
   }
 }
