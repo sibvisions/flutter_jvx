@@ -118,8 +118,9 @@ Future<void> initApp({
           ));
         } catch (e, stackTrace) {
           LOGGER.logE(pType: LogType.GENERAL, pError: e, pStacktrace: stackTrace);
-          bool? dialogResult = await uiService.openDialog(
-            pDialogWidget: ErrorDialog(
+          bool? dialogResult = await uiService.openDismissibleDialog(
+            pContext: initContext,
+            pBuilder: (context) => ErrorDialog(
               message: IUiService.getErrorMessage(e),
               gotToSettings: true,
               dismissible: false,
