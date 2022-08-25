@@ -62,7 +62,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
       double width = splitLayout.splitterSize;
       double height = splitLayout.splitterSize;
 
-      if (model.orientation == SPLIT_ORIENTATION.HORIZONTAL) {
+      if (model.orientation == SplitOrientation.HORIZONTAL) {
         width = currentPosition.width;
         top = (currentPosition.height * (splitLayout.leftTopRatio / 100.0)) - (splitLayout.splitterSize / 2);
       } else {
@@ -77,18 +77,18 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         height: height,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onVerticalDragUpdate: model.orientation == SPLIT_ORIENTATION.HORIZONTAL ? _verticalDrag : null,
-          onVerticalDragEnd: model.orientation == SPLIT_ORIENTATION.HORIZONTAL ? _verticalDragEnd : null,
-          onHorizontalDragUpdate: model.orientation == SPLIT_ORIENTATION.VERTICAL ? _horizontalDrag : null,
-          onHorizontalDragEnd: model.orientation == SPLIT_ORIENTATION.VERTICAL ? _horizontalDragEnd : null,
+          onVerticalDragUpdate: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDrag : null,
+          onVerticalDragEnd: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDragEnd : null,
+          onHorizontalDragUpdate: model.orientation == SplitOrientation.VERTICAL ? _horizontalDrag : null,
+          onHorizontalDragEnd: model.orientation == SplitOrientation.VERTICAL ? _horizontalDragEnd : null,
           child: Container(
             color: Theme.of(context).backgroundColor,
             child: Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5.0),
                 child: Container(
-                  width: model.orientation == SPLIT_ORIENTATION.VERTICAL ? width : width * 0.3,
-                  height: model.orientation == SPLIT_ORIENTATION.VERTICAL ? height * 0.3 : height,
+                  width: model.orientation == SplitOrientation.VERTICAL ? width : width * 0.3,
+                  height: model.orientation == SplitOrientation.VERTICAL ? height * 0.3 : height,
                   color: IColor.darken(IColorConstants.COMPONENT_DISABLED),
                 ),
               ),

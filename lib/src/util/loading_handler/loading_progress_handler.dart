@@ -51,7 +51,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
   void notifyCommandProgressStart(BaseCommand pCommand) async {
     if (isSupported(pCommand)) {
       LOGGER.logD(
-          pType: LOG_TYPE.COMMAND,
+          pType: LogType.COMMAND,
           pMessage: "notifyCommandProgressStart: ${pCommand.runtimeType} + ${pCommand.hashCode}");
       _commandTimerMap[pCommand] = Timer(pCommand.loadingDelay, () {
         if (_commandTimerMap[pCommand] != null) {
@@ -67,7 +67,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
     if (timer != null) {
       if (timer.isActive) {
         timer.cancel();
-        LOGGER.logD(pType: LOG_TYPE.COMMAND, pMessage: "Timer cancel: ${pCommand.runtimeType} + ${pCommand.hashCode}");
+        LOGGER.logD(pType: LogType.COMMAND, pMessage: "Timer cancel: ${pCommand.runtimeType} + ${pCommand.hashCode}");
       } else {
         _closeLoadingProgress(pCommand);
       }
@@ -91,7 +91,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
     }
 
     LOGGER.logD(
-      pType: LOG_TYPE.COMMAND,
+      pType: LogType.COMMAND,
       pMessage: "showLoadingProgress | $_loadingCommandAmount | ${pCommand.runtimeType} + ${pCommand.hashCode}",
     );
     if (_loadingCommandAmount == 0) {
@@ -123,7 +123,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
   void _closeLoadingProgress(BaseCommand pCommand) {
     _loadingCommandAmount--;
     LOGGER.logD(
-      pType: LOG_TYPE.COMMAND,
+      pType: LogType.COMMAND,
       pMessage: "closeLoadingProgress | $_loadingCommandAmount |  ${pCommand.runtimeType} + ${pCommand.hashCode}",
     );
     if (_loadingCommandAmount == 0 && _dialogContext != null) {

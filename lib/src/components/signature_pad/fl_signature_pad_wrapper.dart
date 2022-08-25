@@ -174,6 +174,8 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   PopupMenuItem<SignatureContextMenuCommand> _getContextMenuItem(
       IconData icon, String text, SignatureContextMenuCommand value) {
     return PopupMenuItem<SignatureContextMenuCommand>(
+      enabled: true,
+      value: value,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -184,8 +186,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
           Padding(padding: const EdgeInsets.only(left: 5), child: Text(text)),
         ],
       ),
-      enabled: true,
-      value: value,
     );
   }
 }

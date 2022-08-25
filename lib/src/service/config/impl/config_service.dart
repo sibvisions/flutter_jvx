@@ -237,7 +237,7 @@ class ConfigService implements IConfigService {
 
   @override
   Future<bool> setAppStyle(Map<String, String>? pAppStyle) {
-    log("AppStyle: " + pAppStyle.toString());
+    log("AppStyle: $pAppStyle");
 
     if (pAppStyle == null) {
       applicationStyle?.clear();
@@ -327,7 +327,7 @@ class ConfigService implements IConfigService {
     String? translatedText = translation.translations[pText];
     if (translatedText == null) {
       LOGGER.logD(
-          pType: LOG_TYPE.CONFIG, pMessage: "Translation for text: $pText was not found for language ${getLanguage()}");
+          pType: LogType.CONFIG, pMessage: "Translation for text: $pText was not found for language ${getLanguage()}");
       return pText;
     }
     return translatedText;
@@ -478,7 +478,7 @@ class ConfigService implements IConfigService {
 
     File? langTransFile = fileManager.getFileSync(pPath: "languages/translation_$pLanguage.json");
     if (langTransFile == null) {
-      LOGGER.logW(pType: LOG_TYPE.CONFIG, pMessage: "Translation file for code $pLanguage could not be found");
+      LOGGER.logW(pType: LogType.CONFIG, pMessage: "Translation file for code $pLanguage could not be found");
     } else {
       langTrans.merge(langTransFile);
     }

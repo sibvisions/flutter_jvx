@@ -225,7 +225,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         currentObjectFocused = null;
         sendValue();
       } else {
-        LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Value will be set");
+        LOGGER.logI(pType: LogType.UI, pMessage: "Value will be set");
         currentObjectFocused!.addListener(sendValue);
         currentObjectFocused!.unfocus();
       }
@@ -246,7 +246,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     if (_toSendValue is HashMap<String, dynamic>) {
       var map = _toSendValue as HashMap<String, dynamic>;
 
-      LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Values of ${model.id} set to $_toSendValue");
+      LOGGER.logI(pType: LogType.DATA, pMessage: "Values of ${model.id} set to $_toSendValue");
       getUiService().sendCommand(SetValuesCommand(
           componentId: model.id,
           dataProvider: model.dataProvider,
@@ -254,7 +254,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           values: map.values.toList(),
           reason: "Value of ${model.id} set to $_toSendValue"));
     } else {
-      LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
+      LOGGER.logI(pType: LogType.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
       getUiService().sendCommand(SetValuesCommand(
           componentId: model.id,
           dataProvider: model.dataProvider,
@@ -288,10 +288,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Logs the cell editor for debug purposes.
   void logCellEditor(String pPhase) {
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: StackTrace.current.toString());
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- $pPhase -----");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor?.hashCode}");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- $pPhase -----");
+    LOGGER.logD(pType: LogType.UI, pMessage: StackTrace.current.toString());
+    LOGGER.logD(pType: LogType.UI, pMessage: "----- $pPhase -----");
+    LOGGER.logD(pType: LogType.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor?.hashCode}");
+    LOGGER.logD(pType: LogType.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
+    LOGGER.logD(pType: LogType.UI, pMessage: "----- $pPhase -----");
   }
 }

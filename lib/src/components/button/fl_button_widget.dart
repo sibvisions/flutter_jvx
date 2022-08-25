@@ -60,8 +60,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     }
     return ElevatedButton(
       onPressed: getOnPressed(),
-      child: createDirectButtonChild(context),
       style: getButtonStyle(context),
+      child: createDirectButtonChild(context),
     );
   }
 
@@ -99,24 +99,24 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
           model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
         return Column(
+          mainAxisSize: MainAxisSize.min,
+          textBaseline: TextBaseline.alphabetic,
+          textDirection: // If the text is aligned to the left, the text comes before the icon
+              model.labelModel.verticalAlignment == VerticalAlignment.TOP ? TextDirection.rtl : TextDirection.ltr,
           children: <Widget>[
             image!,
             SizedBox(height: model.imageTextGap.toDouble()),
             Flexible(child: _getTextWidget()),
           ],
-          mainAxisSize: MainAxisSize.min,
-          textBaseline: TextBaseline.alphabetic,
-          textDirection: // If the text is aligned to the left, the text comes before the icon
-              model.labelModel.verticalAlignment == VerticalAlignment.TOP ? TextDirection.rtl : TextDirection.ltr,
         );
       } else {
         return Row(
-          children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: _getTextWidget())],
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: _getCrossAxisAlignment(model.labelModel.verticalAlignment),
           textBaseline: TextBaseline.alphabetic,
           textDirection: // If the text is aligned to the left, the text comes before the icon
               model.labelModel.horizontalAlignment == HorizontalAlignment.LEFT ? TextDirection.rtl : TextDirection.ltr,
+          children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: _getTextWidget())],
         );
       }
     } else if (model.labelModel.text.isNotEmpty) {
@@ -130,9 +130,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   Widget createDirectButtonChild(BuildContext context) {
     return Container(
-      child: getButtonChild(),
       decoration: getBoxDecoration(context),
       alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+      child: getButtonChild(),
     );
   }
 
@@ -172,7 +172,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       String url = model.labelModel.text;
 
       if (!url.startsWith("http")) {
-        url = 'https://' + url;
+        url = 'https://$url';
       }
       try {
         launchUrlString(url);

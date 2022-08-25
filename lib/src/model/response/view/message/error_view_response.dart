@@ -39,7 +39,7 @@ class ErrorViewResponse extends MessageView {
         exceptions = ServerException.fromJson(pJson[ApiObjectProperty.exceptions]),
         isTimeout = false,
         super.fromJson(pJson: pJson, originalRequest: originalRequest) {
-    LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: toString());
+    LOGGER.logW(pType: LogType.COMMAND, pMessage: toString());
   }
 
   @override

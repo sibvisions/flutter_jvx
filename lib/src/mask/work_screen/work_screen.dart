@@ -78,7 +78,7 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
     String? backgroundImageString = getConfigService().getAppStyle()?['desktop.icon'];
 
-    log("WORKSCREEN Layoutbuilder build: " + MediaQuery.of(context).viewInsets.bottom.toString());
+    log("WORKSCREEN Layoutbuilder build: ${MediaQuery.of(context).viewInsets.bottom}");
 
     return GestureDetector(
       onTap: () {
@@ -147,13 +147,13 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
                           Container(
                             height: constraints.maxHeight + viewInsets.bottom,
                             width: constraints.maxWidth,
+                            color: backgroundColor,
                             child: backgroundImageString != null
                                 ? ImageLoader.loadImage(
                                     backgroundImageString,
                                     fit: BoxFit.scaleDown,
                                   )
                                 : null,
-                            color: backgroundColor,
                           ),
                           screenWidget
                         ],

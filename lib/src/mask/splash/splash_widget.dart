@@ -58,7 +58,7 @@ class _SplashWidgetState extends State<SplashWidget> {
   @override
   void initState() {
     super.initState();
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initState");
+    LOGGER.logD(pType: LogType.UI, pMessage: "initState");
 
     initAppFuture = initApp(
       initContext: context,
@@ -68,7 +68,7 @@ class _SplashWidgetState extends State<SplashWidget> {
       languageCallbacks: widget.languageCallbacks,
       imagesCallbacks: widget.imagesCallbacks,
     ).catchError((error, stackTrace) {
-      LOGGER.logE(pType: LOG_TYPE.GENERAL, pMessage: error.toString(), pStacktrace: stackTrace);
+      LOGGER.logE(pType: LogType.GENERAL, pMessage: error.toString(), pStacktrace: stackTrace);
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -92,7 +92,7 @@ class _SplashWidgetState extends State<SplashWidget> {
 
   @override
   Widget build(BuildContext context) {
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "build");
+    LOGGER.logD(pType: LogType.UI, pMessage: "build");
 
     return FutureBuilder(
       future: initAppFuture,

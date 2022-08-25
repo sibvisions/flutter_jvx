@@ -86,7 +86,7 @@ class CommandService implements ICommandService {
       routeCommands = await processCommand(pCommand);
       pCommand.callback?.call();
     } catch (error) {
-      LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Error processing ${pCommand.runtimeType}");
+      LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error processing ${pCommand.runtimeType}");
       rethrow;
     } finally {
       progressHandler.forEach((element) => element.notifyCommandProgressEnd(pCommand));
@@ -140,7 +140,7 @@ class CommandService implements ICommandService {
       commands = await _dataProcessor.processCommand(pCommand);
     } else {
       LOGGER.logW(
-        pType: LOG_TYPE.COMMAND,
+        pType: LogType.COMMAND,
         pMessage: "Command (${pCommand.runtimeType}) without Processor found",
       );
       return [];

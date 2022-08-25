@@ -127,6 +127,8 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
             _config.valueType != ValueType.none &&
                     (_config.progress! > 0 || _config.progressType == ProgressType.valuable)
                 ? Align(
+                    alignment:
+                        _config.valuePosition == ValuePosition.right ? Alignment.bottomRight : Alignment.bottomCenter,
                     child: Text(
                       _config.valueType == ValueType.number
                           ? '${_config.progress}/${_config.maxProgress}'
@@ -139,8 +141,6 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                         fontWeight: _config.valueFontWeight,
                       ),
                     ),
-                    alignment:
-                        _config.valuePosition == ValuePosition.right ? Alignment.bottomRight : Alignment.bottomCenter,
                   )
                 : Container()
           ],

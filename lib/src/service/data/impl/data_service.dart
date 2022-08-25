@@ -251,10 +251,10 @@ class DataService implements IDataService {
 
   @override
   void clearData(String pWorkscreen) {
-    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Clearing all data books of prefix: $pWorkscreen");
-    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Pre clearing" + dataBooks.toString());
+    LOGGER.logI(pType: LogType.DATA, pMessage: "Clearing all data books of prefix: $pWorkscreen");
+    LOGGER.logI(pType: LogType.DATA, pMessage: "Pre clearing: $dataBooks");
     dataBooks.removeWhere((key, value) => key.startsWith(pWorkscreen, key.indexOf("/") + 1));
-    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Post clearing: " + dataBooks.toString());
+    LOGGER.logI(pType: LogType.DATA, pMessage: "Post clearing: $dataBooks");
   }
 
   @override

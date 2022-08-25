@@ -140,12 +140,12 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
 
         if (response.statusCode == 404) {
           var body = await _decodeBody(response);
-          LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: "Server sent HTTP 404: $body");
+          LOGGER.logW(pType: LogType.COMMAND, pMessage: "Server sent HTTP 404: $body");
           throw const SocketException("Application not found (404)");
         }
         if (response.statusCode == 500) {
           var body = await _decodeBody(response);
-          LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Server sent HTTP 500: $body");
+          LOGGER.logE(pType: LogType.COMMAND, pMessage: "Server sent HTTP 500: $body");
           throw const SocketException("General Server Error (500)");
         }
 
@@ -183,13 +183,13 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
           var viewResponse = parsedResponseObjects.firstWhereOrNull((element) => element is MessageView);
           if (viewResponse != null) {
             var messageViewResponse = viewResponse as MessageView;
-            throw StateError("Server sent error: " + messageViewResponse.toString());
+            throw StateError("Server sent error: $messageViewResponse");
           }
         }
 
         return parsedResponseObjects;
       } catch (e) {
-        LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Error while sending ${pRequest.runtimeType}");
+        LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error while sending ${pRequest.runtimeType}");
         rethrow;
       }
     } else {

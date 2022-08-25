@@ -1,7 +1,7 @@
 import '../../../service/api/shared/api_object_property.dart';
 import 'fl_panel_model.dart';
 
-enum SPLIT_ORIENTATION { HORIZONTAL, VERTICAL }
+enum SplitOrientation { HORIZONTAL, VERTICAL }
 
 class FlSplitPanelModel extends FlPanelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,7 +12,7 @@ class FlSplitPanelModel extends FlPanelModel {
   double dividerPosition = 50;
 
   /// The way the panels are split up.
-  SPLIT_ORIENTATION orientation = SPLIT_ORIENTATION.VERTICAL;
+  SplitOrientation orientation = SplitOrientation.VERTICAL;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -46,11 +46,11 @@ class FlSplitPanelModel extends FlPanelModel {
     );
   }
 
-  static SPLIT_ORIENTATION orientationFromDynamic(dynamic pValue) {
+  static SplitOrientation orientationFromDynamic(dynamic pValue) {
     if (pValue != 1) {
-      return SPLIT_ORIENTATION.HORIZONTAL;
+      return SplitOrientation.HORIZONTAL;
     } else {
-      return SPLIT_ORIENTATION.VERTICAL;
+      return SplitOrientation.VERTICAL;
     }
   }
 }

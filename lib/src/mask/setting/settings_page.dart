@@ -186,8 +186,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
       floatingActionButton: !getConfigService().isOffline()
           ? FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
-              child: const FaIcon(FontAwesomeIcons.qrcode),
               onPressed: loading ? null : _openQRScanner,
+              child: const FaIcon(FontAwesomeIcons.qrcode),
             )
           : null,
     );

@@ -79,7 +79,7 @@ class OfflineDatabase with ConfigServiceGetterMixin {
         }
 
         String createTableSQL = _createTable(table);
-        LOGGER.logD(pType: LOG_TYPE.DATA, pMessage: "Create Table SQL:\n" + createTableSQL);
+        LOGGER.logD(pType: LogType.DATA, pMessage: "Create Table SQL:\n$createTableSQL");
         // Run the CREATE TABLE statement on the database.
         return db.execute(createTableSQL);
       })
@@ -138,8 +138,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         .query(
           OFFLINE_METADATA_TABLE,
           columns: ["META_DATA"],
-          where: "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)" +
-              (pDataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""),
+          where:
+              "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)${pDataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""}",
           whereArgs: whereArgs,
         )
         .then((result) => result
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     sql.write('"$STATE_COLUMN" TEXT\n');
 
     if (pTable.primaryKeyColumns.isNotEmpty) {
-      sql.write(', PRIMARY KEY ("' + pTable.primaryKeyColumns.join('", "') + '")\n');
+      sql.write(', PRIMARY KEY ("${pTable.primaryKeyColumns.join('", "')}")\n');
     }
 
     sql.write(");");
@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
           }
           columns.add(s);
         }
-        where += columns.join(" AND ") + ")";
+        where += "${columns.join(" AND ")})";
       }
     }
 
@@ -273,7 +273,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<bool> rowExists({required String pTableName, Map<String, dynamic>? pFilter}) {
     String sql = 'SELECT COUNT(*) AS COUNT FROM "${formatOfflineTableName(pTableName)}"';
     if (pFilter != null) {
-      sql += " WHERE" + pFilter.keys.map((key) => '"$key" = ?').join(" AND ");
+      sql += " WHERE${pFilter.keys.map((key) => '"$key" = ?').join(" AND ")}";
       sql += ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
     }
 
@@ -406,8 +406,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   List<dynamic>? _getWhere(List<FilterCondition>? pFilters) {
     String where = '"$STATE_COLUMN" IS NULL OR "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
     if (!(pFilters?.isEmpty ?? true)) {
-      where =
-          "((" + pFilters!.map((e) => _buildWhereClause(e)).where((s) => s != null).join(") AND (") + ')) AND ($where)';
+      String filterWhere = pFilters!.map((e) => _buildWhereClause(e)).where((s) => s != null).join(") AND (");
+      where = '(($filterWhere)) AND ($where)';
       var whereArgs = pFilters.expand((e) => e.getValues()).map((e) {
         if (e is String) {
           return e.replaceAll("*", "%").replaceAll("?", "_");
@@ -440,7 +440,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
               .map((subCondition) => _buildWhereClause(subCondition))
               .where((s) => s != null)
               .map((e) => "($e)")
-        ].join(" " + condition.operatorType.name + " ");
+        ].join(" ${condition.operatorType.name} ");
       }
     }
     return where;
@@ -527,7 +527,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<List<String>> _getTableColumns(String pTableName, {Transaction? txn}) {
     return (txn ?? db)
         .rawQuery("SELECT NAME FROM PRAGMA_TABLE_INFO('$pTableName') WHERE NAME NOT LIKE ? AND NAME NOT LIKE ?;", [
-      COLUMN_PREFIX + "%",
+      "$COLUMN_PREFIX%",
       STATE_COLUMN,
     ]).then((value) => value.map((e) => e['name'] as String).toList(growable: false));
   }

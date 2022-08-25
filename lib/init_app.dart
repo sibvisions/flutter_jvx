@@ -32,7 +32,7 @@ Future<void> initApp({
   List<Function(String language)>? languageCallbacks,
   List<Function()>? imagesCallbacks,
 }) async {
-  LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
+  LOGGER.logD(pType: LogType.UI, pMessage: "initApp");
 
   HttpOverrides.global = MyHttpOverrides();
 
@@ -57,7 +57,7 @@ Future<void> initApp({
   if (!kReleaseMode) {
     AppConfig? devConfig = await ConfigUtil.readDevConfig();
     if (devConfig != null) {
-      LOGGER.logI(pType: LOG_TYPE.CONFIG, pMessage: "Found dev config, overriding values");
+      LOGGER.logI(pType: LogType.CONFIG, pMessage: "Found dev config, overriding values");
       appConfig = devConfig;
       devConfigLoaded = true;
     }
@@ -65,7 +65,7 @@ Future<void> initApp({
   appConfig ??= await ConfigUtil.readAppConfig();
 
   if (appConfig == null) {
-    LOGGER.logI(pType: LOG_TYPE.CONFIG, pMessage: "No config found, using default values");
+    LOGGER.logI(pType: LogType.CONFIG, pMessage: "No config found, using default values");
     appConfig = AppConfig();
   }
   await (configService as ConfigService).setAppConfig(appConfig, devConfigLoaded);
@@ -118,7 +118,7 @@ Future<void> initApp({
             reason: "InitApp",
           ));
         } catch (e, stackTrace) {
-          LOGGER.logE(pType: LOG_TYPE.GENERAL, pError: e, pStacktrace: stackTrace);
+          LOGGER.logE(pType: LogType.GENERAL, pError: e, pStacktrace: stackTrace);
           bool? dialogResult = await uiService.openDialog(
             pDialogWidget: ErrorDialog(
               message: IUiService.getErrorMessage(e),

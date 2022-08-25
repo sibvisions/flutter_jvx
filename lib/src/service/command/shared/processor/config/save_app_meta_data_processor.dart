@@ -26,7 +26,7 @@ class SaveAppMetaDataCommandProcessor
 
     bool doLangExits = getConfigService().getFileManager().getDirectory(pPath: "languages/")?.existsSync() ?? false;
     bool doImgExits =
-        getConfigService().getFileManager().getDirectory(pPath: IFileManager.IMAGES_PATH + "/")?.existsSync() ?? false;
+        getConfigService().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/")?.existsSync() ?? false;
 
     List<BaseCommand> commands = [];
     if (!doLangExits) {

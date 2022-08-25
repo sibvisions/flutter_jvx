@@ -173,10 +173,10 @@ class StorageService implements IStorageService {
   @override
   Future<void> deleteScreen({required String screenName}) async {
     LOGGER.logD(
-        pType: LOG_TYPE.STORAGE,
+        pType: LogType.STORAGE,
         pMessage: "Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
 
-    LOGGER.logD(pType: LOG_TYPE.STORAGE, pMessage: _componentMap.keys.toList().toString());
+    LOGGER.logD(pType: LogType.STORAGE, pMessage: _componentMap.keys.toList().toString());
 
     FlComponentModel? screenModel =
         _componentMap.values.firstWhereOrNull((componentModel) => componentModel.name == screenName);
@@ -190,7 +190,7 @@ class StorageService implements IStorageService {
       });
     }
     LOGGER.logD(
-        pType: LOG_TYPE.STORAGE,
+        pType: LogType.STORAGE,
         pMessage: "Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
   }
 

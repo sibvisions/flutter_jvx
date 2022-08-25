@@ -58,7 +58,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
                 imageInBinary: true, imageInBase64: false, fit: BoxFit.scaleDown);
           }
         } catch (error, stacktrace) {
-          LOGGER.logE(pType: LOG_TYPE.UI, pMessage: error.toString(), pStacktrace: stacktrace);
+          LOGGER.logE(pType: LogType.UI, pMessage: error.toString(), pStacktrace: stacktrace);
         }
       }
 

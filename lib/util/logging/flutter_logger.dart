@@ -1,7 +1,7 @@
 import 'dart:developer' as dev;
 
 /// The log level.
-enum LOG_LEVEL {
+enum LogLevel {
   /// Any error that is forcing a shutdown of the service or application to prevent data loss (or further data loss).
   /// I reserve these only for the most heinous errors and situations where
   /// there is guaranteed to have been data corruption or loss.
@@ -27,26 +27,26 @@ enum LOG_LEVEL {
   TRACE,
 }
 
-enum LOG_TYPE { GENERAL, CONFIG, LAYOUT, STORAGE, DATA, COMMAND, UI }
+enum LogType { GENERAL, CONFIG, LAYOUT, STORAGE, DATA, COMMAND, UI }
 
 /// The log level which is always logged, independent from the type.
-const LOG_LEVEL MINIMUM_LOG = LOG_LEVEL.WARNING;
+const LogLevel MINIMUM_LOG = LogLevel.WARNING;
 
 class LOGGER {
   // ignore: non_constant_identifier_names
-  static Map<LOG_TYPE, LOG_LEVEL> LOG_SETTINGS = {
-    LOG_TYPE.GENERAL: LOG_LEVEL.ERROR,
-    LOG_TYPE.CONFIG: LOG_LEVEL.ERROR,
-    LOG_TYPE.LAYOUT: LOG_LEVEL.ERROR,
-    LOG_TYPE.STORAGE: LOG_LEVEL.ERROR,
-    LOG_TYPE.DATA: LOG_LEVEL.ERROR,
-    LOG_TYPE.COMMAND: LOG_LEVEL.ERROR,
-    LOG_TYPE.UI: LOG_LEVEL.ERROR,
+  static Map<LogType, LogLevel> LOG_SETTINGS = {
+    LogType.GENERAL: LogLevel.ERROR,
+    LogType.CONFIG: LogLevel.ERROR,
+    LogType.LAYOUT: LogLevel.ERROR,
+    LogType.STORAGE: LogLevel.ERROR,
+    LogType.DATA: LogLevel.ERROR,
+    LogType.COMMAND: LogLevel.ERROR,
+    LogType.UI: LogLevel.ERROR,
   };
 
   static logs({
-    required List<LOG_TYPE> pTypes,
-    required LOG_LEVEL pLevel,
+    required List<LogType> pTypes,
+    required LogLevel pLevel,
     dynamic pMessage,
     Object? pError,
     StackTrace? pStacktrace,
@@ -54,8 +54,8 @@ class LOGGER {
     bool canLog = MINIMUM_LOG.index >= pLevel.index;
 
     if (!canLog) {
-      for (LOG_TYPE logType in pTypes) {
-        LOG_LEVEL? logLevel = LOG_SETTINGS[logType];
+      for (LogType logType in pTypes) {
+        LogLevel? logLevel = LOG_SETTINGS[logType];
 
         if (logLevel != null && logLevel.index >= pLevel.index) {
           canLog = true;
@@ -74,33 +74,33 @@ class LOGGER {
     }
   }
 
-  static logsF({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.FATAL, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logsF({required List<LogType> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    logs(pLevel: LogLevel.FATAL, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logsE({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.ERROR, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logsE({required List<LogType> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    logs(pLevel: LogLevel.ERROR, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logsW({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.WARNING, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logsW({required List<LogType> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    logs(pLevel: LogLevel.WARNING, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logsI({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.INFO, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logsI({required List<LogType> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    logs(pLevel: LogLevel.INFO, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logsD({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.DEBUG, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logsD({required List<LogType> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    logs(pLevel: LogLevel.DEBUG, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logsT({required List<LOG_TYPE> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    logs(pLevel: LOG_LEVEL.TRACE, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logsT({required List<LogType> pTypes, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    logs(pLevel: LogLevel.TRACE, pTypes: pTypes, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static log({
-    required LOG_TYPE pType,
-    required LOG_LEVEL pLevel,
+    required LogType pType,
+    required LogLevel pLevel,
     dynamic pMessage,
     Object? pError,
     StackTrace? pStacktrace,
@@ -108,7 +108,7 @@ class LOGGER {
     bool canLog = MINIMUM_LOG.index >= pLevel.index;
 
     if (!canLog) {
-      LOG_LEVEL? logLevel = LOG_SETTINGS[pType];
+      LogLevel? logLevel = LOG_SETTINGS[pType];
       canLog = logLevel != null && logLevel.index >= pLevel.index;
     }
 
@@ -122,38 +122,38 @@ class LOGGER {
     }
   }
 
-  static logF({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.FATAL, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logF({required LogType pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    log(pLevel: LogLevel.FATAL, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logE({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.ERROR, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logE({required LogType pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    log(pLevel: LogLevel.ERROR, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logW({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.WARNING, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logW({required LogType pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    log(pLevel: LogLevel.WARNING, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logI({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.INFO, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logI({required LogType pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    log(pLevel: LogLevel.INFO, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logD({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.DEBUG, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logD({required LogType pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    log(pLevel: LogLevel.DEBUG, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
-  static logT({required LOG_TYPE pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
-    log(pLevel: LOG_LEVEL.TRACE, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
+  static logT({required LogType pType, dynamic pMessage, Object? pError, StackTrace? pStacktrace}) {
+    log(pLevel: LogLevel.TRACE, pType: pType, pMessage: pMessage, pError: pError, pStacktrace: pStacktrace);
   }
 
   static _log({
-    required LOG_LEVEL pLevel,
+    required LogLevel pLevel,
     dynamic pMessage,
     Object? pError,
     StackTrace? pStacktrace,
   }) {
     dev.log(
-      "${pLevel.name}:" + (pMessage != null ? " " + pMessage.toString() : ""),
+      "${pLevel.name}:${pMessage != null ? " $pMessage" : ""}",
       error: pError,
       stackTrace: pStacktrace,
     );

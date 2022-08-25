@@ -15,7 +15,7 @@ class DownloadTranslationCommandProcessor
 
     if (clientId == null) {
       LOGGER.logE(
-          pType: LOG_TYPE.COMMAND, pMessage: "Client id not found while trying to send Download translation request");
+          pType: LogType.COMMAND, pMessage: "Client id not found while trying to send Download translation request");
       throw Exception("Client id not found while trying to send Download translation request");
     }
 

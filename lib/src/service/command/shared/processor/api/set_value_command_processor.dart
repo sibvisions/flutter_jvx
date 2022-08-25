@@ -18,7 +18,7 @@ class SetValueCommandProcessor
 
       return getApiService().sendRequest(request: setValueRequest);
     } else {
-      throw Exception("NO CLIENT ID FOUND, while trying to send setValue request. CommandID: " + command.id.toString());
+      throw Exception("NO CLIENT ID FOUND, while trying to send setValue request. CommandID: ${command.id}");
     }
   }
 }

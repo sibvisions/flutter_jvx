@@ -35,7 +35,7 @@ class SaveComponentsCommand extends StorageCommand {
 
     if (componentsToSave != null) {
       for (FlComponentModel element in componentsToSave!) {
-        saveCompIds += " " + element.id + ";";
+        saveCompIds += " ${element.id};";
       }
 
       saveCompIds += "]";
@@ -46,7 +46,7 @@ class SaveComponentsCommand extends StorageCommand {
     if (updatedComponent != null) {
       for (var element in updatedComponent!) {
         if (element is Map) {
-          updateCompIds += " " + element[ApiObjectProperty.id] + ";";
+          updateCompIds += " ${element[ApiObjectProperty.id]};";
         }
       }
       updateCompIds += "]";
@@ -54,6 +54,6 @@ class SaveComponentsCommand extends StorageCommand {
       updateCompIds = "";
     }
 
-    return "SaveComponentsCommand | " + saveCompIds + updateCompIds + " | Reason : $reason";
+    return "SaveComponentsCommand | $saveCompIds$updateCompIds | Reason : $reason";
   }
 }

@@ -42,6 +42,7 @@ class AppLogin extends StatelessWidget with ConfigServiceGetterMixin {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
+                flex: 4,
                 child: ClipPath(
                   clipper: ArcClipper(),
                   child: Container(
@@ -51,14 +52,13 @@ class AppLogin extends StatelessWidget with ConfigServiceGetterMixin {
                     child: loginLogo != null ? ImageLoader.loadImage(loginLogo, fit: BoxFit.scaleDown) : null,
                   ),
                 ),
-                flex: 4,
               ),
               Expanded(
-                child: Container(
-                  child: loginIcon != null ? ImageLoader.loadImage(loginIcon, fit: BoxFit.fitWidth) : null,
-                  color: bottomColor ?? Colors.transparent,
-                ),
                 flex: 6,
+                child: Container(
+                  color: bottomColor ?? Colors.transparent,
+                  child: loginIcon != null ? ImageLoader.loadImage(loginIcon, fit: BoxFit.fitWidth) : null,
+                ),
               ),
             ],
           ),

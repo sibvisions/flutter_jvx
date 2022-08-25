@@ -19,8 +19,7 @@ class OpenScreenCommandProcessor
           ApiOpenScreenRequest(screenLongName: command.componentId, clientId: clientId, manualClose: true);
       return getApiService().sendRequest(request: openScreenRequest);
     } else {
-      throw Exception(
-          "NO CLIENT ID FOUND, while trying to send openScreen request. CommandID: " + command.id.toString());
+      throw Exception("NO CLIENT ID FOUND, while trying to send openScreen request. CommandID: ${command.id}");
     }
   }
 }

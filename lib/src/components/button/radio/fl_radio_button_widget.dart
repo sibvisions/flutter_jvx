@@ -57,11 +57,11 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
 
     if (child != null) {
       child = InkWell(
+        onTap: super.getOnPressed(),
         child: Ink(
           padding: const EdgeInsets.only(right: 10),
           child: child,
         ),
-        onTap: super.getOnPressed(),
       );
     }
     return child;

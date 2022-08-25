@@ -47,6 +47,8 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               loginTitle ?? getConfigService().getAppName()!.toUpperCase(),
@@ -56,10 +58,10 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               controller: usernameController,
-              decoration: InputDecoration(labelText: getConfigService().translateText("Username") + ":"),
+              decoration: InputDecoration(labelText: "${getConfigService().translateText("Username")}:"),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: getConfigService().translateText("Password") + ":"),
+              decoration: InputDecoration(labelText: "${getConfigService().translateText("Password")}:"),
               controller: passwordController,
               obscureText: true,
             ),
@@ -83,8 +85,6 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
               ),
             ]),
           ],
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
         ),
       ),
     );
@@ -94,7 +94,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
     if (!(getConfigService().getMetaData()?.lostPasswordEnabled == false)) {
       return TextButton(
         onPressed: () => context.beamToNamed("/login/lostPassword"),
-        child: Text(getConfigService().translateText("Reset password") + "?"),
+        child: Text("${getConfigService().translateText("Reset password")}?"),
       );
     } else {
       return Container();

@@ -40,9 +40,9 @@ class UpdateComponentsCommand extends UiCommand {
     String allAffectedComponentIds = "[";
 
     for (FlComponentModel element in newComponents) {
-      allAffectedComponentIds += " " + element.id + ";";
+      allAffectedComponentIds += " ${element.id};";
     }
 
-    return "UpdateComponentsCommand Reason: $reason | Affected IDs: " + allAffectedComponentIds + "]";
+    return "UpdateComponentsCommand Reason: $reason | Affected IDs: $allAffectedComponentIds]";
   }
 }

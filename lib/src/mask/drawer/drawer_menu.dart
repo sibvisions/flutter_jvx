@@ -64,7 +64,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
                 const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 _buildHeaderText(
                   flex: 20,
-                  text: getConfigService().translateText("Logged in as") + ":",
+                  text: "${getConfigService().translateText("Logged in as")}:",
                   context: context,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 1)),

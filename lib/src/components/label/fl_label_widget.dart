@@ -25,7 +25,6 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     return GestureDetector(
       onTap: onPress,
       child: Container(
-        child: child,
         decoration: BoxDecoration(
           color: model.background,
           border: Border.all(
@@ -35,6 +34,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
           ),
         ),
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+        child: child,
       ),
     );
   }

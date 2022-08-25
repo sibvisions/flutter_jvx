@@ -40,10 +40,10 @@ class AppMenuListUngroup extends StatelessWidget {
     return Stack(children: [
       SizedBox.expand(
         child: Container(
+          color: backgroundColor,
           child: Center(
             child: backgroundImageString != null ? ImageLoader.loadImage(backgroundImageString!) : null,
           ),
-          color: backgroundColor,
         ),
       ),
       CustomScrollView(

@@ -109,7 +109,7 @@ class TableSize with UiServiceGetterMixin {
       double columnWidth = adjustValue(
         minColumnWidth,
         ParseUtil.getTextWidth(
-              text: columnHeader + "*",
+              text: "$columnHeader*",
               style: tableModel.getTextStyle(pFontWeight: FontWeight.bold),
               textScaleFactor: textScaleFactor,
             ) *

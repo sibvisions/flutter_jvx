@@ -82,7 +82,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   void handleAsyncError(Object error, StackTrace stackTrace) {
-    LOGGER.logE(pType: LOG_TYPE.COMMAND, pError: error, pStacktrace: stackTrace);
+    LOGGER.logE(pType: LogType.COMMAND, pError: error, pStacktrace: stackTrace);
 
     bool isTimeout = error is TimeoutException || error is SocketException;
     getCommandService().sendCommand(OpenErrorDialogCommand(
@@ -184,7 +184,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
           Widget child = pDialogWidget;
 
           if (pLocale != null) {
-            child = Localizations.override(context: context, child: child, locale: pLocale);
+            child = Localizations.override(context: context, locale: pLocale, child: child);
           }
 
           return WillPopScope(
@@ -208,7 +208,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
             Widget child = pBuilder.call(context);
 
             if (pLocale != null) {
-              child = Localizations.override(context: context, child: child, locale: pLocale);
+              child = Localizations.override(context: context, locale: pLocale, child: child);
             }
 
             return WillPopScope(
@@ -298,7 +298,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Save new components: " + newModels.map((e) => e.id).toList().toString());
+    LOGGER.logD(pType: LogType.UI, pMessage: "Save new components: ${newModels.map((e) => e.id).toList()}");
     _activeComponentModels.addAll(newModels);
   }
 

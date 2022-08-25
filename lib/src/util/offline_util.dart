@@ -35,11 +35,11 @@ abstract class OfflineUtil {
       elevation: useElevation ? Theme.of(context).appBarTheme.elevation ?? 4.0 : 0.0,
       child: Container(
         height: 20,
+        alignment: Alignment.center,
         child: const Text(
           'OFFLINE',
           style: TextStyle(color: Colors.white),
         ),
-        alignment: Alignment.center,
       ),
     );
   }
@@ -68,7 +68,7 @@ abstract class OfflineUtil {
           pBuilder: (context) => ProgressDialogWidget(
             key: dialogKey,
             config: Config(
-              message: configService.translateText("Re-syncing offline data") + "...",
+              message: "${configService.translateText("Re-syncing offline data")}...",
               progressType: ProgressType.valuable,
               barrierDismissible: false,
               progressValueColor: Theme.of(context).primaryColor,
@@ -108,7 +108,7 @@ abstract class OfflineUtil {
 
       var dataBooks = dataService.getDataBooks();
       for (DataBook dataBook in dataBooks.values) {
-        log("DataBook: " + dataBook.dataProvider + " | " + dataBook.records.length.toString());
+        log("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
         List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
 
         Map<String, List<Map<String, Object?>>> groupedRows =
@@ -121,7 +121,7 @@ abstract class OfflineUtil {
 
         dialogKey.currentState?.update(
             config: Config(
-          message: configService.translateText("Syncing data") + "... ($dataBookCounter / ${dataBooks.length})",
+          message: "${configService.translateText("Syncing data")}... ($dataBookCounter / ${dataBooks.length})",
           progress: successfulSyncedPrimaryKeys.length,
           maxProgress: changedRowsPerDataBook,
         ));
@@ -172,8 +172,8 @@ abstract class OfflineUtil {
           pContext: context,
           pBuilder: (context) => AlertDialog(
             title: Text("Sync $syncResult"),
-            content: Text("Successfully synced $successfulSyncedRows rows" +
-                (failedRowCount > 0 ? "\n$failedRowCount rows failed to sync" : "")),
+            content: Text(
+                "Successfully synced $successfulSyncedRows rows${failedRowCount > 0 ? "\n$failedRowCount rows failed to sync" : ""}"),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -463,7 +463,7 @@ abstract class OfflineUtil {
           return ProgressDialogWidget(
             key: dialogKey,
             config: Config(
-              message: configService.translateText("Fetching offline data") + "...",
+              message: "${configService.translateText("Fetching offline data")}...",
               progressType: ProgressType.valuable,
               barrierDismissible: false,
               progressValueColor: Theme.of(context).primaryColor,
@@ -488,7 +488,7 @@ abstract class OfflineUtil {
 
       dialogKey.currentState?.update(
           config: Config(
-        message: configService.translateText("Processing data") + "...",
+        message: "${configService.translateText("Processing data")}...",
         progress: 0,
         maxProgress: 100,
       ));
@@ -498,7 +498,7 @@ abstract class OfflineUtil {
       await offlineApiRepository.initDatabase((value, max, {progress}) {
         dialogKey.currentState?.update(
             config: Config(
-          message: configService.translateText("Processing data") + " ($value / $max)...",
+          message: "${configService.translateText("Processing data")} ($value / $max)...",
           progress: progress ?? 0,
         ));
       });

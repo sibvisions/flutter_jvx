@@ -15,11 +15,11 @@ class FlDummyWidget extends FlStatelessWidget<FlDummyModel> {
       color: kDebugMode
           ? Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0)
           : Theme.of(context).backgroundColor,
+      alignment: Alignment.bottomLeft,
       child: Text(
         "Dummy for ${model.id}",
         textAlign: TextAlign.end,
       ),
-      alignment: Alignment.bottomLeft,
     );
   }
 }

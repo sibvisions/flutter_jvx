@@ -44,7 +44,7 @@ class LayoutData implements ICloneable {
   Size? _calculatedSize;
 
   set calculatedSize(Size? newCalcSize) {
-    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "$id CHANGED CALC TO: $newCalcSize");
+    LOGGER.logD(pType: LogType.LAYOUT, pMessage: "$id CHANGED CALC TO: $newCalcSize");
 
     _calculatedSize = newCalcSize;
   }

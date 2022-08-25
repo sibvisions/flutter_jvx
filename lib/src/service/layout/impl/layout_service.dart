@@ -29,7 +29,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${pLayoutData.id} REPORT: ${pLayoutData.layout}");
+    LOGGER.logD(pType: LogType.LAYOUT, pMessage: "${pLayoutData.id} REPORT: ${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -51,7 +51,7 @@ class LayoutService implements ILayoutService {
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
     LOGGER.logD(
-        pType: LOG_TYPE.LAYOUT,
+        pType: LogType.LAYOUT,
         pMessage:
             "Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
     pLayoutData.layoutState = LayoutState.VALID;
@@ -121,7 +121,7 @@ class LayoutService implements ILayoutService {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if (data != null) {
-      LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "$pComponentId was marked as DIRTY");
+      LOGGER.logD(pType: LogType.LAYOUT, pMessage: "$pComponentId was marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
 
       return true;
@@ -158,7 +158,7 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   List<BaseCommand> _performLayout({required LayoutData pParentLayout}) {
-    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${pParentLayout.id} PERFORM LAYOUT");
+    LOGGER.logD(pType: LogType.LAYOUT, pMessage: "${pParentLayout.id} PERFORM LAYOUT");
     _currentlyLayouting.add(pParentLayout.id);
 
     try {
@@ -179,7 +179,7 @@ class LayoutService implements ILayoutService {
       parent.layout!.calculateLayout(parent, children);
 
       LOGGER.logD(
-          pType: LOG_TYPE.LAYOUT,
+          pType: LogType.LAYOUT,
           pMessage:
               "${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
 
@@ -226,7 +226,7 @@ class LayoutService implements ILayoutService {
   /// Returns true if conditions to perform the layout are met.
   bool _isLegalState({required LayoutData pParentLayout}) {
     if (!_isValid) {
-      LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "I am not valid. ${pParentLayout.id}");
+      LOGGER.logD(pType: LogType.LAYOUT, pMessage: "I am not valid. ${pParentLayout.id}");
       return false;
     }
 
@@ -236,7 +236,7 @@ class LayoutService implements ILayoutService {
       for (LayoutData child in children) {
         if (!(child.layoutState == LayoutState.VALID && (child.hasCalculatedSize || child.hasPreferredSize))) {
           LOGGER.logD(
-              pType: LOG_TYPE.LAYOUT,
+              pType: LogType.LAYOUT,
               pMessage:
                   "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
           return false;

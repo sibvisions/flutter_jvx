@@ -33,7 +33,7 @@ abstract class BaseCommand {
 
   @override
   String toString() {
-    return super.toString() + "  reason: $reason";
+    return "${super.toString()} | Reason: $reason";
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -12,8 +12,7 @@ abstract class ConfigUtil {
     try {
       return await _readConfigFile("app.conf.json");
     } catch (e, stackTrace) {
-      LOGGER.logD(
-          pType: LOG_TYPE.CONFIG, pMessage: "App Config File failed to load: " + e.toString(), pStacktrace: stackTrace);
+      LOGGER.logD(pType: LogType.CONFIG, pMessage: "App Config File failed to load: $e", pStacktrace: stackTrace);
     }
     return null;
   }
@@ -23,10 +22,7 @@ abstract class ConfigUtil {
     try {
       return await _readConfigFile("dev.conf.json");
     } catch (e, stackTrace) {
-      LOGGER.logD(
-          pType: LOG_TYPE.CONFIG,
-          pMessage: "Dev App Config File failed to load: " + e.toString(),
-          pStacktrace: stackTrace);
+      LOGGER.logD(pType: LogType.CONFIG, pMessage: "Dev App Config File failed to load: $e", pStacktrace: stackTrace);
     }
     return null;
   }

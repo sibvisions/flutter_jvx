@@ -23,12 +23,12 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: getOnPressed(),
+      style: getButtonStyle(context),
       child: Container(
-        child: getButtonChild(),
         decoration: getBoxDecoration(context),
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+        child: getButtonChild(),
       ),
-      style: getButtonStyle(context),
     );
   }
 

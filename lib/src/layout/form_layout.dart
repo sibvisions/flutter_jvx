@@ -568,10 +568,10 @@ class FormLayout extends ILayout {
             bottomAnchor: bottomAnchor, leftAnchor: leftAnchor, rightAnchor: rightAnchor, topAnchor: topAnchor);
         componentConstraints[value.id] = constraint;
       } catch (_) {
-        dev.log("Parent id: " + value.parentId!);
-        dev.log("Child id: " + value.id);
-        dev.log("Layoutdata" + layoutData);
-        dev.log("Layout" + layoutString);
+        dev.log("Parent id: ${value.parentId!}");
+        dev.log("Child id: ${value.id}");
+        dev.log("Layoutdata $layoutData");
+        dev.log("Layout $layoutString");
         var keys = anchors.keys.toList()..sort();
         anchorNames.sort();
         dev.log(keys.toString());

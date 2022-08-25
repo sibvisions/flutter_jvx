@@ -268,7 +268,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       Filter? filter = createPrimaryFilter(pRowIndex: lastTouchedIndex);
 
       if (filter == null) {
-        LOGGER.logW(pType: LOG_TYPE.DATA, pMessage: "Filter of table(${model.id}) null");
+        LOGGER.logW(pType: LogType.DATA, pMessage: "Filter of table(${model.id}) null");
         return;
       }
 
@@ -286,7 +286,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     Filter? filter = createPrimaryFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
-      LOGGER.logW(pType: LOG_TYPE.DATA, pMessage: "Filter of table(${model.id}) null");
+      LOGGER.logW(pType: LogType.DATA, pMessage: "Filter of table(${model.id}) null");
       return;
     }
 
@@ -427,6 +427,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   PopupMenuItem<ContextMenuCommand> _getContextMenuItem(IconData icon, String text, ContextMenuCommand value) {
     return PopupMenuItem<ContextMenuCommand>(
+      enabled: true,
+      value: value,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -437,8 +439,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
           Padding(padding: const EdgeInsets.only(left: 5), child: Text(text)),
         ],
       ),
-      enabled: true,
-      value: value,
     );
   }
 

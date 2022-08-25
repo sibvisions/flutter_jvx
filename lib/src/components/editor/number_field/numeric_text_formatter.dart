@@ -153,7 +153,7 @@ class NumericTextFormatter extends TextInputFormatter {
     List<String> numberFormatParts = _numberFormat!.split(".");
     if (numberFormatParts.length > 1 && numberFormatParts[1].length > cutAt) {
       try {
-        String newFormat = numberFormatParts[0] + "." + numberFormatParts[1].substring(0, cutAt < 0 ? 14 : cutAt);
+        String newFormat = "${numberFormatParts[0]}.${numberFormatParts[1].substring(0, cutAt < 0 ? 14 : cutAt)}";
         if (newFormat.endsWith(".")) return newFormat.substring(0, newFormat.length - 1);
         return newFormat;
       } catch (e) {

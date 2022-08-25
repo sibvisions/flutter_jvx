@@ -32,7 +32,7 @@ class SplitLayout implements ILayout, ICloneable {
   double splitterSize;
 
   /// How the splitter is orientated, defaults to Vertical
-  SPLIT_ORIENTATION splitAlignment;
+  SplitOrientation splitAlignment;
 
   LayoutPosition firstComponentViewer = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
 
@@ -46,7 +46,7 @@ class SplitLayout implements ILayout, ICloneable {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SplitLayout({this.splitterSize = 10, this.splitAlignment = SPLIT_ORIENTATION.VERTICAL, this.leftTopRatio = 50});
+  SplitLayout({this.splitterSize = 10, this.splitAlignment = SplitOrientation.VERTICAL, this.leftTopRatio = 50});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -63,7 +63,7 @@ class SplitLayout implements ILayout, ICloneable {
 
     // Only set position on children if layout has a position set.
     if (position != null) {
-      if (splitAlignment == SPLIT_ORIENTATION.VERTICAL) {
+      if (splitAlignment == SplitOrientation.VERTICAL) {
         double leftTopWidth = position.width / 100 * leftTopRatio - splitterSize / 2;
         double rightBottomWidth = position.width / 100 * (100 - leftTopRatio) - splitterSize / 2;
 
@@ -103,11 +103,11 @@ class SplitLayout implements ILayout, ICloneable {
         width: secondComponentSize.width, height: secondComponentSize.height, top: 0, left: 0, isComponentSize: true);
 
     // preferred width & height
-    double width = splitAlignment == SPLIT_ORIENTATION.VERTICAL ? splitterSize : 0;
-    double height = splitAlignment == SPLIT_ORIENTATION.HORIZONTAL ? splitterSize : 0;
+    double width = splitAlignment == SplitOrientation.VERTICAL ? splitterSize : 0;
+    double height = splitAlignment == SplitOrientation.HORIZONTAL ? splitterSize : 0;
 
     for (LayoutData child in pChildren) {
-      if (splitAlignment == SPLIT_ORIENTATION.VERTICAL) {
+      if (splitAlignment == SplitOrientation.VERTICAL) {
         width += child.bestSize.width;
         height = max(height, child.bestSize.height);
       } else {

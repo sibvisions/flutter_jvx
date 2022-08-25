@@ -29,7 +29,7 @@ class SetValuesCommandProcessor
 
       return getApiService().sendRequest(request: setValuesRequest);
     } else {
-      throw Exception("NO CLIENT ID FOUND while trying to send setValues request. CommandID: " + command.id.toString());
+      throw Exception("NO CLIENT ID FOUND while trying to send setValues request. CommandID: ${command.id}");
     }
   }
 }

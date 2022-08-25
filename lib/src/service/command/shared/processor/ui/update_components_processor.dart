@@ -15,7 +15,7 @@ class UpdateComponentsProcessor
 
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
-    LOGGER.logD(pType: LOG_TYPE.COMMAND, pMessage: "------------------- Components are updating");
+    LOGGER.logD(pType: LogType.COMMAND, pMessage: "------------------- Components are updating");
 
     if (!isOpenScreen && !_secondRun) {
       await getLayoutService().setValid(isValid: false);
@@ -57,7 +57,7 @@ class UpdateComponentsProcessor
 
         getUiService().notifyAffectedComponents(affectedIds: command.affectedComponents);
 
-        LOGGER.logD(pType: LOG_TYPE.COMMAND, pMessage: "------------------- Components are finished updating");
+        LOGGER.logD(pType: LogType.COMMAND, pMessage: "------------------- Components are finished updating");
       });
     });
 

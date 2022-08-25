@@ -25,7 +25,7 @@ class SaveApplicationImagesCommandProcessor
         name.replaceFirst("/", "");
       }
 
-      await fileManager.saveFile(pContent: content, pPath: IFileManager.IMAGES_PATH + "/$name");
+      await fileManager.saveFile(pContent: content, pPath: "${IFileManager.IMAGES_PATH}/$name");
     }
 
     getConfigService().imagesChanged();
