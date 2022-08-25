@@ -25,7 +25,7 @@ class SaveApplicationImagesCommandProcessor
         name.replaceFirst("/", "");
       }
 
-      fileManager.saveFile(pContent: content, pPath: "images/$name");
+      fileManager.saveFile(pContent: content, pPath: IFileManager.IMAGES_PATH + "/$name");
     }
 
     return Future.value([]);

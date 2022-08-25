@@ -48,7 +48,7 @@ abstract class ImageLoader {
 
     Image image;
 
-    File? file = fileManager.getFileSync(pPath: "images/$pPath");
+    File? file = fileManager.getFileSync(pPath: IFileManager.IMAGES_PATH + "/$pPath");
 
     if (imageInBinary) {
       Uint8List imageValues = imageInBase64 ? base64Decode(pPath) : Uint8List.fromList(pPath.codeUnits);
