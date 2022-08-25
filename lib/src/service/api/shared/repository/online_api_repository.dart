@@ -139,11 +139,13 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
         HttpClientResponse response = await _sendPostRequest(uri, jsonRequest);
 
         if (response.statusCode == 404) {
-          LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: "Server sent HTTP 404: $response");
+          var body = await _decodeBody(response);
+          LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: "Server sent HTTP 404: $body");
           throw const SocketException("Application not found (404)");
         }
         if (response.statusCode == 500) {
-          LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Server sent HTTP 500: $response");
+          var body = await _decodeBody(response);
+          LOGGER.logE(pType: LOG_TYPE.COMMAND, pMessage: "Server sent HTTP 500: $body");
           throw const SocketException("General Server Error (500)");
         }
 
