@@ -408,7 +408,12 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     if (!(pFilters?.isEmpty ?? true)) {
       where =
           "((" + pFilters!.map((e) => _buildWhereClause(e)).where((s) => s != null).join(") AND (") + ')) AND ($where)';
-      var whereArgs = pFilters.expand((e) => e.getValues()).toList();
+      var whereArgs = pFilters.expand((e) => e.getValues()).map((e) {
+        if (e is String) {
+          return e.replaceAll("*", "%").replaceAll("?", "_");
+        }
+        return e;
+      }).toList();
       return [where, whereArgs];
     }
     return [where, null];
