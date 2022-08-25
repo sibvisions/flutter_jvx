@@ -12,7 +12,7 @@ class SaveApplicationImagesCommandProcessor
     with ConfigServiceGetterMixin
     implements ICommandProcessor<SaveApplicationImagesCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveApplicationImagesCommand command) {
+  Future<List<BaseCommand>> processCommand(SaveApplicationImagesCommand command) async {
     IFileManager fileManager = getConfigService().getFileManager();
 
     Uint8List content;
@@ -25,9 +25,11 @@ class SaveApplicationImagesCommandProcessor
         name.replaceFirst("/", "");
       }
 
-      fileManager.saveFile(pContent: content, pPath: IFileManager.IMAGES_PATH + "/$name");
+      await fileManager.saveFile(pContent: content, pPath: IFileManager.IMAGES_PATH + "/$name");
     }
 
-    return Future.value([]);
+    getConfigService().imagesChanged();
+
+    return [];
   }
 }

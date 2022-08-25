@@ -30,6 +30,7 @@ Future<void> initApp({
   AppManager? pAppManager,
   List<Function(Map<String, String> style)>? styleCallbacks,
   List<Function(String language)>? languageCallbacks,
+  List<Function()>? imagesCallbacks,
 }) async {
   LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "initApp");
 
@@ -77,10 +78,13 @@ Future<void> initApp({
     }
   }
 
+  //Register callbacks
   configService.disposeStyleCallbacks();
   styleCallbacks?.forEach((element) => configService.registerStyleCallback(element));
   configService.disposeLanguageCallbacks();
   languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
+  configService.disposeImagesCallbacks();
+  imagesCallbacks?.forEach((element) => configService.registerImagesCallback(element));
 
   //Init saved app style
   var appStyle = configService.getAppStyle();

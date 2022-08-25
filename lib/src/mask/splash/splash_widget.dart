@@ -24,6 +24,8 @@ class SplashWidget extends StatefulWidget {
 
   final List<Function(String language)>? languageCallbacks;
 
+  final List<Function()>? imagesCallbacks;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,6 +37,7 @@ class SplashWidget extends StatefulWidget {
     this.loadingBuilder,
     this.styleCallbacks,
     this.languageCallbacks,
+    this.imagesCallbacks,
   }) : super(key: key);
 
   @override
@@ -61,8 +64,9 @@ class _SplashWidgetState extends State<SplashWidget> {
       initContext: context,
       appConfig: widget.appConfig,
       pAppManager: widget.appManager,
-      languageCallbacks: widget.languageCallbacks,
       styleCallbacks: widget.styleCallbacks,
+      languageCallbacks: widget.languageCallbacks,
+      imagesCallbacks: widget.imagesCallbacks,
     ).catchError((error, stackTrace) {
       LOGGER.logE(pType: LOG_TYPE.GENERAL, pMessage: error.toString(), pStacktrace: stackTrace);
       showDialog(

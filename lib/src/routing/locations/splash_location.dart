@@ -20,6 +20,8 @@ class SplashLocation extends BeamLocation<BeamState> {
 
   final List<Function(String language)>? languageCallbacks;
 
+  final List<Function()>? imagesCallbacks;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,8 +30,9 @@ class SplashLocation extends BeamLocation<BeamState> {
     this.appConfig,
     this.appManager,
     this.loadingBuilder,
-    this.languageCallbacks,
     this.styleCallbacks,
+    this.languageCallbacks,
+    this.imagesCallbacks,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,8 +47,9 @@ class SplashLocation extends BeamLocation<BeamState> {
           appConfig: appConfig,
           appManager: appManager,
           loadingBuilder: loadingBuilder,
-          languageCallbacks: languageCallbacks,
           styleCallbacks: styleCallbacks,
+          languageCallbacks: languageCallbacks,
+          imagesCallbacks: imagesCallbacks,
         ),
       ),
     ];

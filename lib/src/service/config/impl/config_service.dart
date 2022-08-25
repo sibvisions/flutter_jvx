@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,11 +30,8 @@ class ConfigService implements IConfigService {
   /// Parameters which will get added to every startup
   final Map<String, dynamic> startupParameters = {};
 
-  /// List of all active styleCallbacks
-  final List<Function> styleCallbacks = [];
-
-  /// List of all active languageStyleCallbacks
-  final List<Function> languageCallbacks = [];
+  /// Map of all active callbacks
+  final Map<String, List<Function>> callbacks = {};
 
   /// If the style callbacks are active
   bool activeStyleCallbacks = true;
@@ -248,7 +246,7 @@ class ConfigService implements IConfigService {
     }
 
     if (activeStyleCallbacks) {
-      styleCallbacks.forEach((element) => element.call(pAppStyle));
+      callbacks['style']?.forEach((element) => element.call(pAppStyle));
     }
     return setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
   }
@@ -381,17 +379,17 @@ class ConfigService implements IConfigService {
 
   @override
   void registerLanguageCallback(Function(String language) pCallback) {
-    languageCallbacks.add(pCallback);
+    registerCallback("language", pCallback);
   }
 
   @override
-  void disposeLanguageCallback(Function(String language) pCallBack) {
-    languageCallbacks.remove(pCallBack);
+  void disposeLanguageCallback(Function(String language) pCallback) {
+    disposeCallback("language", pCallback);
   }
 
   @override
   void disposeLanguageCallbacks() {
-    languageCallbacks.clear();
+    disposeCallbacks("language");
   }
 
   @override
@@ -406,17 +404,17 @@ class ConfigService implements IConfigService {
 
   @override
   void registerStyleCallback(Function(Map<String, String> style) pCallback) {
-    styleCallbacks.add(pCallback);
+    registerCallback("style", pCallback);
   }
 
   @override
   void disposeStyleCallback(Function(Map<String, String> style) pCallback) {
-    styleCallbacks.remove(pCallback);
+    disposeCallback("style", pCallback);
   }
 
   @override
   void disposeStyleCallbacks() {
-    styleCallbacks.clear();
+    disposeCallbacks("style");
   }
 
   @override
@@ -427,6 +425,26 @@ class ConfigService implements IConfigService {
   @override
   void resumeStyleCallbacks() {
     activeStyleCallbacks = true;
+  }
+
+  @override
+  void registerImagesCallback(Function() pCallback) {
+    registerCallback("images", pCallback);
+  }
+
+  @override
+  void disposeImagesCallback(Function() pCallback) {
+    disposeCallback("images", pCallback);
+  }
+
+  @override
+  void disposeImagesCallbacks() {
+    disposeCallbacks("images");
+  }
+
+  @override
+  void imagesChanged() {
+    callbacks["images"]?.forEach((element) => element.call());
   }
 
   @override
@@ -442,6 +460,18 @@ class ConfigService implements IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void registerCallback(String type, Function pCallback) {
+    callbacks.putIfAbsent(type, () => []).add(pCallback);
+  }
+
+  void disposeCallback(String type, Function pCallback) {
+    callbacks[type]?.remove(pCallback);
+  }
+
+  void disposeCallbacks(String type) {
+    callbacks[type]?.clear();
+  }
 
   void _loadLanguage(String pLanguage) {
     translation.translations.clear();
@@ -468,7 +498,7 @@ class ConfigService implements IConfigService {
     }
 
     if (activeLanguageCallbacks) {
-      languageCallbacks.forEach((element) => element.call(pLanguage));
+      callbacks["language"]?.forEach((element) => element.call(pLanguage));
     }
   }
 }

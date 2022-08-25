@@ -169,7 +169,7 @@ abstract class IConfigService {
   void registerLanguageCallback(Function(String language) pCallback);
 
   /// Removes the callback
-  void disposeLanguageCallback(Function(String language) pCallBack);
+  void disposeLanguageCallback(Function(String language) pCallback);
 
   /// Removes all language callbacks
   void disposeLanguageCallbacks();
@@ -179,4 +179,15 @@ abstract class IConfigService {
 
   /// Resumes all language callbacks.
   void resumeLanguageCallbacks();
+
+  void imagesChanged();
+
+  /// Callback will be called when language has been set
+  void registerImagesCallback(Function() pCallback);
+
+  /// Removes the callback
+  void disposeImagesCallback(Function() pCallback);
+
+  /// Removes all language callbacks
+  void disposeImagesCallbacks();
 }

@@ -134,6 +134,7 @@ class FlutterJVxState extends State<FlutterJVx> {
             loadingBuilder: widget.loadingBuilder,
             styleCallbacks: [changeStyle],
             languageCallbacks: [changeLanguage],
+            imagesCallbacks: [changedImages],
           ),
           LoginLocation(),
           MenuLocation(),
@@ -184,6 +185,11 @@ class FlutterJVxState extends State<FlutterJVx> {
   void changeLanguage(String pLanguage) {
     locale = Locale.fromSubtags(languageCode: pLanguage);
     log("setLanguage");
+    setState(() {});
+  }
+
+  void changedImages() {
+    log("changedImages");
     setState(() {});
   }
 }
