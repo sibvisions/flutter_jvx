@@ -437,6 +437,8 @@ class _SettingsPageState extends State<SettingsPage>
           username: username,
           password: password,
         ));
+      } catch (e, stackTrace) {
+        getUiService().handleAsyncError(e, stackTrace);
       } finally {
         setState(() {
           loading = false;
