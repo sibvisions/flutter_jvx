@@ -89,6 +89,10 @@ class LoadingProgressHandler implements ICommandProgressHandler {
     if (_commandTimerMap[pCommand] == null) {
       return;
     }
+    //TODO check for alternatives!
+    if (ModalRoute.of(services<IUiService>().getBuildContext()!)?.isCurrent != true) {
+      return;
+    }
 
     LOGGER.logD(
       pType: LogType.COMMAND,
