@@ -9,6 +9,7 @@ import 'file_manager_web.dart';
 /// File manager used to manage all file interaction (different implementations for web and mobile)
 abstract class IFileManager with ConfigServiceGetterMixin {
   static const String IMAGES_PATH = "images";
+  static const String LANGUAGES_PATH = "languages";
 
   ///Constructs a FileManager depending on the platform
   static Future<IFileManager> getFileManager() async {

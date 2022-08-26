@@ -15,7 +15,8 @@ class SaveApplicationTranslationCommandProcessor
     List<Future> saveFutures = [];
 
     for (ArchiveFile translation in command.translations) {
-      saveFutures.add(fileManager.saveFile(pContent: translation.content, pPath: "languages/${translation.name}"));
+      saveFutures.add(fileManager.saveFile(
+          pContent: translation.content, pPath: "${IFileManager.LANGUAGES_PATH}/${translation.name}"));
     }
 
     // Wait till all files are saved

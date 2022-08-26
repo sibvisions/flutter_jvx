@@ -225,7 +225,7 @@ class ConfigService implements IConfigService {
   @override
   void reloadSupportedLanguages() {
     // Add supported languages by parsing all translation file names
-    Directory? langDir = fileManager.getDirectory(pPath: "languages/");
+    Directory? langDir = fileManager.getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");
     if (langDir != null && langDir.existsSync()) {
       List<String> fileNames = langDir.listSync().map((e) => e.path.split("/").last).toList();
 
@@ -485,14 +485,14 @@ class ConfigService implements IConfigService {
   void _loadLanguage(String pLanguage) {
     Translation langTrans = Translation.empty();
 
-    File? langTransFile = fileManager.getFileSync(pPath: "languages/translation_$pLanguage.json");
+    File? langTransFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation_$pLanguage.json");
     if (langTransFile == null) {
       LOGGER.logW(pType: LogType.CONFIG, pMessage: "Translation file for code $pLanguage could not be found");
     } else {
       langTrans.merge(langTransFile);
     }
 
-    langTransFile = fileManager.getFileSync(pPath: "languages/translation.json");
+    langTransFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation.json");
     langTrans.merge(langTransFile);
 
     translation = langTrans;
