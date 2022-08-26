@@ -408,18 +408,22 @@ abstract class OfflineUtil {
     return primaryColumns;
   }
 
-  static Future<void> fetchDataProvider(
-      IDataService dataService, String offlineWorkscreen, ICommandService commandService,
-      {void Function(int value, int max)? progressUpdate}) async {
+  static Set<String> getActiveDataProviders(IDataService dataService, String offlineWorkscreen) {
     //String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
-    Set<String> activeDataProviders = dataService.getDataBooks().keys.toList().where((element) {
+    return dataService.getDataBooks().keys.toList().where((element) {
       var prefixes = element.split("/");
       if (prefixes.length >= 2) {
         return prefixes[1] == offlineWorkscreen;
       }
       return false;
     }).toSet();
+  }
 
+  static Future<void> fetchDataProvider(
+    Set<String> activeDataProviders,
+    ICommandService commandService, {
+    void Function(int value, int max)? progressUpdate,
+  }) async {
     int fetchCounter = 1;
     for (String dataProvider in activeDataProviders) {
       log("Start fetching $dataProvider");
@@ -473,9 +477,9 @@ abstract class OfflineUtil {
         },
       ));
 
+      var activeDataProviders = getActiveDataProviders(dataService, pWorkscreen);
       await fetchDataProvider(
-        dataService,
-        pWorkscreen,
+        activeDataProviders,
         commandService,
         progressUpdate: (value, max) {
           dialogKey.currentState?.update(
@@ -495,7 +499,13 @@ abstract class OfflineUtil {
 
       offlineApiRepository = OfflineApiRepository();
       await offlineApiRepository.start();
-      await offlineApiRepository.initDatabase((value, max, {progress}) {
+
+      var dataBooks = dataService
+          .getDataBooks()
+          .values
+          .where((element) => activeDataProviders.contains(element.dataProvider))
+          .toList(growable: false);
+      await offlineApiRepository.initDatabase(dataBooks, (value, max, {progress}) {
         dialogKey.currentState?.update(
             config: Config(
           message: "${configService.translateText("Processing data")} ($value / $max)...",
@@ -504,7 +514,8 @@ abstract class OfflineUtil {
       });
 
       //Clear databooks for offline usage
-      dataService.getDataBooks().values.forEach((dataBook) => dataBook.clearRecords());
+      dataService.clearDataBooks();
+      await offlineApiRepository.initDataBooks(dataService);
 
       await apiService.setRepository(offlineApiRepository);
       await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenLongName!);

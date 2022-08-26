@@ -17,6 +17,7 @@ import '../../../../model/request/i_api_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../model/response/dal_meta_data_response.dart';
+import '../../../data/i_data_service.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
 
@@ -37,9 +38,13 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       offlineDatabase = await OfflineDatabase.open();
 
       //Init all databooks because there is no OpenScreenCommand offline
-      List<DalMetaDataResponse> metaData = await offlineDatabase!.getMetaData();
-      await Future.wait(metaData.map((element) => getDataService().updateMetaData(pMetaData: element)));
+      await initDataBooks(getDataService());
     }
+  }
+
+  Future<void> initDataBooks(IDataService dataService) async {
+    List<DalMetaDataResponse> metaData = await offlineDatabase!.getMetaData();
+    await Future.wait(metaData.map((element) => dataService.updateMetaData(pMetaData: element)));
   }
 
   @override
@@ -55,9 +60,10 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   }
 
   /// Init database with currently available dataBooks
-  Future<void> initDatabase(void Function(int value, int max, {int? progress})? progressUpdate) async {
-    var dataBooks = getDataService().getDataBooks().values.toList(growable: false);
-
+  Future<void> initDatabase(
+    List<DataBook> dataBooks,
+    void Function(int value, int max, {int? progress})? progressUpdate,
+  ) async {
     var dalMetaData = dataBooks.map((e) => e.metaData!).toList(growable: false);
     //Drop old data + possible old scheme
     await offlineDatabase!.dropTables(dalMetaData);
