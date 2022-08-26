@@ -1,10 +1,9 @@
 import 'dart:developer';
 
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../custom/custom_screen.dart';
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/image/image_loader.dart';
@@ -251,9 +250,10 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     }
   }
 
-  _customBack() {
-    CustomScreen? screen = getUiService().getCustomScreen(pScreenLongName: widget.screenLongName);
-    bool isHandled = screen?.onBack?.call() ?? false;
-    if (!isHandled) context.beamToNamed("/menu");
+  _customBack() async {
+    bool handled = await Navigator.of(context).maybePop();
+    if (!handled) {
+      context.beamBack();
+    }
   }
 }

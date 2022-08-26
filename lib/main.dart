@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/app_config.dart';
 import 'custom/app_manager.dart';
-import 'src/routing/fl_back_button_dispatcher.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
 import 'src/routing/locations/settings_location.dart';
@@ -151,7 +150,7 @@ class FlutterJVxState extends State<FlutterJVx> {
       theme: themeData,
       routeInformationParser: BeamerParser(),
       routerDelegate: routerDelegate,
-      backButtonDispatcher: FlBackButtonDispatcher(delegate: routerDelegate),
+      backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
       title: widget.appConfig?.title ?? "JVx Mobile",
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

@@ -5,6 +5,7 @@ import '../../../custom/custom_screen.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../components/components_factory.dart';
 import '../../mask/work_screen/work_screen.dart';
+import '../../model/command/api/navigation_command.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 
 class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
@@ -60,14 +61,22 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
     return [
       BeamPage(
         key: ValueKey(screenTitle),
-        child: WorkScreen(
-          isCustomScreen: isCustomScreen,
-          screenTitle: screenTitle,
-          screenWidget: screen,
-          footer: footer,
-          header: header,
-          screenName: workScreenName,
-          screenLongName: screenLongName,
+        child: WillPopScope(
+          onWillPop: () async {
+            if (!getUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
+              getUiService().sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName));
+            }
+            return true;
+          },
+          child: WorkScreen(
+            isCustomScreen: isCustomScreen,
+            screenTitle: screenTitle,
+            screenWidget: screen,
+            footer: footer,
+            header: header,
+            screenName: workScreenName,
+            screenLongName: screenLongName,
+          ),
         ),
       )
     ];
