@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
 import '../../../custom/custom_screen.dart';
+import '../../../main.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
@@ -67,10 +67,6 @@ abstract class IUiService {
   /// Route to the provided full path, used for routing to offline screens
   void routeToCustom({required String pFullPath});
 
-  /// Sets the buildContext from the current [BeamLocation],
-  /// used when server dictates location
-  void setRouteContext({required BuildContext pContext});
-
   /// Gets the current custom manager
   AppManager? getAppManager();
 
@@ -93,7 +89,9 @@ abstract class IUiService {
     Locale? pLocale,
   });
 
-  BuildContext? getBuildContext();
+  static BuildContext getCurrentContext() {
+    return routerDelegate.navigatorKey.currentContext!;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Meta data management

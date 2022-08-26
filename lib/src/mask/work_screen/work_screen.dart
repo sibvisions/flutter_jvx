@@ -72,9 +72,6 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
 
   @override
   Widget build(BuildContext context) {
-    if (mounted) {
-      getUiService().setRouteContext(pContext: context);
-    }
     Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
     String? backgroundImageString = getConfigService().getAppStyle()?['desktop.icon'];
 
@@ -208,8 +205,6 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
   }
 
   _onBackTap() {
-    getUiService().setRouteContext(pContext: context);
-
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       _navigateBack();
@@ -233,8 +228,6 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
   }
 
   _onDoubleTap() {
-    getUiService().setRouteContext(pContext: context);
-
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       _navigateBackForcefully();

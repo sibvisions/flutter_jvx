@@ -8,6 +8,7 @@ import '../../../../../mask/error/server_error_dialog.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../../../routing/locations/settings_location.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogCommand> with UiServiceGetterMixin {
@@ -15,7 +16,7 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
   Future<List<BaseCommand>> processCommand(OpenErrorDialogCommand command) async {
     bool goToSettings = command.isTimeout || command.canBeFixedInSettings;
     //Don't show "Go to Settings" while in settings
-    if (getUiService().getBuildContext()!.currentBeamLocation.runtimeType == SettingsLocation) {
+    if (IUiService.getCurrentContext().currentBeamLocation.runtimeType == SettingsLocation) {
       goToSettings = false;
     }
 

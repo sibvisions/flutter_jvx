@@ -111,9 +111,9 @@ class FlutterJVx extends StatefulWidget {
   }
 }
 
-class FlutterJVxState extends State<FlutterJVx> {
-  late BeamerDelegate _routerDelegate;
+late BeamerDelegate routerDelegate;
 
+class FlutterJVxState extends State<FlutterJVx> {
   ThemeData themeData = ThemeData(
     backgroundColor: Colors.grey.shade50,
   );
@@ -122,7 +122,7 @@ class FlutterJVxState extends State<FlutterJVx> {
   void initState() {
     super.initState();
 
-    _routerDelegate = BeamerDelegate(
+    routerDelegate = BeamerDelegate(
       initialPath: "/splash",
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
@@ -150,8 +150,8 @@ class FlutterJVxState extends State<FlutterJVx> {
     return MaterialApp.router(
       theme: themeData,
       routeInformationParser: BeamerParser(),
-      routerDelegate: _routerDelegate,
-      backButtonDispatcher: FlBackButtonDispatcher(delegate: _routerDelegate),
+      routerDelegate: routerDelegate,
+      backButtonDispatcher: FlBackButtonDispatcher(delegate: routerDelegate),
       title: widget.appConfig?.title ?? "JVx Mobile",
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

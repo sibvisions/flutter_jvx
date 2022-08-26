@@ -18,10 +18,6 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     Map<String, String?>? dataMap = data as Map<String, String?>?;
 
-    if (mounted) {
-      getUiService().setRouteContext(pContext: context);
-    }
-
     return [
       const BeamPage(
         key: ValueKey("login"),

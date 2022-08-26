@@ -50,7 +50,6 @@ Future<void> initApp({
     ..add(LoadingProgressHandler());
 
   uiService.setAppManager(pAppManager);
-  uiService.setRouteContext(pContext: initContext);
 
   // Load config files
   bool devConfigLoaded = false;
@@ -121,7 +120,6 @@ Future<void> initApp({
         } catch (e, stackTrace) {
           LOGGER.logE(pType: LogType.GENERAL, pError: e, pStacktrace: stackTrace);
           bool? dialogResult = await uiService.openDismissibleDialog(
-            pContext: initContext,
             pBuilder: (context) => ErrorDialog(
               message: IUiService.getErrorMessage(e),
               gotToSettings: true,

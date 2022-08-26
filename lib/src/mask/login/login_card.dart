@@ -103,8 +103,6 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   void _onLoginPressed() {
-    getUiService().setRouteContext(pContext: context);
-
     LoginCommand loginCommand = LoginCommand(
       loginMode: LoginMode.MANUAL,
       userName: usernameController.text,

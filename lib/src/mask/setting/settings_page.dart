@@ -11,7 +11,6 @@ import '../../model/command/api/set_api_config_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/config/api/api_config.dart';
-import '../../routing/locations/settings_location.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_overlay.dart';
 import 'widgets/editor/app_name_editor.dart';
@@ -105,15 +104,6 @@ class _SettingsPageState extends State<SettingsPage>
 
   @override
   Widget build(BuildContext context) {
-    //If the style changes, for unknown reasons to us, this page gets built when calling
-    //setState directly in the changeStyle method of main.dart.
-    //A delayed future solved it, but it only happened on some devices.
-    //This is the only widget not having a working "mounted" state for route context.
-    //TODO investigate low prio
-    if (mounted && context.currentBeamLocation.runtimeType == SettingsLocation) {
-      getUiService().setRouteContext(pContext: context);
-    }
-
     Widget body = SingleChildScrollView(
       child: Column(
         children: [_buildApplicationSettings(context), _buildVersionInfo()],
@@ -423,8 +413,6 @@ class _SettingsPageState extends State<SettingsPage>
 
   /// Will send a [StartupCommand] with current values
   void _saveClicked() async {
-    getUiService().setRouteContext(pContext: context);
-
     if (appNameNotifier.value.isNotEmpty && baseUrlNotifier.value.isNotEmpty) {
       try {
         setState(() {

@@ -203,12 +203,10 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
   }
 
   void _settings() {
-    getUiService().setRouteContext(pContext: context);
     getUiService().routeToSettings();
   }
 
   void _changePassword() {
-    getUiService().setRouteContext(pContext: context);
     getUiService().openDialog(
       pDialogWidget: ChangePassword(
         username: getConfigService().getUserInfo()?.userName,
@@ -218,8 +216,6 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
   }
 
   void _logout() {
-    getUiService().setRouteContext(pContext: context);
-
     LogoutCommand logoutCommand = LogoutCommand(reason: "Drawer menu logout");
     getUiService().sendCommand(logoutCommand);
   }

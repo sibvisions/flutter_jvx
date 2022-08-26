@@ -14,10 +14,6 @@ class MenuLocation extends BeamLocation<BeamState> with ConfigServiceGetterMixin
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    if (mounted) {
-      getUiService().setRouteContext(pContext: context);
-    }
-
     LoadingProgressHandler.setEnabled(!getConfigService().isOffline());
 
     return [

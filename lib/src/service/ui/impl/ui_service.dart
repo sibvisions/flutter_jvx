@@ -9,6 +9,7 @@ import '../../../../custom/app_manager.dart';
 import '../../../../custom/custom_component.dart';
 import '../../../../custom/custom_menu_item.dart';
 import '../../../../custom/custom_screen.dart';
+import '../../../../main.dart';
 import '../../../../mixin/command_service_mixin.dart';
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../util/extensions/list_extensions.dart';
@@ -42,9 +43,6 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   /// ALl current menu items
   MenuModel? _menuModel;
-
-  /// Build context of the current location, used for routing and pop-ups
-  BuildContext? _currentBuildContext;
 
   /// List of all models currently active
   final List<FlComponentModel> _activeComponentModels = [];
@@ -100,14 +98,14 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
-    var last = _currentBuildContext!.beamingHistory.last;
+    var last = IUiService.getCurrentContext().beamingHistory.last;
     if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
-      _currentBuildContext!.beamingHistory.clear();
+      IUiService.getCurrentContext().beamingHistory.clear();
     }
     if (pReplaceRoute) {
-      _currentBuildContext!.beamToReplacementNamed("/menu");
+      IUiService.getCurrentContext().beamToReplacementNamed("/menu");
     } else {
-      _currentBuildContext!.beamToNamed("/menu");
+      IUiService.getCurrentContext().beamToNamed("/menu");
     }
   }
 
@@ -115,48 +113,42 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     log("routing to workscreen: $pScreenName");
 
-    var last = _currentBuildContext!.beamingHistory.last;
+    var last = IUiService.getCurrentContext().beamingHistory.last;
 
     if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
-      _currentBuildContext!.beamingHistory.clear();
+      IUiService.getCurrentContext().beamingHistory.clear();
     }
     if (pReplaceRoute) {
-      _currentBuildContext!.beamToReplacementNamed("/workScreen/$pScreenName");
+      IUiService.getCurrentContext().beamToReplacementNamed("/workScreen/$pScreenName");
     } else {
-      _currentBuildContext!.beamToNamed("/workScreen/$pScreenName");
+      IUiService.getCurrentContext().beamToNamed("/workScreen/$pScreenName");
     }
   }
 
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
-    var last = _currentBuildContext!.beamingHistory.last;
+    var last = IUiService.getCurrentContext().beamingHistory.last;
 
     if (last.runtimeType == WorkScreenLocation ||
         last.runtimeType == MenuLocation ||
         last.runtimeType == SplashLocation) {
-      _currentBuildContext!.beamingHistory.clear();
+      IUiService.getCurrentContext().beamingHistory.clear();
     }
-    _currentBuildContext!.beamToNamed("/login/$mode", data: pLoginProps);
+    IUiService.getCurrentContext().beamToNamed("/login/$mode", data: pLoginProps);
   }
 
   @override
   void routeToSettings({bool pReplaceRoute = false}) {
     if (pReplaceRoute) {
-      _currentBuildContext!.beamToReplacementNamed("/setting");
+      IUiService.getCurrentContext().beamToReplacementNamed("/setting");
     } else {
-      _currentBuildContext!.beamToNamed("/setting");
+      IUiService.getCurrentContext().beamToNamed("/setting");
     }
   }
 
   @override
   void routeToCustom({required String pFullPath}) {
-    _currentBuildContext!.beamToNamed(pFullPath);
-  }
-
-  @override
-  void setRouteContext({required BuildContext pContext}) {
-    log("setting route context: ${pContext.widget.runtimeType}");
-    _currentBuildContext = pContext;
+    IUiService.getCurrentContext().beamToNamed(pFullPath);
   }
 
   @override
@@ -177,7 +169,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     Locale? pLocale,
   }) {
     return showDialog(
-        context: _currentBuildContext!,
+        context: IUiService.getCurrentContext(),
         barrierDismissible: pIsDismissible,
         builder: (BuildContext context) {
           pContextCallback?.call(context);
@@ -202,7 +194,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     Locale? pLocale,
   }) =>
       showDialog(
-          context: pContext ?? _currentBuildContext!,
+          context: pContext ?? IUiService.getCurrentContext(),
           barrierDismissible: pIsDismissible,
           builder: (BuildContext context) {
             Widget child = pBuilder.call(context);
@@ -216,11 +208,6 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
               onWillPop: () async => pIsDismissible,
             );
           });
-
-  @override
-  BuildContext? getBuildContext() {
-    return _currentBuildContext;
-  }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Meta data management
@@ -321,7 +308,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
         currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
 
     if (pBeamBack) {
-      _currentBuildContext!.beamBack();
+      IUiService.getCurrentContext().beamBack();
     }
   }
 

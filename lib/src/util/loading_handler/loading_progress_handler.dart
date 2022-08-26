@@ -90,7 +90,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
       return;
     }
     //TODO check for alternatives!
-    if (ModalRoute.of(services<IUiService>().getBuildContext()!)?.isCurrent != true) {
+    if (ModalRoute.of(IUiService.getCurrentContext())?.isCurrent != true) {
       return;
     }
 

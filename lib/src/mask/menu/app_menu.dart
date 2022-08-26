@@ -51,8 +51,6 @@ class AppMenu extends StatefulWidget with UiServiceGetterMixin {
 
   static void menuItemPressed(
       {required String pScreenLongName, required IUiService pUiService, required BuildContext pContext}) {
-    pUiService.setRouteContext(pContext: pContext);
-
     // Offline screens no not require the server to know that they are open
     if (pUiService.usesNativeRouting(pScreenLongName: pScreenLongName)) {
       pUiService.routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
@@ -75,10 +73,6 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext pContext) {
-    if (mounted) {
-      getUiService().setRouteContext(pContext: pContext);
-    }
-
     List<Widget> actions = [];
 
     if (getConfigService().isOffline()) {
@@ -86,7 +80,6 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
         Builder(
           builder: (context) => IconButton(
             onPressed: () {
-              getUiService().setRouteContext(pContext: pContext);
               showSyncDialog().then(
                 (value) {
                   if (value == true) {
