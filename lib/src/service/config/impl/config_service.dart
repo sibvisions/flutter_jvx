@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_io/io.dart' as universal_io;
 
 import '../../../../config/app_config.dart';
 import '../../../../config/server_config.dart';
@@ -169,7 +170,8 @@ class ConfigService implements IConfigService {
   }
 
   String _getPlatformLocale() {
-    return Platform.localeName.substring(0, Platform.localeName.indexOf("_"));
+    int? end = universal_io.Platform.localeName.indexOf(RegExp("[_-]"));
+    return universal_io.Platform.localeName.substring(0, end == -1 ? null : end);
   }
 
   @override
