@@ -308,15 +308,15 @@ class ConfigService implements IConfigService {
 
   @override
   String? getString(String key) {
-    return sharedPrefs.getString("$getAppName.$key");
+    return sharedPrefs.getString("${getAppName()}.$key");
   }
 
   @override
   Future<bool> setString(String key, String? value) {
     if (value != null) {
-      return sharedPrefs.setString("$getAppName.$key", value);
+      return sharedPrefs.setString("${getAppName()}.$key", value);
     } else {
-      return sharedPrefs.remove("$getAppName.$key");
+      return sharedPrefs.remove("${getAppName()}.$key");
     }
   }
 
