@@ -117,6 +117,7 @@ Future<void> initApp({
             username: configService.getAppConfig()!.serverConfig.username,
             password: configService.getAppConfig()!.serverConfig.password,
           ));
+          break;
         } catch (e, stackTrace) {
           LOGGER.logE(pType: LogType.GENERAL, pError: e, pStacktrace: stackTrace);
           bool? dialogResult = await uiService.openDismissibleDialog(
