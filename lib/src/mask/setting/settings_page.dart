@@ -4,6 +4,7 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../mixin/command_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/set_api_config_command.dart';
@@ -27,7 +28,8 @@ class SettingsPage extends StatefulWidget {
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, ConfigServiceGetterMixin {
+class _SettingsPageState extends State<SettingsPage>
+    with ConfigServiceGetterMixin, UiServiceGetterMixin, CommandServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,72 +126,75 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
       );
     }
 
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        leading: context.canBeamBack
-            ? IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                onPressed: context.beamBack,
-              )
-            : null,
-        title: Text(getConfigService().translateText("Settings")),
-      ),
-      body: body,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        color: Theme.of(context).primaryColor,
-        child: SizedBox(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: getConfigService().getUserInfo() != null && context.canBeamBack
-                    ? InkWell(
-                        onTap: loading ? null : context.beamBack,
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            getConfigService().translateText("Close"),
-                            style:
-                                TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+    return WillPopScope(
+      onWillPop: () async => !loading,
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          leading: context.canBeamBack
+              ? IconButton(
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeft),
+                  onPressed: !loading ? context.beamBack : null,
+                )
+              : null,
+          title: Text(getConfigService().translateText("Settings")),
+        ),
+        body: body,
+        bottomNavigationBar: BottomAppBar(
+          shape: const CircularNotchedRectangle(),
+          color: Theme.of(context).primaryColor,
+          child: SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: getConfigService().getUserInfo() != null && context.canBeamBack
+                      ? InkWell(
+                          onTap: loading ? null : context.beamBack,
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              getConfigService().translateText("Close"),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+                            ),
                           ),
-                        ),
-                      )
-                    : Container(),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: loading || getConfigService().isOffline() ? null : _saveClicked,
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: getConfigService().getUserInfo() != null
-                        ? Text(
-                            getConfigService().translateText("Save"),
-                            style:
-                                TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
-                          )
-                        : Text(
-                            getConfigService().translateText("Open"),
-                            style:
-                                TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
-                          ),
+                        )
+                      : Container(),
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: loading || getConfigService().isOffline() ? null : _saveClicked,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: getConfigService().getUserInfo() != null
+                          ? Text(
+                              getConfigService().translateText("Save"),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+                            )
+                          : Text(
+                              getConfigService().translateText("Open"),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+                            ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+        floatingActionButton: !getConfigService().isOffline()
+            ? FloatingActionButton(
+                backgroundColor: Theme.of(context).primaryColor,
+                onPressed: loading ? null : _openQRScanner,
+                child: const FaIcon(FontAwesomeIcons.qrcode),
+              )
+            : null,
       ),
-      floatingActionButton: !getConfigService().isOffline()
-          ? FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColor,
-              onPressed: loading ? null : _openQRScanner,
-              child: const FaIcon(FontAwesomeIcons.qrcode),
-            )
-          : null,
     );
   }
 
@@ -417,7 +422,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
   }
 
   /// Will send a [StartupCommand] with current values
-  void _saveClicked() {
+  void _saveClicked() async {
     getUiService().setRouteContext(pContext: context);
 
     if (appNameNotifier.value.isNotEmpty && baseUrlNotifier.value.isNotEmpty) {
@@ -430,19 +435,18 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceGetterMixin, 
         appName: appNameNotifier.value,
         username: username,
         password: password,
-        callback: () {
-          setState(() {
-            loading = false;
-          });
-        },
       );
 
-      getUiService().sendCommand(startupCommand);
+      await getCommandService().sendCommand(startupCommand);
+
+      setState(() {
+        loading = false;
+      });
 
       username = null;
       password = null;
     } else {
-      getUiService().openDialog(
+      await getUiService().openDialog(
         pDialogWidget: AlertDialog(
           title: Text(getConfigService().translateText("Missing required fields")),
           content: Text(getConfigService().translateText("You have to provide app name and base url to open an app.")),
