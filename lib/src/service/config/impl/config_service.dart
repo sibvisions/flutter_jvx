@@ -245,7 +245,7 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  Future<bool> setAppStyle(Map<String, String>? pAppStyle) {
+  Future<bool> setAppStyle(Map<String, String>? pAppStyle) async {
     log("AppStyle: $pAppStyle");
 
     if (pAppStyle == null) {
@@ -254,10 +254,12 @@ class ConfigService implements IConfigService {
       applicationStyle = pAppStyle;
     }
 
+    bool success = await setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
+
     if (activeStyleCallbacks) {
       callbacks['style']?.forEach((element) => element.call(pAppStyle));
     }
-    return setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
+    return success;
   }
 
   @override
