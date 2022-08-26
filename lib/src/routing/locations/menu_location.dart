@@ -18,7 +18,8 @@ class MenuLocation extends BeamLocation<BeamState> with ConfigServiceGetterMixin
 
     return [
       BeamPage(
-        key: const ValueKey("Menu"),
+        //Append state to trigger rebuild on online/offline switch
+        key: ValueKey("Menu_${getConfigService().isOffline() ? "offline" : "online"}"),
         child: AppMenu(),
       ),
     ];
