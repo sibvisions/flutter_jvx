@@ -84,14 +84,14 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          leading: Center(
-            child: InkWell(
-              onTap: () => _onBackTap(),
-              onDoubleTap: () => _onDoubleTap(),
-              child: CircleAvatar(
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                backgroundColor: Theme.of(context).primaryColor,
-                child: const FaIcon(FontAwesomeIcons.arrowLeft),
+          leading: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () => _onBackTap(),
+            onDoubleTap: () => _onDoubleTap(),
+            child: Center(
+              child: FaIcon(
+                FontAwesomeIcons.arrowLeft,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
           ),
