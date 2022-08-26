@@ -25,10 +25,10 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
       goToSettings: goToSettings,
     );
 
-    await getUiService().openDialog(
+    unawaited(getUiService().openDialog(
       pDialogWidget: errorWidget,
       pIsDismissible: false,
-    );
+    ));
 
     return [];
   }

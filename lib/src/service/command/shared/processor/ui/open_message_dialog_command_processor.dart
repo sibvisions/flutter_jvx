@@ -16,10 +16,10 @@ class OpenMessageDialogCommandProcessor extends ICommandProcessor<OpenMessageDia
       messageScreenName: command.messageScreenName,
     );
 
-    await getUiService().openDialog(
+    unawaited(getUiService().openDialog(
       pDialogWidget: dialog,
       pIsDismissible: false,
-    );
+    ));
 
     return [];
   }

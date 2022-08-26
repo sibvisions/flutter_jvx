@@ -89,8 +89,9 @@ class LoadingProgressHandler implements ICommandProgressHandler {
     if (_commandTimerMap[pCommand] == null) {
       return;
     }
-    //TODO check for alternatives!
-    if (ModalRoute.of(IUiService.getCurrentContext())?.isCurrent != true) {
+
+    //Only show loading dialog if there isn't any other dialog
+    if (ModalRoute.of(IUiService.getCurrentContext())?.isCurrent == false) {
       return;
     }
 
