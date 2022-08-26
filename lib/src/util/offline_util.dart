@@ -448,7 +448,7 @@ abstract class OfflineUtil {
     ICommandService commandService = services<ICommandService>();
 
     var dialogKey = GlobalKey<ProgressDialogState>();
-    OnlineApiRepository? onlineApiRepository;
+    OnlineApiRepository? onlineApiRepository = (await apiService.getRepository()) as OnlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
@@ -506,7 +506,6 @@ abstract class OfflineUtil {
       //Clear databooks for offline usage
       dataService.getDataBooks().values.forEach((dataBook) => dataBook.clearRecords());
 
-      onlineApiRepository = (await apiService.getRepository()) as OnlineApiRepository;
       await apiService.setRepository(offlineApiRepository);
       await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenLongName!);
       await onlineApiRepository.stop();
@@ -518,12 +517,14 @@ abstract class OfflineUtil {
     } catch (e, stackTrace) {
       log("Error while downloading offline data", error: e, stackTrace: stackTrace);
 
-      //Revert all changes in case we have an in-tact online state
-      if (onlineApiRepository != null) {
-        await apiService.setRepository(onlineApiRepository);
-        await configService.setOffline(false);
-        LoadingProgressHandler.setEnabled(true);
+      //Revert all changes
+      if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
+        await offlineApiRepository.deleteDatabase();
       }
+      await offlineApiRepository?.stop();
+      await apiService.setRepository(onlineApiRepository);
+      await configService.setOffline(false);
+      LoadingProgressHandler.setEnabled(true);
 
       ProgressDialogWidget.safeClose(dialogKey);
       await uiService.openDismissibleDialog(
