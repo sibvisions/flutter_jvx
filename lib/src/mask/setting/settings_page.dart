@@ -400,25 +400,25 @@ class _SettingsPageState extends State<SettingsPage>
   /// parses scanned code and saves values to config service
   void _openQRScanner() {
     getUiService().openDialog(
-        pDialogWidget: QRScannerOverlay(callback: (barcode, _) {
-          QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
-          getConfigService().setAppName(code.appName);
-          getConfigService().setBaseUrl(code.url);
+      pDialogWidget: QRScannerOverlay(callback: (barcode, _) {
+        QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
+        getConfigService().setAppName(code.appName);
+        getConfigService().setBaseUrl(code.url);
 
-          // set local display values
-          appNameNotifier.value = code.appName;
-          baseUrlNotifier.value = code.url;
-          // set username & password for later
-          username = code.username;
-          password = code.password;
+        // set local display values
+        appNameNotifier.value = code.appName;
+        baseUrlNotifier.value = code.url;
+        // set username & password for later
+        username = code.username;
+        password = code.password;
 
-          SetApiConfigCommand apiConfigCommand = SetApiConfigCommand(
-            apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()),
-            reason: "QR Scan replaced url",
-          );
-          getUiService().sendCommand(apiConfigCommand);
-        }),
-        pIsDismissible: false);
+        SetApiConfigCommand apiConfigCommand = SetApiConfigCommand(
+          apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()),
+          reason: "QR Scan replaced url",
+        );
+        getUiService().sendCommand(apiConfigCommand);
+      }),
+    );
   }
 
   /// Will send a [StartupCommand] with current values

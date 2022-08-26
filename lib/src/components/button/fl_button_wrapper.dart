@@ -111,7 +111,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void openQrCodeScanner() {
     getUiService().openDialog(
-      pIsDismissible: false,
       pDialogWidget: QRScannerOverlay(callback: sendQrCodeResult),
     );
   }
