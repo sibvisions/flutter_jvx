@@ -158,14 +158,23 @@ class ConfigService implements IConfigService {
 
   @override
   String getLanguage() {
-    return getString("language") ?? Platform.localeName;
+    return getString("language") ?? _getPlatformLocale();
   }
 
   @override
-  Future<bool> setLanguage(String pLanguage) async {
-    bool success = await setString("language", pLanguage);
-    _loadLanguage(pLanguage);
+  Future<bool> setLanguage(String? pLanguage) async {
+    bool success = await setString("language", pLanguage == _getPlatformLocale() ? null : pLanguage);
+    loadLanguages();
     return success;
+  }
+
+  String _getPlatformLocale() {
+    return Platform.localeName.substring(0, Platform.localeName.indexOf("_"));
+  }
+
+  @override
+  void loadLanguages() {
+    _loadLanguage(getLanguage());
   }
 
   @override

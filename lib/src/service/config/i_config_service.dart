@@ -72,8 +72,11 @@ abstract class IConfigService {
   /// Returns language code of current language
   String getLanguage();
 
-  /// Set current display language, app will need to restart to take effect (new Startup)
-  Future<bool> setLanguage(String pLanguage);
+  /// Set current display language
+  Future<bool> setLanguage(String? pLanguage);
+
+  /// Reload current language (after translation files update)
+  void loadLanguages();
 
   /// Translates text in current translation, will return the original text if not translation was found
   String translateText(String pText);

@@ -24,7 +24,7 @@ class SaveApplicationTranslationCommandProcessor
     getConfigService().reloadSupportedLanguages();
 
     // Trigger load language
-    await getConfigService().setLanguage(getConfigService().getLanguage());
+    getConfigService().loadLanguages();
 
     return [];
   }
