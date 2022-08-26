@@ -6,7 +6,12 @@ import '../../mask/setting/settings_page.dart';
 class SettingsLocation extends BeamLocation {
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
-    return [const BeamPage(key: ValueKey("Settings"), child: SettingsPage())];
+    return [
+      const BeamPage(
+        key: ValueKey("Settings"),
+        child: SettingsPage(),
+      ),
+    ];
   }
 
   @override

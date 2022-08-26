@@ -43,6 +43,7 @@ class SplashLocation extends BeamLocation<BeamState> {
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     return [
       BeamPage(
+        key: const ValueKey("Splash"),
         child: SplashWidget(
           appConfig: appConfig,
           appManager: appManager,
@@ -56,5 +57,7 @@ class SplashLocation extends BeamLocation<BeamState> {
   }
 
   @override
-  List<Pattern> get pathPatterns => ["/splash"];
+  List<Pattern> get pathPatterns => [
+        "/splash",
+      ];
 }

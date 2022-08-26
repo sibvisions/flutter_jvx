@@ -23,23 +23,23 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
     }
 
     return [
-      BeamPage(
-        child: const AppLogin(loginCard: LoginCard()),
-        key: UniqueKey(),
+      const BeamPage(
+        key: ValueKey("login"),
+        child: AppLogin(loginCard: LoginCard()),
       ),
       if (state.uri.pathSegments.contains("lostPassword"))
         BeamPage(
-          child: AppLogin(loginCard: LostPasswordCard()),
           key: const ValueKey("login_password_reset"),
+          child: AppLogin(loginCard: LostPasswordCard()),
         ),
       if (state.uri.pathSegments.contains("changeOneTimePassword"))
         BeamPage(
-          child: AppLogin(
-            loginCard: ChangeOneTimePasswordCard(),
-          ),
+          key: const ValueKey("login_password_reset"),
+          child: AppLogin(loginCard: ChangeOneTimePasswordCard()),
         ),
       if (state.uri.pathSegments.contains("changePassword"))
         BeamPage(
+          key: const ValueKey("change_password"),
           child: AppLogin(
             loginCard: ChangePassword(
               username: dataMap?.entries.elementAt(0).value,
@@ -51,6 +51,10 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
   }
 
   @override
-  List<Pattern> get pathPatterns =>
-      ["/login/manual", "/login/lostPassword", "/login/changeOneTimePassword", "/login/changePassword"];
+  List<Pattern> get pathPatterns => [
+        "/login/manual",
+        "/login/lostPassword",
+        "/login/changeOneTimePassword",
+        "/login/changePassword",
+      ];
 }
