@@ -230,10 +230,14 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   // Row Management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {
-    return db
-        .query(formatOfflineTableName(pDataProvider), where: '"$STATE_COLUMN" IS NOT NULL')
-        .then((value) => groupBy(value, (p0) => p0[STATE_COLUMN] as String));
+  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) async {
+    if (await tableExists(pDataProvider)) {
+      return db
+          .query(formatOfflineTableName(pDataProvider), where: '"$STATE_COLUMN" IS NOT NULL')
+          .then((value) => groupBy(value, (p0) => p0[STATE_COLUMN] as String));
+    } else {
+      return {};
+    }
   }
 
   Future<int> resetStates(String pDataProvider, List<Map<String, Object?>> pResetRows) {
