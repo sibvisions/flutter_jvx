@@ -82,7 +82,10 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
             onPressed: () {
               showSyncDialog().then(
                 (value) {
-                  if (value == true) {
+                  if (value == SyncDialogResult.DISCARD_CHANGES) {
+                    OfflineUtil.discardChanges(context);
+                    OfflineUtil.initOnline(context);
+                  } else if (value == SyncDialogResult.YES) {
                     OfflineUtil.initOnline(context);
                   }
                 },
@@ -122,9 +125,9 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
     );
   }
 
-  Future<bool?> showSyncDialog() {
-    return getUiService().openDialog<bool>(
-      pDialogWidget: AlertDialog(
+  Future<SyncDialogResult?> showSyncDialog() {
+    return getUiService().openDismissibleDialog(
+      pBuilder: (context) => AlertDialog(
         title: Text(
           getConfigService().translateText("Synchronization"),
         ),
@@ -134,17 +137,53 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
           ),
         ),
         actions: [
-          TextButton(
-            child: Text(getConfigService().translateText("No")),
-            onPressed: () => Navigator.of(context).pop(false),
-          ),
-          TextButton(
-            child: Text(getConfigService().translateText("Yes")),
-            onPressed: () => Navigator.of(context).pop(true),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(primary: Colors.red),
+                      child: Text(getConfigService().translateText("Discard Changes")),
+                      onPressed: () async {
+                        SyncDialogResult? result = await getUiService().openDismissibleDialog(
+                          pBuilder: (subContext) => AlertDialog(
+                            title: Text(getConfigService().translateText("Discard Offline Changes")),
+                            content: Text(getConfigService().translateText(
+                                "Are you sure you want to discard all the changes you made in offline mode?")),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.NO),
+                                child: Text(getConfigService().translateText("No")),
+                              ),
+                              TextButton(
+                                style: TextButton.styleFrom(primary: Colors.red),
+                                onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.DISCARD_CHANGES),
+                                child: Text(getConfigService().translateText("Yes")),
+                              ),
+                            ],
+                          ),
+                        );
+                        Navigator.of(context).pop(result);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              TextButton(
+                child: Text(getConfigService().translateText("No")),
+                onPressed: () => Navigator.of(context).pop(SyncDialogResult.NO),
+              ),
+              TextButton(
+                child: Text(getConfigService().translateText("Yes")),
+                onPressed: () => Navigator.of(context).pop(SyncDialogResult.YES),
+              ),
+            ],
           ),
         ],
       ),
-      pIsDismissible: true,
     );
   }
 
@@ -235,4 +274,10 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
       backgroundImageString: backgroundImageString,
     );
   }
+}
+
+enum SyncDialogResult {
+  YES,
+  NO,
+  DISCARD_CHANGES,
 }

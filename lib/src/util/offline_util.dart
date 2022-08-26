@@ -561,4 +561,12 @@ abstract class OfflineUtil {
       ProgressDialogWidget.safeClose(dialogKey);
     }
   }
+
+  static void discardChanges(BuildContext context) async {
+    IApiService apiService = services<IApiService>();
+    var offlineApiRepository = (await apiService.getRepository());
+    if (offlineApiRepository is OfflineApiRepository && !offlineApiRepository.isStopped()) {
+      await offlineApiRepository.deleteDatabase();
+    }
+  }
 }
