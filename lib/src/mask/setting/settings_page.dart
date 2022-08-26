@@ -426,25 +426,24 @@ class _SettingsPageState extends State<SettingsPage>
     getUiService().setRouteContext(pContext: context);
 
     if (appNameNotifier.value.isNotEmpty && baseUrlNotifier.value.isNotEmpty) {
-      setState(() {
-        loading = true;
-      });
+      try {
+        setState(() {
+          loading = true;
+        });
 
-      StartupCommand startupCommand = StartupCommand(
-        reason: "Open App from Settings",
-        appName: appNameNotifier.value,
-        username: username,
-        password: password,
-      );
-
-      await getCommandService().sendCommand(startupCommand);
-
-      setState(() {
-        loading = false;
-      });
-
-      username = null;
-      password = null;
+        await getCommandService().sendCommand(StartupCommand(
+          reason: "Open App from Settings",
+          appName: appNameNotifier.value,
+          username: username,
+          password: password,
+        ));
+      } finally {
+        setState(() {
+          loading = false;
+          username = null;
+          password = null;
+        });
+      }
     } else {
       await getUiService().openDialog(
         pDialogWidget: AlertDialog(
