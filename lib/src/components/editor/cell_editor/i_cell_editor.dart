@@ -77,6 +77,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   String formatValue(Object pValue);
 
   double get additionalTablePadding;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

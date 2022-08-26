@@ -23,6 +23,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
 
   /// The size of the image.
   late Size imageSize = model.maxImageSize;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

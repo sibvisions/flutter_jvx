@@ -19,6 +19,7 @@ class SplitLayout implements ILayout, ICloneable {
   static const String SECOND_COMPONENT = "SECOND_COMPONENT";
 
   static const Duration UPDATE_INTERVALL = Duration(milliseconds: 16);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

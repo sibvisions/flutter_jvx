@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../util/parse_util.dart';
 import '../../../model/command/api/set_value_command.dart';

@@ -1,6 +1,6 @@
 import 'package:charts_flutter/flutter.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/component/chart/fl_chart_model.dart';

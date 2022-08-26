@@ -8,6 +8,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   final Function(String)? onItemPress;
 
   final List<PopupMenuEntry<String>> popupItems;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

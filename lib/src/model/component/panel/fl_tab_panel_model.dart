@@ -21,6 +21,7 @@ class FlTabPanelModel extends FlPanelModel {
 
   /// Placement of the tab. TOP and BOTTOM is supported.
   TabPlacements tabPlacement = TabPlacements.TOP;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

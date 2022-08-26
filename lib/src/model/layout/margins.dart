@@ -1,5 +1,4 @@
 class Margins {
-
   /// The top margin
   final double marginTop;
 
@@ -12,17 +11,16 @@ class Margins {
   /// The right margin
   final double marginRight;
 
-
   Margins({
     required this.marginBottom,
     required this.marginLeft,
     required this.marginRight,
-    required this.marginTop
+    required this.marginTop,
   });
 
-  Margins.fromList({required List<String> marginList}) :
-    marginTop = double.parse(marginList[0]),
-    marginLeft = double.parse(marginList[1]),
-    marginBottom = double.parse(marginList[2]),
-    marginRight = double.parse(marginList[3]);
+  Margins.fromList({required List<String> marginList})
+      : marginTop = double.parse(marginList[0]),
+        marginLeft = double.parse(marginList[1]),
+        marginBottom = double.parse(marginList[2]),
+        marginRight = double.parse(marginList[3]);
 }

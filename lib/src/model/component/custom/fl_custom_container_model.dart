@@ -9,6 +9,7 @@ class FlCustomContainerModel extends FlComponentModel implements IDataModel {
   @override
   String dataProvider = "";
   String columnName = "";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -11,6 +11,7 @@ class NumericTextFormatter extends TextInputFormatter {
   late NumberFormat numberFormatter;
 
   int? get scale => _scale;
+
   set scale(int? newScale) {
     _scale = newScale;
 
@@ -23,6 +24,7 @@ class NumericTextFormatter extends TextInputFormatter {
   }
 
   String? get numberFormat => _numberFormat;
+
   set numberFormat(String? newFormat) {
     _numberFormat = newFormat;
 
@@ -35,6 +37,7 @@ class NumericTextFormatter extends TextInputFormatter {
   }
 
   String? get locale => _locale;
+
   set locale(String? newLocale) {
     _locale = newLocale;
     numberFormatter = NumberFormat(_numberFormat, _locale);

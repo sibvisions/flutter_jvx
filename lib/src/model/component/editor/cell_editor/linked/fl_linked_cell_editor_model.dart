@@ -31,6 +31,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   bool validationEnabled = true;
 
   bool doNotClearColumnNames = true;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

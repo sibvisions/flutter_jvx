@@ -39,6 +39,7 @@ class FlowLayout extends ILayout {
   late final bool autoWrap;
 
   late final bool isRowOrientationHorizontal;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

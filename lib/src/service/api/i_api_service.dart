@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import '../../model/request/i_api_request.dart';
 import '../../model/command/base_command.dart';
 import '../../model/config/api/api_config.dart';
+import '../../model/request/i_api_request.dart';
 import 'shared/i_controller.dart';
 import 'shared/i_repository.dart';
 

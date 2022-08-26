@@ -18,6 +18,7 @@ class FlChartModel extends FlComponentModel implements IDataModel {
 
   @override
   String dataProvider = "";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

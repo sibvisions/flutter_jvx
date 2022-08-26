@@ -1,9 +1,9 @@
-import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../../model/command/api/fetch_command.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/data/change_selected_row_command.dart';
 import '../../../../model/command/data/delete_provider_data_command.dart';
 import '../../../../model/command/data/delete_row_command.dart';
+import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../i_response_processor.dart';
 
 class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProviderChangedResponse> {

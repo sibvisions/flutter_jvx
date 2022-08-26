@@ -1,5 +1,5 @@
-import '../../../model/response/api_response.dart';
 import '../../../model/command/base_command.dart';
+import '../../../model/response/api_response.dart';
 
 abstract class IController {
   /// Process a list of [ApiResponse] into a list of [BaseCommand]s

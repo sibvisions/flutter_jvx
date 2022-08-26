@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../model/component/icon/fl_icon_model.dart';
 import '../../model/layout/layout_data.dart';

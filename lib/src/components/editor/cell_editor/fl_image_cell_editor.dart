@@ -27,6 +27,7 @@ class FlImageCellEditor extends ICellEditor<FlImageCellEditorModel, dynamic> {
   late Function(Size, bool)? imageStreamListener = onImage;
 
   ColumnDefinition? _columnDefinition;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

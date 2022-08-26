@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';

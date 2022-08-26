@@ -63,6 +63,7 @@ class ApiStartUpRequest extends IApiRequest {
 
   /// If the server must create a new session
   bool? forceNewSession;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -69,8 +69,10 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> wi
   FlTextFieldWidget createWidget() {
     return FlTextFieldWidget(
       model: FlTextFieldModel(),
-      valueChanged: onValueChange, //(value) => onValueChange(numberFormatter.convertToNumber(value)),
-      endEditing: onEndEditing, //(value) => onEndEditing(numberFormatter.convertToNumber(value)),
+      valueChanged: onValueChange,
+      //(value) => onValueChange(numberFormatter.convertToNumber(value)),
+      endEditing: onEndEditing,
+      //(value) => onEndEditing(numberFormatter.convertToNumber(value)),
       focusNode: focusNode,
       textController: textController,
       keyboardType: numberFormatter.getKeyboardType(),

@@ -1,5 +1,5 @@
-import '../../../../../model/request/i_api_request.dart';
 import '../../../../../model/command/base_command.dart';
+import '../../../../../model/request/i_api_request.dart';
 import '../../../../isolate/isolate_message.dart';
 
 /// Used to send [IApiRequest] to the APIs isolate to be executed

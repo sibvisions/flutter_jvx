@@ -25,4 +25,3 @@ class PreferredSizeCommand extends LayoutCommand {
   @override
   String get logString => "PreferredSizeCommand";
 }
-

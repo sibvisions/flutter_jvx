@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 class FlTabView extends StatefulWidget {
   final Widget child;
+
   const FlTabView({Key? key, required this.child}) : super(key: key);
 
   @override
