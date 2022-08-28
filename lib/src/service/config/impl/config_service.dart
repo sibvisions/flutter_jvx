@@ -34,12 +34,6 @@ class ConfigService implements IConfigService {
   /// Map of all active callbacks
   final Map<String, List<Function>> callbacks = {};
 
-  /// If the style callbacks are active
-  bool activeStyleCallbacks = true;
-
-  /// If the language callbacks are active
-  bool activeLanguageCallbacks = true;
-
   /// Config of the app
   AppConfig? appConfig;
 
@@ -258,9 +252,7 @@ class ConfigService implements IConfigService {
 
     bool success = await setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
 
-    if (activeStyleCallbacks) {
-      callbacks['style']?.forEach((element) => element.call(pAppStyle));
-    }
+    callbacks['style']?.forEach((element) => element.call(pAppStyle));
     return success;
   }
 
@@ -406,16 +398,6 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void pauseLanguageCallbacks() {
-    activeLanguageCallbacks = false;
-  }
-
-  @override
-  void resumeLanguageCallbacks() {
-    activeLanguageCallbacks = true;
-  }
-
-  @override
   void registerStyleCallback(Function(Map<String, String> style) pCallback) {
     registerCallback("style", pCallback);
   }
@@ -428,16 +410,6 @@ class ConfigService implements IConfigService {
   @override
   void disposeStyleCallbacks() {
     disposeCallbacks("style");
-  }
-
-  @override
-  void pauseStyleCallbacks() {
-    activeStyleCallbacks = false;
-  }
-
-  @override
-  void resumeStyleCallbacks() {
-    activeStyleCallbacks = true;
   }
 
   @override
@@ -501,8 +473,6 @@ class ConfigService implements IConfigService {
 
     translation = langTrans;
 
-    if (activeLanguageCallbacks) {
-      callbacks["language"]?.forEach((element) => element.call(pLanguage));
-    }
+    callbacks["language"]?.forEach((element) => element.call(pLanguage));
   }
 }

@@ -83,9 +83,6 @@ abstract class OfflineUtil {
       await onlineApiRepository.start();
       await apiService.setRepository(onlineApiRepository);
 
-      configService.pauseStyleCallbacks();
-      configService.pauseLanguageCallbacks();
-
       await commandService.sendCommand(
         StartupCommand(
           reason: "Going online",
@@ -196,9 +193,6 @@ abstract class OfflineUtil {
         await commandService.sendCommand(
           CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
         );
-
-        configService.resumeStyleCallbacks();
-        configService.resumeLanguageCallbacks();
 
         await commandService.sendCommand(
           StartupCommand(
