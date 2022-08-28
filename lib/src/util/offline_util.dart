@@ -61,18 +61,16 @@ abstract class OfflineUtil {
       String offlineUsername = configService.getUsername()!;
       String offlinePassword = configService.getPassword()!;
 
-      unawaited(
-        uiService.openDismissibleDialog(
-          pIsDismissible: false,
-          pContext: context,
-          pBuilder: (context) => ProgressDialogWidget(
-            key: dialogKey,
-            config: Config(
-              message: "${configService.translateText("Re-syncing offline data")}...",
-              progressType: ProgressType.valuable,
-              barrierDismissible: false,
-              progressValueColor: Theme.of(context).primaryColor,
-            ),
+      var futureDialog = uiService.openDismissibleDialog(
+        pIsDismissible: false,
+        pContext: context,
+        pBuilder: (context) => ProgressDialogWidget(
+          key: dialogKey,
+          config: Config(
+            message: "${configService.translateText("Re-syncing offline data")}...",
+            progressType: ProgressType.valuable,
+            barrierDismissible: false,
+            progressValueColor: Theme.of(context).primaryColor,
           ),
         ),
       );
@@ -160,24 +158,26 @@ abstract class OfflineUtil {
       int failedRowCount = changedRowsSum - successfulSyncedRows;
 
       log("Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
-      ProgressDialogWidget.close(context);
 
       if (successfulSyncedRows > 0 || failedRowCount > 0) {
-        await uiService.openDismissibleDialog(
-          pIsDismissible: false,
-          pContext: context,
-          pBuilder: (context) => AlertDialog(
-            title: Text("Sync $syncResult"),
-            content: Text(
-                "Successfully synced $successfulSyncedRows rows${failedRowCount > 0 ? "\n$failedRowCount rows failed to sync" : ""}"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(configService.translateText("Ok")),
-              ),
-            ],
-          ),
-        );
+        dialogKey.currentState!.update(
+            config: Config(
+          message:
+              "Successfully synced $successfulSyncedRows rows${failedRowCount > 0 ? ".\n$failedRowCount rows failed to sync" : ""}",
+          progress: 100,
+          maxProgress: 100,
+          valueType: ValueType.none,
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogKey.currentContext!).pop(),
+              child: Text(configService.translateText("Ok")),
+            ),
+          ],
+        ));
+        await futureDialog;
+      } else {
+        ProgressDialogWidget.close(context);
       }
 
       if (successfulSync) {
