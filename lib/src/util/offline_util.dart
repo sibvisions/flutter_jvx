@@ -25,7 +25,6 @@ import '../service/config/i_config_service.dart';
 import '../service/data/i_data_service.dart';
 import '../service/service.dart';
 import '../service/ui/i_ui_service.dart';
-import 'loading_handler/loading_progress_handler.dart';
 import 'loading_handler/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
@@ -185,7 +184,6 @@ abstract class OfflineUtil {
         dataService.clearDataBooks();
 
         await configService.setOffline(false);
-        LoadingProgressHandler.setEnabled(true);
         await offlineApiRepository.stop();
 
         FlComponentModel? workscreenModel =
@@ -214,7 +212,6 @@ abstract class OfflineUtil {
         await onlineApiRepository?.stop();
         await apiService.setRepository(offlineApiRepository);
         await configService.setOffline(true);
-        LoadingProgressHandler.setEnabled(false);
         //Clear menu
         uiService.setMenuModel(null);
       }
@@ -449,7 +446,6 @@ abstract class OfflineUtil {
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
-      LoadingProgressHandler.setEnabled(false);
       //Set already here to receive errors from api responses
       await configService.setOffline(true);
 
@@ -527,7 +523,6 @@ abstract class OfflineUtil {
       await offlineApiRepository?.stop();
       await apiService.setRepository(onlineApiRepository);
       await configService.setOffline(false);
-      LoadingProgressHandler.setEnabled(true);
 
       ProgressDialogWidget.safeClose(dialogKey);
       await uiService.openDismissibleDialog(

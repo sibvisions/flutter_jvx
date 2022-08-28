@@ -33,6 +33,7 @@ import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
+import 'src/util/loading_handler/loading_overlay.dart';
 import 'util/parse_util.dart';
 
 export 'package:beamer/beamer.dart';
@@ -151,6 +152,7 @@ class FlutterJVxState extends State<FlutterJVx> {
       routeInformationParser: BeamerParser(),
       routerDelegate: routerDelegate,
       backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
+      builder: (context, child) => LoadingOverlay(child: child),
       title: widget.appConfig?.title ?? "JVx Mobile",
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

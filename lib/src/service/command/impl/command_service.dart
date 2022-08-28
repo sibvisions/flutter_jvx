@@ -79,7 +79,7 @@ class CommandService implements ICommandService {
         return;
       }
     }
-    progressHandler.forEach((element) => element.notifyCommandProgressStart(pCommand));
+    progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
 
     List<BaseCommand>? routeCommands;
     try {
@@ -89,7 +89,7 @@ class CommandService implements ICommandService {
       LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error processing ${pCommand.runtimeType}");
       rethrow;
     } finally {
-      progressHandler.forEach((element) => element.notifyCommandProgressEnd(pCommand));
+      progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
 
       if (routeCommands != null) {
         if (routeCommands.any((element) => element is RouteToWorkCommand)) {

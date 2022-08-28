@@ -23,7 +23,4 @@ class OpenScreenCommand extends ApiCommand {
 
   @override
   String get logString => "OpenScreenCommand | Component id: $componentId | Reason; $reason";
-
-  @override
-  Duration get loadingDelay => const Duration();
 }
