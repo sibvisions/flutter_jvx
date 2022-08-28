@@ -145,6 +145,8 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                 : Container()
           ],
         ),
+        contentPadding: _config.contentPadding!,
+        buttonPadding: _config.buttonPadding,
         actions: _config.actions,
         actionsPadding: _config.actionsPadding!,
         actionsAlignment: _config.actionsAlignment,
@@ -215,6 +217,8 @@ class Config {
   ///
   /// (Default: [false])
   bool? barrierDismissible;
+  EdgeInsetsGeometry? contentPadding;
+  EdgeInsetsGeometry? buttonPadding;
   List<Widget>? actions;
   EdgeInsetsGeometry? actionsPadding;
   MainAxisAlignment? actionsAlignment;
@@ -239,6 +243,8 @@ class Config {
     this.elevation,
     this.borderRadius,
     this.barrierDismissible,
+    this.contentPadding,
+    this.buttonPadding,
     this.actions,
     this.actionsPadding,
     this.actionsAlignment,
@@ -258,6 +264,7 @@ class Config {
     elevation ??= 5.0;
     borderRadius ??= 15.0;
     barrierDismissible ??= false;
+    contentPadding ??= const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0);
     actionsPadding ??= EdgeInsets.zero;
   }
 
@@ -281,6 +288,8 @@ class Config {
     if (config.elevation != null) elevation = config.elevation;
     if (config.borderRadius != null) borderRadius = config.borderRadius;
     if (config.barrierDismissible != null) barrierDismissible = config.barrierDismissible;
+    if (config.contentPadding != null) contentPadding = config.contentPadding;
+    if (config.buttonPadding != null) buttonPadding = config.buttonPadding;
     if (config.actions != null) actions = config.actions;
     if (config.actionsPadding != null) actionsPadding = config.actionsPadding;
     if (config.actionsAlignment != null) actionsAlignment = config.actionsAlignment;
