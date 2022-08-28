@@ -90,6 +90,7 @@ Future<void> initApp({
   if (appStyle.isNotEmpty) {
     await configService.setAppStyle(appStyle);
   }
+  configService.loadLanguages();
 
   configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance.window).size : null);
 
