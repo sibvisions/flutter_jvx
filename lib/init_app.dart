@@ -102,6 +102,10 @@ Future<void> initApp({
   await apiService.setRepository(repository);
 
   if (configService.getAppName() != null && configService.getBaseUrl() != null) {
+    if (configService.getVersion() != null) {
+      configService.loadLanguages();
+    }
+
     if (!configService.isOffline()) {
       await commandService.sendCommand(SetApiConfigCommand(
         apiConfig: ApiConfig(serverConfig: configService.getServerConfig()),
@@ -133,7 +137,6 @@ Future<void> initApp({
         }
       } while (retry);
     } else {
-      configService.loadLanguages();
       uiService.routeToMenu(pReplaceRoute: true);
     }
   } else {
