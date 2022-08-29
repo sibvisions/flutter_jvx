@@ -65,7 +65,7 @@ abstract class OfflineUtil {
         pBuilder: (context) => ProgressDialogWidget(
           key: dialogKey,
           config: Config(
-            message: "${configService.translateText("Re-syncing offline data")}...",
+            message: configService.translateText("Re-syncing offline data"),
             progressType: ProgressType.valuable,
             barrierDismissible: false,
             progressValueColor: Theme.of(context).primaryColor,
@@ -113,7 +113,7 @@ abstract class OfflineUtil {
 
         dialogKey.currentState?.update(
             config: Config(
-          message: "${configService.translateText("Syncing data")}... ($dataBookCounter / ${dataBooks.length})",
+          message: "${configService.translateText("Syncing data")} ($dataBookCounter / ${dataBooks.length})",
           progress: successfulSyncedPrimaryKeys.length,
           maxProgress: changedRowsPerDataBook,
         ));
@@ -453,7 +453,7 @@ abstract class OfflineUtil {
           return ProgressDialogWidget(
             key: dialogKey,
             config: Config(
-              message: "${configService.translateText("Fetching offline data")}...",
+              message: configService.translateText("Fetching offline data"),
               progressType: ProgressType.valuable,
               barrierDismissible: false,
               progressValueColor: Theme.of(context).primaryColor,
@@ -477,7 +477,7 @@ abstract class OfflineUtil {
 
       dialogKey.currentState?.update(
           config: Config(
-        message: "${configService.translateText("Processing data")}...",
+        message: configService.translateText("Processing data"),
         progress: 0,
         maxProgress: 100,
       ));
@@ -493,7 +493,7 @@ abstract class OfflineUtil {
       await offlineApiRepository.initDatabase(dataBooks, (value, max, {progress}) {
         dialogKey.currentState?.update(
             config: Config(
-          message: "${configService.translateText("Processing data")} ($value / $max)...",
+          message: "${configService.translateText("Processing data")} ($value / $max)",
           progress: progress ?? 0,
         ));
       });
