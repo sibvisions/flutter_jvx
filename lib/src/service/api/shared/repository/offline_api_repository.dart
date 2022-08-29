@@ -110,24 +110,28 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   }
 
   @override
-  Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) {
+  Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
     if (isStopped()) throw Exception("Repository not initialized");
+
+    ApiResponse? response;
 
     if (pRequest is ApiDalSaveRequest) {
       // Does nothing but is supported as api
     } else if (pRequest is ApiDeleteRecordRequest) {
-      return _delete(pRequest);
+      response = await _delete(pRequest);
     } else if (pRequest is ApiFetchRequest) {
-      return _fetch(pRequest);
+      response = await _fetch(pRequest);
     } else if (pRequest is ApiFilterRequest) {
-      return _filter(pRequest);
+      response = await _filter(pRequest);
     } else if (pRequest is ApiInsertRecordRequest) {
-      return _insert(pRequest);
+      response = await _insert(pRequest);
     } else if (pRequest is ApiSetValuesRequest) {
-      return _setValues(pRequest);
+      response = await _setValues(pRequest);
+    } else {
+      throw Exception("${pRequest.runtimeType} is not supported while offline");
     }
 
-    throw Exception("${pRequest.runtimeType} is not supported while offline");
+    return response != null ? [response] : [];
   }
 
   @override
@@ -139,7 +143,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<List<ApiResponse>> _delete(ApiDeleteRecordRequest pRequest) async {
+  Future<DalFetchResponse?> _delete(ApiDeleteRecordRequest pRequest) async {
     Map<String, dynamic> filter = {};
     if (pRequest.filter != null) {
       Filter requestFilter = pRequest.filter!;
@@ -173,13 +177,16 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
     // JVx Server does also ignore fetch and always fetches.
     // if (pRequest.fetch) {
+
+    await DataBook.selectRecord(pDataProvider: pRequest.dataProvider, pSelectedRecord: -1);
+
     return _refetchMaximum(pRequest.dataProvider);
     // }
   }
 
-  Future<List<ApiResponse>> _fetch(ApiFetchRequest pRequest) async {
+  Future<DalFetchResponse?> _fetch(ApiFetchRequest pRequest) async {
     if (pRequest.fromRow <= -1) {
-      return [];
+      return null;
     }
 
     int? rowCount = pRequest.rowCount >= 0 ? pRequest.rowCount : null;
@@ -227,22 +234,20 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
 
     bool isAllFetched = rowCountDatabase <= sortedMap.length;
 
-    return [
-      DalFetchResponse(
-        dataProvider: pRequest.dataProvider,
-        from: pRequest.fromRow,
-        selectedRow: dataBook.selectedRow,
-        isAllFetched: isAllFetched,
-        columnNames: columnNames,
-        to: pRequest.fromRow + (sortedMap.length - 1),
-        records: sortedMap,
-        name: "dal.fetch",
-        originalResponse: pRequest,
-      )
-    ];
+    return DalFetchResponse(
+      dataProvider: pRequest.dataProvider,
+      from: pRequest.fromRow,
+      selectedRow: dataBook.selectedRow,
+      isAllFetched: isAllFetched,
+      columnNames: columnNames,
+      to: pRequest.fromRow + (sortedMap.length - 1),
+      records: sortedMap,
+      name: "dal.fetch",
+      originalResponse: pRequest,
+    );
   }
 
-  Future<List<ApiResponse>> _filter(ApiFilterRequest pRequest) async {
+  Future<DalFetchResponse?> _filter(ApiFilterRequest pRequest) async {
     if (pRequest.columnNames != null) {
       Filter filter = Filter(
         values: pRequest.columnNames!.map((e) => pRequest.value).toList(),
@@ -259,13 +264,13 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     return _refetchMaximum(pRequest.dataProvider);
   }
 
-  Future<List<ApiResponse>> _insert(ApiInsertRecordRequest pRequest) async {
+  Future<ApiResponse?> _insert(ApiInsertRecordRequest pRequest) async {
     await offlineDatabase!.insert(pTableName: pRequest.dataProvider, pInsert: {});
 
     return _refetchMaximum(pRequest.dataProvider);
   }
 
-  Future<List<ApiResponse>> _setValues(ApiSetValuesRequest pRequest) async {
+  Future<DalFetchResponse?> _setValues(ApiSetValuesRequest pRequest) async {
     List<FilterCondition> filters = _getLastFilter(pRequest.dataProvider);
     filters.addAll([...?_getFilter(pRequest.filter, pRequest.filterCondition)]);
 
@@ -299,7 +304,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     ];
   }
 
-  Future<List<ApiResponse>> _refetchMaximum(String pDataProvider) async {
+  Future<DalFetchResponse?> _refetchMaximum(String pDataProvider) async {
     int? maxFetch = _databookFetchMap[pDataProvider];
     if (maxFetch != null) {
       return _fetch(
@@ -312,7 +317,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
       );
     }
 
-    return [];
+    return null;
   }
 
   List<FilterCondition>? _getFilter(Filter? pFilter, FilterCondition? pFilterCondition) {
