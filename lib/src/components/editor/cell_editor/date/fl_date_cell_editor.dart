@@ -107,11 +107,11 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
 
     uiService
         .openDialog(
-            pDialogWidget: DatePickerDialog(
-              initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100),
-            ),
+            pBuilder: (_) => DatePickerDialog(
+                  initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime(2100),
+                ),
             pIsDismissible: true)
         .then((value) {
       if (value == null) {
@@ -126,9 +126,9 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
       }
       uiService
           .openDialog(
-              pDialogWidget: TimePickerDialog(
-                initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
-              ),
+              pBuilder: (_) => TimePickerDialog(
+                    initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
+                  ),
               pIsDismissible: true)
           .then((value) {
         if (value == null) {
@@ -149,11 +149,11 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   void _openDateEditor() {
     uiService
         .openDialog(
-            pDialogWidget: DatePickerDialog(
-              initialDate: DateTime.fromMillisecondsSinceEpoch(_value),
-              firstDate: DateTime.fromMillisecondsSinceEpoch(_value).subtract(const Duration(days: 36525)),
-              lastDate: DateTime.fromMillisecondsSinceEpoch(_value).add(const Duration(days: 36525)),
-            ),
+            pBuilder: (_) => DatePickerDialog(
+                  initialDate: DateTime.fromMillisecondsSinceEpoch(_value),
+                  firstDate: DateTime.fromMillisecondsSinceEpoch(_value).subtract(const Duration(days: 36525)),
+                  lastDate: DateTime.fromMillisecondsSinceEpoch(_value).add(const Duration(days: 36525)),
+                ),
             pIsDismissible: true)
         .then((value) {
       if (value != null) {
@@ -166,9 +166,9 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   void _openTimeEditor() {
     uiService
         .openDialog(
-            pDialogWidget: TimePickerDialog(
-              initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value)),
-            ),
+            pBuilder: (_) => TimePickerDialog(
+                  initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value)),
+                ),
             pIsDismissible: true)
         .then((value) {
       if (value != null) {

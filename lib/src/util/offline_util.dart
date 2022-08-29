@@ -43,7 +43,7 @@ abstract class OfflineUtil {
     );
   }
 
-  static initOnline(BuildContext context) async {
+  static initOnline() async {
     IConfigService configService = services<IConfigService>();
     IUiService uiService = services<IUiService>();
     IApiService apiService = services<IApiService>();
@@ -60,9 +60,8 @@ abstract class OfflineUtil {
       String offlineUsername = configService.getUsername()!;
       String offlinePassword = configService.getPassword()!;
 
-      var futureDialog = uiService.openDismissibleDialog(
+      var futureDialog = uiService.openDialog(
         pIsDismissible: false,
-        pContext: context,
         pBuilder: (context) => ProgressDialogWidget(
           key: dialogKey,
           config: Config(
@@ -176,7 +175,7 @@ abstract class OfflineUtil {
         ));
         await futureDialog;
       } else {
-        ProgressDialogWidget.close(context);
+        ProgressDialogWidget.close(IUiService.getCurrentContext());
       }
 
       if (successfulSync) {
@@ -217,9 +216,8 @@ abstract class OfflineUtil {
       }
 
       ProgressDialogWidget.safeClose(dialogKey);
-      await uiService.openDismissibleDialog(
+      await uiService.openDialog(
         pIsDismissible: false,
-        pContext: context,
         pBuilder: (context) => AlertDialog(
           title: Text(configService.translateText("Offline Sync Error")),
           content: Text(configService.translateText("There was an error while trying to sync your data."
@@ -434,7 +432,7 @@ abstract class OfflineUtil {
     log("Finished fetching data");
   }
 
-  static initOffline(BuildContext context, String pWorkscreen) async {
+  static initOffline(String pWorkscreen) async {
     IConfigService configService = services<IConfigService>();
     IUiService uiService = services<IUiService>();
     IApiService apiService = services<IApiService>();
@@ -449,8 +447,7 @@ abstract class OfflineUtil {
       //Set already here to receive errors from api responses
       await configService.setOffline(true);
 
-      unawaited(uiService.openDismissibleDialog(
-        pContext: context,
+      unawaited(uiService.openDialog(
         pIsDismissible: false,
         pBuilder: (context) {
           return ProgressDialogWidget(
@@ -511,7 +508,7 @@ abstract class OfflineUtil {
       //Clear menu
       uiService.setMenuModel(null);
 
-      ProgressDialogWidget.close(context);
+      ProgressDialogWidget.close(IUiService.getCurrentContext());
       await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
     } catch (e, stackTrace) {
       log("Error while downloading offline data", error: e, stackTrace: stackTrace);
@@ -525,9 +522,8 @@ abstract class OfflineUtil {
       await configService.setOffline(false);
 
       ProgressDialogWidget.safeClose(dialogKey);
-      await uiService.openDismissibleDialog(
+      await uiService.openDialog(
         pIsDismissible: false,
-        pContext: context,
         pBuilder: (context) => AlertDialog(
           title: Text(configService.translateText("Offline Init Error")),
           content: Text(configService.translateText("There was an error while trying to download data."

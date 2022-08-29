@@ -24,7 +24,7 @@ class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage>
@@ -390,7 +390,7 @@ class _SettingsPageState extends State<SettingsPage>
   /// parses scanned code and saves values to config service
   void _openQRScanner() {
     getUiService().openDialog(
-      pDialogWidget: QRScannerOverlay(callback: (barcode, _) {
+      pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) {
         QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
         getConfigService().setAppName(code.appName);
         getConfigService().setBaseUrl(code.url);
@@ -436,7 +436,7 @@ class _SettingsPageState extends State<SettingsPage>
       }
     } else {
       await getUiService().openDialog(
-        pDialogWidget: AlertDialog(
+        pBuilder: (_) => AlertDialog(
           title: Text(getConfigService().translateText("Missing required fields")),
           content: Text(getConfigService().translateText("You have to provide app name and base url to open an app.")),
           actions: [

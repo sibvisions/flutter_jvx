@@ -73,19 +73,10 @@ abstract class IUiService {
   /// Sets the current custom manager
   void setAppManager(AppManager? pAppManager);
 
-  /// Opens a [Dialog], the future will complete if the dialog is closed by an
-  /// action
+  /// Opens a [Dialog]
   Future<T?> openDialog<T>({
-    required Widget pDialogWidget,
-    bool pIsDismissible = true,
-    Function(BuildContext context)? pContextCallback,
-    Locale? pLocale,
-  });
-
-  Future<T?> openDismissibleDialog<T>({
-    bool pIsDismissible = true,
-    BuildContext? pContext,
     required WidgetBuilder pBuilder,
+    bool pIsDismissible = true,
     Locale? pLocale,
   });
 

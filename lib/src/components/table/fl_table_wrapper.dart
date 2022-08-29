@@ -14,6 +14,7 @@ import '../../model/command/api/delete_record_command.dart';
 import '../../model/command/api/insert_record_command.dart';
 import '../../model/command/api/select_record_command.dart';
 import '../../model/command/api/set_values_command.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -33,7 +34,7 @@ class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   FlTableWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlTableWrapperState createState() => _FlTableWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlTableWrapperState();
 }
 
 class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiServiceGetterMixin {
@@ -445,7 +446,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   void goOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workscreenName = state.pathParameters['workScreenName']!;
-    OfflineUtil.initOffline(context, workscreenName);
+    OfflineUtil.initOffline(workscreenName);
   }
 }
 

@@ -9,7 +9,7 @@ class FlCustomWrapper<T extends FlComponentModel> extends BaseCompWrapperWidget<
   FlCustomWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlCustomWrapperState createState() => _FlCustomWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlCustomWrapperState();
 }
 
 class _FlCustomWrapperState extends BaseCompWrapperState<FlComponentModel> {

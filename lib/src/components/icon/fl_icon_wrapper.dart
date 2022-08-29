@@ -1,6 +1,7 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../model/component/fl_component_model.dart';
 import '../../model/component/icon/fl_icon_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -11,7 +12,7 @@ class FlIconWrapper extends BaseCompWrapperWidget<FlIconModel> {
   FlIconWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlIconWrapperState createState() => _FlIconWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlIconWrapperState();
 }
 
 class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {

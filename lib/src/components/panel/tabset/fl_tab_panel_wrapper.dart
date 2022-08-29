@@ -12,6 +12,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/label/fl_label_model.dart';
 import '../../../model/component/panel/fl_tab_panel_model.dart';
 import '../../../model/layout/alignments.dart';
+import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
 import '../../label/fl_label_widget.dart';
@@ -25,7 +26,7 @@ class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
   FlTabPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlTabPanelWrapperState createState() => _FlTabPanelWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlTabPanelWrapperState();
 }
 
 class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with TickerProviderStateMixin {

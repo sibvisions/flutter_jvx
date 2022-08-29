@@ -111,7 +111,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void openQrCodeScanner() {
     getUiService().openDialog(
-      pDialogWidget: QRScannerOverlay(callback: sendQrCodeResult),
+      pBuilder: (_) => QRScannerOverlay(callback: sendQrCodeResult),
     );
   }
 
@@ -138,6 +138,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void goOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workscreenName = state.pathParameters['workScreenName']!;
-    OfflineUtil.initOffline(context, workscreenName);
+    OfflineUtil.initOffline(workscreenName);
   }
 }

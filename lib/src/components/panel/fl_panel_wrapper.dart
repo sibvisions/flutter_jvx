@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 
 import '../../layout/i_layout.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
+import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_panel_widget.dart';
@@ -10,7 +12,7 @@ class FlPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
   FlPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlPanelWrapperState createState() => _FlPanelWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlPanelWrapperState();
 }
 
 class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {

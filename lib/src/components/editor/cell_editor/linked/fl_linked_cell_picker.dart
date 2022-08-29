@@ -22,7 +22,7 @@ class FlLinkedCellPicker extends StatefulWidget {
   const FlLinkedCellPicker({required this.name, required this.model, Key? key}) : super(key: key);
 
   @override
-  _FlLinkedCellPickerState createState() => _FlLinkedCellPickerState();
+  State<FlLinkedCellPicker> createState() => _FlLinkedCellPickerState();
 }
 
 class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceGetterMixin, ConfigServiceGetterMixin {

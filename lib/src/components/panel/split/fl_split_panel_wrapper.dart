@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../util/constants/i_color.dart';
 import '../../../layout/split_layout.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../model/layout/layout_position.dart';
+import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_split_panel_widget.dart';
@@ -14,7 +16,7 @@ class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
   FlSplitPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlSplitPanelWrapperState createState() => _FlSplitPanelWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlSplitPanelWrapperState();
 }
 
 class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> {

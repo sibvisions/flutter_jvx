@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/image/image_loader.dart';
 import '../../model/command/api/set_values_command.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/component/map/fl_map_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
@@ -18,7 +19,7 @@ class FlMapWrapper extends BaseCompWrapperWidget<FlMapModel> {
   FlMapWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlMapWrapperState createState() => _FlMapWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlMapWrapperState();
 }
 
 class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiServiceGetterMixin {

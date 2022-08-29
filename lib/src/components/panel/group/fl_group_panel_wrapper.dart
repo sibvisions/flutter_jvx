@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_group_panel_model.dart';
+import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
 import '../fl_sized_panel_widget.dart';
@@ -12,7 +14,7 @@ class FlGroupPanelWrapper extends BaseCompWrapperWidget<FlGroupPanelModel> {
   FlGroupPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlGroupPanelWrapperState createState() => _FlGroupPanelWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlGroupPanelWrapperState();
 }
 
 class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> {

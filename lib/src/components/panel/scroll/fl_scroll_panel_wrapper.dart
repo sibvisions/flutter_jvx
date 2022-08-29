@@ -4,7 +4,9 @@ import 'package:flutter/widgets.dart';
 
 import '../../../layout/i_layout.dart';
 import '../../../layout/scroll_layout.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
+import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_scroll_panel_widget.dart';
@@ -13,7 +15,7 @@ class FlScrollPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
   FlScrollPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlScrollPanelWrapperState createState() => _FlScrollPanelWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlScrollPanelWrapperState();
 }
 
 class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {

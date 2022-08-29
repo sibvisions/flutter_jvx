@@ -106,7 +106,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceGetterMixi
   void _sendRequest() {
     if (newPasswordController.text != newPasswordConfController.text) {
       getUiService().openDialog(
-          pDialogWidget: Text(getConfigService().translateText("The new Passwords do not match!")),
+          pBuilder: (_) => Text(getConfigService().translateText("The new Passwords do not match!")),
           pIsDismissible: true);
     }
     LoginCommand loginCommand = LoginCommand(

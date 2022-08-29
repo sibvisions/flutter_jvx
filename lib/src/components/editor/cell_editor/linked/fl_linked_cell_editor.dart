@@ -105,10 +105,10 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
     uiService
         .openDialog(
-            pDialogWidget: FlLinkedCellPicker(
-              model: model,
-              name: name!,
-            ),
+            pBuilder: (_) => FlLinkedCellPicker(
+                  model: model,
+                  name: name!,
+                ),
             pIsDismissible: true)
         .then((value) {
       if (value != null) {

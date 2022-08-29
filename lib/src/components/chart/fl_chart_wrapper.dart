@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/component/chart/fl_chart_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -14,7 +15,7 @@ class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
   FlChartWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlChartWrapperState createState() => _FlChartWrapperState();
+  BaseCompWrapperState<FlComponentModel> createState() => _FlChartWrapperState();
 }
 
 class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiServiceGetterMixin {

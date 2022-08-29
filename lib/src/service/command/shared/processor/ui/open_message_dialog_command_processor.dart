@@ -17,7 +17,7 @@ class OpenMessageDialogCommandProcessor extends ICommandProcessor<OpenMessageDia
     );
 
     unawaited(getUiService().openDialog(
-      pDialogWidget: dialog,
+      pBuilder: (_) => dialog,
       pIsDismissible: false,
     ));
 

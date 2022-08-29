@@ -163,38 +163,12 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   Future<T?> openDialog<T>({
-    required Widget pDialogWidget,
-    bool pIsDismissible = true,
-    Function(BuildContext context)? pContextCallback,
-    Locale? pLocale,
-  }) {
-    return showDialog(
-        context: IUiService.getCurrentContext(),
-        barrierDismissible: pIsDismissible,
-        builder: (BuildContext context) {
-          pContextCallback?.call(context);
-          Widget child = pDialogWidget;
-
-          if (pLocale != null) {
-            child = Localizations.override(context: context, locale: pLocale, child: child);
-          }
-
-          return WillPopScope(
-            child: pDialogWidget,
-            onWillPop: () async => pIsDismissible,
-          );
-        });
-  }
-
-  @override
-  Future<T?> openDismissibleDialog<T>({
-    bool pIsDismissible = true,
-    BuildContext? pContext,
     required WidgetBuilder pBuilder,
+    bool pIsDismissible = true,
     Locale? pLocale,
   }) =>
       showDialog(
-          context: pContext ?? IUiService.getCurrentContext(),
+          context: IUiService.getCurrentContext(),
           barrierDismissible: pIsDismissible,
           builder: (BuildContext context) {
             Widget child = pBuilder.call(context);

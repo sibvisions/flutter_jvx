@@ -208,7 +208,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
 
   void _changePassword() {
     getUiService().openDialog(
-      pDialogWidget: ChangePassword(
+      pBuilder: (_) => ChangePassword(
         username: getConfigService().getUserInfo()?.userName,
       ),
       pIsDismissible: true,

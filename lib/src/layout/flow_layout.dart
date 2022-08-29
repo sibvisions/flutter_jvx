@@ -93,7 +93,7 @@ class FlowLayout extends ILayout {
 
     Size dimSize = Size(dimWidth, dimHeight);
 
-    final _FlowGrid flowLayoutInfo = calculateGrid(dimSize, pChildren);
+    final _FlowGrid flowLayoutInfo = _calculateGrid(dimSize, pChildren);
 
     Size prefSize = Size(
         (flowLayoutInfo.gridWidth * flowLayoutInfo.columns + gaps.horizontalGap * (flowLayoutInfo.columns - 1)),
@@ -222,7 +222,7 @@ class FlowLayout extends ILayout {
   }
 
   /// Calculates the grid for the FlowLayout
-  _FlowGrid calculateGrid(Size pContainerSize, List<LayoutData> pChildren) {
+  _FlowGrid _calculateGrid(Size pContainerSize, List<LayoutData> pChildren) {
     /// Calculated height of the latest column of the FlowLayout
     double calcHeight = 0;
 

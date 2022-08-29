@@ -84,9 +84,9 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
                 (value) {
                   if (value == SyncDialogResult.DISCARD_CHANGES) {
                     OfflineUtil.discardChanges(context);
-                    OfflineUtil.initOnline(context);
+                    OfflineUtil.initOnline();
                   } else if (value == SyncDialogResult.YES) {
-                    OfflineUtil.initOnline(context);
+                    OfflineUtil.initOnline();
                   }
                 },
               );
@@ -126,7 +126,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
   }
 
   Future<SyncDialogResult?> showSyncDialog() {
-    return getUiService().openDismissibleDialog(
+    return getUiService().openDialog(
       pBuilder: (context) => AlertDialog(
         title: Text(
           getConfigService().translateText("Synchronization"),
@@ -148,7 +148,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
                       style: TextButton.styleFrom(primary: Colors.red),
                       child: Text(getConfigService().translateText("Discard Changes")),
                       onPressed: () async {
-                        SyncDialogResult? result = await getUiService().openDismissibleDialog(
+                        SyncDialogResult? result = await getUiService().openDialog(
                           pBuilder: (subContext) => AlertDialog(
                             title: Text(getConfigService().translateText("Discard Offline Changes")),
                             content: Text(getConfigService().translateText(

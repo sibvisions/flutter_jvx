@@ -125,7 +125,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
             ));
           }
         } else {
-          getUiService().openDialog(pDialogWidget: passwordError(), pIsDismissible: true);
+          getUiService().openDialog(pBuilder: (_) => passwordError(), pIsDismissible: true);
         }
       },
       child: Text(getConfigService().translateText('Change Password')),
