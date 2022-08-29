@@ -292,7 +292,7 @@ the License.
   <target name="start.web" depends="clean, build.web" description="Creates application archives for web" />
 
   <target name="update">
-    <get src="https://github.com/sibvisions/flutterclient/tree/main/creator/build.xml" dest="build.xml" usetimestamp="true"/>
+    <get src="https://raw.githubusercontent.com/sibvisions/flutterclient/main/creator/build.xml" dest="build.xml" usetimestamp="true"/>
   </target>
 
 </project>
