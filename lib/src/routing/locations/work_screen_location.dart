@@ -65,6 +65,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
           onWillPop: () async {
             if (!getUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
               getUiService().sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName));
+              return false;
             }
             return true;
           },
