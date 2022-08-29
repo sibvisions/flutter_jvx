@@ -72,6 +72,7 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     log("Sum of all dataBook entries: ${dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element)}");
 
     await offlineDatabase!.db.transaction((txn) async {
+      var batch = txn.batch();
       for (var dataBook in dataBooks) {
         progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length);
 
@@ -84,13 +85,14 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
             }
           });
           if (rowData.isNotEmpty) {
-            await offlineDatabase!.rawInsert(pTableName: dataBook.dataProvider, pInsert: rowData, txn: txn);
+            batch.insert(offlineDatabase!.formatOfflineTableName(dataBook.dataProvider), rowData);
           }
 
           progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length,
               progress: (entry.key / dataBook.records.length * 100).round());
         }
       }
+      return batch.commit();
     });
 
     log("done inserting offline data");
