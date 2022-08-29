@@ -74,6 +74,17 @@ the License.
 
 	<target name="prepare">
 
+    <!-- we need an extension for windows -->
+    <if>
+      <os family="windows"/>
+      <then>
+        <property name="file.ext" value=".bat" />
+      </then>
+      <else>
+        <property name="file.ext" value="" />
+      </else>
+    </if>
+
     <copy todir="${project.temp}">
       <fileset dir="${project}">
         <exclude name="creator/**" />
@@ -82,7 +93,7 @@ the License.
         <exclude name=".dart_tool/**" />
         <exclude name=".idea/**" />
         <exclude name="ios/.symlinks/**" />
-        <exclude name="ios/Flutter/flutter_export_environment.sh" />
+        <exclude name="ios/Flutter/flutter_export_environment.*" />
 
         <exclude name=".flutter-plugins" />
         <exclude name=".packages" />
@@ -232,11 +243,10 @@ the License.
 
 	<target name="build.ios" depends="prepare">
 
-    <exec executable="flutter" dir="${project.temp}">
+    <exec executable="flutter{file.ext}" dir="${project.temp}">
       <arg value="build" />
       <arg value="ipa" />
       <arg value="--release" />
-      <arg value="--no-sound-null-safety" />
     </exec>
 
     <copy todir="${install}">
@@ -249,11 +259,10 @@ the License.
 
 	<target name="build.android" depends="prepare">
 
-    <exec executable="flutter" dir="${project.temp}">
+    <exec executable="flutter{file.ext}" dir="${project.temp}">
       <arg value="build" />
       <arg value="apk" />
       <arg value="--release" />
-      <arg value="--no-sound-null-safety" />
       <arg value="--dart-define=PROD=true" />
     </exec>
 
@@ -262,11 +271,10 @@ the License.
 
 	<target name="build.web" depends="prepare">
 
-    <exec executable="flutter" dir="${project.temp}">
+    <exec executable="flutter{file.ext}" dir="${project.temp}">
       <arg value="build" />
       <arg value="web" />
       <arg value="--release" />
-      <arg value="--no-sound-null-safety" />
       <arg value="--dart-define=PROD=true" />
     </exec>
 
@@ -282,5 +290,9 @@ the License.
   <target name="start.ios" depends="clean, build.ios" description="Creates application archives for ios" />
   <target name="start.android" depends="clean, build.android" description="Creates application archives for android" />
   <target name="start.web" depends="clean, build.web" description="Creates application archives for web" />
+
+  <target name="update">
+    <get src="https://github.com/sibvisions/flutterclient/tree/main/creator/build.xml" dest="build.xml" usetimestamp="true"/>
+  </target>
 
 </project>
