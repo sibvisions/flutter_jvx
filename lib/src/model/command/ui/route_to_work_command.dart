@@ -27,4 +27,7 @@ class RouteToWorkCommand extends UiCommand {
 
   @override
   String get logString => "RouteToWorkCommand: screenName: $screenName, replaceRoute: $replaceRoute, reason: $reason";
+
+  @override
+  Duration get loadingDelay => Duration.zero;
 }
