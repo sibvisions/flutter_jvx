@@ -243,7 +243,7 @@ the License.
 
 	<target name="build.ios" depends="prepare">
 
-    <exec executable="flutter{file.ext}" dir="${project.temp}">
+    <exec executable="flutter${file.ext}" dir="${project.temp}">
       <arg value="build" />
       <arg value="ipa" />
       <arg value="--release" />
@@ -259,7 +259,7 @@ the License.
 
 	<target name="build.android" depends="prepare">
 
-    <exec executable="flutter{file.ext}" dir="${project.temp}">
+    <exec executable="flutter${file.ext}" dir="${project.temp}">
       <arg value="build" />
       <arg value="apk" />
       <arg value="--release" />
@@ -271,7 +271,7 @@ the License.
 
 	<target name="build.web" depends="prepare">
 
-    <exec executable="flutter{file.ext}" dir="${project.temp}">
+    <exec executable="flutter${file.ext}" dir="${project.temp}">
       <arg value="build" />
       <arg value="web" />
       <arg value="--release" />
