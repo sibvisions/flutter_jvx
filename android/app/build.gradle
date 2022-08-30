@@ -87,6 +87,7 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    namespace 'com.sibvisions.flutter_jvx'
 }
 
 flutter {
