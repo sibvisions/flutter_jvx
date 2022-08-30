@@ -74,17 +74,6 @@ the License.
 
   <target name="prepare">
 
-    <!-- we need an extension for windows -->
-    <if>
-      <os family="windows"/>
-      <then>
-        <property name="file.ext" value=".bat" />
-      </then>
-      <else>
-        <property name="file.ext" value="" />
-      </else>
-    </if>
-
     <copy todir="${project.temp}">
       <fileset dir="${project}">
         <exclude name="creator/**" />
@@ -235,22 +224,33 @@ the License.
       </fileset>
     </chmod>
 
+    <chmod perm="ug+x" file="${basedir}/cleanup.sh" />
+    <exec executable="${basedir}/cleanup.sh" failifexecutionfails="false" />
+
     <mkdir dir="${install}" />
   </target>
 
   <target name="build.ios" depends="prepare">
 
-    <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
-      <arg value="build" />
-      <arg value="ipa" />
-      <arg value="--release" />
-    </exec>
+    <if>
+      <os family="mac"/>
+      <then>
+        <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
+          <arg value="build" />
+          <arg value="ipa" />
+          <arg value="--release" />
+        </exec>
 
-    <copy todir="${install}">
-      <fileset dir="${project.temp}/build/ios/ipa">
-        <include name="*.ipa" />
-      </fileset>
-    </copy> 
+        <copy todir="${install}">
+          <fileset dir="${project.temp}/build/ios/ipa">
+            <include name="*.ipa" />
+          </fileset>
+        </copy> 
+      </then>
+      <else>
+        <echo>MacOS is required for iOS build!</echo>
+      </else>
+    </if>
 
   </target>
 
