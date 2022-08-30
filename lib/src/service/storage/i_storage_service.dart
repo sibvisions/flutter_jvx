@@ -4,7 +4,6 @@ import '../../model/menu/menu_model.dart';
 
 /// Defines the base construct of a [IStorageService],
 /// Storage service is used to store & retrieve all Data of [FlComponentModel] & [MenuModel]
-//Author: Michael Schober
 abstract class IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions

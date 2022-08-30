@@ -10,7 +10,6 @@ import 'split_layout.dart';
 
 /// Defines the base construct of a [ILayout].
 /// It is generally advised to use this class as an interface and not as a superclass.
-// Author: Toni Heiss
 abstract class ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions

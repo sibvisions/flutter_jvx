@@ -54,8 +54,6 @@ import 'start_up_command_processor.dart';
 
 ///
 /// Processes all [ApiCommand], delegates all commands to their respective [ICommandProcessor].
-///
-// Author: Michael Schober
 class ApiProcessor implements ICommandProcessor<ApiCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members

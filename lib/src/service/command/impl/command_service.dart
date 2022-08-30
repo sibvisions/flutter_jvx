@@ -26,8 +26,6 @@ import '../shared/processor/ui/ui_processor.dart';
 /// [CommandService] is used to processCommands(facilitating communication between Services.
 /// Will take in Commands and transfer them to a [ICommandProcessor] which will process its
 /// contents, resulting in potentially more commands.
-///
-// Author: Michael Schober
 class CommandService implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members

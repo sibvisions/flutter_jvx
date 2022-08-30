@@ -1,7 +1,6 @@
 import '../../../util/i_clonable.dart';
 
 /// The [LayoutPosition] are the constraints actually getting applied to a component.
-// Author: Toni Heiss
 class LayoutPosition implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
