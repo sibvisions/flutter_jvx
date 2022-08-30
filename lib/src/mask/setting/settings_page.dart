@@ -106,7 +106,13 @@ class _SettingsPageState extends State<SettingsPage>
   Widget build(BuildContext context) {
     Widget body = SingleChildScrollView(
       child: Column(
-        children: [_buildApplicationSettings(context), _buildVersionInfo()],
+        children: [
+          _buildApplicationSettings(context),
+          _buildVersionInfo(),
+          Container(
+            height: 50,
+          )
+        ],
       ),
     );
 
@@ -118,72 +124,78 @@ class _SettingsPageState extends State<SettingsPage>
 
     return WillPopScope(
       onWillPop: () async => !loading,
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        backgroundColor: Theme.of(context).backgroundColor,
-        appBar: AppBar(
-          leading: context.canBeamBack
-              ? IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                  onPressed: !loading ? context.beamBack : null,
-                )
-              : null,
-          title: Text(getConfigService().translateText("Settings")),
-        ),
-        body: body,
-        bottomNavigationBar: BottomAppBar(
-          shape: const CircularNotchedRectangle(),
-          color: Theme.of(context).primaryColor,
-          child: SizedBox(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: getConfigService().getUserInfo() != null && context.canBeamBack
-                      ? InkWell(
-                          onTap: loading ? null : context.beamBack,
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              getConfigService().translateText("Close"),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+      child: Container(
+        color: Theme.of(context).backgroundColor,
+        child: Scaffold(
+          extendBody: true,
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            leading: context.canBeamBack
+                ? IconButton(
+                    icon: const FaIcon(FontAwesomeIcons.arrowLeft),
+                    onPressed: !loading ? context.beamBack : null,
+                  )
+                : null,
+            title: Text(getConfigService().translateText("Settings")),
+          ),
+          body: body,
+          bottomNavigationBar: BottomAppBar(
+            elevation: 0.0,
+            shape: const CircularNotchedRectangle(),
+            color: Theme.of(context).primaryColor,
+            child: SizedBox(
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: getConfigService().getUserInfo() != null && context.canBeamBack
+                        ? InkWell(
+                            onTap: loading ? null : context.beamBack,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                getConfigService().translateText("Close"),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+                              ),
                             ),
-                          ),
-                        )
-                      : Container(),
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: loading || getConfigService().isOffline() ? null : _saveClicked,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: getConfigService().getUserInfo() != null
-                          ? Text(
-                              getConfigService().translateText("Save"),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
-                            )
-                          : Text(
-                              getConfigService().translateText("Open"),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
-                            ),
+                          )
+                        : Container(),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: loading || getConfigService().isOffline() ? null : _saveClicked,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: getConfigService().getUserInfo() != null
+                            ? Text(
+                                getConfigService().translateText("Save"),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+                              )
+                            : Text(
+                                getConfigService().translateText("Open"),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+                              ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: !getConfigService().isOffline()
+              ? FloatingActionButton(
+                  elevation: 0.0,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  onPressed: loading ? null : _openQRScanner,
+                  child: const FaIcon(FontAwesomeIcons.qrcode),
+                )
+              : null,
         ),
-        floatingActionButton: !getConfigService().isOffline()
-            ? FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
-                onPressed: loading ? null : _openQRScanner,
-                child: const FaIcon(FontAwesomeIcons.qrcode),
-              )
-            : null,
       ),
     );
   }
