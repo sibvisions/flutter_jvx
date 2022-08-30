@@ -263,7 +263,6 @@ the License.
       <arg value="build" />
       <arg value="apk" />
       <arg value="--release" />
-      <arg value="--dart-define=PROD=true" />
     </exec>
 
     <copy file="${project.temp}/build/app/outputs/flutter-apk/app-release.apk" tofile="${install}/app-release-android.apk" />
@@ -275,8 +274,13 @@ the License.
       <arg value="build" />
       <arg value="web" />
       <arg value="--release" />
-      <arg value="--dart-define=PROD=true" />
     </exec>
+
+    <copy todir="${install}/web">
+      <fileset dir="${project.temp}/build/web">
+        <exclude name=".last_build_id" />
+      </fileset>
+    </copy> 
 
 	</target>
 
