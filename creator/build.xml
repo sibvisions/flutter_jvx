@@ -15,31 +15,31 @@ the License.
 -->
 
 <project name="App creator" 
-	       default="start.complete" 
-	       xmlns:if="ant:if" 
+         default="start.complete" 
+         xmlns:if="ant:if" 
          xmlns:unless="ant:unless">
 
   <!-- 
   ***************************************************************** 
-	* information   
-	***************************************************************** 
-	-->
+  * information   
+  ***************************************************************** 
+  -->
 
-	<description>Creates app archives</description>
-
-  <!-- 
-	***************************************************************** 
-	* global properties
-	***************************************************************** 
-	-->
+  <description>Creates app archives</description>
 
   <!-- 
-	***************************************************************** 
-	* general properties
-	***************************************************************** 
-	-->
+  ***************************************************************** 
+  * global properties
+  ***************************************************************** 
+  -->
 
-	<property name="buildnumber" location="${basedir}/buildnumber/" />
+  <!-- 
+  ***************************************************************** 
+  * general properties
+  ***************************************************************** 
+  -->
+
+  <property name="buildnumber" location="${basedir}/buildnumber/" />
 
   <property name="project" location="${basedir}/../" />
 
@@ -48,31 +48,31 @@ the License.
   <property name="project.temp" location="${build}/project" />
 
   <!--
-	***************************************************************** 
-	* external taskdefinitions   
-	***************************************************************** 
-	-->
-	
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
-		<classpath>
-			<pathelement location="${basedir}/ant-contrib-1.0b3.jar"/>
-		</classpath>
-	</taskdef>
+  ***************************************************************** 
+  * external taskdefinitions   
+  ***************************************************************** 
+  -->
+  
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="${basedir}/ant-contrib-1.0b3.jar"/>
+    </classpath>
+  </taskdef>
 
   <taskdef resource="com/sibvisions/addons/ant/taskdef_min.properties" 
            classpath="${basedir}/addons.jar"/>
 
   <!-- 
-	***************************************************************** 
-	* INTERNAL TASKS   
-	***************************************************************** 
-	-->
+  ***************************************************************** 
+  * INTERNAL TASKS   
+  ***************************************************************** 
+  -->
 
-	<target name="clean">
-		<delete dir="${build}" />
-	</target>
+  <target name="clean">
+    <delete dir="${build}" />
+  </target>
 
-	<target name="prepare">
+  <target name="prepare">
 
     <!-- we need an extension for windows -->
     <if>
@@ -235,15 +235,12 @@ the License.
       </fileset>
     </chmod>
 
-    <chmod perm="ug+x" file="${basedir}/cleanup.sh" />
-    <exec executable="${basedir}/cleanup.sh" failifexecutionfails="false" />
-
     <mkdir dir="${install}" />
-	</target>
+  </target>
 
-	<target name="build.ios" depends="prepare">
+  <target name="build.ios" depends="prepare">
 
-    <exec executable="flutter${file.ext}" dir="${project.temp}">
+    <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
       <arg value="build" />
       <arg value="ipa" />
       <arg value="--release" />
@@ -255,22 +252,22 @@ the License.
       </fileset>
     </copy> 
 
-	</target>
+  </target>
 
-	<target name="build.android" depends="prepare">
+  <target name="build.android" depends="prepare">
 
-    <exec executable="flutter${file.ext}" dir="${project.temp}">
+    <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
       <arg value="build" />
       <arg value="apk" />
       <arg value="--release" />
     </exec>
 
     <copy file="${project.temp}/build/app/outputs/flutter-apk/app-release.apk" tofile="${install}/app-release-android.apk" />
-	</target>
+  </target>
 
-	<target name="build.web" depends="prepare">
+  <target name="build.web" depends="prepare">
 
-    <exec executable="flutter${file.ext}" dir="${project.temp}">
+    <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
       <arg value="build" />
       <arg value="web" />
       <arg value="--release" />
@@ -282,15 +279,15 @@ the License.
       </fileset>
     </copy> 
 
-	</target>
+  </target>
 
   <!-- 
-	***************************************************************** 
-	* PUBLIC START TASKS   
-	***************************************************************** 
-	-->
+  ***************************************************************** 
+  * PUBLIC START TASKS   
+  ***************************************************************** 
+  -->
 
-	<target name="start.complete" depends="clean, build.ios, build.android, build.web" description="Creates application archives for all platforms" />
+  <target name="start.complete" depends="clean, build.ios, build.android, build.web" description="Creates application archives for all platforms" />
   <target name="start.ios" depends="clean, build.ios" description="Creates application archives for ios" />
   <target name="start.android" depends="clean, build.android" description="Creates application archives for android" />
   <target name="start.web" depends="clean, build.web" description="Creates application archives for web" />
