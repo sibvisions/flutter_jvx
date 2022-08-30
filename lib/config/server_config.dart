@@ -29,6 +29,17 @@ class ServerConfig {
           password: json['password'],
         );
 
+  ServerConfig merge(ServerConfig? other) {
+    if (other == null) return this;
+
+    return ServerConfig(
+      baseUrl: other.baseUrl ?? baseUrl,
+      appName: other.appName ?? appName,
+      username: other.username ?? username,
+      password: other.password ?? password,
+    );
+  }
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'baseUrl': baseUrl,
         'appName': appName,

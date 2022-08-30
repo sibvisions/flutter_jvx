@@ -128,11 +128,12 @@ class ConfigService implements IConfigService {
 
   @override
   String? getAppName() {
-    return sharedPrefs.getString("appName") ?? getAppConfig()?.serverConfig.appName;
+    return sharedPrefs.getString("appName") ?? getAppConfig()?.serverConfig!.appName;
   }
 
   @override
-  Future<bool> setAppName(String pAppName) {
+  Future<bool> setAppName(String? pAppName) {
+    if (pAppName == null) return sharedPrefs.remove("appName");
     return sharedPrefs.setString("appName", pAppName);
   }
 
@@ -175,7 +176,7 @@ class ConfigService implements IConfigService {
 
   @override
   String? getBaseUrl() {
-    return getString("baseUrl") ?? getAppConfig()?.serverConfig.baseUrl;
+    return getString("baseUrl") ?? getAppConfig()?.serverConfig!.baseUrl;
   }
 
   @override
@@ -185,7 +186,7 @@ class ConfigService implements IConfigService {
 
   @override
   String? getUsername() {
-    return getString("username") ?? getAppConfig()?.serverConfig.username;
+    return getString("username") ?? getAppConfig()?.serverConfig!.username;
   }
 
   @override
@@ -195,7 +196,7 @@ class ConfigService implements IConfigService {
 
   @override
   String? getPassword() {
-    return getString("password") ?? getAppConfig()?.serverConfig.password;
+    return getString("password") ?? getAppConfig()?.serverConfig!.password;
   }
 
   @override
@@ -347,17 +348,17 @@ class ConfigService implements IConfigService {
   setAppConfig(AppConfig? pAppConfig, [bool devConfig = false]) async {
     appConfig = pAppConfig;
     if (devConfig) {
-      if (pAppConfig?.serverConfig.appName != null) {
-        await setAppName(pAppConfig!.serverConfig.appName!);
+      if (pAppConfig?.serverConfig!.appName != null) {
+        await setAppName(null);
       }
-      if (pAppConfig?.serverConfig.baseUrl != null) {
-        await setBaseUrl(pAppConfig!.serverConfig.baseUrl!);
+      if (pAppConfig?.serverConfig!.baseUrl != null) {
+        await setBaseUrl(null);
       }
-      if (pAppConfig?.serverConfig.username != null) {
-        await setUsername(pAppConfig!.serverConfig.username!);
+      if (pAppConfig?.serverConfig!.username != null) {
+        await setUsername(null);
       }
-      if (pAppConfig?.serverConfig.password != null) {
-        await setPassword(pAppConfig!.serverConfig.password!);
+      if (pAppConfig?.serverConfig!.password != null) {
+        await setPassword(null);
       }
     }
   }

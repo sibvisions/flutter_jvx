@@ -52,25 +52,19 @@ Future<void> initApp({
   uiService.setAppManager(pAppManager);
 
   // Load config files
-  bool devConfigLoaded = false;
+  AppConfig? devConfig;
   if (!kReleaseMode) {
-    AppConfig? devConfig = await ConfigUtil.readDevConfig();
+    devConfig = await ConfigUtil.readDevConfig();
     if (devConfig != null) {
       LOGGER.logI(pType: LogType.CONFIG, pMessage: "Found dev config, overriding values");
-      appConfig = devConfig;
-      devConfigLoaded = true;
     }
   }
-  appConfig ??= await ConfigUtil.readAppConfig();
 
-  if (appConfig == null) {
-    LOGGER.logI(pType: LogType.CONFIG, pMessage: "No config found, using default values");
-    appConfig = AppConfig();
-  }
-  await (configService as ConfigService).setAppConfig(appConfig, devConfigLoaded);
+  appConfig = const AppConfig.empty().merge(appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
+  await (configService as ConfigService).setAppConfig(appConfig, devConfig != null);
 
-  if (appConfig.serverConfig.baseUrl != null) {
-    var baseUri = Uri.parse(appConfig.serverConfig.baseUrl!);
+  if (appConfig.serverConfig!.baseUrl != null) {
+    var baseUri = Uri.parse(appConfig.serverConfig!.baseUrl!);
     //If no https on a remote host, you have to use localhost because of secure cookies
     if (kIsWeb && kDebugMode && baseUri.host != "localhost" && !baseUri.isScheme("https")) {
       await configService.setBaseUrl(baseUri.replace(host: "localhost").toString());
@@ -118,8 +112,8 @@ Future<void> initApp({
           // Send startup to server
           await commandService.sendCommand(StartupCommand(
             reason: "InitApp",
-            username: configService.getAppConfig()!.serverConfig.username,
-            password: configService.getAppConfig()!.serverConfig.password,
+            username: configService.getAppConfig()!.serverConfig!.username,
+            password: configService.getAppConfig()!.serverConfig!.password,
           ));
           break;
         } catch (e, stackTrace) {

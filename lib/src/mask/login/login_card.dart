@@ -33,7 +33,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
     super.initState();
     usernameController = TextEditingController(text: getConfigService().getUsername());
     passwordController = TextEditingController();
-    checkHolder = CheckHolder(isChecked: getConfigService().getAppConfig()?.uiConfig.rememberMeChecked ?? false);
+    checkHolder = CheckHolder(isChecked: getConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +66,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
               obscureText: true,
             ),
             const Padding(padding: EdgeInsets.all(5)),
-            if (getConfigService().getAppConfig()?.uiConfig.showRememberMe ?? false)
+            if (getConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false)
               Center(
                 child: RememberMeCheckbox(
                   checkHolder: checkHolder,

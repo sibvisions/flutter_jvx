@@ -33,4 +33,14 @@ class VersionConfig {
               : null,
           version: json['version'],
         );
+
+  VersionConfig merge(VersionConfig? other) {
+    if (other == null) return this;
+
+    return VersionConfig(
+      commit: other.commit ?? commit,
+      buildDate: other.buildDate ?? buildDate,
+      version: other.version ?? version,
+    );
+  }
 }

@@ -82,13 +82,13 @@ class _SettingsPageState extends State<SettingsPage>
 
     // Version Info
     appVersionNotifier = ValueNotifier("Loading...");
-    if (appConfig.versionConfig.version != null) {
-      appVersionNotifier.value = appConfig.versionConfig.version!;
+    if (appConfig.versionConfig!.version != null) {
+      appVersionNotifier.value = appConfig.versionConfig!.version!;
     } else {
       PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value = packageInfo.version);
     }
-    commitNotifier = ValueNotifier(appConfig.versionConfig.commit ?? "");
-    buildDateNotifier = ValueNotifier(appConfig.versionConfig.buildDate ?? "");
+    commitNotifier = ValueNotifier(appConfig.versionConfig!.commit ?? "");
+    buildDateNotifier = ValueNotifier(appConfig.versionConfig!.buildDate ?? "");
   }
 
   @override

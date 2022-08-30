@@ -7,12 +7,12 @@ class AppConfig {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final String title;
-  final int requestTimeout;
+  final String? title;
+  final int? requestTimeout;
 
-  final UiConfig uiConfig;
-  final ServerConfig serverConfig;
-  final VersionConfig versionConfig;
+  final UiConfig? uiConfig;
+  final ServerConfig? serverConfig;
+  final VersionConfig? versionConfig;
 
   final Map<String, dynamic>? startupParameters;
 
@@ -20,26 +20,44 @@ class AppConfig {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppConfig({
-    this.title = "JVx Mobile",
-    this.uiConfig = const UiConfig.empty(),
-    this.serverConfig = const ServerConfig.empty(),
-    this.versionConfig = const VersionConfig.empty(),
-    this.requestTimeout = 10,
+  const AppConfig({
+    this.title,
+    this.requestTimeout,
+    this.uiConfig,
+    this.serverConfig,
+    this.versionConfig,
     this.startupParameters,
   });
 
+  const AppConfig.empty()
+      : this(
+          title: "JVx Mobile",
+          requestTimeout: 10,
+          uiConfig: const UiConfig.empty(),
+          serverConfig: const ServerConfig.empty(),
+          versionConfig: const VersionConfig.empty(),
+        );
+
   AppConfig.fromJson({required Map<String, dynamic> json})
       : this(
-          title: json["title"] ?? "JVx Mobile",
-          requestTimeout: json["requestTimeout"] ?? 10,
-          uiConfig: json["uiConfig"] != null ? UiConfig.fromJson(json: json["uiConfig"]) : const UiConfig.empty(),
-          serverConfig: json["serverConfig"] != null
-              ? ServerConfig.fromJson(json: json["serverConfig"])
-              : const ServerConfig.empty(),
-          versionConfig: json["versionConfig"] != null
-              ? VersionConfig.fromJson(json: json["versionConfig"])
-              : const VersionConfig.empty(),
+          title: json["title"],
+          requestTimeout: json["requestTimeout"],
+          uiConfig: json["uiConfig"] != null ? UiConfig.fromJson(json: json["uiConfig"]) : null,
+          serverConfig: json["serverConfig"] != null ? ServerConfig.fromJson(json: json["serverConfig"]) : null,
+          versionConfig: json["versionConfig"] != null ? VersionConfig.fromJson(json: json["versionConfig"]) : null,
           startupParameters: json["startupParameters"],
         );
+
+  AppConfig merge(AppConfig? other) {
+    if (other == null) return this;
+
+    return AppConfig(
+      title: other.title ?? title,
+      requestTimeout: other.requestTimeout ?? requestTimeout,
+      uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
+      serverConfig: serverConfig?.merge(other.serverConfig) ?? other.serverConfig,
+      versionConfig: versionConfig?.merge(other.versionConfig) ?? other.versionConfig,
+      startupParameters: (startupParameters ?? {})..addAll(other.startupParameters ?? {}),
+    );
+  }
 }

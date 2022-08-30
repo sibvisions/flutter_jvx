@@ -107,7 +107,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
   @override
   Future<void> start() async {
     if (isStopped()) {
-      client = HttpClient()..connectionTimeout = Duration(seconds: getConfigService().getAppConfig()!.requestTimeout);
+      client = HttpClient()..connectionTimeout = Duration(seconds: getConfigService().getAppConfig()!.requestTimeout!);
     }
   }
 

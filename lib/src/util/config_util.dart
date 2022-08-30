@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../config/app_config.dart';
 import '../../util/logging/flutter_logger.dart';
@@ -11,8 +12,8 @@ abstract class ConfigUtil {
   static Future<AppConfig?> readAppConfig() async {
     try {
       return await _readConfigFile("app.conf.json");
-    } catch (e, stackTrace) {
-      LOGGER.logD(pType: LogType.CONFIG, pMessage: "App Config File failed to load: $e", pStacktrace: stackTrace);
+    } catch (e, stack) {
+      LOGGER.logE(pType: LogType.CONFIG, pMessage: "AppConfig failed to load:", pError: e, pStacktrace: stack);
     }
     return null;
   }
@@ -21,8 +22,12 @@ abstract class ConfigUtil {
   static Future<AppConfig?> readDevConfig() async {
     try {
       return await _readConfigFile("dev.conf.json");
-    } catch (e, stackTrace) {
-      LOGGER.logD(pType: LogType.CONFIG, pMessage: "Dev App Config File failed to load: $e", pStacktrace: stackTrace);
+    } catch (e, stack) {
+      if (e is FlutterError && e.message.startsWith("Unable to load asset")) {
+        LOGGER.logD(pType: LogType.CONFIG, pError: e, pStacktrace: stack);
+        return null;
+      }
+      LOGGER.logE(pType: LogType.CONFIG, pMessage: "Dev AppConfig failed to load:", pError: e, pStacktrace: stack);
     }
     return null;
   }
