@@ -1,7 +1,7 @@
 import '../../service/api/shared/api_object_property.dart';
 import 'i_api_request.dart';
 
-class ApiMenuRequest implements IApiRequest {
+class ApiOpenMenuRequest implements IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,7 +13,7 @@ class ApiMenuRequest implements IApiRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiMenuRequest({
+  ApiOpenMenuRequest({
     required this.clientId,
   });
 

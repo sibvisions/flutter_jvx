@@ -86,7 +86,7 @@ class EndpointConfig {
   /// For [ApiCloseFrameRequest]
   final String closeFrame;
 
-  /// For [ApiMenuRequest]
+  /// For [ApiOpenMenuRequest]
   final String menu;
 
   const EndpointConfig({

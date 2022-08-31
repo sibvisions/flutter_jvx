@@ -60,7 +60,7 @@ class ApiConfig {
       ApiChangePasswordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.changePassword),
       ApiResetPasswordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.resetPassword),
       ApiNavigationRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.navigation),
-      ApiMenuRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.menu),
+      ApiOpenMenuRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.menu),
       ApiFetchRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.fetch),
       ApiLogoutRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.logout),
       ApiFilterRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.filter),
