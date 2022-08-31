@@ -5,4 +5,13 @@
     <item
         android:drawable="@drawable/ic_jvx_bg"
         android:gravity="fill" />
+    <item android:bottom="50dp">
+        <bitmap
+            android:gravity="center|bottom"
+            android:src="@mipmap/sib_visions" />
+    </item>
+    <item
+        android:drawable="@drawable/ic_jvx_ss"
+        android:gravity="center|top"
+        android:top="100dp" />
 </layer-list>
