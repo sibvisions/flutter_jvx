@@ -3,26 +3,38 @@ import 'package:flutter/material.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/close_frame_command.dart';
+import '../../model/command/api/press_button_command.dart';
+import '../../model/command/ui/open_message_dialog_command.dart';
 
 /// This is a standard template for a server side message.
 class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
+  /// the type for ok, cancel buttons.
+  static const int MESSAGE_BUTTON_OK_CANCEL = 4;
+
+  /// the type for yes, no buttons.
+  static const int MESSAGE_BUTTON_YES_NO = 5;
+
+  /// the type for ok button.
+  static const int MESSAGE_BUTTON_OK = 6;
+
+  /// the type for yes, no, cancel buttons.
+  static const int MESSAGE_BUTTON_YES_NO_CANCEL = 7;
+
+  /// the type for no buttons.
+  static const int MESSAGE_BUTTON_NONE = 8;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// This message will be displayed in the popup
-  final String message;
-
-  /// Name of the message screen used for closing the message
-  final String componentId;
+  final OpenMessageDialogCommand command;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ServerDialog({
-    required this.componentId,
-    required this.message,
+    required this.command,
     Key? key,
   }) : super(key: key);
 
@@ -32,27 +44,88 @@ class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServ
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(getConfigService().translateText("MESSAGE")),
-      content: Text(message),
-      actions: [
-        TextButton(
-          onPressed: () => _closeScreen(context),
-          child: Text(
-            getConfigService().translateText("OK"),
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
+    return WillPopScope(
+      onWillPop: () async {
+        _closeScreen(context);
+        return true;
+      },
+      child: AlertDialog(
+        backgroundColor: Theme.of(context).cardColor.withAlpha(255),
+        title: Text(command.title),
+        content: Text(command.message!),
+        actions: [
+          ..._getButtons(context, command.buttonType),
+        ],
+      ),
     );
   }
 
-  _closeScreen(BuildContext context) {
+  void _closeScreen(BuildContext context) {
     CloseFrameCommand closeScreenCommand =
-        CloseFrameCommand(frameName: componentId, reason: "Message Dialog was dismissed");
+        CloseFrameCommand(frameName: command.componentId, reason: "Message Dialog was dismissed");
     getUiService().sendCommand(closeScreenCommand);
+  }
 
+  void _pressButton(BuildContext context, String componentId) {
+    getUiService().sendCommand(PressButtonCommand(
+      componentName: componentId,
+      reason: "Button has been pressed",
+    ));
     Navigator.of(context).pop();
+  }
+
+  List<Widget> _getButtons(BuildContext context, int buttonType) {
+    List<Widget> buttonList = [];
+    switch (buttonType) {
+      case MESSAGE_BUTTON_YES_NO_CANCEL:
+        buttonList.addAll([
+          _getYesButton(context),
+          TextButton(
+            onPressed: () => _pressButton(context, command.notOkComponentId!),
+            child: Text(getConfigService().translateText("No")),
+          ),
+          _getCancelButton(context),
+        ]);
+        break;
+      case MESSAGE_BUTTON_YES_NO:
+        buttonList.addAll([
+          _getYesButton(context),
+          TextButton(
+            onPressed: () => _pressButton(context, command.cancelComponentId!),
+            child: Text(getConfigService().translateText("No")),
+          ),
+        ]);
+        break;
+      case MESSAGE_BUTTON_OK_CANCEL:
+        buttonList.add(_getCancelButton(context));
+        continue OK;
+      OK:
+      case MESSAGE_BUTTON_OK:
+        buttonList.add(
+          TextButton(
+            onPressed: () => _pressButton(context, command.okComponentId!),
+            child: Text(getConfigService().translateText("Ok")),
+          ),
+        );
+        break;
+      case MESSAGE_BUTTON_NONE:
+      default:
+        break;
+    }
+    return buttonList;
+  }
+
+  Widget _getYesButton(BuildContext context) {
+    return TextButton(
+      onPressed: () => _pressButton(context, command.okComponentId!),
+      child: Text(getConfigService().translateText("Yes")),
+    );
+  }
+
+  Widget _getCancelButton(BuildContext context) {
+    return TextButton(
+      onPressed: () => _pressButton(context, command.cancelComponentId!),
+      child: Text(getConfigService().translateText("Cancel")),
+    );
   }
 }

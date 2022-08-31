@@ -8,9 +8,15 @@ class MessageDialogProcessor implements IResponseProcessor<MessageDialogResponse
   List<BaseCommand> processResponse({required MessageDialogResponse pResponse}) {
     return [
       OpenMessageDialogCommand(
-        reason: "Message.dialog from server",
-        message: pResponse.message!,
         componentId: pResponse.componentId,
+        closable: pResponse.closable,
+        buttonType: pResponse.buttonType,
+        okComponentId: pResponse.okComponentId,
+        notOkComponentId: pResponse.notOkComponentId,
+        cancelComponentId: pResponse.cancelComponentId,
+        title: pResponse.title,
+        message: pResponse.message,
+        reason: "Message.dialog from server",
       )
     ];
   }

@@ -159,6 +159,13 @@ abstract class ApiObjectProperty {
   static const String mode = "mode";
   static const String profileImage = "profileImage";
 
+  // MessageDialogResponse
+  static const String iconType = "iconType";
+  static const String buttonType = "buttonType";
+  static const String okComponentId = "okComponentId";
+  static const String notOkComponentId = "notOkComponentId";
+  static const String cancelComponentId = "cancelComponentId";
+
   // ErrorViewResponse
   static const String silentAbort = "silentAbort";
   static const String details = "details";
@@ -172,6 +179,7 @@ abstract class ApiObjectProperty {
   static const String readOnly = "readonly";
   static const String nullable = "nullable";
   static const String resizable = "resizable";
+  static const String closable = "closable";
   static const String sortable = "sortable";
   static const String movable = "movable";
   static const String contentType = "contentType";
