@@ -10,7 +10,7 @@ class MessageDialogProcessor implements IResponseProcessor<MessageDialogResponse
       OpenMessageDialogCommand(
         reason: "Message.dialog from server",
         message: pResponse.message!,
-        messageScreenName: pResponse.messageScreenName,
+        componentId: pResponse.componentId,
       )
     ];
   }

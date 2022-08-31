@@ -14,14 +14,14 @@ class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServ
   final String message;
 
   /// Name of the message screen used for closing the message
-  final String messageScreenName;
+  final String componentId;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ServerDialog({
-    required this.messageScreenName,
+    required this.componentId,
     required this.message,
     Key? key,
   }) : super(key: key);
@@ -50,7 +50,7 @@ class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServ
 
   _closeScreen(BuildContext context) {
     CloseFrameCommand closeScreenCommand =
-        CloseFrameCommand(frameName: messageScreenName, reason: "Message Dialog was dismissed");
+        CloseFrameCommand(frameName: componentId, reason: "Message Dialog was dismissed");
     getUiService().sendCommand(closeScreenCommand);
 
     Navigator.of(context).pop();

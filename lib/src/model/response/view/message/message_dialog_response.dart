@@ -7,7 +7,7 @@ class MessageDialogResponse extends MessageView {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Name of the message screen used for closing the message
-  final String messageScreenName;
+  final String componentId;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -16,12 +16,12 @@ class MessageDialogResponse extends MessageView {
   MessageDialogResponse({
     required super.title,
     required super.message,
-    required this.messageScreenName,
+    required this.componentId,
     required super.name,
     required super.originalRequest,
   });
 
   MessageDialogResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : messageScreenName = pJson[ApiObjectProperty.componentId],
+      : componentId = pJson[ApiObjectProperty.componentId],
         super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

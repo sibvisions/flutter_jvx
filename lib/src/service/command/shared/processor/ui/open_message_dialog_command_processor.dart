@@ -13,7 +13,7 @@ class OpenMessageDialogCommandProcessor extends ICommandProcessor<OpenMessageDia
   Future<List<BaseCommand>> processCommand(OpenMessageDialogCommand command) async {
     Widget dialog = ServerDialog(
       message: command.message,
-      messageScreenName: command.messageScreenName,
+      componentId: command.componentId,
     );
 
     unawaited(getUiService().openDialog(

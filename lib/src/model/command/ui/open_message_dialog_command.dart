@@ -10,7 +10,7 @@ class OpenMessageDialogCommand extends UiCommand {
   final String message;
 
   /// Name of the message screen used for closing the message
-  final String messageScreenName;
+  final String componentId;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -19,7 +19,7 @@ class OpenMessageDialogCommand extends UiCommand {
   OpenMessageDialogCommand({
     required String reason,
     required this.message,
-    required this.messageScreenName,
+    required this.componentId,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,6 +27,5 @@ class OpenMessageDialogCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "OpenMessageDialogCommand: message: $message, messageScreenName: $messageScreenName, reason: $reason";
+  String get logString => "OpenMessageDialogCommand: message: $message, componentId: $componentId, reason: $reason";
 }
