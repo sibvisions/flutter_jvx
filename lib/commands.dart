@@ -15,6 +15,7 @@ export 'src/model/command/api/insert_record_command.dart';
 export 'src/model/command/api/login_command.dart';
 export 'src/model/command/api/logout_command.dart';
 export 'src/model/command/api/navigation_command.dart';
+export 'src/model/command/api/open_menu_command.dart';
 export 'src/model/command/api/open_screen_command.dart';
 export 'src/model/command/api/open_tab_command.dart';
 export 'src/model/command/api/press_button_command.dart';
