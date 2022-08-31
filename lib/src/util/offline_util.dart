@@ -236,8 +236,6 @@ abstract class OfflineUtil {
           ],
         ),
       );
-
-      rethrow;
     } finally {
       await Wakelock.disable();
       //In case it hasn't been closed yet
@@ -562,8 +560,6 @@ abstract class OfflineUtil {
           ],
         ),
       );
-
-      rethrow;
     } finally {
       await Wakelock.disable();
       //In case it hasn't been closed yet
