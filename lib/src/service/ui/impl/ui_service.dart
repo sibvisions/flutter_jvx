@@ -18,7 +18,7 @@ import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
-import '../../../model/command/ui/open_error_dialog_command.dart';
+import '../../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';

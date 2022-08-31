@@ -2,7 +2,7 @@ import '../../../../../../mixin/api_service_mixin.dart';
 import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/ui/open_error_dialog_command.dart';
+import '../../../../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../../../../../model/request/api_close_screen_request.dart';
 import '../../i_command_processor.dart';
 

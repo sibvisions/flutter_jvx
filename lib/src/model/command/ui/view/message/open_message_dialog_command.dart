@@ -45,5 +45,6 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "OpenMessageDialogCommand: message: $message, componentId: $componentId, reason: $reason";
+  String get logString =>
+      "OpenMessageDialogCommand: ${super.logString}, message: $message, componentId: $componentId, reason: $reason";
 }

@@ -11,7 +11,7 @@ class SessionExpiredResponse extends MessageView {
 
   SessionExpiredResponse({
     required super.title,
-    required super.message,
+    super.message,
     required super.name,
     required super.originalRequest,
   });

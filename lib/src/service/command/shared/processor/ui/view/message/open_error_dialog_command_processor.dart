@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:beamer/beamer.dart';
-import 'package:flutter/widgets.dart';
 
-import '../../../../../../mixin/ui_service_mixin.dart';
-import '../../../../../mask/error/server_error_dialog.dart';
-import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/ui/open_error_dialog_command.dart';
-import '../../../../../routing/locations/settings_location.dart';
-import '../../../../ui/i_ui_service.dart';
-import '../../i_command_processor.dart';
+import '../../../../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../../../mask/error/server_error_dialog.dart';
+import '../../../../../../../model/command/base_command.dart';
+import '../../../../../../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../../../../../../routing/locations/settings_location.dart';
+import '../../../../../../ui/i_ui_service.dart';
+import '../../../../i_command_processor.dart';
 
 class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogCommand> with UiServiceGetterMixin {
   @override
@@ -20,13 +19,11 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
       goToSettings = false;
     }
 
-    Widget errorWidget = ServerErrorDialog(
-      message: command.message,
-      goToSettings: goToSettings,
-    );
-
     unawaited(getUiService().openDialog(
-      pBuilder: (_) => errorWidget,
+      pBuilder: (_) => ServerErrorDialog(
+        command: command,
+        goToSettings: goToSettings,
+      ),
       pIsDismissible: false,
     ));
 

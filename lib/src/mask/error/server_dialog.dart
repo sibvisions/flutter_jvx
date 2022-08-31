@@ -51,8 +51,8 @@ class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServ
       },
       child: AlertDialog(
         backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-        title: Text(command.title),
-        content: Text(command.message!),
+        title: Text(getConfigService().translateText(command.title)),
+        content: Text(getConfigService().translateText(command.message!)),
         actions: [
           ..._getButtons(context, command.buttonType),
         ],

@@ -30,7 +30,7 @@ class MessageDialogResponse extends MessageView {
 
   MessageDialogResponse({
     required super.title,
-    required super.message,
+    super.message,
     required this.componentId,
     required this.closable,
     required this.buttonType,

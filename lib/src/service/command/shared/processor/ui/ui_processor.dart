@@ -1,6 +1,4 @@
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/ui/open_error_dialog_command.dart';
-import '../../../../../model/command/ui/open_session_expired_dialog_command.dart';
 import '../../../../../model/command/ui/route_to_login_command.dart';
 import '../../../../../model/command/ui/route_to_menu_command.dart';
 import '../../../../../model/command/ui/route_to_work_command.dart';
@@ -8,17 +6,19 @@ import '../../../../../model/command/ui/save_menu_command.dart';
 import '../../../../../model/command/ui/ui_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../../../../model/command/ui/update_layout_position_command.dart';
+import '../../../../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../../../../../model/command/ui/view/message/open_message_dialog_command.dart';
+import '../../../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../i_command_processor.dart';
-import 'open_error_dialog_command_processor.dart';
-import 'open_message_dialog_command_processor.dart';
-import 'open_session_expired_dialog_command_processor.dart';
 import 'route_to_login_command_processor.dart';
 import 'route_to_menu_command_processor.dart';
 import 'route_to_work_command_processor.dart';
 import 'save_menu_command_processor.dart';
 import 'update_components_processor.dart';
 import 'update_layout_position_command_processor.dart';
+import 'view/message/open_error_dialog_command_processor.dart';
+import 'view/message/open_message_dialog_command_processor.dart';
+import 'view/message/open_session_expired_dialog_command_processor.dart';
 
 /// Process all sub-types of [UiCommand], delegates commands to specific sub [ICommandProcessor]
 class UiProcessor implements ICommandProcessor<UiCommand> {

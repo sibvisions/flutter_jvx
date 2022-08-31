@@ -2,6 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../../mixin/config_service_mixin.dart';
+import '../../model/command/ui/view/message/open_error_dialog_command.dart';
 
 /// This is a standard template for a server side error message.
 class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
@@ -9,8 +10,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// This message will be displayed in the popup
-  final String message;
+  final OpenErrorDialogCommand command;
 
   /// True if this error is fixable by the user (e.g. invalid url/timeout)
   final bool goToSettings;
@@ -20,7 +20,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ServerErrorDialog({
-    required this.message,
+    required this.command,
     this.goToSettings = false,
     Key? key,
   }) : super(key: key);
@@ -33,8 +33,8 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(getConfigService().translateText("Server Error")),
-      content: Text(message),
+      title: Text(getConfigService().translateText(command.title.isNotEmpty ? command.title : "Server Error")),
+      content: Text(getConfigService().translateText(command.message!)),
       actions: _getButtons(context),
     );
   }

@@ -1,31 +1,25 @@
-import 'ui_command.dart';
+import 'message_view_command.dart';
 
 /// Opens a dialog, telling the user that the session has expired
-class OpenSessionExpiredDialogCommand extends UiCommand {
+class OpenSessionExpiredDialogCommand extends MessageViewCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Title to display
-  final String? title;
-
-  /// Message to display
-  final String message;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenSessionExpiredDialogCommand({
-    this.title,
-    required this.message,
-    required String reason,
-  }) : super(reason: reason);
+    required super.title,
+    super.message,
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "OpenSessionExpiredDialogCommand: title: $title, message: $message, reason: $reason";
+  String get logString => "OpenSessionExpiredDialogCommand: ${super.logString}";
 }

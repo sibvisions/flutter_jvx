@@ -16,6 +16,7 @@ class ErrorViewResponse extends MessageView {
   /// The error object.
   final List<ServerException>? exceptions;
 
+  /// True if this error is a timeout
   final bool isTimeout;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +27,7 @@ class ErrorViewResponse extends MessageView {
     this.silentAbort = false,
     this.details,
     required super.title,
-    required super.message,
+    super.message,
     this.exceptions,
     this.isTimeout = false,
     required super.name,
