@@ -58,6 +58,8 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
       getUiService().routeToMenu(pReplaceRoute: true);
     }
 
+    getUiService().getAppManager()?.onScreen();
+
     return [
       BeamPage(
         key: ValueKey(screenTitle),

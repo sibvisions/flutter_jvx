@@ -13,10 +13,14 @@ class MenuLocation extends BeamLocation<BeamState> with ConfigServiceGetterMixin
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
+    String sValue = "Menu_${getConfigService().isOffline() ? "offline" : "online"}";
+
+    getUiService().getAppManager()?.onMenu();
+
     return [
       BeamPage(
         //Append state to trigger rebuild on online/offline switch
-        key: ValueKey("Menu_${getConfigService().isOffline() ? "offline" : "online"}"),
+        key: ValueKey(sValue),
         child: AppMenu(),
       ),
     ];

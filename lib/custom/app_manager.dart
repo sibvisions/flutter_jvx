@@ -46,4 +46,10 @@ abstract class AppManager {
   Future<HttpClientResponse?> handleResponse(
           IApiRequest request, String responseBody, Future<HttpClientResponse> Function() resendRequest) =>
       Future.value(null);
+
+  /// Is called when going to the menu.
+  void onMenu() {}
+
+  /// Is called when going to a workscreen.
+  void onScreen() {}
 }

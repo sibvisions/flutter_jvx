@@ -47,4 +47,8 @@ class DataChunk {
   dynamic getValue(String columnName, int rowIndex) {
     return data[rowIndex]?[getColumnIndex(columnName)];
   }
+
+  List<dynamic> getValues(String columnName) {
+    return data.values.map((value) => value[getColumnIndex(columnName)]).toList();
+  }
 }
