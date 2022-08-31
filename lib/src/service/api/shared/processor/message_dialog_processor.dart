@@ -1,5 +1,5 @@
 import '../../../../model/command/base_command.dart';
-import '../../../../model/command/ui/open_message_dialog_command.dart';
+import '../../../../model/command/ui/view/message/open_message_dialog_command.dart';
 import '../../../../model/response/view/message/message_dialog_response.dart';
 import '../i_response_processor.dart';
 

@@ -4,7 +4,7 @@ import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/api/press_button_command.dart';
-import '../../model/command/ui/open_message_dialog_command.dart';
+import '../../model/command/ui/view/message/open_message_dialog_command.dart';
 
 /// This is a standard template for a server side message.
 class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {

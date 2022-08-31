@@ -1,4 +1,4 @@
-import 'view/message/message_view_command.dart';
+import 'message_view_command.dart';
 
 /// This command will open a popup containing the provided message
 class OpenMessageDialogCommand extends MessageViewCommand {
