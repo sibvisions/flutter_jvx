@@ -16,6 +16,7 @@ class ConfigGenerator {
       changePassword: "/api/changePassword",
       resetPassword: "/api/resetPassword",
       navigation: "/api/navigation",
+      menu: "/api/menu",
       fetch: "/api/dal/fetch",
       logout: "/api/logout",
       filter: "/api/dal/filter",

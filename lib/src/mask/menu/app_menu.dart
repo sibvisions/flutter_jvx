@@ -191,8 +191,8 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
     MenuMode menuMode = getConfigService().getMenuMode();
 
     // Overriding menu mode
-    AppManager? customScreenManager = getUiService().getAppManager();
-    menuMode = customScreenManager?.getMenuMode(menuMode) ?? menuMode;
+    AppManager? customAppManager = getUiService().getAppManager();
+    menuMode = customAppManager?.getMenuMode(menuMode) ?? menuMode;
 
     MenuFactory menuBuilder = menuFactory[menuMode]!;
 

@@ -10,6 +10,7 @@ import '../../request/api_fetch_request.dart';
 import '../../request/api_insert_record_request.dart';
 import '../../request/api_login_request.dart';
 import '../../request/api_logout_request.dart';
+import '../../request/api_menu_request.dart';
 import '../../request/api_navigation_request.dart';
 import '../../request/api_open_screen_request.dart';
 import '../../request/api_press_button_request.dart';
@@ -85,6 +86,9 @@ class EndpointConfig {
   /// For [ApiCloseFrameRequest]
   final String closeFrame;
 
+  /// For [ApiMenuRequest]
+  final String menu;
+
   const EndpointConfig({
     required this.startup,
     required this.login,
@@ -99,6 +103,7 @@ class EndpointConfig {
     required this.changePassword,
     required this.resetPassword,
     required this.navigation,
+    required this.menu,
     required this.fetch,
     required this.logout,
     required this.filter,

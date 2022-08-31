@@ -14,6 +14,7 @@ import '../../request/api_filter_request.dart';
 import '../../request/api_insert_record_request.dart';
 import '../../request/api_login_request.dart';
 import '../../request/api_logout_request.dart';
+import '../../request/api_menu_request.dart';
 import '../../request/api_navigation_request.dart';
 import '../../request/api_open_screen_request.dart';
 import '../../request/api_open_tab_request.dart';
@@ -59,6 +60,7 @@ class ApiConfig {
       ApiChangePasswordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.changePassword),
       ApiResetPasswordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.resetPassword),
       ApiNavigationRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.navigation),
+      ApiMenuRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.menu),
       ApiFetchRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.fetch),
       ApiLogoutRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.logout),
       ApiFilterRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.filter),
