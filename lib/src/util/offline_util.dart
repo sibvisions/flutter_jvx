@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../util/logging/flutter_logger.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';
 import '../model/command/api/fetch_command.dart';
@@ -204,7 +205,12 @@ abstract class OfflineUtil {
         await apiService.setRepository(offlineApiRepository);
       }
     } catch (e, stackTrace) {
-      log("Error while syncing offline data", error: e, stackTrace: stackTrace);
+      LOGGER.logE(
+        pType: LogType.DATA,
+        pMessage: "Error while syncing offline data",
+        pError: e,
+        pStacktrace: stackTrace,
+      );
 
       //Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
@@ -259,8 +265,13 @@ abstract class OfflineUtil {
               config: Config(
             progress: successfulSyncedPrimaryKeys.length,
           ));
-        } catch (e, stackTrace) {
-          log("Error while syncing inserted row: $row", error: e, stackTrace: stackTrace);
+        } catch (e, stack) {
+          LOGGER.logE(
+            pType: LogType.DATA,
+            pMessage: "Error while syncing inserted row: $row",
+            pError: e,
+            pStacktrace: stack,
+          );
           successful = false;
         }
       }
@@ -293,8 +304,13 @@ abstract class OfflineUtil {
               config: Config(
             progress: successfulSyncedPrimaryKeys.length,
           ));
-        } catch (e, stackTrace) {
-          log("Error while syncing updated row: $row", error: e, stackTrace: stackTrace);
+        } catch (e, stack) {
+          LOGGER.logE(
+            pType: LogType.DATA,
+            pMessage: "Error while syncing updated row: $row",
+            pError: e,
+            pStacktrace: stack,
+          );
           successful = false;
         }
       }
@@ -322,8 +338,13 @@ abstract class OfflineUtil {
               config: Config(
             progress: successfulSyncedPrimaryKeys.length,
           ));
-        } catch (e, stackTrace) {
-          log("Error while syncing deleted row: $row", error: e, stackTrace: stackTrace);
+        } catch (e, stack) {
+          LOGGER.logE(
+            pType: LogType.DATA,
+            pMessage: "Error while syncing deleted row: $row",
+            pError: e.toString(),
+            pStacktrace: stack,
+          );
           successful = false;
         }
       }
@@ -511,7 +532,12 @@ abstract class OfflineUtil {
       ProgressDialogWidget.close(IUiService.getCurrentContext());
       await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
     } catch (e, stackTrace) {
-      log("Error while downloading offline data", error: e, stackTrace: stackTrace);
+      LOGGER.logE(
+        pType: LogType.DATA,
+        pMessage: "Error while downloading offline data",
+        pError: e,
+        pStacktrace: stackTrace,
+      );
 
       //Revert all changes
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
