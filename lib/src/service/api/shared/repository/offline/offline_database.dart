@@ -174,10 +174,6 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     }
     sql.write('"$STATE_COLUMN" TEXT\n');
 
-    if (pTable.primaryKeyColumns.isNotEmpty) {
-      sql.write(', PRIMARY KEY ("${pTable.primaryKeyColumns.join('", "')}")\n');
-    }
-
     sql.write(");");
     return sql.toString();
   }
@@ -185,11 +181,6 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   String _createColumn(String pColumnName, ColumnDefinition pColumn, {bool? nullable}) {
     var columnDef = StringBuffer('"$pColumnName" ');
     columnDef.write(Types.convertToSQLite(pColumn.dataTypeIdentifier, scale: pColumn.scale));
-
-    //Check overridden value first, then column spec
-    // if (!(nullable ?? pColumn.nullable)) {
-    //   columnDef.write(" NOT NULL");
-    // }
 
     //TODO Check default value
 
