@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
@@ -32,6 +31,7 @@ import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
+import 'src/util/init_config.dart';
 import 'src/util/loading_handler/loading_overlay.dart';
 import 'util/parse_util.dart';
 
@@ -48,6 +48,8 @@ class FlutterJVx extends StatefulWidget {
 
   final AppConfig? appConfig;
   final AppManager? appManager;
+
+  /// Builder function for custom loading widget
   final Widget Function(BuildContext context)? loadingBuilder;
 
   const FlutterJVx({
@@ -126,12 +128,14 @@ class FlutterJVxState extends State<FlutterJVx> {
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
           SplashLocation(
-            appConfig: widget.appConfig,
-            appManager: widget.appManager,
-            loadingBuilder: widget.loadingBuilder,
-            styleCallbacks: [changeStyle],
-            languageCallbacks: [changeLanguage],
-            imagesCallbacks: [changedImages],
+            initConfig: InitConfig(
+              appConfig: widget.appConfig,
+              appManager: widget.appManager,
+              loadingBuilder: widget.loadingBuilder,
+              styleCallbacks: [changeStyle],
+              languageCallbacks: [changeLanguage],
+              imagesCallbacks: [changedImages],
+            ),
           ),
           LoginLocation(),
           MenuLocation(),
@@ -185,18 +189,5 @@ class FlutterJVxState extends State<FlutterJVx> {
   void changedImages() {
     log("changedImages");
     setState(() {});
-  }
-}
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    var client = super.createHttpClient(context);
-    if (!kIsWeb) {
-      // Needed to avoid CORS issues
-      // TODO find way to not do this
-      client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
-    }
-    return client;
   }
 }

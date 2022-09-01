@@ -1,38 +1,22 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../config/app_config.dart';
-import '../../../custom/app_manager.dart';
 import '../../mask/splash/splash_widget.dart';
+import '../../util/init_config.dart';
 
 class SplashLocation extends BeamLocation<BeamState> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final AppConfig? appConfig;
-
-  final AppManager? appManager;
-
-  final Widget Function(BuildContext context)? loadingBuilder;
-
-  final List<Function(Map<String, String> style)>? styleCallbacks;
-
-  final List<Function(String language)>? languageCallbacks;
-
-  final List<Function()>? imagesCallbacks;
+  final InitConfig? initConfig;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SplashLocation({
-    this.appConfig,
-    this.appManager,
-    this.loadingBuilder,
-    this.styleCallbacks,
-    this.languageCallbacks,
-    this.imagesCallbacks,
+    this.initConfig,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,12 +29,7 @@ class SplashLocation extends BeamLocation<BeamState> {
       BeamPage(
         key: const ValueKey("Splash"),
         child: SplashWidget(
-          appConfig: appConfig,
-          appManager: appManager,
-          loadingBuilder: loadingBuilder,
-          styleCallbacks: styleCallbacks,
-          languageCallbacks: languageCallbacks,
-          imagesCallbacks: imagesCallbacks,
+          initConfig: initConfig,
         ),
       ),
     ];
