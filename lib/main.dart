@@ -30,7 +30,6 @@ import 'src/service/layout/impl/layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/default/storage_service.dart';
-import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/loading_handler/loading_overlay.dart';
@@ -87,7 +86,7 @@ class FlutterJVx extends StatefulWidget {
     services.registerSingleton(layoutService);
 
     // Storage
-    IStorageService storageService = kIsWeb ? StorageService() : await IsolateStorageService.create();
+    IStorageService storageService = StorageService();
     services.registerSingleton(storageService);
 
     // Data
