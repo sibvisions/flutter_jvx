@@ -7,7 +7,7 @@ import '../../model/command/api/press_button_command.dart';
 import '../../model/command/ui/view/message/open_message_dialog_command.dart';
 
 /// This is a standard template for a server side message.
-class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class MessageDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
   /// the type for ok, cancel buttons.
   static const int MESSAGE_BUTTON_OK_CANCEL = 4;
 
@@ -33,7 +33,7 @@ class ServerDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServ
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ServerDialog({
+  MessageDialog({
     required this.command,
     Key? key,
   }) : super(key: key);
