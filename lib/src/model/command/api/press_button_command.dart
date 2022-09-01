@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 import 'api_command.dart';
 
 ///
@@ -21,8 +19,7 @@ class PressButtonCommand extends ApiCommand {
   PressButtonCommand({
     required this.componentName,
     required String reason,
-    VoidCallback? callback,
-  }) : super(reason: reason, callback: callback);
+  }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

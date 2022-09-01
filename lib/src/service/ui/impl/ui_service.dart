@@ -68,8 +68,8 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void sendCommand(BaseCommand command, {Function(Object error, StackTrace stackTrace)? onError}) {
-    getCommandService().sendCommand(command).catchError((error, stackTrace) {
+  Future<void> sendCommand(BaseCommand command, {Function(Object error, StackTrace stackTrace)? onError}) {
+    return getCommandService().sendCommand(command).catchError((error, stackTrace) {
       if (onError != null) {
         onError.call(error, stackTrace);
       } else {

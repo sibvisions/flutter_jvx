@@ -9,7 +9,6 @@ import '../../../util/logging/flutter_logger.dart';
 import '../../mask/camera/qr_scanner_overlay.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
-import '../../model/command/base_command.dart';
 import '../../model/component/button/fl_button_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
@@ -76,7 +75,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       LOGGER.logI(pType: LogType.UI, pMessage: "Button pressed");
-      getUiService().sendCommand(_createButtonCommand());
+      _sendButtonCommand();
     } else {
       LOGGER.logI(pType: LogType.UI, pMessage: "Button will be pressed");
       currentObjectFocused!.addListener(delayedSendButtonPressed);
@@ -86,27 +85,28 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void delayedSendButtonPressed() {
     LOGGER.logI(pType: LogType.UI, pMessage: "Delayed button pressed");
-    getUiService().sendCommand(_createButtonCommand());
+    _sendButtonCommand();
     currentObjectFocused!.removeListener(delayedSendButtonPressed);
     currentObjectFocused = null;
   }
 
-  BaseCommand _createButtonCommand() {
-    return PressButtonCommand(
+  void _sendButtonCommand() {
+    getUiService()
+        .sendCommand(PressButtonCommand(
       componentName: _overwrittenButtonPressId ?? model.name,
       reason: "Button has been pressed",
-      callback: () {
-        if (!kIsWeb) {
-          if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
-            goOffline();
-          } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
-            openQrCodeScanner();
-          } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
-            callNumber();
-          }
+    ))
+        .then((value) {
+      if (!kIsWeb) {
+        if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
+          goOffline();
+        } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
+          openQrCodeScanner();
+        } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
+          callNumber();
         }
-      },
-    );
+      }
+    });
   }
 
   void openQrCodeScanner() {

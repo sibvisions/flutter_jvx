@@ -262,12 +262,12 @@ class _SettingsPageState extends State<SettingsPage>
                 await getConfigService().setBaseUrl(uri.toString());
                 baseUrlNotifier.value = uri.toString();
 
-                getUiService().sendCommand(SetApiConfigCommand(
+                await getUiService().sendCommand(SetApiConfigCommand(
                   apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()),
                   reason: "Settings url editor",
                 ));
               } catch (e) {
-                getUiService().sendCommand(OpenErrorDialogCommand(
+                await getUiService().sendCommand(OpenErrorDialogCommand(
                   reason: "parseURl",
                   message: getConfigService().translateText("URL text could not be parsed"),
                   canBeFixedInSettings: true,

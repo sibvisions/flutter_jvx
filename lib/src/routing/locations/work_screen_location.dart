@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
@@ -66,7 +68,8 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
         child: WillPopScope(
           onWillPop: () async {
             if (!getUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-              getUiService().sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName));
+              unawaited(getUiService()
+                  .sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName)));
               return false;
             }
             return true;
