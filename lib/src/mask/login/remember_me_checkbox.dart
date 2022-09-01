@@ -25,17 +25,12 @@ class RememberMeCheckbox extends StatefulWidget {
 class _RememberMeCheckboxState extends State<RememberMeCheckbox> with ConfigServiceGetterMixin {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Checkbox(
-          value: widget.checkHolder.isChecked,
-          onChanged: (value) => _onPress(),
-        ),
-        TextButton(
-          onPressed: () => _onPress(),
-          child: Text(getConfigService().translateText("Remember me?")),
-        ),
-      ],
+    return CheckboxListTile(
+      title: Text(getConfigService().translateText("Remember me?")),
+      value: widget.checkHolder.isChecked,
+      contentPadding: EdgeInsets.zero,
+      onChanged: (newValue) => _onPress(),
+      controlAffinity: ListTileControlAffinity.leading,
     );
   }
 
