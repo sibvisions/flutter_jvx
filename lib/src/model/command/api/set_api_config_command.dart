@@ -14,13 +14,15 @@ class SetApiConfigCommand extends ApiCommand {
 
   SetApiConfigCommand({
     required this.apiConfig,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SetApiConfigCommand: apiConfig: $apiConfig,  reason: $reason";
+  String toString() {
+    return 'SetApiConfigCommand{apiConfig: $apiConfig, ${super.toString()}}';
+  }
 }

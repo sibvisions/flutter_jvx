@@ -6,13 +6,15 @@ class DownloadStyleCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DownloadStyleCommand({
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "DownloadStyleCommand: reason: $reason";
+  String toString() {
+    return 'DownloadStyleCommand{${super.toString()}}';
+  }
 }

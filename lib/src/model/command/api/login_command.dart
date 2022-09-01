@@ -37,16 +37,17 @@ class LoginCommand extends ApiCommand {
     required this.userName,
     required this.password,
     required this.loginMode,
-    required String reason,
     this.createAuthKey = false,
     this.newPassword,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  //ToDo logString
-  String get logString => throw UnimplementedError();
+  String toString() {
+    return 'LoginCommand{userName: $userName, loginMode: $loginMode, createAuthKey: $createAuthKey, ${super.toString()}}';
+  }
 }

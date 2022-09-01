@@ -25,19 +25,20 @@ class DeleteRecordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DeleteRecordCommand({
-    required String reason,
     required this.dataProvider,
     this.selectedRow,
     this.fetch = false,
     this.filter,
     this.filterCondition,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "DeleteRecordCommand: dataProvider: $dataProvider, selectedRow: $selectedRow, fetch: $fetch, filter: $filter, filterCondition: $filterCondition, reason: $reason";
+  String toString() {
+    return 'DeleteRecordCommand{dataProvider: $dataProvider, filter: $filter, filterCondition: $filterCondition, selectedRow: $selectedRow, fetch: $fetch, ${super.toString()}}';
+  }
 }

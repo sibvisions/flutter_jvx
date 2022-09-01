@@ -18,9 +18,11 @@ class CloseTabCommand extends ApiCommand {
   CloseTabCommand({
     required this.componentName,
     required this.index,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   @override
-  String get logString => "CloseTabCommand: componentName: $componentName, index: $index, reason: $reason";
+  String toString() {
+    return 'CloseTabCommand{componentName: $componentName, index: $index, ${super.toString()}}';
+  }
 }

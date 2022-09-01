@@ -6,13 +6,15 @@ class LogoutCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   LogoutCommand({
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "LogoutCommand: reason: $reason";
+  String toString() {
+    return 'LogoutCommand{${super.toString()}}';
+  }
 }

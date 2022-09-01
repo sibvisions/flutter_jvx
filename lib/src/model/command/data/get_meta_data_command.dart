@@ -17,15 +17,17 @@ class GetMetaDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   GetMetaDataCommand({
-    required String reason,
     required this.dataProvider,
     required this.subId,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "GetDataChunkCommand: dataProvider: $dataProvider, subId: $subId, reason: $reason";
+  String toString() {
+    return 'GetMetaDataCommand{dataProvider: $dataProvider, subId: $subId, ${super.toString()}}';
+  }
 }

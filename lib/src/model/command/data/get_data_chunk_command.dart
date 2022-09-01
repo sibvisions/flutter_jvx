@@ -29,20 +29,21 @@ class GetDataChunkCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   GetDataChunkCommand({
-    required String reason,
     required this.dataProvider,
     required this.from,
     required this.subId,
     this.isUpdate = false,
     this.to,
     this.dataColumns,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "GetDataChunkCommand: dataProvider: $dataProvider, from: $from, subId: $subId, isUpdate: $isUpdate, to: $to, dataColumns: $dataColumns,  reason: $reason";
+  String toString() {
+    return 'GetDataChunkCommand{subId: $subId, dataProvider: $dataProvider, dataColumns: $dataColumns, from: $from, to: $to, isUpdate: $isUpdate, ${super.toString()}}';
+  }
 }

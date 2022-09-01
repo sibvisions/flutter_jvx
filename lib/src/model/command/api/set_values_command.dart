@@ -35,16 +35,17 @@ class SetValuesCommand extends ApiCommand {
     required this.dataProvider,
     required this.columnNames,
     required this.values,
-    required String reason,
     this.filter,
     this.filterCondition,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "SetValuesCommand: componentId: $componentId, dataProvider: $dataProvider, columnNames: $columnNames, values: $values, reason: $reason";
+  String toString() {
+    return 'SetValuesCommand{componentId: $componentId, dataProvider: $dataProvider, columnNames: $columnNames, values: $values, filter: $filter, filterCondition: $filterCondition, ${super.toString()}}';
+  }
 }

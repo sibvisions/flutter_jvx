@@ -15,13 +15,15 @@ class PreferredSizeCommand extends LayoutCommand {
 
   PreferredSizeCommand({
     required this.layoutData,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "PreferredSizeCommand";
+  String toString() {
+    return 'PreferredSizeCommand{layoutData: $layoutData, ${super.toString()}}';
+  }
 }

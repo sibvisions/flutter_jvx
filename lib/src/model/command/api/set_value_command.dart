@@ -20,13 +20,15 @@ class SetValueCommand extends ApiCommand {
   SetValueCommand({
     required this.componentName,
     required this.value,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SetValueCommand: componentName: $componentName, value: $value,   reason: $reason";
+  String toString() {
+    return 'SetValueCommand{componentName: $componentName, value: $value, ${super.toString()}}';
+  }
 }

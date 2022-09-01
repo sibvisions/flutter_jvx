@@ -5,6 +5,6 @@ import '../base_command.dart';
 ///
 abstract class StorageCommand extends BaseCommand {
   StorageCommand({
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 }

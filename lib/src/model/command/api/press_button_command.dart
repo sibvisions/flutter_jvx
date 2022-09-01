@@ -18,13 +18,15 @@ class PressButtonCommand extends ApiCommand {
   /// Initializes a [PressButtonCommand].
   PressButtonCommand({
     required this.componentName,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "ButtonPressedCommand | Component: $componentName | Reason: $reason";
+  String toString() {
+    return 'PressButtonCommand{componentName: $componentName, ${super.toString()}}';
+  }
 }

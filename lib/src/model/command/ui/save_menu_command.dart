@@ -17,13 +17,15 @@ class SaveMenuCommand extends UiCommand {
 
   SaveMenuCommand({
     required this.menuModel,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SaveMenuCommand: menuModel: $menuModel, reason: $reason";
+  String toString() {
+    return 'SaveMenuCommand{menuModel: $menuModel, ${super.toString()}}';
+  }
 }

@@ -16,13 +16,15 @@ class InsertRecordCommand extends ApiCommand {
 
   InsertRecordCommand({
     required this.dataProvider,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "InsertRecordCommand: dataProvider: $dataProvider, reason: $reason";
+  String toString() {
+    return 'InsertRecordCommand{dataProvider: $dataProvider, ${super.toString()}}';
+  }
 }

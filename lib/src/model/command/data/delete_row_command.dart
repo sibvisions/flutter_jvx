@@ -22,14 +22,15 @@ class DeleteRowCommand extends DataCommand {
     required this.dataProvider,
     required this.deletedRow,
     required this.newSelectedRow,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "DeleteRowCommand: dataProvider: $dataProvider, deletedRow: $deletedRow, newSelectedRow: $newSelectedRow, reason: $reason";
+  String toString() {
+    return 'DeleteRowCommand{dataProvider: $dataProvider, deletedRow: $deletedRow, newSelectedRow: $newSelectedRow, ${super.toString()}}';
+  }
 }

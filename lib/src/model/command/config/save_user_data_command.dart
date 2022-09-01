@@ -16,13 +16,15 @@ class SaveUserDataCommand extends ConfigCommand {
 
   SaveUserDataCommand({
     required this.userData,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SaveUserDataCommand: userData: $userData, reason: $reason";
+  String toString() {
+    return 'SaveUserDataCommand{userData: $userData, ${super.toString()}}';
+  }
 }

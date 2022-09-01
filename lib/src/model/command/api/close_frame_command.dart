@@ -13,14 +13,16 @@ class CloseFrameCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CloseFrameCommand({
-    required String reason,
     required this.frameName,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "CloseFrameCommand: frameName: $frameName, reason: $reason";
+  String toString() {
+    return 'CloseFrameCommand{frameName: $frameName, ${super.toString()}}';
+  }
 }

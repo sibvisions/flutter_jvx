@@ -5,6 +5,6 @@ import '../base_command.dart';
 ///
 abstract class ApiCommand extends BaseCommand {
   ApiCommand({
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 }

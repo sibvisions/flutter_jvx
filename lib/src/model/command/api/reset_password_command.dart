@@ -13,14 +13,16 @@ class ResetPasswordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ResetPasswordCommand({
-    required String reason,
     required this.identifier,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "ResetPasswordCommand: identifier: $identifier, reason: $reason";
+  String toString() {
+    return 'ResetPasswordCommand{identifier: $identifier, ${super.toString()}}';
+  }
 }

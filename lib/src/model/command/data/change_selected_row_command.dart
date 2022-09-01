@@ -18,14 +18,15 @@ class ChangeSelectedRowCommand extends DataCommand {
   ChangeSelectedRowCommand({
     required this.dataProvider,
     required this.newSelectedRow,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "ChangeSelectedRowCommand: dataProvider: $dataProvider, newSelectedRow: $newSelectedRow, reason: $reason";
+  String toString() {
+    return 'ChangeSelectedRowCommand{dataProvider: $dataProvider, newSelectedRow: $newSelectedRow, ${super.toString()}}';
+  }
 }

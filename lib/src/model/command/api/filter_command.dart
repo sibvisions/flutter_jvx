@@ -30,14 +30,15 @@ class FilterCommand extends ApiCommand {
     this.columnNames,
     this.filter,
     this.filterCondition,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "FilterCommand: editorId: $editorId, value: $value, dataProvider: $dataProvider, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, reason: $reason";
+  String toString() {
+    return 'FilterCommand{editorId: $editorId, value: $value, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, dataProvider: $dataProvider, ${super.toString()}}';
+  }
 }

@@ -7,10 +7,12 @@ class DeleteScreenCommand extends StorageCommand {
 
   DeleteScreenCommand({
     required this.screenName,
-    required String reason,
     this.beamBack = true,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   @override
-  String get logString => "DeleteScreenCommand: screenName: $screenName, reason: $reason";
+  String toString() {
+    return 'DeleteScreenCommand{screenName: $screenName, beamBack: $beamBack, ${super.toString()}}';
+  }
 }

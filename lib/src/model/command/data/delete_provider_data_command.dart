@@ -24,17 +24,18 @@ class DeleteProviderDataCommand extends DataCommand {
 
   DeleteProviderDataCommand({
     required this.dataProvider,
-    required String reason,
     this.deleteAll,
     this.fromIndex,
     this.toIndex,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "DeleteProviderDataCommand: dataProvider: $dataProvider, deleteAll: $deleteAll, fromIndex: $fromIndex, toIndex: $toIndex, reason: $reason";
+  String toString() {
+    return 'DeleteProviderDataCommand{dataProvider: $dataProvider, fromIndex: $fromIndex, toIndex: $toIndex, deleteAll: $deleteAll, ${super.toString()}}';
+  }
 }

@@ -18,9 +18,11 @@ class OpenTabCommand extends ApiCommand {
   OpenTabCommand({
     required this.componentName,
     required this.index,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   @override
-  String get logString => "OpenTabCommand: componentName: $componentName, index: $index,  reason: $reason";
+  String toString() {
+    return 'OpenTabCommand{componentName: $componentName, index: $index, ${super.toString()}}';
+  }
 }

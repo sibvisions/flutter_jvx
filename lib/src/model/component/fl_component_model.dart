@@ -113,7 +113,7 @@ abstract class FlComponentModel {
 
   @override
   String toString() {
-    return "Instance of $runtimeType with id: $id ";
+    return '$runtimeType{id: $id}';
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

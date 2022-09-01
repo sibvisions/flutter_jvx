@@ -18,13 +18,15 @@ class DeviceStatusCommand extends ApiCommand {
   DeviceStatusCommand({
     required this.screenWidth,
     required this.screenHeight,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "DeviceStatusCommand | Width: $screenWidth | Height: $screenHeight | Reason: $reason";
+  String toString() {
+    return 'DeviceStatusCommand{screenWidth: $screenWidth, screenHeight: $screenHeight, ${super.toString()}}';
+  }
 }

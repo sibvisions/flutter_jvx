@@ -14,9 +14,11 @@ class SaveAuthKeyCommand extends ConfigCommand {
 
   SaveAuthKeyCommand({
     required this.authKey,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   @override
-  String get logString => "SaveAuthKeyCommand: authKey: $authKey, reason: $reason";
+  String toString() {
+    return 'SaveAuthKeyCommand{${super.toString()}}';
+  }
 }

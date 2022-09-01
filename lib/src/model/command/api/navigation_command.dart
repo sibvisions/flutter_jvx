@@ -17,14 +17,16 @@ class NavigationCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   NavigationCommand({
-    required String reason,
     required this.openScreen,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "NavigationCommand: openscreen: $openScreen, reason: $reason";
+  String toString() {
+    return 'NavigationCommand{openScreen: $openScreen, ${super.toString()}}';
+  }
 }

@@ -6,6 +6,6 @@ import '../base_command.dart';
 ///
 abstract class UiCommand extends BaseCommand {
   UiCommand({
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 }

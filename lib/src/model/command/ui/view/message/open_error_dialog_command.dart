@@ -31,9 +31,9 @@ class OpenErrorDialogCommand extends MessageViewCommand {
     this.silentAbort = false,
     this.details,
     this.exceptions,
-    required super.reason,
     this.isTimeout = false,
     this.canBeFixedInSettings = false,
+    required super.reason,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,5 +41,7 @@ class OpenErrorDialogCommand extends MessageViewCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "OpenErrorDialogCommand: ${super.toString()}, isTimeout: $isTimeout, reason: $reason";
+  String toString() {
+    return 'OpenErrorDialogCommand{silentAbort: $silentAbort, details: $details, exceptions: $exceptions, isTimeout: $isTimeout, canBeFixedInSettings: $canBeFixedInSettings, ${super.toString()}}';
+  }
 }

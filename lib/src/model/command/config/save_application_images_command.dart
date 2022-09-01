@@ -15,13 +15,15 @@ class SaveApplicationImagesCommand extends ConfigCommand {
 
   SaveApplicationImagesCommand({
     required this.images,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SaveApplicationImagesCommand: images: $images, reason: $reason";
+  String toString() {
+    return 'SaveApplicationImagesCommand{images: $images, ${super.toString()}}';
+  }
 }

@@ -28,21 +28,15 @@ class UpdateComponentsCommand extends UiCommand {
     this.newComponents = const [],
     this.changedComponents = const [],
     this.deletedComponents = const {},
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString {
-    String allAffectedComponentIds = "[";
-
-    for (FlComponentModel element in newComponents) {
-      allAffectedComponentIds += " ${element.id};";
-    }
-
-    return "UpdateComponentsCommand Reason: $reason | Affected IDs: $allAffectedComponentIds]";
+  String toString() {
+    return 'UpdateComponentsCommand{changedComponents: $changedComponents, newComponents: $newComponents, deletedComponents: $deletedComponents, affectedComponents: $affectedComponents, ${super.toString()}}';
   }
 }

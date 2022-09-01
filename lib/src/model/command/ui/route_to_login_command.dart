@@ -19,13 +19,15 @@ class RouteToLoginCommand extends UiCommand {
   RouteToLoginCommand({
     required this.mode,
     required this.loginData,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => throw UnimplementedError();
+  String toString() {
+    return 'RouteToLoginCommand{mode: $mode, loginData: $loginData, ${super.toString()}}';
+  }
 }

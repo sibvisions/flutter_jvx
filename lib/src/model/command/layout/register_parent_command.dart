@@ -15,13 +15,15 @@ class RegisterParentCommand extends LayoutCommand {
 
   RegisterParentCommand({
     required this.layoutData,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "RegisterParentCommand: | ${layoutData.toString()} | Reason $reason";
+  String toString() {
+    return 'RegisterParentCommand{layoutData: $layoutData, ${super.toString()}}';
+  }
 }

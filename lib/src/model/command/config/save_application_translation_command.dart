@@ -15,13 +15,15 @@ class SaveApplicationTranslationCommand extends ConfigCommand {
 
   SaveApplicationTranslationCommand({
     required this.translations,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SaveApplicationTranslationCommand: translations: $translations, reason: $reason";
+  String toString() {
+    return 'SaveApplicationTranslationCommand{translations: $translations, ${super.toString()}}';
+  }
 }

@@ -14,15 +14,17 @@ class DalSaveCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DalSaveCommand({
-    required String reason,
     required this.dataProvider,
     this.onlySelected,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "DalSaveCommand: dataProvider: $dataProvider, onlySelected: $onlySelected, reason: $reason";
+  String toString() {
+    return 'DalSaveCommand{dataProvider: $dataProvider, onlySelected: $onlySelected, ${super.toString()}}';
+  }
 }

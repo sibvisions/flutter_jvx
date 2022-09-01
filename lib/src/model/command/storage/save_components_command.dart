@@ -20,40 +20,20 @@ class SaveComponentsCommand extends StorageCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveComponentsCommand(
-      {this.updatedComponent, this.componentsToSave, required this.screenName, required String reason})
-      : super(reason: reason);
+  SaveComponentsCommand({
+    this.updatedComponent,
+    this.componentsToSave,
+    required this.screenName,
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString {
-    String saveCompIds = " Components to save: [";
-    String updateCompIds = " Components to update: [";
-
-    if (componentsToSave != null) {
-      for (FlComponentModel element in componentsToSave!) {
-        saveCompIds += " ${element.id};";
-      }
-
-      saveCompIds += "]";
-    } else {
-      saveCompIds = "";
-    }
-
-    if (updatedComponent != null) {
-      for (var element in updatedComponent!) {
-        if (element is Map) {
-          updateCompIds += " ${element[ApiObjectProperty.id]};";
-        }
-      }
-      updateCompIds += "]";
-    } else {
-      updateCompIds = "";
-    }
-
-    return "SaveComponentsCommand | $saveCompIds$updateCompIds | Reason : $reason";
+  String toString() {
+    String? updateCompIds = updatedComponent?.whereType<Map>().map((e) => e[ApiObjectProperty.id]).join(";");
+    return 'SaveComponentsCommand{componentsToSave: $componentsToSave, updatedComponent: $updateCompIds, screenName: $screenName, ${super.toString()}}';
   }
 }

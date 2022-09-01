@@ -22,16 +22,17 @@ class GetSelectedDataCommand extends DataCommand {
 
   GetSelectedDataCommand({
     required this.subId,
-    required String reason,
     required this.dataProvider,
     this.columnNames,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "GetSelectedDataCommand: dataProvider: $dataProvider, subId: $subId, columnNames: $columnNames, reason: $reason";
+  String toString() {
+    return 'GetSelectedDataCommand{dataProvider: $dataProvider, subId: $subId, columnNames: $columnNames, ${super.toString()}}';
+  }
 }

@@ -7,9 +7,11 @@ class UpdateLayoutPositionCommand extends UiCommand {
 
   UpdateLayoutPositionCommand({
     required this.layoutDataList,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   @override
-  String get logString => "UpdateLayoutPositionCommand: layoutDataList: $layoutDataList, reason: $reason";
+  String toString() {
+    return 'UpdateLayoutPositionCommand{layoutDataList: $layoutDataList, ${super.toString()}}';
+  }
 }

@@ -18,16 +18,18 @@ class RouteToWorkCommand extends UiCommand {
   RouteToWorkCommand({
     required this.screenName,
     this.replaceRoute = false,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "RouteToWorkCommand: screenName: $screenName, replaceRoute: $replaceRoute, reason: $reason";
+  Duration get loadingDelay => Duration.zero;
 
   @override
-  Duration get loadingDelay => Duration.zero;
+  String toString() {
+    return 'RouteToWorkCommand{screenName: $screenName, replaceRoute: $replaceRoute, ${super.toString()}}';
+  }
 }

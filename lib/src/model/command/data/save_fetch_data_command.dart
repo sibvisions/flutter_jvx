@@ -7,9 +7,11 @@ class SaveFetchDataCommand extends DataCommand {
 
   SaveFetchDataCommand({
     required this.response,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   @override
-  String get logString => "SaveFetchDataCommand: response: $response, reason: $reason";
+  String toString() {
+    return 'SaveFetchDataCommand{response: $response, ${super.toString()}}';
+  }
 }

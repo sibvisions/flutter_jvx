@@ -16,13 +16,15 @@ class RouteToMenuCommand extends UiCommand {
 
   RouteToMenuCommand({
     this.replaceRoute = false,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "RouteToMenuCommand: replaceRoute: $replaceRoute, reason: $reason";
+  String toString() {
+    return 'RouteToMenuCommand{replaceRoute: $replaceRoute, ${super.toString()}}';
+  }
 }

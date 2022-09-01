@@ -20,19 +20,20 @@ class FetchCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FetchCommand({
-    required String reason,
     required this.fromRow,
     required this.rowCount,
     required this.dataProvider,
     this.includeMetaData,
     this.columnNames,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "FetchCommand: fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, includeMetaData: $includeMetaData, columnNames: $columnNames, reason: $reason";
+  String toString() {
+    return 'FetchCommand{columnNames: $columnNames, includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, ${super.toString()}}';
+  }
 }

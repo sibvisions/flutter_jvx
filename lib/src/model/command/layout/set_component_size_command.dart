@@ -20,13 +20,15 @@ class SetComponentSizeCommand extends LayoutCommand {
   SetComponentSizeCommand({
     required this.componentId,
     required this.size,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SetComponentSizeCommand: componentId: $componentId, size: $size, reason: $reason";
+  String toString() {
+    return 'SetComponentSizeCommand{componentId: $componentId, size: $size, ${super.toString()}}';
+  }
 }

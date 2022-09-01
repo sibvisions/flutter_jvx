@@ -22,17 +22,19 @@ class StartupCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   StartupCommand({
-    required String reason,
     this.appName,
     this.username,
     this.password,
     this.forceNewSession,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "StartupCommand | Reason: $reason | Username: $username | Password: $password";
+  String toString() {
+    return 'StartupCommand{appName: $appName, username: $username, forceNewSession: $forceNewSession, ${super.toString()}}';
+  }
 }

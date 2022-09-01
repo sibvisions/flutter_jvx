@@ -16,9 +16,11 @@ class SaveMetaDataCommand extends DataCommand {
 
   SaveMetaDataCommand({
     required this.response,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   @override
-  String get logString => "SaveMetaDataCommand: response: $response, reason: $reason";
+  String toString() {
+    return 'SaveMetaDataCommand{response: $response, ${super.toString()}}';
+  }
 }

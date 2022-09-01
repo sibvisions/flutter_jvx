@@ -22,14 +22,16 @@ class ChangePasswordCommand extends ApiCommand {
   ChangePasswordCommand({
     required this.newPassword,
     required this.password,
-    required String reason,
     this.username,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "ChangePasswordCommand: username: $username, reason: $reason";
+  String toString() {
+    return 'ChangePasswordCommand{username: $username, ${super.toString()}}';
+  }
 }

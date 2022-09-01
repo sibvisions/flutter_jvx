@@ -5,12 +5,16 @@ class DownloadImagesCommand extends ApiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DownloadImagesCommand({required String reason}) : super(reason: reason);
+  DownloadImagesCommand({
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "DownloadResourceCommand";
+  String toString() {
+    return 'DownloadImagesCommand{${super.toString()}}';
+  }
 }

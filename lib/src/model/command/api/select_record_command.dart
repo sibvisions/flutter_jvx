@@ -23,19 +23,20 @@ class SelectRecordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SelectRecordCommand({
-    required String reason,
     required this.dataProvider,
     required this.selectedRecord,
     this.reload = false,
     this.fetch = false,
     this.filter,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "SelectRecordCommand: dataProvider: $dataProvider, slectedRecord: $selectedRecord, reload: $reload, fetch: $fetch, filter: $filter,  reason: $reason";
+  String toString() {
+    return 'SelectRecordCommand{selectedRecord: $selectedRecord, dataProvider: $dataProvider, filter: $filter, reload: $reload, fetch: $fetch, ${super.toString()}}';
+  }
 }

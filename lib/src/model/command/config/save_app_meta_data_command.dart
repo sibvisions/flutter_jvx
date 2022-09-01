@@ -13,12 +13,17 @@ class SaveAppMetaDataCommand extends ConfigCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveAppMetaDataCommand({required this.metaData, required String reason}) : super(reason: reason);
+  SaveAppMetaDataCommand({
+    required this.metaData,
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SaveAppMetaData | response: $metaData | Reason: $reason";
+  String toString() {
+    return 'SaveAppMetaDataCommand{metaData: $metaData, ${super.toString()}}';
+  }
 }

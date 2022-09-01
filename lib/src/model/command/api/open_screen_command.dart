@@ -14,13 +14,15 @@ class OpenScreenCommand extends ApiCommand {
 
   OpenScreenCommand({
     required this.componentId,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "OpenScreenCommand | Component id: $componentId | Reason; $reason";
+  String toString() {
+    return 'OpenScreenCommand{componentId: $componentId, ${super.toString()}}';
+  }
 }

@@ -13,9 +13,11 @@ class CloseScreenCommand extends ApiCommand {
 
   CloseScreenCommand({
     required this.screenName,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   @override
-  String get logString => "CloseScreenCommand: screenName: $screenName, reason: $reason";
+  String toString() {
+    return 'CloseScreenCommand{screenName: $screenName, ${super.toString()}}';
+  }
 }

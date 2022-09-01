@@ -14,13 +14,15 @@ class AuthenticatedCommand extends BaseCommand {
 
   AuthenticatedCommand({
     required this.authenticated,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "AuthenticatedCommand | Authenticated: $authenticated | Reason: $reason";
+  String toString() {
+    return 'AuthenticatedCommand{authenticated: $authenticated, ${super.toString()}}';
+  }
 }

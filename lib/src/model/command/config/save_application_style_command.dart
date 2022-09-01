@@ -14,13 +14,15 @@ class SaveApplicationStyleCommand extends ConfigCommand {
 
   SaveApplicationStyleCommand({
     required this.style,
-    required String reason,
-  }) : super(reason: reason);
+    required super.reason,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "SaveApplicationStyleCommand: style: $style, reason: $reason";
+  String toString() {
+    return 'SaveApplicationStyleCommand{style: $style, ${super.toString()}}';
+  }
 }

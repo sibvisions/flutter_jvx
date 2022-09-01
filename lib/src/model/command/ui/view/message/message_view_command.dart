@@ -22,5 +22,7 @@ class MessageViewCommand extends UiCommand {
   });
 
   @override
-  String get logString => 'MessageViewCommand{title: $title, message: $message}';
+  String toString() {
+    return 'MessageViewCommand{title: $title, message: $message, ${super.toString()}}';
+  }
 }
