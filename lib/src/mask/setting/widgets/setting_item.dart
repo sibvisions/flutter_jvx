@@ -53,7 +53,14 @@ class SettingItem<T> extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: ListTile(
         enabled: enabled ?? true,
-        leading: frontIcon,
+        leading: frontIcon != null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  frontIcon!,
+                ],
+              )
+            : null,
         trailing: endIcon,
         title: Text(title),
         subtitle: ValueListenableBuilder<T>(
