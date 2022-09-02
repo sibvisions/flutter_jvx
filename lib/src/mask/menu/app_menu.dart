@@ -145,7 +145,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TextButton(
-                      style: TextButton.styleFrom(primary: Colors.red),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
                       child: Text(getConfigService().translateText("Discard Changes")),
                       onPressed: () async {
                         SyncDialogResult? result = await getUiService().openDialog(
@@ -159,7 +159,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
                                 child: Text(getConfigService().translateText("No")),
                               ),
                               TextButton(
-                                style: TextButton.styleFrom(primary: Colors.red),
+                                style: TextButton.styleFrom(foregroundColor: Colors.red),
                                 onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.DISCARD_CHANGES),
                                 child: Text(getConfigService().translateText("Yes")),
                               ),
