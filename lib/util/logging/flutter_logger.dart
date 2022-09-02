@@ -155,7 +155,7 @@ class LOGGER {
     dev.log(
       "${pLevel.name}:${pMessage != null ? " $pMessage" : ""}",
       //toString() prevents truncating
-      error: pError.toString(),
+      error: pError?.toString(),
       stackTrace: pStacktrace,
     );
   }
