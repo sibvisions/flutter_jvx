@@ -10,7 +10,7 @@ enum ProgressType { normal, valuable }
 
 enum ValueType { none, number, percentage }
 
-enum ValuePosition { center, right }
+enum ValuePosition { center, right, in_progress }
 
 /// Based on https://github.com/emreesen27/Flutter-Progress-Dialog
 class ProgressDialogWidget extends StatefulWidget {
@@ -90,14 +90,20 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                               theme: SvgTheme(currentColor: _config.progressValueColor!),
                               package: FlutterJVx.package ? ImageLoader.getPackageName() : null,
                             ))
-                      : CircularProgressIndicator(
-                          color: _config.progressValueColor,
-                          backgroundColor: _config.progressBgColor,
-                          value: (_config.progressType == ProgressType.normal ||
-                                  _config.progress == 0 ||
-                                  _config.maxProgress == 0
-                              ? null
-                              : _config.progress! / _config.maxProgress!),
+                      : Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              color: _config.progressValueColor,
+                              backgroundColor: _config.progressBgColor,
+                              value: (_config.progressType == ProgressType.normal ||
+                                      _config.progress == 0 ||
+                                      _config.maxProgress == 0
+                                  ? null
+                                  : _config.progress! / _config.maxProgress!),
+                            ),
+                            if (_config.valuePosition == ValuePosition.in_progress) getValueWidget(context),
+                          ],
                         ),
                 ),
                 Expanded(
@@ -125,22 +131,12 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
               ],
             ),
             _config.valueType != ValueType.none &&
-                    (_config.progress! > 0 || _config.progressType == ProgressType.valuable)
+                    (_config.progress! > 0 || _config.progressType == ProgressType.valuable) &&
+                    (_config.valuePosition == ValuePosition.right || _config.valuePosition == ValuePosition.center)
                 ? Align(
                     alignment:
                         _config.valuePosition == ValuePosition.right ? Alignment.bottomRight : Alignment.bottomCenter,
-                    child: Text(
-                      _config.valueType == ValueType.number
-                          ? '${_config.progress}/${_config.maxProgress}'
-                          : (_config.maxProgress! > 0
-                              ? "${(_config.progress! / _config.maxProgress! * 100).round()}%"
-                              : "0%"),
-                      style: const TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.normal,
-                      ).merge(_config.valueTextStyle),
-                    ),
+                    child: getValueWidget(context),
                   )
                 : Container()
           ],
@@ -152,6 +148,19 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
         actionsAlignment: _config.actionsAlignment,
       ),
       onWillPop: () => Future.value(_config.barrierDismissible),
+    );
+  }
+
+  Widget getValueWidget(BuildContext context) {
+    return Text(
+      _config.valueType == ValueType.number
+          ? '${_config.progress}/${_config.maxProgress}'
+          : "${_config.maxProgress! > 0 ? "${(_config.progress! / _config.maxProgress! * 100).round()}" : "0"}%",
+      style: TextStyle(
+        fontSize: _config.valuePosition != ValuePosition.in_progress ? 15.0 : 13.0,
+        color: Colors.black87,
+        fontWeight: _config.valuePosition != ValuePosition.in_progress ? FontWeight.normal : FontWeight.bold,
+      ).merge(_config.valueTextStyle),
     );
   }
 }
