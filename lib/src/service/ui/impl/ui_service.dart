@@ -140,9 +140,9 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   @override
   void routeToSettings({bool pReplaceRoute = false}) {
     if (pReplaceRoute) {
-      IUiService.getCurrentContext().beamToReplacementNamed("/setting");
+      IUiService.getCurrentContext().beamToReplacementNamed("/settings");
     } else {
-      IUiService.getCurrentContext().beamToNamed("/setting");
+      IUiService.getCurrentContext().beamToNamed("/settings");
     }
   }
 

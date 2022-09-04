@@ -16,6 +16,6 @@ class SettingsLocation extends BeamLocation {
 
   @override
   List<Pattern> get pathPatterns => [
-        '/setting',
+        '/settings',
       ];
 }

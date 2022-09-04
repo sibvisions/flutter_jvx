@@ -114,6 +114,6 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
   }
 
   void _onSettingsPressed({required BuildContext context}) {
-    context.beamToNamed("/setting");
+    context.beamToNamed("/settings");
   }
 }

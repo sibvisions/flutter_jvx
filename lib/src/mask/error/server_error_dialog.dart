@@ -52,7 +52,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
-            context.beamToReplacementNamed("/setting");
+            context.beamToReplacementNamed("/settings");
           },
           child: Text(
             getConfigService().translateText("Go to Settings"),
