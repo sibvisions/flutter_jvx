@@ -76,12 +76,13 @@ abstract class IUiService {
   /// Opens a [Dialog]
   Future<T?> openDialog<T>({
     required WidgetBuilder pBuilder,
+    BuildContext? context,
     bool pIsDismissible = true,
     Locale? pLocale,
   });
 
-  static BuildContext getCurrentContext() {
-    return routerDelegate.navigatorKey.currentContext!;
+  static BuildContext? getCurrentContext() {
+    return routerDelegate.navigatorKey.currentContext;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

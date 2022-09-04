@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../custom/app_manager.dart';
@@ -31,7 +32,6 @@ import '../../../model/menu/menu_model.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/menu_location.dart';
 import '../../../routing/locations/settings_location.dart';
-import '../../../routing/locations/splash_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
 import '../i_ui_service.dart';
 
@@ -98,14 +98,22 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
-    var last = IUiService.getCurrentContext().beamingHistory.last;
-    if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
-      IUiService.getCurrentContext().beamingHistory.clear();
+    if (IUiService.getCurrentContext() == null) {
+      //TODO fix workScreen web reload (e.g. send OpenScreenCommand)
+      if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
+        routerDelegate.setNewRoutePath(const RouteInformation(location: "/menu"));
+      }
+      return;
+    }
+
+    var last = IUiService.getCurrentContext()!.beamingHistory.last;
+    if (last.runtimeType == SettingsLocation) {
+      IUiService.getCurrentContext()!.beamingHistory.clear();
     }
     if (pReplaceRoute) {
-      IUiService.getCurrentContext().beamToReplacementNamed("/menu");
+      IUiService.getCurrentContext()!.beamToReplacementNamed("/menu");
     } else {
-      IUiService.getCurrentContext().beamToNamed("/menu");
+      IUiService.getCurrentContext()!.beamToNamed("/menu");
     }
   }
 
@@ -113,42 +121,45 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     log("routing to workscreen: $pScreenName");
 
-    var last = IUiService.getCurrentContext().beamingHistory.last;
+    var last = IUiService.getCurrentContext()!.beamingHistory.last;
 
-    if (last.runtimeType == SettingsLocation || last.runtimeType == SplashLocation) {
-      IUiService.getCurrentContext().beamingHistory.clear();
+    if (last.runtimeType == SettingsLocation) {
+      IUiService.getCurrentContext()!.beamingHistory.clear();
     }
     if (pReplaceRoute) {
-      IUiService.getCurrentContext().beamToReplacementNamed("/workScreen/$pScreenName");
+      IUiService.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName");
     } else {
-      IUiService.getCurrentContext().beamToNamed("/workScreen/$pScreenName");
+      IUiService.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName");
     }
   }
 
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
-    var last = IUiService.getCurrentContext().beamingHistory.last;
+    var last = IUiService.getCurrentContext()!.beamingHistory.last;
 
-    if (last.runtimeType == WorkScreenLocation ||
-        last.runtimeType == MenuLocation ||
-        last.runtimeType == SplashLocation) {
-      IUiService.getCurrentContext().beamingHistory.clear();
+    if (last.runtimeType == WorkScreenLocation || last.runtimeType == MenuLocation) {
+      IUiService.getCurrentContext()!.beamingHistory.clear();
     }
-    IUiService.getCurrentContext().beamToNamed("/login/$mode", data: pLoginProps);
+    IUiService.getCurrentContext()!.beamToNamed("/login/$mode", data: pLoginProps);
   }
 
   @override
   void routeToSettings({bool pReplaceRoute = false}) {
+    if (IUiService.getCurrentContext() == null) {
+      routerDelegate.setNewRoutePath(const RouteInformation(location: "/settings"));
+      return;
+    }
+
     if (pReplaceRoute) {
-      IUiService.getCurrentContext().beamToReplacementNamed("/settings");
+      IUiService.getCurrentContext()!.beamToReplacementNamed("/settings");
     } else {
-      IUiService.getCurrentContext().beamToNamed("/settings");
+      IUiService.getCurrentContext()!.beamToNamed("/settings");
     }
   }
 
   @override
   void routeToCustom({required String pFullPath}) {
-    IUiService.getCurrentContext().beamToNamed(pFullPath);
+    IUiService.getCurrentContext()!.beamToNamed(pFullPath);
   }
 
   @override
@@ -164,11 +175,12 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   @override
   Future<T?> openDialog<T>({
     required WidgetBuilder pBuilder,
+    BuildContext? context,
     bool pIsDismissible = true,
     Locale? pLocale,
   }) =>
       showDialog(
-          context: IUiService.getCurrentContext(),
+          context: context ?? IUiService.getCurrentContext()!,
           barrierDismissible: pIsDismissible,
           builder: (BuildContext context) {
             Widget child = pBuilder.call(context);
@@ -282,7 +294,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
         currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
 
     if (pBeamBack) {
-      IUiService.getCurrentContext().beamBack();
+      IUiService.getCurrentContext()!.beamBack();
     }
   }
 

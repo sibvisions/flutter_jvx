@@ -3,19 +3,26 @@ import 'dart:developer';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_io/io.dart';
 
 import 'config/app_config.dart';
 import 'custom/app_manager.dart';
+import 'src/mask/splash/splash_widget.dart';
+import 'src/model/command/api/set_api_config_command.dart';
+import 'src/model/command/api/startup_command.dart';
+import 'src/model/config/api/api_config.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
 import 'src/routing/locations/settings_location.dart';
-import 'src/routing/locations/splash_location.dart';
 import 'src/routing/locations/work_screen_location.dart';
 import 'src/service/api/i_api_service.dart';
 import 'src/service/api/impl/default/api_service.dart';
 import 'src/service/api/shared/controller/api_controller.dart';
+import 'src/service/api/shared/repository/offline_api_repository.dart';
+import 'src/service/api/shared/repository/online_api_repository.dart';
 import 'src/service/command/i_command_service.dart';
 import 'src/service/command/impl/command_service.dart';
 import 'src/service/config/i_config_service.dart';
@@ -31,8 +38,11 @@ import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
+import 'src/util/config_util.dart';
 import 'src/util/init_config.dart';
 import 'src/util/loading_handler/loading_overlay.dart';
+import 'src/util/loading_handler/loading_progress_handler.dart';
+import 'util/logging/flutter_logger.dart';
 import 'util/parse_util.dart';
 
 export 'package:beamer/beamer.dart';
@@ -78,11 +88,6 @@ class FlutterJVx extends StatefulWidget {
     );
     services.registerSingleton(configService);
 
-    if (configService.getAppName() != null && configService.getVersion() != null) {
-      // Only load if name and version is available for FileManager
-      configService.reloadSupportedLanguages();
-    }
-
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService() : await IsolateLayoutService.create();
     services.registerSingleton(layoutService);
@@ -98,6 +103,7 @@ class FlutterJVx extends StatefulWidget {
     // Command
     ICommandService commandService = CommandService();
     services.registerSingleton(commandService);
+    (commandService as CommandService).progressHandler.add(LoadingProgressHandler());
 
     // UI
     IUiService uiService = UiService();
@@ -119,24 +125,16 @@ class FlutterJVxState extends State<FlutterJVx> {
     backgroundColor: Colors.grey.shade50,
   );
 
+  late Future<void> initAppFuture;
+  Future<void>? startupFuture;
+
   @override
   void initState() {
     super.initState();
 
     routerDelegate = BeamerDelegate(
-      initialPath: "/splash",
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
-          SplashLocation(
-            initConfig: InitConfig(
-              appConfig: widget.appConfig,
-              appManager: widget.appManager,
-              loadingBuilder: widget.loadingBuilder,
-              styleCallbacks: [changeStyle],
-              languageCallbacks: [changeLanguage],
-              imagesCallbacks: [changedImages],
-            ),
-          ),
           LoginLocation(),
           MenuLocation(),
           SettingsLocation(),
@@ -144,18 +142,76 @@ class FlutterJVxState extends State<FlutterJVx> {
         ],
       ),
     );
+
+    initAppFuture = initApp(
+      initConfig: InitConfig(
+        appConfig: widget.appConfig,
+        appManager: widget.appManager,
+        styleCallbacks: [changeStyle],
+        languageCallbacks: [changeLanguage],
+        imagesCallbacks: [changedImages],
+      ),
+    ).then((value) {
+      //Activate second future
+      startupFuture = doStartup().onError((error, stackTrace) {
+        LOGGER.logE(
+          pType: LogType.GENERAL,
+          pMessage: "Failed to send startup",
+          pError: error,
+          pStacktrace: stackTrace,
+        );
+        throw error!;
+      });
+    }).onError((error, stackTrace) {
+      LOGGER.logE(
+        pType: LogType.GENERAL,
+        pMessage: "Failed to initialize",
+        pError: error,
+        pStacktrace: stackTrace,
+      );
+      throw error!;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    //_routerDelegate.setNewRoutePath(const RouteInformation(location: "/splash"));
-
     return MaterialApp.router(
       theme: themeData,
       routeInformationParser: BeamerParser(),
       routerDelegate: routerDelegate,
       backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
-      builder: (context, child) => LoadingOverlay(child: child),
+      builder: (context, child) {
+        return FutureBuilder(
+          future: initAppFuture,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
+              return FutureBuilder(
+                future: startupFuture,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.none ||
+                      !snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
+                    return LoadingOverlay(child: child);
+                  }
+
+                  return Stack(children: [
+                    SplashWidget(
+                      loadingBuilder: widget.loadingBuilder,
+                    ),
+                    if (snapshot.hasError) _getStartupErrorDialog(context, snapshot),
+                  ]);
+                },
+              );
+            }
+
+            return Stack(children: [
+              SplashWidget(
+                loadingBuilder: widget.loadingBuilder,
+              ),
+              if (snapshot.hasError) _getFatalErrorDialog(context, snapshot),
+            ]);
+          },
+        );
+      },
       title: widget.appConfig?.title ?? "JVx Mobile",
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -189,5 +245,163 @@ class FlutterJVxState extends State<FlutterJVx> {
   void changedImages() {
     log("changedImages");
     setState(() {});
+  }
+
+  Future<void> initApp({
+    InitConfig? initConfig,
+  }) async {
+    HttpOverrides.global = MyHttpOverrides();
+
+    IConfigService configService = services<IConfigService>();
+    IUiService uiService = services<IUiService>();
+    IApiService apiService = services<IApiService>();
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Load config
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    uiService.setAppManager(initConfig?.appManager);
+
+    // Load config files
+    AppConfig? devConfig;
+    if (!kReleaseMode) {
+      devConfig = await ConfigUtil.readDevConfig();
+      if (devConfig != null) {
+        LOGGER.logI(pType: LogType.CONFIG, pMessage: "Found dev config, overriding values");
+      }
+    }
+
+    AppConfig appConfig =
+        const AppConfig.empty().merge(initConfig?.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
+    await (configService as ConfigService).setAppConfig(appConfig, devConfig != null);
+
+    if (appConfig.serverConfig!.baseUrl != null) {
+      var baseUri = Uri.parse(appConfig.serverConfig!.baseUrl!);
+      //If no https on a remote host, you have to use localhost because of secure cookies
+      if (kIsWeb && kDebugMode && baseUri.host != "localhost" && !baseUri.isScheme("https")) {
+        await configService.setBaseUrl(baseUri.replace(host: "localhost").toString());
+      }
+    }
+
+    //Register callbacks
+    configService.disposeStyleCallbacks();
+    initConfig?.styleCallbacks?.forEach((element) => configService.registerStyleCallback(element));
+    configService.disposeLanguageCallbacks();
+    initConfig?.languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
+    configService.disposeImagesCallbacks();
+    initConfig?.imagesCallbacks?.forEach((element) => configService.registerImagesCallback(element));
+
+    //Init saved app style
+    var appStyle = configService.getAppStyle();
+    if (appStyle.isNotEmpty) {
+      await configService.setAppStyle(appStyle);
+    }
+
+    if (configService.getAppName() != null && configService.getVersion() != null) {
+      // Only load if name and version is available for FileManager
+      configService.reloadSupportedLanguages();
+      configService.loadLanguages();
+    }
+
+    configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance.window).size : null);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // API init
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var repository = configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository();
+    await repository.start();
+    await apiService.setRepository(repository);
+  }
+
+  Future<void> doStartup() async {
+    IConfigService configService = services<IConfigService>();
+    ICommandService commandService = services<ICommandService>();
+    IUiService uiService = services<IUiService>();
+
+    if (configService.getAppName() == null || configService.getBaseUrl() == null) {
+      uiService.routeToSettings(pReplaceRoute: true);
+      return;
+    }
+
+    if (configService.isOffline()) {
+      uiService.routeToMenu(pReplaceRoute: true);
+      return;
+    }
+
+    await commandService.sendCommand(SetApiConfigCommand(
+      apiConfig: ApiConfig(serverConfig: configService.getServerConfig()),
+      reason: "Startup Api Config",
+    ));
+
+    // Send startup to server
+    await commandService.sendCommand(StartupCommand(
+      reason: "InitApp",
+      username: configService.getAppConfig()!.serverConfig!.username,
+      password: configService.getAppConfig()!.serverConfig!.password,
+    ));
+  }
+
+  Widget _getStartupErrorDialog(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: AlertDialog(
+        backgroundColor: Theme.of(context).cardColor.withAlpha(255),
+        title: Text(services<IConfigService>().translateText("Error")),
+        content: Text(IUiService.getErrorMessage(snapshot.error!)),
+        actions: [
+          TextButton(
+            onPressed: () {
+              routerDelegate.setNewRoutePath(const RouteInformation(location: "/settings"));
+              startupFuture = null;
+              setState(() {});
+            },
+            child: Text(
+              services<IConfigService>().translateText("Go to Settings"),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getFatalErrorDialog(BuildContext context, AsyncSnapshot snapshot) {
+    return WillPopScope(
+      onWillPop: () async {
+        await SystemNavigator.pop();
+        return false;
+      },
+      child: AlertDialog(
+        backgroundColor: Theme.of(context).cardColor.withAlpha(255),
+        title: const Text("FATAL ERROR"),
+        content: Text(snapshot.error.toString()),
+        actions: [
+          if (!kIsWeb)
+            TextButton(
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: const Text(
+                "Exit App",
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    var client = super.createHttpClient(context);
+    if (!kIsWeb) {
+      // Needed to avoid CORS issues
+      // TODO find way to not do this
+      client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    }
+    return client;
   }
 }

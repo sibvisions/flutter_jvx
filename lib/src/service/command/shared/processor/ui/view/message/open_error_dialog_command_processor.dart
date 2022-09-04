@@ -15,7 +15,7 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
   Future<List<BaseCommand>> processCommand(OpenErrorDialogCommand command) async {
     bool goToSettings = command.isTimeout || command.canBeFixedInSettings;
     //Don't show "Go to Settings" while in settings
-    if (IUiService.getCurrentContext().currentBeamLocation.runtimeType == SettingsLocation) {
+    if (IUiService.getCurrentContext()!.currentBeamLocation.runtimeType == SettingsLocation) {
       goToSettings = false;
     }
 

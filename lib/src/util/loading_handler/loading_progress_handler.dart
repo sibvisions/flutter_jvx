@@ -36,7 +36,7 @@ class LoadingProgressHandler with ConfigServiceGetterMixin implements ICommandPr
     if (isSupported(pCommand) && !getConfigService().isOffline()) {
       _loadingCommandAmount++;
       if (_loadingCommandAmount == 1) {
-        LoadingOverlay.of(IUiService.getCurrentContext()).show(pCommand.loadingDelay);
+        LoadingOverlay.of(IUiService.getCurrentContext())?.show(pCommand.loadingDelay);
       }
     }
   }
@@ -47,7 +47,7 @@ class LoadingProgressHandler with ConfigServiceGetterMixin implements ICommandPr
       _loadingCommandAmount--;
     }
     if (_loadingCommandAmount == 0) {
-      LoadingOverlay.of(IUiService.getCurrentContext()).hide();
+      LoadingOverlay.of(IUiService.getCurrentContext())?.hide();
     }
   }
 
