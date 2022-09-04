@@ -89,21 +89,26 @@ class CommandService implements ICommandService {
     } finally {
       progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
 
-      if (routeCommands != null) {
-        if (routeCommands.any((element) => element is RouteToWorkCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
-        } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
-        } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+      try {
+        if (routeCommands != null) {
+          if (routeCommands.any((element) => element is RouteToWorkCommand)) {
+            await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+          } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
+            await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+          } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
+            await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+          }
         }
-      }
-
-      if (_apiCommandsQueue.remove(pCommand)) {
-        // Remove current command after execution is complete
-        // and call the next one in queue
-        if (_apiCommandsQueue.isNotEmpty) {
-          unawaited(sendCommand(_apiCommandsQueue.first));
+      } catch (error) {
+        LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error processing follow-up ${pCommand.runtimeType}");
+        rethrow;
+      } finally {
+        if (_apiCommandsQueue.remove(pCommand)) {
+          // Remove current command after execution is complete
+          // and call the next one in queue
+          if (_apiCommandsQueue.isNotEmpty) {
+            unawaited(sendCommand(_apiCommandsQueue.first));
+          }
         }
       }
     }
