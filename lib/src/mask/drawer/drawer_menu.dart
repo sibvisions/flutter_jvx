@@ -3,15 +3,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
-import '../../model/command/api/logout_command.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
-import '../setting/widgets/change_password.dart';
 
 class DrawerMenu extends StatefulWidget {
+  final void Function() onSettingsPressed;
+  final void Function() onChangePasswordPressed;
+  final void Function() onLogoutPressed;
+
   const DrawerMenu({
     Key? key,
+    required this.onSettingsPressed,
+    required this.onChangePasswordPressed,
+    required this.onLogoutPressed,
   }) : super(key: key);
 
   @override
@@ -120,7 +125,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
         context: context,
         text: getConfigService().translateText("Settings"),
         leadingIcon: FontAwesomeIcons.gear,
-        onTap: _settings,
+        onTap: widget.onSettingsPressed,
       ),
     ];
 
@@ -131,14 +136,14 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
           context: context,
           text: getConfigService().translateText("Change password"),
           leadingIcon: FontAwesomeIcons.key,
-          onTap: _changePassword,
+          onTap: widget.onChangePasswordPressed,
         ),
         _buildFooterDivider(context),
         _buildFooterEntry(
           context: context,
           text: getConfigService().translateText("Logout"),
           leadingIcon: FontAwesomeIcons.rightFromBracket,
-          onTap: _logout,
+          onTap: widget.onLogoutPressed,
         ),
       ]);
     }
@@ -200,23 +205,5 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
       ),
       onTap: onTap,
     );
-  }
-
-  void _settings() {
-    getUiService().routeToSettings();
-  }
-
-  void _changePassword() {
-    getUiService().openDialog(
-      pBuilder: (_) => ChangePassword(
-        username: getConfigService().getUserInfo()?.userName,
-      ),
-      pIsDismissible: true,
-    );
-  }
-
-  void _logout() {
-    LogoutCommand logoutCommand = LogoutCommand(reason: "Drawer menu logout");
-    getUiService().sendCommand(logoutCommand);
   }
 }

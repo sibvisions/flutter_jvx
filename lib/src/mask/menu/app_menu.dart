@@ -10,7 +10,7 @@ import '../../model/menu/menu_model.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
-import '../drawer/drawer_menu.dart';
+import '../frame/frame.dart';
 import 'grid/app_menu_grid_grouped.dart';
 import 'grid/app_menu_grid_ungroup.dart';
 import 'list/app_menu_list_grouped.dart';
@@ -97,31 +97,21 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
       );
     }
 
-    actions.add(
-      Builder(
-        builder: (context) => IconButton(
-          onPressed: () => Scaffold.of(context).openEndDrawer(),
-          icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
-        ),
-      ),
+    Widget body = Column(
+      children: [
+        if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context, useElevation: true),
+        Expanded(child: _getMenu()),
+      ],
     );
+
+    FrameState frame = Frame.of(context)!;
+    actions.addAll(frame.getActions());
 
     return Scaffold(
       endDrawerEnableOpenDragGesture: false,
-      endDrawer: const DrawerMenu(),
-      appBar: AppBar(
-        title: Text(getConfigService().translateText("Menu")),
-        centerTitle: false,
-        actions: actions,
-        backgroundColor: getConfigService().isOffline() ? Colors.grey.shade500 : null,
-        elevation: getConfigService().isOffline() ? 0 : null,
-      ),
-      body: Column(
-        children: [
-          if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context, useElevation: true),
-          Expanded(child: _getMenu()),
-        ],
-      ),
+      endDrawer: frame.getEndDrawer(),
+      appBar: frame.getAppBar(actions),
+      body: frame.wrapBody(body),
     );
   }
 

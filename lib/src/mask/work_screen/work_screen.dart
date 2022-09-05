@@ -17,7 +17,8 @@ import '../../model/command/storage/delete_screen_command.dart';
 import '../../model/request/api_navigation_request.dart';
 import '../../util/misc/debouncer.dart';
 import '../../util/offline_util.dart';
-import '../drawer/drawer_menu.dart';
+import '../frame/frame.dart';
+import '../frame/web_frame.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for
@@ -71,10 +72,20 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
 
   @override
   Widget build(BuildContext context) {
-    Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
-    String? backgroundImageString = getConfigService().getAppStyle()?['desktop.icon'];
-
     log("WORKSCREEN Layoutbuilder build: ${MediaQuery.of(context).viewInsets.bottom}");
+
+    List<Widget> actions = [];
+
+    Widget body = Column(
+      children: [
+        if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
+        Expanded(child: _getScreen(context)),
+      ],
+    );
+
+    FrameState frame = Frame.of(context)!;
+
+    actions.addAll(frame.getActions());
 
     return GestureDetector(
       onTap: () {
@@ -82,86 +93,26 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: () => _onBackTap(),
-            onDoubleTap: () => _onDoubleTap(),
-            child: Center(
-              child: FaIcon(
-                FontAwesomeIcons.arrowLeft,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-            ),
-          ),
-          title: Text(widget.screenTitle),
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-                icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
-              ),
-            ),
-          ],
-        ),
-        endDrawerEnableOpenDragGesture: false,
-        endDrawer: const DrawerMenu(),
-        body: Column(
-          children: [
-            if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
-            Expanded(
-              child: Scaffold(
-                appBar: widget.header,
-                bottomNavigationBar: widget.footer,
-                backgroundColor: Colors.transparent,
-                body: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final viewInsets = EdgeInsets.fromWindowPadding(
-                      WidgetsBinding.instance.window.viewInsets,
-                      WidgetsBinding.instance.window.devicePixelRatio,
-                    );
-                    Widget screenWidget = widget.screenWidget;
-                    if (!widget.isCustomScreen) {
-                      // debounce to not re-layout multiple times when opening the keyboard
-                      _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
-                      _sendDeviceStatus(
-                          pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
-                    } else {
-                      // Wrap custom screen in Positioned
-                      screenWidget = Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: screenWidget,
-                      );
-                    }
-                    return SingleChildScrollView(
-                      physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: constraints.maxHeight + viewInsets.bottom,
-                            width: constraints.maxWidth,
-                            color: backgroundColor,
-                            child: backgroundImageString != null
-                                ? ImageLoader.loadImage(
-                                    backgroundImageString,
-                                    fit: BoxFit.scaleDown,
-                                  )
-                                : null,
-                          ),
-                          screenWidget
-                        ],
-                      ),
-                    );
-                  },
+        appBar: frame is WebFrameState
+            ? frame.getAppBar(actions)
+            : AppBar(
+                leading: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => _onBackTap(),
+                  onDoubleTap: () => _onDoubleTap(),
+                  child: Center(
+                    child: FaIcon(
+                      FontAwesomeIcons.arrowLeft,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
                 ),
-                //resizeToAvoidBottomInset: false,
+                title: Text(widget.screenTitle),
+                actions: actions,
               ),
-            ),
-          ],
-        ),
+        endDrawerEnableOpenDragGesture: false,
+        endDrawer: frame.getEndDrawer(),
+        body: frame.wrapBody(body),
       ),
     );
 
@@ -255,5 +206,59 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     if (!handled) {
       context.beamBack();
     }
+  }
+
+  Widget _getScreen(BuildContext context) {
+    Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
+    String? backgroundImageString = getConfigService().getAppStyle()?['desktop.icon'];
+
+    return Scaffold(
+      appBar: widget.header,
+      bottomNavigationBar: widget.footer,
+      backgroundColor: Colors.transparent,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final viewInsets = EdgeInsets.fromWindowPadding(
+            WidgetsBinding.instance.window.viewInsets,
+            WidgetsBinding.instance.window.devicePixelRatio,
+          );
+          Widget screenWidget = widget.screenWidget;
+          if (!widget.isCustomScreen) {
+            // debounce to not re-layout multiple times when opening the keyboard
+            _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+            _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+          } else {
+            // Wrap custom screen in Positioned
+            screenWidget = Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: screenWidget,
+            );
+          }
+          return SingleChildScrollView(
+            physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+            child: Stack(
+              children: [
+                Container(
+                  height: constraints.maxHeight + viewInsets.bottom,
+                  width: constraints.maxWidth,
+                  color: backgroundColor,
+                  child: backgroundImageString != null
+                      ? ImageLoader.loadImage(
+                          backgroundImageString,
+                          fit: BoxFit.scaleDown,
+                        )
+                      : null,
+                ),
+                screenWidget
+              ],
+            ),
+          );
+        },
+      ),
+      //resizeToAvoidBottomInset: false,
+    );
   }
 }
