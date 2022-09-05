@@ -70,6 +70,7 @@ abstract class OfflineUtil {
             progressType: ProgressType.valuable,
             barrierDismissible: false,
             progressValueColor: Theme.of(context).primaryColor,
+            valuePosition: ValuePosition.in_progress,
           ),
         ),
       );
@@ -476,6 +477,7 @@ abstract class OfflineUtil {
               progressType: ProgressType.valuable,
               barrierDismissible: false,
               progressValueColor: Theme.of(context).primaryColor,
+              valuePosition: ValuePosition.in_progress,
             ),
           );
         },
