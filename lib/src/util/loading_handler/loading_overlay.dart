@@ -20,13 +20,13 @@ class LoadingOverlay extends StatefulWidget {
 class LoadingOverlayState extends State<LoadingOverlay> {
   bool _loading = false;
 
-  Duration? _loadingDelay;
+  Future? _loadingDelayFuture;
 
   bool get isLoading => _loading;
 
   void show(Duration delay) {
     if (!_loading) {
-      _loadingDelay = delay;
+      _loadingDelayFuture = Future.delayed(delay);
       _loading = true;
 
       if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
@@ -51,7 +51,7 @@ class LoadingOverlayState extends State<LoadingOverlay> {
         if (widget.child != null) widget.child!,
         if (_loading)
           FutureBuilder(
-            future: Future.delayed(_loadingDelay!),
+            future: _loadingDelayFuture,
             builder: (context, snapshot) {
               return Stack(
                 children: getLoadingIndicator(context, snapshot.connectionState == ConnectionState.done),
