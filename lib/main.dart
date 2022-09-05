@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
@@ -39,7 +40,6 @@ import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/config_util.dart';
-import 'src/util/init_config.dart';
 import 'src/util/loading_handler/loading_overlay.dart';
 import 'src/util/loading_handler/loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
@@ -143,33 +143,9 @@ class FlutterJVxState extends State<FlutterJVx> {
       ),
     );
 
-    initAppFuture = initApp(
-      initConfig: InitConfig(
-        appConfig: widget.appConfig,
-        appManager: widget.appManager,
-        styleCallbacks: [changeStyle],
-        languageCallbacks: [changeLanguage],
-        imagesCallbacks: [changedImages],
-      ),
-    ).then((value) {
+    initAppFuture = initApp().onError(createErrorHandler("Failed to initialize")).then((value) {
       //Activate second future
-      startupFuture = doStartup().onError((error, stackTrace) {
-        LOGGER.logE(
-          pType: LogType.GENERAL,
-          pMessage: "Failed to send startup",
-          pError: error,
-          pStacktrace: stackTrace,
-        );
-        throw error!;
-      });
-    }).onError((error, stackTrace) {
-      LOGGER.logE(
-        pType: LogType.GENERAL,
-        pMessage: "Failed to initialize",
-        pError: error,
-        pStacktrace: stackTrace,
-      );
-      throw error!;
+      startupFuture = doStartup().onError(createErrorHandler("Failed to send startup"));
     });
   }
 
@@ -247,9 +223,19 @@ class FlutterJVxState extends State<FlutterJVx> {
     setState(() {});
   }
 
-  Future<void> initApp({
-    InitConfig? initConfig,
-  }) async {
+  Function(Object error, StackTrace stackTrace) createErrorHandler(String pMessage) {
+    return (error, stackTrace) {
+      LOGGER.logE(
+        pType: LogType.GENERAL,
+        pMessage: pMessage,
+        pError: error,
+        pStacktrace: stackTrace,
+      );
+      throw error;
+    };
+  }
+
+  Future<void> initApp() async {
     HttpOverrides.global = MyHttpOverrides();
 
     IConfigService configService = services<IConfigService>();
@@ -260,7 +246,7 @@ class FlutterJVxState extends State<FlutterJVx> {
     // Load config
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    uiService.setAppManager(initConfig?.appManager);
+    uiService.setAppManager(widget.appManager);
 
     // Load config files
     AppConfig? devConfig;
@@ -272,7 +258,7 @@ class FlutterJVxState extends State<FlutterJVx> {
     }
 
     AppConfig appConfig =
-        const AppConfig.empty().merge(initConfig?.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
+        const AppConfig.empty().merge(widget.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
     await (configService as ConfigService).setAppConfig(appConfig, devConfig != null);
 
     if (appConfig.serverConfig!.baseUrl != null) {
@@ -285,11 +271,11 @@ class FlutterJVxState extends State<FlutterJVx> {
 
     //Register callbacks
     configService.disposeStyleCallbacks();
-    initConfig?.styleCallbacks?.forEach((element) => configService.registerStyleCallback(element));
+    configService.registerStyleCallback(changeStyle);
     configService.disposeLanguageCallbacks();
-    initConfig?.languageCallbacks?.forEach((element) => configService.registerLanguageCallback(element));
+    configService.registerLanguageCallback(changeLanguage);
     configService.disposeImagesCallbacks();
-    initConfig?.imagesCallbacks?.forEach((element) => configService.registerImagesCallback(element));
+    configService.registerImagesCallback(changedImages);
 
     //Init saved app style
     var appStyle = configService.getAppStyle();
