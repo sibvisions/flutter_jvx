@@ -15,10 +15,10 @@ import '../../../../../model/command/api/insert_record_command.dart';
 import '../../../../../model/command/api/login_command.dart';
 import '../../../../../model/command/api/logout_command.dart';
 import '../../../../../model/command/api/navigation_command.dart';
-import '../../../../../model/command/api/open_menu_command.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/api/open_tab_command.dart';
 import '../../../../../model/command/api/press_button_command.dart';
+import '../../../../../model/command/api/reload_menu_command.dart';
 import '../../../../../model/command/api/reset_password_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/api/set_api_config_command.dart';
@@ -43,10 +43,10 @@ import 'insert_record_command_processor.dart';
 import 'login_command_processor.dart';
 import 'logout_command_processor.dart';
 import 'navigation_command_processor.dart';
-import 'open_menu_command_processor.dart';
 import 'open_screen_command_processor.dart';
 import 'open_tab_command_processor.dart';
 import 'press_button_command_processor.dart';
+import 'reload_menu_command_processor.dart';
 import 'reset_password_command_processor.dart';
 import 'select_record_command_processor.dart';
 import 'set_api_config_command_processor.dart';
@@ -70,8 +70,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [OpenScreenCommand]
   final ICommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
 
-  /// Processes [OpenMenuCommand]
-  final ICommandProcessor _openMenuCommandProcessor = OpenMenuCommandProcessor();
+  /// Processes [ReloadMenuCommand]
+  final ICommandProcessor _reloadMenuCommandProcessor = ReloadMenuCommandProcessor();
 
   /// Processes [DeviceStatusCommand]
   final ICommandProcessor _deviceStatusProcessor = DeviceStatusCommandProcessor();
@@ -145,8 +145,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _loginCommandProcessor.processCommand(command);
     } else if (command is OpenScreenCommand) {
       return _openScreenCommandProcessor.processCommand(command);
-    } else if (command is OpenMenuCommand) {
-      return _openMenuCommandProcessor.processCommand(command);
+    } else if (command is ReloadMenuCommand) {
+      return _reloadMenuCommandProcessor.processCommand(command);
     } else if (command is DeviceStatusCommand) {
       return _deviceStatusProcessor.processCommand(command);
     } else if (command is PressButtonCommand) {

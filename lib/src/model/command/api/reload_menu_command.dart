@@ -1,11 +1,11 @@
 import 'api_command.dart';
 
-class OpenMenuCommand extends ApiCommand {
+class ReloadMenuCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  OpenMenuCommand({
+  ReloadMenuCommand({
     required super.reason,
   });
 
@@ -15,6 +15,6 @@ class OpenMenuCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'OpenMenuCommand{${super.toString()}}';
+    return 'ReloadMenuCommand{${super.toString()}}';
   }
 }

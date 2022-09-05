@@ -14,11 +14,11 @@ import '../../request/api_filter_request.dart';
 import '../../request/api_insert_record_request.dart';
 import '../../request/api_login_request.dart';
 import '../../request/api_logout_request.dart';
-import '../../request/api_menu_request.dart';
 import '../../request/api_navigation_request.dart';
 import '../../request/api_open_screen_request.dart';
 import '../../request/api_open_tab_request.dart';
 import '../../request/api_press_button_request.dart';
+import '../../request/api_reload_menu_request.dart';
 import '../../request/api_reset_password_request.dart';
 import '../../request/api_select_record_request.dart';
 import '../../request/api_set_value_request.dart';
@@ -60,7 +60,7 @@ class ApiConfig {
       ApiChangePasswordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.changePassword),
       ApiResetPasswordRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.resetPassword),
       ApiNavigationRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.navigation),
-      ApiOpenMenuRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.menu),
+      ApiReloadMenuRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.menu),
       ApiFetchRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.fetch),
       ApiLogoutRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.logout),
       ApiFilterRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.filter),

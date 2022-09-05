@@ -10,10 +10,10 @@ import '../../request/api_fetch_request.dart';
 import '../../request/api_insert_record_request.dart';
 import '../../request/api_login_request.dart';
 import '../../request/api_logout_request.dart';
-import '../../request/api_menu_request.dart';
 import '../../request/api_navigation_request.dart';
 import '../../request/api_open_screen_request.dart';
 import '../../request/api_press_button_request.dart';
+import '../../request/api_reload_menu_request.dart';
 import '../../request/api_reset_password_request.dart';
 import '../../request/api_select_record_request.dart';
 import '../../request/api_set_value_request.dart';
@@ -86,7 +86,7 @@ class EndpointConfig {
   /// For [ApiCloseFrameRequest]
   final String closeFrame;
 
-  /// For [ApiOpenMenuRequest]
+  /// For [ApiReloadMenuRequest]
   final String menu;
 
   const EndpointConfig({
