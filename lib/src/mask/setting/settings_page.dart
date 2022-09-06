@@ -81,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage>
     pictureSizeNotifier = ValueNotifier(getConfigService().getPictureResolution() ?? resolutions.last);
 
     // Version Info
-    appVersionNotifier = ValueNotifier("Loading...");
+    appVersionNotifier = ValueNotifier("${FlutterJVx.translate("Loading")}...");
     if (appConfig.versionConfig!.version != null) {
       appVersionNotifier.value = appConfig.versionConfig!.version!;
     } else {
@@ -312,7 +312,7 @@ class _SettingsPageState extends State<SettingsPage>
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: FlutterJVx.translate("Picture Size"),
       value: pictureSizeNotifier,
-      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text("$value px"),
+      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
       onPressed: () {
         Picker picker = Picker(
             selecteds: [resolutions.indexOf(pictureSizeNotifier.value)],
