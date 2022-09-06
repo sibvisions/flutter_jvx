@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../../../../mixin/api_service_mixin.dart';
 import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../../mixin/ui_service_mixin.dart';
@@ -38,7 +40,8 @@ class StartUpCommandProcessor
       screenHeight: configService.getPhoneSize()?.height.toInt(),
       screenWidth: configService.getPhoneSize()?.width.toInt(),
       readAheadLimit: 100,
-      deviceMode: "mobile",
+      //TODO use forceWeb/forceMobile
+      deviceMode: kIsWeb ? "mobileDesktop" : "mobile",
       username: command.username,
       password: command.password,
       langCode: getConfigService().getLanguage(),
