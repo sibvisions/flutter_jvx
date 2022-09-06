@@ -1,6 +1,6 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
 
@@ -33,8 +33,8 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(getConfigService().translateText(command.title.isNotEmpty ? command.title : "Server Error")),
-      content: Text(getConfigService().translateText(command.message!)),
+      title: Text(FlutterJVx.translate(command.title.isNotEmpty ? command.title : "Server Error")),
+      content: Text(FlutterJVx.translate(command.message!)),
       actions: _getButtons(context),
     );
   }
@@ -55,7 +55,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
             context.beamToReplacementNamed("/settings");
           },
           child: Text(
-            getConfigService().translateText("Go to Settings"),
+            FlutterJVx.translate("Go to Settings"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
@@ -67,7 +67,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
       TextButton(
         onPressed: () => Navigator.of(context).pop(),
         child: Text(
-          getConfigService().translateText("Ok"),
+          FlutterJVx.translate("Ok"),
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
       ),

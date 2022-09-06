@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 
 /// Definition of the callback for the QR-scanner
@@ -49,7 +50,7 @@ class _QRScannerOverlayState extends State<QRScannerOverlay> with ConfigServiceG
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(getConfigService().translateText("QR Scanner")),
+        title: Text(FlutterJVx.translate("QR Scanner")),
         actions: [
           IconButton(
             onPressed: () => controller.toggleTorch(),

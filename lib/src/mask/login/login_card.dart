@@ -1,7 +1,7 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/login_command.dart';
@@ -58,10 +58,10 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               controller: usernameController,
-              decoration: InputDecoration(labelText: "${getConfigService().translateText("Username")}:"),
+              decoration: InputDecoration(labelText: "${FlutterJVx.translate("Username")}:"),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: "${getConfigService().translateText("Password")}:"),
+              decoration: InputDecoration(labelText: "${FlutterJVx.translate("Password")}:"),
               controller: passwordController,
               obscureText: true,
             ),
@@ -74,14 +74,14 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
               ),
             ElevatedButton(
               onPressed: _onLoginPressed,
-              child: Text(getConfigService().translateText("Login")),
+              child: Text(FlutterJVx.translate("Login")),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               _getLostPasswordButton(),
               TextButton.icon(
                 onPressed: () => _onSettingsPressed(context: context),
                 icon: const FaIcon(FontAwesomeIcons.gears),
-                label: Text(getConfigService().translateText("Settings")),
+                label: Text(FlutterJVx.translate("Settings")),
               ),
             ]),
           ],
@@ -94,7 +94,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
     if (!(getConfigService().getMetaData()?.lostPasswordEnabled == false)) {
       return TextButton(
         onPressed: () => context.beamToNamed("/login/lostPassword"),
-        child: Text("${getConfigService().translateText("Reset password")}?"),
+        child: Text("${FlutterJVx.translate("Reset password")}?"),
       );
     } else {
       return Container();

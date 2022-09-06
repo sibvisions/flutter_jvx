@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/menu/menu_model.dart';
@@ -69,7 +70,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
                 const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 _buildHeaderText(
                   flex: 20,
-                  text: "${getConfigService().translateText("Logged in as")}:",
+                  text: "${FlutterJVx.translate("Logged in as")}:",
                   context: context,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
@@ -123,7 +124,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
       _buildFooterDivider(context),
       _buildFooterEntry(
         context: context,
-        text: getConfigService().translateText("Settings"),
+        text: FlutterJVx.translate("Settings"),
         leadingIcon: FontAwesomeIcons.gear,
         onTap: widget.onSettingsPressed,
       ),
@@ -134,14 +135,14 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
         _buildFooterDivider(context),
         _buildFooterEntry(
           context: context,
-          text: getConfigService().translateText("Change password"),
+          text: FlutterJVx.translate("Change password"),
           leadingIcon: FontAwesomeIcons.key,
           onTap: widget.onChangePasswordPressed,
         ),
         _buildFooterDivider(context),
         _buildFooterEntry(
           context: context,
-          text: getConfigService().translateText("Logout"),
+          text: FlutterJVx.translate("Logout"),
           leadingIcon: FontAwesomeIcons.rightFromBracket,
           onTap: widget.onLogoutPressed,
         ),

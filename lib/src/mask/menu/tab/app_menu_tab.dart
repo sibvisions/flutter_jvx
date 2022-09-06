@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../main.dart';
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../util/image/image_loader.dart';
 import '../../../model/menu/menu_group_model.dart';
@@ -46,7 +47,7 @@ class AppMenuTab extends StatelessWidget with ConfigServiceGetterMixin {
           appBar: TabBar(
             labelColor: Theme.of(context).primaryColor,
             indicatorColor: Theme.of(context).primaryColor,
-            tabs: menuModel.menuGroups.map((e) => Tab(text: getConfigService().translateText(e.name))).toList(),
+            tabs: menuModel.menuGroups.map((e) => Tab(text: FlutterJVx.translate(e.name))).toList(),
           ),
           body: TabBarView(
             children: menuModel.menuGroups.map((e) => _getMenuGrid(model: e)).toList(),

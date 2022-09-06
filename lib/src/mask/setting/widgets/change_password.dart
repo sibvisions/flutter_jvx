@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../main.dart';
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../mixin/ui_service_mixin.dart';
 import '../../../model/command/api/change_password_command.dart';
@@ -26,20 +27,20 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
     passwordController.text = password ?? "";
 
     return AlertDialog(
-      title: Text(getConfigService().translateText('Change Password')),
+      title: Text(FlutterJVx.translate('Change Password')),
       content: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-              child: Text(getConfigService().translateText('Please enter and confirm the new password.')),
+              child: Text(FlutterJVx.translate('Please enter and confirm the new password.')),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
               child: TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
-                  labelText: "${getConfigService().translateText('Username')}:",
+                  labelText: "${FlutterJVx.translate('Username')}:",
                   enabled: false,
                   border: const OutlineInputBorder(),
                 ),
@@ -52,8 +53,8 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
                 obscureText: true,
                 controller: passwordController,
                 decoration: InputDecoration(
-                  labelText: getConfigService().translateText('Password'),
-                  hintText: getConfigService().translateText('Enter Password'),
+                  labelText: FlutterJVx.translate('Password'),
+                  hintText: FlutterJVx.translate('Enter Password'),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -64,8 +65,8 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
                 obscureText: true,
                 controller: newPasswordController,
                 decoration: InputDecoration(
-                  labelText: getConfigService().translateText('Password (new)'),
-                  hintText: getConfigService().translateText('Password (new)'),
+                  labelText: FlutterJVx.translate('Password (new)'),
+                  hintText: FlutterJVx.translate('Password (new)'),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -76,7 +77,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
                 obscureText: true,
                 controller: repeatPasswordController,
                 decoration: InputDecoration(
-                  hintText: getConfigService().translateText('Password (confirm)'),
+                  hintText: FlutterJVx.translate('Password (confirm)'),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -90,8 +91,8 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
 
   Widget passwordError() {
     return AlertDialog(
-      title: Text(getConfigService().translateText('Error')),
-      content: Text(getConfigService().translateText("The passwords don't match!")),
+      title: Text(FlutterJVx.translate('Error')),
+      content: Text(FlutterJVx.translate("The passwords don't match!")),
     );
   }
 
@@ -101,7 +102,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
     if (getConfigService().getUserInfo() != null) {
       widgetList.add(TextButton(
         onPressed: () => Navigator.of(context).pop(),
-        child: Text(getConfigService().translateText('Cancel')),
+        child: Text(FlutterJVx.translate('Cancel')),
       ));
     }
 
@@ -128,7 +129,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiSe
           getUiService().openDialog(pBuilder: (_) => passwordError(), pIsDismissible: true);
         }
       },
-      child: Text(getConfigService().translateText('Change Password')),
+      child: Text(FlutterJVx.translate('Change Password')),
     ));
 
     return widgetList;

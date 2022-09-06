@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../main.dart';
 import '../../util/logging/flutter_logger.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';
@@ -66,7 +67,7 @@ abstract class OfflineUtil {
         pBuilder: (context) => ProgressDialogWidget(
           key: dialogKey,
           config: Config(
-            message: configService.translateText("Re-syncing offline data"),
+            message: FlutterJVx.translate("Re-syncing offline data"),
             progressType: ProgressType.valuable,
             barrierDismissible: false,
             progressValueColor: Theme.of(context).primaryColor,
@@ -115,7 +116,7 @@ abstract class OfflineUtil {
 
         dialogKey.currentState?.update(
             config: Config(
-          message: "${configService.translateText("Syncing data")} ($dataBookCounter / ${dataBooks.length})",
+          message: "${FlutterJVx.translate("Syncing data")} ($dataBookCounter / ${dataBooks.length})",
           progress: successfulSyncedPrimaryKeys.length,
           maxProgress: changedRowsPerDataBook,
         ));
@@ -171,7 +172,7 @@ abstract class OfflineUtil {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogKey.currentContext!).pop(),
-              child: Text(configService.translateText("Ok")),
+              child: Text(FlutterJVx.translate("Ok")),
             ),
           ],
         ));
@@ -226,13 +227,13 @@ abstract class OfflineUtil {
       await uiService.openDialog(
         pIsDismissible: false,
         pBuilder: (context) => AlertDialog(
-          title: Text(configService.translateText("Offline Sync Error")),
-          content: Text(configService.translateText("There was an error while trying to sync your data."
+          title: Text(FlutterJVx.translate("Offline Sync Error")),
+          content: Text(FlutterJVx.translate("There was an error while trying to sync your data."
               "\n${e.toString()}")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(configService.translateText("Ok")),
+              child: Text(FlutterJVx.translate("Ok")),
             ),
           ],
         ),
@@ -473,7 +474,7 @@ abstract class OfflineUtil {
           return ProgressDialogWidget(
             key: dialogKey,
             config: Config(
-              message: configService.translateText("Fetching offline data"),
+              message: FlutterJVx.translate("Fetching offline data"),
               progressType: ProgressType.valuable,
               barrierDismissible: false,
               progressValueColor: Theme.of(context).primaryColor,
@@ -498,7 +499,7 @@ abstract class OfflineUtil {
 
       dialogKey.currentState?.update(
           config: Config(
-        message: configService.translateText("Processing data"),
+        message: FlutterJVx.translate("Processing data"),
         progress: 0,
         maxProgress: 100,
       ));
@@ -514,7 +515,7 @@ abstract class OfflineUtil {
       await offlineApiRepository.initDatabase(dataBooks, (value, max, {progress}) {
         dialogKey.currentState?.update(
             config: Config(
-          message: "${configService.translateText("Processing data")} ($value / $max)",
+          message: "${FlutterJVx.translate("Processing data")} ($value / $max)",
           progress: progress ?? 0,
         ));
       });
@@ -551,13 +552,13 @@ abstract class OfflineUtil {
       await uiService.openDialog(
         pIsDismissible: false,
         pBuilder: (context) => AlertDialog(
-          title: Text(configService.translateText("Offline Init Error")),
-          content: Text(configService.translateText("There was an error while trying to download data."
+          title: Text(FlutterJVx.translate("Offline Init Error")),
+          content: Text(FlutterJVx.translate("There was an error while trying to download data."
               "\n${e.toString()}")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(configService.translateText("Ok")),
+              child: Text(FlutterJVx.translate("Ok")),
             ),
           ],
         ),

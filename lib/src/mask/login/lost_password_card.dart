@@ -1,7 +1,7 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/reset_password_command.dart';
@@ -35,12 +35,12 @@ class LostPasswordCard extends StatelessWidget with UiServiceGetterMixin, Config
         child: Column(
           children: [
             Text(
-              getConfigService().translateText("Please enter Email"),
+              FlutterJVx.translate("Please enter Email"),
               style: Theme.of(context).textTheme.headline5,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: getConfigService().translateText("Email: ")),
+              decoration: InputDecoration(labelText: FlutterJVx.translate("Email: ")),
               controller: identifierController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
@@ -53,7 +53,7 @@ class LostPasswordCard extends StatelessWidget with UiServiceGetterMixin, Config
                     children: [
                       const FaIcon(FontAwesomeIcons.paperPlane),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(getConfigService().translateText("Reset password")),
+                      Text(FlutterJVx.translate("Reset password")),
                     ],
                   ),
                 ),
@@ -64,7 +64,7 @@ class LostPasswordCard extends StatelessWidget with UiServiceGetterMixin, Config
                     children: [
                       const FaIcon(FontAwesomeIcons.arrowLeft),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(getConfigService().translateText("Cancel")),
+                      Text(FlutterJVx.translate("Cancel")),
                     ],
                   ),
                 ),

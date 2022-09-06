@@ -1,7 +1,7 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/login_command.dart';
@@ -41,30 +41,30 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceGetterMixi
         child: Column(
           children: [
             Text(
-              getConfigService().translateText("Welcome"),
+              FlutterJVx.translate("Welcome"),
               style: Theme.of(context).textTheme.headline5,
             ),
             Text(
-              getConfigService().translateText("Please enter and confirm the new password"),
+              FlutterJVx.translate("Please enter and confirm the new password"),
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: getConfigService().translateText("Username: ")),
+              decoration: InputDecoration(labelText: FlutterJVx.translate("Username: ")),
               controller: userNameController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: getConfigService().translateText("One time password: ")),
+              decoration: InputDecoration(labelText: FlutterJVx.translate("One time password: ")),
               controller: oneTimeController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: getConfigService().translateText("New password: ")),
+              decoration: InputDecoration(labelText: FlutterJVx.translate("New password: ")),
               controller: newPasswordController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
-              decoration: InputDecoration(labelText: getConfigService().translateText("Confirm new password: ")),
+              decoration: InputDecoration(labelText: FlutterJVx.translate("Confirm new password: ")),
               controller: newPasswordConfController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
@@ -77,7 +77,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceGetterMixi
                     children: [
                       const FaIcon(FontAwesomeIcons.arrowLeft),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(getConfigService().translateText("Cancel")),
+                      Text(FlutterJVx.translate("Cancel")),
                     ],
                   ),
                 ),
@@ -87,7 +87,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceGetterMixi
                     children: [
                       const FaIcon(FontAwesomeIcons.paperPlane),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(getConfigService().translateText("Send Request")),
+                      Text(FlutterJVx.translate("Send Request")),
                     ],
                   ),
                 ),
@@ -106,8 +106,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceGetterMixi
   void _sendRequest() {
     if (newPasswordController.text != newPasswordConfController.text) {
       getUiService().openDialog(
-          pBuilder: (_) => Text(getConfigService().translateText("The new Passwords do not match!")),
-          pIsDismissible: true);
+          pBuilder: (_) => Text(FlutterJVx.translate("The new Passwords do not match!")), pIsDismissible: true);
     }
     LoginCommand loginCommand = LoginCommand(
       loginMode: LoginMode.CHANGE_ONE_TIME_PASSWORD,

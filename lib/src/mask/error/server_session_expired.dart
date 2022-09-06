@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/startup_command.dart';
@@ -29,13 +30,13 @@ class ServerSessionExpired extends StatelessWidget with UiServiceGetterMixin, Co
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(command.title.isNotEmpty ? command.title : getConfigService().translateText("Session Expired")),
+      title: Text(command.title.isNotEmpty ? command.title : FlutterJVx.translate("Session Expired")),
       content: Text(command.message!),
       actions: [
         TextButton(
           onPressed: () => _restartApp(context: context),
           child: Text(
-            getConfigService().translateText("Restart App"),
+            FlutterJVx.translate("Restart App"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

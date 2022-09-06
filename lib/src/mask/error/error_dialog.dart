@@ -1,6 +1,6 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 
 /// This is a standard template for a server side error message.
@@ -45,7 +45,7 @@ class ErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-      title: Text(title ?? getConfigService().translateText("Error")),
+      title: Text(title ?? FlutterJVx.translate("Error")),
       content: Text(message),
       actions: _getActions(context),
     );
@@ -64,7 +64,7 @@ class ErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(
-            getConfigService().translateText("Retry"),
+            FlutterJVx.translate("Retry"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
@@ -79,7 +79,7 @@ class ErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
             context.beamToReplacementNamed("/settings");
           },
           child: Text(
-            getConfigService().translateText("Go to Settings"),
+            FlutterJVx.translate("Go to Settings"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
@@ -91,7 +91,7 @@ class ErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
-            getConfigService().translateText("Ok"),
+            FlutterJVx.translate("Ok"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

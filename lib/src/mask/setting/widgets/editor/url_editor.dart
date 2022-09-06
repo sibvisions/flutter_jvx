@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../main.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 
 class UrlEditor extends StatelessWidget with ConfigServiceGetterMixin {
@@ -28,7 +29,7 @@ class UrlEditor extends StatelessWidget with ConfigServiceGetterMixin {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: getConfigService().translateText('URL'),
+        labelText: FlutterJVx.translate('URL'),
         hintText: 'http://host:port/services/mobile',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),

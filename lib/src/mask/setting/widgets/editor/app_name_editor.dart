@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../main.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 
 class AppNameEditor extends StatelessWidget with ConfigServiceGetterMixin {
@@ -25,8 +26,8 @@ class AppNameEditor extends StatelessWidget with ConfigServiceGetterMixin {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: getConfigService().translateText('App Name'),
-        hintText: getConfigService().translateText('Enter new App Name'),
+        labelText: FlutterJVx.translate('App Name'),
+        hintText: FlutterJVx.translate('Enter new App Name'),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

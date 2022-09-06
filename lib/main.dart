@@ -74,6 +74,10 @@ class FlutterJVx extends StatefulWidget {
 
   static FlutterJVxState? of(BuildContext context) => context.findAncestorStateOfType<FlutterJVxState>();
 
+  static String translate(String? pText) {
+    return services<IConfigService>().translateText(pText ?? "");
+  }
+
   static start([FlutterJVx pAppToRun = const FlutterJVx()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -335,7 +339,7 @@ class FlutterJVxState extends State<FlutterJVx> {
       onWillPop: () async => false,
       child: AlertDialog(
         backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-        title: Text(services<IConfigService>().translateText("Error")),
+        title: Text(FlutterJVx.translate("Error")),
         content: Text(IUiService.getErrorMessage(snapshot.error!)),
         actions: [
           TextButton(
@@ -345,7 +349,7 @@ class FlutterJVxState extends State<FlutterJVx> {
               setState(() {});
             },
             child: Text(
-              services<IConfigService>().translateText("Go to Settings"),
+              FlutterJVx.translate("Go to Settings"),
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),

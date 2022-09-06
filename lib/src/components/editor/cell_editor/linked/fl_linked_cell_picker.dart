@@ -3,6 +3,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
+import '../../../../../main.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/command/api/filter_command.dart';
@@ -80,7 +81,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceG
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: Text(
-                  getConfigService().translateText("SELECT ITEM"),
+                  FlutterJVx.translate("SELECT ITEM"),
                   style: TextStyle(
                     color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
                   ),
@@ -98,7 +99,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceG
                   style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
                   decoration: InputDecoration(
                       hintStyle: const TextStyle(color: Colors.green),
-                      labelText: getConfigService().translateText("Search"),
+                      labelText: FlutterJVx.translate("Search"),
                       labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
                 )),
             Expanded(
@@ -140,7 +141,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceG
             ButtonBar(alignment: MainAxisAlignment.center, children: <Widget>[
               ElevatedButton(
                 child: Text(
-                  getConfigService().translateText("CANCEL"),
+                  FlutterJVx.translate("CANCEL"),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();

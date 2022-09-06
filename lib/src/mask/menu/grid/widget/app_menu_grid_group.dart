@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
+import '../../../../../main.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../app_menu.dart';
@@ -32,7 +33,7 @@ class AppMenuGridGroup extends StatelessWidget with ConfigServiceGetterMixin {
         SliverPersistentHeader(
             pinned: true,
             delegate: AppMenuGridHeader(
-              headerText: getConfigService().translateText(menuGroupModel.name),
+              headerText: FlutterJVx.translate(menuGroupModel.name),
               height: 48,
             )),
         SliverGrid(

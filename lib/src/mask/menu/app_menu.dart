@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../custom/app_manager.dart';
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/parse_util.dart';
@@ -119,10 +120,10 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
     return getUiService().openDialog(
       pBuilder: (context) => AlertDialog(
         title: Text(
-          getConfigService().translateText("Synchronization"),
+          FlutterJVx.translate("Synchronization"),
         ),
         content: Text(
-          getConfigService().translateText(
+          FlutterJVx.translate(
             "Do you want to switch back online and synchronize all the data?",
           ),
         ),
@@ -136,22 +137,22 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
                   children: [
                     TextButton(
                       style: TextButton.styleFrom(foregroundColor: Colors.red),
-                      child: Text(getConfigService().translateText("Discard Changes")),
+                      child: Text(FlutterJVx.translate("Discard Changes")),
                       onPressed: () async {
                         SyncDialogResult? result = await getUiService().openDialog(
                           pBuilder: (subContext) => AlertDialog(
-                            title: Text(getConfigService().translateText("Discard Offline Changes")),
-                            content: Text(getConfigService().translateText(
+                            title: Text(FlutterJVx.translate("Discard Offline Changes")),
+                            content: Text(FlutterJVx.translate(
                                 "Are you sure you want to discard all the changes you made in offline mode?")),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.NO),
-                                child: Text(getConfigService().translateText("No")),
+                                child: Text(FlutterJVx.translate("No")),
                               ),
                               TextButton(
                                 style: TextButton.styleFrom(foregroundColor: Colors.red),
                                 onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.DISCARD_CHANGES),
-                                child: Text(getConfigService().translateText("Yes")),
+                                child: Text(FlutterJVx.translate("Yes")),
                               ),
                             ],
                           ),
@@ -163,11 +164,11 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
                 ),
               ),
               TextButton(
-                child: Text(getConfigService().translateText("No")),
+                child: Text(FlutterJVx.translate("No")),
                 onPressed: () => Navigator.of(context).pop(SyncDialogResult.NO),
               ),
               TextButton(
-                child: Text(getConfigService().translateText("Yes")),
+                child: Text(FlutterJVx.translate("Yes")),
                 onPressed: () => Navigator.of(context).pop(SyncDialogResult.YES),
               ),
             ],

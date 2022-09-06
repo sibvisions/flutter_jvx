@@ -1,9 +1,9 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../main.dart';
 import '../../../mixin/command_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
@@ -136,7 +136,7 @@ class _SettingsPageState extends State<SettingsPage>
                     onPressed: !loading ? context.beamBack : null,
                   )
                 : null,
-            title: Text(getConfigService().translateText("Settings")),
+            title: Text(FlutterJVx.translate("Settings")),
           ),
           body: body,
           bottomNavigationBar: BottomAppBar(
@@ -155,7 +155,7 @@ class _SettingsPageState extends State<SettingsPage>
                             child: Container(
                               alignment: Alignment.center,
                               child: Text(
-                                getConfigService().translateText("Close"),
+                                FlutterJVx.translate("Close"),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                               ),
@@ -170,12 +170,12 @@ class _SettingsPageState extends State<SettingsPage>
                         alignment: Alignment.center,
                         child: getConfigService().getUserInfo() != null
                             ? Text(
-                                getConfigService().translateText("Save"),
+                                FlutterJVx.translate("Save"),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                               )
                             : Text(
-                                getConfigService().translateText("Open"),
+                                FlutterJVx.translate("Open"),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                               ),
@@ -212,7 +212,7 @@ class _SettingsPageState extends State<SettingsPage>
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: appNameNotifier,
-      title: getConfigService().translateText("App Name"),
+      title: FlutterJVx.translate("App Name"),
       enabled: !getConfigService().isOffline(),
       onPressed: () {
         TextEditingController controller = TextEditingController(text: appNameNotifier.value);
@@ -224,7 +224,7 @@ class _SettingsPageState extends State<SettingsPage>
             FontAwesomeIcons.server,
             color: Theme.of(context).primaryColor,
           ),
-          pTitleText: getConfigService().translateText("App Name"),
+          pTitleText: FlutterJVx.translate("App Name"),
         ).then((value) {
           if (value == true) {
             appNameNotifier.value = controller.text;
@@ -241,7 +241,7 @@ class _SettingsPageState extends State<SettingsPage>
         ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
         value: baseUrlNotifier,
-        title: getConfigService().translateText("URL"),
+        title: FlutterJVx.translate("URL"),
         enabled: !getConfigService().isOffline(),
         onPressed: () {
           TextEditingController controller = TextEditingController(text: baseUrlNotifier.value);
@@ -253,7 +253,7 @@ class _SettingsPageState extends State<SettingsPage>
               FontAwesomeIcons.globe,
               color: Theme.of(context).primaryColor,
             ),
-            pTitleText: getConfigService().translateText("URL"),
+            pTitleText: FlutterJVx.translate("URL"),
           ).then((value) async {
             if (value == true) {
               try {
@@ -269,7 +269,7 @@ class _SettingsPageState extends State<SettingsPage>
               } catch (e) {
                 await getUiService().sendCommand(OpenErrorDialogCommand(
                   reason: "parseURl",
-                  message: getConfigService().translateText("URL text could not be parsed"),
+                  message: FlutterJVx.translate("URL text could not be parsed"),
                   canBeFixedInSettings: true,
                 ));
               }
@@ -283,7 +283,7 @@ class _SettingsPageState extends State<SettingsPage>
         color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
-      title: getConfigService().translateText("Language"),
+      title: FlutterJVx.translate("Language"),
       value: languageNotifier,
       onPressed: () {
         var supportedLanguages = getConfigService().getSupportedLanguages().toList(growable: false);
@@ -310,7 +310,7 @@ class _SettingsPageState extends State<SettingsPage>
         color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
-      title: getConfigService().translateText("Picture Size"),
+      title: FlutterJVx.translate("Picture Size"),
       value: pictureSizeNotifier,
       itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text("$value px"),
       onPressed: () {
@@ -337,7 +337,7 @@ class _SettingsPageState extends State<SettingsPage>
         groupHeader: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            getConfigService().translateText("Application"),
+            FlutterJVx.translate("Application"),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -353,26 +353,26 @@ class _SettingsPageState extends State<SettingsPage>
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
       value: commitNotifier,
-      title: getConfigService().translateText("RCS"),
+      title: FlutterJVx.translate("RCS"),
     );
 
     SettingItem appVersionSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.github),
       value: appVersionNotifier,
-      title: getConfigService().translateText("App version"),
+      title: FlutterJVx.translate("App version"),
     );
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
       value: buildDateNotifier,
-      title: getConfigService().translateText("Build date"),
+      title: FlutterJVx.translate("Build date"),
     );
 
     SettingGroup group = SettingGroup(
         groupHeader: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            getConfigService().translateText("Version Info"),
+            FlutterJVx.translate("Version Info"),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -449,13 +449,13 @@ class _SettingsPageState extends State<SettingsPage>
     } else {
       await getUiService().openDialog(
         pBuilder: (_) => AlertDialog(
-          title: Text(getConfigService().translateText("Missing required fields")),
-          content: Text(getConfigService().translateText("You have to provide app name and base url to open an app.")),
+          title: Text(FlutterJVx.translate("Missing required fields")),
+          content: Text(FlutterJVx.translate("You have to provide app name and base url to open an app.")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                getConfigService().translateText("Ok"),
+                FlutterJVx.translate("Ok"),
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),

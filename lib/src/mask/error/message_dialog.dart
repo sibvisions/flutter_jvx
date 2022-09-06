@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/close_frame_command.dart';
@@ -51,8 +52,8 @@ class MessageDialog extends StatelessWidget with ConfigServiceGetterMixin, UiSer
       },
       child: AlertDialog(
         backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-        title: Text(getConfigService().translateText(command.title)),
-        content: Text(getConfigService().translateText(command.message!)),
+        title: Text(FlutterJVx.translate(command.title)),
+        content: Text(FlutterJVx.translate(command.message!)),
         actions: [
           ..._getButtons(context, command.buttonType),
         ],
@@ -82,7 +83,7 @@ class MessageDialog extends StatelessWidget with ConfigServiceGetterMixin, UiSer
           _getYesButton(context),
           TextButton(
             onPressed: () => _pressButton(context, command.notOkComponentId!),
-            child: Text(getConfigService().translateText("No")),
+            child: Text(FlutterJVx.translate("No")),
           ),
           _getCancelButton(context),
         ]);
@@ -92,7 +93,7 @@ class MessageDialog extends StatelessWidget with ConfigServiceGetterMixin, UiSer
           _getYesButton(context),
           TextButton(
             onPressed: () => _pressButton(context, command.cancelComponentId!),
-            child: Text(getConfigService().translateText("No")),
+            child: Text(FlutterJVx.translate("No")),
           ),
         ]);
         break;
@@ -104,7 +105,7 @@ class MessageDialog extends StatelessWidget with ConfigServiceGetterMixin, UiSer
         buttonList.add(
           TextButton(
             onPressed: () => _pressButton(context, command.okComponentId!),
-            child: Text(getConfigService().translateText("Ok")),
+            child: Text(FlutterJVx.translate("Ok")),
           ),
         );
         break;
@@ -118,14 +119,14 @@ class MessageDialog extends StatelessWidget with ConfigServiceGetterMixin, UiSer
   Widget _getYesButton(BuildContext context) {
     return TextButton(
       onPressed: () => _pressButton(context, command.okComponentId!),
-      child: Text(getConfigService().translateText("Yes")),
+      child: Text(FlutterJVx.translate("Yes")),
     );
   }
 
   Widget _getCancelButton(BuildContext context) {
     return TextButton(
       onPressed: () => _pressButton(context, command.cancelComponentId!),
-      child: Text(getConfigService().translateText("Cancel")),
+      child: Text(FlutterJVx.translate("Cancel")),
     );
   }
 }

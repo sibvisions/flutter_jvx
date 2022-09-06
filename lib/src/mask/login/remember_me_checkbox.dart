@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 
 class CheckHolder {
@@ -26,7 +27,7 @@ class _RememberMeCheckboxState extends State<RememberMeCheckbox> with ConfigServ
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: Text(getConfigService().translateText("Remember me?")),
+      title: Text(FlutterJVx.translate("Remember me?")),
       value: widget.checkHolder.isChecked,
       contentPadding: EdgeInsets.zero,
       onChanged: (newValue) => _onPress(),
