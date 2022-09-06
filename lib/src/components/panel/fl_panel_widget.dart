@@ -1,14 +1,21 @@
 import 'package:flutter/widgets.dart';
 
-class FlPanelWidget extends StatelessWidget {
-  const FlPanelWidget({Key? key, required this.children}) : super(key: key);
+import '../../../components.dart';
+
+class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
+  const FlPanelWidget({super.key, required super.model, required this.children});
 
   final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: children,
+      children: [
+        Container(
+          color: model.background,
+        ),
+        ...children
+      ],
     );
   }
 }

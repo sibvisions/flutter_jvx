@@ -174,7 +174,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
         direction: Axis.vertical,
         verticalDirection: TabPlacements.BOTTOM == model.tabPlacement ? VerticalDirection.up : VerticalDirection.down,
         children: [
-          SizedBox(
+          Container(
+            color: model.background,
             width: widthOfTabPanel,
             height: (layoutData.layout as TabLayout).tabHeaderHeight,
             child: FlTabHeader(
@@ -183,7 +184,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
               tabController: tabController,
             ),
           ),
-          SizedBox(
+          Container(
+            color: model.background,
             width: widthOfTabPanel,
             height: heightOfTabPanel,
             child: GestureDetector(

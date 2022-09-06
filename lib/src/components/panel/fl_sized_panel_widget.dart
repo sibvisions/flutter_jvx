@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-class FlSizedPanelWidget extends StatelessWidget {
-  const FlSizedPanelWidget({Key? key, required this.children, this.width, this.height}) : super(key: key);
+import '../../../components.dart';
 
-  final List<Widget> children;
+class FlSizedPanelWidget extends FlPanelWidget {
+  const FlSizedPanelWidget({super.key, required super.model, required super.children, this.width, this.height});
+
   final double? width;
   final double? height;
 
@@ -15,7 +16,8 @@ class FlSizedPanelWidget extends StatelessWidget {
       children: [
         IgnorePointer(
           ignoring: true,
-          child: SizedBox(
+          child: Container(
+            color: model.background,
             width: max((width ?? 0), 0),
             height: max((height ?? 0), 0),
           ),

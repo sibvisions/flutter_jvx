@@ -1,18 +1,14 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../../components.dart';
 import '../../../layout/split_layout.dart';
-import '../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../model/layout/layout_position.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
 
-class FlSplitPanelWidget extends FlStatelessWidget<FlSplitPanelModel> {
+class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
   final SplitLayout layout;
 
-  const FlSplitPanelWidget({Key? key, required this.layout, required FlSplitPanelModel model, required this.children})
-      : super(key: key, model: model);
-
-  final List<Widget> children;
+  const FlSplitPanelWidget({super.key, required super.model, required this.layout, required super.children});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +47,8 @@ class FlSplitPanelWidget extends FlStatelessWidget<FlSplitPanelModel> {
                 children: [
                   IgnorePointer(
                     ignoring: true,
-                    child: SizedBox(
+                    child: Container(
+                      color: model.background,
                       width: childPosition.width,
                       height: childPosition.height,
                     ),
@@ -73,7 +70,8 @@ class FlSplitPanelWidget extends FlStatelessWidget<FlSplitPanelModel> {
               children: [
                 IgnorePointer(
                   ignoring: true,
-                  child: SizedBox(
+                  child: Container(
+                    color: model.background,
                     width: childPosition.width,
                     height: childPosition.height,
                   ),

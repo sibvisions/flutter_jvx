@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-class FlScrollPanelWidget extends StatelessWidget {
-  const FlScrollPanelWidget({Key? key, required this.children, this.width, this.height, required this.isScrollable})
-      : super(key: key);
+import '../../../../components.dart';
+
+class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
+  const FlScrollPanelWidget(
+      {super.key, required super.children, this.width, this.height, required this.isScrollable, required super.model});
 
   final bool isScrollable;
-  final List<Widget> children;
   final double? width;
   final double? height;
 
@@ -18,7 +19,8 @@ class FlScrollPanelWidget extends StatelessWidget {
           children: [
             IgnorePointer(
               ignoring: true,
-              child: SizedBox(
+              child: Container(
+                color: model.background,
                 width: (width ?? 0),
                 height: (height ?? 0),
               ),

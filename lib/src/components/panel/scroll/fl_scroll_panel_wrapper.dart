@@ -45,6 +45,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   @override
   Widget build(BuildContext context) {
     FlScrollPanelWidget panelWidget = FlScrollPanelWidget(
+      model: model,
       width: widthOfScrollPanel,
       height: heightOfScrollPanel,
       isScrollable: isScrollable,

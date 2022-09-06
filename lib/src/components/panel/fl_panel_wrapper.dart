@@ -44,7 +44,10 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
   @override
   Widget build(BuildContext context) {
-    FlPanelWidget panelWidget = FlPanelWidget(children: children.values.toList());
+    FlPanelWidget panelWidget = FlPanelWidget(
+      model: model,
+      children: children.values.toList(),
+    );
 
     return (getPositioned(child: panelWidget));
   }
