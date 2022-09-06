@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/layout_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
@@ -12,10 +14,8 @@ import '../../components/panel/fl_panel_wrapper.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/device_status_command.dart';
 import '../../model/command/api/navigation_command.dart';
-import '../../model/command/layout/set_component_size_command.dart';
 import '../../model/command/storage/delete_screen_command.dart';
 import '../../model/request/api_navigation_request.dart';
-import '../../util/misc/debouncer.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
@@ -64,11 +64,30 @@ class WorkScreen extends StatefulWidget {
   State<WorkScreen> createState() => _WorkScreenState();
 }
 
-class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, ConfigServiceGetterMixin {
+class _WorkScreenState extends State<WorkScreen>
+    with ConfigServiceGetterMixin, UiServiceGetterMixin, LayoutServiceGetterMixin {
   /// Debounce re-layouts if keyboard opens.
-  final Debounce debounce = Debounce(delay: const Duration(milliseconds: 500));
+  final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
   FocusNode? currentObjectFocused;
+
+  @override
+  void initState() {
+    super.initState();
+
+    subject.throttleTime(const Duration(milliseconds: 8)).listen((size) {
+      _setScreenSize(size);
+      _sendDeviceStatus(pWidth: size.width, pHeight: size.height);
+    });
+  }
+
+  @override
+  void dispose() {
+    subject.close();
+    super.dispose();
+  }
+
+  bool sentScreen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -134,13 +153,11 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
     // }
   }
 
-  _setScreenSize({required double pWidth, required double pHeight}) {
-    SetComponentSizeCommand command = SetComponentSizeCommand(
-      componentId: (widget.screenWidget as FlPanelWrapper).id,
-      size: Size(pWidth, pHeight),
-      reason: "Opened Work Screen",
+  _setScreenSize(Size size) {
+    getLayoutService().setScreenSize(
+      pScreenComponentId: (widget.screenWidget as FlPanelWrapper).id,
+      pSize: size,
     );
-    getUiService().sendCommand(command);
   }
 
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
@@ -225,8 +242,14 @@ class _WorkScreenState extends State<WorkScreen> with UiServiceGetterMixin, Conf
           Widget screenWidget = widget.screenWidget;
           if (!widget.isCustomScreen) {
             // debounce to not re-layout multiple times when opening the keyboard
-            _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
-            _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+            Size size = Size(constraints.maxWidth, constraints.maxHeight + viewInsets.bottom);
+            if (!sentScreen) {
+              _setScreenSize(size);
+              _sendDeviceStatus(pWidth: size.width, pHeight: size.height);
+              sentScreen = true;
+            } else {
+              subject.add(size);
+            }
           } else {
             // Wrap custom screen in Positioned
             screenWidget = Positioned(

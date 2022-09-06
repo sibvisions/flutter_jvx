@@ -45,7 +45,6 @@ export 'src/model/command/data/save_meta_data_command.dart';
 export 'src/model/command/layout/layout_command.dart';
 export 'src/model/command/layout/preferred_size_command.dart';
 export 'src/model/command/layout/register_parent_command.dart';
-export 'src/model/command/layout/set_component_size_command.dart';
 export 'src/model/command/storage/delete_screen_command.dart';
 export 'src/model/command/storage/save_components_command.dart';
 export 'src/model/command/storage/storage_command.dart';
