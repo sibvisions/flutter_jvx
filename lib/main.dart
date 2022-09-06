@@ -141,6 +141,8 @@ class FlutterJVxState extends State<FlutterJVx> {
           WorkScreenLocation(),
         ],
       ),
+      transitionDelegate:
+          (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate()),
     );
 
     initAppFuture = initApp().onError(createErrorHandler("Failed to initialize")).then((value) {
