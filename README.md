@@ -1,6 +1,6 @@
-# Flutter Client
+# Flutter JVx Client
 
-The Flutter Client is a mobile app for the [JVx framework](https://doc.sibvisions.com/jvx). It's super generic and renders work-screens dynamically. The app supports all layout features of JVx and comes with a default menu and login mechanism. It's designed as standalone app and also as library. This means that you can easily extend the library and create your own app.
+The Flutter JVx Client is a mobile app for the [JVx framework](https://doc.sibvisions.com/jvx). It's super generic and renders work-screens dynamically. The app supports all layout features of JVx and comes with a default menu and login mechanism. It's designed as standalone app and also as library. This means that you can easily extend the library and create your own app.
 
 # Requirements
 
@@ -14,13 +14,13 @@ We use [Visual Studio Code](https://code.visualstudio.com/) and [Android Studio]
 
 # Run
 
-We recommend that you use the client as library and create your own app. We have an example [here](https://github.com/sibvisions/flutterclient.example).
+We recommend that you use the client as library and create your own app. We have an example [here](https://github.com/sibvisions/flutter_jvx.example).
 
 Following dependency is required in your pubspec.yaml:
 
     flutter_jvx:
         git:
-            url: https://github.com/sibvisions/flutterclient.git
+            url: https://github.com/sibvisions/flutter_jvx.git
 
 
 It's also possible to use the app itself - standalone and not as library. You have the choice.
