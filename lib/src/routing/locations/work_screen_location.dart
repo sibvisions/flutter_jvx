@@ -63,8 +63,6 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
 
     getUiService().getAppManager()?.onScreen();
 
-    final GlobalKey childKey = GlobalKey();
-
     return [
       BeamPage(
         key: ValueKey(screenTitle),
@@ -78,12 +76,10 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceGetterMix
             return true;
           },
           child: Frame.wrapWithFrame(
-            childKey: childKey,
-            child: WorkScreen(
-              key: childKey,
+            builder: (context) => WorkScreen(
               isCustomScreen: isCustomScreen,
               screenTitle: screenTitle,
-              screenWidget: screen,
+              screenWidget: screen!,
               footer: footer,
               header: header,
               screenName: workScreenName,

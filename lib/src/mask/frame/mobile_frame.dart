@@ -5,11 +5,10 @@ import '../../../mixin/config_service_mixin.dart';
 import '../drawer/drawer_menu.dart';
 import 'frame.dart';
 
-class MobileFrame extends Frame with ConfigServiceGetterMixin {
+class MobileFrame extends Frame {
   MobileFrame({
     super.key,
-    required super.child,
-    super.childKey,
+    required super.builder,
   });
 
   @override

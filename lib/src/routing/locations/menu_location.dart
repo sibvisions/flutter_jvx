@@ -18,13 +18,11 @@ class MenuLocation extends BeamLocation<BeamState> with ConfigServiceGetterMixin
 
     getUiService().getAppManager()?.onMenu();
 
-    final GlobalKey childKey = GlobalKey();
-
     return [
       BeamPage(
         //Append state to trigger rebuild on online/offline switch
         key: ValueKey(sValue),
-        child: Frame.wrapWithFrame(childKey: childKey, child: AppMenu(key: childKey)),
+        child: Frame.wrapWithFrame(builder: (context) => AppMenu()),
       ),
     ];
   }

@@ -9,13 +9,11 @@ import 'mobile_frame.dart';
 import 'web_frame.dart';
 
 abstract class Frame extends StatefulWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
-  final Widget child;
-  final GlobalKey? childKey;
+  final WidgetBuilder builder;
 
   Frame({
     super.key,
-    required this.child,
-    this.childKey,
+    required this.builder,
   });
 
   void openSettings(BuildContext context) {
@@ -39,34 +37,31 @@ abstract class Frame extends StatefulWidget with ConfigServiceGetterMixin, UiSer
   factory Frame.getFrame(
     bool isWeb, {
     Key? key,
-    GlobalKey? childKey,
-    required Widget child,
+    required WidgetBuilder builder,
   }) {
     if (isWeb) {
-      return WebFrame(key: key, childKey: childKey, child: child);
+      return WebFrame(key: key, builder: builder);
     } else {
-      return MobileFrame(key: key, childKey: childKey, child: child);
+      return MobileFrame(key: key, builder: builder);
     }
   }
 
   static FrameState? of(BuildContext context) => context.findAncestorStateOfType<FrameState>();
 
   static Widget wrapWithFrame(
-      {Key? key, GlobalKey? childKey, bool forceMobile = false, bool forceWeb = false, required Widget child}) {
+      {Key? key, bool forceMobile = false, bool forceWeb = false, required WidgetBuilder builder}) {
     if (forceMobile) {
       return Frame.getFrame(
         key: key,
         false,
-        childKey: childKey,
-        child: child,
+        builder: builder,
       );
     }
     if (forceWeb) {
       return Frame.getFrame(
         key: key,
         true,
-        childKey: childKey,
-        child: child,
+        builder: builder,
       );
     }
     return OrientationBuilder(
@@ -74,8 +69,7 @@ abstract class Frame extends StatefulWidget with ConfigServiceGetterMixin, UiSer
         return Frame.getFrame(
           key: key,
           orientation == Orientation.landscape && kIsWeb,
-          childKey: childKey,
-          child: child,
+          builder: builder,
         );
       },
     );
@@ -83,10 +77,8 @@ abstract class Frame extends StatefulWidget with ConfigServiceGetterMixin, UiSer
 }
 
 abstract class FrameState extends State<Frame> {
-  // bool showWebMenu = true;
-
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) => widget.builder.call(context);
 
   List<Widget> getActions() => [];
 
@@ -95,8 +87,4 @@ abstract class FrameState extends State<Frame> {
   PreferredSizeWidget getAppBar(List<Widget>? actions);
 
   Widget wrapBody(Widget body) => body;
-
-// void toggleWebMenu() {
-//   setState(() => showWebMenu = !showWebMenu);
-// }
 }

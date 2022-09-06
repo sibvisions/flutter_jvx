@@ -6,11 +6,10 @@ import '../drawer/web_menu.dart';
 import '../setting/settings_page.dart';
 import 'frame.dart';
 
-class WebFrame extends Frame with ConfigServiceGetterMixin {
+class WebFrame extends Frame {
   WebFrame({
     super.key,
-    required super.child,
-    super.childKey,
+    required super.builder,
   });
 
   @override
@@ -29,7 +28,6 @@ class WebFrameState extends FrameState with ConfigServiceGetterMixin {
   void toggleWebMenu() {
     showWebMenu = !showWebMenu;
     setState(() {});
-    widget.childKey!.currentState!.setState(() {});
   }
 
   @override
