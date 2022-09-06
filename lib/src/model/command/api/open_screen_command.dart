@@ -6,14 +6,18 @@ class OpenScreenCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Component id.
-  final String screenLongName;
+  final String? screenLongName;
+
+  /// Class name of the screen
+  final String? screenClassName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenScreenCommand({
-    required this.screenLongName,
+    this.screenLongName,
+    this.screenClassName,
     required super.reason,
   });
 

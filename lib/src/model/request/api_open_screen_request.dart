@@ -11,7 +11,10 @@ class ApiOpenScreenRequest extends IApiRequest {
   final String clientId;
 
   /// Id of the menuItem clicked
-  final String screenLongName;
+  final String? screenLongName;
+
+  /// Id of the menuItem clicked
+  final String? screenClassName;
 
   /// If the screen should only be closed manually
   final bool manualClose;
@@ -20,7 +23,7 @@ class ApiOpenScreenRequest extends IApiRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiOpenScreenRequest({required this.screenLongName, required this.clientId, required this.manualClose});
+  ApiOpenScreenRequest({this.screenLongName, this.screenClassName, required this.clientId, required this.manualClose});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -30,6 +33,7 @@ class ApiOpenScreenRequest extends IApiRequest {
   Map<String, dynamic> toJson() => {
         ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.componentId: screenLongName,
+        ApiObjectProperty.className: screenClassName,
         ApiObjectProperty.manualClose: manualClose
       };
 }

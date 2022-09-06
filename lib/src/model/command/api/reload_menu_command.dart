@@ -8,9 +8,12 @@ class ReloadMenuCommand extends ApiCommand with UiServiceGetterMixin {
 
   final String? screenLongName;
 
+  final String? screenClassName;
+
   ReloadMenuCommand({
     required super.reason,
     this.screenLongName,
+    this.screenClassName,
   }) {
     if (screenLongName != null) {
       callback = () {
