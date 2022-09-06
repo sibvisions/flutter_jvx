@@ -92,7 +92,7 @@ abstract class OfflineUtil {
       );
 
       await commandService.sendCommand(
-        OpenScreenCommand(componentId: offlineWorkscreenLongName, reason: "We are back online"),
+        OpenScreenCommand(screenLongName: offlineWorkscreenLongName, reason: "We are back online"),
       );
 
       bool successfulSync = true;

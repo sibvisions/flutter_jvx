@@ -47,9 +47,24 @@ abstract class AppManager {
           IApiRequest request, String responseBody, Future<HttpClientResponse> Function() resendRequest) =>
       Future.value(null);
 
+  /// Is called if a new startup is initiated.
+  void onInitStartup() {}
+
+  /// Is called if a new startup is successfully finished.
+  void onSuccessfulStartup() {}
+
   /// Is called when going to the menu.
-  void onMenu() {}
+  void onMenuPage() {}
 
   /// Is called when going to a workscreen.
-  void onScreen() {}
+  void onScreenPage() {}
+
+  /// Is called when going to the settings.
+  void onSettingPage() {}
+
+  /// Is called when going to the login.
+  void onLoginPage() {}
+
+  /// Is called if a login is successfully completed.
+  void onLoginSuccess() {}
 }

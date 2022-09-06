@@ -16,7 +16,7 @@ class OpenScreenCommandProcessor
       UpdateComponentsProcessor.isOpenScreen = true;
 
       ApiOpenScreenRequest openScreenRequest =
-          ApiOpenScreenRequest(screenLongName: command.componentId, clientId: clientId, manualClose: true);
+          ApiOpenScreenRequest(screenLongName: command.screenLongName, clientId: clientId, manualClose: true);
       return getApiService().sendRequest(request: openScreenRequest);
     } else {
       throw Exception("NO CLIENT ID FOUND, while trying to send openScreen request. CommandID: ${command.id}");

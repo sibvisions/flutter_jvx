@@ -55,7 +55,7 @@ class AppMenu extends StatefulWidget with UiServiceGetterMixin {
     if (pUiService.usesNativeRouting(pScreenLongName: pScreenLongName)) {
       pUiService.routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
     } else {
-      pUiService.sendCommand(OpenScreenCommand(componentId: pScreenLongName, reason: "Menu Item was pressed"));
+      pUiService.sendCommand(OpenScreenCommand(screenLongName: pScreenLongName, reason: "Menu Item was pressed"));
     }
   }
 }

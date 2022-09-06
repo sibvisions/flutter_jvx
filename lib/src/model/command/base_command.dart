@@ -16,7 +16,7 @@ abstract class BaseCommand {
   final String reason;
 
   /// Callback will be called when all follow-up commands have been fully processed
-  final VoidCallback? callback;
+  VoidCallback? callback;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

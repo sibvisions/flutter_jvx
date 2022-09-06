@@ -1,6 +1,7 @@
+import '../../../../mixin/ui_service_mixin.dart';
 import 'api_command.dart';
 
-class StartupCommand extends ApiCommand {
+class StartupCommand extends ApiCommand with UiServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,7 +28,9 @@ class StartupCommand extends ApiCommand {
     this.password,
     this.forceNewSession,
     required super.reason,
-  });
+  }) {
+    callback = () => getUiService().getAppManager()?.onSuccessfulStartup();
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
