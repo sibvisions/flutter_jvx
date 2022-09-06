@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
+import '../../../util/image/image_loader.dart';
 import '../drawer/web_menu.dart';
 import '../setting/settings_page.dart';
 import 'frame.dart';
@@ -35,32 +37,40 @@ class WebFrameState extends FrameState with ConfigServiceGetterMixin {
     var profileImage = getConfigService().getUserInfo()?.profileImage;
 
     return AppBar(
-      // leading: Image.asset(
-      //   ImageLoader.getAssetPath(
-      //     FlutterJVx.package,
-      //     'assets/images/logo.png',
-      //   ),
-      //   fit: BoxFit.scaleDown,
-      // ),
-      // leadingWidth: 280,
-      title: Builder(
+      leading: Builder(
         builder: (context) => IconButton(
-          icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
+          icon: const FaIcon(FontAwesomeIcons.bars),
           onPressed: () => toggleWebMenu(),
+        ),
+      ),
+      titleSpacing: 0.0,
+      title: SizedBox(
+        height: kToolbarHeight,
+        child: Image.asset(
+          ImageLoader.getAssetPath(
+            FlutterJVx.package,
+            'assets/images/logo.png',
+          ),
+          fit: BoxFit.scaleDown,
         ),
       ),
       centerTitle: false,
       actions: [
-        IconButton(
-          icon: const FaIcon(FontAwesomeIcons.rightFromBracket),
-          onPressed: () => widget.logout(),
-        ),
-        const Padding(padding: EdgeInsets.only(right: spacing)),
         Builder(
           builder: (context) => IconButton(
             icon: const FaIcon(FontAwesomeIcons.gear),
             onPressed: () => widget.openSettings(context),
           ),
+        ),
+        const Padding(padding: EdgeInsets.only(right: spacing)),
+        IconButton(
+          icon: const FaIcon(FontAwesomeIcons.key),
+          onPressed: () => widget.changePassword(),
+        ),
+        const Padding(padding: EdgeInsets.only(right: spacing)),
+        IconButton(
+          icon: const FaIcon(FontAwesomeIcons.rightFromBracket),
+          onPressed: () => widget.logout(),
         ),
         const Padding(padding: EdgeInsets.only(right: spacing)),
         Builder(builder: (context) {
@@ -87,14 +97,16 @@ class WebFrameState extends FrameState with ConfigServiceGetterMixin {
   Widget wrapBody(Widget body) {
     return Builder(builder: (context) {
       return Row(children: [
-        WebMenu(
-          showWebMenu: showWebMenu,
-          onSettingsPressed: () => widget.openSettings(context),
-          onChangePasswordPressed: widget.changePassword,
-          onLogoutPressed: widget.logout,
+        RepaintBoundary(
+          child: WebMenu(
+            showWebMenu: showWebMenu,
+            onSettingsPressed: () => widget.openSettings(context),
+            onChangePasswordPressed: widget.changePassword,
+            onLogoutPressed: widget.logout,
+          ),
         ),
-        Flexible(
-          flex: 8,
+        Expanded(
+          flex: 1,
           child: body,
         ),
       ]);
@@ -103,8 +115,9 @@ class WebFrameState extends FrameState with ConfigServiceGetterMixin {
 
   @override
   Widget? getEndDrawer() => Builder(
-      builder: (context) => SizedBox(
-            width: MediaQuery.of(context).size.width / 4,
-            child: const SettingsPage(),
-          ));
+        builder: (context) => SizedBox(
+          width: MediaQuery.of(context).size.width / 4,
+          child: const SettingsPage(),
+        ),
+      );
 }
