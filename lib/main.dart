@@ -384,7 +384,6 @@ class MyHttpOverrides extends HttpOverrides {
   HttpClient createHttpClient(SecurityContext? context) {
     var client = super.createHttpClient(context);
     if (!kIsWeb) {
-      // Needed to avoid CORS issues
       // TODO find way to not do this
       client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     }

@@ -221,6 +221,7 @@ abstract class ApiObjectProperty {
   static const String cellEditorBackground = "cellEditor_background_";
   static const String cellEditorForeground = "cellEditor_foreground_";
   static const String cellEditorPlaceholder = "cellEditor_placeholder_";
+  static const String cellEditorText = "cellEditor_text_";
 
   // Choice cell editor
   static const String allowedValues = "allowedValues";

@@ -1,6 +1,5 @@
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
-import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../check_box/fl_check_box_widget.dart';
@@ -50,7 +49,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  FlComponentModel createWidgetModel() => FlCheckBoxModel();
+  FlCheckBoxModel createWidgetModel() => FlCheckBoxModel();
 
   @override
   dynamic getValue() {

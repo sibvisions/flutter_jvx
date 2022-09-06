@@ -5,11 +5,10 @@ import '../../../components/button/fl_button_widget.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../layout/alignments.dart';
 import '../fl_component_model.dart';
-import '../interface/i_data_model.dart';
 import '../label/fl_label_model.dart';
 
 /// The model for [FlButtonWidget]
-class FlButtonModel extends FlComponentModel implements IDataModel {
+class FlButtonModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +47,6 @@ class FlButtonModel extends FlComponentModel implements IDataModel {
   String style = "";
 
   /// Dataprovider for QR-Code buttons or telephone button
-  @override
   String dataProvider = "";
 
   /// Columnname for QR-Code buttons or telephone button
@@ -203,5 +201,10 @@ class FlButtonModel extends FlComponentModel implements IDataModel {
     }
 
     labelModel.applyFromJson(labelJson);
+  }
+
+  @override
+  void applyCellEditorOverrides(Map<String, dynamic> pJson) {
+    labelModel.applyCellEditorOverrides(pJson);
   }
 }

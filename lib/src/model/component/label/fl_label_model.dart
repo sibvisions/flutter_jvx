@@ -40,4 +40,14 @@ class FlLabelModel extends FlComponentModel {
       pCurrent: text,
     );
   }
+
+  @override
+  void applyCellEditorOverrides(Map<String, dynamic> pJson) {
+    text = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.cellEditorText,
+      pDefault: defaultModel.text,
+      pCurrent: text,
+    );
+  }
 }
