@@ -107,10 +107,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     }
 
     var last = IUiService.getCurrentContext()!.beamingHistory.last;
-    if (last.runtimeType == SettingsLocation) {
-      IUiService.getCurrentContext()!.beamingHistory.clear();
-    }
-    if (pReplaceRoute) {
+    if (pReplaceRoute || last.runtimeType == SettingsLocation) {
       IUiService.getCurrentContext()!.beamToReplacementNamed("/menu");
     } else {
       IUiService.getCurrentContext()!.beamToNamed("/menu");
@@ -122,11 +119,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
     log("routing to workscreen: $pScreenName");
 
     var last = IUiService.getCurrentContext()!.beamingHistory.last;
-
-    if (last.runtimeType == SettingsLocation) {
-      IUiService.getCurrentContext()!.beamingHistory.clear();
-    }
-    if (pReplaceRoute) {
+    if (pReplaceRoute || last.runtimeType == SettingsLocation) {
       IUiService.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName");
     } else {
       IUiService.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName");
@@ -136,11 +129,11 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
     var last = IUiService.getCurrentContext()!.beamingHistory.last;
-
     if (last.runtimeType == WorkScreenLocation || last.runtimeType == MenuLocation) {
-      IUiService.getCurrentContext()!.beamingHistory.clear();
+      IUiService.getCurrentContext()!.beamToReplacementNamed("/login/$mode", data: pLoginProps);
+    } else {
+      IUiService.getCurrentContext()!.beamToNamed("/login/$mode", data: pLoginProps);
     }
-    IUiService.getCurrentContext()!.beamToNamed("/login/$mode", data: pLoginProps);
   }
 
   @override
