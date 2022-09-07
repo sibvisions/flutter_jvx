@@ -81,6 +81,8 @@ class FlutterJVx extends StatefulWidget {
   static start([FlutterJVx pAppToRun = const FlutterJVx()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    BrowserHttpClientException.verbose = !kReleaseMode;
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Service init
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
