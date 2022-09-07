@@ -40,8 +40,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
   void initState() {
     super.initState();
 
-    _config = widget.config;
-    _config.fillDefaults();
+    _config = widget.config.withDefaults();
     if (_config.message == null) {
       throw Exception("Message has to be set during initialization");
     }
@@ -49,7 +48,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
 
   /// Pass a new (partly filled) config to update the state.
   void update({required Config config}) {
-    _config.compareAndSet(config);
+    _config = _config.merge(config);
     setState(() {});
   }
 
@@ -142,37 +141,37 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
 
 class Config {
   /// The message in the dialog
-  String? message;
-  String? completedMessage;
+  final String? message;
+  final String? completedMessage;
 
   /// The value of the progress.
   ///
   /// (Default: 0)
-  int? progress;
+  final int? progress;
 
   /// The maximum value of the progress.
   ///
   /// (Default: 100)
-  int? maxProgress;
+  final int? maxProgress;
 
-  Color? backgroundColor;
-  Color? progressValueColor;
-  Color? progressBgColor;
-  TextAlign? messageTextAlign;
-  TextStyle? messageTextStyle;
+  final Color? backgroundColor;
+  final Color? progressValueColor;
+  final Color? progressBgColor;
+  final TextAlign? messageTextAlign;
+  final TextStyle? messageTextStyle;
 
-  double? elevation;
-  double? borderRadius;
+  final double? elevation;
+  final double? borderRadius;
 
   /// Determines whether the dialog closes when the back button or screen is clicked.
   ///
   /// (Default: [false])
-  bool? barrierDismissible;
-  EdgeInsetsGeometry? contentPadding;
-  EdgeInsetsGeometry? buttonPadding;
-  List<Widget>? actions;
-  EdgeInsetsGeometry? actionsPadding;
-  MainAxisAlignment? actionsAlignment;
+  final bool? barrierDismissible;
+  final EdgeInsetsGeometry? contentPadding;
+  final EdgeInsetsGeometry? buttonPadding;
+  final List<Widget>? actions;
+  final EdgeInsetsGeometry? actionsPadding;
+  final MainAxisAlignment? actionsAlignment;
 
   Config({
     this.message,
@@ -194,35 +193,41 @@ class Config {
     this.actionsAlignment,
   });
 
-  void fillDefaults() {
-    progress ??= 0;
-    maxProgress ??= 100;
-    backgroundColor ??= Colors.white;
-    progressBgColor ??= Colors.white;
-    messageTextAlign ??= TextAlign.center;
-    borderRadius ??= 15.0;
-    barrierDismissible ??= false;
-    contentPadding ??= const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0);
-    actionsPadding ??= EdgeInsets.zero;
+  Config withDefaults() {
+    return Config(
+      progress: 0,
+      maxProgress: 100,
+      backgroundColor: Colors.white,
+      progressBgColor: Colors.white,
+      messageTextAlign: TextAlign.center,
+      borderRadius: 15.0,
+      barrierDismissible: false,
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
+      actionsPadding: EdgeInsets.zero,
+    ).merge(this);
   }
 
-  void compareAndSet(Config config) {
-    if (config.message != null) message = config.message;
-    if (config.completedMessage != null) completedMessage = config.completedMessage;
-    if (config.progress != null) progress = config.progress;
-    if (config.maxProgress != null) maxProgress = config.maxProgress;
-    if (config.backgroundColor != null) backgroundColor = config.backgroundColor;
-    if (config.progressValueColor != null) progressValueColor = config.progressValueColor;
-    if (config.progressBgColor != null) progressBgColor = config.progressBgColor;
-    if (config.messageTextAlign != null) messageTextAlign = config.messageTextAlign;
-    if (config.messageTextStyle != null) messageTextStyle = config.messageTextStyle;
-    if (config.elevation != null) elevation = config.elevation;
-    if (config.borderRadius != null) borderRadius = config.borderRadius;
-    if (config.barrierDismissible != null) barrierDismissible = config.barrierDismissible;
-    if (config.contentPadding != null) contentPadding = config.contentPadding;
-    if (config.buttonPadding != null) buttonPadding = config.buttonPadding;
-    if (config.actions != null) actions = config.actions;
-    if (config.actionsPadding != null) actionsPadding = config.actionsPadding;
-    if (config.actionsAlignment != null) actionsAlignment = config.actionsAlignment;
+  Config merge(Config? other) {
+    if (other == null) return this;
+
+    return Config(
+      message: other.message ?? message,
+      completedMessage: other.completedMessage ?? completedMessage,
+      progress: other.progress ?? progress,
+      maxProgress: other.maxProgress ?? maxProgress,
+      backgroundColor: other.backgroundColor ?? backgroundColor,
+      progressValueColor: other.progressValueColor ?? progressValueColor,
+      progressBgColor: other.progressBgColor ?? progressBgColor,
+      messageTextAlign: other.messageTextAlign ?? messageTextAlign,
+      messageTextStyle: other.messageTextStyle ?? messageTextStyle,
+      elevation: other.elevation ?? elevation,
+      borderRadius: other.borderRadius ?? borderRadius,
+      barrierDismissible: other.barrierDismissible ?? barrierDismissible,
+      contentPadding: other.contentPadding ?? contentPadding,
+      buttonPadding: other.buttonPadding ?? buttonPadding,
+      actions: other.actions ?? actions,
+      actionsPadding: other.actionsPadding ?? actionsPadding,
+      actionsAlignment: other.actionsAlignment ?? actionsAlignment,
+    );
   }
 }
