@@ -40,8 +40,8 @@ class StartUpCommandProcessor
       screenHeight: configService.getPhoneSize()?.height.toInt(),
       screenWidth: configService.getPhoneSize()?.width.toInt(),
       readAheadLimit: 100,
-      //TODO use forceWeb/forceMobile
-      deviceMode: kIsWeb ? "mobileDesktop" : "mobile",
+      deviceMode:
+          (kIsWeb && !getConfigService().isMobileOnly()) || getConfigService().isWebOnly() ? "mobileDesktop" : "mobile",
       username: command.username,
       password: command.password,
       langCode: getConfigService().getLanguage(),

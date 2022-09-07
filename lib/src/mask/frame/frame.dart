@@ -49,7 +49,7 @@ abstract class Frame extends StatefulWidget with ConfigServiceGetterMixin, UiSer
   static FrameState? of(BuildContext context) => context.findAncestorStateOfType<FrameState>();
 
   static Widget wrapWithFrame(
-      {Key? key, bool forceMobile = false, bool forceWeb = false, required WidgetBuilder builder}) {
+      {Key? key, required bool forceMobile, required bool forceWeb, required WidgetBuilder builder}) {
     if (forceMobile) {
       return Frame.getFrame(
         key: key,

@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../mixin/config_service_mixin.dart';
 import 'file_manager.dart';
 
-class FileMangerMobile with ConfigServiceGetterMixin implements IFileManager {
+class FileMangerMobile extends IFileManager with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

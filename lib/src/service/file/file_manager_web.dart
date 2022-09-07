@@ -6,7 +6,7 @@ import 'fake_file.dart';
 import 'file_manager.dart';
 
 /// File manger for web
-class FileManagerWeb with ConfigServiceGetterMixin implements IFileManager {
+class FileManagerWeb extends IFileManager with ConfigServiceGetterMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

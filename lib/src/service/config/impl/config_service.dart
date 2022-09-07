@@ -58,6 +58,12 @@ class ConfigService implements IConfigService {
   /// The phone size
   Size? phoneSize;
 
+  /// If we run in mobileOnly
+  bool mobileOnly = false;
+
+  /// If we run in webOnly
+  bool webOnly = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,7 +167,9 @@ class ConfigService implements IConfigService {
   @override
   Future<bool> setLanguage(String? pLanguage) async {
     bool success = await setString("language", pLanguage == _getPlatformLocale() ? null : pLanguage);
-    loadLanguages();
+    if (fileManager.isSatisfied()) {
+      loadLanguages();
+    }
     return success;
   }
 
@@ -442,6 +450,26 @@ class ConfigService implements IConfigService {
   @override
   void setPhoneSize(Size? pPhoneSize) {
     phoneSize = pPhoneSize;
+  }
+
+  @override
+  bool isMobileOnly() {
+    return mobileOnly;
+  }
+
+  @override
+  void setMobileOnly(bool pMobileOnly) {
+    mobileOnly = pMobileOnly;
+  }
+
+  @override
+  bool isWebOnly() {
+    return webOnly;
+  }
+
+  @override
+  void setWebOnly(bool pWebOnly) {
+    webOnly = pWebOnly;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -120,6 +120,36 @@ class FlutterJVx extends StatefulWidget {
     await apiService.setController(ApiController());
     services.registerSingleton(apiService);
 
+    // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
+    String? baseUrl = Uri.base.queryParameters["baseUrl"];
+    if (baseUrl != null) {
+      await configService.setBaseUrl(baseUrl);
+    }
+    String? appName = Uri.base.queryParameters["appName"];
+    if (appName != null) {
+      await configService.setAppName(appName);
+    }
+    String? username = Uri.base.queryParameters["username"];
+    if (username != null) {
+      await configService.setUsername(username);
+    }
+    String? password = Uri.base.queryParameters["password"];
+    if (password != null) {
+      await configService.setUsername(password);
+    }
+    String? language = Uri.base.queryParameters["language"];
+    if (language != null) {
+      await configService.setLanguage(language);
+    }
+    String? mobileOnly = Uri.base.queryParameters["mobileOnly"];
+    if (mobileOnly != null) {
+      configService.setMobileOnly(mobileOnly == "true");
+    }
+    String? webOnly = Uri.base.queryParameters["webOnly"];
+    if (webOnly != null) {
+      configService.setWebOnly(webOnly == "true");
+    }
+
     runApp(pAppToRun);
   }
 }
@@ -267,6 +297,7 @@ class FlutterJVxState extends State<FlutterJVx> {
 
     AppConfig appConfig =
         const AppConfig.empty().merge(widget.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
+
     await (configService as ConfigService).setAppConfig(appConfig, devConfig != null);
 
     if (appConfig.serverConfig!.baseUrl != null) {
@@ -291,14 +322,13 @@ class FlutterJVxState extends State<FlutterJVx> {
       await configService.setAppStyle(appStyle);
     }
 
-    if (configService.getAppName() != null && configService.getVersion() != null) {
-      // Only load if name and version is available for FileManager
+    if (configService.getFileManager().isSatisfied()) {
+      // Only try to load if FileManager is available
       configService.reloadSupportedLanguages();
       configService.loadLanguages();
     }
 
     configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance.window).size : null);
-
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // API init
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

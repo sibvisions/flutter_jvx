@@ -16,6 +16,11 @@ abstract class IFileManager with ConfigServiceGetterMixin {
     return kIsWeb ? FileManagerWeb() : await FileMangerMobile.create();
   }
 
+  /// Returns if all requirements are set to successfully access files
+  bool isSatisfied() {
+    return getConfigService().getAppName() != null && getConfigService().getVersion() != null;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

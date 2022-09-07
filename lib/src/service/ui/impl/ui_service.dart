@@ -128,6 +128,14 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
+    if (IUiService.getCurrentContext() == null) {
+      //TODO fix workScreen web reload (e.g. send OpenScreenCommand)
+      if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
+        routerDelegate.setNewRoutePath(RouteInformation(location: "/login/$mode"));
+      }
+      return;
+    }
+
     var last = IUiService.getCurrentContext()!.beamingHistory.last;
     if (last.runtimeType == WorkScreenLocation || last.runtimeType == MenuLocation) {
       IUiService.getCurrentContext()!.beamToReplacementNamed("/login/$mode", data: pLoginProps);

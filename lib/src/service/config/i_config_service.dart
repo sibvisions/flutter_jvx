@@ -146,6 +146,14 @@ abstract class IConfigService {
   /// Sets the phone size for the startup command
   void setPhoneSize(Size? pPhoneSize);
 
+  bool isMobileOnly();
+
+  void setMobileOnly(bool pMobileOnly);
+
+  bool isWebOnly();
+
+  void setWebOnly(bool pWebOnly);
+
   /// Get a general app setting
   String? getString(String key);
 

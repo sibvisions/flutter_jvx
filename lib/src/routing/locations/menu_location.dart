@@ -22,7 +22,11 @@ class MenuLocation extends BeamLocation<BeamState> with ConfigServiceGetterMixin
       BeamPage(
         //Append state to trigger rebuild on online/offline switch
         key: ValueKey(sValue),
-        child: Frame.wrapWithFrame(builder: (context) => AppMenu()),
+        child: Frame.wrapWithFrame(
+          forceWeb: getConfigService().isWebOnly(),
+          forceMobile: getConfigService().isMobileOnly(),
+          builder: (context) => AppMenu(),
+        ),
       ),
     ];
   }
