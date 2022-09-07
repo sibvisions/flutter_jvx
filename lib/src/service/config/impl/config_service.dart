@@ -90,7 +90,6 @@ class ConfigService implements IConfigService {
 
   @override
   void setClientId(String? pClientId) {
-    log(StackTrace.current.toString());
     clientId = pClientId;
   }
 
