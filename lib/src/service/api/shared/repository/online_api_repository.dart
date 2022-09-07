@@ -137,15 +137,16 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
         String jsonRequest = jsonEncode(pRequest);
         HttpClientResponse response = await _sendPostRequest(uri, jsonRequest);
 
-        if (response.statusCode == 404) {
+        if (response.statusCode >= 400 && response.statusCode <= 599) {
           var body = await _decodeBody(response);
-          LOGGER.logW(pType: LogType.COMMAND, pMessage: "Server sent HTTP 404: $body");
-          throw const SocketException("Application not found (404)");
-        }
-        if (response.statusCode == 500) {
-          var body = await _decodeBody(response);
-          LOGGER.logE(pType: LogType.COMMAND, pMessage: "Server sent HTTP 500: $body");
-          throw const SocketException("General Server Error (500)");
+          LOGGER.logE(pType: LogType.COMMAND, pMessage: "Server sent HTTP ${response.statusCode}: $body");
+          if (response.statusCode == 404) {
+            throw const SocketException("Application not found (404)");
+          } else if (response.statusCode == 500) {
+            throw const SocketException("General Server Error (500)");
+          } else {
+            throw SocketException("Request Error (${response.statusCode}):\n$body");
+          }
         }
 
         // Download Request needs different handling
