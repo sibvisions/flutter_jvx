@@ -68,10 +68,7 @@ abstract class OfflineUtil {
           key: dialogKey,
           config: Config(
             message: FlutterJVx.translate("Re-syncing offline data"),
-            progressType: ProgressType.valuable,
             barrierDismissible: false,
-            progressValueColor: Theme.of(context).primaryColor,
-            valuePosition: ValuePosition.in_progress,
           ),
         ),
       );
@@ -167,7 +164,6 @@ abstract class OfflineUtil {
               "Successfully synced $successfulSyncedRows rows${failedRowCount > 0 ? ".\n$failedRowCount rows failed to sync" : ""}",
           progress: 100,
           maxProgress: 100,
-          valueType: ValueType.none,
           contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
           actions: [
             TextButton(
@@ -475,10 +471,7 @@ abstract class OfflineUtil {
             key: dialogKey,
             config: Config(
               message: FlutterJVx.translate("Fetching offline data"),
-              progressType: ProgressType.valuable,
               barrierDismissible: false,
-              progressValueColor: Theme.of(context).primaryColor,
-              valuePosition: ValuePosition.in_progress,
             ),
           );
         },
