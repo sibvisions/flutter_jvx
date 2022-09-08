@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -20,13 +19,16 @@ class SettingItem<T> extends StatelessWidget {
   final bool? enabled;
 
   /// Value to be displayed
-  final ValueListenable<T> value;
+  final T? value;
+
+  /// Value to be displayed
+  final ValueNotifier<T>? valueNotifier;
 
   /// Provide a custom builder for the inner item
   final ValueWidgetBuilder<T>? itemBuilder;
 
   /// Will be called when item was pressed
-  final VoidCallback? onPressed;
+  final Function(T value)? onPressed;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -34,8 +36,9 @@ class SettingItem<T> extends StatelessWidget {
 
   const SettingItem({
     Key? key,
-    required this.value,
     required this.title,
+    this.value,
+    this.valueNotifier,
     this.enabled,
     this.frontIcon,
     this.endIcon,
@@ -63,15 +66,20 @@ class SettingItem<T> extends StatelessWidget {
             : null,
         trailing: endIcon,
         title: Text(title),
-        subtitle: ValueListenableBuilder<T>(
-          valueListenable: value,
-          builder: (BuildContext buildContext, T value, Widget? widget) {
-            return itemBuilder?.call(buildContext, value, widget) ??
-                Text(value.toString().isNotEmpty ? value.toString() : "-");
-          },
-        ),
-        onTap: onPressed,
+        subtitle: valueNotifier != null
+            ? ValueListenableBuilder<T>(
+                valueListenable: valueNotifier!,
+                builder: (context, value, child) {
+                  return createSubtitle(context, value);
+                },
+              )
+            : createSubtitle(context, value as T),
+        onTap: () => onPressed?.call(value ?? valueNotifier!.value),
       ),
     );
+  }
+
+  Widget createSubtitle(BuildContext context, T value) {
+    return itemBuilder?.call(context, value, null) ?? Text(value.toString().isNotEmpty ? value.toString() : "-");
   }
 }

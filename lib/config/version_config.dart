@@ -7,7 +7,6 @@ class VersionConfig {
 
   final String? commit;
   final String? buildDate;
-  final String? version;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -16,7 +15,6 @@ class VersionConfig {
   const VersionConfig({
     this.commit,
     this.buildDate,
-    this.version,
   });
 
   const VersionConfig.empty() : this();
@@ -31,7 +29,6 @@ class VersionConfig {
                   : DateFormat('dd.MM.yyyy')
                       .format(DateTime.fromMillisecondsSinceEpoch(json['buildDate'], isUtc: true)))
               : null,
-          version: json['version'],
         );
 
   VersionConfig merge(VersionConfig? other) {
@@ -40,7 +37,6 @@ class VersionConfig {
     return VersionConfig(
       commit: other.commit ?? commit,
       buildDate: other.buildDate ?? buildDate,
-      version: other.version ?? version,
     );
   }
 }

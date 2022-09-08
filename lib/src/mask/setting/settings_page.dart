@@ -35,26 +35,8 @@ class _SettingsPageState extends State<SettingsPage>
 
   final List<int> resolutions = [320, 640, 1024];
 
-  /// Baseurl notifier, will rebuild the value once changed
-  late ValueNotifier<String> baseUrlNotifier;
-
-  /// Language notifier, , will rebuild the value once changed
-  late ValueNotifier<String> languageNotifier;
-
-  /// App name notifier, will rebuild the value once changed
-  late ValueNotifier<String> appNameNotifier;
-
-  /// Picture Size notifier, will rebuild the value once changed
-  late ValueNotifier<int> pictureSizeNotifier;
-
-  /// Commit notifier
-  late ValueNotifier<String> commitNotifier;
-
   /// App version notifier
   late ValueNotifier<String> appVersionNotifier;
-
-  /// Build date notifier
-  late ValueNotifier<String> buildDateNotifier;
 
   /// Username of a scanned QR-Code
   String? username;
@@ -72,34 +54,10 @@ class _SettingsPageState extends State<SettingsPage>
   @override
   void initState() {
     super.initState();
-    var appConfig = getConfigService().getAppConfig()!;
 
-    // Application setting
-    baseUrlNotifier = ValueNotifier(getConfigService().getBaseUrl() ?? "");
-    appNameNotifier = ValueNotifier(getConfigService().getAppName() ?? "");
-    languageNotifier = ValueNotifier(getConfigService().getLanguage());
-    pictureSizeNotifier = ValueNotifier(getConfigService().getPictureResolution() ?? resolutions.last);
-
-    // Version Info
+    // Load Version
     appVersionNotifier = ValueNotifier("${FlutterJVx.translate("Loading")}...");
-    if (appConfig.versionConfig!.version != null) {
-      appVersionNotifier.value = appConfig.versionConfig!.version!;
-    } else {
-      PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value = packageInfo.version);
-    }
-    commitNotifier = ValueNotifier(appConfig.versionConfig!.commit ?? "");
-    buildDateNotifier = ValueNotifier(appConfig.versionConfig!.buildDate ?? "");
-  }
-
-  @override
-  void dispose() {
-    baseUrlNotifier.dispose();
-    appNameNotifier.dispose();
-    languageNotifier.dispose();
-    pictureSizeNotifier.dispose();
-    commitNotifier.dispose();
-    buildDateNotifier.dispose();
-    super.dispose();
+    PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value = packageInfo.version);
   }
 
   @override
@@ -207,11 +165,11 @@ class _SettingsPageState extends State<SettingsPage>
         color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-      value: appNameNotifier,
+      value: getConfigService().getAppName() ?? "",
       title: FlutterJVx.translate("App Name"),
       enabled: !getConfigService().isOffline(),
-      onPressed: () {
-        TextEditingController controller = TextEditingController(text: appNameNotifier.value);
+      onPressed: (value) {
+        TextEditingController controller = TextEditingController(text: value);
         Widget editor = AppNameEditor(controller: controller);
 
         _settingItemClicked(
@@ -223,8 +181,8 @@ class _SettingsPageState extends State<SettingsPage>
           pTitleText: FlutterJVx.translate("App Name"),
         ).then((value) {
           if (value == true) {
-            appNameNotifier.value = controller.text;
             getConfigService().setAppName(controller.text);
+            setState(() {});
           }
         });
       },
@@ -236,11 +194,11 @@ class _SettingsPageState extends State<SettingsPage>
           color: Theme.of(context).primaryColor,
         ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-        value: baseUrlNotifier,
+        value: getConfigService().getBaseUrl() ?? "",
         title: FlutterJVx.translate("URL"),
         enabled: !getConfigService().isOffline(),
-        onPressed: () {
-          TextEditingController controller = TextEditingController(text: baseUrlNotifier.value);
+        onPressed: (value) {
+          TextEditingController controller = TextEditingController(text: value);
           Widget editor = UrlEditor(controller: controller);
 
           _settingItemClicked(
@@ -256,7 +214,7 @@ class _SettingsPageState extends State<SettingsPage>
                 // Validate format
                 var uri = Uri.parse(controller.text);
                 await getConfigService().setBaseUrl(uri.toString());
-                baseUrlNotifier.value = uri.toString();
+                setState(() {});
 
                 await getUiService().sendCommand(SetApiConfigCommand(
                   apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()),
@@ -280,20 +238,20 @@ class _SettingsPageState extends State<SettingsPage>
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: FlutterJVx.translate("Language"),
-      value: languageNotifier,
-      onPressed: () {
+      value: getConfigService().getLanguage(),
+      onPressed: (value) {
         var supportedLanguages = getConfigService().getSupportedLanguages().toList(growable: false);
         Picker picker = Picker(
             confirmTextStyle: const TextStyle(fontSize: 16),
             cancelTextStyle: const TextStyle(fontSize: 16),
-            selecteds: [supportedLanguages.indexOf(languageNotifier.value)],
+            selecteds: [supportedLanguages.indexOf(value)],
             adapter: PickerDataAdapter<String>(
               pickerdata: supportedLanguages,
             ),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
-                languageNotifier.value = picker.getSelectedValues()[0];
-                getConfigService().setLanguage(languageNotifier.value);
+                getConfigService().setLanguage(picker.getSelectedValues()[0]);
+                setState(() {});
               }
             });
         picker.showModal(context, themeData: Theme.of(context));
@@ -307,11 +265,11 @@ class _SettingsPageState extends State<SettingsPage>
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: FlutterJVx.translate("Picture Size"),
-      value: pictureSizeNotifier,
+      value: getConfigService().getPictureResolution() ?? resolutions.last,
       itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
-      onPressed: () {
+      onPressed: (value) {
         Picker picker = Picker(
-            selecteds: [resolutions.indexOf(pictureSizeNotifier.value)],
+            selecteds: [resolutions.indexOf(value)],
             adapter: PickerDataAdapter<int>(
               data: resolutions.map((e) => PickerItem(text: Text("$e px"), value: e)).toList(growable: false),
             ),
@@ -319,8 +277,8 @@ class _SettingsPageState extends State<SettingsPage>
             cancelTextStyle: const TextStyle(fontSize: 16),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
-                pictureSizeNotifier.value = picker.getSelectedValues()[0];
-                getConfigService().setPictureResolution(pictureSizeNotifier.value);
+                getConfigService().setPictureResolution(picker.getSelectedValues()[0]);
+                setState(() {});
               }
             });
         picker.showModal(context, themeData: Theme.of(context));
@@ -348,34 +306,35 @@ class _SettingsPageState extends State<SettingsPage>
   SettingGroup _buildVersionInfo() {
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
-      value: commitNotifier,
+      value: getConfigService().getAppConfig()?.versionConfig?.commit ?? "",
       title: FlutterJVx.translate("RCS"),
     );
 
     SettingItem appVersionSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.github),
-      value: appVersionNotifier,
+      valueNotifier: appVersionNotifier,
       title: FlutterJVx.translate("App version"),
     );
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
-      value: buildDateNotifier,
+      value: getConfigService().getAppConfig()?.versionConfig?.buildDate ?? "",
       title: FlutterJVx.translate("Build date"),
     );
 
     SettingGroup group = SettingGroup(
-        groupHeader: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Text(
-            FlutterJVx.translate("Version Info"),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+      groupHeader: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text(
+          FlutterJVx.translate("Version Info"),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        items: [commitSetting, appVersionSetting, buildDataSetting]);
+      ),
+      items: [commitSetting, appVersionSetting, buildDataSetting],
+    );
 
     return group;
   }
@@ -402,10 +361,8 @@ class _SettingsPageState extends State<SettingsPage>
         QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
         getConfigService().setAppName(code.appName);
         getConfigService().setBaseUrl(code.url);
+        setState(() {});
 
-        // set local display values
-        appNameNotifier.value = code.appName;
-        baseUrlNotifier.value = code.url;
         // set username & password for later
         username = code.username;
         password = code.password;
@@ -421,7 +378,7 @@ class _SettingsPageState extends State<SettingsPage>
 
   /// Will send a [StartupCommand] with current values
   void _saveClicked() async {
-    if (appNameNotifier.value.isNotEmpty && baseUrlNotifier.value.isNotEmpty) {
+    if (getConfigService().getAppName()?.isNotEmpty == true && getConfigService().getBaseUrl()?.isNotEmpty == true) {
       try {
         setState(() {
           loading = true;
@@ -429,7 +386,6 @@ class _SettingsPageState extends State<SettingsPage>
 
         await getCommandService().sendCommand(StartupCommand(
           reason: "Open App from Settings",
-          appName: appNameNotifier.value,
           username: username,
           password: password,
         ));
