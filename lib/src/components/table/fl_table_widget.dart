@@ -287,7 +287,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceGetter
     for (String columnName in model.columnNames) {
       int colIndex = model.columnNames.indexOf(columnName);
 
-      String headerText = (model.columnLabels?.isNotEmpty ?? false) ? model.columnLabels![colIndex] : columnName;
+      String headerText = model.columnLabels[colIndex];
 
       ColumnDefinition? colDef = metaData?.columns.firstWhere((element) => element.name == columnName);
 

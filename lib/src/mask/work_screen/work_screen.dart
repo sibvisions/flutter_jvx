@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
@@ -91,8 +89,6 @@ class _WorkScreenState extends State<WorkScreen>
 
   @override
   Widget build(BuildContext context) {
-    log("WORKSCREEN Layoutbuilder build: ${MediaQuery.of(context).viewInsets.bottom}");
-
     List<Widget> actions = [];
 
     Widget body = Column(

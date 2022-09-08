@@ -103,7 +103,7 @@ class TableSize with UiServiceGetterMixin {
 
     availableWidth = (availableWidth ?? 0.0) - (borderWidth * 2);
 
-    List<String> columnHeaders = tableModel.columnLabels ?? tableModel.columnNames;
+    List<String> columnHeaders = tableModel.columnLabels;
 
     for (String columnHeader in columnHeaders) {
       double columnWidth = adjustValue(

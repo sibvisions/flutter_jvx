@@ -186,11 +186,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceG
     }
 
     tableModel.columnNames.clear();
-    tableModel.columnLabels!.clear();
+    tableModel.columnLabels.clear();
     for (ColumnDefinition colDef
         in _chunkData!.columnDefinitions.where((element) => columnNamesToShow().contains(element.name))) {
       tableModel.columnNames.add(colDef.name);
-      tableModel.columnLabels!.add(colDef.label);
+      tableModel.columnLabels.add(colDef.label);
     }
 
     if (mounted) {

@@ -11,7 +11,7 @@ class FlTableModel extends FlComponentModel implements IDataModel {
 
   List<String> columnNames = [];
 
-  List<String>? columnLabels;
+  List<String> columnLabels = [];
 
   /// If the table should reduce every column to fit into the available space
   bool autoResize = false;
@@ -138,13 +138,5 @@ class FlTableModel extends FlComponentModel implements IDataModel {
       pDefault: defaultModel.wordWrapEnabled,
       pCurrent: wordWrapEnabled,
     );
-  }
-
-  int getColumnCount() {
-    return getHeaders().length;
-  }
-
-  List<String> getHeaders() {
-    return columnLabels ?? columnNames;
   }
 }

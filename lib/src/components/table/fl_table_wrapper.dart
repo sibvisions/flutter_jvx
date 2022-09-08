@@ -42,6 +42,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   static const int LOADED_SELECTED_RECORD = 2;
   static const int LOADED_DATA = 4;
   static const int CALCULATION_COMPLETE = 8;
+  static const int ALL_COMPLETE = 15;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -105,7 +106,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   @override
   Widget build(BuildContext context) {
     Widget? widget;
-    if (currentState != (LOADED_META_DATA | LOADED_SELECTED_RECORD | LOADED_DATA | CALCULATION_COMPLETE)) {
+    if (currentState != (ALL_COMPLETE)) {
       widget = const CircularProgressIndicator();
     }
 
