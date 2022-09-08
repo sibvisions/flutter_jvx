@@ -153,11 +153,11 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
           var body = await _decodeBody(response);
           LOGGER.logE(pType: LogType.COMMAND, pMessage: "Server sent HTTP ${response.statusCode}: $body");
           if (response.statusCode == 404) {
-            throw const SocketException("Application not found (404)");
+            throw Exception("Application not found (404)");
           } else if (response.statusCode == 500) {
-            throw const SocketException("General Server Error (500)");
+            throw Exception("General Server Error (500)");
           } else {
-            throw SocketException("Request Error (${response.statusCode}):\n$body");
+            throw Exception("Request Error (${response.statusCode}):\n$body");
           }
         }
 

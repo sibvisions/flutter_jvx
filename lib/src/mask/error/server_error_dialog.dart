@@ -15,6 +15,9 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   /// True if this error is fixable by the user (e.g. invalid url/timeout)
   final bool goToSettings;
 
+  /// True if this dialog can be dismissed via button
+  final bool dismissible;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,6 +25,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
   ServerErrorDialog({
     required this.command,
     this.goToSettings = false,
+    this.dismissible = false,
     Key? key,
   }) : super(key: key);
 
@@ -60,18 +64,19 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceGetterMixin {
           ),
         ),
       );
-      return actions;
     }
 
-    actions.add(
-      TextButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Text(
-          FlutterJVx.translate("Ok"),
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    if (dismissible) {
+      actions.add(
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            FlutterJVx.translate("Ok"),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     return actions;
   }

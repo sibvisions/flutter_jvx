@@ -23,8 +23,9 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
       pBuilder: (_) => ServerErrorDialog(
         command: command,
         goToSettings: goToSettings,
+        dismissible: command.dismissible,
       ),
-      pIsDismissible: false,
+      pIsDismissible: command.dismissible,
     ));
 
     return [];

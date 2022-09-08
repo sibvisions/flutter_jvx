@@ -32,7 +32,7 @@ abstract class IUiService {
     } else if (error is SocketException) {
       return "Could not connect to remote server";
     } else {
-      return "API Error $error";
+      return error.toString();
     }
   }
 

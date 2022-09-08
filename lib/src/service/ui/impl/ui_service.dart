@@ -87,6 +87,7 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
       reason: "Command error in ui service",
       message: IUiService.getErrorMessage(error),
       isTimeout: isTimeout,
+      dismissible: true,
     ));
   }
 

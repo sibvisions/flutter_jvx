@@ -21,6 +21,9 @@ class OpenErrorDialogCommand extends MessageViewCommand {
   /// True if this error is caused and therefore fixable by the user (e.g. invalid url)
   final bool canBeFixedInSettings;
 
+  /// True if this dialog should be dismissible
+  final bool dismissible;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,6 +36,7 @@ class OpenErrorDialogCommand extends MessageViewCommand {
     this.exceptions,
     this.isTimeout = false,
     this.canBeFixedInSettings = false,
+    this.dismissible = false,
     required super.reason,
   });
 
