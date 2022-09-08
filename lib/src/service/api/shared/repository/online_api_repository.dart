@@ -179,6 +179,8 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
         List<dynamic> jsonResponse = _parseAndCheckJson(responseBody);
         List<ApiResponse> parsedResponseObjects = _responseParser(pJsonList: jsonResponse, originalRequest: pRequest);
 
+        getUiService().getAppManager()?.modifyResponses(parsedResponseObjects, pRequest);
+
         if (getConfigService().isOffline()) {
           var viewResponse = parsedResponseObjects.firstWhereOrNull((element) => element is MessageView);
           if (viewResponse != null) {
