@@ -148,11 +148,11 @@ abstract class IConfigService {
 
   bool isMobileOnly();
 
-  void setMobileOnly(bool pMobileOnly);
+  Future<bool> setMobileOnly(bool pMobileOnly);
 
   bool isWebOnly();
 
-  void setWebOnly(bool pWebOnly);
+  Future<bool> setWebOnly(bool pWebOnly);
 
   /// Get a general app setting
   String? getString(String key);

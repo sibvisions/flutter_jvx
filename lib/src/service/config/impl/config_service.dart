@@ -58,12 +58,6 @@ class ConfigService implements IConfigService {
   /// The phone size
   Size? phoneSize;
 
-  /// If we run in mobileOnly
-  bool mobileOnly = false;
-
-  /// If we run in webOnly
-  bool webOnly = false;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -453,22 +447,22 @@ class ConfigService implements IConfigService {
 
   @override
   bool isMobileOnly() {
-    return mobileOnly;
+    return sharedPrefs.getBool("${getAppName()}.mobileOnly") ?? false;
   }
 
   @override
-  void setMobileOnly(bool pMobileOnly) {
-    mobileOnly = pMobileOnly;
+  Future<bool> setMobileOnly(bool pMobileOnly) {
+    return sharedPrefs.setBool("${getAppName()}.mobileOnly", pMobileOnly);
   }
 
   @override
   bool isWebOnly() {
-    return webOnly;
+    return sharedPrefs.getBool("${getAppName()}.webOnly") ?? false;
   }
 
   @override
-  void setWebOnly(bool pWebOnly) {
-    webOnly = pWebOnly;
+  Future<bool> setWebOnly(bool pWebOnly) {
+    return sharedPrefs.setBool("${getAppName()}.webOnly", pWebOnly);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
