@@ -6,6 +6,7 @@ import '../../../../../model/command/ui/save_menu_command.dart';
 import '../../../../../model/command/ui/ui_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../../../../model/command/ui/update_layout_position_command.dart';
+import '../../../../../model/command/ui/upload_action_command.dart';
 import '../../../../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../../../../../model/command/ui/view/message/open_message_dialog_command.dart';
 import '../../../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
@@ -16,6 +17,7 @@ import 'route_to_work_command_processor.dart';
 import 'save_menu_command_processor.dart';
 import 'update_components_processor.dart';
 import 'update_layout_position_command_processor.dart';
+import 'upload_action_command_processor.dart';
 import 'view/message/open_error_dialog_command_processor.dart';
 import 'view/message/open_message_dialog_command_processor.dart';
 import 'view/message/open_session_expired_dialog_command_processor.dart';
@@ -35,6 +37,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   final ICommandProcessor _openErrorDialogProcessor = OpenErrorDialogCommandProcessor();
   final ICommandProcessor _openSessionExpiredDialogProcessor = OpenSessionExpiredDialogCommandProcessor();
   final ICommandProcessor _openMessageDialogProcessor = OpenMessageDialogCommandProcessor();
+  final ICommandProcessor _uploadActionProcessor = UploadActionCommandProcessor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -61,6 +64,8 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _openSessionExpiredDialogProcessor.processCommand(command);
     } else if (command is OpenMessageDialogCommand) {
       return _openMessageDialogProcessor.processCommand(command);
+    } else if (command is UploadActionCommand) {
+      return _uploadActionProcessor.processCommand(command);
     }
 
     return [];

@@ -1,7 +1,7 @@
 import '../../service/api/shared/api_object_property.dart';
 import 'api_response.dart';
 
-class ApiAuthenticationDataResponse extends ApiResponse {
+class AuthenticationDataResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,13 +13,13 @@ class ApiAuthenticationDataResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiAuthenticationDataResponse({
+  AuthenticationDataResponse({
     required String name,
     required this.authKey,
     required Object originalRequest,
   }) : super(name: name, originalRequest: originalRequest);
 
-  ApiAuthenticationDataResponse.fromJson({
+  AuthenticationDataResponse.fromJson({
     required Map<String, dynamic> pJson,
     required Object originalRequest,
   })  : authKey = pJson[ApiObjectProperty.authKey],

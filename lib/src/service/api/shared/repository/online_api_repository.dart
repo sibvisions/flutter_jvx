@@ -14,10 +14,10 @@ import '../../../../model/request/api_download_style_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
 import '../../../../model/request/i_api_download_request.dart';
 import '../../../../model/request/i_api_request.dart';
-import '../../../../model/response/api_authentication_data_response.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
 import '../../../../model/response/application_parameter_response.dart';
+import '../../../../model/response/authentication_data_response.dart';
 import '../../../../model/response/close_screen_response.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
@@ -28,6 +28,7 @@ import '../../../../model/response/download_translation_response.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
 import '../../../../model/response/login_view_response.dart';
 import '../../../../model/response/menu_view_response.dart';
+import '../../../../model/response/upload_action_response.dart';
 import '../../../../model/response/user_data_response.dart';
 import '../../../../model/response/view/message/error_view_response.dart';
 import '../../../../model/response/view/message/message_dialog_response.dart';
@@ -71,9 +72,11 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
     ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         DalDataProviderChangedResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.authenticationData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
-        ApiAuthenticationDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+        AuthenticationDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.messageDialog: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         MessageDialogResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.upload: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        UploadActionResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

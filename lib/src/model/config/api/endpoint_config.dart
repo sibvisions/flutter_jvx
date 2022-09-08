@@ -19,6 +19,7 @@ import '../../request/api_select_record_request.dart';
 import '../../request/api_set_value_request.dart';
 import '../../request/api_set_values_request.dart';
 import '../../request/api_startup_request.dart';
+import '../../request/api_upload_request.dart';
 import '../../request/i_api_request.dart';
 
 /// Config for all endpoints for all [IApiRequest]s
@@ -89,6 +90,9 @@ class EndpointConfig {
   /// For [ApiReloadMenuRequest]
   final String menu;
 
+  /// For [ApiUploadRequest]
+  final String upload;
+
   const EndpointConfig({
     required this.startup,
     required this.login,
@@ -112,5 +116,6 @@ class EndpointConfig {
     required this.closeScreen,
     required this.deleteRecord,
     required this.closeFrame,
+    required this.upload,
   });
 }

@@ -24,6 +24,7 @@ import '../../request/api_select_record_request.dart';
 import '../../request/api_set_value_request.dart';
 import '../../request/api_set_values_request.dart';
 import '../../request/api_startup_request.dart';
+import '../../request/api_upload_request.dart';
 import 'endpoint_config.dart';
 
 /// Config for each requests exact endpoint
@@ -72,6 +73,7 @@ class ApiConfig {
       ApiDownloadTranslationRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.download),
       ApiDownloadStyleRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.download),
       ApiCloseFrameRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.closeFrame),
+      ApiUploadRequest: () => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.upload),
     };
   }
 }

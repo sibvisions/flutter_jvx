@@ -21,6 +21,7 @@ import '../processor/login_view_processor.dart';
 import '../processor/menu_view_processor.dart';
 import '../processor/message_dialog_processor.dart';
 import '../processor/session_expired_processor.dart';
+import '../processor/upload_action_processor.dart';
 import '../processor/user_data_processor.dart';
 
 class ApiController implements IController {
@@ -45,6 +46,7 @@ class ApiController implements IController {
   final IResponseProcessor _downloadTranslationProcessor = DownloadTranslationProcessor();
   final IResponseProcessor _downloadStyleProcessor = DownloadStyleProcessor();
   final IResponseProcessor _messageDialogProcessor = MessageDialogProcessor();
+  final IResponseProcessor _uploadActionProcessor = UploadActionProcessor();
 
   /// Maps response names to their processor
   late final HashMap<String, IResponseProcessor> responseToProcessorMap;
@@ -72,6 +74,7 @@ class ApiController implements IController {
       ApiResponseNames.downloadTranslation: _downloadTranslationProcessor,
       ApiResponseNames.messageDialog: _messageDialogProcessor,
       ApiResponseNames.downloadStyle: _downloadStyleProcessor,
+      ApiResponseNames.upload: _uploadActionProcessor,
     });
   }
 

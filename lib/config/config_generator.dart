@@ -25,6 +25,7 @@ class ConfigGenerator {
       closeScreen: "/api/closeScreen",
       deleteRecord: "/api/dal/deleteRecord",
       closeFrame: "/api/closeFrame",
+      upload: "/upload",
     );
   }
 }

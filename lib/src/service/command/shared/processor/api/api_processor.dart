@@ -25,6 +25,7 @@ import '../../../../../model/command/api/set_api_config_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
+import '../../../../../model/command/api/upload_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 import 'change_password_command_processor.dart';
@@ -53,6 +54,7 @@ import 'set_api_config_command_processor.dart';
 import 'set_value_command_processor.dart';
 import 'set_values_command_processor.dart';
 import 'start_up_command_processor.dart';
+import 'upload_command_processor.dart';
 
 ///
 /// Processes all [ApiCommand], delegates all commands to their respective [ICommandProcessor].
@@ -132,6 +134,9 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _closeFrameProcessor = CloseFrameCommandProcessor();
 
+  /// Processes [UploadCommand]
+  final ICommandProcessor _uploadProcessor = UploadCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,6 +196,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _downloadStyleProcessor.processCommand(command);
     } else if (command is CloseFrameCommand) {
       return _closeFrameProcessor.processCommand(command);
+    } else if (command is UploadCommand) {
+      return _uploadProcessor.processCommand(command);
     }
 
     return [];

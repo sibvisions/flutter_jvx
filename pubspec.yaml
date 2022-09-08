@@ -84,6 +84,8 @@ dependencies:
       path: charts_flutter
       ref: fix_flutter3.0
   gauges: ^1.0.0
+  image_picker: ^0.8.5+3
+  file_picker: ^5.0.1
 
 dev_dependencies:
   flutter_lints: ^2.0.1
