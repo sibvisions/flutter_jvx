@@ -14,6 +14,7 @@ import '../../../../model/request/api_download_style_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
 import '../../../../model/request/i_api_download_request.dart';
 import '../../../../model/request/i_api_request.dart';
+import '../../../../model/request/i_session_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
 import '../../../../model/response/application_parameter_response.dart';
@@ -137,6 +138,14 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
 
     if (uri != null) {
       try {
+        if (pRequest is ISessionRequest) {
+          if (getConfigService().getClientId()?.isNotEmpty == true) {
+            pRequest.clientId = getConfigService().getClientId()!;
+          } else {
+            throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
+          }
+        }
+
         String jsonRequest = jsonEncode(pRequest);
         HttpClientResponse response = await _sendPostRequest(uri, jsonRequest);
 

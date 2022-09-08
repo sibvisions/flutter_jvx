@@ -1,13 +1,10 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
-class ApiCloseScreenRequest implements IApiRequest {
+class ApiCloseScreenRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Name of the screen to close
   final String screenName;
@@ -17,7 +14,6 @@ class ApiCloseScreenRequest implements IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiCloseScreenRequest({
-    required this.clientId,
     required this.screenName,
   });
 
@@ -27,7 +23,7 @@ class ApiCloseScreenRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.componentId: screenName,
       };
 }

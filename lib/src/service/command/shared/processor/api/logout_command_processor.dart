@@ -12,17 +12,14 @@ class LogoutCommandProcessor
     implements ICommandProcessor<LogoutCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LogoutCommand command) async {
-    ApiLogoutRequest logoutRequest = ApiLogoutRequest(
-      clientId: getConfigService().getClientId()!,
-    );
-
     if (await getConfigService().getFileManager().doesFileExist(pPath: "auth.txt")) {
       getConfigService().getFileManager().deleteFile(pPath: "/auth.txt");
     }
+
     await getConfigService().setUserInfo(pUserInfo: null, pJson: null);
     await getConfigService().setAuthCode(null);
     await getConfigService().setPassword(null);
 
-    return getApiService().sendRequest(request: logoutRequest);
+    return getApiService().sendRequest(request: ApiLogoutRequest());
   }
 }

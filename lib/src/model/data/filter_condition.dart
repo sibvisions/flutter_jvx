@@ -65,17 +65,15 @@ class FilterCondition {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      ApiObjectProperty.columnName: columnName,
-      ApiObjectProperty.value: value,
-      ApiObjectProperty.operatorType: ParseUtil.propertyAsString(operatorType.name),
-      ApiObjectProperty.compareType: ParseUtil.propertyAsString(compareType.name),
-      ApiObjectProperty.not: value,
-      ApiObjectProperty.condition: condition?.toJson(),
-      ApiObjectProperty.conditions: conditions.map<Map<String, dynamic>>((c) => c.toJson()).toList()
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        ApiObjectProperty.columnName: columnName,
+        ApiObjectProperty.value: value,
+        ApiObjectProperty.operatorType: ParseUtil.propertyAsString(operatorType.name),
+        ApiObjectProperty.compareType: ParseUtil.propertyAsString(compareType.name),
+        ApiObjectProperty.not: value,
+        ApiObjectProperty.condition: condition?.toJson(),
+        ApiObjectProperty.conditions: conditions.map<Map<String, dynamic>>((c) => c.toJson()).toList()
+      };
 
   /// Collects recursively all values
   List<dynamic> getValues() {

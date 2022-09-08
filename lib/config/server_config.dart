@@ -40,7 +40,7 @@ class ServerConfig {
     );
   }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() => {
         'baseUrl': baseUrl,
         'appName': appName,
         'username': username,

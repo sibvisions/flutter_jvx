@@ -1,16 +1,13 @@
 import '../../service/api/shared/api_object_property.dart';
 import '../data/filter_condition.dart';
 import 'filter.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request to set the value of a data-bound component
-class ApiSetValuesRequest extends IApiRequest {
+class ApiSetValuesRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Id of the current session
-  final String clientId;
 
   /// DataRow or DataProvider of the component
   final String dataProvider;
@@ -35,7 +32,6 @@ class ApiSetValuesRequest extends IApiRequest {
 
   ApiSetValuesRequest({
     required this.componentId,
-    required this.clientId,
     required this.dataProvider,
     required this.columnNames,
     required this.values,
@@ -49,7 +45,7 @@ class ApiSetValuesRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.componentId: componentId,
         ApiObjectProperty.columnNames: columnNames,

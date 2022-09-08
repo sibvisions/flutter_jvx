@@ -1,14 +1,11 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request to open a new work screen
-class ApiOpenScreenRequest extends IApiRequest {
+class ApiOpenScreenRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Id of the menuItem clicked
   final String? screenLongName;
@@ -23,7 +20,11 @@ class ApiOpenScreenRequest extends IApiRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiOpenScreenRequest({this.screenLongName, this.screenClassName, required this.clientId, required this.manualClose});
+  ApiOpenScreenRequest({
+    this.screenLongName,
+    this.screenClassName,
+    required this.manualClose,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -31,7 +32,7 @@ class ApiOpenScreenRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.componentId: screenLongName,
         ApiObjectProperty.className: screenClassName,
         ApiObjectProperty.manualClose: manualClose

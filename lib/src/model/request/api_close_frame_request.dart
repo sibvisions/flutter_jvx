@@ -1,13 +1,10 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
-class ApiCloseFrameRequest implements IApiRequest {
+class ApiCloseFrameRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Name of the frame(messages) to close
   final String frameName;
@@ -17,7 +14,6 @@ class ApiCloseFrameRequest implements IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiCloseFrameRequest({
-    required this.clientId,
     required this.frameName,
   });
 
@@ -27,7 +23,7 @@ class ApiCloseFrameRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.componentId: frameName,
       };
 }

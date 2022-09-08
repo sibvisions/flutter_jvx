@@ -1,14 +1,12 @@
 import '../../service/api/shared/api_object_property.dart';
 import 'i_api_download_request.dart';
+import 'i_session_request.dart';
 
 /// Request to download all images the app needs
-class ApiDownloadImagesRequest implements IApiDownloadRequest {
+class ApiDownloadImagesRequest extends ISessionRequest implements IApiDownloadRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Name of the request, will always be "images"
   final String name = "images";
@@ -26,9 +24,7 @@ class ApiDownloadImagesRequest implements IApiDownloadRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiDownloadImagesRequest({
-    required this.clientId,
-  });
+  ApiDownloadImagesRequest();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -36,8 +32,8 @@ class ApiDownloadImagesRequest implements IApiDownloadRequest {
 
   @override
   Map<String, dynamic> toJson() => {
+        ...super.toJson(),
         ApiObjectProperty.name: name,
-        ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.libraryImages: libraryImages,
         ApiObjectProperty.applicationImages: applicationImages,
         ApiObjectProperty.contentMode: contentMode

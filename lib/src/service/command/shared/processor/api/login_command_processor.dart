@@ -23,7 +23,6 @@ class LoginCommandProcessor
         newPassword: command.newPassword,
         username: command.userName,
         password: command.password,
-        clientId: clientId,
       );
       return getApiService().sendRequest(request: loginRequest);
     } else {

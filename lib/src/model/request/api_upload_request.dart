@@ -10,9 +10,6 @@ class ApiUploadRequest extends IApiRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Session id
-  final String clientId;
-
   /// The id of the file for the server.
   String fileId;
 
@@ -28,7 +25,6 @@ class ApiUploadRequest extends IApiRequest {
 
   ApiUploadRequest({
     this.name = ApiResponseNames.upload,
-    required this.clientId,
     required this.file,
     required this.fileId,
   });
@@ -39,9 +35,9 @@ class ApiUploadRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
+        ...super.toJson(),
         ApiObjectProperty.fileId: fileId,
         ApiObjectProperty.file: file,
-        ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.name: name,
       };
 }

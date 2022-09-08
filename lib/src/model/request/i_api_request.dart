@@ -5,5 +5,5 @@ abstract class IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Converts request to json
-  Map<String, dynamic> toJson();
+  Map<String, dynamic> toJson() => {};
 }

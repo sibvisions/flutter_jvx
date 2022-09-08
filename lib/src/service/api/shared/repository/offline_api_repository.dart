@@ -311,7 +311,6 @@ class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
     if (maxFetch != null) {
       return _fetch(
         ApiFetchRequest(
-          clientId: "",
           fromRow: 0,
           rowCount: maxFetch,
           dataProvider: pDataProvider,

@@ -1,14 +1,11 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request to update the available screen size to the app
-class ApiDeviceStatusRequest implements IApiRequest {
+class ApiDeviceStatusRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Available width of the device for workscreens
   final double screenWidth;
@@ -20,7 +17,10 @@ class ApiDeviceStatusRequest implements IApiRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiDeviceStatusRequest({required this.clientId, required this.screenWidth, required this.screenHeight});
+  ApiDeviceStatusRequest({
+    required this.screenWidth,
+    required this.screenHeight,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -28,8 +28,8 @@ class ApiDeviceStatusRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.screenHeight: screenHeight,
-        ApiObjectProperty.screenWidth: screenWidth
+        ApiObjectProperty.screenWidth: screenWidth,
       };
 }

@@ -1,12 +1,10 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
-class ApiDalSaveRequest extends IApiRequest {
+class ApiDalSaveRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  final String clientId;
 
   final String dataProvider;
 
@@ -17,7 +15,6 @@ class ApiDalSaveRequest extends IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiDalSaveRequest({
-    required this.clientId,
     required this.dataProvider,
     this.onlySelected,
   });
@@ -28,7 +25,7 @@ class ApiDalSaveRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.onlySelected: onlySelected,
       };

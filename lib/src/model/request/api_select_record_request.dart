@@ -1,14 +1,11 @@
 import '../../service/api/shared/api_object_property.dart';
 import 'filter.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
-class ApiSelectRecordRequest implements IApiRequest {
+class ApiSelectRecordRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Data provider to change selected row of
   final String dataProvider;
@@ -27,7 +24,6 @@ class ApiSelectRecordRequest implements IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiSelectRecordRequest({
-    required this.clientId,
     required this.dataProvider,
     required this.selectedRow,
     this.fetch = false,
@@ -41,7 +37,7 @@ class ApiSelectRecordRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.rowNumber: selectedRow,
         ApiObjectProperty.fetch: fetch,

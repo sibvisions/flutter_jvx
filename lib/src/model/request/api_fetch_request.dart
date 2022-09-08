@@ -1,13 +1,10 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
-class ApiFetchRequest implements IApiRequest {
+class ApiFetchRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   final List<String>? columnNames;
 
@@ -24,7 +21,6 @@ class ApiFetchRequest implements IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiFetchRequest({
-    required this.clientId,
     required this.fromRow,
     required this.rowCount,
     required this.dataProvider,
@@ -38,7 +34,7 @@ class ApiFetchRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.includeMetaData: includeMetaData,
         ApiObjectProperty.fromRow: fromRow,

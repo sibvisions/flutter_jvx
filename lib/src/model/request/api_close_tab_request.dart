@@ -1,14 +1,11 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request to notify the server which tab on a tab-set panel is being closed/deleted
-class ApiCloseTabRequest extends IApiRequest {
+class ApiCloseTabRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Current session id
-  final String clientId;
 
   /// Component name of the tab-set panel
   final String componentName;
@@ -20,7 +17,10 @@ class ApiCloseTabRequest extends IApiRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiCloseTabRequest({required this.index, required this.componentName, required this.clientId});
+  ApiCloseTabRequest({
+    required this.index,
+    required this.componentName,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -28,8 +28,8 @@ class ApiCloseTabRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.componentId: componentName,
-        ApiObjectProperty.index: index
+        ApiObjectProperty.index: index,
       };
 }

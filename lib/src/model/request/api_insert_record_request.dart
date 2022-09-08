@@ -1,13 +1,10 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
-class ApiInsertRecordRequest implements IApiRequest {
+class ApiInsertRecordRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Data provider where row should be inserted
   final String dataProvider;
@@ -18,7 +15,6 @@ class ApiInsertRecordRequest implements IApiRequest {
 
   ApiInsertRecordRequest({
     required this.dataProvider,
-    required this.clientId,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,7 +23,7 @@ class ApiInsertRecordRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
+        ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
-        ApiObjectProperty.clientId: clientId,
       };
 }

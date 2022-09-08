@@ -29,7 +29,7 @@ class LinkReference {
     }
   }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() => {
         'columnNames': columnNames,
         'referencedColumnNames': referencedColumnNames,
         'referencedDataBook': referencedDataBook,

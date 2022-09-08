@@ -1,14 +1,11 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request to change the password of the user
-class ApiChangePasswordRequest extends IApiRequest {
+class ApiChangePasswordRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Current password
   final String password;
@@ -24,7 +21,6 @@ class ApiChangePasswordRequest extends IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiChangePasswordRequest({
-    required this.clientId,
     required this.password,
     required this.newPassword,
     this.username,
@@ -36,9 +32,9 @@ class ApiChangePasswordRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
+        ...super.toJson(),
         ApiObjectProperty.password: password,
         ApiObjectProperty.newPassword: newPassword,
-        ApiObjectProperty.clientId: clientId,
         if (username != null) ApiObjectProperty.userName: username,
       };
 }

@@ -1,15 +1,12 @@
 import '../../service/api/shared/api_object_property.dart';
 import '../data/filter_condition.dart';
 import 'filter.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
-class ApiDeleteRecordRequest extends IApiRequest {
+class ApiDeleteRecordRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Data provider to change selected row of
   final String dataProvider;
@@ -28,7 +25,6 @@ class ApiDeleteRecordRequest extends IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiDeleteRecordRequest({
-    required this.clientId,
     required this.dataProvider,
     this.selectedRow,
     this.filter,
@@ -42,7 +38,7 @@ class ApiDeleteRecordRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.filter: filter?.toJson(),
         ApiObjectProperty.filterCondition: filterCondition?.toJson(),

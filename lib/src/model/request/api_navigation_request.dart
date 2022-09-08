@@ -1,9 +1,9 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request that should be sent when navigating(user pressing back),
 /// while being in workscreen and when navigating back to the menu
-class ApiNavigationRequest extends IApiRequest {
+class ApiNavigationRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -11,19 +11,21 @@ class ApiNavigationRequest extends IApiRequest {
   /// Name of the screen(top most panel)
   final String screenName;
 
-  /// SessionId
-  final String clientId;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiNavigationRequest({required this.screenName, required this.clientId});
+  ApiNavigationRequest({
+    required this.screenName,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Map<String, dynamic> toJson() => {ApiObjectProperty.componentId: screenName, ApiObjectProperty.clientId: clientId};
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        ApiObjectProperty.componentId: screenName,
+      };
 }

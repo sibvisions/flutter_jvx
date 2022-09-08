@@ -1,30 +1,17 @@
 import '../../../../../../mixin/api_service_mixin.dart';
-import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/change_password_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_change_password_request.dart';
 import '../../i_command_processor.dart';
 
-class ChangePasswordCommandProcessor
-    with ApiServiceGetterMixin, ConfigServiceGetterMixin
-    implements ICommandProcessor<ChangePasswordCommand> {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Interface implementation
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+class ChangePasswordCommandProcessor with ApiServiceGetterMixin implements ICommandProcessor<ChangePasswordCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(ChangePasswordCommand command) async {
-    String? clientId = getConfigService().getClientId();
-
-    if (clientId != null) {
-      ApiChangePasswordRequest changePasswordRequest = ApiChangePasswordRequest(
-        clientId: clientId,
-        password: command.password,
-        newPassword: command.newPassword,
-        username: command.username,
-      );
-      return getApiService().sendRequest(request: changePasswordRequest);
-    }
-    return [];
+  Future<List<BaseCommand>> processCommand(ChangePasswordCommand command) {
+    return getApiService().sendRequest(
+        request: ApiChangePasswordRequest(
+      password: command.password,
+      newPassword: command.newPassword,
+      username: command.username,
+    ));
   }
 }

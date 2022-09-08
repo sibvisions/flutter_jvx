@@ -1,15 +1,12 @@
 import '../../service/api/shared/api_object_property.dart';
 import '../data/filter_condition.dart';
 import 'filter.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
-class ApiFilterRequest implements IApiRequest {
+class ApiFilterRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   final String? value;
 
@@ -28,7 +25,6 @@ class ApiFilterRequest implements IApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiFilterRequest({
-    required this.clientId,
     required this.editorComponentId,
     required this.dataProvider,
     this.columnNames,
@@ -43,7 +39,7 @@ class ApiFilterRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.value: value,
         ApiObjectProperty.filter: filter?.toJson(),

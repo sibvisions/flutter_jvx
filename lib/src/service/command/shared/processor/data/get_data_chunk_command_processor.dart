@@ -1,5 +1,4 @@
 import '../../../../../../mixin/api_service_mixin.dart';
-import '../../../../../../mixin/config_service_mixin.dart';
 import '../../../../../../mixin/data_service_mixin.dart';
 import '../../../../../../mixin/ui_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
@@ -9,7 +8,7 @@ import '../../../../../model/request/api_fetch_request.dart';
 import '../../i_command_processor.dart';
 
 class GetDataChunkCommandProcessor
-    with DataServiceGetterMixin, UiServiceGetterMixin, ApiServiceGetterMixin, ConfigServiceGetterMixin
+    with DataServiceGetterMixin, UiServiceGetterMixin, ApiServiceGetterMixin
     implements ICommandProcessor<GetDataChunkCommand> {
   @override
   Future<List<BaseCommand>> processCommand(GetDataChunkCommand command) async {
@@ -36,15 +35,12 @@ class GetDataChunkCommandProcessor
       return [];
     }
 
-    ApiFetchRequest request = ApiFetchRequest(
-      dataProvider: command.dataProvider,
-      clientId: getConfigService().getClientId()!,
-      fromRow: command.from,
-      rowCount: command.to != null ? command.to! - command.from : -1,
+    return getApiService().sendRequest(
+      request: ApiFetchRequest(
+        dataProvider: command.dataProvider,
+        fromRow: command.from,
+        rowCount: command.to != null ? command.to! - command.from : -1,
+      ),
     );
-
-    List<BaseCommand> commands = await getApiService().sendRequest(request: request);
-
-    return commands;
   }
 }

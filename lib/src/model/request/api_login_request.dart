@@ -1,14 +1,11 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request to login into the app
-class ApiLoginRequest implements IApiRequest {
+class ApiLoginRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// SessionId
-  final String clientId;
 
   /// Username
   final String username;
@@ -32,7 +29,6 @@ class ApiLoginRequest implements IApiRequest {
   ApiLoginRequest({
     required this.username,
     required this.password,
-    required this.clientId,
     this.createAuthKey = false,
     this.loginMode,
     this.newPassword,
@@ -44,7 +40,7 @@ class ApiLoginRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.password: password,
         ApiObjectProperty.username: username,
         ApiObjectProperty.newPassword: newPassword,

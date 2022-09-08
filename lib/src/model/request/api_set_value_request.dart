@@ -1,14 +1,11 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request to set the value of an unbound(no-dataProvider) component
-class ApiSetValueRequest extends IApiRequest {
+class ApiSetValueRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Session id
-  final String clientId;
 
   /// Name of the component from which the value is set
   final String componentName;
@@ -20,7 +17,10 @@ class ApiSetValueRequest extends IApiRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiSetValueRequest({required this.componentName, required this.value, required this.clientId});
+  ApiSetValueRequest({
+    required this.componentName,
+    required this.value,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -28,8 +28,8 @@ class ApiSetValueRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
+        ...super.toJson(),
         ApiObjectProperty.componentId: componentName,
-        ApiObjectProperty.value: value
+        ApiObjectProperty.value: value,
       };
 }
