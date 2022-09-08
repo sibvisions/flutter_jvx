@@ -168,17 +168,13 @@ class _SettingsPageState extends State<SettingsPage>
                       onTap: loading || getConfigService().isOffline() ? null : _saveClicked,
                       child: Container(
                         alignment: Alignment.center,
-                        child: getConfigService().getUserInfo() != null
-                            ? Text(
-                                FlutterJVx.translate("Save"),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
-                              )
-                            : Text(
-                                FlutterJVx.translate("Open"),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
-                              ),
+                        child: Text(
+                          FlutterJVx.translate("Open"),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
                       ),
                     ),
                   ),
