@@ -121,13 +121,13 @@ class FlutterJVx extends StatefulWidget {
     services.registerSingleton(apiService);
 
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
-    String? baseUrl = Uri.base.queryParameters["baseUrl"];
-    if (baseUrl != null) {
-      await configService.setBaseUrl(baseUrl);
-    }
     String? appName = Uri.base.queryParameters["appName"];
     if (appName != null) {
       await configService.setAppName(appName);
+    }
+    String? baseUrl = Uri.base.queryParameters["baseUrl"];
+    if (baseUrl != null) {
+      await configService.setBaseUrl(baseUrl);
     }
     String? username = Uri.base.queryParameters["username"];
     if (username != null) {
@@ -143,11 +143,11 @@ class FlutterJVx extends StatefulWidget {
     }
     String? mobileOnly = Uri.base.queryParameters["mobileOnly"];
     if (mobileOnly != null) {
-      configService.setMobileOnly(mobileOnly == "true");
+      await configService.setMobileOnly(mobileOnly == "true");
     }
     String? webOnly = Uri.base.queryParameters["webOnly"];
     if (webOnly != null) {
-      configService.setWebOnly(webOnly == "true");
+      await configService.setWebOnly(webOnly == "true");
     }
 
     runApp(pAppToRun);
