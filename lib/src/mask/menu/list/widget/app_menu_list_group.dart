@@ -52,7 +52,7 @@ class AppMenuListGroup extends StatelessWidget with ConfigServiceGetterMixin {
           pinned: true,
           delegate: AppMenuGridHeader(
             headerText: FlutterJVx.translate(menuGroupModel.name),
-            height: kIsWeb ? 48 : 50,
+            height: 48,
           ),
         ),
         SliverList(

@@ -36,7 +36,7 @@ class MobileFrameState extends FrameState with ConfigServiceGetterMixin {
       centerTitle: false,
       actions: actions,
       backgroundColor: getConfigService().isOffline() ? Colors.grey.shade500 : null,
-      elevation: getConfigService().isOffline() ? 0 : null,
+      elevation: 0,
     );
   }
 

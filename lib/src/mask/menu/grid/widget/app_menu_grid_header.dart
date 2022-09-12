@@ -38,21 +38,20 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServic
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: Theme.of(context).bottomAppBarColor.withOpacity(getConfigService().getOpacitySideMenu()),
-      child: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          child: ListTile(
-            title: Text(
-              headerText,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                color:
-                    Theme.of(context).textTheme.headline5?.color?.withOpacity(getConfigService().getOpacitySideMenu()),
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          )),
+      child: ListTile(
+        dense: true,
+        contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+        title: Text(
+          headerText,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.headline5?.color?.withOpacity(getConfigService().getOpacitySideMenu()),
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      ),
     );
   }
 }
