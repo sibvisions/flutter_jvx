@@ -212,6 +212,7 @@ abstract class ApiObjectProperty {
   static const String fetch = "fetch";
   static const String onlySelected = "onlySelected";
   static const String primaryKeyColumns = "primaryKeyColumns";
+  static const String clear = "clear";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";

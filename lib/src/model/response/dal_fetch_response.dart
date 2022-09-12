@@ -27,6 +27,9 @@ class DalFetchResponse extends ApiResponse {
   /// Fetched records
   final List<List<dynamic>> records;
 
+  /// Clear data before filling
+  final bool clear;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,6 +43,7 @@ class DalFetchResponse extends ApiResponse {
     required this.columnNames,
     required this.to,
     required this.records,
+    this.clear = false,
     required String name,
     required Object originalResponse,
   }) : super(name: name, originalRequest: originalResponse);
@@ -53,5 +57,6 @@ class DalFetchResponse extends ApiResponse {
         isAllFetched = pJson[ApiObjectProperty.isAllFetched] ?? false,
         selectedRow = pJson[ApiObjectProperty.selectedRow],
         dataProvider = pJson[ApiObjectProperty.dataProvider],
+        clear = pJson[ApiObjectProperty.clear] ?? false,
         super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

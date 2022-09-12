@@ -39,6 +39,9 @@ class DataService implements IDataService {
       log("databook inserted: ${pFetch.dataProvider}");
       dataBooks[pFetch.dataProvider] = dataBook;
     } else {
+      if (pFetch.clear) {
+        dataBook.clearRecords();
+      }
       dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
     }
 
