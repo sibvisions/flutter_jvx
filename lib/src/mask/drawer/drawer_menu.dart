@@ -33,14 +33,17 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: Theme.of(context).backgroundColor.withOpacity(getConfigService().getOpacitySideMenu()),
-      child: Column(
-        children: [
-          _buildDrawerHeader(context),
-          Expanded(child: _buildMenu(context)),
-          ..._buildDrawerFooter(context),
-        ],
+    return Opacity(
+      opacity: getConfigService().getOpacitySideMenu(),
+      child: Drawer(
+        backgroundColor: Theme.of(context).backgroundColor,
+        child: Column(
+          children: [
+            _buildDrawerHeader(context),
+            Expanded(child: _buildMenu(context)),
+            ..._buildDrawerFooter(context),
+          ],
+        ),
       ),
     );
   }
@@ -51,8 +54,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
 
     return DrawerHeader(
       margin: EdgeInsets.zero,
-      decoration:
-          BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacitySideMenu())),
+      decoration: BoxDecoration(color: Theme.of(context).primaryColor),
       child: Row(
         children: [
           Expanded(
@@ -154,7 +156,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
 
   Divider _buildFooterDivider(BuildContext context) {
     return Divider(
-      color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+      color: Theme.of(context).colorScheme.onPrimary,
       height: 1,
     );
   }
@@ -175,7 +177,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
         child: Text(
           text,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+            color: Theme.of(context).colorScheme.onPrimary,
             fontWeight: fontWeight,
           ),
         ),
@@ -191,13 +193,13 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
     required VoidCallback onTap,
   }) {
     return ListTile(
-      tileColor: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacitySideMenu()),
-      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+      tileColor: Theme.of(context).colorScheme.primary,
+      textColor: Theme.of(context).colorScheme.onPrimary,
       leading: CircleAvatar(
         backgroundColor: Colors.transparent,
         child: FaIcon(
           leadingIcon,
-          color: Theme.of(context).colorScheme.onPrimary.withOpacity(getConfigService().getOpacitySideMenu()),
+          color: Theme.of(context).colorScheme.onPrimary,
         ),
       ),
       title: Text(

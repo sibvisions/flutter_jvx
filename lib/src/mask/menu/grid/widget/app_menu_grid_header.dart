@@ -37,7 +37,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServic
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Theme.of(context).bottomAppBarColor.withOpacity(getConfigService().getOpacitySideMenu()),
+      color: Theme.of(context).bottomAppBarColor,
       child: ListTile(
         dense: true,
         contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -46,7 +46,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServic
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left,
           style: TextStyle(
-            color: Theme.of(context).textTheme.headline5?.color?.withOpacity(getConfigService().getOpacitySideMenu()),
+            color: Theme.of(context).textTheme.headline5?.color,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
