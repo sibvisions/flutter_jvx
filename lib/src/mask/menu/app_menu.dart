@@ -100,7 +100,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
 
     Widget body = Column(
       children: [
-        if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context, useElevation: true),
+        if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
         Expanded(child: _getMenu()),
       ],
     );
