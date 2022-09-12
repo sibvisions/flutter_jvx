@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../../mixin/config_service_mixin.dart';
@@ -12,6 +13,7 @@ import '../../../../model/config/api/api_config.dart';
 import '../../../../model/request/api_download_images_request.dart';
 import '../../../../model/request/api_download_style_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
+import '../../../../model/request/api_upload_request.dart';
 import '../../../../model/request/i_api_download_request.dart';
 import '../../../../model/request/i_api_request.dart';
 import '../../../../model/request/i_session_request.dart';
@@ -99,6 +101,12 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
   /// Maps response names with a corresponding factory
   late final Map<String, ResponseFactory> responseFactoryMap = Map.from(maps);
 
+  static const String boundary = "--dart-http-boundary--";
+
+  /// A regular expression that matches strings that are composed entirely of
+  /// ASCII-compatible characters.
+  final _asciiOnly = RegExp(r'^[\x00-\x7F]+$');
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,8 +154,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
           }
         }
 
-        String jsonRequest = jsonEncode(pRequest);
-        HttpClientResponse response = await _sendPostRequest(uri, jsonRequest);
+        HttpClientResponse response = await _sendPostRequest(uri, pRequest);
 
         if (response.statusCode >= 400 && response.statusCode <= 599) {
           var body = await _decodeBody(response);
@@ -174,7 +181,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
           var overrideResponse = await getUiService().getAppManager()?.handleResponse(
                 pRequest,
                 responseBody,
-                () => _sendPostRequest(uri, jsonRequest),
+                () => _sendPostRequest(uri, pRequest),
               );
           if (overrideResponse != null) {
             response = overrideResponse;
@@ -225,7 +232,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Send post request to remote server, applies timeout.
-  Future<HttpClientResponse> _sendPostRequest(Uri uri, String body) async {
+  Future<HttpClientResponse> _sendPostRequest(Uri uri, IApiRequest pRequest) async {
     HttpClientRequest request = await client!.postUrl(uri);
 
     if (kIsWeb) {
@@ -240,8 +247,27 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
     getUiService().getAppManager()?.modifyCookies(request.cookies);
 
     _headers.forEach((key, value) => request.headers.set(key, value));
-    request.headers.contentType = ContentType("application", "json", charset: "utf-8");
-    request.write(body);
+
+    if (pRequest is ApiUploadRequest) {
+      request.headers.contentType = ContentType(
+        "multipart",
+        "form-data",
+        charset: "utf-8",
+        parameters: {"boundary": boundary},
+      );
+      await request.addStream(_addContent(
+        {
+          "clientId": pRequest.clientId,
+          "fileId": pRequest.fileId,
+        },
+        {"data": pRequest.file},
+        boundary,
+      ));
+    } else {
+      request.headers.contentType = ContentType("application", "json", charset: "utf-8");
+      request.write(jsonEncode(pRequest));
+    }
+
     HttpClientResponse res = await request.close();
 
     if (!kIsWeb) {
@@ -249,6 +275,47 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
       _cookies.addAll(res.cookies);
     }
     return res;
+  }
+
+  bool isPlainAscii(String value) {
+    return _asciiOnly.hasMatch(value);
+  }
+
+  String _headerForField(String name, String value) {
+    var header = 'content-disposition: form-data; name="$name"';
+    if (!isPlainAscii(value)) {
+      header = '$header\r\n'
+          'content-type: text/plain; charset=utf-8\r\n'
+          'content-transfer-encoding: binary';
+    }
+    return '$header\r\n\r\n';
+  }
+
+  String _headerForFile(String field, String fileName) {
+    var header = 'content-type: ${ContentType('application', 'octet-stream')}\r\n'
+        'content-disposition: form-data; name="$field"; filename="$fileName"';
+    return '$header\r\n\r\n';
+  }
+
+  Stream<List<int>> _addContent(Map<String, String> fields, Map<String, File> files, String boundary) async* {
+    const line = [13, 10]; // \r\n
+    final separator = utf8.encode('--$boundary\r\n');
+    final close = utf8.encode('--$boundary--\r\n');
+
+    for (var field in fields.entries) {
+      yield separator;
+      yield utf8.encode(_headerForField(field.key, field.value));
+      yield utf8.encode(field.value);
+      yield line;
+    }
+
+    for (final file in files.entries) {
+      yield separator;
+      yield utf8.encode(_headerForFile(file.key, basename(file.value.path)));
+      yield* Stream.fromIterable([file.value.readAsBytesSync()]);
+      yield line;
+    }
+    yield close;
   }
 
   /// Check if response is an error, an error does not come as array, returns

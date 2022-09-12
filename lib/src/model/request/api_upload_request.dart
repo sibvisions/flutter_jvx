@@ -2,10 +2,10 @@ import 'package:universal_io/io.dart';
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
-import 'i_api_request.dart';
+import 'i_session_request.dart';
 
 /// Request to change the password of the user
-class ApiUploadRequest extends IApiRequest {
+class ApiUploadRequest extends ISessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,8 +36,7 @@ class ApiUploadRequest extends IApiRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.fileId: fileId,
-        ApiObjectProperty.file: file,
         ApiObjectProperty.name: name,
+        ApiObjectProperty.fileId: fileId,
       };
 }
