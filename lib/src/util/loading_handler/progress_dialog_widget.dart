@@ -105,7 +105,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                               "${"${((progress) * 100).round()}"}%",
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 20.0,
+                                fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
