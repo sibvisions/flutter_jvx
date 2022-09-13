@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../util/constants/i_color.dart';
 import '../../../model/component/button/fl_toggle_button_model.dart';
-import '../../../model/layout/alignments.dart';
 import '../fl_button_widget.dart';
 
 /// The widget representing a button.
@@ -18,19 +17,6 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: getOnPressed(),
-      style: getButtonStyle(context),
-      child: Container(
-        decoration: getBoxDecoration(context),
-        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-        child: getButtonChild(),
-      ),
-    );
-  }
 
   @override
   ButtonStyle getButtonStyle(context) {
