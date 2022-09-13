@@ -26,7 +26,8 @@ class DownloadStyleProcessor extends IResponseProcessor<DownloadStyleResponse> {
 
     pOgMap.forEach((key, value) {
       if (value is Map) {
-        rebuiltMap.addAll(rebuildStylesMap(value as Map<String, dynamic>, key));
+        rebuiltMap
+            .addAll(rebuildStylesMap(value as Map<String, dynamic>, pKeyPrefix == null ? key : "$pKeyPrefix.$key"));
       } else if (pKeyPrefix != null) {
         rebuiltMap["$pKeyPrefix.$key"] = value;
       } else {
