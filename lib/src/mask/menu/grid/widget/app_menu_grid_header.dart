@@ -39,7 +39,8 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServic
     return Container(
       color: Theme.of(context).bottomAppBarColor,
       child: ListTile(
-        dense: true,
+        // Triggers https://github.com/flutter/flutter/issues/78748
+        // dense: true,
         contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
         title: Text(
           headerText,
