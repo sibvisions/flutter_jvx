@@ -11,8 +11,19 @@ import '../../i_command_processor.dart';
 class SaveDownloadCommandProcessor with ConfigServiceGetterMixin implements ICommandProcessor<SaveDownloadCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveDownloadCommand command) async {
-    unawaited(FileSaver.instance.saveAs(path.basenameWithoutExtension(command.fileName), command.bodyBytes,
-        path.extension(command.fileName), MimeType.OTHER));
+    String extension = path.extension(command.fileName);
+    if (extension.startsWith(".")) {
+      extension = extension.substring(1);
+    }
+
+    unawaited(
+      FileSaver.instance.saveAs(
+        path.basenameWithoutExtension(command.fileName),
+        command.bodyBytes,
+        extension,
+        MimeType.OTHER,
+      ),
+    );
 
     return [];
   }
