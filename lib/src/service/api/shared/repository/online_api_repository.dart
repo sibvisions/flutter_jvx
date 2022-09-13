@@ -11,6 +11,7 @@ import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/request/api_download_images_request.dart';
+import '../../../../model/request/api_download_request.dart';
 import '../../../../model/request/api_download_style_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
 import '../../../../model/request/api_upload_request.dart';
@@ -25,7 +26,9 @@ import '../../../../model/response/close_screen_response.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../model/response/dal_meta_data_response.dart';
+import '../../../../model/response/download_action_response.dart';
 import '../../../../model/response/download_images_response.dart';
+import '../../../../model/response/download_response.dart';
 import '../../../../model/response/download_style_response.dart';
 import '../../../../model/response/download_translation_response.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
@@ -80,6 +83,8 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
         MessageDialogResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.upload: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         UploadActionResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.download: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        DownloadActionResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,7 +147,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
     if (isStopped()) throw Exception("Repository not initialized");
     if (apiConfig == null) throw Exception("ApiConfig not initialized");
 
-    Uri? uri = apiConfig!.uriMap[pRequest.runtimeType]?.call();
+    Uri? uri = apiConfig!.uriMap[pRequest.runtimeType]?.call(pRequest);
 
     if (uri != null) {
       try {
@@ -232,8 +237,8 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Send post request to remote server, applies timeout.
-  Future<HttpClientResponse> _sendPostRequest(Uri uri, IApiRequest pRequest) async {
-    HttpClientRequest request = await client!.postUrl(uri);
+  Future<HttpClientResponse> _sendPostRequest(Uri pUri, IApiRequest pRequest) async {
+    HttpClientRequest request = await connect(pUri, pRequest);
 
     if (kIsWeb) {
       if (request is BrowserHttpClientRequest) {
@@ -263,7 +268,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
         {"data": pRequest.file},
         boundary,
       ));
-    } else {
+    } else if (pRequest.conType != ConnectionType.GET) {
       request.headers.contentType = ContentType("application", "json", charset: "utf-8");
       request.write(jsonEncode(pRequest));
     }
@@ -275,6 +280,25 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
       _cookies.addAll(res.cookies);
     }
     return res;
+  }
+
+  Future<HttpClientRequest> connect(Uri pUri, IApiRequest pRequest) {
+    switch (pRequest.conType) {
+      case ConnectionType.GET:
+        return client!.getUrl(pUri);
+      case ConnectionType.PUT:
+        return client!.putUrl(pUri);
+      case ConnectionType.HEAD:
+        return client!.headUrl(pUri);
+      case ConnectionType.POST:
+        return client!.postUrl(pUri);
+      case ConnectionType.PATCH:
+        return client!.patchUrl(pUri);
+      case ConnectionType.DELETE:
+        return client!.deleteUrl(pUri);
+      default:
+        return client!.postUrl(pUri);
+    }
   }
 
   bool isPlainAscii(String value) {
@@ -366,6 +390,12 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
       parsedResponse.add(DownloadStyleResponse(
         bodyBytes: pBody,
         name: ApiResponseNames.downloadStyle,
+        originalRequest: pRequest,
+      ));
+    } else if (pRequest is ApiDownloadRequest) {
+      parsedResponse.add(DownloadResponse(
+        bodyBytes: pBody,
+        name: ApiResponseNames.downloadResponse,
         originalRequest: pRequest,
       ));
     }

@@ -12,7 +12,9 @@ import '../processor/close_screen_processor.dart';
 import '../processor/dal_data_provider_changed_processor.dart';
 import '../processor/dal_fetch_processor.dart';
 import '../processor/dal_meta_data_processor.dart';
+import '../processor/download_action_processor.dart';
 import '../processor/download_images_processor.dart';
+import '../processor/download_processor.dart';
 import '../processor/download_style_processor.dart';
 import '../processor/download_translation_processor.dart';
 import '../processor/error_view_processor.dart';
@@ -47,6 +49,8 @@ class ApiController implements IController {
   final IResponseProcessor _downloadStyleProcessor = DownloadStyleProcessor();
   final IResponseProcessor _messageDialogProcessor = MessageDialogProcessor();
   final IResponseProcessor _uploadActionProcessor = UploadActionProcessor();
+  final IResponseProcessor _downloadActionProcessor = DownloadActionProcessor();
+  final IResponseProcessor _downloadProcessor = DownloadProcessor();
 
   /// Maps response names to their processor
   late final HashMap<String, IResponseProcessor> responseToProcessorMap;
@@ -75,6 +79,8 @@ class ApiController implements IController {
       ApiResponseNames.messageDialog: _messageDialogProcessor,
       ApiResponseNames.downloadStyle: _downloadStyleProcessor,
       ApiResponseNames.upload: _uploadActionProcessor,
+      ApiResponseNames.download: _downloadActionProcessor,
+      ApiResponseNames.downloadResponse: _downloadProcessor,
     });
   }
 

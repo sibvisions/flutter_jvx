@@ -290,4 +290,6 @@ abstract class ApiObjectProperty {
   static const String forceNewSession = "forceNewSession";
 
   static const String file = "file";
+  static const String fileName = "fileName";
+  static const String url = "url";
 }

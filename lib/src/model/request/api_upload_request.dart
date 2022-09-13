@@ -16,7 +16,7 @@ class ApiUploadRequest extends ISessionRequest {
   /// The file to send.
   File file;
 
-  /// Name of request, will always be - "translation"
+  /// Name of request
   final String name;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
