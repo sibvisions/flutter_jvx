@@ -36,7 +36,7 @@ class OpenErrorDialogCommand extends MessageViewCommand {
     this.exceptions,
     this.isTimeout = false,
     this.canBeFixedInSettings = false,
-    this.dismissible = false,
+    this.dismissible = true,
     required super.reason,
   });
 
