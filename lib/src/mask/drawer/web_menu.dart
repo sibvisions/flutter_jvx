@@ -88,9 +88,9 @@ class _WebMenuState extends State<WebMenu>
       iconColor: textColor,
       selectedColor: selectionColor,
       selectedTileColor: color,
-      child: DividerTheme(
-        data: DividerThemeData(
-          color: groupColor,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          bottomAppBarColor: groupColor,
         ),
         child: AppMenuListGrouped(
           menuModel: menuModel,
