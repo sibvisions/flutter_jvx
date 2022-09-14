@@ -115,12 +115,7 @@ class _WorkScreenState extends State<WorkScreen>
                   customBorder: const CircleBorder(),
                   onTap: () => _onBackTap(),
                   onDoubleTap: () => _onDoubleTap(),
-                  child: Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.arrowLeft,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
+                  child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
                 ),
                 title: Text(widget.screenTitle),
                 actions: actions,
