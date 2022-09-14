@@ -80,7 +80,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, Ui
               _getLostPasswordButton(),
               TextButton.icon(
                 onPressed: () => _onSettingsPressed(context: context),
-                icon: const FaIcon(FontAwesomeIcons.gears),
+                icon: const FaIcon(FontAwesomeIcons.gear),
                 label: Text(FlutterJVx.translate("Settings")),
               ),
             ]),
