@@ -35,14 +35,11 @@ class AppMenuListGroup extends StatelessWidget with ConfigServiceGetterMixin {
     List<Widget> listGroupItems = [];
 
     for (int i = 0; i < menuGroupModel.items.length; i++) {
-      listGroupItems.add(AppMenuListItem(menuItemModel: menuGroupModel.items.elementAt(i), onClick: onClick));
-
-      // Enable this if to remove the last divider
-      //if (i < (menuGroupModel.items.length - 1)) {
       listGroupItems.add(const Divider(
         height: 1,
       ));
-      //}
+
+      listGroupItems.add(AppMenuListItem(menuItemModel: menuGroupModel.items.elementAt(i), onClick: onClick));
     }
 
     return MultiSliver(
