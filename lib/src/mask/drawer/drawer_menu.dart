@@ -115,9 +115,13 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
 
   Widget _buildMenu(BuildContext context) {
     MenuModel menuModel = getUiService().getMenuModel();
-    return AppMenuListGrouped(
-      menuModel: menuModel,
-      onClick: AppMenu.menuItemPressed,
+    return ListTileTheme.merge(
+      iconColor: Theme.of(context).colorScheme.primary,
+      textColor: Colors.grey.shade800,
+      child: AppMenuListGrouped(
+        menuModel: menuModel,
+        onClick: AppMenu.menuItemPressed,
+      ),
     );
   }
 

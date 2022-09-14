@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../mixin/ui_service_mixin.dart';
+import '../../../util/parse_util.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
@@ -75,10 +76,27 @@ class _WebMenuState extends State<WebMenu>
   }
 
   Widget _buildMenu(BuildContext context) {
+    Color? color = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.sidemenu.color"]);
+    Color? groupColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.sidemenu.groupColor"]);
+    Color? textColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.sidemenu.textColor"]);
+    Color? selectionColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.sidemenu.selectionColor"]);
+
     MenuModel menuModel = getUiService().getMenuModel();
-    return AppMenuListGrouped(
-      menuModel: menuModel,
-      onClick: AppMenu.menuItemPressed,
+    return ListTileTheme.merge(
+      tileColor: color,
+      textColor: textColor,
+      iconColor: textColor,
+      selectedColor: selectionColor,
+      selectedTileColor: color,
+      child: DividerTheme(
+        data: DividerThemeData(
+          color: groupColor,
+        ),
+        child: AppMenuListGrouped(
+          menuModel: menuModel,
+          onClick: AppMenu.menuItemPressed,
+        ),
+      ),
     );
   }
 }

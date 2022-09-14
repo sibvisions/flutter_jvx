@@ -32,12 +32,11 @@ class MenuItemModel {
     required BuildContext pContext,
     required MenuItemModel pMenuItemModel,
     required double pSize,
-    required Color pColor,
+    Color? pColor,
   }) {
     Widget icon = FaIcon(
       FontAwesomeIcons.clone,
       size: pSize,
-      color: pColor,
     );
 
     // Server side images
@@ -46,7 +45,6 @@ class MenuItemModel {
       icon = FontAwesomeUtil.getFontAwesomeIcon(
         pText: imageName,
         pIconSize: pSize,
-        pColor: pColor,
       );
     }
 
@@ -56,16 +54,29 @@ class MenuItemModel {
         icon = FaIcon(
           pMenuItemModel.faIcon,
           size: pSize,
-          color: pColor,
         );
       } else if (pMenuItemModel.iconBuilder != null) {
-        return pMenuItemModel.iconBuilder!.call(pSize, pColor);
+        return pMenuItemModel.iconBuilder!.call(pSize);
       }
     }
 
-    return CircleAvatar(
-      backgroundColor: Colors.transparent,
-      child: icon,
+    return Builder(
+      builder: (context) => Container(
+        clipBehavior: Clip.hardEdge,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
+          shape: BoxShape.circle,
+        ),
+        width: 40,
+        height: 40,
+        child: IconTheme(
+          data: IconTheme.of(context).copyWith(
+            color: pColor,
+          ),
+          child: icon,
+        ),
+      ),
     );
   }
 }

@@ -260,7 +260,6 @@ class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin impleme
 
   @override
   FlComponentModel? getComponentByName({required String pComponentName}) {
-    log("get component by name $pComponentName");
     return _activeComponentModels.firstWhereOrNull((element) => element.name == pComponentName);
   }
 

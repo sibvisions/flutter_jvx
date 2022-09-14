@@ -15,7 +15,7 @@ class CustomMenuItem extends MenuItemModel {
   final IconData? faIcon;
 
   /// Icon to be used when creating a custom menu item
-  final Widget Function(double size, Color contextColor)? iconBuilder;
+  final Widget Function(double size)? iconBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

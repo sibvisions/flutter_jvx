@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../util/image/image_loader.dart';
+import '../../../util/parse_util.dart';
 import '../drawer/web_menu.dart';
 import '../setting/settings_page.dart';
 import 'frame.dart';
@@ -35,41 +36,58 @@ class WebFrameState extends FrameState with ConfigServiceGetterMixin {
   @override
   PreferredSizeWidget getAppBar(List<Widget>? actions) {
     var profileImage = getConfigService().getUserInfo()?.profileImage;
+    Color? topMenuColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.topmenu.color"]);
+    Color? iconColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.topmenu.iconColor"]);
+    String? imagePath = getConfigService().getAppStyle()?["web.topmenu.image"];
 
     return AppBar(
       leading: Builder(
         builder: (context) => IconButton(
-          icon: const FaIcon(FontAwesomeIcons.bars),
+          icon: FaIcon(
+            FontAwesomeIcons.bars,
+            color: iconColor,
+          ),
           onPressed: () => toggleWebMenu(),
         ),
       ),
       titleSpacing: 0.0,
       title: SizedBox(
         height: kToolbarHeight,
-        child: Image.asset(
-          ImageLoader.getAssetPath(
-            FlutterJVx.package,
-            'assets/images/logo.png',
-          ),
-          fit: BoxFit.scaleDown,
-        ),
+        child: imagePath != null
+            ? ImageLoader.loadImage(imagePath)
+            : Image.asset(
+                ImageLoader.getAssetPath(
+                  FlutterJVx.package,
+                  'assets/images/logo.png',
+                ),
+                fit: BoxFit.scaleDown,
+              ),
       ),
       centerTitle: false,
       actions: [
         Builder(
           builder: (context) => IconButton(
-            icon: const FaIcon(FontAwesomeIcons.gear),
+            icon: FaIcon(
+              FontAwesomeIcons.gear,
+              color: iconColor,
+            ),
             onPressed: () => widget.openSettings(context),
           ),
         ),
         const Padding(padding: EdgeInsets.only(right: spacing)),
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.key),
+          icon: FaIcon(
+            FontAwesomeIcons.key,
+            color: iconColor,
+          ),
           onPressed: () => widget.changePassword(),
         ),
         const Padding(padding: EdgeInsets.only(right: spacing)),
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.rightFromBracket),
+          icon: FaIcon(
+            FontAwesomeIcons.rightFromBracket,
+            color: iconColor,
+          ),
           onPressed: () => widget.logout(),
         ),
         const Padding(padding: EdgeInsets.only(right: spacing)),
@@ -88,7 +106,7 @@ class WebFrameState extends FrameState with ConfigServiceGetterMixin {
         }),
         const Padding(padding: EdgeInsets.only(right: spacing)),
       ],
-      backgroundColor: getConfigService().isOffline() ? Colors.grey.shade500 : null,
+      backgroundColor: getConfigService().isOffline() ? Colors.grey.shade500 : topMenuColor,
       elevation: getConfigService().isOffline() ? 0 : null,
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../main.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/menu/menu_item_model.dart';
@@ -36,17 +37,25 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
 
   @override
   Widget build(BuildContext context) {
+    bool selected = false;
+
+    String key = "workScreenName";
+    var pathSegments = (context.currentBeamLocation.state as BeamState).pathParameters;
+    if (pathSegments.containsKey(key)) {
+      selected = getUiService().getComponentByName(pComponentName: pathSegments[key]!)?.screenLongName ==
+          menuItemModel.screenLongName;
+    }
+
     return ListTile(
+      selected: selected,
       leading: MenuItemModel.getImage(
         pContext: context,
         pMenuItemModel: menuItemModel,
         pSize: 32,
-        pColor: Theme.of(context).colorScheme.primary,
       ),
       title: Text(
         menuItemModel.label,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(color: Colors.grey.shade800),
       ),
       onTap: () =>
           onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),
