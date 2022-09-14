@@ -76,7 +76,7 @@ class ApiConfig {
       ApiDownloadStyleRequest: (_) => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.download),
       ApiCloseFrameRequest: (_) => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.closeFrame),
       ApiUploadRequest: (_) => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.upload),
-      ApiDownloadRequest: (pRequest) => Uri.parse((pRequest as ApiDownloadRequest).url),
+      ApiDownloadRequest: (pRequest) => Uri.parse(serverConfig.baseUrl! + this.endpointConfig.download),
     };
   }
 }
