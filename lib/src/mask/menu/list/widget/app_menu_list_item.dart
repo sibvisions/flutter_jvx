@@ -41,7 +41,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
         pContext: context,
         pMenuItemModel: menuItemModel,
         pSize: 32,
-        pColor: Theme.of(context).primaryColor,
+        pColor: Theme.of(context).colorScheme.primary,
       ),
       title: Text(
         menuItemModel.label,
