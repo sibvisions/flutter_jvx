@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -96,6 +99,15 @@ class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServ
           ),
         ),
       );
+    }
+
+    if (kDebugMode) {
+      actions.add(IconButton(
+        onPressed: () async {
+          //Add your debug code here
+        },
+        icon: const FaIcon(FontAwesomeIcons.bug),
+      ));
     }
 
     Widget body = Column(
