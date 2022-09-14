@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -8,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../../../main.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/api/delete_record_command.dart';
@@ -315,7 +315,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
 
     if (metaData?.insertEnabled ?? true) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, 'Insert', ContextMenuCommand.INSERT));
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, 'New', ContextMenuCommand.NEW));
     }
 
     if ((metaData?.deleteEnabled ?? true) && lastTouchedIndex != -1) {
@@ -340,7 +340,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     ).then((val) {
       WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
 
-      if (val == ContextMenuCommand.INSERT) {
+      if (val == ContextMenuCommand.NEW) {
         insertRecord();
       } else if (val == ContextMenuCommand.DELETE) {
         deleteRecord();
@@ -438,7 +438,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
             icon,
             color: Colors.grey[600],
           ),
-          Padding(padding: const EdgeInsets.only(left: 5), child: Text(text)),
+          Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: Text(
+              FlutterJVx.translate(
+                text,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -451,4 +458,4 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   }
 }
 
-enum ContextMenuCommand { INSERT, DELETE, OFFLINE }
+enum ContextMenuCommand { NEW, DELETE, OFFLINE }
