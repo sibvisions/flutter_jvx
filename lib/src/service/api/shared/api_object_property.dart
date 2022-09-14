@@ -292,4 +292,6 @@ abstract class ApiObjectProperty {
   static const String file = "file";
   static const String fileName = "fileName";
   static const String url = "url";
+
+  static const String tableReadonly = "tableReadonly";
 }

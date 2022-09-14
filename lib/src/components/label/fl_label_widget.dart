@@ -25,6 +25,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     return GestureDetector(
       onTap: onPress,
       child: Container(
+        padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
         decoration: BoxDecoration(
           color: model.background,
           border: Border.all(

@@ -51,6 +51,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceG
     super.initState();
 
     tableModel.columnLabels = [];
+    tableModel.tableHeaderVisible = model.tableHeaderVisible;
 
     subscribe();
   }
@@ -60,13 +61,29 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceG
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
 
+    Size screenSize = MediaQuery.of(context).size;
+
+    EdgeInsets paddingInsets;
+
+    // TODO server sends it way too small atm
+    // if (model.popupSize != null) {
+    //   paddingInsets = EdgeInsets.fromLTRB(
+    //     (screenSize.width - model.popupSize!.width) / 2,
+    //     (screenSize.height - model.popupSize!.height) / 2,
+    //     (screenSize.width - model.popupSize!.width) / 2,
+    //     (screenSize.height - model.popupSize!.height) / 2,
+    //   );
+    // } else {
+    paddingInsets = EdgeInsets.fromLTRB(
+      screenSize.width / 16,
+      screenSize.height / 16,
+      screenSize.width / 16,
+      screenSize.height / 16,
+    );
+    // }
+
     return Dialog(
-      insetPadding: EdgeInsets.fromLTRB(
-        MediaQuery.of(context).size.width / 16,
-        MediaQuery.of(context).size.height / 16,
-        MediaQuery.of(context).size.width / 16,
-        MediaQuery.of(context).size.height / 16,
-      ),
+      insetPadding: paddingInsets,
       elevation: 10.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       child: Container(

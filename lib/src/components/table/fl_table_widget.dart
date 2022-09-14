@@ -63,13 +63,6 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceGetter
   final DalMetaDataResponse? metaData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overrideable widget defaults
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// If the headers are at the top of the list in the scrollable list.
-  bool get buildHeadersInList => model.tableHeaderVisible && !model.stickyHeaders;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -142,27 +135,34 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceGetter
       ),
     );
 
-    if (buildHeadersInList) {
+    if (!model.stickyHeaders || !model.tableHeaderVisible) {
       return table;
     }
 
-    Widget headerRow = buildHeaderRow(pContext);
-
     return LayoutBuilder(
       builder: ((context, constraints) {
-        return Column(
-          children: [
+        List<Widget> children = [];
+
+        if (model.tableHeaderVisible) {
+          children.add(
             SizedBox(
               height: tableSize.tableHeaderHeight,
               width: max(constraints.maxWidth, 0),
-              child: headerRow,
+              child: buildHeaderRow(pContext),
             ),
-            SizedBox(
-              height: max(constraints.maxHeight - tableSize.tableHeaderHeight, 0),
-              width: max(constraints.maxWidth, constraints.maxWidth),
-              child: table,
-            ),
-          ],
+          );
+        }
+
+        children.add(
+          SizedBox(
+            height: max(constraints.maxHeight - tableSize.tableHeaderHeight, 0),
+            width: max(constraints.maxWidth, constraints.maxWidth),
+            child: table,
+          ),
+        );
+
+        return Column(
+          children: children,
         );
       }),
     );
@@ -171,7 +171,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceGetter
   /// The item builder of the scrollable positioned list.
   Widget itemBuilder(BuildContext pContext, int pIndex) {
     int index = pIndex;
-    if (buildHeadersInList) {
+    if (model.tableHeaderVisible && !model.stickyHeaders) {
       index--;
       if (pIndex == 0) {
         return buildHeaderRow(pContext);
@@ -185,7 +185,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceGetter
   int get _itemCount {
     int itemCount = chunkData.data.length;
 
-    if (buildHeadersInList) {
+    if (model.tableHeaderVisible && !model.stickyHeaders) {
       itemCount += 1;
     }
 
@@ -322,7 +322,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceGetter
       ),
     );
 
-    if (buildHeadersInList) {
+    if (!model.stickyHeaders && model.tableHeaderVisible) {
       return header;
     }
 
