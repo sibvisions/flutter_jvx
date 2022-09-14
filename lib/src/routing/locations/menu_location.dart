@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../main.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../mask/frame/frame.dart';
@@ -20,6 +21,7 @@ class MenuLocation extends BeamLocation<BeamState> with ConfigServiceGetterMixin
 
     return [
       BeamPage(
+        title: FlutterJVx.translate("Menu"),
         //Append state to trigger rebuild on online/offline switch
         key: ValueKey(sValue),
         child: Frame.wrapWithFrame(

@@ -66,7 +66,8 @@ class WorkScreenLocation extends BeamLocation<BeamState> with ConfigServiceGette
 
     return [
       BeamPage(
-        key: ValueKey(screenTitle),
+        title: screenTitle,
+        key: ValueKey(workScreenName),
         child: WillPopScope(
           onWillPop: () async {
             if (!getUiService().usesNativeRouting(pScreenLongName: screenLongName)) {

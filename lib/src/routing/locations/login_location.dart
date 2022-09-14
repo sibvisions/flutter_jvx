@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../main.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../mask/login/app_login.dart';
 import '../../mask/login/change_one_time_password_card.dart';
@@ -21,23 +22,27 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
     getUiService().getAppManager()?.onLoginPage();
 
     return [
-      const BeamPage(
+      BeamPage(
+        title: FlutterJVx.translate("Login"),
         key: ValueKey("login"),
         child: AppLogin(loginCard: LoginCard()),
       ),
       if (state.uri.pathSegments.contains("lostPassword"))
         BeamPage(
+          title: FlutterJVx.translate("Password Reset"),
           key: const ValueKey("login_password_reset"),
           child: AppLogin(loginCard: LostPasswordCard()),
         ),
       if (state.uri.pathSegments.contains("changeOneTimePassword"))
         BeamPage(
-          key: const ValueKey("login_password_reset"),
+          title: FlutterJVx.translate("Change One Time Password"),
+          key: const ValueKey("login_change_otp"),
           child: AppLogin(loginCard: ChangeOneTimePasswordCard()),
         ),
       if (state.uri.pathSegments.contains("changePassword"))
         BeamPage(
-          key: const ValueKey("change_password"),
+          title: FlutterJVx.translate("Change Password"),
+          key: const ValueKey("login_change_password"),
           child: AppLogin(
             loginCard: ChangePassword(
               username: dataMap?.entries.elementAt(0).value,

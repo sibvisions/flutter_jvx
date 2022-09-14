@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../main.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../mask/setting/settings_page.dart';
 
@@ -10,9 +11,10 @@ class SettingsLocation extends BeamLocation with UiServiceGetterMixin {
     getUiService().getAppManager()?.onSettingPage();
 
     return [
-      const BeamPage(
-        key: ValueKey("Settings"),
-        child: SettingsPage(),
+      BeamPage(
+        title: FlutterJVx.translate("Settings"),
+        key: const ValueKey("Settings"),
+        child: const SettingsPage(),
       ),
     ];
   }
