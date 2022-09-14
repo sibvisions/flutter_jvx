@@ -238,7 +238,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
 
   /// Send post request to remote server, applies timeout.
   Future<HttpClientResponse> _sendPostRequest(Uri pUri, IApiRequest pRequest) async {
-    HttpClientRequest request = await connect(pUri, pRequest);
+    HttpClientRequest request = await connect(pUri, pRequest.httpMethod);
 
     if (kIsWeb) {
       if (request is BrowserHttpClientRequest) {
@@ -268,7 +268,7 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
         {"data": pRequest.file},
         boundary,
       ));
-    } else if (pRequest.conType != ConnectionType.GET) {
+    } else if (pRequest.httpMethod != Method.GET) {
       request.headers.contentType = ContentType("application", "json", charset: "utf-8");
       request.write(jsonEncode(pRequest));
     }
@@ -282,19 +282,19 @@ class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin im
     return res;
   }
 
-  Future<HttpClientRequest> connect(Uri pUri, IApiRequest pRequest) {
-    switch (pRequest.conType) {
-      case ConnectionType.GET:
+  Future<HttpClientRequest> connect(Uri pUri, Method method) {
+    switch (method) {
+      case Method.GET:
         return client!.getUrl(pUri);
-      case ConnectionType.PUT:
+      case Method.PUT:
         return client!.putUrl(pUri);
-      case ConnectionType.HEAD:
+      case Method.HEAD:
         return client!.headUrl(pUri);
-      case ConnectionType.POST:
+      case Method.POST:
         return client!.postUrl(pUri);
-      case ConnectionType.PATCH:
+      case Method.PATCH:
         return client!.patchUrl(pUri);
-      case ConnectionType.DELETE:
+      case Method.DELETE:
         return client!.deleteUrl(pUri);
       default:
         return client!.postUrl(pUri);

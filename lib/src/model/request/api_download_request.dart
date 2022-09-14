@@ -7,7 +7,7 @@ class ApiDownloadRequest extends IApiDownloadRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  ConnectionType get conType => ConnectionType.GET;
+  Method get httpMethod => Method.GET;
 
   /// File id
   String fileId;
