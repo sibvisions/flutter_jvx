@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:material_color_generator/material_color_generator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_io/io.dart';
 
@@ -241,12 +242,29 @@ class FlutterJVxState extends State<FlutterJVx> {
   void changeStyle(Map<String, String> styleMap) {
     Color? styleColor = ParseUtil.parseHexColor(styleMap['theme.color']);
     if (styleColor != null) {
-      themeData = ThemeData.from(
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: ParseUtil.getMaterialColor(styleColor),
-          backgroundColor: Colors.grey.shade50,
-        ),
+      // ColorScheme colorScheme = ColorScheme.fromSeed(
+      //   seedColor: styleColor,
+      //   primary: styleColor,
+      //   background: Colors.grey.shade50,
+      // );
+      ColorScheme colorScheme = ColorScheme.fromSwatch(
+        primarySwatch: generateMaterialColor(color: styleColor),
+        backgroundColor: Colors.grey.shade50,
       );
+
+      if (themeData.colorScheme.onPrimary.computeLuminance() == 0.0) {
+        log("Replaced onPrimary with grey");
+        colorScheme = colorScheme.copyWith(
+          onPrimary: Colors.grey.shade800,
+        );
+      }
+
+      if (themeData.colorScheme.onBackground.computeLuminance() == 0.0) {
+        log("Replaced onBackground with grey");
+        colorScheme = colorScheme.copyWith(onBackground: Colors.grey.shade800);
+      }
+
+      themeData = ThemeData.from(colorScheme: colorScheme);
     }
     setState(() {});
   }

@@ -47,7 +47,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServic
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.left,
           style: TextStyle(
-            color: Theme.of(context).textTheme.headline5?.color,
+            color: Colors.grey.shade800,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),

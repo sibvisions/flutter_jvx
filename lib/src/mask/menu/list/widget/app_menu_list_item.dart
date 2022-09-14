@@ -46,6 +46,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
       title: Text(
         menuItemModel.label,
         overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: Colors.grey.shade800),
       ),
       onTap: () =>
           onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),

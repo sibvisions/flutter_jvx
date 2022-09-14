@@ -24,6 +24,8 @@ dependencies:
   # Translations capability
   intl: ^0.17.0
 
+  material_color_generator: ^1.1.0
+
   # Config
   shared_preferences: ^2.0.15
 
