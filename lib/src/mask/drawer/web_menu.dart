@@ -59,10 +59,7 @@ class _WebMenuState extends State<WebMenu>
       alignment: AlignmentDirectional.centerEnd,
       widthFactor: animationController.value,
       child: RepaintBoundary(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width / 4,
-          child: _buildMenu(context),
-        ),
+        child: _buildMenu(context),
       ),
     );
   }

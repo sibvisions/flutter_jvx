@@ -116,11 +116,14 @@ class WebFrameState extends FrameState with ConfigServiceGetterMixin {
     return Builder(builder: (context) {
       return Row(children: [
         RepaintBoundary(
-          child: WebMenu(
-            showWebMenu: showWebMenu,
-            onSettingsPressed: () => widget.openSettings(context),
-            onChangePasswordPressed: widget.changePassword,
-            onLogoutPressed: widget.logout,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 250),
+            child: WebMenu(
+              showWebMenu: showWebMenu,
+              onSettingsPressed: () => widget.openSettings(context),
+              onChangePasswordPressed: widget.changePassword,
+              onLogoutPressed: widget.logout,
+            ),
           ),
         ),
         Expanded(
