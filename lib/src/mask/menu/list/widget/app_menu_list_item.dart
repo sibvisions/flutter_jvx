@@ -50,7 +50,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
     return ListTile(
       selected: selected,
       visualDensity: context.findAncestorWidgetOfExactType<WebMenu>() != null
-          ? const VisualDensity(horizontal: 0, vertical: -4)
+          ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity)
           : null,
       leading: MenuItemModel.getImage(
         pContext: context,
