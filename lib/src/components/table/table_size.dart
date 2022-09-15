@@ -133,7 +133,7 @@ class TableSize with UiServiceGetterMixin {
         colIndex++;
 
         if (!tableModel.columnNames.contains(colDef.name)) {
-          continue; //Not to be meassured
+          continue; //Not to be measured
         } else {
           showIndex = tableModel.columnNames.indexOf(colDef.name);
         }
