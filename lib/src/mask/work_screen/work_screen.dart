@@ -145,10 +145,12 @@ class _WorkScreenState extends State<WorkScreen>
   }
 
   _setScreenSize(Size size) {
-    getLayoutService().setScreenSize(
-      pScreenComponentId: (widget.screenWidget as FlPanelWrapper).id,
-      pSize: size,
-    );
+    getLayoutService()
+        .setScreenSize(
+          pScreenComponentId: (widget.screenWidget as FlPanelWrapper).id,
+          pSize: size,
+        )
+        .then((value) => value.forEach((e) async => await getUiService().sendCommand(e)));
   }
 
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
