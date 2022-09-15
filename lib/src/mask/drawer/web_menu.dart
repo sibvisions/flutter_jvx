@@ -88,13 +88,23 @@ class _WebMenuState extends State<WebMenu>
       iconColor: textColor,
       selectedColor: selectionColor,
       selectedTileColor: color,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+      horizontalTitleGap: 0,
       child: Theme(
         data: Theme.of(context).copyWith(
           bottomAppBarColor: groupColor,
         ),
-        child: AppMenuListGrouped(
-          menuModel: menuModel,
-          onClick: AppMenu.menuItemPressed,
+        child: IconTheme.merge(
+          data: const IconThemeData(size: 16),
+          child: DividerTheme(
+            data: DividerTheme.of(context).copyWith(
+              color: color,
+            ),
+            child: AppMenuListGrouped(
+              menuModel: menuModel,
+              onClick: AppMenu.menuItemPressed,
+            ),
+          ),
         ),
       ),
     );

@@ -118,9 +118,14 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceGetterMixin, 
     return ListTileTheme.merge(
       iconColor: Theme.of(context).colorScheme.primary,
       textColor: Colors.grey.shade800,
-      child: AppMenuListGrouped(
-        menuModel: menuModel,
-        onClick: AppMenu.menuItemPressed,
+      child: IconTheme(
+        data: IconTheme.of(context).copyWith(
+          size: 32,
+        ),
+        child: AppMenuListGrouped(
+          menuModel: menuModel,
+          onClick: AppMenu.menuItemPressed,
+        ),
       ),
     );
   }

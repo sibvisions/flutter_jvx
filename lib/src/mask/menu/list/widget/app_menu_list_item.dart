@@ -4,6 +4,7 @@ import '../../../../../main.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/menu/menu_item_model.dart';
+import '../../../drawer/web_menu.dart';
 import '../../app_menu.dart';
 
 class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
@@ -48,10 +49,12 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiS
 
     return ListTile(
       selected: selected,
+      visualDensity: context.findAncestorWidgetOfExactType<WebMenu>() != null
+          ? const VisualDensity(horizontal: 0, vertical: -4)
+          : null,
       leading: MenuItemModel.getImage(
         pContext: context,
         pMenuItemModel: menuItemModel,
-        pSize: 32,
       ),
       title: Text(
         menuItemModel.label,

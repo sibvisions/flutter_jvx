@@ -31,12 +31,11 @@ class MenuItemModel {
   static Widget getImage({
     required BuildContext pContext,
     required MenuItemModel pMenuItemModel,
-    required double pSize,
+    double? pSize,
     Color? pColor,
   }) {
-    Widget icon = FaIcon(
+    Widget icon = const FaIcon(
       FontAwesomeIcons.clone,
-      size: pSize,
     );
 
     // Server side images
@@ -44,7 +43,6 @@ class MenuItemModel {
     if (imageName != null) {
       icon = FontAwesomeUtil.getFontAwesomeIcon(
         pText: imageName,
-        pIconSize: pSize,
       );
     }
 
@@ -53,10 +51,9 @@ class MenuItemModel {
       if (pMenuItemModel.faIcon != null) {
         icon = FaIcon(
           pMenuItemModel.faIcon,
-          size: pSize,
         );
       } else if (pMenuItemModel.iconBuilder != null) {
-        return pMenuItemModel.iconBuilder!.call(pSize);
+        return pMenuItemModel.iconBuilder!.call();
       }
     }
 
@@ -72,6 +69,7 @@ class MenuItemModel {
         height: 40,
         child: IconTheme(
           data: IconTheme.of(context).copyWith(
+            size: pSize,
             color: pColor,
           ),
           child: icon,
