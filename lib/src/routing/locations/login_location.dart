@@ -24,8 +24,8 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceGetterMixin {
     return [
       BeamPage(
         title: FlutterJVx.translate("Login"),
-        key: ValueKey("login"),
-        child: AppLogin(loginCard: LoginCard()),
+        key: const ValueKey("login"),
+        child: const AppLogin(loginCard: LoginCard()),
       ),
       if (state.uri.pathSegments.contains("lostPassword"))
         BeamPage(
