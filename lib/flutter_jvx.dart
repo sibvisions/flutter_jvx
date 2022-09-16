@@ -46,8 +46,6 @@ import 'src/util/loading_handler/loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
 import 'util/parse_util.dart';
 
-export 'package:beamer/beamer.dart';
-
 class FlutterJVx extends StatefulWidget {
   //Loads assets with packages prefix
   static bool package = true;
