@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../main.dart';
+import '../../../flutter_jvx.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
 

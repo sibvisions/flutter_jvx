@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
-import '../../main.dart';
+import '../../flutter_jvx.dart';
 import '../../util/logging/flutter_logger.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';

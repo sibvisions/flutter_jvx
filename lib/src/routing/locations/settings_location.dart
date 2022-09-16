@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../main.dart';
+import '../../../flutter_jvx.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../mask/setting/settings_page.dart';
 

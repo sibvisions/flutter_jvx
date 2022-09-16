@@ -3,7 +3,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-import '../../../../../main.dart';
+import '../../../../../flutter_jvx.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/command/api/filter_command.dart';

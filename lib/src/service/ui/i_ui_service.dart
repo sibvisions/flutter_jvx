@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
 import '../../../custom/custom_screen.dart';
-import '../../../main.dart';
+import '../../../flutter_jvx.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';

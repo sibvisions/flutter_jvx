@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
-import '../../../main.dart';
+import '../../../flutter_jvx.dart';
 import '../../../util/image/image_loader.dart';
 
 class LoadingWidget extends StatelessWidget {

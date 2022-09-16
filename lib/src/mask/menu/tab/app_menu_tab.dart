@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../main.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../util/image/image_loader.dart';
 import '../../../model/menu/menu_group_model.dart';

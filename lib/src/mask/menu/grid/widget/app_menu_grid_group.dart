@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-import '../../../../../main.dart';
+import '../../../../../flutter_jvx.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../app_menu.dart';

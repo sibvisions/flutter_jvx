@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../../main.dart';
+import '../../../flutter_jvx.dart';
 import '../../../mixin/config_service_mixin.dart';
 
 /// Definition of the callback for the QR-scanner

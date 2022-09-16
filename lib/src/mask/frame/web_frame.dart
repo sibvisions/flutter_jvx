@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../main.dart';
+import '../../../flutter_jvx.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';

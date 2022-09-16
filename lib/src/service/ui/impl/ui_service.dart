@@ -10,7 +10,7 @@ import '../../../../custom/app_manager.dart';
 import '../../../../custom/custom_component.dart';
 import '../../../../custom/custom_menu_item.dart';
 import '../../../../custom/custom_screen.dart';
-import '../../../../main.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../../mixin/command_service_mixin.dart';
 import '../../../../mixin/config_service_mixin.dart';
 import '../../../../util/extensions/list_extensions.dart';

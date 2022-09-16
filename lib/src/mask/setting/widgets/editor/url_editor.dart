@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../main.dart';
+import '../../../../../flutter_jvx.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 
 class UrlEditor extends StatelessWidget with ConfigServiceGetterMixin {

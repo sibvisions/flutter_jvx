@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../../main.dart';
+import '../../../flutter_jvx.dart';
 import '../../../mixin/ui_service_mixin.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/api/delete_record_command.dart';
