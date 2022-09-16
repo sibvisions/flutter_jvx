@@ -61,9 +61,6 @@ class ApiStartUpRequest extends IApiRequest {
   /// The device type model this app runs on.
   String? deviceTypeModel;
 
-  /// If the server must create a new session
-  bool? forceNewSession;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,7 +84,6 @@ class ApiStartUpRequest extends IApiRequest {
     this.appVersion,
     this.deviceType,
     this.deviceTypeModel,
-    this.forceNewSession,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,7 +110,6 @@ class ApiStartUpRequest extends IApiRequest {
         ApiObjectProperty.appVersion: appVersion,
         ApiObjectProperty.deviceType: deviceType,
         ApiObjectProperty.deviceTypeModel: deviceTypeModel,
-        ApiObjectProperty.forceNewSession: forceNewSession,
         ...?startUpParameters
       };
 }

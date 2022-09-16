@@ -287,7 +287,6 @@ abstract class ApiObjectProperty {
   static const String appVersion = "appVersion";
   static const String deviceType = "deviceType";
   static const String deviceTypeModel = "deviceTypeModel";
-  static const String forceNewSession = "forceNewSession";
 
   static const String file = "file";
   static const String fileName = "fileName";

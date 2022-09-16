@@ -15,9 +15,6 @@ class StartupCommand extends ApiCommand with UiServiceGetterMixin {
   /// The password
   final String? password;
 
-  /// If the server must create a new session
-  bool? forceNewSession;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +23,6 @@ class StartupCommand extends ApiCommand with UiServiceGetterMixin {
     this.appName,
     this.username,
     this.password,
-    this.forceNewSession,
     required super.reason,
   }) {
     callback = () => getUiService().getAppManager()?.onSuccessfulStartup();
@@ -38,6 +34,6 @@ class StartupCommand extends ApiCommand with UiServiceGetterMixin {
 
   @override
   String toString() {
-    return 'StartupCommand{appName: $appName, username: $username, forceNewSession: $forceNewSession, ${super.toString()}}';
+    return 'StartupCommand{appName: $appName, username: $username, ${super.toString()}}';
   }
 }
