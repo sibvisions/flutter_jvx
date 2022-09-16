@@ -1,6 +1,6 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../main.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/menu/menu_item_model.dart';
