@@ -21,7 +21,7 @@ class AppLogin extends StatelessWidget with ConfigServiceMixin {
     String? loginIcon = getConfigService().getAppStyle()?['login.icon'];
     String? loginLogo = getConfigService().getAppStyle()?['login.logo'];
 
-    Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.background']);
+    //Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.background']);
     bool inverseColor = ParseUtil.parseBool(getConfigService().getAppStyle()?['login.inverseColor']) ?? false;
 
     Color? topColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.topColor']);

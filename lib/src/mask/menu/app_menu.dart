@@ -166,6 +166,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
                             ],
                           ),
                         );
+                        // ignore: use_build_context_synchronously
                         Navigator.of(context).pop(result);
                       },
                     ),

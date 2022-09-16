@@ -211,6 +211,7 @@ class _WorkScreenState extends State<WorkScreen> with ConfigServiceMixin, UiServ
   _customBack() async {
     bool handled = await Navigator.of(context).maybePop();
     if (!handled) {
+      // ignore: use_build_context_synchronously
       context.beamBack();
     }
   }

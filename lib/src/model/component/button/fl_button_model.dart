@@ -25,7 +25,7 @@ class FlButtonModel extends FlComponentModel {
   /// The aria label.
   String ariaLabel = "";
 
-  /// If this is the default button to press. // TODO: implement default button behaviour
+  /// If this is the default button to press. // TODO: talk about default button behaviour
   bool defaultButton = false;
 
   /// The image of the button.
