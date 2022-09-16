@@ -1,10 +1,10 @@
-import '../../../../../../mixin/api_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_fetch_request.dart';
 import '../../i_command_processor.dart';
 
-class FetchCommandProcessor extends ICommandProcessor<FetchCommand> with ApiServiceGetterMixin {
+class FetchCommandProcessor extends ICommandProcessor<FetchCommand> with ApiServiceMixin {
   @override
   Future<List<BaseCommand>> processCommand(FetchCommand command) {
     return getApiService().sendRequest(

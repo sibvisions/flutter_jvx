@@ -2,13 +2,12 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/menu/app_menu.dart';
 
 /// Displays all possible screens of the menu
-class MenuLocation extends BeamLocation<BeamState> with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class MenuLocation extends BeamLocation<BeamState> with ConfigServiceMixin, UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

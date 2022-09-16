@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../mixin/config_service_mixin.dart';
+import '../../../../mixin/services.dart';
 import '../../../model/component/editor/cell_editor/fl_number_cell_editor_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/data/column_definition.dart';
@@ -8,7 +8,7 @@ import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> with ConfigServiceGetterMixin {
+class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

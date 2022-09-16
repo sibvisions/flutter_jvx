@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import '../../../../../../mixin/layout_service_mixin.dart';
-import '../../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../../util/logging/flutter_logger.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../i_command_processor.dart';
 
 class UpdateComponentsProcessor
-    with UiServiceGetterMixin, LayoutServiceGetterMixin
+    with UiServiceMixin, LayoutServiceMixin
     implements ICommandProcessor<UpdateComponentsCommand> {
   static bool isOpenScreen = false;
   static bool _secondRun = false;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 
-class AppNameEditor extends StatelessWidget with ConfigServiceGetterMixin {
+class AppNameEditor extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -2,7 +2,7 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../model/component/chart/fl_chart_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -18,7 +18,7 @@ class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
   BaseCompWrapperState<FlComponentModel> createState() => _FlChartWrapperState();
 }
 
-class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiServiceGetterMixin {
+class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiServiceMixin {
   DataChunk? _chunkData;
 
   @override

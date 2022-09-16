@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../model/command/api/login_command.dart';
 import 'remember_me_checkbox.dart';
 
@@ -19,7 +18,7 @@ class LoginCard extends StatefulWidget {
   State<LoginCard> createState() => _LoginCardState();
 }
 
-class _LoginCardState extends State<LoginCard> with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class _LoginCardState extends State<LoginCard> with ConfigServiceMixin, UiServiceMixin {
   /// Controller for username text field
   late TextEditingController usernameController;
 

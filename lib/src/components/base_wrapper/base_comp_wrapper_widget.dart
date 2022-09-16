@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../model/component/fl_component_model.dart';
 
-abstract class BaseCompWrapperWidget<T extends FlComponentModel> extends StatefulWidget with UiServiceGetterMixin {
+abstract class BaseCompWrapperWidget<T extends FlComponentModel> extends StatefulWidget with UiServiceMixin {
   BaseCompWrapperWidget({Key? key, required this.id}) : super(key: key);
 
   final String id;

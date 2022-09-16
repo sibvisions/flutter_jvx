@@ -1,4 +1,4 @@
-import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route_to_menu_command.dart';
 import '../../../../model/command/ui/save_menu_command.dart';
@@ -10,7 +10,7 @@ import '../i_response_processor.dart';
 
 /// Processes the menu response into a [MenuModel], will try to route to menu,
 /// if no other routing actions take precedent.
-class MenuViewProcessor with ConfigServiceGetterMixin implements IResponseProcessor<MenuViewResponse> {
+class MenuViewProcessor with ConfigServiceMixin implements IResponseProcessor<MenuViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

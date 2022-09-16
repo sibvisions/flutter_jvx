@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../app_menu.dart';
 import '../../grid/widget/app_menu_grid_header.dart';
 import 'app_menu_list_item.dart';
 
-class AppMenuListGroup extends StatelessWidget with ConfigServiceGetterMixin {
+class AppMenuListGroup extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

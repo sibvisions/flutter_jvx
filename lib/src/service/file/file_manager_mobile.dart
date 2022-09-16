@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/services.dart';
 import 'file_manager.dart';
 
-class FileMangerMobile extends IFileManager with ConfigServiceGetterMixin {
+class FileMangerMobile extends IFileManager with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

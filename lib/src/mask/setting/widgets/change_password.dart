@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_jvx.dart';
-import '../../../../mixin/config_service_mixin.dart';
-import '../../../../mixin/ui_service_mixin.dart';
+import '../../../../mixin/services.dart';
 import '../../../model/command/api/change_password_command.dart';
 import '../../../model/command/api/login_command.dart';
 
-class ChangePassword extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();

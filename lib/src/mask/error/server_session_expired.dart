@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 
-class ServerSessionExpired extends StatelessWidget with UiServiceGetterMixin, ConfigServiceGetterMixin {
+class ServerSessionExpired extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

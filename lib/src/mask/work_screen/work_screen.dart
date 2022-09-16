@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/layout_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
@@ -62,8 +60,7 @@ class WorkScreen extends StatefulWidget {
   State<WorkScreen> createState() => _WorkScreenState();
 }
 
-class _WorkScreenState extends State<WorkScreen>
-    with ConfigServiceGetterMixin, UiServiceGetterMixin, LayoutServiceGetterMixin {
+class _WorkScreenState extends State<WorkScreen> with ConfigServiceMixin, UiServiceMixin, LayoutServiceMixin {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 

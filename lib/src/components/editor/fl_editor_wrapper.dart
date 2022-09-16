@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/extensions/list_extensions.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../../util/parse_util.dart';
@@ -45,7 +45,7 @@ class FlEditorWrapper<T extends FlEditorModel> extends BaseCompWrapperWidget<T> 
   FlEditorWrapperState createState() => FlEditorWrapperState();
 }
 
-class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T> with UiServiceGetterMixin {
+class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

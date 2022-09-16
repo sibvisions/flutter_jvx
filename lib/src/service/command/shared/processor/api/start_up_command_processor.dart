@@ -1,18 +1,15 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../../../mixin/api_service_mixin.dart';
-import '../../../../../../mixin/config_service_mixin.dart';
-import '../../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../../util/device_info/device_info.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_startup_request.dart';
-import '../../../../config/i_config_service.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
 class StartUpCommandProcessor
-    with ConfigServiceGetterMixin, ApiServiceGetterMixin, UiServiceGetterMixin
+    with ConfigServiceMixin, ApiServiceMixin, UiServiceMixin
     implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {

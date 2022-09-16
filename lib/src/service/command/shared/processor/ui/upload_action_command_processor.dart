@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import '../../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/api/upload_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/upload_action_command.dart';
 import '../../../../../util/file_picker_dialog.dart';
 import '../../i_command_processor.dart';
 
-class UploadActionCommandProcessor with UiServiceGetterMixin implements ICommandProcessor<UploadActionCommand> {
+class UploadActionCommandProcessor with UiServiceMixin implements ICommandProcessor<UploadActionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UploadActionCommand command) async {
     unawaited(openFilePicker().then((value) {

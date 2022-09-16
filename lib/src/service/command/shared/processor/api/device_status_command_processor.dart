@@ -1,15 +1,12 @@
-import '../../../../../../mixin/api_service_mixin.dart';
-import '../../../../../../mixin/layout_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/api/device_status_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_device_status_request.dart';
-import '../../../../api/i_api_service.dart';
-import '../../../../config/i_config_service.dart';
 import '../../i_command_processor.dart';
 
 /// Calls [IApiService] deviceStatus and [IConfigService] for current clientId
 class DeviceStatusCommandProcessor
-    with ApiServiceGetterMixin, LayoutServiceGetterMixin
+    with ApiServiceMixin, LayoutServiceMixin
     implements ICommandProcessor<DeviceStatusCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

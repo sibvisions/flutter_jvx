@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import '../../../../../mixin/data_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 import '../../../../../util/parse_util.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/data/data_book.dart';
@@ -17,11 +17,10 @@ import '../../../../model/request/i_api_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../model/response/dal_meta_data_response.dart';
-import '../../../data/i_data_service.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
 
-class OfflineApiRepository with DataServiceGetterMixin implements IRepository {
+class OfflineApiRepository with DataServiceMixin implements IRepository {
   OfflineDatabase? offlineDatabase;
 
   /// Every databook saves the maximum fetch registered, that way unspezified fetch responses don't

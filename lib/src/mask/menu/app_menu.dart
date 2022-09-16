@@ -6,13 +6,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../custom/app_manager.dart';
 import '../../../flutter_jvx.dart';
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/menu/menu_model.dart';
-import '../../service/config/i_config_service.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import 'grid/app_menu_grid_grouped.dart';
@@ -35,7 +32,7 @@ typedef MenuFactory = Widget Function({
 
 /// Menu Widget - will display menu items accordingly to the menu mode set in
 /// [IConfigService]
-class AppMenu extends StatefulWidget with UiServiceGetterMixin {
+class AppMenu extends StatefulWidget with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +61,7 @@ class AppMenu extends StatefulWidget with UiServiceGetterMixin {
   }
 }
 
-class _AppMenuState extends State<AppMenu> with UiServiceGetterMixin, ConfigServiceGetterMixin {
+class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   late final Map<MenuMode, MenuFactory> menuFactory = {
     MenuMode.GRID_GROUPED: _getGroupedGridMenu,

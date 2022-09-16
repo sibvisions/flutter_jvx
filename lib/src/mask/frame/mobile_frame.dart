@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../drawer/drawer_menu.dart';
 import 'frame.dart';
 
@@ -16,7 +16,7 @@ class MobileFrame extends Frame {
   MobileFrameState createState() => MobileFrameState();
 }
 
-class MobileFrameState extends FrameState with ConfigServiceGetterMixin {
+class MobileFrameState extends FrameState with ConfigServiceMixin {
   @override
   List<Widget> getActions() {
     return [

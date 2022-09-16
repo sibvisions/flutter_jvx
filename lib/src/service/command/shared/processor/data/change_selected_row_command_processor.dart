@@ -1,12 +1,11 @@
-import '../../../../../../mixin/data_service_mixin.dart';
-import '../../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/change_selected_row_command.dart';
 import '../../../../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class ChangeSelectedRowCommandProcessor
-    with UiServiceGetterMixin, DataServiceGetterMixin
+    with UiServiceMixin, DataServiceMixin
     implements ICommandProcessor<ChangeSelectedRowCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ChangeSelectedRowCommand command) async {

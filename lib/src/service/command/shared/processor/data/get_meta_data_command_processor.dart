@@ -1,12 +1,10 @@
-import '../../../../../../mixin/data_service_mixin.dart';
-import '../../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/get_meta_data_command.dart';
 import '../../../../../model/response/dal_meta_data_response.dart';
 import '../../i_command_processor.dart';
 
-class GetMetaDataCommandProcessor extends ICommandProcessor<GetMetaDataCommand>
-    with UiServiceGetterMixin, DataServiceGetterMixin {
+class GetMetaDataCommandProcessor extends ICommandProcessor<GetMetaDataCommand> with UiServiceMixin, DataServiceMixin {
   @override
   Future<List<BaseCommand>> processCommand(GetMetaDataCommand command) async {
     DalMetaDataResponse meta = getDataService().getMetaData(pDataProvider: command.dataProvider);

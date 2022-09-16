@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/services.dart';
 
 class CheckHolder {
   bool isChecked;
@@ -23,7 +23,7 @@ class RememberMeCheckbox extends StatefulWidget {
   State<RememberMeCheckbox> createState() => _RememberMeCheckboxState();
 }
 
-class _RememberMeCheckboxState extends State<RememberMeCheckbox> with ConfigServiceGetterMixin {
+class _RememberMeCheckboxState extends State<RememberMeCheckbox> with ConfigServiceMixin {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(

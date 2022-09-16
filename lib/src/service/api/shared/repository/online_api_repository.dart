@@ -5,8 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
-import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/config/api/api_config.dart';
@@ -47,7 +46,7 @@ import '../i_repository.dart';
 typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson, required Object originalRequest});
 
 /// Handles all possible requests to the mobile server.
-class OnlineApiRepository with ConfigServiceGetterMixin, UiServiceGetterMixin implements IRepository {
+class OnlineApiRepository with ConfigServiceMixin, UiServiceMixin implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

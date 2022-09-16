@@ -4,7 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/fl_component_model.dart';
@@ -22,7 +22,7 @@ class FlMapWrapper extends BaseCompWrapperWidget<FlMapModel> {
   BaseCompWrapperState<FlComponentModel> createState() => _FlMapWrapperState();
 }
 
-class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiServiceGetterMixin {
+class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiServiceMixin {
   DataChunk? _chunkData;
 
   List<Marker> markers = [];

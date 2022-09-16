@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
-import '../../../../mixin/ui_service_mixin.dart';
+import '../../../../mixin/services.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
@@ -15,7 +15,6 @@ import '../../../model/command/ui/route_to_work_command.dart';
 import '../../../model/command/ui/ui_command.dart';
 import '../../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
-import '../i_command_service.dart';
 import '../shared/i_command_processor.dart';
 import '../shared/processor/api/api_processor.dart';
 import '../shared/processor/config/config_processor.dart';
@@ -27,7 +26,7 @@ import '../shared/processor/ui/ui_processor.dart';
 /// [CommandService] is used to processCommands(facilitating communication between Services.
 /// Will take in Commands and transfer them to a [ICommandProcessor] which will process its
 /// contents, resulting in potentially more commands.
-class CommandService with UiServiceGetterMixin implements ICommandService {
+class CommandService with UiServiceMixin implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,4 +1,4 @@
-import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route_to_work_command.dart';
@@ -13,9 +13,7 @@ import '../i_response_processor.dart';
 /// based on the 'update' property of the request.
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class GenericScreenViewProcessor
-    with ConfigServiceGetterMixin
-    implements IResponseProcessor<GenericScreenViewResponse> {
+class GenericScreenViewProcessor with ConfigServiceMixin implements IResponseProcessor<GenericScreenViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

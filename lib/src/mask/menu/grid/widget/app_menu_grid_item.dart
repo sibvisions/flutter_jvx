@@ -1,12 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../app_menu.dart';
 
-class AppMenuGridItem extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class AppMenuGridItem extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

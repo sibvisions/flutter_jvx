@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../../../../mixin/config_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../../util/logging/flutter_logger.dart';
 import '../../../../../model/data/column_definition.dart';
 import '../../../../../model/data/filter_condition.dart';
@@ -17,7 +17,7 @@ import '../../../../../util/i_types.dart';
 /// https://www.sqlite.org/lang_keywords.html
 ///
 /// Has to be closed with [close()]
-class OfflineDatabase with ConfigServiceGetterMixin {
+class OfflineDatabase with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

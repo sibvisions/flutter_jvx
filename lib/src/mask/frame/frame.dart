@@ -1,14 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../model/command/api/logout_command.dart';
 import '../setting/widgets/change_password.dart';
 import 'mobile_frame.dart';
 import 'web_frame.dart';
 
-abstract class Frame extends StatefulWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
+abstract class Frame extends StatefulWidget with ConfigServiceMixin, UiServiceMixin {
   final WidgetBuilder builder;
 
   Frame({

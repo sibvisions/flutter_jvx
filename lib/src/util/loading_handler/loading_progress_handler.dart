@@ -1,4 +1,4 @@
-import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../model/command/api/api_command.dart';
 import '../../model/command/api/change_password_command.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -14,12 +14,11 @@ import '../../model/command/config/config_command.dart';
 import '../../model/command/data/data_command.dart';
 import '../../model/command/layout/layout_command.dart';
 import '../../model/command/ui/ui_command.dart';
-import '../../service/ui/i_ui_service.dart';
 import 'i_command_progress_handler.dart';
 import 'loading_overlay.dart';
 
 /// The [LoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
-class LoadingProgressHandler with ConfigServiceGetterMixin implements ICommandProgressHandler {
+class LoadingProgressHandler with ConfigServiceMixin implements ICommandProgressHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

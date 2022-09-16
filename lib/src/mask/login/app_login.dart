@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import 'arc_clipper.dart';
 
 /// Login page of the app, also used for reset/change password
-class AppLogin extends StatelessWidget with ConfigServiceGetterMixin {
+class AppLogin extends StatelessWidget with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

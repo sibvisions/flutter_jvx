@@ -1,7 +1,7 @@
 import '../../../../commands.dart';
-import '../../../../mixin/ui_service_mixin.dart';
+import '../../../../mixin/services.dart';
 
-class ReloadMenuCommand extends ApiCommand with UiServiceGetterMixin {
+class ReloadMenuCommand extends ApiCommand with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

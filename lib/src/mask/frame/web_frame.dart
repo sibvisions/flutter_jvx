@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../drawer/web_menu.dart';
@@ -24,7 +24,7 @@ class WebFrame extends Frame {
   FrameState createState() => WebFrameState();
 }
 
-class WebFrameState extends FrameState with ConfigServiceGetterMixin {
+class WebFrameState extends FrameState with ConfigServiceMixin {
   static const double spacing = 15.0;
   bool showWebMenu = true;
 

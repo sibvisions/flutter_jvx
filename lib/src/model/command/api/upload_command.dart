@@ -1,9 +1,9 @@
 import 'package:universal_io/io.dart';
 
-import '../../../../mixin/ui_service_mixin.dart';
+import '../../../../mixin/services.dart';
 import 'api_command.dart';
 
-class UploadCommand extends ApiCommand with UiServiceGetterMixin {
+class UploadCommand extends ApiCommand with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

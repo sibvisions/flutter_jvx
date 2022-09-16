@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/services.dart';
 import 'file_manager_mobile.dart';
 import 'file_manager_web.dart';
 
 /// File manager used to manage all file interaction (different implementations for web and mobile)
-abstract class IFileManager with ConfigServiceGetterMixin {
+abstract class IFileManager with ConfigServiceMixin {
   static const String IMAGES_PATH = "images";
   static const String LANGUAGES_PATH = "languages";
 

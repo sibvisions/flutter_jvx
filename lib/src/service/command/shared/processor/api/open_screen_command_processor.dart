@@ -1,11 +1,11 @@
-import '../../../../../../mixin/api_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_open_screen_request.dart';
 import '../../i_command_processor.dart';
 import '../ui/update_components_processor.dart';
 
-class OpenScreenCommandProcessor with ApiServiceGetterMixin implements ICommandProcessor<OpenScreenCommand> {
+class OpenScreenCommandProcessor with ApiServiceMixin implements ICommandProcessor<OpenScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(OpenScreenCommand command) async {
     UpdateComponentsProcessor.isOpenScreen = true;

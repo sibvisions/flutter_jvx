@@ -9,7 +9,7 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/api/delete_record_command.dart';
 import '../../model/command/api/insert_record_command.dart';
@@ -38,7 +38,7 @@ class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   BaseCompWrapperState<FlComponentModel> createState() => _FlTableWrapperState();
 }
 
-class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiServiceGetterMixin {
+class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiServiceMixin {
   static const int LOADED_META_DATA = 1;
   static const int LOADED_SELECTED_RECORD = 2;
   static const int LOADED_DATA = 4;

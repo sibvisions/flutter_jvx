@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../mixin/config_service_mixin.dart';
-import '../../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/app_menu.dart';
@@ -26,8 +25,7 @@ class WebMenu extends StatefulWidget {
   State<WebMenu> createState() => _WebMenuState();
 }
 
-class _WebMenuState extends State<WebMenu>
-    with ConfigServiceGetterMixin, UiServiceGetterMixin, SingleTickerProviderStateMixin {
+class _WebMenuState extends State<WebMenu> with ConfigServiceMixin, UiServiceMixin, SingleTickerProviderStateMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   final TextStyle boldStyle = const TextStyle(
     fontWeight: FontWeight.bold,

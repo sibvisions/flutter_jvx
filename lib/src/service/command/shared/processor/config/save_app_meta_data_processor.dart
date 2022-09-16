@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../../../../mixin/config_service_mixin.dart';
+import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
@@ -9,9 +9,7 @@ import '../../../../../model/command/config/save_app_meta_data_command.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
-class SaveAppMetaDataCommandProcessor
-    with ConfigServiceGetterMixin
-    implements ICommandProcessor<SaveAppMetaDataCommand> {
+class SaveAppMetaDataCommandProcessor with ConfigServiceMixin implements ICommandProcessor<SaveAppMetaDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveAppMetaDataCommand command) async {
     // Remove '.' to allow easy saving of images in filesystem

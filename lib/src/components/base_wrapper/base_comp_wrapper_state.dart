@@ -2,8 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/component/component_subscription.dart';
@@ -17,7 +16,7 @@ import 'base_comp_wrapper_widget.dart';
 /// Subscription handling in UiService
 /// Getters for componentSize
 abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget>
-    with ConfigServiceGetterMixin, UiServiceGetterMixin {
+    with ConfigServiceMixin, UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

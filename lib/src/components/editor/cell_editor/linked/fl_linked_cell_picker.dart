@@ -4,8 +4,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/table/fl_table_model.dart';
@@ -26,7 +25,7 @@ class FlLinkedCellPicker extends StatefulWidget {
   State<FlLinkedCellPicker> createState() => _FlLinkedCellPickerState();
 }
 
-class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceGetterMixin, ConfigServiceGetterMixin {
+class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceMixin, ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

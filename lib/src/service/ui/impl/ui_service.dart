@@ -11,8 +11,7 @@ import '../../../../custom/custom_component.dart';
 import '../../../../custom/custom_menu_item.dart';
 import '../../../../custom/custom_screen.dart';
 import '../../../../flutter_jvx.dart';
-import '../../../../mixin/command_service_mixin.dart';
-import '../../../../mixin/config_service_mixin.dart';
+import '../../../../mixin/services.dart';
 import '../../../../util/extensions/list_extensions.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/base_command.dart';
@@ -33,10 +32,9 @@ import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/menu_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
-import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
-class UiService with ConfigServiceGetterMixin, CommandServiceGetterMixin implements IUiService {
+class UiService with ConfigServiceMixin, CommandServiceMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

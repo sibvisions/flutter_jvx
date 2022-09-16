@@ -1,13 +1,12 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../mixin/ui_service_mixin.dart';
+import '../../../../../mixin/services.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../drawer/web_menu.dart';
 import '../../app_menu.dart';
 
-class AppMenuListItem extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class AppMenuListItem extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

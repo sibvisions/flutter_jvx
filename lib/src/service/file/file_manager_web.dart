@@ -1,12 +1,12 @@
 import 'dart:collection';
 import 'dart:io';
 
-import '../../../mixin/config_service_mixin.dart';
+import '../../../mixin/services.dart';
 import 'fake_file.dart';
 import 'file_manager.dart';
 
 /// File manger for web
-class FileManagerWeb extends IFileManager with ConfigServiceGetterMixin {
+class FileManagerWeb extends IFileManager with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

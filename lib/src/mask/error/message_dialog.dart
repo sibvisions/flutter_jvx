@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/ui/view/message/open_message_dialog_command.dart';
 
 /// This is a standard template for a server side message.
-class MessageDialog extends StatelessWidget with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class MessageDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
   /// the type for ok, cancel buttons.
   static const int MESSAGE_BUTTON_OK_CANCEL = 4;
 

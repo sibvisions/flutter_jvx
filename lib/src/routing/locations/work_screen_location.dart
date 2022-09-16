@@ -4,15 +4,14 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../custom/custom_screen.dart';
-import '../../../mixin/config_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
+import '../../../mixin/services.dart';
 import '../../components/components_factory.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/work_screen/work_screen.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 
-class WorkScreenLocation extends BeamLocation<BeamState> with ConfigServiceGetterMixin, UiServiceGetterMixin {
+class WorkScreenLocation extends BeamLocation<BeamState> with ConfigServiceMixin, UiServiceMixin {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     final String workScreenName = state.pathParameters['workScreenName']!;

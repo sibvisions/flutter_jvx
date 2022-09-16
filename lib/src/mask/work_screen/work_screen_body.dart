@@ -1,8 +1,8 @@
 // import 'package:flutter/widgets.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// import '../../../mixin/config_service_mixin.dart';
-// import '../../../mixin/ui_service_mixin.dart';
+//
+//
 // import '../../../util/image/image_loader.dart';
 // import '../../../util/parse_util.dart';
 // import '../../model/command/api/device_status_command.dart';
