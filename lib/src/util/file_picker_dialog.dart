@@ -9,7 +9,6 @@ import 'package:universal_io/io.dart';
 import '../../flutter_jvx.dart';
 import '../service/config/i_config_service.dart';
 import '../service/service.dart';
-import '../service/ui/i_ui_service.dart';
 
 enum UploadType {
   FILE_SYSTEM,
@@ -18,7 +17,7 @@ enum UploadType {
 }
 
 Future<File?> openFilePicker() async {
-  BuildContext context = IUiService.getCurrentContext()!;
+  BuildContext context = FlutterJVx.getCurrentContext()!;
 
   File? file;
 

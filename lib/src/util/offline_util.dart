@@ -173,7 +173,7 @@ abstract class OfflineUtil {
         ));
         await futureDialog;
       } else {
-        ProgressDialogWidget.close(IUiService.getCurrentContext()!);
+        ProgressDialogWidget.close(FlutterJVx.getCurrentContext()!);
       }
 
       if (successfulSync) {
@@ -522,7 +522,7 @@ abstract class OfflineUtil {
       //Clear menu
       uiService.setMenuModel(null);
 
-      ProgressDialogWidget.close(IUiService.getCurrentContext()!);
+      ProgressDialogWidget.close(FlutterJVx.getCurrentContext()!);
       await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
     } catch (e, stackTrace) {
       LOGGER.logE(

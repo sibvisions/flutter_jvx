@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:beamer/beamer.dart';
 
+import '../../../../../../../../flutter_jvx.dart';
 import '../../../../../../../../services.dart';
 import '../../../../../../../mask/error/server_error_dialog.dart';
 import '../../../../../../../model/command/base_command.dart';
@@ -14,7 +15,7 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
   Future<List<BaseCommand>> processCommand(OpenErrorDialogCommand command) async {
     bool goToSettings = command.isTimeout || command.canBeFixedInSettings;
     //Don't show "Go to Settings" while in settings
-    if (IUiService.getCurrentContext()!.currentBeamLocation.runtimeType == SettingsLocation) {
+    if (FlutterJVx.getCurrentContext()!.currentBeamLocation.runtimeType == SettingsLocation) {
       goToSettings = false;
     }
 

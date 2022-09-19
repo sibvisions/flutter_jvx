@@ -98,7 +98,7 @@ class UiService implements IUiService {
 
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
-    if (IUiService.getCurrentContext() == null) {
+    if (FlutterJVx.getCurrentContext() == null) {
       //TODO fix workScreen web reload (e.g. send OpenScreenCommand)
       if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
         routerDelegate.setNewRoutePath(const RouteInformation(location: "/menu"));
@@ -106,11 +106,11 @@ class UiService implements IUiService {
       return;
     }
 
-    var last = IUiService.getCurrentContext()!.beamingHistory.last;
+    var last = FlutterJVx.getCurrentContext()!.beamingHistory.last;
     if (pReplaceRoute || last.runtimeType == SettingsLocation) {
-      IUiService.getCurrentContext()!.beamToReplacementNamed("/menu");
+      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/menu");
     } else {
-      IUiService.getCurrentContext()!.beamToNamed("/menu");
+      FlutterJVx.getCurrentContext()!.beamToNamed("/menu");
     }
   }
 
@@ -118,17 +118,17 @@ class UiService implements IUiService {
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     log("routing to workscreen: $pScreenName");
 
-    var last = IUiService.getCurrentContext()!.beamingHistory.last;
+    var last = FlutterJVx.getCurrentContext()!.beamingHistory.last;
     if (pReplaceRoute || last.runtimeType == SettingsLocation) {
-      IUiService.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName");
+      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName");
     } else {
-      IUiService.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName");
+      FlutterJVx.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName");
     }
   }
 
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
-    if (IUiService.getCurrentContext() == null) {
+    if (FlutterJVx.getCurrentContext() == null) {
       //TODO fix workScreen web reload (e.g. send OpenScreenCommand)
       if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
         routerDelegate.setNewRoutePath(RouteInformation(location: "/login/$mode"));
@@ -136,31 +136,31 @@ class UiService implements IUiService {
       return;
     }
 
-    var last = IUiService.getCurrentContext()!.beamingHistory.last;
+    var last = FlutterJVx.getCurrentContext()!.beamingHistory.last;
     if (last.runtimeType == WorkScreenLocation || last.runtimeType == MenuLocation) {
-      IUiService.getCurrentContext()!.beamToReplacementNamed("/login/$mode", data: pLoginProps);
+      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/login/$mode", data: pLoginProps);
     } else {
-      IUiService.getCurrentContext()!.beamToNamed("/login/$mode", data: pLoginProps);
+      FlutterJVx.getCurrentContext()!.beamToNamed("/login/$mode", data: pLoginProps);
     }
   }
 
   @override
   void routeToSettings({bool pReplaceRoute = false}) {
-    if (IUiService.getCurrentContext() == null) {
+    if (FlutterJVx.getCurrentContext() == null) {
       routerDelegate.setNewRoutePath(const RouteInformation(location: "/settings"));
       return;
     }
 
     if (pReplaceRoute) {
-      IUiService.getCurrentContext()!.beamToReplacementNamed("/settings");
+      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/settings");
     } else {
-      IUiService.getCurrentContext()!.beamToNamed("/settings");
+      FlutterJVx.getCurrentContext()!.beamToNamed("/settings");
     }
   }
 
   @override
   void routeToCustom({required String pFullPath}) {
-    IUiService.getCurrentContext()!.beamToNamed(pFullPath);
+    FlutterJVx.getCurrentContext()!.beamToNamed(pFullPath);
   }
 
   @override
@@ -181,7 +181,7 @@ class UiService implements IUiService {
     Locale? pLocale,
   }) =>
       showDialog(
-          context: context ?? IUiService.getCurrentContext()!,
+          context: context ?? FlutterJVx.getCurrentContext()!,
           barrierDismissible: pIsDismissible,
           builder: (BuildContext context) {
             Widget child = pBuilder.call(context);
@@ -294,7 +294,7 @@ class UiService implements IUiService {
         currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
 
     if (pBeamBack) {
-      IUiService.getCurrentContext()!.beamBack();
+      FlutterJVx.getCurrentContext()!.beamBack();
     }
   }
 

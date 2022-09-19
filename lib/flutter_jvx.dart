@@ -72,6 +72,10 @@ class FlutterJVx extends StatefulWidget {
     return services<IConfigService>().translateText(pText ?? "");
   }
 
+  static BuildContext? getCurrentContext() {
+    return routerDelegate.navigatorKey.currentContext;
+  }
+
   static start([FlutterJVx pAppToRun = const FlutterJVx()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 

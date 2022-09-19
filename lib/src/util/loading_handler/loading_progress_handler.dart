@@ -1,3 +1,4 @@
+import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../model/command/api/api_command.dart';
 import '../../model/command/api/change_password_command.dart';
@@ -35,7 +36,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
     if (isSupported(pCommand) && !IConfigService().isOffline()) {
       _loadingCommandAmount++;
       if (_loadingCommandAmount == 1) {
-        LoadingOverlay.of(IUiService.getCurrentContext())?.show(pCommand.loadingDelay);
+        LoadingOverlay.of(FlutterJVx.getCurrentContext())?.show(pCommand.loadingDelay);
       }
     }
   }
@@ -46,7 +47,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
       _loadingCommandAmount--;
     }
     if (_loadingCommandAmount == 0) {
-      LoadingOverlay.of(IUiService.getCurrentContext())?.hide();
+      LoadingOverlay.of(FlutterJVx.getCurrentContext())?.hide();
     }
   }
 
