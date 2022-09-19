@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import '../../../../services.dart';
+import '../../../../util/extensions/list_extensions.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
@@ -79,9 +80,8 @@ class CommandService implements ICommandService {
     }
     progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
 
-    List<BaseCommand>? routeCommands;
     try {
-      routeCommands = await processCommand(pCommand);
+      await processCommand(pCommand);
       pCommand.callback?.call();
     } catch (error) {
       LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error processing ${pCommand.runtimeType}");
@@ -89,26 +89,11 @@ class CommandService implements ICommandService {
     } finally {
       progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
 
-      try {
-        if (routeCommands != null) {
-          if (routeCommands.any((element) => element is RouteToWorkCommand)) {
-            await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
-          } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-            await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
-          } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-            await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
-          }
-        }
-      } catch (error) {
-        LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error processing follow-up ${pCommand.runtimeType}");
-        rethrow;
-      } finally {
-        if (_apiCommandsQueue.remove(pCommand)) {
-          // Remove current command after execution is complete
-          // and call the next one in queue
-          if (_apiCommandsQueue.isNotEmpty) {
-            unawaited(sendCommand(_apiCommandsQueue.first));
-          }
+      if (_apiCommandsQueue.remove(pCommand)) {
+        // Remove current command after execution is complete
+        // and call the next one in queue
+        if (_apiCommandsQueue.isNotEmpty) {
+          unawaited(sendCommand(_apiCommandsQueue.first));
         }
       }
     }
@@ -126,7 +111,7 @@ class CommandService implements ICommandService {
     }
   }
 
-  Future<List<BaseCommand>> processCommand(BaseCommand pCommand) async {
+  Future<void> processCommand(BaseCommand pCommand) async {
     List<BaseCommand> commands = [];
     // Switch-Case doesn't work with types
     if (pCommand is ApiCommand) {
@@ -146,7 +131,7 @@ class CommandService implements ICommandService {
         pType: LogType.COMMAND,
         pMessage: "Command (${pCommand.runtimeType}) without Processor found",
       );
-      return [];
+      return;
     }
 
     IUiService().getAppManager()?.modifyCommands(commands, pCommand);
@@ -163,14 +148,37 @@ class CommandService implements ICommandService {
     var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
     // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));
 
-    // When all commands are finished execute routing commands sorted by priority
-    await _waitTillFinished(pCommands: nonRouteCommands);
+    try {
+      // When all commands are finished execute routing commands sorted by priority
+      await _waitTillFinished(pCommands: nonRouteCommands);
 
-    if (!nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
-      return routeCommands;
-    } else {
       // Don't route if there is a server error
-      return [];
+      if (!nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+        if (routeCommands.any((element) => element is RouteToWorkCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+        } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+        } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+        }
+      }
+    } catch (error) {
+      LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error processing follow-up ${pCommand.runtimeType}");
+      rethrow;
+    }
+
+    var errorCommand =
+        nonRouteCommands.firstWhereOrNull((element) => element is OpenErrorDialogCommand) as OpenErrorDialogCommand?;
+    if (errorCommand != null) {
+      throw ErrorViewException(errorCommand);
     }
   }
+}
+
+class ErrorViewException implements Exception {
+  /// A message describing the exception.
+  final String? message;
+  final OpenErrorDialogCommand errorCommand;
+
+  ErrorViewException(this.errorCommand, [this.message]);
 }

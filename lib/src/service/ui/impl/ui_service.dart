@@ -80,12 +80,14 @@ class UiService implements IUiService {
   void handleAsyncError(Object error, StackTrace stackTrace) {
     LOGGER.logE(pType: LogType.COMMAND, pError: error, pStacktrace: stackTrace);
 
-    bool isTimeout = error is TimeoutException || error is SocketException;
-    ICommandService().sendCommand(OpenErrorDialogCommand(
-      reason: "Command error in ui service",
-      message: IUiService.getErrorMessage(error),
-      isTimeout: isTimeout,
-    ));
+    if (error is! ErrorViewException) {
+      bool isTimeout = error is TimeoutException || error is SocketException;
+      ICommandService().sendCommand(OpenErrorDialogCommand(
+        reason: "Command error in ui service",
+        message: IUiService.getErrorMessage(error),
+        isTimeout: isTimeout,
+      ));
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
