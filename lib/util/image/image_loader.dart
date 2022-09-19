@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:universal_io/io.dart';
 
 import '../../src/service/config/i_config_service.dart';
 import '../../src/service/file/file_manager.dart';

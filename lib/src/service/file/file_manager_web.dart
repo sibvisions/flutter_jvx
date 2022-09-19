@@ -1,6 +1,5 @@
 import 'dart:collection';
-
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 import '../../../services.dart';
 import 'fake_file.dart';

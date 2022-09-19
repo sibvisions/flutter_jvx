@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
-
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 class Translation {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
