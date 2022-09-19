@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import '../../../../../mixin/services.dart';
+import '../../../../../services.dart';
 import '../../../../../util/parse_util.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../../../../model/data/data_book.dart';
@@ -20,7 +20,7 @@ import '../../../../model/response/dal_meta_data_response.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
 
-class OfflineApiRepository with DataServiceMixin implements IRepository {
+class OfflineApiRepository implements IRepository {
   OfflineDatabase? offlineDatabase;
 
   /// Every databook saves the maximum fetch registered, that way unspezified fetch responses don't
@@ -37,7 +37,7 @@ class OfflineApiRepository with DataServiceMixin implements IRepository {
       offlineDatabase = await OfflineDatabase.open();
 
       //Init all databooks because there is no OpenScreenCommand offline
-      await initDataBooks(getDataService());
+      await initDataBooks(IDataService());
     }
   }
 
@@ -206,7 +206,7 @@ class OfflineApiRepository with DataServiceMixin implements IRepository {
 
     List<FilterCondition> filters = _getLastFilter(pRequest.dataProvider);
 
-    DataBook dataBook = getDataService().getDataBook(pRequest.dataProvider)!;
+    DataBook dataBook = IDataService().getDataBook(pRequest.dataProvider)!;
 
     List<String> columnNames = pRequest.columnNames ?? dataBook.columnDefinitions.map((e) => e.name).toList();
 
@@ -331,7 +331,7 @@ class OfflineApiRepository with DataServiceMixin implements IRepository {
   }
 
   Filter? _createSelectedRowFilter({required String pDataProvider, int? pSelectedRow}) {
-    DataBook dataBook = getDataService().getDataBook(pDataProvider)!;
+    DataBook dataBook = IDataService().getDataBook(pDataProvider)!;
 
     DataRecord? dataRecord = dataBook.getRecord(
       pDataColumnNames: dataBook.metaData!.primaryKeyColumns,

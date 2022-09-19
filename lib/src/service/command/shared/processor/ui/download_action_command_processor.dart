@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/download_action_command.dart';
 import '../../../../../model/request/api_download_request.dart';
+import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class DownloadActionCommandProcessor with ApiServiceMixin implements ICommandProcessor<DownloadActionCommand> {
+class DownloadActionCommandProcessor implements ICommandProcessor<DownloadActionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadActionCommand command) async {
-    return getApiService().sendRequest(
+    return IApiService().sendRequest(
       request: ApiDownloadRequest(
         url: command.url,
         fileId: command.fileId,

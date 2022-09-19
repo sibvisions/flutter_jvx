@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/command/api/login_command.dart';
 
-class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
+class ChangeOneTimePasswordCard extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,7 +105,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, Con
 
   void _sendRequest() {
     if (newPasswordController.text != newPasswordConfController.text) {
-      getUiService().openDialog(
+      IUiService().openDialog(
           pBuilder: (_) => Text(FlutterJVx.translate("The new Passwords do not match!")), pIsDismissible: true);
     }
     LoginCommand loginCommand = LoginCommand(
@@ -116,6 +116,6 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin, Con
       reason: "Password reset",
     );
 
-    getUiService().sendCommand(loginCommand);
+    IUiService().sendCommand(loginCommand);
   }
 }

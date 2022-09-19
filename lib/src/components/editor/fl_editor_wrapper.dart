@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/extensions/list_extensions.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../../util/parse_util.dart';
@@ -35,7 +35,7 @@ class FlEditorWrapper<T extends FlEditorModel> extends BaseCompWrapperWidget<T> 
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlEditorWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlEditorWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -45,7 +45,7 @@ class FlEditorWrapper<T extends FlEditorModel> extends BaseCompWrapperWidget<T> 
   FlEditorWrapperState createState() => FlEditorWrapperState();
 }
 
-class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T> with UiServiceMixin {
+class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -178,7 +178,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Subscribes to the service and registers the set value call back.
   void subscribe(T pModel) {
-    getUiService().registerDataSubscription(
+    IUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
         dataProvider: pModel.dataProvider,
@@ -192,7 +192,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Unsubscribes the callback of the cell editor from value changes.
   void unsubscribe() {
-    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
@@ -247,7 +247,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       var map = _toSendValue as HashMap<String, dynamic>;
 
       LOGGER.logI(pType: LogType.DATA, pMessage: "Values of ${model.id} set to $_toSendValue");
-      getUiService().sendCommand(SetValuesCommand(
+      IUiService().sendCommand(SetValuesCommand(
           componentId: model.id,
           dataProvider: model.dataProvider,
           columnNames: map.keys.toList(),
@@ -255,7 +255,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           reason: "Value of ${model.id} set to $_toSendValue"));
     } else {
       LOGGER.logI(pType: LogType.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
-      getUiService().sendCommand(SetValuesCommand(
+      IUiService().sendCommand(SetValuesCommand(
           componentId: model.id,
           dataProvider: model.dataProvider,
           columnNames: [model.columnName],
@@ -279,7 +279,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         onChange: onChange,
         onEndEditing: onEndEditing,
         pRecalculateSizeCallback: recalculateSize,
-        pUiService: getUiService());
+        pUiService: IUiService());
 
     if (pSubscribe) {
       subscribe(pModel);

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../drawer/drawer_menu.dart';
 import 'frame.dart';
 
 class MobileFrame extends Frame {
-  MobileFrame({
+  const MobileFrame({
     super.key,
     required super.builder,
   });
@@ -16,7 +16,7 @@ class MobileFrame extends Frame {
   MobileFrameState createState() => MobileFrameState();
 }
 
-class MobileFrameState extends FrameState with ConfigServiceMixin {
+class MobileFrameState extends FrameState {
   @override
   List<Widget> getActions() {
     return [
@@ -35,7 +35,7 @@ class MobileFrameState extends FrameState with ConfigServiceMixin {
       title: Text(FlutterJVx.translate("Menu")),
       centerTitle: false,
       actions: actions,
-      backgroundColor: getConfigService().isOffline() ? Colors.grey.shade500 : null,
+      backgroundColor: IConfigService().isOffline() ? Colors.grey.shade500 : null,
       elevation: 0,
     );
   }

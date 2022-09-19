@@ -1,7 +1,7 @@
 import '../../../../commands.dart';
-import '../../../../mixin/services.dart';
+import '../../../../services.dart';
 
-class ReloadMenuCommand extends ApiCommand with UiServiceMixin {
+class ReloadMenuCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,8 +17,8 @@ class ReloadMenuCommand extends ApiCommand with UiServiceMixin {
   }) {
     if (screenLongName != null) {
       callback = () {
-        if (getUiService().getMenuModel().containsScreen(screenLongName!)) {
-          getUiService().sendCommand(OpenScreenCommand(
+        if (IUiService().getMenuModel().containsScreen(screenLongName!)) {
+          IUiService().sendCommand(OpenScreenCommand(
             screenLongName: screenLongName!,
             reason: reason,
           ));

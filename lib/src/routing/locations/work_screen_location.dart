@@ -4,18 +4,18 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../custom/custom_screen.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../components/components_factory.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/work_screen/work_screen.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 
-class WorkScreenLocation extends BeamLocation<BeamState> with ConfigServiceMixin, UiServiceMixin {
+class WorkScreenLocation extends BeamLocation<BeamState> {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     final String workScreenName = state.pathParameters['workScreenName']!;
-    FlPanelModel? model = getUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
+    FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
 
     // Header
     PreferredSizeWidget? header;
@@ -36,7 +36,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with ConfigServiceMixin
     String screenLongName = model?.screenLongName ?? workScreenName;
 
     // Custom Config for this screen
-    CustomScreen? customScreen = getUiService().getCustomScreen(pScreenLongName: screenLongName);
+    CustomScreen? customScreen = IUiService().getCustomScreen(pScreenLongName: screenLongName);
 
     if (customScreen != null) {
       header = customScreen.headerBuilder?.call(context);
@@ -58,10 +58,10 @@ class WorkScreenLocation extends BeamLocation<BeamState> with ConfigServiceMixin
 
     if (screen == null) {
       screen = Container();
-      getUiService().routeToMenu(pReplaceRoute: true);
+      IUiService().routeToMenu(pReplaceRoute: true);
     }
 
-    getUiService().getAppManager()?.onScreenPage();
+    IUiService().getAppManager()?.onScreenPage();
 
     return [
       BeamPage(
@@ -69,16 +69,16 @@ class WorkScreenLocation extends BeamLocation<BeamState> with ConfigServiceMixin
         key: ValueKey(workScreenName),
         child: WillPopScope(
           onWillPop: () async {
-            if (!getUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-              unawaited(getUiService()
+            if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
+              unawaited(IUiService()
                   .sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName)));
               return false;
             }
             return true;
           },
           child: Frame.wrapWithFrame(
-            forceWeb: getConfigService().isWebOnly(),
-            forceMobile: getConfigService().isMobileOnly(),
+            forceWeb: IConfigService().isWebOnly(),
+            forceMobile: IConfigService().isMobileOnly(),
             builder: (context) => WorkScreen(
               isCustomScreen: isCustomScreen,
               screenTitle: screenTitle,

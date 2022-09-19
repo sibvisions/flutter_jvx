@@ -2,7 +2,7 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/component/chart/fl_chart_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -12,13 +12,13 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_chart_widget.dart';
 
 class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
-  FlChartWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlChartWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlChartWrapperState();
 }
 
-class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiServiceMixin {
+class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
   DataChunk? _chunkData;
 
   @override
@@ -52,7 +52,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
     var columnNames = getDataColumns();
 
     if (columnNames.isNotEmpty) {
-      getUiService().registerDataSubscription(
+      IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
@@ -107,6 +107,6 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
   }
 
   void unsubscribe() {
-    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 }

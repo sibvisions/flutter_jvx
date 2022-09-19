@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/command/api/set_api_config_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
@@ -26,7 +26,7 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, UiServiceMixin, CommandServiceMixin {
+class _SettingsPageState extends State<SettingsPage> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,7 +105,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Expanded(
-                    child: getConfigService().getUserInfo() != null && context.canBeamBack
+                    child: IConfigService().getUserInfo() != null && context.canBeamBack
                         ? InkWell(
                             onTap: loading ? null : context.beamBack,
                             child: Container(
@@ -121,7 +121,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
                   ),
                   Expanded(
                     child: InkWell(
-                      onTap: loading || getConfigService().isOffline() ? null : _saveClicked,
+                      onTap: loading || IConfigService().isOffline() ? null : _saveClicked,
                       child: Container(
                         alignment: Alignment.center,
                         child: Text(
@@ -139,7 +139,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: !getConfigService().isOffline()
+          floatingActionButton: !IConfigService().isOffline()
               ? FloatingActionButton(
                   elevation: 0.0,
                   backgroundColor: Theme.of(context).primaryColor,
@@ -163,9 +163,9 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
         color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-      value: getConfigService().getAppName() ?? "",
+      value: IConfigService().getAppName() ?? "",
       title: FlutterJVx.translate("App Name"),
-      enabled: !getConfigService().isOffline(),
+      enabled: !IConfigService().isOffline(),
       onPressed: (value) {
         TextEditingController controller = TextEditingController(text: value);
         Widget editor = AppNameEditor(controller: controller);
@@ -179,7 +179,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
           pTitleText: FlutterJVx.translate("App Name"),
         ).then((value) {
           if (value == true) {
-            getConfigService().setAppName(controller.text);
+            IConfigService().setAppName(controller.text);
             setState(() {});
           }
         });
@@ -192,9 +192,9 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
           color: Theme.of(context).primaryColor,
         ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-        value: getConfigService().getBaseUrl() ?? "",
+        value: IConfigService().getBaseUrl() ?? "",
         title: FlutterJVx.translate("URL"),
-        enabled: !getConfigService().isOffline(),
+        enabled: !IConfigService().isOffline(),
         onPressed: (value) {
           TextEditingController controller = TextEditingController(text: value);
           Widget editor = UrlEditor(controller: controller);
@@ -211,15 +211,15 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
               try {
                 // Validate format
                 var uri = Uri.parse(controller.text);
-                await getConfigService().setBaseUrl(uri.toString());
+                await IConfigService().setBaseUrl(uri.toString());
                 setState(() {});
 
-                await getUiService().sendCommand(SetApiConfigCommand(
-                  apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()),
+                await IUiService().sendCommand(SetApiConfigCommand(
+                  apiConfig: ApiConfig(serverConfig: IConfigService().getServerConfig()),
                   reason: "Settings url editor",
                 ));
               } catch (e) {
-                await getUiService().sendCommand(OpenErrorDialogCommand(
+                await IUiService().sendCommand(OpenErrorDialogCommand(
                   reason: "parseURl",
                   message: FlutterJVx.translate("URL text could not be parsed"),
                   canBeFixedInSettings: true,
@@ -236,9 +236,9 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: FlutterJVx.translate("Language"),
-      value: getConfigService().getLanguage(),
+      value: IConfigService().getLanguage(),
       onPressed: (value) {
-        var supportedLanguages = getConfigService().getSupportedLanguages().toList(growable: false);
+        var supportedLanguages = IConfigService().getSupportedLanguages().toList(growable: false);
         Picker picker = Picker(
             confirmTextStyle: const TextStyle(fontSize: 16),
             cancelTextStyle: const TextStyle(fontSize: 16),
@@ -248,7 +248,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
             ),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
-                getConfigService().setLanguage(picker.getSelectedValues()[0]);
+                IConfigService().setLanguage(picker.getSelectedValues()[0]);
                 setState(() {});
               }
             });
@@ -263,7 +263,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: FlutterJVx.translate("Picture Size"),
-      value: getConfigService().getPictureResolution() ?? resolutions.last,
+      value: IConfigService().getPictureResolution() ?? resolutions.last,
       itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
       onPressed: (value) {
         Picker picker = Picker(
@@ -275,7 +275,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
             cancelTextStyle: const TextStyle(fontSize: 16),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
-                getConfigService().setPictureResolution(picker.getSelectedValues()[0]);
+                IConfigService().setPictureResolution(picker.getSelectedValues()[0]);
                 setState(() {});
               }
             });
@@ -304,7 +304,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
   SettingGroup _buildVersionInfo() {
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
-      value: getConfigService().getAppConfig()?.versionConfig?.commit ?? "",
+      value: IConfigService().getAppConfig()?.versionConfig?.commit ?? "",
       title: FlutterJVx.translate("RCS"),
     );
 
@@ -316,7 +316,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
-      value: getConfigService().getAppConfig()?.versionConfig?.buildDate ?? "",
+      value: IConfigService().getAppConfig()?.versionConfig?.buildDate ?? "",
       title: FlutterJVx.translate("Build date"),
     );
 
@@ -354,11 +354,11 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
   /// Opens the QR-Scanner,
   /// parses scanned code and saves values to config service
   void _openQRScanner() {
-    getUiService().openDialog(
+    IUiService().openDialog(
       pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) {
         QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
-        getConfigService().setAppName(code.appName);
-        getConfigService().setBaseUrl(code.url);
+        IConfigService().setAppName(code.appName);
+        IConfigService().setBaseUrl(code.url);
         setState(() {});
 
         // set username & password for later
@@ -366,29 +366,29 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
         password = code.password;
 
         SetApiConfigCommand apiConfigCommand = SetApiConfigCommand(
-          apiConfig: ApiConfig(serverConfig: getConfigService().getServerConfig()),
+          apiConfig: ApiConfig(serverConfig: IConfigService().getServerConfig()),
           reason: "QR Scan replaced url",
         );
-        getUiService().sendCommand(apiConfigCommand);
+        IUiService().sendCommand(apiConfigCommand);
       }),
     );
   }
 
   /// Will send a [StartupCommand] with current values
   void _saveClicked() async {
-    if (getConfigService().getAppName()?.isNotEmpty == true && getConfigService().getBaseUrl()?.isNotEmpty == true) {
+    if (IConfigService().getAppName()?.isNotEmpty == true && IConfigService().getBaseUrl()?.isNotEmpty == true) {
       try {
         setState(() {
           loading = true;
         });
 
-        await getCommandService().sendCommand(StartupCommand(
+        await ICommandService().sendCommand(StartupCommand(
           reason: "Open App from Settings",
           username: username,
           password: password,
         ));
       } catch (e, stackTrace) {
-        getUiService().handleAsyncError(e, stackTrace);
+        IUiService().handleAsyncError(e, stackTrace);
       } finally {
         setState(() {
           loading = false;
@@ -397,7 +397,7 @@ class _SettingsPageState extends State<SettingsPage> with ConfigServiceMixin, Ui
         });
       }
     } else {
-      await getUiService().openDialog(
+      await IUiService().openDialog(
         pBuilder: (_) => AlertDialog(
           title: Text(FlutterJVx.translate("Missing required fields")),
           content: Text(FlutterJVx.translate("You have to provide app name and base url to open an app.")),

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../../../../mixin/services.dart';
+import '../../../../../../services.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
@@ -9,24 +9,23 @@ import '../../../../../model/command/config/save_app_meta_data_command.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
-class SaveAppMetaDataCommandProcessor with ConfigServiceMixin implements ICommandProcessor<SaveAppMetaDataCommand> {
+class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveAppMetaDataCommand command) async {
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
-    getConfigService().setClientId(command.metaData.clientId);
-    await getConfigService().setVersion(version);
+    IConfigService().setClientId(command.metaData.clientId);
+    await IConfigService().setVersion(version);
 
-    await getConfigService().setLanguage(command.metaData.langCode);
+    await IConfigService().setLanguage(command.metaData.langCode);
 
-    getConfigService().setMetaData(command.metaData);
+    IConfigService().setMetaData(command.metaData);
 
     bool doLangExits =
-        getConfigService().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/")?.existsSync() ??
-            false;
+        IConfigService().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/")?.existsSync() ?? false;
     bool doImgExits =
-        getConfigService().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/")?.existsSync() ?? false;
+        IConfigService().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/")?.existsSync() ?? false;
 
     List<BaseCommand> commands = [];
     if (!doLangExits) {

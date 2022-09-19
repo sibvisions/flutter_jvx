@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_jvx.dart';
-import '../../../../mixin/services.dart';
+import '../../../../services.dart';
 import '../../../model/command/api/change_password_command.dart';
 import '../../../model/command/api/login_command.dart';
 
-class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
+class ChangePassword extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
@@ -98,7 +98,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
   List<Widget>? actionsList(BuildContext context) {
     List<Widget>? widgetList = [];
 
-    if (getConfigService().getUserInfo() != null) {
+    if (IConfigService().getUserInfo() != null) {
       widgetList.add(TextButton(
         onPressed: () => Navigator.of(context).pop(),
         child: Text(FlutterJVx.translate('Cancel')),
@@ -108,8 +108,8 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
     widgetList.add(TextButton(
       onPressed: () {
         if (newPasswordController.text == repeatPasswordController.text) {
-          if (getConfigService().getUserInfo() == null) {
-            getUiService().sendCommand(LoginCommand(
+          if (IConfigService().getUserInfo() == null) {
+            IUiService().sendCommand(LoginCommand(
               userName: usernameController.text,
               password: passwordController.text,
               loginMode: LoginMode.CHANGE_PASSWORD,
@@ -117,7 +117,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
               reason: 'Password Expired',
             ));
           } else {
-            getUiService().sendCommand(ChangePasswordCommand(
+            IUiService().sendCommand(ChangePasswordCommand(
               username: usernameController.text,
               newPassword: newPasswordController.text,
               password: passwordController.text,
@@ -125,7 +125,7 @@ class ChangePassword extends StatelessWidget with ConfigServiceMixin, UiServiceM
             ));
           }
         } else {
-          getUiService().openDialog(pBuilder: (_) => passwordError(), pIsDismissible: true);
+          IUiService().openDialog(pBuilder: (_) => passwordError(), pIsDismissible: true);
         }
       },
       child: Text(FlutterJVx.translate('Change Password')),

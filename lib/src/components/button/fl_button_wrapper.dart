@@ -12,13 +12,14 @@ import '../../model/command/api/set_values_command.dart';
 import '../../model/component/button/fl_button_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_button_widget.dart';
 
 class FlButtonWrapper<T extends FlButtonModel> extends BaseCompWrapperWidget<T> {
-  FlButtonWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlButtonWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   FlButtonWrapperState createState() => FlButtonWrapperState();
@@ -38,7 +39,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     super.initState();
 
     if (model.columnName.isNotEmpty && model.dataProvider.isNotEmpty) {
-      getUiService().registerDataSubscription(
+      IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider,
@@ -91,7 +92,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   void _sendButtonCommand() {
-    getUiService()
+    IUiService()
         .sendCommand(PressButtonCommand(
       componentName: _overwrittenButtonPressId ?? model.name,
       reason: "Button has been pressed",
@@ -110,13 +111,13 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   void openQrCodeScanner() {
-    getUiService().openDialog(
+    IUiService().openDialog(
       pBuilder: (_) => QRScannerOverlay(callback: sendQrCodeResult),
     );
   }
 
   void sendQrCodeResult(Barcode pBarcode, MobileScannerArguments? pArguments) {
-    getUiService().sendCommand(
+    IUiService().sendCommand(
       SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataProvider,

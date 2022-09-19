@@ -2,7 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../mask/login/app_login.dart';
 import '../../mask/login/change_one_time_password_card.dart';
 import '../../mask/login/login_card.dart';
@@ -10,7 +10,7 @@ import '../../mask/login/lost_password_card.dart';
 import '../../mask/setting/widgets/change_password.dart';
 
 /// Displays all possible screens the login can show0
-class LoginLocation extends BeamLocation<BeamState> with UiServiceMixin {
+class LoginLocation extends BeamLocation<BeamState> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,7 +19,7 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceMixin {
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     Map<String, String?>? dataMap = data as Map<String, String?>?;
 
-    getUiService().getAppManager()?.onLoginPage();
+    IUiService().getAppManager()?.onLoginPage();
 
     return [
       BeamPage(

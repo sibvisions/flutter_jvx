@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
@@ -23,7 +23,7 @@ class DrawerMenu extends StatefulWidget {
   State<DrawerMenu> createState() => _DrawerMenuState();
 }
 
-class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServiceMixin {
+class _DrawerMenuState extends State<DrawerMenu> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   final TextStyle boldStyle = const TextStyle(
     fontWeight: FontWeight.bold,
@@ -33,7 +33,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: getConfigService().getOpacitySideMenu(),
+      opacity: IConfigService().getOpacitySideMenu(),
       child: Drawer(
         backgroundColor: Theme.of(context).backgroundColor,
         child: Column(
@@ -49,7 +49,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Widget _buildDrawerHeader(BuildContext context) {
-    var profileImage = getConfigService().getUserInfo()?.profileImage;
+    var profileImage = IConfigService().getUserInfo()?.profileImage;
 
     return DrawerHeader(
       margin: EdgeInsets.zero,
@@ -64,7 +64,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
                 const Padding(padding: EdgeInsets.only(top: 10)),
                 _buildHeaderText(
                   flex: 60,
-                  text: getConfigService().getAppStyle()?['login.title'] ?? getConfigService().getAppName()!,
+                  text: IConfigService().getAppStyle()?['login.title'] ?? IConfigService().getAppName()!,
                   context: context,
                   fontWeight: FontWeight.bold,
                 ),
@@ -77,7 +77,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
                 const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
                 _buildHeaderText(
                   flex: 35,
-                  text: getConfigService().getUserInfo()?.displayName ?? " ",
+                  text: IConfigService().getUserInfo()?.displayName ?? " ",
                   context: context,
                   fontWeight: FontWeight.bold,
                 ),
@@ -113,7 +113,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
   }
 
   Widget _buildMenu(BuildContext context) {
-    MenuModel menuModel = getUiService().getMenuModel();
+    MenuModel menuModel = IUiService().getMenuModel();
     return ListTileTheme.merge(
       iconColor: Theme.of(context).colorScheme.primary,
       textColor: Colors.grey.shade800,
@@ -140,7 +140,7 @@ class _DrawerMenuState extends State<DrawerMenu> with ConfigServiceMixin, UiServ
       ),
     ];
 
-    if (!getConfigService().isOffline()) {
+    if (!IConfigService().isOffline()) {
       footerEntries.addAll([
         _buildFooterDivider(context),
         _buildFooterEntry(

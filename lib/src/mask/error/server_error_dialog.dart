@@ -2,11 +2,10 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
 
 /// This is a standard template for a server side error message.
-class ServerErrorDialog extends StatelessWidget with ConfigServiceMixin {
+class ServerErrorDialog extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,7 +22,7 @@ class ServerErrorDialog extends StatelessWidget with ConfigServiceMixin {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ServerErrorDialog({
+  const ServerErrorDialog({
     required this.command,
     this.goToSettings = false,
     this.dismissible = false,

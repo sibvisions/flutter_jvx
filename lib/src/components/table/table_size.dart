@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
@@ -10,7 +10,7 @@ import '../../model/data/subscriptions/data_chunk.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
 /// Represents a table size
-class TableSize with UiServiceMixin {
+class TableSize {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -148,7 +148,7 @@ class TableSize with UiServiceMixin {
             pCellEditorJson: colDef.cellEditorJson,
             onChange: (_) => null,
             onEndEditing: (_) => null,
-            pUiService: getUiService(),
+            pUiService: IUiService(),
           );
 
           for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {

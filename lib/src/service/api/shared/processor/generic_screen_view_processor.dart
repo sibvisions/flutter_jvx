@@ -1,4 +1,4 @@
-import '../../../../../mixin/services.dart';
+import '../../../../../services.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route_to_work_command.dart';
@@ -13,7 +13,7 @@ import '../i_response_processor.dart';
 /// based on the 'update' property of the request.
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class GenericScreenViewProcessor with ConfigServiceMixin implements IResponseProcessor<GenericScreenViewResponse> {
+class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +56,7 @@ class GenericScreenViewProcessor with ConfigServiceMixin implements IResponsePro
 
     // Handle Screen Opening
     // if update == false => new screen that should be routed to
-    if (!screenGenericResponse.update && !getConfigService().isOffline()) {
+    if (!screenGenericResponse.update && !IConfigService().isOffline()) {
       RouteToWorkCommand workCommand = RouteToWorkCommand(
         screenName: screenGenericResponse.screenName,
         reason: "Server sent screen.generic response with update = 'false'",

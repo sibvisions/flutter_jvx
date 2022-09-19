@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../../mixin/services.dart';
 
-class UrlEditor extends StatelessWidget with ConfigServiceMixin {
+class UrlEditor extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,7 +14,7 @@ class UrlEditor extends StatelessWidget with ConfigServiceMixin {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  UrlEditor({
+  const UrlEditor({
     required this.controller,
     Key? key,
   }) : super(key: key);

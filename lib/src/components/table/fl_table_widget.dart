@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -12,7 +12,7 @@ import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'table_size.dart';
 
-class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin {
+class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +66,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTableWidget({
+  const FlTableWidget({
     Key? key,
     required FlTableModel model,
     required this.chunkData,
@@ -214,7 +214,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin 
           pCellEditorJson: colDef.cellEditorJson,
           onChange: (value) => onValueChanged?.call(value, pIndex, colDef.name),
           onEndEditing: (value) => onEndEditing?.call(value, pIndex, colDef.name),
-          pUiService: getUiService(),
+          pUiService: IUiService(),
         );
 
         cellEditor.setValue(value);

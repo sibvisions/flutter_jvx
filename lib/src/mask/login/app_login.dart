@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import 'arc_clipper.dart';
 
 /// Login page of the app, also used for reset/change password
-class AppLogin extends StatelessWidget with ConfigServiceMixin {
+class AppLogin extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,14 +18,14 @@ class AppLogin extends StatelessWidget with ConfigServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    String? loginIcon = getConfigService().getAppStyle()?['login.icon'];
-    String? loginLogo = getConfigService().getAppStyle()?['login.logo'];
+    String? loginIcon = IConfigService().getAppStyle()?['login.icon'];
+    String? loginLogo = IConfigService().getAppStyle()?['login.logo'];
 
-    //Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.background']);
-    bool inverseColor = ParseUtil.parseBool(getConfigService().getAppStyle()?['login.inverseColor']) ?? false;
+    //Color? backgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['login.background']);
+    bool inverseColor = ParseUtil.parseBool(IConfigService().getAppStyle()?['login.inverseColor']) ?? false;
 
-    Color? topColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.topColor']);
-    Color? bottomColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['login.bottomColor']);
+    Color? topColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['login.topColor']);
+    Color? bottomColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['login.bottomColor']);
 
     if (inverseColor) {
       var tempTop = topColor;

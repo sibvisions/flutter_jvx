@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../../../../mixin/services.dart';
+import '../../../../../../services.dart';
 import '../../../../../../util/logging/flutter_logger.dart';
 import '../../../../../model/data/column_definition.dart';
 import '../../../../../model/data/filter_condition.dart';
@@ -17,7 +17,7 @@ import '../../../../../util/i_types.dart';
 /// https://www.sqlite.org/lang_keywords.html
 ///
 /// Has to be closed with [close()]
-class OfflineDatabase with ConfigServiceMixin {
+class OfflineDatabase {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,7 +72,7 @@ class OfflineDatabase with ConfigServiceMixin {
 
   createTables(List<DalMetaDataResponse> dalMetaData, {bool onlyIfNotExists = false}) {
     return Future.wait([
-      _createStructTables(getConfigService().getAppName()!, dalMetaData),
+      _createStructTables(IConfigService().getAppName()!, dalMetaData),
       ...dalMetaData.map((table) async {
         if (onlyIfNotExists && (await tableExists(table.dataProvider))) {
           return Future.value(null);
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<dynamic> dropTables(List<DalMetaDataResponse> dalMetaData) {
     return Future.wait([
       ...dalMetaData.map((table) => dropTable(table.dataProvider)),
-      _dropStructTables(getConfigService().getAppName()!),
+      _dropStructTables(IConfigService().getAppName()!),
     ]);
   }
 
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   Future<List<DalMetaDataResponse>> getMetaData({String? pDataProvider}) {
-    List<String> whereArgs = [getConfigService().getAppName()!];
+    List<String> whereArgs = [IConfigService().getAppName()!];
     if (pDataProvider != null) {
       whereArgs.add(pDataProvider);
     }

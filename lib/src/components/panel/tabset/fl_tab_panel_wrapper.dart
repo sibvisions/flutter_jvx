@@ -12,6 +12,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/label/fl_label_model.dart';
 import '../../../model/component/panel/fl_tab_panel_model.dart';
 import '../../../model/layout/alignments.dart';
+import '../../../service/ui/i_ui_service.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
@@ -23,7 +24,7 @@ import 'fl_tab_view.dart';
 enum TabPlacements { WRAP, TOP, LEFT, BOTTOM, RIGHT }
 
 class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
-  FlTabPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlTabPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlTabPanelWrapperState();
@@ -58,7 +59,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     super.initState();
 
     layoutData.layout = TabLayout(tabHeaderHeight: 0.0); //, selectedIndex: model.selectedIndex);
-    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
     layoutAfterBuild = true;
     tabController = FlTabController(tabs: [], vsync: this, changedIndexTo: changedIndexTo);
@@ -68,7 +69,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   @override
   receiveNewModel({required FlTabPanelModel newModel}) {
-    layoutData.children = getUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
     // Performance optimization.
@@ -315,7 +316,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     //   model.selectedIndex = pValue;
     // });
 
-    getUiService().sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
+    IUiService().sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
   }
 
   double get widthOfTabPanel {
@@ -393,7 +394,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   void closeTab(int index) {
     LOGGER.logI(pType: LogType.UI, pMessage: "Closing tab $index");
     lastDeletedTab = index;
-    getUiService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
+    IUiService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }
 }
 

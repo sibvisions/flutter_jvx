@@ -1,13 +1,13 @@
-import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_close_screen_request.dart';
+import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class CloseScreenCommandProcessor with ApiServiceMixin implements ICommandProcessor<CloseScreenCommand> {
+class CloseScreenCommandProcessor implements ICommandProcessor<CloseScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command) {
-    return getApiService().sendRequest(
+    return IApiService().sendRequest(
       request: ApiCloseScreenRequest(
         screenName: command.screenName,
       ),

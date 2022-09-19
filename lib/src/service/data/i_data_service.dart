@@ -6,9 +6,20 @@ import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/response/dal_fetch_response.dart';
 import '../../model/response/dal_meta_data_response.dart';
+import '../service.dart';
 
 /// Interface for a dataService meant to handle all dataBook related tasks,
 abstract class IDataService {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  factory IDataService() => services<IDataService>();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// Establishes the meta data of the given dataBook
   Future<bool> updateMetaData({required DalMetaDataResponse pMetaData});
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
-import '../../../../mixin/services.dart';
+import '../../../../services.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
@@ -26,7 +26,7 @@ import '../shared/processor/ui/ui_processor.dart';
 /// [CommandService] is used to processCommands(facilitating communication between Services.
 /// Will take in Commands and transfer them to a [ICommandProcessor] which will process its
 /// contents, resulting in potentially more commands.
-class CommandService with UiServiceMixin implements ICommandService {
+class CommandService implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -149,7 +149,7 @@ class CommandService with UiServiceMixin implements ICommandService {
       return [];
     }
 
-    getUiService().getAppManager()?.modifyCommands(commands, pCommand);
+    IUiService().getAppManager()?.modifyCommands(commands, pCommand);
 
     // Executes Commands resulting from incoming command.
     // Call routing commands last, all other actions must take priority.

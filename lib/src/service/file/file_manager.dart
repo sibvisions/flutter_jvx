@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import 'file_manager_mobile.dart';
 import 'file_manager_web.dart';
 
 /// File manager used to manage all file interaction (different implementations for web and mobile)
-abstract class IFileManager with ConfigServiceMixin {
+abstract class IFileManager {
   static const String IMAGES_PATH = "images";
   static const String LANGUAGES_PATH = "languages";
 
@@ -18,7 +18,7 @@ abstract class IFileManager with ConfigServiceMixin {
 
   /// Returns if all requirements are set to successfully access files
   bool isSatisfied() {
-    return getConfigService().getAppName() != null && getConfigService().getVersion() != null;
+    return IConfigService().getAppName() != null && IConfigService().getVersion() != null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

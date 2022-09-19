@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../mixin/services.dart';
+import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../app_menu.dart';
 
-class AppMenuGridItem extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
+class AppMenuGridItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,7 +20,7 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceMixin, UiService
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppMenuGridItem({
+  const AppMenuGridItem({
     Key? key,
     required this.menuItemModel,
     required this.onClick,
@@ -33,10 +33,9 @@ class AppMenuGridItem extends StatelessWidget with ConfigServiceMixin, UiService
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () =>
-          onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),
+      onTap: () => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context),
       child: Ink(
-        color: Theme.of(context).primaryColor.withOpacity(getConfigService().getOpacityMenu()),
+        color: Theme.of(context).primaryColor.withOpacity(IConfigService().getOpacityMenu()),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

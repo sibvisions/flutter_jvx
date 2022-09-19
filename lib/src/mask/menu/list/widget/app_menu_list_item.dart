@@ -1,12 +1,12 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../mixin/services.dart';
+import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../drawer/web_menu.dart';
 import '../../app_menu.dart';
 
-class AppMenuListItem extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
+class AppMenuListItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +24,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceMixin, UiService
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppMenuListItem({
+  const AppMenuListItem({
     Key? key,
     required this.menuItemModel,
     required this.onClick,
@@ -42,7 +42,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceMixin, UiService
     String key = "workScreenName";
     var pathSegments = (context.currentBeamLocation.state as BeamState).pathParameters;
     if (pathSegments.containsKey(key)) {
-      selected = getUiService().getComponentByName(pComponentName: pathSegments[key]!)?.screenLongName ==
+      selected = IUiService().getComponentByName(pComponentName: pathSegments[key]!)?.screenLongName ==
           menuItemModel.screenLongName;
     }
 
@@ -59,8 +59,7 @@ class AppMenuListItem extends StatelessWidget with ConfigServiceMixin, UiService
         menuItemModel.label,
         overflow: TextOverflow.ellipsis,
       ),
-      onTap: () =>
-          onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: getUiService(), pContext: context),
+      onTap: () => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context),
     );
   }
 }

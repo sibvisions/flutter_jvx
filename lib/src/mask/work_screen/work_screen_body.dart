@@ -36,8 +36,8 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
-//     String? backgroundImageString = getConfigService().getAppStyle()?['desktop.icon'];
+//     Color? backgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['desktop.color']);
+//     String? backgroundImageString = IConfigService().getAppStyle()?['desktop.icon'];
 
 //     final viewInsets = EdgeInsets.fromWindowPadding(
 //       WidgetsBinding.instance!.window.viewInsets,

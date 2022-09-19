@@ -2,9 +2,20 @@ import 'dart:ui';
 
 import '../../model/command/base_command.dart';
 import '../../model/layout/layout_data.dart';
+import '../service.dart';
 
 /// An [ILayoutService] handles the layouting of components.
 abstract class ILayoutService {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  factory ILayoutService() => services<ILayoutService>();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// Registers a parent for receiving child constraint changes.
   ///
   /// Returns Command to update UI if, layout has been newly calculated, returns an empty list if nothing happened.

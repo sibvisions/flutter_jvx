@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/command/api/login_command.dart';
 import 'remember_me_checkbox.dart';
 
@@ -18,7 +18,7 @@ class LoginCard extends StatefulWidget {
   State<LoginCard> createState() => _LoginCardState();
 }
 
-class _LoginCardState extends State<LoginCard> with ConfigServiceMixin, UiServiceMixin {
+class _LoginCardState extends State<LoginCard> {
   /// Controller for username text field
   late TextEditingController usernameController;
 
@@ -31,15 +31,15 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceMixin, UiServic
   @override
   void initState() {
     super.initState();
-    usernameController = TextEditingController(text: getConfigService().getUsername());
+    usernameController = TextEditingController(text: IConfigService().getUsername());
     passwordController = TextEditingController();
-    checkHolder = CheckHolder(isChecked: getConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false);
+    checkHolder = CheckHolder(isChecked: IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
-    String? loginTitle = getConfigService().getAppStyle()?['login.title'];
+    String? loginTitle = IConfigService().getAppStyle()?['login.title'];
 
     return Card(
       color: Colors.white.withOpacity(0.9),
@@ -51,7 +51,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceMixin, UiServic
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              loginTitle ?? getConfigService().getAppName()!.toUpperCase(),
+              loginTitle ?? IConfigService().getAppName()!.toUpperCase(),
               style: Theme.of(context).textTheme.headline6,
               textAlign: TextAlign.center,
             ),
@@ -66,7 +66,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceMixin, UiServic
               obscureText: true,
             ),
             const Padding(padding: EdgeInsets.all(5)),
-            if (getConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false)
+            if (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false)
               Center(
                 child: RememberMeCheckbox(
                   checkHolder: checkHolder,
@@ -91,7 +91,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceMixin, UiServic
   }
 
   Widget _getLostPasswordButton() {
-    if (!(getConfigService().getMetaData()?.lostPasswordEnabled == false)) {
+    if (!(IConfigService().getMetaData()?.lostPasswordEnabled == false)) {
       return TextButton(
         onPressed: () => context.beamToNamed("/login/lostPassword"),
         child: Text("${FlutterJVx.translate("Reset password")}?"),
@@ -110,7 +110,7 @@ class _LoginCardState extends State<LoginCard> with ConfigServiceMixin, UiServic
       reason: "LoginButton",
       createAuthKey: checkHolder.isChecked,
     );
-    getUiService().sendCommand(loginCommand);
+    IUiService().sendCommand(loginCommand);
   }
 
   void _onSettingsPressed({required BuildContext context}) {

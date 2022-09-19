@@ -1,13 +1,13 @@
-import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_set_values_request.dart';
+import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class SetValuesCommandProcessor with ApiServiceMixin implements ICommandProcessor<SetValuesCommand> {
+class SetValuesCommandProcessor implements ICommandProcessor<SetValuesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetValuesCommand command) {
-    return getApiService().sendRequest(
+    return IApiService().sendRequest(
       request: ApiSetValuesRequest(
         componentId: command.componentId,
         dataProvider: command.dataProvider,

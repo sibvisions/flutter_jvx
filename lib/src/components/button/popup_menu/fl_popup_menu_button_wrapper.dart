@@ -6,6 +6,7 @@ import '../../../model/component/button/fl_popup_menu_item_model.dart';
 import '../../../model/component/button/fl_popup_menu_model.dart';
 import '../../../model/component/button/fl_seperator.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../service/ui/i_ui_service.dart';
 import '../fl_button_wrapper.dart';
 import 'fl_popup_menu_button_widget.dart';
 import 'fl_popup_menu_item_widget.dart';
@@ -15,7 +16,7 @@ class FlPopupMenuButtonWrapper extends FlButtonWrapper<FlPopupMenuButtonModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlPopupMenuButtonWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlPopupMenuButtonWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -52,12 +53,12 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       List<FlComponentModel> menuItems = [];
 
       // Get all children models
-      List<FlComponentModel> listOfPopupMenuModels = getUiService().getChildrenModels(model.id);
+      List<FlComponentModel> listOfPopupMenuModels = IUiService().getChildrenModels(model.id);
       // Remove all non popup menu models
       listOfPopupMenuModels.removeWhere((element) => element is! FlPopupMenuModel);
 
       for (FlComponentModel popupMenuModel in listOfPopupMenuModels) {
-        List<FlComponentModel> listOfPopupMenuItems = getUiService().getChildrenModels(popupMenuModel.id);
+        List<FlComponentModel> listOfPopupMenuItems = IUiService().getChildrenModels(popupMenuModel.id);
         // Remove all non popup menu item models
         listOfPopupMenuItems.removeWhere((element) => element is! FlPopupMenuItemModel && element is! FlSeperatorModel);
 

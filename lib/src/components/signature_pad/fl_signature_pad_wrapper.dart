@@ -12,6 +12,7 @@ import '../../model/component/custom/fl_custom_container_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_signature_pad_widget.dart';
@@ -21,7 +22,7 @@ class FlSignaturePadWrapper extends BaseCompWrapperWidget<FlCustomContainerModel
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlSignaturePadWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlSignaturePadWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlSignaturePadWrapperState();
@@ -100,7 +101,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         columnNames: getDataColumns(),
         values: values,
         reason: "Drawing has ended on ${model.id}");
-    await getUiService().sendCommand(setValues);
+    await IUiService().sendCommand(setValues);
   }
 
   Future<void> deleteSignature() async {
@@ -113,11 +114,11 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         columnNames: getDataColumns(),
         values: [],
         reason: "Drawing has ended on ${model.id}");
-    await getUiService().sendCommand(setValues);
+    await IUiService().sendCommand(setValues);
   }
 
   void subscribe() {
-    getUiService().registerDataSubscription(
+    IUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
         from: -1,
@@ -129,7 +130,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   void unsubscribe() {
-    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
   void receiveSignatureData(DataRecord? pDataRecord) {

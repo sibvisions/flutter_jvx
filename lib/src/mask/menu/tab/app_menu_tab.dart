@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_jvx.dart';
-import '../../../../mixin/services.dart';
 import '../../../../util/image/image_loader.dart';
 import '../../../model/menu/menu_group_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../app_menu.dart';
 import '../grid/widget/app_menu_grid_item.dart';
 
-class AppMenuTab extends StatelessWidget with ConfigServiceMixin {
+class AppMenuTab extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

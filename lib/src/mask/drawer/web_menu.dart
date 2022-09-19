@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/app_menu.dart';
@@ -25,7 +25,7 @@ class WebMenu extends StatefulWidget {
   State<WebMenu> createState() => _WebMenuState();
 }
 
-class _WebMenuState extends State<WebMenu> with ConfigServiceMixin, UiServiceMixin, SingleTickerProviderStateMixin {
+class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   final TextStyle boldStyle = const TextStyle(
     fontWeight: FontWeight.bold,
@@ -71,12 +71,12 @@ class _WebMenuState extends State<WebMenu> with ConfigServiceMixin, UiServiceMix
   }
 
   Widget _buildMenu(BuildContext context) {
-    Color? color = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.sidemenu.color"]);
-    Color? groupColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.sidemenu.groupColor"]);
-    Color? textColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.sidemenu.textColor"]);
-    Color? selectionColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.sidemenu.selectionColor"]);
+    Color? color = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.color"]);
+    Color? groupColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.groupColor"]);
+    Color? textColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.textColor"]);
+    Color? selectionColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.selectionColor"]);
 
-    MenuModel menuModel = getUiService().getMenuModel();
+    MenuModel menuModel = IUiService().getMenuModel();
     return ListTileTheme.merge(
       tileColor: color,
       textColor: textColor,

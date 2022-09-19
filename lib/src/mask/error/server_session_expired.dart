@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 
-class ServerSessionExpired extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
+class ServerSessionExpired extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +16,7 @@ class ServerSessionExpired extends StatelessWidget with UiServiceMixin, ConfigSe
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ServerSessionExpired({
+  const ServerSessionExpired({
     required this.command,
     Key? key,
   }) : super(key: key);
@@ -50,10 +50,10 @@ class ServerSessionExpired extends StatelessWidget with UiServiceMixin, ConfigSe
   void _restartApp({required BuildContext context}) {
     StartupCommand startupCommand = StartupCommand(
       reason: "Session expired dialog",
-      username: getConfigService().getUsername(),
-      password: getConfigService().getPassword(),
+      username: IConfigService().getUsername(),
+      password: IConfigService().getPassword(),
     );
-    getUiService().sendCommand(startupCommand);
+    IUiService().sendCommand(startupCommand);
 
     //close popup
     Navigator.of(context).pop();

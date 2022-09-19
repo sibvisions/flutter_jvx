@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
@@ -60,7 +60,7 @@ class WorkScreen extends StatefulWidget {
   State<WorkScreen> createState() => _WorkScreenState();
 }
 
-class _WorkScreenState extends State<WorkScreen> with ConfigServiceMixin, UiServiceMixin, LayoutServiceMixin {
+class _WorkScreenState extends State<WorkScreen> {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
@@ -90,7 +90,7 @@ class _WorkScreenState extends State<WorkScreen> with ConfigServiceMixin, UiServ
 
     Widget body = Column(
       children: [
-        if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
+        if (IConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
         Expanded(child: _getScreen(context)),
       ],
     );
@@ -142,22 +142,22 @@ class _WorkScreenState extends State<WorkScreen> with ConfigServiceMixin, UiServ
   }
 
   _setScreenSize(Size size) {
-    getLayoutService()
+    ILayoutService()
         .setScreenSize(
           pScreenComponentId: (widget.screenWidget as FlPanelWrapper).id,
           pSize: size,
         )
-        .then((value) => value.forEach((e) async => await getUiService().sendCommand(e)));
+        .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
   }
 
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
-    if (!getConfigService().isOffline()) {
+    if (!IConfigService().isOffline()) {
       DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(
         screenWidth: pWidth,
         screenHeight: pHeight,
         reason: "Device was rotated",
       );
-      getUiService().sendCommand(deviceStatusCommand);
+      IUiService().sendCommand(deviceStatusCommand);
     }
   }
 
@@ -177,10 +177,10 @@ class _WorkScreenState extends State<WorkScreen> with ConfigServiceMixin, UiServ
       currentObjectFocused = null;
     }
 
-    if (getUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
+    if (IUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
       _customBack();
     } else {
-      getUiService().sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
+      IUiService().sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
     }
   }
 
@@ -200,11 +200,11 @@ class _WorkScreenState extends State<WorkScreen> with ConfigServiceMixin, UiServ
       currentObjectFocused = null;
     }
 
-    if (getUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
+    if (IUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
       _customBack();
     } else {
-      getUiService().sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
-      getUiService().sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
+      IUiService().sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
+      IUiService().sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
     }
   }
 
@@ -217,8 +217,8 @@ class _WorkScreenState extends State<WorkScreen> with ConfigServiceMixin, UiServ
   }
 
   Widget _getScreen(BuildContext context) {
-    Color? backgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
-    String? backgroundImageString = getConfigService().getAppStyle()?['desktop.icon'];
+    Color? backgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['desktop.color']);
+    String? backgroundImageString = IConfigService().getAppStyle()?['desktop.icon'];
 
     return Scaffold(
       appBar: widget.header,

@@ -11,7 +11,7 @@ import '../../../../custom/custom_component.dart';
 import '../../../../custom/custom_menu_item.dart';
 import '../../../../custom/custom_screen.dart';
 import '../../../../flutter_jvx.dart';
-import '../../../../mixin/services.dart';
+import '../../../../services.dart';
 import '../../../../util/extensions/list_extensions.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/base_command.dart';
@@ -34,7 +34,7 @@ import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
 
 /// Manages all interactions with the UI
-class UiService with ConfigServiceMixin, CommandServiceMixin implements IUiService {
+class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,7 +67,7 @@ class UiService with ConfigServiceMixin, CommandServiceMixin implements IUiServi
 
   @override
   Future<void> sendCommand(BaseCommand command, {Function(Object error, StackTrace stackTrace)? onError}) {
-    return getCommandService().sendCommand(command).catchError((error, stackTrace) {
+    return ICommandService().sendCommand(command).catchError((error, stackTrace) {
       if (onError != null) {
         onError.call(error, stackTrace);
       } else {
@@ -81,7 +81,7 @@ class UiService with ConfigServiceMixin, CommandServiceMixin implements IUiServi
     LOGGER.logE(pType: LogType.COMMAND, pError: error, pStacktrace: stackTrace);
 
     bool isTimeout = error is TimeoutException || error is SocketException;
-    getCommandService().sendCommand(OpenErrorDialogCommand(
+    ICommandService().sendCommand(OpenErrorDialogCommand(
       reason: "Command error in ui service",
       message: IUiService.getErrorMessage(error),
       isTimeout: isTimeout,
@@ -211,8 +211,8 @@ class UiService with ConfigServiceMixin, CommandServiceMixin implements IUiServi
         menuGroupModels.forEach((menuGroup) =>
             menuGroup.items.removeWhere((menuItem) => menuItem.screenLongName == customMenuItem.screenLongName));
 
-        if ((customScreen.showOnline && !getConfigService().isOffline()) ||
-            (customScreen.showOffline && getConfigService().isOffline())) {
+        if ((customScreen.showOnline && !IConfigService().isOffline()) ||
+            (customScreen.showOffline && IConfigService().isOffline())) {
           // Check if group already exists
           MenuGroupModel? menuGroupModel =
               menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem.group);
@@ -526,7 +526,7 @@ class UiService with ConfigServiceMixin, CommandServiceMixin implements IUiServi
 
     if (customScreen != null) {
       if (_hasReplaced(pScreenLongName: pScreenLongName)) {
-        if (getConfigService().isOffline()) {
+        if (IConfigService().isOffline()) {
           // Offline + Replace => Beam
           return true;
         } else {

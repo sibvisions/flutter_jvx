@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../mixin/services.dart';
-
-class AppMenuGridHeader extends SliverPersistentHeaderDelegate with ConfigServiceMixin {
+class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

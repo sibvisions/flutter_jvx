@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/component/component_subscription.dart';
@@ -15,8 +15,7 @@ import 'base_comp_wrapper_widget.dart';
 /// Model and layout init
 /// Subscription handling in UiService
 /// Getters for componentSize
-abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget>
-    with ConfigServiceMixin, UiServiceMixin {
+abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +42,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   void initState() {
     super.initState();
     // Models need to be same type, dart doesn't see that both extend [FlComponentModel]
-    model = getUiService().getComponentModel(pComponentId: widget.id)! as T;
+    model = IUiService().getComponentModel(pComponentId: widget.id)! as T;
 
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(
@@ -79,12 +78,12 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         }
       },
     );
-    getUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
+    IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
   }
 
   @override
   void dispose() {
-    getUiService().disposeSubscriptions(pSubscriber: this);
+    IUiService().disposeSubscriptions(pSubscriber: this);
     super.dispose();
   }
 
@@ -108,7 +107,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       left: getLeftForPositioned(),
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
-      child: Opacity(opacity: getConfigService().getOpacityControls(), child: child),
+      child: Opacity(opacity: IConfigService().getOpacityControls(), child: child),
     );
   }
 
@@ -215,7 +214,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
     PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(layoutData: pLayoutData, reason: pReason);
 
-    getUiService().sendCommand(preferredSizeCommand);
+    IUiService().sendCommand(preferredSizeCommand);
   }
 
   double getTopForPositioned() {

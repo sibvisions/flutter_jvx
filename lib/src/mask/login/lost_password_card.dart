@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/command/api/reset_password_command.dart';
 
 /// Card to be displayed in app-login for resetting the password
-class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
+class LostPasswordCard extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,6 +84,6 @@ class LostPasswordCard extends StatelessWidget with UiServiceMixin, ConfigServic
   void _sendRequest() {
     ResetPasswordCommand resetPasswordCommand =
         ResetPasswordCommand(reason: "User reset password", identifier: identifierController.text);
-    getUiService().sendCommand(resetPasswordCommand);
+    IUiService().sendCommand(resetPasswordCommand);
   }
 }

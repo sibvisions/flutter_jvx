@@ -1,28 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/command/api/logout_command.dart';
 import '../setting/widgets/change_password.dart';
 import 'mobile_frame.dart';
 import 'web_frame.dart';
 
-abstract class Frame extends StatefulWidget with ConfigServiceMixin, UiServiceMixin {
+abstract class Frame extends StatefulWidget {
   final WidgetBuilder builder;
 
-  Frame({
+  const Frame({
     super.key,
     required this.builder,
   });
 
   void openSettings(BuildContext context) {
-    getUiService().routeToSettings();
+    IUiService().routeToSettings();
   }
 
   void changePassword() {
-    getUiService().openDialog(
+    IUiService().openDialog(
       pBuilder: (_) => ChangePassword(
-        username: getConfigService().getUserInfo()?.userName,
+        username: IConfigService().getUserInfo()?.userName,
       ),
       pIsDismissible: true,
     );
@@ -30,7 +30,7 @@ abstract class Frame extends StatefulWidget with ConfigServiceMixin, UiServiceMi
 
   void logout() {
     LogoutCommand logoutCommand = LogoutCommand(reason: "Drawer menu logout");
-    getUiService().sendCommand(logoutCommand);
+    IUiService().sendCommand(logoutCommand);
   }
 
   factory Frame.getFrame(

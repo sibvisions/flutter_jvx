@@ -1,9 +1,9 @@
 import 'package:universal_io/io.dart';
 
-import '../../../../mixin/services.dart';
+import '../../../../services.dart';
 import 'api_command.dart';
 
-class UploadCommand extends ApiCommand with UiServiceMixin {
+class UploadCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,7 +23,7 @@ class UploadCommand extends ApiCommand with UiServiceMixin {
     required this.file,
     required super.reason,
   }) {
-    callback = () => getUiService().getAppManager()?.onSuccessfulStartup();
+    callback = () => IUiService().getAppManager()?.onSuccessfulStartup();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

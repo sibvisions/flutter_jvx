@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 
 import '../../../model/component/editor/cell_editor/fl_image_cell_editor_model.dart';
@@ -79,6 +81,8 @@ class FlImageCellEditor extends ICellEditor<FlImageCellEditorModel, dynamic> {
       widgetModel.image = model.defaultImageName;
       pDefaultImageUsed = true;
     }
+
+    log(_columnDefinition?.dataTypeIdentifier.toString() ?? "");
 
     return FlIconWidget(
       model: widgetModel,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../drawer/web_menu.dart';
@@ -10,7 +10,7 @@ import '../setting/settings_page.dart';
 import 'frame.dart';
 
 class WebFrame extends Frame {
-  WebFrame({
+  const WebFrame({
     super.key,
     required super.builder,
   });
@@ -24,7 +24,7 @@ class WebFrame extends Frame {
   FrameState createState() => WebFrameState();
 }
 
-class WebFrameState extends FrameState with ConfigServiceMixin {
+class WebFrameState extends FrameState {
   static const double spacing = 15.0;
   bool showWebMenu = true;
 
@@ -35,10 +35,10 @@ class WebFrameState extends FrameState with ConfigServiceMixin {
 
   @override
   PreferredSizeWidget getAppBar(List<Widget>? actions) {
-    var profileImage = getConfigService().getUserInfo()?.profileImage;
-    Color? topMenuColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.topmenu.color"]);
-    Color? iconColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?["web.topmenu.iconColor"]);
-    String? imagePath = getConfigService().getAppStyle()?["web.topmenu.image"];
+    var profileImage = IConfigService().getUserInfo()?.profileImage;
+    Color? topMenuColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.topmenu.color"]);
+    Color? iconColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.topmenu.iconColor"]);
+    String? imagePath = IConfigService().getAppStyle()?["web.topmenu.image"];
 
     return AppBar(
       leading: Builder(
@@ -106,8 +106,8 @@ class WebFrameState extends FrameState with ConfigServiceMixin {
         }),
         const Padding(padding: EdgeInsets.only(right: spacing)),
       ],
-      backgroundColor: getConfigService().isOffline() ? Colors.grey.shade500 : topMenuColor,
-      elevation: getConfigService().isOffline() ? 0 : null,
+      backgroundColor: IConfigService().isOffline() ? Colors.grey.shade500 : topMenuColor,
+      elevation: IConfigService().isOffline() ? 0 : null,
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../../../util/parse_util.dart';
 import '../../../model/command/api/set_value_command.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../../service/ui/i_ui_service.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_text_field_widget.dart';
@@ -13,7 +14,7 @@ class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTextFieldWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlTextFieldWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -104,7 +105,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   void endEditing(String pValue) {
     SetValueCommand setValue =
         SetValueCommand(componentName: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
-    getUiService().sendCommand(setValue);
+    IUiService().sendCommand(setValue);
 
     setState(() {});
   }

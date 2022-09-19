@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:universal_io/io.dart';
 
 import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
@@ -18,10 +18,17 @@ import '../../model/layout/layout_data.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/dal_meta_data_response.dart';
 import '../command/i_command_service.dart';
+import '../service.dart';
 
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
 abstract class IUiService {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  factory IUiService() => services<IUiService>();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

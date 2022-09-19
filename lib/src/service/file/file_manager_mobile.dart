@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import 'file_manager.dart';
 
-class FileMangerMobile extends IFileManager with ConfigServiceMixin {
+class FileMangerMobile extends IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -120,8 +120,8 @@ class FileMangerMobile extends IFileManager with ConfigServiceMixin {
 
   /// Checks of version & name are set will return "directory/appName/appVersion"
   String _getSavePath({required String pPath}) {
-    String? appName = getConfigService().getAppName();
-    String? version = getConfigService().getVersion();
+    String? appName = IConfigService().getAppName();
+    String? version = IConfigService().getVersion();
     if (appName == null || version == null) {
       throw Exception("App Version/Name was not set while trying to save/read files!");
     }

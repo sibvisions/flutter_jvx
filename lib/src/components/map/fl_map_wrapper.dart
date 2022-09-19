@@ -4,7 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/fl_component_model.dart';
@@ -16,13 +16,13 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_map_widget.dart';
 
 class FlMapWrapper extends BaseCompWrapperWidget<FlMapModel> {
-  FlMapWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlMapWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlMapWrapperState();
 }
 
-class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiServiceMixin {
+class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   DataChunk? _chunkData;
 
   List<Marker> markers = [];
@@ -69,7 +69,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void subscribe() {
     if (model.pointsDataBook != null) {
-      getUiService().registerDataSubscription(
+      IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
@@ -85,7 +85,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     }
 
     if (model.groupDataBook != null) {
-      getUiService().registerDataSubscription(
+      IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
           from: 0,
@@ -103,11 +103,11 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void unsubscribe() {
     if (model.groupDataBook != null) {
-      getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.groupDataBook!);
+      IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.groupDataBook!);
     }
 
     if (model.pointsDataBook != null) {
-      getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.pointsDataBook!);
+      IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.pointsDataBook!);
     }
   }
 
@@ -178,7 +178,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void onPointSelection(LatLng latLng) {
     if (model.pointSelectionEnabled && model.pointsDataBook != null) {
-      getUiService().sendCommand(
+      IUiService().sendCommand(
         SetValuesCommand(
           componentId: model.id,
           dataProvider: model.pointsDataBook!,

@@ -4,7 +4,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../../mixin/services.dart';
+import '../../../../../services.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/table/fl_table_model.dart';
@@ -25,7 +25,7 @@ class FlLinkedCellPicker extends StatefulWidget {
   State<FlLinkedCellPicker> createState() => _FlLinkedCellPickerState();
 }
 
-class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceMixin, ConfigServiceMixin {
+class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,11 +172,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
 
   @override
   void dispose() {
-    getUiService().disposeSubscriptions(
+    IUiService().disposeSubscriptions(
       pSubscriber: this,
     );
 
-    getUiService().sendCommand(FilterCommand(
+    IUiService().sendCommand(FilterCommand(
         editorId: widget.name,
         value: "",
         dataProvider: widget.model.linkReference.dataProvider,
@@ -263,7 +263,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       }
     }
 
-    getUiService().sendCommand(
+    IUiService().sendCommand(
       FilterCommand(
           editorId: widget.name,
           value: lastChangedFilter,
@@ -311,7 +311,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   //     return SizedBox(
   //       height: 50,
   //       child: Center(
-  //         child: Text(getConfigService().translateText("Loading...")),
+  //         child: Text(IConfigService().translateText("Loading...")),
   //       ),
   //     );
   //   }
@@ -367,7 +367,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void subscribe() {
-    getUiService().registerDataSubscription(
+    IUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
         dataProvider: model.linkReference.dataProvider,
@@ -380,7 +380,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void unsubscribe() {
-    getUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.dataProvider);
+    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.dataProvider);
   }
 
   List<String> columnNamesToShow() {

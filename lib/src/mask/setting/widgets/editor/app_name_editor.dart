@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../../mixin/services.dart';
 
-class AppNameEditor extends StatelessWidget with ConfigServiceMixin {
+class AppNameEditor extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,7 +14,7 @@ class AppNameEditor extends StatelessWidget with ConfigServiceMixin {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppNameEditor({required this.controller, Key? key}) : super(key: key);
+  const AppNameEditor({required this.controller, Key? key}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

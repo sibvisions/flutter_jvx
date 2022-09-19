@@ -1,4 +1,4 @@
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/command/api/api_command.dart';
 import '../../model/command/api/change_password_command.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -18,7 +18,7 @@ import 'i_command_progress_handler.dart';
 import 'loading_overlay.dart';
 
 /// The [LoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
-class LoadingProgressHandler with ConfigServiceMixin implements ICommandProgressHandler {
+class LoadingProgressHandler implements ICommandProgressHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,7 +32,7 @@ class LoadingProgressHandler with ConfigServiceMixin implements ICommandProgress
 
   @override
   void notifyProgressStart(BaseCommand pCommand) async {
-    if (isSupported(pCommand) && !getConfigService().isOffline()) {
+    if (isSupported(pCommand) && !IConfigService().isOffline()) {
       _loadingCommandAmount++;
       if (_loadingCommandAmount == 1) {
         LoadingOverlay.of(IUiService.getCurrentContext())?.show(pCommand.loadingDelay);

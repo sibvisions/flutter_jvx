@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../../../mixin/services.dart';
+import '../../../../../../services.dart';
 import '../../../../../../util/device_info/device_info.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
@@ -8,12 +8,10 @@ import '../../../../../model/request/api_startup_request.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
-class StartUpCommandProcessor
-    with ConfigServiceMixin, ApiServiceMixin, UiServiceMixin
-    implements ICommandProcessor<StartupCommand> {
+class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
-    IConfigService configService = getConfigService();
+    IConfigService configService = IConfigService();
 
     if (command.appName != null) {
       await configService.setAppName(command.appName!);
@@ -28,7 +26,7 @@ class StartUpCommandProcessor
     DeviceInfo deviceInfo = DeviceInfo();
     await deviceInfo.setSystemInfo();
 
-    getUiService().getAppManager()?.onInitStartup();
+    IUiService().getAppManager()?.onInitStartup();
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
       appMode: "full",
@@ -38,10 +36,10 @@ class StartUpCommandProcessor
       screenWidth: configService.getPhoneSize()?.width.toInt(),
       readAheadLimit: 100,
       deviceMode:
-          (kIsWeb && !getConfigService().isMobileOnly()) || getConfigService().isWebOnly() ? "mobileDesktop" : "mobile",
+          (kIsWeb && !IConfigService().isMobileOnly()) || IConfigService().isWebOnly() ? "mobileDesktop" : "mobile",
       username: command.username,
       password: command.password,
-      langCode: getConfigService().getLanguage(),
+      langCode: IConfigService().getLanguage(),
       technology: deviceInfo.technology,
       osName: deviceInfo.osName,
       osVersion: deviceInfo.osVersion,
@@ -49,9 +47,9 @@ class StartUpCommandProcessor
       deviceType: deviceInfo.deviceType,
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
-      startUpParameters: getConfigService().getStartupParameters(),
+      startUpParameters: IConfigService().getStartupParameters(),
     );
 
-    return getApiService().sendRequest(request: startUpRequest);
+    return IApiService().sendRequest(request: startUpRequest);
   }
 }

@@ -2,18 +2,16 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 
-import '../../../../../../mixin/services.dart';
+import '../../../../../../services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_images_command.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
-class SaveApplicationImagesCommandProcessor
-    with ConfigServiceMixin
-    implements ICommandProcessor<SaveApplicationImagesCommand> {
+class SaveApplicationImagesCommandProcessor implements ICommandProcessor<SaveApplicationImagesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationImagesCommand command) async {
-    IFileManager fileManager = getConfigService().getFileManager();
+    IFileManager fileManager = IConfigService().getFileManager();
 
     Uint8List content;
 
@@ -28,7 +26,7 @@ class SaveApplicationImagesCommandProcessor
       await fileManager.saveFile(pContent: content, pPath: "${IFileManager.IMAGES_PATH}/$name");
     }
 
-    getConfigService().imagesChanged();
+    IConfigService().imagesChanged();
 
     return [];
   }

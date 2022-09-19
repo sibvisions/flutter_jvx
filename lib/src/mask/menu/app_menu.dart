@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../custom/app_manager.dart';
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/menu/menu_model.dart';
@@ -32,12 +32,12 @@ typedef MenuFactory = Widget Function({
 
 /// Menu Widget - will display menu items accordingly to the menu mode set in
 /// [IConfigService]
-class AppMenu extends StatefulWidget with UiServiceMixin {
+class AppMenu extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppMenu({Key? key}) : super(key: key);
+  const AppMenu({Key? key}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -61,7 +61,7 @@ class AppMenu extends StatefulWidget with UiServiceMixin {
   }
 }
 
-class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMixin {
+class _AppMenuState extends State<AppMenu> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   late final Map<MenuMode, MenuFactory> menuFactory = {
     MenuMode.GRID_GROUPED: _getGroupedGridMenu,
@@ -76,7 +76,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
   Widget build(BuildContext pContext) {
     List<Widget> actions = [];
 
-    if (getConfigService().isOffline()) {
+    if (IConfigService().isOffline()) {
       actions.add(
         Builder(
           builder: (context) => IconButton(
@@ -109,7 +109,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
 
     Widget body = Column(
       children: [
-        if (getConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
+        if (IConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
         Expanded(child: _getMenu()),
       ],
     );
@@ -126,7 +126,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
   }
 
   Future<SyncDialogResult?> showSyncDialog() {
-    return getUiService().openDialog(
+    return IUiService().openDialog(
       pBuilder: (context) => AlertDialog(
         title: Text(
           FlutterJVx.translate("Synchronization"),
@@ -148,7 +148,7 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
                       style: TextButton.styleFrom(foregroundColor: Colors.red),
                       child: Text(FlutterJVx.translate("Discard Changes")),
                       onPressed: () async {
-                        SyncDialogResult? result = await getUiService().openDialog(
+                        SyncDialogResult? result = await IUiService().openDialog(
                           pBuilder: (subContext) => AlertDialog(
                             title: Text(FlutterJVx.translate("Discard Offline Changes")),
                             content: Text(FlutterJVx.translate(
@@ -189,19 +189,19 @@ class _AppMenuState extends State<AppMenu> with UiServiceMixin, ConfigServiceMix
   }
 
   Widget _getMenu() {
-    MenuMode menuMode = getConfigService().getMenuMode();
+    MenuMode menuMode = IConfigService().getMenuMode();
 
     // Overriding menu mode
-    AppManager? customAppManager = getUiService().getAppManager();
+    AppManager? customAppManager = IUiService().getAppManager();
     menuMode = customAppManager?.getMenuMode(menuMode) ?? menuMode;
 
     MenuFactory menuBuilder = menuFactory[menuMode]!;
 
-    Color? menuBackgroundColor = ParseUtil.parseHexColor(getConfigService().getAppStyle()?['desktop.color']);
-    String? menuBackgroundImage = getConfigService().getAppStyle()?['desktop.icon'];
+    Color? menuBackgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['desktop.color']);
+    String? menuBackgroundImage = IConfigService().getAppStyle()?['desktop.icon'];
 
     return menuBuilder(
-      menuModel: getUiService().getMenuModel(),
+      menuModel: IUiService().getMenuModel(),
       onClick: AppMenu.menuItemPressed,
       backgroundImageString: menuBackgroundImage,
       menuBackgroundColor: menuBackgroundColor,

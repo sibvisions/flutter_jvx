@@ -2,13 +2,12 @@ import 'package:flutter/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../../flutter_jvx.dart';
-import '../../../../../mixin/services.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../app_menu.dart';
 import 'app_menu_grid_header.dart';
 import 'app_menu_grid_item.dart';
 
-class AppMenuGridGroup extends StatelessWidget with ConfigServiceMixin {
+class AppMenuGridGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

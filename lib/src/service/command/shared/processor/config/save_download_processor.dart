@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:file_saver/file_saver.dart';
 import 'package:path/path.dart' as path;
 
-import '../../../../../../mixin/services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_download_command.dart';
 import '../../i_command_processor.dart';
 
-class SaveDownloadCommandProcessor with ConfigServiceMixin implements ICommandProcessor<SaveDownloadCommand> {
+class SaveDownloadCommandProcessor implements ICommandProcessor<SaveDownloadCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveDownloadCommand command) async {
     String extension = path.extension(command.fileName);

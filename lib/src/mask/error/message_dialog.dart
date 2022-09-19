@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
-import '../../../mixin/services.dart';
+import '../../../services.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/ui/view/message/open_message_dialog_command.dart';
 
 /// This is a standard template for a server side message.
-class MessageDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
+class MessageDialog extends StatelessWidget {
   /// the type for ok, cancel buttons.
   static const int MESSAGE_BUTTON_OK_CANCEL = 4;
 
@@ -33,7 +33,7 @@ class MessageDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMi
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  MessageDialog({
+  const MessageDialog({
     required this.command,
     Key? key,
   }) : super(key: key);
@@ -63,11 +63,11 @@ class MessageDialog extends StatelessWidget with ConfigServiceMixin, UiServiceMi
   void _closeScreen(BuildContext context) {
     CloseFrameCommand closeScreenCommand =
         CloseFrameCommand(frameName: command.componentId, reason: "Message Dialog was dismissed");
-    getUiService().sendCommand(closeScreenCommand);
+    IUiService().sendCommand(closeScreenCommand);
   }
 
   void _pressButton(BuildContext context, String componentId) {
-    getUiService().sendCommand(PressButtonCommand(
+    IUiService().sendCommand(PressButtonCommand(
       componentName: componentId,
       reason: "Button has been pressed",
     ));

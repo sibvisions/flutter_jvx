@@ -1,7 +1,7 @@
-import '../../../../mixin/services.dart';
+import '../../../../services.dart';
 import 'api_command.dart';
 
-class StartupCommand extends ApiCommand with UiServiceMixin {
+class StartupCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,7 +25,7 @@ class StartupCommand extends ApiCommand with UiServiceMixin {
     this.password,
     required super.reason,
   }) {
-    callback = () => getUiService().getAppManager()?.onSuccessfulStartup();
+    callback = () => IUiService().getAppManager()?.onSuccessfulStartup();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

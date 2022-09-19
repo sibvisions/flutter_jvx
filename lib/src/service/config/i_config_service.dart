@@ -7,12 +7,19 @@ import '../../mask/menu/menu_mode.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/response/application_meta_data_response.dart';
 import '../file/file_manager.dart';
+import '../service.dart';
 
 /// Defines the base construct of a [IConfigService]
 /// Config service is used to store & access all configurable data,
 /// also stores session based data such as clientId and userData.
 abstract class IConfigService {
   static final RegExp langRegex = RegExp("_(?<name>[a-z]+)");
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  factory IConfigService() => services<IConfigService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions

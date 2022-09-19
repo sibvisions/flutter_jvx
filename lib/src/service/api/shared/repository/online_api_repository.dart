@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
-import '../../../../../mixin/services.dart';
+import '../../../../../services.dart';
 import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/config/api/api_config.dart';
@@ -46,7 +46,7 @@ import '../i_repository.dart';
 typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson, required Object originalRequest});
 
 /// Handles all possible requests to the mobile server.
-class OnlineApiRepository with ConfigServiceMixin, UiServiceMixin implements IRepository {
+class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,7 +122,7 @@ class OnlineApiRepository with ConfigServiceMixin, UiServiceMixin implements IRe
   @override
   Future<void> start() async {
     if (isStopped()) {
-      client = HttpClient()..connectionTimeout = Duration(seconds: getConfigService().getAppConfig()!.requestTimeout!);
+      client = HttpClient()..connectionTimeout = Duration(seconds: IConfigService().getAppConfig()!.requestTimeout!);
     }
   }
 
@@ -151,8 +151,8 @@ class OnlineApiRepository with ConfigServiceMixin, UiServiceMixin implements IRe
     if (uri != null) {
       try {
         if (pRequest is ISessionRequest) {
-          if (getConfigService().getClientId()?.isNotEmpty == true) {
-            pRequest.clientId = getConfigService().getClientId()!;
+          if (IConfigService().getClientId()?.isNotEmpty == true) {
+            pRequest.clientId = IConfigService().getClientId()!;
           } else {
             throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
           }
@@ -181,8 +181,8 @@ class OnlineApiRepository with ConfigServiceMixin, UiServiceMixin implements IRe
 
         String responseBody = await _decodeBody(response);
 
-        if (getUiService().getAppManager() != null) {
-          var overrideResponse = await getUiService().getAppManager()?.handleResponse(
+        if (IUiService().getAppManager() != null) {
+          var overrideResponse = await IUiService().getAppManager()?.handleResponse(
                 pRequest,
                 responseBody,
                 () => _sendPostRequest(uri, pRequest),
@@ -202,9 +202,9 @@ class OnlineApiRepository with ConfigServiceMixin, UiServiceMixin implements IRe
         List<dynamic> jsonResponse = _parseAndCheckJson(responseBody);
         List<ApiResponse> parsedResponseObjects = _responseParser(pJsonList: jsonResponse, originalRequest: pRequest);
 
-        getUiService().getAppManager()?.modifyResponses(parsedResponseObjects, pRequest);
+        IUiService().getAppManager()?.modifyResponses(parsedResponseObjects, pRequest);
 
-        if (getConfigService().isOffline()) {
+        if (IConfigService().isOffline()) {
           var viewResponse = parsedResponseObjects.firstWhereOrNull((element) => element is MessageView);
           if (viewResponse != null) {
             var messageViewResponse = viewResponse as MessageView;
@@ -248,7 +248,7 @@ class OnlineApiRepository with ConfigServiceMixin, UiServiceMixin implements IRe
       _cookies.forEach((value) => request.cookies.add(value));
     }
 
-    getUiService().getAppManager()?.modifyCookies(request.cookies);
+    IUiService().getAppManager()?.modifyCookies(request.cookies);
 
     _headers.forEach((key, value) => request.headers.set(key, value));
 
