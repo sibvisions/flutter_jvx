@@ -44,26 +44,20 @@ class MessageDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        _closeScreen(context);
-        return true;
-      },
-      child: AlertDialog(
-        backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-        title: Text(FlutterJVx.translate(command.title)),
-        content: Text(FlutterJVx.translate(command.message!)),
-        actions: [
-          ..._getButtons(context, command.buttonType),
-        ],
-      ),
+    return AlertDialog(
+      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
+      title: Text(FlutterJVx.translate(command.title)),
+      content: Text(FlutterJVx.translate(command.message!)),
+      actions: [
+        ..._getButtons(context, command.buttonType),
+      ],
     );
   }
 
-  void _closeScreen(BuildContext context) {
-    CloseFrameCommand closeScreenCommand =
-        CloseFrameCommand(frameName: command.componentId, reason: "Message Dialog was dismissed");
-    IUiService().sendCommand(closeScreenCommand);
+  void close() {
+    IUiService().sendCommand(
+      CloseFrameCommand(frameName: command.componentId, reason: "Message Dialog was dismissed"),
+    );
   }
 
   void _pressButton(BuildContext context, String componentId) {
@@ -71,7 +65,6 @@ class MessageDialog extends StatelessWidget {
       componentName: componentId,
       reason: "Button has been pressed",
     ));
-    Navigator.of(context).pop();
   }
 
   List<Widget> _getButtons(BuildContext context, int buttonType) {

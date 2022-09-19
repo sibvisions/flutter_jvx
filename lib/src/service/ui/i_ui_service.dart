@@ -6,6 +6,7 @@ import 'package:universal_io/io.dart';
 import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
 import '../../../custom/custom_screen.dart';
+import '../../mask/error/message_dialog.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
@@ -194,6 +195,15 @@ abstract class IUiService {
     required String pDataProvider,
     required DalMetaDataResponse pMetaData,
   });
+
+  Map<String, MessageDialog> getFrames();
+
+  void showFrame({
+    required String componentId,
+    required MessageDialog pDialog,
+  });
+
+  void closeFrame({required String componentId});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom

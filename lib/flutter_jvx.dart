@@ -202,7 +202,11 @@ class FlutterJVxState extends State<FlutterJVx> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.none ||
                       !snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
-                    return LoadingOverlay(child: child);
+                    return Stack(children: [
+                      if (child != null) child,
+                      ..._getFrames(),
+                      const LoadingOverlay(),
+                    ]);
                   }
 
                   return Stack(children: [
@@ -432,6 +436,32 @@ class FlutterJVxState extends State<FlutterJVx> {
         ],
       ),
     );
+  }
+
+  List<Widget> _getFrames() {
+    return IUiService()
+        .getFrames()
+        .values
+        .map(
+          (e) => Stack(
+            children: [
+              Opacity(
+                opacity: 0.7,
+                child: ModalBarrier(
+                  dismissible: e.command.closable,
+                  color: Colors.black54,
+                  onDismiss: () {
+                    e.close();
+                    IUiService().closeFrame(componentId: e.command.componentId);
+                    setState(() {});
+                  },
+                ),
+              ),
+              e,
+            ],
+          ),
+        )
+        .toList();
   }
 }
 

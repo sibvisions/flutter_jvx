@@ -21,6 +21,7 @@ import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
 import '../../../../model/response/application_parameter_response.dart';
 import '../../../../model/response/authentication_data_response.dart';
+import '../../../../model/response/close_frame_response.dart';
 import '../../../../model/response/close_screen_response.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
@@ -58,6 +59,8 @@ class OnlineApiRepository implements IRepository {
         ApplicationParametersResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.closeScreen: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         CloseScreenResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.closeFrame: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        CloseFrameResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         DalFetchResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.menu: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>

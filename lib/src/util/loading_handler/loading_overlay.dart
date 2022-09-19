@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class LoadingOverlay extends StatefulWidget {
-  final Widget? child;
-
   const LoadingOverlay({
     Key? key,
-    required this.child,
   }) : super(key: key);
 
   static LoadingOverlayState? of(BuildContext? context) {
@@ -46,20 +43,18 @@ class LoadingOverlayState extends State<LoadingOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        if (widget.child != null) widget.child!,
-        if (_loading)
-          FutureBuilder(
-            future: _loadingDelayFuture,
-            builder: (context, snapshot) {
-              return Stack(
-                children: getLoadingIndicator(context, snapshot.connectionState == ConnectionState.done),
-              );
-            },
-          ),
-      ],
-    );
+    if (_loading) {
+      return FutureBuilder(
+        future: _loadingDelayFuture,
+        builder: (context, snapshot) {
+          return Stack(
+            children: getLoadingIndicator(context, snapshot.connectionState == ConnectionState.done),
+          );
+        },
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
   List<Widget> getLoadingIndicator(BuildContext context, bool delayFinished) {

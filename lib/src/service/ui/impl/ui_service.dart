@@ -14,6 +14,7 @@ import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
 import '../../../../util/extensions/list_extensions.dart';
 import '../../../../util/logging/flutter_logger.dart';
+import '../../../mask/error/message_dialog.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
@@ -53,6 +54,9 @@ class UiService implements IUiService {
 
   /// List of all received
   final Map<String, LayoutData> _layoutDataList = {};
+
+  /// Map of all active frames (dialogs) with their componentId
+  final Map<String, MessageDialog> _activeFrames = {};
 
   /// Holds all custom screen modifications
   AppManager? appManager;
@@ -499,6 +503,24 @@ class UiService implements IUiService {
         .forEach((element) {
       element.onMetaData!(pMetaData);
     });
+  }
+
+  @override
+  Map<String, MessageDialog> getFrames() {
+    return _activeFrames;
+  }
+
+  @override
+  void showFrame({
+    required String componentId,
+    required MessageDialog pDialog,
+  }) {
+    _activeFrames[componentId] = pDialog;
+  }
+
+  @override
+  void closeFrame({required String componentId}) {
+    _activeFrames.remove(componentId);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

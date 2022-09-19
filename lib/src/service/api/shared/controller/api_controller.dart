@@ -8,6 +8,7 @@ import '../i_response_processor.dart';
 import '../processor/application_meta_data_processor.dart';
 import '../processor/application_parameters_processor.dart';
 import '../processor/authentication_data_processor.dart';
+import '../processor/close_frame_processor.dart';
 import '../processor/close_screen_processor.dart';
 import '../processor/dal_data_provider_changed_processor.dart';
 import '../processor/dal_fetch_processor.dart';
@@ -35,6 +36,7 @@ class ApiController implements IController {
   final IResponseProcessor _applicationMetaDataProcessor = ApplicationMetaDataProcessor();
   final IResponseProcessor _menuViewProcessor = MenuViewProcessor();
   final IResponseProcessor _closeScreenProcessor = CloseScreenProcessor();
+  final IResponseProcessor _closeFrameProcessor = CloseFrameProcessor();
   final IResponseProcessor _genericScreenViewProcessor = GenericScreenViewProcessor();
   final IResponseProcessor _dalMetaDataProcessor = DalMetaDataProcessor();
   final IResponseProcessor _dalFetchProcessor = DalFetchProcessor();
@@ -66,6 +68,7 @@ class ApiController implements IController {
       ApiResponseNames.menu: _menuViewProcessor,
       ApiResponseNames.screenGeneric: _genericScreenViewProcessor,
       ApiResponseNames.closeScreen: _closeScreenProcessor,
+      ApiResponseNames.closeFrame: _closeFrameProcessor,
       ApiResponseNames.dalMetaData: _dalMetaDataProcessor,
       ApiResponseNames.dalFetch: _dalFetchProcessor,
       ApiResponseNames.userData: _userDataProcessor,

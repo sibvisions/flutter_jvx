@@ -1,4 +1,5 @@
 import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/ui/delete_frame_command.dart';
 import '../../../../../model/command/ui/download_action_command.dart';
 import '../../../../../model/command/ui/route_to_login_command.dart';
 import '../../../../../model/command/ui/route_to_menu_command.dart';
@@ -12,6 +13,7 @@ import '../../../../../model/command/ui/view/message/open_error_dialog_command.d
 import '../../../../../model/command/ui/view/message/open_message_dialog_command.dart';
 import '../../../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../i_command_processor.dart';
+import 'delete_frame_command_processor.dart';
 import 'download_action_command_processor.dart';
 import 'route_to_login_command_processor.dart';
 import 'route_to_menu_command_processor.dart';
@@ -41,6 +43,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   final ICommandProcessor _openMessageDialogProcessor = OpenMessageDialogCommandProcessor();
   final ICommandProcessor _uploadActionProcessor = UploadActionCommandProcessor();
   final ICommandProcessor _downloadActionProcessor = DownloadActionCommandProcessor();
+  final ICommandProcessor _deleteFrameProcessor = DeleteFrameCommandProcessor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -71,6 +74,8 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _uploadActionProcessor.processCommand(command);
     } else if (command is DownloadActionCommand) {
       return _downloadActionProcessor.processCommand(command);
+    } else if (command is DeleteFrameCommand) {
+      return _deleteFrameProcessor.processCommand(command);
     }
 
     return [];

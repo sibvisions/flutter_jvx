@@ -9,10 +9,10 @@ import '../../../../i_command_processor.dart';
 class OpenMessageDialogCommandProcessor extends ICommandProcessor<OpenMessageDialogCommand> {
   @override
   Future<List<BaseCommand>> processCommand(OpenMessageDialogCommand command) async {
-    unawaited(IUiService().openDialog(
-      pBuilder: (_) => MessageDialog(command: command),
-      pIsDismissible: command.closable,
-    ));
+    IUiService().showFrame(
+      componentId: command.componentId,
+      pDialog: MessageDialog(command: command),
+    );
 
     return [];
   }
