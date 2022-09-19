@@ -21,7 +21,6 @@ export 'src/model/command/api/press_button_command.dart';
 export 'src/model/command/api/reload_menu_command.dart';
 export 'src/model/command/api/reset_password_command.dart';
 export 'src/model/command/api/select_record_command.dart';
-export 'src/model/command/api/set_api_config_command.dart';
 export 'src/model/command/api/set_value_command.dart';
 export 'src/model/command/api/set_values_command.dart';
 export 'src/model/command/api/startup_command.dart';

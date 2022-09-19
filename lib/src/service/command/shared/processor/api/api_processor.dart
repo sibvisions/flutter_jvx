@@ -21,7 +21,6 @@ import '../../../../../model/command/api/press_button_command.dart';
 import '../../../../../model/command/api/reload_menu_command.dart';
 import '../../../../../model/command/api/reset_password_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
-import '../../../../../model/command/api/set_api_config_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
@@ -50,7 +49,6 @@ import 'press_button_command_processor.dart';
 import 'reload_menu_command_processor.dart';
 import 'reset_password_command_processor.dart';
 import 'select_record_command_processor.dart';
-import 'set_api_config_command_processor.dart';
 import 'set_value_command_processor.dart';
 import 'set_values_command_processor.dart';
 import 'start_up_command_processor.dart';
@@ -104,9 +102,6 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   /// Processes [NavigationCommand]
   final ICommandProcessor _navigationProcessor = NavigationCommandProcessor();
-
-  /// Processes [SetApiConfigCommand]
-  final ICommandProcessor _setApiConfigProcessor = SetApiConfigCommandProcessor();
 
   /// Processes [FilterCommand]
   final ICommandProcessor _filterProcessor = FilterCommandProcessor();
@@ -172,8 +167,6 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _resetPasswordProcessor.processCommand(command);
     } else if (command is NavigationCommand) {
       return _navigationProcessor.processCommand(command);
-    } else if (command is SetApiConfigCommand) {
-      return _setApiConfigProcessor.processCommand(command);
     } else if (command is FilterCommand) {
       return _filterProcessor.processCommand(command);
     } else if (command is FetchCommand) {

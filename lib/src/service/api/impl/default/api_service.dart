@@ -1,5 +1,4 @@
 import '../../../../model/command/base_command.dart';
-import '../../../../model/config/api/api_config.dart';
 import '../../../../model/request/i_api_request.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
@@ -51,11 +50,5 @@ class ApiService implements IApiService {
   @override
   Future<void> setController(IController pController) async {
     controller = pController;
-  }
-
-  @override
-  void setApiConfig({required ApiConfig apiConfig}) {
-    if (repository == null) throw Exception("Repository not initialized");
-    repository!.setApiConfig(config: apiConfig);
   }
 }

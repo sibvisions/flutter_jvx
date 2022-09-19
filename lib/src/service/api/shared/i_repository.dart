@@ -1,4 +1,3 @@
-import '../../../model/config/api/api_config.dart';
 import '../../../model/request/i_api_request.dart';
 import '../../../model/response/api_response.dart';
 
@@ -20,7 +19,4 @@ abstract class IRepository {
   /// Executes [pRequest],
   /// will throw an exception if request fails to be executed
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest});
-
-  /// Replaces the current config
-  void setApiConfig({required ApiConfig config});
 }

@@ -93,9 +93,6 @@ class OnlineApiRepository implements IRepository {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Api config for remote endpoints and url
-  ApiConfig? apiConfig;
-
   /// Http client for outside connection
   HttpClient? client;
 
@@ -118,9 +115,7 @@ class OnlineApiRepository implements IRepository {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  OnlineApiRepository({
-    this.apiConfig,
-  });
+  OnlineApiRepository();
 
   @override
   Future<void> start() async {
@@ -147,9 +142,9 @@ class OnlineApiRepository implements IRepository {
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
     if (isStopped()) throw Exception("Repository not initialized");
-    if (apiConfig == null) throw Exception("ApiConfig not initialized");
 
-    Uri? uri = apiConfig!.uriMap[pRequest.runtimeType]?.call(pRequest);
+    var apiConfig = ApiConfig(serverConfig: IConfigService().getServerConfig());
+    Uri? uri = apiConfig.uriMap[pRequest.runtimeType]?.call(pRequest);
 
     if (uri != null) {
       try {
@@ -227,11 +222,6 @@ class OnlineApiRepository implements IRepository {
 
   Future<String> _decodeBody(HttpClientResponse response) {
     return response.transform(utf8.decoder).join();
-  }
-
-  @override
-  void setApiConfig({required ApiConfig config}) {
-    apiConfig = config;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

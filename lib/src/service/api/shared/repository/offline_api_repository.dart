@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import '../../../../../services.dart';
 import '../../../../../util/parse_util.dart';
-import '../../../../model/config/api/api_config.dart';
 import '../../../../model/data/data_book.dart';
 import '../../../../model/data/filter_condition.dart';
 import '../../../../model/data/subscriptions/data_record.dart';
@@ -133,11 +132,6 @@ class OfflineApiRepository implements IRepository {
     }
 
     return response != null ? [response] : [];
-  }
-
-  @override
-  void setApiConfig({required ApiConfig config}) {
-    // Do nothing
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

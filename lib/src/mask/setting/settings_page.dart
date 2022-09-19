@@ -8,10 +8,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
-import '../../model/command/api/set_api_config_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
-import '../../model/config/api/api_config.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_overlay.dart';
 import 'widgets/editor/app_name_editor.dart';
@@ -183,11 +181,6 @@ class _SettingsPageState extends State<SettingsPage> {
           if (value == true) {
             await IConfigService().setAppName(controller.text);
             setState(() {});
-
-            await IUiService().sendCommand(SetApiConfigCommand(
-              apiConfig: ApiConfig(serverConfig: IConfigService().getServerConfig()),
-              reason: "Settings url editor",
-            ));
           }
         });
       },
@@ -220,11 +213,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 var uri = Uri.parse(controller.text);
                 await IConfigService().setBaseUrl(uri.toString());
                 setState(() {});
-
-                await IUiService().sendCommand(SetApiConfigCommand(
-                  apiConfig: ApiConfig(serverConfig: IConfigService().getServerConfig()),
-                  reason: "Settings url editor",
-                ));
               } catch (e) {
                 await IUiService().sendCommand(OpenErrorDialogCommand(
                   reason: "parseURl",
@@ -373,21 +361,16 @@ class _SettingsPageState extends State<SettingsPage> {
   /// parses scanned code and saves values to config service
   void _openQRScanner() {
     IUiService().openDialog(
-      pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) {
+      pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) async {
         QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
-        IConfigService().setAppName(code.appName);
-        IConfigService().setBaseUrl(code.url);
-        setState(() {});
+        await IConfigService().setAppName(code.appName);
+        await IConfigService().setBaseUrl(code.url);
 
         // set username & password for later
         username = code.username;
         password = code.password;
 
-        SetApiConfigCommand apiConfigCommand = SetApiConfigCommand(
-          apiConfig: ApiConfig(serverConfig: IConfigService().getServerConfig()),
-          reason: "QR Scan replaced url",
-        );
-        IUiService().sendCommand(apiConfigCommand);
+        setState(() {});
       }),
     );
   }

@@ -13,9 +13,7 @@ import 'package:universal_io/io.dart';
 import 'config/app_config.dart';
 import 'custom/app_manager.dart';
 import 'src/mask/splash/splash_widget.dart';
-import 'src/model/command/api/set_api_config_command.dart';
 import 'src/model/command/api/startup_command.dart';
-import 'src/model/config/api/api_config.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
 import 'src/routing/locations/settings_location.dart';
@@ -374,11 +372,6 @@ class FlutterJVxState extends State<FlutterJVx> {
       uiService.routeToMenu(pReplaceRoute: true);
       return;
     }
-
-    await commandService.sendCommand(SetApiConfigCommand(
-      apiConfig: ApiConfig(serverConfig: configService.getServerConfig()),
-      reason: "Startup Api Config",
-    ));
 
     // Send startup to server
     await commandService.sendCommand(StartupCommand(

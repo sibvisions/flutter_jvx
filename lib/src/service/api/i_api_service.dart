@@ -1,5 +1,4 @@
 import '../../model/command/base_command.dart';
-import '../../model/config/api/api_config.dart';
 import '../../model/request/i_api_request.dart';
 import '../service.dart';
 import 'shared/i_controller.dart';
@@ -25,6 +24,4 @@ abstract class IApiService {
   Future<void> setRepository(IRepository pRepository);
 
   Future<void> setController(IController pController);
-
-  void setApiConfig({required ApiConfig apiConfig});
 }
