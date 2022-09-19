@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../layout/split_layout.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -21,7 +22,7 @@ class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
 }
 
 class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> {
-  bool canSendAgain = true;
+  final BehaviorSubject behaviourSubject = BehaviorSubject();
 
   @override
   void initState() {
@@ -29,6 +30,10 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
     layoutData.layout = SplitLayout(splitAlignment: model.orientation, leftTopRatio: model.dividerPosition);
     layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+
+    behaviourSubject.throttleTime(SplitLayout.UPDATE_INTERVALL).listen((_) {
+      registerParent();
+    });
 
     buildChildren(pSetStateOnChange: false);
     registerParent();
@@ -53,6 +58,16 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
     return getPositioned(child: panelWidget);
   }
+
+  @override
+  void dispose() {
+    behaviourSubject.close();
+    super.dispose();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget getDragSlider() {
     if (layoutData.hasPosition) {
@@ -80,28 +95,32 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
       dev.log(splitterHeight.toString());
 
+      // TODO: On drag the mouse pointer gets switched back to a normal pointer
       return Positioned(
         top: top,
         left: left,
         width: width,
         height: height,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onVerticalDragUpdate: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDrag : null,
-          onVerticalDragEnd: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDragEnd : null,
-          onHorizontalDragUpdate: model.orientation == SplitOrientation.VERTICAL ? _horizontalDrag : null,
-          onHorizontalDragEnd: model.orientation == SplitOrientation.VERTICAL ? _horizontalDragEnd : null,
-          child: Container(
-            color: Theme.of(context).backgroundColor,
-            child: Center(
-              child: Container(
-                width: splitterWidth,
-                height: splitterHeight,
-                padding: const EdgeInsets.all(1.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: const ColoredBox(
-                    color: Color(0xFFBDBDBD),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.resizeColumn,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onVerticalDragUpdate: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDrag : null,
+            onVerticalDragEnd: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDragEnd : null,
+            onHorizontalDragUpdate: model.orientation == SplitOrientation.VERTICAL ? _horizontalDrag : null,
+            onHorizontalDragEnd: model.orientation == SplitOrientation.VERTICAL ? _horizontalDragEnd : null,
+            child: Container(
+              color: Theme.of(context).backgroundColor,
+              child: Center(
+                child: Container(
+                  width: splitterWidth,
+                  height: splitterHeight,
+                  padding: const EdgeInsets.all(1.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: const ColoredBox(
+                      color: Color(0xFFBDBDBD),
+                    ),
                   ),
                 ),
               ),
@@ -125,14 +144,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     SplitLayout splitLayout = (layoutData.layout as SplitLayout);
     splitLayout.leftTopRatio = min(1.0, pos.dy / container.size.height) * 100;
 
-    if (canSendAgain) {
-      canSendAgain = false;
-      registerParent();
-
-      Future.delayed(SplitLayout.UPDATE_INTERVALL, () {
-        canSendAgain = true;
-      });
-    }
+    behaviourSubject.add(null);
   }
 
   void _horizontalDragEnd(DragEndDetails pDragDetails) {
@@ -146,13 +158,6 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     SplitLayout splitLayout = (layoutData.layout as SplitLayout);
     splitLayout.leftTopRatio = min(1.0, pos.dx / container.size.width) * 100;
 
-    if (canSendAgain) {
-      canSendAgain = false;
-      registerParent();
-
-      Future.delayed(SplitLayout.UPDATE_INTERVALL, () {
-        canSendAgain = true;
-      });
-    }
+    behaviourSubject.add(null);
   }
 }
