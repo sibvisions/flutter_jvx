@@ -1,8 +1,8 @@
+import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../../util/constants/i_color.dart';
 import '../../../layout/split_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_split_panel_model.dart';
@@ -73,6 +73,13 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         left = (currentPosition.width * (splitLayout.leftTopRatio / 100.0)) - (splitLayout.splitterSize / 2);
       }
 
+      double splitterWidth = model.orientation == SplitOrientation.VERTICAL ? width : width * 0.3;
+      double splitterHeight = model.orientation == SplitOrientation.VERTICAL ? height * 0.3 : height;
+
+      dev.log(splitterWidth.toString());
+
+      dev.log(splitterHeight.toString());
+
       return Positioned(
         top: top,
         left: left,
@@ -87,12 +94,15 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
           child: Container(
             color: Theme.of(context).backgroundColor,
             child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: Container(
-                  width: model.orientation == SplitOrientation.VERTICAL ? width : width * 0.3,
-                  height: model.orientation == SplitOrientation.VERTICAL ? height * 0.3 : height,
-                  color: IColor.darken(IColorConstants.COMPONENT_DISABLED),
+              child: Container(
+                width: splitterWidth,
+                height: splitterHeight,
+                padding: const EdgeInsets.all(1.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: const ColoredBox(
+                    color: Color(0xFFBDBDBD),
+                  ),
                 ),
               ),
             ),
