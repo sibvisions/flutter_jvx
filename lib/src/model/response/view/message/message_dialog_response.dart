@@ -32,7 +32,7 @@ class MessageDialogResponse extends MessageView {
     required super.title,
     super.message,
     required this.componentId,
-    required this.closable,
+    this.closable = true,
     required this.buttonType,
     required this.okComponentId,
     required this.notOkComponentId,
@@ -43,7 +43,7 @@ class MessageDialogResponse extends MessageView {
 
   MessageDialogResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : componentId = pJson[ApiObjectProperty.componentId],
-        closable = pJson[ApiObjectProperty.closable],
+        closable = pJson[ApiObjectProperty.closable] ?? true,
         buttonType = pJson[ApiObjectProperty.buttonType],
         okComponentId = pJson[ApiObjectProperty.okComponentId],
         notOkComponentId = pJson[ApiObjectProperty.notOkComponentId],
