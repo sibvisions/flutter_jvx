@@ -39,22 +39,16 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
         center: model.center,
       ),
       children: [
-        TileLayerWidget(
-          options: TileLayerOptions(
-            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            subdomains: ['a', 'b', 'c'],
-          ),
+        TileLayer(
+          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: const ['a', 'b', 'c'],
         ),
-        PolygonLayerWidget(
-          options: PolygonLayerOptions(
-            polygons: polygons,
-          ),
+        PolygonLayer(
+          polygons: polygons,
         ),
-        MarkerLayerWidget(
-          options: MarkerLayerOptions(
-            markers: markers,
-            rotate: true,
-          ),
+        MarkerLayer(
+          markers: markers,
+          rotate: true,
         )
       ],
     );
