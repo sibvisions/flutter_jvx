@@ -8,7 +8,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_dummy_widget.dart';
 
 class FlDummyWrapper<T extends FlDummyModel> extends BaseCompWrapperWidget<T> {
-  FlDummyWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlDummyWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlDummyWrapperState();

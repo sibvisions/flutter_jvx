@@ -10,7 +10,7 @@ class FlCheckBoxWrapper extends FlButtonWrapper<FlCheckBoxModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlCheckBoxWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlCheckBoxWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
