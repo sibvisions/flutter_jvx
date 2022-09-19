@@ -116,7 +116,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     MenuModel menuModel = IUiService().getMenuModel();
     return ListTileTheme.merge(
       iconColor: Theme.of(context).colorScheme.primary,
-      textColor: Colors.grey.shade800,
+      style: ListTileStyle.drawer,
       child: IconTheme(
         data: IconTheme.of(context).copyWith(
           size: 32,
