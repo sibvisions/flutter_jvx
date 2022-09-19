@@ -78,6 +78,7 @@ class ICellEditorModel {
       pKey: ApiObjectProperty.horizontalAlignment,
       pDefault: defaultModel.horizontalAlignment,
       pCurrent: horizontalAlignment,
+      pCondition: (pValue) => pValue < HorizontalAlignment.values.length && pValue >= 0,
       pConversion: HorizontalAlignmentE.fromDynamic,
     );
 
@@ -87,6 +88,7 @@ class ICellEditorModel {
       pKey: ApiObjectProperty.verticalAlignment,
       pDefault: defaultModel.verticalAlignment,
       pCurrent: verticalAlignment,
+      pCondition: (pValue) => pValue < VerticalAlignment.values.length && pValue >= 0,
       pConversion: VerticalAlignmentE.fromDynamic,
     );
 
@@ -121,6 +123,7 @@ class ICellEditorModel {
     required dynamic pDefault,
     required dynamic pCurrent,
     dynamic Function(dynamic)? pConversion,
+    bool Function(dynamic)? pCondition,
   }) {
     return ParseUtil.getPropertyValue(
       pJson: pJson,
@@ -128,6 +131,7 @@ class ICellEditorModel {
       pDefault: pDefault,
       pCurrent: pCurrent,
       pConversion: pConversion,
+      pCondition: pCondition,
     );
   }
 }

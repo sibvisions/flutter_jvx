@@ -230,10 +230,11 @@ abstract class ParseUtil {
     required dynamic pDefault,
     required dynamic pCurrent,
     dynamic Function(dynamic)? pConversion,
+    bool Function(dynamic)? pCondition,
   }) {
     if (pJson.containsKey(pKey)) {
       dynamic value = pJson[pKey];
-      if (value != null) {
+      if (value != null && (pCondition == null || pCondition.call(value))) {
         if (pConversion != null) {
           return pConversion.call(value);
         } else {

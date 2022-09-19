@@ -245,6 +245,7 @@ abstract class FlComponentModel {
       pKey: ApiObjectProperty.verticalAlignment,
       pDefault: defaultModel.verticalAlignment,
       pCurrent: verticalAlignment,
+      pCondition: (pValue) => pValue < VerticalAlignment.values.length && pValue >= 0,
       pConversion: VerticalAlignmentE.fromDynamic,
     );
     horizontalAlignment = getPropertyValue(
@@ -252,6 +253,7 @@ abstract class FlComponentModel {
       pKey: ApiObjectProperty.horizontalAlignment,
       pDefault: defaultModel.horizontalAlignment,
       pCurrent: horizontalAlignment,
+      pCondition: (pValue) => pValue < HorizontalAlignment.values.length && pValue >= 0,
       pConversion: HorizontalAlignmentE.fromDynamic,
     );
     toolTipText = getPropertyValue(
@@ -323,6 +325,7 @@ abstract class FlComponentModel {
     required dynamic pDefault,
     required dynamic pCurrent,
     dynamic Function(dynamic)? pConversion,
+    bool Function(dynamic)? pCondition,
   }) {
     return ParseUtil.getPropertyValue(
       pJson: pJson,
@@ -330,6 +333,7 @@ abstract class FlComponentModel {
       pDefault: pDefault,
       pCurrent: pCurrent,
       pConversion: pConversion,
+      pCondition: pCondition,
     );
   }
 
