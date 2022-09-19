@@ -1,11 +1,13 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
+import '../../../util/image/image_loader.dart';
 import '../../model/command/api/set_api_config_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
@@ -302,16 +304,27 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   SettingGroup _buildVersionInfo() {
-    SettingItem commitSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
-      value: IConfigService().getAppConfig()?.versionConfig?.commit ?? "",
-      title: FlutterJVx.translate("RCS"),
-    );
-
     SettingItem appVersionSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.github),
       valueNotifier: appVersionNotifier,
       title: FlutterJVx.translate("App version"),
+      onPressed: (value) => showLicensePage(
+        context: context,
+        applicationIcon: Image(
+          image: Svg(
+            ImageLoader.getAssetPath(
+              FlutterJVx.package,
+              'assets/images/J.svg',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    SettingItem commitSetting = SettingItem(
+      frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
+      value: IConfigService().getAppConfig()?.versionConfig?.commit ?? "",
+      title: FlutterJVx.translate("RCS"),
     );
 
     SettingItem buildDataSetting = SettingItem(
@@ -331,7 +344,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      items: [commitSetting, appVersionSetting, buildDataSetting],
+      items: [appVersionSetting, commitSetting, buildDataSetting],
     );
 
     return group;
