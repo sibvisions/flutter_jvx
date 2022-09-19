@@ -64,7 +64,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     EdgeInsets paddingInsets;
 
-    // TODO server sends it way too small atm
+    // Server sends it way too small -> currently ignored.
+    // Leave code for future implementation if wanted.
     // if (model.popupSize != null) {
     //   paddingInsets = EdgeInsets.fromLTRB(
     //     (screenSize.width - model.popupSize!.width) / 2,

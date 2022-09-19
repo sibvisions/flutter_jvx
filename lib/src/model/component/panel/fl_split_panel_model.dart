@@ -34,7 +34,7 @@ class FlSplitPanelModel extends FlPanelModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    // TODO DividerPosition -> currently ignored as its sent in pixels
+    // currently ignored as its sent in pixels, which are not mobile friendly
 
     // Orientation
     orientation = getPropertyValue(

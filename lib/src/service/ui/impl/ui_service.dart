@@ -99,7 +99,9 @@ class UiService implements IUiService {
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
     if (FlutterJVx.getCurrentContext() == null) {
-      //TODO fix workScreen web reload (e.g. send OpenScreenCommand)
+      // TODO fix workScreen web reload (e.g. send OpenScreenCommand)
+      // Potential Idea -> Go to menu on workscreen but send an OpenScreenCommand,
+      // which will route to the work screen once it is finished and returned.
       if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
         routerDelegate.setNewRoutePath(const RouteInformation(location: "/menu"));
       }
@@ -129,7 +131,9 @@ class UiService implements IUiService {
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
     if (FlutterJVx.getCurrentContext() == null) {
-      //TODO fix workScreen web reload (e.g. send OpenScreenCommand)
+      // TODO fix workScreen web reload (e.g. send OpenScreenCommand)
+      // Potential Idea -> Go to menu on workscreen but send an OpenScreenCommand,
+      // which will route to the work screen once it is finished and returned.
       if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
         routerDelegate.setNewRoutePath(RouteInformation(location: "/login/$mode"));
       }
