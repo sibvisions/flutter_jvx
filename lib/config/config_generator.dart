@@ -3,7 +3,7 @@ import '../src/model/config/api/endpoint_config.dart';
 class ConfigGenerator {
   static EndpointConfig generateFixedEndpoints() {
     return const EndpointConfig(
-      startup: "/api/v3/startup",
+      startup: "/api/v4/startup",
       login: "/api/v2/login",
       openScreen: "/api/v2/openScreen",
       deviceStatus: "/api/deviceStatus",
