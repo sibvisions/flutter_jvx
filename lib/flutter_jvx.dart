@@ -253,9 +253,7 @@ class FlutterJVxState extends State<FlutterJVx> {
 
       if (themeData.colorScheme.onPrimary.computeLuminance() == 0.0) {
         log("Replaced onPrimary with grey");
-        colorScheme = colorScheme.copyWith(
-          onPrimary: Colors.grey.shade800,
-        );
+        colorScheme = colorScheme.copyWith(onPrimary: Colors.grey.shade800);
       }
       if (themeData.colorScheme.onBackground.computeLuminance() == 0.0) {
         log("Replaced onBackground with grey");
