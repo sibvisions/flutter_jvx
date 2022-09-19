@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
+import 'package:universal_io/io.dart';
 
 import '../../../services.dart';
 import 'file_manager_mobile.dart';
