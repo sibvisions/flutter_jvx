@@ -179,10 +179,15 @@ class _SettingsPageState extends State<SettingsPage> {
             color: Theme.of(context).primaryColor,
           ),
           pTitleText: FlutterJVx.translate("App Name"),
-        ).then((value) {
+        ).then((value) async {
           if (value == true) {
-            IConfigService().setAppName(controller.text);
+            await IConfigService().setAppName(controller.text);
             setState(() {});
+
+            await IUiService().sendCommand(SetApiConfigCommand(
+              apiConfig: ApiConfig(serverConfig: IConfigService().getServerConfig()),
+              reason: "Settings url editor",
+            ));
           }
         });
       },
