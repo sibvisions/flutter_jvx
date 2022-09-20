@@ -44,7 +44,7 @@ class ErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title ?? FlutterJVx.translate("Error")),
+      title: Text(title?.isNotEmpty == true ? title! : FlutterJVx.translate("Error")),
       content: Text(message),
       actions: _getActions(context),
     );

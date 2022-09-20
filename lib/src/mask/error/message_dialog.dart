@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
@@ -45,8 +46,10 @@ class MessageDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(FlutterJVx.translate(command.title)),
-      content: Text(FlutterJVx.translate(command.message!)),
+      title: command.title?.isNotEmpty == true ? Text(command.title!) : null,
+      content: command.message!.substring(0, 6).toLowerCase().startsWith("<html>")
+          ? Html(data: command.message!)
+          : Text(command.message!),
       actions: [
         ..._getButtons(context, command.buttonType),
       ],

@@ -6,7 +6,7 @@ class MessageViewCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Title of the message
-  final String title;
+  final String? title;
 
   /// Message
   final String? message;
