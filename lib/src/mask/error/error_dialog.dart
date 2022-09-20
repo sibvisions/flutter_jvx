@@ -44,7 +44,6 @@ class ErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
       title: Text(title ?? FlutterJVx.translate("Error")),
       content: Text(message),
       actions: _getActions(context),

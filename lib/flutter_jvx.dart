@@ -391,7 +391,6 @@ class FlutterJVxState extends State<FlutterJVx> {
           ),
         ),
         AlertDialog(
-          backgroundColor: Theme.of(context).cardColor.withAlpha(255),
           title: Text(FlutterJVx.translate("Error")),
           content: Text(IUiService.getErrorMessage(snapshot.error!)),
           actions: [
@@ -419,7 +418,6 @@ class FlutterJVxState extends State<FlutterJVx> {
         return false;
       },
       child: AlertDialog(
-        backgroundColor: Theme.of(context).cardColor.withAlpha(255),
         title: const Text("FATAL ERROR"),
         content: Text(snapshot.error.toString()),
         actions: [

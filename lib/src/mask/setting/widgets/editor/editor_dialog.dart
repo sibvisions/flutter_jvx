@@ -34,7 +34,6 @@ class EditorDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        backgroundColor: Theme.of(context).dialogBackgroundColor.withAlpha(255),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

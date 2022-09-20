@@ -45,7 +45,6 @@ class MessageDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).cardColor.withAlpha(255),
       title: Text(FlutterJVx.translate(command.title)),
       content: Text(FlutterJVx.translate(command.message!)),
       actions: [
