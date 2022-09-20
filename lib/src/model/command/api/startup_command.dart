@@ -23,6 +23,7 @@ class StartupCommand extends ApiCommand {
     this.appName,
     this.username,
     this.password,
+    super.showLoading,
     required super.reason,
   }) {
     callback = () => IUiService().getAppManager()?.onSuccessfulStartup();

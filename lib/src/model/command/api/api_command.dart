@@ -6,5 +6,6 @@ import '../base_command.dart';
 abstract class ApiCommand extends BaseCommand {
   ApiCommand({
     required super.reason,
+    super.showLoading,
   });
 }

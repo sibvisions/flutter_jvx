@@ -387,6 +387,7 @@ class _SettingsPageState extends State<SettingsPage> {
           reason: "Open App from Settings",
           username: username,
           password: password,
+          showLoading: false,
         ));
       } catch (e, stackTrace) {
         IUiService().handleAsyncError(e, stackTrace);
