@@ -32,7 +32,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void notifyProgressStart(BaseCommand pCommand) async {
+  void notifyProgressStart(BaseCommand pCommand) {
     if (isSupported(pCommand) && !IConfigService().isOffline()) {
       _loadingCommandAmount++;
       if (_loadingCommandAmount == 1) {
@@ -42,12 +42,14 @@ class LoadingProgressHandler implements ICommandProgressHandler {
   }
 
   @override
-  void notifyProgressEnd(BaseCommand pCommand) async {
-    if (_loadingCommandAmount > 0) {
-      _loadingCommandAmount--;
-    }
-    if (_loadingCommandAmount == 0) {
-      LoadingOverlay.of(FlutterJVx.getCurrentContext())?.hide();
+  void notifyProgressEnd(BaseCommand pCommand) {
+    if (isSupported(pCommand)) {
+      if (_loadingCommandAmount > 0) {
+        _loadingCommandAmount--;
+      }
+      if (_loadingCommandAmount == 0) {
+        LoadingOverlay.of(FlutterJVx.getCurrentContext())?.hide();
+      }
     }
   }
 
