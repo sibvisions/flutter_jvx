@@ -247,15 +247,15 @@ class FlutterJVxState extends State<FlutterJVx> {
         backgroundColor: Colors.grey.shade50,
       );
 
-      if (themeData.colorScheme.onPrimary.computeLuminance() == 0.0) {
+      if (colorScheme.onPrimary.computeLuminance() == 0.0) {
         log("Replaced onPrimary with grey");
         colorScheme = colorScheme.copyWith(onPrimary: Colors.grey.shade800);
       }
-      if (themeData.colorScheme.onBackground.computeLuminance() == 0.0) {
+      if (colorScheme.onBackground.computeLuminance() == 0.0) {
         log("Replaced onBackground with grey");
         colorScheme = colorScheme.copyWith(onBackground: Colors.grey.shade800);
       }
-      if (themeData.colorScheme.onSurface.computeLuminance() == 0.0) {
+      if (colorScheme.onSurface.computeLuminance() == 0.0) {
         log("Replaced onSurface with grey");
         colorScheme = colorScheme.copyWith(onSurface: Colors.grey.shade800);
       }
