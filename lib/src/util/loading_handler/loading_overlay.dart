@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../../services.dart';
+
 class LoadingOverlay extends StatefulWidget {
+  final Widget? child;
+
   const LoadingOverlay({
     Key? key,
+    required this.child,
   }) : super(key: key);
 
   static LoadingOverlayState? of(BuildContext? context) {
@@ -15,11 +20,20 @@ class LoadingOverlay extends StatefulWidget {
 }
 
 class LoadingOverlayState extends State<LoadingOverlay> {
-  bool _loading = false;
+  GlobalKey<FramesWidgetState> framesKey = GlobalKey();
 
   Future? _loadingDelayFuture;
+  bool _loading = false;
 
   bool get isLoading => _loading;
+
+  void refresh() {
+    setState(() {});
+  }
+
+  void refreshFrames() {
+    framesKey.currentState?.setState(() {});
+  }
 
   void show(Duration delay) {
     if (!_loading) {
@@ -43,18 +57,21 @@ class LoadingOverlayState extends State<LoadingOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return FutureBuilder(
-        future: _loadingDelayFuture,
-        builder: (context, snapshot) {
-          return Stack(
-            children: getLoadingIndicator(context, snapshot.connectionState == ConnectionState.done),
-          );
-        },
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
+    return Stack(
+      children: [
+        if (widget.child != null) widget.child!,
+        FramesWidget(key: framesKey),
+        if (_loading)
+          FutureBuilder(
+            future: _loadingDelayFuture,
+            builder: (context, snapshot) {
+              return Stack(
+                children: getLoadingIndicator(context, snapshot.connectionState == ConnectionState.done),
+              );
+            },
+          ),
+      ],
+    );
   }
 
   List<Widget> getLoadingIndicator(BuildContext context, bool delayFinished) {
@@ -80,5 +97,45 @@ class LoadingOverlayState extends State<LoadingOverlay> {
           ),
         ),
     ];
+  }
+}
+
+class FramesWidget extends StatefulWidget {
+  const FramesWidget({super.key});
+
+  @override
+  State<FramesWidget> createState() => FramesWidgetState();
+}
+
+class FramesWidgetState extends State<FramesWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: _getFrames());
+  }
+
+  List<Widget> _getFrames() {
+    return IUiService()
+        .getFrames()
+        .values
+        .map(
+          (e) => Stack(
+            children: [
+              Opacity(
+                opacity: 0.7,
+                child: ModalBarrier(
+                  dismissible: e.command.closable,
+                  color: Colors.black54,
+                  onDismiss: () {
+                    e.close();
+                    IUiService().closeFrame(componentId: e.command.componentId);
+                    setState(() {});
+                  },
+                ),
+              ),
+              e,
+            ],
+          ),
+        )
+        .toList();
   }
 }

@@ -33,6 +33,7 @@ import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/menu_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
+import '../../../util/loading_handler/loading_overlay.dart';
 
 /// Manages all interactions with the UI
 class UiService implements IUiService {
@@ -516,11 +517,19 @@ class UiService implements IUiService {
     required MessageDialog pDialog,
   }) {
     _activeFrames[componentId] = pDialog;
+    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
   void closeFrame({required String componentId}) {
     _activeFrames.remove(componentId);
+    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+  }
+
+  @override
+  void closeFrames() {
+    _activeFrames.clear();
+    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
