@@ -381,26 +381,34 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   Widget _getStartupErrorDialog(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: AlertDialog(
-        backgroundColor: Theme.of(context).cardColor.withAlpha(255),
-        title: Text(FlutterJVx.translate("Error")),
-        content: Text(IUiService.getErrorMessage(snapshot.error!)),
-        actions: [
-          TextButton(
-            onPressed: () {
-              routerDelegate.setNewRoutePath(const RouteInformation(location: "/settings"));
-              startupFuture = null;
-              setState(() {});
-            },
-            child: Text(
-              FlutterJVx.translate("Go to Settings"),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
+    return Stack(
+      children: [
+        const Opacity(
+          opacity: 0.7,
+          child: ModalBarrier(
+            dismissible: false,
+            color: Colors.black54,
           ),
-        ],
-      ),
+        ),
+        AlertDialog(
+          backgroundColor: Theme.of(context).cardColor.withAlpha(255),
+          title: Text(FlutterJVx.translate("Error")),
+          content: Text(IUiService.getErrorMessage(snapshot.error!)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                routerDelegate.setNewRoutePath(const RouteInformation(location: "/settings"));
+                startupFuture = null;
+                setState(() {});
+              },
+              child: Text(
+                FlutterJVx.translate("Go to Settings"),
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
