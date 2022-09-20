@@ -264,6 +264,7 @@ class FlutterJVxState extends State<FlutterJVx> {
       themeData = themeData.copyWith(
         listTileTheme: themeData.listTileTheme.copyWith(
           textColor: themeData.colorScheme.onBackground,
+          iconColor: themeData.colorScheme.onBackground,
         ),
       );
     }
