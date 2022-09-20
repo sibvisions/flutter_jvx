@@ -2,10 +2,12 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../../services.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../frame_dialog.dart';
 
 /// This is a standard template for a server side error message.
-class ServerErrorDialog extends StatelessWidget {
+class ServerErrorDialog extends FrameDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +18,7 @@ class ServerErrorDialog extends StatelessWidget {
   final bool goToSettings;
 
   /// True if this dialog can be dismissed via button
-  final bool dismissible;
+  final bool closeable;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -25,9 +27,10 @@ class ServerErrorDialog extends StatelessWidget {
   const ServerErrorDialog({
     required this.command,
     this.goToSettings = false,
-    this.dismissible = false,
-    Key? key,
-  }) : super(key: key);
+    this.closeable = false,
+    super.dismissible,
+    super.key,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -55,7 +58,7 @@ class ServerErrorDialog extends StatelessWidget {
       actions.add(
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            IUiService().closeFrameDialog(this);
             context.beamToReplacementNamed("/settings");
           },
           child: Text(
@@ -69,7 +72,7 @@ class ServerErrorDialog extends StatelessWidget {
     if (dismissible) {
       actions.add(
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => IUiService().closeFrameDialog(this),
           child: Text(
             FlutterJVx.translate("Ok"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),

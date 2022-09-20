@@ -9,10 +9,7 @@ import '../../../../i_command_processor.dart';
 class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSessionExpiredDialogCommand> {
   @override
   Future<List<BaseCommand>> processCommand(OpenSessionExpiredDialogCommand command) async {
-    unawaited(IUiService().openDialog(
-      pBuilder: (_) => ServerSessionExpired(command: command),
-      pIsDismissible: false,
-    ));
+    IUiService().showFrameDialog(ServerSessionExpired(command: command));
 
     return [];
   }

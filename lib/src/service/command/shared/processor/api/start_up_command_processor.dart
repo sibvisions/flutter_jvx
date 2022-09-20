@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../../../../flutter_jvx.dart';
 import '../../../../../../services.dart';
 import '../../../../../../util/device_info/device_info.dart';
 import '../../../../../model/command/api/startup_command.dart';
@@ -27,6 +28,12 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
     await deviceInfo.setSystemInfo();
 
     IUiService().getAppManager()?.onInitStartup();
+
+    //Close frames on (re-)start
+    if (FlutterJVx.getCurrentContext() != null) {
+      IUiService().closeFrames();
+      IUiService().closeFrameDialogs();
+    }
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
       appMode: "full",

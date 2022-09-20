@@ -15,6 +15,7 @@ import '../../../../services.dart';
 import '../../../../util/extensions/list_extensions.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../mask/error/message_dialog.dart';
+import '../../../mask/frame_dialog.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
@@ -58,6 +59,7 @@ class UiService implements IUiService {
 
   /// Map of all active frames (dialogs) with their componentId
   final Map<String, MessageDialog> _activeFrames = {};
+  final List<FrameDialog> _activeDialogs = [];
 
   /// Holds all custom screen modifications
   AppManager? appManager;
@@ -530,6 +532,29 @@ class UiService implements IUiService {
   void closeFrames() {
     _activeFrames.clear();
     LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+  }
+
+  @override
+  List<FrameDialog> getFrameDialogs() {
+    return _activeDialogs;
+  }
+
+  @override
+  void showFrameDialog(FrameDialog pDialog) {
+    _activeDialogs.add(pDialog);
+    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
+  }
+
+  @override
+  void closeFrameDialog(FrameDialog pDialog) {
+    _activeDialogs.remove(pDialog);
+    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
+  }
+
+  @override
+  void closeFrameDialogs() {
+    _activeDialogs.clear();
+    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

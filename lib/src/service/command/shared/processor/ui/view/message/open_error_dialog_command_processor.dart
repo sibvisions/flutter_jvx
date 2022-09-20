@@ -19,14 +19,13 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
       goToSettings = false;
     }
 
-    unawaited(IUiService().openDialog(
-      pBuilder: (_) => ServerErrorDialog(
+    IUiService().showFrameDialog(
+      ServerErrorDialog(
         command: command,
         goToSettings: goToSettings,
         dismissible: command.dismissible,
       ),
-      pIsDismissible: command.dismissible,
-    ));
+    );
 
     return [];
   }

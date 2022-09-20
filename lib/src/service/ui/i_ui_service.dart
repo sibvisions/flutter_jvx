@@ -7,6 +7,7 @@ import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
 import '../../../custom/custom_screen.dart';
 import '../../mask/error/message_dialog.dart';
+import '../../mask/frame_dialog.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
@@ -206,6 +207,14 @@ abstract class IUiService {
   void closeFrame({required String componentId});
 
   void closeFrames();
+
+  List<FrameDialog> getFrameDialogs();
+
+  void showFrameDialog(FrameDialog pDialog);
+
+  void closeFrameDialog(FrameDialog pDialog);
+
+  void closeFrameDialogs();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom

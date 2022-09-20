@@ -4,8 +4,9 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
+import '../frame_dialog.dart';
 
-class ServerSessionExpired extends StatelessWidget {
+class ServerSessionExpired extends FrameDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,8 +19,9 @@ class ServerSessionExpired extends StatelessWidget {
 
   const ServerSessionExpired({
     required this.command,
-    Key? key,
-  }) : super(key: key);
+    super.dismissible,
+    super.key,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -33,7 +35,7 @@ class ServerSessionExpired extends StatelessWidget {
       content: Text(command.message!),
       actions: [
         TextButton(
-          onPressed: () => _restartApp(context: context),
+          onPressed: () => _restartApp(),
           child: Text(
             FlutterJVx.translate("Restart App"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -47,15 +49,12 @@ class ServerSessionExpired extends StatelessWidget {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _restartApp({required BuildContext context}) {
-    StartupCommand startupCommand = StartupCommand(
+  void _restartApp() {
+    IUiService().closeFrameDialog(this);
+    IUiService().sendCommand(StartupCommand(
       reason: "Session expired dialog",
       username: IConfigService().getUsername(),
       password: IConfigService().getPassword(),
-    );
-    IUiService().sendCommand(startupCommand);
-
-    //close popup
-    Navigator.of(context).pop();
+    ));
   }
 }

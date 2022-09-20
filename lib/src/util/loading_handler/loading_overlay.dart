@@ -21,6 +21,7 @@ class LoadingOverlay extends StatefulWidget {
 
 class LoadingOverlayState extends State<LoadingOverlay> {
   GlobalKey<FramesWidgetState> framesKey = GlobalKey();
+  GlobalKey<DialogsWidgetState> dialogsKey = GlobalKey();
 
   Future? _loadingDelayFuture;
   bool _loading = false;
@@ -33,6 +34,10 @@ class LoadingOverlayState extends State<LoadingOverlay> {
 
   void refreshFrames() {
     framesKey.currentState?.setState(() {});
+  }
+
+  void refreshDialogs() {
+    dialogsKey.currentState?.setState(() {});
   }
 
   void show(Duration delay) {
@@ -61,6 +66,7 @@ class LoadingOverlayState extends State<LoadingOverlay> {
       children: [
         if (widget.child != null) widget.child!,
         FramesWidget(key: framesKey),
+        DialogsWidget(key: dialogsKey),
         if (_loading)
           FutureBuilder(
             future: _loadingDelayFuture,
@@ -128,6 +134,44 @@ class FramesWidgetState extends State<FramesWidget> {
                   onDismiss: () {
                     e.close();
                     IUiService().closeFrame(componentId: e.command.componentId);
+                    setState(() {});
+                  },
+                ),
+              ),
+              e,
+            ],
+          ),
+        )
+        .toList();
+  }
+}
+
+class DialogsWidget extends StatefulWidget {
+  const DialogsWidget({super.key});
+
+  @override
+  State<DialogsWidget> createState() => DialogsWidgetState();
+}
+
+class DialogsWidgetState extends State<DialogsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: _getDialogs());
+  }
+
+  List<Widget> _getDialogs() {
+    return IUiService()
+        .getFrameDialogs()
+        .map(
+          (e) => Stack(
+            children: [
+              Opacity(
+                opacity: 0.7,
+                child: ModalBarrier(
+                  dismissible: e.dismissible,
+                  color: Colors.black54,
+                  onDismiss: () {
+                    IUiService().closeFrameDialog(e);
                     setState(() {});
                   },
                 ),
