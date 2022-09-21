@@ -104,40 +104,23 @@ class OnlineApiRepository implements IRepository {
   };
 
   static final Map<String, ResponseFactory> maps = {
-    ApiResponseNames.applicationMetaData: ({required originalRequest, required pJson}) =>
-        ApplicationMetaDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.applicationParameters: ({required originalRequest, required pJson}) =>
-        ApplicationParametersResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.closeScreen: ({required originalRequest, required pJson}) =>
-        CloseScreenResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.closeFrame: ({required originalRequest, required pJson}) =>
-        CloseFrameResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.dalFetch: ({required originalRequest, required pJson}) =>
-        DalFetchResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.menu: ({required originalRequest, required pJson}) =>
-        MenuViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.screenGeneric: ({required originalRequest, required pJson}) =>
-        GenericScreenViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.dalMetaData: ({required originalRequest, required pJson}) =>
-        DalMetaDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.userData: ({required originalRequest, required pJson}) =>
-        UserDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.login: ({required originalRequest, required pJson}) =>
-        LoginViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.error: ({required originalRequest, required pJson}) =>
-        ErrorViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.sessionExpired: ({required originalRequest, required pJson}) =>
-        SessionExpiredResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.dalDataProviderChanged: ({required originalRequest, required pJson}) =>
-        DalDataProviderChangedResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.authenticationData: ({required originalRequest, required pJson}) =>
-        AuthenticationDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.messageDialog: ({required originalRequest, required pJson}) =>
-        MessageDialogResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.upload: ({required originalRequest, required pJson}) =>
-        UploadActionResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.download: ({required originalRequest, required pJson}) =>
-        DownloadActionResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.applicationMetaData: ApplicationMetaDataResponse.fromJson,
+    ApiResponseNames.applicationParameters: ApplicationParametersResponse.fromJson,
+    ApiResponseNames.closeScreen: CloseScreenResponse.fromJson,
+    ApiResponseNames.closeFrame: CloseFrameResponse.fromJson,
+    ApiResponseNames.dalFetch: DalFetchResponse.fromJson,
+    ApiResponseNames.menu: MenuViewResponse.fromJson,
+    ApiResponseNames.screenGeneric: GenericScreenViewResponse.fromJson,
+    ApiResponseNames.dalMetaData: DalMetaDataResponse.fromJson,
+    ApiResponseNames.userData: UserDataResponse.fromJson,
+    ApiResponseNames.login: LoginViewResponse.fromJson,
+    ApiResponseNames.error: ErrorViewResponse.fromJson,
+    ApiResponseNames.sessionExpired: SessionExpiredResponse.fromJson,
+    ApiResponseNames.dalDataProviderChanged: DalDataProviderChangedResponse.fromJson,
+    ApiResponseNames.authenticationData: AuthenticationDataResponse.fromJson,
+    ApiResponseNames.messageDialog: MessageDialogResponse.fromJson,
+    ApiResponseNames.upload: UploadActionResponse.fromJson,
+    ApiResponseNames.download: DownloadActionResponse.fromJson,
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
