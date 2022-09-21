@@ -22,7 +22,7 @@ class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
 }
 
 class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> {
-  final BehaviorSubject behaviourSubject = BehaviorSubject();
+  final BehaviorSubject subject = BehaviorSubject();
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     layoutData.layout = SplitLayout(splitAlignment: model.orientation, leftTopRatio: model.dividerPosition);
     layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
-    behaviourSubject.throttleTime(SplitLayout.UPDATE_INTERVALL).listen((_) {
+    subject.throttleTime(SplitLayout.UPDATE_INTERVALL, trailing: true).listen((_) {
       registerParent();
     });
 
@@ -61,7 +61,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   @override
   void dispose() {
-    behaviourSubject.close();
+    subject.close();
     super.dispose();
   }
 
@@ -144,7 +144,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     SplitLayout splitLayout = (layoutData.layout as SplitLayout);
     splitLayout.leftTopRatio = min(1.0, pos.dy / container.size.height) * 100;
 
-    behaviourSubject.add(null);
+    subject.add(null);
   }
 
   void _horizontalDragEnd(DragEndDetails pDragDetails) {
@@ -158,6 +158,6 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     SplitLayout splitLayout = (layoutData.layout as SplitLayout);
     splitLayout.leftTopRatio = min(1.0, pos.dx / container.size.width) * 100;
 
-    behaviourSubject.add(null);
+    subject.add(null);
   }
 }

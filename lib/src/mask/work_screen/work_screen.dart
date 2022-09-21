@@ -70,7 +70,7 @@ class _WorkScreenState extends State<WorkScreen> {
   void initState() {
     super.initState();
 
-    subject.throttleTime(const Duration(milliseconds: 8)).listen((size) {
+    subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
       _setScreenSize(size);
       _sendDeviceStatus(pWidth: size.width, pHeight: size.height);
     });
