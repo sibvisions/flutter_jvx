@@ -104,39 +104,39 @@ class OnlineApiRepository implements IRepository {
   };
 
   static final Map<String, ResponseFactory> maps = {
-    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.applicationMetaData: ({required originalRequest, required pJson}) =>
         ApplicationMetaDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.applicationParameters: ({required originalRequest, required pJson}) =>
         ApplicationParametersResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.closeScreen: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.closeScreen: ({required originalRequest, required pJson}) =>
         CloseScreenResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.closeFrame: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.closeFrame: ({required originalRequest, required pJson}) =>
         CloseFrameResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.dalFetch: ({required originalRequest, required pJson}) =>
         DalFetchResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.menu: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.menu: ({required originalRequest, required pJson}) =>
         MenuViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.screenGeneric: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.screenGeneric: ({required originalRequest, required pJson}) =>
         GenericScreenViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.dalMetaData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.dalMetaData: ({required originalRequest, required pJson}) =>
         DalMetaDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.userData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.userData: ({required originalRequest, required pJson}) =>
         UserDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.login: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.login: ({required originalRequest, required pJson}) =>
         LoginViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.error: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.error: ({required originalRequest, required pJson}) =>
         ErrorViewResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.sessionExpired: ({required originalRequest, required pJson}) =>
         SessionExpiredResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.dalDataProviderChanged: ({required originalRequest, required pJson}) =>
         DalDataProviderChangedResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.authenticationData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.authenticationData: ({required originalRequest, required pJson}) =>
         AuthenticationDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.messageDialog: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.messageDialog: ({required originalRequest, required pJson}) =>
         MessageDialogResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.upload: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.upload: ({required originalRequest, required pJson}) =>
         UploadActionResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
-    ApiResponseNames.download: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+    ApiResponseNames.download: ({required originalRequest, required pJson}) =>
         DownloadActionResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
   };
 
@@ -154,7 +154,7 @@ class OnlineApiRepository implements IRepository {
   final Set<Cookie> _cookies = {};
 
   /// Maps response names with a corresponding factory
-  late final Map<String, ResponseFactory> responseFactoryMap = Map.from(maps);
+  late final Map<String, ResponseFactory> responseFactoryMap = maps;
 
   static const String boundary = "--dart-http-boundary--";
 
