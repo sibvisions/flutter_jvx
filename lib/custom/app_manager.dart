@@ -8,6 +8,8 @@ import '../src/model/response/api_response.dart';
 import 'custom_screen.dart';
 
 export '../src/mask/menu/menu_mode.dart';
+export '../src/model/command/base_command.dart';
+export '../src/model/menu/menu_model.dart';
 export '../src/model/request/i_api_request.dart';
 export '../src/model/response/api_response.dart';
 
