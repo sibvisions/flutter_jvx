@@ -113,7 +113,7 @@ class _AppMenuState extends State<AppMenu> {
       ],
     );
 
-    FrameState frame = Frame.of(context)!;
+    FrameState frame = FrameState.of(context)!;
     actions.addAll(frame.getActions());
 
     return Scaffold(
