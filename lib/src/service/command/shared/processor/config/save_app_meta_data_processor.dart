@@ -30,6 +30,9 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
     List<BaseCommand> commands = [];
     if (!doLangExits) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
+    } else {
+      IConfigService().reloadSupportedLanguages();
+      IConfigService().loadLanguages();
     }
     if (!doImgExits) {
       commands.add(DownloadImagesCommand(reason: "Resources should be downloaded"));
