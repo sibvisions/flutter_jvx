@@ -24,6 +24,8 @@ class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
 class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> {
   final BehaviorSubject subject = BehaviorSubject();
 
+  MouseCursor mouseCursor = MouseCursor.defer;
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +34,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
     subject.throttleTime(SplitLayout.UPDATE_INTERVALL, trailing: true).listen((_) {
+      mouseCursor = SystemMouseCursors.resizeLeftRight;
       registerParent();
     });
 
@@ -51,12 +54,19 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   @override
   Widget build(BuildContext context) {
-    var panelWidget = FlSplitPanelWidget(
-        model: model,
-        layout: layoutData.layout as SplitLayout,
-        children: [...children.values.toList(), getDragSlider()]);
-
-    return getPositioned(child: panelWidget);
+    return getPositioned(
+      child: MouseRegion(
+        cursor: mouseCursor,
+        child: FlSplitPanelWidget(
+          model: model,
+          layout: layoutData.layout as SplitLayout,
+          children: [
+            ...children.values.toList(),
+            getDragSlider(),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -102,13 +112,13 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         width: width,
         height: height,
         child: MouseRegion(
-          cursor: SystemMouseCursors.resizeColumn,
+          cursor: SystemMouseCursors.resizeLeftRight,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onVerticalDragUpdate: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDrag : null,
-            onVerticalDragEnd: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDragEnd : null,
+            onVerticalDragEnd: model.orientation == SplitOrientation.HORIZONTAL ? _dragEnd : null,
             onHorizontalDragUpdate: model.orientation == SplitOrientation.VERTICAL ? _horizontalDrag : null,
-            onHorizontalDragEnd: model.orientation == SplitOrientation.VERTICAL ? _horizontalDragEnd : null,
+            onHorizontalDragEnd: model.orientation == SplitOrientation.VERTICAL ? _dragEnd : null,
             child: Container(
               color: Theme.of(context).backgroundColor,
               child: Center(
@@ -133,30 +143,27 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     }
   }
 
-  void _verticalDragEnd(DragEndDetails pDragDetails) {
+  void _dragEnd(DragEndDetails pDragDetails) {
+    mouseCursor = MouseCursor.defer;
     registerParent();
   }
 
   void _verticalDrag(DragUpdateDetails pDragDetails) {
-    final RenderBox container = context.findRenderObject() as RenderBox;
-    final pos = container.globalToLocal(pDragDetails.globalPosition);
-
-    SplitLayout splitLayout = (layoutData.layout as SplitLayout);
-    splitLayout.leftTopRatio = min(1.0, pos.dy / container.size.height) * 100;
-
-    subject.add(null);
-  }
-
-  void _horizontalDragEnd(DragEndDetails pDragDetails) {
-    registerParent();
+    _calculateSlider(pDragDetails, false);
   }
 
   void _horizontalDrag(DragUpdateDetails pDragDetails) {
+    _calculateSlider(pDragDetails, true);
+  }
+
+  _calculateSlider(DragUpdateDetails pDragDetails, bool pHorizontal) {
     final RenderBox container = context.findRenderObject() as RenderBox;
     final pos = container.globalToLocal(pDragDetails.globalPosition);
 
     SplitLayout splitLayout = (layoutData.layout as SplitLayout);
-    splitLayout.leftTopRatio = min(1.0, pos.dx / container.size.width) * 100;
+    double positionalPixel = pHorizontal ? pos.dx : pos.dy;
+
+    splitLayout.leftTopRatio = max(0.0, min(1.0, positionalPixel / container.size.height)) * 100;
 
     subject.add(null);
   }
