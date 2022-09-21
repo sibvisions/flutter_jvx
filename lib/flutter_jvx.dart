@@ -44,16 +44,27 @@ import 'src/util/loading_handler/loading_progress_handler.dart';
 import 'util/logging/flutter_logger.dart';
 import 'util/parse_util.dart';
 
+/// The base Widget representing the JVx to Flutter bridge.
 class FlutterJVx extends StatefulWidget {
-  //Loads assets with packages prefix
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Loads assets with packages prefix
   static bool package = true;
 
+  /// The initial application configuration
   final AppConfig? appConfig;
+
+  /// The application manager of this app.
   final AppManager? appManager;
 
   /// Builder function for custom loading widget
   final Widget Function(BuildContext context)? loadingBuilder;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const FlutterJVx({
     Key? key,
     this.appConfig,
@@ -61,13 +72,22 @@ class FlutterJVx extends StatefulWidget {
     this.loadingBuilder,
   }) : super(key: key);
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   FlutterJVxState createState() => FlutterJVxState();
 
-  static FlutterJVxState? of(BuildContext context) => context.findAncestorStateOfType<FlutterJVxState>();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Gets the [FlutterJVx] widget.
+  static FlutterJVx? of(BuildContext context) => context.findAncestorWidgetOfExactType<FlutterJVx>();
+
+  /// Translates any text through the translation files loaded by the application.
   static String translate(String? pText) {
-    return services<IConfigService>().translateText(pText ?? "");
+    return IConfigService().translateText(pText ?? "");
   }
 
   static BuildContext? getCurrentContext() {
@@ -228,9 +248,8 @@ class FlutterJVxState extends State<FlutterJVx> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales:
-          services<IConfigService>().getSupportedLanguages().map((e) => Locale.fromSubtags(languageCode: e)),
-      locale: Locale.fromSubtags(languageCode: services<IConfigService>().getLanguage()),
+      supportedLocales: IConfigService().getSupportedLanguages().map((e) => Locale.fromSubtags(languageCode: e)),
+      locale: Locale.fromSubtags(languageCode: IConfigService().getLanguage()),
     );
   }
 
@@ -296,9 +315,9 @@ class FlutterJVxState extends State<FlutterJVx> {
   Future<void> initApp() async {
     HttpOverrides.global = MyHttpOverrides();
 
-    IConfigService configService = services<IConfigService>();
-    IUiService uiService = services<IUiService>();
-    IApiService apiService = services<IApiService>();
+    IConfigService configService = IConfigService();
+    IUiService uiService = IUiService();
+    IApiService apiService = IApiService();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Load config
@@ -359,9 +378,9 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   Future<void> doStartup() async {
-    IConfigService configService = services<IConfigService>();
-    ICommandService commandService = services<ICommandService>();
-    IUiService uiService = services<IUiService>();
+    IConfigService configService = IConfigService();
+    ICommandService commandService = ICommandService();
+    IUiService uiService = IUiService();
 
     if (configService.getAppName() == null || configService.getBaseUrl() == null) {
       uiService.routeToSettings(pReplaceRoute: true);

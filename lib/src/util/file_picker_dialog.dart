@@ -8,7 +8,6 @@ import 'package:universal_io/io.dart';
 
 import '../../flutter_jvx.dart';
 import '../service/config/i_config_service.dart';
-import '../service/service.dart';
 
 enum UploadType {
   FILE_SYSTEM,
@@ -132,7 +131,7 @@ Future<File?> openFilePicker() async {
 }
 
 Future<File?> pick(UploadType type) async {
-  double? maxPictureWidth = services<IConfigService>().getPictureResolution()?.toDouble();
+  double? maxPictureWidth = IConfigService().getPictureResolution()?.toDouble();
 
   File? file;
 

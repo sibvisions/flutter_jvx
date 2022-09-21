@@ -43,7 +43,7 @@ abstract class IConfigService {
   /// Set appName
   Future<bool> setAppName(String? pAppName);
 
-  /// Returns current apiConfig
+  /// Returns current appConfig
   AppConfig? getAppConfig();
 
   ServerConfig getServerConfig();

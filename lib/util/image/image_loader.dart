@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../src/service/config/i_config_service.dart';
 import '../../src/service/file/file_manager.dart';
-import '../../src/service/service.dart';
 import '../font_awesome_util.dart';
 
 //TODO investigate loading delays
@@ -41,10 +40,9 @@ abstract class ImageLoader {
     bool imageInBase64 = false,
     BoxFit fit = BoxFit.none,
   }) {
-    var configService = services<IConfigService>();
-    String appName = configService.getAppName()!;
-    String baseUrl = configService.getBaseUrl()!;
-    IFileManager fileManager = configService.getFileManager();
+    String appName = IConfigService().getAppName()!;
+    String baseUrl = IConfigService().getBaseUrl()!;
+    IFileManager fileManager = IConfigService().getFileManager();
 
     Image image;
 

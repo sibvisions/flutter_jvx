@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import '../../service/command/i_command_service.dart';
-import '../../service/service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../command/api/delete_record_command.dart';
 import '../command/api/filter_command.dart';
@@ -169,7 +168,7 @@ class DataBook {
     required int pSelectedRecord,
     bool asyncErrorHandling = true,
   }) {
-    var future = services<ICommandService>().sendCommand(SelectRecordCommand(
+    var future = ICommandService().sendCommand(SelectRecordCommand(
       reason: "Select record | DataBook selectRecord",
       dataProvider: pDataProvider,
       selectedRecord: pSelectedRecord,
@@ -183,7 +182,7 @@ class DataBook {
     FilterCondition? pFilterCondition,
     bool asyncErrorHandling = true,
   }) {
-    var future = services<ICommandService>().sendCommand(FilterCommand(
+    var future = ICommandService().sendCommand(FilterCommand(
       editorId: "custom",
       filter: pFilter,
       filterCondition: pFilterCondition,
@@ -197,7 +196,7 @@ class DataBook {
     required String pDataProvider,
     bool asyncErrorHandling = true,
   }) {
-    var future = services<ICommandService>().sendCommand(InsertRecordCommand(
+    var future = ICommandService().sendCommand(InsertRecordCommand(
       dataProvider: pDataProvider,
       reason: "Insert record | DataBook insertRecord",
     ));
@@ -212,7 +211,7 @@ class DataBook {
     FilterCondition? pFilterCondition,
     bool asyncErrorHandling = true,
   }) {
-    var future = services<ICommandService>().sendCommand(SetValuesCommand(
+    var future = ICommandService().sendCommand(SetValuesCommand(
       componentId: "custom",
       dataProvider: pDataProvider,
       columnNames: pColumnNames,
@@ -231,7 +230,7 @@ class DataBook {
     int? pRowIndex,
     bool asyncErrorHandling = true,
   }) {
-    var future = services<ICommandService>().sendCommand(DeleteRecordCommand(
+    var future = ICommandService().sendCommand(DeleteRecordCommand(
       dataProvider: pDataProvider,
       filter: pFilter,
       filterCondition: pFilterCondition,
@@ -244,7 +243,7 @@ class DataBook {
   static Future<T> _handleCommandFuture<T>(Future<T> future, bool asyncErrorHandling) {
     if (asyncErrorHandling) {
       return future.catchError((error, stackTrace) {
-        services<IUiService>().handleAsyncError(error, stackTrace);
+        IUiService().handleAsyncError(error, stackTrace);
       });
     }
     return future;
@@ -260,8 +259,7 @@ class DataBook {
     void Function(DalMetaDataResponse)? pOnMetaData,
     void Function(DataRecord?)? pOnSelectedRecord,
   }) {
-    IUiService uiService = services<IUiService>();
-    uiService.registerDataSubscription(
+    IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
       subbedObj: pSubObject,
       dataProvider: pDataProvider,
@@ -278,8 +276,7 @@ class DataBook {
     required Object pSubObject,
     String? pDataProvider,
   }) {
-    IUiService uiService = services<IUiService>();
-    uiService.disposeDataSubscription(pSubscriber: pSubObject, pDataProvider: pDataProvider);
+    IUiService().disposeDataSubscription(pSubscriber: pSubObject, pDataProvider: pDataProvider);
   }
 
   static int getColumnIndex(List<ColumnDefinition> columnDefinitions, String columnName) {

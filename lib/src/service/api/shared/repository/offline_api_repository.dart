@@ -36,13 +36,13 @@ class OfflineApiRepository implements IRepository {
       offlineDatabase = await OfflineDatabase.open();
 
       //Init all databooks because there is no OpenScreenCommand offline
-      await initDataBooks(IDataService());
+      await initDataBooks();
     }
   }
 
-  Future<void> initDataBooks(IDataService dataService) async {
+  Future<void> initDataBooks() async {
     List<DalMetaDataResponse> metaData = await offlineDatabase!.getMetaData();
-    await Future.wait(metaData.map((element) => dataService.updateMetaData(pMetaData: element)));
+    await Future.wait(metaData.map((element) => IDataService().updateMetaData(pMetaData: element)));
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../../flutter_jvx.dart';
+import '../../services.dart';
 import '../../util/logging/flutter_logger.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';
@@ -17,15 +18,9 @@ import '../model/command/ui/route_to_menu_command.dart';
 import '../model/component/fl_component_model.dart';
 import '../model/data/data_book.dart';
 import '../model/request/filter.dart';
-import '../service/api/i_api_service.dart';
 import '../service/api/shared/repository/offline/offline_database.dart';
 import '../service/api/shared/repository/offline_api_repository.dart';
 import '../service/api/shared/repository/online_api_repository.dart';
-import '../service/command/i_command_service.dart';
-import '../service/config/i_config_service.dart';
-import '../service/data/i_data_service.dart';
-import '../service/service.dart';
-import '../service/ui/i_ui_service.dart';
 import 'loading_handler/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
@@ -45,23 +40,17 @@ abstract class OfflineUtil {
   }
 
   static initOnline() async {
-    IConfigService configService = services<IConfigService>();
-    IUiService uiService = services<IUiService>();
-    IApiService apiService = services<IApiService>();
-    IDataService dataService = services<IDataService>();
-    ICommandService commandService = services<ICommandService>();
-
     var dialogKey = GlobalKey<ProgressDialogState>();
     OnlineApiRepository? onlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
-      String offlineWorkscreenLongName = configService.getOfflineScreen()!;
-      String offlineAppName = configService.getAppName()!;
-      String offlineUsername = configService.getUsername()!;
-      String offlinePassword = configService.getPassword()!;
+      String offlineWorkscreenLongName = IConfigService().getOfflineScreen()!;
+      String offlineAppName = IConfigService().getAppName()!;
+      String offlineUsername = IConfigService().getUsername()!;
+      String offlinePassword = IConfigService().getPassword()!;
 
-      var futureDialog = uiService.openDialog(
+      var futureDialog = IUiService().openDialog(
         pIsDismissible: false,
         pBuilder: (context) => ProgressDialogWidget(
           key: dialogKey,
@@ -72,13 +61,13 @@ abstract class OfflineUtil {
         ),
       );
 
-      offlineApiRepository = (await apiService.getRepository()) as OfflineApiRepository;
+      offlineApiRepository = (await IApiService().getRepository()) as OfflineApiRepository;
       //Set online api repository to handle commands
       onlineApiRepository = OnlineApiRepository();
       await onlineApiRepository.start();
-      await apiService.setRepository(onlineApiRepository);
+      await IApiService().setRepository(onlineApiRepository);
 
-      await commandService.sendCommand(
+      await ICommandService().sendCommand(
         StartupCommand(
           reason: "Going online",
           appName: offlineAppName,
@@ -87,7 +76,7 @@ abstract class OfflineUtil {
         ),
       );
 
-      await commandService.sendCommand(
+      await ICommandService().sendCommand(
         OpenScreenCommand(screenLongName: offlineWorkscreenLongName, reason: "We are back online"),
       );
 
@@ -96,7 +85,7 @@ abstract class OfflineUtil {
       int successfulSyncedRows = 0;
       int changedRowsSum = 0;
 
-      var dataBooks = dataService.getDataBooks();
+      var dataBooks = IDataService().getDataBooks();
       for (DataBook dataBook in dataBooks.values) {
         log("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
         List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
@@ -119,7 +108,6 @@ abstract class OfflineUtil {
         successfulSync = await _handleInsertedRows(
               groupedRows[OfflineDatabase.ROW_STATE_INSERTED],
               dataBook,
-              commandService,
               successfulSyncedPrimaryKeys,
               dialogKey: dialogKey,
             ) &&
@@ -128,7 +116,6 @@ abstract class OfflineUtil {
         successfulSync = await _handleUpdatedRows(
               groupedRows[OfflineDatabase.ROW_STATE_UPDATED],
               dataBook,
-              commandService,
               successfulSyncedPrimaryKeys,
               dialogKey: dialogKey,
             ) &&
@@ -137,7 +124,6 @@ abstract class OfflineUtil {
         successfulSync = await _handleDeletedRows(
               groupedRows[OfflineDatabase.ROW_STATE_DELETED],
               dataBook,
-              commandService,
               successfulSyncedPrimaryKeys,
               dialogKey: dialogKey,
             ) &&
@@ -177,18 +163,18 @@ abstract class OfflineUtil {
 
       if (successfulSync) {
         await offlineApiRepository.deleteDatabase();
-        dataService.clearDataBooks();
+        IDataService().clearDataBooks();
 
-        await configService.setOffline(false);
+        await IConfigService().setOffline(false);
         await offlineApiRepository.stop();
 
         FlComponentModel? workscreenModel =
-            uiService.getComponentByScreenName(pScreenLongName: offlineWorkscreenLongName)!;
-        await commandService.sendCommand(
+            IUiService().getComponentByScreenName(pScreenLongName: offlineWorkscreenLongName)!;
+        await ICommandService().sendCommand(
           CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
         );
 
-        await commandService.sendCommand(
+        await ICommandService().sendCommand(
           StartupCommand(
             reason: "Going online",
             appName: offlineAppName,
@@ -198,7 +184,7 @@ abstract class OfflineUtil {
         );
       } else {
         await onlineApiRepository.stop();
-        await apiService.setRepository(offlineApiRepository);
+        await IApiService().setRepository(offlineApiRepository);
       }
     } catch (e, stackTrace) {
       LOGGER.logE(
@@ -211,14 +197,14 @@ abstract class OfflineUtil {
       //Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
         await onlineApiRepository?.stop();
-        await apiService.setRepository(offlineApiRepository);
-        await configService.setOffline(true);
+        await IApiService().setRepository(offlineApiRepository);
+        await IConfigService().setOffline(true);
         //Clear menu
-        uiService.setMenuModel(null);
+        IUiService().setMenuModel(null);
       }
 
       ProgressDialogWidget.safeClose(dialogKey);
-      await uiService.openDialog(
+      await IUiService().openDialog(
         pIsDismissible: false,
         pBuilder: (context) => AlertDialog(
           title: Text(FlutterJVx.translate("Offline Sync Error")),
@@ -242,7 +228,6 @@ abstract class OfflineUtil {
   static Future<bool> _handleInsertedRows(
     List<Map<String, Object?>>? insertedRows,
     DataBook dataBook,
-    ICommandService commandService,
     List<Map<String, Object?>> successfulSyncedPrimaryKeys, {
     required GlobalKey<ProgressDialogState> dialogKey,
   }) async {
@@ -252,7 +237,7 @@ abstract class OfflineUtil {
       for (var row in insertedRows) {
         try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
-          await _insertOfflineRecord(commandService, dataBook, row);
+          await _insertOfflineRecord(dataBook, row);
           successfulSyncedPrimaryKeys.add(primaryColumns);
 
           dialogKey.currentState?.update(
@@ -276,7 +261,6 @@ abstract class OfflineUtil {
   static Future<bool> _handleUpdatedRows(
     List<Map<String, Object?>>? updatedRows,
     DataBook dataBook,
-    ICommandService commandService,
     List<Map<String, Object?>> successfulSyncedPrimaryKeys, {
     required GlobalKey<ProgressDialogState> dialogKey,
   }) async {
@@ -291,7 +275,7 @@ abstract class OfflineUtil {
           };
           Map<String, Object?> primaryColumns = _getPrimaryColumns(oldColumns, dataBook);
 
-          await _updateOfflineRecord(row, commandService, dataBook, primaryColumns);
+          await _updateOfflineRecord(row, dataBook, primaryColumns);
           successfulSyncedPrimaryKeys.add(primaryColumns);
 
           dialogKey.currentState?.update(
@@ -315,7 +299,6 @@ abstract class OfflineUtil {
   static Future<bool> _handleDeletedRows(
     List<Map<String, Object?>>? deletedRows,
     DataBook dataBook,
-    ICommandService commandService,
     List<Map<String, Object?>> successfulSyncedPrimaryKeys, {
     required GlobalKey<ProgressDialogState> dialogKey,
   }) async {
@@ -325,7 +308,7 @@ abstract class OfflineUtil {
       for (var row in deletedRows) {
         try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
-          await _deleteOfflineRecord(commandService, dataBook, primaryColumns);
+          await _deleteOfflineRecord(dataBook, primaryColumns);
           successfulSyncedPrimaryKeys.add(primaryColumns);
 
           dialogKey.currentState?.update(
@@ -346,9 +329,8 @@ abstract class OfflineUtil {
     return successful;
   }
 
-  static Future<void> _insertOfflineRecord(
-      ICommandService commandService, DataBook dataBook, Map<String, Object?> row) async {
-    await commandService.sendCommand(InsertRecordCommand(
+  static Future<void> _insertOfflineRecord(DataBook dataBook, Map<String, Object?> row) async {
+    await ICommandService().sendCommand(InsertRecordCommand(
       reason: "Re-sync: Insert",
       dataProvider: dataBook.dataProvider,
     ));
@@ -360,7 +342,7 @@ abstract class OfflineUtil {
         entry.key: entry.value
     };
 
-    return commandService.sendCommand(SetValuesCommand(
+    return ICommandService().sendCommand(SetValuesCommand(
       reason: "Re-sync: Insert",
       componentId: "",
       dataProvider: dataBook.dataProvider,
@@ -369,14 +351,14 @@ abstract class OfflineUtil {
     ));
   }
 
-  static Future<void> _updateOfflineRecord(Map<String, Object?> row, ICommandService commandService, DataBook dataBook,
-      Map<String, Object?> primaryColumns) {
+  static Future<void> _updateOfflineRecord(
+      Map<String, Object?> row, DataBook dataBook, Map<String, Object?> primaryColumns) {
     var newColumns = {
       for (var entry in row.entries.where((rowColumn) =>
           !(rowColumn.key.startsWith(OfflineDatabase.COLUMN_PREFIX) || rowColumn.key == OfflineDatabase.STATE_COLUMN)))
         entry.key: entry.value
     };
-    return commandService.sendCommand(SetValuesCommand(
+    return ICommandService().sendCommand(SetValuesCommand(
       reason: "Re-sync: Update",
       componentId: "",
       dataProvider: dataBook.dataProvider,
@@ -389,9 +371,8 @@ abstract class OfflineUtil {
     ));
   }
 
-  static Future<void> _deleteOfflineRecord(
-      ICommandService commandService, DataBook dataBook, Map<String, Object?> primaryColumns) {
-    return commandService.sendCommand(DeleteRecordCommand(
+  static Future<void> _deleteOfflineRecord(DataBook dataBook, Map<String, Object?> primaryColumns) {
+    return ICommandService().sendCommand(DeleteRecordCommand(
       reason: "Re-sync: Delete",
       dataProvider: dataBook.dataProvider,
       selectedRow: -1,
@@ -411,9 +392,9 @@ abstract class OfflineUtil {
     return primaryColumns;
   }
 
-  static Set<String> getActiveDataProviders(IDataService dataService, String offlineWorkscreen) {
+  static Set<String> getActiveDataProviders(String offlineWorkscreen) {
     //String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
-    return dataService.getDataBooks().keys.toList().where((element) {
+    return IDataService().getDataBooks().keys.toList().where((element) {
       var prefixes = element.split("/");
       if (prefixes.length >= 2) {
         return prefixes[1] == offlineWorkscreen;
@@ -423,8 +404,7 @@ abstract class OfflineUtil {
   }
 
   static Future<void> fetchDataProvider(
-    Set<String> activeDataProviders,
-    ICommandService commandService, {
+    Set<String> activeDataProviders, {
     void Function(int value, int max)? progressUpdate,
   }) async {
     int fetchCounter = 1;
@@ -433,7 +413,7 @@ abstract class OfflineUtil {
 
       progressUpdate?.call(fetchCounter++, activeDataProviders.length);
 
-      await commandService.sendCommand(
+      await ICommandService().sendCommand(
         FetchCommand(
           reason: "Fetching data for offline/online switch",
           dataProvider: dataProvider,
@@ -448,21 +428,15 @@ abstract class OfflineUtil {
   }
 
   static initOffline(String pWorkscreen) async {
-    IConfigService configService = services<IConfigService>();
-    IUiService uiService = services<IUiService>();
-    IApiService apiService = services<IApiService>();
-    IDataService dataService = services<IDataService>();
-    ICommandService commandService = services<ICommandService>();
-
     var dialogKey = GlobalKey<ProgressDialogState>();
-    OnlineApiRepository? onlineApiRepository = (await apiService.getRepository()) as OnlineApiRepository;
+    OnlineApiRepository? onlineApiRepository = (await IApiService().getRepository()) as OnlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
       //Set already here to receive errors from api responses
-      await configService.setOffline(true);
+      await IConfigService().setOffline(true);
 
-      unawaited(uiService.openDialog(
+      unawaited(IUiService().openDialog(
         pIsDismissible: false,
         pBuilder: (context) {
           return ProgressDialogWidget(
@@ -475,10 +449,9 @@ abstract class OfflineUtil {
         },
       ));
 
-      var activeDataProviders = getActiveDataProviders(dataService, pWorkscreen);
+      var activeDataProviders = getActiveDataProviders(pWorkscreen);
       await fetchDataProvider(
         activeDataProviders,
-        commandService,
         progressUpdate: (value, max) {
           dialogKey.currentState?.update(
               config: Config(
@@ -498,7 +471,7 @@ abstract class OfflineUtil {
       offlineApiRepository = OfflineApiRepository();
       await offlineApiRepository.start();
 
-      var dataBooks = dataService
+      var dataBooks = IDataService()
           .getDataBooks()
           .values
           .where((element) => activeDataProviders.contains(element.dataProvider))
@@ -512,17 +485,18 @@ abstract class OfflineUtil {
       });
 
       //Clear databooks for offline usage
-      dataService.clearDataBooks();
-      await offlineApiRepository.initDataBooks(dataService);
+      IDataService().clearDataBooks();
+      await offlineApiRepository.initDataBooks();
 
-      await apiService.setRepository(offlineApiRepository);
-      await configService.setOfflineScreen(uiService.getComponentByName(pComponentName: pWorkscreen)!.screenLongName!);
+      await IApiService().setRepository(offlineApiRepository);
+      await IConfigService()
+          .setOfflineScreen(IUiService().getComponentByName(pComponentName: pWorkscreen)!.screenLongName!);
       await onlineApiRepository.stop();
       //Clear menu
-      uiService.setMenuModel(null);
+      IUiService().setMenuModel(null);
 
       ProgressDialogWidget.close(FlutterJVx.getCurrentContext()!);
-      await commandService.sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
+      await ICommandService().sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
     } catch (e, stackTrace) {
       LOGGER.logE(
         pType: LogType.DATA,
@@ -536,11 +510,11 @@ abstract class OfflineUtil {
         await offlineApiRepository.deleteDatabase();
       }
       await offlineApiRepository?.stop();
-      await apiService.setRepository(onlineApiRepository);
-      await configService.setOffline(false);
+      await IApiService().setRepository(onlineApiRepository);
+      await IConfigService().setOffline(false);
 
       ProgressDialogWidget.safeClose(dialogKey);
-      await uiService.openDialog(
+      await IUiService().openDialog(
         pIsDismissible: false,
         pBuilder: (context) => AlertDialog(
           title: Text(FlutterJVx.translate("Offline Init Error")),
@@ -562,8 +536,7 @@ abstract class OfflineUtil {
   }
 
   static void discardChanges(BuildContext context) async {
-    IApiService apiService = services<IApiService>();
-    var offlineApiRepository = (await apiService.getRepository());
+    var offlineApiRepository = (await IApiService().getRepository());
     if (offlineApiRepository is OfflineApiRepository && !offlineApiRepository.isStopped()) {
       await offlineApiRepository.deleteDatabase();
     }
