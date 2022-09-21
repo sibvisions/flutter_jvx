@@ -5,14 +5,35 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
+import '../../../../../config/api/route.dart';
 import '../../../../../services.dart';
 import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../../util/logging/flutter_logger.dart';
-import '../../../../model/config/api/api_config.dart';
+import '../../../../model/request/api_change_password_request.dart';
+import '../../../../model/request/api_close_frame_request.dart';
+import '../../../../model/request/api_close_screen_request.dart';
+import '../../../../model/request/api_close_tab_request.dart';
+import '../../../../model/request/api_delete_record_request.dart';
+import '../../../../model/request/api_device_status_request.dart';
 import '../../../../model/request/api_download_images_request.dart';
 import '../../../../model/request/api_download_request.dart';
 import '../../../../model/request/api_download_style_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
+import '../../../../model/request/api_fetch_request.dart';
+import '../../../../model/request/api_filter_request.dart';
+import '../../../../model/request/api_insert_record_request.dart';
+import '../../../../model/request/api_login_request.dart';
+import '../../../../model/request/api_logout_request.dart';
+import '../../../../model/request/api_navigation_request.dart';
+import '../../../../model/request/api_open_screen_request.dart';
+import '../../../../model/request/api_open_tab_request.dart';
+import '../../../../model/request/api_press_button_request.dart';
+import '../../../../model/request/api_reload_menu_request.dart';
+import '../../../../model/request/api_reset_password_request.dart';
+import '../../../../model/request/api_select_record_request.dart';
+import '../../../../model/request/api_set_value_request.dart';
+import '../../../../model/request/api_set_values_request.dart';
+import '../../../../model/request/api_startup_request.dart';
 import '../../../../model/request/api_upload_request.dart';
 import '../../../../model/request/i_api_download_request.dart';
 import '../../../../model/request/i_api_request.dart';
@@ -52,7 +73,37 @@ class OnlineApiRepository implements IRepository {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static Map<String, ResponseFactory> maps = {
+  /// Map of all remote request mapped to their route
+  static final Map<Type, Route Function(IApiRequest pRequest)> uriMap = {
+    ApiStartUpRequest: (_) => Route.POST_STARTUP,
+    ApiLoginRequest: (_) => Route.POST_LOGIN,
+    ApiCloseTabRequest: (_) => Route.POST_CLOSE_TAB,
+    ApiDeviceStatusRequest: (_) => Route.POST_DEVICE_STATUS,
+    ApiOpenScreenRequest: (_) => Route.POST_OPEN_SCREEN,
+    ApiOpenTabRequest: (_) => Route.POST_SELECT_TAB,
+    ApiPressButtonRequest: (_) => Route.POST_PRESS_BUTTON,
+    ApiSetValueRequest: (_) => Route.POST_SET_VALUE,
+    ApiSetValuesRequest: (_) => Route.POST_SET_VALUES,
+    ApiChangePasswordRequest: (_) => Route.POST_CHANGE_PASSWORD,
+    ApiResetPasswordRequest: (_) => Route.POST_RESET_PASSWORD,
+    ApiNavigationRequest: (_) => Route.POST_NAVIGATION,
+    ApiReloadMenuRequest: (_) => Route.POST_MENU,
+    ApiFetchRequest: (_) => Route.POST_FETCH,
+    ApiLogoutRequest: (_) => Route.POST_LOGOUT,
+    ApiFilterRequest: (_) => Route.POST_FILTER,
+    ApiInsertRecordRequest: (_) => Route.POST_INSERT_RECORD,
+    ApiSelectRecordRequest: (_) => Route.POST_SELECT_RECORD,
+    ApiCloseScreenRequest: (_) => Route.POST_CLOSE_SCREEN,
+    ApiDeleteRecordRequest: (_) => Route.POST_DELETE_RECORD,
+    ApiDownloadImagesRequest: (_) => Route.POST_DOWNLOAD,
+    ApiDownloadTranslationRequest: (_) => Route.POST_DOWNLOAD,
+    ApiDownloadStyleRequest: (_) => Route.POST_DOWNLOAD,
+    ApiCloseFrameRequest: (_) => Route.POST_CLOSE_FRAME,
+    ApiUploadRequest: (_) => Route.POST_UPLOAD,
+    ApiDownloadRequest: (_) => Route.POST_DOWNLOAD,
+  };
+
+  static final Map<String, ResponseFactory> maps = {
     ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
         ApplicationMetaDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
     ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
@@ -143,10 +194,9 @@ class OnlineApiRepository implements IRepository {
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
-    var apiConfig = ApiConfig(serverConfig: IConfigService().getServerConfig());
-    Uri? uri = apiConfig.uriMap[pRequest.runtimeType]?.call(pRequest);
+    Route? route = uriMap[pRequest.runtimeType]?.call(pRequest);
 
-    if (uri != null) {
+    if (route != null) {
       try {
         if (pRequest is ISessionRequest) {
           if (IConfigService().getClientId()?.isNotEmpty == true) {
@@ -156,7 +206,7 @@ class OnlineApiRepository implements IRepository {
           }
         }
 
-        HttpClientResponse response = await _sendPostRequest(uri, pRequest);
+        HttpClientResponse response = await _sendPostRequest(route, pRequest);
 
         if (response.statusCode >= 400 && response.statusCode <= 599) {
           var body = await _decodeBody(response);
@@ -183,7 +233,7 @@ class OnlineApiRepository implements IRepository {
           var overrideResponse = await IUiService().getAppManager()?.handleResponse(
                 pRequest,
                 responseBody,
-                () => _sendPostRequest(uri, pRequest),
+                () => _sendPostRequest(route, pRequest),
               );
           if (overrideResponse != null) {
             response = overrideResponse;
@@ -229,8 +279,9 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Send post request to remote server, applies timeout.
-  Future<HttpClientResponse> _sendPostRequest(Uri pUri, IApiRequest pRequest) async {
-    HttpClientRequest request = await connect(pUri, pRequest.httpMethod);
+  Future<HttpClientResponse> _sendPostRequest(Route route, IApiRequest pRequest) async {
+    Uri uri = Uri.parse(IConfigService().getBaseUrl()! + route.route);
+    HttpClientRequest request = await connect(uri, route.method);
 
     if (kIsWeb) {
       if (request is BrowserHttpClientRequest) {
@@ -260,7 +311,7 @@ class OnlineApiRepository implements IRepository {
         {"data": pRequest.file},
         boundary,
       ));
-    } else if (pRequest.httpMethod != Method.GET) {
+    } else if (route.method != Method.GET) {
       request.headers.contentType = ContentType("application", "json", charset: "utf-8");
       request.write(jsonEncode(pRequest));
     }

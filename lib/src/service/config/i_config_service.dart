@@ -2,7 +2,6 @@ import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../config/app_config.dart';
-import '../../../config/server_config.dart';
 import '../../mask/menu/menu_mode.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/response/application_meta_data_response.dart';
@@ -43,10 +42,8 @@ abstract class IConfigService {
   /// Set appName
   Future<bool> setAppName(String? pAppName);
 
-  /// Returns current appConfig
+  /// Returns initial final appConfig
   AppConfig? getAppConfig();
-
-  ServerConfig getServerConfig();
 
   /// Return version
   String? getVersion();
