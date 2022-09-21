@@ -25,23 +25,6 @@ class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<FlComponentModel> getScreenByScreenClassName(String screenClassName) {
-    // Get Screen (Top-most Panel)
-    FlComponentModel? screenModel =
-        _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
-
-    if (screenModel != null) {
-      List<FlComponentModel> screen = [];
-
-      screen.add(screenModel);
-      screen.addAll(_getAllComponentsBelow(screenModel.id));
-      return screen;
-    }
-
-    throw Exception("No Screen with screenClassName: $screenClassName was found");
-  }
-
-  @override
   List<BaseCommand> saveComponents(
     List<dynamic>? componentsToUpdate,
     List<FlComponentModel>? newComponents,

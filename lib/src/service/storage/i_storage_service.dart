@@ -21,11 +21,6 @@ abstract class IStorageService {
   List<BaseCommand> saveComponents(
       List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName);
 
-  /// Returns all [FlComponentModel] in the given [screenClassName],
-  /// including all children recursively.
-  /// First Object of List is always screen (most top) component.
-  List<FlComponentModel> getScreenByScreenClassName(String screenClassName);
-
   /// Deletes Screen Model, and all descendants.
   void deleteScreen({required String screenName});
 }
