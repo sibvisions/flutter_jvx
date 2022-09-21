@@ -9,7 +9,7 @@ class SaveComponentsCommandProcessor implements ICommandProcessor<SaveComponents
     List<BaseCommand> commands = [];
 
     commands.addAll(
-      await IStorageService().updateComponents(
+      IStorageService().saveComponents(
         command.updatedComponent,
         command.componentsToSave,
         command.screenName,

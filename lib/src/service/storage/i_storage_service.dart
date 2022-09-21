@@ -18,14 +18,14 @@ abstract class IStorageService {
 
   /// Updates [FlComponentModel]
   /// Returns [BaseCommand] to update UI with all effected components.
-  Future<List<BaseCommand>> updateComponents(
+  List<BaseCommand> saveComponents(
       List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName);
 
   /// Returns all [FlComponentModel] in the given [screenClassName],
   /// including all children recursively.
   /// First Object of List is always screen (most top) component.
-  Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName);
+  List<FlComponentModel> getScreenByScreenClassName(String screenClassName);
 
   /// Deletes Screen Model, and all descendants.
-  Future<void> deleteScreen({required String screenName});
+  void deleteScreen({required String screenName});
 }

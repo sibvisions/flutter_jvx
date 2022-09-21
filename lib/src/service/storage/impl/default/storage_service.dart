@@ -25,7 +25,7 @@ class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) async {
+  List<FlComponentModel> getScreenByScreenClassName(String screenClassName) {
     // Get Screen (Top-most Panel)
     FlComponentModel? screenModel =
         _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
@@ -42,11 +42,11 @@ class StorageService implements IStorageService {
   }
 
   @override
-  Future<List<BaseCommand>> updateComponents(
+  List<BaseCommand> saveComponents(
     List<dynamic>? componentsToUpdate,
     List<FlComponentModel>? newComponents,
     String screenName,
-  ) async {
+  ) {
     // List of all changed models
     Set<String> changedModels = {};
     // List of all affected models
@@ -171,7 +171,7 @@ class StorageService implements IStorageService {
   }
 
   @override
-  Future<void> deleteScreen({required String screenName}) async {
+  void deleteScreen({required String screenName}) {
     LOGGER.logD(
         pType: LogType.STORAGE,
         pMessage: "Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");

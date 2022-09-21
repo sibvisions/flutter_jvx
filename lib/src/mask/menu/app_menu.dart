@@ -9,7 +9,6 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/open_screen_command.dart';
-import '../../model/menu/menu_model.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import 'grid/app_menu_grid_grouped.dart';
