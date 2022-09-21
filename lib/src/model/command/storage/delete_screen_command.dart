@@ -2,12 +2,10 @@ import 'storage_command.dart';
 
 class DeleteScreenCommand extends StorageCommand {
   final String screenName;
-
-  final bool beamBack;
+  bool beamBack = true;
 
   DeleteScreenCommand({
     required this.screenName,
-    this.beamBack = true,
     required super.reason,
   });
 
