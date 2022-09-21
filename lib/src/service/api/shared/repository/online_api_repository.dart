@@ -263,7 +263,7 @@ class OnlineApiRepository implements IRepository {
 
   /// Send post request to remote server, applies timeout.
   Future<HttpClientResponse> _sendPostRequest(Route route, IApiRequest pRequest) async {
-    Uri uri = Uri.parse(IConfigService().getBaseUrl()! + route.route);
+    Uri uri = Uri.parse("${IConfigService().getBaseUrl()!}/${route.route}");
     HttpClientRequest request = await connect(uri, route.method);
 
     if (kIsWeb) {

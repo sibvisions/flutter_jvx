@@ -1,6 +1,5 @@
 import 'package:universal_io/io.dart';
 
-import '../../../../services.dart';
 import 'api_command.dart';
 
 class UploadCommand extends ApiCommand {
@@ -22,9 +21,7 @@ class UploadCommand extends ApiCommand {
     required this.fileId,
     required this.file,
     required super.reason,
-  }) {
-    callback = () => IUiService().getAppManager()?.onSuccessfulStartup();
-  }
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
