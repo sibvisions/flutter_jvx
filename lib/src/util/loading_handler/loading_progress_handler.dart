@@ -31,7 +31,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
     if (isSupported(pCommand) && !IConfigService().isOffline()) {
       _loadingCommandAmount++;
       if (_loadingCommandAmount == 1) {
-        LoadingOverlay.of(FlutterJVx.getCurrentContext())?.show(pCommand.loadingDelay);
+        LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.show(pCommand.loadingDelay);
       }
     }
   }
@@ -43,7 +43,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
         _loadingCommandAmount--;
       }
       if (_loadingCommandAmount == 0) {
-        LoadingOverlay.of(FlutterJVx.getCurrentContext())?.hide();
+        LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.hide();
       }
     }
   }

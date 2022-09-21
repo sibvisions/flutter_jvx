@@ -517,19 +517,19 @@ class UiService implements IUiService {
     required MessageDialog pDialog,
   }) {
     _activeFrames[componentId] = pDialog;
-    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
   void closeFrame({required String componentId}) {
     _activeFrames.remove(componentId);
-    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
   void closeFrames() {
     _activeFrames.clear();
-    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
@@ -540,19 +540,19 @@ class UiService implements IUiService {
   @override
   void showFrameDialog(FrameDialog pDialog) {
     _activeDialogs.add(pDialog);
-    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
   }
 
   @override
   void closeFrameDialog(FrameDialog pDialog) {
     _activeDialogs.remove(pDialog);
-    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
   }
 
   @override
   void closeFrameDialogs() {
     _activeDialogs.clear();
-    LoadingOverlay.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -45,8 +45,6 @@ abstract class Frame extends StatefulWidget {
     }
   }
 
-  static FrameState? of(BuildContext context) => context.findAncestorStateOfType<FrameState>();
-
   static Widget wrapWithFrame(
       {Key? key, required bool forceMobile, required bool forceWeb, required WidgetBuilder builder}) {
     if (forceMobile) {
@@ -76,6 +74,8 @@ abstract class Frame extends StatefulWidget {
 }
 
 abstract class FrameState extends State<Frame> {
+  static FrameState? of(BuildContext context) => context.findAncestorStateOfType<FrameState>();
+
   @override
   Widget build(BuildContext context) => widget.builder.call(context);
 

@@ -173,6 +173,9 @@ class FlutterJVx extends StatefulWidget {
 late BeamerDelegate routerDelegate;
 
 class FlutterJVxState extends State<FlutterJVx> {
+  /// Gets the [FlutterJVxState] widget.
+  static FlutterJVxState? of(BuildContext context) => context.findAncestorStateOfType();
+
   ThemeData themeData = ThemeData(
     backgroundColor: Colors.grey.shade50,
   );
