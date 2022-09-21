@@ -5,7 +5,6 @@ import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
-import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../api/shared/api_object_property.dart';
 import '../../i_storage_service.dart';
 
@@ -180,23 +179,6 @@ class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Returns true if [componentModel] does have the [ApiObjectProperty.screenClassName] property
-  /// and it matches the [screenClassName]
-  bool _isScreen(String screenClassName, FlComponentModel componentModel) {
-    FlPanelModel? componentPanelModel;
-
-    if (componentModel is FlPanelModel) {
-      componentPanelModel = componentModel;
-    }
-
-    if (componentPanelModel != null) {
-      if (componentPanelModel.screenClassName == screenClassName) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   /// Returns List of all [FlComponentModel] below it, recursively.
   List<FlComponentModel> _getAllComponentsBelow(String id, [bool ignoreVisiblity = false]) {
