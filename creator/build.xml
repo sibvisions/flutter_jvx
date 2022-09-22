@@ -98,11 +98,63 @@ the License.
     <loadfile property="pubspec" srcFile="${project.temp}/pubspec.yaml" />
 
     <!-- get version from yaml -->
-    <propertyregex property="appversion"
+
+    <!-- get version property from file: version: 1.2.42+45 => 1.2.42+45 -->
+    <propertyregex property="appversion.orig"
                    input="${pubspec}"
                    regexp="version:\s*([0-9\+\.]*).*"
                    select="\1"
                    casesensitive="true" />
+
+    <!-- get version name from version information: 1.2.42+45 => 1.2.42 -->
+    <propertyregex property="appversion.name"
+                   input="${appversion.orig}"
+                   regexp="([0-9\.]*)\+?+(\d).*"
+                   select="\1"
+                   casesensitive="true" />
+
+    <!-- get version code from version information: 1.2.42+45 => 45 -->
+    <propertyregex property="appversion.code.temp"
+                   input="${appversion.orig}"
+                   regexp="([0-9\.]*)\+?+(\d*).*"
+                   select="\2"
+                   casesensitive="true" />
+
+    <!-- no version information means 0 -->
+    <if>
+      <isset property="appversion.code.temp" />
+      <then>
+        <property name="appversion.code" value="${appversion.code.temp}" />
+      </then>
+      <else>
+        <property name="appversion.code" value="0" />
+      </else>
+    </if>
+
+    <mkdir dir="${basedir}/buildnumber/" />
+
+    <buildnr buildfile="${basedir}/buildnumber/version.properties" version="${appversion.name}" name="Creator" />
+
+    <!-- add buildnumber to version -->
+    <property name="appversion.name.new" value="${build.version}.${build.number}" />                   
+    <!-- increase appcode (+1) -->
+    <math result="appversion.code.new" operand1="${appversion.code}" operand2="1" operation="+" datatype="int"/>
+
+    <!-- 
+      We only update the code in the pubspec.yaml because the buildnumber is internal only 
+
+      BE SURE TO commit all changes manually!
+      -->
+    <replaceregexp byline="true">
+      <regexp pattern="version:\s*(.*)"/>
+      <substitution expression="version: ${appversion.name}+${appversion.code.new}"/>
+      <fileset dir="${project}">
+        <include name="pubspec.yaml"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- for packaging, we use the new version number (includes buildnumer) and the new appcode. -->
+    <property name="appversion" value="${appversion.name.new}+${appversion.code.new}" />
 
     <!-- replace version in config -->
     <replaceregexp byline="true">
@@ -292,8 +344,11 @@ the License.
   <target name="start.android" depends="clean, build.android" description="Creates application archives for android" />
   <target name="start.web" depends="clean, build.web" description="Creates application archives for web" />
 
+<target name="test" depends="clean, prepare" />
+
   <target name="update">
     <get src="https://raw.githubusercontent.com/sibvisions/flutterclient/main/creator/build.xml" dest="build.xml" usetimestamp="true"/>
+    <get src="https://raw.githubusercontent.com/sibvisions/flutterclient/main/creator/addons.jar" dest="addons.jar" usetimestamp="true"/>
   </target>
 
 </project>
