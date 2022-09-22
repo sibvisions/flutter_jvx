@@ -207,6 +207,12 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   @override
+  void dispose() {
+    IApiService().getRepository()?.stop();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: themeData,

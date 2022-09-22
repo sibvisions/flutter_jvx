@@ -32,6 +32,7 @@ class Route {
   static const Route POST_CLOSE_FRAME = Route(Method.POST, "api/closeFrame");
   static const Route POST_DOWNLOAD = Route(Method.POST, "download");
   static const Route POST_UPLOAD = Route(Method.POST, "upload");
+  static const Route POST_CHANGES = Route(Method.POST, "api/changes");
 
   final String route;
   final Method method;

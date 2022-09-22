@@ -1,5 +1,6 @@
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/change_password_command.dart';
+import '../../../../../model/command/api/changes_command.dart';
 import '../../../../../model/command/api/close_frame_command.dart';
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/api/close_tab_command.dart';
@@ -28,6 +29,7 @@ import '../../../../../model/command/api/upload_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 import 'change_password_command_processor.dart';
+import 'changes_command_processor.dart';
 import 'close_frame_command_processor.dart';
 import 'close_screen_command_processor.dart';
 import 'close_tab_command_processor.dart';
@@ -132,6 +134,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [UploadCommand]
   final ICommandProcessor _uploadProcessor = UploadCommandProcessor();
 
+  final ICommandProcessor _changesProcessor = ChangesCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,6 +195,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _closeFrameProcessor.processCommand(command);
     } else if (command is UploadCommand) {
       return _uploadProcessor.processCommand(command);
+    } else if (command is ChangesCommand) {
+      return _changesProcessor.processCommand(command);
     }
 
     return [];

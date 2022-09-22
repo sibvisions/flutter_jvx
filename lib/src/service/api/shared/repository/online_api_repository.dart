@@ -1,15 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
+import 'package:web_socket_channel/status.dart' as status;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../../../config/api/route.dart';
 import '../../../../../services.dart';
 import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../../util/logging/flutter_logger.dart';
+import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/request/api_change_password_request.dart';
+import '../../../../model/request/api_changes_request.dart';
 import '../../../../model/request/api_close_frame_request.dart';
 import '../../../../model/request/api_close_screen_request.dart';
 import '../../../../model/request/api_close_tab_request.dart';
@@ -64,6 +69,7 @@ import '../../../../model/response/view/message/session_expired_response.dart';
 import '../api_object_property.dart';
 import '../api_response_names.dart';
 import '../i_repository.dart';
+import 'web_socket/universal_web_socket.dart';
 
 typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson, required Object originalRequest});
 
@@ -101,6 +107,7 @@ class OnlineApiRepository implements IRepository {
     ApiCloseFrameRequest: (_) => Route.POST_CLOSE_FRAME,
     ApiUploadRequest: (_) => Route.POST_UPLOAD,
     ApiDownloadRequest: (_) => Route.POST_DOWNLOAD,
+    ApiChangesRequest: (_) => Route.POST_CHANGES,
   };
 
   static final Map<String, ResponseFactory> maps = {
@@ -127,8 +134,11 @@ class OnlineApiRepository implements IRepository {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Http client for outside connection
+  /// Http client for outgoing connection
   HttpClient? client;
+
+  /// Http client for outside connection
+  WebSocketChannel? webSocket;
 
   /// Header fields, used for sessionId
   final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
@@ -145,6 +155,8 @@ class OnlineApiRepository implements IRepository {
   /// ASCII-compatible characters.
   final _asciiOnly = RegExp(r'^[\x00-\x7F]+$');
 
+  int lastDelay = 2;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -153,15 +165,102 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<void> start() async {
+    client ??= HttpClient()..connectionTimeout = Duration(seconds: IConfigService().getAppConfig()!.requestTimeout!);
+  }
+
+  Future<void> startWebSocket([bool reconnect = false]) async {
+    unawaited(webSocket?.sink.close());
+
     if (isStopped()) {
-      client = HttpClient()..connectionTimeout = Duration(seconds: IConfigService().getAppConfig()!.requestTimeout!);
+      return;
     }
+
+    var uri = _getWebSocketUri(reconnect);
+    try {
+      LOGGER.logI(pType: LogType.COMMAND, pMessage: "Connecting to Websocket on $uri");
+
+      webSocket = UniversalWebSocketChannel.create(
+        uri,
+        {"Cookie": _cookies.map((e) => "${e.name}=${e.value}").join(";")},
+      );
+
+      webSocket!.stream.listen(
+        (data) {
+          lastDelay = 2;
+          if (data.isNotEmpty) {
+            try {
+              LOGGER.logI(pType: LogType.COMMAND, pMessage: "Received data via websocket: $data");
+              if (data == "api/changes") {
+                ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
+              }
+            } catch (e) {
+              LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error handling websocket message:", pError: e.toString());
+            }
+          }
+        },
+        onError: (error) {
+          LOGGER.logW(
+            pType: LogType.COMMAND,
+            pMessage: "Connection to Websocket failed",
+            pError: error,
+          );
+          reconnectWebSocket();
+        },
+        onDone: () {
+          LOGGER.logW(
+            pType: LogType.COMMAND,
+            pMessage:
+                "Connection to Websocket closed (${webSocket?.closeCode})${webSocket?.closeReason != null ? ": ${webSocket?.closeReason}" : ""}",
+          );
+
+          if (webSocket?.closeCode == status.protocolError) {
+            reconnectWebSocket();
+          }
+        },
+        cancelOnError: true,
+      );
+    } catch (e) {
+      LOGGER.logE(pType: LogType.COMMAND, pMessage: "Connection to Websocket could not be established!", pError: e);
+      rethrow;
+    }
+  }
+
+  void reconnectWebSocket() {
+    lastDelay = min(lastDelay << 1, 120);
+    LOGGER.logI(pType: LogType.COMMAND, pMessage: "Retrying Websocket connection in $lastDelay seconds...");
+    Timer(Duration(seconds: lastDelay), () {
+      LOGGER.logI(pType: LogType.COMMAND, pMessage: "Retrying Websocket connection");
+      startWebSocket();
+    });
+  }
+
+  Uri _getWebSocketUri(bool reconnect) {
+    Uri location = Uri.parse(IConfigService().getBaseUrl()!);
+
+    const String subPath = "/services/mobile";
+    int? end = location.path.lastIndexOf(subPath);
+    if (end == -1) end = null;
+
+    return location.replace(
+      scheme: location.scheme == "https" ? "wss" : "ws",
+      path: "${location.path.substring(0, end)}/pushlistener",
+      queryParameters: {
+        "clientId": IConfigService().getClientId()!,
+        if (reconnect) "reconnect": null,
+      },
+    );
+  }
+
+  Future<void> stopWebSocket() async {
+    await webSocket?.sink.close();
+    webSocket = null;
   }
 
   @override
   Future<void> stop() async {
     client?.close();
     client = null;
+    await stopWebSocket();
   }
 
   @override
