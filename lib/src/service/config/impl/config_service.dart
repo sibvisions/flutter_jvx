@@ -233,6 +233,8 @@ class ConfigService implements IConfigService {
         }
       });
     }
+
+    log("reloaded languages: $supportedLanguages");
   }
 
   @override
@@ -472,15 +474,18 @@ class ConfigService implements IConfigService {
   void _loadLanguage(String pLanguage) {
     Translation langTrans = Translation.empty();
 
-    File? langTransFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation_$pLanguage.json");
-    if (langTransFile == null) {
-      LOGGER.logW(pType: LogType.CONFIG, pMessage: "Translation file for code $pLanguage could not be found");
-    } else {
-      langTrans.merge(langTransFile);
-    }
+    // Load the default translation.
+    File? defaultTransFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation.json");
+    langTrans.merge(defaultTransFile);
 
-    langTransFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation.json");
-    langTrans.merge(langTransFile);
+    if (pLanguage != "en") {
+      File? transFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation_$pLanguage.json");
+      if (transFile == null) {
+        LOGGER.logW(pType: LogType.CONFIG, pMessage: "Translation file for code $pLanguage could not be found");
+      } else {
+        langTrans.merge(transFile);
+      }
+    }
 
     translation = langTrans;
 
