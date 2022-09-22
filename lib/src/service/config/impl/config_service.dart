@@ -222,16 +222,17 @@ class ConfigService implements IConfigService {
   @override
   void reloadSupportedLanguages() {
     // Add supported languages by parsing all translation file names
-    Directory? langDir = fileManager.getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");
-    if (langDir != null && langDir.existsSync()) {
-      List<String> fileNames = langDir.listSync().map((e) => e.path.split("/").last).toList();
+    supportedLanguages.clear();
+    supportedLanguages.add("en");
 
-      fileNames.forEach((element) {
-        RegExpMatch? match = IConfigService.langRegex.firstMatch(element);
-        if (match != null) {
-          supportedLanguages.add(match.namedGroup("name")!);
-        }
-      });
+    List<File> listFiles = fileManager.getTranslationFiles();
+
+    for (File file in listFiles) {
+      String fileName = file.path.split("/").last;
+      RegExpMatch? match = IConfigService.langRegex.firstMatch(fileName);
+      if (match != null) {
+        supportedLanguages.add(match.namedGroup("name")!);
+      }
     }
 
     log("reloaded languages: $supportedLanguages");

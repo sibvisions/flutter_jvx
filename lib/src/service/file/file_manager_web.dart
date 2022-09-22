@@ -72,6 +72,19 @@ class FileManagerWeb extends IFileManager {
     return null;
   }
 
+  @override
+  List<File> getTranslationFiles() {
+    List<File> listFiles = [];
+
+    _files.forEach((key, value) {
+      if (key.contains("/${IFileManager.LANGUAGES_PATH}/")) {
+        listFiles.add(value);
+      }
+    });
+
+    return listFiles;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

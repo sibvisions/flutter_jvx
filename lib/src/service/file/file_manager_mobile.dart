@@ -114,6 +114,18 @@ class FileMangerMobile extends IFileManager {
     return Directory(_getSavePath(pPath: _fixPath(pPath)));
   }
 
+  @override
+  List<File> getTranslationFiles() {
+    List<File> listFiles = [];
+
+    Directory? dir = getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");
+
+    if (dir != null) {
+      listFiles.addAll(dir.listSync().whereType<File>().toList());
+    }
+
+    return listFiles;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

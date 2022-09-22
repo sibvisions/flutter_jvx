@@ -51,4 +51,7 @@ abstract class IFileManager {
 
   /// Returns directory, will always return null if in web
   Directory? getDirectory({required String pPath});
+
+  /// Returns directory, will always return null if in web
+  List<File> getTranslationFiles();
 }
