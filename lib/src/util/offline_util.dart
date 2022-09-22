@@ -61,11 +61,11 @@ abstract class OfflineUtil {
         ),
       );
 
-      offlineApiRepository = (await IApiService().getRepository()) as OfflineApiRepository;
+      offlineApiRepository = IApiService().getRepository() as OfflineApiRepository;
       //Set online api repository to handle commands
       onlineApiRepository = OnlineApiRepository();
       await onlineApiRepository.start();
-      await IApiService().setRepository(onlineApiRepository);
+      IApiService().setRepository(onlineApiRepository);
 
       await ICommandService().sendCommand(
         StartupCommand(
@@ -184,7 +184,7 @@ abstract class OfflineUtil {
         );
       } else {
         await onlineApiRepository.stop();
-        await IApiService().setRepository(offlineApiRepository);
+        IApiService().setRepository(offlineApiRepository);
       }
     } catch (e, stackTrace) {
       LOGGER.logE(
@@ -197,7 +197,7 @@ abstract class OfflineUtil {
       //Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
         await onlineApiRepository?.stop();
-        await IApiService().setRepository(offlineApiRepository);
+        IApiService().setRepository(offlineApiRepository);
         await IConfigService().setOffline(true);
         //Clear menu
         IUiService().setMenuModel(null);
@@ -429,7 +429,7 @@ abstract class OfflineUtil {
 
   static initOffline(String pWorkscreen) async {
     var dialogKey = GlobalKey<ProgressDialogState>();
-    OnlineApiRepository? onlineApiRepository = (await IApiService().getRepository()) as OnlineApiRepository;
+    OnlineApiRepository? onlineApiRepository = IApiService().getRepository() as OnlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
@@ -488,7 +488,7 @@ abstract class OfflineUtil {
       IDataService().clearDataBooks();
       await offlineApiRepository.initDataBooks();
 
-      await IApiService().setRepository(offlineApiRepository);
+      IApiService().setRepository(offlineApiRepository);
       await IConfigService()
           .setOfflineScreen(IUiService().getComponentByName(pComponentName: pWorkscreen)!.screenLongName!);
       await onlineApiRepository.stop();
@@ -510,7 +510,7 @@ abstract class OfflineUtil {
         await offlineApiRepository.deleteDatabase();
       }
       await offlineApiRepository?.stop();
-      await IApiService().setRepository(onlineApiRepository);
+      IApiService().setRepository(onlineApiRepository);
       await IConfigService().setOffline(false);
 
       ProgressDialogWidget.safeClose(dialogKey);
@@ -536,7 +536,7 @@ abstract class OfflineUtil {
   }
 
   static void discardChanges(BuildContext context) async {
-    var offlineApiRepository = (await IApiService().getRepository());
+    var offlineApiRepository = IApiService().getRepository();
     if (offlineApiRepository is OfflineApiRepository && !offlineApiRepository.isStopped()) {
       await offlineApiRepository.deleteDatabase();
     }

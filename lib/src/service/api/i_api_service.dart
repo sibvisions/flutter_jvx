@@ -19,9 +19,9 @@ abstract class IApiService {
   /// after which it will be processed to [BaseCommand]s in an [IController]
   Future<List<BaseCommand>> sendRequest({required IApiRequest request});
 
-  Future<IRepository?> getRepository();
+  IRepository? getRepository();
 
-  Future<void> setRepository(IRepository pRepository);
+  void setRepository(IRepository pRepository);
 
-  Future<void> setController(IController pController);
+  void setController(IController pController);
 }

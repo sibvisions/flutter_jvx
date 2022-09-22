@@ -133,7 +133,7 @@ class FlutterJVx extends StatefulWidget {
 
     // API
     IApiService apiService = ApiService();
-    await apiService.setController(ApiController());
+    apiService.setController(ApiController());
     services.registerSingleton(apiService);
 
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
@@ -377,7 +377,7 @@ class FlutterJVxState extends State<FlutterJVx> {
 
     var repository = configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository();
     await repository.start();
-    await apiService.setRepository(repository);
+    apiService.setRepository(repository);
   }
 
   Future<void> doStartup() async {

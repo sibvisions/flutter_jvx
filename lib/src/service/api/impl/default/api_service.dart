@@ -38,17 +38,17 @@ class ApiService implements IApiService {
   }
 
   @override
-  Future<IRepository?> getRepository() {
-    return Future.value(repository);
+  IRepository? getRepository() {
+    return repository;
   }
 
   @override
-  Future<void> setRepository(IRepository pRepository) async {
+  void setRepository(IRepository pRepository) {
     repository = pRepository;
   }
 
   @override
-  Future<void> setController(IController pController) async {
+  void setController(IController pController) {
     controller = pController;
   }
 }
