@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../../../config/api/api_route.dart';
+import '../../../../../flutter_jvx.dart';
 import '../../../../../services.dart';
 import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../../util/logging/flutter_logger.dart';
@@ -204,6 +206,9 @@ class OnlineApiRepository implements IRepository {
             pMessage: "Connection to Websocket failed",
             pError: error,
           );
+          if (lastDelay == 2) {
+            showStatus("Server Connection lost, retrying...");
+          }
           reconnectWebSocket();
         },
         onDone: () {
@@ -213,8 +218,12 @@ class OnlineApiRepository implements IRepository {
                 "Connection to Websocket closed (${webSocket?.closeCode})${webSocket?.closeReason != null ? ": ${webSocket?.closeReason}" : ""}",
           );
 
+          lastDelay = 2;
           if (webSocket?.closeCode == status.protocolError) {
+            showStatus("Server Connection lost, retrying...");
             reconnectWebSocket();
+          } else {
+            showStatus("Server Connection lost");
           }
         },
         cancelOnError: true,
@@ -222,6 +231,14 @@ class OnlineApiRepository implements IRepository {
     } catch (e) {
       LOGGER.logE(pType: LogType.COMMAND, pMessage: "Connection to Websocket could not be established!", pError: e);
       rethrow;
+    }
+  }
+
+  void showStatus(String message) {
+    if (!IConfigService().isOffline()) {
+      ScaffoldMessenger.of(FlutterJVx.getCurrentContext()!).showSnackBar(SnackBar(
+        content: Text(message),
+      ));
     }
   }
 
