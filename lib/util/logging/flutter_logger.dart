@@ -30,7 +30,7 @@ enum LogLevel {
 enum LogType { GENERAL, CONFIG, LAYOUT, STORAGE, DATA, COMMAND, UI }
 
 /// The log level which is always logged, independent from the type.
-const LogLevel MINIMUM_LOG = LogLevel.WARNING;
+const LogLevel MINIMUM_LOG = LogLevel.INFO;
 
 class LOGGER {
   // ignore: non_constant_identifier_names
