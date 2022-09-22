@@ -8,7 +8,7 @@ import 'package:universal_io/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../../../../config/api/route.dart';
+import '../../../../../config/api/api_route.dart';
 import '../../../../../services.dart';
 import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../../util/logging/flutter_logger.dart';
@@ -80,34 +80,34 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Map of all remote request mapped to their route
-  static final Map<Type, Route Function(IApiRequest pRequest)> uriMap = {
-    ApiStartUpRequest: (_) => Route.POST_STARTUP,
-    ApiLoginRequest: (_) => Route.POST_LOGIN,
-    ApiCloseTabRequest: (_) => Route.POST_CLOSE_TAB,
-    ApiDeviceStatusRequest: (_) => Route.POST_DEVICE_STATUS,
-    ApiOpenScreenRequest: (_) => Route.POST_OPEN_SCREEN,
-    ApiOpenTabRequest: (_) => Route.POST_SELECT_TAB,
-    ApiPressButtonRequest: (_) => Route.POST_PRESS_BUTTON,
-    ApiSetValueRequest: (_) => Route.POST_SET_VALUE,
-    ApiSetValuesRequest: (_) => Route.POST_SET_VALUES,
-    ApiChangePasswordRequest: (_) => Route.POST_CHANGE_PASSWORD,
-    ApiResetPasswordRequest: (_) => Route.POST_RESET_PASSWORD,
-    ApiNavigationRequest: (_) => Route.POST_NAVIGATION,
-    ApiReloadMenuRequest: (_) => Route.POST_MENU,
-    ApiFetchRequest: (_) => Route.POST_FETCH,
-    ApiLogoutRequest: (_) => Route.POST_LOGOUT,
-    ApiFilterRequest: (_) => Route.POST_FILTER,
-    ApiInsertRecordRequest: (_) => Route.POST_INSERT_RECORD,
-    ApiSelectRecordRequest: (_) => Route.POST_SELECT_RECORD,
-    ApiCloseScreenRequest: (_) => Route.POST_CLOSE_SCREEN,
-    ApiDeleteRecordRequest: (_) => Route.POST_DELETE_RECORD,
-    ApiDownloadImagesRequest: (_) => Route.POST_DOWNLOAD,
-    ApiDownloadTranslationRequest: (_) => Route.POST_DOWNLOAD,
-    ApiDownloadStyleRequest: (_) => Route.POST_DOWNLOAD,
-    ApiCloseFrameRequest: (_) => Route.POST_CLOSE_FRAME,
-    ApiUploadRequest: (_) => Route.POST_UPLOAD,
-    ApiDownloadRequest: (_) => Route.POST_DOWNLOAD,
-    ApiChangesRequest: (_) => Route.POST_CHANGES,
+  static final Map<Type, APIRoute Function(IApiRequest pRequest)> uriMap = {
+    ApiStartUpRequest: (_) => APIRoute.POST_STARTUP,
+    ApiLoginRequest: (_) => APIRoute.POST_LOGIN,
+    ApiCloseTabRequest: (_) => APIRoute.POST_CLOSE_TAB,
+    ApiDeviceStatusRequest: (_) => APIRoute.POST_DEVICE_STATUS,
+    ApiOpenScreenRequest: (_) => APIRoute.POST_OPEN_SCREEN,
+    ApiOpenTabRequest: (_) => APIRoute.POST_SELECT_TAB,
+    ApiPressButtonRequest: (_) => APIRoute.POST_PRESS_BUTTON,
+    ApiSetValueRequest: (_) => APIRoute.POST_SET_VALUE,
+    ApiSetValuesRequest: (_) => APIRoute.POST_SET_VALUES,
+    ApiChangePasswordRequest: (_) => APIRoute.POST_CHANGE_PASSWORD,
+    ApiResetPasswordRequest: (_) => APIRoute.POST_RESET_PASSWORD,
+    ApiNavigationRequest: (_) => APIRoute.POST_NAVIGATION,
+    ApiReloadMenuRequest: (_) => APIRoute.POST_MENU,
+    ApiFetchRequest: (_) => APIRoute.POST_FETCH,
+    ApiLogoutRequest: (_) => APIRoute.POST_LOGOUT,
+    ApiFilterRequest: (_) => APIRoute.POST_FILTER,
+    ApiInsertRecordRequest: (_) => APIRoute.POST_INSERT_RECORD,
+    ApiSelectRecordRequest: (_) => APIRoute.POST_SELECT_RECORD,
+    ApiCloseScreenRequest: (_) => APIRoute.POST_CLOSE_SCREEN,
+    ApiDeleteRecordRequest: (_) => APIRoute.POST_DELETE_RECORD,
+    ApiDownloadImagesRequest: (_) => APIRoute.POST_DOWNLOAD,
+    ApiDownloadTranslationRequest: (_) => APIRoute.POST_DOWNLOAD,
+    ApiDownloadStyleRequest: (_) => APIRoute.POST_DOWNLOAD,
+    ApiCloseFrameRequest: (_) => APIRoute.POST_CLOSE_FRAME,
+    ApiUploadRequest: (_) => APIRoute.POST_UPLOAD,
+    ApiDownloadRequest: (_) => APIRoute.POST_DOWNLOAD,
+    ApiChangesRequest: (_) => APIRoute.POST_CHANGES,
   };
 
   static final Map<String, ResponseFactory> maps = {
@@ -276,7 +276,7 @@ class OnlineApiRepository implements IRepository {
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
-    Route? route = uriMap[pRequest.runtimeType]?.call(pRequest);
+    APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
 
     if (route != null) {
       try {
@@ -361,7 +361,7 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Send post request to remote server, applies timeout.
-  Future<HttpClientResponse> _sendPostRequest(Route route, IApiRequest pRequest) async {
+  Future<HttpClientResponse> _sendPostRequest(APIRoute route, IApiRequest pRequest) async {
     Uri uri = Uri.parse("${IConfigService().getBaseUrl()!}/${route.route}");
     HttpClientRequest request = await connect(uri, route.method);
 
