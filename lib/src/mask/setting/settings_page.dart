@@ -45,6 +45,11 @@ class _SettingsPageState extends State<SettingsPage> {
   /// If the settings are currently loading.
   bool loading = false;
 
+  String? originalAppName = IConfigService().getAppName();
+  String? originalBaseUrl = IConfigService().getBaseUrl();
+  String originalLanguage = IConfigService().getLanguage();
+  int? originalResolution = IConfigService().getPictureResolution();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Expanded(
                     child: IConfigService().getUserInfo() != null && context.canBeamBack
                         ? InkWell(
-                            onTap: loading ? null : context.beamBack,
+                            onTap: loading ? null : closeClicked,
                             child: Container(
                               alignment: Alignment.center,
                               child: Text(
@@ -416,5 +421,14 @@ class _SettingsPageState extends State<SettingsPage> {
         pIsDismissible: true,
       );
     }
+  }
+
+  void closeClicked() {
+    IConfigService().setAppName(originalAppName);
+    IConfigService().setBaseUrl(originalBaseUrl);
+    IConfigService().setLanguage(originalLanguage);
+    IConfigService().setPictureResolution(originalResolution ?? resolutions.last);
+
+    context.beamBack();
   }
 }
