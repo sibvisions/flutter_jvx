@@ -230,7 +230,7 @@ class OnlineApiRepository implements IRepository {
           lastDelay = 2;
 
           if (!manualClose) {
-            if (webSocket?.closeCode == status.protocolError || webSocket?.closeCode == status.normalClosure) {
+            if (webSocket?.closeCode != status.abnormalClosure && webSocket?.closeCode != status.goingAway) {
               showStatus("Server Connection lost, retrying...");
               reconnectWebSocket();
             } else {
