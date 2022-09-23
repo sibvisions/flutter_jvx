@@ -15,13 +15,14 @@ class LoadingWidget extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: Svg(
-                  ImageLoader.getAssetPath(
-                    FlutterJVx.package,
-                    'assets/images/JVx_Bg.svg',
-                  ),
+              image: Svg(
+                ImageLoader.getAssetPath(
+                  FlutterJVx.package,
+                  'assets/images/JVx_Bg.svg',
                 ),
-                fit: BoxFit.fill),
+              ),
+              fit: BoxFit.fill,
+            ),
           ),
         ),
         Column(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: <Widget>[
