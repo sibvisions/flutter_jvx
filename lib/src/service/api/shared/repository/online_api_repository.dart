@@ -260,8 +260,7 @@ class OnlineApiRepository implements IRepository {
     LOGGER.logI(pType: LogType.COMMAND, pMessage: "Retrying Websocket connection in $lastDelay seconds...");
     Timer(Duration(seconds: lastDelay), () {
       LOGGER.logI(pType: LogType.COMMAND, pMessage: "Retrying Websocket connection");
-      //TODO wait for bugfix on server
-      startWebSocket(/*true*/);
+      startWebSocket(true);
     });
   }
 
