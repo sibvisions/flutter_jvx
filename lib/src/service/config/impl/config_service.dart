@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -234,8 +233,6 @@ class ConfigService implements IConfigService {
         supportedLanguages.add(match.namedGroup("name")!);
       }
     }
-
-    log("reloaded languages: $supportedLanguages");
   }
 
   @override
@@ -246,8 +243,6 @@ class ConfigService implements IConfigService {
 
   @override
   Future<bool> setAppStyle(Map<String, String>? pAppStyle) async {
-    log("AppStyle: $pAppStyle");
-
     if (pAppStyle == null) {
       applicationStyle?.clear();
     } else {

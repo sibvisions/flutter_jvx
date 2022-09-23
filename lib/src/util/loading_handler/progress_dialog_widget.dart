@@ -1,7 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
+
+import '../../../util/logging/flutter_logger.dart';
 
 class ProgressDialogWidget extends StatefulWidget {
   final Config config;
@@ -27,7 +27,12 @@ class ProgressDialogWidget extends StatefulWidget {
       try {
         ProgressDialogWidget.close(globalKey.currentContext!);
       } catch (e, stackTrace) {
-        log("Error while safely closing progress dialog", error: e, stackTrace: stackTrace);
+        LOGGER.logE(
+          pType: LogType.UI,
+          pMessage: "Error while safely closing progress dialog",
+          pError: e,
+          pStacktrace: stackTrace,
+        );
       }
     }
   }
@@ -94,8 +99,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                       value: progress ?? 0.5,
                       valueColor: AlwaysStoppedAnimation(effectiveValueColor),
                       //Workaround to disable wave on 100%
-                      backgroundColor:
-                          progress != null && progress >= 1 ? effectiveValueColor : _config.progressBgColor,
+                      backgroundColor: progress >= 1 ? effectiveValueColor : _config.progressBgColor,
                       borderRadius: 15.0,
                       borderWidth: 2.0,
                       borderColor: effectiveValueColor,

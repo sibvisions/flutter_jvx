@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import '../../../../../services.dart';
+import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../../util/parse_util.dart';
 import '../../../../model/data/data_book.dart';
 import '../../../../model/data/filter_condition.dart';
@@ -67,7 +66,10 @@ class OfflineApiRepository implements IRepository {
     await offlineDatabase!.dropTables(dalMetaData);
     offlineDatabase!.createTables(dalMetaData);
 
-    log("Sum of all dataBook entries: ${dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element)}");
+    LOGGER.logD(
+        pType: LogType.DATA,
+        pMessage:
+            "Sum of all dataBook entries: ${dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element)}");
 
     await offlineDatabase!.db.transaction((txn) async {
       var batch = txn.batch();
@@ -93,7 +95,7 @@ class OfflineApiRepository implements IRepository {
       return batch.commit();
     });
 
-    log("done inserting offline data");
+    LOGGER.logI(pType: LogType.DATA, pMessage: "done inserting offline data");
   }
 
   /// Deletes all currently used dataBooks

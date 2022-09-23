@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
@@ -87,7 +86,7 @@ abstract class OfflineUtil {
 
       var dataBooks = IDataService().getDataBooks();
       for (DataBook dataBook in dataBooks.values) {
-        log("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
+        LOGGER.logI(pType: LogType.DATA, pMessage: "DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
         List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
 
         Map<String, List<Map<String, Object?>>> groupedRows =
@@ -129,7 +128,7 @@ abstract class OfflineUtil {
             ) &&
             successfulSync;
 
-        log("Marking ${successfulSyncedPrimaryKeys.length} rows as synced");
+        LOGGER.logI(pType: LogType.DATA, pMessage: "Marking ${successfulSyncedPrimaryKeys.length} rows as synced");
         await offlineApiRepository.resetStates(dataBook.dataProvider, pResetRows: successfulSyncedPrimaryKeys);
         successfulSyncedRows += successfulSyncedPrimaryKeys.length;
 
@@ -139,7 +138,9 @@ abstract class OfflineUtil {
       String syncResult = successfulSync ? "successful" : "failed";
       int failedRowCount = changedRowsSum - successfulSyncedRows;
 
-      log("Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
+      LOGGER.logI(
+          pType: LogType.DATA,
+          pMessage: "Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
 
       if (successfulSyncedRows > 0 || failedRowCount > 0) {
         dialogKey.currentState!.update(
@@ -233,7 +234,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (insertedRows != null) {
-      log("Syncing ${insertedRows.length} inserted rows");
+      LOGGER.logI(pType: LogType.DATA, pMessage: "Syncing ${insertedRows.length} inserted rows");
       for (var row in insertedRows) {
         try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
@@ -266,7 +267,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (updatedRows != null) {
-      log("Syncing ${updatedRows.length} updated rows");
+      LOGGER.logI(pType: LogType.DATA, pMessage: "Syncing ${updatedRows.length} updated rows");
       for (var row in updatedRows) {
         try {
           var oldColumns = {
@@ -304,7 +305,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (deletedRows != null) {
-      log("Syncing ${deletedRows.length} deleted rows");
+      LOGGER.logI(pType: LogType.DATA, pMessage: "Syncing ${deletedRows.length} deleted rows");
       for (var row in deletedRows) {
         try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
@@ -409,7 +410,7 @@ abstract class OfflineUtil {
   }) async {
     int fetchCounter = 1;
     for (String dataProvider in activeDataProviders) {
-      log("Start fetching $dataProvider");
+      LOGGER.logI(pType: LogType.DATA, pMessage: "Start fetching $dataProvider");
 
       progressUpdate?.call(fetchCounter++, activeDataProviders.length);
 
@@ -424,7 +425,7 @@ abstract class OfflineUtil {
       );
     }
 
-    log("Finished fetching data");
+    LOGGER.logI(pType: LogType.DATA, pMessage: "Finished fetching data");
   }
 
   static initOffline(String pWorkscreen) async {

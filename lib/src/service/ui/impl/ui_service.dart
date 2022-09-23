@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
@@ -123,7 +122,7 @@ class UiService implements IUiService {
 
   @override
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
-    log("routing to workscreen: $pScreenName");
+    LOGGER.logI(pType: LogType.UI, pMessage: "Routing to workscreen: $pScreenName");
 
     var last = FlutterJVx.getCurrentContext()!.beamingHistory.last;
     if (pReplaceRoute || last.runtimeType == SettingsLocation) {

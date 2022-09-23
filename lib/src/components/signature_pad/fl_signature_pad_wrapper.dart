@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/gestures.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:signature/signature.dart';
 
+import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/custom/fl_custom_container_model.dart';
 import '../../model/component/fl_component_model.dart';
@@ -93,7 +93,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     List<dynamic> values = [];
     values.add(pngBytes);
 
-    log("Sending Signature");
+    LOGGER.logI(pType: LogType.UI, pMessage: "Sending Signature");
 
     SetValuesCommand setValues = SetValuesCommand(
         componentId: model.id,
@@ -105,7 +105,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   Future<void> deleteSignature() async {
-    log("Deleting Signature");
+    LOGGER.logI(pType: LogType.UI, pMessage: "Deleting Signature");
     signatureController.clear();
 
     SetValuesCommand setValues = SetValuesCommand(

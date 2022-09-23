@@ -1,10 +1,10 @@
 import 'dart:collection';
 import 'dart:core';
-import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
+import '../../util/logging/flutter_logger.dart';
 import '../model/layout/alignments.dart';
 import '../model/layout/form_layout/form_layout_anchor.dart';
 import '../model/layout/form_layout/form_layout_constraints.dart';
@@ -567,16 +567,23 @@ class FormLayout extends ILayout {
         FormLayoutConstraints constraint = FormLayoutConstraints(
             bottomAnchor: bottomAnchor, leftAnchor: leftAnchor, rightAnchor: rightAnchor, topAnchor: topAnchor);
         componentConstraints[value.id] = constraint;
-      } catch (_) {
-        dev.log("Parent id: ${value.parentId!}");
-        dev.log("Child id: ${value.id}");
-        dev.log("Layoutdata $layoutData");
-        dev.log("Layout $layoutString");
+      } catch (error, stacktrace) {
+        LOGGER.logE(pType: LogType.LAYOUT, pMessage: "Parent id: ${value.parentId!}");
+        LOGGER.logE(pType: LogType.LAYOUT, pMessage: "Child id: ${value.id}");
+        LOGGER.logE(pType: LogType.LAYOUT, pMessage: "Layoutdata $layoutData");
+        LOGGER.logE(pType: LogType.LAYOUT, pMessage: "Layout $layoutString");
         var keys = anchors.keys.toList()..sort();
         anchorNames.sort();
-        dev.log(keys.toString());
-        dev.log(anchorNames.toString());
-        dev.log(anchorNames.where((anchorName) => !keys.contains(anchorName)).toString());
+        LOGGER.logE(pType: LogType.LAYOUT, pMessage: keys.toString());
+        LOGGER.logE(pType: LogType.LAYOUT, pMessage: anchorNames.toString());
+        LOGGER.logE(
+          pType: LogType.LAYOUT,
+          pMessage: anchorNames.where((anchorName) => !keys.contains(anchorName)).toString(),
+          pError: error,
+          pStacktrace: stacktrace,
+        );
+
+        rethrow;
       }
     }
     return componentConstraints;

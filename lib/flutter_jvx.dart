@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
@@ -276,15 +275,12 @@ class FlutterJVxState extends State<FlutterJVx> {
       );
 
       if (colorScheme.onPrimary.computeLuminance() == 0.0) {
-        log("Replaced onPrimary with grey");
         colorScheme = colorScheme.copyWith(onPrimary: Colors.grey.shade800);
       }
       if (colorScheme.onBackground.computeLuminance() == 0.0) {
-        log("Replaced onBackground with grey");
         colorScheme = colorScheme.copyWith(onBackground: Colors.grey.shade800);
       }
       if (colorScheme.onSurface.computeLuminance() == 0.0) {
-        log("Replaced onSurface with grey");
         colorScheme = colorScheme.copyWith(onSurface: Colors.grey.shade800);
       }
 
@@ -300,12 +296,10 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   void changeLanguage(String pLanguage) {
-    log("setLanguage");
     setState(() {});
   }
 
   void changedImages() {
-    log("changedImages");
     setState(() {});
   }
 

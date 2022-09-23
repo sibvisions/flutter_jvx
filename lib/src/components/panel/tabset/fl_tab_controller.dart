@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import '../../../../util/parse_util.dart';
@@ -51,7 +49,6 @@ class FlTabController extends TabController {
       }
 
       if (!isAllowed) {
-        log("ANIMATION CANCELLED");
         return false;
       }
     }

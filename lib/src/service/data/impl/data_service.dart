@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:developer';
 
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/base_command.dart';
@@ -36,7 +35,6 @@ class DataService implements IDataService {
     if (dataBook == null) {
       dataBook = DataBook.empty();
       dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
-      log("databook inserted: ${pFetch.dataProvider}");
       dataBooks[pFetch.dataProvider] = dataBook;
     } else {
       if (pFetch.clear) {
