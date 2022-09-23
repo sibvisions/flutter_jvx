@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
@@ -12,10 +13,24 @@ import '../../model/command/api/navigation_command.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 
 class WorkScreenLocation extends BeamLocation<BeamState> {
+  String lastWorkscreen = "";
+  UniqueKey workscreenKey = UniqueKey();
+
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
+    log("Building the workscreen location");
+
     final String workScreenName = state.pathParameters['workScreenName']!;
     FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
+
+    if (workScreenName != lastWorkscreen) {
+      workscreenKey = UniqueKey();
+      lastWorkscreen = workScreenName;
+    }
+
+    if (data != null && data is Map<String, dynamic> && (data as Map<String, dynamic>)["reload"] == true) {
+      workscreenKey = UniqueKey();
+    }
 
     // Header
     PreferredSizeWidget? header;
@@ -66,7 +81,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
     return [
       BeamPage(
         title: screenTitle,
-        key: ValueKey(workScreenName),
+        key: workscreenKey,
         child: WillPopScope(
           onWillPop: () async {
             if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {

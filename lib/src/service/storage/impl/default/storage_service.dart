@@ -136,10 +136,10 @@ class StorageService implements IStorageService {
       }
     }
 
-    // log("----------DeletedUiComponents: $deletedUiComponents ");
-    // log("----------affected: $affectedUiComponents ");
-    // log("----------changed: $changedUiComponents ");
-    // log("----------newUiComponents: $newUiComponents ");
+    LOGGER.logD(pType: LogType.STORAGE, pMessage: "----------DeletedUiComponents: $deletedUiComponents ");
+    LOGGER.logD(pType: LogType.STORAGE, pMessage: "----------affected: $affectedUiComponents ");
+    LOGGER.logD(pType: LogType.STORAGE, pMessage: "----------changed: $changedUiComponents ");
+    LOGGER.logD(pType: LogType.STORAGE, pMessage: "----------newUiComponents: $newUiComponents ");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
       affectedComponents: affectedUiComponents,

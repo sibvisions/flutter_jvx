@@ -124,12 +124,26 @@ class UiService implements IUiService {
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     LOGGER.logI(pType: LogType.UI, pMessage: "Routing to workscreen: $pScreenName");
 
-    var last = FlutterJVx.getCurrentContext()!.beamingHistory.last;
-    if (pReplaceRoute || last.runtimeType == SettingsLocation) {
-      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName");
-    } else {
-      FlutterJVx.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName");
+    BeamLocation lastLocation = FlutterJVx.getCurrentContext()!.beamingHistory.last;
+
+    bool justReload = false;
+
+    if (lastLocation.runtimeType == WorkScreenLocation) {
+      BeamState beamState = lastLocation.state as BeamState;
+      if (beamState.pathParameters["workScreenName"] == pScreenName) {
+        justReload = true;
+      }
     }
+
+    Map<String, dynamic> beamData = {};
+    beamData["reload"] = justReload;
+
+    if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation) {
+      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName", data: beamData);
+    } else {
+      FlutterJVx.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName", data: beamData);
+    }
+    // }
   }
 
   @override
