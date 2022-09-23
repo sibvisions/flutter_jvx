@@ -158,6 +158,7 @@ class OnlineApiRepository implements IRepository {
   final _asciiOnly = RegExp(r'^[\x00-\x7F]+$');
 
   int lastDelay = 2;
+  bool manualClose = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -171,9 +172,9 @@ class OnlineApiRepository implements IRepository {
   }
 
   Future<void> startWebSocket([bool reconnect = false]) async {
-    unawaited(webSocket?.sink.close());
+    await stopWebSocket();
 
-    if (isStopped()) {
+    if (reconnect && isStopped()) {
       return;
     }
 
@@ -189,6 +190,7 @@ class OnlineApiRepository implements IRepository {
       webSocket!.stream.listen(
         (data) {
           lastDelay = 2;
+          manualClose = false;
           if (data.isNotEmpty) {
             try {
               LOGGER.logI(pType: LogType.COMMAND, pMessage: "Received data via websocket: $data");
@@ -206,6 +208,13 @@ class OnlineApiRepository implements IRepository {
             pMessage: "Connection to Websocket failed",
             pError: error,
           );
+
+          //Cancel reconnect if manually closed
+          if (manualClose) {
+            manualClose = false;
+            return;
+          }
+
           if (lastDelay == 2) {
             showStatus("Server Connection lost, retrying...");
           }
@@ -219,11 +228,15 @@ class OnlineApiRepository implements IRepository {
           );
 
           lastDelay = 2;
-          if (webSocket?.closeCode == status.protocolError) {
-            showStatus("Server Connection lost, retrying...");
-            reconnectWebSocket();
-          } else {
-            showStatus("Server Connection lost");
+
+          if (!manualClose) {
+            if (webSocket?.closeCode == status.protocolError || webSocket?.closeCode == status.normalClosure) {
+              showStatus("Server Connection lost, retrying...");
+              reconnectWebSocket();
+            } else {
+              showStatus("Server Connection lost");
+            }
+            manualClose = false;
           }
         },
         cancelOnError: true,
@@ -247,7 +260,8 @@ class OnlineApiRepository implements IRepository {
     LOGGER.logI(pType: LogType.COMMAND, pMessage: "Retrying Websocket connection in $lastDelay seconds...");
     Timer(Duration(seconds: lastDelay), () {
       LOGGER.logI(pType: LogType.COMMAND, pMessage: "Retrying Websocket connection");
-      startWebSocket();
+      //TODO wait for bugfix on server
+      startWebSocket(/*true*/);
     });
   }
 
@@ -269,8 +283,8 @@ class OnlineApiRepository implements IRepository {
   }
 
   Future<void> stopWebSocket() async {
-    await webSocket?.sink.close();
-    webSocket = null;
+    manualClose = true;
+    await webSocket?.sink.close(status.goingAway);
   }
 
   @override
