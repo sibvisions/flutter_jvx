@@ -55,7 +55,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
 
           if (imageValue is Uint8List) {
             image = ImageLoader.loadImage(String.fromCharCodes(imageValue),
-                imageInBinary: true, imageInBase64: false, fit: BoxFit.scaleDown);
+                pImageInBinary: true, pImageInBase64: false, pFit: BoxFit.scaleDown);
           }
         } catch (error, stacktrace) {
           FlutterJVx.log.e("Failed to show image", error, stacktrace);

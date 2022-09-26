@@ -43,17 +43,9 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       child = Tooltip(message: model.toolTipText!, child: child);
     }
 
-    Alignment? alignment = FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index];
-
-    BoxFit boxFit = getBoxFit();
-    if (boxFit != BoxFit.contain && !model.preserveAspectRatio) {
-      alignment = null;
-    }
-
     return GestureDetector(
       onTap: onPress,
-      child: Container(
-        alignment: alignment,
+      child: DecoratedBox(
         decoration: BoxDecoration(color: model.background),
         child: child,
       ),
@@ -92,8 +84,9 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       model.image,
       pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
       pImageStreamListener: imageStreamListener,
-      imageInBinary: imageInBinary,
-      fit: getBoxFit(),
+      pImageInBinary: imageInBinary,
+      pFit: getBoxFit(),
+      pAlignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
     );
   }
 }

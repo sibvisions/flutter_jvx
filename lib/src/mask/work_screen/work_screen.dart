@@ -262,7 +262,7 @@ class _WorkScreenState extends State<WorkScreen> {
                   child: backgroundImageString != null
                       ? ImageLoader.loadImage(
                           backgroundImageString,
-                          fit: BoxFit.scaleDown,
+                          pFit: BoxFit.scaleDown,
                         )
                       : null,
                 ),

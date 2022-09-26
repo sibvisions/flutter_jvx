@@ -49,7 +49,7 @@ class AppLogin extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: topColor ?? Colors.white,
                     ),
-                    child: loginLogo != null ? ImageLoader.loadImage(loginLogo, fit: BoxFit.scaleDown) : null,
+                    child: loginLogo != null ? ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown) : null,
                   ),
                 ),
               ),
@@ -57,7 +57,7 @@ class AppLogin extends StatelessWidget {
                 flex: 6,
                 child: Container(
                   color: bottomColor ?? Colors.transparent,
-                  child: loginIcon != null ? ImageLoader.loadImage(loginIcon, fit: BoxFit.fitWidth) : null,
+                  child: loginIcon != null ? ImageLoader.loadImage(loginIcon, pFit: BoxFit.fitWidth) : null,
                 ),
               ),
             ],

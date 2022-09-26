@@ -30,15 +30,16 @@ abstract class ImageLoader {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Loads an Image from the filesystem.
-  static Image _loadImageFiles(
-    String pPath, {
+  static Image _loadImageFiles({
+    required String pPath,
     double? pWidth,
     double? pHeight,
     Color? pBlendedColor,
     Function(Size, bool)? pImageStreamListener,
-    bool imageInBinary = false,
-    bool imageInBase64 = false,
-    BoxFit fit = BoxFit.none,
+    required bool pImageInBinary,
+    required bool pImageInBase64,
+    required BoxFit pFit,
+    required AlignmentGeometry pAlignment,
   }) {
     String appName = IConfigService().getAppName()!;
     String baseUrl = IConfigService().getBaseUrl()!;
@@ -48,36 +49,39 @@ abstract class ImageLoader {
 
     File? file = fileManager.getFileSync(pPath: "${IFileManager.IMAGES_PATH}/$pPath");
 
-    if (imageInBinary) {
-      Uint8List imageValues = imageInBase64 ? base64Decode(pPath) : Uint8List.fromList(pPath.codeUnits);
+    if (pImageInBinary) {
+      Uint8List imageValues = pImageInBase64 ? base64Decode(pPath) : Uint8List.fromList(pPath.codeUnits);
       image = Image.memory(
         imageValues,
-        fit: fit,
+        alignment: pAlignment,
+        fit: pFit,
         width: pWidth,
         height: pHeight,
         color: pBlendedColor,
       );
     } else if (file != null) {
       image = Image(
-        fit: fit,
         image: FileImage(file),
+        loadingBuilder: _getImageLoadingBuilder(),
+        fit: pFit,
+        alignment: pAlignment,
         width: pWidth,
         height: pHeight,
         color: pBlendedColor,
-        loadingBuilder: _getImageLoadingBuilder(),
       );
     } else {
       image = Image.network(
         '$baseUrl/resource/$appName/$pPath',
-        fit: fit,
-        width: pWidth,
-        height: pHeight,
-        color: pBlendedColor,
         loadingBuilder: _getImageLoadingBuilder(),
         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
           FlutterJVx.log.e("Failed to load network image ($pPath)", error, stackTrace);
           return ImageLoader.DEFAULT_IMAGE;
         },
+        fit: pFit,
+        alignment: pAlignment,
+        width: pWidth,
+        height: pHeight,
+        color: pBlendedColor,
       );
     }
 
@@ -106,9 +110,10 @@ abstract class ImageLoader {
       {Size? pWantedSize,
       Color? pWantedColor,
       Function(Size, bool)? pImageStreamListener,
-      bool imageInBinary = false,
-      bool imageInBase64 = true,
-      BoxFit fit = BoxFit.none}) {
+      bool pImageInBinary = false,
+      bool pImageInBase64 = true,
+      BoxFit pFit = BoxFit.none,
+      AlignmentGeometry pAlignment = Alignment.center}) {
     if (pImageString.isEmpty) {
       try {
         return DEFAULT_IMAGE;
@@ -121,7 +126,7 @@ abstract class ImageLoader {
     } else {
       String path = pImageString;
       Size? size;
-      if (!imageInBinary) {
+      if (!pImageInBinary) {
         List<String> arr = pImageString.split(',');
 
         path = arr[0];
@@ -136,14 +141,15 @@ abstract class ImageLoader {
       }
 
       return _loadImageFiles(
-        path,
+        pPath: path,
         pWidth: size?.width,
         pHeight: size?.height,
         pBlendedColor: pWantedColor,
         pImageStreamListener: pImageStreamListener,
-        imageInBinary: imageInBinary,
-        imageInBase64: imageInBase64,
-        fit: fit,
+        pImageInBinary: pImageInBinary,
+        pImageInBase64: pImageInBase64,
+        pFit: pFit,
+        pAlignment: pAlignment,
       );
     }
   }
