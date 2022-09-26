@@ -24,16 +24,12 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlNumberCellEditor({
-    ColumnDefinition? columnDefinition,
-    required Map<String, dynamic> pCellEditorJson,
-    required Function(String) onChange,
-    required Function(String) onEndEditing,
+    required super.columnDefinition,
+    required super.pCellEditorJson,
+    required super.onValueChange,
+    required super.onEndEditing,
   }) : super(
-          columnDefinition: columnDefinition,
           model: FlNumberCellEditorModel(),
-          pCellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
         ) {
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
@@ -90,11 +86,6 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   @override
   String getValue() {
     return textController.text;
-  }
-
-  @override
-  bool isActionCellEditor() {
-    return false;
   }
 
   @override

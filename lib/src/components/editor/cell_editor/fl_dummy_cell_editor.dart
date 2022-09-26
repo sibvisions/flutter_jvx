@@ -30,18 +30,8 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   getValue() {}
 
   @override
-  bool isActionCellEditor() {
-    return false;
-  }
-
-  @override
   String formatValue(Object pValue) {
     return pValue.toString();
-  }
-
-  @override
-  FlDummyWidget? createTableWidget() {
-    return null;
   }
 
   @override

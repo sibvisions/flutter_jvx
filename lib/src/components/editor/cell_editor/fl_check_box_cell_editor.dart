@@ -1,6 +1,5 @@
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
-import '../../../model/data/column_definition.dart';
 import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
 
@@ -17,16 +16,12 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlCheckBoxCellEditor({
-    ColumnDefinition? columnDefinition,
-    required Map<String, dynamic> pCellEditorJson,
-    required Function(dynamic) onChange,
-    required Function(dynamic) onEndEditing,
+    required super.columnDefinition,
+    required super.pCellEditorJson,
+    required super.onValueChange,
+    required super.onEndEditing,
   }) : super(
-          columnDefinition: columnDefinition,
           model: FlCheckBoxCellEditorModel(),
-          pCellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
         );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,9 +63,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   }
 
   @override
-  bool isActionCellEditor() {
-    return true;
-  }
+  bool isInTable() => true;
 
   @override
   String formatValue(Object pValue) {

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_editor_model.dart';
-import '../../../../model/data/column_definition.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../i_cell_editor.dart';
 import 'fl_date_editor_widget.dart';
@@ -28,18 +27,14 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlDateCellEditor({
-    ColumnDefinition? columnDefinition,
-    required Map<String, dynamic> pCellEditorJson,
-    required Function(dynamic) onChange,
-    required Function(dynamic) onEndEditing,
+    required super.columnDefinition,
+    required super.pCellEditorJson,
+    required super.onValueChange,
+    required super.onEndEditing,
     this.recalculateSizeCallback,
     required this.uiService,
   }) : super(
-          columnDefinition: columnDefinition,
           model: FlDateCellEditorModel(),
-          pCellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
         ) {
     focusNode.addListener(
       () {
@@ -90,6 +85,27 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       inTable: pInTable,
     );
   }
+
+  @override
+  createWidgetModel() => FlDateEditorModel();
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    textController.dispose();
+  }
+
+  @override
+  dynamic getValue() {
+    return _value;
+  }
+
+  @override
+  bool isInTable() => true;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void openDatePicker() {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -178,25 +194,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         onEndEditing(_value);
       }
     });
-  }
-
-  @override
-  createWidgetModel() => FlDateEditorModel();
-
-  @override
-  void dispose() {
-    focusNode.dispose();
-    textController.dispose();
-  }
-
-  @override
-  dynamic getValue() {
-    return _value;
-  }
-
-  @override
-  bool isActionCellEditor() {
-    return true;
   }
 
   void _setDatePart(DateTime date) {

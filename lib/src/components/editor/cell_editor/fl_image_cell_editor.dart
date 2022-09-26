@@ -32,17 +32,13 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlImageCellEditor({
-    ColumnDefinition? columnDefinition,
-    required Map<String, dynamic> pCellEditorJson,
-    required Function(dynamic) onChange,
-    required Function(dynamic) onEndEditing,
+    required super.columnDefinition,
+    required super.pCellEditorJson,
+    required super.onValueChange,
+    required super.onEndEditing,
     this.recalculateSizeCallback,
   }) : super(
-          columnDefinition: columnDefinition,
           model: FlImageCellEditorModel(),
-          pCellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
         );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,17 +99,15 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   }
 
   @override
-  bool isActionCellEditor() {
-    return false;
-  }
-
-  @override
   String formatValue(Object pValue) {
     return pValue.toString();
   }
 
   @override
   double get additionalTablePadding => 0.0;
+
+  @override
+  bool isInTable() => true;
 
   void onImage(Size pImageInfo, bool pSynchronousCall) {
     bool newSize = false;

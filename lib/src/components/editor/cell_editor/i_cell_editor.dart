@@ -70,7 +70,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
   /// Returns the model of the widget representing the cell editor.
   WidgetModelType createWidgetModel();
 
-  bool isActionCellEditor();
+  /// If the cell editor catches the focus.
+  bool isInTable() => false;
 
   String formatValue(Object pValue);
 
@@ -97,41 +98,42 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
         return FlTextCellEditor(
           columnDefinition: columnDefinition,
           pCellEditorJson: pCellEditorJson,
-          onChange: onChange,
+          onValueChange: onChange,
           onEndEditing: onEndEditing,
         );
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(
           columnDefinition: columnDefinition,
           pCellEditorJson: pCellEditorJson,
-          onChange: onChange,
+          onValueChange: onChange,
           onEndEditing: onEndEditing,
         );
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         return FlNumberCellEditor(
           columnDefinition: columnDefinition,
           pCellEditorJson: pCellEditorJson,
-          onChange: onChange,
+          onValueChange: onChange,
           onEndEditing: onEndEditing,
         );
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
             columnDefinition: columnDefinition,
             pCellEditorJson: pCellEditorJson,
-            onChange: onChange,
+            onValueChange: onChange,
             onEndEditing: onEndEditing,
             recalculateSizeCallback: pRecalculateSizeCallback);
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         return FlChoiceCellEditor(
             columnDefinition: columnDefinition,
             pCellEditorJson: pCellEditorJson,
-            onChange: onChange,
+            onValueChange: onChange,
             onEndEditing: onEndEditing,
             recalculateSizeCallback: pRecalculateSizeCallback);
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         return FlDateCellEditor(
+            columnDefinition: columnDefinition,
             pCellEditorJson: pCellEditorJson,
-            onChange: onChange,
+            onValueChange: onChange,
             onEndEditing: onEndEditing,
             recalculateSizeCallback: pRecalculateSizeCallback,
             uiService: pUiService);
@@ -140,7 +142,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
             name: pName,
             columnDefinition: columnDefinition,
             pCellEditorJson: pCellEditorJson,
-            onChange: onChange,
+            onValueChange: onChange,
             onEndEditing: onEndEditing,
             recalculateSizeCallback: pRecalculateSizeCallback,
             uiService: pUiService);

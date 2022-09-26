@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../../model/component/editor/cell_editor/fl_choice_cell_editor_model.dart';
 import '../../../model/component/icon/fl_icon_model.dart';
-import '../../../model/data/column_definition.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
@@ -27,17 +26,13 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlChoiceCellEditor({
-    ColumnDefinition? columnDefinition,
-    required Map<String, dynamic> pCellEditorJson,
-    required Function(dynamic) onChange,
-    required Function(dynamic) onEndEditing,
+    required super.columnDefinition,
+    required super.pCellEditorJson,
+    required super.onValueChange,
+    required super.onEndEditing,
     this.recalculateSizeCallback,
   }) : super(
-          columnDefinition: columnDefinition,
           model: FlChoiceCellEditorModel(),
-          pCellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
         ) {
     model.imageLoadingCallback = recalculateSizeCallback;
   }
@@ -78,6 +73,9 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
     );
   }
 
+  @override
+  bool isInTable() => true;
+
   void onPress() {
     currentIndex++;
     if (currentIndex >= model.listValues.length) {
@@ -98,11 +96,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   @override
   void dispose() {
     // do nothing
-  }
-
-  @override
-  bool isActionCellEditor() {
-    return false;
   }
 
   @override

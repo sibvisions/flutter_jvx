@@ -6,7 +6,6 @@ import '../../../../../services.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
-import '../../../../model/data/column_definition.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../i_cell_editor.dart';
@@ -45,18 +44,15 @@ class FlLinkedCellEditor
 
   FlLinkedCellEditor({
     required String name,
-    ColumnDefinition? columnDefinition,
-    required Map<String, dynamic> pCellEditorJson,
-    required Function(dynamic) onChange,
-    required Function(dynamic) onEndEditing,
+    required super.columnDefinition,
+    required super.pCellEditorJson,
+    required super.onValueChange,
+    required super.onEndEditing,
     this.recalculateSizeCallback,
     required this.uiService,
   }) : super(
           name: name,
           model: FlLinkedCellEditorModel(),
-          pCellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
         ) {
     focusNode.addListener(
       () {
@@ -135,9 +131,7 @@ class FlLinkedCellEditor
   }
 
   @override
-  bool isActionCellEditor() {
-    return true;
-  }
+  bool isInTable() => true;
 
   void setValueMap(DataChunk pChunkData) {
     if (!lastCallbackIntentional && !pChunkData.update) {

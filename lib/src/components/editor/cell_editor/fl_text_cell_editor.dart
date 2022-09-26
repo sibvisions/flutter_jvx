@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
-import '../../../model/data/column_definition.dart';
 import '../password_field/fl_password_field_widget.dart';
 import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
@@ -39,16 +38,12 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlTextCellEditor({
-    ColumnDefinition? columnDefinition,
-    required Map<String, dynamic> pCellEditorJson,
-    required Function(String) onChange,
-    required Function(String) onEndEditing,
+    required super.columnDefinition,
+    required super.pCellEditorJson,
+    required super.onValueChange,
+    required super.onEndEditing,
   }) : super(
-          columnDefinition: columnDefinition,
           model: ICellEditorModel(),
-          pCellEditorJson: pCellEditorJson,
-          onValueChange: onChange,
-          onEndEditing: onEndEditing,
         ) {
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
@@ -138,11 +133,6 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
   @override
   String getValue() {
     return textController.text;
-  }
-
-  @override
-  bool isActionCellEditor() {
-    return false;
   }
 
   @override

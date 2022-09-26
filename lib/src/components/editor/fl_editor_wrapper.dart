@@ -219,18 +219,14 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     _toSendValue = pValue;
     setState(() {});
 
-    if (cellEditor.isActionCellEditor()) {
-      currentObjectFocused = FocusManager.instance.primaryFocus;
-      if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
-        currentObjectFocused = null;
-        sendValue();
-      } else {
-        FlutterJVx.log.i("Value will be set");
-        currentObjectFocused!.addListener(sendValue);
-        currentObjectFocused!.unfocus();
-      }
-    } else {
+    currentObjectFocused = FocusManager.instance.primaryFocus;
+    if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
+      currentObjectFocused = null;
       sendValue();
+    } else {
+      FlutterJVx.log.i("Value will be set");
+      currentObjectFocused!.addListener(sendValue);
+      currentObjectFocused!.unfocus();
     }
   }
 

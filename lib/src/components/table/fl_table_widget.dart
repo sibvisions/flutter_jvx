@@ -219,14 +219,16 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
         cellEditor.setValue(value);
 
-        FlStatelessWidget? tableWidget = cellEditor.createWidget(null, true);
+        if (cellEditor.isInTable()) {
+          FlStatelessWidget tableWidget = cellEditor.createWidget(null, true);
 
-        tableWidget.model.applyFromJson(model.json);
-        // Some parts of a json have to take priority.
-        // As they override the properties.
-        tableWidget.model.applyCellEditorOverrides(model.json);
+          tableWidget.model.applyFromJson(model.json);
+          // Some parts of a json have to take priority.
+          // As they override the properties.
+          tableWidget.model.applyCellEditorOverrides(model.json);
 
-        widget = tableWidget;
+          widget = tableWidget;
+        }
       }
 
       widget ??= Text(
