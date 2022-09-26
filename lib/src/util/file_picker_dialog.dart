@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -163,8 +161,8 @@ Future<File?> pick(UploadType type) async {
         }
         break;
     }
-  } on Exception catch (e) {
-    log(e.toString());
+  } catch (e, stack) {
+    FlutterJVx.log.e("Failed to pick file", e, stack);
   }
 
   return file;
