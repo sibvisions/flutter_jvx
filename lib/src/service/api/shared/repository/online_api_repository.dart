@@ -276,7 +276,7 @@ class OnlineApiRepository implements IRepository {
 
   Future<void> stopWebSocket() async {
     manualClose = true;
-    await webSocket?.sink.close(status.goingAway);
+    await webSocket?.sink.close(status.normalClosure);
   }
 
   @override
