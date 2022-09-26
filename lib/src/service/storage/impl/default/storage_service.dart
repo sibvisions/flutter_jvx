@@ -1,7 +1,7 @@
 import 'dart:collection';
 
+import '../../../../../flutter_jvx.dart';
 import '../../../../../util/extensions/list_extensions.dart';
-import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
@@ -136,10 +136,10 @@ class StorageService implements IStorageService {
       }
     }
 
-    LOGGER.logD(pType: LogType.STORAGE, pMessage: "----------DeletedUiComponents: $deletedUiComponents ");
-    LOGGER.logD(pType: LogType.STORAGE, pMessage: "----------affected: $affectedUiComponents ");
-    LOGGER.logD(pType: LogType.STORAGE, pMessage: "----------changed: $changedUiComponents ");
-    LOGGER.logD(pType: LogType.STORAGE, pMessage: "----------newUiComponents: $newUiComponents ");
+    FlutterJVx.log.d("----------DeletedUiComponents: $deletedUiComponents ");
+    FlutterJVx.log.d("----------affected: $affectedUiComponents ");
+    FlutterJVx.log.d("----------changed: $changedUiComponents ");
+    FlutterJVx.log.d("----------newUiComponents: $newUiComponents ");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
       affectedComponents: affectedUiComponents,
@@ -154,11 +154,9 @@ class StorageService implements IStorageService {
 
   @override
   void deleteScreen({required String screenName}) {
-    LOGGER.logD(
-        pType: LogType.STORAGE,
-        pMessage: "Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+    FlutterJVx.log.d("Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
 
-    LOGGER.logD(pType: LogType.STORAGE, pMessage: _componentMap.keys.toList().toString());
+    FlutterJVx.log.d(_componentMap.keys.toList().toString());
 
     FlComponentModel? screenModel =
         _componentMap.values.firstWhereOrNull((componentModel) => componentModel.name == screenName);
@@ -171,9 +169,7 @@ class StorageService implements IStorageService {
         _componentMap.remove(element.id);
       });
     }
-    LOGGER.logD(
-        pType: LogType.STORAGE,
-        pMessage: "Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+    FlutterJVx.log.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

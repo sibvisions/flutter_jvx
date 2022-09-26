@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import '../../../../../../flutter_jvx.dart';
 import '../../../../../../services.dart';
-import '../../../../../../util/logging/flutter_logger.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../i_command_processor.dart';
@@ -12,7 +12,7 @@ class UpdateComponentsProcessor implements ICommandProcessor<UpdateComponentsCom
 
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
-    LOGGER.logD(pType: LogType.COMMAND, pMessage: "------------------- Components are updating");
+    FlutterJVx.log.d("------------------- Components are updating");
 
     if (!isOpenScreen && !_secondRun) {
       await ILayoutService().setValid(isValid: false);
@@ -54,7 +54,7 @@ class UpdateComponentsProcessor implements ICommandProcessor<UpdateComponentsCom
 
         IUiService().notifyAffectedComponents(affectedIds: command.affectedComponents);
 
-        LOGGER.logD(pType: LogType.COMMAND, pMessage: "------------------- Components are finished updating");
+        FlutterJVx.log.d("------------------- Components are finished updating");
       });
     });
 

@@ -3,9 +3,9 @@ import 'dart:collection';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/extensions/list_extensions.dart';
-import '../../../util/logging/flutter_logger.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
@@ -225,7 +225,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         currentObjectFocused = null;
         sendValue();
       } else {
-        LOGGER.logI(pType: LogType.UI, pMessage: "Value will be set");
+        FlutterJVx.log.i("Value will be set");
         currentObjectFocused!.addListener(sendValue);
         currentObjectFocused!.unfocus();
       }
@@ -246,7 +246,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     if (_toSendValue is HashMap<String, dynamic>) {
       var map = _toSendValue as HashMap<String, dynamic>;
 
-      LOGGER.logI(pType: LogType.DATA, pMessage: "Values of ${model.id} set to $_toSendValue");
+      FlutterJVx.log.i("Values of ${model.id} set to $_toSendValue");
       IUiService().sendCommand(SetValuesCommand(
           componentId: model.id,
           dataProvider: model.dataProvider,
@@ -254,7 +254,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           values: map.values.toList(),
           reason: "Value of ${model.id} set to $_toSendValue"));
     } else {
-      LOGGER.logI(pType: LogType.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
+      FlutterJVx.log.i("Value of ${model.id} set to $_toSendValue");
       IUiService().sendCommand(SetValuesCommand(
           componentId: model.id,
           dataProvider: model.dataProvider,
@@ -288,10 +288,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Logs the cell editor for debug purposes.
   void logCellEditor(String pPhase) {
-    LOGGER.logD(pType: LogType.UI, pMessage: StackTrace.current.toString());
-    LOGGER.logD(pType: LogType.UI, pMessage: "----- $pPhase -----");
-    LOGGER.logD(pType: LogType.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor?.hashCode}");
-    LOGGER.logD(pType: LogType.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
-    LOGGER.logD(pType: LogType.UI, pMessage: "----- $pPhase -----");
+    FlutterJVx.log.d(StackTrace.current.toString());
+    FlutterJVx.log.d("----- $pPhase -----");
+    FlutterJVx.log.d("Old cell editor hashcode: ${oldCellEditor?.hashCode}");
+    FlutterJVx.log.d("New cell editor hashcode: ${cellEditor.hashCode}");
+    FlutterJVx.log.d("----- $pPhase -----");
   }
 }

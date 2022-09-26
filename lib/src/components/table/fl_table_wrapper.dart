@@ -10,7 +10,6 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/api/delete_record_command.dart';
 import '../../model/command/api/insert_record_command.dart';
 import '../../model/command/api/select_record_command.dart';
@@ -271,7 +270,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       Filter? filter = createPrimaryFilter(pRowIndex: lastTouchedIndex);
 
       if (filter == null) {
-        LOGGER.logW(pType: LogType.DATA, pMessage: "Filter of table(${model.id}) null");
+        FlutterJVx.log.w("Filter of table(${model.id}) null");
         return;
       }
 
@@ -289,7 +288,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     Filter? filter = createPrimaryFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
-      LOGGER.logW(pType: LogType.DATA, pMessage: "Filter of table(${model.id}) null");
+      FlutterJVx.log.w("Filter of table(${model.id}) null");
       return;
     }
 

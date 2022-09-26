@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_io/io.dart' as universal_io;
 
 import '../../../../config/app_config.dart';
-import '../../../../util/logging/flutter_logger.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../mask/menu/menu_mode.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
@@ -330,8 +330,7 @@ class ConfigService implements IConfigService {
   String translateText(String pText) {
     String? translatedText = translation.translations[pText];
     if (translatedText == null) {
-      LOGGER.logD(
-          pType: LogType.CONFIG, pMessage: "Translation for text: $pText was not found for language ${getLanguage()}");
+      FlutterJVx.log.d("Translation for text: $pText was not found for language ${getLanguage()}");
       return pText;
     }
     return translatedText;
@@ -477,7 +476,7 @@ class ConfigService implements IConfigService {
     if (pLanguage != "en") {
       File? transFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation_$pLanguage.json");
       if (transFile == null) {
-        LOGGER.logW(pType: LogType.CONFIG, pMessage: "Translation file for code $pLanguage could not be found");
+        FlutterJVx.log.w("Translation file for code $pLanguage could not be found");
       } else {
         langTrans.merge(transFile);
       }

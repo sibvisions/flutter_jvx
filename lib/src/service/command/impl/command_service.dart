@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
 
+import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
 import '../../../../util/extensions/list_extensions.dart';
-import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
@@ -84,7 +84,7 @@ class CommandService implements ICommandService {
       await processCommand(pCommand);
       pCommand.callback?.call();
     } catch (error) {
-      LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error processing ${pCommand.runtimeType}");
+      FlutterJVx.log.e("Error processing ${pCommand.runtimeType}");
       rethrow;
     } finally {
       progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
@@ -127,10 +127,7 @@ class CommandService implements ICommandService {
     } else if (pCommand is DataCommand) {
       commands = await _dataProcessor.processCommand(pCommand);
     } else {
-      LOGGER.logW(
-        pType: LogType.COMMAND,
-        pMessage: "Command (${pCommand.runtimeType}) without Processor found",
-      );
+      FlutterJVx.log.w("Command (${pCommand.runtimeType}) without Processor found");
       return;
     }
 
@@ -163,7 +160,7 @@ class CommandService implements ICommandService {
         }
       }
     } catch (error) {
-      LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error processing follow-up ${pCommand.runtimeType}");
+      FlutterJVx.log.e("Error processing follow-up ${pCommand.runtimeType}");
       rethrow;
     }
 

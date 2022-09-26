@@ -5,10 +5,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../flutter_jvx.dart';
 import '../../src/service/config/i_config_service.dart';
 import '../../src/service/file/file_manager.dart';
 import '../font_awesome_util.dart';
-import '../logging/flutter_logger.dart';
 
 //TODO investigate loading delays
 abstract class ImageLoader {
@@ -75,12 +75,7 @@ abstract class ImageLoader {
         color: pBlendedColor,
         loadingBuilder: _getImageLoadingBuilder(),
         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-          LOGGER.logE(
-            pType: LogType.GENERAL,
-            pMessage: "Failed to load network image ($pPath)",
-            pError: error,
-            pStacktrace: stackTrace,
-          );
+          FlutterJVx.log.e("Failed to load network image ($pPath)", error, stackTrace);
           return ImageLoader.DEFAULT_IMAGE;
         },
       );

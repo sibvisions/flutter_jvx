@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../../util/logging/flutter_logger.dart';
+import '../../../flutter_jvx.dart';
 import '../../mask/camera/qr_scanner_overlay.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
@@ -75,17 +75,17 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     _overwrittenButtonPressId = overwrittenButtonPressId;
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
-      LOGGER.logI(pType: LogType.UI, pMessage: "Button pressed");
+      FlutterJVx.log.i("Button pressed");
       _sendButtonCommand();
     } else {
-      LOGGER.logI(pType: LogType.UI, pMessage: "Button will be pressed");
+      FlutterJVx.log.i("Button will be pressed");
       currentObjectFocused!.addListener(delayedSendButtonPressed);
       currentObjectFocused!.unfocus();
     }
   }
 
   void delayedSendButtonPressed() {
-    LOGGER.logI(pType: LogType.UI, pMessage: "Delayed button pressed");
+    FlutterJVx.log.i("Delayed button pressed");
     _sendButtonCommand();
     currentObjectFocused!.removeListener(delayedSendButtonPressed);
     currentObjectFocused = null;

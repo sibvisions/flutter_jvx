@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../custom/custom_screen.dart';
+import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../components/components_factory.dart';
 import '../../mask/frame/frame.dart';
@@ -18,7 +18,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    log("Building the workscreen location");
+    FlutterJVx.log.d("Building the workscreen location");
 
     final String workScreenName = state.pathParameters['workScreenName']!;
     FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;

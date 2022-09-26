@@ -4,8 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../../util/image/image_loader.dart';
-import '../../../util/logging/flutter_logger.dart';
 import '../../model/component/custom/fl_custom_container_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
@@ -58,7 +58,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
                 imageInBinary: true, imageInBase64: false, fit: BoxFit.scaleDown);
           }
         } catch (error, stacktrace) {
-          LOGGER.logE(pType: LogType.UI, pMessage: error.toString(), pStacktrace: stacktrace);
+          FlutterJVx.log.e("Failed to show image", error, stacktrace);
         }
       }
 

@@ -1,4 +1,4 @@
-import '../../../../../../util/logging/flutter_logger.dart';
+import '../../../../../flutter_jvx.dart';
 import '../../../../service/api/shared/api_object_property.dart';
 import 'message_view.dart';
 
@@ -40,7 +40,7 @@ class ErrorViewResponse extends MessageView {
         exceptions = ServerException.fromJson(pJson[ApiObjectProperty.exceptions]),
         isTimeout = false,
         super.fromJson(pJson: pJson, originalRequest: originalRequest) {
-    LOGGER.logW(pType: LogType.COMMAND, pMessage: toString());
+    FlutterJVx.log.w(toString());
   }
 
   @override

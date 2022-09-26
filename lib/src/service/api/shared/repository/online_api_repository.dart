@@ -13,7 +13,6 @@ import '../../../../../config/api/api_route.dart';
 import '../../../../../flutter_jvx.dart';
 import '../../../../../services.dart';
 import '../../../../../util/extensions/list_extensions.dart';
-import '../../../../../util/logging/flutter_logger.dart';
 import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/request/api_change_password_request.dart';
 import '../../../../model/request/api_changes_request.dart';
@@ -180,7 +179,7 @@ class OnlineApiRepository implements IRepository {
 
     var uri = _getWebSocketUri(reconnect);
     try {
-      LOGGER.logI(pType: LogType.COMMAND, pMessage: "Connecting to Websocket on $uri");
+      FlutterJVx.log.i("Connecting to Websocket on $uri");
 
       webSocket = UniversalWebSocketChannel.create(
         uri,
@@ -193,21 +192,17 @@ class OnlineApiRepository implements IRepository {
           manualClose = false;
           if (data.isNotEmpty) {
             try {
-              LOGGER.logI(pType: LogType.COMMAND, pMessage: "Received data via websocket: $data");
+              FlutterJVx.log.i("Received data via websocket: $data");
               if (data == "api/changes") {
                 ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
               }
             } catch (e) {
-              LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error handling websocket message:", pError: e.toString());
+              FlutterJVx.log.e("Error handling websocket message:", e);
             }
           }
         },
         onError: (error) {
-          LOGGER.logW(
-            pType: LogType.COMMAND,
-            pMessage: "Connection to Websocket failed",
-            pError: error,
-          );
+          FlutterJVx.log.w("Connection to Websocket failed", error);
 
           //Cancel reconnect if manually closed
           if (manualClose) {
@@ -221,10 +216,8 @@ class OnlineApiRepository implements IRepository {
           reconnectWebSocket();
         },
         onDone: () {
-          LOGGER.logW(
-            pType: LogType.COMMAND,
-            pMessage:
-                "Connection to Websocket closed (${webSocket?.closeCode})${webSocket?.closeReason != null ? ": ${webSocket?.closeReason}" : ""}",
+          FlutterJVx.log.w(
+            "Connection to Websocket closed (${webSocket?.closeCode})${webSocket?.closeReason != null ? ": ${webSocket?.closeReason}" : ""}",
           );
 
           lastDelay = 2;
@@ -242,7 +235,7 @@ class OnlineApiRepository implements IRepository {
         cancelOnError: true,
       );
     } catch (e) {
-      LOGGER.logE(pType: LogType.COMMAND, pMessage: "Connection to Websocket could not be established!", pError: e);
+      FlutterJVx.log.e("Connection to Websocket could not be established!", e);
       rethrow;
     }
   }
@@ -257,9 +250,9 @@ class OnlineApiRepository implements IRepository {
 
   void reconnectWebSocket() {
     lastDelay = min(lastDelay << 1, 120);
-    LOGGER.logI(pType: LogType.COMMAND, pMessage: "Retrying Websocket connection in $lastDelay seconds...");
+    FlutterJVx.log.i("Retrying Websocket connection in $lastDelay seconds...");
     Timer(Duration(seconds: lastDelay), () {
-      LOGGER.logI(pType: LogType.COMMAND, pMessage: "Retrying Websocket connection");
+      FlutterJVx.log.i("Retrying Websocket connection");
       startWebSocket(true);
     });
   }
@@ -322,7 +315,7 @@ class OnlineApiRepository implements IRepository {
 
         if (response.statusCode >= 400 && response.statusCode <= 599) {
           var body = await _decodeBody(response);
-          LOGGER.logE(pType: LogType.COMMAND, pMessage: "Server sent HTTP ${response.statusCode}: $body");
+          FlutterJVx.log.e("Server sent HTTP ${response.statusCode}: $body");
           if (response.statusCode == 404) {
             throw Exception("Application not found (404)");
           } else if (response.statusCode == 500) {
@@ -374,7 +367,7 @@ class OnlineApiRepository implements IRepository {
 
         return parsedResponseObjects;
       } catch (e) {
-        LOGGER.logE(pType: LogType.COMMAND, pMessage: "Error while sending ${pRequest.runtimeType}");
+        FlutterJVx.log.e("Error while sending ${pRequest.runtimeType}");
         rethrow;
       }
     } else {

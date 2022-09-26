@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:logger/logger.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_io/io.dart';
@@ -40,7 +41,6 @@ import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/config_util.dart';
 import 'src/util/loading_handler/loading_overlay.dart';
 import 'src/util/loading_handler/loading_progress_handler.dart';
-import 'util/logging/flutter_logger.dart';
 import 'util/parse_util.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
@@ -51,6 +51,14 @@ class FlutterJVx extends StatefulWidget {
 
   /// Loads assets with packages prefix
   static bool package = true;
+
+  static final Logger log = Logger(
+    level: Level.info,
+    printer: PrettyPrinter(
+      methodCount: 0,
+      errorMethodCount: 30,
+    ),
+  );
 
   /// The initial application configuration
   final AppConfig? appConfig;
@@ -305,12 +313,7 @@ class FlutterJVxState extends State<FlutterJVx> {
 
   Function(Object error, StackTrace stackTrace) createErrorHandler(String pMessage) {
     return (error, stackTrace) {
-      LOGGER.logE(
-        pType: LogType.GENERAL,
-        pMessage: pMessage,
-        pError: error,
-        pStacktrace: stackTrace,
-      );
+      FlutterJVx.log.e(pMessage, error, stackTrace);
       throw error;
     };
   }
@@ -333,7 +336,7 @@ class FlutterJVxState extends State<FlutterJVx> {
     if (!kReleaseMode) {
       devConfig = await ConfigUtil.readDevConfig();
       if (devConfig != null) {
-        LOGGER.logI(pType: LogType.CONFIG, pMessage: "Found dev config, overriding values");
+        FlutterJVx.log.i("Found dev config, overriding values");
       }
     }
 

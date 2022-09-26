@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import '../../../../util/logging/flutter_logger.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';
@@ -252,10 +252,10 @@ class DataService implements IDataService {
 
   @override
   void clearData(String pWorkscreen) {
-    LOGGER.logI(pType: LogType.DATA, pMessage: "Clearing all data books of prefix: $pWorkscreen");
-    LOGGER.logI(pType: LogType.DATA, pMessage: "Pre clearing: $dataBooks");
+    FlutterJVx.log.i("Clearing all data books of prefix: $pWorkscreen");
+    FlutterJVx.log.i("Pre clearing: $dataBooks");
     dataBooks.removeWhere((key, value) => key.startsWith(pWorkscreen, key.indexOf("/") + 1));
-    LOGGER.logI(pType: LogType.DATA, pMessage: "Post clearing: $dataBooks");
+    FlutterJVx.log.i("Post clearing: $dataBooks");
   }
 
   @override

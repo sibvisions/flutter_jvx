@@ -5,7 +5,6 @@ import 'package:wakelock/wakelock.dart';
 
 import '../../flutter_jvx.dart';
 import '../../services.dart';
-import '../../util/logging/flutter_logger.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';
 import '../model/command/api/fetch_command.dart';
@@ -86,7 +85,7 @@ abstract class OfflineUtil {
 
       var dataBooks = IDataService().getDataBooks();
       for (DataBook dataBook in dataBooks.values) {
-        LOGGER.logI(pType: LogType.DATA, pMessage: "DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
+        FlutterJVx.log.i("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
         List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
 
         Map<String, List<Map<String, Object?>>> groupedRows =
@@ -128,7 +127,7 @@ abstract class OfflineUtil {
             ) &&
             successfulSync;
 
-        LOGGER.logI(pType: LogType.DATA, pMessage: "Marking ${successfulSyncedPrimaryKeys.length} rows as synced");
+        FlutterJVx.log.i("Marking ${successfulSyncedPrimaryKeys.length} rows as synced");
         await offlineApiRepository.resetStates(dataBook.dataProvider, pResetRows: successfulSyncedPrimaryKeys);
         successfulSyncedRows += successfulSyncedPrimaryKeys.length;
 
@@ -138,9 +137,7 @@ abstract class OfflineUtil {
       String syncResult = successfulSync ? "successful" : "failed";
       int failedRowCount = changedRowsSum - successfulSyncedRows;
 
-      LOGGER.logI(
-          pType: LogType.DATA,
-          pMessage: "Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
+      FlutterJVx.log.i("Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
 
       if (successfulSyncedRows > 0 || failedRowCount > 0) {
         dialogKey.currentState!.update(
@@ -188,12 +185,7 @@ abstract class OfflineUtil {
         IApiService().setRepository(offlineApiRepository);
       }
     } catch (e, stackTrace) {
-      LOGGER.logE(
-        pType: LogType.DATA,
-        pMessage: "Error while syncing offline data",
-        pError: e,
-        pStacktrace: stackTrace,
-      );
+      FlutterJVx.log.e("Error while syncing offline data", e, stackTrace);
 
       //Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
@@ -234,7 +226,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (insertedRows != null) {
-      LOGGER.logI(pType: LogType.DATA, pMessage: "Syncing ${insertedRows.length} inserted rows");
+      FlutterJVx.log.i("Syncing ${insertedRows.length} inserted rows");
       for (var row in insertedRows) {
         try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
@@ -246,12 +238,7 @@ abstract class OfflineUtil {
             progress: successfulSyncedPrimaryKeys.length,
           ));
         } catch (e, stack) {
-          LOGGER.logE(
-            pType: LogType.DATA,
-            pMessage: "Error while syncing inserted row: $row",
-            pError: e,
-            pStacktrace: stack,
-          );
+          FlutterJVx.log.e("Error while syncing inserted row: $row", e, stack);
           successful = false;
         }
       }
@@ -267,7 +254,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (updatedRows != null) {
-      LOGGER.logI(pType: LogType.DATA, pMessage: "Syncing ${updatedRows.length} updated rows");
+      FlutterJVx.log.i("Syncing ${updatedRows.length} updated rows");
       for (var row in updatedRows) {
         try {
           var oldColumns = {
@@ -284,12 +271,7 @@ abstract class OfflineUtil {
             progress: successfulSyncedPrimaryKeys.length,
           ));
         } catch (e, stack) {
-          LOGGER.logE(
-            pType: LogType.DATA,
-            pMessage: "Error while syncing updated row: $row",
-            pError: e,
-            pStacktrace: stack,
-          );
+          FlutterJVx.log.e("Error while syncing updated row: $row", e, stack);
           successful = false;
         }
       }
@@ -305,7 +287,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (deletedRows != null) {
-      LOGGER.logI(pType: LogType.DATA, pMessage: "Syncing ${deletedRows.length} deleted rows");
+      FlutterJVx.log.i("Syncing ${deletedRows.length} deleted rows");
       for (var row in deletedRows) {
         try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
@@ -317,12 +299,7 @@ abstract class OfflineUtil {
             progress: successfulSyncedPrimaryKeys.length,
           ));
         } catch (e, stack) {
-          LOGGER.logE(
-            pType: LogType.DATA,
-            pMessage: "Error while syncing deleted row: $row",
-            pError: e.toString(),
-            pStacktrace: stack,
-          );
+          FlutterJVx.log.e("Error while syncing deleted row: $row", e, stack);
           successful = false;
         }
       }
@@ -410,7 +387,7 @@ abstract class OfflineUtil {
   }) async {
     int fetchCounter = 1;
     for (String dataProvider in activeDataProviders) {
-      LOGGER.logI(pType: LogType.DATA, pMessage: "Start fetching $dataProvider");
+      FlutterJVx.log.i("Start fetching $dataProvider");
 
       progressUpdate?.call(fetchCounter++, activeDataProviders.length);
 
@@ -425,7 +402,7 @@ abstract class OfflineUtil {
       );
     }
 
-    LOGGER.logI(pType: LogType.DATA, pMessage: "Finished fetching data");
+    FlutterJVx.log.i("Finished fetching data");
   }
 
   static initOffline(String pWorkscreen) async {
@@ -498,13 +475,8 @@ abstract class OfflineUtil {
 
       ProgressDialogWidget.close(FlutterJVx.getCurrentContext()!);
       await ICommandService().sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
-    } catch (e, stackTrace) {
-      LOGGER.logE(
-        pType: LogType.DATA,
-        pMessage: "Error while downloading offline data",
-        pError: e,
-        pStacktrace: stackTrace,
-      );
+    } catch (e, stack) {
+      FlutterJVx.log.e("Error while downloading offline data", e, stack);
 
       //Revert all changes
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {

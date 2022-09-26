@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../../util/constants/i_color.dart';
 import '../../../../util/image/image_loader.dart';
-import '../../../../util/logging/flutter_logger.dart';
 import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';
 import '../../../model/command/api/open_tab_command.dart';
@@ -146,15 +146,13 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       tabHeaderList.add(createTab(tabContentList[i], i));
     }
 
-    LOGGER.logD(pType: LogType.UI, pMessage: "BUILD CHILDREN");
-    LOGGER.logD(pType: LogType.UI, pMessage: "Children count: ${children.values.length}");
-    LOGGER.logD(pType: LogType.UI, pMessage: "Tabcontentlist: $tabContentList");
-    LOGGER.logD(pType: LogType.UI, pMessage: "Tabheaderlist: $tabHeaderList");
-    LOGGER.logD(pType: LogType.UI, pMessage: "Model Selected index:${model.selectedIndex}");
-    LOGGER.logD(
-        pType: LogType.UI,
-        pMessage: "Tabcontroller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
-    LOGGER.logD(pType: LogType.UI, pMessage: "Set state: $returnValue");
+    FlutterJVx.log.d("BUILD CHILDREN");
+    FlutterJVx.log.d("Children count: ${children.values.length}");
+    FlutterJVx.log.d("Tabcontentlist: $tabContentList");
+    FlutterJVx.log.d("Tabheaderlist: $tabHeaderList");
+    FlutterJVx.log.d("Model Selected index:${model.selectedIndex}");
+    FlutterJVx.log.d("Tabcontroller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
+    FlutterJVx.log.d("Set state: $returnValue");
 
     if (returnValue && pSetStateOnChange) {
       setState(() {});
@@ -168,7 +166,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     List<Widget> childrenToHide = tabContentList.where((e) {
       return !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e));
     }).toList();
-    LOGGER.logD(pType: LogType.UI, pMessage: "ChildrenToHide: $childrenToHide");
+    FlutterJVx.log.d("ChildrenToHide: $childrenToHide");
 
     return getPositioned(
       child: Wrap(
@@ -392,7 +390,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   void closeTab(int index) {
-    LOGGER.logI(pType: LogType.UI, pMessage: "Closing tab $index");
+    FlutterJVx.log.i("Closing tab $index");
     lastDeletedTab = index;
     IUiService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }

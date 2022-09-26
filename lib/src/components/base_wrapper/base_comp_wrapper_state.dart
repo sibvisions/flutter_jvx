@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../../util/logging/flutter_logger.dart';
 import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
@@ -113,7 +113,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new Model
   void receiveNewModel({required T newModel}) {
-    LOGGER.logD(pType: LogType.LAYOUT, pMessage: "${newModel.id} received new Model");
+    FlutterJVx.log.d("${newModel.id} received new Model");
 
     setState(() {
       // Set potentially new layout data contained in the new model
@@ -146,7 +146,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData = newLayoutData;
       calcPosition = null;
     }
-    LOGGER.logD(pType: LogType.LAYOUT, pMessage: "${layoutData.id} NEW DATA; ${newLayoutData.layoutPosition}");
+    FlutterJVx.log.d("${layoutData.id} NEW DATA; ${newLayoutData.layoutPosition}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (!layoutData.isParent && (layoutData.isNewlyConstraint || calcPosition != null) && lastContext != null) {

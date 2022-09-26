@@ -12,7 +12,6 @@ import '../../../../custom/custom_screen.dart';
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
 import '../../../../util/extensions/list_extensions.dart';
-import '../../../../util/logging/flutter_logger.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
@@ -82,7 +81,7 @@ class UiService implements IUiService {
 
   @override
   void handleAsyncError(Object error, StackTrace stackTrace) {
-    LOGGER.logE(pType: LogType.COMMAND, pError: error, pStacktrace: stackTrace);
+    FlutterJVx.log.e("Error while sending async command", error, stackTrace);
 
     if (error is! ErrorViewException) {
       bool isTimeout = error is TimeoutException || error is SocketException;
@@ -122,7 +121,7 @@ class UiService implements IUiService {
 
   @override
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
-    LOGGER.logI(pType: LogType.UI, pMessage: "Routing to workscreen: $pScreenName");
+    FlutterJVx.log.i("Routing to workscreen: $pScreenName");
 
     BeamLocation lastLocation = FlutterJVx.getCurrentContext()!.beamingHistory.last;
 
@@ -293,7 +292,7 @@ class UiService implements IUiService {
 
   @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
-    LOGGER.logD(pType: LogType.UI, pMessage: "Save new components: ${newModels.map((e) => e.id).toList()}");
+    FlutterJVx.log.d("Save new components: ${newModels.map((e) => e.id).toList()}");
     _activeComponentModels.addAll(newModels);
   }
 

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:ui';
 
-import '../../../../util/logging/flutter_logger.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/layout/preferred_size_command.dart';
 import '../../../model/command/layout/register_parent_command.dart';
@@ -30,7 +30,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    LOGGER.logD(pType: LogType.LAYOUT, pMessage: "${pLayoutData.id} REPORT: ${pLayoutData.layout}");
+    FlutterJVx.log.d("${pLayoutData.id} REPORT: ${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -51,10 +51,8 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
-    LOGGER.logD(
-        pType: LogType.LAYOUT,
-        pMessage:
-            "Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
+    FlutterJVx.log.d(
+        "Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data.
@@ -122,7 +120,7 @@ class LayoutService implements ILayoutService {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if (data != null) {
-      LOGGER.logD(pType: LogType.LAYOUT, pMessage: "$pComponentId was marked as DIRTY");
+      FlutterJVx.log.d("$pComponentId was marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
 
       return true;
@@ -159,7 +157,7 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   List<BaseCommand> _performLayout({required LayoutData pParentLayout}) {
-    LOGGER.logD(pType: LogType.LAYOUT, pMessage: "${pParentLayout.id} PERFORM LAYOUT");
+    FlutterJVx.log.d("${pParentLayout.id} PERFORM LAYOUT");
     _currentlyLayouting.add(pParentLayout.id);
 
     try {
@@ -179,10 +177,8 @@ class LayoutService implements ILayoutService {
       parent.lastCalculatedSize = parent.calculatedSize;
       parent.layout!.calculateLayout(parent, children);
 
-      LOGGER.logD(
-          pType: LogType.LAYOUT,
-          pMessage:
-              "${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
+      FlutterJVx.log.d(
+          "${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
 
       // Check if any children have been newly constrained.
       for (LayoutData child in children) {
@@ -227,7 +223,7 @@ class LayoutService implements ILayoutService {
   /// Returns true if conditions to perform the layout are met.
   bool _isLegalState({required LayoutData pParentLayout}) {
     if (!_isValid) {
-      LOGGER.logD(pType: LogType.LAYOUT, pMessage: "I am not valid. ${pParentLayout.id}");
+      FlutterJVx.log.d("I am not valid. ${pParentLayout.id}");
       return false;
     }
 
@@ -236,10 +232,8 @@ class LayoutService implements ILayoutService {
     if (pParentLayout.layoutState == LayoutState.VALID && children != null) {
       for (LayoutData child in children) {
         if (!(child.layoutState == LayoutState.VALID && (child.hasCalculatedSize || child.hasPreferredSize))) {
-          LOGGER.logD(
-              pType: LogType.LAYOUT,
-              pMessage:
-                  "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
+          FlutterJVx.log.d(
+              "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
           return false;
         }
       }
