@@ -1,17 +1,13 @@
-import 'dart:developer';
-
 import 'package:flutter/widgets.dart';
 
 import '../../../model/component/editor/cell_editor/fl_image_cell_editor_model.dart';
-import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/icon/fl_icon_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../util/i_types.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlImageCellEditor extends ICellEditor<FlImageCellEditorModel, dynamic> {
+class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +24,8 @@ class FlImageCellEditor extends ICellEditor<FlImageCellEditorModel, dynamic> {
   /// The image loading callback.
   late Function(Size, bool)? imageStreamListener = onImage;
 
-  ColumnDefinition? _columnDefinition;
+  /// If the cell editor is currently showing the default image.
+  bool pDefaultImageUsed = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -61,51 +58,38 @@ class FlImageCellEditor extends ICellEditor<FlImageCellEditorModel, dynamic> {
 
   @override
   void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    _columnDefinition = pColumnDefinition;
+    super.setColumnDefinition(pColumnDefinition);
 
     recalculateSizeCallback?.call(true);
   }
 
   @override
-  ColumnDefinition? getColumnDefinition() {
-    return _columnDefinition;
-  }
+  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+    FlIconModel widgetModel = createWidgetModel();
 
-  @override
-  FlStatelessWidget createWidget([bool pInTable = false]) {
-    FlIconModel widgetModel = FlIconModel();
-    widgetModel.image = _value ?? '';
-
-    bool pDefaultImageUsed = false;
-    if (widgetModel.image.isEmpty) {
-      widgetModel.image = model.defaultImageName;
-      pDefaultImageUsed = true;
-    }
-
-    log(_columnDefinition?.dataTypeIdentifier.toString() ?? "");
+    ICellEditor.applyEditorJson(widgetModel, pJson);
 
     return FlIconWidget(
       model: widgetModel,
       imageStreamListener: imageStreamListener,
-      imageInBinary: !pDefaultImageUsed && _columnDefinition?.dataTypeIdentifier == Types.BINARY,
+      imageInBinary: !pDefaultImageUsed && columnDefinition?.dataTypeIdentifier == Types.BINARY,
       inTable: pInTable,
     );
   }
 
   @override
-  FlComponentModel createWidgetModel() => FlIconModel();
+  createWidgetModel() {
+    FlIconModel widgetModel = FlIconModel();
 
-  void onImage(Size pImageInfo, bool pSynchronousCall) {
-    bool newSize = false;
+    widgetModel.image = _value ?? '';
+    widgetModel.preserveAspectRatio = model.preserveAspectRatio;
 
-    if (imageSize.height.toInt() != pImageInfo.height || imageSize.width.toInt() != pImageInfo.width) {
-      imageSize = Size(pImageInfo.width.toDouble(), pImageInfo.height.toDouble());
-      newSize = true;
+    if (widgetModel.image.isEmpty) {
+      widgetModel.image = model.defaultImageName;
+      pDefaultImageUsed = true;
     }
 
-    if (!pSynchronousCall && newSize) {
-      recalculateSizeCallback?.call(true);
-    }
+    return widgetModel;
   }
 
   @override
@@ -129,10 +113,18 @@ class FlImageCellEditor extends ICellEditor<FlImageCellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget? createTableWidget() {
-    return createWidget(true);
-  }
-
-  @override
   double get additionalTablePadding => 0.0;
+
+  void onImage(Size pImageInfo, bool pSynchronousCall) {
+    bool newSize = false;
+
+    if (imageSize.height.toInt() != pImageInfo.height || imageSize.width.toInt() != pImageInfo.width) {
+      imageSize = Size(pImageInfo.width.toDouble(), pImageInfo.height.toDouble());
+      newSize = true;
+    }
+
+    if (!pSynchronousCall && newSize) {
+      recalculateSizeCallback?.call(true);
+    }
+  }
 }

@@ -8,6 +8,9 @@ class FlImageCellEditorModel extends ICellEditorModel {
 
   String defaultImageName = "";
 
+  /// If the aspect ratio of the image should be preserved.
+  bool preserveAspectRatio = true;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,6 +26,13 @@ class FlImageCellEditorModel extends ICellEditorModel {
       pKey: ApiObjectProperty.defaultImageName,
       pDefault: defaultModel.defaultImageName,
       pCurrent: defaultImageName,
+    );
+
+    preserveAspectRatio = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.preserveAspectRatio,
+      pDefault: defaultModel.preserveAspectRatio,
+      pCurrent: preserveAspectRatio,
     );
   }
 }

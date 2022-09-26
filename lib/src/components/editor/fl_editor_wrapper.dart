@@ -3,13 +3,13 @@ import 'dart:collection';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../components.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/extensions/list_extensions.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
-import '../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
@@ -17,16 +17,8 @@ import '../../model/response/dal_meta_data_response.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
-import 'cell_editor/date/fl_date_cell_editor.dart';
-import 'cell_editor/fl_choice_cell_editor.dart';
 import 'cell_editor/fl_dummy_cell_editor.dart';
-import 'cell_editor/fl_image_cell_editor.dart';
-import 'cell_editor/fl_number_cell_editor.dart';
-import 'cell_editor/fl_text_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
-import 'cell_editor/linked/fl_linked_cell_editor.dart';
-import 'text_field/fl_text_field_widget.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layouting wrapper of various non layouting widgets.
@@ -102,17 +94,25 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       postFrameCallback(context);
     });
 
-    // Celleditors always return a fresh new widget.
-    // We must apply the universal editor components onto the widget.
-    FlStatelessWidget editorWidget = cellEditor.createWidget();
-    editorWidget.model.applyFromJson(model.json);
-    // Some parts of a json have to take priority.
-    // As they override the properties.
-    editorWidget.model.applyCellEditorOverrides(model.json);
+    if (cellEditor is FlImageCellEditor) {
+      FlIconWidget editorWidget = (cellEditor as FlImageCellEditor).createWidget(model.json, false);
+
+      FlIconModel baseWidgetModel = (cellEditor as FlImageCellEditor).createWidgetModel();
+      FlIconModel widgetModel = editorWidget.model;
+
+      StringBuffer buffer = StringBuffer();
+      //buffer.write("Editor values: ${model.horizontalAlignment} ${model.verticalAlignment}\n");
+
+      buffer.write("Celleditor   : ${baseWidgetModel.preserveAspectRatio} \n");
+
+      buffer.write("Actual values: ${widgetModel.preserveAspectRatio}");
+
+      FlutterJVx.log.i(buffer.toString());
+    }
 
     logCellEditor("BUILD");
 
-    return getPositioned(child: editorWidget);
+    return getPositioned(child: cellEditor.createWidget(model.json, false));
   }
 
   @override
@@ -146,7 +146,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           cellEditor is FlLinkedCellEditor ||
           cellEditor is FlDateCellEditor ||
           cellEditor is FlNumberCellEditor) {
-        double extraWidth = (cellEditor.createWidget() as FlTextFieldWidget).extraWidthPaddings();
+        double extraWidth = (cellEditor.createWidget(null, false) as FlTextFieldWidget).extraWidthPaddings();
 
         double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
 

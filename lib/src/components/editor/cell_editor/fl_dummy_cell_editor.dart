@@ -1,12 +1,9 @@
 import '../../../model/component/dummy/fl_dummy_model.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
-import '../../../model/component/fl_component_model.dart';
-import '../../../model/data/column_definition.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../dummy/fl_dummy_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
+class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEditorModel, dynamic> {
   FlDummyCellEditor()
       : super(
           model: ICellEditorModel(),
@@ -19,12 +16,12 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   void dispose() {}
 
   @override
-  FlStatelessWidget createWidget() {
-    return FlDummyWidget(model: FlDummyModel());
+  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+    return FlDummyWidget(model: createWidgetModel());
   }
 
   @override
-  FlComponentModel createWidgetModel() => FlDummyModel();
+  FlDummyModel createWidgetModel() => FlDummyModel();
 
   @override
   void setValue(pValue) {}
@@ -38,22 +35,12 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    // do nothing
-  }
-
-  @override
-  ColumnDefinition? getColumnDefinition() {
-    return null;
-  }
-
-  @override
   String formatValue(Object pValue) {
     return pValue.toString();
   }
 
   @override
-  FlStatelessWidget? createTableWidget() {
+  FlDummyWidget? createTableWidget() {
     return null;
   }
 

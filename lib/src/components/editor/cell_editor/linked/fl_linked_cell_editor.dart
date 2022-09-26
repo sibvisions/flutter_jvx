@@ -13,7 +13,8 @@ import '../i_cell_editor.dart';
 import 'fl_linked_cell_picker.dart';
 import 'fl_linked_editor_widget.dart';
 
-class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
+class FlLinkedCellEditor
+    extends ICellEditor<FlLinkedEditorModel, FlLinkedEditorWidget, FlLinkedCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,8 +80,10 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   }
 
   @override
-  FlLinkedEditorWidget createWidget([bool pInTable = false]) {
-    FlLinkedEditorModel widgetModel = FlLinkedEditorModel();
+  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+    FlLinkedEditorModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
 
     return FlLinkedEditorWidget(
         model: widgetModel,
@@ -117,7 +120,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   }
 
   @override
-  FlLinkedEditorModel createWidgetModel() => FlLinkedEditorModel();
+  createWidgetModel() => FlLinkedEditorModel();
 
   @override
   void dispose() {
@@ -134,16 +137,6 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   @override
   bool isActionCellEditor() {
     return true;
-  }
-
-  @override
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    // do nothing
-  }
-
-  @override
-  ColumnDefinition? getColumnDefinition() {
-    return null;
   }
 
   void setValueMap(DataChunk pChunkData) {
@@ -246,12 +239,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   }
 
   @override
-  FlLinkedEditorWidget createTableWidget() {
-    return createWidget(true);
-  }
-
-  @override
   double get additionalTablePadding {
-    return createTableWidget().extraWidthPaddings();
+    return createWidget(null, true).extraWidthPaddings();
   }
 }

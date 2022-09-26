@@ -8,12 +8,10 @@ import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
+class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, FlNumberCellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  ColumnDefinition? _columnDefinition;
 
   late NumericTextFormatter numberFormatter;
 
@@ -66,9 +64,13 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   @override
-  FlTextFieldWidget createWidget() {
+  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+    FlTextFieldModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
+
     return FlTextFieldWidget(
-      model: FlTextFieldModel(),
+      model: widgetModel,
       valueChanged: onValueChange,
       //(value) => onValueChange(numberFormatter.convertToNumber(value)),
       endEditing: onEndEditing,
@@ -96,31 +98,15 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   @override
-  ColumnDefinition? getColumnDefinition() {
-    return _columnDefinition;
-  }
-
-  @override
-  FlTextFieldModel createWidgetModel() {
+  createWidgetModel() {
     return FlTextFieldModel();
   }
 
   @override
   void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    _columnDefinition = pColumnDefinition;
+    super.setColumnDefinition(pColumnDefinition);
 
     _recreateNumericFormatter();
-  }
-
-  void _recreateNumericFormatter() {
-    numberFormatter = NumericTextFormatter(
-      numberFormat: model.numberFormat,
-      length: _columnDefinition?.length,
-      precision: _columnDefinition?.precision,
-      scale: _columnDefinition?.scale,
-      signed: _columnDefinition?.signed,
-      locale: IConfigService().getLanguage(),
-    );
   }
 
   @override
@@ -129,10 +115,16 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   @override
-  FlTextFieldWidget? createTableWidget() {
-    return null;
-  }
-
-  @override
   double get additionalTablePadding => 0.0;
+
+  void _recreateNumericFormatter() {
+    numberFormatter = NumericTextFormatter(
+      numberFormat: model.numberFormat,
+      length: columnDefinition?.length,
+      precision: columnDefinition?.precision,
+      scale: columnDefinition?.scale,
+      signed: columnDefinition?.signed,
+      locale: IConfigService().getLanguage(),
+    );
+  }
 }

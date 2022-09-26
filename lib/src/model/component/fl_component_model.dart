@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 
 import '../../../util/constants/i_color.dart';
@@ -5,6 +7,7 @@ import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
+import 'editor/fl_editor_model.dart';
 import 'i_font_style.dart';
 
 /// The base component model.
@@ -248,6 +251,10 @@ abstract class FlComponentModel {
       pCondition: (pValue) => pValue < VerticalAlignment.values.length && pValue >= 0,
       pConversion: VerticalAlignmentE.fromDynamic,
     );
+    if (this is FlEditorModel) {
+      log(pJson[ApiObjectProperty.verticalAlignment]?.toString() ?? "");
+      log(pJson[ApiObjectProperty.horizontalAlignment]?.toString() ?? "");
+    }
     horizontalAlignment = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.horizontalAlignment,

@@ -8,7 +8,7 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../i_cell_editor.dart';
 import 'fl_date_editor_widget.dart';
 
-class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
+class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget, FlDateCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,8 +76,10 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  FlDateEditorWidget createWidget([bool pInTable = false]) {
-    FlDateEditorModel widgetModel = FlDateEditorModel();
+  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+    FlDateEditorModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
 
     return FlDateEditorWidget(
       model: widgetModel,
@@ -179,7 +181,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  FlDateEditorModel createWidgetModel() => FlDateEditorModel();
+  createWidgetModel() => FlDateEditorModel();
 
   @override
   void dispose() {
@@ -195,16 +197,6 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   @override
   bool isActionCellEditor() {
     return true;
-  }
-
-  @override
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    // do nothing
-  }
-
-  @override
-  ColumnDefinition? getColumnDefinition() {
-    return null;
   }
 
   void _setDatePart(DateTime date) {
@@ -246,12 +238,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   }
 
   @override
-  FlDateEditorWidget createTableWidget() {
-    return createWidget(true);
-  }
-
-  @override
   double get additionalTablePadding {
-    return createTableWidget().extraWidthPaddings();
+    return createWidget(null, true).extraWidthPaddings();
   }
 }

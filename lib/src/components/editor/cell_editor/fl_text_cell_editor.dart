@@ -9,7 +9,7 @@ import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
+class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, ICellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,12 +79,16 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  FlTextFieldWidget createWidget() {
+  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+    FlTextFieldModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
+
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
         return FlTextAreaWidget(
-          model: FlTextAreaModel(),
+          model: widgetModel as FlTextAreaModel,
           valueChanged: onValueChange,
           endEditing: onEndEditing,
           focusNode: focusNode,
@@ -92,7 +96,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
         );
       case (TEXT_PLAIN_PASSWORD):
         return FlPasswordWidget(
-          model: FlTextFieldModel(),
+          model: widgetModel,
           valueChanged: onValueChange,
           endEditing: onEndEditing,
           focusNode: focusNode,
@@ -101,7 +105,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
       case (TEXT_PLAIN_SINGLELINE):
       default:
         return FlTextFieldWidget(
-          model: FlTextFieldModel(),
+          model: widgetModel,
           valueChanged: onValueChange,
           endEditing: onEndEditing,
           focusNode: focusNode,
@@ -111,7 +115,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  FlTextFieldModel createWidgetModel() {
+  createWidgetModel() {
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
@@ -142,23 +146,8 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    // do nothing
-  }
-
-  @override
-  ColumnDefinition? getColumnDefinition() {
-    return null;
-  }
-
-  @override
   String formatValue(Object pValue) {
     return pValue.toString();
-  }
-
-  @override
-  FlTextFieldWidget? createTableWidget() {
-    return null;
   }
 
   @override

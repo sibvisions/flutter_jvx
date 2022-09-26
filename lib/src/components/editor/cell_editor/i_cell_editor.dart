@@ -17,7 +17,8 @@ import 'linked/fl_linked_cell_editor.dart';
 typedef CellEditorRecalculateSizeCallback = Function([bool pRecalculate]);
 
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.
-abstract class ICellEditor<T extends ICellEditorModel, C> {
+abstract class ICellEditor<WidgetModelType extends FlComponentModel,
+    WidgetType extends FlStatelessWidget<WidgetModelType>, CellEditorModelType extends ICellEditorModel, ReturnValues> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,11 +27,11 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   String? name;
 
   /// The cell editor model
-  T model;
+  CellEditorModelType model;
 
-  Function(C) onValueChange;
+  Function(ReturnValues) onValueChange;
 
-  Function(C) onEndEditing;
+  Function(ReturnValues) onEndEditing;
 
   ColumnDefinition? columnDefinition;
 
@@ -55,22 +56,19 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   void dispose();
 
-  C? getValue();
+  ReturnValues? getValue();
 
   void setValue(dynamic pValue);
 
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition);
+  void setColumnDefinition(ColumnDefinition? pColumnDefinition) => columnDefinition = pColumnDefinition;
 
-  ColumnDefinition? getColumnDefinition();
+  ColumnDefinition? getColumnDefinition() => columnDefinition;
 
   /// Returns the widget representing the cell editor.
-  FlStatelessWidget createWidget();
-
-  /// Returns the widget for the table.
-  FlStatelessWidget? createTableWidget();
+  WidgetType createWidget(Map<String, dynamic>? pJson, bool pInTable);
 
   /// Returns the model of the widget representing the cell editor.
-  FlComponentModel createWidgetModel();
+  WidgetModelType createWidgetModel();
 
   bool isActionCellEditor();
 
@@ -149,6 +147,13 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
       default:
         return FlDummyCellEditor();
+    }
+  }
+
+  static void applyEditorJson(FlComponentModel pModel, Map<String, dynamic>? pJson) {
+    if (pJson != null) {
+      pModel.applyFromJson(pJson);
+      pModel.applyCellEditorOverrides(pJson);
     }
   }
 }

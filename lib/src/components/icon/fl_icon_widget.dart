@@ -43,10 +43,17 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       child = Tooltip(message: model.toolTipText!, child: child);
     }
 
+    Alignment? alignment = FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index];
+
+    if (model.horizontalAlignment == HorizontalAlignment.STRETCH ||
+        model.verticalAlignment == VerticalAlignment.STRETCH) {
+      alignment = null;
+    }
+
     return GestureDetector(
       onTap: onPress,
       child: Container(
-        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+        alignment: alignment,
         decoration: BoxDecoration(color: model.background),
         child: child,
       ),
@@ -56,19 +63,6 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   BoxFit getBoxFit() {
     if (inTable) {
       return BoxFit.scaleDown;
-    }
-
-    if (model.horizontalAlignment == HorizontalAlignment.STRETCH &&
-        model.verticalAlignment == VerticalAlignment.STRETCH) {
-      if (model.preserveAspectRatio) {
-        return BoxFit.contain;
-      } else {
-        return BoxFit.fill;
-      }
-    } else if (model.horizontalAlignment == HorizontalAlignment.STRETCH) {
-      return BoxFit.fitWidth;
-    } else if (model.verticalAlignment == VerticalAlignment.STRETCH) {
-      return BoxFit.fitHeight;
     }
 
     if (model.preserveAspectRatio) {

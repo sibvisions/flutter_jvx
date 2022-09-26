@@ -1,14 +1,12 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../model/component/editor/cell_editor/fl_choice_cell_editor_model.dart';
-import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/icon/fl_icon_model.dart';
 import '../../../model/data/column_definition.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
+class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoiceCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,8 +56,10 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget createWidget([bool inTable = false]) {
-    FlIconModel widgetModel = FlIconModel();
+  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+    FlIconModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
 
     Widget image;
     if (currentIndex >= 0) {
@@ -73,7 +73,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
     return FlIconWidget(
       model: widgetModel,
       directImage: image,
-      inTable: inTable,
+      inTable: pInTable,
       onPress: onPress,
     );
   }
@@ -88,7 +88,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  FlComponentModel createWidgetModel() => FlIconModel();
+  createWidgetModel() => FlIconModel();
 
   @override
   dynamic getValue() {
@@ -106,23 +106,8 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    // do nothing
-  }
-
-  @override
-  ColumnDefinition? getColumnDefinition() {
-    return null;
-  }
-
-  @override
   String formatValue(Object pValue) {
     return pValue.toString();
-  }
-
-  @override
-  FlStatelessWidget? createTableWidget() {
-    return createWidget(true);
   }
 
   @override

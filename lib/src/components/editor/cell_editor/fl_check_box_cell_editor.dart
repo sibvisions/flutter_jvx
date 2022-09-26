@@ -1,11 +1,10 @@
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
 import '../../../model/data/column_definition.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynamic> {
+class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget, FlCheckBoxCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,16 +39,23 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  FlStatelessWidget createWidget() {
-    FlCheckBoxModel widgetModel = FlCheckBoxModel();
-    widgetModel.labelModel.text = model.text;
-    widgetModel.selected = model.selectedValue == _value;
+  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+    FlCheckBoxModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
 
     return FlCheckBoxWidget(model: widgetModel, onPress: onPress);
   }
 
   @override
-  FlCheckBoxModel createWidgetModel() => FlCheckBoxModel();
+  createWidgetModel() {
+    FlCheckBoxModel widgetModel = FlCheckBoxModel();
+
+    widgetModel.labelModel.text = model.text;
+    widgetModel.selected = model.selectedValue == _value;
+
+    return widgetModel;
+  }
 
   @override
   dynamic getValue() {
@@ -67,14 +73,12 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    // do nothing
+  String formatValue(Object pValue) {
+    return pValue.toString();
   }
 
   @override
-  ColumnDefinition? getColumnDefinition() {
-    return null;
-  }
+  double get additionalTablePadding => 0.0;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
@@ -87,17 +91,4 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
       onEndEditing(model.selectedValue);
     }
   }
-
-  @override
-  String formatValue(Object pValue) {
-    return pValue.toString();
-  }
-
-  @override
-  FlStatelessWidget? createTableWidget() {
-    return createWidget();
-  }
-
-  @override
-  double get additionalTablePadding => 0.0;
 }
