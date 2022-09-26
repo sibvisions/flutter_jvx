@@ -94,22 +94,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       postFrameCallback(context);
     });
 
-    if (cellEditor is FlImageCellEditor) {
-      FlIconWidget editorWidget = (cellEditor as FlImageCellEditor).createWidget(model.json, false);
-
-      FlIconModel baseWidgetModel = (cellEditor as FlImageCellEditor).createWidgetModel();
-      FlIconModel widgetModel = editorWidget.model;
-
-      StringBuffer buffer = StringBuffer();
-      //buffer.write("Editor values: ${model.horizontalAlignment} ${model.verticalAlignment}\n");
-
-      buffer.write("Celleditor   : ${baseWidgetModel.preserveAspectRatio} \n");
-
-      buffer.write("Actual values: ${widgetModel.preserveAspectRatio}");
-
-      FlutterJVx.log.i(buffer.toString());
-    }
-
     logCellEditor("BUILD");
 
     return getPositioned(child: cellEditor.createWidget(model.json, false));

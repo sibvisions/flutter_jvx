@@ -45,8 +45,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
     Alignment? alignment = FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index];
 
-    if (model.horizontalAlignment == HorizontalAlignment.STRETCH ||
-        model.verticalAlignment == VerticalAlignment.STRETCH) {
+    BoxFit boxFit = getBoxFit();
+    if (boxFit != BoxFit.contain && !model.preserveAspectRatio) {
       alignment = null;
     }
 
@@ -66,9 +66,26 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     }
 
     if (model.preserveAspectRatio) {
+      if ((model.horizontalAlignment == HorizontalAlignment.STRETCH) ^ //XOR
+          (model.verticalAlignment == VerticalAlignment.STRETCH)) {
+        if (model.horizontalAlignment == HorizontalAlignment.STRETCH) {
+          return BoxFit.fitWidth;
+        } else if (model.verticalAlignment == VerticalAlignment.STRETCH) {
+          return BoxFit.fitHeight;
+        }
+      }
+
       return BoxFit.contain;
     } else {
-      return BoxFit.fill;
+      if ((model.horizontalAlignment == HorizontalAlignment.STRETCH) && //XOR
+          (model.verticalAlignment == VerticalAlignment.STRETCH)) {
+        return BoxFit.fill;
+      } else if (model.horizontalAlignment == HorizontalAlignment.STRETCH) {
+        return BoxFit.fitWidth;
+      } else if (model.verticalAlignment == VerticalAlignment.STRETCH) {
+        return BoxFit.fitHeight;
+      }
+      return BoxFit.contain;
     }
   }
 
