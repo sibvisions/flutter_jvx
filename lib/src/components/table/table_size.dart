@@ -103,9 +103,7 @@ class TableSize {
 
     availableWidth = (availableWidth ?? 0.0) - (borderWidth * 2);
 
-    List<String> columnHeaders = tableModel.columnLabels;
-
-    for (String columnHeader in columnHeaders) {
+    for (String columnHeader in tableModel.columnLabels) {
       double columnWidth = adjustValue(
         minColumnWidth,
         ParseUtil.getTextWidth(
@@ -127,21 +125,14 @@ class TableSize {
         calculateForRecordCount,
       );
 
-      int colIndex = -1;
-      int showIndex = 0;
-      for (ColumnDefinition colDef in dataChunk.columnDefinitions) {
-        colIndex++;
-
-        if (!tableModel.columnNames.contains(colDef.name)) {
-          continue; //Not to be measured
-        } else {
-          showIndex = tableModel.columnNames.indexOf(colDef.name);
-        }
+      for (int i = 0; i < tableModel.columnNames.length; i++) {
+        String columnName = tableModel.columnNames[i];
+        ColumnDefinition colDef = dataChunk.columnDefinitions.firstWhere((element) => element.name == columnName);
 
         double colWidth = minColumnWidth;
 
         if (colDef.width != null) {
-          calculatedColumnWidths[showIndex] = colDef.width!;
+          calculatedColumnWidths[i] = colDef.width!;
         } else {
           ICellEditor cellEditor = ICellEditor.getCellEditor(
             pName: "",
@@ -151,8 +142,9 @@ class TableSize {
             pUiService: IUiService(),
           );
 
+          final int dataColIndex = dataChunk.columnDefinitions.indexOf(colDef);
           for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {
-            dynamic value = dataChunk.data[rowIndex]![colIndex];
+            dynamic value = dataChunk.data[rowIndex]![dataColIndex];
 
             if (value == null) {
               continue;
@@ -173,7 +165,7 @@ class TableSize {
           // Add padding and add right border
           colWidth = adjustValue(colWidth, colWidth);
 
-          calculatedColumnWidths[showIndex] = adjustValue(calculatedColumnWidths[showIndex], colWidth);
+          calculatedColumnWidths[i] = adjustValue(calculatedColumnWidths[i], colWidth);
         }
       }
     }

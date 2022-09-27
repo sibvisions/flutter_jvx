@@ -113,41 +113,42 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget createTable(BuildContext pContext) {
-    Widget table = GestureDetector(
-      onLongPress: model.isEnabled ? onLongPress : null,
-      onPanDown: model.isEnabled ? ((DragDownDetails? pDragDetails) => onRowTapDown?.call(-1, pDragDetails)) : null,
-      child: NotificationListener<ScrollEndNotification>(
-        onNotification: onInternalEndScroll,
-        child: SingleChildScrollView(
-          controller: tableHorizontalController,
-          scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: max(tableSize.size.width, 0),
-            ),
-            child: ScrollablePositionedList.builder(
-              itemScrollController: itemScrollController,
-              itemBuilder: itemBuilder,
-              itemCount: _itemCount,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    if (!model.stickyHeaders || !model.tableHeaderVisible) {
-      return table;
-    }
-
     return LayoutBuilder(
       builder: ((context, constraints) {
+        double maxWidth = max(max(tableSize.size.width, constraints.maxWidth), 0);
+
+        Widget table = GestureDetector(
+          onLongPress: model.isEnabled ? onLongPress : null,
+          onPanDown: model.isEnabled ? ((DragDownDetails? pDragDetails) => onRowTapDown?.call(-1, pDragDetails)) : null,
+          child: NotificationListener<ScrollEndNotification>(
+            onNotification: onInternalEndScroll,
+            child: SingleChildScrollView(
+              controller: tableHorizontalController,
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: maxWidth,
+                ),
+                child: ScrollablePositionedList.builder(
+                  itemScrollController: itemScrollController,
+                  itemBuilder: itemBuilder,
+                  itemCount: _itemCount,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        if (!model.stickyHeaders || !model.tableHeaderVisible) {
+          return table;
+        }
+
         List<Widget> children = [];
 
         if (model.tableHeaderVisible) {
           children.add(
             SizedBox(
               height: tableSize.tableHeaderHeight,
-              width: max(constraints.maxWidth, 0),
               child: buildHeaderRow(pContext),
             ),
           );
@@ -156,7 +157,6 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
         children.add(
           SizedBox(
             height: max(constraints.maxHeight - tableSize.tableHeaderHeight, 0),
-            width: max(constraints.maxWidth, constraints.maxWidth),
             child: table,
           ),
         );
@@ -201,8 +201,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     List<ColumnDefinition> columnsToShow =
         model.columnNames.map((e) => chunkData.columnDefinitions.firstWhere((element) => element.name == e)).toList();
 
-    for (ColumnDefinition colDef in columnsToShow) {
-      int columnIndex = columnsToShow.indexOf(colDef);
+    for (int columnIndex = 0; columnIndex < columnsToShow.length; columnIndex++) {
+      ColumnDefinition colDef = columnsToShow[columnIndex];
       int dataIndex = chunkData.columnDefinitions.indexOf(colDef);
 
       Widget? widget;
@@ -287,8 +287,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   Widget buildHeaderRow(BuildContext context) {
     List<Widget> rowWidgets = [];
 
-    for (String columnName in model.columnNames) {
-      int colIndex = model.columnNames.indexOf(columnName);
+    for (int colIndex = 0; colIndex < model.columnNames.length; colIndex++) {
+      String columnName = model.columnNames[colIndex];
 
       String headerText = model.columnLabels[colIndex];
 
