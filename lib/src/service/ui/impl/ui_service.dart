@@ -310,21 +310,24 @@ class UiService implements IUiService {
 
   @override
   void closeScreen({required String pScreenName, required bool pBeamBack}) {
-    FlComponentModel screenModel = _activeComponentModels.firstWhere((element) => element.name == pScreenName);
+    FlComponentModel? screenModel = _activeComponentModels.firstWhereOrNull((element) => element.name == pScreenName);
 
-    List<FlComponentModel> children = getAllComponentsBelow(screenModel.id);
+    if (screenModel != null) {
+      List<FlComponentModel> children = getAllComponentsBelow(screenModel.id);
 
-    // Remove all children and itself
-    _activeComponentModels.removeWhere((currentComp) =>
-        currentComp == screenModel || children.any((compToDelete) => compToDelete.id == currentComp.id));
+      // Remove all children and itself
+      _activeComponentModels.removeWhere((currentComp) =>
+          currentComp == screenModel || children.any((compToDelete) => compToDelete.id == currentComp.id));
 
-    // clear lists that get filled when new screen opens anyway
-    _registeredComponents.removeWhere((currentComp) =>
-        currentComp.compId == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.compId));
-    _layoutDataList
-        .removeWhere((key, value) => key == screenModel.id || children.any((compToDelete) => compToDelete.id == key));
-    _dataSubscriptions.removeWhere((currentComp) =>
-        currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
+      // clear lists that get filled when new screen opens anyway
+      _registeredComponents.removeWhere((currentComp) =>
+          currentComp.compId == screenModel.id ||
+          children.any((compToDelete) => compToDelete.id == currentComp.compId));
+      _layoutDataList
+          .removeWhere((key, value) => key == screenModel.id || children.any((compToDelete) => compToDelete.id == key));
+      _dataSubscriptions.removeWhere((currentComp) =>
+          currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
+    }
 
     if (pBeamBack) {
       FlutterJVx.getCurrentContext()!.beamBack();
