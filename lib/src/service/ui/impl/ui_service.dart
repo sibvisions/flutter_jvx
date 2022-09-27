@@ -123,6 +123,11 @@ class UiService implements IUiService {
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     FlutterJVx.log.i("Routing to workscreen: $pScreenName");
 
+    if (FlutterJVx.getCurrentContext() == null) {
+      routerDelegate.setNewRoutePath(RouteInformation(location: "/workScreen/$pScreenName"));
+      return;
+    }
+
     BeamLocation lastLocation = FlutterJVx.getCurrentContext()!.beamingHistory.last;
 
     bool justReload = false;
