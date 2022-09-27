@@ -252,8 +252,12 @@ abstract class FlComponentModel {
       pConversion: VerticalAlignmentE.fromDynamic,
     );
     if (this is FlEditorModel) {
-      log(pJson[ApiObjectProperty.verticalAlignment]?.toString() ?? "");
-      log(pJson[ApiObjectProperty.horizontalAlignment]?.toString() ?? "");
+      if (pJson[ApiObjectProperty.verticalAlignment] != null) {
+        log(pJson[ApiObjectProperty.verticalAlignment].toString());
+      }
+      if (pJson[ApiObjectProperty.horizontalAlignment] != null) {
+        log(pJson[ApiObjectProperty.horizontalAlignment].toString());
+      }
     }
     horizontalAlignment = getPropertyValue(
       pJson: pJson,
