@@ -77,11 +77,13 @@ class _LoginCardState extends State<LoginCard> {
               child: Text(FlutterJVx.translate("Login")),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              _getLostPasswordButton(),
-              TextButton.icon(
-                onPressed: () => _onSettingsPressed(context: context),
-                icon: const FaIcon(FontAwesomeIcons.gear),
-                label: Text(FlutterJVx.translate("Settings")),
+              Flexible(child: _getLostPasswordButton()),
+              Flexible(
+                child: TextButton.icon(
+                  onPressed: () => _onSettingsPressed(context: context),
+                  icon: const FaIcon(FontAwesomeIcons.gear),
+                  label: Text(FlutterJVx.translate("Settings")),
+                ),
               ),
             ]),
           ],
