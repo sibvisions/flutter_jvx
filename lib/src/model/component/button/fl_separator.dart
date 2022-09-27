@@ -1,17 +1,17 @@
 import '../fl_component_model.dart';
 
-class FlSeperatorModel extends FlComponentModel {
+class FlSeparatorModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Initializes the [FlSeperatorModel]
-  FlSeperatorModel() : super();
+  /// Initializes the [FlSeparatorModel]
+  FlSeparatorModel() : super();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  FlSeperatorModel get defaultModel => FlSeperatorModel();
+  FlSeparatorModel get defaultModel => FlSeparatorModel();
 }

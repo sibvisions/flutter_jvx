@@ -5,7 +5,7 @@ import 'component/button/fl_popup_menu_button_model.dart';
 import 'component/button/fl_popup_menu_item_model.dart';
 import 'component/button/fl_popup_menu_model.dart';
 import 'component/button/fl_radio_button_model.dart';
-import 'component/button/fl_seperator.dart';
+import 'component/button/fl_separator.dart';
 import 'component/button/fl_toggle_button_model.dart';
 import 'component/chart/fl_chart_model.dart';
 import 'component/check_box/fl_check_box_model.dart';
@@ -60,7 +60,7 @@ abstract class ModelFactory {
       case FlComponentClassname.MENU_ITEM:
         return FlPopupMenuItemModel();
       case FlComponentClassname.SEPERATOR:
-        return FlSeperatorModel();
+        return FlSeparatorModel();
       case FlComponentClassname.POPUP_MENU_BUTTON:
         return FlPopupMenuButtonModel();
       case FlComponentClassname.CHECK_BOX:

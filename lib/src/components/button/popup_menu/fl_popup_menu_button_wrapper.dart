@@ -4,7 +4,7 @@ import 'package:flutter/scheduler.dart';
 import '../../../model/component/button/fl_popup_menu_button_model.dart';
 import '../../../model/component/button/fl_popup_menu_item_model.dart';
 import '../../../model/component/button/fl_popup_menu_model.dart';
-import '../../../model/component/button/fl_seperator.dart';
+import '../../../model/component/button/fl_separator.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../service/ui/i_ui_service.dart';
@@ -102,7 +102,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       for (FlComponentModel popupMenuModel in listOfPopupMenuModels) {
         List<FlComponentModel> listOfPopupMenuItems = IUiService().getChildrenModels(popupMenuModel.id);
         // Remove all non popup menu item models
-        listOfPopupMenuItems.removeWhere((element) => element is! FlPopupMenuItemModel && element is! FlSeperatorModel);
+        listOfPopupMenuItems.removeWhere((element) => element is! FlPopupMenuItemModel && element is! FlSeparatorModel);
 
         menuItems.addAll(listOfPopupMenuItems);
       }
