@@ -270,8 +270,15 @@ class UiService implements IUiService {
 
   @override
   List<FlComponentModel> getChildrenModels(String id) {
-    var children = _activeComponentModels.where((element) => (element.parent == id)).toList();
-    return children;
+    return _activeComponentModels.where((element) => (element.parent == id)).toList();
+  }
+
+  @override
+  List<FlComponentModel> getDescendantModels(String id) {
+    return _activeComponentModels
+        .where((element) => (element.parent == id))
+        .expand((element) => [element, ...getDescendantModels(element.id)])
+        .toList();
   }
 
   @override

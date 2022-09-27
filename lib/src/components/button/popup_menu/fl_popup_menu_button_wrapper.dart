@@ -5,6 +5,7 @@ import '../../../model/component/button/fl_popup_menu_button_model.dart';
 import '../../../model/component/button/fl_popup_menu_item_model.dart';
 import '../../../model/component/button/fl_popup_menu_model.dart';
 import '../../../model/component/button/fl_seperator.dart';
+import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../fl_button_wrapper.dart';
@@ -30,6 +31,47 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void initState() {
+    super.initState();
+
+    registerDescendantModels();
+  }
+
+  @override
+  void receiveNewModel({required T newModel}) {
+    //Dispose old subscriptions
+    List<FlComponentModel> oldModels = IUiService().getDescendantModels(model.id);
+    oldModels.forEach((element) => IUiService().disposeSubscriptions(pSubscriber: element));
+
+    super.receiveNewModel(newModel: newModel);
+
+    registerDescendantModels();
+  }
+
+  ///Register descendant models to receive ui updates
+  void registerDescendantModels() {
+    List<FlComponentModel> descendantModels = IUiService().getDescendantModels(model.id);
+    for (var childModel in descendantModels) {
+      ComponentSubscription componentSubscription = ComponentSubscription(
+        compId: childModel.id,
+        subbedObj: this,
+        callback: ({data, newModel}) {
+          if (newModel != null) {
+            setState(() {});
+          }
+        },
+      );
+      IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
+    }
+  }
+
+  @override
+  void dispose() {
+    IUiService().disposeSubscriptions(pSubscriber: this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

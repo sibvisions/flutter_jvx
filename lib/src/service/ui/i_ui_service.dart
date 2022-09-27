@@ -106,6 +106,9 @@ abstract class IUiService {
   /// Returns all [FlComponentModel] children of provided id.
   List<FlComponentModel> getChildrenModels(String id);
 
+  /// Returns all [FlComponentModel] descendants of provided id.
+  List<FlComponentModel> getDescendantModels(String id);
+
   /// Returns component model with matching componentId,
   /// if none was found returns null
   FlComponentModel? getComponentModel({required String pComponentId});
