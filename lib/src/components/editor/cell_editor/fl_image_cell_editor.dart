@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../../model/component/editor/cell_editor/fl_image_cell_editor_model.dart';
 import '../../../model/component/icon/fl_icon_model.dart';
 import '../../../model/data/column_definition.dart';
+import '../../../model/layout/alignments.dart';
 import '../../../util/i_types.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
@@ -64,6 +65,10 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
     FlIconModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
+
+    if (pInTable) {
+      widgetModel.horizontalAlignment = HorizontalAlignment.LEFT;
+    }
 
     return FlIconWidget(
       model: widgetModel,
