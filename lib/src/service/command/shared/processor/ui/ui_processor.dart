@@ -19,7 +19,7 @@ import 'route_to_login_command_processor.dart';
 import 'route_to_menu_command_processor.dart';
 import 'route_to_work_command_processor.dart';
 import 'save_menu_command_processor.dart';
-import 'update_components_processor.dart';
+import 'update_components_command_processor.dart';
 import 'update_layout_position_command_processor.dart';
 import 'upload_action_command_processor.dart';
 import 'view/message/open_error_dialog_command_processor.dart';
@@ -32,7 +32,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final ICommandProcessor _updateComponentsProcessor = UpdateComponentsProcessor();
+  final ICommandProcessor _updateComponentsProcessor = UpdateComponentsCommandProcessor();
   final ICommandProcessor _updateLayoutPositionProcessor = UpdateLayoutPositionCommandProcessor();
   final ICommandProcessor _routeToMenuProcessor = RouteToMenuCommandProcessor();
   final ICommandProcessor _routeToWorkProcessor = RouteToWorkCommandProcessor();

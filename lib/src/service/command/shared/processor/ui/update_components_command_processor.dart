@@ -6,7 +6,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../i_command_processor.dart';
 
-class UpdateComponentsProcessor implements ICommandProcessor<UpdateComponentsCommand> {
+class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateComponentsCommand> {
   static bool isOpenScreen = false;
   static bool _secondRun = false;
 
