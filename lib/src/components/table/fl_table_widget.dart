@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -292,7 +293,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
       String headerText = model.columnLabels[colIndex];
 
-      ColumnDefinition? colDef = metaData?.columns.firstWhere((element) => element.name == columnName);
+      ColumnDefinition? colDef = metaData?.columns.firstWhereOrNull((element) => element.name == columnName);
 
       if (colDef != null && colDef.nullable != true) {
         headerText += "*";
