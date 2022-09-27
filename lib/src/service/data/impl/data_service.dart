@@ -158,6 +158,10 @@ class DataService implements IDataService {
     required String pDataProvider,
     int? pTo,
   }) async {
+    if (!dataBooks.containsKey(pDataProvider)) {
+      return true;
+    }
+
     DataBook dataBook = dataBooks[pDataProvider]!;
 
     // If all has already been fetched, then there is no point in fetching more,

@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../command/api/delete_record_command.dart';
@@ -112,7 +114,10 @@ class DataBook {
       // Get provided column definitions
       definitions = [];
       for (String columnName in pDataColumnNames) {
-        definitions.add(columnDefinitions.firstWhere((element) => element.name == columnName));
+        var colDef = columnDefinitions.firstWhereOrNull((element) => element.name == columnName);
+        if (colDef != null) {
+          definitions.add(colDef);
+        }
       }
 
       // Get full selected record, then only take requested columns

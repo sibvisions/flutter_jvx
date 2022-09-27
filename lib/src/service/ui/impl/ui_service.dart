@@ -383,32 +383,38 @@ class UiService implements IUiService {
     _dataSubscriptions.add(pDataSubscription);
 
     if (pShouldFetch) {
-      if (pDataSubscription.from != -1) {
-        GetDataChunkCommand getDataChunkCommand = GetDataChunkCommand(
-          reason: "Subscription added",
-          dataProvider: pDataSubscription.dataProvider,
-          from: pDataSubscription.from,
-          to: pDataSubscription.to,
-          subId: pDataSubscription.id,
-          dataColumns: pDataSubscription.dataColumns,
-        );
-        sendCommand(getDataChunkCommand);
+      if (IDataService().getDataBook(pDataSubscription.dataProvider) != null) {
+        if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
+          GetDataChunkCommand getDataChunkCommand = GetDataChunkCommand(
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            from: pDataSubscription.from,
+            to: pDataSubscription.to,
+            subId: pDataSubscription.id,
+            dataColumns: pDataSubscription.dataColumns,
+          );
+          sendCommand(getDataChunkCommand);
+        }
+
+        if (pDataSubscription.onSelectedRecord != null) {
+          GetSelectedDataCommand getSelectedDataCommand = GetSelectedDataCommand(
+            subId: pDataSubscription.id,
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            columnNames: pDataSubscription.dataColumns,
+          );
+          sendCommand(getSelectedDataCommand);
+        }
+
+        if (pDataSubscription.onMetaData != null) {
+          GetMetaDataCommand getMetaDataCommand = GetMetaDataCommand(
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            subId: pDataSubscription.id,
+          );
+          sendCommand(getMetaDataCommand);
+        }
       }
-
-      GetSelectedDataCommand getSelectedDataCommand = GetSelectedDataCommand(
-        subId: pDataSubscription.id,
-        reason: "Subscription added",
-        dataProvider: pDataSubscription.dataProvider,
-        columnNames: pDataSubscription.dataColumns,
-      );
-      sendCommand(getSelectedDataCommand);
-
-      GetMetaDataCommand getMetaDataCommand = GetMetaDataCommand(
-        reason: "Subscription added",
-        dataProvider: pDataSubscription.dataProvider,
-        subId: pDataSubscription.id,
-      );
-      sendCommand(getMetaDataCommand);
     }
   }
 
