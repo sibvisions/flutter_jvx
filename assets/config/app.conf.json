@@ -1,6 +1,6 @@
 {
   "title": "JVx Mobile Demo",
-  "requestTimeout": 25,
+  "requestTimeout": 5,
   "uiConfig": {
     "showRememberMe": true,
     "rememberMeChecked": true
