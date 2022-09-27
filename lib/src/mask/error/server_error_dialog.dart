@@ -58,7 +58,7 @@ class ServerErrorDialog extends FrameDialog {
         TextButton(
           onPressed: () {
             IUiService().closeFrameDialog(this);
-            context.beamToReplacementNamed("/settings");
+            FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/settings");
           },
           child: Text(
             FlutterJVx.translate("Go to Settings"),
