@@ -1,14 +1,15 @@
 import '../../../service/api/shared/api_object_property.dart';
 import '../fl_component_model.dart';
-import '../interface/i_data_model.dart';
 
-class FlCustomContainerModel extends FlComponentModel implements IDataModel {
+class FlCustomContainerModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  @override
-  String dataProvider = "";
-  String columnName = "";
+
+  String? dataProvider;
+  String? columnName;
+
+  Map<String, dynamic> properties = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -27,13 +28,15 @@ class FlCustomContainerModel extends FlComponentModel implements IDataModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
+    properties = pJson;
+
+    //Currently only used for signature pad
     dataProvider = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.dataRow,
       pDefault: defaultModel.dataProvider,
       pCurrent: dataProvider,
     );
-
     columnName = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.columnName,

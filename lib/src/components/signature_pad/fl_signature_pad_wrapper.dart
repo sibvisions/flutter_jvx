@@ -35,7 +35,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
   DataRecord? _dataRecord;
   late final SignatureController signatureController;
-  bool showImage = false;
   LongPressDownDetails? details;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +46,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     super.initState();
     signatureController = SignatureController();
 
-    showImage = _dataRecord?.values[0] != null;
     layoutData.isFixedSize = true;
 
     subscribe();
@@ -60,7 +58,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       controller: signatureController,
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
-      showImage: showImage,
+      showImage: _dataRecord?.values.isNotEmpty == true && _dataRecord?.values[0] != null,
       sendSignature: sendSignature,
       deleteSignature: deleteSignature,
       dataRecord: _dataRecord,
@@ -88,45 +86,52 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   Future<void> sendSignature() async {
-    Uint8List? pngBytes = await signatureController.toPngBytes();
+    if (model.dataProvider != null && model.columnName != null) {
+      Uint8List? pngBytes = await signatureController.toPngBytes();
 
-    List<dynamic> values = [];
-    values.add(pngBytes);
+      List<dynamic> values = [];
+      values.add(pngBytes);
 
-    FlutterJVx.log.i("Sending Signature");
+      FlutterJVx.log.i("Sending Signature");
 
-    SetValuesCommand setValues = SetValuesCommand(
-        componentId: model.id,
-        dataProvider: model.dataProvider,
-        columnNames: getDataColumns(),
-        values: values,
-        reason: "Drawing has ended on ${model.id}");
-    await IUiService().sendCommand(setValues);
+      SetValuesCommand setValues = SetValuesCommand(
+          componentId: model.id,
+          dataProvider: model.dataProvider!,
+          columnNames: [model.columnName!],
+          values: values,
+          reason: "Drawing has ended on ${model.id}");
+      await IUiService().sendCommand(setValues);
+    }
   }
 
   Future<void> deleteSignature() async {
-    FlutterJVx.log.i("Deleting Signature");
     signatureController.clear();
 
-    SetValuesCommand setValues = SetValuesCommand(
-        componentId: model.id,
-        dataProvider: model.dataProvider,
-        columnNames: getDataColumns(),
-        values: [],
-        reason: "Drawing has ended on ${model.id}");
-    await IUiService().sendCommand(setValues);
+    if (model.dataProvider != null && model.columnName != null) {
+      FlutterJVx.log.i("Deleting Signature");
+
+      SetValuesCommand setValues = SetValuesCommand(
+          componentId: model.id,
+          dataProvider: model.dataProvider!,
+          columnNames: [model.columnName!],
+          values: [],
+          reason: "Drawing has ended on ${model.id}");
+      await IUiService().sendCommand(setValues);
+    }
   }
 
   void subscribe() {
-    IUiService().registerDataSubscription(
-      pDataSubscription: DataSubscription(
-        subbedObj: this,
-        from: -1,
-        dataProvider: model.dataProvider,
-        onSelectedRecord: receiveSignatureData,
-        dataColumns: getDataColumns(),
-      ),
-    );
+    if (model.dataProvider != null && model.columnName != null) {
+      IUiService().registerDataSubscription(
+        pDataSubscription: DataSubscription(
+          subbedObj: this,
+          from: -1,
+          dataProvider: model.dataProvider!,
+          onSelectedRecord: receiveSignatureData,
+          dataColumns: [model.columnName!],
+        ),
+      );
+    }
   }
 
   void unsubscribe() {
@@ -135,12 +140,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
   void receiveSignatureData(DataRecord? pDataRecord) {
     _dataRecord = pDataRecord;
-    showImage = _dataRecord?.values[0] != null;
     setState(() {});
-  }
-
-  List<String> getDataColumns() {
-    return [model.columnName];
   }
 
   showContextMenu() {
