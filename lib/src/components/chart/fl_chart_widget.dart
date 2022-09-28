@@ -19,20 +19,14 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
       return Container();
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) => SizedBox(
-        height: constraints.maxHeight,
-        width: constraints.maxWidth,
-        child: LineChart(
-          series,
-          animate: false,
-          layoutConfig: LayoutConfig(
-            topMarginSpec: MarginSpec.defaultSpec,
-            bottomMarginSpec: MarginSpec.defaultSpec,
-            leftMarginSpec: MarginSpec.defaultSpec,
-            rightMarginSpec: MarginSpec.defaultSpec,
-          ),
-        ),
+    return LineChart(
+      series,
+      animate: false,
+      layoutConfig: LayoutConfig(
+        topMarginSpec: MarginSpec.fromPercent(minPercent: 2, maxPercent: 100),
+        bottomMarginSpec: MarginSpec.fromPercent(minPercent: 5, maxPercent: 100),
+        leftMarginSpec: MarginSpec.fromPercent(minPercent: 5, maxPercent: 100),
+        rightMarginSpec: MarginSpec.fromPercent(minPercent: 2, maxPercent: 100),
       ),
     );
   }
