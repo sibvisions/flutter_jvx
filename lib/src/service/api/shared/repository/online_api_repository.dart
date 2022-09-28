@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -12,7 +13,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../../config/api/api_route.dart';
 import '../../../../../flutter_jvx.dart';
 import '../../../../../services.dart';
-import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/request/api_change_password_request.dart';
 import '../../../../model/request/api_changes_request.dart';

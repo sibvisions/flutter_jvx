@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
-import '../../../../util/extensions/list_extensions.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';

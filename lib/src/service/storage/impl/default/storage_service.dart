@@ -1,7 +1,8 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../../../../flutter_jvx.dart';
-import '../../../../../util/extensions/list_extensions.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';

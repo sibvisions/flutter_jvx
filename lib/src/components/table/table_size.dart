@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../services.dart';
@@ -127,39 +128,42 @@ class TableSize {
 
       for (int i = 0; i < tableModel.columnNames.length; i++) {
         String columnName = tableModel.columnNames[i];
-        ColumnDefinition colDef = dataChunk.columnDefinitions.firstWhere((element) => element.name == columnName);
+        ColumnDefinition? colDef =
+            dataChunk.columnDefinitions.firstWhereOrNull((element) => element.name == columnName);
 
         double colWidth = minColumnWidth;
 
-        if (colDef.width != null) {
-          calculatedColumnWidths[i] = colDef.width!;
-        } else {
-          ICellEditor cellEditor = ICellEditor.getCellEditor(
-            pName: "",
-            pCellEditorJson: colDef.cellEditorJson,
-            onChange: (_) => null,
-            onEndEditing: (_) => null,
-            pUiService: IUiService(),
-          );
+        if (colDef != null) {
+          if (colDef.width != null) {
+            calculatedColumnWidths[i] = colDef.width!;
+          } else {
+            ICellEditor? cellEditor = ICellEditor.getCellEditor(
+              pName: "",
+              pCellEditorJson: colDef.cellEditorJson,
+              onChange: (_) => null,
+              onEndEditing: (_) => null,
+              pUiService: IUiService(),
+            );
 
-          final int dataColIndex = dataChunk.columnDefinitions.indexOf(colDef);
-          for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {
-            dynamic value = dataChunk.data[rowIndex]![dataColIndex];
+            final int dataColIndex = dataChunk.columnDefinitions.indexOf(colDef);
+            for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {
+              dynamic value = dataChunk.data[rowIndex]![dataColIndex];
 
-            if (value == null) {
-              continue;
+              if (value == null) {
+                continue;
+              }
+
+              String formattedText = cellEditor.formatValue(value);
+              double width = ParseUtil.getTextWidth(
+                  text: formattedText, style: tableModel.getTextStyle(), textScaleFactor: textScaleFactor);
+
+              width *= 1.3; // Value is multiplied by 1.3 to make sure that the text is not cut off
+              // because the calculated width is too small. Still not sure why, but it works.
+
+              width += cellEditor.additionalTablePadding;
+
+              colWidth = adjustValue(colWidth, width);
             }
-
-            String formattedText = cellEditor.formatValue(value);
-            double width = ParseUtil.getTextWidth(
-                text: formattedText, style: tableModel.getTextStyle(), textScaleFactor: textScaleFactor);
-
-            width *= 1.3; // Value is multiplied by 1.4 to make sure that the text is not cut off
-            // because the calculated width is too small. Still not sure why, but it works.
-
-            width += cellEditor.additionalTablePadding;
-
-            colWidth = adjustValue(colWidth, width);
           }
 
           // Add padding and add right border

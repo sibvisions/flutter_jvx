@@ -1,9 +1,9 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../util/extensions/list_extensions.dart';
 import '../../util/i_clonable.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';

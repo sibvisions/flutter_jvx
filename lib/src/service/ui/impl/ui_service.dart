@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,6 @@ import '../../../../custom/custom_menu_item.dart';
 import '../../../../custom/custom_screen.dart';
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
-import '../../../../util/extensions/list_extensions.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';

@@ -1,12 +1,12 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../components.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../../util/extensions/list_extensions.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
