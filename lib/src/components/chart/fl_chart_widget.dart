@@ -25,6 +25,7 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
         width: constraints.maxWidth,
         child: LineChart(
           series,
+          animate: false,
           layoutConfig: LayoutConfig(
             topMarginSpec: MarginSpec.defaultSpec,
             bottomMarginSpec: MarginSpec.defaultSpec,

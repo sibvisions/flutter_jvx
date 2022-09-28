@@ -2,6 +2,7 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../model/component/chart/fl_chart_model.dart';
 import '../../model/component/fl_component_model.dart';
@@ -96,14 +97,42 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
       seriesList.add(
         Series<dynamic, num>(
           id: model.name,
-          data: chunkData.data.keys.toList(),
-          domainFn: (_, index) => chunkData.data[index]![xColumnIndex],
-          measureFn: (_, index) => chunkData.data[index]![yColumnIndex],
+          data: chunkData.data.values.toList(),
+          domainFn: (data, index) => createXData(data, index, xColumnIndex),
+          measureFn: (data, index) => createYData(data, index, yColumnIndex),
         ),
       );
     }
 
     return seriesList;
+  }
+
+  num createYData(dynamic pData, int? pIndex, int pColumnIndex) {
+    if (pData.length <= pColumnIndex) {
+      FlutterJVx.log.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
+      return pIndex ?? 0;
+    }
+
+    dynamic value = pData[pColumnIndex];
+    if (value is num) {
+      return value;
+    } else {
+      return double.tryParse(value) ?? 0.0;
+    }
+  }
+
+  num createXData(dynamic pData, int? pIndex, int pColumnIndex) {
+    if (pData.length <= pColumnIndex) {
+      FlutterJVx.log.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
+      return pIndex ?? 0;
+    }
+
+    dynamic value = pData[pColumnIndex];
+    if (value is num) {
+      return value;
+    } else {
+      return double.tryParse(value) ?? pIndex ?? 0.0;
+    }
   }
 
   void unsubscribe() {
