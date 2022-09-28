@@ -37,24 +37,3 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     );
   }
 }
-
-//Syncfusion Chart
-// SfCartesianChart(
-//       title: ChartTitle(text: model.title, textStyle: model.getTextStyle()),
-//       legend: Legend(isVisible: true),
-//       tooltipBehavior: TooltipBehavior(enable: true),
-//       series: series,
-//       primaryXAxis: CategoryAxis(
-//         labelPlacement: LabelPlacement.onTicks,
-//         title: AxisTitle(
-//           text: model.xAxisTitle,
-//           textStyle: model.getTextStyle(),
-//         ),
-//       ),
-//       primaryYAxis: NumericAxis(
-//         title: AxisTitle(
-//           text: model.yAxisTitle,
-//           textStyle: model.getTextStyle(),
-//         ),
-//       ),
-//     )
