@@ -74,8 +74,17 @@ class FormLayout extends ILayout {
 
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
-    /// Component constraints
-    HashMap<String, FormLayoutConstraints> componentConstraints = _getComponentConstraints(pChildren, anchors);
+    // Component constraints
+
+    HashMap<String, FormLayoutConstraints> componentConstraints;
+    // TODO: Stop layout from using new and old data at the same time, Maybe introduce a data date, to check if
+    // The layout call started before or after a specific set of data has been changed.
+    try {
+      componentConstraints = _getComponentConstraints(pChildren, anchors);
+    } catch (_) {
+      // Old component constraints.
+      return;
+    }
 
     FormLayoutUsedBorder usedBorder = FormLayoutUsedBorder();
     FormLayoutSize formLayoutSize = FormLayoutSize();
@@ -88,7 +97,7 @@ class FormLayout extends ILayout {
         pPreferredMinimumSize: formLayoutSize,
         pGaps: gaps);
 
-    /// Size set by Parent
+    // Size set by Parent
     Size calcSize = _getSize(pParent, formLayoutSize);
 
     _calculateTargetDependentAnchors(
@@ -570,14 +579,11 @@ class FormLayout extends ILayout {
       } catch (error, stacktrace) {
         FlutterJVx.log.e("Parent id: ${value.parentId!}");
         FlutterJVx.log.e("Child id: ${value.id}");
-        FlutterJVx.log.e("Layoutdata $layoutData");
-        FlutterJVx.log.e("Layout $layoutString");
         var keys = anchors.keys.toList()..sort();
         anchorNames.sort();
         FlutterJVx.log.e(keys.toString());
         FlutterJVx.log.e(anchorNames.toString());
         FlutterJVx.log.e(anchorNames.where((anchorName) => !keys.contains(anchorName)).toString(), error, stacktrace);
-
         rethrow;
       }
     }
