@@ -323,8 +323,6 @@ the License.
       <arg value="build" />
       <arg value="web" />
       <arg value="--release" />
-      <arg value="--base-href" />
-      <arg value="/mobile/" />
     </exec>
 
     <copy todir="${install}/web">
