@@ -124,7 +124,7 @@ class UiService implements IUiService {
     FlutterJVx.log.i("Routing to workscreen: $pScreenName");
 
     if (FlutterJVx.getCurrentContext() == null) {
-      routerDelegate.setNewRoutePath(RouteInformation(location: "/workScreen/$pScreenName"));
+      initialPath = "/workScreen/$pScreenName";
       return;
     }
 
@@ -147,7 +147,6 @@ class UiService implements IUiService {
     } else {
       FlutterJVx.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName", data: beamData);
     }
-    // }
   }
 
   @override

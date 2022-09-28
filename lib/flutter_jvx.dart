@@ -178,6 +178,7 @@ class FlutterJVx extends StatefulWidget {
 }
 
 late BeamerDelegate routerDelegate;
+String? initialPath;
 
 class FlutterJVxState extends State<FlutterJVx> {
   /// Gets the [FlutterJVxState] widget.
@@ -195,6 +196,7 @@ class FlutterJVxState extends State<FlutterJVx> {
     super.initState();
 
     routerDelegate = BeamerDelegate(
+      initialPath: "/menu",
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
           LoginLocation(),
