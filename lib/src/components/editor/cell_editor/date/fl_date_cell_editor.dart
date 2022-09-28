@@ -110,24 +110,34 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   void openDatePicker() {
     FocusManager.instance.primaryFocus?.unfocus();
 
+    DateTime initialDate;
+    TimeOfDay initialTime;
+    if (_value != null) {
+      initialDate = DateTime.fromMillisecondsSinceEpoch(_value);
+      initialTime = TimeOfDay.fromDateTime(initialDate);
+    } else {
+      initialDate = DateTime.now();
+      initialTime = TimeOfDay.now();
+    }
+
     if (model.isDateEditor && model.isTimeEditor) {
-      _openDateAndTimeEditors();
+      _openDateAndTimeEditors(initialDate, initialTime);
     } else if (model.isDateEditor) {
-      _openDateEditor();
+      _openDateEditor(initialDate);
     } else if (model.isTimeEditor) {
-      _openTimeEditor();
+      _openTimeEditor(initialTime);
     }
   }
 
-  void _openDateAndTimeEditors() {
+  void _openDateAndTimeEditors(DateTime pInitialDate, TimeOfDay pInitialTime) {
     bool cancelled = false;
     dynamic originalValue = _value;
 
     uiService
         .openDialog(
             pBuilder: (_) => DatePickerDialog(
-                  initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
-                  firstDate: DateTime(1900),
+                  initialDate: pInitialDate,
+                  firstDate: DateTime(1970),
                   lastDate: DateTime(2100),
                 ),
             pIsDismissible: true)
@@ -145,14 +155,14 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       uiService
           .openDialog(
               pBuilder: (_) => TimePickerDialog(
-                    initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
+                    initialTime: pInitialTime,
                   ),
               pIsDismissible: true)
           .then((value) {
         if (value == null) {
           cancelled = true;
         } else {
-          _setTimePart(value ?? const TimeOfDay(hour: 0, minute: 0));
+          _setTimePart(value);
         }
       }).then((_) {
         if (cancelled) {
@@ -164,62 +174,57 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     });
   }
 
-  void _openDateEditor() {
+  void _openDateEditor(DateTime pInitialDate) {
     uiService
         .openDialog(
             pBuilder: (_) => DatePickerDialog(
-                  initialDate: DateTime.fromMillisecondsSinceEpoch(_value),
-                  firstDate: DateTime.fromMillisecondsSinceEpoch(_value).subtract(const Duration(days: 36525)),
-                  lastDate: DateTime.fromMillisecondsSinceEpoch(_value).add(const Duration(days: 36525)),
+                  initialDate: pInitialDate,
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime(2100),
                 ),
             pIsDismissible: true)
         .then((value) {
       if (value != null) {
-        _setDatePart(value ?? DateTime.fromMillisecondsSinceEpoch(_value));
+        _setDatePart(value);
         onEndEditing(_value);
       }
     });
   }
 
-  void _openTimeEditor() {
+  void _openTimeEditor(TimeOfDay pInitialTime) {
     uiService
         .openDialog(
             pBuilder: (_) => TimePickerDialog(
-                  initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value)),
+                  initialTime: pInitialTime,
                 ),
             pIsDismissible: true)
         .then((value) {
       if (value != null) {
-        _setTimePart(value ?? const TimeOfDay(hour: 0, minute: 0));
+        _setTimePart(value);
         onEndEditing(_value);
       }
     });
   }
 
   void _setDatePart(DateTime date) {
-    DateTime time = DateTime.fromMillisecondsSinceEpoch(_value ?? 0);
+    TimeOfDay timePart = TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0));
 
-    _value = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-      time.second,
-      time.millisecond,
-      time.microsecond,
-    ).millisecondsSinceEpoch;
+    _setDateTime(date, timePart);
   }
 
   void _setTimePart(TimeOfDay timePart) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(_value ?? 0);
 
+    _setDateTime(date, timePart);
+  }
+
+  void _setDateTime(DateTime pDate, TimeOfDay pTimePart) {
     _value = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      model.isHourEditor ? timePart.hour : 0,
-      model.isMinuteEditor ? timePart.minute : 0,
+      pDate.year,
+      pDate.month,
+      pDate.day,
+      model.isHourEditor ? pTimePart.hour : 0,
+      model.isMinuteEditor ? pTimePart.minute : 0,
       0,
       0,
       0,
