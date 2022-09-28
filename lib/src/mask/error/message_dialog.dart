@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
+import '../../../util/parse_util.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/ui/view/message/open_message_dialog_command.dart';
@@ -47,9 +48,7 @@ class MessageDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: command.title?.isNotEmpty == true ? Text(command.title!) : null,
-      content: command.message!.substring(0, 6).toLowerCase().startsWith("<html>")
-          ? Html(data: command.message!)
-          : Text(command.message!),
+      content: ParseUtil.isHTML(command.message!) ? Html(data: command.message!) : Text(command.message!),
       actions: [
         ..._getButtons(context, command.buttonType),
       ],

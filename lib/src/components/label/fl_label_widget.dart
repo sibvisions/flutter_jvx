@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
+import '../../../util/parse_util.dart';
 import '../../model/component/label/fl_label_model.dart';
 import '../../model/layout/alignments.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
@@ -44,11 +46,13 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     return Tooltip(message: model.toolTipText!, child: getTextWidget());
   }
 
-  Text getTextWidget() {
-    return Text(
-      model.text,
-      style: model.getTextStyle(),
-      textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
-    );
+  Widget getTextWidget() {
+    return ParseUtil.isHTML(model.text)
+        ? Html(data: model.text)
+        : Text(
+            model.text,
+            style: model.getTextStyle(),
+            textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
+          );
   }
 }

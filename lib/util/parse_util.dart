@@ -7,6 +7,10 @@ import 'constants/i_color.dart';
 abstract class ParseUtil {
   static T? castOrNull<T>(dynamic x) => x is T ? x : null;
 
+  static bool isHTML(String? text) {
+    return text != null && text.length >= 6 && text.substring(0, 6).toLowerCase().startsWith("<html>");
+  }
+
   /// Will return true if string == "true", false if string == "false"
   /// otherwise returns null.
   static bool? parseBool(dynamic pBool) {
