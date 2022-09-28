@@ -283,7 +283,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Selects the record.
-  void selectRecord(int pRowIndex) {
+  Future<void> selectRecord(int pRowIndex) async {
     // if (selectedRow != pRowIndex) {
     Filter? filter = createPrimaryFilter(pRowIndex: pRowIndex);
 
@@ -292,10 +292,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
-    IUiService().sendCommand(SelectRecordCommand(
+    return IUiService().sendCommand(SelectRecordCommand(
         dataProvider: model.dataProvider, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
-    setState(() {});
-    // }
   }
 
   /// Saves the last touched row.
@@ -351,15 +349,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void setValueEnd(dynamic pValue, int pRow, String pColumnName) {
-    int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
+    selectRecord(pRow).then((value) {
+      int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
 
-    if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
-      if (pValue is HashMap<String, dynamic>) {
-        sendRow(pRow, pValue.keys.toList(), pValue.values.toList());
-      } else {
-        sendRow(pRow, [pColumnName], [pValue]);
+      if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
+        if (pValue is HashMap<String, dynamic>) {
+          sendRow(pRow, pValue.keys.toList(), pValue.values.toList());
+        } else {
+          sendRow(pRow, [pColumnName], [pValue]);
+        }
       }
-    }
+    });
   }
 
   void setValueChanged(dynamic pValue, int pRow, String pColumnName) {

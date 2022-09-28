@@ -118,12 +118,15 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       builder: ((context, constraints) {
         double maxWidth = max(max(tableSize.size.width, constraints.maxWidth), 0);
 
+        bool canScroll = tableSize.size.width > constraints.maxWidth;
+
         Widget table = GestureDetector(
           onLongPress: model.isEnabled ? onLongPress : null,
           onPanDown: model.isEnabled ? ((DragDownDetails? pDragDetails) => onRowTapDown?.call(-1, pDragDetails)) : null,
           child: NotificationListener<ScrollEndNotification>(
             onNotification: onInternalEndScroll,
             child: SingleChildScrollView(
+              physics: canScroll ? null : const NeverScrollableScrollPhysics(),
               controller: tableHorizontalController,
               scrollDirection: Axis.horizontal,
               child: ConstrainedBox(
@@ -150,7 +153,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
           children.add(
             SizedBox(
               height: tableSize.tableHeaderHeight,
-              child: buildHeaderRow(pContext),
+              child: buildHeaderRow(pContext, canScroll),
             ),
           );
         }
@@ -175,7 +178,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     if (model.tableHeaderVisible && !model.stickyHeaders) {
       index--;
       if (pIndex == 0) {
-        return buildHeaderRow(pContext);
+        // Header gets a false scrollable as it is already handled by the item scroller.
+        return buildHeaderRow(pContext, false);
       }
     }
 
@@ -285,7 +289,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     );
   }
 
-  Widget buildHeaderRow(BuildContext context) {
+  Widget buildHeaderRow(BuildContext context, bool pCanScroll) {
     List<Widget> rowWidgets = [];
 
     for (int colIndex = 0; colIndex < model.columnNames.length; colIndex++) {
@@ -331,6 +335,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     }
 
     return SingleChildScrollView(
+      physics: pCanScroll ? null : const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       controller: headerHorizontalController,
       child: header,
