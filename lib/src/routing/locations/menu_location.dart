@@ -24,13 +24,13 @@ class MenuLocation extends BeamLocation<BeamState> {
       IUiService().getAppManager()?.onMenuPage();
     }
 
-    String sValue = "Menu_${IConfigService().isOffline() ? "offline" : "online"}";
+    String keyValue = "Menu_${IConfigService().isOffline() ? "offline" : "online"}";
 
     return [
       BeamPage(
         title: FlutterJVx.translate("Menu"),
         //Append state to trigger rebuild on online/offline switch
-        key: ValueKey(sValue),
+        key: ValueKey(keyValue),
         child: Frame.wrapWithFrame(
           forceWeb: IConfigService().isWebOnly(),
           forceMobile: IConfigService().isMobileOnly(),
