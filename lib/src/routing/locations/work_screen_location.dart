@@ -13,8 +13,7 @@ import '../../model/command/api/navigation_command.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 
 class WorkScreenLocation extends BeamLocation<BeamState> {
-  String lastWorkscreen = "";
-  UniqueKey workscreenKey = UniqueKey();
+  GlobalKey<State<WorkScreen>> key = GlobalKey();
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
@@ -23,13 +22,8 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
     final String workScreenName = state.pathParameters['workScreenName']!;
     FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
 
-    if (workScreenName != lastWorkscreen) {
-      workscreenKey = UniqueKey();
-      lastWorkscreen = workScreenName;
-    }
-
     if (data != null && data is Map<String, dynamic> && (data as Map<String, dynamic>)["reload"] == true) {
-      workscreenKey = UniqueKey();
+      key.currentState?.setState(() {});
     }
 
     // Header
@@ -81,7 +75,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
     return [
       BeamPage(
         title: screenTitle,
-        key: workscreenKey,
+        key: ValueKey(workScreenName),
         child: WillPopScope(
           onWillPop: () async {
             if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
@@ -95,6 +89,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
             forceWeb: IConfigService().isWebOnly(),
             forceMobile: IConfigService().isMobileOnly(),
             builder: (context) => WorkScreen(
+              key: key,
               isCustomScreen: isCustomScreen,
               screenTitle: screenTitle,
               screenWidget: screen!,
