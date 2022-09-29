@@ -349,18 +349,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void setValueEnd(dynamic pValue, int pRow, String pColumnName) {
-    // TODO ask if select record should be sent first.
-    // selectRecord(pRow).then((value) {
-    int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
+    selectRecord(pRow).then((value) {
+      int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
 
-    if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
-      if (pValue is HashMap<String, dynamic>) {
-        sendRow(pRow, pValue.keys.toList(), pValue.values.toList());
-      } else {
-        sendRow(pRow, [pColumnName], [pValue]);
+      if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
+        if (pValue is HashMap<String, dynamic>) {
+          sendRow(pRow, pValue.keys.toList(), pValue.values.toList());
+        } else {
+          sendRow(pRow, [pColumnName], [pValue]);
+        }
       }
-    }
-    // });
+    });
   }
 
   void setValueChanged(dynamic pValue, int pRow, String pColumnName) {
