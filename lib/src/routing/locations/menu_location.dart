@@ -1,5 +1,4 @@
 import 'package:beamer/beamer.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../flutter_jvx.dart';
@@ -15,14 +14,7 @@ class MenuLocation extends BeamLocation<BeamState> {
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    if (initialPath != null) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        context.beamToNamed(initialPath!);
-        initialPath = null;
-      });
-    } else {
-      IUiService().getAppManager()?.onMenuPage();
-    }
+    IUiService().getAppManager()?.onMenuPage();
 
     //Append state to trigger rebuild on online/offline switch
     String keyValue = "Menu_${IConfigService().isOffline() ? "offline" : "online"}";

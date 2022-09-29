@@ -11,6 +11,7 @@ import '../../mask/frame/frame.dart';
 import '../../mask/work_screen/work_screen.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/component/panel/fl_panel_model.dart';
+import 'menu_location.dart';
 
 class WorkScreenLocation extends BeamLocation<BeamState> {
   GlobalKey<State<WorkScreen>> key = GlobalKey();
@@ -20,6 +21,10 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     FlutterJVx.log.d("Building the workscreen location");
+
+    if (context.beamingHistory.every((element) => element is WorkScreenLocation)) {
+      context.beamingHistory.insert(0, MenuLocation());
+    }
 
     final String workScreenName = state.pathParameters['workScreenName']!;
     FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;

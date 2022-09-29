@@ -27,6 +27,7 @@ import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_group_model.dart';
 import '../../../model/response/dal_meta_data_response.dart';
+import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/menu_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
@@ -112,7 +113,7 @@ class UiService implements IUiService {
     }
 
     var last = FlutterJVx.getCurrentContext()!.beamingHistory.last;
-    if (pReplaceRoute || last.runtimeType == SettingsLocation) {
+    if (pReplaceRoute || last.runtimeType == SettingsLocation || last.runtimeType == LoginLocation) {
       FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/menu");
     } else {
       FlutterJVx.getCurrentContext()!.beamToNamed("/menu");
@@ -124,7 +125,10 @@ class UiService implements IUiService {
     FlutterJVx.log.i("Routing to workscreen: $pScreenName");
 
     if (FlutterJVx.getCurrentContext() == null) {
-      initialPath = "/workScreen/$pScreenName";
+      // TODO: See [routeToMenu]
+      if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
+        routerDelegate.setNewRoutePath(RouteInformation(location: "/workScreen/$pScreenName"));
+      }
       return;
     }
 
@@ -144,7 +148,7 @@ class UiService implements IUiService {
 
     TransitionDelegate? transition = justReload ? const NoAnimationTransitionDelegate() : null;
 
-    if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation) {
+    if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
       FlutterJVx.getCurrentContext()!.beamToReplacementNamed(
         "/workScreen/$pScreenName",
         data: beamData,
@@ -162,9 +166,7 @@ class UiService implements IUiService {
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
     if (FlutterJVx.getCurrentContext() == null) {
-      // TODO fix workScreen web reload (e.g. send OpenScreenCommand)
-      // Potential Idea -> Go to menu on workscreen but send an OpenScreenCommand,
-      // which will route to the work screen once it is finished and returned.
+      // TODO: See [routeToMenu]
       if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
         routerDelegate.setNewRoutePath(RouteInformation(location: "/login/$mode"));
       }
