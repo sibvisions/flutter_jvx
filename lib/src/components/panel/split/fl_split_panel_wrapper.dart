@@ -140,6 +140,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   void _dragEnd(DragEndDetails pDragDetails) {
     mouseCursor = MouseCursor.defer;
+    setState(() {});
     registerParent();
   }
 
