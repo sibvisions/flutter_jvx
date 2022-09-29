@@ -146,20 +146,10 @@ class UiService implements IUiService {
     Map<String, dynamic> beamData = {};
     beamData["reload"] = justReload;
 
-    TransitionDelegate? transition = justReload ? const NoAnimationTransitionDelegate() : null;
-
     if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
-      FlutterJVx.getCurrentContext()!.beamToReplacementNamed(
-        "/workScreen/$pScreenName",
-        data: beamData,
-        transitionDelegate: transition,
-      );
+      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName", data: beamData);
     } else {
-      FlutterJVx.getCurrentContext()!.beamToNamed(
-        "/workScreen/$pScreenName",
-        data: beamData,
-        transitionDelegate: transition,
-      );
+      FlutterJVx.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName", data: beamData);
     }
   }
 
