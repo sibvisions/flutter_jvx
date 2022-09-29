@@ -113,25 +113,25 @@ class WebFrameState extends FrameState {
 
   @override
   Widget wrapBody(Widget body) {
-    return Builder(builder: (context) {
-      return Row(children: [
-        RepaintBoundary(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 250),
-            child: WebMenu(
-              showWebMenu: showWebMenu,
-              onSettingsPressed: () => widget.openSettings(context),
-              onChangePasswordPressed: widget.changePassword,
-              onLogoutPressed: widget.logout,
-            ),
+    Widget overrideBody = Row(children: [
+      RepaintBoundary(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 250),
+          child: WebMenu(
+            showWebMenu: showWebMenu,
+            onSettingsPressed: () => widget.openSettings(context),
+            onChangePasswordPressed: widget.changePassword,
+            onLogoutPressed: widget.logout,
           ),
         ),
-        Expanded(
-          flex: 1,
-          child: body,
-        ),
-      ]);
-    });
+      ),
+      Expanded(
+        flex: 1,
+        child: body,
+      ),
+    ]);
+
+    return Frame.wrapLoadingBar(overrideBody);
   }
 
   @override

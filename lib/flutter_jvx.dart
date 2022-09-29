@@ -238,7 +238,7 @@ class FlutterJVxState extends State<FlutterJVx> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.none ||
                       !snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
-                    return LoadingOverlay(child: child);
+                    return LoadingOverlay(child: child ?? const SizedBox.shrink());
                   }
 
                   return Stack(children: [

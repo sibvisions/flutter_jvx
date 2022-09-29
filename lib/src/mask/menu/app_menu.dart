@@ -113,14 +113,16 @@ class _AppMenuState extends State<AppMenu> {
       ],
     );
 
-    FrameState frame = FrameState.of(context)!;
-    actions.addAll(frame.getActions());
+    FrameState? frame = FrameState.of(context);
+    if (frame != null) {
+      actions.addAll(frame.getActions());
+    }
 
     return Scaffold(
       endDrawerEnableOpenDragGesture: false,
-      endDrawer: frame.getEndDrawer(),
-      appBar: frame.getAppBar(actions),
-      body: frame.wrapBody(body),
+      endDrawer: frame?.getEndDrawer(),
+      appBar: frame?.getAppBar(actions),
+      body: frame?.wrapBody(body) ?? body,
     );
   }
 

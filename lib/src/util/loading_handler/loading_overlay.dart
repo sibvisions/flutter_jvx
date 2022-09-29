@@ -19,10 +19,11 @@ class LoadingOverlayState extends State<LoadingOverlay> {
   GlobalKey<FramesWidgetState> framesKey = GlobalKey();
   GlobalKey<DialogsWidgetState> dialogsKey = GlobalKey();
 
-  Future? _loadingDelayFuture;
-  bool _loading = false;
+  final ValueNotifier<bool> _loading = ValueNotifier(false);
 
-  bool get isLoading => _loading;
+  ValueNotifier<bool> get loading => _loading;
+
+  bool get isLoading => _loading.value;
 
   static LoadingOverlayState? of(BuildContext? context) {
     return context?.findAncestorStateOfType<LoadingOverlayState>();
@@ -41,21 +42,22 @@ class LoadingOverlayState extends State<LoadingOverlay> {
   }
 
   void show(Duration delay) {
-    if (!_loading) {
-      _loadingDelayFuture = Future.delayed(delay);
-      _loading = true;
-
+    if (!_loading.value) {
       if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {});
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          _loading.value = true;
+        });
         return;
       }
+
+      _loading.value = true;
       setState(() {});
     }
   }
 
   void hide() {
-    if (_loading) {
-      _loading = false;
+    if (_loading.value) {
+      _loading.value = false;
       setState(() {});
     }
   }
@@ -67,42 +69,12 @@ class LoadingOverlayState extends State<LoadingOverlay> {
         if (widget.child != null) widget.child!,
         FramesWidget(key: framesKey),
         DialogsWidget(key: dialogsKey),
-        if (_loading)
-          FutureBuilder(
-            future: _loadingDelayFuture,
-            builder: (context, snapshot) {
-              return Stack(
-                children: getLoadingIndicator(context, snapshot.connectionState == ConnectionState.done),
-              );
-            },
+        if (_loading.value)
+          const ModalBarrier(
+            dismissible: false,
           ),
       ],
     );
-  }
-
-  List<Widget> getLoadingIndicator(BuildContext context, bool delayFinished) {
-    return [
-      Opacity(
-        opacity: delayFinished ? 0.7 : 0,
-        child: const ModalBarrier(dismissible: false, color: Colors.black),
-      ),
-      if (delayFinished)
-        Center(
-          child: Container(
-            width: 100.0,
-            height: 100.0,
-            padding: const EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [CircularProgressIndicator.adaptive()],
-            ),
-          ),
-        ),
-    ];
   }
 }
 

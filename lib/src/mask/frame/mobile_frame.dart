@@ -50,4 +50,9 @@ class MobileFrameState extends FrameState {
       ),
     );
   }
+
+  @override
+  Widget wrapBody(Widget body) {
+    return Frame.wrapLoadingBar(body);
+  }
 }

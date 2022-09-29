@@ -95,9 +95,10 @@ class _WorkScreenState extends State<WorkScreen> {
       ],
     );
 
-    FrameState frame = FrameState.of(context)!;
-
-    actions.addAll(frame.getActions());
+    FrameState? frame = FrameState.of(context);
+    if (frame != null) {
+      actions.addAll(frame.getActions());
+    }
 
     return GestureDetector(
       onTap: () {
@@ -118,8 +119,8 @@ class _WorkScreenState extends State<WorkScreen> {
                 actions: actions,
               ),
         endDrawerEnableOpenDragGesture: false,
-        endDrawer: frame.getEndDrawer(),
-        body: frame.wrapBody(body),
+        endDrawer: frame?.getEndDrawer(),
+        body: frame?.wrapBody(body) ?? body,
       ),
     );
 

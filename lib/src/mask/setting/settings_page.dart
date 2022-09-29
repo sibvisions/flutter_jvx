@@ -10,8 +10,10 @@ import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../util/loading_handler/loading_overlay.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_overlay.dart';
+import '../frame/frame.dart';
 import 'widgets/editor/app_name_editor.dart';
 import 'widgets/editor/editor_dialog.dart';
 import 'widgets/editor/url_editor.dart';
@@ -41,9 +43,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   /// Password of a scanned QR-Code
   String? password;
-
-  /// If the settings are currently loading.
-  bool loading = false;
 
   String? originalAppName = IConfigService().getAppName();
   String? originalBaseUrl = IConfigService().getBaseUrl();
@@ -77,81 +76,80 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
 
-    if (loading) {
-      body = Column(
-        children: [const LinearProgressIndicator(minHeight: 5), Expanded(child: body)],
-      );
-    }
+    body = Frame.wrapLoadingBar(body);
 
-    return WillPopScope(
-      onWillPop: () async => !loading,
-      child: Container(
-        color: Theme.of(context).backgroundColor,
-        child: Scaffold(
-          extendBody: true,
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            leading: context.canBeamBack
-                ? IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                    onPressed: !loading ? context.beamBack : null,
-                  )
-                : null,
-            title: Text(FlutterJVx.translate("Settings")),
-          ),
-          body: body,
-          bottomNavigationBar: BottomAppBar(
-            elevation: 0.0,
-            shape: const CircularNotchedRectangle(),
-            color: Theme.of(context).primaryColor,
-            child: SizedBox(
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: IConfigService().getUserInfo() != null && context.canBeamBack
-                        ? InkWell(
-                            onTap: loading ? null : closeClicked,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                FlutterJVx.translate("Close"),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+    return ValueListenableBuilder<bool>(
+      valueListenable: LoadingOverlayState.of(context)!.loading,
+      builder: (context, value, child) => WillPopScope(
+        onWillPop: () async => !value,
+        child: Container(
+          color: Theme.of(context).backgroundColor,
+          child: Scaffold(
+            extendBody: true,
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              leading: context.canBeamBack
+                  ? IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.arrowLeft),
+                      onPressed: !value ? context.beamBack : null,
+                    )
+                  : null,
+              title: Text(FlutterJVx.translate("Settings")),
+            ),
+            body: body,
+            bottomNavigationBar: BottomAppBar(
+              elevation: 0.0,
+              shape: const CircularNotchedRectangle(),
+              color: Theme.of(context).primaryColor,
+              child: SizedBox(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: IConfigService().getUserInfo() != null && context.canBeamBack
+                          ? InkWell(
+                              onTap: value ? null : closeClicked,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  FlutterJVx.translate("Close"),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+                                ),
                               ),
+                            )
+                          : Container(),
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        onTap: value || IConfigService().isOffline() ? null : _saveClicked,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            FlutterJVx.translate("Open"),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onPrimary,
                             ),
-                          )
-                        : Container(),
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: loading || IConfigService().isOffline() ? null : _saveClicked,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          FlutterJVx.translate("Open"),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: !IConfigService().isOffline()
+                ? FloatingActionButton(
+                    elevation: 0.0,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    onPressed: value ? null : _openQRScanner,
+                    child: const FaIcon(FontAwesomeIcons.qrcode),
+                  )
+                : null,
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: !IConfigService().isOffline()
-              ? FloatingActionButton(
-                  elevation: 0.0,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  onPressed: loading ? null : _openQRScanner,
-                  child: const FaIcon(FontAwesomeIcons.qrcode),
-                )
-              : null,
         ),
       ),
     );
@@ -283,21 +281,18 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
-    return IgnorePointer(
-      ignoring: loading,
-      child: SettingGroup(
-        groupHeader: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Text(
-            FlutterJVx.translate("Application"),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+    return SettingGroup(
+      groupHeader: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text(
+          FlutterJVx.translate("Application"),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
       ),
+      items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
     );
   }
 
@@ -384,24 +379,17 @@ class _SettingsPageState extends State<SettingsPage> {
   void _saveClicked() async {
     if (IConfigService().getAppName()?.isNotEmpty == true && IConfigService().getBaseUrl()?.isNotEmpty == true) {
       try {
-        setState(() {
-          loading = true;
-        });
-
         await ICommandService().sendCommand(StartupCommand(
           reason: "Open App from Settings",
           username: username,
           password: password,
-          showLoading: false,
         ));
       } catch (e, stackTrace) {
         IUiService().handleAsyncError(e, stackTrace);
       } finally {
-        setState(() {
-          loading = false;
-          username = null;
-          password = null;
-        });
+        username = null;
+        password = null;
+        setState(() {});
       }
     } else {
       await IUiService().openDialog(
