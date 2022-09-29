@@ -134,6 +134,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
                   maxWidth: maxWidth,
                 ),
                 child: ScrollablePositionedList.builder(
+                  scrollDirection: Axis.vertical,
                   itemScrollController: itemScrollController,
                   itemBuilder: itemBuilder,
                   itemCount: _itemCount,
