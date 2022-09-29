@@ -24,6 +24,15 @@ class MessageDialogResponse extends MessageView {
   /// Name of the cancel button
   final String? cancelComponentId;
 
+  /// Text of the ok button
+  final String? okText;
+
+  /// Text of the not ok button
+  final String? notOkText;
+
+  /// Text of the cancel button
+  final String? cancelText;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,6 +46,9 @@ class MessageDialogResponse extends MessageView {
     required this.okComponentId,
     required this.notOkComponentId,
     required this.cancelComponentId,
+    this.okText,
+    this.notOkText,
+    this.cancelText,
     required super.name,
     required super.originalRequest,
   });
@@ -48,5 +60,8 @@ class MessageDialogResponse extends MessageView {
         okComponentId = pJson[ApiObjectProperty.okComponentId],
         notOkComponentId = pJson[ApiObjectProperty.notOkComponentId],
         cancelComponentId = pJson[ApiObjectProperty.cancelComponentId],
+        okText = pJson[ApiObjectProperty.okText],
+        notOkText = pJson[ApiObjectProperty.notOkText],
+        cancelText = pJson[ApiObjectProperty.cancelText],
         super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

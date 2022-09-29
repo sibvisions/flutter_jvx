@@ -165,6 +165,9 @@ abstract class ApiObjectProperty {
   static const String okComponentId = "okComponentId";
   static const String notOkComponentId = "notOkComponentId";
   static const String cancelComponentId = "cancelComponentId";
+  static const String okText = "okText";
+  static const String notOkText = "notOkText";
+  static const String cancelText = "cancelText";
 
   // ErrorViewResponse
   static const String silentAbort = "silentAbort";

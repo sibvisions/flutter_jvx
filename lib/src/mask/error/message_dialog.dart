@@ -76,7 +76,7 @@ class MessageDialog extends StatelessWidget {
           _getYesButton(context),
           TextButton(
             onPressed: () => _pressButton(context, command.notOkComponentId!),
-            child: Text(FlutterJVx.translate("No")),
+            child: Text(command.notOkText ?? FlutterJVx.translate("No")),
           ),
           _getCancelButton(context),
         ]);
@@ -86,7 +86,7 @@ class MessageDialog extends StatelessWidget {
           _getYesButton(context),
           TextButton(
             onPressed: () => _pressButton(context, command.cancelComponentId!),
-            child: Text(FlutterJVx.translate("No")),
+            child: Text(command.cancelText ?? FlutterJVx.translate("No")),
           ),
         ]);
         break;
@@ -98,7 +98,7 @@ class MessageDialog extends StatelessWidget {
         buttonList.add(
           TextButton(
             onPressed: () => _pressButton(context, command.okComponentId!),
-            child: Text(FlutterJVx.translate("Ok")),
+            child: Text(command.okText ?? FlutterJVx.translate("Ok")),
           ),
         );
         break;
@@ -112,14 +112,14 @@ class MessageDialog extends StatelessWidget {
   Widget _getYesButton(BuildContext context) {
     return TextButton(
       onPressed: () => _pressButton(context, command.okComponentId!),
-      child: Text(FlutterJVx.translate("Yes")),
+      child: Text(command.okText ?? FlutterJVx.translate("Yes")),
     );
   }
 
   Widget _getCancelButton(BuildContext context) {
     return TextButton(
       onPressed: () => _pressButton(context, command.cancelComponentId!),
-      child: Text(FlutterJVx.translate("Cancel")),
+      child: Text(command.cancelText ?? FlutterJVx.translate("Cancel")),
     );
   }
 }

@@ -24,6 +24,15 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   /// Name of the cancel button
   final String? cancelComponentId;
 
+  /// Text of the ok button
+  final String? okText;
+
+  /// Text of the not ok button
+  final String? notOkText;
+
+  /// Text of the cancel button
+  final String? cancelText;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,6 +46,9 @@ class OpenMessageDialogCommand extends MessageViewCommand {
     required this.okComponentId,
     required this.notOkComponentId,
     required this.cancelComponentId,
+    this.okText,
+    this.notOkText,
+    this.cancelText,
     required super.reason,
   });
 
@@ -46,6 +58,6 @@ class OpenMessageDialogCommand extends MessageViewCommand {
 
   @override
   String toString() {
-    return 'OpenMessageDialogCommand{componentId: $componentId, closable: $closable, buttonType: $buttonType, okComponentId: $okComponentId, notOkComponentId: $notOkComponentId, cancelComponentId: $cancelComponentId, ${super.toString()}';
+    return 'OpenMessageDialogCommand{componentId: $componentId, closable: $closable, buttonType: $buttonType, okComponentId: $okComponentId, notOkComponentId: $notOkComponentId, cancelComponentId: $cancelComponentId, okText: $okText, notOkText: $notOkText, cancelText: $cancelText, ${super.toString()}';
   }
 }
