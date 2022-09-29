@@ -76,6 +76,12 @@ class LoadingOverlayState extends State<LoadingOverlay> {
       ],
     );
   }
+
+  @override
+  void dispose() {
+    loading.dispose();
+    super.dispose();
+  }
 }
 
 class FramesWidget extends StatefulWidget {
