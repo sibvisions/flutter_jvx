@@ -15,12 +15,19 @@ import '../../model/component/panel/fl_panel_model.dart';
 class WorkScreenLocation extends BeamLocation<BeamState> {
   GlobalKey<State<WorkScreen>> key = GlobalKey();
 
+  String? lastWorkscreen;
+
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     FlutterJVx.log.d("Building the workscreen location");
 
     final String workScreenName = state.pathParameters['workScreenName']!;
     FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
+
+    if (workScreenName != lastWorkscreen) {
+      key = GlobalKey();
+      lastWorkscreen = workScreenName;
+    }
 
     if (data != null && data is Map<String, dynamic> && (data as Map<String, dynamic>)["reload"] == true) {
       key.currentState?.setState(() {});
