@@ -95,6 +95,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     )
                   : null,
               title: Text(FlutterJVx.translate("Settings")),
+              elevation: 0,
             ),
             body: body,
             bottomNavigationBar: BottomAppBar(

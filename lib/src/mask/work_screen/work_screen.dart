@@ -117,6 +117,7 @@ class _WorkScreenState extends State<WorkScreen> {
                 ),
                 title: Text(widget.screenTitle),
                 actions: actions,
+                elevation: 0,
               ),
         endDrawerEnableOpenDragGesture: false,
         endDrawer: frame?.getEndDrawer(),
