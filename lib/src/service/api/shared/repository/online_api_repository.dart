@@ -53,6 +53,7 @@ import '../../../../model/response/close_screen_response.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../model/response/dal_meta_data_response.dart';
+import '../../../../model/response/device_status_response.dart';
 import '../../../../model/response/download_action_response.dart';
 import '../../../../model/response/download_images_response.dart';
 import '../../../../model/response/download_response.dart';
@@ -127,6 +128,7 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.dalDataProviderChanged: DalDataProviderChangedResponse.fromJson,
     ApiResponseNames.authenticationData: AuthenticationDataResponse.fromJson,
     ApiResponseNames.messageDialog: MessageDialogResponse.fromJson,
+    ApiResponseNames.deviceStatus: DeviceStatusResponse.fromJson,
     ApiResponseNames.upload: UploadActionResponse.fromJson,
     ApiResponseNames.download: DownloadActionResponse.fromJson,
   };

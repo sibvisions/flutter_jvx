@@ -70,10 +70,7 @@ class _WorkScreenState extends State<WorkScreen> {
   void initState() {
     super.initState();
 
-    subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
-      _setScreenSize(size);
-      _sendDeviceStatus(pWidth: size.width, pHeight: size.height);
-    });
+    subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
   }
 
   @override
@@ -152,17 +149,6 @@ class _WorkScreenState extends State<WorkScreen> {
         .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
   }
 
-  _sendDeviceStatus({required double pWidth, required double pHeight}) {
-    if (!IConfigService().isOffline()) {
-      DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(
-        screenWidth: pWidth,
-        screenHeight: pHeight,
-        reason: "Device was rotated",
-      );
-      IUiService().sendCommand(deviceStatusCommand);
-    }
-  }
-
   _onBackTap() {
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
@@ -234,11 +220,9 @@ class _WorkScreenState extends State<WorkScreen> {
           );
           Widget screenWidget = widget.screenWidget;
           if (!widget.isCustomScreen) {
-            // debounce to not re-layout multiple times when opening the keyboard
             Size size = Size(constraints.maxWidth, constraints.maxHeight + viewInsets.bottom);
             if (!sentScreen) {
               _setScreenSize(size);
-              _sendDeviceStatus(pWidth: size.width, pHeight: size.height);
               sentScreen = true;
             } else {
               subject.add(size);

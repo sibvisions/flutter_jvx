@@ -1,10 +1,12 @@
 import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../config/app_config.dart';
 import '../../mask/menu/menu_mode.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/response/application_meta_data_response.dart';
+import '../../model/response/device_status_response.dart';
 import '../file/file_manager.dart';
 import '../service.dart';
 
@@ -149,6 +151,9 @@ abstract class IConfigService {
 
   /// Sets the phone size for the startup command
   void setPhoneSize(Size? pPhoneSize);
+
+  /// Gets the layoutMode from the server
+  ValueNotifier<LayoutMode> getLayoutMode();
 
   bool isMobileOnly();
 

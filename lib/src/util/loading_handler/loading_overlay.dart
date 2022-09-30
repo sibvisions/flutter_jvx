@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../services.dart';
+import '../../model/command/api/device_status_command.dart';
 
 class LoadingOverlay extends StatefulWidget {
   final Widget? child;
@@ -16,6 +18,9 @@ class LoadingOverlay extends StatefulWidget {
 }
 
 class LoadingOverlayState extends State<LoadingOverlay> {
+  /// Report device status to server
+  final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
+
   GlobalKey<FramesWidgetState> framesKey = GlobalKey();
   GlobalKey<DialogsWidgetState> dialogsKey = GlobalKey();
 
@@ -63,10 +68,29 @@ class LoadingOverlayState extends State<LoadingOverlay> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
+      if (!IConfigService().isOffline()) {
+        IUiService().sendCommand(DeviceStatusCommand(
+          screenWidth: size.width,
+          screenHeight: size.height,
+          reason: "Device was rotated",
+        ));
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (widget.child != null) widget.child!,
+        if (widget.child != null)
+          LayoutBuilder(builder: (context, constraints) {
+            subject.add(Size(constraints.maxWidth, constraints.maxHeight));
+            return widget.child!;
+          }),
         FramesWidget(key: framesKey),
         DialogsWidget(key: dialogsKey),
         if (_loading.value)

@@ -13,6 +13,7 @@ import '../processor/close_screen_processor.dart';
 import '../processor/dal_data_provider_changed_processor.dart';
 import '../processor/dal_fetch_processor.dart';
 import '../processor/dal_meta_data_processor.dart';
+import '../processor/device_status_processor.dart';
 import '../processor/download_action_processor.dart';
 import '../processor/download_images_processor.dart';
 import '../processor/download_processor.dart';
@@ -50,6 +51,7 @@ class ApiController implements IController {
   final IResponseProcessor _downloadTranslationProcessor = DownloadTranslationProcessor();
   final IResponseProcessor _downloadStyleProcessor = DownloadStyleProcessor();
   final IResponseProcessor _messageDialogProcessor = MessageDialogProcessor();
+  final IResponseProcessor _deviceStatusProcessor = DeviceStatusProcessor();
   final IResponseProcessor _uploadActionProcessor = UploadActionProcessor();
   final IResponseProcessor _downloadActionProcessor = DownloadActionProcessor();
   final IResponseProcessor _downloadProcessor = DownloadProcessor();
@@ -81,6 +83,7 @@ class ApiController implements IController {
       ApiResponseNames.downloadTranslation: _downloadTranslationProcessor,
       ApiResponseNames.messageDialog: _messageDialogProcessor,
       ApiResponseNames.downloadStyle: _downloadStyleProcessor,
+      ApiResponseNames.deviceStatus: _deviceStatusProcessor,
       ApiResponseNames.upload: _uploadActionProcessor,
       ApiResponseNames.download: _downloadActionProcessor,
       ApiResponseNames.downloadResponse: _downloadProcessor,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../services.dart';
 import '../../../util/constants/i_color.dart';
 import '../../model/command/api/logout_command.dart';
+import '../../model/response/device_status_response.dart';
 import '../../util/loading_handler/loading_overlay.dart';
 import '../setting/widgets/change_password.dart';
 import 'mobile_frame.dart';
@@ -79,15 +80,17 @@ abstract class Frame extends StatefulWidget {
         builder: builder,
       );
     }
-    return OrientationBuilder(
-      builder: (context, orientation) {
+    return ValueListenableBuilder(
+      valueListenable: IConfigService().getLayoutMode(),
+      builder: (context, value, child) {
         return Frame.getFrame(
           key: key,
-          orientation == Orientation.landscape && kIsWeb,
+          value != LayoutMode.Mini,
           builder: builder,
         );
       },
     );
+    // );
   }
 }
 

@@ -158,6 +158,7 @@ abstract class ApiObjectProperty {
   static const String eMail = "email";
   static const String mode = "mode";
   static const String profileImage = "profileImage";
+  static const String layoutMode = "layoutMode";
 
   // MessageDialogResponse
   static const String iconType = "iconType";

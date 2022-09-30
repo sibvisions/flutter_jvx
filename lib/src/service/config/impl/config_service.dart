@@ -12,6 +12,7 @@ import '../../../mask/menu/menu_mode.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
 import '../../../model/response/application_meta_data_response.dart';
+import '../../../model/response/device_status_response.dart';
 import '../../../util/config_util.dart';
 import '../../file/file_manager.dart';
 import '../i_config_service.dart';
@@ -55,6 +56,9 @@ class ConfigService implements IConfigService {
 
   /// The phone size
   Size? phoneSize;
+
+  /// The last layoutMode from the server
+  ValueNotifier<LayoutMode> layoutMode = ValueNotifier(LayoutMode.Small);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -428,6 +432,11 @@ class ConfigService implements IConfigService {
   @override
   void setPhoneSize(Size? pPhoneSize) {
     phoneSize = pPhoneSize;
+  }
+
+  @override
+  ValueNotifier<LayoutMode> getLayoutMode() {
+    return layoutMode;
   }
 
   @override
