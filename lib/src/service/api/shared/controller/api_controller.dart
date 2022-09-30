@@ -7,6 +7,7 @@ import '../i_controller.dart';
 import '../i_response_processor.dart';
 import '../processor/application_meta_data_processor.dart';
 import '../processor/application_parameters_processor.dart';
+import '../processor/application_settings_processor.dart';
 import '../processor/authentication_data_processor.dart';
 import '../processor/close_frame_processor.dart';
 import '../processor/close_screen_processor.dart';
@@ -35,6 +36,7 @@ class ApiController implements IController {
 
   final IResponseProcessor _applicationParameterProcessor = ApplicationParametersProcessor();
   final IResponseProcessor _applicationMetaDataProcessor = ApplicationMetaDataProcessor();
+  final IResponseProcessor _applicationSettingsProcessor = ApplicationSettingsProcessor();
   final IResponseProcessor _menuViewProcessor = MenuViewProcessor();
   final IResponseProcessor _closeScreenProcessor = CloseScreenProcessor();
   final IResponseProcessor _closeFrameProcessor = CloseFrameProcessor();
@@ -67,6 +69,7 @@ class ApiController implements IController {
     responseToProcessorMap = HashMap.from({
       ApiResponseNames.applicationParameters: _applicationParameterProcessor,
       ApiResponseNames.applicationMetaData: _applicationMetaDataProcessor,
+      ApiResponseNames.applicationSettings: _applicationSettingsProcessor,
       ApiResponseNames.menu: _menuViewProcessor,
       ApiResponseNames.screenGeneric: _genericScreenViewProcessor,
       ApiResponseNames.closeScreen: _closeScreenProcessor,

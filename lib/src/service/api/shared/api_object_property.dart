@@ -160,6 +160,17 @@ abstract class ApiObjectProperty {
   static const String profileImage = "profileImage";
   static const String layoutMode = "layoutMode";
 
+  //ApplicationSettings
+  static const String save = "save";
+  static const String rollback = "rollback";
+  static const String changePassword = "changePassword";
+  static const String menuBar = "menuBar";
+  static const String toolBar = "toolBar";
+  static const String desktop = "desktop";
+  static const String logout = "logout";
+  static const String userSettings = "userSettings";
+  static const String colors = "colors";
+
   // MessageDialogResponse
   static const String iconType = "iconType";
   static const String buttonType = "buttonType";

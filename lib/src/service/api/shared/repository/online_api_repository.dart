@@ -47,6 +47,7 @@ import '../../../../model/request/i_session_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
 import '../../../../model/response/application_parameter_response.dart';
+import '../../../../model/response/application_settings_response.dart';
 import '../../../../model/response/authentication_data_response.dart';
 import '../../../../model/response/close_frame_response.dart';
 import '../../../../model/response/close_screen_response.dart';
@@ -115,6 +116,7 @@ class OnlineApiRepository implements IRepository {
   static final Map<String, ResponseFactory> maps = {
     ApiResponseNames.applicationMetaData: ApplicationMetaDataResponse.fromJson,
     ApiResponseNames.applicationParameters: ApplicationParametersResponse.fromJson,
+    ApiResponseNames.applicationSettings: ApplicationSettingsResponse.fromJson,
     ApiResponseNames.closeScreen: CloseScreenResponse.fromJson,
     ApiResponseNames.closeFrame: CloseFrameResponse.fromJson,
     ApiResponseNames.dalFetch: DalFetchResponse.fromJson,
