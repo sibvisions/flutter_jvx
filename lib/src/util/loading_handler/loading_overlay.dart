@@ -72,11 +72,11 @@ class LoadingOverlayState extends State<LoadingOverlay> {
     super.initState();
 
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
-      if (!IConfigService().isOffline()) {
+      if (IConfigService().getClientId() != null && !IConfigService().isOffline()) {
         IUiService().sendCommand(DeviceStatusCommand(
           screenWidth: size.width,
           screenHeight: size.height,
-          reason: "Device was rotated",
+          reason: "Device Size changed",
         ));
       }
     });
