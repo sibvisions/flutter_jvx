@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
+import '../../../../model/response/device_status_response.dart';
 import '../../../drawer/web_menu.dart';
 import '../../app_menu.dart';
 
@@ -20,6 +21,8 @@ class AppMenuListItem extends StatelessWidget {
   /// Background override color.
   final Color? backgroundOverride;
 
+  final LayoutMode? layoutMode;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,6 +32,7 @@ class AppMenuListItem extends StatelessWidget {
     required this.menuItemModel,
     required this.onClick,
     this.backgroundOverride,
+    this.layoutMode,
   }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,19 +50,23 @@ class AppMenuListItem extends StatelessWidget {
           menuItemModel.screenLongName;
     }
 
+    var leading = MenuItemModel.getImage(
+      pContext: context,
+      pMenuItemModel: menuItemModel,
+    );
+
     return ListTile(
       selected: selected,
       visualDensity: context.findAncestorWidgetOfExactType<WebMenu>() != null
           ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity)
           : null,
-      leading: MenuItemModel.getImage(
-        pContext: context,
-        pMenuItemModel: menuItemModel,
-      ),
-      title: Text(
-        menuItemModel.label,
-        overflow: TextOverflow.ellipsis,
-      ),
+      leading: layoutMode != LayoutMode.Small ? leading : null,
+      title: layoutMode == LayoutMode.Small && leading != null
+          ? leading
+          : Text(
+              menuItemModel.label,
+              overflow: TextOverflow.ellipsis,
+            ),
       onTap: () => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context),
     );
   }

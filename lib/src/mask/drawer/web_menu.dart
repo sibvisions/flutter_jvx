@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/menu/menu_model.dart';
+import '../../model/response/device_status_response.dart';
 import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
 
@@ -57,7 +58,10 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       alignment: AlignmentDirectional.centerEnd,
       widthFactor: animationController.value,
       child: RepaintBoundary(
-        child: _buildMenu(context),
+        child: ValueListenableBuilder<LayoutMode>(
+          valueListenable: IConfigService().getLayoutMode(),
+          builder: (context, value, child) => _buildMenu(context, value),
+        ),
       ),
     );
   }
@@ -70,13 +74,25 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
     }
   }
 
-  Widget _buildMenu(BuildContext context) {
+  Widget _buildMenu(BuildContext context, LayoutMode value) {
     Color? color = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.color"]);
     Color? groupColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.groupColor"]);
     Color? textColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.textColor"]);
     Color? selectionColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.selectionColor"]);
 
     MenuModel menuModel = IUiService().getMenuModel();
+    Widget menu = AppMenuListGrouped(
+      menuModel: menuModel,
+      layoutMode: value,
+      onClick: AppMenu.menuItemPressed,
+    );
+    if (value == LayoutMode.Small) {
+      menu = SizedBox(
+        width: 50,
+        child: menu,
+      );
+    }
+
     return ListTileTheme.merge(
       tileColor: color,
       textColor: textColor,
@@ -95,10 +111,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
             data: DividerTheme.of(context).copyWith(
               color: color,
             ),
-            child: AppMenuListGrouped(
-              menuModel: menuModel,
-              onClick: AppMenu.menuItemPressed,
-            ),
+            child: menu,
           ),
         ),
       ),

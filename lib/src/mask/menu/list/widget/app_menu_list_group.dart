@@ -3,6 +3,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../../flutter_jvx.dart';
 import '../../../../model/menu/menu_group_model.dart';
+import '../../../../model/response/device_status_response.dart';
 import '../../app_menu.dart';
 import '../../grid/widget/app_menu_grid_header.dart';
 import 'app_menu_list_item.dart';
@@ -17,6 +18,7 @@ class AppMenuListGroup extends StatelessWidget {
 
   /// Model of this group
   final MenuGroupModel menuGroupModel;
+  final LayoutMode? layoutMode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -26,6 +28,7 @@ class AppMenuListGroup extends StatelessWidget {
     Key? key,
     required this.onClick,
     required this.menuGroupModel,
+    this.layoutMode,
   }) : super(key: key);
 
   @override
@@ -37,19 +40,24 @@ class AppMenuListGroup extends StatelessWidget {
         height: 1,
       ));
 
-      listGroupItems.add(AppMenuListItem(menuItemModel: menuGroupModel.items.elementAt(i), onClick: onClick));
+      listGroupItems.add(AppMenuListItem(
+        menuItemModel: menuGroupModel.items.elementAt(i),
+        onClick: onClick,
+        layoutMode: layoutMode,
+      ));
     }
 
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: AppMenuGridHeader(
-            headerText: FlutterJVx.translate(menuGroupModel.name),
-            height: 48,
+        if (layoutMode != LayoutMode.Small)
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: AppMenuGridHeader(
+              headerText: FlutterJVx.translate(menuGroupModel.name),
+              height: 48,
+            ),
           ),
-        ),
         SliverList(
           delegate: SliverChildListDelegate.fixed(
             listGroupItems,
