@@ -574,19 +574,19 @@ class UiService implements IUiService {
   @override
   void showFrameDialog(FrameDialog pDialog) {
     _activeDialogs.add(pDialog);
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialog(FrameDialog pDialog) {
     _activeDialogs.remove(pDialog);
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialogs() {
     _activeDialogs.clear();
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshDialogs();
+    LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

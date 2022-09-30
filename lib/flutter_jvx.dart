@@ -408,6 +408,8 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   Widget _getStartupErrorDialog(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+    ErrorViewException? errorView = snapshot.error is ErrorViewException ? snapshot.error as ErrorViewException : null;
+
     return Stack(
       children: [
         const Opacity(
@@ -418,8 +420,10 @@ class FlutterJVxState extends State<FlutterJVx> {
           ),
         ),
         AlertDialog(
-          title: Text(FlutterJVx.translate("Error")),
-          content: Text(IUiService.getErrorMessage(snapshot.error!)),
+          title: Text(errorView?.errorCommand.title?.isNotEmpty ?? false
+              ? errorView!.errorCommand.title!
+              : FlutterJVx.translate("Error")),
+          content: Text(errorView?.errorCommand.message ?? IUiService.getErrorMessage(snapshot.error!)),
           actions: [
             TextButton(
               onPressed: () {

@@ -179,4 +179,9 @@ class ErrorViewException implements Exception {
   final OpenErrorDialogCommand errorCommand;
 
   ErrorViewException(this.errorCommand, [this.message]);
+
+  @override
+  String toString() {
+    return "${message != null ? "$message " : ""}${errorCommand.message}";
+  }
 }

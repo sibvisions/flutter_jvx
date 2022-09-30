@@ -13,20 +13,22 @@ import '../../../../i_command_processor.dart';
 class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogCommand> {
   @override
   Future<List<BaseCommand>> processCommand(OpenErrorDialogCommand command) async {
-    bool goToSettings = command.isTimeout || command.canBeFixedInSettings;
-    //Don't show "Go to Settings" while in settings
-    if (FlutterJVx.getCurrentContext()!.currentBeamLocation.runtimeType == SettingsLocation) {
-      goToSettings = false;
+    //Will be displayed in Splash if context is null
+    if (FlutterJVx.getCurrentContext() != null) {
+      bool goToSettings = command.isTimeout || command.canBeFixedInSettings;
+      //Don't show "Go to Settings" while in settings
+      if (FlutterJVx.getCurrentContext()?.currentBeamLocation.runtimeType == SettingsLocation) {
+        goToSettings = false;
+      }
+
+      IUiService().showFrameDialog(
+        ServerErrorDialog(
+          command: command,
+          goToSettings: goToSettings,
+          dismissible: command.dismissible,
+        ),
+      );
     }
-
-    IUiService().showFrameDialog(
-      ServerErrorDialog(
-        command: command,
-        goToSettings: goToSettings,
-        dismissible: command.dismissible,
-      ),
-    );
-
     return [];
   }
 }

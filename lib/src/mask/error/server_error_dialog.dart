@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
@@ -39,7 +38,7 @@ class ServerErrorDialog extends FrameDialog {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(command.title?.isNotEmpty == true ? command.title! : FlutterJVx.translate("Server Error")),
+      title: Text(command.title?.isNotEmpty ?? false ? command.title! : FlutterJVx.translate("Server Error")),
       content: Text(command.message!),
       actions: _getButtons(context),
     );
@@ -58,7 +57,7 @@ class ServerErrorDialog extends FrameDialog {
         TextButton(
           onPressed: () {
             IUiService().closeFrameDialog(this);
-            FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/settings");
+            IUiService().routeToSettings(pReplaceRoute: true);
           },
           child: Text(
             FlutterJVx.translate("Go to Settings"),
