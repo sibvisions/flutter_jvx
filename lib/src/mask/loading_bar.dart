@@ -9,9 +9,7 @@ class LoadingBar extends InheritedWidget {
     required super.child,
   });
 
-  static LoadingBar? of(BuildContext? context) {
-    return context?.dependOnInheritedWidgetOfExactType<LoadingBar>();
-  }
+  static LoadingBar? of(BuildContext? context) => context?.dependOnInheritedWidgetOfExactType<LoadingBar>();
 
   @override
   bool updateShouldNotify(covariant LoadingBar oldWidget) => show != oldWidget.show;

@@ -27,9 +27,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   bool loading = false;
 
-  static JVxOverlayState? of(BuildContext? context) {
-    return context?.findAncestorStateOfType<JVxOverlayState>();
-  }
+  static JVxOverlayState? of(BuildContext? context) => context?.findAncestorStateOfType<JVxOverlayState>();
 
   void refreshFrames() {
     framesKey.currentState?.setState(() {});
