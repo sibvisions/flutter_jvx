@@ -1,11 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services.dart';
 import '../../../util/constants/i_color.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../model/response/device_status_response.dart';
-import '../../util/loading_handler/loading_overlay.dart';
+import '../loading_bar.dart';
 import '../setting/widgets/change_password.dart';
 import 'mobile_frame.dart';
 import 'web_frame.dart';
@@ -19,19 +18,13 @@ abstract class Frame extends StatefulWidget {
   });
 
   static Widget wrapLoadingBar(Widget child) {
-    return Builder(
-      builder: (context) => ValueListenableBuilder<bool>(
-        valueListenable: LoadingOverlayState.of(context)!.loading,
-        builder: (context, value, child) {
-          return Stack(children: [
-            child!,
-            if (value)
-              LinearProgressIndicator(minHeight: 5, color: IColor.toggleColor(Theme.of(context).colorScheme.primary)),
-          ]);
-        },
-        child: child,
-      ),
-    );
+    return Builder(builder: (context) {
+      return Stack(children: [
+        child,
+        if (LoadingBar.of(context)?.show ?? false)
+          LinearProgressIndicator(minHeight: 5, color: IColor.toggleColor(Theme.of(context).colorScheme.primary)),
+      ]);
+    });
   }
 
   void openSettings(BuildContext context) {

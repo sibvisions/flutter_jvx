@@ -14,6 +14,7 @@ import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
+import '../../../mask/jvx_overlay.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
@@ -31,7 +32,6 @@ import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/menu_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
-import '../../../util/loading_handler/loading_overlay.dart';
 
 /// Manages all interactions with the UI
 class UiService implements IUiService {
@@ -551,19 +551,19 @@ class UiService implements IUiService {
     required MessageDialog pDialog,
   }) {
     _activeFrames[componentId] = pDialog;
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
   void closeFrame({required String componentId}) {
     _activeFrames.remove(componentId);
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
   void closeFrames() {
     _activeFrames.clear();
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
@@ -574,19 +574,19 @@ class UiService implements IUiService {
   @override
   void showFrameDialog(FrameDialog pDialog) {
     _activeDialogs.add(pDialog);
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialog(FrameDialog pDialog) {
     _activeDialogs.remove(pDialog);
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialogs() {
     _activeDialogs.clear();
-    LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

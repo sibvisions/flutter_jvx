@@ -2,40 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../services.dart';
-import '../../model/command/api/device_status_command.dart';
+import '../../services.dart';
+import '../model/command/api/device_status_command.dart';
+import 'loading_bar.dart';
 
-class LoadingOverlay extends StatefulWidget {
+class JVxOverlay extends StatefulWidget {
   final Widget? child;
 
-  const LoadingOverlay({
-    Key? key,
+  const JVxOverlay({
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
-  State<LoadingOverlay> createState() => LoadingOverlayState();
+  State<JVxOverlay> createState() => JVxOverlayState();
 }
 
-class LoadingOverlayState extends State<LoadingOverlay> {
+class JVxOverlayState extends State<JVxOverlay> {
   /// Report device status to server
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
   GlobalKey<FramesWidgetState> framesKey = GlobalKey();
   GlobalKey<DialogsWidgetState> dialogsKey = GlobalKey();
 
-  final ValueNotifier<bool> _loading = ValueNotifier(false);
+  bool loading = false;
 
-  ValueNotifier<bool> get loading => _loading;
-
-  bool get isLoading => _loading.value;
-
-  static LoadingOverlayState? of(BuildContext? context) {
-    return context?.findAncestorStateOfType<LoadingOverlayState>();
-  }
-
-  void refresh() {
-    setState(() {});
+  static JVxOverlayState? of(BuildContext? context) {
+    return context?.findAncestorStateOfType<JVxOverlayState>();
   }
 
   void refreshFrames() {
@@ -46,23 +39,23 @@ class LoadingOverlayState extends State<LoadingOverlay> {
     dialogsKey.currentState?.setState(() {});
   }
 
-  void show(Duration delay) {
-    if (!_loading.value) {
+  void showLoading(Duration delay) {
+    if (!loading) {
       if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          _loading.value = true;
+          loading = true;
         });
         return;
       }
 
-      _loading.value = true;
+      loading = true;
       setState(() {});
     }
   }
 
-  void hide() {
-    if (_loading.value) {
-      _loading.value = false;
+  void hideLoading() {
+    if (loading) {
+      loading = false;
       setState(() {});
     }
   }
@@ -84,27 +77,24 @@ class LoadingOverlayState extends State<LoadingOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        if (widget.child != null)
-          LayoutBuilder(builder: (context, constraints) {
-            subject.add(Size(constraints.maxWidth, constraints.maxHeight));
-            return widget.child!;
-          }),
-        FramesWidget(key: framesKey),
-        DialogsWidget(key: dialogsKey),
-        if (_loading.value)
-          const ModalBarrier(
-            dismissible: false,
-          ),
-      ],
+    return LoadingBar(
+      show: loading,
+      child: Stack(
+        children: [
+          if (widget.child != null)
+            LayoutBuilder(builder: (context, constraints) {
+              subject.add(Size(constraints.maxWidth, constraints.maxHeight));
+              return widget.child!;
+            }),
+          FramesWidget(key: framesKey),
+          DialogsWidget(key: dialogsKey),
+          if (loading)
+            const ModalBarrier(
+              dismissible: false,
+            ),
+        ],
+      ),
     );
-  }
-
-  @override
-  void dispose() {
-    loading.dispose();
-    super.dispose();
   }
 }
 

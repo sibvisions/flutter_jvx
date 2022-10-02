@@ -1,5 +1,6 @@
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
+import '../../mask/jvx_overlay.dart';
 import '../../model/command/api/api_command.dart';
 import '../../model/command/api/device_status_command.dart';
 import '../../model/command/api/download_images_command.dart';
@@ -11,7 +12,6 @@ import '../../model/command/data/data_command.dart';
 import '../../model/command/layout/layout_command.dart';
 import '../../model/command/ui/ui_command.dart';
 import 'i_command_progress_handler.dart';
-import 'loading_overlay.dart';
 
 /// The [LoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
 class LoadingProgressHandler implements ICommandProgressHandler {
@@ -30,7 +30,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
   void notifyProgressStart(BaseCommand pCommand) {
     if (isSupported(pCommand) && !IConfigService().isOffline()) {
       _loadingCommandAmount++;
-      LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.show(pCommand.loadingDelay);
+      JVxOverlayState.of(FlutterJVx.getCurrentContext())?.showLoading(pCommand.loadingDelay);
     }
   }
 
@@ -41,7 +41,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
         _loadingCommandAmount--;
       }
       if (_loadingCommandAmount == 0) {
-        LoadingOverlayState.of(FlutterJVx.getCurrentContext())?.hide();
+        JVxOverlayState.of(FlutterJVx.getCurrentContext())?.hideLoading();
       }
     }
   }

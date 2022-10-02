@@ -12,6 +12,7 @@ import 'package:universal_io/io.dart';
 
 import 'config/app_config.dart';
 import 'custom/app_manager.dart';
+import 'src/mask/jvx_overlay.dart';
 import 'src/mask/splash/splash_widget.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/routing/locations/login_location.dart';
@@ -39,7 +40,6 @@ import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/config_util.dart';
-import 'src/util/loading_handler/loading_overlay.dart';
 import 'src/util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
 
@@ -237,7 +237,7 @@ class FlutterJVxState extends State<FlutterJVx> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.none ||
                       !snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
-                    return LoadingOverlay(child: child ?? const SizedBox.shrink());
+                    return JVxOverlay(child: child ?? const SizedBox.shrink());
                   }
 
                   return Stack(children: [

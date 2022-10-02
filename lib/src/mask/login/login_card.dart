@@ -8,7 +8,7 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/constants/i_color.dart';
 import '../../model/command/api/login_command.dart';
-import '../../util/loading_handler/loading_overlay.dart';
+import '../loading_bar.dart';
 import 'remember_me_checkbox.dart';
 
 class LoginCard extends StatefulWidget {
@@ -85,43 +85,39 @@ class _LoginCardState extends State<LoginCard> {
                 ),
               ),
             const Padding(padding: EdgeInsets.all(5)),
-            ValueListenableBuilder<bool>(
-              valueListenable: LoadingOverlayState.of(context)!.loading,
-              builder: (context, value, child) => ProgressButton.icon(
-                radius: 4.0,
-                progressIndicator: CircularProgressIndicator.adaptive(
-                  backgroundColor: Colors.white,
-                  valueColor: AlwaysStoppedAnimation(IColor.toggleColor(Theme.of(context).colorScheme.primary)),
-                ),
-                textStyle: TextStyle(
-                  color:
-                      progressButtonState != ButtonState.fail ? Theme.of(context).colorScheme.onPrimary : Colors.white,
-                ),
-                iconedButtons: {
-                  ButtonState.idle: IconedButton(
-                    text: FlutterJVx.translate("Login"),
-                    icon: Icon(Icons.login, color: Theme.of(context).colorScheme.onPrimary),
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  ButtonState.loading: IconedButton(
-                    text: FlutterJVx.translate("Loading"),
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  ButtonState.fail: IconedButton(
-                    text: FlutterJVx.translate("Failed"),
-                    icon: const Icon(Icons.cancel, color: Colors.white),
-                    color: Colors.red.shade600,
-                  ),
-                  //Unused but not removable
-                  ButtonState.success: IconedButton(
-                    text: FlutterJVx.translate("Success"),
-                    icon: const Icon(Icons.check_circle, color: Colors.white),
-                    color: Colors.green.shade600,
-                  ),
-                },
-                onPressed: _onLoginPressed,
-                state: value ? ButtonState.loading : progressButtonState,
+            ProgressButton.icon(
+              radius: 4.0,
+              progressIndicator: CircularProgressIndicator.adaptive(
+                backgroundColor: Colors.white,
+                valueColor: AlwaysStoppedAnimation(IColor.toggleColor(Theme.of(context).colorScheme.primary)),
               ),
+              textStyle: TextStyle(
+                color: progressButtonState != ButtonState.fail ? Theme.of(context).colorScheme.onPrimary : Colors.white,
+              ),
+              iconedButtons: {
+                ButtonState.idle: IconedButton(
+                  text: FlutterJVx.translate("Login"),
+                  icon: Icon(Icons.login, color: Theme.of(context).colorScheme.onPrimary),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                ButtonState.loading: IconedButton(
+                  text: FlutterJVx.translate("Loading"),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                ButtonState.fail: IconedButton(
+                  text: FlutterJVx.translate("Failed"),
+                  icon: const Icon(Icons.cancel, color: Colors.white),
+                  color: Colors.red.shade600,
+                ),
+                //Unused but not removable
+                ButtonState.success: IconedButton(
+                  text: FlutterJVx.translate("Success"),
+                  icon: const Icon(Icons.check_circle, color: Colors.white),
+                  color: Colors.green.shade600,
+                ),
+              },
+              onPressed: _onLoginPressed,
+              state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
