@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:material_color_generator/material_color_generator.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_io/io.dart';
 
@@ -68,6 +69,8 @@ class FlutterJVx extends StatefulWidget {
 
   /// Builder function for custom loading widget
   final Widget Function(BuildContext context)? loadingBuilder;
+
+  static late PackageInfo packageInfo;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -173,6 +176,8 @@ class FlutterJVx extends StatefulWidget {
       await configService.setWebOnly(webOnly == "true");
     }
 
+    packageInfo = await PackageInfo.fromPlatform();
+
     runApp(pAppToRun);
   }
 }
@@ -259,7 +264,7 @@ class FlutterJVxState extends State<FlutterJVx> {
           },
         );
       },
-      title: widget.appConfig?.title ?? "JVx Mobile",
+      title: widget.appConfig?.title ?? FlutterJVx.packageInfo.appName,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
