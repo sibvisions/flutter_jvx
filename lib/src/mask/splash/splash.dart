@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'loading_widget.dart';
+import 'jvx_splash.dart';
 
-class SplashWidget extends StatelessWidget {
+class Splash extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,13 +14,13 @@ class SplashWidget extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const SplashWidget({
+  const Splash({
     Key? key,
     this.loadingBuilder,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return loadingBuilder?.call(context) ?? const LoadingWidget();
+    return loadingBuilder?.call(context) ?? const JVxSplash();
   }
 }

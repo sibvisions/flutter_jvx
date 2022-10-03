@@ -14,7 +14,7 @@ import 'package:universal_io/io.dart';
 import 'config/app_config.dart';
 import 'custom/app_manager.dart';
 import 'src/mask/jvx_overlay.dart';
-import 'src/mask/splash/splash_widget.dart';
+import 'src/mask/splash/splash.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
@@ -246,9 +246,7 @@ class FlutterJVxState extends State<FlutterJVx> {
                   }
 
                   return Stack(children: [
-                    SplashWidget(
-                      loadingBuilder: widget.loadingBuilder,
-                    ),
+                    Splash(loadingBuilder: widget.loadingBuilder),
                     if (snapshot.hasError) _getStartupErrorDialog(context, snapshot),
                   ]);
                 },
@@ -256,9 +254,7 @@ class FlutterJVxState extends State<FlutterJVx> {
             }
 
             return Stack(children: [
-              SplashWidget(
-                loadingBuilder: widget.loadingBuilder,
-              ),
+              Splash(loadingBuilder: widget.loadingBuilder),
               if (snapshot.hasError) _getFatalErrorDialog(context, snapshot),
             ]);
           },
