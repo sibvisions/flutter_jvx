@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../../flutter_jvx.dart';
+
 class EditorDialog extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -63,15 +65,12 @@ class EditorDialog extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () => Navigator.pop(pContext, false),
-          child: Text("CANCEL", style: style),
+          child: Text(FlutterJVx.translate("Cancel"), style: style),
         ),
         const SizedBox(width: 20),
         TextButton(
           onPressed: () => Navigator.pop(pContext, true),
-          child: Text(
-            "SAVE",
-            style: style,
-          ),
+          child: Text(FlutterJVx.translate("Confirm"), style: style),
         ),
       ],
     );

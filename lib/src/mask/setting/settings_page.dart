@@ -43,10 +43,10 @@ class _SettingsPageState extends State<SettingsPage> {
   /// Password of a scanned QR-Code
   String? password;
 
-  String? originalAppName = IConfigService().getAppName();
-  String? originalBaseUrl = IConfigService().getBaseUrl();
-  String originalLanguage = IConfigService().getLanguage();
-  int? originalResolution = IConfigService().getPictureResolution();
+  String? appName;
+  String? baseUrl;
+  String? language;
+  late int resolution;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -59,6 +59,11 @@ class _SettingsPageState extends State<SettingsPage> {
     // Load Version
     appVersionNotifier = ValueNotifier("${FlutterJVx.translate("Loading")}...");
     PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value = packageInfo.version);
+
+    appName = IConfigService().getAppName();
+    baseUrl = IConfigService().getBaseUrl();
+    language = IConfigService().getLanguage();
+    resolution = IConfigService().getPictureResolution() ?? resolutions.last;
   }
 
   @override
@@ -109,11 +114,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   Expanded(
                     child: IConfigService().getUserInfo() != null && context.canBeamBack
                         ? InkWell(
-                            onTap: loading ? null : closeClicked,
+                            onTap: loading ? null : context.beamBack,
                             child: Container(
                               alignment: Alignment.center,
                               child: Text(
-                                FlutterJVx.translate("Close"),
+                                FlutterJVx.translate("Cancel"),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                               ),
@@ -127,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: Container(
                         alignment: Alignment.center,
                         child: Text(
-                          FlutterJVx.translate("Open"),
+                          FlutterJVx.translate(IConfigService().getUserInfo() != null ? "Save" : "Open"),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.onPrimary,
@@ -165,7 +170,7 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-      value: IConfigService().getAppName() ?? "",
+      value: appName ?? "",
       title: FlutterJVx.translate("App Name"),
       enabled: !IConfigService().isOffline(),
       onPressed: (value) {
@@ -181,7 +186,7 @@ class _SettingsPageState extends State<SettingsPage> {
           pTitleText: FlutterJVx.translate("App Name"),
         ).then((value) async {
           if (value == true) {
-            await IConfigService().setAppName(controller.text);
+            appName = controller.text;
             setState(() {});
           }
         });
@@ -194,7 +199,7 @@ class _SettingsPageState extends State<SettingsPage> {
           color: Theme.of(context).primaryColor,
         ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-        value: IConfigService().getBaseUrl() ?? "",
+        value: baseUrl ?? "",
         title: FlutterJVx.translate("URL"),
         enabled: !IConfigService().isOffline(),
         onPressed: (value) {
@@ -213,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
               try {
                 // Validate format
                 var uri = Uri.parse(controller.text);
-                await IConfigService().setBaseUrl(uri.toString());
+                baseUrl = uri.toString();
                 setState(() {});
               } catch (e) {
                 await IUiService().sendCommand(OpenErrorDialogCommand(
@@ -233,10 +238,12 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: FlutterJVx.translate("Language"),
-      value: IConfigService().getLanguage(),
+      value: language,
       onPressed: (value) {
         var supportedLanguages = IConfigService().getSupportedLanguages().toList(growable: false);
         Picker picker = Picker(
+            cancelText: FlutterJVx.translate("Cancel"),
+            confirmText: FlutterJVx.translate("Confirm"),
             confirmTextStyle: const TextStyle(fontSize: 16),
             cancelTextStyle: const TextStyle(fontSize: 16),
             selecteds: [supportedLanguages.indexOf(value)],
@@ -245,7 +252,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
-                IConfigService().setLanguage(picker.getSelectedValues()[0]);
+                language = picker.getSelectedValues()[0];
                 setState(() {});
               }
             });
@@ -260,10 +267,12 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: FlutterJVx.translate("Picture Size"),
-      value: IConfigService().getPictureResolution() ?? resolutions.last,
+      value: resolution,
       itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
       onPressed: (value) {
         Picker picker = Picker(
+            cancelText: FlutterJVx.translate("Cancel"),
+            confirmText: FlutterJVx.translate("Confirm"),
             selecteds: [resolutions.indexOf(value)],
             adapter: PickerDataAdapter<int>(
               data: resolutions.map((e) => PickerItem(text: Text("$e px"), value: e)).toList(growable: false),
@@ -272,7 +281,7 @@ class _SettingsPageState extends State<SettingsPage> {
             cancelTextStyle: const TextStyle(fontSize: 16),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
-                IConfigService().setPictureResolution(picker.getSelectedValues()[0]);
+                resolution = picker.getSelectedValues()[0];
                 setState(() {});
               }
             });
@@ -362,8 +371,8 @@ class _SettingsPageState extends State<SettingsPage> {
     IUiService().openDialog(
       pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) async {
         QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
-        await IConfigService().setAppName(code.appName);
-        await IConfigService().setBaseUrl(code.url);
+        appName = code.appName;
+        baseUrl = code.url;
 
         // set username & password for later
         username = code.username;
@@ -376,8 +385,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
   /// Will send a [StartupCommand] with current values
   void _saveClicked() async {
-    if (IConfigService().getAppName()?.isNotEmpty == true && IConfigService().getBaseUrl()?.isNotEmpty == true) {
+    if (appName?.isNotEmpty == true && baseUrl?.isNotEmpty == true) {
       try {
+        await IConfigService().setAppName(appName);
+        await IConfigService().setBaseUrl(baseUrl);
+        await IConfigService().setLanguage(language);
+        await IConfigService().setPictureResolution(resolution);
+
         await ICommandService().sendCommand(StartupCommand(
           reason: "Open App from Settings",
           username: username,
@@ -408,14 +422,5 @@ class _SettingsPageState extends State<SettingsPage> {
         pIsDismissible: true,
       );
     }
-  }
-
-  void closeClicked() {
-    IConfigService().setAppName(originalAppName);
-    IConfigService().setBaseUrl(originalBaseUrl);
-    IConfigService().setLanguage(originalLanguage);
-    IConfigService().setPictureResolution(originalResolution ?? resolutions.last);
-
-    context.beamBack();
   }
 }
