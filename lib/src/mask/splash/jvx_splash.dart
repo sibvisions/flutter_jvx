@@ -102,7 +102,6 @@ class _JVxSplashState extends State<JVxSplash> {
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 9.0,
-                        // fontWeight: FontWeight.bold,
                       ),
                     ),
                   );
