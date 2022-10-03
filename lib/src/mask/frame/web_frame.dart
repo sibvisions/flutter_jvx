@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -137,9 +139,13 @@ class WebFrameState extends FrameState {
 
   @override
   Widget? getEndDrawer() => Builder(
-        builder: (context) => SizedBox(
-          width: MediaQuery.of(context).size.width / 4,
-          child: const SettingsPage(),
-        ),
+        builder: (context) {
+          double screenWidth = MediaQuery.of(context).size.width;
+
+          return SizedBox(
+            width: max(screenWidth / 4, min(screenWidth, 300)),
+            child: const SettingsPage(),
+          );
+        },
       );
 }
