@@ -18,6 +18,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  flutter_native_splash: ^2.2.10+1
+
   # iOS Dep
   cupertino_icons: ^1.0.2
 
@@ -104,3 +106,38 @@ flutter:
   assets:
     - assets/config/
     - assets/images/
+
+flutter_native_splash:
+  # This package generates native code to customize Flutter's default white native splash screen
+  # with background color and splash image.
+  # Customize the parameters below, and run the following command in the terminal:
+  # flutter pub run flutter_native_splash:create
+  # To restore Flutter's default white splash screen, run the following command in the terminal:
+  # flutter pub run flutter_native_splash:remove
+
+  background_image: assets/images/JVx_Bg.png
+
+  image: assets/images/J.png
+
+  #branding: assets/images/logo.png
+
+  android_12:
+    # The image parameter sets the splash screen icon image.  If this parameter is not specified,
+    # the app's launcher icon will be used instead.
+    # Please note that the splash screen will be clipped to a circle on the center of the screen.
+    # App icon with an icon background: This should be 960×960 pixels, and fit within a circle
+    # 640 pixels in diameter.
+    # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
+    # 768 pixels in diameter.
+    image: assets/images/J.png
+
+    # Splash screen background color.
+    #color: "#E3E3E3"
+
+    # App icon background color.
+    icon_background_color: "#DADADA"
+
+    # The branding property allows you to specify an image used as branding in the splash screen.
+    branding: assets/images/branding_sib_visions.png
+
+  fullscreen: true

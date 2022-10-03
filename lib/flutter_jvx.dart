@@ -208,9 +208,9 @@ class FlutterJVxState extends State<FlutterJVx> {
           (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate()),
     );
 
-    initAppFuture = initApp().onError(createErrorHandler("Failed to initialize")).then((value) {
+    initAppFuture = initApp().catchError(createErrorHandler("Failed to initialize")).then((value) {
       //Activate second future
-      startupFuture = doStartup().onError(createErrorHandler("Failed to send startup"));
+      startupFuture = doStartup().catchError(createErrorHandler("Failed to send startup"));
     });
   }
 
