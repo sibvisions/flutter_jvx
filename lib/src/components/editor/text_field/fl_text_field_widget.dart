@@ -25,7 +25,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   double get iconSize => 16;
 
-  EdgeInsets? get textPadding => EdgeInsets.only(left: (inTable ? 0.0 : 5.0));
+  EdgeInsets? get textPadding => inTable ? EdgeInsets.only(left: (inTable ? 0.0 : 5.0)) : null;
 
   EdgeInsets get iconPadding => const EdgeInsets.only(right: 15);
 
@@ -75,9 +75,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       decoration: InputDecoration(
         hintText: model.placeholder,
         contentPadding: textPadding,
-        border: const OutlineInputBorder(),
-        enabledBorder: createBorder(context),
+        border: createBorder(context),
         suffixIcon: createSuffixIcon(),
+        filled: inTable ? false : null,
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
       textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
@@ -163,7 +163,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   OutlineInputBorder createBorder(context) {
     if (inTable) {
       return const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.transparent),
+        borderSide: BorderSide.none,
       );
     }
     return OutlineInputBorder(
