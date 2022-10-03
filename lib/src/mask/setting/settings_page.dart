@@ -12,7 +12,6 @@ import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_overlay.dart';
-import '../frame/frame.dart';
 import '../loading_bar.dart';
 import 'widgets/editor/app_name_editor.dart';
 import 'widgets/editor/editor_dialog.dart';
@@ -76,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
 
-    body = Frame.wrapLoadingBar(body);
+    body = LoadingBar.wrapLoadingBar(body);
 
     bool loading = LoadingBar.of(context)?.show ?? false;
 

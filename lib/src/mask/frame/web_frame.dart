@@ -6,6 +6,7 @@ import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../drawer/web_menu.dart';
+import '../loading_bar.dart';
 import '../setting/settings_page.dart';
 import 'frame.dart';
 
@@ -131,7 +132,7 @@ class WebFrameState extends FrameState {
       ),
     ]);
 
-    return Frame.wrapLoadingBar(overrideBody);
+    return LoadingBar.wrapLoadingBar(overrideBody);
   }
 
   @override
