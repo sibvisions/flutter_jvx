@@ -26,6 +26,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   GlobalKey<DialogsWidgetState> dialogsKey = GlobalKey();
 
   bool loading = false;
+  Future? _loadingDelayFuture;
 
   static JVxOverlayState? of(BuildContext? context) => context?.findAncestorStateOfType<JVxOverlayState>();
 
@@ -39,14 +40,14 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   void showLoading(Duration delay) {
     if (!loading) {
+      _loadingDelayFuture = Future.delayed(delay);
+      loading = true;
+
       if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          loading = true;
-        });
+        SchedulerBinding.instance.addPostFrameCallback((_) {});
         return;
       }
 
-      loading = true;
       setState(() {});
     }
   }
@@ -75,24 +76,28 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingBar(
-      show: loading,
-      child: Stack(
-        children: [
-          if (widget.child != null)
-            LayoutBuilder(builder: (context, constraints) {
-              subject.add(Size(constraints.maxWidth, constraints.maxHeight));
-              return widget.child!;
-            }),
-          FramesWidget(key: framesKey),
-          DialogsWidget(key: dialogsKey),
-          if (loading)
-            const ModalBarrier(
-              dismissible: false,
+    return FutureBuilder(
+        future: _loadingDelayFuture,
+        builder: (context, snapshot) {
+          return LoadingBar(
+            show: loading && snapshot.connectionState == ConnectionState.done,
+            child: Stack(
+              children: [
+                if (widget.child != null)
+                  LayoutBuilder(builder: (context, constraints) {
+                    subject.add(Size(constraints.maxWidth, constraints.maxHeight));
+                    return widget.child!;
+                  }),
+                FramesWidget(key: framesKey),
+                DialogsWidget(key: dialogsKey),
+                if (loading)
+                  const ModalBarrier(
+                    dismissible: false,
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
