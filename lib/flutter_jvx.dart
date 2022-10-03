@@ -42,6 +42,7 @@ import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/config_util.dart';
 import 'src/util/loading_handler/loading_progress_handler.dart';
+import 'util/constants/i_color.dart';
 import 'util/parse_util.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
@@ -274,24 +275,21 @@ class FlutterJVxState extends State<FlutterJVx> {
   void changeStyle(Map<String, String> styleMap) {
     Color? styleColor = ParseUtil.parseHexColor(styleMap['theme.color']);
     if (styleColor != null) {
-      // ColorScheme colorScheme = ColorScheme.fromSeed(
-      //   seedColor: styleColor,
-      //   primary: styleColor,
-      //   background: Colors.grey.shade50,
-      // );
+      MaterialColor materialColor = generateMaterialColor(color: styleColor);
+
       ColorScheme colorScheme = ColorScheme.fromSwatch(
-        primarySwatch: generateMaterialColor(color: styleColor),
+        primarySwatch: materialColor,
         backgroundColor: Colors.grey.shade50,
       );
 
       if (colorScheme.onPrimary.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onPrimary: Colors.grey.shade800);
+        colorScheme = colorScheme.copyWith(onPrimary: IColorConstants.JVX_LIGHTER_BLACK);
       }
       if (colorScheme.onBackground.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onBackground: Colors.grey.shade800);
+        colorScheme = colorScheme.copyWith(onBackground: IColorConstants.JVX_LIGHTER_BLACK);
       }
       if (colorScheme.onSurface.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onSurface: Colors.grey.shade800);
+        colorScheme = colorScheme.copyWith(onSurface: IColorConstants.JVX_LIGHTER_BLACK);
       }
 
       themeData = ThemeData.from(colorScheme: colorScheme);

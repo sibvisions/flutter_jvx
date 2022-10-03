@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Class defining various colors.
 abstract class IColorConstants {
+  static const Color JVX_LIGHTER_BLACK = Color(0xFF424242);
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
 
   static const Color ICONTROL_BACKGROUND = Color(0xFFFFFFFF);
