@@ -68,8 +68,11 @@ the License.
   ***************************************************************** 
   -->
 
-  <target name="clean">
+  <target name="clean.start">
     <delete dir="${build}" />
+  </target>
+
+  <target name="clean.stop">
   </target>
 
   <target name="prepare">
@@ -269,6 +272,17 @@ the License.
       </fileset>
     </replaceregexp>
 
+    <!-- replace base in html page -->
+
+    <replaceregexp byline="true">
+      <regexp pattern="&lt;base href=&quot;\$FLUTTER_BASE_HREF&quot;&gt;"/>
+      <substitution expression="&lt;!-- &lt;base href=&quot;$FLUTTER_BASE_HREF&quot;&gt; --&gt;"/>
+      <fileset dir="${project.temp}">
+        <include name="web/index.html"/>
+      </fileset>
+    </replaceregexp>
+
+
     <!-- file permissions -->
     <chmod perm="ug+x">
       <fileset dir="${project.temp}">
@@ -281,6 +295,7 @@ the License.
 
     <mkdir dir="${install}" />
   </target>
+
 
   <target name="build.ios" depends="prepare">
 
@@ -306,6 +321,7 @@ the License.
 
   </target>
 
+
   <target name="build.android" depends="prepare">
 
     <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
@@ -316,6 +332,7 @@ the License.
 
     <copy file="${project.temp}/build/app/outputs/flutter-apk/app-release.apk" tofile="${install}/app-release-android.apk" />
   </target>
+
 
   <target name="build.web" depends="prepare">
 
@@ -339,12 +356,18 @@ the License.
   ***************************************************************** 
   -->
 
-  <target name="start.complete" depends="clean, build.ios, build.android, build.web" description="Creates application archives for all platforms" />
-  <target name="start.ios" depends="clean, build.ios" description="Creates application archives for ios" />
-  <target name="start.android" depends="clean, build.android" description="Creates application archives for android" />
-  <target name="start.web" depends="clean, build.web" description="Creates application archives for web" />
+  <!-- keep temp files -->
+  <target name="start.complete_" depends="clean.start, build.ios, build.android, build.web" description="Creates application archives for all platforms (keep files)" />
+  <target name="start.ios_" depends="clean.start, build.ios" description="Creates application archives for ios (keep files)" />
+  <target name="start.android_" depends="clean.start, build.android" description="Creates application archives for android (keep files)" />
+  <target name="start.web_" depends="clean.start, build.web" description="Creates application archives for web (keep files)" />
 
-<target name="test" depends="clean, prepare" />
+  <!-- cleanup temp files -->
+  <target name="start.complete" depends="start.complete_, clean.stop" description="Creates application archives for all platforms" />
+  <target name="start.ios" depends="start.ios_, clean.stop" description="Creates application archives for ios" />
+  <target name="start.android" depends="start.android_, clean.stop" description="Creates application archives for android" />
+  <target name="start.web" depends="start.web_, clean.stop" description="Creates application archives for web" />
+
 
   <target name="update">
     <get src="https://raw.githubusercontent.com/sibvisions/flutterclient/main/creator/build.xml" dest="build.xml" usetimestamp="true"/>
