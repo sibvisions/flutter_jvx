@@ -84,7 +84,7 @@ class _JVxSplashState extends State<JVxSplash> {
             ),
           ),
           const Expanded(child: SizedBox.shrink()),
-          if (UiService().getFrames().isNotEmpty)
+          if (UiService().getFrames().isEmpty)
             Container(
               height: 15,
               padding: const EdgeInsets.symmetric(horizontal: 50),
