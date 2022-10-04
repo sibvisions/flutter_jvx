@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 
 class JVxSplash extends StatefulWidget {
@@ -83,30 +84,31 @@ class _JVxSplashState extends State<JVxSplash> {
             ),
           ),
           const Expanded(child: SizedBox.shrink()),
-          Container(
-            height: 15,
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: StreamBuilder<double>(
-                stream: stream,
-                builder: (context, snapshot) {
-                  return LiquidLinearProgressIndicator(
-                    value: (snapshot.data ?? 0) / 100,
-                    valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
-                    backgroundColor: Colors.white,
-                    borderRadius: 15.0,
-                    borderWidth: 2.0,
-                    borderColor: Theme.of(context).colorScheme.primary,
-                    direction: Axis.horizontal,
-                    center: Text(
-                      "Loading...",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 9.0,
+          if (UiService().getFrames().isNotEmpty)
+            Container(
+              height: 15,
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: StreamBuilder<double>(
+                  stream: stream,
+                  builder: (context, snapshot) {
+                    return LiquidLinearProgressIndicator(
+                      value: (snapshot.data ?? 0) / 100,
+                      valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
+                      backgroundColor: Colors.white,
+                      borderRadius: 15.0,
+                      borderWidth: 2.0,
+                      borderColor: Theme.of(context).colorScheme.primary,
+                      direction: Axis.horizontal,
+                      center: Text(
+                        "Loading...",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontSize: 9.0,
+                        ),
                       ),
-                    ),
-                  );
-                }),
-          ),
+                    );
+                  }),
+            ),
           const Expanded(child: SizedBox.shrink()),
           Align(
             alignment: Alignment.bottomCenter,
