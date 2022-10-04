@@ -294,8 +294,7 @@ class FlutterJVxState extends State<FlutterJVx> {
 
       themeData = ThemeData.from(colorScheme: colorScheme);
 
-      bool backgroundColorIsLight =
-          ThemeData.estimateBrightnessForColor(Theme.of(context).backgroundColor) == Brightness.light;
+      bool backgroundColorIsLight = ThemeData.estimateBrightnessForColor(themeData.backgroundColor) == Brightness.light;
       themeData = themeData.copyWith(
         listTileTheme: themeData.listTileTheme.copyWith(
           //TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
