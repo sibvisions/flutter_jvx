@@ -32,6 +32,25 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     );
   }
 
+  @override
+  Widget? getButtonChild() {
+    if (model.labelModel.text.isNotEmpty && image != null) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: getCrossAxisAlignment(model.labelModel.verticalAlignment),
+        textBaseline: TextBaseline.alphabetic,
+        textDirection: TextDirection.ltr,
+        children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: getTextWidget())],
+      );
+    } else if (model.labelModel.text.isNotEmpty) {
+      return getTextWidget();
+    } else if (image != null) {
+      return image!;
+    } else {
+      return null;
+    }
+  }
+
   Widget createPopupIcon(BuildContext context) {
     return InkWell(
       onTap: () => openMenu(context),

@@ -102,21 +102,21 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           children: <Widget>[
             image!,
             SizedBox(height: model.imageTextGap.toDouble()),
-            Flexible(child: _getTextWidget()),
+            Flexible(child: getTextWidget()),
           ],
         );
       } else {
         return Row(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: _getCrossAxisAlignment(model.labelModel.verticalAlignment),
+          crossAxisAlignment: getCrossAxisAlignment(model.labelModel.verticalAlignment),
           textBaseline: TextBaseline.alphabetic,
           textDirection: // If the text is aligned to the left, the text comes before the icon
               model.labelModel.horizontalAlignment == HorizontalAlignment.LEFT ? TextDirection.rtl : TextDirection.ltr,
-          children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: _getTextWidget())],
+          children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: getTextWidget())],
         );
       }
     } else if (model.labelModel.text.isNotEmpty) {
-      return _getTextWidget();
+      return getTextWidget();
     } else if (image != null) {
       return image!;
     } else {
@@ -133,7 +133,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   /// Converts [VerticalAlignment] into a usable [CrossAxisAlignment] for [Row]
-  CrossAxisAlignment _getCrossAxisAlignment(VerticalAlignment pAlignment) {
+  CrossAxisAlignment getCrossAxisAlignment(VerticalAlignment pAlignment) {
     if (pAlignment == VerticalAlignment.TOP) {
       return CrossAxisAlignment.start;
     } else if (pAlignment == VerticalAlignment.BOTTOM) {
@@ -144,7 +144,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   /// Gets the text widget of the button with the label model.
-  Widget _getTextWidget() {
+  Widget getTextWidget() {
     return FlLabelWidget(model: model.labelModel).getTextWidget();
   }
 
