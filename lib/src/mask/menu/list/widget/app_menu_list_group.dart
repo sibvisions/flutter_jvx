@@ -20,6 +20,12 @@ class AppMenuListGroup extends StatelessWidget {
   final MenuGroupModel menuGroupModel;
   final LayoutMode? layoutMode;
 
+  /// Text style for menu items
+  final TextStyle? textStyle;
+
+  /// Text color for header
+  final Color? headerColor;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,6 +35,8 @@ class AppMenuListGroup extends StatelessWidget {
     required this.onClick,
     required this.menuGroupModel,
     this.layoutMode,
+    this.textStyle,
+    this.headerColor,
   }) : super(key: key);
 
   @override
@@ -44,6 +52,7 @@ class AppMenuListGroup extends StatelessWidget {
         menuItemModel: menuGroupModel.items.elementAt(i),
         onClick: onClick,
         layoutMode: layoutMode,
+        textStyle: textStyle,
       ));
     }
 
@@ -54,7 +63,7 @@ class AppMenuListGroup extends StatelessWidget {
           Container(
             color: Theme.of(context).bottomAppBarColor,
             child: Divider(
-              color: ListTileTheme.of(context).iconColor,
+              color: headerColor ?? ListTileTheme.of(context).iconColor,
               height: 48,
               indent: 15,
               endIndent: 15,
@@ -66,7 +75,9 @@ class AppMenuListGroup extends StatelessWidget {
             pinned: true,
             delegate: AppMenuGridHeader(
               headerText: FlutterJVx.translate(menuGroupModel.name),
+              headerColor: headerColor,
               height: 48,
+              textStyle: textStyle,
             ),
           ),
         SliverList(

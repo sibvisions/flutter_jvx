@@ -75,15 +75,21 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildMenu(BuildContext context, LayoutMode value) {
-    Color? color = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.color"]);
-    Color? groupColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.groupColor"]);
-    Color? textColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.textColor"]);
-    Color? selectionColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.selectionColor"]);
+    Color? tileColor =
+        ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.color"]) ?? const Color(0xFF3d3d3d);
+    Color? groupTextColor =
+        ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.groupColor"]) ?? Colors.white;
+    Color? textColor =
+        ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.textColor"]) ?? Colors.white;
+    Color? selectionColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?["web.sidemenu.selectionColor"]) ??
+        Theme.of(context).colorScheme.primary;
 
     MenuModel menuModel = IUiService().getMenuModel();
     Widget menu = AppMenuListGrouped(
       menuModel: menuModel,
       layoutMode: value,
+      textStyle: const TextStyle(fontWeight: FontWeight.normal),
+      headerColor: groupTextColor,
       onClick: AppMenu.menuItemPressed,
     );
     if (value == LayoutMode.Small) {
@@ -94,22 +100,22 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
     }
 
     return ListTileTheme.merge(
-      tileColor: color,
+      tileColor: tileColor,
       textColor: textColor,
       iconColor: textColor,
       selectedColor: selectionColor,
-      selectedTileColor: color,
+      selectedTileColor: tileColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
       horizontalTitleGap: 0,
       child: Theme(
         data: Theme.of(context).copyWith(
-          bottomAppBarColor: groupColor,
+          bottomAppBarColor: tileColor,
         ),
         child: IconTheme.merge(
           data: const IconThemeData(size: 16),
           child: DividerTheme(
             data: DividerTheme.of(context).copyWith(
-              color: color,
+              color: tileColor,
             ),
             child: menu,
           ),

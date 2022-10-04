@@ -23,6 +23,9 @@ class AppMenuListItem extends StatelessWidget {
 
   final LayoutMode? layoutMode;
 
+  /// Text style for inner widgets
+  final TextStyle? textStyle;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,6 +36,7 @@ class AppMenuListItem extends StatelessWidget {
     required this.onClick,
     this.backgroundOverride,
     this.layoutMode,
+    this.textStyle,
   }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,6 +70,7 @@ class AppMenuListItem extends StatelessWidget {
           : Text(
               menuItemModel.label,
               overflow: TextOverflow.ellipsis,
+              style: textStyle,
             ),
       onTap: () => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context),
     );

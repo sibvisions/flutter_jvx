@@ -18,6 +18,12 @@ class AppMenuListGrouped extends StatelessWidget {
 
   final LayoutMode? layoutMode;
 
+  /// Text style for menu items
+  final TextStyle? textStyle;
+
+  /// Text color for menu header
+  final Color? headerColor;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,6 +33,8 @@ class AppMenuListGrouped extends StatelessWidget {
     required this.menuModel,
     required this.onClick,
     this.layoutMode,
+    this.textStyle,
+    this.headerColor,
   }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +46,13 @@ class AppMenuListGrouped extends StatelessWidget {
     return CustomScrollView(
       slivers: menuModel.menuGroups
           .map(
-            (e) => AppMenuListGroup(menuGroupModel: e, onClick: onClick, layoutMode: layoutMode),
+            (e) => AppMenuListGroup(
+              menuGroupModel: e,
+              onClick: onClick,
+              layoutMode: layoutMode,
+              textStyle: textStyle,
+              headerColor: headerColor,
+            ),
           )
           .toList(),
     );
