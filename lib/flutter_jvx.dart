@@ -16,6 +16,7 @@ import 'custom/app_manager.dart';
 import 'src/mask/jvx_overlay.dart';
 import 'src/mask/splash/splash.dart';
 import 'src/model/command/api/startup_command.dart';
+import 'src/model/response/device_status_response.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
 import 'src/routing/locations/settings_location.dart';
@@ -273,7 +274,10 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   void changeStyle(Map<String, String> styleMap) {
-    Color? styleColor = ParseUtil.parseHexColor(styleMap['theme.color']);
+    Color? styleColor = IConfigService().getLayoutMode().value != LayoutMode.Mini
+        ? ParseUtil.parseHexColor(styleMap['web.topmenu.color'])
+        : null;
+    styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
     if (styleColor != null) {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);
 
@@ -304,8 +308,8 @@ class FlutterJVxState extends State<FlutterJVx> {
           // iconColor: themeData.colorScheme.onBackground,
         ),
       );
+      setState(() {});
     }
-    setState(() {});
   }
 
   void changeLanguage(String pLanguage) {
@@ -365,6 +369,11 @@ class FlutterJVxState extends State<FlutterJVx> {
     configService.registerLanguageCallback(changeLanguage);
     configService.disposeImagesCallbacks();
     configService.registerImagesCallback(changedImages);
+
+    configService.getLayoutMode().addListener(() {
+      changeStyle(IConfigService().getAppStyle()!);
+      setState(() {});
+    });
 
     //Init saved app style
     var appStyle = configService.getAppStyle();
