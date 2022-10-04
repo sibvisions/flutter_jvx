@@ -367,7 +367,7 @@ class UiService implements IUiService {
   @override
   void setLayoutPosition({required LayoutData layoutData}) {
     _layoutDataList[layoutData.id] = layoutData;
-    _registeredComponents.where((element) => element.compId == layoutData.id).forEach((element) {
+    List.from(_registeredComponents).where((element) => element.compId == layoutData.id).forEach((element) {
       element.callback.call(data: layoutData);
     });
   }
@@ -450,7 +450,7 @@ class UiService implements IUiService {
   @override
   void notifyAffectedComponents({required Set<String> affectedIds}) {
     for (String affectedId in affectedIds) {
-      _registeredComponents.where((element) => element.compId == affectedId).forEach((element) {
+      List.from(_registeredComponents).where((element) => element.compId == affectedId).forEach((element) {
         element.callback.call();
       });
     }
@@ -466,7 +466,7 @@ class UiService implements IUiService {
       }
 
       // Notify active component
-      _registeredComponents.where((element) => element.compId == updatedModel.id).forEach((element) {
+      List.from(_registeredComponents).where((element) => element.compId == updatedModel.id).forEach((element) {
         element.callback(newModel: updatedModel);
       });
     }
