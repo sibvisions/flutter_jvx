@@ -50,6 +50,17 @@ class AppMenuListGroup extends StatelessWidget {
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
+        if (layoutMode == LayoutMode.Small)
+          Container(
+            color: Theme.of(context).bottomAppBarColor,
+            child: Divider(
+              color: ListTileTheme.of(context).iconColor,
+              height: 48,
+              indent: 15,
+              endIndent: 15,
+              thickness: 5,
+            ),
+          ),
         if (layoutMode != LayoutMode.Small)
           SliverPersistentHeader(
             pinned: true,
