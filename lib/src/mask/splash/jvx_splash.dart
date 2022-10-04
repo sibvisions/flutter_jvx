@@ -10,7 +10,9 @@ import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 
 class JVxSplash extends StatefulWidget {
-  const JVxSplash({Key? key}) : super(key: key);
+  final AsyncSnapshot? snapshot;
+
+  const JVxSplash({Key? key, this.snapshot}) : super(key: key);
 
   @override
   State<JVxSplash> createState() => _JVxSplashState();
@@ -84,7 +86,7 @@ class _JVxSplashState extends State<JVxSplash> {
             ),
           ),
           const Expanded(child: SizedBox.shrink()),
-          if (UiService().getFrames().isEmpty)
+          if (widget.snapshot?.connectionState != ConnectionState.done && UiService().getFrames().isEmpty)
             Container(
               height: 15,
               padding: const EdgeInsets.symmetric(horizontal: 50),

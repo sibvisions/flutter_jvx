@@ -9,6 +9,7 @@ class Splash extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final Widget Function(BuildContext context)? loadingBuilder;
+  final AsyncSnapshot? snapshot;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -17,10 +18,11 @@ class Splash extends StatelessWidget {
   const Splash({
     Key? key,
     this.loadingBuilder,
+    this.snapshot,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return loadingBuilder?.call(context) ?? const JVxSplash();
+    return loadingBuilder?.call(context) ?? JVxSplash(snapshot: snapshot);
   }
 }

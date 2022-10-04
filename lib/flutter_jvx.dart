@@ -248,7 +248,7 @@ class FlutterJVxState extends State<FlutterJVx> {
                   }
 
                   return Stack(children: [
-                    Splash(loadingBuilder: widget.loadingBuilder),
+                    Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
                     if (snapshot.hasError) _getStartupErrorDialog(context, snapshot),
                   ]);
                 },
@@ -256,7 +256,7 @@ class FlutterJVxState extends State<FlutterJVx> {
             }
 
             return Stack(children: [
-              Splash(loadingBuilder: widget.loadingBuilder),
+              Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
               if (snapshot.hasError) _getFatalErrorDialog(context, snapshot),
             ]);
           },
