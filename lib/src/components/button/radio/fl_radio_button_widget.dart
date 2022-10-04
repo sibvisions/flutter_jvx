@@ -23,18 +23,14 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
     );
   }
 
-  @override
-  bool get enableFeedback => false;
-
-  @override
   InteractiveInkFeatureFactory? get splashFactory => NoSplash.splashFactory;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlRadioButtonWidget({Key? key, required FlRadioButtonModel model, required Function()? onPress})
-      : super(key: key, model: model, onPress: onPress);
+  const FlRadioButtonWidget({Key? key, required super.model, required Function()? onPress})
+      : super(key: key, onPress: onPress);
 
   @override
   Function()? getOnPressed() {

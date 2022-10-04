@@ -34,7 +34,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
       child: Padding(
         padding: iconPadding,
         child: Icon(
-          FontAwesomeIcons.sortDown,
+          FontAwesomeIcons.caretDown,
           size: iconSize,
         ),
       ),

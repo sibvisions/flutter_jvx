@@ -10,23 +10,11 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   final List<PopupMenuEntry<String>> popupItems;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden widget defaults
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  InteractiveInkFeatureFactory? get splashFactory => NoSplash.splashFactory;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const FlPopupMenuButtonWidget(
-      {Key? key,
-      required FlPopupMenuButtonModel model,
-      required Function()? onPress,
-      this.onItemPress,
-      required this.popupItems})
-      : super(key: key, model: model, onPress: onPress);
+      {super.key, required super.model, super.onPress, this.onItemPress, required this.popupItems});
 
   @override
   Widget createDirectButtonChild(BuildContext context) {
@@ -35,20 +23,52 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
         Expanded(
           child: super.createDirectButtonChild(context),
         ),
+        const VerticalDivider(
+          width: 5,
+          color: Colors.transparent,
+        ),
         createPopupIcon(context),
       ],
     );
   }
 
   Widget createPopupIcon(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: onItemPress,
-      itemBuilder: (_) => popupItems,
-      padding: const EdgeInsets.only(bottom: 8),
-      icon: FaIcon(
-        FontAwesomeIcons.sortDown,
+    return InkWell(
+      onTap: () => openMenu(context),
+      child: FaIcon(
+        FontAwesomeIcons.caretDown,
         color: Theme.of(context).buttonTheme.colorScheme?.onPrimary,
       ),
     );
+  }
+
+  void openMenu(BuildContext context) {
+    // Copied from [PopupMenuButtonState]
+    final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
+    final RenderBox button = context.findRenderObject()! as RenderBox;
+    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    if (popupItems.isNotEmpty) {
+      showMenu<String>(
+        context: context,
+        items: popupItems,
+        position: position,
+        shape: popupMenuTheme.shape,
+        color: popupMenuTheme.color,
+      ).then<void>(
+        (String? newValue) {
+          if (newValue != null) {
+            onItemPress?.call(newValue);
+          }
+        },
+      );
+    }
   }
 }

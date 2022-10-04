@@ -37,17 +37,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     return null;
   }
 
-  bool get enableFeedback => true;
-
-  InteractiveInkFeatureFactory? get splashFactory => null;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [FlButtonWidget]
-  const FlButtonWidget({Key? key, required FlButtonModel model, required this.onPress})
-      : super(key: key, model: model as T);
+  const FlButtonWidget({super.key, required super.model, this.onPress});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -79,9 +74,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
             child: Text(
               model.labelModel.text,
               style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  fontSize: model.labelModel.getTextStyle().fontSize,
-                  color: !model.isEnabled ? IColorConstants.COMPONENT_DISABLED : model.foreground ?? Colors.blue),
+                decoration: TextDecoration.underline,
+                fontSize: model.labelModel.getTextStyle().fontSize,
+                color: !model.isEnabled ? IColorConstants.COMPONENT_DISABLED : model.foreground ?? Colors.blue,
+              ),
             ),
           ),
         ),
