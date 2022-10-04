@@ -293,10 +293,16 @@ class FlutterJVxState extends State<FlutterJVx> {
       }
 
       themeData = ThemeData.from(colorScheme: colorScheme);
+
+      bool backgroundColorIsLight =
+          ThemeData.estimateBrightnessForColor(Theme.of(context).backgroundColor) == Brightness.light;
       themeData = themeData.copyWith(
         listTileTheme: themeData.listTileTheme.copyWith(
-          textColor: themeData.colorScheme.onBackground,
-          iconColor: themeData.colorScheme.onBackground,
+          //TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
+          textColor: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white,
+          iconColor: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white,
+          // textColor: themeData.colorScheme.onBackground,
+          // iconColor: themeData.colorScheme.onBackground,
         ),
       );
     }

@@ -7,7 +7,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../../util/constants/i_color.dart';
 import '../../../util/image/image_loader.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_error_dialog_command.dart';
@@ -165,15 +164,6 @@ class _SettingsPageState extends State<SettingsPage> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _buildApplicationSettings(BuildContext context) {
-    bool backgroundColorIsLight =
-        ThemeData.estimateBrightnessForColor(Theme.of(context).backgroundColor) == Brightness.light;
-
-    TextStyle textStyle = TextStyle(
-      inherit: true,
-      color: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white,
-      //color: Theme.of(context).colorScheme.onBackground,
-    );
-
     SettingItem appNameSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.server,
@@ -278,10 +268,7 @@ class _SettingsPageState extends State<SettingsPage> {
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
       title: FlutterJVx.translate("Picture Size"),
       value: resolution,
-      itemBuilder: <int>(BuildContext context, int value, TextStyle? textStyle) => Text(
-        FlutterJVx.translate("$value px"),
-        style: textStyle,
-      ),
+      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
       onPressed: (value) {
         Picker picker = Picker(
             cancelText: FlutterJVx.translate("Cancel"),
@@ -307,7 +294,7 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(10),
         child: Text(
           FlutterJVx.translate("Application"),
-          style: textStyle.copyWith(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -318,20 +305,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   SettingGroup _buildVersionInfo() {
-    bool backgroundColorIsLight =
-        ThemeData.estimateBrightnessForColor(Theme.of(context).backgroundColor) == Brightness.light;
-
-    TextStyle textStyle = TextStyle(
-      inherit: true,
-      color: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white,
-      //color: Theme.of(context).colorScheme.onBackground,
-    );
-
     SettingItem appVersionSetting = SettingItem(
-      frontIcon: FaIcon(
-        FontAwesomeIcons.github,
-        color: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white,
-      ),
+      frontIcon: const FaIcon(FontAwesomeIcons.github),
       valueNotifier: appVersionNotifier,
       title: FlutterJVx.translate("App version"),
       onPressed: (value) => showLicensePage(
@@ -348,15 +323,13 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     SettingItem commitSetting = SettingItem(
-      frontIcon: FaIcon(FontAwesomeIcons.codeBranch,
-          color: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white),
+      frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
       value: IConfigService().getAppConfig()?.versionConfig?.commit ?? "",
       title: FlutterJVx.translate("RCS"),
     );
 
     SettingItem buildDataSetting = SettingItem(
-      frontIcon: FaIcon(FontAwesomeIcons.calendar,
-          color: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white),
+      frontIcon: const FaIcon(FontAwesomeIcons.calendar),
       value: IConfigService().getAppConfig()?.versionConfig?.buildDate ?? "",
       title: FlutterJVx.translate("Build date"),
     );
@@ -366,7 +339,7 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(10),
         child: Text(
           FlutterJVx.translate("Version Info"),
-          style: textStyle.copyWith(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
