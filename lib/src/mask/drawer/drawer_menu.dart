@@ -64,7 +64,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 const Padding(padding: EdgeInsets.only(top: 10)),
                 _buildHeaderText(
                   flex: 60,
-                  text: IConfigService().getAppStyle()?['login.title'] ?? IConfigService().getAppName()!,
+                  text: IConfigService().getAppStyle()['login.title'] ?? IConfigService().getAppName()!,
                   context: context,
                   fontWeight: FontWeight.bold,
                 ),

@@ -198,8 +198,8 @@ class _AppMenuState extends State<AppMenu> {
 
     MenuFactory menuBuilder = menuFactory[menuMode]!;
 
-    Color? menuBackgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['desktop.color']);
-    String? menuBackgroundImage = IConfigService().getAppStyle()?['desktop.icon'];
+    Color? menuBackgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['desktop.color']);
+    String? menuBackgroundImage = IConfigService().getAppStyle()['desktop.icon'];
 
     return menuBuilder(
       menuModel: IUiService().getMenuModel(),

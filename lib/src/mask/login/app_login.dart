@@ -18,14 +18,14 @@ class AppLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? loginIcon = IConfigService().getAppStyle()?['login.icon'];
-    String? loginLogo = IConfigService().getAppStyle()?['login.logo'];
+    String? loginIcon = IConfigService().getAppStyle()['login.icon'];
+    String? loginLogo = IConfigService().getAppStyle()['login.logo'];
 
     //Color? backgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['login.background']);
-    bool inverseColor = ParseUtil.parseBool(IConfigService().getAppStyle()?['login.inverseColor']) ?? false;
+    bool inverseColor = ParseUtil.parseBool(IConfigService().getAppStyle()['login.inverseColor']) ?? false;
 
-    Color? topColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['login.topColor']);
-    Color? bottomColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['login.bottomColor']);
+    Color? topColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['login.topColor']);
+    Color? bottomColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['login.bottomColor']);
 
     if (inverseColor) {
       var tempTop = topColor;

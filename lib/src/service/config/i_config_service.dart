@@ -115,7 +115,7 @@ abstract class IConfigService {
   void reloadSupportedLanguages();
 
   /// Get app style sent from server
-  Map<String, String>? getAppStyle();
+  Map<String, String> getAppStyle();
 
   /// Set app style, usually only called after download
   Future<bool> setAppStyle(Map<String, String>? pAppStyle);

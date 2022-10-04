@@ -45,7 +45,7 @@ class _LoginCardState extends State<LoginCard> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
-    String? loginTitle = IConfigService().getAppStyle()?['login.title'];
+    String? loginTitle = IConfigService().getAppStyle()['login.title'];
 
     return Card(
       color: Colors.white.withOpacity(0.9),

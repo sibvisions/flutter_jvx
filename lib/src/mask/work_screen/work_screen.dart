@@ -205,8 +205,8 @@ class _WorkScreenState extends State<WorkScreen> {
   }
 
   Widget _getScreen(BuildContext context) {
-    Color? backgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()?['desktop.color']);
-    String? backgroundImageString = IConfigService().getAppStyle()?['desktop.icon'];
+    Color? backgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['desktop.color']);
+    String? backgroundImageString = IConfigService().getAppStyle()['desktop.icon'];
 
     return Scaffold(
       appBar: widget.header,
