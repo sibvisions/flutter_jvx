@@ -188,7 +188,6 @@ class _SettingsPageState extends State<SettingsPage> {
         ).then((value) {
           if (value == true) {
             appName = controller.text.trim();
-            FlutterJVx.log.i(appName);
             setState(() {});
           }
         });
