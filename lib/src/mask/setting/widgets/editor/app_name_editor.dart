@@ -25,6 +25,7 @@ class AppNameEditor extends StatelessWidget {
     return TextField(
       autofocus: true,
       controller: controller,
+      onEditingComplete: () => Navigator.pop(context, true),
       decoration: InputDecoration(
         labelText: FlutterJVx.translate("App Name"),
         hintText: FlutterJVx.translate("Enter new App Name"),

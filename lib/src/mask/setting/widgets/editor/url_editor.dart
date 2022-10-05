@@ -28,6 +28,7 @@ class UrlEditor extends StatelessWidget {
     return TextField(
       autofocus: true,
       controller: controller,
+      onEditingComplete: () => Navigator.pop(context, true),
       decoration: InputDecoration(
         labelText: FlutterJVx.translate("URL"),
         hintText: "http://host:port/services/mobile",
