@@ -147,7 +147,7 @@ class OfflineApiRepository implements IRepository {
         filter[requestFilter.columnNames[i]] = requestFilter.values[i];
       }
     } else {
-      filter["ROWID"] = pRequest.selectedRow;
+      filter['ROWID'] = pRequest.selectedRow;
     }
 
     List<FilterCondition> filters = [...?_getFilter(pRequest.filter, pRequest.filterCondition)];

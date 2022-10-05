@@ -137,13 +137,13 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return db
         .query(
           OFFLINE_METADATA_TABLE,
-          columns: ["META_DATA"],
+          columns: ['META_DATA'],
           where:
               "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)${pDataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""}",
           whereArgs: whereArgs,
         )
         .then((result) => result
-            .map((e) => DalMetaDataResponse.fromJson(pJson: jsonDecode(e["META_DATA"] as String), originalRequest: ""))
+            .map((e) => DalMetaDataResponse.fromJson(pJson: jsonDecode(e['META_DATA'] as String), originalRequest: ""))
             .toList(growable: false));
   }
 

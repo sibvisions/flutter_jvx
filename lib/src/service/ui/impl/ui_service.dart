@@ -138,13 +138,13 @@ class UiService implements IUiService {
 
     if (lastLocation.runtimeType == WorkScreenLocation) {
       BeamState beamState = lastLocation.state as BeamState;
-      if (beamState.pathParameters["workScreenName"] == pScreenName) {
+      if (beamState.pathParameters['workScreenName'] == pScreenName) {
         justReload = true;
       }
     }
 
     Map<String, dynamic> beamData = {};
-    beamData["reload"] = justReload;
+    beamData['reload'] = justReload;
 
     if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
       FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName", data: beamData);

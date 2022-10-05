@@ -58,8 +58,8 @@ class QRAppCode {
   QRAppCode({required this.appName, required this.url, this.password, this.username});
 
   QRAppCode.fromJson({required Map<String, String> pJson})
-      : username = pJson["USER"],
-        password = pJson["PWD"],
-        appName = pJson["APPNAME"]!,
-        url = pJson["URL"]!;
+      : username = pJson['USER'],
+        password = pJson['PWD'],
+        appName = pJson['APPNAME']!,
+        url = pJson['URL']!;
 }

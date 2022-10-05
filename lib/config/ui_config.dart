@@ -22,8 +22,8 @@ class UiConfig {
 
   UiConfig.fromJson({required Map<String, dynamic> json})
       : this(
-          showRememberMe: json["showRememberMe"],
-          rememberMeChecked: json["rememberMeChecked"],
+          showRememberMe: json['showRememberMe'],
+          rememberMeChecked: json['rememberMeChecked'],
         );
 
   UiConfig merge(UiConfig? other) {

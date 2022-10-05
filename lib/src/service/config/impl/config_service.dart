@@ -141,7 +141,7 @@ class ConfigService implements IConfigService {
 
   @override
   MenuMode getMenuMode() {
-    return ConfigUtil.getMenuMode(getAppStyle()["menu.mode"]);
+    return ConfigUtil.getMenuMode(getAppStyle()['menu.mode']);
   }
 
   @override
@@ -434,7 +434,7 @@ class ConfigService implements IConfigService {
 
   @override
   void imagesChanged() {
-    callbacks["images"]?.forEach((element) => element.call());
+    callbacks['images']?.forEach((element) => element.call());
   }
 
   @override
@@ -506,6 +506,6 @@ class ConfigService implements IConfigService {
 
     translation = langTrans;
 
-    callbacks["language"]?.forEach((element) => element.call(pLanguage));
+    callbacks['language']?.forEach((element) => element.call(pLanguage));
   }
 }

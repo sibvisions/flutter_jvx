@@ -35,7 +35,7 @@ HashMap<String, String> _getTranslationsFromFile(File file) {
 
   HashMap<String, String> mapped = HashMap();
   for (var a in translations) {
-    mapped[a["text"]] = a["translation"];
+    mapped[a['text']] = a['translation'];
   }
   return mapped;
 }

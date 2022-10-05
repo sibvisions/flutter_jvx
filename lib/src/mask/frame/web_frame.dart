@@ -39,9 +39,9 @@ class WebFrameState extends FrameState {
   @override
   PreferredSizeWidget getAppBar(List<Widget>? actions) {
     var profileImage = IConfigService().getUserInfo()?.profileImage;
-    Color? topMenuColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()["web.topmenu.color"]);
-    Color? iconColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()["web.topmenu.iconColor"]);
-    String? imagePath = IConfigService().getAppStyle()["web.topmenu.image"];
+    Color? topMenuColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['web.topmenu.color']);
+    Color? iconColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['web.topmenu.iconColor']);
+    String? imagePath = IConfigService().getAppStyle()['web.topmenu.image'];
 
     return AppBar(
       leading: Builder(

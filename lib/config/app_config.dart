@@ -40,12 +40,12 @@ class AppConfig {
 
   AppConfig.fromJson({required Map<String, dynamic> json})
       : this(
-          title: json["title"],
-          requestTimeout: json["requestTimeout"],
-          uiConfig: json["uiConfig"] != null ? UiConfig.fromJson(json: json["uiConfig"]) : null,
-          serverConfig: json["serverConfig"] != null ? ServerConfig.fromJson(json: json["serverConfig"]) : null,
-          versionConfig: json["versionConfig"] != null ? VersionConfig.fromJson(json: json["versionConfig"]) : null,
-          startupParameters: json["startupParameters"],
+          title: json['title'],
+          requestTimeout: json['requestTimeout'],
+          uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json: json['uiConfig']) : null,
+          serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json: json['serverConfig']) : null,
+          versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json: json['versionConfig']) : null,
+          startupParameters: json['startupParameters'],
         );
 
   AppConfig merge(AppConfig? other) {

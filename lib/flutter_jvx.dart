@@ -149,31 +149,31 @@ class FlutterJVx extends StatefulWidget {
     services.registerSingleton(apiService);
 
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
-    String? appName = Uri.base.queryParameters["appName"];
+    String? appName = Uri.base.queryParameters['appName'];
     if (appName != null) {
       await configService.setAppName(appName);
     }
-    String? baseUrl = Uri.base.queryParameters["baseUrl"];
+    String? baseUrl = Uri.base.queryParameters['baseUrl'];
     if (baseUrl != null) {
       await configService.setBaseUrl(baseUrl);
     }
-    String? username = Uri.base.queryParameters["username"];
+    String? username = Uri.base.queryParameters['username'];
     if (username != null) {
       await configService.setUsername(username);
     }
-    String? password = Uri.base.queryParameters["password"];
+    String? password = Uri.base.queryParameters['password'];
     if (password != null) {
       await configService.setUsername(password);
     }
-    String? language = Uri.base.queryParameters["language"];
+    String? language = Uri.base.queryParameters['language'];
     if (language != null) {
       await configService.setUserLanguage(language == IConfigService.getPlatformLocale() ? null : language);
     }
-    String? mobileOnly = Uri.base.queryParameters["mobileOnly"];
+    String? mobileOnly = Uri.base.queryParameters['mobileOnly'];
     if (mobileOnly != null) {
       await configService.setMobileOnly(mobileOnly == "true");
     }
-    String? webOnly = Uri.base.queryParameters["webOnly"];
+    String? webOnly = Uri.base.queryParameters['webOnly'];
     if (webOnly != null) {
       await configService.setWebOnly(webOnly == "true");
     }

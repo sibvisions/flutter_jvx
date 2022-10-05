@@ -34,7 +34,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
       lastWorkscreen = workScreenName;
     }
 
-    if (data != null && data is Map<String, dynamic> && (data as Map<String, dynamic>)["reload"] == true) {
+    if (data != null && data is Map<String, dynamic> && (data as Map<String, dynamic>)['reload'] == true) {
       // ignore: invalid_use_of_protected_member
       key.currentState?.setState(() {});
     }

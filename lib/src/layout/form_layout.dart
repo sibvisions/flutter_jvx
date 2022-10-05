@@ -314,7 +314,7 @@ class FormLayout extends ILayout {
         pPreferredMinimumSize.minimumWidth = w;
       }
     } else if (leftWidth != 0) {
-      FormLayoutAnchor rma = pAnchors["rm"]!;
+      FormLayoutAnchor rma = pAnchors['rm']!;
       double w = leftWidth - rma.position;
       if (w > pPreferredMinimumSize.preferredWidth) {
         pPreferredMinimumSize.preferredWidth = w;
@@ -323,7 +323,7 @@ class FormLayout extends ILayout {
         pPreferredMinimumSize.minimumWidth = w;
       }
     } else {
-      FormLayoutAnchor lma = pAnchors["lm"]!;
+      FormLayoutAnchor lma = pAnchors['lm']!;
       double w = rightWidth + lma.position;
       if (w > pPreferredMinimumSize.preferredWidth) {
         pPreferredMinimumSize.preferredWidth = w;
@@ -343,7 +343,7 @@ class FormLayout extends ILayout {
         pPreferredMinimumSize.minimumHeight = h;
       }
     } else if (topHeight != 0) {
-      FormLayoutAnchor bma = pAnchors["bm"]!;
+      FormLayoutAnchor bma = pAnchors['bm']!;
       double h = topHeight - bma.position;
       if (h > pPreferredMinimumSize.preferredHeight) {
         pPreferredMinimumSize.preferredHeight = h;
@@ -352,7 +352,7 @@ class FormLayout extends ILayout {
         pPreferredMinimumSize.minimumHeight = h;
       }
     } else {
-      FormLayoutAnchor tma = pAnchors["tm"]!;
+      FormLayoutAnchor tma = pAnchors['tm']!;
       double h = bottomHeight + tma.position;
       if (h > pPreferredMinimumSize.preferredHeight) {
         pPreferredMinimumSize.preferredHeight = h;
@@ -381,10 +381,10 @@ class FormLayout extends ILayout {
     /// Available Size, set to setSize from parent by default
     Size calcSize = pGivenSize ?? Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
 
-    FormLayoutAnchor lba = pAnchors["l"]!;
-    FormLayoutAnchor rba = pAnchors["r"]!;
-    FormLayoutAnchor bba = pAnchors["b"]!;
-    FormLayoutAnchor tba = pAnchors["t"]!;
+    FormLayoutAnchor lba = pAnchors['l']!;
+    FormLayoutAnchor rba = pAnchors['r']!;
+    FormLayoutAnchor bba = pAnchors['b']!;
+    FormLayoutAnchor tba = pAnchors['t']!;
 
     // Horizontal Alignment
     if (pHorizontalAlignment == HorizontalAlignment.STRETCH ||
@@ -494,15 +494,15 @@ class FormLayout extends ILayout {
       required LayoutData pParent,
       required FormLayoutSize pMinPrefSize}) {
     /// Get Border- and Margin Anchors for calculation
-    // FormLayoutAnchor lba = pAnchors["l"]!;
-    // FormLayoutAnchor rba = pAnchors["r"]!;
-    // FormLayoutAnchor tba = pAnchors["t"]!;
-    // FormLayoutAnchor bba = pAnchors["b"]!;
+    // FormLayoutAnchor lba = pAnchors['l']!;
+    // FormLayoutAnchor rba = pAnchors['r']!;
+    // FormLayoutAnchor tba = pAnchors['t']!;
+    // FormLayoutAnchor bba = pAnchors['b']!;
 
-    FormLayoutAnchor tma = pAnchors["tm"]!;
-    FormLayoutAnchor bma = pAnchors["bm"]!;
-    FormLayoutAnchor lma = pAnchors["lm"]!;
-    FormLayoutAnchor rma = pAnchors["rm"]!;
+    FormLayoutAnchor tma = pAnchors['tm']!;
+    FormLayoutAnchor bma = pAnchors['bm']!;
+    FormLayoutAnchor lma = pAnchors['lm']!;
+    FormLayoutAnchor rma = pAnchors['rm']!;
 
     /// Used for components
     FormLayoutConstraints marginConstraints =
