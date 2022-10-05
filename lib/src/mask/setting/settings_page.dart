@@ -27,6 +27,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  static const String urlSuffix = "/services/mobile";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -223,6 +225,13 @@ class _SettingsPageState extends State<SettingsPage> {
               try {
                 // Validate format
                 var uri = Uri.parse(controller.text.trim());
+                if (!uri.path.endsWith(urlSuffix)) {
+                  String appendingSuffix = urlSuffix;
+                  if (uri.pathSegments.last.isEmpty) {
+                    appendingSuffix = appendingSuffix.substring(1);
+                  }
+                  uri = uri.replace(path: uri.path + appendingSuffix);
+                }
                 baseUrl = uri.toString();
                 setState(() {});
               } catch (e) {
