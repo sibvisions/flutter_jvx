@@ -13,9 +13,8 @@ import '../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_overlay.dart';
 import '../loading_bar.dart';
-import 'widgets/editor/app_name_editor.dart';
 import 'widgets/editor/editor_dialog.dart';
-import 'widgets/editor/url_editor.dart';
+import 'widgets/editor/text_editor.dart';
 import 'widgets/setting_group.dart';
 import 'widgets/setting_item.dart';
 
@@ -164,51 +163,67 @@ class _SettingsPageState extends State<SettingsPage> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _buildApplicationSettings(BuildContext context) {
+    String appNameTitle = FlutterJVx.translate("App Name");
+
     SettingItem appNameSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.server),
       endIcon: const FaIcon(FontAwesomeIcons.keyboard),
       value: appName ?? "",
-      title: FlutterJVx.translate("App Name"),
+      title: appNameTitle,
       enabled: !IConfigService().isOffline(),
       onPressed: (value) {
         TextEditingController controller = TextEditingController(text: value);
-        Widget editor = AppNameEditor(controller: controller);
 
-        _settingItemClicked(
-          pEditor: editor,
+        _showEditor(
+          context,
+          pEditorBuilder: (context, onConfirm) => TextEditor(
+            title: appNameTitle,
+            hintText: FlutterJVx.translate("Enter new App Name"),
+            controller: controller,
+            onConfirm: onConfirm,
+          ),
+          controller: controller,
           pTitleIcon: const FaIcon(FontAwesomeIcons.server),
-          pTitleText: FlutterJVx.translate("App Name"),
-        ).then((value) async {
+          pTitleText: appNameTitle,
+        ).then((value) {
           if (value == true) {
-            appName = controller.text;
+            appName = controller.text.trim();
+            FlutterJVx.log.i(appName);
             setState(() {});
           }
         });
       },
     );
 
+    String urlTitle = FlutterJVx.translate("URL");
     SettingItem baseUrlSetting = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.globe),
         endIcon: const FaIcon(FontAwesomeIcons.keyboard),
         value: baseUrl ?? "",
-        title: FlutterJVx.translate("URL"),
+        title: urlTitle,
         enabled: !IConfigService().isOffline(),
         onPressed: (value) {
           TextEditingController controller = TextEditingController(text: value);
-          Widget editor = UrlEditor(controller: controller);
 
-          _settingItemClicked(
-            pEditor: editor,
+          _showEditor(
+            context,
+            pEditorBuilder: (context, onConfirm) => TextEditor(
+              title: urlTitle,
+              hintText: "http://host:port/services/mobile",
+              controller: controller,
+              onConfirm: onConfirm,
+            ),
+            controller: controller,
             pTitleIcon: FaIcon(
               FontAwesomeIcons.globe,
               color: Theme.of(context).primaryColor,
             ),
-            pTitleText: FlutterJVx.translate("URL"),
+            pTitleText: urlTitle,
           ).then((value) async {
             if (value == true) {
               try {
                 // Validate format
-                var uri = Uri.parse(controller.text);
+                var uri = Uri.parse(controller.text.trim());
                 baseUrl = uri.toString();
                 setState(() {});
               } catch (e) {
@@ -352,18 +367,23 @@ class _SettingsPageState extends State<SettingsPage> {
     return group;
   }
 
-  Future<bool?> _settingItemClicked<bool>(
-      {required Widget pEditor, required FaIcon pTitleIcon, required String pTitleText}) {
+  Future<bool?> _showEditor<bool>(
+    BuildContext context, {
+    required String pTitleText,
+    required FaIcon pTitleIcon,
+    required EditorBuilder pEditorBuilder,
+    required TextEditingController controller,
+  }) {
     return showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return EditorDialog(
-            editor: pEditor,
-            titleIcon: pTitleIcon,
-            titleText: pTitleText,
-          );
-        },
-        barrierDismissible: false);
+      context: context,
+      builder: (BuildContext context) => EditorDialog(
+        titleText: pTitleText,
+        titleIcon: pTitleIcon,
+        editorBuilder: pEditorBuilder,
+        controller: controller,
+      ),
+      barrierDismissible: false,
+    );
   }
 
   /// Opens the QR-Scanner,

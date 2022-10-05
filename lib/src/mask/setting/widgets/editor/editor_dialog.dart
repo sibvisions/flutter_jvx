@@ -3,13 +3,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../flutter_jvx.dart';
 
+typedef EditorBuilder = Widget Function(
+  BuildContext context,
+  Function() onConfirm,
+);
+
 class EditorDialog extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The editor widget to be shown
-  final Widget editor;
+  final EditorBuilder editorBuilder;
+
+  final TextEditingController controller;
 
   /// Icon to be displayed at the top of the dialog
   final FaIcon? titleIcon;
@@ -22,8 +29,9 @@ class EditorDialog extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const EditorDialog({
-    required this.editor,
     required this.titleText,
+    required this.editorBuilder,
+    required this.controller,
     this.titleIcon,
     Key? key,
   }) : super(key: key);
@@ -42,34 +50,34 @@ class EditorDialog extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(20),
-              child: _title(pContext: context),
+              child: _createTitle(context),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: editor,
+              child: editorBuilder.call(context, () => Navigator.pop(context, true)),
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: _closeButtons(pContext: context),
+              child: _closeButtons(context),
             ),
           ],
         ));
   }
 
   /// Returns the
-  Widget _closeButtons({required BuildContext pContext}) {
+  Widget _closeButtons(BuildContext context) {
     TextStyle style = const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          onPressed: () => Navigator.pop(pContext, false),
+          onPressed: () => Navigator.pop(context, false),
           child: Text(FlutterJVx.translate("Cancel"), style: style),
         ),
         const SizedBox(width: 20),
         TextButton(
-          onPressed: () => Navigator.pop(pContext, true),
+          onPressed: () => Navigator.pop(context, true),
           child: Text(FlutterJVx.translate("Confirm"), style: style),
         ),
       ],
@@ -78,7 +86,7 @@ class EditorDialog extends StatelessWidget {
 
   /// Returns the title Widget of the editor
   /// containing the [titleIcon] and [titleText]
-  Widget _title({required BuildContext pContext}) {
+  Widget _createTitle(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

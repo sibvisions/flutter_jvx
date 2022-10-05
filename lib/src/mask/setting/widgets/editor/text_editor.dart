@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../flutter_jvx.dart';
-
-class AppNameEditor extends StatelessWidget {
+class TextEditor extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  final String title;
+  final String hintText;
+
   /// TextController for the editing field
   final TextEditingController controller;
+
+  final Function()? onConfirm;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppNameEditor({required this.controller, Key? key}) : super(key: key);
+  const TextEditor({
+    required this.title,
+    required this.hintText,
+    required this.controller,
+    this.onConfirm,
+    Key? key,
+  }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -25,10 +34,10 @@ class AppNameEditor extends StatelessWidget {
     return TextField(
       autofocus: true,
       controller: controller,
-      onEditingComplete: () => Navigator.pop(context, true),
+      onEditingComplete: onConfirm,
       decoration: InputDecoration(
-        labelText: FlutterJVx.translate("App Name"),
-        hintText: FlutterJVx.translate("Enter new App Name"),
+        labelText: title,
+        hintText: hintText,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );
