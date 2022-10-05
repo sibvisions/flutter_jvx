@@ -102,7 +102,7 @@ class _JVxSplashState extends State<JVxSplash> {
                       borderColor: Theme.of(context).colorScheme.primary,
                       direction: Axis.horizontal,
                       center: Text(
-                        "Loading...",
+                        "Starting...",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurface,
                           fontSize: 9.0,
