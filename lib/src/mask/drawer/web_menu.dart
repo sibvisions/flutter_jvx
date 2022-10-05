@@ -117,7 +117,10 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
             data: DividerTheme.of(context).copyWith(
               color: tileColor,
             ),
-            child: menu,
+            child: Material(
+              color: tileColor,
+              child: menu,
+            ),
           ),
         ),
       ),
