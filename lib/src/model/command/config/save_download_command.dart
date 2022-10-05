@@ -33,6 +33,6 @@ class SaveDownloadCommand extends ConfigCommand {
 
   @override
   String toString() {
-    return 'SaveDownloadCommand{fileId: $fileId, fileName: $fileName ${super.toString()}}';
+    return "SaveDownloadCommand{fileId: $fileId, fileName: $fileName ${super.toString()}}";
   }
 }

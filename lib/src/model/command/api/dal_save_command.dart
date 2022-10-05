@@ -25,6 +25,6 @@ class DalSaveCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'DalSaveCommand{dataProvider: $dataProvider, onlySelected: $onlySelected, ${super.toString()}}';
+    return "DalSaveCommand{dataProvider: $dataProvider, onlySelected: $onlySelected, ${super.toString()}}";
   }
 }

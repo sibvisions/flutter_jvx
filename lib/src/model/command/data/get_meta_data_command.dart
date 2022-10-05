@@ -28,6 +28,6 @@ class GetMetaDataCommand extends DataCommand {
 
   @override
   String toString() {
-    return 'GetMetaDataCommand{dataProvider: $dataProvider, subId: $subId, ${super.toString()}}';
+    return "GetMetaDataCommand{dataProvider: $dataProvider, subId: $subId, ${super.toString()}}";
   }
 }

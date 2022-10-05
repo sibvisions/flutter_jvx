@@ -29,6 +29,6 @@ class SetValueCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'SetValueCommand{componentName: $componentName, value: $value, ${super.toString()}}';
+    return "SetValueCommand{componentName: $componentName, value: $value, ${super.toString()}}";
   }
 }

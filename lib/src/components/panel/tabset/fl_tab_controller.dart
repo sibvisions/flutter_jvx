@@ -89,6 +89,6 @@ class FlTabController extends TabController {
   }
 
   bool isTabEnabled(int value) {
-    return (ParseUtil.parseBool(tabs[value].model.constraints!.split(';').first) ?? false);
+    return (ParseUtil.parseBool(tabs[value].model.constraints!.split(";").first) ?? false);
   }
 }

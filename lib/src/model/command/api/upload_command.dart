@@ -29,6 +29,6 @@ class UploadCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'UploadCommand{fileId: $fileId, file: $file, reason: $reason}';
+    return "UploadCommand{fileId: $fileId, file: $file, reason: $reason}";
   }
 }

@@ -34,6 +34,6 @@ class FetchCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'FetchCommand{columnNames: $columnNames, includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, ${super.toString()}}';
+    return "FetchCommand{columnNames: $columnNames, includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, ${super.toString()}}";
   }
 }

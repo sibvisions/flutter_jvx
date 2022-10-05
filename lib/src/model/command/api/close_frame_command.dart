@@ -23,6 +23,6 @@ class CloseFrameCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'CloseFrameCommand{frameName: $frameName, ${super.toString()}}';
+    return "CloseFrameCommand{frameName: $frameName, ${super.toString()}}";
   }
 }

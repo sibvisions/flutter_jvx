@@ -39,6 +39,6 @@ class FilterCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'FilterCommand{editorId: $editorId, value: $value, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, dataProvider: $dataProvider, ${super.toString()}}';
+    return "FilterCommand{editorId: $editorId, value: $value, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, dataProvider: $dataProvider, ${super.toString()}}";
   }
 }

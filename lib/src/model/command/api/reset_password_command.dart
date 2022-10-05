@@ -23,6 +23,6 @@ class ResetPasswordCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'ResetPasswordCommand{identifier: $identifier, ${super.toString()}}';
+    return "ResetPasswordCommand{identifier: $identifier, ${super.toString()}}";
   }
 }

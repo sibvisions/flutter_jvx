@@ -27,6 +27,6 @@ class PressButtonCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'PressButtonCommand{componentName: $componentName, ${super.toString()}}';
+    return "PressButtonCommand{componentName: $componentName, ${super.toString()}}";
   }
 }

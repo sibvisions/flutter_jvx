@@ -82,7 +82,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   createWidgetModel() {
     FlIconModel widgetModel = FlIconModel();
 
-    widgetModel.image = _value ?? '';
+    widgetModel.image = _value ?? "";
     widgetModel.preserveAspectRatio = model.preserveAspectRatio;
 
     pDefaultImageUsed = false;

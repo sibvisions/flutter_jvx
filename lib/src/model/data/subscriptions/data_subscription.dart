@@ -69,7 +69,7 @@ class DataSubscription {
   }
 }
 
-const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+const _chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
 Random _rnd = Random();
 
 String getRandomString(int length) =>

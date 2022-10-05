@@ -27,6 +27,6 @@ class DeviceStatusCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'DeviceStatusCommand{screenWidth: $screenWidth, screenHeight: $screenHeight, ${super.toString()}}';
+    return "DeviceStatusCommand{screenWidth: $screenWidth, screenHeight: $screenHeight, ${super.toString()}}";
   }
 }

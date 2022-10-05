@@ -28,6 +28,6 @@ class RouteToLoginCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'RouteToLoginCommand{mode: $mode, loginData: $loginData, ${super.toString()}}';
+    return "RouteToLoginCommand{mode: $mode, loginData: $loginData, ${super.toString()}}";
   }
 }

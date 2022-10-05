@@ -45,7 +45,7 @@ class ErrorViewResponse extends MessageView {
 
   @override
   String toString() {
-    return 'ErrorViewResponse{messageView: ${super.toString()}, silentAbort: $silentAbort, isTimeout: $isTimeout, exceptions: $exceptions}';
+    return "ErrorViewResponse{messageView: ${super.toString()}, silentAbort: $silentAbort, isTimeout: $isTimeout, exceptions: $exceptions}";
   }
 }
 
@@ -71,6 +71,6 @@ class ServerException {
 
   @override
   String toString() {
-    return 'ServerException{message: $message, exception: $exception}';
+    return "ServerException{message: $message, exception: $exception}";
   }
 }

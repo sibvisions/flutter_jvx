@@ -313,15 +313,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
 
     if (metaData?.insertEnabled ?? true) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, 'New', ContextMenuCommand.NEW));
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, "New", ContextMenuCommand.NEW));
     }
 
     if ((metaData?.deleteEnabled ?? true) && lastTouchedIndex != -1) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squareMinus, 'Delete', ContextMenuCommand.DELETE));
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", ContextMenuCommand.DELETE));
     }
 
     if (kDebugMode) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.powerOff, 'Offline', ContextMenuCommand.OFFLINE));
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.powerOff, "Offline", ContextMenuCommand.OFFLINE));
     }
 
     if (_lastDragDownDetails == null) {

@@ -43,7 +43,7 @@ abstract class ComponentsFactory {
         return FlTabPanelWrapper(id: model.id, key: GlobalKey());
       case FlContainerClassname.CUSTOM_CONTAINER:
         switch (model.classNameEventSourceRef) {
-          case 'SignaturePad':
+          case "SignaturePad":
             return FlSignaturePadWrapper(id: model.id, key: GlobalKey());
         }
         continue alsoDefault;

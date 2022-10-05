@@ -152,9 +152,9 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         <PopupMenuEntry<SignatureContextMenuCommand>>[];
 
     if (_dataRecord?.values[0] == null) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, 'Done', SignatureContextMenuCommand.DONE));
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, "Done", SignatureContextMenuCommand.DONE));
     }
-    popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squareMinus, 'Clear', SignatureContextMenuCommand.CLEAR));
+    popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squareMinus, "Clear", SignatureContextMenuCommand.CLEAR));
 
     showMenu(
             position: RelativeRect.fromRect(

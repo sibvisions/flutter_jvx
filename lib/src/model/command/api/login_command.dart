@@ -48,6 +48,6 @@ class LoginCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'LoginCommand{userName: $userName, loginMode: $loginMode, createAuthKey: $createAuthKey, ${super.toString()}}';
+    return "LoginCommand{userName: $userName, loginMode: $loginMode, createAuthKey: $createAuthKey, ${super.toString()}}";
   }
 }

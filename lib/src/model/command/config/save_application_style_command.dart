@@ -23,6 +23,6 @@ class SaveApplicationStyleCommand extends ConfigCommand {
 
   @override
   String toString() {
-    return 'SaveApplicationStyleCommand{style: $style, ${super.toString()}}';
+    return "SaveApplicationStyleCommand{style: $style, ${super.toString()}}";
   }
 }

@@ -35,7 +35,7 @@ Future<File?> openFilePicker() async {
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
                       child: Text(
-                        FlutterJVx.translate('Choose file'),
+                        FlutterJVx.translate("Choose file"),
                         style: const TextStyle(fontSize: 20),
                       ),
                     ),
@@ -65,7 +65,7 @@ Future<File?> openFilePicker() async {
                           width: 15,
                         ),
                         Text(
-                          FlutterJVx.translate('Camera'),
+                          FlutterJVx.translate("Camera"),
                           style: const TextStyle(fontSize: 18),
                         ),
                       ],
@@ -90,7 +90,7 @@ Future<File?> openFilePicker() async {
                           width: 15,
                         ),
                         Text(
-                          FlutterJVx.translate('Gallery'),
+                          FlutterJVx.translate("Gallery"),
                           style: const TextStyle(fontSize: 18),
                         ),
                       ],
@@ -112,7 +112,7 @@ Future<File?> openFilePicker() async {
                           width: 15,
                         ),
                         Text(
-                          FlutterJVx.translate('Filesystem'),
+                          FlutterJVx.translate("Filesystem"),
                           style: const TextStyle(fontSize: 18),
                         ),
                       ],

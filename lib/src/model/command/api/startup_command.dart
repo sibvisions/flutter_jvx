@@ -35,6 +35,6 @@ class StartupCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'StartupCommand{appName: $appName, username: $username, ${super.toString()}}';
+    return "StartupCommand{appName: $appName, username: $username, ${super.toString()}}";
   }
 }

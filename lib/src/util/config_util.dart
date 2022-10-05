@@ -35,23 +35,23 @@ abstract class ConfigUtil {
   /// Read file config
   static Future<AppConfig?> _readConfigFile(String name) {
     return rootBundle
-        .loadString('assets/config/$name')
+        .loadString("assets/config/$name")
         .then((rawAppConfig) => AppConfig.fromJson(json: jsonDecode(rawAppConfig)));
   }
 
   static MenuMode getMenuMode(String? menuModeString) {
     MenuMode menuMode;
     switch (menuModeString) {
-      case 'grid':
+      case "grid":
         menuMode = MenuMode.GRID;
         break;
-      case 'list':
+      case "list":
         menuMode = MenuMode.LIST;
         break;
-      case 'tabs':
+      case "tabs":
         menuMode = MenuMode.TABS;
         break;
-      case 'grid_grouped':
+      case "grid_grouped":
       default:
         menuMode = MenuMode.GRID_GROUPED;
     }

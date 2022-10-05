@@ -32,6 +32,6 @@ class ChangePasswordCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'ChangePasswordCommand{username: $username, ${super.toString()}}';
+    return "ChangePasswordCommand{username: $username, ${super.toString()}}";
   }
 }

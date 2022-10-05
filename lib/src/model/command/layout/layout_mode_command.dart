@@ -23,6 +23,6 @@ class LayoutModeCommand extends LayoutCommand {
 
   @override
   String toString() {
-    return 'LayoutModeCommand{layoutMode: $layoutMode, ${super.toString()}}';
+    return "LayoutModeCommand{layoutMode: $layoutMode, ${super.toString()}}";
   }
 }

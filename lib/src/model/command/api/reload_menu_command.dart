@@ -33,6 +33,6 @@ class ReloadMenuCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'ReloadMenuCommand{${super.toString()}}';
+    return "ReloadMenuCommand{${super.toString()}}";
   }
 }

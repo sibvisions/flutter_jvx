@@ -25,8 +25,8 @@ class AppNameEditor extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: FlutterJVx.translate('App Name'),
-        hintText: FlutterJVx.translate('Enter new App Name'),
+        labelText: FlutterJVx.translate("App Name"),
+        hintText: FlutterJVx.translate("Enter new App Name"),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

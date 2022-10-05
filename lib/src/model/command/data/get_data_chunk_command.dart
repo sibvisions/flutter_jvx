@@ -44,6 +44,6 @@ class GetDataChunkCommand extends DataCommand {
 
   @override
   String toString() {
-    return 'GetDataChunkCommand{subId: $subId, dataProvider: $dataProvider, dataColumns: $dataColumns, from: $from, to: $to, isUpdate: $isUpdate, ${super.toString()}}';
+    return "GetDataChunkCommand{subId: $subId, dataProvider: $dataProvider, dataColumns: $dataColumns, from: $from, to: $to, isUpdate: $isUpdate, ${super.toString()}}";
   }
 }

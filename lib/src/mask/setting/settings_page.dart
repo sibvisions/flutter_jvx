@@ -316,7 +316,7 @@ class _SettingsPageState extends State<SettingsPage> {
           image: Svg(
             ImageLoader.getAssetPath(
               FlutterJVx.package,
-              'assets/images/J.svg',
+              "assets/images/J.svg",
             ),
           ),
         ),

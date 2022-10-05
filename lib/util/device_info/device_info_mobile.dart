@@ -35,11 +35,11 @@ class DeviceInfoMobile implements DeviceInfo {
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+    appVersion = "${packageInfo.version}+${packageInfo.buildNumber}";
 
     if (Platform.isAndroid) {
       var androidInfo = await DeviceInfoPlugin().androidInfo;
-      osName = 'Android ${androidInfo.version.release}';
+      osName = "Android ${androidInfo.version.release}";
       osVersion = androidInfo.version.sdkInt.toString();
       deviceType = androidInfo.manufacturer;
       deviceTypeModel = androidInfo.model;

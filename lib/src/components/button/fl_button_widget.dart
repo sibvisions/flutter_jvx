@@ -50,7 +50,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    if (model.style == 'hyperlink') {
+    if (model.style == "hyperlink") {
       return createHyperlinkButton();
     }
     return ElevatedButton(
@@ -168,7 +168,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       String url = model.labelModel.text;
 
       if (!url.startsWith("http")) {
-        url = 'https://$url';
+        url = "https://$url";
       }
       try {
         launchUrlString(url);

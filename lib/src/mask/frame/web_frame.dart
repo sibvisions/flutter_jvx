@@ -61,7 +61,7 @@ class WebFrameState extends FrameState {
             : Image.asset(
                 ImageLoader.getAssetPath(
                   FlutterJVx.package,
-                  'assets/images/logo.png',
+                  "assets/images/logo.png",
                 ),
                 fit: BoxFit.scaleDown,
               ),

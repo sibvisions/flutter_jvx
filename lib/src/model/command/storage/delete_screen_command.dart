@@ -11,6 +11,6 @@ class DeleteScreenCommand extends StorageCommand {
 
   @override
   String toString() {
-    return 'DeleteScreenCommand{screenName: $screenName, beamBack: $beamBack, ${super.toString()}}';
+    return "DeleteScreenCommand{screenName: $screenName, beamBack: $beamBack, ${super.toString()}}";
   }
 }

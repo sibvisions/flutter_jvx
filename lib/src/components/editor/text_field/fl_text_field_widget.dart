@@ -43,7 +43,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   bool get obscureText => false;
 
-  String get obscuringCharacter => '•';
+  String get obscuringCharacter => "•";
 
   bool get showSuffixIcon => true;
 

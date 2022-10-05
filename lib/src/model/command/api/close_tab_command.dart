@@ -23,6 +23,6 @@ class CloseTabCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'CloseTabCommand{componentName: $componentName, index: $index, ${super.toString()}}';
+    return "CloseTabCommand{componentName: $componentName, index: $index, ${super.toString()}}";
   }
 }

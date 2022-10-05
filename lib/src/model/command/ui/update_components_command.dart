@@ -37,6 +37,6 @@ class UpdateComponentsCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'UpdateComponentsCommand{changedComponents: $changedComponents, newComponents: $newComponents, deletedComponents: $deletedComponents, affectedComponents: $affectedComponents, ${super.toString()}}';
+    return "UpdateComponentsCommand{changedComponents: $changedComponents, newComponents: $newComponents, deletedComponents: $deletedComponents, affectedComponents: $affectedComponents, ${super.toString()}}";
   }
 }

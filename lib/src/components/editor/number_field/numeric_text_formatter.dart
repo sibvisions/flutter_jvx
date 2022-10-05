@@ -160,7 +160,7 @@ class NumericTextFormatter extends TextInputFormatter {
         if (newFormat.endsWith(".")) return newFormat.substring(0, newFormat.length - 1);
         return newFormat;
       } catch (e) {
-        return '';
+        return "";
       }
     }
 

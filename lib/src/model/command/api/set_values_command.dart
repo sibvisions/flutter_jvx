@@ -46,6 +46,6 @@ class SetValuesCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'SetValuesCommand{componentId: $componentId, dataProvider: $dataProvider, columnNames: $columnNames, values: $values, filter: $filter, filterCondition: $filterCondition, ${super.toString()}}';
+    return "SetValuesCommand{componentId: $componentId, dataProvider: $dataProvider, columnNames: $columnNames, values: $values, filter: $filter, filterCondition: $filterCondition, ${super.toString()}}";
   }
 }

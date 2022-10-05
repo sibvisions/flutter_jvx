@@ -25,6 +25,6 @@ class SaveUserDataCommand extends ConfigCommand {
 
   @override
   String toString() {
-    return 'SaveUserDataCommand{userData: $userData, ${super.toString()}}';
+    return "SaveUserDataCommand{userData: $userData, ${super.toString()}}";
   }
 }

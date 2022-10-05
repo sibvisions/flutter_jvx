@@ -31,6 +31,6 @@ class DeleteRowCommand extends DataCommand {
 
   @override
   String toString() {
-    return 'DeleteRowCommand{dataProvider: $dataProvider, deletedRow: $deletedRow, newSelectedRow: $newSelectedRow, ${super.toString()}}';
+    return "DeleteRowCommand{dataProvider: $dataProvider, deletedRow: $deletedRow, newSelectedRow: $newSelectedRow, ${super.toString()}}";
   }
 }

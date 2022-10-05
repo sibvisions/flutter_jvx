@@ -27,6 +27,6 @@ class ChangeSelectedRowCommand extends DataCommand {
 
   @override
   String toString() {
-    return 'ChangeSelectedRowCommand{dataProvider: $dataProvider, newSelectedRow: $newSelectedRow, ${super.toString()}}';
+    return "ChangeSelectedRowCommand{dataProvider: $dataProvider, newSelectedRow: $newSelectedRow, ${super.toString()}}";
   }
 }

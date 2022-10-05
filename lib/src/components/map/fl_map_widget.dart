@@ -40,8 +40,8 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          subdomains: const ['a', 'b', 'c'],
+          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          subdomains: const ["a", "b", "c"],
         ),
         PolygonLayer(
           polygons: polygons,

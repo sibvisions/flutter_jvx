@@ -36,6 +36,6 @@ class DeleteProviderDataCommand extends DataCommand {
 
   @override
   String toString() {
-    return 'DeleteProviderDataCommand{dataProvider: $dataProvider, fromIndex: $fromIndex, toIndex: $toIndex, deleteAll: $deleteAll, ${super.toString()}}';
+    return "DeleteProviderDataCommand{dataProvider: $dataProvider, fromIndex: $fromIndex, toIndex: $toIndex, deleteAll: $deleteAll, ${super.toString()}}";
   }
 }

@@ -27,6 +27,6 @@ class NavigationCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'NavigationCommand{openScreen: $openScreen, ${super.toString()}}';
+    return "NavigationCommand{openScreen: $openScreen, ${super.toString()}}";
   }
 }

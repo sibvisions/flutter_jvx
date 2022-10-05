@@ -28,8 +28,8 @@ class UrlEditor extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: FlutterJVx.translate('URL'),
-        hintText: 'http://host:port/services/mobile',
+        labelText: FlutterJVx.translate("URL"),
+        hintText: "http://host:port/services/mobile",
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );

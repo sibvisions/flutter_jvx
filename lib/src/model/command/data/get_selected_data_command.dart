@@ -33,6 +33,6 @@ class GetSelectedDataCommand extends DataCommand {
 
   @override
   String toString() {
-    return 'GetSelectedDataCommand{dataProvider: $dataProvider, subId: $subId, columnNames: $columnNames, ${super.toString()}}';
+    return "GetSelectedDataCommand{dataProvider: $dataProvider, subId: $subId, columnNames: $columnNames, ${super.toString()}}";
   }
 }

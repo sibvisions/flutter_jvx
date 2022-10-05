@@ -15,6 +15,6 @@ class DownloadTranslationCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'DownloadTranslationCommand{${super.toString()}}';
+    return "DownloadTranslationCommand{${super.toString()}}";
   }
 }

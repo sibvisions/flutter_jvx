@@ -51,7 +51,7 @@ class FlIconModel extends FlComponentModel {
       dynamic value = pJson[ApiObjectProperty.image];
       if (value != null) {
         // Set the original size of the image.
-        List<String> arr = value.split(',');
+        List<String> arr = value.split(",");
         image = arr[0];
 
         if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {

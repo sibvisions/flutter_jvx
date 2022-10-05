@@ -71,7 +71,7 @@ abstract class ImageLoader {
       );
     } else {
       image = Image.network(
-        '$baseUrl/resource/$appName/$pPath',
+        "$baseUrl/resource/$appName/$pPath",
         loadingBuilder: _getImageLoadingBuilder(),
         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
           FlutterJVx.log.e("Failed to load network image ($pPath)", error, stackTrace);
@@ -127,7 +127,7 @@ abstract class ImageLoader {
       String path = pImageString;
       Size? size;
       if (!pImageInBinary) {
-        List<String> arr = pImageString.split(',');
+        List<String> arr = pImageString.split(",");
 
         path = arr[0];
 
@@ -172,7 +172,7 @@ abstract class ImageLoader {
 
   static String getAssetPath(bool inPackage, String path) {
     if (inPackage) {
-      return 'packages/${getPackageName()}/$path';
+      return "packages/${getPackageName()}/$path";
     } else {
       return path;
     }

@@ -46,6 +46,6 @@ class OpenErrorDialogCommand extends MessageViewCommand {
 
   @override
   String toString() {
-    return 'OpenErrorDialogCommand{silentAbort: $silentAbort, details: $details, exceptions: $exceptions, isTimeout: $isTimeout, canBeFixedInSettings: $canBeFixedInSettings, ${super.toString()}}';
+    return "OpenErrorDialogCommand{silentAbort: $silentAbort, details: $details, exceptions: $exceptions, isTimeout: $isTimeout, canBeFixedInSettings: $canBeFixedInSettings, ${super.toString()}}";
   }
 }

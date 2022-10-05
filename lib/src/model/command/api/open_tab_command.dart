@@ -23,6 +23,6 @@ class OpenTabCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'OpenTabCommand{componentName: $componentName, index: $index, ${super.toString()}}';
+    return "OpenTabCommand{componentName: $componentName, index: $index, ${super.toString()}}";
   }
 }

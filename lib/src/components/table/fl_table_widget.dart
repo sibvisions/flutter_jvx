@@ -239,7 +239,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       }
 
       widget ??= Text(
-        (value ?? '').toString(),
+        (value ?? "").toString(),
         style: model.getTextStyle(),
         overflow: TextOverflow.ellipsis,
       );

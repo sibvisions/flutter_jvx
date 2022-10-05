@@ -32,6 +32,6 @@ class DownloadActionCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'DownloadActionCommand{fileId: $fileId, fileName: $fileName, url: $url ${super.toString()}}';
+    return "DownloadActionCommand{fileId: $fileId, fileName: $fileName, url: $url ${super.toString()}}";
   }
 }

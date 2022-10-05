@@ -30,6 +30,6 @@ class RouteToWorkCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'RouteToWorkCommand{screenName: $screenName, replaceRoute: $replaceRoute, ${super.toString()}}';
+    return "RouteToWorkCommand{screenName: $screenName, replaceRoute: $replaceRoute, ${super.toString()}}";
   }
 }

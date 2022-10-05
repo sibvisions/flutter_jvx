@@ -337,11 +337,11 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     FlComponentModel childModel = pComponent.model;
     String pTabString = childModel.constraints!;
 
-    List pTabStrings = pTabString.split(';');
-    bool enabled = (pTabStrings[0]?.toLowerCase() == 'true');
-    bool closable = (pTabStrings[1]?.toLowerCase() == 'true');
-    String text = pTabStrings[2] ?? '';
-    String imageString = pTabStrings.length >= 4 ? pTabStrings[3] : '';
+    List pTabStrings = pTabString.split(";");
+    bool enabled = (pTabStrings[0]?.toLowerCase() == "true");
+    bool closable = (pTabStrings[1]?.toLowerCase() == "true");
+    String text = pTabStrings[2] ?? "";
+    String imageString = pTabStrings.length >= 4 ? pTabStrings[3] : "";
 
     Widget? image;
     if (imageString.isNotEmpty) {

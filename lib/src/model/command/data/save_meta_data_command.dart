@@ -21,6 +21,6 @@ class SaveMetaDataCommand extends DataCommand {
 
   @override
   String toString() {
-    return 'SaveMetaDataCommand{response: $response, ${super.toString()}}';
+    return "SaveMetaDataCommand{response: $response, ${super.toString()}}";
   }
 }

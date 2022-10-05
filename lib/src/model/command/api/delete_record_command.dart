@@ -39,6 +39,6 @@ class DeleteRecordCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'DeleteRecordCommand{dataProvider: $dataProvider, filter: $filter, filterCondition: $filterCondition, selectedRow: $selectedRow, fetch: $fetch, ${super.toString()}}';
+    return "DeleteRecordCommand{dataProvider: $dataProvider, filter: $filter, filterCondition: $filterCondition, selectedRow: $selectedRow, fetch: $fetch, ${super.toString()}}";
   }
 }

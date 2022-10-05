@@ -269,27 +269,27 @@ abstract class ParseUtil {
 
   static String? propertyAsString(String? property) {
     if (property == null) return null;
-    String result = property.split('.').last.toLowerCase().replaceAll('\$', '~');
+    String result = property.split(".").last.toLowerCase().replaceAll("\$", "~");
 
-    if (result.contains('___')) {
-      result = result.replaceAll('___', '?');
+    if (result.contains("___")) {
+      result = result.replaceAll("___", "?");
 
-      result = result.replaceAll('__', '.');
+      result = result.replaceAll("__", ".");
 
       result = _enumToCamelCase(result);
 
-      result = result.replaceAll('?', '_');
-    } else if (result.contains('__')) {
-      result.split('__').asMap().forEach((i, p) {
+      result = result.replaceAll("?", "_");
+    } else if (result.contains("__")) {
+      result.split("__").asMap().forEach((i, p) {
         if (i == 0) {
           result = p;
         } else {
-          result += '.${p.toLowerCase()}';
+          result += ".${p.toLowerCase()}";
         }
       });
 
       result = _enumToCamelCase(result);
-    } else if (result.contains('_')) {
+    } else if (result.contains("_")) {
       result = _enumToCamelCase(result);
     }
 
@@ -297,11 +297,11 @@ abstract class ParseUtil {
   }
 
   static String _enumToCamelCase(String string) {
-    string.split('_').asMap().forEach((i, p) {
+    string.split("_").asMap().forEach((i, p) {
       if (i == 0) {
         string = p;
       } else if (p.isNotEmpty) {
-        string += '${p[0].toUpperCase()}${p.substring(1)}';
+        string += "${p[0].toUpperCase()}${p.substring(1)}";
       }
     });
     return string;

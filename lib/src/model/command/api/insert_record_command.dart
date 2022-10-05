@@ -25,6 +25,6 @@ class InsertRecordCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'InsertRecordCommand{dataProvider: $dataProvider, ${super.toString()}}';
+    return "InsertRecordCommand{dataProvider: $dataProvider, ${super.toString()}}";
   }
 }

@@ -18,6 +18,6 @@ class CloseScreenCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'CloseScreenCommand{screenName: $screenName, ${super.toString()}}';
+    return "CloseScreenCommand{screenName: $screenName, ${super.toString()}}";
   }
 }

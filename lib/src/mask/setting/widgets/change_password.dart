@@ -26,20 +26,20 @@ class ChangePassword extends StatelessWidget {
     passwordController.text = password ?? "";
 
     return AlertDialog(
-      title: Text(FlutterJVx.translate('Change Password')),
+      title: Text(FlutterJVx.translate("Change Password")),
       content: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-              child: Text(FlutterJVx.translate('Please enter and confirm the new password.')),
+              child: Text(FlutterJVx.translate("Please enter and confirm the new password.")),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
               child: TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
-                  labelText: "${FlutterJVx.translate('Username')}:",
+                  labelText: "${FlutterJVx.translate("Username")}:",
                   enabled: false,
                   border: const OutlineInputBorder(),
                 ),
@@ -52,8 +52,8 @@ class ChangePassword extends StatelessWidget {
                 obscureText: true,
                 controller: passwordController,
                 decoration: InputDecoration(
-                  labelText: FlutterJVx.translate('Password'),
-                  hintText: FlutterJVx.translate('Enter Password'),
+                  labelText: FlutterJVx.translate("Password"),
+                  hintText: FlutterJVx.translate("Enter Password"),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -64,8 +64,8 @@ class ChangePassword extends StatelessWidget {
                 obscureText: true,
                 controller: newPasswordController,
                 decoration: InputDecoration(
-                  labelText: FlutterJVx.translate('Password (new)'),
-                  hintText: FlutterJVx.translate('Password (new)'),
+                  labelText: FlutterJVx.translate("Password (new)"),
+                  hintText: FlutterJVx.translate("Password (new)"),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -76,7 +76,7 @@ class ChangePassword extends StatelessWidget {
                 obscureText: true,
                 controller: repeatPasswordController,
                 decoration: InputDecoration(
-                  hintText: FlutterJVx.translate('Password (confirm)'),
+                  hintText: FlutterJVx.translate("Password (confirm)"),
                   border: const OutlineInputBorder(),
                 ),
               ),
@@ -90,7 +90,7 @@ class ChangePassword extends StatelessWidget {
 
   Widget passwordError() {
     return AlertDialog(
-      title: Text(FlutterJVx.translate('Error')),
+      title: Text(FlutterJVx.translate("Error")),
       content: Text(FlutterJVx.translate("The passwords don't match!")),
     );
   }
@@ -101,7 +101,7 @@ class ChangePassword extends StatelessWidget {
     if (IConfigService().getUserInfo() != null) {
       widgetList.add(TextButton(
         onPressed: () => Navigator.of(context).pop(),
-        child: Text(FlutterJVx.translate('Cancel')),
+        child: Text(FlutterJVx.translate("Cancel")),
       ));
     }
 
@@ -114,21 +114,21 @@ class ChangePassword extends StatelessWidget {
               password: passwordController.text,
               loginMode: LoginMode.CHANGE_PASSWORD,
               newPassword: newPasswordController.text,
-              reason: 'Password Expired',
+              reason: "Password Expired",
             ));
           } else {
             IUiService().sendCommand(ChangePasswordCommand(
               username: usernameController.text,
               newPassword: newPasswordController.text,
               password: passwordController.text,
-              reason: 'Change Password Request',
+              reason: "Change Password Request",
             ));
           }
         } else {
           IUiService().openDialog(pBuilder: (_) => passwordError(), pIsDismissible: true);
         }
       },
-      child: Text(FlutterJVx.translate('Change Password')),
+      child: Text(FlutterJVx.translate("Change Password")),
     ));
 
     return widgetList;

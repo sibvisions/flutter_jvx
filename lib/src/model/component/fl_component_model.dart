@@ -116,7 +116,7 @@ abstract class FlComponentModel {
 
   @override
   String toString() {
-    return '$runtimeType{id: $id}';
+    return "$runtimeType{id: $id}";
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

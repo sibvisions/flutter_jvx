@@ -37,6 +37,6 @@ class SelectRecordCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'SelectRecordCommand{selectedRecord: $selectedRecord, dataProvider: $dataProvider, filter: $filter, reload: $reload, fetch: $fetch, ${super.toString()}}';
+    return "SelectRecordCommand{selectedRecord: $selectedRecord, dataProvider: $dataProvider, filter: $filter, reload: $reload, fetch: $fetch, ${super.toString()}}";
   }
 }

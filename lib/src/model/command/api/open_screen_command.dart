@@ -27,6 +27,6 @@ class OpenScreenCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'OpenScreenCommand{componentId: $screenLongName, ${super.toString()}}';
+    return "OpenScreenCommand{componentId: $screenLongName, ${super.toString()}}";
   }
 }

@@ -48,7 +48,7 @@ class _JVxSplashState extends State<JVxSplash> {
               image: Svg(
                 ImageLoader.getAssetPath(
                   FlutterJVx.package,
-                  'assets/images/JVx_Bg.svg',
+                  "assets/images/JVx_Bg.svg",
                 ),
               ),
               fit: BoxFit.fill,
@@ -66,7 +66,7 @@ class _JVxSplashState extends State<JVxSplash> {
                     image: Svg(
                       ImageLoader.getAssetPath(
                         FlutterJVx.package,
-                        'assets/images/J.svg',
+                        "assets/images/J.svg",
                       ),
                       size: const Size(138, 145),
                     ),
@@ -119,7 +119,7 @@ class _JVxSplashState extends State<JVxSplash> {
               child: Image.asset(
                 ImageLoader.getAssetPath(
                   FlutterJVx.package,
-                  'assets/images/logo.png',
+                  "assets/images/logo.png",
                 ),
                 width: 200,
               ),

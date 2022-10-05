@@ -26,6 +26,6 @@ class SaveMenuCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'SaveMenuCommand{menuModel: $menuModel, ${super.toString()}}';
+    return "SaveMenuCommand{menuModel: $menuModel, ${super.toString()}}";
   }
 }

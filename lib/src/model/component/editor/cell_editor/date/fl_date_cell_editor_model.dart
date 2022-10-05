@@ -36,7 +36,7 @@ class FlDateCellEditorModel extends ICellEditorModel {
       pKey: ApiObjectProperty.dateFormat,
       pDefault: defaultModel.dateFormat,
       pCurrent: dateFormat,
-      pConversion: (value) => value.replaceAll('Y', 'y'),
+      pConversion: (value) => value.replaceAll("Y", "y"),
     );
 
     isDateEditor = getPropertyValue(

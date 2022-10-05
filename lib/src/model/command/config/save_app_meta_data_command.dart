@@ -24,6 +24,6 @@ class SaveAppMetaDataCommand extends ConfigCommand {
 
   @override
   String toString() {
-    return 'SaveAppMetaDataCommand{metaData: $metaData, ${super.toString()}}';
+    return "SaveAppMetaDataCommand{metaData: $metaData, ${super.toString()}}";
   }
 }

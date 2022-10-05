@@ -30,6 +30,6 @@ class MessageView extends ApiResponse {
 
   @override
   String toString() {
-    return 'MessageView{title: $title, message: $message}';
+    return "MessageView{title: $title, message: $message}";
   }
 }

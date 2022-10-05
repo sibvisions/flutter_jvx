@@ -61,7 +61,7 @@ class OfflineDatabase {
     // Open the database and store the reference.
     db = await openDatabase(
       // Set the path to the database.
-      join(await getDatabasesPath(), 'jvx_offline_data.sqlite'),
+      join(await getDatabasesPath(), "jvx_offline_data.sqlite"),
       onUpgrade: (db, oldVersion, newVersion) => _initStructTables(db),
       // Set the version. This executes the onCreate/onUpgrade function and provides a
       // path to perform database upgrades and downgrades.

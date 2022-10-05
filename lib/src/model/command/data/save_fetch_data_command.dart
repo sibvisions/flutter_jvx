@@ -12,6 +12,6 @@ class SaveFetchDataCommand extends DataCommand {
 
   @override
   String toString() {
-    return 'SaveFetchDataCommand{response: $response, ${super.toString()}}';
+    return "SaveFetchDataCommand{response: $response, ${super.toString()}}";
   }
 }

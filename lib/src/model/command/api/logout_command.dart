@@ -15,6 +15,6 @@ class LogoutCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'LogoutCommand{${super.toString()}}';
+    return "LogoutCommand{${super.toString()}}";
   }
 }

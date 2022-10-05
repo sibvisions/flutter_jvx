@@ -24,6 +24,6 @@ class PreferredSizeCommand extends LayoutCommand {
 
   @override
   String toString() {
-    return 'PreferredSizeCommand{layoutData: $layoutData, ${super.toString()}}';
+    return "PreferredSizeCommand{layoutData: $layoutData, ${super.toString()}}";
   }
 }

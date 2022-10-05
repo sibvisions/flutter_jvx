@@ -36,20 +36,20 @@ class FlMapModel extends FlComponentModel {
   bool pointSelectionLockedOnCenter = false;
 
   //TitleProvider
-  String tileProvider = 'OpenStreetMap';
+  String tileProvider = "OpenStreetMap";
 
   String? groupDataBook;
   String? pointsDataBook;
 
   //layoutVal?:CSSProperties,
   //centerPosition?:MapLocation
-  String groupColumnName = 'GROUP';
+  String groupColumnName = "GROUP";
 
-  String latitudeColumnName = 'LATITUDE';
+  String latitudeColumnName = "LATITUDE";
 
-  String longitudeColumnName = 'LONGITUDE';
+  String longitudeColumnName = "LONGITUDE";
 
-  String markerImageColumnName = 'MARKER_IMAGE';
+  String markerImageColumnName = "MARKER_IMAGE";
 
   String? markerImage;
 
@@ -177,7 +177,7 @@ class FlMapModel extends FlComponentModel {
 
   LatLng? _parseLatLng(dynamic pValue) {
     if (pValue != null && pValue is String) {
-      List<String> centerStrings = pValue.split(';');
+      List<String> centerStrings = pValue.split(";");
       return LatLng(double.tryParse(centerStrings.first) ?? 0, double.tryParse(centerStrings.last) ?? 0);
     }
     return null;

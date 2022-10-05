@@ -15,6 +15,6 @@ class DownloadStyleCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'DownloadStyleCommand{${super.toString()}}';
+    return "DownloadStyleCommand{${super.toString()}}";
   }
 }

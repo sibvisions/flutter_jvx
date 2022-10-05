@@ -23,6 +23,6 @@ class ChangesCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'ChangesCommand{${super.toString()}}';
+    return "ChangesCommand{${super.toString()}}";
   }
 }

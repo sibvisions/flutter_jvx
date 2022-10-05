@@ -23,6 +23,6 @@ class MessageViewCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'MessageViewCommand{title: $title, message: $message, ${super.toString()}}';
+    return "MessageViewCommand{title: $title, message: $message, ${super.toString()}}";
   }
 }

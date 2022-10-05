@@ -30,7 +30,7 @@ abstract class OfflineUtil {
         height: 20,
         alignment: Alignment.center,
         child: const Text(
-          'OFFLINE',
+          "OFFLINE",
           style: TextStyle(color: Colors.white),
         ),
       ),

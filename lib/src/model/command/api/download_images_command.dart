@@ -15,6 +15,6 @@ class DownloadImagesCommand extends ApiCommand {
 
   @override
   String toString() {
-    return 'DownloadImagesCommand{${super.toString()}}';
+    return "DownloadImagesCommand{${super.toString()}}";
   }
 }

@@ -23,6 +23,6 @@ class AuthenticatedCommand extends BaseCommand {
 
   @override
   String toString() {
-    return 'AuthenticatedCommand{authenticated: $authenticated, ${super.toString()}}';
+    return "AuthenticatedCommand{authenticated: $authenticated, ${super.toString()}}";
   }
 }

@@ -25,5 +25,5 @@ class ColumnView {
   }
 
   Map<String, dynamic> toJson() =>
-      <String, dynamic>{'columnNames': columnNames, 'columnCount': columnCount, 'rowDefinitions': rowDefinitions};
+      <String, dynamic>{"columnNames": columnNames, "columnCount": columnCount, "rowDefinitions": rowDefinitions};
 }

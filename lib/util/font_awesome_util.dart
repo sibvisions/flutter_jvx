@@ -5,7 +5,7 @@ import 'parse_util.dart';
 
 abstract class FontAwesomeUtil {
   static bool checkFontAwesome(String pText) {
-    return pText.contains('FontAwesome');
+    return pText.contains("FontAwesome");
   }
 
   static FaIcon getFontAwesomeIcon({required String pText, double? pIconSize, Color? pColor}) {

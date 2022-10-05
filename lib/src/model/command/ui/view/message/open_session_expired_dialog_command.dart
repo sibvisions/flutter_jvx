@@ -22,6 +22,6 @@ class OpenSessionExpiredDialogCommand extends MessageViewCommand {
 
   @override
   String toString() {
-    return 'OpenSessionExpiredDialogCommand{${super.toString()}}';
+    return "OpenSessionExpiredDialogCommand{${super.toString()}}";
   }
 }

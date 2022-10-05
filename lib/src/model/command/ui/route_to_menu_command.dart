@@ -25,6 +25,6 @@ class RouteToMenuCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'RouteToMenuCommand{replaceRoute: $replaceRoute, ${super.toString()}}';
+    return "RouteToMenuCommand{replaceRoute: $replaceRoute, ${super.toString()}}";
   }
 }
