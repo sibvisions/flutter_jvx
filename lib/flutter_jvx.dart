@@ -371,7 +371,7 @@ class FlutterJVxState extends State<FlutterJVx> {
     configService.registerImagesCallback(changedImages);
 
     configService.getLayoutMode().addListener(() {
-      changeStyle(IConfigService().getAppStyle()!);
+      changeStyle(IConfigService().getAppStyle());
       setState(() {});
     });
 
