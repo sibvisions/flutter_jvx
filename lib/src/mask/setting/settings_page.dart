@@ -165,11 +165,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildApplicationSettings(BuildContext context) {
     SettingItem appNameSetting = SettingItem(
-      frontIcon: FaIcon(
-        FontAwesomeIcons.server,
-        color: Theme.of(context).primaryColor,
-      ),
-      endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
+      frontIcon: const FaIcon(FontAwesomeIcons.server),
+      endIcon: const FaIcon(FontAwesomeIcons.keyboard),
       value: appName ?? "",
       title: FlutterJVx.translate("App Name"),
       enabled: !IConfigService().isOffline(),
@@ -179,10 +176,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
         _settingItemClicked(
           pEditor: editor,
-          pTitleIcon: FaIcon(
-            FontAwesomeIcons.server,
-            color: Theme.of(context).primaryColor,
-          ),
+          pTitleIcon: const FaIcon(FontAwesomeIcons.server),
           pTitleText: FlutterJVx.translate("App Name"),
         ).then((value) async {
           if (value == true) {
@@ -194,11 +188,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     SettingItem baseUrlSetting = SettingItem(
-        frontIcon: FaIcon(
-          FontAwesomeIcons.globe,
-          color: Theme.of(context).primaryColor,
-        ),
-        endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
+        frontIcon: const FaIcon(FontAwesomeIcons.globe),
+        endIcon: const FaIcon(FontAwesomeIcons.keyboard),
         value: baseUrl ?? "",
         title: FlutterJVx.translate("URL"),
         enabled: !IConfigService().isOffline(),
@@ -238,11 +229,8 @@ class _SettingsPageState extends State<SettingsPage> {
     ]);
 
     SettingItem languageSetting = SettingItem(
-      frontIcon: FaIcon(
-        FontAwesomeIcons.language,
-        color: Theme.of(context).primaryColor,
-      ),
-      endIcon: const FaIcon(FontAwesomeIcons.caretDown),
+      frontIcon: const FaIcon(FontAwesomeIcons.language),
+      endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown),
       title:
           "${FlutterJVx.translate("Language")} (${FlutterJVx.translate("Current")}: ${IConfigService().getDisplayLanguage()})",
       //"System" is default
@@ -273,11 +261,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     SettingItem pictureSetting = SettingItem(
-      frontIcon: FaIcon(
-        FontAwesomeIcons.image,
-        color: Theme.of(context).primaryColor,
-      ),
-      endIcon: const FaIcon(FontAwesomeIcons.caretDown),
+      frontIcon: const FaIcon(FontAwesomeIcons.image),
+      endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown),
       title: FlutterJVx.translate("Picture Size"),
       value: resolution,
       itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
@@ -301,24 +286,28 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
-    return SettingGroup(
-      groupHeader: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Text(
-          FlutterJVx.translate("Application"),
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+    return ListTileTheme.merge(
+      iconColor: Theme.of(context).colorScheme.primary,
+      child: SettingGroup(
+        groupHeader: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            FlutterJVx.translate("Application"),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
+        items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
       ),
-      items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
     );
   }
 
   SettingGroup _buildVersionInfo() {
     SettingItem appVersionSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.github),
+      endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare),
       valueNotifier: appVersionNotifier,
       title: FlutterJVx.translate("App version"),
       onPressed: (value) => showLicensePage(
