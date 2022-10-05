@@ -26,6 +26,7 @@ class UrlEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      autofocus: true,
       controller: controller,
       decoration: InputDecoration(
         labelText: FlutterJVx.translate("URL"),
