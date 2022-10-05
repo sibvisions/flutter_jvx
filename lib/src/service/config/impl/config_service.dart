@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:universal_io/io.dart' as universal_io;
 
 import '../../../../config/app_config.dart';
 import '../../../../flutter_jvx.dart';
@@ -22,7 +21,7 @@ class ConfigService implements IConfigService {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final Set<String> supportedLanguages = {"en"};
+  final Set<String> supportedLanguages = {};
 
   final SharedPreferences sharedPrefs;
 
@@ -46,6 +45,9 @@ class ConfigService implements IConfigService {
 
   /// Used to manage files, different implementations for web and mobile
   IFileManager fileManager;
+
+  /// Current display language
+  String? language;
 
   /// Current translation, base translation + overlaid language
   Translation translation = Translation.empty();
@@ -153,27 +155,61 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  String getLanguage() {
-    return getString("language") ?? _getPlatformLocale();
+  String getDisplayLanguage() {
+    return getLanguage() ?? getUserLanguage() ?? IConfigService.getPlatformLocale();
   }
 
   @override
-  Future<bool> setLanguage(String? pLanguage) async {
-    bool success = await setString("language", pLanguage == _getPlatformLocale() ? null : pLanguage);
+  String? getLanguage() {
+    return language;
+  }
+
+  @override
+  void setLanguage(String? pLanguage) {
+    language = pLanguage;
+    if (fileManager.isSatisfied()) {
+      loadLanguages();
+    }
+  }
+
+  @override
+  String? getUserLanguage() {
+    return getString("language");
+  }
+
+  @override
+  Future<bool> setUserLanguage(String? pLanguage) async {
+    bool success = await setString("language", pLanguage);
     if (fileManager.isSatisfied()) {
       loadLanguages();
     }
     return success;
   }
 
-  String _getPlatformLocale() {
-    int? end = universal_io.Platform.localeName.indexOf(RegExp("[_-]"));
-    return universal_io.Platform.localeName.substring(0, end == -1 ? null : end);
+  @override
+  void loadLanguages() {
+    _loadLanguage(getDisplayLanguage());
   }
 
   @override
-  void loadLanguages() {
-    _loadLanguage(getLanguage());
+  Set<String> getSupportedLanguages() {
+    return supportedLanguages;
+  }
+
+  @override
+  void reloadSupportedLanguages() {
+    // Add supported languages by parsing all translation file names
+    supportedLanguages.clear();
+
+    List<File> listFiles = fileManager.getTranslationFiles();
+
+    for (File file in listFiles) {
+      String fileName = file.path.split("/").last;
+      RegExpMatch? match = IConfigService.langRegex.firstMatch(fileName);
+      if (match != null) {
+        supportedLanguages.add(match.namedGroup("name")!);
+      }
+    }
   }
 
   @override
@@ -214,28 +250,6 @@ class ConfigService implements IConfigService {
   @override
   Future<bool> setAuthCode(String? pAuthCode) {
     return setString("authKey", pAuthCode);
-  }
-
-  @override
-  Set<String> getSupportedLanguages() {
-    return supportedLanguages;
-  }
-
-  @override
-  void reloadSupportedLanguages() {
-    // Add supported languages by parsing all translation file names
-    supportedLanguages.clear();
-    supportedLanguages.add("en");
-
-    List<File> listFiles = fileManager.getTranslationFiles();
-
-    for (File file in listFiles) {
-      String fileName = file.path.split("/").last;
-      RegExpMatch? match = IConfigService.langRegex.firstMatch(fileName);
-      if (match != null) {
-        supportedLanguages.add(match.namedGroup("name")!);
-      }
-    }
   }
 
   @override
@@ -333,7 +347,7 @@ class ConfigService implements IConfigService {
   String translateText(String pText) {
     String? translatedText = translation.translations[pText];
     if (translatedText == null) {
-      FlutterJVx.log.d("Translation for text: $pText was not found for language ${getLanguage()}");
+      FlutterJVx.log.d("Translation for text: $pText was not found for language ${getDisplayLanguage()}");
       return pText;
     }
     return translatedText;

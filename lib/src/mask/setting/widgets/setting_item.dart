@@ -28,7 +28,7 @@ class SettingItem<T> extends StatelessWidget {
   final ValueWidgetBuilder<T>? itemBuilder;
 
   /// Will be called when item was pressed
-  final Function(T value)? onPressed;
+  final Function(T? value)? onPressed;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -74,7 +74,7 @@ class SettingItem<T> extends StatelessWidget {
                 },
               )
             : createSubtitle(context, value as T),
-        onTap: () => onPressed?.call(value ?? valueNotifier!.value),
+        onTap: () => onPressed?.call(value ?? valueNotifier?.value),
       ),
     );
   }

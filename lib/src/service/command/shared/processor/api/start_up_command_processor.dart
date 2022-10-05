@@ -46,7 +46,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
           (kIsWeb && !IConfigService().isMobileOnly()) || IConfigService().isWebOnly() ? "mobileDesktop" : "mobile",
       username: command.username,
       password: command.password,
-      langCode: IConfigService().getLanguage(),
+      langCode: IConfigService().getUserLanguage() ?? IConfigService.getPlatformLocale(),
       technology: deviceInfo.technology,
       osName: deviceInfo.osName,
       osVersion: deviceInfo.osVersion,

@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     appName = IConfigService().getAppName();
     baseUrl = IConfigService().getBaseUrl();
-    language = IConfigService().getLanguage();
+    language = IConfigService().getUserLanguage();
     resolution = IConfigService().getPictureResolution() ?? resolutions.last;
   }
 
@@ -231,16 +231,23 @@ class _SettingsPageState extends State<SettingsPage> {
           });
         });
 
+    var supportedLanguages = IConfigService().getSupportedLanguages().toList();
+    supportedLanguages.insertAll(0, [
+      "${FlutterJVx.translate("System")} (${IConfigService.getPlatformLocale()})",
+      "en",
+    ]);
+
     SettingItem languageSetting = SettingItem(
       frontIcon: FaIcon(
         FontAwesomeIcons.language,
         color: Theme.of(context).primaryColor,
       ),
       endIcon: const FaIcon(FontAwesomeIcons.caretDown),
-      title: FlutterJVx.translate("Language"),
-      value: language,
+      title:
+          "${FlutterJVx.translate("Language")} (${FlutterJVx.translate("Current")}: ${IConfigService().getDisplayLanguage()})",
+      //"System" is default
+      value: language ?? supportedLanguages[0],
       onPressed: (value) {
-        var supportedLanguages = IConfigService().getSupportedLanguages().toList(growable: false);
         Picker picker = Picker(
             cancelText: FlutterJVx.translate("Cancel"),
             confirmText: FlutterJVx.translate("Confirm"),
@@ -252,7 +259,12 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
-                language = picker.getSelectedValues()[0];
+                String? selectedLanguage = picker.getSelectedValues()[0];
+                if (selectedLanguage == supportedLanguages[0]) {
+                  //"System" selected
+                  selectedLanguage = null;
+                }
+                language = selectedLanguage;
                 setState(() {});
               }
             });
@@ -389,7 +401,7 @@ class _SettingsPageState extends State<SettingsPage> {
       try {
         await IConfigService().setAppName(appName);
         await IConfigService().setBaseUrl(baseUrl);
-        await IConfigService().setLanguage(language);
+        await IConfigService().setUserLanguage(language);
         await IConfigService().setPictureResolution(resolution);
 
         await ICommandService().sendCommand(StartupCommand(

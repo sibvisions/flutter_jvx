@@ -167,7 +167,7 @@ class FlutterJVx extends StatefulWidget {
     }
     String? language = Uri.base.queryParameters["language"];
     if (language != null) {
-      await configService.setLanguage(language);
+      await configService.setUserLanguage(language == IConfigService.getPlatformLocale() ? null : language);
     }
     String? mobileOnly = Uri.base.queryParameters["mobileOnly"];
     if (mobileOnly != null) {
@@ -268,8 +268,6 @@ class FlutterJVxState extends State<FlutterJVx> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: IConfigService().getSupportedLanguages().map((e) => Locale.fromSubtags(languageCode: e)),
-      locale: Locale.fromSubtags(languageCode: IConfigService().getLanguage()),
     );
   }
 

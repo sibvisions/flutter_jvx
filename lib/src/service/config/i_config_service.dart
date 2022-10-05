@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_io/io.dart' as universal_io;
 
 import '../../../config/app_config.dart';
 import '../../mask/menu/menu_mode.dart';
@@ -73,14 +74,33 @@ abstract class IConfigService {
   /// Set instance of [IFileManager]
   void setFileManger(IFileManager pFileManger);
 
-  /// Returns language code of current language
-  String getLanguage();
+  static String getPlatformLocale() {
+    int? end = universal_io.Platform.localeName.indexOf(RegExp("[_-]"));
+    return universal_io.Platform.localeName.substring(0, end == -1 ? null : end);
+  }
 
-  /// Set current display language
-  Future<bool> setLanguage(String? pLanguage);
+  /// Returns current display language code
+  String getDisplayLanguage();
+
+  /// Returns current language code
+  String? getLanguage();
+
+  /// Set current language code
+  void setLanguage(String? pLanguage);
+
+  /// Returns user selected language
+  String? getUserLanguage();
+
+  /// Set user selected language
+  Future<bool> setUserLanguage(String? pLanguage);
 
   /// Reload current language (after translation files update)
   void loadLanguages();
+
+  /// Returns a modifiable list of all supported languages codes
+  Set<String> getSupportedLanguages();
+
+  void reloadSupportedLanguages();
 
   /// Translates text in current translation, will return the original text if not translation was found
   String translateText(String pText);
@@ -108,11 +128,6 @@ abstract class IConfigService {
 
   /// Set auth code for future auto-login
   Future<bool> setAuthCode(String? pAuthCode);
-
-  /// Returns a modifiable list of all supported languages codes
-  Set<String> getSupportedLanguages();
-
-  void reloadSupportedLanguages();
 
   /// Get app style sent from server
   Map<String, String> getAppStyle();

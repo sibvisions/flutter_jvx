@@ -19,7 +19,7 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
     IConfigService().setClientId(command.metaData.clientId);
     await IConfigService().setVersion(version);
 
-    await IConfigService().setLanguage(command.metaData.langCode);
+    IConfigService().setLanguage(command.metaData.langCode);
 
     IConfigService().setMetaData(command.metaData);
 
