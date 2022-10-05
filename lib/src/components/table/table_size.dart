@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
@@ -142,7 +141,6 @@ class TableSize {
               pCellEditorJson: colDef.cellEditorJson,
               onChange: (_) => null,
               onEndEditing: (_) => null,
-              pUiService: IUiService(),
             );
 
             final int dataColIndex = dataChunk.columnDefinitions.indexOf(colDef);

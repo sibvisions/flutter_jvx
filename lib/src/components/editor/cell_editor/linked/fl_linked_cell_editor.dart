@@ -17,9 +17,6 @@ class FlLinkedCellEditor
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  IUiService uiService;
-
   final HashMap<dynamic, dynamic> _valueMap = HashMap();
 
   final int pageLoad = 50;
@@ -49,7 +46,6 @@ class FlLinkedCellEditor
     required super.onValueChange,
     required super.onEndEditing,
     this.recalculateSizeCallback,
-    required this.uiService,
   }) : super(
           name: name,
           model: FlLinkedCellEditorModel(),
@@ -101,7 +97,7 @@ class FlLinkedCellEditor
           reason: "Opened the linked cell picker"),
     );
 
-    uiService
+    IUiService()
         .openDialog(
             pBuilder: (_) => FlLinkedCellPicker(
                   model: model,

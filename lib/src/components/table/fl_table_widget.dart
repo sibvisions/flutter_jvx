@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../../services.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -221,7 +220,6 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
           pCellEditorJson: colDef.cellEditorJson,
           onChange: (value) => onValueChanged?.call(value, pIndex, colDef.name),
           onEndEditing: (value) => onEndEditing?.call(value, pIndex, colDef.name),
-          pUiService: IUiService(),
         );
 
         cellEditor.setValue(value);

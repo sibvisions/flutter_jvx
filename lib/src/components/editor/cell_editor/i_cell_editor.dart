@@ -3,7 +3,6 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
-import '../../../service/ui/i_ui_service.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import 'date/fl_date_cell_editor.dart';
 import 'fl_check_box_cell_editor.dart';
@@ -89,7 +88,6 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     CellEditorRecalculateSizeCallback? pRecalculateSizeCallback,
-    required IUiService pUiService,
   }) {
     String cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
 
@@ -117,35 +115,37 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
         );
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
-            columnDefinition: columnDefinition,
-            pCellEditorJson: pCellEditorJson,
-            onValueChange: onChange,
-            onEndEditing: onEndEditing,
-            recalculateSizeCallback: pRecalculateSizeCallback);
+          columnDefinition: columnDefinition,
+          pCellEditorJson: pCellEditorJson,
+          onValueChange: onChange,
+          onEndEditing: onEndEditing,
+          recalculateSizeCallback: pRecalculateSizeCallback,
+        );
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         return FlChoiceCellEditor(
-            columnDefinition: columnDefinition,
-            pCellEditorJson: pCellEditorJson,
-            onValueChange: onChange,
-            onEndEditing: onEndEditing,
-            recalculateSizeCallback: pRecalculateSizeCallback);
+          columnDefinition: columnDefinition,
+          pCellEditorJson: pCellEditorJson,
+          onValueChange: onChange,
+          onEndEditing: onEndEditing,
+          recalculateSizeCallback: pRecalculateSizeCallback,
+        );
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         return FlDateCellEditor(
-            columnDefinition: columnDefinition,
-            pCellEditorJson: pCellEditorJson,
-            onValueChange: onChange,
-            onEndEditing: onEndEditing,
-            recalculateSizeCallback: pRecalculateSizeCallback,
-            uiService: pUiService);
+          columnDefinition: columnDefinition,
+          pCellEditorJson: pCellEditorJson,
+          onValueChange: onChange,
+          onEndEditing: onEndEditing,
+          recalculateSizeCallback: pRecalculateSizeCallback,
+        );
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
-            name: pName,
-            columnDefinition: columnDefinition,
-            pCellEditorJson: pCellEditorJson,
-            onValueChange: onChange,
-            onEndEditing: onEndEditing,
-            recalculateSizeCallback: pRecalculateSizeCallback,
-            uiService: pUiService);
+          name: pName,
+          columnDefinition: columnDefinition,
+          pCellEditorJson: pCellEditorJson,
+          onValueChange: onChange,
+          onEndEditing: onEndEditing,
+          recalculateSizeCallback: pRecalculateSizeCallback,
+        );
 
       default:
         return FlDummyCellEditor();

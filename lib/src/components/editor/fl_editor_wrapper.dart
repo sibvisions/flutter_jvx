@@ -162,16 +162,18 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Subscribes to the service and registers the set value call back.
   void subscribe(T pModel) {
-    IUiService().registerDataSubscription(
-      pDataSubscription: DataSubscription(
-        subbedObj: this,
-        dataProvider: pModel.dataProvider,
-        from: -1,
-        onSelectedRecord: setValue,
-        onMetaData: setColumnDefinition,
-        dataColumns: [pModel.columnName],
-      ),
-    );
+    if (pModel.dataProvider.isNotEmpty) {
+      IUiService().registerDataSubscription(
+        pDataSubscription: DataSubscription(
+          subbedObj: this,
+          dataProvider: pModel.dataProvider,
+          from: -1,
+          onSelectedRecord: setValue,
+          onMetaData: setColumnDefinition,
+          dataColumns: [pModel.columnName],
+        ),
+      );
+    }
   }
 
   /// Unsubscribes the callback of the cell editor from value changes.
@@ -196,6 +198,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void setColumnDefinition(DalMetaDataResponse pMetaData) {
     cellEditor.setColumnDefinition(pMetaData.columns.firstWhereOrNull((element) => element.name == model.columnName));
+    setState(() {});
   }
 
   /// Sets the state of the widget and sends a set value command.
@@ -254,12 +257,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     var jsonCellEditor = Map<String, dynamic>.from(pModel.json[ApiObjectProperty.cellEditor]);
     cellEditor = ICellEditor.getCellEditor(
-        pName: pModel.name,
-        pCellEditorJson: jsonCellEditor,
-        onChange: onChange,
-        onEndEditing: onEndEditing,
-        pRecalculateSizeCallback: recalculateSize,
-        pUiService: IUiService());
+      pName: pModel.name,
+      pCellEditorJson: jsonCellEditor,
+      onChange: onChange,
+      onEndEditing: onEndEditing,
+      pRecalculateSizeCallback: recalculateSize,
+    );
 
     if (pSubscribe) {
       subscribe(pModel);

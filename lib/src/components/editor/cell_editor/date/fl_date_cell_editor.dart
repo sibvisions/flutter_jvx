@@ -11,9 +11,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  IUiService uiService;
-
   dynamic _value;
 
   TextEditingController textController = TextEditingController();
@@ -32,7 +29,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     required super.onValueChange,
     required super.onEndEditing,
     this.recalculateSizeCallback,
-    required this.uiService,
   }) : super(
           model: FlDateCellEditorModel(),
         ) {
@@ -133,7 +129,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     bool cancelled = false;
     dynamic originalValue = _value;
 
-    uiService
+    IUiService()
         .openDialog(
             pBuilder: (_) => DatePickerDialog(
                   initialDate: pInitialDate,
@@ -152,7 +148,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         _value = originalValue;
         return;
       }
-      uiService
+      IUiService()
           .openDialog(
               pBuilder: (_) => TimePickerDialog(
                     initialTime: pInitialTime,
@@ -175,7 +171,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   void _openDateEditor(DateTime pInitialDate) {
-    uiService
+    IUiService()
         .openDialog(
             pBuilder: (_) => DatePickerDialog(
                   initialDate: pInitialDate,
@@ -192,7 +188,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   void _openTimeEditor(TimeOfDay pInitialTime) {
-    uiService
+    IUiService()
         .openDialog(
             pBuilder: (_) => TimePickerDialog(
                   initialTime: pInitialTime,
