@@ -59,27 +59,16 @@ class AppMenuListGroup extends StatelessWidget {
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
-        if (layoutMode == LayoutMode.Small)
-          Container(
-            color: Theme.of(context).bottomAppBarColor,
-            child: Divider(
-              color: headerColor ?? ListTileTheme.of(context).iconColor,
-              height: 48,
-              indent: 15,
-              endIndent: 15,
-              thickness: 5,
-            ),
+        SliverPersistentHeader(
+          pinned: layoutMode != LayoutMode.Small,
+          delegate: AppMenuGridHeader(
+            headerText: FlutterJVx.translate(menuGroupModel.name),
+            headerColor: headerColor,
+            height: 48,
+            textStyle: textStyle,
+            layoutMode: layoutMode,
           ),
-        if (layoutMode != LayoutMode.Small)
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: AppMenuGridHeader(
-              headerText: FlutterJVx.translate(menuGroupModel.name),
-              headerColor: headerColor,
-              height: 48,
-              textStyle: textStyle,
-            ),
-          ),
+        ),
         SliverList(
           delegate: SliverChildListDelegate.fixed(
             listGroupItems,
