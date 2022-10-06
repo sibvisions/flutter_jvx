@@ -37,7 +37,7 @@ abstract class BaseCommand {
 
   @override
   String toString() {
-    return "${super.toString()} | ShowLoading: $showLoading | LoadingDelay: $loadingDelay | Reason: $reason";
+    return "ShowLoading: $showLoading | LoadingDelay: $loadingDelay | Reason: $reason";
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
