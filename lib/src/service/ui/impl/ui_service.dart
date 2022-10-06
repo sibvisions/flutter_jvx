@@ -42,13 +42,13 @@ class UiService implements IUiService {
   /// ALl current menu items
   MenuModel? _menuModel;
 
-  /// List of all models currently active
-  final List<FlComponentModel> _activeComponentModels = [];
+  /// List of all known models
+  final List<FlComponentModel> _componentModels = [];
 
-  /// Live component registration
-  final List<ComponentSubscription> _registeredComponents = [];
+  /// All component subscriptions
+  final List<ComponentSubscription> _componentSubscriptions = [];
 
-  /// All Registered data subscriptions
+  /// All data subscriptions
   final List<DataSubscription> _dataSubscriptions = [];
 
   /// Map of all active frames (dialogs) with their componentId
@@ -273,12 +273,12 @@ class UiService implements IUiService {
 
   @override
   List<FlComponentModel> getChildrenModels(String id) {
-    return _activeComponentModels.where((element) => (element.parent == id)).toList();
+    return _componentModels.where((element) => (element.parent == id)).toList();
   }
 
   @override
   List<FlComponentModel> getDescendantModels(String id) {
-    return _activeComponentModels
+    return _componentModels
         .where((element) => (element.parent == id))
         .expand((element) => [element, ...getDescendantModels(element.id)])
         .toList();
@@ -286,39 +286,38 @@ class UiService implements IUiService {
 
   @override
   FlComponentModel? getComponentModel({required String pComponentId}) {
-    return _activeComponentModels.firstWhereOrNull((element) => element.id == pComponentId);
+    return _componentModels.firstWhereOrNull((element) => element.id == pComponentId);
   }
 
   @override
   FlComponentModel? getComponentByName({required String pComponentName}) {
-    return _activeComponentModels.firstWhereOrNull((element) => element.name == pComponentName);
+    return _componentModels.firstWhereOrNull((element) => element.name == pComponentName);
   }
 
   @override
   FlPanelModel? getComponentByScreenName({required String pScreenLongName}) {
-    return _activeComponentModels.firstWhereOrNull((element) => element.screenLongName == pScreenLongName)
-        as FlPanelModel?;
+    return _componentModels.firstWhereOrNull((element) => element.screenLongName == pScreenLongName) as FlPanelModel?;
   }
 
   @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
     FlutterJVx.log.d("Save new components: ${newModels.map((e) => e.id).toList()}");
-    _activeComponentModels.addAll(newModels);
+    _componentModels.addAll(newModels);
   }
 
   @override
   void closeScreen({required String pScreenName, required bool pBeamBack}) {
-    FlComponentModel? screenModel = _activeComponentModels.firstWhereOrNull((element) => element.name == pScreenName);
+    FlComponentModel? screenModel = _componentModels.firstWhereOrNull((element) => element.name == pScreenName);
 
     if (screenModel != null) {
       List<FlComponentModel> children = getAllComponentsBelow(screenModel.id);
 
       // Remove all children and itself
-      _activeComponentModels.removeWhere((currentComp) =>
+      _componentModels.removeWhere((currentComp) =>
           currentComp == screenModel || children.any((compToDelete) => compToDelete.id == currentComp.id));
 
       // clear lists that get filled when new screen opens anyway
-      _registeredComponents.removeWhere((currentComp) =>
+      _componentSubscriptions.removeWhere((currentComp) =>
           currentComp.compId == screenModel.id ||
           children.any((compToDelete) => compToDelete.id == currentComp.compId));
       _dataSubscriptions.removeWhere((currentComp) =>
@@ -334,7 +333,7 @@ class UiService implements IUiService {
   List<FlComponentModel> getAllComponentsBelow(String id) {
     List<FlComponentModel> children = [];
 
-    for (FlComponentModel componentModel in _activeComponentModels) {
+    for (FlComponentModel componentModel in _componentModels) {
       String? parentId = componentModel.parent;
       if (parentId != null && parentId == id) {
         children.add(componentModel);
@@ -350,7 +349,7 @@ class UiService implements IUiService {
 
   @override
   void setLayoutPosition({required LayoutData layoutData}) {
-    List.from(_registeredComponents).where((element) => element.compId == layoutData.id).forEach((element) {
+    List.from(_componentSubscriptions).where((element) => element.compId == layoutData.id).forEach((element) {
       element.callback.call(data: layoutData);
     });
   }
@@ -361,7 +360,7 @@ class UiService implements IUiService {
 
   @override
   void registerAsLiveComponent({required ComponentSubscription pComponentSubscription}) {
-    _registeredComponents.add(pComponentSubscription);
+    _componentSubscriptions.add(pComponentSubscription);
   }
 
   @override
@@ -409,14 +408,14 @@ class UiService implements IUiService {
   void deleteInactiveComponent({required Set<String> inactiveIds}) {
     // remove subscription for removed components
     for (String inactiveId in inactiveIds) {
-      _activeComponentModels.removeWhere((screenComponent) => screenComponent.id == inactiveId);
+      _componentModels.removeWhere((screenComponent) => screenComponent.id == inactiveId);
     }
   }
 
   @override
   void disposeSubscriptions({required Object pSubscriber}) {
     _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
-    _registeredComponents.removeWhere((element) => element.subbedObj == pSubscriber);
+    _componentSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
   }
 
   @override
@@ -432,7 +431,7 @@ class UiService implements IUiService {
   @override
   void notifyAffectedComponents({required Set<String> affectedIds}) {
     for (String affectedId in affectedIds) {
-      List.from(_registeredComponents).where((element) => element.compId == affectedId).forEach((element) {
+      List.from(_componentSubscriptions).where((element) => element.compId == affectedId).forEach((element) {
         element.callback.call();
       });
     }
@@ -442,13 +441,13 @@ class UiService implements IUiService {
   void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
-      int index = _activeComponentModels.indexWhere((element) => element.id == updatedModel.id);
+      int index = _componentModels.indexWhere((element) => element.id == updatedModel.id);
       if (index != -1) {
-        _activeComponentModels[index] = updatedModel;
+        _componentModels[index] = updatedModel;
       }
 
       // Notify active component
-      List.from(_registeredComponents).where((element) => element.compId == updatedModel.id).forEach((element) {
+      List.from(_componentSubscriptions).where((element) => element.compId == updatedModel.id).forEach((element) {
         element.callback(newModel: updatedModel);
       });
     }
