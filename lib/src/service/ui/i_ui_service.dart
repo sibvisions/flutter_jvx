@@ -136,9 +136,6 @@ abstract class IUiService {
   /// Notify component of new [LayoutData].
   void setLayoutPosition({required LayoutData layoutData});
 
-  /// Returns a list of layoutData from all children.
-  List<LayoutData> getChildrenLayoutData({required String pParentId});
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Component registration management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

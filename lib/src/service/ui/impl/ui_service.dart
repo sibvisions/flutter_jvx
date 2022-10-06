@@ -51,9 +51,6 @@ class UiService implements IUiService {
   /// All Registered data subscriptions
   final List<DataSubscription> _dataSubscriptions = [];
 
-  /// List of all received
-  final Map<String, LayoutData> _layoutDataList = {};
-
   /// Map of all active frames (dialogs) with their componentId
   final Map<String, MessageDialog> _activeFrames = {};
   final List<FrameDialog> _activeDialogs = [];
@@ -324,8 +321,6 @@ class UiService implements IUiService {
       _registeredComponents.removeWhere((currentComp) =>
           currentComp.compId == screenModel.id ||
           children.any((compToDelete) => compToDelete.id == currentComp.compId));
-      _layoutDataList
-          .removeWhere((key, value) => key == screenModel.id || children.any((compToDelete) => compToDelete.id == key));
       _dataSubscriptions.removeWhere((currentComp) =>
           currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
     }
@@ -354,19 +349,7 @@ class UiService implements IUiService {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<LayoutData> getChildrenLayoutData({required String pParentId}) {
-    List<LayoutData> childrenData = [];
-    _layoutDataList.forEach((key, value) {
-      if (value.parentId == pParentId) {
-        childrenData.add(value);
-      }
-    });
-    return childrenData;
-  }
-
-  @override
   void setLayoutPosition({required LayoutData layoutData}) {
-    _layoutDataList[layoutData.id] = layoutData;
     List.from(_registeredComponents).where((element) => element.compId == layoutData.id).forEach((element) {
       element.callback.call(data: layoutData);
     });
@@ -426,7 +409,6 @@ class UiService implements IUiService {
   void deleteInactiveComponent({required Set<String> inactiveIds}) {
     // remove subscription for removed components
     for (String inactiveId in inactiveIds) {
-      _layoutDataList.remove(inactiveId);
       _activeComponentModels.removeWhere((screenComponent) => screenComponent.id == inactiveId);
     }
   }
