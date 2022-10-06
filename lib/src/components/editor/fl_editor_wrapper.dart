@@ -271,10 +271,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Logs the cell editor for debug purposes.
   void logCellEditor(String pPhase) {
-    FlutterJVx.log.d(StackTrace.current.toString());
-    FlutterJVx.log.d("----- $pPhase -----");
-    FlutterJVx.log.d("Old cell editor hashcode: ${oldCellEditor?.hashCode}");
-    FlutterJVx.log.d("New cell editor hashcode: ${cellEditor.hashCode}");
-    FlutterJVx.log.d("----- $pPhase -----");
+    FlutterJVx.log.d("""
+----- $pPhase -----
+Old cell editor hashcode: ${oldCellEditor?.hashCode}
+New cell editor hashcode: ${cellEditor.hashCode}
+----- $pPhase -----""", null, StackTrace.current);
   }
 }
