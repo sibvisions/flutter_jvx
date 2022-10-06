@@ -25,12 +25,11 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
 
     // Handle New & Changed Components
     // Get new full components
-    List<dynamic>? changedComponents = pResponse.changedComponents;
-    if (changedComponents != null) {
-      List<FlComponentModel>? componentsToSave = _getNewComponents(changedComponents);
+    if (pResponse.changedComponents != null) {
+      List<FlComponentModel>? componentsToSave = _getNewComponents(pResponse.changedComponents!);
 
       // Get changed Components
-      List<dynamic>? updatedComponent = _getChangedComponents(changedComponents);
+      List<dynamic>? updatedComponent = _getChangedComponents(pResponse.changedComponents!);
 
       if (componentsToSave != null || updatedComponent != null) {
         if (screenGenericResponse.originalRequest is ApiOpenScreenRequest) {

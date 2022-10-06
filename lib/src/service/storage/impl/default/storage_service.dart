@@ -1,7 +1,5 @@
 import 'dart:collection';
 
-import 'package:collection/collection.dart';
-
 import '../../../../../flutter_jvx.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
@@ -35,7 +33,7 @@ class StorageService implements IStorageService {
     // List of all affected models
     Set<String> affectedModels = {};
 
-    List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName);
+    List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName, ignoreVisibility: false);
 
     // Handle new Components
     if (newComponents != null) {
@@ -55,8 +53,8 @@ class StorageService implements IStorageService {
         // If a removed component changes it is no longer removed
         FlComponentModel? removedModel = _removedComponents[changedData[ApiObjectProperty.id]];
         if (removedModel != null) {
-          removedModel.isRemoved = false;
           _componentMap[removedModel.id] = removedModel;
+          _removedComponents.remove(removedModel.id);
         }
 
         // Get old Model
@@ -65,6 +63,8 @@ class StorageService implements IStorageService {
           // Update Component and add to changedModels
           String? oldParentId = model.parent;
           bool wasVisible = model.isVisible;
+          bool wasRemoved = model.isRemoved;
+          model.isRemoved = false;
 
           model.lastChangedProperties = changedData.keys.toSet();
           model.applyFromJson(changedData);
@@ -74,24 +74,22 @@ class StorageService implements IStorageService {
           if (model.isRemoved) {
             _componentMap.remove(model.id);
             _removedComponents[model.id] = model;
-          } else {
-            _componentMap[model.id] = model;
           }
 
           // Handle parent change, notify old parent of change
-          if (model.parent != oldParentId) {
-            var oldParent = _componentMap[model.parent]!;
+          if (oldParentId != null && model.parent != oldParentId) {
+            FlComponentModel oldParent = _componentMap[oldParentId]!;
             affectedModels.add(oldParent.id);
           }
 
-          if (model.isVisible != wasVisible || model.isRemoved) {
+          if (model.isVisible != wasVisible || model.isRemoved != wasRemoved) {
             affectedModels.add(model.parent!);
           }
         }
       }
     }
 
-    List<FlComponentModel> newScreenComps = _getAllComponentsBelowByName(name: screenName);
+    List<FlComponentModel> currentScreenComps = _getAllComponentsBelowByName(name: screenName, ignoreVisibility: false);
 
     List<FlComponentModel> newUiComponents = [];
     List<FlComponentModel> changedUiComponents = [];
@@ -100,34 +98,35 @@ class StorageService implements IStorageService {
 
     // Build UI Notification
     // Check for new or changed active components
-    for (FlComponentModel newModel in newScreenComps) {
+    for (FlComponentModel currentModel in currentScreenComps) {
       // Was model already sent once, present in oldScreen
-      bool isExisting = oldScreenComps.isNotEmpty && oldScreenComps.any((oldModel) => oldModel.id == newModel.id);
+      bool isExisting = oldScreenComps.isNotEmpty && oldScreenComps.any((oldModel) => oldModel.id == currentModel.id);
 
       // IF component has not been rendered before it is new.
       if (!isExisting) {
-        newUiComponents.add(newModel);
+        newUiComponents.add(currentModel);
       } else {
         // IF component has been rendered, check if it has been changed.
-        bool hasChanged = changedModels.any((changedModels) => changedModels == newModel.id);
+        bool hasChanged = changedModels.any((changedModels) => changedModels == currentModel.id);
+        // If model has been changed and is still in the screen.
         if (hasChanged) {
-          changedUiComponents.add(newModel);
+          changedUiComponents.add(currentModel);
         }
       }
     }
 
     // Check for components which are not active anymore, e.g. not visible, removed or destroyed
     for (FlComponentModel oldModel in oldScreenComps) {
-      bool isExisting = newScreenComps.any((newModel) => newModel.id == oldModel.id);
+      bool isExisting = currentScreenComps.any((newModel) => newModel.id == oldModel.id);
 
       if (!isExisting) {
         deletedUiComponents.add(oldModel.id);
       }
     }
 
-    // Components can only be affected if any other component has either changed, was deleted or is new. -Special Case for opening a screen
-    // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
+    // Components can only be affected if any other component has either changed, was deleted or is new.
     if (newUiComponents.isNotEmpty || changedUiComponents.isNotEmpty || deletedUiComponents.isNotEmpty) {
+      // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
       for (String affectedModel in affectedModels) {
         bool isChanged = changedUiComponents.any((changedModel) => changedModel.id == affectedModel);
         bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
@@ -159,10 +158,9 @@ class StorageService implements IStorageService {
 
     FlutterJVx.log.d(_componentMap.keys.toList().toString());
 
-    FlComponentModel? screenModel =
-        _componentMap.values.firstWhereOrNull((componentModel) => componentModel.name == screenName);
+    var list = _componentMap.values.where((componentModel) => componentModel.name == screenName).toList();
 
-    if (screenModel != null) {
+    for (var screenModel in list) {
       _componentMap.remove(screenModel.id);
 
       List<FlComponentModel> models = _getAllComponentsBelow(screenModel.id, true);
@@ -170,6 +168,7 @@ class StorageService implements IStorageService {
         _componentMap.remove(element.id);
       });
     }
+
     FlutterJVx.log.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
   }
 
@@ -178,12 +177,12 @@ class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns List of all [FlComponentModel] below it, recursively.
-  List<FlComponentModel> _getAllComponentsBelow(String id, [bool ignoreVisiblity = false]) {
+  List<FlComponentModel> _getAllComponentsBelow(String id, [bool ignoreVisibility = false]) {
     List<FlComponentModel> children = [];
 
     for (FlComponentModel componentModel in _componentMap.values) {
       String? parentId = componentModel.parent;
-      if (parentId != null && parentId == id && (ignoreVisiblity || componentModel.isVisible)) {
+      if (parentId != null && parentId == id && (ignoreVisibility || componentModel.isVisible)) {
         children.add(componentModel);
         children.addAll(_getAllComponentsBelow(componentModel.id));
       }
@@ -191,7 +190,7 @@ class StorageService implements IStorageService {
     return children;
   }
 
-  List<FlComponentModel> _getAllComponentsBelowByName({required String name, bool ignoreVisiblity = false}) {
+  List<FlComponentModel> _getAllComponentsBelowByName({required String name, bool ignoreVisibility = false}) {
     FlComponentModel? componentModel;
     _componentMap.forEach((key, value) {
       if (value.name == name) {
@@ -199,8 +198,8 @@ class StorageService implements IStorageService {
       }
     });
 
-    if (componentModel != null && (ignoreVisiblity || componentModel!.isVisible)) {
-      var list = _getAllComponentsBelow(componentModel!.id, ignoreVisiblity);
+    if (componentModel != null && (ignoreVisibility || componentModel!.isVisible)) {
+      var list = _getAllComponentsBelow(componentModel!.id, ignoreVisibility);
       list.add(componentModel!);
       return list;
     } else {
@@ -211,6 +210,5 @@ class StorageService implements IStorageService {
   /// Adds new Component
   void _addNewComponent(FlComponentModel newComponent) {
     _componentMap[newComponent.id] = newComponent;
-    newComponent;
   }
 }

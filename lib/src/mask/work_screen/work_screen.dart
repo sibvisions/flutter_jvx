@@ -219,7 +219,7 @@ class _WorkScreenState extends State<WorkScreen> {
             WidgetsBinding.instance.window.devicePixelRatio,
           );
           Widget screenWidget = widget.screenWidget;
-          if (!widget.isCustomScreen) {
+          if (!widget.isCustomScreen && screenWidget is FlPanelWrapper) {
             Size size = Size(constraints.maxWidth, constraints.maxHeight + viewInsets.bottom);
             if (!sentScreen) {
               _setScreenSize(size);
