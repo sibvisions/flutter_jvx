@@ -10,6 +10,7 @@ import '../../../mask/menu/menu_mode.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
 import '../../../model/response/application_meta_data_response.dart';
+import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../util/config_util.dart';
 import '../../file/file_manager.dart';
@@ -54,6 +55,9 @@ class ConfigService implements IConfigService {
 
   /// Application style sent from server
   Map<String, String>? applicationStyle;
+
+  /// JVx Application Settings
+  ApplicationSettingsResponse applicationSettings = ApplicationSettingsResponse.empty();
 
   /// The phone size
   Size? phoneSize;
@@ -470,6 +474,16 @@ class ConfigService implements IConfigService {
   @override
   Future<bool> setWebOnly(bool pWebOnly) {
     return sharedPrefs.setBool("${getAppName()}.webOnly", pWebOnly);
+  }
+
+  @override
+  void setApplicationSettings(ApplicationSettingsResponse pApplicationSettings) {
+    applicationSettings = pApplicationSettings;
+  }
+
+  @override
+  ApplicationSettingsResponse getApplicationSettings() {
+    return applicationSettings;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

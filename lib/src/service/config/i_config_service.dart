@@ -6,6 +6,7 @@ import '../../../config/app_config.dart';
 import '../../mask/menu/menu_mode.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/response/application_meta_data_response.dart';
+import '../../model/response/application_settings_response.dart';
 import '../../model/response/device_status_response.dart';
 import '../file/file_manager.dart';
 import '../service.dart';
@@ -211,4 +212,8 @@ abstract class IConfigService {
 
   /// Removes all language callbacks
   void disposeImagesCallbacks();
+
+  void setApplicationSettings(ApplicationSettingsResponse pApplicationSettings);
+
+  ApplicationSettingsResponse getApplicationSettings();
 }

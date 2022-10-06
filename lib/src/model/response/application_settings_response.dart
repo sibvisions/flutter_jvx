@@ -18,11 +18,24 @@ class ApplicationSettingsResponse extends ApiResponse {
 
   /// map with typeName and color as string
   /// e.g. mandatoryBackground, readOnlyBackground, invalidEditorBackground, alternateBackground, ...
-  final Map<String, String> colors;
+  final dynamic colors;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ApplicationSettingsResponse.empty()
+      : saveVisible = true,
+        reloadVisible = true,
+        rollbackVisible = true,
+        changePasswordVisible = true,
+        menuBarVisible = true,
+        toolBarVisible = true,
+        homeVisible = true,
+        logoutVisible = true,
+        userSettingsVisible = true,
+        colors = {},
+        super.fromJson(pJson: {}, originalRequest: "");
 
   ApplicationSettingsResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : saveVisible = pJson[ApiObjectProperty.save] ?? true,
