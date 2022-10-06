@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:beamer/beamer.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../commands.dart';
 import '../../../custom/custom_screen.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
@@ -79,8 +81,16 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
     }
 
     if (screen == null) {
+      FlutterJVx.log.wtf("Model not found for current work screen");
       screen = Container();
-      IUiService().routeToMenu(pReplaceRoute: true);
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        IUiService().sendCommand(OpenErrorDialogCommand(
+          reason: "Workscreen Model missing",
+          message: "Failed to open screen, please try again.",
+          dismissible: true,
+        ));
+        IUiService().routeToMenu(pReplaceRoute: true);
+      });
     }
 
     IUiService().getAppManager()?.onScreenPage();
