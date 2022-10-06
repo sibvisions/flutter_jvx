@@ -236,9 +236,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 setState(() {});
               } catch (e) {
                 await IUiService().sendCommand(OpenErrorDialogCommand(
-                  reason: "parseURl",
-                  message: FlutterJVx.translate("URL text could not be parsed"),
-                  canBeFixedInSettings: true,
+                  reason: "parseURl failed",
+                  details: e.toString(),
+                  message: FlutterJVx.translate("URL is invalid"),
+                  dismissible: true,
                 ));
               }
             }
