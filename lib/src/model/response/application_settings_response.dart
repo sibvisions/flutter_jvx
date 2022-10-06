@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import '../../service/api/shared/api_object_property.dart';
+import '../../service/api/shared/api_response_names.dart';
 import 'api_response.dart';
 
 class ApplicationSettingsResponse extends ApiResponse {
@@ -18,7 +21,7 @@ class ApplicationSettingsResponse extends ApiResponse {
 
   /// map with typeName and color as string
   /// e.g. mandatoryBackground, readOnlyBackground, invalidEditorBackground, alternateBackground, ...
-  final dynamic colors;
+  Map<String, Color> colors = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -35,7 +38,7 @@ class ApplicationSettingsResponse extends ApiResponse {
         logoutVisible = true,
         userSettingsVisible = true,
         colors = {},
-        super.fromJson(pJson: {}, originalRequest: "");
+        super.fromJson(pJson: {ApiObjectProperty.name: ApiResponseNames.applicationSettings}, originalRequest: "");
 
   ApplicationSettingsResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : saveVisible = pJson[ApiObjectProperty.save] ?? true,
@@ -47,6 +50,13 @@ class ApplicationSettingsResponse extends ApiResponse {
         homeVisible = pJson[ApiObjectProperty.home] ?? true,
         logoutVisible = pJson[ApiObjectProperty.logout] ?? true,
         userSettingsVisible = pJson[ApiObjectProperty.userSettings] ?? true,
-        colors = pJson[ApiObjectProperty.colors] ?? {},
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+        super.fromJson(pJson: pJson, originalRequest: originalRequest) {
+    // dynamic x = pJson[ApiObjectProperty.colors];
+    // for (dynamic y in x) {
+    //   log(y.toString());
+    // }
+
+    // log(x.toString());
+    //colors = pJson[ApiObjectProperty.colors] ?? {};
+  }
 }
