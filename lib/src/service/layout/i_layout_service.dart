@@ -16,6 +16,9 @@ abstract class ILayoutService {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Basically resets the service
+  void clear();
+
   /// Registers a parent for receiving child constraint changes.
   ///
   /// Returns Command to update UI if, layout has been newly calculated, returns an empty list if nothing happened.

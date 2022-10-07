@@ -188,7 +188,7 @@ late BeamerDelegate routerDelegate;
 
 class FlutterJVxState extends State<FlutterJVx> {
   /// Gets the [FlutterJVxState] widget.
-  static FlutterJVxState? of(BuildContext context) => context.findAncestorStateOfType();
+  static FlutterJVxState? of(BuildContext? context) => context?.findAncestorStateOfType();
 
   ThemeData themeData = ThemeData(
     backgroundColor: Colors.grey.shade50,
@@ -217,8 +217,12 @@ class FlutterJVxState extends State<FlutterJVx> {
 
     initAppFuture = initApp().catchError(createErrorHandler("Failed to initialize")).then((value) {
       //Activate second future
-      startupFuture = doStartup().catchError(createErrorHandler("Failed to send startup"));
+      restart();
     });
+  }
+
+  void restart() {
+    startupFuture = doStartup().catchError(createErrorHandler("Failed to send startup"));
   }
 
   @override

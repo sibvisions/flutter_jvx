@@ -29,6 +29,13 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  void clear() {
+    _isValid = true;
+    _currentlyLayouting.clear();
+    _layoutDataSet.clear();
+  }
+
+  @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
     FlutterJVx.log.d("${pLayoutData.id} REPORT: ${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;

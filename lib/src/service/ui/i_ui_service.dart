@@ -32,6 +32,9 @@ abstract class IUiService {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Basically resets the service
+  void clear();
+
   static String getErrorMessage(Object error) {
     if (error is TimeoutException) {
       return "Connection to remote server timed out";

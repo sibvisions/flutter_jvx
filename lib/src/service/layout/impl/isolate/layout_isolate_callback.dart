@@ -3,6 +3,7 @@ import 'dart:isolate';
 import '../../../isolate/isolate_message.dart';
 import '../../../isolate/isolate_message_wrapper.dart';
 import '../layout_service.dart';
+import 'message/endpoint/clear_message.dart';
 import 'message/endpoint/layout_in_process_message.dart';
 import 'message/endpoint/layout_valid_message.dart';
 import 'message/endpoint/mark_as_dirty_message.dart';
@@ -27,7 +28,9 @@ void layoutCallback(SendPort callerSendPort) {
     IsolateMessage isolateMessage = isolateMessageWrapper.message;
     dynamic response;
 
-    if (isolateMessage is MarkAsDirtyMessage) {
+    if (isolateMessage is ClearMessage) {
+      layoutStorage.clear();
+    } else if (isolateMessage is MarkAsDirtyMessage) {
       response = await layoutStorage.markLayoutAsDirty(pComponentId: isolateMessage.id);
     } else if (isolateMessage is ReportLayoutMessage) {
       response = await layoutStorage.reportLayout(pLayoutData: isolateMessage.layoutData);

@@ -30,6 +30,11 @@ class DataService implements IDataService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  void clear() {
+    clearDataBooks();
+  }
+
+  @override
   Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch}) async {
     DataBook? dataBook = dataBooks[pFetch.dataProvider];
     if (dataBook == null) {

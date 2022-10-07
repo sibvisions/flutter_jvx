@@ -27,6 +27,12 @@ class StartupCommand extends ApiCommand {
     required super.reason,
   }) {
     beforeProcessing = () => IUiService().getAppManager()?.onInitStartup();
+    afterProcessing = () {
+      ILayoutService().clear();
+      IStorageService().clear();
+      IDataService().clear();
+      IUiService().clear();
+    };
     onFinish = () => IUiService().getAppManager()?.onSuccessfulStartup();
   }
 

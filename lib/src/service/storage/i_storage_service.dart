@@ -16,6 +16,9 @@ abstract class IStorageService {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Basically resets the service
+  void clear();
+
   /// Updates [FlComponentModel]
   /// Returns [BaseCommand] to update UI with all effected components.
   List<BaseCommand> saveComponents(

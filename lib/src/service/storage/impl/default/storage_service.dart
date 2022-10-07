@@ -23,6 +23,12 @@ class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  void clear() {
+    _componentMap.clear();
+    _removedComponents.clear();
+  }
+
+  @override
   List<BaseCommand> saveComponents(
     List<dynamic>? componentsToUpdate,
     List<FlComponentModel>? newComponents,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../frame_dialog.dart';
 
@@ -50,10 +49,6 @@ class ServerSessionExpired extends FrameDialog {
 
   void _restartApp() {
     IUiService().closeFrameDialog(this);
-    IUiService().sendCommand(StartupCommand(
-      reason: "Session expired dialog",
-      username: IConfigService().getUsername(),
-      password: IConfigService().getPassword(),
-    ));
+    FlutterJVxState.of(FlutterJVx.getCurrentContext())?.restart();
   }
 }

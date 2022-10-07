@@ -39,7 +39,7 @@ class UiService implements IUiService {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// ALl current menu items
+  /// All current menu items
   MenuModel? _menuModel;
 
   /// List of all known models
@@ -61,6 +61,16 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void clear() {
+    _menuModel = null;
+    _componentModels.clear();
+    _componentSubscriptions.clear();
+    _dataSubscriptions.clear();
+    _activeFrames.clear();
+    _activeDialogs.clear();
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Communication with other services

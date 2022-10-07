@@ -20,6 +20,9 @@ abstract class IDataService {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Basically resets the service
+  void clear();
+
   /// Establishes the meta data of the given dataBook
   Future<bool> updateMetaData({required DalMetaDataResponse pMetaData});
 

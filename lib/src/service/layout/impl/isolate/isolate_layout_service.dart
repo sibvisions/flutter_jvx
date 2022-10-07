@@ -9,6 +9,7 @@ import '../../../isolate/isolate_message.dart';
 import '../../../isolate/isolate_message_wrapper.dart';
 import '../../i_layout_service.dart';
 import 'layout_isolate_callback.dart';
+import 'message/endpoint/clear_message.dart';
 import 'message/endpoint/layout_in_process_message.dart';
 import 'message/endpoint/layout_valid_message.dart';
 import 'message/endpoint/mark_as_dirty_message.dart';
@@ -44,6 +45,11 @@ class IsolateLayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void clear() {
+    _sendMessage(ClearMessage());
+  }
 
   @override
   Future<bool> markLayoutAsDirty({required String pComponentId}) {
