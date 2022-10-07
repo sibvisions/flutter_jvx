@@ -72,7 +72,13 @@ class _SettingsPageState extends State<SettingsPage> {
     Widget body = SingleChildScrollView(
       child: Column(
         children: [
-          _buildApplicationSettings(context),
+          ListTileTheme.merge(
+            iconColor: Theme.of(context).colorScheme.primary,
+            child: IconTheme.merge(
+              data: IconThemeData(color: Theme.of(context).colorScheme.primary),
+              child: Builder(builder: (context) => _buildApplicationSettings(context)),
+            ),
+          ),
           _buildVersionInfo(),
           Container(
             height: 50,
@@ -215,10 +221,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onConfirm: onConfirm,
             ),
             controller: controller,
-            pTitleIcon: FaIcon(
-              FontAwesomeIcons.globe,
-              color: Theme.of(context).primaryColor,
-            ),
+            pTitleIcon: const FaIcon(FontAwesomeIcons.globe),
             pTitleText: urlTitle,
           ).then((value) async {
             if (value == true) {
@@ -310,21 +313,18 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
-    return ListTileTheme.merge(
-      iconColor: Theme.of(context).colorScheme.primary,
-      child: SettingGroup(
-        groupHeader: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Text(
-            FlutterJVx.translate("Application"),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+    return SettingGroup(
+      groupHeader: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text(
+          FlutterJVx.translate("Application"),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
       ),
+      items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
     );
   }
 
