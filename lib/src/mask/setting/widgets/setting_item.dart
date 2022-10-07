@@ -70,7 +70,7 @@ class SettingItem<T> extends StatelessWidget {
             ? ValueListenableBuilder<T>(
                 valueListenable: valueNotifier!,
                 builder: (context, value, child) {
-                  return createSubtitle(context, value);
+                  return createSubtitle(context, value)!;
                 },
               )
             : createSubtitle(context, value as T),
@@ -79,7 +79,8 @@ class SettingItem<T> extends StatelessWidget {
     );
   }
 
-  Widget createSubtitle(BuildContext context, T value) {
-    return itemBuilder?.call(context, value, null) ?? Text(value.toString().isNotEmpty ? value.toString() : "-");
+  Widget? createSubtitle(BuildContext context, T value) {
+    return itemBuilder?.call(context, value, null) ??
+        (value is String ? Text(value.toString().isNotEmpty ? value.toString() : "-") : null);
   }
 }

@@ -1,5 +1,6 @@
 {
   "title": "JVx Mobile Demo",
+  "privacyPolicy": "https://visionx.sibvisions.com/privacy-policy/",
   "requestTimeout": 5,
   "autoRestartOnSessionExpired": true,
   "uiConfig": {

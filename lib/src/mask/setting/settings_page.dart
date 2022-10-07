@@ -4,6 +4,7 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
@@ -73,6 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
     Widget body = SingleChildScrollView(
       child: Column(
         children: [
+          _buildApplicationInfo(),
           ListTileTheme.merge(
             iconColor: Theme.of(context).colorScheme.primary,
             child: IconTheme.merge(
@@ -170,6 +172,36 @@ class _SettingsPageState extends State<SettingsPage> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Widget _buildApplicationInfo() {
+    if (IConfigService().getAppConfig()?.privacyPolicy != null) {
+      SettingItem privacyPolicy = SettingItem(
+        frontIcon: const FaIcon(FontAwesomeIcons.link),
+        endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize),
+        title: FlutterJVx.translate("Privacy Policy"),
+        onPressed: (value) => launchUrl(
+          IConfigService().getAppConfig()!.privacyPolicy!,
+          mode: LaunchMode.externalApplication,
+        ),
+      );
+
+      return SettingGroup(
+        groupHeader: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            FlutterJVx.translate("Info"),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        items: [privacyPolicy],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
 
   Widget _buildApplicationSettings(BuildContext context) {
     String appNameTitle = FlutterJVx.translate("App Name");
@@ -329,7 +361,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  SettingGroup _buildVersionInfo() {
+  Widget _buildVersionInfo() {
     SettingItem appVersionSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.github),
       endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize),
@@ -360,7 +392,7 @@ class _SettingsPageState extends State<SettingsPage> {
       title: FlutterJVx.translate("Build date"),
     );
 
-    SettingGroup group = SettingGroup(
+    return SettingGroup(
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
@@ -373,8 +405,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       items: [appVersionSetting, commitSetting, buildDataSetting],
     );
-
-    return group;
   }
 
   Future<bool?> _showEditor<bool>(

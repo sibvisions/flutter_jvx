@@ -8,6 +8,7 @@ class AppConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final String? title;
+  final Uri? privacyPolicy;
   final int? requestTimeout;
   final bool? autoRestartOnSessionExpired;
 
@@ -23,6 +24,7 @@ class AppConfig {
 
   const AppConfig({
     this.title,
+    this.privacyPolicy,
     this.requestTimeout,
     this.autoRestartOnSessionExpired,
     this.uiConfig,
@@ -44,6 +46,7 @@ class AppConfig {
   AppConfig.fromJson({required Map<String, dynamic> json})
       : this(
           title: json['title'],
+          privacyPolicy: Uri.parse(json['privacyPolicy']),
           requestTimeout: json['requestTimeout'],
           autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json: json['uiConfig']) : null,
@@ -57,6 +60,7 @@ class AppConfig {
 
     return AppConfig(
       title: other.title ?? title,
+      privacyPolicy: other.privacyPolicy ?? privacyPolicy,
       requestTimeout: other.requestTimeout ?? requestTimeout,
       autoRestartOnSessionExpired: other.autoRestartOnSessionExpired ?? autoRestartOnSessionExpired,
       uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
