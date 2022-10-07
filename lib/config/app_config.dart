@@ -9,6 +9,7 @@ class AppConfig {
 
   final String? title;
   final int? requestTimeout;
+  final bool? autoRestartOnSessionExpired;
 
   final UiConfig? uiConfig;
   final ServerConfig? serverConfig;
@@ -23,6 +24,7 @@ class AppConfig {
   const AppConfig({
     this.title,
     this.requestTimeout,
+    this.autoRestartOnSessionExpired,
     this.uiConfig,
     this.serverConfig,
     this.versionConfig,
@@ -33,6 +35,7 @@ class AppConfig {
       : this(
           title: "JVx Mobile",
           requestTimeout: 10,
+          autoRestartOnSessionExpired: true,
           uiConfig: const UiConfig.empty(),
           serverConfig: const ServerConfig.empty(),
           versionConfig: const VersionConfig.empty(),
@@ -42,6 +45,7 @@ class AppConfig {
       : this(
           title: json['title'],
           requestTimeout: json['requestTimeout'],
+          autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json: json['uiConfig']) : null,
           serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json: json['serverConfig']) : null,
           versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json: json['versionConfig']) : null,
@@ -54,6 +58,7 @@ class AppConfig {
     return AppConfig(
       title: other.title ?? title,
       requestTimeout: other.requestTimeout ?? requestTimeout,
+      autoRestartOnSessionExpired: other.autoRestartOnSessionExpired ?? autoRestartOnSessionExpired,
       uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
       serverConfig: serverConfig?.merge(other.serverConfig) ?? other.serverConfig,
       versionConfig: versionConfig?.merge(other.versionConfig) ?? other.versionConfig,

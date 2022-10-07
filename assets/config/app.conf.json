@@ -1,6 +1,7 @@
 {
   "title": "JVx Mobile Demo",
   "requestTimeout": 5,
+  "autoRestartOnSessionExpired": true,
   "uiConfig": {
     "showRememberMe": true,
     "rememberMeChecked": true
