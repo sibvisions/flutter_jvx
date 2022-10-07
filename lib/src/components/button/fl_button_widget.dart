@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../util/constants/i_color.dart';
 import '../../../util/image/image_loader.dart';
@@ -170,11 +170,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       if (!url.startsWith("http")) {
         url = "https://$url";
       }
-      try {
-        launchUrlString(url);
-      } catch (e) {
-        rethrow;
-      }
+      launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+      );
     }
   }
 }
