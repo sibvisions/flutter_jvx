@@ -46,7 +46,7 @@ class AppConfig {
   AppConfig.fromJson({required Map<String, dynamic> json})
       : this(
           title: json['title'],
-          privacyPolicy: Uri.parse(json['privacyPolicy']),
+          privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
           requestTimeout: json['requestTimeout'],
           autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json: json['uiConfig']) : null,
