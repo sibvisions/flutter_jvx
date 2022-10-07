@@ -85,7 +85,6 @@ class CommandService implements ICommandService {
     try {
       await processCommand(pCommand);
       pCommand.onFinish?.call();
-      FlutterJVx.log.i("$pCommand finished");
     } catch (error) {
       FlutterJVx.log.e("Error processing ${pCommand.runtimeType}");
       rethrow;
