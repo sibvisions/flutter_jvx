@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:collection/collection.dart';
+import 'package:queue/queue.dart';
 
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
@@ -54,7 +54,7 @@ class CommandService implements ICommandService {
   /// New api commands will be added to this list and
   /// will only be executed if the previous command and all of its follow-ups
   /// have finished execution (excluding layout-ing)
-  final Queue<BaseCommand> _apiCommandsQueue = Queue();
+  final Queue _apiCommandsQueue = Queue();
 
   /// List of all progress handler for commands
   final List<ICommandProgressHandler> progressHandler = [];
@@ -70,33 +70,27 @@ class CommandService implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<void> sendCommand(BaseCommand pCommand) async {
-    // Same Command cant  be added twice, a previously added command will end up here when its called
-    if (pCommand is ApiCommand && !_apiCommandsQueue.contains(pCommand)) {
-      _apiCommandsQueue.add(pCommand);
-      // If there is already a command in queue don't execute it
-      if (_apiCommandsQueue.length > 1) {
-        return;
-      }
+  Future<void> sendCommand(BaseCommand pCommand) {
+    // Only queue api commands
+    if (pCommand is ApiCommand) {
+      return _apiCommandsQueue.add(() => _sendCommand(pCommand));
+    } else {
+      return _sendCommand(pCommand);
     }
+  }
+
+  Future<void> _sendCommand(BaseCommand pCommand) async {
     progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
 
     try {
       await processCommand(pCommand);
       pCommand.onFinish?.call();
+      FlutterJVx.log.i("$pCommand finished");
     } catch (error) {
       FlutterJVx.log.e("Error processing ${pCommand.runtimeType}");
       rethrow;
     } finally {
       progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
-
-      if (_apiCommandsQueue.remove(pCommand)) {
-        // Remove current command after execution is complete
-        // and call the next one in queue
-        if (_apiCommandsQueue.isNotEmpty) {
-          unawaited(sendCommand(_apiCommandsQueue.first));
-        }
-      }
     }
   }
 
@@ -137,6 +131,10 @@ class CommandService implements ICommandService {
     pCommand.afterProcessing?.call();
 
     IUiService().getAppManager()?.modifyCommands(commands, pCommand);
+
+    if (commands.isNotEmpty) {
+      FlutterJVx.log.d("$pCommand\n->\n\t$commands");
+    }
 
     // Executes Commands resulting from incoming command.
     // Call routing commands last, all other actions must take priority.
