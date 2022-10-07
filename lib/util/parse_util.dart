@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../src/model/data/column_definition.dart';
 import '../src/model/layout/layout_position.dart';
-import 'constants/i_color.dart';
 
 abstract class ParseUtil {
   static T? castOrNull<T>(dynamic x) => x is T ? x : null;
@@ -44,14 +43,7 @@ abstract class ParseUtil {
     }
 
     var values = pValue.split(";");
-    int serverStringIndex = values.length - 1;
-    // TODO: change later so serverString index has priority
-    // if (values[serverStringIndex].contains("#")) {
-    if (values[0].contains("#")) {
-      return parseHexColor(values[0]);
-    } else {
-      return IColorConstants.SERVER_COLORS[values[serverStringIndex]];
-    }
+    return parseHexColor(values[0]);
   }
 
   /// Parses 6 or 8 digit hex-integers to colors.
