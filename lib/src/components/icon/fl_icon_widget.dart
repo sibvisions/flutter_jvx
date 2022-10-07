@@ -44,11 +44,11 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     }
 
     return GestureDetector(
-      onTap: onPress,
-      child: DecoratedBox(
-        decoration: BoxDecoration(color: model.background),
-        child: child,
-      ),
+      onTap: model.isEnabled ? onPress : null,
+      // child: DecoratedBox(
+      //   decoration: BoxDecoration(color: model.background),
+      child: child,
+      // ),
     );
   }
 

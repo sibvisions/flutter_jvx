@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 
+import '../../../../commands.dart';
 import '../../../../services.dart';
 import '../../../model/component/editor/cell_editor/fl_number_cell_editor_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -63,6 +66,9 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   createWidget(Map<String, dynamic>? pJson, bool pInTable) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
+    if (columnDefinition?.name == "ID") {
+      log("${pJson?[ApiObjectProperty.cellEditorBackground]}");
+    }
     ICellEditor.applyEditorJson(widgetModel, pJson);
 
     return FlTextFieldWidget(
@@ -74,6 +80,8 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
       focusNode: focusNode,
       textController: textController,
       keyboardType: numberFormatter.getKeyboardType(),
+      inTable: pInTable,
+      isMandatory: columnDefinition?.nullable == false,
     );
   }
 
@@ -96,6 +104,12 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   @override
   void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
     super.setColumnDefinition(pColumnDefinition);
+
+    if (pColumnDefinition?.name == "ID") {
+      log("setColumnDefinition");
+      log("${columnDefinition?.nullable}");
+      log(hashCode.toString());
+    }
 
     _recreateNumericFormatter();
   }

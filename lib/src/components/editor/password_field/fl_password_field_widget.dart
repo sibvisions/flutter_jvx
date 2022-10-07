@@ -1,6 +1,3 @@
-import 'package:flutter/widgets.dart';
-
-import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../text_field/fl_text_field_widget.dart';
 
 class FlPasswordWidget extends FlTextFieldWidget {
@@ -8,20 +5,16 @@ class FlPasswordWidget extends FlTextFieldWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlPasswordWidget(
-      {Key? key,
-      required FlTextFieldModel model,
-      required Function(String) valueChanged,
-      required Function(String) endEditing,
-      required FocusNode focusNode,
-      required TextEditingController textController})
-      : super(
-            key: key,
-            model: model,
-            valueChanged: valueChanged,
-            endEditing: endEditing,
-            focusNode: focusNode,
-            textController: textController);
+  const FlPasswordWidget({
+    super.key,
+    required super.model,
+    required super.valueChanged,
+    required super.endEditing,
+    required super.focusNode,
+    required super.textController,
+    super.inTable,
+    super.isMandatory,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults

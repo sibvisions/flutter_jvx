@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../flutter_jvx.dart';
@@ -105,6 +106,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           openQrCodeScanner();
         } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
           callNumber();
+        } else if (model.style == "hyperlink") {
+          openUrl();
         }
       }
     });
@@ -134,6 +137,18 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       tel = dataRecord!.values[0];
     }
     launchUrlString("tel://$tel");
+  }
+
+  void openUrl() {
+    String url = model.labelModel.text;
+
+    if (!url.startsWith("http")) {
+      url = "https://$url";
+    }
+    launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   void goOffline() {

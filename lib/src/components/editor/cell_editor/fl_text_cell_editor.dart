@@ -88,6 +88,8 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
+          inTable: pInTable,
+          isMandatory: columnDefinition?.nullable == false,
         );
       case (TEXT_PLAIN_PASSWORD):
         return FlPasswordWidget(
@@ -96,6 +98,8 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
+          inTable: pInTable,
+          isMandatory: columnDefinition?.nullable == false,
         );
       case (TEXT_PLAIN_SINGLELINE):
       default:
@@ -105,6 +109,8 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
+          inTable: pInTable,
+          isMandatory: columnDefinition?.nullable == false,
         );
     }
   }

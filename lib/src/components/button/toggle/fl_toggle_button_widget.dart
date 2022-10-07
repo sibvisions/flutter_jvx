@@ -20,15 +20,16 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
 
   @override
   ButtonStyle getButtonStyle(context) {
-    return ButtonStyle(
-      elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
-      backgroundColor: model.selected
-          ? MaterialStateProperty.all(IColor.toggleColor(model.background ?? Theme.of(context).colorScheme.primary))
-          : model.background != null
-              ? MaterialStateProperty.all(model.background)
-              : null,
-      padding: MaterialStateProperty.all(model.paddings),
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
-    );
+    ButtonStyle buttonStyle = super.getButtonStyle(context);
+
+    if (model.isEnabled && model.selected) {
+      buttonStyle = buttonStyle.copyWith(
+        backgroundColor: MaterialStateProperty.all(
+          IColor.toggleColor(model.background ?? Theme.of(context).colorScheme.primary),
+        ),
+      );
+    }
+
+    return buttonStyle;
   }
 }

@@ -5,15 +5,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../components.dart';
+import '../../../data.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
-import '../../model/data/subscriptions/data_record.dart';
-import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
-import '../../model/response/dal_meta_data_response.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -54,6 +52,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// The value to send to the server on sendValue.
   dynamic _toSendValue;
+
+  /// Last value;
+  dynamic _currentValue;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -188,21 +189,26 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void setValue(DataRecord? pDataRecord) {
     if (pDataRecord != null) {
-      cellEditor
-          .setValue(pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)]);
+      _currentValue = pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)];
     } else {
-      cellEditor.setValue(null);
+      _currentValue = null;
     }
+    cellEditor.setValue(_currentValue);
     setState(() {});
   }
 
   void setColumnDefinition(DalMetaDataResponse pMetaData) {
-    cellEditor.setColumnDefinition(pMetaData.columns.firstWhereOrNull((element) => element.name == model.columnName));
+    ColumnDefinition? newColDef = pMetaData.columns.firstWhereOrNull((element) => element.name == model.columnName);
+    cellEditor.setColumnDefinition(newColDef);
     setState(() {});
   }
 
   /// Sets the state of the widget and sends a set value command.
   void onEndEditing(dynamic pValue) {
+    if ((pValue?.toString() ?? "") == (_currentValue?.toString() ?? "")) {
+      return;
+    }
+
     _toSendValue = pValue;
     setState(() {});
 

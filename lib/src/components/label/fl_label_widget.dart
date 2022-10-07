@@ -21,7 +21,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     if (model.toolTipText != null) {
       child = getTooltipWidget();
     } else {
-      child = getTextWidget();
+      child = getTextWidget(model);
     }
 
     return GestureDetector(
@@ -43,16 +43,16 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   }
 
   Tooltip getTooltipWidget() {
-    return Tooltip(message: model.toolTipText!, child: getTextWidget());
+    return Tooltip(message: model.toolTipText!, child: getTextWidget(model));
   }
 
-  Widget getTextWidget() {
-    return ParseUtil.isHTML(model.text)
-        ? Html(data: model.text)
+  static Widget getTextWidget(FlLabelModel pModel, [TextStyle? pTextStyle]) {
+    return ParseUtil.isHTML(pModel.text)
+        ? Html(data: pModel.text)
         : Text(
-            model.text,
-            style: model.getTextStyle(),
-            textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
+            pModel.text,
+            style: pTextStyle ?? pModel.getTextStyle(),
+            textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
           );
   }
 }

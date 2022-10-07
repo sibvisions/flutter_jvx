@@ -103,11 +103,13 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   void endEditing(String pValue) {
-    SetValueCommand setValue =
-        SetValueCommand(componentName: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
-    IUiService().sendCommand(setValue);
+    if (model.isReadOnly) {
+      SetValueCommand setValue =
+          SetValueCommand(componentName: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
+      IUiService().sendCommand(setValue);
 
-    setState(() {});
+      setState(() {});
+    }
   }
 
   void updateText() {

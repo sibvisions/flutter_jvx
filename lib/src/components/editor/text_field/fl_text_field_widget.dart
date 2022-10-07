@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../services.dart';
 import '../../../../util/constants/i_color.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
@@ -18,6 +21,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   final TextEditingController textController;
 
   final bool inTable;
+
+  final bool isMandatory;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
@@ -62,6 +67,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     required this.textController,
     this.keyboardType = TextInputType.text,
     this.inTable = false,
+    this.isMandatory = false,
   }) : super(key: key, model: model, valueChanged: valueChanged, endEditing: endEditing);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,6 +76,14 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   @override
   Widget build(BuildContext context) {
+    Color? fillColor =
+        model.background ?? (isMandatory ? IConfigService().getApplicationSettings().mandatoryBackground : null);
+    bool isFilled = fillColor != null && !inTable;
+
+    if (isMandatory) {
+      log(fillColor.toString());
+    }
+
     return TextField(
       controller: textController,
       decoration: InputDecoration(
@@ -77,7 +91,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         contentPadding: textPadding,
         border: createBorder(context),
         suffixIcon: createSuffixIcon(),
-        filled: inTable ? false : null,
+        fillColor: fillColor,
+        filled: isFilled,
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
       textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
@@ -117,11 +132,13 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         padding: iconPadding,
         child: InkWell(
           onTap: () {
-            if (focusNode.hasFocus) {
-              textController.clear();
-              valueChanged("");
-            } else {
-              endEditing("");
+            if (!model.isReadOnly) {
+              if (focusNode.hasFocus) {
+                textController.clear();
+                valueChanged("");
+              } else {
+                endEditing("");
+              }
             }
           },
           child: Icon(

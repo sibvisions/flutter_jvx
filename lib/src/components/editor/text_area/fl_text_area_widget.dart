@@ -8,21 +8,18 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlTextAreaWidget(
-      {Key? key,
-      required T model,
-      required Function(String) valueChanged,
-      required Function(String) endEditing,
-      required FocusNode focusNode,
-      required TextEditingController textController})
-      : super(
-            key: key,
-            model: model,
-            valueChanged: valueChanged,
-            endEditing: endEditing,
-            focusNode: focusNode,
-            textController: textController,
-            keyboardType: TextInputType.multiline);
+  const FlTextAreaWidget({
+    super.key,
+    required super.model,
+    required super.valueChanged,
+    required super.endEditing,
+    required super.focusNode,
+    required super.textController,
+    super.inTable,
+    super.isMandatory,
+  }) : super(
+          keyboardType: TextInputType.multiline,
+        );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults

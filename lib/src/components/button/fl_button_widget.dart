@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../util/constants/i_color.dart';
 import '../../../util/image/image_loader.dart';
@@ -50,38 +49,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    if (model.style == "hyperlink") {
-      return createHyperlinkButton();
-    }
     return ElevatedButton(
       onPressed: getOnPressed(),
       style: getButtonStyle(context),
       child: createDirectButtonChild(context),
-    );
-  }
-
-  Widget createHyperlinkButton() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      margin: const EdgeInsets.all(4),
-      child: InkWell(
-        onTap: hyperlinkOnTap,
-        child: SizedBox(
-          height: 40,
-          child: Center(
-            child: Text(
-              model.labelModel.text,
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-                fontSize: model.labelModel.getTextStyle().fontSize,
-                color: !model.isEnabled ? IColorConstants.COMPONENT_DISABLED : model.foreground ?? Colors.blue,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -125,8 +96,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   Widget createDirectButtonChild(BuildContext context) {
-    return Container(
-      decoration: getBoxDecoration(context),
+    return Align(
       alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       child: getButtonChild(),
     );
@@ -145,35 +115,39 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   /// Gets the text widget of the button with the label model.
   Widget getTextWidget() {
-    return FlLabelWidget(model: model.labelModel).getTextWidget();
+    TextStyle textStyle = model.labelModel.getTextStyle();
+
+    if (!model.isEnabled) {
+      textStyle = textStyle.copyWith(color: IColor.darken(IColorConstants.COMPONENT_DISABLED));
+    } else if (model.labelModel.foreground == null && model.style == "hyperlink") {
+      textStyle = textStyle.copyWith(color: Colors.blue);
+    }
+
+    return FlLabelWidget.getTextWidget(model.labelModel, textStyle);
   }
 
   /// Gets the button style.
   ButtonStyle getButtonStyle(context) {
+    Color? backgroundColor;
+
+    if (!model.isEnabled) {
+      backgroundColor = IColorConstants.COMPONENT_DISABLED;
+    } else {
+      backgroundColor = model.background;
+    }
+
     return ButtonStyle(
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
-      backgroundColor: model.background != null ? MaterialStateProperty.all(model.background) : null,
+      backgroundColor: backgroundColor != null ? MaterialStateProperty.all(backgroundColor) : null,
       padding: MaterialStateProperty.all(model.paddings),
     );
   }
 
-  BoxDecoration? getBoxDecoration(BuildContext pContext) => null;
-
   Function()? getOnPressed() {
-    return model.isEnabled && model.isFocusable ? onPress : null;
-  }
-
-  void hyperlinkOnTap() {
-    if (model.isEnabled) {
-      String url = model.labelModel.text;
-
-      if (!url.startsWith("http")) {
-        url = "https://$url";
-      }
-      launchUrl(
-        Uri.parse(url),
-        mode: LaunchMode.externalApplication,
-      );
-    }
+    return model.isEnabled
+        ? onPress
+        : () {
+            return null;
+          };
   }
 }
