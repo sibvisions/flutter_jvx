@@ -37,31 +37,31 @@ class ApplicationSettingsResponse extends ApiResponse {
   static const String BACKGROUND = "background";
 
   /// The static constant for control alternate background color. */
-  static const String ALTERNATE_BACKGROUND = "alternateBackground";
+  static const String ALTERNATE_BACKGROUND = "alternatebackground";
 
   /// The static constant for control foreground color. */
   static const String FOREGROUND = "foreground";
 
   /// The static constant for control active selection background color. */
-  static const String ACTIVE_SELECTION_BACKGROUND = "activeSelectionBackground";
+  static const String ACTIVE_SELECTION_BACKGROUND = "activeselectionbackground";
 
   /// The static constant for control active selection foreground color. */
-  static const String ACTIVE_SELECTION_FOREGROUND = "activeSelectionForeground";
+  static const String ACTIVE_SELECTION_FOREGROUND = "activeselectionforeground";
 
   /// The static constant for control inactive selection background color. */
-  static const String INACTIVE_SELECTION_BACKGROUND = "inactiveSelectionBackground";
+  static const String INACTIVE_SELECTION_BACKGROUND = "inactiveselectionbackground";
 
   /// The static constant for control inactive selection foreground color. */
-  static const String INACTIVE_SELECTION_FOREGROUND = "inactiveSelectionForeground";
+  static const String INACTIVE_SELECTION_FOREGROUND = "inactiveselectionforeground";
 
   /// The static constant for control mandatory background color. */
-  static const String MANDATORY_BACKGROUND = "mandatoryBackground";
+  static const String MANDATORY_BACKGROUND = "mandatorybackground";
 
   /// The static constant for control read only background color. */
-  static const String READ_ONLY_BACKGROUND = "readOnlyBackground";
+  static const String READ_ONLY_BACKGROUND = "readonlybackground";
 
   /// The static constant for control read only background color. */
-  static const String INVALID_EDITOR_BACKGROUND = "invalidEditorBackground";
+  static const String INVALID_EDITOR_BACKGROUND = "invalideditorbackground";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
