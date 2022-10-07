@@ -78,8 +78,10 @@ class StorageService implements IStorageService {
 
           // Handle parent change, notify old parent of change
           if (oldParentId != null && model.parent != oldParentId) {
-            FlComponentModel oldParent = _componentMap[oldParentId]!;
-            affectedModels.add(oldParent.id);
+            FlComponentModel? oldParent = _componentMap[oldParentId];
+            if (oldParent != null) {
+              affectedModels.add(oldParent.id);
+            }
           }
 
           if (model.isVisible != wasVisible || model.isRemoved != wasRemoved) {
