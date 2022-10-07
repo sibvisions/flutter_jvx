@@ -196,7 +196,7 @@ class OnlineApiRepository implements IRepository {
           manualClose = false;
           if (data.isNotEmpty) {
             try {
-              FlutterJVx.log.i("Received data via websocket: $data");
+              FlutterJVx.log.d("Received data via websocket: $data");
               if (data == "api/changes") {
                 ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
               }
