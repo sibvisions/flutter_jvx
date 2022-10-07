@@ -170,11 +170,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       if (!url.startsWith("http")) {
         url = "https://$url";
       }
-      try {
-        launchUrlString(url);
-      } catch (e) {
-        rethrow;
-      }
+      launchUrlString(url);
     }
   }
 }
