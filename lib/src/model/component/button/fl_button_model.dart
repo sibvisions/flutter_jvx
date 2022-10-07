@@ -205,6 +205,7 @@ class FlButtonModel extends FlComponentModel {
 
   @override
   void applyCellEditorOverrides(Map<String, dynamic> pJson) {
+    super.applyCellEditorOverrides(pJson);
     labelModel.applyCellEditorOverrides(pJson);
   }
 }

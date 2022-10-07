@@ -43,6 +43,8 @@ class FlLabelModel extends FlComponentModel {
 
   @override
   void applyCellEditorOverrides(Map<String, dynamic> pJson) {
+    super.applyCellEditorOverrides(pJson);
+
     text = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.cellEditorText,
