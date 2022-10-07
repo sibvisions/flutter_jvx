@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,7 +64,7 @@ class ConfigService implements IConfigService {
   Size? phoneSize;
 
   /// The last layoutMode from the server
-  ValueNotifier<LayoutMode> layoutMode = ValueNotifier(LayoutMode.Small);
+  ValueNotifier<LayoutMode> layoutMode = ValueNotifier(kIsWeb ? LayoutMode.Full : LayoutMode.Mini);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
