@@ -27,8 +27,6 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
     DeviceInfo deviceInfo = DeviceInfo();
     await deviceInfo.setSystemInfo();
 
-    IUiService().getAppManager()?.onInitStartup();
-
     //Close frames on (re-)start
     if (FlutterJVx.getCurrentContext() != null) {
       IUiService().closeFrames();

@@ -16,7 +16,7 @@ class ReloadMenuCommand extends ApiCommand {
     this.screenClassName,
   }) {
     if (screenLongName != null) {
-      callback = () {
+      onFinish = () {
         if (IUiService().getMenuModel().containsScreen(screenLongName!)) {
           IUiService().sendCommand(OpenScreenCommand(
             screenLongName: screenLongName!,

@@ -15,11 +15,17 @@ abstract class BaseCommand {
   /// Descriptive Reason why this Command was issued.
   final String reason;
 
-  /// If a loading progress should be displayed for this instance
+  /// If a loading progress should be displayed for this instance.
   final bool showLoading;
 
-  /// Callback will be called when all follow-up commands have been fully processed
-  VoidCallback? callback;
+  /// Will be called when the command is being processed.
+  VoidCallback? beforeProcessing;
+
+  /// Will be called when the command is done processing.
+  VoidCallback? afterProcessing;
+
+  /// Internal callback, when all follow-up commands have been fully processed and the command therefore is done processing.
+  VoidCallback? onFinish;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -27,7 +33,9 @@ abstract class BaseCommand {
 
   BaseCommand({
     required this.reason,
-    this.callback,
+    this.beforeProcessing,
+    this.afterProcessing,
+    this.onFinish,
     this.showLoading = true,
   }) : id = DateTime.now().millisecondsSinceEpoch;
 

@@ -83,7 +83,7 @@ class CommandService implements ICommandService {
 
     try {
       await processCommand(pCommand);
-      pCommand.callback?.call();
+      pCommand.onFinish?.call();
     } catch (error) {
       FlutterJVx.log.e("Error processing ${pCommand.runtimeType}");
       rethrow;
@@ -113,6 +113,8 @@ class CommandService implements ICommandService {
   }
 
   Future<void> processCommand(BaseCommand pCommand) async {
+    pCommand.beforeProcessing?.call();
+
     List<BaseCommand> commands = [];
     // Switch-Case doesn't work with types
     if (pCommand is ApiCommand) {
@@ -131,6 +133,8 @@ class CommandService implements ICommandService {
       FlutterJVx.log.w("Command (${pCommand.runtimeType}) without Processor found");
       return;
     }
+
+    pCommand.afterProcessing?.call();
 
     IUiService().getAppManager()?.modifyCommands(commands, pCommand);
 

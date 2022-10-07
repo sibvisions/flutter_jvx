@@ -26,7 +26,8 @@ class StartupCommand extends ApiCommand {
     super.showLoading,
     required super.reason,
   }) {
-    callback = () => IUiService().getAppManager()?.onSuccessfulStartup();
+    beforeProcessing = () => IUiService().getAppManager()?.onInitStartup();
+    onFinish = () => IUiService().getAppManager()?.onSuccessfulStartup();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
