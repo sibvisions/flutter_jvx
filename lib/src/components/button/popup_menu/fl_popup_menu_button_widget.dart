@@ -33,17 +33,17 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   }
 
   @override
-  Widget? getButtonChild() {
+  Widget? createButtonChild() {
     if (model.labelModel.text.isNotEmpty && image != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: getCrossAxisAlignment(model.labelModel.verticalAlignment),
         textBaseline: TextBaseline.alphabetic,
         textDirection: TextDirection.ltr,
-        children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: getTextWidget())],
+        children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: createTextWidget())],
       );
     } else if (model.labelModel.text.isNotEmpty) {
-      return getTextWidget();
+      return createTextWidget();
     } else if (image != null) {
       return image!;
     } else {
@@ -53,10 +53,11 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
 
   Widget createPopupIcon(BuildContext context) {
     return InkWell(
+      enableFeedback: model.isEnabled,
       onTap: () => openMenu(context),
       child: FaIcon(
         FontAwesomeIcons.caretDown,
-        color: Theme.of(context).buttonTheme.colorScheme?.onPrimary,
+        color: model.createTextStyle().color,
       ),
     );
   }

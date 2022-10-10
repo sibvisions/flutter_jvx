@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,6 +6,15 @@ import '../../../mask/state/app_style.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
+
+enum FlTextBorderType {
+  border,
+  errorBorder,
+  enabledBorder,
+  focusedBorder,
+  disabledBorder,
+  focusedErrorBorder,
+}
 
 class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidget<T, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,7 +37,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   double get iconSize => 16;
 
-  EdgeInsets? get textPadding => inTable ? EdgeInsets.only(left: (inTable ? 0.0 : 5.0)) : null;
+  EdgeInsets? get textPadding => inTable ? const EdgeInsets.only(left: 0.0) : null;
 
   EdgeInsets get iconPadding => const EdgeInsets.only(right: 15);
 
@@ -59,16 +66,16 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const FlTextFieldWidget({
-    Key? key,
-    required T model,
-    required Function(String) valueChanged,
-    required Function(String) endEditing,
+    super.key,
+    required super.model,
+    required super.valueChanged,
+    required super.endEditing,
     required this.focusNode,
     required this.textController,
     this.keyboardType = TextInputType.text,
     this.inTable = false,
     this.isMandatory = false,
-  }) : super(key: key, model: model, valueChanged: valueChanged, endEditing: endEditing);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -80,16 +87,18 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         model.background ?? (isMandatory ? AppStyle.of(context)!.applicationSettings.mandatoryBackground : null);
     bool isFilled = fillColor != null && !inTable;
 
-    if (isMandatory) {
-      log(fillColor.toString());
-    }
-
     return TextField(
       controller: textController,
       decoration: InputDecoration(
+        enabled: model.isEnabled,
         hintText: model.placeholder,
         contentPadding: textPadding,
-        border: createBorder(context),
+        border: createBorder(context, FlTextBorderType.border),
+        errorBorder: createBorder(context, FlTextBorderType.errorBorder),
+        enabledBorder: createBorder(context, FlTextBorderType.enabledBorder),
+        focusedBorder: createBorder(context, FlTextBorderType.focusedBorder),
+        disabledBorder: createBorder(context, FlTextBorderType.disabledBorder),
+        focusedErrorBorder: createBorder(context, FlTextBorderType.focusedBorder),
         suffixIcon: createSuffixIcon(),
         fillColor: fillColor,
         filled: isFilled,
@@ -97,8 +106,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
       textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
       readOnly: model.isReadOnly,
-      enabled: model.isEnabled,
-      style: model.getTextStyle(),
+      style: model.createTextStyle(),
       onChanged: valueChanged,
       onEditingComplete: () {
         focusNode.unfocus();
@@ -177,16 +185,32 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     );
   }
 
-  OutlineInputBorder createBorder(context) {
+  InputBorder? createBorder(BuildContext context, FlTextBorderType pBorderType) {
     if (inTable) {
-      return const OutlineInputBorder(
-        borderSide: BorderSide.none,
-      );
+      return InputBorder.none;
     }
-    return OutlineInputBorder(
-      borderSide:
-          BorderSide(color: model.isEnabled ? Theme.of(context).primaryColor : IColorConstants.COMPONENT_DISABLED),
-    );
+
+    switch (pBorderType) {
+      case FlTextBorderType.border:
+      case FlTextBorderType.errorBorder:
+      case FlTextBorderType.enabledBorder:
+        return const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: IColorConstants.COMPONENT_DISABLED,
+          ),
+        );
+      case FlTextBorderType.focusedBorder:
+        return null;
+      case FlTextBorderType.disabledBorder:
+        return const OutlineInputBorder(
+          borderSide: BorderSide(
+            width: 1.5,
+            color: IColorConstants.COMPONENT_DISABLED,
+          ),
+        );
+      case FlTextBorderType.focusedErrorBorder:
+        return null;
+    }
   }
 
   /// Returns all extra paddings this text field has in sum apart from the text size itself.

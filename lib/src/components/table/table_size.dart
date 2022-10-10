@@ -108,7 +108,7 @@ class TableSize {
         minColumnWidth,
         ParseUtil.getTextWidth(
               text: "$columnHeader*",
-              style: tableModel.getTextStyle(pFontWeight: FontWeight.bold),
+              style: tableModel.createTextStyle(pFontWeight: FontWeight.bold),
               textScaleFactor: textScaleFactor,
             ) *
             1.3, // Value is multiplied by 1.3 to make sure that the text is not cut off
@@ -153,7 +153,7 @@ class TableSize {
 
               String formattedText = cellEditor.formatValue(value);
               double width = ParseUtil.getTextWidth(
-                  text: formattedText, style: tableModel.getTextStyle(), textScaleFactor: textScaleFactor);
+                  text: formattedText, style: tableModel.createTextStyle(), textScaleFactor: textScaleFactor);
 
               width *= 1.3; // Value is multiplied by 1.3 to make sure that the text is not cut off
               // because the calculated width is too small. Still not sure why, but it works.

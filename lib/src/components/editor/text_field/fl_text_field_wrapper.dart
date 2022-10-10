@@ -73,7 +73,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   Size calculateSize(BuildContext context) {
     Size size = super.calculateSize(context);
 
-    double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
+    double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.createTextStyle());
 
     double width = averageColumnWidth * model.columns;
 

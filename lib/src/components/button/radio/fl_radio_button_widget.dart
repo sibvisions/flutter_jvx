@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../util/constants/i_color.dart';
 import '../../../model/component/button/fl_radio_button_model.dart';
 import '../fl_button_widget.dart';
 
@@ -10,17 +11,20 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
 
   @override
   Widget get image {
-    return Radio<bool>(
-      visualDensity: VisualDensity.compact,
-      value: true,
-      groupValue: model.selected,
-      onChanged: (_) {
-        if (model.isEnabled) {
-          onPress?.call();
-        }
-      },
-      toggleable: true,
-    );
+    return Builder(builder: (context) {
+      return Theme(
+        data: Theme.of(context).copyWith(
+          disabledColor: IColorConstants.COMPONENT_DISABLED,
+        ),
+        child: Radio<bool>(
+          visualDensity: VisualDensity.compact,
+          value: true,
+          groupValue: model.selected,
+          onChanged: model.isEnabled ? (_) => onPress?.call() : null,
+          toggleable: true,
+        ),
+      );
+    });
   }
 
   InteractiveInkFeatureFactory? get splashFactory => NoSplash.splashFactory;
@@ -38,7 +42,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   }
 
   @override
-  ButtonStyle getButtonStyle(context) {
+  ButtonStyle createButtonStyle(context) {
     return ButtonStyle(
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
       backgroundColor: MaterialStateProperty.all(model.background ?? Colors.transparent),
@@ -51,8 +55,8 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   }
 
   @override
-  Widget? getButtonChild() {
-    Widget? child = super.getButtonChild();
+  Widget? createButtonChild() {
+    Widget? child = super.createButtonChild();
 
     if (child != null) {
       child = InkWell(

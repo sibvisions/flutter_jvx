@@ -27,7 +27,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     return GestureDetector(
       onTap: onPress,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+        padding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
         decoration: BoxDecoration(
           color: model.background,
           border: Border.all(
@@ -51,7 +51,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
         ? Html(data: pModel.text)
         : Text(
             pModel.text,
-            style: pTextStyle ?? pModel.getTextStyle(),
+            style: pTextStyle ?? pModel.createTextStyle(),
             textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
           );
   }

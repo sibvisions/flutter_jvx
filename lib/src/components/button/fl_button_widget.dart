@@ -30,8 +30,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   Widget? get image {
     if (model.image != null) {
-      return ImageLoader.loadImage(model.image!,
-          pWantedColor: model.isEnabled ? model.getTextStyle().color : IColorConstants.COMPONENT_DISABLED);
+      return ImageLoader.loadImage(model.image!, pWantedColor: model.createTextStyle().color);
     }
     return null;
   }
@@ -51,7 +50,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: getOnPressed(),
-      style: getButtonStyle(context),
+      style: createButtonStyle(context),
       child: createDirectButtonChild(context),
     );
   }
@@ -61,7 +60,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns the icon and/or the text of the button.
-  Widget? getButtonChild() {
+  Widget? createButtonChild() {
     if (model.labelModel.text.isNotEmpty && image != null) {
       if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
           model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
@@ -73,7 +72,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           children: <Widget>[
             image!,
             SizedBox(height: model.imageTextGap.toDouble()),
-            Flexible(child: getTextWidget()),
+            Flexible(child: createTextWidget()),
           ],
         );
       } else {
@@ -83,11 +82,15 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           textBaseline: TextBaseline.alphabetic,
           textDirection: // If the text is aligned to the left, the text comes before the icon
               model.labelModel.horizontalAlignment == HorizontalAlignment.LEFT ? TextDirection.rtl : TextDirection.ltr,
-          children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: getTextWidget())],
+          children: <Widget>[
+            image!,
+            SizedBox(width: model.imageTextGap.toDouble()),
+            Flexible(child: createTextWidget())
+          ],
         );
       }
     } else if (model.labelModel.text.isNotEmpty) {
-      return getTextWidget();
+      return createTextWidget();
     } else if (image != null) {
       return image!;
     } else {
@@ -98,7 +101,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget createDirectButtonChild(BuildContext context) {
     return Align(
       alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-      child: getButtonChild(),
+      child: createButtonChild(),
     );
   }
 
@@ -114,8 +117,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   /// Gets the text widget of the button with the label model.
-  Widget getTextWidget() {
-    TextStyle textStyle = model.labelModel.getTextStyle();
+  Widget createTextWidget() {
+    TextStyle textStyle = model.labelModel.createTextStyle();
 
     if (!model.isEnabled) {
       textStyle = textStyle.copyWith(color: IColor.darken(IColorConstants.COMPONENT_DISABLED));
@@ -127,7 +130,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   /// Gets the button style.
-  ButtonStyle getButtonStyle(context) {
+  ButtonStyle createButtonStyle(context) {
     Color? backgroundColor;
 
     if (!model.isEnabled) {
@@ -137,17 +140,16 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     }
 
     return ButtonStyle(
-      elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
+      elevation: MaterialStateProperty.all(model.borderPainted && model.isEnabled ? 2 : 0),
       backgroundColor: backgroundColor != null ? MaterialStateProperty.all(backgroundColor) : null,
       padding: MaterialStateProperty.all(model.paddings),
     );
   }
 
   Function()? getOnPressed() {
-    return model.isEnabled
-        ? onPress
-        : () {
-            return null;
-          };
+    if (model.isEnabled) {
+      return onPress;
+    }
+    return null;
   }
 }

@@ -238,7 +238,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
       widget ??= Text(
         (value ?? "").toString(),
-        style: model.getTextStyle(),
+        style: model.createTextStyle(),
         overflow: TextOverflow.ellipsis,
       );
 
@@ -309,7 +309,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
             padding: tableSize.cellPadding,
             child: Text(
               headerText,
-              style: model.getTextStyle(pFontWeight: FontWeight.bold),
+              style: model.createTextStyle(pFontWeight: FontWeight.bold),
             ),
           ),
         ),

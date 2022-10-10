@@ -318,10 +318,10 @@ abstract class FlComponentModel {
   }
 
   /// Returns the textstyle of the component.
-  TextStyle getTextStyle(
+  TextStyle createTextStyle(
       {Color? pForeground, double? pFontSize, FontStyle? pFontStyle, FontWeight? pFontWeight, String? pFontFamily}) {
     return TextStyle(
-      color: pForeground ?? (isEnabled ? foreground : IColorConstants.COMPONENT_DISABLED),
+      color: pForeground ?? (isEnabled ? foreground : IColor.toggleColor(IColorConstants.COMPONENT_DISABLED)),
       fontSize: pFontSize ?? fontSize.toDouble(),
       fontStyle: pFontStyle ?? (isItalic ? FontStyle.italic : FontStyle.normal),
       fontWeight: pFontWeight ?? (isBold ? FontWeight.bold : FontWeight.normal),

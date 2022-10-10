@@ -133,7 +133,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           cellEditor is FlNumberCellEditor) {
         double extraWidth = (cellEditor.createWidget(null, false) as FlTextFieldWidget).extraWidthPaddings();
 
-        double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
+        double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.createTextStyle());
 
         newCalcSize = Size(
           (averageColumnWidth * (cellEditor.createWidgetModel() as FlTextFieldModel).columns) + extraWidth,
