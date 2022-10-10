@@ -6,6 +6,7 @@ import '../../model/menu/menu_model.dart';
 import '../../model/response/device_status_response.dart';
 import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
+import '../state/app_style.dart';
 
 class WebMenu extends StatefulWidget {
   final bool showWebMenu;
@@ -75,14 +76,12 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildMenu(BuildContext context, LayoutMode value) {
-    Color? tileColor =
-        ParseUtil.parseHexColor(IConfigService().getAppStyle()['web.sidemenu.color']) ?? const Color(0xFF3d3d3d);
-    Color? groupTextColor =
-        ParseUtil.parseHexColor(IConfigService().getAppStyle()['web.sidemenu.groupColor']) ?? Colors.white;
-    Color? textColor =
-        ParseUtil.parseHexColor(IConfigService().getAppStyle()['web.sidemenu.textColor']) ?? Colors.white;
-    Color? selectionColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['web.sidemenu.selectionColor']) ??
-        Theme.of(context).colorScheme.primary;
+    var appStyle = AppStyle.of(context)!.applicationStyle!;
+    Color? tileColor = ParseUtil.parseHexColor(appStyle['web.sidemenu.color']) ?? const Color(0xFF3d3d3d);
+    Color? groupTextColor = ParseUtil.parseHexColor(appStyle['web.sidemenu.groupColor']) ?? Colors.white;
+    Color? textColor = ParseUtil.parseHexColor(appStyle['web.sidemenu.textColor']) ?? Colors.white;
+    Color? selectionColor =
+        ParseUtil.parseHexColor(appStyle['web.sidemenu.selectionColor']) ?? Theme.of(context).colorScheme.primary;
 
     MenuModel menuModel = IUiService().getMenuModel();
     Widget menu = AppMenuListGrouped(

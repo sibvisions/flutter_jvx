@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../services.dart';
 import '../../../../util/constants/i_color.dart';
+import '../../../mask/state/app_style.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
@@ -77,7 +77,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   @override
   Widget build(BuildContext context) {
     Color? fillColor =
-        model.background ?? (isMandatory ? IConfigService().getApplicationSettings().mandatoryBackground : null);
+        model.background ?? (isMandatory ? AppStyle.of(context)!.applicationSettings.mandatoryBackground : null);
     bool isFilled = fillColor != null && !inTable;
 
     if (isMandatory) {

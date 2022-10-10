@@ -15,6 +15,7 @@ import '../../model/request/api_navigation_request.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
+import '../state/app_style.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for
@@ -205,8 +206,9 @@ class _WorkScreenState extends State<WorkScreen> {
   }
 
   Widget _getScreen(BuildContext context) {
-    Color? backgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['desktop.color']);
-    String? backgroundImageString = IConfigService().getAppStyle()['desktop.icon'];
+    var appStyle = AppStyle.of(context)!.applicationStyle!;
+    Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
+    String? backgroundImageString = appStyle['desktop.icon'];
 
     return Scaffold(
       appBar: widget.header,

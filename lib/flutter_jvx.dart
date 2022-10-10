@@ -310,8 +310,8 @@ class FlutterJVxState extends State<FlutterJVx> {
           // iconColor: themeData.colorScheme.onBackground,
         ),
       );
-      setState(() {});
     }
+    setState(() {});
   }
 
   void changeLanguage(String pLanguage) {

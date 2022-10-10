@@ -11,6 +11,7 @@ import '../../../util/parse_util.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
+import '../state/app_style.dart';
 import 'grid/app_menu_grid_grouped.dart';
 import 'grid/app_menu_grid_ungroup.dart';
 import 'list/app_menu_list_grouped.dart';
@@ -198,8 +199,9 @@ class _AppMenuState extends State<AppMenu> {
 
     MenuFactory menuBuilder = menuFactory[menuMode]!;
 
-    Color? menuBackgroundColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['desktop.color']);
-    String? menuBackgroundImage = IConfigService().getAppStyle()['desktop.icon'];
+    var appStyle = AppStyle.of(context)!.applicationStyle!;
+    Color? menuBackgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
+    String? menuBackgroundImage = appStyle['desktop.icon'];
 
     return menuBuilder(
       menuModel: IUiService().getMenuModel(),

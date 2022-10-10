@@ -8,8 +8,9 @@ import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../drawer/web_menu.dart';
-import '../loading_bar.dart';
 import '../setting/settings_page.dart';
+import '../state/app_style.dart';
+import '../state/loading_bar.dart';
 import 'frame.dart';
 
 class WebFrame extends Frame {
@@ -39,9 +40,10 @@ class WebFrameState extends FrameState {
   @override
   PreferredSizeWidget getAppBar(List<Widget>? actions) {
     var profileImage = IConfigService().getUserInfo()?.profileImage;
-    Color? topMenuColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['web.topmenu.color']);
-    Color? iconColor = ParseUtil.parseHexColor(IConfigService().getAppStyle()['web.topmenu.iconColor']);
-    String? imagePath = IConfigService().getAppStyle()['web.topmenu.image'];
+    var appStyle = AppStyle.of(context)!.applicationStyle!;
+    Color? topMenuColor = ParseUtil.parseHexColor(appStyle['web.topmenu.color']);
+    Color? iconColor = ParseUtil.parseHexColor(appStyle['web.topmenu.iconColor']);
+    String? imagePath = appStyle['web.topmenu.image'];
 
     return AppBar(
       leading: Builder(

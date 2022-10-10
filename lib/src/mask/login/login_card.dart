@@ -8,7 +8,8 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/constants/i_color.dart';
 import '../../model/command/api/login_command.dart';
-import '../loading_bar.dart';
+import '../state/app_style.dart';
+import '../state/loading_bar.dart';
 import 'remember_me_checkbox.dart';
 
 class LoginCard extends StatefulWidget {
@@ -45,7 +46,7 @@ class _LoginCardState extends State<LoginCard> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
-    String? loginTitle = IConfigService().getAppStyle()['login.title'];
+    String? loginTitle = AppStyle.of(context)!.applicationStyle!['login.title'];
 
     return Card(
       color: Colors.white.withOpacity(0.9),

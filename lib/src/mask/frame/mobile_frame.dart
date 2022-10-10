@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../drawer/drawer_menu.dart';
-import '../loading_bar.dart';
+import '../state/loading_bar.dart';
 import 'frame.dart';
 
 class MobileFrame extends Frame {

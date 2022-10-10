@@ -6,6 +6,7 @@ import '../../../services.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
+import '../state/app_style.dart';
 
 class DrawerMenu extends StatefulWidget {
   final void Function() onSettingsPressed;
@@ -64,7 +65,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 const Padding(padding: EdgeInsets.only(top: 10)),
                 _buildHeaderText(
                   flex: 60,
-                  text: IConfigService().getAppStyle()['login.title'] ?? IConfigService().getAppName()!,
+                  text: AppStyle.of(context)!.applicationStyle!['login.title'] ?? IConfigService().getAppName()!,
                   context: context,
                   fontWeight: FontWeight.bold,
                 ),

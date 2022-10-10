@@ -480,6 +480,8 @@ class ConfigService implements IConfigService {
   @override
   void setApplicationSettings(ApplicationSettingsResponse pApplicationSettings) {
     applicationSettings = pApplicationSettings;
+    //Trigger setState
+    callbacks['style']?.forEach((element) => element.call(applicationStyle));
   }
 
   @override

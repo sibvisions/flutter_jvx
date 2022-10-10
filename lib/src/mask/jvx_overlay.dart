@@ -4,7 +4,8 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../services.dart';
 import '../model/command/api/device_status_command.dart';
-import 'loading_bar.dart';
+import 'state/app_style.dart';
+import 'state/loading_bar.dart';
 
 class JVxOverlay extends StatefulWidget {
   final Widget? child;
@@ -76,7 +77,10 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return AppStyle(
+      applicationStyle: IConfigService().getAppStyle(),
+      applicationSettings: IConfigService().getApplicationSettings(),
+      child: FutureBuilder(
         future: _loadingDelayFuture,
         builder: (context, snapshot) {
           return LoadingBar(
@@ -97,7 +101,9 @@ class JVxOverlayState extends State<JVxOverlay> {
               ],
             ),
           );
-        });
+        },
+      ),
+    );
   }
 }
 

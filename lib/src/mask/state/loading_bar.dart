@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../util/constants/i_color.dart';
+import '../../../util/constants/i_color.dart';
 
 class LoadingBar extends InheritedWidget {
   final bool show;
