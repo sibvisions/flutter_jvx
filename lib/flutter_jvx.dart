@@ -56,7 +56,7 @@ class FlutterJVx extends StatefulWidget {
   static bool package = true;
 
   static final Logger log = Logger(
-    level: kDebugMode ? Level.warning : Level.info,
+    level: Level.info,
     printer: PrettyPrinter(
       methodCount: 0,
       errorMethodCount: 30,
