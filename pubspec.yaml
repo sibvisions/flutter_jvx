@@ -18,7 +18,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  flutter_native_splash: ^2.2.10+1
+  flutter_native_splash: ^2.2.11
 
   # iOS Dep
   cupertino_icons: ^1.0.2
@@ -33,7 +33,7 @@ dependencies:
 
   # Device Identification
   package_info_plus: ^1.4.2
-  device_info_plus: ^4.1.0
+  device_info_plus: ^5.0.5
   uuid: ^3.0.6
 
   # Util
