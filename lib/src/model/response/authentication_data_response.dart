@@ -14,14 +14,12 @@ class AuthenticationDataResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   AuthenticationDataResponse({
-    required String name,
+    required super.name,
     required this.authKey,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.originalRequest,
+  });
 
-  AuthenticationDataResponse.fromJson({
-    required Map<String, dynamic> pJson,
-    required Object originalRequest,
-  })  : authKey = pJson[ApiObjectProperty.authKey],
-        super.fromJson(originalRequest: originalRequest, pJson: pJson);
+  AuthenticationDataResponse.fromJson({required super.json, required super.originalRequest})
+      : authKey = json[ApiObjectProperty.authKey],
+        super.fromJson();
 }

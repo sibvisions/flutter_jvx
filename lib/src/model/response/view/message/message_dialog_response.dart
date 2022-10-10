@@ -53,15 +53,15 @@ class MessageDialogResponse extends MessageView {
     required super.originalRequest,
   });
 
-  MessageDialogResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : componentId = pJson[ApiObjectProperty.componentId],
-        closable = pJson[ApiObjectProperty.closable] ?? true,
-        buttonType = pJson[ApiObjectProperty.buttonType],
-        okComponentId = pJson[ApiObjectProperty.okComponentId],
-        notOkComponentId = pJson[ApiObjectProperty.notOkComponentId],
-        cancelComponentId = pJson[ApiObjectProperty.cancelComponentId],
-        okText = pJson[ApiObjectProperty.okText],
-        notOkText = pJson[ApiObjectProperty.notOkText],
-        cancelText = pJson[ApiObjectProperty.cancelText],
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+  MessageDialogResponse.fromJson({required super.json, required super.originalRequest})
+      : componentId = json[ApiObjectProperty.componentId],
+        closable = json[ApiObjectProperty.closable] ?? true,
+        buttonType = json[ApiObjectProperty.buttonType],
+        okComponentId = json[ApiObjectProperty.okComponentId],
+        notOkComponentId = json[ApiObjectProperty.notOkComponentId],
+        cancelComponentId = json[ApiObjectProperty.cancelComponentId],
+        okText = json[ApiObjectProperty.okText],
+        notOkText = json[ApiObjectProperty.notOkText],
+        cancelText = json[ApiObjectProperty.cancelText],
+        super.fromJson();
 }

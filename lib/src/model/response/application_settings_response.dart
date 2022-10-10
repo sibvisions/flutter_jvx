@@ -87,23 +87,20 @@ class ApplicationSettingsResponse extends ApiResponse {
         mandatoryBackground = null,
         readOnlyBackground = null,
         invalidEditorBackground = null,
-        super.fromJson(pJson: {ApiObjectProperty.name: ApiResponseNames.applicationSettings}, originalRequest: "");
+        super(name: ApiResponseNames.applicationSettings, originalRequest: "");
 
-  ApplicationSettingsResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : saveVisible = pJson[ApiObjectProperty.save] ?? true,
-        reloadVisible = pJson[ApiObjectProperty.reload] ?? true,
-        rollbackVisible = pJson[ApiObjectProperty.rollback] ?? true,
-        changePasswordVisible = pJson[ApiObjectProperty.changePassword] ?? true,
-        menuBarVisible = pJson[ApiObjectProperty.menuBar] ?? true,
-        toolBarVisible = pJson[ApiObjectProperty.toolBar] ?? true,
-        homeVisible = pJson[ApiObjectProperty.home] ?? true,
-        logoutVisible = pJson[ApiObjectProperty.logout] ?? true,
-        userSettingsVisible = pJson[ApiObjectProperty.userSettings] ?? true,
-        super.fromJson(
-          pJson: pJson,
-          originalRequest: originalRequest,
-        ) {
-    applyColors(pJson[ApiObjectProperty.colors] ?? {});
+  ApplicationSettingsResponse.fromJson({required super.json, required super.originalRequest})
+      : saveVisible = json[ApiObjectProperty.save] ?? true,
+        reloadVisible = json[ApiObjectProperty.reload] ?? true,
+        rollbackVisible = json[ApiObjectProperty.rollback] ?? true,
+        changePasswordVisible = json[ApiObjectProperty.changePassword] ?? true,
+        menuBarVisible = json[ApiObjectProperty.menuBar] ?? true,
+        toolBarVisible = json[ApiObjectProperty.toolBar] ?? true,
+        homeVisible = json[ApiObjectProperty.home] ?? true,
+        logoutVisible = json[ApiObjectProperty.logout] ?? true,
+        userSettingsVisible = json[ApiObjectProperty.userSettings] ?? true,
+        super.fromJson() {
+    applyColors(json[ApiObjectProperty.colors] ?? {});
   }
 
   void applyColors(Map<String, dynamic> pJson) {

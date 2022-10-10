@@ -27,9 +27,9 @@ class DownloadActionResponse extends ApiResponse {
     required super.name,
   });
 
-  DownloadActionResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : fileId = pJson[ApiObjectProperty.fileId],
-        url = pJson[ApiObjectProperty.url],
-        fileName = pJson[ApiObjectProperty.fileName],
-        super.fromJson(originalRequest: originalRequest, pJson: pJson);
+  DownloadActionResponse.fromJson({required super.json, required super.originalRequest})
+      : fileId = json[ApiObjectProperty.fileId],
+        url = json[ApiObjectProperty.url],
+        fileName = json[ApiObjectProperty.fileName],
+        super.fromJson();
 }

@@ -28,14 +28,14 @@ class UserDataResponse extends ApiResponse {
     required this.userName,
     required this.eMail,
     required this.profileImage,
-    required String name,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.name,
+    required super.originalRequest,
+  });
 
-  UserDataResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : userName = pJson[ApiObjectProperty.userName],
-        displayName = pJson[ApiObjectProperty.displayName],
-        eMail = pJson[ApiObjectProperty.eMail],
-        profileImage = pJson[ApiObjectProperty.profileImage],
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+  UserDataResponse.fromJson({required super.json, required super.originalRequest})
+      : userName = json[ApiObjectProperty.userName],
+        displayName = json[ApiObjectProperty.displayName],
+        eMail = json[ApiObjectProperty.eMail],
+        profileImage = json[ApiObjectProperty.profileImage],
+        super.fromJson();
 }

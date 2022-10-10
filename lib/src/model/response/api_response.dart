@@ -10,7 +10,7 @@ class ApiResponse<T extends Object> {
   final String name;
 
   /// Raw json from this response
-  final Map<String, dynamic>? json;
+  final Map<String, dynamic> json;
 
   /// Original Request that provoked this response
   final T originalRequest;
@@ -21,13 +21,12 @@ class ApiResponse<T extends Object> {
 
   ApiResponse({
     required this.name,
-    this.json,
+    this.json = const {},
     required this.originalRequest,
   });
 
   ApiResponse.fromJson({
-    required Map<String, dynamic> pJson,
+    required this.json,
     required this.originalRequest,
-  })  : name = pJson[ApiObjectProperty.name],
-        json = pJson;
+  }) : name = json[ApiObjectProperty.name];
 }

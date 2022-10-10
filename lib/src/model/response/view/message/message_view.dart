@@ -23,10 +23,10 @@ class MessageView extends ApiResponse {
     required super.originalRequest,
   });
 
-  MessageView.fromJson({required Map<String, dynamic> pJson, required super.originalRequest})
-      : title = pJson[ApiObjectProperty.title],
-        message = pJson[ApiObjectProperty.message],
-        super.fromJson(pJson: pJson);
+  MessageView.fromJson({required Map<String, dynamic> json, required super.originalRequest})
+      : title = json[ApiObjectProperty.title],
+        message = json[ApiObjectProperty.message],
+        super.fromJson(json: json);
 
   @override
   String toString() {

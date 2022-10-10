@@ -57,21 +57,21 @@ class DalDataProviderChangedResponse extends ApiResponse {
     this.insertEnabled,
     this.readOnly,
     this.updateEnabled,
-    required String name,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.name,
+    required super.originalRequest,
+  });
 
-  DalDataProviderChangedResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : dataProvider = pJson[ApiObjectProperty.dataProvider],
-        reload = pJson[ApiObjectProperty.reload],
-        columnNames = pJson[ApiObjectProperty.columnNames],
-        selectedRow = pJson[ApiObjectProperty.selectedRow],
-        deletedRow = pJson[ApiObjectProperty.deletedRow],
-        changedColumnNames = pJson[ApiObjectProperty.changedColumnNames]?.cast<String>(),
-        changedValues = pJson[ApiObjectProperty.changedValues],
-        deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],
-        insertEnabled = pJson[ApiObjectProperty.insertEnabled],
-        readOnly = pJson[ApiObjectProperty.readOnly],
-        updateEnabled = pJson[ApiObjectProperty.updateEnabled],
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+  DalDataProviderChangedResponse.fromJson({required super.json, required super.originalRequest})
+      : dataProvider = json[ApiObjectProperty.dataProvider],
+        reload = json[ApiObjectProperty.reload],
+        columnNames = json[ApiObjectProperty.columnNames],
+        selectedRow = json[ApiObjectProperty.selectedRow],
+        deletedRow = json[ApiObjectProperty.deletedRow],
+        changedColumnNames = json[ApiObjectProperty.changedColumnNames]?.cast<String>(),
+        changedValues = json[ApiObjectProperty.changedValues],
+        deleteEnabled = json[ApiObjectProperty.deleteEnabled],
+        insertEnabled = json[ApiObjectProperty.insertEnabled],
+        readOnly = json[ApiObjectProperty.readOnly],
+        updateEnabled = json[ApiObjectProperty.updateEnabled],
+        super.fromJson();
 }

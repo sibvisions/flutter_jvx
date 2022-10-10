@@ -18,12 +18,12 @@ class LoginViewResponse extends ApiResponse {
   LoginViewResponse({
     required this.username,
     required this.mode,
-    required String name,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.name,
+    required super.originalRequest,
+  });
 
-  LoginViewResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : mode = pJson[ApiObjectProperty.mode],
-        username = pJson[ApiObjectProperty.username],
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+  LoginViewResponse.fromJson({required super.json, required super.originalRequest})
+      : mode = json[ApiObjectProperty.mode],
+        username = json[ApiObjectProperty.username],
+        super.fromJson();
 }

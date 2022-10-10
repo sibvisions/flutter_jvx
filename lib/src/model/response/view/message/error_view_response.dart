@@ -34,12 +34,12 @@ class ErrorViewResponse extends MessageView {
     required super.originalRequest,
   });
 
-  ErrorViewResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : silentAbort = pJson[ApiObjectProperty.silentAbort] ?? false,
-        details = pJson[ApiObjectProperty.details],
-        exceptions = ServerException.fromJson(pJson[ApiObjectProperty.exceptions]),
+  ErrorViewResponse.fromJson({required super.json, required super.originalRequest})
+      : silentAbort = json[ApiObjectProperty.silentAbort] ?? false,
+        details = json[ApiObjectProperty.details],
+        exceptions = ServerException.fromJson(json[ApiObjectProperty.exceptions]),
         isTimeout = false,
-        super.fromJson(pJson: pJson, originalRequest: originalRequest) {
+        super.fromJson() {
     FlutterJVx.log.w(toString());
   }
 

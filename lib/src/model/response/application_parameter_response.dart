@@ -15,8 +15,8 @@ class ApplicationParametersResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApplicationParametersResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : authenticated = pJson[ApiObjectProperty.authenticated],
-        openScreen = pJson[ApiObjectProperty.openScreen],
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+  ApplicationParametersResponse.fromJson({required super.json, required super.originalRequest})
+      : authenticated = json[ApiObjectProperty.authenticated],
+        openScreen = json[ApiObjectProperty.openScreen],
+        super.fromJson();
 }

@@ -31,10 +31,10 @@ class ApplicationMetaDataResponse extends ApiResponse {
     required super.name,
   });
 
-  ApplicationMetaDataResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : clientId = pJson[ApiObjectProperty.clientId],
-        version = pJson[ApiObjectProperty.version],
-        langCode = pJson[ApiObjectProperty.langCode],
-        lostPasswordEnabled = pJson[ApiObjectProperty.lostPasswordEnabled],
-        super.fromJson(originalRequest: originalRequest, pJson: pJson);
+  ApplicationMetaDataResponse.fromJson({required super.json, required super.originalRequest})
+      : clientId = json[ApiObjectProperty.clientId],
+        version = json[ApiObjectProperty.version],
+        langCode = json[ApiObjectProperty.langCode],
+        lostPasswordEnabled = json[ApiObjectProperty.lostPasswordEnabled],
+        super.fromJson();
 }

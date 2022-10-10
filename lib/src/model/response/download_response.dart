@@ -18,7 +18,7 @@ class DownloadResponse extends ApiResponse<ApiDownloadRequest> {
 
   DownloadResponse({
     required this.bodyBytes,
-    required String name,
-    required ApiDownloadRequest originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.name,
+    required super.originalRequest,
+  });
 }

@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
           "APP_ID": appId,
           "DATA_PROVIDER": metaData.dataProvider,
           "TABLE_NAME": formatOfflineTableName(metaData.dataProvider),
-          "META_DATA": jsonEncode(metaData.originalJson),
+          "META_DATA": jsonEncode(metaData.json),
         })));
   }
 
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
           whereArgs: whereArgs,
         )
         .then((result) => result
-            .map((e) => DalMetaDataResponse.fromJson(pJson: jsonDecode(e['META_DATA'] as String), originalRequest: ""))
+            .map((e) => DalMetaDataResponse.fromJson(json: jsonDecode(e['META_DATA'] as String), originalRequest: ""))
             .toList(growable: false));
   }
 

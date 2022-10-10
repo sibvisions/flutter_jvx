@@ -15,11 +15,11 @@ class CloseScreenResponse extends ApiResponse {
 
   CloseScreenResponse({
     required this.screenName,
-    required String name,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.name,
+    required super.originalRequest,
+  });
 
-  CloseScreenResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : screenName = pJson[ApiObjectProperty.componentId],
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+  CloseScreenResponse.fromJson({required super.json, required super.originalRequest})
+      : screenName = json[ApiObjectProperty.componentId],
+        super.fromJson();
 }

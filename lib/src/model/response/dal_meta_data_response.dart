@@ -8,8 +8,6 @@ class DalMetaDataResponse extends ApiResponse {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final Map<String, dynamic> originalJson;
-
   /// All column definitions in this dataBook
   final List<ColumnDefinition> columns;
 
@@ -38,15 +36,14 @@ class DalMetaDataResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DalMetaDataResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : originalJson = pJson,
-        columnViewTable = pJson[ApiObjectProperty.columnViewTable].cast<String>(),
-        columns = ParseUtil.parseColumnDefinitions(pJson[ApiObjectProperty.columns]),
-        dataProvider = pJson[ApiObjectProperty.dataProvider],
-        readOnly = pJson[ApiObjectProperty.readOnly] ?? false,
-        deleteEnabled = pJson[ApiObjectProperty.deleteEnabled] ?? true,
-        updateEnabled = pJson[ApiObjectProperty.updateEnabled] ?? true,
-        insertEnabled = pJson[ApiObjectProperty.insertEnabled] ?? true,
-        primaryKeyColumns = List<String>.from(pJson[ApiObjectProperty.primaryKeyColumns] ?? []),
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+  DalMetaDataResponse.fromJson({required super.json, required super.originalRequest})
+      : columnViewTable = json[ApiObjectProperty.columnViewTable].cast<String>(),
+        columns = ParseUtil.parseColumnDefinitions(json[ApiObjectProperty.columns]),
+        dataProvider = json[ApiObjectProperty.dataProvider],
+        readOnly = json[ApiObjectProperty.readOnly] ?? false,
+        deleteEnabled = json[ApiObjectProperty.deleteEnabled] ?? true,
+        updateEnabled = json[ApiObjectProperty.updateEnabled] ?? true,
+        insertEnabled = json[ApiObjectProperty.insertEnabled] ?? true,
+        primaryKeyColumns = List<String>.from(json[ApiObjectProperty.primaryKeyColumns] ?? []),
+        super.fromJson();
 }

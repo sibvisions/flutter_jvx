@@ -44,19 +44,19 @@ class DalFetchResponse extends ApiResponse {
     required this.to,
     required this.records,
     this.clear = false,
-    required String name,
-    required Object originalResponse,
-  }) : super(name: name, originalRequest: originalResponse);
+    required super.name,
+    required super.originalRequest,
+  });
 
   /// Parses a json into an [DalFetchResponse] Object
-  DalFetchResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : records = pJson[ApiObjectProperty.records].cast<List<dynamic>>(),
-        to = pJson[ApiObjectProperty.to],
-        from = pJson[ApiObjectProperty.from],
-        columnNames = pJson[ApiObjectProperty.columnNames].cast<String>(),
-        isAllFetched = pJson[ApiObjectProperty.isAllFetched] ?? false,
-        selectedRow = pJson[ApiObjectProperty.selectedRow],
-        dataProvider = pJson[ApiObjectProperty.dataProvider],
-        clear = pJson[ApiObjectProperty.clear] ?? false,
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+  DalFetchResponse.fromJson({required super.json, required super.originalRequest})
+      : records = json[ApiObjectProperty.records].cast<List<dynamic>>(),
+        to = json[ApiObjectProperty.to],
+        from = json[ApiObjectProperty.from],
+        columnNames = json[ApiObjectProperty.columnNames].cast<String>(),
+        isAllFetched = json[ApiObjectProperty.isAllFetched] ?? false,
+        selectedRow = json[ApiObjectProperty.selectedRow],
+        dataProvider = json[ApiObjectProperty.dataProvider],
+        clear = json[ApiObjectProperty.clear] ?? false,
+        super.fromJson();
 }

@@ -238,7 +238,7 @@ class OfflineApiRepository implements IRepository {
       to: pRequest.fromRow + (sortedMap.length - 1),
       records: sortedMap,
       name: "dal.fetch",
-      originalResponse: pRequest,
+      originalRequest: pRequest,
     );
   }
 

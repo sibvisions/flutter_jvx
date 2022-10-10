@@ -27,13 +27,13 @@ class DeviceStatusResponse extends ApiResponse {
 
   DeviceStatusResponse({
     required this.layoutMode,
-    required String name,
-    required Object originalRequest,
-  }) : super(name: name, originalRequest: originalRequest);
+    required super.name,
+    required super.originalRequest,
+  });
 
-  DeviceStatusResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : layoutMode = pJson[ApiObjectProperty.layoutMode] != null
-            ? LayoutMode.values.firstWhereOrNull((e) => e.name == pJson[ApiObjectProperty.layoutMode])
+  DeviceStatusResponse.fromJson({required super.json, required super.originalRequest})
+      : layoutMode = json[ApiObjectProperty.layoutMode] != null
+            ? LayoutMode.values.firstWhereOrNull((e) => e.name == json[ApiObjectProperty.layoutMode])
             : null,
-        super.fromJson(pJson: pJson, originalRequest: originalRequest);
+        super.fromJson();
 }

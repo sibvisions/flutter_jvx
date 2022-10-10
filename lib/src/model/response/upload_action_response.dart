@@ -19,7 +19,7 @@ class UploadActionResponse extends ApiResponse {
     required super.name,
   });
 
-  UploadActionResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
-      : fileId = pJson[ApiObjectProperty.fileId],
-        super.fromJson(originalRequest: originalRequest, pJson: pJson);
+  UploadActionResponse.fromJson({required super.json, required super.originalRequest})
+      : fileId = json[ApiObjectProperty.fileId],
+        super.fromJson();
 }
