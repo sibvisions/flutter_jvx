@@ -453,11 +453,10 @@ class _SettingsPageState extends State<SettingsPage> {
         await IConfigService().setUserLanguage(language);
         await IConfigService().setPictureResolution(resolution);
 
-        await ICommandService().sendCommand(StartupCommand(
-          reason: "Open App from Settings",
+        FlutterJVxState.of(FlutterJVx.getCurrentContext())?.restart(
           username: username,
           password: password,
-        ));
+        );
       } catch (e, stackTrace) {
         IUiService().handleAsyncError(e, stackTrace);
       } finally {

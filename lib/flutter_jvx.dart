@@ -221,8 +221,16 @@ class FlutterJVxState extends State<FlutterJVx> {
     });
   }
 
-  void restart() {
-    startupFuture = doStartup().catchError(createErrorHandler("Failed to send startup"));
+  void restart({
+    String? appName,
+    String? username,
+    String? password,
+  }) {
+    startupFuture = doStartup(
+      appName: appName,
+      username: username,
+      password: password,
+    ).catchError(createErrorHandler("Failed to send startup"));
   }
 
   @override
@@ -399,7 +407,11 @@ class FlutterJVxState extends State<FlutterJVx> {
     apiService.setRepository(repository);
   }
 
-  Future<void> doStartup() async {
+  Future<void> doStartup({
+    String? appName,
+    String? username,
+    String? password,
+  }) async {
     IConfigService configService = IConfigService();
     ICommandService commandService = ICommandService();
     IUiService uiService = IUiService();
@@ -417,8 +429,9 @@ class FlutterJVxState extends State<FlutterJVx> {
     // Send startup to server
     await commandService.sendCommand(StartupCommand(
       reason: "InitApp",
-      username: configService.getAppConfig()!.serverConfig!.username,
-      password: configService.getAppConfig()!.serverConfig!.password,
+      appName: appName,
+      username: username ?? configService.getAppConfig()!.serverConfig!.username,
+      password: password ?? configService.getAppConfig()!.serverConfig!.password,
     ));
   }
 
