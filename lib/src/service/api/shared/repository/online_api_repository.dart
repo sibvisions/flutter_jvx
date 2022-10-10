@@ -46,7 +46,7 @@ import '../../../../model/request/i_api_request.dart';
 import '../../../../model/request/i_session_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
-import '../../../../model/response/application_parameter_response.dart';
+import '../../../../model/response/application_parameters_response.dart';
 import '../../../../model/response/application_settings_response.dart';
 import '../../../../model/response/authentication_data_response.dart';
 import '../../../../model/response/close_frame_response.dart';
