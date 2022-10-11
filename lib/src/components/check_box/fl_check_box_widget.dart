@@ -24,11 +24,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
       side: borderside,
       visualDensity: VisualDensity.compact,
       value: model.selected,
-      onChanged: (_) {
-        if (model.isEnabled) {
-          onPress?.call();
-        }
-      },
+      onChanged: model.isEnabled ? (_) => onPress?.call() : null,
     );
   }
 

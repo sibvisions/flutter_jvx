@@ -226,11 +226,13 @@ class FlutterJVxState extends State<FlutterJVx> {
     String? username,
     String? password,
   }) {
-    startupFuture = doStartup(
-      appName: appName,
-      username: username,
-      password: password,
-    ).catchError(createErrorHandler("Failed to send startup"));
+    setState(() {
+      startupFuture = doStartup(
+        appName: appName,
+        username: username,
+        password: password,
+      ).catchError(createErrorHandler("Failed to send startup"));
+    });
   }
 
   @override
