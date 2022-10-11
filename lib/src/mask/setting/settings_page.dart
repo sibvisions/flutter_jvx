@@ -261,7 +261,7 @@ class _SettingsPageState extends State<SettingsPage> {
               try {
                 // Validate format
                 var uri = Uri.parse(controller.text.trim());
-                if (!uri.path.endsWith(urlSuffix)) {
+                if (!uri.path.endsWith(urlSuffix) && !uri.path.endsWith("$urlSuffix/")) {
                   String appendingSuffix = urlSuffix;
                   if (uri.pathSegments.last.isEmpty) {
                     appendingSuffix = appendingSuffix.substring(1);
