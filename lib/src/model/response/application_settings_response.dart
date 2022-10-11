@@ -33,36 +33,6 @@ class ApplicationSettingsResponse extends ApiResponse {
   late final Color? readOnlyBackground;
   late final Color? invalidEditorBackground;
 
-  /// The static constant for control background color. */
-  static const String BACKGROUND = "background";
-
-  /// The static constant for control alternate background color. */
-  static const String ALTERNATE_BACKGROUND = "alternatebackground";
-
-  /// The static constant for control foreground color. */
-  static const String FOREGROUND = "foreground";
-
-  /// The static constant for control active selection background color. */
-  static const String ACTIVE_SELECTION_BACKGROUND = "activeselectionbackground";
-
-  /// The static constant for control active selection foreground color. */
-  static const String ACTIVE_SELECTION_FOREGROUND = "activeselectionforeground";
-
-  /// The static constant for control inactive selection background color. */
-  static const String INACTIVE_SELECTION_BACKGROUND = "inactiveselectionbackground";
-
-  /// The static constant for control inactive selection foreground color. */
-  static const String INACTIVE_SELECTION_FOREGROUND = "inactiveselectionforeground";
-
-  /// The static constant for control mandatory background color. */
-  static const String MANDATORY_BACKGROUND = "mandatorybackground";
-
-  /// The static constant for control read only background color. */
-  static const String READ_ONLY_BACKGROUND = "readonlybackground";
-
-  /// The static constant for control read only background color. */
-  static const String INVALID_EDITOR_BACKGROUND = "invalideditorbackground";
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,16 +74,16 @@ class ApplicationSettingsResponse extends ApiResponse {
   }
 
   void applyColors(Map<String, dynamic> pJson) {
-    background = getColor(pJson[BACKGROUND]);
-    alternateBackground = getColor(pJson[ALTERNATE_BACKGROUND]);
-    foreground = getColor(pJson[FOREGROUND]);
-    activeSelectionBackground = getColor(pJson[ACTIVE_SELECTION_BACKGROUND]);
-    activeSelectionForeground = getColor(pJson[ACTIVE_SELECTION_FOREGROUND]);
-    inactiveSelectionBackground = getColor(pJson[INACTIVE_SELECTION_BACKGROUND]);
-    inactiveSelectionForeground = getColor(pJson[INACTIVE_SELECTION_FOREGROUND]);
-    mandatoryBackground = getColor(pJson[MANDATORY_BACKGROUND]);
-    readOnlyBackground = getColor(pJson[READ_ONLY_BACKGROUND]);
-    invalidEditorBackground = getColor(pJson[INVALID_EDITOR_BACKGROUND]);
+    background = getColor(pJson[ApiObjectProperty.background]);
+    alternateBackground = getColor(pJson[ApiObjectProperty.alternateBackground]);
+    foreground = getColor(pJson[ApiObjectProperty.foreground]);
+    activeSelectionBackground = getColor(pJson[ApiObjectProperty.activeSelectionBackground]);
+    activeSelectionForeground = getColor(pJson[ApiObjectProperty.activeSelectionForeground]);
+    inactiveSelectionBackground = getColor(pJson[ApiObjectProperty.inactiveSelectionBackground]);
+    inactiveSelectionForeground = getColor(pJson[ApiObjectProperty.inactiveSelectionForeground]);
+    mandatoryBackground = getColor(pJson[ApiObjectProperty.mandatoryBackground]);
+    readOnlyBackground = getColor(pJson[ApiObjectProperty.readOnlyBackground]);
+    invalidEditorBackground = getColor(pJson[ApiObjectProperty.invalidEditorBackground]);
   }
 
   Color? getColor(dynamic pValue) {
