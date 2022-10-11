@@ -1,4 +1,3 @@
-import '../../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../data/column_definition.dart';
 import 'api_response.dart';
@@ -38,7 +37,9 @@ class DalMetaDataResponse extends ApiResponse {
 
   DalMetaDataResponse.fromJson({required super.json, required super.originalRequest})
       : columnViewTable = json[ApiObjectProperty.columnViewTable].cast<String>(),
-        columns = ParseUtil.parseColumnDefinitions(json[ApiObjectProperty.columns]),
+        columns = (json[ApiObjectProperty.columns] as List<dynamic>)
+            .map((e) => ColumnDefinition.fromJson(e as Map<String, dynamic>))
+            .toList(),
         dataProvider = json[ApiObjectProperty.dataProvider],
         readOnly = json[ApiObjectProperty.readOnly] ?? false,
         deleteEnabled = json[ApiObjectProperty.deleteEnabled] ?? true,

@@ -34,32 +34,32 @@ class ApiStartUpRequest extends IApiRequest {
   /// Language code
   final String langCode;
 
-  /// Custom startup parameters
-  final Map<String, dynamic>? startUpParameters;
-
   /// How many records the app should fetch ahead
-  int? readAheadLimit;
+  final int? readAheadLimit;
 
   /// Unique id of this device.
-  String? deviceId;
+  final String? deviceId;
 
   /// The technology of this app.
-  String? technology;
+  final String? technology;
 
   /// The os name this app runs on.
-  String? osName;
+  final String? osName;
 
   /// The os version this app runs on.
-  String? osVersion;
+  final String? osVersion;
 
   /// The app version.
-  String? appVersion;
+  final String? appVersion;
 
   /// The type of device this app runs on.
-  String? deviceType;
+  final String? deviceType;
 
   /// The device type model this app runs on.
-  String? deviceTypeModel;
+  final String? deviceTypeModel;
+
+  /// Custom startup parameters
+  final Map<String, dynamic>? startUpParameters;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

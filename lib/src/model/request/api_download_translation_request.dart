@@ -8,19 +8,16 @@ class ApiDownloadTranslationRequest extends ISessionRequest implements IApiDownl
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Name of request, will always be - "translation"
-  final String name;
+  final String name = "translation";
 
   /// Mode of request, will always be - "json"
-  final String contentMode;
+  final String contentMode = "json";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiDownloadTranslationRequest({
-    this.name = "translation",
-    this.contentMode = "json",
-  });
+  ApiDownloadTranslationRequest();
 
   @override
   Map<String, dynamic> toJson() => {

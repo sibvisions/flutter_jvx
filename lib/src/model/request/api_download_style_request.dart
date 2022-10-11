@@ -7,7 +7,7 @@ class ApiDownloadStyleRequest extends ISessionRequest implements IApiDownloadReq
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of the request, will always be "images"
+  /// Name of the request, will always be "applicationStyle"
   final String name = "applicationStyle";
 
   /// Set to true to download all images of the library

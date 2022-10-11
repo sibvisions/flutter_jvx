@@ -12,34 +12,34 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// -1 | x
   /// -1 - delete all local data and re-fetch
   /// x - re-fetch this specific row
-  int? reload;
+  final int? reload;
 
   /// New selected row
-  int? selectedRow;
+  final int? selectedRow;
 
   /// The deleted row
-  int? deletedRow;
+  final int? deletedRow;
 
   /// Name of columns of the data book, only not null if [changedValues] is provided
-  List<String>? columnNames;
+  final List<String>? columnNames;
 
   /// Name of all changed columns, only not null if [changedValues] is provided
-  List<String>? changedColumnNames;
+  final List<String>? changedColumnNames;
 
   /// Values of all changed Columns, corresponds to [changedColumnNames] order
-  List<dynamic>? changedValues;
+  final List<dynamic>? changedValues;
 
   /// If data book is readOnly
-  bool? readOnly;
+  final bool? readOnly;
 
   /// If data book has deletion enabled
-  bool? deleteEnabled;
+  final bool? deleteEnabled;
 
   /// If data book has update enabled
-  bool? updateEnabled;
+  final bool? updateEnabled;
 
   /// If data book has insert enabled
-  bool? insertEnabled;
+  final bool? insertEnabled;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

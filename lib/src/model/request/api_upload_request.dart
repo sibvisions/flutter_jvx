@@ -10,21 +10,20 @@ class ApiUploadRequest extends ISessionRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Name of request
+  final String name = ApiResponseNames.upload;
+
   /// The id of the file for the server.
-  String fileId;
+  final String fileId;
 
   /// The file to send.
-  File file;
-
-  /// Name of request
-  final String name;
+  final File file;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiUploadRequest({
-    this.name = ApiResponseNames.upload,
     required this.file,
     required this.fileId,
   });

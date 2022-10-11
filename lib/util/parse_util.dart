@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../src/model/data/column_definition.dart';
 import '../src/model/layout/layout_position.dart';
 
 abstract class ParseUtil {
@@ -127,17 +126,6 @@ abstract class ParseUtil {
       }
     }
     return null;
-  }
-
-  /// Parse a json list of column definitions into a list of [ColumnDefinition] objects.
-  static List<ColumnDefinition> parseColumnDefinitions(List<dynamic> pJsonColumnDefinitions) {
-    List<ColumnDefinition> colDef = [];
-    for (Map<String, dynamic> element in pJsonColumnDefinitions) {
-      ColumnDefinition columnDefinition = ColumnDefinition();
-      columnDefinition.applyFromJson(pJson: element);
-      colDef.add(columnDefinition);
-    }
-    return colDef;
   }
 
   static TextPainter getTextPainter({
