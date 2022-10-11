@@ -462,7 +462,6 @@ class _SettingsPageState extends State<SettingsPage> {
       } finally {
         username = null;
         password = null;
-        setState(() {});
       }
     } else {
       await IUiService().openDialog(
