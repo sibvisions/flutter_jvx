@@ -121,16 +121,7 @@ class _LoginCardState extends State<LoginCard> {
               state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
             ),
             const Padding(padding: EdgeInsets.all(5)),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Flexible(child: _getLostPasswordButton()),
-              Flexible(
-                child: TextButton.icon(
-                  onPressed: () => _onSettingsPressed(context: context),
-                  icon: const FaIcon(FontAwesomeIcons.gear),
-                  label: Text(FlutterJVx.translate("Settings")),
-                ),
-              ),
-            ]),
+            _createBottomRow(),
           ],
         ),
       ),
@@ -141,14 +132,40 @@ class _LoginCardState extends State<LoginCard> {
     setState(() => progressButtonState = ButtonState.idle);
   }
 
-  Widget _getLostPasswordButton() {
-    if (!(IConfigService().getMetaData()?.lostPasswordEnabled == false)) {
+  Widget? _createLostPasswordButton() {
+    if (IConfigService().getMetaData()?.lostPasswordEnabled == true) {
       return TextButton(
         onPressed: () => context.beamToNamed("/login/lostPassword"),
-        child: Text("${FlutterJVx.translate("Reset password")}?"),
+        child: Text(
+          "${FlutterJVx.translate("Reset password")}?",
+          overflow: TextOverflow.ellipsis,
+        ),
       );
+    }
+    return null;
+  }
+
+  Widget _createBottomRow() {
+    Widget? lostPasswordButton = _createLostPasswordButton();
+    Widget textButton = TextButton.icon(
+      onPressed: () => _onSettingsPressed(context: context),
+      icon: const FaIcon(FontAwesomeIcons.gear),
+      label: Text(
+        FlutterJVx.translate("Settings"),
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+
+    if (lostPasswordButton != null) {
+      return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Flexible(child: lostPasswordButton),
+        Flexible(child: textButton),
+      ]);
     } else {
-      return Container();
+      return Align(
+        alignment: Alignment.centerRight,
+        child: textButton,
+      );
     }
   }
 
