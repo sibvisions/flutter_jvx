@@ -46,6 +46,8 @@ import 'src/util/loading_handler/loading_progress_handler.dart';
 import 'util/constants/i_color.dart';
 import 'util/parse_util.dart';
 
+export 'src/mask/splash/jvx_splash.dart';
+
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterJVx extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +72,7 @@ class FlutterJVx extends StatefulWidget {
   final AppManager? appManager;
 
   /// Builder function for custom loading widget
-  final Widget Function(BuildContext context)? loadingBuilder;
+  final Widget Function(BuildContext context, AsyncSnapshot? snapshot)? loadingBuilder;
 
   static late PackageInfo packageInfo;
 
