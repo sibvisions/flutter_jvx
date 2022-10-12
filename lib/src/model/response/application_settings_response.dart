@@ -19,6 +19,7 @@ class ApplicationSettingsResponse extends ApiResponse {
   final bool homeVisible;
   final bool logoutVisible;
   final bool userSettingsVisible;
+  final ApplicationColors? colors;
 
   /// map with typeName and color as string
   /// e.g. mandatoryBackground, readOnlyBackground, invalidEditorBackground, alternateBackground, ...
@@ -37,6 +38,21 @@ class ApplicationSettingsResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  ApplicationSettingsResponse({
+    required this.saveVisible,
+    required this.reloadVisible,
+    required this.rollbackVisible,
+    required this.changePasswordVisible,
+    required this.menuBarVisible,
+    required this.toolBarVisible,
+    required this.homeVisible,
+    required this.logoutVisible,
+    required this.userSettingsVisible,
+    this.colors,
+    required super.name,
+    required super.originalRequest,
+  });
+
   ApplicationSettingsResponse.empty()
       : saveVisible = true,
         reloadVisible = true,
@@ -47,16 +63,7 @@ class ApplicationSettingsResponse extends ApiResponse {
         homeVisible = true,
         logoutVisible = true,
         userSettingsVisible = true,
-        background = null,
-        alternateBackground = null,
-        foreground = null,
-        activeSelectionBackground = null,
-        activeSelectionForeground = null,
-        inactiveSelectionBackground = null,
-        inactiveSelectionForeground = null,
-        mandatoryBackground = null,
-        readOnlyBackground = null,
-        invalidEditorBackground = null,
+        colors = null,
         super(name: ApiResponseNames.applicationSettings, originalRequest: "");
 
   ApplicationSettingsResponse.fromJson({required super.json, required super.originalRequest})
@@ -69,27 +76,60 @@ class ApplicationSettingsResponse extends ApiResponse {
         homeVisible = json[ApiObjectProperty.home] ?? true,
         logoutVisible = json[ApiObjectProperty.logout] ?? true,
         userSettingsVisible = json[ApiObjectProperty.userSettings] ?? true,
-        super.fromJson() {
-    applyColors(json[ApiObjectProperty.colors] ?? {});
-  }
+        colors = json[ApiObjectProperty.colors] == null
+            ? null
+            : ApplicationColors.fromJson(json[ApiObjectProperty.colors] as Map<String, dynamic>),
+        super.fromJson();
+}
 
-  void applyColors(Map<String, dynamic> pJson) {
-    background = getColor(pJson[ApiObjectProperty.background]);
-    alternateBackground = getColor(pJson[ApiObjectProperty.alternateBackground]);
-    foreground = getColor(pJson[ApiObjectProperty.foreground]);
-    activeSelectionBackground = getColor(pJson[ApiObjectProperty.activeSelectionBackground]);
-    activeSelectionForeground = getColor(pJson[ApiObjectProperty.activeSelectionForeground]);
-    inactiveSelectionBackground = getColor(pJson[ApiObjectProperty.inactiveSelectionBackground]);
-    inactiveSelectionForeground = getColor(pJson[ApiObjectProperty.inactiveSelectionForeground]);
-    mandatoryBackground = getColor(pJson[ApiObjectProperty.mandatoryBackground]);
-    readOnlyBackground = getColor(pJson[ApiObjectProperty.readOnlyBackground]);
-    invalidEditorBackground = getColor(pJson[ApiObjectProperty.invalidEditorBackground]);
-  }
+class ApplicationColors {
+  /// Map with typeName and color as string
+  /// e.g. mandatoryBackground, readOnlyBackground, invalidEditorBackground, alternateBackground, ...
+  late final Color? background;
+  late final Color? alternateBackground;
+  late final Color? foreground;
+  late final Color? activeSelectionBackground;
+  late final Color? activeSelectionForeground;
+  late final Color? inactiveSelectionBackground;
+  late final Color? inactiveSelectionForeground;
+  late final Color? mandatoryBackground;
+  late final Color? readOnlyBackground;
+  late final Color? invalidEditorBackground;
 
-  Color? getColor(dynamic pValue) {
-    String? sColor = pValue?.toString();
+  ApplicationColors({
+    this.background,
+    this.alternateBackground,
+    this.foreground,
+    this.activeSelectionBackground,
+    this.activeSelectionForeground,
+    this.inactiveSelectionBackground,
+    this.inactiveSelectionForeground,
+    this.mandatoryBackground,
+    this.readOnlyBackground,
+    this.invalidEditorBackground,
+  });
 
-    sColor = sColor?.split(";").first;
+  ApplicationColors.fromJson(Map<String, dynamic> json)
+      : background = ColorConverter.fromJson(json[ApiObjectProperty.background]),
+        alternateBackground = ColorConverter.fromJson(json[ApiObjectProperty.alternateBackground]),
+        foreground = ColorConverter.fromJson(json[ApiObjectProperty.foreground]),
+        activeSelectionBackground = ColorConverter.fromJson(json[ApiObjectProperty.activeSelectionBackground]),
+        activeSelectionForeground = ColorConverter.fromJson(json[ApiObjectProperty.activeSelectionForeground]),
+        inactiveSelectionBackground = ColorConverter.fromJson(json[ApiObjectProperty.inactiveSelectionBackground]),
+        inactiveSelectionForeground = ColorConverter.fromJson(json[ApiObjectProperty.inactiveSelectionForeground]),
+        mandatoryBackground = ColorConverter.fromJson(json[ApiObjectProperty.mandatoryBackground]),
+        readOnlyBackground = ColorConverter.fromJson(json[ApiObjectProperty.readOnlyBackground]),
+        invalidEditorBackground = ColorConverter.fromJson(json[ApiObjectProperty.invalidEditorBackground]);
+}
+
+abstract class ColorConverter {
+  static Color? fromJson(String? json) {
+    if (json == null) return null;
+    String? sColor = json.toString();
+
+    sColor = sColor.split(";").first;
     return ParseUtil.parseHexColor(sColor);
   }
+
+  static String toJson(Color object) => "#${object.value.toRadixString(16)}";
 }
