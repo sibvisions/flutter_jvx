@@ -257,13 +257,14 @@ class FlutterJVxState extends State<FlutterJVx> {
                 future: startupFuture,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.none ||
-                      !snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
+                      snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
                     return JVxOverlay(child: child ?? const SizedBox.shrink());
                   }
 
                   return Stack(children: [
                     Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
-                    if (snapshot.hasError) _getStartupErrorDialog(context, snapshot),
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                      _getStartupErrorDialog(context, snapshot),
                   ]);
                 },
               );
@@ -271,7 +272,8 @@ class FlutterJVxState extends State<FlutterJVx> {
 
             return Stack(children: [
               Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
-              if (snapshot.hasError) _getFatalErrorDialog(context, snapshot),
+              if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                _getFatalErrorDialog(context, snapshot),
             ]);
           },
         );
@@ -458,8 +460,9 @@ class FlutterJVxState extends State<FlutterJVx> {
             TextButton(
               onPressed: () {
                 routerDelegate.setNewRoutePath(const RouteInformation(location: "/settings"));
-                startupFuture = null;
-                setState(() {});
+                setState(() {
+                  startupFuture = null;
+                });
               },
               child: Text(
                 FlutterJVx.translate("Go to Settings"),
