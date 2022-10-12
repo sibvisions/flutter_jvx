@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services.dart';
 import '../../model/command/api/logout_command.dart';
-import '../../model/response/device_status_response.dart';
 import '../setting/widgets/change_password.dart';
 import 'mobile_frame.dart';
 import 'web_frame.dart';
@@ -66,12 +66,11 @@ abstract class Frame extends StatefulWidget {
       builder: (context, value, child) {
         return Frame.getFrame(
           key: key,
-          value != LayoutMode.Mini,
+          kIsWeb,
           builder: builder,
         );
       },
     );
-    // );
   }
 }
 
