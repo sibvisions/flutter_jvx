@@ -159,6 +159,15 @@ the License.
     <!-- for packaging, we use the new version number (includes buildnumer) and the new appcode. -->
     <property name="appversion" value="${appversion.name.new}+${appversion.code.new}" />
 
+    <!-- we use the new version only in our built app and don't update the original project with this internal version. -->
+    <replaceregexp byline="true">
+      <regexp pattern="version:\s*(.*)"/>
+      <substitution expression="version: ${appversion}"/>
+      <fileset dir="${project.temp}">
+        <include name="pubspec.yaml"/>
+      </fileset>
+    </replaceregexp>
+
     <!-- replace version in config -->
     <replaceregexp byline="true">
       <regexp pattern="&quot;version&quot;\s*:\s*&quot;(.*)&quot;"/>
