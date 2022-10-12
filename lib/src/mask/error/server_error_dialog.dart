@@ -38,7 +38,7 @@ class ServerErrorDialog extends FrameDialog {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(command.title?.isNotEmpty ?? false ? command.title! : FlutterJVx.translate("Error")),
+      title: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterJVx.translate("Error")),
       content: Text(command.message!),
       actions: _getButtons(context),
     );

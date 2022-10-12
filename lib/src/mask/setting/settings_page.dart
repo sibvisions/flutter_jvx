@@ -291,8 +291,7 @@ class _SettingsPageState extends State<SettingsPage> {
     SettingItem languageSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.language),
       endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize),
-      title:
-          "${FlutterJVx.translate("Language")} (${FlutterJVx.translate("Current")}: ${IConfigService().getDisplayLanguage()})",
+      title: FlutterJVx.translate("Language"),
       //"System" is default
       value: language ?? supportedLanguages[0],
       onPressed: (value) {
@@ -366,7 +365,7 @@ class _SettingsPageState extends State<SettingsPage> {
       frontIcon: const FaIcon(FontAwesomeIcons.github),
       endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize),
       valueNotifier: appVersionNotifier,
-      title: FlutterJVx.translate("App version"),
+      title: FlutterJVx.translate("App Version"),
       onPressed: (value) => showLicensePage(
         context: context,
         applicationIcon: Image(
