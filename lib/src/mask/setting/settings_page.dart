@@ -466,7 +466,7 @@ class _SettingsPageState extends State<SettingsPage> {
       await IUiService().openDialog(
         pBuilder: (_) => AlertDialog(
           title: Text(FlutterJVx.translate("Missing required fields")),
-          content: Text(FlutterJVx.translate("You have to provide app name and base url to open an app.")),
+          content: Text(FlutterJVx.translate("You have to provide an app name and a base url to open an app.")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
