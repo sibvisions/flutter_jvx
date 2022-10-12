@@ -194,6 +194,8 @@ class FlutterJVxState extends State<FlutterJVx> {
     backgroundColor: Colors.grey.shade50,
   );
 
+  final ThemeData splashTheme = ThemeData();
+
   late Future<void> initAppFuture;
   Future<void>? startupFuture;
 
@@ -261,20 +263,26 @@ class FlutterJVxState extends State<FlutterJVx> {
                     return JVxOverlay(child: child ?? const SizedBox.shrink());
                   }
 
-                  return Stack(children: [
-                    Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
-                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                      _getStartupErrorDialog(context, snapshot),
-                  ]);
+                  return Theme(
+                    data: splashTheme,
+                    child: Stack(children: [
+                      Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
+                      if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                        _getStartupErrorDialog(context, snapshot),
+                    ]),
+                  );
                 },
               );
             }
 
-            return Stack(children: [
-              Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
-              if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                _getFatalErrorDialog(context, snapshot),
-            ]);
+            return Theme(
+              data: splashTheme,
+              child: Stack(children: [
+                Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
+                if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                  _getFatalErrorDialog(context, snapshot),
+              ]),
+            );
           },
         );
       },
