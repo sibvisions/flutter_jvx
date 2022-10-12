@@ -111,7 +111,7 @@ class FileMangerMobile extends IFileManager {
 
   @override
   Directory? getDirectory({required String pPath}) {
-    return Directory(_getSavePath(pPath: _fixPath(pPath)));
+    return Directory(_getSavePath(pPath: pPath));
   }
 
   @override
@@ -120,7 +120,7 @@ class FileMangerMobile extends IFileManager {
 
     Directory? dir = getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");
 
-    if (dir != null) {
+    if (dir != null && dir.existsSync()) {
       listFiles.addAll(dir.listSync().whereType<File>().toList());
     }
 
