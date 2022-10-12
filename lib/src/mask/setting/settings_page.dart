@@ -83,9 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           _buildVersionInfo(),
-          Container(
-            height: 50,
-          )
+          const SizedBox(height: kBottomNavigationBarHeight),
         ],
       ),
     );
@@ -96,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return WillPopScope(
       onWillPop: () async => !loading,
-      child: Container(
+      child: ColoredBox(
         color: Theme.of(context).backgroundColor,
         child: Scaffold(
           extendBody: true,
@@ -116,43 +114,12 @@ class _SettingsPageState extends State<SettingsPage> {
             elevation: 0.0,
             shape: const CircularNotchedRectangle(),
             color: Theme.of(context).primaryColor,
-            child: SizedBox(
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: IConfigService().getUserInfo() != null && context.canBeamBack
-                        ? InkWell(
-                            onTap: loading ? null : context.beamBack,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                FlutterJVx.translate("Cancel"),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
-                              ),
-                            ),
-                          )
-                        : Container(),
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: loading || IConfigService().isOffline() ? null : _saveClicked,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          FlutterJVx.translate(IConfigService().getUserInfo() != null ? "Save" : "Open"),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(child: _createCancelButton(context, loading)),
+                Expanded(child: _createSaveButton(context, loading)),
+              ],
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -164,6 +131,48 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: const FaIcon(FontAwesomeIcons.qrcode),
                 )
               : null,
+        ),
+      ),
+    );
+  }
+
+  Widget _createCancelButton(BuildContext context, bool loading) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: kBottomNavigationBarHeight),
+      child: IConfigService().getUserInfo() != null && context.canBeamBack
+          ? InkWell(
+              onTap: loading ? null : context.beamBack,
+              child: SizedBox.shrink(
+                child: Center(
+                  child: Text(
+                    FlutterJVx.translate("Cancel"),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          : const SizedBox.shrink(),
+    );
+  }
+
+  Widget _createSaveButton(BuildContext context, bool loading) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: kBottomNavigationBarHeight),
+      child: InkWell(
+        onTap: loading || IConfigService().isOffline() ? null : _saveClicked,
+        child: SizedBox.shrink(
+          child: Center(
+            child: Text(
+              FlutterJVx.translate(IConfigService().getUserInfo() != null ? "Save" : "Open"),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          ),
         ),
       ),
     );
