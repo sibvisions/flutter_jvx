@@ -83,8 +83,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   @override
   Widget build(BuildContext context) {
-    Color? fillColor =
-        model.background ?? (isMandatory ? AppStyle.of(context)!.applicationSettings.mandatoryBackground : null);
+    Color? fillColor = model.background ??
+        (isMandatory ? AppStyle.of(context)!.applicationSettings.colors?.mandatoryBackground : null);
     bool isFilled = fillColor != null && !inTable;
 
     return TextField(

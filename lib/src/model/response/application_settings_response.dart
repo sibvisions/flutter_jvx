@@ -21,19 +21,6 @@ class ApplicationSettingsResponse extends ApiResponse {
   final bool userSettingsVisible;
   final ApplicationColors? colors;
 
-  /// map with typeName and color as string
-  /// e.g. mandatoryBackground, readOnlyBackground, invalidEditorBackground, alternateBackground, ...
-  late final Color? background;
-  late final Color? alternateBackground;
-  late final Color? foreground;
-  late final Color? activeSelectionBackground;
-  late final Color? activeSelectionForeground;
-  late final Color? inactiveSelectionBackground;
-  late final Color? inactiveSelectionForeground;
-  late final Color? mandatoryBackground;
-  late final Color? readOnlyBackground;
-  late final Color? invalidEditorBackground;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,16 +72,16 @@ class ApplicationSettingsResponse extends ApiResponse {
 class ApplicationColors {
   /// Map with typeName and color as string
   /// e.g. mandatoryBackground, readOnlyBackground, invalidEditorBackground, alternateBackground, ...
-  late final Color? background;
-  late final Color? alternateBackground;
-  late final Color? foreground;
-  late final Color? activeSelectionBackground;
-  late final Color? activeSelectionForeground;
-  late final Color? inactiveSelectionBackground;
-  late final Color? inactiveSelectionForeground;
-  late final Color? mandatoryBackground;
-  late final Color? readOnlyBackground;
-  late final Color? invalidEditorBackground;
+  final Color? background;
+  final Color? alternateBackground;
+  final Color? foreground;
+  final Color? activeSelectionBackground;
+  final Color? activeSelectionForeground;
+  final Color? inactiveSelectionBackground;
+  final Color? inactiveSelectionForeground;
+  final Color? mandatoryBackground;
+  final Color? readOnlyBackground;
+  final Color? invalidEditorBackground;
 
   ApplicationColors({
     this.background,
