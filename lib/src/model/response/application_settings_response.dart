@@ -110,9 +110,9 @@ class ApplicationColors {
 }
 
 abstract class ColorConverter {
-  static Color? fromJson(String? json) {
-    if (json == null) return null;
-    String? sColor = json.toString();
+  static Color? fromJson(String? value) {
+    if (value == null) return null;
+    String sColor = value.toString();
 
     sColor = sColor.split(";").first;
     return ParseUtil.parseHexColor(sColor);
