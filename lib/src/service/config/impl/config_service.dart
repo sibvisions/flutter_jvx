@@ -352,7 +352,6 @@ class ConfigService implements IConfigService {
   String translateText(String pText) {
     String? translatedText = translation.translations[pText];
     if (translatedText == null) {
-      FlutterJVx.log.d("Translation for text: $pText was not found for language ${getDisplayLanguage()}");
       return pText;
     }
     return translatedText;
