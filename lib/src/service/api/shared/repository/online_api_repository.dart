@@ -280,7 +280,11 @@ class OnlineApiRepository implements IRepository {
 
   Future<void> stopWebSocket() async {
     manualClose = true;
-    await webSocket?.sink.close(status.normalClosure);
+    // Workaround for never finishing future in some cases
+    // https://github.com/dart-lang/web_socket_channel/issues/231
+    try {
+      await webSocket?.sink.close().timeout(const Duration(seconds: 2));
+    } on TimeoutException catch (_) {}
   }
 
   @override
