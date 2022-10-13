@@ -20,32 +20,31 @@ class ProgressButton extends StatefulWidget {
   final List<ButtonState> minWidthStates;
   final Duration animationDuration;
 
-  ProgressButton(
-      {Key? key,
-      required this.stateWidgets,
-      required this.stateColors,
-      this.state = ButtonState.idle,
-      this.onPressed,
-      this.onAnimationEnd,
-      this.minWidth = 200.0,
-      this.maxWidth = 400.0,
-      this.radius = 16.0,
-      this.height = 53.0,
-      this.progressIndicatorSize = 35.0,
-      this.progressIndicator,
-      this.progressIndicatorAlignment = MainAxisAlignment.spaceBetween,
-      this.padding = EdgeInsets.zero,
-      this.minWidthStates = const <ButtonState>[ButtonState.loading],
-      this.animationDuration = const Duration(milliseconds: 500)})
-      : assert(
-          stateWidgets != null && stateWidgets.keys.toSet().containsAll(ButtonState.values.toSet()),
-          'Must be non-null widgetds provided in map of stateWidgets. Missing keys => ${ButtonState.values.toSet().difference(stateWidgets.keys.toSet())}',
+  ProgressButton({
+    super.key,
+    required this.stateWidgets,
+    required this.stateColors,
+    this.state = ButtonState.idle,
+    this.onPressed,
+    this.onAnimationEnd,
+    this.minWidth = 200.0,
+    this.maxWidth = 400.0,
+    this.radius = 16.0,
+    this.height = 53.0,
+    this.progressIndicatorSize = 35.0,
+    this.progressIndicator,
+    this.progressIndicatorAlignment = MainAxisAlignment.spaceBetween,
+    this.padding = EdgeInsets.zero,
+    this.minWidthStates = const [ButtonState.loading],
+    this.animationDuration = const Duration(milliseconds: 500),
+  })  : assert(
+          stateWidgets.keys.toSet().containsAll(ButtonState.values.toSet()),
+          'Must be non-null widgets provided in map of stateWidgets. Missing keys => ${ButtonState.values.toSet().difference(stateWidgets.keys.toSet())}',
         ),
         assert(
-          stateColors != null && stateColors.keys.toSet().containsAll(ButtonState.values.toSet()),
-          'Must be non-null widgetds provided in map of stateWidgets. Missing keys => ${ButtonState.values.toSet().difference(stateColors.keys.toSet())}',
-        ),
-        super(key: key);
+          stateColors.keys.toSet().containsAll(ButtonState.values.toSet()),
+          'Must be non-null widgets provided in map of stateWidgets. Missing keys => ${ButtonState.values.toSet().difference(stateColors.keys.toSet())}',
+        );
 
   @override
   State<StatefulWidget> createState() {
@@ -53,16 +52,17 @@ class ProgressButton extends StatefulWidget {
   }
 
   factory ProgressButton.icon({
+    Key? key,
     required Map<ButtonState, IconedButton> iconedButtons,
     Function? onPressed,
     ButtonState? state = ButtonState.idle,
     Function? animationEnd,
-    maxWidth: 170.0,
-    minWidth: 58.0,
-    height: 53.0,
-    radius: 100.0,
-    progressIndicatorSize: 35.0,
-    double iconPadding: 4.0,
+    maxWidth = 170.0,
+    minWidth = 58.0,
+    height = 53.0,
+    radius = 100.0,
+    progressIndicatorSize = 35.0,
+    double iconPadding = 4.0,
     TextStyle? textStyle,
     CircularProgressIndicator? progressIndicator,
     MainAxisAlignment? progressIndicatorAlignment,
@@ -70,13 +70,11 @@ class ProgressButton extends StatefulWidget {
     List<ButtonState> minWidthStates = const <ButtonState>[ButtonState.loading],
   }) {
     assert(
-      iconedButtons != null && iconedButtons.keys.toSet().containsAll(ButtonState.values.toSet()),
+      iconedButtons.keys.toSet().containsAll(ButtonState.values.toSet()),
       'Must be non-null widgets provided in map of stateWidgets. Missing keys => ${ButtonState.values.toSet().difference(iconedButtons.keys.toSet())}',
     );
 
-    if (textStyle == null) {
-      textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.w500);
-    }
+    textStyle ??= const TextStyle(color: Colors.white, fontWeight: FontWeight.w500);
 
     Map<ButtonState, Widget> stateWidgets = {
       ButtonState.idle: buildChildWithIcon(iconedButtons[ButtonState.idle]!, iconPadding, textStyle),
@@ -93,6 +91,7 @@ class ProgressButton extends StatefulWidget {
     };
 
     return ProgressButton(
+      key: key,
       stateWidgets: stateWidgets,
       stateColors: stateColors,
       state: state,
@@ -111,10 +110,9 @@ class ProgressButton extends StatefulWidget {
 }
 
 class _ProgressButtonState extends State<ProgressButton> with TickerProviderStateMixin {
-  AnimationController? colorAnimationController;
+  late AnimationController colorAnimationController;
   Animation<Color?>? colorAnimation;
   double? width;
-  Widget? progressIndicator;
 
   void startAnimations(ButtonState? oldState, ButtonState? newState) {
     Color? begin = widget.stateColors[oldState!];
@@ -125,14 +123,10 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
       width = widget.maxWidth;
     }
     colorAnimation = ColorTween(begin: begin, end: end).animate(CurvedAnimation(
-      parent: colorAnimationController!,
-      curve: Interval(
-        0,
-        1,
-        curve: Curves.easeIn,
-      ),
+      parent: colorAnimationController,
+      curve: const Interval(0, 1, curve: Curves.easeIn),
     ));
-    colorAnimationController!.forward();
+    colorAnimationController.forward();
   }
 
   Color? get backgroundColor => colorAnimation == null
@@ -146,21 +140,16 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     width = widget.maxWidth;
 
     colorAnimationController = AnimationController(duration: widget.animationDuration, vsync: this);
-    colorAnimationController!.addStatusListener((status) {
+    colorAnimationController.addStatusListener((status) {
       if (widget.onAnimationEnd != null) {
         widget.onAnimationEnd!(status, widget.state);
       }
     });
-
-    progressIndicator = widget.progressIndicator ??
-        CircularProgressIndicator(
-            backgroundColor: widget.stateColors[widget.state!],
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white));
   }
 
   @override
   void dispose() {
-    colorAnimationController!.dispose();
+    colorAnimationController.dispose();
     super.dispose();
   }
 
@@ -168,8 +157,10 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
   void didUpdateWidget(ProgressButton oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    colorAnimationController.duration = widget.animationDuration;
+
     if (oldWidget.state != widget.state) {
-      colorAnimationController?.reset();
+      colorAnimationController.reset();
       startAnimations(oldWidget.state, widget.state);
     }
   }
@@ -179,24 +170,28 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     if (widget.state == ButtonState.loading) {
       return Row(
         mainAxisAlignment: widget.progressIndicatorAlignment,
-        children: <Widget>[
+        children: [
           SizedBox(
-            child: progressIndicator,
             width: widget.progressIndicatorSize,
             height: widget.progressIndicatorSize,
+            child: widget.progressIndicator ??
+                CircularProgressIndicator(
+                  backgroundColor: widget.stateColors[widget.state!],
+                  valueColor: const AlwaysStoppedAnimation(Colors.white),
+                ),
           ),
-          buttonChild ?? Container(),
-          Container()
+          buttonChild ?? const SizedBox.shrink(),
         ],
       );
     }
-    return AnimatedOpacity(opacity: visibility ? 1.0 : 0.0, duration: Duration(milliseconds: 250), child: buttonChild);
+    return AnimatedOpacity(
+        opacity: visibility ? 1.0 : 0.0, duration: const Duration(milliseconds: 250), child: buttonChild);
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: colorAnimationController!,
+      animation: colorAnimationController,
       builder: (context, child) {
         return AnimatedContainer(
             width: width,
@@ -206,7 +201,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
               padding: widget.padding,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(widget.radius),
-                  side: BorderSide(color: Colors.transparent, width: 0)),
+                  side: const BorderSide(color: Colors.transparent, width: 0)),
               color: backgroundColor,
               onPressed: widget.onPressed as void Function()?,
               child: getButtonChild(colorAnimation == null ? true : colorAnimation!.isCompleted),
@@ -233,8 +228,8 @@ Widget buildChildWithIcon(IconedButton iconedButton, double iconPadding, TextSty
 }
 
 Widget buildChildWithIC(String? text, Icon? icon, double gap, TextStyle textStyle) {
-  var children = <Widget>[];
-  children.add(icon ?? Container());
+  List<Widget> children = [];
+  children.add(icon ?? const SizedBox.shrink());
   if (text != null) {
     children.add(Padding(padding: EdgeInsets.all(gap)));
     children.add(buildText(text, textStyle));
