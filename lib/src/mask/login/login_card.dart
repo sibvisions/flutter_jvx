@@ -93,7 +93,7 @@ class _LoginCardState extends State<LoginCard> {
               radius: 4.0,
               progressIndicator: CircularProgressIndicator.adaptive(
                 backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation(IColor.toggleColor(Theme.of(context).colorScheme.primary)),
+                valueColor: AlwaysStoppedAnimation(IColor.toggleColor(Theme.of(context).colorScheme.onPrimary)),
               ),
               textStyle: TextStyle(
                 color: progressButtonState != ButtonState.fail ? Theme.of(context).colorScheme.onPrimary : Colors.white,
