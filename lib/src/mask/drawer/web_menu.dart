@@ -96,6 +96,11 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
         width: 50,
         child: menu,
       );
+    } else if (value == LayoutMode.Mini) {
+      menu = SizedBox(
+        width: 0,
+        child: menu,
+      );
     }
 
     return ListTileTheme.merge(
