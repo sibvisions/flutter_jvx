@@ -1,13 +1,12 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:progress_state_button/iconed_button.dart';
-import 'package:progress_state_button/progress_button.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/constants/i_color.dart';
 import '../../model/command/api/login_command.dart';
+import '../../util/loading_handler/progress_button.dart';
 import '../state/app_style.dart';
 import '../state/loading_bar.dart';
 import 'remember_me_checkbox.dart';

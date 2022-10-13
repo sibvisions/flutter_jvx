@@ -85,7 +85,6 @@ dependencies:
   url_launcher: ^6.1.5
   linked_scroll_controller: ^0.2.0
   liquid_progress_indicator: ^0.4.0
-  progress_state_button: ^1.0.4
 
   #  charts_flutter: ^0.12.0
   charts_flutter:
