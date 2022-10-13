@@ -82,6 +82,7 @@ abstract class ApiObjectProperty {
   static const String longitudeColumnName = "longitudeColumnName";
   static const String latitudeColumnName = "latitudeColumnName";
   static const String groupColumnName = "groupColumnName";
+  static const String defaultMenuItem = "defaultMenuItem";
 
   //Can occur in both request & response
   static const String clientId = "clientId";
@@ -311,28 +312,12 @@ abstract class ApiObjectProperty {
   static const String tableReadonly = "tableReadonly";
 
   // Color properties
-
-  /// The static constant for control alternate background color. */
   static const String alternateBackground = "alternatebackground";
-
-  /// The static constant for control active selection background color. */
   static const String activeSelectionBackground = "activeselectionbackground";
-
-  /// The static constant for control active selection foreground color. */
   static const String activeSelectionForeground = "activeselectionforeground";
-
-  /// The static constant for control inactive selection background color. */
   static const String inactiveSelectionBackground = "inactiveselectionbackground";
-
-  /// The static constant for control inactive selection foreground color. */
   static const String inactiveSelectionForeground = "inactiveselectionforeground";
-
-  /// The static constant for control mandatory background color. */
   static const String mandatoryBackground = "mandatorybackground";
-
-  /// The static constant for control read only background color. */
   static const String readOnlyBackground = "readonlybackground";
-
-  /// The static constant for control read only background color. */
   static const String invalidEditorBackground = "invalideditorbackground";
 }
