@@ -7,7 +7,7 @@ class FetchCommand extends ApiCommand {
 
   final List<String>? columnNames;
 
-  final bool? includeMetaData;
+  final bool includeMetaData;
 
   final int fromRow;
 
@@ -23,7 +23,7 @@ class FetchCommand extends ApiCommand {
     required this.fromRow,
     required this.rowCount,
     required this.dataProvider,
-    this.includeMetaData,
+    this.includeMetaData = true,
     this.columnNames,
     required super.reason,
   });

@@ -1,8 +1,7 @@
+import '../../../../../../commands.dart';
 import '../../../../../../services.dart';
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/data/get_data_chunk_command.dart';
 import '../../../../../model/data/subscriptions/data_chunk.dart';
-import '../../../../../model/request/api_fetch_request.dart';
 import '../../i_command_processor.dart';
 
 class GetDataChunkCommandProcessor implements ICommandProcessor<GetDataChunkCommand> {
@@ -14,29 +13,30 @@ class GetDataChunkCommandProcessor implements ICommandProcessor<GetDataChunkComm
       pDataProvider: command.dataProvider,
     );
 
-    if (!needFetch) {
-      DataChunk dataChunk = await IDataService().getDataChunk(
-        pColumnNames: command.dataColumns,
-        pFrom: command.from,
-        pTo: command.to,
-        pDataProvider: command.dataProvider,
-      );
-      dataChunk.update = command.isUpdate;
-
-      IUiService().setChunkData(
-        pDataChunk: dataChunk,
-        pDataProvider: command.dataProvider,
-        pSubId: command.subId,
-      );
-      return [];
+    if (needFetch) {
+      return [
+        FetchCommand(
+          fromRow: command.from,
+          rowCount: command.to != null ? command.to! - command.from : -1,
+          dataProvider: command.dataProvider,
+          reason: "Fetch for ${command.runtimeType}",
+        )
+      ];
     }
 
-    return IApiService().sendRequest(
-      request: ApiFetchRequest(
-        dataProvider: command.dataProvider,
-        fromRow: command.from,
-        rowCount: command.to != null ? command.to! - command.from : -1,
-      ),
+    DataChunk dataChunk = await IDataService().getDataChunk(
+      pColumnNames: command.dataColumns,
+      pFrom: command.from,
+      pTo: command.to,
+      pDataProvider: command.dataProvider,
     );
+    dataChunk.update = command.isUpdate;
+
+    IUiService().setChunkData(
+      pDataChunk: dataChunk,
+      pDataProvider: command.dataProvider,
+      pSubId: command.subId,
+    );
+    return [];
   }
 }

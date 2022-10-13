@@ -199,20 +199,18 @@ class StorageService implements IStorageService {
   }
 
   List<FlComponentModel> _getAllComponentsBelowByName({required String name, bool ignoreVisibility = false}) {
-    FlComponentModel? componentModel;
-    _componentMap.forEach((key, value) {
-      if (value.name == name) {
-        componentModel = value;
-      }
-    });
+    List<FlComponentModel> list = [];
+    List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.name == name).toList();
 
-    if (componentModel != null && (ignoreVisibility || componentModel!.isVisible)) {
-      var list = _getAllComponentsBelow(componentModel!.id, ignoreVisibility);
-      list.add(componentModel!);
-      return list;
-    } else {
-      return [];
+    if (screenModels.length != 1) {
+      FlutterJVx.log.wtf("The same screen is found twice in the storage service!!!!");
+    } else if ((ignoreVisibility || screenModels.first.isVisible)) {
+      list.addAll(_getAllComponentsBelow(screenModels.first.id, ignoreVisibility));
+      //Return after the first was found.
+      list.add(screenModels.first);
     }
+
+    return list;
   }
 
   /// Adds new Component

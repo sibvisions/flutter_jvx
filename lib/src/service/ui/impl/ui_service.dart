@@ -5,6 +5,7 @@ import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../commands.dart';
 import '../../../../custom/app_manager.dart';
 import '../../../../custom/custom_component.dart';
 import '../../../../custom/custom_menu_item.dart';
@@ -15,10 +16,6 @@ import '../../../exceptions/error_view_exception.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
-import '../../../model/command/data/get_data_chunk_command.dart';
-import '../../../model/command/data/get_meta_data_command.dart';
-import '../../../model/command/data/get_selected_data_command.dart';
-import '../../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
@@ -379,37 +376,48 @@ class UiService implements IUiService {
     _dataSubscriptions.add(pDataSubscription);
 
     if (pShouldFetch) {
-      if (IDataService().getDataBook(pDataSubscription.dataProvider) != null) {
-        if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
-          GetDataChunkCommand getDataChunkCommand = GetDataChunkCommand(
-            reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            from: pDataSubscription.from,
-            to: pDataSubscription.to,
-            subId: pDataSubscription.id,
-            dataColumns: pDataSubscription.dataColumns,
-          );
-          sendCommand(getDataChunkCommand);
-        }
+      bool needFetch = IDataService().getDataBook(pDataSubscription.dataProvider) == null;
 
-        if (pDataSubscription.onSelectedRecord != null) {
-          GetSelectedDataCommand getSelectedDataCommand = GetSelectedDataCommand(
-            subId: pDataSubscription.id,
-            reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            columnNames: pDataSubscription.dataColumns,
-          );
-          sendCommand(getSelectedDataCommand);
-        }
+      if (needFetch) {
+        sendCommand(FetchCommand(
+          dataProvider: pDataSubscription.dataProvider,
+          fromRow: pDataSubscription.from,
+          rowCount: pDataSubscription.to != null ? pDataSubscription.to! - pDataSubscription.from : -1,
+          columnNames: pDataSubscription.dataColumns,
+          reason: "Fetch for ${pDataSubscription.runtimeType}",
+        ));
+        return;
+      }
 
-        if (pDataSubscription.onMetaData != null) {
-          GetMetaDataCommand getMetaDataCommand = GetMetaDataCommand(
-            reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            subId: pDataSubscription.id,
-          );
-          sendCommand(getMetaDataCommand);
-        }
+      if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
+        GetDataChunkCommand getDataChunkCommand = GetDataChunkCommand(
+          reason: "Subscription added",
+          dataProvider: pDataSubscription.dataProvider,
+          from: pDataSubscription.from,
+          to: pDataSubscription.to,
+          subId: pDataSubscription.id,
+          dataColumns: pDataSubscription.dataColumns,
+        );
+        sendCommand(getDataChunkCommand);
+      }
+
+      if (pDataSubscription.onSelectedRecord != null) {
+        GetSelectedDataCommand getSelectedDataCommand = GetSelectedDataCommand(
+          subId: pDataSubscription.id,
+          reason: "Subscription added",
+          dataProvider: pDataSubscription.dataProvider,
+          columnNames: pDataSubscription.dataColumns,
+        );
+        sendCommand(getSelectedDataCommand);
+      }
+
+      if (pDataSubscription.onMetaData != null) {
+        GetMetaDataCommand getMetaDataCommand = GetMetaDataCommand(
+          reason: "Subscription added",
+          dataProvider: pDataSubscription.dataProvider,
+          subId: pDataSubscription.id,
+        );
+        sendCommand(getMetaDataCommand);
       }
     }
   }
