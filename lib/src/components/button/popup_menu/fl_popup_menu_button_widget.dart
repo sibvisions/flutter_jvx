@@ -13,8 +13,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlPopupMenuButtonWidget(
-      {super.key, required super.model, super.onPress, this.onItemPress, required this.popupItems});
+  const FlPopupMenuButtonWidget({super.key, required super.model, this.onItemPress, required this.popupItems});
 
   @override
   Widget createDirectButtonChild(BuildContext context) {
@@ -33,7 +32,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   }
 
   @override
-  Widget? createButtonChild() {
+  Widget? createButtonChild(BuildContext context) {
     if (model.labelModel.text.isNotEmpty && image != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -90,5 +89,17 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
         },
       );
     }
+  }
+
+  @override
+  Function()? getOnPressed(BuildContext context) {
+    if (model.isEnabled) {
+      if (model.defaultMenuItem != null && model.defaultMenuItem!.isNotEmpty) {
+        return () => onItemPress?.call(model.defaultMenuItem!);
+      } else {
+        return () => openMenu(context);
+      }
+    }
+    return null;
   }
 }

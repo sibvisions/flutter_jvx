@@ -33,13 +33,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlRadioButtonWidget({Key? key, required super.model, required Function()? onPress})
-      : super(key: key, onPress: onPress);
-
-  @override
-  Function()? getOnPressed() {
-    return model.isEnabled && model.isFocusable ? () {} : null;
-  }
+  const FlRadioButtonWidget({super.key, required super.model, required super.onPress});
 
   @override
   ButtonStyle createButtonStyle(context) {
@@ -55,12 +49,12 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   }
 
   @override
-  Widget? createButtonChild() {
-    Widget? child = super.createButtonChild();
+  Widget? createButtonChild(BuildContext context) {
+    Widget? child = super.createButtonChild(context);
 
     if (child != null) {
       child = InkWell(
-        onTap: super.getOnPressed(),
+        onTap: super.getOnPressed(context),
         child: Ink(
           padding: const EdgeInsets.only(right: 10),
           child: child,

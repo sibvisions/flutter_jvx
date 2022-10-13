@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../components.dart';
 import '../../../util/constants/i_color.dart';
 import '../../../util/image/image_loader.dart';
-import '../../model/component/button/fl_button_model.dart';
 import '../../model/layout/alignments.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
-import '../label/fl_label_widget.dart';
 
 /// The widget representing a button.
 class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
@@ -49,7 +47,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: getOnPressed(),
+      onPressed: getOnPressed(context),
       style: createButtonStyle(context),
       child: createDirectButtonChild(context),
     );
@@ -60,7 +58,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns the icon and/or the text of the button.
-  Widget? createButtonChild() {
+  Widget? createButtonChild(BuildContext context) {
     if (model.labelModel.text.isNotEmpty && image != null) {
       if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
           model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
@@ -101,7 +99,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget createDirectButtonChild(BuildContext context) {
     return Align(
       alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-      child: createButtonChild(),
+      child: createButtonChild(context),
     );
   }
 
@@ -146,7 +144,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Function()? getOnPressed() {
+  Function()? getOnPressed(BuildContext context) {
     if (model.isEnabled) {
       return onPress;
     }
