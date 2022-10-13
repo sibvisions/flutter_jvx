@@ -83,10 +83,12 @@ class CommandService implements ICommandService {
     progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
 
     try {
+      FlutterJVx.log.d("Started ${pCommand.runtimeType}-chain");
       await processCommand(pCommand);
       pCommand.onFinish?.call();
+      FlutterJVx.log.d("Finished ${pCommand.runtimeType}-chain");
     } catch (error) {
-      FlutterJVx.log.e("Error processing ${pCommand.runtimeType}");
+      FlutterJVx.log.e("Error processing ${pCommand.runtimeType}-chain");
       rethrow;
     } finally {
       progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
@@ -106,6 +108,7 @@ class CommandService implements ICommandService {
   }
 
   Future<void> processCommand(BaseCommand pCommand) async {
+    FlutterJVx.log.d("Processing ${pCommand.runtimeType}");
     pCommand.beforeProcessing?.call();
 
     List<BaseCommand> commands = [];
@@ -127,6 +130,7 @@ class CommandService implements ICommandService {
       return;
     }
 
+    FlutterJVx.log.d("After processing ${pCommand.runtimeType}");
     pCommand.afterProcessing?.call();
 
     IUiService().getAppManager()?.modifyCommands(commands, pCommand);
