@@ -42,4 +42,9 @@ class ApplicationMetaDataResponse extends ApiResponse {
         lostPasswordEnabled = json[ApiObjectProperty.lostPasswordEnabled],
         rememberMeEnabled = json[ApiObjectProperty.rememberMe],
         super.fromJson();
+
+  @override
+  String toString() {
+    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, langCode: $langCode, lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled}';
+  }
 }
