@@ -13,6 +13,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../../config/api/api_route.dart';
 import '../../../../../flutter_jvx.dart';
 import '../../../../../services.dart';
+import '../../../../exceptions/session_expired_exception.dart';
 import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/request/api_change_password_request.dart';
 import '../../../../model/request/api_changes_request.dart';
@@ -326,6 +327,8 @@ class OnlineApiRepository implements IRepository {
           FlutterJVx.log.e("Server sent HTTP ${response.statusCode}: $body");
           if (response.statusCode == 404) {
             throw Exception("Application not found (404)");
+          } else if (response.statusCode == 410) {
+            throw SessionExpiredException(response.statusCode);
           } else if (response.statusCode == 500) {
             throw Exception("General Server Error (500)");
           } else {

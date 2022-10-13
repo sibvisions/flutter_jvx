@@ -30,7 +30,8 @@ class ServerSessionExpired extends FrameDialog {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(command.title?.isNotEmpty == true ? command.title! : FlutterJVx.translate("Session Expired")),
-      content: Text(command.message!),
+      content:
+          Text(command.message?.isNotEmpty == true ? command.message! : FlutterJVx.translate("Session has expired")),
       actions: [
         TextButton(
           onPressed: () => _restartApp(),

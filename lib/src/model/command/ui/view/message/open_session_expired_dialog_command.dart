@@ -11,7 +11,7 @@ class OpenSessionExpiredDialogCommand extends MessageViewCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenSessionExpiredDialogCommand({
-    required super.title,
+    super.title,
     super.message,
     required super.reason,
   });

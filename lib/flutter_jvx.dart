@@ -13,6 +13,7 @@ import 'package:universal_io/io.dart';
 
 import 'config/app_config.dart';
 import 'custom/app_manager.dart';
+import 'src/exceptions/error_view_exception.dart';
 import 'src/mask/jvx_overlay.dart';
 import 'src/mask/splash/splash.dart';
 import 'src/model/command/api/startup_command.dart';

@@ -5,6 +5,8 @@ import 'package:queue/queue.dart';
 
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
+import '../../../exceptions/error_view_exception.dart';
+import '../../../exceptions/session_expired_exception.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
@@ -16,6 +18,7 @@ import '../../../model/command/ui/route_to_menu_command.dart';
 import '../../../model/command/ui/route_to_work_command.dart';
 import '../../../model/command/ui/ui_command.dart';
 import '../../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
 import '../shared/i_command_processor.dart';
 import '../shared/processor/api/api_processor.dart';
@@ -112,22 +115,29 @@ class CommandService implements ICommandService {
     pCommand.beforeProcessing?.call();
 
     List<BaseCommand> commands = [];
-    // Switch-Case doesn't work with types
-    if (pCommand is ApiCommand) {
-      commands = await _apiProcessor.processCommand(pCommand);
-    } else if (pCommand is ConfigCommand) {
-      commands = await _configProcessor.processCommand(pCommand);
-    } else if (pCommand is StorageCommand) {
-      commands = await _storageProcessor.processCommand(pCommand);
-    } else if (pCommand is UiCommand) {
-      commands = await _uiProcessor.processCommand(pCommand);
-    } else if (pCommand is LayoutCommand) {
-      commands = await _layoutProcessor.processCommand(pCommand);
-    } else if (pCommand is DataCommand) {
-      commands = await _dataProcessor.processCommand(pCommand);
-    } else {
-      FlutterJVx.log.w("Command (${pCommand.runtimeType}) without Processor found");
-      return;
+    try {
+      // Switch-Case doesn't work with types
+      if (pCommand is ApiCommand) {
+        commands = await _apiProcessor.processCommand(pCommand);
+      } else if (pCommand is ConfigCommand) {
+        commands = await _configProcessor.processCommand(pCommand);
+      } else if (pCommand is StorageCommand) {
+        commands = await _storageProcessor.processCommand(pCommand);
+      } else if (pCommand is UiCommand) {
+        commands = await _uiProcessor.processCommand(pCommand);
+      } else if (pCommand is LayoutCommand) {
+        commands = await _layoutProcessor.processCommand(pCommand);
+      } else if (pCommand is DataCommand) {
+        commands = await _dataProcessor.processCommand(pCommand);
+      } else {
+        FlutterJVx.log.w("Command (${pCommand.runtimeType}) without Processor found");
+        return;
+      }
+    } on SessionExpiredException catch (e) {
+      FlutterJVx.log.w("Server sent HTTP ${e.statusCode}, session seems to be expired.");
+      commands.add(OpenSessionExpiredDialogCommand(
+        reason: "Server sent HTTP ${e.statusCode}",
+      ));
     }
 
     FlutterJVx.log.d("After processing ${pCommand.runtimeType}");
@@ -175,18 +185,5 @@ class CommandService implements ICommandService {
     if (errorCommand != null) {
       throw ErrorViewException(errorCommand);
     }
-  }
-}
-
-class ErrorViewException implements Exception {
-  /// A message describing the exception.
-  final String? message;
-  final OpenErrorDialogCommand errorCommand;
-
-  ErrorViewException(this.errorCommand, [this.message]);
-
-  @override
-  String toString() {
-    return "${message != null ? "$message " : ""}${errorCommand.message}";
   }
 }

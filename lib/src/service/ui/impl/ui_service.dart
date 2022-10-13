@@ -11,6 +11,7 @@ import '../../../../custom/custom_menu_item.dart';
 import '../../../../custom/custom_screen.dart';
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
+import '../../../exceptions/error_view_exception.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';

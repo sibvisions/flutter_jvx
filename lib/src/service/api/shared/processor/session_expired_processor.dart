@@ -8,7 +8,7 @@ class SessionExpiredProcessor implements IResponseProcessor<SessionExpiredRespon
   List<BaseCommand> processResponse({required SessionExpiredResponse pResponse}) {
     OpenSessionExpiredDialogCommand command = OpenSessionExpiredDialogCommand(
       title: pResponse.title,
-      message: pResponse.message ?? "Session has expired",
+      message: pResponse.message,
       reason: "Server sent session expired",
     );
 
