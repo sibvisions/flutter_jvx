@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../state/app_style.dart';
@@ -19,13 +20,13 @@ class AppLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appStyle = AppStyle.of(context)!.applicationStyle!;
-    String? loginIcon = appStyle['login.icon'];
     String? loginLogo = appStyle['login.logo'];
 
-    //Color? backgroundColor = ParseUtil.parseHexColor(appStyle?['login.background']);
     bool inverseColor = ParseUtil.parseBool(appStyle['login.inverseColor']) ?? false;
 
-    Color? topColor = ParseUtil.parseHexColor(appStyle['login.topColor']);
+    Color? topColor = ParseUtil.parseHexColor(appStyle['login.topColor']) ??
+        ParseUtil.parseHexColor(appStyle['login.background']) ??
+        Theme.of(context).colorScheme.primary;
     Color? bottomColor = ParseUtil.parseHexColor(appStyle['login.bottomColor']);
 
     if (inverseColor) {
@@ -50,15 +51,25 @@ class AppLogin extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: topColor ?? Colors.white,
                     ),
-                    child: loginLogo != null ? ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown) : null,
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Center(
+                      child: loginLogo != null
+                          ? ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown)
+                          : Image.asset(
+                              ImageLoader.getAssetPath(
+                                FlutterJVx.package,
+                                "assets/images/branding_sib_visions.png",
+                              ),
+                              fit: BoxFit.scaleDown,
+                            ),
+                    ),
                   ),
                 ),
               ),
               Expanded(
                 flex: 6,
-                child: Container(
-                  color: bottomColor ?? Colors.transparent,
-                  child: loginIcon != null ? ImageLoader.loadImage(loginIcon, pFit: BoxFit.fitWidth) : null,
+                child: ColoredBox(
+                  color: bottomColor ?? Colors.white,
                 ),
               ),
             ],
