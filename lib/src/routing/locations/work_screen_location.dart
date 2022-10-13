@@ -11,7 +11,6 @@ import '../../../services.dart';
 import '../../components/components_factory.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/work_screen/work_screen.dart';
-import '../../model/command/api/navigation_command.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import 'menu_location.dart';
 
