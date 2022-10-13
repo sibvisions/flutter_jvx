@@ -17,7 +17,6 @@ import 'src/exceptions/error_view_exception.dart';
 import 'src/mask/jvx_overlay.dart';
 import 'src/mask/splash/splash.dart';
 import 'src/model/command/api/startup_command.dart';
-import 'src/model/response/device_status_response.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
 import 'src/routing/locations/settings_location.dart';
@@ -299,9 +298,7 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   void changeStyle(Map<String, String> styleMap) {
-    Color? styleColor = IConfigService().getLayoutMode().value != LayoutMode.Mini
-        ? ParseUtil.parseHexColor(styleMap['web.topmenu.color'])
-        : null;
+    Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
     styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
     if (styleColor != null) {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);
