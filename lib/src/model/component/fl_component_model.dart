@@ -32,6 +32,9 @@ abstract class FlComponentModel {
   /// If this component is currently removed, defaults to false
   bool isRemoved = false;
 
+  /// If this component is indef removed, defaults to false
+  bool isDestroyed = false;
+
   /// If the component is visible.
   bool isVisible = true;
 
@@ -163,6 +166,13 @@ abstract class FlComponentModel {
       pKey: ApiObjectProperty.remove,
       pDefault: defaultModel.isRemoved,
       pCurrent: isRemoved,
+      pConversion: ParseUtil.parseBool,
+    );
+    isDestroyed = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.destroy,
+      pDefault: defaultModel.isDestroyed,
+      pCurrent: isDestroyed,
       pConversion: ParseUtil.parseBool,
     );
     isVisible = getPropertyValue(

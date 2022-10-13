@@ -6,6 +6,7 @@ abstract class ApiObjectProperty {
   static const String className = "className";
   static const String parent = "parent";
   static const String remove = "~remove";
+  static const String destroy = "~destroy";
   static const String visible = "visible";
   static const String enabled = "enabled";
   static const String focusable = "focusable";

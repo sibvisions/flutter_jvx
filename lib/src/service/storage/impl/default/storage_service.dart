@@ -39,7 +39,12 @@ class StorageService implements IStorageService {
     // List of all affected models
     Set<String> affectedModels = {};
 
+    Set<String> destroyedModels = {};
+
     List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName, ignoreVisibility: false);
+
+    List<FlComponentModel> oldAndRemovedScreenComps =
+        _getAllComponentsBelowByName(name: screenName, ignoreVisibility: true, includeRemoved: true);
 
     // Handle new Components
     if (newComponents != null) {
@@ -56,42 +61,49 @@ class StorageService implements IStorageService {
     // Handle components to Update
     if (componentsToUpdate != null) {
       for (Map<String, dynamic> changedData in componentsToUpdate) {
-        // If a removed component changes it is no longer removed
-        FlComponentModel? removedModel = _removedComponents[changedData[ApiObjectProperty.id]];
-        if (removedModel != null) {
-          _componentMap[removedModel.id] = removedModel;
-          _removedComponents.remove(removedModel.id);
-        }
-
-        // Get old Model
-        FlComponentModel? model = _componentMap[changedData[ApiObjectProperty.id]];
-        if (model != null) {
-          // Update Component and add to changedModels
-          String? oldParentId = model.parent;
-          bool wasVisible = model.isVisible;
-          bool wasRemoved = model.isRemoved;
-          model.isRemoved = false;
-
-          model.lastChangedProperties = changedData.keys.toSet();
-          model.applyFromJson(changedData);
-          changedModels.add(model.id);
-
-          // Handle component removed
-          if (model.isRemoved) {
-            _componentMap.remove(model.id);
-            _removedComponents[model.id] = model;
+        String changedId = changedData[ApiObjectProperty.id];
+        if (oldAndRemovedScreenComps.any((element) => element.id == changedId)) {
+          // If a removed component changes it is no longer removed
+          FlComponentModel? removedModel = _removedComponents[changedData[ApiObjectProperty.id]];
+          if (removedModel != null) {
+            _componentMap[removedModel.id] = removedModel;
+            _removedComponents.remove(removedModel.id);
           }
 
-          // Handle parent change, notify old parent of change
-          if (oldParentId != null && model.parent != oldParentId) {
-            FlComponentModel? oldParent = _componentMap[oldParentId];
-            if (oldParent != null) {
-              affectedModels.add(oldParent.id);
+          // Get old Model
+          FlComponentModel? model = _componentMap[changedData[ApiObjectProperty.id]];
+          if (model != null) {
+            // Update Component and add to changedModels
+            String? oldParentId = model.parent;
+            bool wasVisible = model.isVisible;
+            bool wasRemoved = model.isRemoved;
+            model.isRemoved = false;
+
+            model.lastChangedProperties = changedData.keys.toSet();
+            model.applyFromJson(changedData);
+            changedModels.add(model.id);
+
+            // Handle component removed
+            if (model.isDestroyed) {
+              _componentMap.remove(model.id);
+              _removedComponents.remove(model.id);
+              destroyedModels.add(model.id);
+            } else if (model.isRemoved) {
+              _componentMap.remove(model.id);
+              _removedComponents[model.id] = model;
             }
-          }
 
-          if (model.isVisible != wasVisible || model.isRemoved != wasRemoved) {
-            affectedModels.add(model.parent!);
+            // Handle parent change, notify old parent of change
+            if (oldParentId != null && model.parent != oldParentId) {
+              FlComponentModel? oldParent = _componentMap[oldParentId];
+              if (oldParent != null) {
+                affectedModels.add(oldParent.id);
+              }
+            }
+
+            if (model.isVisible != wasVisible || model.isRemoved != wasRemoved) {
+              affectedModels.add(model.parent!);
+            }
           }
         }
       }
@@ -101,7 +113,7 @@ class StorageService implements IStorageService {
 
     List<FlComponentModel> newUiComponents = [];
     List<FlComponentModel> changedUiComponents = [];
-    Set<String> deletedUiComponents = {};
+    Set<String> deletedUiComponents = {...destroyedModels};
     Set<String> affectedUiComponents = {};
 
     // Build UI Notification
@@ -136,18 +148,21 @@ class StorageService implements IStorageService {
     if (newUiComponents.isNotEmpty || changedUiComponents.isNotEmpty || deletedUiComponents.isNotEmpty) {
       // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
       for (String affectedModel in affectedModels) {
+        bool isExisting = oldScreenComps.any((oldModel) => oldModel.id == affectedModel);
         bool isChanged = changedUiComponents.any((changedModel) => changedModel.id == affectedModel);
         bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
-        if (!isChanged && !isNew) {
+        if (!isChanged && !isNew && isExisting) {
           affectedUiComponents.add(affectedModel);
         }
       }
     }
 
-    FlutterJVx.log.d("----------DeletedUiComponents: $deletedUiComponents ");
-    FlutterJVx.log.d("----------affected: $affectedUiComponents ");
-    FlutterJVx.log.d("----------changed: $changedUiComponents ");
-    FlutterJVx.log.d("----------newUiComponents: $newUiComponents ");
+    FlutterJVx.log.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
+    FlutterJVx.log.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
+    FlutterJVx.log
+        .d("Changed {${changedUiComponents.length}}:${changedUiComponents.map((e) => e.id).toList()..sort()}");
+    FlutterJVx.log
+        .d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.map((e) => e.id).toList()..sort()}");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
       affectedComponents: affectedUiComponents,
@@ -171,9 +186,10 @@ class StorageService implements IStorageService {
     for (var screenModel in list) {
       _componentMap.remove(screenModel.id);
 
-      List<FlComponentModel> models = _getAllComponentsBelow(screenModel.id, true);
+      List<FlComponentModel> models = _getAllComponentsBelow(screenModel.id, true, true);
       models.forEach((element) {
         _componentMap.remove(element.id);
+        _removedComponents.remove(element.id);
       });
     }
 
@@ -185,27 +201,35 @@ class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns List of all [FlComponentModel] below it, recursively.
-  List<FlComponentModel> _getAllComponentsBelow(String id, [bool ignoreVisibility = false]) {
+  List<FlComponentModel> _getAllComponentsBelow(String id,
+      [bool ignoreVisibility = false, bool includeRemoved = false]) {
     List<FlComponentModel> children = [];
 
-    for (FlComponentModel componentModel in _componentMap.values) {
+    List<FlComponentModel> toCheck = _componentMap.values.toList();
+
+    if (includeRemoved) {
+      toCheck.addAll(_removedComponents.values);
+    }
+
+    for (FlComponentModel componentModel in toCheck) {
       String? parentId = componentModel.parent;
       if (parentId != null && parentId == id && (ignoreVisibility || componentModel.isVisible)) {
         children.add(componentModel);
-        children.addAll(_getAllComponentsBelow(componentModel.id));
+        children.addAll(_getAllComponentsBelow(componentModel.id, ignoreVisibility, includeRemoved));
       }
     }
     return children;
   }
 
-  List<FlComponentModel> _getAllComponentsBelowByName({required String name, bool ignoreVisibility = false}) {
+  List<FlComponentModel> _getAllComponentsBelowByName(
+      {required String name, bool ignoreVisibility = false, bool includeRemoved = false}) {
     List<FlComponentModel> list = [];
     List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.name == name).toList();
 
-    if (screenModels.length != 1) {
+    if (screenModels.length >= 2) {
       FlutterJVx.log.wtf("The same screen is found twice in the storage service!!!!");
-    } else if ((ignoreVisibility || screenModels.first.isVisible)) {
-      list.addAll(_getAllComponentsBelow(screenModels.first.id, ignoreVisibility));
+    } else if (screenModels.length == 1 && (ignoreVisibility || screenModels.first.isVisible)) {
+      list.addAll(_getAllComponentsBelow(screenModels.first.id, ignoreVisibility, includeRemoved));
       //Return after the first was found.
       list.add(screenModels.first);
     }
