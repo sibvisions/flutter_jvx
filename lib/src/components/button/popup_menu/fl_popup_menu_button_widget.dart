@@ -54,9 +54,12 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     return InkWell(
       enableFeedback: model.isEnabled,
       onTap: () => openMenu(context),
-      child: FaIcon(
-        FontAwesomeIcons.caretDown,
-        color: model.createTextStyle().color,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+        child: FaIcon(
+          FontAwesomeIcons.caretDown,
+          color: model.createTextStyle().color,
+        ),
       ),
     );
   }
