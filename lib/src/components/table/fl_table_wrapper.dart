@@ -187,23 +187,33 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Subscribes to the data service.
   void subscribe() {
-    IUiService().registerDataSubscription(
-      pDataSubscription: DataSubscription(
-        subbedObj: this,
-        dataProvider: model.dataProvider,
-        from: 0,
-        to: FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount,
-        onSelectedRecord: receiveSelectedRecord,
-        onDataChunk: receiveTableData,
-        onMetaData: receiveMetaData,
-        dataColumns: null,
-      ),
-    );
+    if (model.dataProvider.isNotEmpty) {
+      IUiService().registerDataSubscription(
+        pDataSubscription: DataSubscription(
+          subbedObj: this,
+          dataProvider: model.dataProvider,
+          from: 0,
+          to: FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount,
+          onSelectedRecord: receiveSelectedRecord,
+          onDataChunk: receiveTableData,
+          onMetaData: receiveMetaData,
+          dataColumns: null,
+        ),
+      );
+    } else {
+      currentState = currentState | LOADED_META_DATA;
+      currentState = currentState | LOADED_DATA;
+      currentState = currentState | LOADED_SELECTED_RECORD;
+    }
   }
 
   /// Unsubscribes from the data service.
   void unsubscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
+
+    currentState = currentState ^ LOADED_META_DATA;
+    currentState = currentState ^ LOADED_DATA;
+    currentState = currentState ^ LOADED_SELECTED_RECORD;
   }
 
   /// Loads data from the server.
