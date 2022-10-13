@@ -174,7 +174,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       availableWidth: layoutData.layoutPosition?.width,
     );
 
-    currentState = currentState | CALCULATION_COMPLETE;
+    currentState |= CALCULATION_COMPLETE;
 
     if (pSetState) {
       setState(() {});
@@ -201,9 +201,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         ),
       );
     } else {
-      currentState = currentState | LOADED_META_DATA;
-      currentState = currentState | LOADED_DATA;
-      currentState = currentState | LOADED_SELECTED_RECORD;
+      currentState |= LOADED_META_DATA;
+      currentState |= LOADED_DATA;
+      currentState |= LOADED_SELECTED_RECORD;
     }
   }
 
@@ -211,14 +211,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void unsubscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
 
-    currentState = currentState ^ LOADED_META_DATA;
-    currentState = currentState ^ LOADED_DATA;
-    currentState = currentState ^ LOADED_SELECTED_RECORD;
+    currentState &= ~LOADED_META_DATA;
+    currentState &= ~LOADED_DATA;
+    currentState &= ~LOADED_SELECTED_RECORD;
   }
 
   /// Loads data from the server.
   void receiveTableData(DataChunk pChunkData) {
-    currentState = currentState | LOADED_DATA;
+    currentState |= LOADED_DATA;
 
     bool hasToCalc = false;
     if (pChunkData.update) {
@@ -238,7 +238,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Receives which row is selected.
   void receiveSelectedRecord(DataRecord? pRecord) {
-    currentState = currentState | LOADED_SELECTED_RECORD;
+    currentState |= LOADED_SELECTED_RECORD;
 
     if (pRecord != null) {
       selectedRow = pRecord.index;
@@ -254,7 +254,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     // Future.delayed(
     //   const Duration(seconds: 5),
     //   () {
-    currentState = currentState | LOADED_META_DATA;
+    currentState |= LOADED_META_DATA;
 
     metaData = pMetaData;
     setState(() {});
