@@ -18,6 +18,9 @@ class ApplicationMetaDataResponse extends ApiResponse {
   /// Whether lost password feature is enabled.
   bool lostPasswordEnabled;
 
+  /// Whether lost password feature is enabled.
+  bool? rememberMeEnabled;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,6 +30,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
     required this.version,
     required this.langCode,
     required this.lostPasswordEnabled,
+    this.rememberMeEnabled,
     required super.originalRequest,
     required super.name,
   });
@@ -36,5 +40,6 @@ class ApplicationMetaDataResponse extends ApiResponse {
         version = json[ApiObjectProperty.version],
         langCode = json[ApiObjectProperty.langCode],
         lostPasswordEnabled = json[ApiObjectProperty.lostPasswordEnabled],
+        rememberMeEnabled = json[ApiObjectProperty.rememberMe],
         super.fromJson();
 }

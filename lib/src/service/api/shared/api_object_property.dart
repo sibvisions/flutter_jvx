@@ -153,6 +153,7 @@ abstract class ApiObjectProperty {
   static const String columns = "columns";
   static const String version = "version";
   static const String lostPasswordEnabled = "lostPasswordEnabled";
+  static const String rememberMe = "rememberMe";
   static const String displayName = "displayName";
   static const String userName = "userName";
   static const String eMail = "email";

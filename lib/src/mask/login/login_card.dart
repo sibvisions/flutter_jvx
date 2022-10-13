@@ -35,6 +35,8 @@ class _LoginCardState extends State<LoginCard> {
 
   ButtonState progressButtonState = ButtonState.idle;
 
+  bool showRememberMe = false;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +50,8 @@ class _LoginCardState extends State<LoginCard> {
   Widget build(BuildContext context) {
     String? loginTitle = AppStyle.of(context)!.applicationStyle!['login.title'];
 
+    showRememberMe = (IConfigService().getMetaData()?.rememberMeEnabled ?? false) ||
+        (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
     return Card(
       color: Colors.white.withOpacity(0.9),
       elevation: 10,
@@ -79,7 +83,7 @@ class _LoginCardState extends State<LoginCard> {
               obscureText: true,
             ),
             const Padding(padding: EdgeInsets.all(5)),
-            if (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false)
+            if (showRememberMe)
               Center(
                 child: RememberMeCheckbox(
                   checkHolder: checkHolder,
@@ -179,7 +183,7 @@ class _LoginCardState extends State<LoginCard> {
           userName: usernameController.text,
           password: passwordController.text,
           reason: "LoginButton",
-          createAuthKey: checkHolder.isChecked,
+          createAuthKey: showRememberMe && checkHolder.isChecked,
         ), onError: (error, stackTrace) {
       setState(() => progressButtonState = ButtonState.fail);
       IUiService().handleAsyncError(error, stackTrace);
