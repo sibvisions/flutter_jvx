@@ -514,7 +514,7 @@ class ConfigService implements IConfigService {
     if (pLanguage != "en") {
       File? transFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation_$pLanguage.json");
       if (transFile == null) {
-        FlutterJVx.log.w("Translation file for code $pLanguage could not be found");
+        FlutterJVx.log.v("Translation file for code $pLanguage could not be found");
       } else {
         langTrans.merge(transFile);
       }
