@@ -91,24 +91,22 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                       ),
                     )
                   : LiquidLinearProgressIndicator(
-                      value: progress ?? 0.5,
+                      value: progress,
                       valueColor: AlwaysStoppedAnimation(effectiveValueColor),
                       //Workaround to disable wave on 100%
                       backgroundColor: progress >= 1 ? effectiveValueColor : _config.progressBgColor,
                       borderRadius: 15.0,
                       borderWidth: 2.0,
                       borderColor: effectiveValueColor,
-                      direction: progress != null ? Axis.horizontal : Axis.vertical,
-                      center: progress != null
-                          ? Text(
-                              "${"${((progress) * 100).round()}"}%",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          : null,
+                      direction: Axis.horizontal,
+                      center: Text(
+                        "${"${((progress) * 100).round()}"}%",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
             ),
             const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),

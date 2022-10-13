@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../custom/app_manager.dart';
@@ -164,9 +163,9 @@ class UiService implements IUiService {
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
     if (FlutterJVx.getCurrentContext() == null) {
       // TODO: See [routeToMenu]
-      if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
-        routerDelegate.setNewRoutePath(RouteInformation(location: "/login/$mode"));
-      }
+      // if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
+      routerDelegate.setNewRoutePath(RouteInformation(location: "/login/$mode"));
+      // }
       return;
     }
 
