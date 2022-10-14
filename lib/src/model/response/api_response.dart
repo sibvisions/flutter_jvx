@@ -25,8 +25,5 @@ class ApiResponse<T extends Object> {
     required this.originalRequest,
   });
 
-  ApiResponse.fromJson({
-    required this.json,
-    required this.originalRequest,
-  }) : name = json[ApiObjectProperty.name];
+  ApiResponse.fromJson(this.json, this.originalRequest) : name = json[ApiObjectProperty.name];
 }

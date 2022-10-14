@@ -27,7 +27,7 @@ class DownloadActionResponse extends ApiResponse {
     required super.name,
   });
 
-  DownloadActionResponse.fromJson({required super.json, required super.originalRequest})
+  DownloadActionResponse.fromJson(super.json, super.originalRequest)
       : fileId = json[ApiObjectProperty.fileId],
         url = json[ApiObjectProperty.url],
         fileName = json[ApiObjectProperty.fileName],

@@ -53,7 +53,7 @@ class ApplicationSettingsResponse extends ApiResponse {
         colors = null,
         super(name: ApiResponseNames.applicationSettings, originalRequest: "");
 
-  ApplicationSettingsResponse.fromJson({required super.json, required super.originalRequest})
+  ApplicationSettingsResponse.fromJson(super.json, super.originalRequest)
       : saveVisible = json[ApiObjectProperty.save] ?? true,
         reloadVisible = json[ApiObjectProperty.reload] ?? true,
         rollbackVisible = json[ApiObjectProperty.rollback] ?? true,

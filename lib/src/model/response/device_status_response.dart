@@ -31,7 +31,7 @@ class DeviceStatusResponse extends ApiResponse {
     required super.originalRequest,
   });
 
-  DeviceStatusResponse.fromJson({required super.json, required super.originalRequest})
+  DeviceStatusResponse.fromJson(super.json, super.originalRequest)
       : layoutMode = json[ApiObjectProperty.layoutMode] != null
             ? LayoutMode.values.firstWhereOrNull((e) => e.name == json[ApiObjectProperty.layoutMode])
             : null,

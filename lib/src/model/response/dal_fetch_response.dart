@@ -49,7 +49,7 @@ class DalFetchResponse extends ApiResponse {
   });
 
   /// Parses a json into an [DalFetchResponse] Object
-  DalFetchResponse.fromJson({required super.json, required super.originalRequest})
+  DalFetchResponse.fromJson(super.json, super.originalRequest)
       : records = json[ApiObjectProperty.records].cast<List<dynamic>>(),
         to = json[ApiObjectProperty.to],
         from = json[ApiObjectProperty.from],

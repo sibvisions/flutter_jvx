@@ -16,5 +16,5 @@ class SessionExpiredResponse extends MessageView {
     required super.originalRequest,
   });
 
-  SessionExpiredResponse.fromJson({required super.json, required super.originalRequest}) : super.fromJson();
+  SessionExpiredResponse.fromJson(super.json, super.originalRequest) : super.fromJson();
 }

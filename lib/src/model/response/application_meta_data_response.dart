@@ -35,7 +35,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
     required super.name,
   });
 
-  ApplicationMetaDataResponse.fromJson({required super.json, required super.originalRequest})
+  ApplicationMetaDataResponse.fromJson(super.json, super.originalRequest)
       : clientId = json[ApiObjectProperty.clientId],
         version = json[ApiObjectProperty.version],
         langCode = json[ApiObjectProperty.langCode],

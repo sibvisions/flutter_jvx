@@ -61,7 +61,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
     required super.originalRequest,
   });
 
-  DalDataProviderChangedResponse.fromJson({required super.json, required super.originalRequest})
+  DalDataProviderChangedResponse.fromJson(super.json, super.originalRequest)
       : dataProvider = json[ApiObjectProperty.dataProvider],
         reload = json[ApiObjectProperty.reload],
         columnNames = json[ApiObjectProperty.columnNames],

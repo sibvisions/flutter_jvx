@@ -75,7 +75,7 @@ import '../api_response_names.dart';
 import '../i_repository.dart';
 import 'web_socket/universal_web_socket.dart';
 
-typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> json, required Object originalRequest});
+typedef ResponseFactory = ApiResponse Function(Map<String, dynamic> json, Object originalRequest);
 
 /// Handles all possible requests to the mobile server.
 class OnlineApiRepository implements IRepository {
@@ -521,7 +521,7 @@ class OnlineApiRepository implements IRepository {
       ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
 
       if (builder != null) {
-        returnList.add(builder(json: responseItem, originalRequest: originalRequest));
+        returnList.add(builder(responseItem, originalRequest));
       } else {
         // returnList.add(ErrorResponse(message: "Could not find builder for ${responseItem[ApiObjectProperty.name]}", name: ApiResponseNames.error));
       }

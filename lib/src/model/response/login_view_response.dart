@@ -22,7 +22,7 @@ class LoginViewResponse extends ApiResponse {
     required super.originalRequest,
   });
 
-  LoginViewResponse.fromJson({required super.json, required super.originalRequest})
+  LoginViewResponse.fromJson(super.json, super.originalRequest)
       : mode = json[ApiObjectProperty.mode],
         username = json[ApiObjectProperty.username],
         super.fromJson();

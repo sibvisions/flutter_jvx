@@ -53,7 +53,7 @@ class MessageDialogResponse extends MessageView {
     required super.originalRequest,
   });
 
-  MessageDialogResponse.fromJson({required super.json, required super.originalRequest})
+  MessageDialogResponse.fromJson(super.json, super.originalRequest)
       : componentId = json[ApiObjectProperty.componentId],
         closable = json[ApiObjectProperty.closable] ?? true,
         buttonType = json[ApiObjectProperty.buttonType],
