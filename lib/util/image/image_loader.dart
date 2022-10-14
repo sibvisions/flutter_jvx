@@ -29,70 +29,38 @@ abstract class ImageLoader {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Loads an Image from the filesystem.
-  static Image _loadImageFiles({
+  /// Creates either a MemoryImage, a FileImage or a NetworkImage
+  static ImageProvider _createImageProvider({
     required String pPath,
-    double? pWidth,
-    double? pHeight,
-    Color? pBlendedColor,
     Function(Size, bool)? pImageStreamListener,
     required bool pImageInBinary,
     required bool pImageInBase64,
-    required BoxFit pFit,
-    required AlignmentGeometry pAlignment,
   }) {
     String appName = IConfigService().getAppName()!;
     String baseUrl = IConfigService().getBaseUrl()!;
     IFileManager fileManager = IConfigService().getFileManager();
 
-    Image image;
+    ImageProvider imageProvider;
 
     File? file = fileManager.getFileSync(pPath: "${IFileManager.IMAGES_PATH}/$pPath");
 
     if (pImageInBinary) {
       Uint8List imageValues = pImageInBase64 ? base64Decode(pPath) : Uint8List.fromList(pPath.codeUnits);
-      image = Image.memory(
-        imageValues,
-        alignment: pAlignment,
-        fit: pFit,
-        width: pWidth,
-        height: pHeight,
-        color: pBlendedColor,
-      );
+      imageProvider = MemoryImage(imageValues);
     } else if (file != null) {
-      image = Image(
-        image: FileImage(file),
-        loadingBuilder: _getImageLoadingBuilder(),
-        fit: pFit,
-        alignment: pAlignment,
-        width: pWidth,
-        height: pHeight,
-        color: pBlendedColor,
-      );
+      imageProvider = FileImage(file);
     } else {
-      image = Image.network(
-        "$baseUrl/resource/$appName/$pPath",
-        loadingBuilder: _getImageLoadingBuilder(),
-        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-          FlutterJVx.log.e("Failed to load network image ($pPath)", error, stackTrace);
-          return ImageLoader.DEFAULT_IMAGE;
-        },
-        fit: pFit,
-        alignment: pAlignment,
-        width: pWidth,
-        height: pHeight,
-        color: pBlendedColor,
-      );
+      imageProvider = NetworkImage("$baseUrl/resource/$appName/$pPath");
     }
 
     if (pImageStreamListener != null) {
-      image.image.resolve(const ImageConfiguration()).addListener(ImageLoader.createListener(pImageStreamListener));
+      imageProvider.resolve(const ImageConfiguration()).addListener(ImageLoader.createListener(pImageStreamListener));
     }
 
-    return image;
+    return imageProvider;
   }
 
-  static ImageLoadingBuilder _getImageLoadingBuilder() {
+  static ImageLoadingBuilder _createImageLoadingBuilder() {
     return (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
       if (loadingProgress == null) return child;
       return Center(
@@ -105,15 +73,24 @@ abstract class ImageLoader {
     };
   }
 
+  static ImageErrorWidgetBuilder _createImageErrorBuilder(String path) {
+    return (BuildContext context, Object error, StackTrace? stackTrace) {
+      FlutterJVx.log.e("Failed to load network image ($path)", error, stackTrace);
+      return ImageLoader.DEFAULT_IMAGE;
+    };
+  }
+
   /// Loads any server sent image string.
-  static Widget loadImage(String pImageString,
-      {Size? pWantedSize,
-      Color? pWantedColor,
-      Function(Size, bool)? pImageStreamListener,
-      bool pImageInBinary = false,
-      bool pImageInBase64 = true,
-      BoxFit pFit = BoxFit.none,
-      AlignmentGeometry pAlignment = Alignment.center}) {
+  static Widget loadImage(
+    String pImageString, {
+    Size? pWantedSize,
+    Color? pWantedColor,
+    Function(Size, bool)? pImageStreamListener,
+    bool pImageInBinary = false,
+    bool pImageInBase64 = true,
+    BoxFit pFit = BoxFit.none,
+    AlignmentGeometry pAlignment = Alignment.center,
+  }) {
     if (pImageString.isEmpty) {
       try {
         return DEFAULT_IMAGE;
@@ -122,7 +99,10 @@ abstract class ImageLoader {
       }
     } else if (FontAwesomeUtil.checkFontAwesome(pImageString)) {
       return FontAwesomeUtil.getFontAwesomeIcon(
-          pText: pImageString, pIconSize: pWantedSize?.width, pColor: pWantedColor);
+        pText: pImageString,
+        pIconSize: pWantedSize?.width,
+        pColor: pWantedColor,
+      );
     } else {
       String path = pImageString;
       Size? size;
@@ -140,16 +120,20 @@ abstract class ImageLoader {
         }
       }
 
-      return _loadImageFiles(
-        pPath: path,
-        pWidth: size?.width,
-        pHeight: size?.height,
-        pBlendedColor: pWantedColor,
-        pImageStreamListener: pImageStreamListener,
-        pImageInBinary: pImageInBinary,
-        pImageInBase64: pImageInBase64,
-        pFit: pFit,
-        pAlignment: pAlignment,
+      return Image(
+        image: _createImageProvider(
+          pPath: path,
+          pImageStreamListener: pImageStreamListener,
+          pImageInBinary: pImageInBinary,
+          pImageInBase64: pImageInBase64,
+        ),
+        loadingBuilder: _createImageLoadingBuilder(),
+        errorBuilder: _createImageErrorBuilder(path),
+        width: size?.width,
+        height: size?.height,
+        color: pWantedColor,
+        fit: pFit,
+        alignment: pAlignment,
       );
     }
   }
