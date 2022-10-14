@@ -37,14 +37,14 @@ import '../../../../model/request/api_open_screen_request.dart';
 import '../../../../model/request/api_open_tab_request.dart';
 import '../../../../model/request/api_press_button_request.dart';
 import '../../../../model/request/api_reload_menu_request.dart';
+import '../../../../model/request/api_request.dart';
 import '../../../../model/request/api_reset_password_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
 import '../../../../model/request/api_set_value_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/api_startup_request.dart';
 import '../../../../model/request/api_upload_request.dart';
-import '../../../../model/request/i_api_download_request.dart';
-import '../../../../model/request/api_request.dart';
+import '../../../../model/request/download_request.dart';
 import '../../../../model/request/session_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
@@ -338,7 +338,7 @@ class OnlineApiRepository implements IRepository {
         }
 
         // Download Request needs different handling
-        if (pRequest is IApiDownloadRequest) {
+        if (pRequest is DownloadRequest) {
           var parsedDownloadObject = _handleDownload(
               pBody: Uint8List.fromList(await response.expand((element) => element).toList()), pRequest: pRequest);
           return parsedDownloadObject;
@@ -531,7 +531,7 @@ class OnlineApiRepository implements IRepository {
     return ApiInteraction(responses: returnList, request: request);
   }
 
-  ApiInteraction _handleDownload({required Uint8List pBody, required IApiDownloadRequest pRequest}) {
+  ApiInteraction _handleDownload({required Uint8List pBody, required DownloadRequest pRequest}) {
     List<ApiResponse> parsedResponse = [];
 
     if (pRequest is ApiDownloadImagesRequest) {

@@ -1,8 +1,8 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_download_request.dart';
+import 'download_request.dart';
 import 'session_request.dart';
 
-class ApiDownloadStyleRequest extends SessionRequest implements IApiDownloadRequest {
+class ApiDownloadStyleRequest extends SessionRequest implements DownloadRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
