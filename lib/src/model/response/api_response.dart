@@ -1,7 +1,7 @@
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
 
-class ApiResponse {
+abstract class ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

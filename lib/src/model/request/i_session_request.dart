@@ -7,8 +7,5 @@ abstract class ISessionRequest extends IApiRequest {
   late String clientId;
 
   @override
-  Map<String, dynamic> toJson() => {
-        ...super.toJson(),
-        ApiObjectProperty.clientId: clientId,
-      };
+  Map<String, dynamic> toJson() => {ApiObjectProperty.clientId: clientId};
 }

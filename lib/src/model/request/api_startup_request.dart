@@ -92,7 +92,6 @@ class ApiStartUpRequest extends IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
-        ...super.toJson(),
         ApiObjectProperty.appMode: appMode,
         ApiObjectProperty.deviceMode: deviceMode,
         ApiObjectProperty.applicationName: applicationName,
