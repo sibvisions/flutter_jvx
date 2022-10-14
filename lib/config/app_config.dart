@@ -43,15 +43,15 @@ class AppConfig {
           versionConfig: const VersionConfig.empty(),
         );
 
-  AppConfig.fromJson({required Map<String, dynamic> json})
+  AppConfig.fromJson(Map<String, dynamic> json)
       : this(
           title: json['title'],
           privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
           requestTimeout: json['requestTimeout'],
           autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
-          uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json: json['uiConfig']) : null,
-          serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json: json['serverConfig']) : null,
-          versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json: json['versionConfig']) : null,
+          uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
+          serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json['serverConfig']) : null,
+          versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json['versionConfig']) : null,
           startupParameters: json['startupParameters'],
         );
 

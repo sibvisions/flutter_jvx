@@ -21,7 +21,7 @@ class ServerConfig {
 
   const ServerConfig.empty() : this();
 
-  ServerConfig.fromJson({required Map<String, dynamic> json})
+  ServerConfig.fromJson(Map<String, dynamic> json)
       : this(
           baseUrl: json['baseUrl'],
           appName: json['appName'],

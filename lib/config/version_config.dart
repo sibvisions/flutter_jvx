@@ -19,7 +19,7 @@ class VersionConfig {
 
   const VersionConfig.empty() : this();
 
-  VersionConfig.fromJson({required Map<String, dynamic> json})
+  VersionConfig.fromJson(Map<String, dynamic> json)
       : this(
           commit: json['commit'],
           buildDate: json['buildDate'] != null

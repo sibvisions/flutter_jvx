@@ -20,7 +20,7 @@ class UiConfig {
     this.rememberMeChecked = false,
   });
 
-  UiConfig.fromJson({required Map<String, dynamic> json})
+  UiConfig.fromJson(Map<String, dynamic> json)
       : this(
           showRememberMe: json['showRememberMe'],
           rememberMeChecked: json['rememberMeChecked'],

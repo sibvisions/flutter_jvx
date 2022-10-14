@@ -36,7 +36,7 @@ abstract class ConfigUtil {
   static Future<AppConfig?> _readConfigFile(String name) {
     return rootBundle
         .loadString("assets/config/$name")
-        .then((rawAppConfig) => AppConfig.fromJson(json: jsonDecode(rawAppConfig)));
+        .then((rawAppConfig) => AppConfig.fromJson(jsonDecode(rawAppConfig)));
   }
 
   static MenuMode getMenuMode(String? menuModeString) {
