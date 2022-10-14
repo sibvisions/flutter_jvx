@@ -51,6 +51,8 @@ class _SettingsPageState extends State<SettingsPage> {
   String? language;
   late int resolution;
 
+  static const double bottomBarHeight = 50;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,7 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           _buildVersionInfo(),
-          const SizedBox(height: kBottomNavigationBarHeight),
+          const SizedBox(height: 5),
         ],
       ),
     );
@@ -95,43 +97,58 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return WillPopScope(
       onWillPop: () async => !loading,
-      child: ColoredBox(
-        color: Theme.of(context).backgroundColor,
-        child: Scaffold(
-          extendBody: true,
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            leading: context.canBeamBack
-                ? IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                    onPressed: !loading ? context.beamBack : null,
-                  )
-                : null,
-            title: Text(FlutterJVx.translate("Settings")),
-            elevation: 0,
-          ),
-          body: body,
-          bottomNavigationBar: BottomAppBar(
-            elevation: 0.0,
-            shape: const CircularNotchedRectangle(),
-            color: Theme.of(context).primaryColor,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(child: _createCancelButton(context, loading)),
-                Expanded(child: _createSaveButton(context, loading)),
-              ],
-            ),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: !IConfigService().isOffline()
-              ? FloatingActionButton(
-                  elevation: 0.0,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  onPressed: loading ? null : _openQRScanner,
-                  child: const FaIcon(FontAwesomeIcons.qrcode),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: context.canBeamBack
+              ? IconButton(
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeft),
+                  onPressed: !loading ? context.beamBack : null,
                 )
               : null,
+          title: Text(FlutterJVx.translate("Settings")),
+          elevation: 0,
+        ),
+        body: body,
+        bottomNavigationBar: SizedBox(
+          height: bottomBarHeight,
+          child: Material(
+            color: Theme.of(context).colorScheme.primary,
+            child: SafeArea(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(child: _createCancelButton(context, loading)),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints.tightFor(width: 80),
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          top: -(bottomBarHeight / 10),
+                          bottom: -(bottomBarHeight / 10),
+                          child: Opacity(
+                            opacity: 0.8,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2.0),
+                            child: SizedBox(child: _createFAB(context, loading)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(child: _createSaveButton(context, loading)),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -139,7 +156,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _createCancelButton(BuildContext context, bool loading) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: kBottomNavigationBarHeight),
+      constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: IConfigService().getUserInfo() != null && context.canBeamBack
           ? InkWell(
               onTap: loading ? null : context.beamBack,
@@ -161,7 +178,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _createSaveButton(BuildContext context, bool loading) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: kBottomNavigationBarHeight),
+      constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: InkWell(
         onTap: loading || IConfigService().isOffline() ? null : _saveClicked,
         child: SizedBox.shrink(
@@ -177,6 +194,20 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+  }
+
+  Widget? _createFAB(BuildContext context, bool loading) {
+    return !IConfigService().isOffline()
+        ? FloatingActionButton(
+            elevation: 0.0,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            onPressed: loading ? null : _openQRScanner,
+            child: FaIcon(
+              FontAwesomeIcons.qrcode,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          )
+        : null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
