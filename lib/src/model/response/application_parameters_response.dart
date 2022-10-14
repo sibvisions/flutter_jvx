@@ -6,10 +6,10 @@ class ApplicationParametersResponse extends ApiResponse {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  String? authenticated;
+  final String? authenticated;
 
   /// Which screen to open, is a screen name
-  String? openScreen;
+  final String? openScreen;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

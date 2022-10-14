@@ -7,19 +7,19 @@ class ApplicationMetaDataResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// SessionId
-  String clientId;
+  final String clientId;
 
   /// Version of the remote app
-  String version;
+  final String version;
 
   /// Lang code of the app
-  String langCode;
+  final String langCode;
 
   /// Whether lost password feature is enabled.
-  bool lostPasswordEnabled;
+  final bool lostPasswordEnabled;
 
   /// Whether lost password feature is enabled.
-  bool? rememberMeEnabled;
+  final bool? rememberMeEnabled;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

@@ -7,13 +7,13 @@ class DownloadActionCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// File id
-  String fileId;
+  final String fileId;
 
   /// The file name
-  String fileName;
+  final String fileName;
 
   /// The url of where to download the file from.
-  String url;
+  final String url;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

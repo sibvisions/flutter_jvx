@@ -8,10 +8,10 @@ class UploadCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The id of the file for the server.
-  String fileId;
+  final String fileId;
 
   /// The file to send.
-  File file;
+  final File file;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

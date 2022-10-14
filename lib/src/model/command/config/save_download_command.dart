@@ -8,10 +8,10 @@ class SaveDownloadCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// File id
-  String fileId;
+  final String fileId;
 
   /// The file name
-  String fileName;
+  final String fileName;
 
   /// Body of the response
   final Uint8List bodyBytes;
