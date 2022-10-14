@@ -8,7 +8,7 @@ class DeleteRecordCommandProcessor extends ICommandProcessor<DeleteRecordCommand
   @override
   Future<List<BaseCommand>> processCommand(DeleteRecordCommand command) {
     return IApiService().sendRequest(
-      request: ApiDeleteRecordRequest(
+      ApiDeleteRecordRequest(
         dataProvider: command.dataProvider,
         selectedRow: command.selectedRow,
         fetch: command.fetch,

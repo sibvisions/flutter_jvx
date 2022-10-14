@@ -7,6 +7,6 @@ import '../../i_command_processor.dart';
 class DownloadTranslationCommandProcessor implements ICommandProcessor<DownloadTranslationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadTranslationCommand command) {
-    return IApiService().sendRequest(request: ApiDownloadTranslationRequest());
+    return IApiService().sendRequest(ApiDownloadTranslationRequest());
   }
 }

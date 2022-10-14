@@ -8,10 +8,11 @@ class ChangePasswordCommandProcessor implements ICommandProcessor<ChangePassword
   @override
   Future<List<BaseCommand>> processCommand(ChangePasswordCommand command) {
     return IApiService().sendRequest(
-        request: ApiChangePasswordRequest(
-      password: command.password,
-      newPassword: command.newPassword,
-      username: command.username,
-    ));
+      ApiChangePasswordRequest(
+        password: command.password,
+        newPassword: command.newPassword,
+        username: command.username,
+      ),
+    );
   }
 }

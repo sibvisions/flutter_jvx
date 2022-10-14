@@ -16,6 +16,5 @@ class DownloadTranslationResponse extends ApiResponse {
   DownloadTranslationResponse({
     required this.bodyBytes,
     required super.name,
-    required super.originalRequest,
   });
 }

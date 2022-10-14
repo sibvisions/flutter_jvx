@@ -1,10 +1,7 @@
+import '../../../model/api_interaction.dart';
 import '../../../model/command/base_command.dart';
-import '../../../model/response/api_response.dart';
 
 abstract class IController {
-  /// Process a list of [ApiResponse] into a list of [BaseCommand]s
-  List<BaseCommand> processResponse({required List<ApiResponse> responses});
-
-// /// Processes downloads, of images and translations
-// List<BaseCommand> processDownload({required IApiRequest downloadRequest});
+  /// Process an [ApiInteraction] into a list of [BaseCommand]s
+  List<BaseCommand> processResponse(ApiInteraction apiInteraction);
 }

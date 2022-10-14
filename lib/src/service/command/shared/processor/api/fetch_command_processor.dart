@@ -8,7 +8,7 @@ class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
   @override
   Future<List<BaseCommand>> processCommand(FetchCommand command) {
     return IApiService().sendRequest(
-      request: ApiFetchRequest(
+      ApiFetchRequest(
         dataProvider: command.dataProvider,
         fromRow: command.fromRow,
         rowCount: command.rowCount,

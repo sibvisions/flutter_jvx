@@ -18,6 +18,5 @@ class DownloadImagesResponse extends ApiResponse {
   DownloadImagesResponse({
     required this.responseBody,
     required super.name,
-    required super.originalRequest,
   });
 }

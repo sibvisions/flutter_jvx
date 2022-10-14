@@ -10,7 +10,7 @@ class DownloadActionCommandProcessor implements ICommandProcessor<DownloadAction
   @override
   Future<List<BaseCommand>> processCommand(DownloadActionCommand command) async {
     return IApiService().sendRequest(
-      request: ApiDownloadRequest(
+      ApiDownloadRequest(
         url: command.url,
         fileId: command.fileId,
         fileName: command.fileName,

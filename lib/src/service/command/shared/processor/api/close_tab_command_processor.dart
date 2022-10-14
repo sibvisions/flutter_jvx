@@ -8,9 +8,10 @@ class CloseTabCommandProcessor implements ICommandProcessor<CloseTabCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseTabCommand command) {
     return IApiService().sendRequest(
-        request: ApiCloseTabRequest(
-      index: command.index,
-      componentName: command.componentName,
-    ));
+      ApiCloseTabRequest(
+        index: command.index,
+        componentName: command.componentName,
+      ),
+    );
   }
 }

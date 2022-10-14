@@ -1,5 +1,5 @@
-import '../../../custom/app_manager.dart';
 import '../../service/api/shared/api_object_property.dart';
+import 'api_response.dart';
 
 class UploadActionResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,11 +15,10 @@ class UploadActionResponse extends ApiResponse {
 
   UploadActionResponse({
     required this.fileId,
-    required super.originalRequest,
     required super.name,
   });
 
-  UploadActionResponse.fromJson(super.json, super.originalRequest)
+  UploadActionResponse.fromJson(super.json)
       : fileId = json[ApiObjectProperty.fileId],
         super.fromJson();
 }

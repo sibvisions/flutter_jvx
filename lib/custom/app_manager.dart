@@ -1,10 +1,10 @@
 import 'package:universal_io/io.dart';
 
 import '../src/mask/menu/menu_mode.dart';
+import '../src/model/api_interaction.dart';
 import '../src/model/command/base_command.dart';
 import '../src/model/menu/menu_model.dart';
 import '../src/model/request/i_api_request.dart';
-import '../src/model/response/api_response.dart';
 import 'custom_screen.dart';
 
 export '../src/mask/menu/menu_mode.dart';
@@ -49,7 +49,7 @@ abstract class AppManager {
   void modifyCommands(List<BaseCommand> commands, BaseCommand originalCommand) {}
 
   /// Can be used to modify the responses list after each request
-  void modifyResponses(List<ApiResponse> responses, IApiRequest originalRequest) {}
+  void modifyResponses(ApiInteraction responses) {}
 
   /// Is called when a response is returned, use the [resendRequest] function to resend the original request.
   /// Useful for 2FA or retry.

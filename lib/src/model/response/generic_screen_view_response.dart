@@ -26,10 +26,9 @@ class GenericScreenViewResponse extends ApiResponse {
     required this.home,
     required this.update,
     required super.name,
-    required super.originalRequest,
   });
 
-  GenericScreenViewResponse.fromJson(super.json, super.originalRequest)
+  GenericScreenViewResponse.fromJson(super.json)
       : screenName = json[ApiObjectProperty.componentId],
         changedComponents = json[ApiObjectProperty.changedComponents],
         update = json[ApiObjectProperty.update],

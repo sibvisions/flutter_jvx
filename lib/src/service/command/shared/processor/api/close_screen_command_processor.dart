@@ -8,7 +8,7 @@ class CloseScreenCommandProcessor implements ICommandProcessor<CloseScreenComman
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command) {
     return IApiService().sendRequest(
-      request: ApiCloseScreenRequest(
+      ApiCloseScreenRequest(
         screenName: command.screenName,
       ),
     );

@@ -8,7 +8,7 @@ class OpenTabCommandProcessor implements ICommandProcessor<OpenTabCommand> {
   @override
   Future<List<BaseCommand>> processCommand(OpenTabCommand command) async {
     return IApiService().sendRequest(
-      request: ApiOpenTabRequest(
+      ApiOpenTabRequest(
         index: command.index,
         componentName: command.componentName,
       ),

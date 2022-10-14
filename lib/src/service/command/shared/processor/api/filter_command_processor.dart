@@ -8,7 +8,7 @@ class FilterCommandProcessor implements ICommandProcessor<FilterCommand> {
   @override
   Future<List<BaseCommand>> processCommand(FilterCommand command) async {
     return IApiService().sendRequest(
-      request: ApiFilterRequest(
+      ApiFilterRequest(
         dataProvider: command.dataProvider,
         columnNames: command.columnNames,
         value: command.value,

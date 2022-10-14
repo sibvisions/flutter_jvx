@@ -58,10 +58,9 @@ class DalDataProviderChangedResponse extends ApiResponse {
     this.readOnly,
     this.updateEnabled,
     required super.name,
-    required super.originalRequest,
   });
 
-  DalDataProviderChangedResponse.fromJson(super.json, super.originalRequest)
+  DalDataProviderChangedResponse.fromJson(super.json)
       : dataProvider = json[ApiObjectProperty.dataProvider],
         reload = json[ApiObjectProperty.reload],
         columnNames = json[ApiObjectProperty.columnNames],

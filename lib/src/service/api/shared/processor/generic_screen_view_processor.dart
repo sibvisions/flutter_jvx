@@ -5,6 +5,7 @@ import '../../../../model/command/ui/route_to_work_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/model_factory.dart';
 import '../../../../model/request/api_open_screen_request.dart';
+import '../../../../model/request/i_api_request.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
 import '../api_object_property.dart';
 import '../i_response_processor.dart';
@@ -19,7 +20,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse({required GenericScreenViewResponse pResponse}) {
+  List<BaseCommand> processResponse(GenericScreenViewResponse pResponse, IApiRequest? pRequest) {
     List<BaseCommand> commands = [];
     GenericScreenViewResponse screenGenericResponse = pResponse;
 
@@ -32,14 +33,13 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
       List<dynamic>? updatedComponent = _getChangedComponents(pResponse.changedComponents!);
 
       if (componentsToSave != null || updatedComponent != null) {
-        if (screenGenericResponse.originalRequest is ApiOpenScreenRequest) {
-          ApiOpenScreenRequest originalRequest = screenGenericResponse.originalRequest as ApiOpenScreenRequest;
+        if (pRequest is ApiOpenScreenRequest) {
           componentsToSave
               ?.where(
                 (element) => element.name == screenGenericResponse.screenName,
               )
               .forEach(
-                (element) => element.screenLongName = originalRequest.screenLongName,
+                (element) => element.screenLongName = pRequest.screenLongName,
               );
         }
 

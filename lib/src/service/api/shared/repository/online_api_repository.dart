@@ -14,6 +14,7 @@ import '../../../../../config/api/api_route.dart';
 import '../../../../../flutter_jvx.dart';
 import '../../../../../services.dart';
 import '../../../../exceptions/session_expired_exception.dart';
+import '../../../../model/api_interaction.dart';
 import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/request/api_change_password_request.dart';
 import '../../../../model/request/api_changes_request.dart';
@@ -75,7 +76,7 @@ import '../api_response_names.dart';
 import '../i_repository.dart';
 import 'web_socket/universal_web_socket.dart';
 
-typedef ResponseFactory = ApiResponse Function(Map<String, dynamic> json, Object originalRequest);
+typedef ResponseFactory = ApiResponse Function(Map<String, dynamic> json);
 
 /// Handles all possible requests to the mobile server.
 class OnlineApiRepository implements IRepository {
@@ -305,7 +306,7 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
+  Future<ApiInteraction> sendRequest(IApiRequest pRequest) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
     APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
@@ -364,19 +365,19 @@ class OnlineApiRepository implements IRepository {
         }
 
         List<dynamic> jsonResponse = _parseAndCheckJson(responseBody);
-        List<ApiResponse> parsedResponseObjects = _responseParser(pJsonList: jsonResponse, originalRequest: pRequest);
+        ApiInteraction apiInteraction = _responseParser(jsonResponse, request: pRequest);
 
-        IUiService().getAppManager()?.modifyResponses(parsedResponseObjects, pRequest);
+        IUiService().getAppManager()?.modifyResponses(apiInteraction);
 
         if (IConfigService().isOffline()) {
-          var viewResponse = parsedResponseObjects.firstWhereOrNull((element) => element is MessageView);
+          var viewResponse = apiInteraction.responses.firstWhereOrNull((element) => element is MessageView);
           if (viewResponse != null) {
             var messageViewResponse = viewResponse as MessageView;
             throw StateError("Server sent error: $messageViewResponse");
           }
         }
 
-        return parsedResponseObjects;
+        return apiInteraction;
       } catch (e) {
         FlutterJVx.log.e("Error while sending ${pRequest.runtimeType}");
         rethrow;
@@ -514,51 +515,47 @@ class OnlineApiRepository implements IRepository {
   }
 
   /// Parses the List of JSON responses in [ApiResponse]s
-  List<ApiResponse> _responseParser({required List<dynamic> pJsonList, required Object originalRequest}) {
+  ApiInteraction _responseParser(List<dynamic> pJsonList, {required IApiRequest? request}) {
     List<ApiResponse> returnList = [];
 
     for (dynamic responseItem in pJsonList) {
       ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
 
       if (builder != null) {
-        returnList.add(builder(responseItem, originalRequest));
+        returnList.add(builder(responseItem));
       } else {
         // returnList.add(ErrorResponse(message: "Could not find builder for ${responseItem[ApiObjectProperty.name]}", name: ApiResponseNames.error));
       }
     }
 
-    return returnList;
+    return ApiInteraction(responses: returnList, request: request);
   }
 
-  List<ApiResponse> _handleDownload({required Uint8List pBody, required IApiDownloadRequest pRequest}) {
+  ApiInteraction _handleDownload({required Uint8List pBody, required IApiDownloadRequest pRequest}) {
     List<ApiResponse> parsedResponse = [];
 
     if (pRequest is ApiDownloadImagesRequest) {
       parsedResponse.add(DownloadImagesResponse(
         responseBody: pBody,
         name: ApiResponseNames.downloadImages,
-        originalRequest: pRequest,
       ));
     } else if (pRequest is ApiDownloadTranslationRequest) {
       parsedResponse.add(DownloadTranslationResponse(
         bodyBytes: pBody,
         name: ApiResponseNames.downloadTranslation,
-        originalRequest: pRequest,
       ));
     } else if (pRequest is ApiDownloadStyleRequest) {
       parsedResponse.add(DownloadStyleResponse(
         bodyBytes: pBody,
         name: ApiResponseNames.downloadStyle,
-        originalRequest: pRequest,
       ));
     } else if (pRequest is ApiDownloadRequest) {
       parsedResponse.add(DownloadResponse(
         bodyBytes: pBody,
         name: ApiResponseNames.downloadResponse,
-        originalRequest: pRequest,
       ));
     }
 
-    return parsedResponse;
+    return ApiInteraction(responses: parsedResponse, request: pRequest);
   }
 }

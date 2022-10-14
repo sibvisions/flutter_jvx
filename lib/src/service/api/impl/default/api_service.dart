@@ -31,10 +31,10 @@ class ApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> sendRequest({required IApiRequest request}) {
+  Future<List<BaseCommand>> sendRequest(IApiRequest request) {
     if (repository == null) throw Exception("Repository not initialized");
     if (controller == null) throw Exception("Controller not initialized");
-    return repository!.sendRequest(pRequest: request).then((value) => controller!.processResponse(responses: value));
+    return repository!.sendRequest(request).then((value) => controller!.processResponse(value));
   }
 
   @override

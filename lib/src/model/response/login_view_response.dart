@@ -19,10 +19,9 @@ class LoginViewResponse extends ApiResponse {
     required this.username,
     required this.mode,
     required super.name,
-    required super.originalRequest,
   });
 
-  LoginViewResponse.fromJson(super.json, super.originalRequest)
+  LoginViewResponse.fromJson(super.json)
       : mode = json[ApiObjectProperty.mode],
         username = json[ApiObjectProperty.username],
         super.fromJson();

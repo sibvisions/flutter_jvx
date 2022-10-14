@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/config/save_application_style_command.dart';
+import '../../../../model/request/i_api_request.dart';
 import '../../../../model/response/download_style_response.dart';
 import '../i_response_processor.dart';
 
 class DownloadStyleProcessor extends IResponseProcessor<DownloadStyleResponse> {
   @override
-  List<BaseCommand> processResponse({required DownloadStyleResponse pResponse}) {
+  List<BaseCommand> processResponse(DownloadStyleResponse pResponse, IApiRequest? pRequest) {
     String decoded = utf8.decode(pResponse.bodyBytes);
 
     Map<String, dynamic> styleWithNull = jsonDecode(decoded);

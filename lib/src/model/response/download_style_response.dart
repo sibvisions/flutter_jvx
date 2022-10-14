@@ -16,6 +16,5 @@ class DownloadStyleResponse extends ApiResponse {
   DownloadStyleResponse({
     required this.bodyBytes,
     required super.name,
-    required super.originalRequest,
   });
 }

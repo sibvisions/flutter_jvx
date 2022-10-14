@@ -8,9 +8,10 @@ class DalSaveCommandProcessor implements ICommandProcessor<DalSaveCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DalSaveCommand command) {
     return IApiService().sendRequest(
-        request: ApiDalSaveRequest(
-      dataProvider: command.dataProvider,
-      onlySelected: command.onlySelected,
-    ));
+      ApiDalSaveRequest(
+        dataProvider: command.dataProvider,
+        onlySelected: command.onlySelected,
+      ),
+    );
   }
 }

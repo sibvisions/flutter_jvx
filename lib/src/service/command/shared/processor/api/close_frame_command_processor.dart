@@ -8,7 +8,7 @@ class CloseFrameCommandProcessor implements ICommandProcessor<CloseFrameCommand>
   @override
   Future<List<BaseCommand>> processCommand(CloseFrameCommand command) async {
     return IApiService().sendRequest(
-      request: ApiCloseFrameRequest(
+      ApiCloseFrameRequest(
         frameName: command.frameName,
       ),
     );

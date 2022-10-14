@@ -8,7 +8,7 @@ class PressButtonCommandProcessor implements ICommandProcessor<PressButtonComman
   @override
   Future<List<BaseCommand>> processCommand(PressButtonCommand command) async {
     return IApiService().sendRequest(
-      request: ApiPressButtonRequest(
+      ApiPressButtonRequest(
         componentName: command.componentName,
       ),
     );

@@ -21,7 +21,7 @@ class LoginCommandProcessor implements ICommandProcessor<LoginCommand> {
         username: command.userName,
         password: command.password,
       );
-      return IApiService().sendRequest(request: loginRequest);
+      return IApiService().sendRequest(loginRequest);
     } else {
       return [StartupCommand(reason: "Login failed")];
     }

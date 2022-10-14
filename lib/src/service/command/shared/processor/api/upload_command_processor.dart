@@ -10,7 +10,7 @@ class UploadCommandProcessor implements ICommandProcessor<UploadCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UploadCommand command) async {
     return IApiService().sendRequest(
-      request: ApiUploadRequest(
+      ApiUploadRequest(
         file: command.file,
         fileId: command.fileId,
       ),

@@ -37,7 +37,6 @@ class ApplicationSettingsResponse extends ApiResponse {
     required this.userSettingsVisible,
     this.colors,
     required super.name,
-    required super.originalRequest,
   });
 
   ApplicationSettingsResponse.empty()
@@ -51,9 +50,9 @@ class ApplicationSettingsResponse extends ApiResponse {
         logoutVisible = true,
         userSettingsVisible = true,
         colors = null,
-        super(name: ApiResponseNames.applicationSettings, originalRequest: "");
+        super(name: ApiResponseNames.applicationSettings);
 
-  ApplicationSettingsResponse.fromJson(super.json, super.originalRequest)
+  ApplicationSettingsResponse.fromJson(super.json)
       : saveVisible = json[ApiObjectProperty.save] ?? true,
         reloadVisible = json[ApiObjectProperty.reload] ?? true,
         rollbackVisible = json[ApiObjectProperty.rollback] ?? true,

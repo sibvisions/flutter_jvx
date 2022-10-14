@@ -17,6 +17,6 @@ class LogoutCommandProcessor implements ICommandProcessor<LogoutCommand> {
     await IConfigService().setAuthCode(null);
     await IConfigService().setPassword(null);
 
-    return IApiService().sendRequest(request: ApiLogoutRequest());
+    return IApiService().sendRequest(ApiLogoutRequest());
   }
 }

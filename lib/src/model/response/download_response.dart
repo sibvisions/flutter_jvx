@@ -1,10 +1,9 @@
 import 'dart:typed_data';
 
-import '../request/api_download_request.dart';
 import 'api_response.dart';
 
 /// Used when downloading application images archive
-class DownloadResponse extends ApiResponse<ApiDownloadRequest> {
+class DownloadResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,6 +18,5 @@ class DownloadResponse extends ApiResponse<ApiDownloadRequest> {
   DownloadResponse({
     required this.bodyBytes,
     required super.name,
-    required super.originalRequest,
   });
 }

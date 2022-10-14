@@ -7,6 +7,6 @@ import '../../i_command_processor.dart';
 class ReloadMenuCommandProcessor implements ICommandProcessor<ReloadMenuCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ReloadMenuCommand command) async {
-    return IApiService().sendRequest(request: ApiReloadMenuRequest());
+    return IApiService().sendRequest(ApiReloadMenuRequest());
   }
 }

@@ -8,7 +8,7 @@ class ResetPasswordCommandProcessor implements ICommandProcessor<ResetPasswordCo
   @override
   Future<List<BaseCommand>> processCommand(ResetPasswordCommand command) {
     return IApiService().sendRequest(
-      request: ApiResetPasswordRequest(
+      ApiResetPasswordRequest(
         identifier: command.identifier,
       ),
     );

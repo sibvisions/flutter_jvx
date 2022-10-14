@@ -1,5 +1,5 @@
-import '../../../custom/app_manager.dart';
 import '../../service/api/shared/api_object_property.dart';
+import 'api_response.dart';
 
 class DownloadActionResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,11 +23,10 @@ class DownloadActionResponse extends ApiResponse {
     required this.fileId,
     required this.fileName,
     required this.url,
-    required super.originalRequest,
     required super.name,
   });
 
-  DownloadActionResponse.fromJson(super.json, super.originalRequest)
+  DownloadActionResponse.fromJson(super.json)
       : fileId = json[ApiObjectProperty.fileId],
         url = json[ApiObjectProperty.url],
         fileName = json[ApiObjectProperty.fileName],

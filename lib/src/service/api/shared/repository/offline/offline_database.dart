@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
           whereArgs: whereArgs,
         )
         .then((result) => result
-            .map((e) => DalMetaDataResponse.fromJson(jsonDecode(e['META_DATA'] as String), ""))
+            .map((e) => DalMetaDataResponse.fromJson(jsonDecode(e['META_DATA'] as String)))
             .toList(growable: false));
   }
 

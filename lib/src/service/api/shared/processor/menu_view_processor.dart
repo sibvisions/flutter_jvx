@@ -5,6 +5,7 @@ import '../../../../model/command/ui/save_menu_command.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
+import '../../../../model/request/i_api_request.dart';
 import '../../../../model/response/menu_view_response.dart';
 import '../i_response_processor.dart';
 
@@ -16,7 +17,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse({required MenuViewResponse pResponse}) {
+  List<BaseCommand> processResponse(MenuViewResponse pResponse, IApiRequest? pRequest) {
     List<BaseCommand> commands = [];
     MenuViewResponse response = pResponse;
 

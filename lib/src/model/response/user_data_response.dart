@@ -29,10 +29,9 @@ class UserDataResponse extends ApiResponse {
     required this.eMail,
     required this.profileImage,
     required super.name,
-    required super.originalRequest,
   });
 
-  UserDataResponse.fromJson(super.json, super.originalRequest)
+  UserDataResponse.fromJson(super.json)
       : userName = json[ApiObjectProperty.userName],
         displayName = json[ApiObjectProperty.displayName],
         eMail = json[ApiObjectProperty.eMail],

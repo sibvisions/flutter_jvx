@@ -1,6 +1,7 @@
 import '../../../../../flutter_jvx.dart';
 import '../../../../../services.dart';
 import '../../../../../util/parse_util.dart';
+import '../../../../model/api_interaction.dart';
 import '../../../../model/data/data_book.dart';
 import '../../../../model/data/filter_condition.dart';
 import '../../../../model/data/subscriptions/data_record.dart';
@@ -110,7 +111,7 @@ class OfflineApiRepository implements IRepository {
   }
 
   @override
-  Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
+  Future<ApiInteraction> sendRequest(IApiRequest pRequest) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
     ApiResponse? response;
@@ -131,7 +132,7 @@ class OfflineApiRepository implements IRepository {
       throw Exception("${pRequest.runtimeType} is not supported while offline");
     }
 
-    return response != null ? [response] : [];
+    return ApiInteraction(responses: response != null ? [response] : [], request: pRequest);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -238,7 +239,6 @@ class OfflineApiRepository implements IRepository {
       to: pRequest.fromRow + (sortedMap.length - 1),
       records: sortedMap,
       name: "dal.fetch",
-      originalRequest: pRequest,
     );
   }
 

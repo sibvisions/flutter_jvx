@@ -15,10 +15,9 @@ class CloseFrameResponse extends ApiResponse {
   CloseFrameResponse({
     required this.componentId,
     required super.name,
-    required super.originalRequest,
   });
 
-  CloseFrameResponse.fromJson(super.json, super.originalRequest)
+  CloseFrameResponse.fromJson(super.json)
       : componentId = json[ApiObjectProperty.componentId],
         super.fromJson();
 }

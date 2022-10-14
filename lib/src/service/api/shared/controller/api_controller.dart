@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import '../../../../model/api_interaction.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/response/api_response.dart';
 import '../api_response_names.dart';
@@ -98,14 +99,14 @@ class ApiController implements IController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse({required List<ApiResponse> responses}) {
+  List<BaseCommand> processResponse(ApiInteraction apiInteraction) {
     List<BaseCommand> commands = [];
 
-    for (ApiResponse response in responses) {
+    for (ApiResponse response in apiInteraction.responses) {
       IResponseProcessor? processor = responseToProcessorMap[response.name];
 
       if (processor != null) {
-        commands.addAll(processor.processResponse(pResponse: response));
+        commands.addAll(processor.processResponse(response, apiInteraction.request));
       } else {
         throw Exception("Couldn't find processor belonging to ${response.name}, add it to the map");
       }

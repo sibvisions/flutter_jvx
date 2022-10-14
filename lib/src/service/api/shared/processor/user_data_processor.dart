@@ -1,5 +1,6 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/config/save_user_data_command.dart';
+import '../../../../model/request/i_api_request.dart';
 import '../../../../model/response/user_data_response.dart';
 import '../i_response_processor.dart';
 
@@ -9,7 +10,7 @@ class UserDataProcessor implements IResponseProcessor<UserDataResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse({required UserDataResponse pResponse}) {
+  List<BaseCommand> processResponse(UserDataResponse pResponse, IApiRequest? pRequest) {
     SaveUserDataCommand command = SaveUserDataCommand(userData: pResponse, reason: "Server sent user data");
     return [command];
   }

@@ -11,7 +11,7 @@ class NavigationCommandProcessor implements ICommandProcessor<NavigationCommand>
   @override
   Future<List<BaseCommand>> processCommand(NavigationCommand command) async {
     List<BaseCommand> commands = await IApiService().sendRequest(
-      request: ApiNavigationRequest(
+      ApiNavigationRequest(
         screenName: command.openScreen,
       ),
     );

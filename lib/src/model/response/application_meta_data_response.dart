@@ -31,11 +31,10 @@ class ApplicationMetaDataResponse extends ApiResponse {
     required this.langCode,
     required this.lostPasswordEnabled,
     this.rememberMeEnabled,
-    required super.originalRequest,
     required super.name,
   });
 
-  ApplicationMetaDataResponse.fromJson(super.json, super.originalRequest)
+  ApplicationMetaDataResponse.fromJson(super.json)
       : clientId = json[ApiObjectProperty.clientId],
         version = json[ApiObjectProperty.version],
         langCode = json[ApiObjectProperty.langCode],

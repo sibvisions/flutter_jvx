@@ -7,6 +7,6 @@ import '../../i_command_processor.dart';
 class DownloadImagesCommandProcessor implements ICommandProcessor<DownloadImagesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadImagesCommand command) {
-    return IApiService().sendRequest(request: ApiDownloadImagesRequest());
+    return IApiService().sendRequest(ApiDownloadImagesRequest());
   }
 }

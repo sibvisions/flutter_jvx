@@ -55,6 +55,6 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       startUpParameters: IConfigService().getStartupParameters(),
     );
 
-    return IApiService().sendRequest(request: startUpRequest);
+    return IApiService().sendRequest(startUpRequest);
   }
 }

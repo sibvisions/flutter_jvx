@@ -8,7 +8,7 @@ class SetValuesCommandProcessor implements ICommandProcessor<SetValuesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetValuesCommand command) {
     return IApiService().sendRequest(
-      request: ApiSetValuesRequest(
+      ApiSetValuesRequest(
         componentId: command.componentId,
         dataProvider: command.dataProvider,
         columnNames: command.columnNames,

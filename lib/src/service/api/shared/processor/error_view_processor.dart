@@ -1,11 +1,12 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../../../model/request/i_api_request.dart';
 import '../../../../model/response/view/message/error_view_response.dart';
 import '../i_response_processor.dart';
 
 class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
   @override
-  List<BaseCommand> processResponse({required ErrorViewResponse pResponse}) {
+  List<BaseCommand> processResponse(ErrorViewResponse pResponse, IApiRequest? pRequest) {
     if (!pResponse.silentAbort) {
       return [
         OpenErrorDialogCommand(

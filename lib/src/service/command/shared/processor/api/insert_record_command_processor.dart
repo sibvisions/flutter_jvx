@@ -8,7 +8,7 @@ class InsertRecordCommandProcessor implements ICommandProcessor<InsertRecordComm
   @override
   Future<List<BaseCommand>> processCommand(InsertRecordCommand command) {
     return IApiService().sendRequest(
-      request: ApiInsertRecordRequest(
+      ApiInsertRecordRequest(
         dataProvider: command.dataProvider,
       ),
     );

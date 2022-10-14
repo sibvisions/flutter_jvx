@@ -31,10 +31,9 @@ class ErrorViewResponse extends MessageView {
     this.exceptions,
     this.isTimeout = false,
     required super.name,
-    required super.originalRequest,
   });
 
-  ErrorViewResponse.fromJson(super.json, super.originalRequest)
+  ErrorViewResponse.fromJson(super.json)
       : silentAbort = json[ApiObjectProperty.silentAbort] ?? false,
         details = json[ApiObjectProperty.details],
         exceptions = ServerException.fromJson(json[ApiObjectProperty.exceptions]),

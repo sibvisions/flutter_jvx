@@ -20,10 +20,9 @@ class MessageView extends ApiResponse {
     required this.title,
     this.message,
     required super.name,
-    required super.originalRequest,
   });
 
-  MessageView.fromJson(super.json, super.originalRequest)
+  MessageView.fromJson(super.json)
       : title = json[ApiObjectProperty.title],
         message = json[ApiObjectProperty.message],
         super.fromJson();

@@ -16,12 +16,13 @@ class SelectRecordCommandProcessor implements ICommandProcessor<SelectRecordComm
     }
 
     return IApiService().sendRequest(
-        request: ApiSelectRecordRequest(
-      dataProvider: command.dataProvider,
-      selectedRow: command.selectedRecord,
-      fetch: command.fetch,
-      filter: command.filter,
-      reload: command.reload,
-    ));
+      ApiSelectRecordRequest(
+        dataProvider: command.dataProvider,
+        selectedRow: command.selectedRecord,
+        fetch: command.fetch,
+        filter: command.filter,
+        reload: command.reload,
+      ),
+    );
   }
 }

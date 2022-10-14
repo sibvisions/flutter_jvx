@@ -23,7 +23,7 @@ class DeviceStatusCommandProcessor implements ICommandProcessor<DeviceStatusComm
         screenWidth: command.screenWidth,
         screenHeight: command.screenHeight,
       );
-      return IApiService().sendRequest(request: deviceStatusRequest);
+      return IApiService().sendRequest(deviceStatusRequest);
     } else {
       return [];
     }

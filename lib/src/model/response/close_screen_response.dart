@@ -16,10 +16,9 @@ class CloseScreenResponse extends ApiResponse {
   CloseScreenResponse({
     required this.screenName,
     required super.name,
-    required super.originalRequest,
   });
 
-  CloseScreenResponse.fromJson(super.json, super.originalRequest)
+  CloseScreenResponse.fromJson(super.json)
       : screenName = json[ApiObjectProperty.componentId],
         super.fromJson();
 }
