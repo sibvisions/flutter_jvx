@@ -1,5 +1,5 @@
 /// Base class for all outgoing api requests
-abstract class IApiRequest {
+abstract class ApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

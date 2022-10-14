@@ -1,8 +1,8 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_session_request.dart';
+import 'session_request.dart';
 
 /// Request to open a new work screen
-class ApiOpenScreenRequest extends ISessionRequest {
+class ApiOpenScreenRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

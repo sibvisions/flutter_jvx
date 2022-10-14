@@ -3,13 +3,13 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/data/change_selected_row_command.dart';
 import '../../../../model/command/data/delete_provider_data_command.dart';
 import '../../../../model/command/data/delete_row_command.dart';
-import '../../../../model/request/i_api_request.dart';
+import '../../../../model/request/api_request.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../i_response_processor.dart';
 
 class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProviderChangedResponse> {
   @override
-  List<BaseCommand> processResponse(DalDataProviderChangedResponse pResponse, IApiRequest? pRequest) {
+  List<BaseCommand> processResponse(DalDataProviderChangedResponse pResponse, ApiRequest? pRequest) {
     List<BaseCommand> commands = [];
 
     // If -1 then delete all saved data and re-fetch

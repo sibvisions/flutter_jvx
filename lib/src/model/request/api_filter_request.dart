@@ -1,9 +1,9 @@
 import '../../service/api/shared/api_object_property.dart';
 import '../data/filter_condition.dart';
 import 'filter.dart';
-import 'i_session_request.dart';
+import 'session_request.dart';
 
-class ApiFilterRequest extends ISessionRequest {
+class ApiFilterRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

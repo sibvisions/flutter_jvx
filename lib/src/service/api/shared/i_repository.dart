@@ -1,5 +1,5 @@
 import '../../../model/api_interaction.dart';
-import '../../../model/request/i_api_request.dart';
+import '../../../model/request/api_request.dart';
 
 /// The interface declaring all possible requests to the mobile server.
 abstract class IRepository {
@@ -18,5 +18,5 @@ abstract class IRepository {
 
   /// Executes [pRequest],
   /// will throw an exception if request fails to be executed
-  Future<ApiInteraction> sendRequest(IApiRequest pRequest);
+  Future<ApiInteraction> sendRequest(ApiRequest pRequest);
 }

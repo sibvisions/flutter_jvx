@@ -1,3 +1,3 @@
-import 'i_api_request.dart';
+import 'api_request.dart';
 
-abstract class IApiDownloadRequest extends IApiRequest {}
+abstract class IApiDownloadRequest extends ApiRequest {}

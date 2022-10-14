@@ -1,12 +1,12 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/delete_screen_command.dart';
-import '../../../../model/request/i_api_request.dart';
+import '../../../../model/request/api_request.dart';
 import '../../../../model/response/close_screen_response.dart';
 import '../i_response_processor.dart';
 
 class CloseScreenProcessor implements IResponseProcessor<CloseScreenResponse> {
   @override
-  List<BaseCommand> processResponse(CloseScreenResponse pResponse, IApiRequest? pRequest) {
+  List<BaseCommand> processResponse(CloseScreenResponse pResponse, ApiRequest? pRequest) {
     List<BaseCommand> commands = [];
 
     CloseScreenResponse closeScreenResponse = pResponse;

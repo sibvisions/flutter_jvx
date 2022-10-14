@@ -1,8 +1,8 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_session_request.dart';
+import 'session_request.dart';
 
 /// Request to send when a button has been pressed.
-class ApiPressButtonRequest extends ISessionRequest {
+class ApiPressButtonRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

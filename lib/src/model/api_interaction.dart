@@ -1,7 +1,7 @@
-import 'request/i_api_request.dart';
+import 'request/api_request.dart';
 import 'response/api_response.dart';
 
-class ApiInteraction<Resp extends ApiResponse, Req extends IApiRequest> {
+class ApiInteraction<Resp extends ApiResponse, Req extends ApiRequest> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

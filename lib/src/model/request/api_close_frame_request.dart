@@ -1,7 +1,7 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_session_request.dart';
+import 'session_request.dart';
 
-class ApiCloseFrameRequest extends ISessionRequest {
+class ApiCloseFrameRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,8 +1,8 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_session_request.dart';
+import 'session_request.dart';
 
 /// Request to login into the app
-class ApiLoginRequest extends ISessionRequest {
+class ApiLoginRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

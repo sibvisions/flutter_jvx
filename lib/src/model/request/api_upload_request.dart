@@ -2,10 +2,10 @@ import 'package:universal_io/io.dart';
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
-import 'i_session_request.dart';
+import 'session_request.dart';
 
 /// Request to change the password of the user
-class ApiUploadRequest extends ISessionRequest {
+class ApiUploadRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

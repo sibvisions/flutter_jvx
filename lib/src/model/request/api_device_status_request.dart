@@ -1,8 +1,8 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_session_request.dart';
+import 'session_request.dart';
 
 /// Request to update the available screen size to the app
-class ApiDeviceStatusRequest extends ISessionRequest {
+class ApiDeviceStatusRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -4,13 +4,13 @@ import '../src/mask/menu/menu_mode.dart';
 import '../src/model/api_interaction.dart';
 import '../src/model/command/base_command.dart';
 import '../src/model/menu/menu_model.dart';
-import '../src/model/request/i_api_request.dart';
+import '../src/model/request/api_request.dart';
 import 'custom_screen.dart';
 
 export '../src/mask/menu/menu_mode.dart';
 export '../src/model/command/base_command.dart';
 export '../src/model/menu/menu_model.dart';
-export '../src/model/request/i_api_request.dart';
+export '../src/model/request/api_request.dart';
 export '../src/model/response/api_response.dart';
 
 abstract class AppManager {
@@ -54,7 +54,7 @@ abstract class AppManager {
   /// Is called when a response is returned, use the [resendRequest] function to resend the original request.
   /// Useful for 2FA or retry.
   Future<HttpClientResponse?> handleResponse(
-          IApiRequest request, String responseBody, Future<HttpClientResponse> Function() resendRequest) =>
+          ApiRequest request, String responseBody, Future<HttpClientResponse> Function() resendRequest) =>
       Future.value(null);
 
   /// Is called if a new startup is initiated.

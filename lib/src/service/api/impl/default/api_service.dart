@@ -1,5 +1,5 @@
 import '../../../../model/command/base_command.dart';
-import '../../../../model/request/i_api_request.dart';
+import '../../../../model/request/api_request.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
 import '../../shared/i_repository.dart';
@@ -31,7 +31,7 @@ class ApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> sendRequest(IApiRequest request) {
+  Future<List<BaseCommand>> sendRequest(ApiRequest request) {
     if (repository == null) throw Exception("Repository not initialized");
     if (controller == null) throw Exception("Controller not initialized");
     return repository!.sendRequest(request).then((value) => controller!.processResponse(value));

@@ -1,10 +1,10 @@
 import '../../service/api/shared/api_object_property.dart';
 import '../data/filter_condition.dart';
 import 'filter.dart';
-import 'i_session_request.dart';
+import 'session_request.dart';
 
 /// Request to set the value of a data-bound component
-class ApiSetValuesRequest extends ISessionRequest {
+class ApiSetValuesRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

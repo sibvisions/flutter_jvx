@@ -12,7 +12,7 @@ import '../../../../model/request/api_filter_request.dart';
 import '../../../../model/request/api_insert_record_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/filter.dart';
-import '../../../../model/request/i_api_request.dart';
+import '../../../../model/request/api_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../model/response/dal_meta_data_response.dart';
@@ -111,7 +111,7 @@ class OfflineApiRepository implements IRepository {
   }
 
   @override
-  Future<ApiInteraction> sendRequest(IApiRequest pRequest) async {
+  Future<ApiInteraction> sendRequest(ApiRequest pRequest) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
     ApiResponse? response;

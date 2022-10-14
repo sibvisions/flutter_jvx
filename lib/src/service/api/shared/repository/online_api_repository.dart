@@ -44,8 +44,8 @@ import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/api_startup_request.dart';
 import '../../../../model/request/api_upload_request.dart';
 import '../../../../model/request/i_api_download_request.dart';
-import '../../../../model/request/i_api_request.dart';
-import '../../../../model/request/i_session_request.dart';
+import '../../../../model/request/api_request.dart';
+import '../../../../model/request/session_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
 import '../../../../model/response/application_parameters_response.dart';
@@ -85,7 +85,7 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Map of all remote request mapped to their route
-  static final Map<Type, APIRoute Function(IApiRequest pRequest)> uriMap = {
+  static final Map<Type, APIRoute Function(ApiRequest pRequest)> uriMap = {
     ApiStartUpRequest: (_) => APIRoute.POST_STARTUP,
     ApiLoginRequest: (_) => APIRoute.POST_LOGIN,
     ApiCloseTabRequest: (_) => APIRoute.POST_CLOSE_TAB,
@@ -306,14 +306,14 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<ApiInteraction> sendRequest(IApiRequest pRequest) async {
+  Future<ApiInteraction> sendRequest(ApiRequest pRequest) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
     APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
 
     if (route != null) {
       try {
-        if (pRequest is ISessionRequest) {
+        if (pRequest is SessionRequest) {
           if (IConfigService().getClientId()?.isNotEmpty == true) {
             pRequest.clientId = IConfigService().getClientId()!;
           } else {
@@ -396,7 +396,7 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Send post request to remote server, applies timeout.
-  Future<HttpClientResponse> _sendPostRequest(APIRoute route, IApiRequest pRequest) async {
+  Future<HttpClientResponse> _sendPostRequest(APIRoute route, ApiRequest pRequest) async {
     Uri uri = Uri.parse("${IConfigService().getBaseUrl()!}/${route.route}");
     HttpClientRequest request = await connect(uri, route.method);
 
@@ -515,7 +515,7 @@ class OnlineApiRepository implements IRepository {
   }
 
   /// Parses the List of JSON responses in [ApiResponse]s
-  ApiInteraction _responseParser(List<dynamic> pJsonList, {required IApiRequest? request}) {
+  ApiInteraction _responseParser(List<dynamic> pJsonList, {required ApiRequest? request}) {
     List<ApiResponse> returnList = [];
 
     for (dynamic responseItem in pJsonList) {

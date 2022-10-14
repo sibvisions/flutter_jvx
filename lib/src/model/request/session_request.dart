@@ -1,8 +1,8 @@
 import '../../service/api/shared/api_object_property.dart';
-import 'i_api_request.dart';
+import 'api_request.dart';
 
 /// Base class for all outgoing api requests
-abstract class ISessionRequest extends IApiRequest {
+abstract class SessionRequest extends ApiRequest {
   /// Session id
   late String clientId;
 
