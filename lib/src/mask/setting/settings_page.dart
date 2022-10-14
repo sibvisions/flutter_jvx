@@ -488,15 +488,22 @@ class _SettingsPageState extends State<SettingsPage> {
   void _saveClicked() async {
     if (appName?.isNotEmpty == true && baseUrl?.isNotEmpty == true) {
       try {
-        await IConfigService().setAppName(appName);
-        await IConfigService().setBaseUrl(baseUrl);
-        await IConfigService().setUserLanguage(language);
-        await IConfigService().setPictureResolution(resolution);
+        if (appName != IConfigService().getAppName() ||
+            baseUrl != IConfigService().getBaseUrl() ||
+            language != IConfigService().getUserLanguage() ||
+            resolution != (IConfigService().getPictureResolution() ?? resolutions.last)) {
+          await IConfigService().setAppName(appName);
+          await IConfigService().setBaseUrl(baseUrl);
+          await IConfigService().setUserLanguage(language);
+          await IConfigService().setPictureResolution(resolution);
 
-        FlutterJVxState.of(FlutterJVx.getCurrentContext())?.restart(
-          username: username,
-          password: password,
-        );
+          FlutterJVxState.of(FlutterJVx.getCurrentContext())?.restart(
+            username: username,
+            password: password,
+          );
+        } else {
+          context.beamBack();
+        }
       } catch (e, stackTrace) {
         IUiService().handleAsyncError(e, stackTrace);
       } finally {
