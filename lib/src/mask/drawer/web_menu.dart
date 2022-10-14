@@ -91,14 +91,9 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       headerColor: groupTextColor,
       onClick: AppMenu.menuItemPressed,
     );
-    if (value == LayoutMode.Small) {
+    if (value != LayoutMode.Full) {
       menu = SizedBox(
         width: 50,
-        child: menu,
-      );
-    } else if (value == LayoutMode.Mini) {
-      menu = SizedBox(
-        width: 0,
         child: menu,
       );
     }
