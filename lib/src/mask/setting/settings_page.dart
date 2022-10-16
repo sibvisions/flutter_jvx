@@ -488,7 +488,9 @@ class _SettingsPageState extends State<SettingsPage> {
   void _saveClicked() async {
     if (appName?.isNotEmpty == true && baseUrl?.isNotEmpty == true) {
       try {
-        if (appName != IConfigService().getAppName() ||
+        if (!context.canBeamBack ||
+            IConfigService().getClientId() == null ||
+            appName != IConfigService().getAppName() ||
             baseUrl != IConfigService().getBaseUrl() ||
             language != IConfigService().getUserLanguage() ||
             resolution != (IConfigService().getPictureResolution() ?? resolutions.last)) {
