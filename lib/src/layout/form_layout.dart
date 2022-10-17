@@ -81,8 +81,12 @@ class FormLayout extends ILayout {
     // The layout call started before or after a specific set of data has been changed.
     try {
       componentConstraints = _getComponentConstraints(pChildren, anchors);
-    } catch (_) {
-      // Old component constraints.
+    } catch (error, stacktrace) {
+      FlutterJVx.log.w(
+        "FormLayout of {${pParent.id}} crashed while getting the component constraints.",
+        error,
+        stacktrace,
+      );
       return;
     }
 
@@ -261,7 +265,7 @@ class FormLayout extends ILayout {
       if (constraint.topAnchor.getBorderAnchor().name == "b") {
         double h = -constraint.topAnchor.getAbsolutePosition();
         if (h > bottomHeight) {
-          topHeight = h;
+          bottomHeight = h;
         }
         pUsedBorder.bottomBorderUsed = true;
       }
@@ -278,7 +282,7 @@ class FormLayout extends ILayout {
               constraint.rightAnchor.getAbsolutePosition() +
               minimumComponentSize.width;
           if (w > pPreferredMinimumSize.minimumWidth) {
-            pPreferredMinimumSize.minimumWidth;
+            pPreferredMinimumSize.minimumWidth = w;
           }
         }
         pUsedBorder.leftBorderUsed = true;
