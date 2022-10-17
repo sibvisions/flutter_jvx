@@ -1,9 +1,8 @@
 import '../../service/api/shared/api_object_property.dart';
 import 'download_request.dart';
-import 'session_request.dart';
 
 /// Request to download all images the app needs
-class ApiDownloadImagesRequest extends SessionRequest implements DownloadRequest {
+class ApiDownloadImagesRequest extends DownloadRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
