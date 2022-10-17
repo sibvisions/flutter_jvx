@@ -15,7 +15,8 @@
   },
   "versionConfig": {
     "commit": "<undefined>",
-    "buildDate": 0
+    "buildDate": 0,
+    "buildNumber": 0
   },
   "startupParameters": {
   }
