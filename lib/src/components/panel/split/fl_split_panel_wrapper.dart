@@ -118,8 +118,8 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
               color: Theme.of(context).backgroundColor,
               child: Center(
                 child: Container(
-                  width: splitterWidth,
-                  height: splitterHeight,
+                  width: max(splitterWidth, 0.0),
+                  height: max(splitterHeight, 0.0),
                   padding: const EdgeInsets.all(2.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5.0),
