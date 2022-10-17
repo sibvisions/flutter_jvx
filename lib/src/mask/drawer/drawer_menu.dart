@@ -52,63 +52,66 @@ class _DrawerMenuState extends State<DrawerMenu> {
   Widget _buildDrawerHeader(BuildContext context) {
     var profileImage = IConfigService().getUserInfo()?.profileImage;
 
-    return DrawerHeader(
-      margin: EdgeInsets.zero,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 6,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(padding: EdgeInsets.only(top: 10)),
-                _buildHeaderText(
-                  flex: 60,
-                  text: AppStyle.of(context)!.applicationStyle!['login.title'] ?? IConfigService().getAppName()!,
-                  context: context,
-                  fontWeight: FontWeight.bold,
-                ),
-                const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                _buildHeaderText(
-                  flex: 20,
-                  text: "${FlutterJVx.translate("Logged in as")}:",
-                  context: context,
-                ),
-                const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
-                _buildHeaderText(
-                  flex: 35,
-                  text: IConfigService().getUserInfo()?.displayName ?? " ",
-                  context: context,
-                  fontWeight: FontWeight.bold,
-                ),
-                const Padding(padding: EdgeInsets.symmetric(vertical: 6)),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: CircleAvatar(
-                    backgroundColor: Theme.of(context).backgroundColor,
-                    backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
-                    child: profileImage == null
-                        ? FaIcon(
-                            FontAwesomeIcons.solidUser,
-                            color: Colors.grey.shade400,
-                            size: 60,
-                          )
-                        : null,
+    return SizedBox(
+      height: 170,
+      child: DrawerHeader(
+        margin: EdgeInsets.zero,
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+        decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeaderText(
+                    flex: 5,
+                    text: AppStyle.of(context)!.applicationStyle!['login.title'] ?? IConfigService().getAppName()!,
+                    context: context,
+                    constraints: const BoxConstraints(maxWidth: 150),
+                    fontWeight: FontWeight.bold,
                   ),
-                )
-              ],
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 2)),
+                  _buildHeaderText(
+                    flex: 1,
+                    text: "${FlutterJVx.translate("Logged in as")}:",
+                    context: context,
+                  ),
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
+                  _buildHeaderText(
+                    flex: 2,
+                    text: IConfigService().getUserInfo()?.displayName ?? " ",
+                    context: context,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
             ),
-          )
-        ],
+            Expanded(
+              flex: 4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: CircleAvatar(
+                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
+                      child: profileImage == null
+                          ? FaIcon(
+                              FontAwesomeIcons.solidUser,
+                              color: Colors.grey.shade400,
+                              size: 60,
+                            )
+                          : null,
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -178,16 +181,23 @@ class _DrawerMenuState extends State<DrawerMenu> {
     required String text,
     required BuildContext context,
     FontWeight? fontWeight,
+    BoxConstraints? constraints,
   }) {
     return Expanded(
       flex: flex,
-      child: FittedBox(
-        alignment: Alignment.topLeft,
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary,
-            fontWeight: fontWeight,
+      child: Container(
+        constraints: constraints,
+        child: FittedBox(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            constraints: constraints,
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontWeight: fontWeight,
+              ),
+            ),
           ),
         ),
       ),
