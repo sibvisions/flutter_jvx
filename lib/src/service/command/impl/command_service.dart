@@ -167,12 +167,14 @@ class CommandService implements ICommandService {
 
       // Don't route if there is a server error
       if (!nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+        if (routeCommands.any((element) => element is RouteToLoginCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+        }
+        if (routeCommands.any((element) => element is RouteToMenuCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+        }
         if (routeCommands.any((element) => element is RouteToWorkCommand)) {
           await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
-        } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
-        } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
         }
       }
     } catch (error) {

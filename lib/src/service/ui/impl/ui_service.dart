@@ -26,7 +26,6 @@ import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_group_model.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/login_location.dart';
-import '../../../routing/locations/menu_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
 
@@ -167,12 +166,7 @@ class UiService implements IUiService {
       return;
     }
 
-    var last = FlutterJVx.getCurrentContext()!.beamingHistory.last;
-    if (last.runtimeType == WorkScreenLocation || last.runtimeType == MenuLocation) {
-      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/login/$mode", data: pLoginProps);
-    } else {
-      FlutterJVx.getCurrentContext()!.beamToNamed("/login/$mode", data: pLoginProps);
-    }
+    FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/login/$mode", data: pLoginProps);
   }
 
   @override
