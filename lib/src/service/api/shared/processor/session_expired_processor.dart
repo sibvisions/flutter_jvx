@@ -7,12 +7,12 @@ import '../i_response_processor.dart';
 class SessionExpiredProcessor implements IResponseProcessor<SessionExpiredResponse> {
   @override
   List<BaseCommand> processResponse(SessionExpiredResponse pResponse, ApiRequest? pRequest) {
-    OpenSessionExpiredDialogCommand command = OpenSessionExpiredDialogCommand(
-      title: pResponse.title,
-      message: pResponse.message,
-      reason: "Server sent session expired",
-    );
-
-    return [command];
+    return [
+      OpenSessionExpiredDialogCommand(
+        title: pResponse.title,
+        message: pResponse.message,
+        reason: "Server sent session expired",
+      )
+    ];
   }
 }
