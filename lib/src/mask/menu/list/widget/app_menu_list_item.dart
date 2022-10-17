@@ -59,20 +59,34 @@ class AppMenuListItem extends StatelessWidget {
       pMenuItemModel: menuItemModel,
     );
 
+    onTap() => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context);
+
+    if (layoutMode != LayoutMode.Full && leading != null) {
+      var tileThemeData = ListTileTheme.of(context);
+      return Material(
+        color: selected ? tileThemeData.selectedTileColor : tileThemeData.tileColor,
+        child: InkWell(
+          onTap: onTap,
+          child: IconTheme.merge(
+            data: IconThemeData(color: selected ? tileThemeData.selectedColor : tileThemeData.iconColor),
+            child: leading,
+          ),
+        ),
+      );
+    }
+
     return ListTile(
       selected: selected,
       visualDensity: context.findAncestorWidgetOfExactType<WebMenu>() != null
           ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity)
           : null,
-      leading: layoutMode != LayoutMode.Small ? leading : null,
-      title: layoutMode == LayoutMode.Small && leading != null
-          ? leading
-          : Text(
-              menuItemModel.label,
-              overflow: TextOverflow.ellipsis,
-              style: textStyle,
-            ),
-      onTap: () => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context),
+      leading: leading,
+      title: Text(
+        menuItemModel.label,
+        overflow: TextOverflow.ellipsis,
+        style: textStyle,
+      ),
+      onTap: onTap,
     );
   }
 }

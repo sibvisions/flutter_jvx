@@ -60,7 +60,7 @@ class AppMenuListGroup extends StatelessWidget {
       pushPinnedChildren: true,
       children: [
         SliverPersistentHeader(
-          pinned: layoutMode != LayoutMode.Small,
+          pinned: layoutMode == LayoutMode.Full,
           delegate: AppMenuGridHeader(
             headerText: FlutterJVx.translate(menuGroupModel.name),
             headerColor: headerColor,
