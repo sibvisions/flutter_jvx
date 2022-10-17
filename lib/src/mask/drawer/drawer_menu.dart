@@ -33,15 +33,23 @@ class _DrawerMenuState extends State<DrawerMenu> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
+    bool isNormalSize = MediaQuery.of(context).size.height > 650;
+    List<Widget> footerEntries = _buildDrawerFooter(context, isNormalSize);
+
     return Opacity(
       opacity: IConfigService().getOpacitySideMenu(),
       child: Drawer(
         backgroundColor: Theme.of(context).backgroundColor,
         child: Column(
           children: [
-            _buildDrawerHeader(context),
-            Expanded(child: _buildMenu(context)),
-            ..._buildDrawerFooter(context),
+            _buildDrawerHeader(context, isNormalSize),
+            Expanded(child: _buildMenu(context, isNormalSize)),
+            if (isNormalSize) ...footerEntries,
+            if (!isNormalSize)
+              SizedBox(
+                height: 55,
+                child: Row(children: footerEntries),
+              ),
           ],
         ),
       ),
@@ -49,11 +57,42 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  Widget _buildDrawerHeader(BuildContext context) {
+  Widget _buildDrawerHeader(BuildContext context, bool isNormalSize) {
     var profileImage = IConfigService().getUserInfo()?.profileImage;
 
+    List<Widget> headerItems = [
+      _buildHeaderText(
+        flex: 5,
+        text: AppStyle.of(context)!.applicationStyle!['login.title'] ?? IConfigService().getAppName()!,
+        context: context,
+        constraints: const BoxConstraints(maxWidth: 150),
+        fontWeight: FontWeight.bold,
+      ),
+      const Spacer(flex: 1),
+      Expanded(
+        flex: 4,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeaderText(
+              flex: 1,
+              text: "${FlutterJVx.translate("Logged in as")}:",
+              context: context,
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
+            _buildHeaderText(
+              flex: 2,
+              text: IConfigService().getUserInfo()?.displayName ?? " ",
+              context: context,
+              fontWeight: FontWeight.bold,
+            ),
+          ],
+        ),
+      ),
+    ];
+
     return SizedBox(
-      height: 170,
+      height: isNormalSize ? 170 : 100,
       child: DrawerHeader(
         margin: EdgeInsets.zero,
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
@@ -62,65 +101,50 @@ class _DrawerMenuState extends State<DrawerMenu> {
           children: [
             Expanded(
               flex: 6,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeaderText(
-                    flex: 5,
-                    text: AppStyle.of(context)!.applicationStyle!['login.title'] ?? IConfigService().getAppName()!,
-                    context: context,
-                    constraints: const BoxConstraints(maxWidth: 150),
-                    fontWeight: FontWeight.bold,
-                  ),
-                  const Padding(padding: EdgeInsets.symmetric(vertical: 2)),
-                  _buildHeaderText(
-                    flex: 1,
-                    text: "${FlutterJVx.translate("Logged in as")}:",
-                    context: context,
-                  ),
-                  const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
-                  _buildHeaderText(
-                    flex: 2,
-                    text: IConfigService().getUserInfo()?.displayName ?? " ",
-                    context: context,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: CircleAvatar(
-                      backgroundColor: Theme.of(context).backgroundColor,
-                      backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
-                      child: profileImage == null
-                          ? FaIcon(
-                              FontAwesomeIcons.solidUser,
-                              color: Colors.grey.shade400,
-                              size: 60,
-                            )
-                          : null,
+              child: isNormalSize
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: headerItems,
+                    )
+                  : Row(
+                      children: headerItems,
                     ),
-                  )
-                ],
-              ),
-            )
+            ),
+            if (isNormalSize)
+              Expanded(
+                flex: 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: CircleAvatar(
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
+                        child: profileImage == null
+                            ? FaIcon(
+                                FontAwesomeIcons.solidUser,
+                                color: Colors.grey.shade400,
+                                size: 60,
+                              )
+                            : null,
+                      ),
+                    )
+                  ],
+                ),
+              )
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMenu(BuildContext context) {
+  Widget _buildMenu(BuildContext context, bool isNormalSize) {
     MenuModel menuModel = IUiService().getMenuModel();
     return ListTileTheme.merge(
       iconColor: Theme.of(context).colorScheme.primary,
       style: ListTileStyle.drawer,
+      dense: !isNormalSize,
       child: IconTheme(
         data: IconTheme.of(context).copyWith(
           size: 32,
@@ -133,7 +157,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     );
   }
 
-  List<Widget> _buildDrawerFooter(BuildContext context) {
+  List<Widget> _buildDrawerFooter(BuildContext context, bool isNormalSize) {
     var footerEntries = [
       _buildFooterDivider(context),
       _buildFooterEntry(
@@ -141,6 +165,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         text: FlutterJVx.translate("Settings"),
         leadingIcon: FontAwesomeIcons.gear,
         onTap: widget.onSettingsPressed,
+        isNormalSize: isNormalSize,
       ),
     ];
 
@@ -152,6 +177,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
           text: FlutterJVx.translate("Change password"),
           leadingIcon: FontAwesomeIcons.key,
           onTap: widget.onChangePasswordPressed,
+          isNormalSize: isNormalSize,
         ),
         _buildFooterDivider(context),
         _buildFooterEntry(
@@ -159,6 +185,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
           text: FlutterJVx.translate("Logout"),
           leadingIcon: FontAwesomeIcons.rightFromBracket,
           onTap: widget.onLogoutPressed,
+          isNormalSize: isNormalSize,
         ),
       ]);
     }
@@ -210,22 +237,42 @@ class _DrawerMenuState extends State<DrawerMenu> {
     required String text,
     required IconData leadingIcon,
     required VoidCallback onTap,
+    bool isNormalSize = true,
   }) {
-    return ListTile(
-      tileColor: Theme.of(context).colorScheme.primary,
-      textColor: Theme.of(context).colorScheme.onPrimary,
-      leading: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: FaIcon(
-          leadingIcon,
-          color: Theme.of(context).colorScheme.onPrimary,
+    if (isNormalSize) {
+      return ListTile(
+        tileColor: Theme.of(context).colorScheme.primary,
+        textColor: Theme.of(context).colorScheme.onPrimary,
+        leading: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          child: FaIcon(
+            leadingIcon,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
         ),
-      ),
-      title: Text(
-        text,
-        overflow: TextOverflow.ellipsis,
-      ),
-      onTap: onTap,
-    );
+        title: isNormalSize
+            ? Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+              )
+            : null,
+        onTap: onTap,
+      );
+    } else {
+      return Flexible(
+        child: Material(
+          color: Theme.of(context).colorScheme.primary,
+          child: InkWell(
+            onTap: onTap,
+            child: Center(
+              child: FaIcon(
+                leadingIcon,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
