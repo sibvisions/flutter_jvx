@@ -3,16 +3,14 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
+import '../../../../../components.dart';
 import '../../../../../flutter_jvx.dart';
 import '../../../../../services.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
-import '../../../../model/component/table/fl_table_model.dart';
 import '../../../../model/data/column_definition.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
-import '../../../table/fl_table_widget.dart';
-import '../../../table/table_size.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
   final String name;
@@ -34,11 +32,13 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   final TextEditingController _controller = TextEditingController();
 
+  final FocusNode focusNode = FocusNode();
+
   FlLinkedCellEditorModel get model => widget.model;
 
   int scrollingPage = 1;
   Timer? filterTimer; // 200-300 Milliseconds
-  dynamic lastChangedFilter;
+  String? lastChangedFilter;
   DataChunk? _chunkData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,23 +64,15 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     EdgeInsets paddingInsets;
 
-    // Server sends it way too small -> currently ignored.
-    // Leave code for future implementation if wanted.
-    // if (model.popupSize != null) {
-    //   paddingInsets = EdgeInsets.fromLTRB(
-    //     (screenSize.width - model.popupSize!.width) / 2,
-    //     (screenSize.height - model.popupSize!.height) / 2,
-    //     (screenSize.width - model.popupSize!.width) / 2,
-    //     (screenSize.height - model.popupSize!.height) / 2,
-    //   );
-    // } else {
     paddingInsets = EdgeInsets.fromLTRB(
       screenSize.width / 16,
       screenSize.height / 16,
       screenSize.width / 16,
       screenSize.height / 16,
     );
-    // }
+
+    FlTextFieldModel searchFieldModel = FlTextFieldModel();
+    searchFieldModel.fontSize = 14;
 
     return Dialog(
       insetPadding: paddingInsets,
@@ -91,7 +83,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         child: Column(
           children: <Widget>[
             Container(
-              width: double.infinity,
               decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
                   borderRadius: const BorderRadius.only(topLeft: Radius.circular(5.0), topRight: Radius.circular(5.0))),
@@ -106,65 +97,61 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
               ),
             ),
             Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: TextFormField(
-                  key: widget.key,
-                  controller: _controller,
-                  maxLines: 1,
-                  keyboardType: TextInputType.text,
-                  onChanged: startTimerValueChanged,
-                  style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
-                  decoration: InputDecoration(
-                      hintStyle: const TextStyle(color: Colors.green),
-                      labelText: FlutterJVx.translate("Search"),
-                      labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
-                )),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: FlTextFieldWidget(
+                key: widget.key,
+                model: searchFieldModel,
+                textController: _controller,
+                keyboardType: TextInputType.text,
+                valueChanged: startTimerValueChanged,
+                endEditing: (_) {},
+                focusNode: focusNode,
+                inputDecoration: InputDecoration(
+                  labelText: FlutterJVx.translate("Search"),
+                  labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
             Expanded(
               child: _chunkData != null
                   ? Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
-                      child: LayoutBuilder(builder: ((context, constraints) {
-                        TableSize tableSize = TableSize.direct(
-                          tableModel: tableModel,
-                          dataChunk: _chunkData,
-                          availableWidth: constraints.maxWidth,
-                        );
-                        tableModel.stickyHeaders =
-                            constraints.maxHeight > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
+                      child: LayoutBuilder(
+                        builder: ((context, constraints) {
+                          TableSize tableSize = TableSize.direct(
+                            tableModel: tableModel,
+                            dataChunk: _chunkData,
+                            availableWidth: constraints.maxWidth,
+                          );
+                          tableModel.stickyHeaders =
+                              constraints.maxHeight > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
 
-                        return FlTableWidget(
-                          chunkData: _chunkData!,
-                          onEndScroll: increasePageLoad,
-                          model: tableModel,
-                          disableEditors: true,
-                          onRowTap: _onRowTapped,
-                          tableSize: tableSize,
-                        );
-                      })),
+                          return FlTableWidget(
+                            chunkData: _chunkData!,
+                            onEndScroll: increasePageLoad,
+                            model: tableModel,
+                            disableEditors: true,
+                            onRowTap: _onRowTapped,
+                            tableSize: tableSize,
+                          );
+                        }),
+                      ),
                     )
                   : Container(),
-              // child: Padding(
-              //   padding: const EdgeInsets.only(top: 10),
-              //   child: NotificationListener<ScrollEndNotification>(
-              //     onNotification: onNotification,
-              //     child: ListView.builder(
-              //       itemBuilder: itemBuilder,
-              //       itemCount: (_chunkData?.data.length ?? 1) + (hasHeader() ? 1 : 0),
-              //       scrollDirection: Axis.vertical,
-              //     ),
-              //   ),
-              // ),
             ),
-            ButtonBar(alignment: MainAxisAlignment.center, children: <Widget>[
-              ElevatedButton(
-                child: Text(
-                  FlutterJVx.translate("CANCEL"),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  child: Text(
+                    FlutterJVx.translate("CANCEL"),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]),
+              ],
+            ),
           ],
         ),
       ),
@@ -239,6 +226,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   void startTimerValueChanged(String value) {
     lastChangedFilter = value;
 
+    // Null the filter if the filter is empty.
+    if (lastChangedFilter != null && lastChangedFilter!.isEmpty) {
+      lastChangedFilter = null;
+    }
+
     if (filterTimer != null) {
       filterTimer!.cancel();
     }
@@ -264,13 +256,22 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       }
     }
 
-    IUiService().sendCommand(
+    IUiService()
+        .sendCommand(
       FilterCommand(
-          editorId: widget.name,
-          value: lastChangedFilter,
-          columnNames: filterColumns,
-          dataProvider: widget.model.linkReference.dataProvider,
-          reason: "Filtered the linked cell picker"),
+        editorId: widget.name,
+        value: lastChangedFilter,
+        columnNames: filterColumns,
+        dataProvider: widget.model.linkReference.dataProvider,
+        reason: "Filtered the linked cell picker",
+      ),
+    )
+        .then(
+      (value) {
+        if (!focusNode.hasPrimaryFocus) {
+          focusNode.requestFocus();
+        }
+      },
     );
   }
 
