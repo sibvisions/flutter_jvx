@@ -89,6 +89,7 @@ class _JVxSplashState extends State<JVxSplash> {
             if (widget.snapshot?.connectionState != ConnectionState.done && UiService().getFrames().isEmpty)
               Container(
                 height: 15,
+                constraints: const BoxConstraints(maxWidth: 500),
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: StreamBuilder<double>(
                     stream: stream,
