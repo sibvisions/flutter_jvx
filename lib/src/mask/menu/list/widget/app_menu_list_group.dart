@@ -4,6 +4,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../../../../flutter_jvx.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/response/device_status_response.dart';
+import '../../../drawer/web_menu.dart';
 import '../../app_menu.dart';
 import '../../grid/widget/app_menu_grid_header.dart';
 import 'app_menu_list_item.dart';
@@ -60,7 +61,7 @@ class AppMenuListGroup extends StatelessWidget {
       pushPinnedChildren: true,
       children: [
         SliverPersistentHeader(
-          pinned: layoutMode == LayoutMode.Full,
+          pinned: WebMenu.maybeOf(context) == null || layoutMode == LayoutMode.Full,
           delegate: AppMenuGridHeader(
             headerText: FlutterJVx.translate(menuGroupModel.name),
             headerColor: headerColor,
