@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../../components.dart';
@@ -15,6 +16,7 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
     if (isScrollable) {
       return InteractiveViewer(
         constrained: false,
+        scaleEnabled: !kIsWeb,
         child: Stack(
           children: [
             IgnorePointer(

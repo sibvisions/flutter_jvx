@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../../components.dart';
@@ -43,6 +44,7 @@ class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
             height: viewerPosition.height,
             child: InteractiveViewer(
               constrained: false,
+              scaleEnabled: !kIsWeb,
               child: Stack(
                 children: [
                   IgnorePointer(
