@@ -63,8 +63,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
     // Load Version
     appVersionNotifier = ValueNotifier("${FlutterJVx.translate("Loading")}...");
-    PackageInfo.fromPlatform().then((packageInfo) => appVersionNotifier.value =
-        "${packageInfo.version}-${IConfigService().getAppConfig()?.versionConfig?.buildNumber ?? packageInfo.buildNumber}");
+    PackageInfo.fromPlatform().then((packageInfo) {
+      int? buildNumber = IConfigService().getAppConfig()?.versionConfig?.buildNumber;
+      return appVersionNotifier.value =
+          "${packageInfo.version}-${buildNumber != null && buildNumber >= 0 ? buildNumber : packageInfo.buildNumber}";
+    });
 
     appName = IConfigService().getAppName();
     baseUrl = IConfigService().getBaseUrl();
