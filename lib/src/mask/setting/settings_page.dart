@@ -109,11 +109,11 @@ class _SettingsPageState extends State<SettingsPage> {
           elevation: 0,
         ),
         body: body,
-        bottomNavigationBar: SizedBox(
-          height: bottomBarHeight,
-          child: Material(
-            color: Theme.of(context).colorScheme.primary,
-            child: SafeArea(
+        bottomNavigationBar: Material(
+          color: Theme.of(context).colorScheme.primary,
+          child: SafeArea(
+            child: SizedBox(
+              height: bottomBarHeight,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
