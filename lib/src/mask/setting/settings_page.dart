@@ -81,12 +81,9 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Column(
         children: [
           _buildApplicationInfo(),
-          ListTileTheme.merge(
-            iconColor: Theme.of(context).colorScheme.primary,
-            child: IconTheme.merge(
-              data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-              child: Builder(builder: (context) => _buildApplicationSettings(context)),
-            ),
+          IconTheme.merge(
+            data: IconThemeData(color: Theme.of(context).colorScheme.primary),
+            child: Builder(builder: (context) => _buildApplicationSettings(context)),
           ),
           _buildVersionInfo(),
           const SizedBox(height: 5),
@@ -251,7 +248,7 @@ class _SettingsPageState extends State<SettingsPage> {
     String appNameTitle = FlutterJVx.translate("App Name");
 
     SettingItem appNameSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.server),
+      frontIcon: FaIcon(FontAwesomeIcons.server, color: Theme.of(context).colorScheme.primary),
       endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize),
       value: appName ?? "",
       title: appNameTitle,
@@ -281,7 +278,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     String urlTitle = FlutterJVx.translate("URL");
     SettingItem baseUrlSetting = SettingItem(
-        frontIcon: const FaIcon(FontAwesomeIcons.globe),
+        frontIcon: FaIcon(FontAwesomeIcons.globe, color: Theme.of(context).colorScheme.primary),
         endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize),
         value: baseUrl ?? "",
         title: urlTitle,
@@ -333,7 +330,7 @@ class _SettingsPageState extends State<SettingsPage> {
     ]);
 
     SettingItem languageSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.language),
+      frontIcon: FaIcon(FontAwesomeIcons.language, color: Theme.of(context).colorScheme.primary),
       endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize),
       title: FlutterJVx.translate("Language"),
       //"System" is default
@@ -364,7 +361,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     SettingItem pictureSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.image),
+      frontIcon: FaIcon(FontAwesomeIcons.image, color: Theme.of(context).colorScheme.primary),
       endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize),
       title: FlutterJVx.translate("Picture Size"),
       value: resolution,
