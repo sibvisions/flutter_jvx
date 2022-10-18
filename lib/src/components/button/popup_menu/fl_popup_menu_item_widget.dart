@@ -3,9 +3,26 @@ import 'package:flutter/material.dart';
 import '../../../../util/image/image_loader.dart';
 import '../../../model/component/button/fl_popup_menu_item_model.dart';
 
-abstract class FlPopupMenuItemWidget {
-  static PopupMenuEntry<String> withModel(FlPopupMenuItemModel pModel, bool pForceIconSlot) {
-    return PopupMenuItem<String>(
+class FlPopupMenuItemWidget extends PopupMenuItem<String> {
+  final String id;
+
+  const FlPopupMenuItemWidget({
+    super.key,
+    super.value,
+    super.onTap,
+    super.enabled = true,
+    super.height = kMinInteractiveDimension,
+    super.padding,
+    super.textStyle,
+    super.mouseCursor,
+    required this.id,
+    required super.child,
+  });
+
+  factory FlPopupMenuItemWidget.withModel(FlPopupMenuItemModel pModel, bool pForceIconSlot) {
+    return FlPopupMenuItemWidget(
+      id: pModel.id,
+      textStyle: pModel.createTextStyle(),
       enabled: pModel.isEnabled,
       value: pModel.name,
       child: pForceIconSlot

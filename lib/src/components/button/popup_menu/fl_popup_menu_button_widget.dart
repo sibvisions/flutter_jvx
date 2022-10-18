@@ -1,8 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../model/component/button/fl_popup_menu_button_model.dart';
-import '../fl_button_widget.dart';
+import '../../../../components.dart';
+import '../../../../util/constants/i_color.dart';
 
 class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButtonWidget<T> {
   final Function(String)? onItemPress;
@@ -23,31 +24,13 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
           child: super.createDirectButtonChild(context),
         ),
         const VerticalDivider(
-          width: 5,
-          color: Colors.transparent,
+          width: 15,
+          thickness: 1.0,
+          color: IColorConstants.JVX_LIGHTER_BLACK,
         ),
         createPopupIcon(context),
       ],
     );
-  }
-
-  @override
-  Widget? createButtonChild(BuildContext context) {
-    if (model.labelModel.text.isNotEmpty && image != null) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: getCrossAxisAlignment(model.labelModel.verticalAlignment),
-        textBaseline: TextBaseline.alphabetic,
-        textDirection: TextDirection.ltr,
-        children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: createTextWidget())],
-      );
-    } else if (model.labelModel.text.isNotEmpty) {
-      return createTextWidget();
-    } else if (image != null) {
-      return image!;
-    } else {
-      return null;
-    }
   }
 
   Widget createPopupIcon(BuildContext context) {
@@ -97,11 +80,14 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   @override
   Function()? getOnPressed(BuildContext context) {
     if (model.isEnabled) {
-      if (model.defaultMenuItem != null && model.defaultMenuItem!.isNotEmpty) {
-        return () => onItemPress?.call(model.defaultMenuItem!);
-      } else {
-        return () => openMenu(context);
+      FlPopupMenuItemWidget? popupItem = popupItems
+          .whereType<FlPopupMenuItemWidget>()
+          .firstWhereOrNull((element) => element.id == model.defaultMenuItem);
+
+      if (popupItem != null) {
+        return () => onItemPress?.call(popupItem.value!);
       }
+      return () => openMenu(context);
     }
     return null;
   }

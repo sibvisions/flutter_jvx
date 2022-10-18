@@ -1,8 +1,8 @@
 import '../../../../commands.dart';
-import 'fl_toggle_button_model.dart';
+import '../../../../components.dart';
 
 /// The model for [FlPopupMenuButtonWidget]
-class FlPopupMenuButtonModel extends FlToggleButtonModel {
+class FlPopupMenuButtonModel extends FlButtonModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

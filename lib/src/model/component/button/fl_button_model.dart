@@ -193,8 +193,8 @@ class FlButtonModel extends FlComponentModel {
     if (pJson.containsKey(ApiObjectProperty.horizontalTextPosition)) {
       labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
     }
-    if (pJson.containsKey(ApiObjectProperty.verticalAlignment)) {
-      labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalAlignment];
+    if (pJson.containsKey(ApiObjectProperty.verticalTextPosition)) {
+      labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalTextPosition];
     }
     if (pJson.containsKey(ApiObjectProperty.text)) {
       labelJson[ApiObjectProperty.text] = pJson[ApiObjectProperty.text];

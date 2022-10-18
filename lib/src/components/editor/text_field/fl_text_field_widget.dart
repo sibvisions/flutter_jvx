@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -42,7 +44,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   double get iconSize => 16;
 
-  EdgeInsets? get contentPadding => inTable ? const EdgeInsets.only(left: 0.0) : null;
+  EdgeInsets? get contentPadding => inTable ? EdgeInsets.zero : const EdgeInsets.fromLTRB(10, 15, 10, 15);
 
   EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
 
@@ -193,7 +195,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           EdgeInsets padding = iconPadding;
 
           if (suffixItem is GestureDetector || suffixItem is InkResponse) {
-            padding = padding.copyWith(right: padding.right - (clickableClearArea - iconSize));
+            padding = padding.copyWith(right: max(padding.right - (clickableClearArea - iconSize), 0.0));
           }
 
           return Padding(
@@ -212,11 +214,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       Widget lastItem = suffixIconItems.last;
 
       if (lastItem is GestureDetector || lastItem is InkResponse) {
-        padding = padding.copyWith(right: padding.right - ((clickableClearArea - iconSize) / 2));
+        padding = padding.copyWith(right: max(padding.right - ((clickableClearArea - iconSize) / 2), 0.0));
       }
     }
 
     return Container(
+      height: double.infinity,
       padding: padding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
