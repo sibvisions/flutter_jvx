@@ -6,37 +6,22 @@ import '../../text_field/fl_text_field_widget.dart';
 
 class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<T> {
   const FlDateEditorWidget({
-    Key? key,
-    required T model,
-    required FocusNode focusNode,
-    required TextEditingController textController,
-    required Function(String) valueChanged,
-    required Function(String) endEditing,
-    bool inTable = false,
-  }) : super(
-            key: key,
-            model: model,
-            valueChanged: valueChanged,
-            endEditing: endEditing,
-            focusNode: focusNode,
-            textController: textController,
-            inTable: inTable);
+    super.key,
+    required super.model,
+    required super.focusNode,
+    required super.textController,
+    required super.valueChanged,
+    required super.endEditing,
+    super.inTable,
+  }) : super(keyboardType: TextInputType.none);
 
   @override
-  List<Widget> createSuffixItems([bool pForceAll = false]) {
-    List<Widget> oldSuffixItems = super.createSuffixItems(pForceAll);
+  List<Widget> createSuffixIconItems([bool pForceAll = false]) {
+    List<Widget> oldSuffixItems = super.createSuffixIconItems(pForceAll);
 
-    oldSuffixItems.add(Align(
-      widthFactor: 1,
-      heightFactor: 1,
-      alignment: keyboardType == TextInputType.multiline ? Alignment.topCenter : Alignment.center,
-      child: Padding(
-        padding: iconPadding,
-        child: Icon(
-          FontAwesomeIcons.calendar,
-          size: iconSize,
-        ),
-      ),
+    oldSuffixItems.add(Icon(
+      FontAwesomeIcons.calendar,
+      size: iconSize,
     ));
 
     return oldSuffixItems;

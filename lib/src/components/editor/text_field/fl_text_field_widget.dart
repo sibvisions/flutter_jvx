@@ -31,17 +31,22 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   final bool isMandatory;
 
+  /// Additional input decorations not handled by the model.
+  final InputDecoration inputDecoration;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  double get clickableClearArea => 24;
+
   double get iconSize => 16;
 
-  EdgeInsets? get textPadding => inTable ? const EdgeInsets.only(left: 0.0) : null;
+  EdgeInsets? get contentPadding => inTable ? const EdgeInsets.only(left: 0.0) : null;
 
-  EdgeInsets get iconPadding => const EdgeInsets.only(right: 15);
+  EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
 
-  double get iconToTextPadding => 5;
+  EdgeInsets get iconsPadding => const EdgeInsets.only(left: 5, right: 10);
 
   int? get minLines => null;
 
@@ -59,7 +64,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   bool get showSuffixIcon => true;
 
-  bool get hasSuffixItems => createSuffixItems().isNotEmpty;
+  bool get hasSuffixItems => createSuffixIconItems().isNotEmpty;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -75,6 +80,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     this.keyboardType = TextInputType.text,
     this.inTable = false,
     this.isMandatory = false,
+    this.inputDecoration = const InputDecoration(),
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,10 +95,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     return TextField(
       controller: textController,
-      decoration: InputDecoration(
+      decoration: inputDecoration.copyWith(
         enabled: model.isEnabled,
         hintText: model.placeholder,
-        contentPadding: textPadding,
+        contentPadding: contentPadding,
         border: createBorder(context, FlTextBorderType.border),
         errorBorder: createBorder(context, FlTextBorderType.errorBorder),
         enabledBorder: createBorder(context, FlTextBorderType.enabledBorder),
@@ -100,6 +106,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         disabledBorder: createBorder(context, FlTextBorderType.disabledBorder),
         focusedErrorBorder: createBorder(context, FlTextBorderType.focusedBorder),
         suffixIcon: createSuffixIcon(),
+        suffix: createSuffix(),
         fillColor: fillColor,
         filled: isFilled,
       ),
@@ -127,28 +134,27 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Creates the clear icon at the end of a textfield.
   Widget? createClearIcon([bool pForce = false]) {
     if (textController.text.isEmpty && !pForce) {
       return null;
     }
 
-    return Align(
-      widthFactor: 1,
-      heightFactor: 1,
-      alignment: keyboardType == TextInputType.multiline ? Alignment.topCenter : Alignment.center,
-      child: Padding(
-        padding: iconPadding,
-        child: InkWell(
-          onTap: () {
-            if (!model.isReadOnly) {
-              if (focusNode.hasFocus) {
-                textController.clear();
-                valueChanged("");
-              } else {
-                endEditing("");
-              }
-            }
-          },
+    return InkWell(
+      onTap: () {
+        if (!model.isReadOnly) {
+          if (focusNode.hasFocus) {
+            textController.clear();
+            valueChanged("");
+          } else {
+            endEditing("");
+          }
+        }
+      },
+      child: SizedBox(
+        width: clickableClearArea,
+        height: clickableClearArea,
+        child: Center(
           child: Icon(
             Icons.clear,
             size: iconSize,
@@ -159,7 +165,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     );
   }
 
-  List<Widget> createSuffixItems([bool pForceAll = false]) {
+  /// Creates a list of widgets to show at the end of a textfield.
+  List<Widget> createSuffixIconItems([bool pForceAll = false]) {
     List<Widget> icons = [];
 
     Widget? clearIcon = createClearIcon(pForceAll);
@@ -170,19 +177,57 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return icons;
   }
 
+  /// Constructs a single widget to show at the end of a textfield, unifying all suffixIconItems.
   Widget? createSuffixIcon() {
     if (!showSuffixIcon || !hasSuffixItems) {
       return null;
     }
 
-    return Padding(
-      padding: EdgeInsets.only(left: iconToTextPadding),
+    List<Widget> suffixIconItems = createSuffixIconItems();
+
+    if (suffixIconItems.length > 1) {
+      Widget lastWidget = suffixIconItems.removeLast();
+
+      suffixIconItems = suffixIconItems.map<Widget>(
+        (suffixItem) {
+          EdgeInsets padding = iconPadding;
+
+          if (suffixItem is GestureDetector || suffixItem is InkResponse) {
+            padding = padding.copyWith(right: padding.right - (clickableClearArea - iconSize));
+          }
+
+          return Padding(
+            padding: padding,
+            child: suffixItem,
+          );
+        },
+      ).toList();
+
+      suffixIconItems.add(lastWidget);
+    }
+
+    EdgeInsets padding = iconsPadding;
+
+    if (suffixIconItems.isNotEmpty) {
+      Widget lastItem = suffixIconItems.last;
+
+      if (lastItem is GestureDetector || lastItem is InkResponse) {
+        padding = padding.copyWith(right: padding.right - ((clickableClearArea - iconSize) / 2));
+      }
+    }
+
+    return Container(
+      padding: padding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
-        children: createSuffixItems(),
+        children: suffixIconItems,
       ),
     );
+  }
+
+  Widget? createSuffix() {
+    return null;
   }
 
   InputBorder? createBorder(BuildContext context, FlTextBorderType pBorderType) {
@@ -215,12 +260,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   /// Returns all extra paddings this text field has in sum apart from the text size itself.
   double extraWidthPaddings() {
-    int iconAmount = createSuffixItems(true).length;
+    int iconAmount = createSuffixIconItems(true).length;
 
-    double width = iconSize * iconAmount;
-    width += (iconPadding.right + iconPadding.left) * iconAmount;
-    width += iconToTextPadding;
-    width += (textPadding?.left ?? 0.0) + (textPadding?.right ?? 0.0);
+    double width = (iconSize * iconAmount) + (clickableClearArea - iconSize);
+    width += (iconPadding.horizontal) * iconAmount;
+    width += iconsPadding.horizontal;
+    width += contentPadding?.horizontal ?? 0.0;
 
     return width;
   }
