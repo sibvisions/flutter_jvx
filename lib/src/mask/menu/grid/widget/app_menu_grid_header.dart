@@ -56,7 +56,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
     Widget child;
     if (layoutMode != LayoutMode.Full &&
         context.findAncestorWidgetOfExactType<AppMenuListGroup>() != null &&
-        context.findAncestorWidgetOfExactType<WebMenu>() != null) {
+        WebMenu.maybeOf(context) != null) {
       child = Divider(
         color: headerColor ?? ListTileTheme.of(context).iconColor,
         height: 48,

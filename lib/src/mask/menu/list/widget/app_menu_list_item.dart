@@ -61,7 +61,7 @@ class AppMenuListItem extends StatelessWidget {
 
     onTap() => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context);
 
-    bool isInWebMenu = context.findAncestorWidgetOfExactType<WebMenu>() != null;
+    bool isInWebMenu = WebMenu.maybeOf(context) != null;
 
     if (isInWebMenu && layoutMode != LayoutMode.Full) {
       var tileThemeData = ListTileTheme.of(context);

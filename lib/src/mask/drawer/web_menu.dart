@@ -23,6 +23,8 @@ class WebMenu extends StatefulWidget {
     required this.onLogoutPressed,
   }) : super(key: key);
 
+  static WebMenu? maybeOf(BuildContext? context) => context?.findAncestorWidgetOfExactType<WebMenu>();
+
   @override
   State<WebMenu> createState() => _WebMenuState();
 }
