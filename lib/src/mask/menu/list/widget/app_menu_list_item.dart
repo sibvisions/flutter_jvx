@@ -61,7 +61,9 @@ class AppMenuListItem extends StatelessWidget {
 
     onTap() => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context);
 
-    if (layoutMode != LayoutMode.Full && leading != null) {
+    bool isInWebMenu = context.findAncestorWidgetOfExactType<WebMenu>() != null;
+
+    if (isInWebMenu && layoutMode != LayoutMode.Full && leading != null) {
       var tileThemeData = ListTileTheme.of(context);
       return Material(
         color: selected ? tileThemeData.selectedTileColor : tileThemeData.tileColor,
@@ -77,9 +79,7 @@ class AppMenuListItem extends StatelessWidget {
 
     return ListTile(
       selected: selected,
-      visualDensity: context.findAncestorWidgetOfExactType<WebMenu>() != null
-          ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity)
-          : null,
+      visualDensity: isInWebMenu ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity) : null,
       leading: leading,
       title: Text(
         menuItemModel.label,
