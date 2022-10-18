@@ -54,7 +54,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     Widget child;
-    if (layoutMode != LayoutMode.Full &&
+    if (layoutMode == LayoutMode.Small &&
         context.findAncestorWidgetOfExactType<AppMenuListGroup>() != null &&
         WebMenu.maybeOf(context) != null) {
       child = Divider(

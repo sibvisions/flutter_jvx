@@ -63,7 +63,7 @@ class AppMenuListItem extends StatelessWidget {
 
     bool isInWebMenu = WebMenu.maybeOf(context) != null;
 
-    if (isInWebMenu && layoutMode != LayoutMode.Full) {
+    if (isInWebMenu && layoutMode == LayoutMode.Small) {
       var tileThemeData = ListTileTheme.of(context);
       return Material(
         color: selected ? tileThemeData.selectedTileColor : tileThemeData.tileColor,

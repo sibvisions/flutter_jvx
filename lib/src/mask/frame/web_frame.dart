@@ -7,6 +7,7 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
+import '../../model/response/device_status_response.dart';
 import '../drawer/web_menu.dart';
 import '../setting/settings_page.dart';
 import '../state/app_style.dart';
@@ -30,12 +31,42 @@ class WebFrame extends Frame {
 
 class WebFrameState extends FrameState {
   static const double spacing = 15.0;
+  late LayoutMode lastMode;
   bool showWebMenu = true;
+
+  @override
+  void initState() {
+    super.initState();
+    lastMode = IConfigService().getLayoutMode().value;
+    IConfigService().getLayoutMode().addListener(updatedLayoutMode);
+  }
+
+  @override
+  void dispose() {
+    IConfigService().getLayoutMode().removeListener(updatedLayoutMode);
+    super.dispose();
+  }
+
+  ///Close menu if screen changed to [LayoutMode.Mini]
+  void updatedLayoutMode() {
+    var newMode = IConfigService().getLayoutMode().value;
+    if (lastMode != newMode && newMode == LayoutMode.Mini) {
+      showWebMenu = false;
+      setState(() {});
+    }
+    lastMode = newMode;
+  }
 
   void toggleWebMenu() {
     showWebMenu = !showWebMenu;
     setState(() {});
   }
+
+  @override
+  Widget build(BuildContext context) => InheritedWebFrame(
+        showMenu: showWebMenu,
+        child: widget.builder.call(context),
+      );
 
   @override
   PreferredSizeWidget getAppBar(List<Widget>? actions) {
@@ -122,11 +153,13 @@ class WebFrameState extends FrameState {
       RepaintBoundary(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 250),
-          child: WebMenu(
-            showWebMenu: showWebMenu,
-            onSettingsPressed: () => widget.openSettings(context),
-            onChangePasswordPressed: widget.changePassword,
-            onLogoutPressed: widget.logout,
+          child: Builder(
+            builder: (context) => WebMenu(
+              showWebMenu: InheritedWebFrame.of(context).showMenu,
+              onSettingsPressed: () => widget.openSettings(context),
+              onChangePasswordPressed: widget.changePassword,
+              onLogoutPressed: widget.logout,
+            ),
           ),
         ),
       ),
@@ -150,4 +183,21 @@ class WebFrameState extends FrameState {
           );
         },
       );
+}
+
+class InheritedWebFrame extends InheritedFrame {
+  final bool showMenu;
+
+  const InheritedWebFrame({
+    super.key,
+    required this.showMenu,
+    required super.child,
+  });
+
+  static InheritedWebFrame of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<InheritedWebFrame>()!;
+
+  @override
+  bool updateShouldNotify(covariant InheritedWebFrame oldWidget) {
+    return showMenu != oldWidget.showMenu;
+  }
 }

@@ -88,3 +88,10 @@ abstract class FrameState extends State<Frame> {
 
   Widget wrapBody(Widget body) => body;
 }
+
+abstract class InheritedFrame extends InheritedWidget {
+  const InheritedFrame({
+    super.key,
+    required super.child,
+  });
+}

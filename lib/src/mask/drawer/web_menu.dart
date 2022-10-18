@@ -37,6 +37,9 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
 
   late AnimationController animationController;
 
+  LayoutMode? nextLayoutMode;
+  LayoutMode? lastLayoutMode;
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +48,15 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       value: widget.showWebMenu ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 246),
       vsync: this,
-    )..addListener(() => setState(() {}));
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (nextLayoutMode != null &&
+            [AnimationStatus.completed, AnimationStatus.dismissed].contains(animationController.status)) {
+          nextLayoutMode = null;
+          setState(() {});
+        }
+      });
   }
 
   @override
@@ -63,7 +74,20 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       child: RepaintBoundary(
         child: ValueListenableBuilder<LayoutMode>(
           valueListenable: IConfigService().getLayoutMode(),
-          builder: (context, value, child) => _buildMenu(context, value),
+          builder: (context, value, child) {
+            //Workaround to provide smooth menu closing without first expanding it.
+            if (![AnimationStatus.completed, AnimationStatus.dismissed].contains(animationController.status)) {
+              nextLayoutMode = value;
+            }
+            Widget child;
+            if (nextLayoutMode != null) {
+              child = _buildMenu(context, nextLayoutMode != null ? lastLayoutMode ?? value : value);
+            } else {
+              child = _buildMenu(context, value);
+              lastLayoutMode = value;
+            }
+            return child;
+          },
         ),
       ),
     );
@@ -93,9 +117,9 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       headerColor: groupTextColor,
       onClick: AppMenu.menuItemPressed,
     );
-    if (value != LayoutMode.Full) {
-      menu = SizedBox(
-        width: 50,
+    if (value == LayoutMode.Small) {
+      menu = ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 50),
         child: menu,
       );
     }
