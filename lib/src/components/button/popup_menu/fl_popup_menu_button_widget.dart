@@ -23,10 +23,19 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
         Expanded(
           child: super.createDirectButtonChild(context),
         ),
-        const VerticalDivider(
-          width: 15,
-          thickness: 1.0,
-          color: IColorConstants.JVX_LIGHTER_BLACK,
+        SizedBox(
+          width: 10,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              width: 1,
+              decoration: BoxDecoration(
+                border: Border(
+                  left: Divider.createBorderSide(context, color: IColorConstants.JVX_LIGHTER_BLACK, width: 1),
+                ),
+              ),
+            ),
+          ),
         ),
         createPopupIcon(context),
       ],
@@ -37,8 +46,8 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     return InkWell(
       enableFeedback: model.isEnabled,
       onTap: () => openMenu(context),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+      child: Center(
+        widthFactor: 2.0,
         child: FaIcon(
           FontAwesomeIcons.caretDown,
           color: model.createTextStyle().color,
