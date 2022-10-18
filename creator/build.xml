@@ -272,6 +272,28 @@ the License.
       </fileset>
     </replaceregexp>
 
+    <!-- replace buildNumber in config -->
+
+    <!-- as number -->
+    <replaceregexp byline="true">
+      <regexp pattern="&quot;buildDate&quot;\s*:\s*(\d+)"/>
+      <substitution expression="&quot;buildNumber&quot;: ${build.number}"/>
+      <fileset dir="${project.temp}">
+        <include name="assets/config/*.json"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- replace buildNumber in source code -->
+
+    <!-- as number -->  
+    <replaceregexp byline="true">
+      <regexp pattern="buildDate\s*:\s*(\d+)"/>
+      <substitution expression="buildNumber: ${build.number}"/>
+      <fileset dir="${project.temp}">
+        <include name="lib/main.dart"/>
+      </fileset>
+    </replaceregexp>
+
     <!-- replace base in html page -->
 
     <replaceregexp byline="true">
