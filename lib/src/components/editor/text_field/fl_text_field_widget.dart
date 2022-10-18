@@ -277,7 +277,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     double width = (iconSize * iconAmount) + (clickableClearArea - iconSize);
     width += (iconPadding.horizontal) * iconAmount;
     width += iconsPadding.horizontal;
-    width += contentPadding.horizontal ?? 0.0;
+    width += contentPadding.horizontal;
 
     return width;
   }
