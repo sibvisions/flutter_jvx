@@ -44,7 +44,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   double get iconSize => 16;
 
-  EdgeInsets? get contentPadding => inTable ? EdgeInsets.zero : const EdgeInsets.fromLTRB(10, 15, 10, 15);
+  EdgeInsets get contentPadding => inTable ? EdgeInsets.zero : const EdgeInsets.fromLTRB(10, 15, 10, 15);
 
   EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
 
@@ -65,8 +65,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   String get obscuringCharacter => "•";
 
   bool get showSuffixIcon => true;
-
-  bool get hasSuffixItems => createSuffixIconItems().isNotEmpty;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -181,11 +179,15 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   /// Constructs a single widget to show at the end of a textfield, unifying all suffixIconItems.
   Widget? createSuffixIcon() {
-    if (!showSuffixIcon || !hasSuffixItems) {
+    if (!showSuffixIcon) {
       return null;
     }
 
     List<Widget> suffixIconItems = createSuffixIconItems();
+
+    if (suffixIconItems.isEmpty) {
+      return null;
+    }
 
     if (suffixIconItems.length > 1) {
       Widget lastWidget = suffixIconItems.removeLast();
@@ -208,13 +210,19 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       suffixIconItems.add(lastWidget);
     }
 
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center;
     EdgeInsets padding = iconsPadding;
+    if (!inTable && keyboardType == TextInputType.multiline) {
+      padding = padding.copyWith(top: contentPadding.top);
+      crossAxisAlignment = CrossAxisAlignment.start;
+      if (suffixIconItems.isNotEmpty) {
+        Widget lastItem = suffixIconItems.last;
 
-    if (suffixIconItems.isNotEmpty) {
-      Widget lastItem = suffixIconItems.last;
-
-      if (lastItem is GestureDetector || lastItem is InkResponse) {
-        padding = padding.copyWith(right: max(padding.right - ((clickableClearArea - iconSize) / 2), 0.0));
+        if (lastItem is GestureDetector || lastItem is InkResponse) {
+          padding = padding.copyWith(
+            right: max(padding.right - ((clickableClearArea - iconSize) / 2), 0.0),
+          );
+        }
       }
     }
 
@@ -222,6 +230,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       height: double.infinity,
       padding: padding,
       child: Row(
+        crossAxisAlignment: crossAxisAlignment,
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: suffixIconItems,
@@ -268,7 +277,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     double width = (iconSize * iconAmount) + (clickableClearArea - iconSize);
     width += (iconPadding.horizontal) * iconAmount;
     width += iconsPadding.horizontal;
-    width += contentPadding?.horizontal ?? 0.0;
+    width += contentPadding.horizontal ?? 0.0;
 
     return width;
   }

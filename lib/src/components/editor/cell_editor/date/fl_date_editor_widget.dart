@@ -19,10 +19,14 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
   List<Widget> createSuffixIconItems([bool pForceAll = false]) {
     List<Widget> oldSuffixItems = super.createSuffixIconItems(pForceAll);
 
-    oldSuffixItems.add(Icon(
-      FontAwesomeIcons.calendar,
-      size: iconSize,
-    ));
+    oldSuffixItems.add(
+      Center(
+        child: Icon(
+          FontAwesomeIcons.calendar,
+          size: iconSize,
+        ),
+      ),
+    );
 
     return oldSuffixItems;
   }

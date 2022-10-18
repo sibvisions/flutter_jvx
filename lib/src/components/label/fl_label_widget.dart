@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -24,10 +25,12 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       child = getTextWidget(model);
     }
 
+    double topPadding = kIsWeb ? 14 : 13;
+
     return GestureDetector(
       onTap: onPress,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
+        padding: EdgeInsets.fromLTRB(0, topPadding, 0, 0),
         decoration: BoxDecoration(
           color: model.background,
           border: Border.all(

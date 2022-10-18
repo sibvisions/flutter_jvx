@@ -19,10 +19,14 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
   List<Widget> createSuffixIconItems([bool pForceAll = false]) {
     List<Widget> oldSuffixItems = super.createSuffixIconItems(pForceAll);
 
-    oldSuffixItems.add(Icon(
-      FontAwesomeIcons.caretDown,
-      size: iconSize,
-    ));
+    oldSuffixItems.add(
+      Center(
+        child: Icon(
+          FontAwesomeIcons.caretDown,
+          size: iconSize,
+        ),
+      ),
+    );
 
     return oldSuffixItems;
   }
