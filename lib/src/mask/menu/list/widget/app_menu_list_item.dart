@@ -63,7 +63,7 @@ class AppMenuListItem extends StatelessWidget {
 
     bool isInWebMenu = context.findAncestorWidgetOfExactType<WebMenu>() != null;
 
-    if (isInWebMenu && layoutMode != LayoutMode.Full && leading != null) {
+    if (isInWebMenu && layoutMode != LayoutMode.Full) {
       var tileThemeData = ListTileTheme.of(context);
       return Material(
         color: selected ? tileThemeData.selectedTileColor : tileThemeData.tileColor,
