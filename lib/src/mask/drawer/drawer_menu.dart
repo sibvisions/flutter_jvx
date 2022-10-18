@@ -109,7 +109,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       height: isNormalSize ? 170 : 100,
       child: DrawerHeader(
         margin: EdgeInsets.zero,
-        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+        padding: isNormalSize ? const EdgeInsets.all(12.0) : const EdgeInsets.all(7.0).copyWith(left: 12.0),
         decoration: BoxDecoration(color: Theme.of(context).primaryColor),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
