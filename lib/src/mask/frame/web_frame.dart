@@ -157,26 +157,39 @@ class WebFrameState extends FrameState {
     );
   }
 
-  @override
-  Widget wrapBody(Widget body) {
-    Widget overrideBody = Row(children: [
-      RepaintBoundary(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 250),
-          child: Builder(
-            builder: (context) => WebMenu(
-              showWebMenu: InheritedWebFrame.of(context).showMenu,
-            ),
+  Widget _buildWebMenu(BuildContext context, bool showMenu, {bool inDrawer = false}) {
+    return RepaintBoundary(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 250),
+        child: Builder(
+          builder: (context) => WebMenu(
+            showWebMenu: showMenu,
+            inDrawer: inDrawer,
           ),
         ),
       ),
-      Expanded(
-        flex: 1,
-        child: body,
-      ),
-    ]);
+    );
+  }
 
-    return LoadingBar.wrapLoadingBar(overrideBody);
+  @override
+  Widget wrapBody(Widget body) {
+    return LoadingBar.wrapLoadingBar(ValueListenableBuilder<LayoutMode>(
+      valueListenable: IConfigService().getLayoutMode(),
+      builder: (context, value, child) {
+        bool showMenu = InheritedWebFrame.of(context).showMenu;
+        return Stack(
+          children: [
+            Row(
+              children: [
+                _buildWebMenu(context, value != LayoutMode.Mini && showMenu),
+                Expanded(flex: 1, child: body),
+              ],
+            ),
+            _buildWebMenu(context, value == LayoutMode.Mini && showMenu, inDrawer: true),
+          ],
+        );
+      },
+    ));
   }
 
   @override

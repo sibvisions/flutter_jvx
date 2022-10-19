@@ -10,10 +10,12 @@ import '../state/app_style.dart';
 
 class WebMenu extends StatefulWidget {
   final bool showWebMenu;
+  final bool inDrawer;
 
   const WebMenu({
     Key? key,
-    this.showWebMenu = true,
+    required this.showWebMenu,
+    required this.inDrawer,
   }) : super(key: key);
 
   static WebMenu? maybeOf(BuildContext? context) => context?.findAncestorWidgetOfExactType<WebMenu>();
@@ -30,9 +32,6 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
 
   late AnimationController animationController;
 
-  LayoutMode? nextLayoutMode;
-  LayoutMode? lastUsedLayoutMode;
-
   @override
   void initState() {
     super.initState();
@@ -41,16 +40,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       value: widget.showWebMenu ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 246),
       vsync: this,
-    )
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        //If there is a delayed layout mode and , update it
-        if (nextLayoutMode != null &&
-            [AnimationStatus.completed, AnimationStatus.dismissed].contains(animationController.status)) {
-          nextLayoutMode = null;
-          setState(() {});
-        }
-      });
+    )..addListener(() => setState(() {}));
   }
 
   @override
@@ -68,26 +58,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       child: RepaintBoundary(
         child: ValueListenableBuilder<LayoutMode>(
           valueListenable: IConfigService().getLayoutMode(),
-          builder: (context, newValue, child) {
-            //Workaround to provide smooth menu closing without first expanding it.
-            //If next mode is mini (which closes the menu) and not yet finished with closing, delay it.
-            if (animationController.status != AnimationStatus.dismissed && newValue == LayoutMode.Mini) {
-              //Delay layout mode update
-              nextLayoutMode = newValue;
-            } else {
-              //Clear delayed status
-              nextLayoutMode = null;
-            }
-
-            Widget child;
-            if (nextLayoutMode != null && lastUsedLayoutMode != null) {
-              child = _buildMenu(context, nextLayoutMode != null ? lastUsedLayoutMode! : newValue);
-            } else {
-              child = _buildMenu(context, newValue);
-              lastUsedLayoutMode = newValue;
-            }
-            return child;
-          },
+          builder: (context, newValue, child) => _buildMenu(context, newValue),
         ),
       ),
     );
@@ -117,7 +88,9 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       headerColor: groupTextColor,
       onClick: AppMenu.menuItemPressed,
     );
-    if (value == LayoutMode.Small) {
+
+    //Drawer Menu always stays the same size
+    if (!widget.inDrawer && value != LayoutMode.Full) {
       menu = ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 50),
         child: menu,
@@ -144,7 +117,12 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
             ),
             child: Material(
               color: tileColor,
-              child: menu,
+              child: AnimatedSize(
+                curve: Curves.easeInOut,
+                alignment: Alignment.centerLeft,
+                duration: const Duration(milliseconds: 120),
+                child: menu,
+              ),
             ),
           ),
         ),
