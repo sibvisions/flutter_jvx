@@ -11,16 +11,9 @@ import '../state/app_style.dart';
 class WebMenu extends StatefulWidget {
   final bool showWebMenu;
 
-  final void Function() onSettingsPressed;
-  final void Function() onChangePasswordPressed;
-  final void Function() onLogoutPressed;
-
   const WebMenu({
     Key? key,
     this.showWebMenu = true,
-    required this.onSettingsPressed,
-    required this.onChangePasswordPressed,
-    required this.onLogoutPressed,
   }) : super(key: key);
 
   static WebMenu? maybeOf(BuildContext? context) => context?.findAncestorWidgetOfExactType<WebMenu>();

@@ -166,9 +166,6 @@ class WebFrameState extends FrameState {
           child: Builder(
             builder: (context) => WebMenu(
               showWebMenu: InheritedWebFrame.of(context).showMenu,
-              onSettingsPressed: () => widget.openSettings(context),
-              onChangePasswordPressed: widget.changePassword,
-              onLogoutPressed: widget.logout,
             ),
           ),
         ),
