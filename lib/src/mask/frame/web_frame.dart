@@ -183,7 +183,7 @@ class WebFrameState extends FrameState {
   }
 
   @override
-  Widget? getEndDrawer() => Builder(
+  Widget? getEndDrawer(BuildContext context) => Builder(
         builder: (context) {
           double screenWidth = MediaQuery.of(context).size.width;
 

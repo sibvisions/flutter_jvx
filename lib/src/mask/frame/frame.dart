@@ -82,7 +82,9 @@ abstract class FrameState extends State<Frame> {
 
   List<Widget> getActions() => [];
 
-  Widget? getEndDrawer() => null;
+  Widget? getDrawer(BuildContext context) => null;
+
+  Widget? getEndDrawer(BuildContext context) => null;
 
   PreferredSizeWidget getAppBar(List<Widget>? actions);
 

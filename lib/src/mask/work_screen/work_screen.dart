@@ -117,8 +117,10 @@ class _WorkScreenState extends State<WorkScreen> {
                 actions: actions,
                 elevation: 0,
               ),
+        drawerEnableOpenDragGesture: false,
         endDrawerEnableOpenDragGesture: false,
-        endDrawer: frame?.getEndDrawer(),
+        drawer: frame?.getDrawer(context),
+        endDrawer: frame?.getEndDrawer(context),
         body: frame?.wrapBody(body) ?? body,
       ),
     );

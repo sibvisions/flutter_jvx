@@ -42,7 +42,7 @@ class MobileFrameState extends FrameState {
   }
 
   @override
-  Widget? getEndDrawer() {
+  Widget? getEndDrawer(BuildContext context) {
     return Builder(
       builder: (context) => DrawerMenu(
         onSettingsPressed: () => widget.openSettings(context),

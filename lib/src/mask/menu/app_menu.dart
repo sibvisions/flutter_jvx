@@ -120,8 +120,10 @@ class _AppMenuState extends State<AppMenu> {
     }
 
     return Scaffold(
+      drawerEnableOpenDragGesture: false,
       endDrawerEnableOpenDragGesture: false,
-      endDrawer: frame?.getEndDrawer(),
+      drawer: frame?.getDrawer(context),
+      endDrawer: frame?.getEndDrawer(context),
       appBar: frame?.getAppBar(actions),
       body: frame?.wrapBody(body) ?? body,
     );
