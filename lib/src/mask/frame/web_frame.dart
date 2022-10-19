@@ -32,11 +32,12 @@ class WebFrame extends Frame {
 class WebFrameState extends FrameState {
   static const double spacing = 15.0;
   late LayoutMode lastMode;
-  bool showWebMenu = true;
+  late bool showWebMenu;
 
   @override
   void initState() {
     super.initState();
+    showWebMenu = IConfigService().getLayoutMode().value != LayoutMode.Mini;
     lastMode = IConfigService().getLayoutMode().value;
     IConfigService().getLayoutMode().addListener(updatedLayoutMode);
   }
