@@ -19,7 +19,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
   /// The size of the image.
-  late Size imageSize = model.maxImageSize;
+  late Size imageSize;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -35,6 +35,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
           model: FlChoiceCellEditorModel(),
         ) {
     model.imageLoadingCallback = recalculateSizeCallback;
+    imageSize = model.maxImageSize;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,7 +75,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  bool isInTable() => true;
+  bool canBeInTable() => true;
 
   void onPress() {
     currentIndex++;

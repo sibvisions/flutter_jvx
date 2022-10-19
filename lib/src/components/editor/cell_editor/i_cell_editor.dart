@@ -69,8 +69,8 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
   /// Returns the model of the widget representing the cell editor.
   WidgetModelType createWidgetModel();
 
-  /// If the cell editor catches the focus.
-  bool isInTable() => false;
+  /// If the cell editor can be inside a table.
+  bool canBeInTable() => false;
 
   String formatValue(Object pValue);
 

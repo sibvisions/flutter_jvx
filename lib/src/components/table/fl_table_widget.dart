@@ -224,7 +224,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
         cellEditor.setValue(value);
 
-        if (cellEditor.isInTable()) {
+        if (cellEditor.canBeInTable()) {
           FlStatelessWidget tableWidget = cellEditor.createWidget(null, true);
 
           tableWidget.model.applyFromJson(model.json);

@@ -113,7 +113,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   double get additionalTablePadding => 0.0;
 
   @override
-  bool isInTable() => true;
+  bool canBeInTable() => true;
 
   void onImage(Size pImageInfo, bool pSynchronousCall) {
     bool newSize = false;

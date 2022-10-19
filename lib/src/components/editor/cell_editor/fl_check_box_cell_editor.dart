@@ -63,7 +63,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   }
 
   @override
-  bool isInTable() => true;
+  bool canBeInTable() => true;
 
   @override
   String formatValue(Object pValue) {

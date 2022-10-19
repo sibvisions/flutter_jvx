@@ -127,7 +127,7 @@ class FlLinkedCellEditor
   }
 
   @override
-  bool isInTable() => true;
+  bool canBeInTable() => true;
 
   void setValueMap(DataChunk pChunkData) {
     if (!lastCallbackIntentional && !pChunkData.update) {

@@ -97,7 +97,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  bool isInTable() => true;
+  bool canBeInTable() => true;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
