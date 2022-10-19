@@ -240,6 +240,11 @@ class FlLinkedCellEditor
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
 
-    return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
+    double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
+
+    if (pInTable) {
+      return colWidth * widgetModel.columns / 2;
+    }
+    return colWidth * widgetModel.columns;
   }
 }
