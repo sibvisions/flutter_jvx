@@ -54,6 +54,8 @@ class UiService implements IUiService {
   /// Holds all custom screen modifications
   AppManager? appManager;
 
+  /// TODO: Holds previously calculated TableSizes
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
