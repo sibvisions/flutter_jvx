@@ -7,6 +7,9 @@ class ErrorViewResponse extends MessageView {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Name of the message screen used for closing the dialog
+  final String? componentId;
+
   /// If we should show this error
   final bool silentAbort;
 
@@ -21,6 +24,7 @@ class ErrorViewResponse extends MessageView {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ErrorViewResponse({
+    this.componentId,
     this.silentAbort = false,
     this.details,
     required super.title,
@@ -30,7 +34,8 @@ class ErrorViewResponse extends MessageView {
   });
 
   ErrorViewResponse.fromJson(super.json)
-      : silentAbort = json[ApiObjectProperty.silentAbort] ?? false,
+      : componentId = json[ApiObjectProperty.componentId],
+        silentAbort = json[ApiObjectProperty.silentAbort] ?? false,
         details = json[ApiObjectProperty.details],
         exceptions = ServerException.fromJson(json[ApiObjectProperty.exceptions]),
         super.fromJson() {
@@ -39,7 +44,7 @@ class ErrorViewResponse extends MessageView {
 
   @override
   String toString() {
-    return "ErrorViewResponse{messageView: ${super.toString()}, silentAbort: $silentAbort, exceptions: $exceptions}";
+    return "ErrorViewResponse{messageView: ${super.toString()}, componentId: $componentId, silentAbort: $silentAbort, exceptions: $exceptions}";
   }
 }
 

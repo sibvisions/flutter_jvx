@@ -575,12 +575,14 @@ class UiService implements IUiService {
 
   @override
   void closeFrameDialog(FrameDialog pDialog) {
+    pDialog.onClose();
     _activeDialogs.remove(pDialog);
     JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialogs() {
+    _activeDialogs.forEach((dialog) => dialog.onClose());
     _activeDialogs.clear();
     JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
+import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../frame_dialog.dart';
 
@@ -39,6 +40,15 @@ class ServerErrorDialog extends FrameDialog {
     );
   }
 
+  @override
+  void onClose() {
+    if (command.componentId != null) {
+      IUiService().sendCommand(
+        CloseFrameCommand(frameName: command.componentId!, reason: "Server Error Dialog was dismissed"),
+      );
+    }
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +75,9 @@ class ServerErrorDialog extends FrameDialog {
     if (dismissible) {
       actions.add(
         TextButton(
-          onPressed: () => IUiService().closeFrameDialog(this),
+          onPressed: () {
+            IUiService().closeFrameDialog(this);
+          },
           child: Text(
             FlutterJVx.translate("Ok"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
