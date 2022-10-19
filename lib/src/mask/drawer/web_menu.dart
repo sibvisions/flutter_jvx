@@ -38,7 +38,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
 
   LayoutMode? nextLayoutMode;
-  LayoutMode? lastLayoutMode;
+  LayoutMode? lastUsedLayoutMode;
 
   @override
   void initState() {
@@ -80,11 +80,11 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
               nextLayoutMode = value;
             }
             Widget child;
-            if (nextLayoutMode != null) {
-              child = _buildMenu(context, nextLayoutMode != null ? lastLayoutMode ?? value : value);
+            if (nextLayoutMode != null && lastUsedLayoutMode != null) {
+              child = _buildMenu(context, nextLayoutMode != null ? lastUsedLayoutMode! : value);
             } else {
               child = _buildMenu(context, value);
-              lastLayoutMode = value;
+              lastUsedLayoutMode = value;
             }
             return child;
           },
