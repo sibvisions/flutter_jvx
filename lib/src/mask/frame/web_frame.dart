@@ -75,7 +75,7 @@ class WebFrameState extends FrameState {
   @override
   Widget build(BuildContext context) => InheritedWebFrame(
         showMenu: showWebMenu,
-        child: widget.builder.call(context),
+        child: super.build(context),
       );
 
   @override
