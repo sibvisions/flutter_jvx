@@ -169,9 +169,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Recalculates the size of the table.
   void recalculateTableSize([bool pSetState = false]) {
     tableSize.calculateTableSize(
-      tableModel: model,
-      dataChunk: chunkData,
-      availableWidth: layoutData.layoutPosition?.width,
+      pTableModel: model,
+      pDataChunk: chunkData,
+      pAvailableWidth: layoutData.layoutPosition?.width,
     );
 
     currentState |= CALCULATION_COMPLETE;

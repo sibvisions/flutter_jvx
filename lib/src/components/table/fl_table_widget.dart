@@ -117,7 +117,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       builder: ((context, constraints) {
         double maxWidth = max(max(tableSize.size.width, constraints.maxWidth), 0);
 
-        bool canScroll = tableSize.size.width > constraints.maxWidth;
+        bool canScrollHorizontally = tableSize.size.width > constraints.maxWidth;
 
         Widget table = GestureDetector(
           onLongPress: model.isEnabled ? onLongPress : null,
@@ -125,7 +125,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
           child: NotificationListener<ScrollEndNotification>(
             onNotification: onInternalEndScroll,
             child: SingleChildScrollView(
-              physics: canScroll ? null : const NeverScrollableScrollPhysics(),
+              physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
               controller: tableHorizontalController,
               scrollDirection: Axis.horizontal,
               child: ConstrainedBox(
@@ -153,7 +153,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
           children.add(
             SizedBox(
               height: tableSize.tableHeaderHeight,
-              child: buildHeaderRow(pContext, canScroll),
+              child: buildHeaderRow(pContext, canScrollHorizontally),
             ),
           );
         }
@@ -206,8 +206,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     List<ColumnDefinition> columnsToShow =
         model.columnNames.map((e) => chunkData.columnDefinitions.firstWhere((element) => element.name == e)).toList();
 
-    for (int columnIndex = 0; columnIndex < columnsToShow.length; columnIndex++) {
-      ColumnDefinition colDef = columnsToShow[columnIndex];
+    for (ColumnDefinition colDef in columnsToShow) {
       int dataIndex = chunkData.columnDefinitions.indexOf(colDef);
 
       Widget? widget;
@@ -246,7 +245,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
         IgnorePointer(
           ignoring: colDef.readonly || (metaData?.readOnly ?? false),
           child: SizedBox(
-            width: tableSize.columnWidths[columnIndex].toDouble(),
+            width: tableSize.columnWidths[colDef.name]!.toDouble(),
             child: Padding(
               padding: tableSize.cellPadding,
               child: widget,
@@ -304,7 +303,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
       rowWidgets.add(
         SizedBox(
-          width: tableSize.columnWidths[colIndex].toDouble(),
+          width: tableSize.columnWidths[columnName]!.toDouble(),
           child: Padding(
             padding: tableSize.cellPadding,
             child: Text(
