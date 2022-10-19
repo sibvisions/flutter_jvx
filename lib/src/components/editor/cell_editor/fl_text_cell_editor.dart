@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../../util/parse_util.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -147,5 +148,20 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
   }
 
   @override
-  double get additionalTablePadding => 0.0;
+  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+    if (!pInTable) {
+      return createWidget(pJson, false).extraWidthPaddings();
+    }
+
+    return 0.0;
+  }
+
+  @override
+  double getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+    FlTextFieldModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
+
+    return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
+  }
 }

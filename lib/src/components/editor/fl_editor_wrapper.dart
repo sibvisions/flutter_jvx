@@ -8,7 +8,6 @@ import '../../../components.dart';
 import '../../../data.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../../util/parse_util.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
 import '../../model/layout/layout_data.dart';
@@ -118,25 +117,16 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   @override
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
     Size? newCalcSize;
-    if (cellEditor is FlChoiceCellEditor) {
-      FlChoiceCellEditor imageCellEditor = cellEditor as FlChoiceCellEditor;
 
-      newCalcSize = imageCellEditor.imageSize;
-    } else if (cellEditor is FlImageCellEditor) {
-      FlImageCellEditor imageCellEditor = cellEditor as FlImageCellEditor;
+    double? width = cellEditor.getEditorSize(model.json, false);
+    if (width != null) {
+      width += cellEditor.getContentPadding(model.json, false);
 
-      newCalcSize = imageCellEditor.imageSize;
-    } else if (pLayoutData.hasCalculatedSize) {
-      if (cellEditor is FlTextCellEditor ||
-          cellEditor is FlLinkedCellEditor ||
-          cellEditor is FlDateCellEditor ||
-          cellEditor is FlNumberCellEditor) {
-        double extraWidth = (cellEditor.createWidget(null, false) as FlTextFieldWidget).extraWidthPaddings();
-
-        double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.createTextStyle());
-
+      if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
+        newCalcSize = Size.square(width);
+      } else {
         newCalcSize = Size(
-          (averageColumnWidth * (cellEditor.createWidgetModel() as FlTextFieldModel).columns) + extraWidth,
+          width,
           layoutData.calculatedSize!.height,
         );
       }
@@ -153,7 +143,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         pLayoutData.heightConstrains[key] = newCalcSize!.width;
       });
     }
-
     super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);
   }
 

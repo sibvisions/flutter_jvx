@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../util/parse_util.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_editor_model.dart';
 import '../../../../service/ui/i_ui_service.dart';
@@ -97,7 +98,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  bool canBeInTable() => true;
+  bool get canBeInTable => true;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -236,7 +237,16 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  double get additionalTablePadding {
-    return createWidget(null, true).extraWidthPaddings();
+  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+    return createWidget(pJson, pInTable).extraWidthPaddings();
+  }
+
+  @override
+  double getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+    FlDateEditorModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
+
+    return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
   }
 }

@@ -63,7 +63,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   }
 
   @override
-  bool canBeInTable() => true;
+  bool get canBeInTable => true;
 
   @override
   String formatValue(Object pValue) {
@@ -71,7 +71,14 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   }
 
   @override
-  double get additionalTablePadding => 0.0;
+  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+    return 0.0;
+  }
+
+  @override
+  double? getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+    return null;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions

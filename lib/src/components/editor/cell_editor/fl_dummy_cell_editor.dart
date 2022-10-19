@@ -8,8 +8,8 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
       : super(
           model: ICellEditorModel(),
           pCellEditorJson: {},
-          onValueChange: (_) {},
-          onEndEditing: (_) {},
+          onValueChange: _doNothing,
+          onEndEditing: _doNothing,
         );
 
   @override
@@ -35,5 +35,14 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   }
 
   @override
-  double get additionalTablePadding => 0.0;
+  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+    return 0.0;
+  }
+
+  @override
+  double? getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+    return null;
+  }
+
+  static void _doNothing(dynamic ignore) {}
 }

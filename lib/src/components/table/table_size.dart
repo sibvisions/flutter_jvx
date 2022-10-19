@@ -223,7 +223,7 @@ class TableSize {
     TextStyle pTextStyle,
     double pTextScaleFactor,
   ) {
-    double columnWidth = 0.0;
+    double columnWidth = pCellEditor.getEditorSize(null, true) ?? 0.0;
 
     Iterable<dynamic> valuesToCheck = dataColumn.whereNotNull();
     for (dynamic value in valuesToCheck) {
@@ -231,10 +231,10 @@ class TableSize {
 
       double rowWidth = _calculateTableTextWidth(pTextStyle, formattedText, pTextScaleFactor);
 
-      rowWidth += pCellEditor.additionalTablePadding;
-
       columnWidth = _adjustValue(columnWidth, rowWidth);
     }
+
+    columnWidth = _adjustValue(columnWidth, columnWidth + pCellEditor.getContentPadding(null, true));
 
     return columnWidth;
   }

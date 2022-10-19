@@ -110,10 +110,17 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   }
 
   @override
-  double get additionalTablePadding => 0.0;
+  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+    return 0.0;
+  }
 
   @override
-  bool canBeInTable() => true;
+  double getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+    return imageSize.width;
+  }
+
+  @override
+  bool get canBeInTable => true;
 
   void onImage(Size pImageInfo, bool pSynchronousCall) {
     bool newSize = false;

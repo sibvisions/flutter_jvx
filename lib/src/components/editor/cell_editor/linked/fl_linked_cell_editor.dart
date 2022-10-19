@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/widgets.dart';
 
 import '../../../../../services.dart';
+import '../../../../../util/parse_util.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
@@ -127,7 +128,7 @@ class FlLinkedCellEditor
   }
 
   @override
-  bool canBeInTable() => true;
+  bool get canBeInTable => true;
 
   void setValueMap(DataChunk pChunkData) {
     if (!lastCallbackIntentional && !pChunkData.update) {
@@ -229,7 +230,16 @@ class FlLinkedCellEditor
   }
 
   @override
-  double get additionalTablePadding {
-    return createWidget(null, true).extraWidthPaddings();
+  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+    return createWidget(pJson, pInTable).extraWidthPaddings();
+  }
+
+  @override
+  double getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+    FlLinkedEditorModel widgetModel = createWidgetModel();
+
+    ICellEditor.applyEditorJson(widgetModel, pJson);
+
+    return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
   }
 }

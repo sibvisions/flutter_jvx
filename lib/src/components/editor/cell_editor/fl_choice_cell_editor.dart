@@ -75,7 +75,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  bool canBeInTable() => true;
+  bool get canBeInTable => true;
 
   void onPress() {
     currentIndex++;
@@ -105,5 +105,12 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  double get additionalTablePadding => 0.0;
+  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+    return 0.0;
+  }
+
+  @override
+  double? getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+    return imageSize.width;
+  }
 }

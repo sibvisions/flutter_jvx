@@ -70,11 +70,13 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
   WidgetModelType createWidgetModel();
 
   /// If the cell editor can be inside a table.
-  bool canBeInTable() => false;
+  bool get canBeInTable => false;
 
   String formatValue(Object pValue);
 
-  double get additionalTablePadding;
+  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable);
+
+  double? getEditorSize(Map<String, dynamic>? pJson, bool pInTable);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
