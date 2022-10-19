@@ -204,6 +204,7 @@ class TableSize {
         List<String>? columnsToRedistribute;
         if (useMinWidth) {
           columnsToRedistribute = _getColumnsToRedistribute(pTableModel.columnNames, pDataChunk, minColumnWidth);
+          useMinWidth = columnsToRedistribute != null;
         }
         columnsToRedistribute ??= _getColumnsToRedistribute(pTableModel.columnNames, pDataChunk);
         columnsToRedistribute = pTableModel.columnNames;
