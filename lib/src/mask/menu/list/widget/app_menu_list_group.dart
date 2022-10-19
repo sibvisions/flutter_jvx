@@ -52,7 +52,6 @@ class AppMenuListGroup extends StatelessWidget {
       listGroupItems.add(AppMenuListItem(
         menuItemModel: menuGroupModel.items.elementAt(i),
         onClick: onClick,
-        layoutMode: layoutMode,
         textStyle: textStyle,
       ));
     }
@@ -67,7 +66,6 @@ class AppMenuListGroup extends StatelessWidget {
             headerColor: headerColor,
             height: 48,
             textStyle: textStyle,
-            layoutMode: layoutMode,
           ),
         ),
         SliverList(

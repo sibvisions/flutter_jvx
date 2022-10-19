@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
-import '../../../../model/response/device_status_response.dart';
 import '../../../drawer/web_menu.dart';
 import '../../app_menu.dart';
 
@@ -21,8 +20,6 @@ class AppMenuListItem extends StatelessWidget {
   /// Background override color.
   final Color? backgroundOverride;
 
-  final LayoutMode? layoutMode;
-
   /// Text style for inner widgets
   final TextStyle? textStyle;
 
@@ -35,7 +32,6 @@ class AppMenuListItem extends StatelessWidget {
     required this.menuItemModel,
     required this.onClick,
     this.backgroundOverride,
-    this.layoutMode,
     this.textStyle,
   }) : super(key: key);
 
@@ -63,30 +59,35 @@ class AppMenuListItem extends StatelessWidget {
 
     bool isInWebMenu = WebMenu.maybeOf(context) != null;
 
-    if (isInWebMenu && layoutMode == LayoutMode.Small) {
-      var tileThemeData = ListTileTheme.of(context);
-      return Material(
-        color: selected ? tileThemeData.selectedTileColor : tileThemeData.tileColor,
-        child: InkWell(
-          onTap: onTap,
-          child: IconTheme.merge(
-            data: IconThemeData(color: selected ? tileThemeData.selectedColor : tileThemeData.iconColor),
-            child: leading,
-          ),
-        ),
-      );
-    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (isInWebMenu && constraints.maxWidth <= 50) {
+          var tileThemeData = ListTileTheme.of(context);
+          return Material(
+            color: selected ? tileThemeData.selectedTileColor : tileThemeData.tileColor,
+            child: InkWell(
+              onTap: onTap,
+              child: IconTheme.merge(
+                data: IconThemeData(color: selected ? tileThemeData.selectedColor : tileThemeData.iconColor),
+                child: leading,
+              ),
+            ),
+          );
+        }
 
-    return ListTile(
-      selected: selected,
-      visualDensity: isInWebMenu ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity) : null,
-      leading: leading,
-      title: Text(
-        menuItemModel.label,
-        overflow: TextOverflow.ellipsis,
-        style: textStyle,
-      ),
-      onTap: onTap,
+        return ListTile(
+          selected: selected,
+          visualDensity:
+              isInWebMenu ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity) : null,
+          leading: leading,
+          title: Text(
+            menuItemModel.label,
+            overflow: TextOverflow.ellipsis,
+            style: textStyle,
+          ),
+          onTap: onTap,
+        );
+      },
     );
   }
 }
