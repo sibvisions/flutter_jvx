@@ -93,7 +93,7 @@ class WebFrameState extends FrameState {
             FontAwesomeIcons.bars,
             color: iconColor,
           ),
-          onPressed: () => toggleWebMenu(),
+          onPressed: toggleWebMenu,
         ),
       ),
       titleSpacing: 0.0,
