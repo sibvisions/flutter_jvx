@@ -51,6 +51,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
     )
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
+        //If there is a delayed layout mode and , update it
         if (nextLayoutMode != null &&
             [AnimationStatus.completed, AnimationStatus.dismissed].contains(animationController.status)) {
           nextLayoutMode = null;
@@ -74,17 +75,23 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       child: RepaintBoundary(
         child: ValueListenableBuilder<LayoutMode>(
           valueListenable: IConfigService().getLayoutMode(),
-          builder: (context, value, child) {
+          builder: (context, newValue, child) {
             //Workaround to provide smooth menu closing without first expanding it.
-            if (![AnimationStatus.completed, AnimationStatus.dismissed].contains(animationController.status)) {
-              nextLayoutMode = value;
+            //If next mode is mini (which closes the menu) and not yet finished with closing, delay it.
+            if (animationController.status != AnimationStatus.dismissed && newValue == LayoutMode.Mini) {
+              //Delay layout mode update
+              nextLayoutMode = newValue;
+            } else {
+              //Clear delayed status
+              nextLayoutMode = null;
             }
+
             Widget child;
             if (nextLayoutMode != null && lastUsedLayoutMode != null) {
-              child = _buildMenu(context, nextLayoutMode != null ? lastUsedLayoutMode! : value);
+              child = _buildMenu(context, nextLayoutMode != null ? lastUsedLayoutMode! : newValue);
             } else {
-              child = _buildMenu(context, value);
-              lastUsedLayoutMode = value;
+              child = _buildMenu(context, newValue);
+              lastUsedLayoutMode = newValue;
             }
             return child;
           },

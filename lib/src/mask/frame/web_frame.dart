@@ -48,12 +48,21 @@ class WebFrameState extends FrameState {
     super.dispose();
   }
 
-  ///Close menu if screen changed to [LayoutMode.Mini]
+  ///Handle menu status on [LayoutMode] change
+  ///Examples:
+  ///* Close menu when changing to [LayoutMode.Mini]
+  ///* Reopen menu when changing from [LayoutMode.Mini]
   void updatedLayoutMode() {
     var newMode = IConfigService().getLayoutMode().value;
-    if (lastMode != newMode && newMode == LayoutMode.Mini) {
-      showWebMenu = false;
-      setState(() {});
+    if (lastMode != newMode) {
+      if (newMode == LayoutMode.Mini && showWebMenu) {
+        showWebMenu = false;
+        setState(() {});
+      }
+      if (newMode != LayoutMode.Mini && lastMode == LayoutMode.Mini && !showWebMenu) {
+        showWebMenu = true;
+        setState(() {});
+      }
     }
     lastMode = newMode;
   }
