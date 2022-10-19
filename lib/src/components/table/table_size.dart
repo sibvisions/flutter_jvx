@@ -164,9 +164,18 @@ class TableSize {
             // Isolate the column from the rows.
             List<dynamic> dataColumn = dataRows.map<dynamic>((e) => e[colIndex!]).toList();
 
-            ICellEditor cellEditor = _createCellEditor(columnDefinition.cellEditorJson);
+            double calculatedWidth;
+            if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHECK_BOX_CELL_EDITOR) {
+              calculatedWidth = checkCellWidth;
+            } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHOICE_CELL_EDITOR) {
+              calculatedWidth = choiceCellWidth;
+            } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER) {
+              calculatedWidth = imageCellWidth;
+            } else {
+              ICellEditor cellEditor = _createCellEditor(columnDefinition.cellEditorJson);
 
-            double calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle, pTextScaleFactor);
+              calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle, pTextScaleFactor);
+            }
             calculatedColumnWidths[columnName] = _adjustValue(calculatedColumnWidths[columnName]!, calculatedWidth);
           }
         }
