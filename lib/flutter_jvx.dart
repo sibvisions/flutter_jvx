@@ -410,7 +410,7 @@ class FlutterJVxState extends State<FlutterJVx> {
       configService.loadLanguages();
     }
 
-    configService.setPhoneSize(!kIsWeb ? MediaQueryData.fromWindow(WidgetsBinding.instance.window).size : null);
+    configService.setPhoneSize(MediaQueryData.fromWindow(WidgetsBinding.instance.window).size);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // API init
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
