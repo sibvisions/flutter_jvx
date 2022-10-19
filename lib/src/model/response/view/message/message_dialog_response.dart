@@ -63,4 +63,9 @@ class MessageDialogResponse extends MessageView {
         notOkText = json[ApiObjectProperty.notOkText],
         cancelText = json[ApiObjectProperty.cancelText],
         super.fromJson();
+
+  @override
+  String toString() {
+    return 'MessageDialogResponse{componentId: $componentId, closable: $closable, buttonType: $buttonType, okComponentId: $okComponentId, notOkComponentId: $notOkComponentId, cancelComponentId: $cancelComponentId, okText: $okText, notOkText: $notOkText, cancelText: $cancelText}';
+  }
 }
