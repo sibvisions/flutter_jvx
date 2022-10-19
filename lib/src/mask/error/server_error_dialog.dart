@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../frame_dialog.dart';
 
 /// This is a standard template for a server side error message.
@@ -11,13 +11,10 @@ class ServerErrorDialog extends FrameDialog {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final OpenErrorDialogCommand command;
+  final OpenServerErrorDialogCommand command;
 
   /// True if this error is fixable by the user (e.g. invalid url/timeout)
   final bool goToSettings;
-
-  /// True if this dialog can be dismissed via button
-  final bool closeable;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -26,10 +23,8 @@ class ServerErrorDialog extends FrameDialog {
   const ServerErrorDialog({
     required this.command,
     this.goToSettings = false,
-    this.closeable = false,
-    super.dismissible,
     super.key,
-  });
+  }) : super(dismissible: true);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -38,7 +33,7 @@ class ServerErrorDialog extends FrameDialog {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterJVx.translate("Error")),
+      title: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterJVx.translate("Server Error")),
       content: Text(command.message!),
       actions: _getButtons(context),
     );

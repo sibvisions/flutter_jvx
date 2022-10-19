@@ -17,7 +17,7 @@ import '../../../model/command/ui/route_to_login_command.dart';
 import '../../../model/command/ui/route_to_menu_command.dart';
 import '../../../model/command/ui/route_to_work_command.dart';
 import '../../../model/command/ui/ui_command.dart';
-import '../../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
 import '../shared/i_command_processor.dart';
@@ -166,7 +166,7 @@ class CommandService implements ICommandService {
       await _waitTillFinished(pCommands: nonRouteCommands);
 
       // Don't route if there is a server error
-      if (!nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+      if (!nonRouteCommands.any((element) => element is OpenServerErrorDialogCommand)) {
         if (routeCommands.any((element) => element is RouteToLoginCommand)) {
           await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
         }
@@ -182,8 +182,8 @@ class CommandService implements ICommandService {
       rethrow;
     }
 
-    var errorCommand =
-        nonRouteCommands.firstWhereOrNull((element) => element is OpenErrorDialogCommand) as OpenErrorDialogCommand?;
+    var errorCommand = nonRouteCommands.firstWhereOrNull((element) => element is OpenServerErrorDialogCommand)
+        as OpenServerErrorDialogCommand?;
     if (errorCommand != null) {
       throw ErrorViewException(errorCommand);
     }

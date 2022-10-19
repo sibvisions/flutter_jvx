@@ -9,12 +9,13 @@ import '../../../../../model/command/ui/ui_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../../../../model/command/ui/update_layout_position_command.dart';
 import '../../../../../model/command/ui/upload_action_command.dart';
-import '../../../../../model/command/ui/view/message/open_error_dialog_command.dart';
 import '../../../../../model/command/ui/view/message/open_message_dialog_command.dart';
+import '../../../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../i_command_processor.dart';
 import 'delete_frame_command_processor.dart';
 import 'download_action_command_processor.dart';
+import 'open_error_dialog_command_processor.dart';
 import 'route_to_login_command_processor.dart';
 import 'route_to_menu_command_processor.dart';
 import 'route_to_work_command_processor.dart';
@@ -22,8 +23,8 @@ import 'save_menu_command_processor.dart';
 import 'update_components_command_processor.dart';
 import 'update_layout_position_command_processor.dart';
 import 'upload_action_command_processor.dart';
-import 'view/message/open_error_dialog_command_processor.dart';
 import 'view/message/open_message_dialog_command_processor.dart';
+import 'view/message/open_server_error_dialog_command_processor.dart';
 import 'view/message/open_session_expired_dialog_command_processor.dart';
 
 /// Process all sub-types of [UiCommand], delegates commands to specific sub [ICommandProcessor]
@@ -38,6 +39,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   final ICommandProcessor _routeToWorkProcessor = RouteToWorkCommandProcessor();
   final ICommandProcessor _saveMenuProcessor = SaveMenuCommandProcessor();
   final ICommandProcessor _routeToLoginProcessor = RouteToLoginCommandProcessor();
+  final ICommandProcessor _openServerErrorDialogProcessor = OpenServerErrorDialogCommandProcessor();
   final ICommandProcessor _openErrorDialogProcessor = OpenErrorDialogCommandProcessor();
   final ICommandProcessor _openSessionExpiredDialogProcessor = OpenSessionExpiredDialogCommandProcessor();
   final ICommandProcessor _openMessageDialogProcessor = OpenMessageDialogCommandProcessor();
@@ -64,7 +66,9 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _routeToWorkProcessor.processCommand(command);
     } else if (command is RouteToLoginCommand) {
       return _routeToLoginProcessor.processCommand(command);
-    } else if (command is OpenErrorDialogCommand) {
+    } else if (command is OpenServerErrorDialogCommand) {
+      return _openServerErrorDialogProcessor.processCommand(command);
+    } else if (command is OpenErrorDialogCommandProcessor) {
       return _openErrorDialogProcessor.processCommand(command);
     } else if (command is OpenSessionExpiredDialogCommand) {
       return _openSessionExpiredDialogProcessor.processCommand(command);

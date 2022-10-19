@@ -1,19 +1,18 @@
-import '../../../../response/view/message/error_view_response.dart';
-import 'message_view_command.dart';
+import 'ui_command.dart';
 
 /// This command will open a popup containing the provided message
-class OpenErrorDialogCommand extends MessageViewCommand {
+class OpenErrorDialogCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  /// If we should show this error
-  final bool silentAbort;
 
-  /// Error details from server
-  final String? details;
+  /// Title of the message
+  final String? title;
 
-  /// The error object.
-  final List<ServerException>? exceptions;
+  /// Message
+  final String message;
+
+  final Object? error;
 
   /// True if this error is a timeout
   final bool isTimeout;
@@ -29,11 +28,9 @@ class OpenErrorDialogCommand extends MessageViewCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenErrorDialogCommand({
-    super.title = "",
-    super.message,
-    this.silentAbort = false,
-    this.details,
-    this.exceptions,
+    this.title,
+    required this.message,
+    this.error,
     this.isTimeout = false,
     this.canBeFixedInSettings = false,
     this.dismissible = true,
@@ -46,6 +43,6 @@ class OpenErrorDialogCommand extends MessageViewCommand {
 
   @override
   String toString() {
-    return "OpenErrorDialogCommand{silentAbort: $silentAbort, details: $details, exceptions: $exceptions, isTimeout: $isTimeout, canBeFixedInSettings: $canBeFixedInSettings, ${super.toString()}}";
+    return 'OpenErrorDialogCommand{title: $title, message: $message, error: $error, isTimeout: $isTimeout, canBeFixedInSettings: $canBeFixedInSettings, dismissible: $dismissible}';
   }
 }

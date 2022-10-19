@@ -16,9 +16,6 @@ class ErrorViewResponse extends MessageView {
   /// The error object.
   final List<ServerException>? exceptions;
 
-  /// True if this error is a timeout
-  final bool isTimeout;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,7 +26,6 @@ class ErrorViewResponse extends MessageView {
     required super.title,
     super.message,
     this.exceptions,
-    this.isTimeout = false,
     required super.name,
   });
 
@@ -37,14 +33,13 @@ class ErrorViewResponse extends MessageView {
       : silentAbort = json[ApiObjectProperty.silentAbort] ?? false,
         details = json[ApiObjectProperty.details],
         exceptions = ServerException.fromJson(json[ApiObjectProperty.exceptions]),
-        isTimeout = false,
         super.fromJson() {
     FlutterJVx.log.w(toString());
   }
 
   @override
   String toString() {
-    return "ErrorViewResponse{messageView: ${super.toString()}, silentAbort: $silentAbort, isTimeout: $isTimeout, exceptions: $exceptions}";
+    return "ErrorViewResponse{messageView: ${super.toString()}, silentAbort: $silentAbort, exceptions: $exceptions}";
   }
 }
 

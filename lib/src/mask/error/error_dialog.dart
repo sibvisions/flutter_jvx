@@ -1,10 +1,11 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../../services.dart';
+import '../frame_dialog.dart';
 
-/// This is a standard template for a server side error message.
-class ErrorDialog extends StatelessWidget {
+/// This is a standard template for an error message.
+class ErrorDialog extends FrameDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,13 +17,13 @@ class ErrorDialog extends StatelessWidget {
   final String message;
 
   /// True if this error is fixable by the user (e.g. invalid url/timeout)
-  final bool gotToSettings;
+  final bool goToSettings;
 
   /// True if a retry is possible
   final bool retry;
 
   /// True if a no action (OK) button should be displayed
-  final bool dismissible;
+  final bool dismissibleViaButton;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -31,9 +32,10 @@ class ErrorDialog extends StatelessWidget {
   const ErrorDialog({
     required this.message,
     this.title,
-    this.gotToSettings = false,
-    this.dismissible = true,
+    this.goToSettings = false,
+    this.dismissibleViaButton = true,
     this.retry = false,
+    super.dismissible,
     super.key,
   });
 
@@ -61,7 +63,7 @@ class ErrorDialog extends StatelessWidget {
     if (retry) {
       actions.add(
         TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
+          onPressed: () => IUiService().closeFrameDialog(this),
           child: Text(
             FlutterJVx.translate("Retry"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -70,12 +72,12 @@ class ErrorDialog extends StatelessWidget {
       );
     }
 
-    if (gotToSettings) {
+    if (goToSettings) {
       actions.add(
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop();
-            context.beamToReplacementNamed("/settings");
+            IUiService().closeFrameDialog(this);
+            IUiService().routeToSettings(pReplaceRoute: true);
           },
           child: Text(
             FlutterJVx.translate("Go to Settings"),
@@ -88,7 +90,7 @@ class ErrorDialog extends StatelessWidget {
     if (dismissible) {
       actions.add(
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => IUiService().closeFrameDialog(this),
           child: Text(
             FlutterJVx.translate("Ok"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),

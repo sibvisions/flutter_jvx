@@ -92,9 +92,10 @@ class UiService implements IUiService {
     if (error is! ErrorViewException) {
       bool isTimeout = error is TimeoutException || error is SocketException;
       ICommandService().sendCommand(OpenErrorDialogCommand(
-        reason: "Command error in ui service",
         message: IUiService.getErrorMessage(error),
-        isTimeout: isTimeout,
+        error: error,
+        canBeFixedInSettings: isTimeout,
+        reason: "Command error in ui service",
       ));
     }
   }

@@ -84,9 +84,8 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
       screen = Container();
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         IUiService().sendCommand(OpenErrorDialogCommand(
-          reason: "Workscreen Model missing",
           message: "Failed to open screen, please try again.",
-          dismissible: true,
+          reason: "Workscreen Model missing",
         ));
         IUiService().routeToMenu(pReplaceRoute: true);
       });

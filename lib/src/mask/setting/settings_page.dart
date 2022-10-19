@@ -10,7 +10,7 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../model/command/api/startup_command.dart';
-import '../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../model/command/ui/open_error_dialog_command.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_overlay.dart';
 import '../state/loading_bar.dart';
@@ -313,10 +313,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 setState(() {});
               } catch (e) {
                 await IUiService().sendCommand(OpenErrorDialogCommand(
-                  reason: "parseURl failed",
-                  details: e.toString(),
+                  error: e.toString(),
                   message: FlutterJVx.translate("URL is invalid"),
-                  dismissible: true,
+                  reason: "parseURl failed",
                 ));
               }
             }

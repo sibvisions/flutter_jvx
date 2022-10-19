@@ -1,7 +1,7 @@
 import '../../../../../../services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/delete_row_command.dart';
-import '../../../../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../i_command_processor.dart';
 
 class DeleteRowCommandProcessor implements ICommandProcessor<DeleteRowCommand> {
@@ -22,11 +22,12 @@ class DeleteRowCommandProcessor implements ICommandProcessor<DeleteRowCommand> {
         pTo: -1,
       );
     } else {
-      OpenErrorDialogCommand openErrorDialogCommand = OpenErrorDialogCommand(
-        reason: "Setting new selected row failed",
-        message: "Setting new selected row failed",
-      );
-      return [openErrorDialogCommand];
+      return [
+        OpenErrorDialogCommand(
+          message: "Setting new selected row failed",
+          reason: "Setting new selected row failed",
+        )
+      ];
     }
     return [];
   }

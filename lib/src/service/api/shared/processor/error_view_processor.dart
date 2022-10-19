@@ -1,5 +1,5 @@
 import '../../../../model/command/base_command.dart';
-import '../../../../model/command/ui/view/message/open_error_dialog_command.dart';
+import '../../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/view/message/error_view_response.dart';
 import '../i_response_processor.dart';
@@ -9,12 +9,11 @@ class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
   List<BaseCommand> processResponse(ErrorViewResponse pResponse, ApiRequest? pRequest) {
     if (!pResponse.silentAbort) {
       return [
-        OpenErrorDialogCommand(
+        OpenServerErrorDialogCommand(
           reason: "Server sent error in response",
           title: pResponse.title,
           message: pResponse.message,
-          isTimeout: pResponse.isTimeout,
-          canBeFixedInSettings: isUserError(pResponse.message!),
+          userError: isUserError(pResponse.message!),
         )
       ];
     }
