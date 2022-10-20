@@ -82,6 +82,13 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     return Size(width, size.height);
   }
 
+  @override
+  void dispose() {
+    textController.dispose();
+    focusNode.dispose();
+
+    super.dispose();
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
