@@ -465,20 +465,27 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  /// Opens the QR-Scanner,
-  /// parses scanned code and saves values to config service
+  /// Opens the QR-Scanner and parses the scanned code
   void _openQRScanner() {
     IUiService().openDialog(
       pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) async {
-        QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
-        appName = code.appName;
-        baseUrl = code.url;
+        FlutterJVx.log.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
+        try {
+          QRAppCode code = QRParser.parseCode(barcode.rawValue!);
+          appName = code.appName;
+          baseUrl = code.url;
 
-        // set username & password for later
-        username = code.username;
-        password = code.password;
+          // set username & password for later
+          username = code.username;
+          password = code.password;
 
-        setState(() {});
+          setState(() {});
+        } on FormatException catch (e) {
+          FlutterJVx.log.w("Error parsing QR Code", e);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(FlutterJVx.translate(e.message)),
+          ));
+        }
       }),
     );
   }

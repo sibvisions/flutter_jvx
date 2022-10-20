@@ -1,39 +1,51 @@
 import 'dart:convert';
 
+import '../../../flutter_jvx.dart';
+
 class QRParser {
-  static QRAppCode parseCode({required String rawQRCode}) {
-    // Static
-    const Map<String, String> propertyNameMap = {
-      "Applikation": "APPNAME",
-      "Application": "APPNAME",
-      "PWD": "PWD",
-      "USER": "USER",
-      "URL": "URL"
-    };
+  static const String url = "URL";
+  static const String appName = "APPNAME";
+  static const String user = "USER";
+  static const String password = "PWD";
 
-    Map<String, String> json = {};
+  static const Map<String, String> propertyNameMap = {
+    "URL": QRParser.url,
+    "Applikation": QRParser.appName,
+    "Application": QRParser.appName,
+    "USER": QRParser.user,
+    "PWD": QRParser.password,
+  };
 
-    // If QR-Code is a json it can be easily parsed, otherwise string is split
-    // by newLines.
+  static QRAppCode parseCode(String rawQRCode) {
+    Map<String, dynamic> json = {};
+
+    // If QR-Code is a json it can be easily parsed, otherwise string is split by newLines.
     try {
       json = jsonDecode(rawQRCode);
-    } on Exception {
+    } on FormatException {
+      FlutterJVx.log.d("Failed to parse valid json from qr code, falling back to line format.");
+
       LineSplitter ls = const LineSplitter();
       List<String> properties = ls.convert(rawQRCode);
 
       for (String prop in properties) {
         List<String> splitProp = prop.split(": ");
-        String propertyName = propertyNameMap[splitProp[0]]!;
-        String propertyValue = splitProp[1];
-        json[propertyName] = propertyValue;
+        String? propertyName = propertyNameMap[splitProp[0]];
+        if (propertyName != null && splitProp.length >= 2) {
+          String propertyValue = splitProp[1];
+          json[propertyName] = propertyValue;
+        }
       }
     }
 
-    return QRAppCode.fromJson(pJson: json);
+    if (json.containsKey(QRParser.appName) && json.containsKey(QRParser.url)) {
+      return QRAppCode.fromJson(json);
+    }
+    throw const FormatException("Invalid QR Code");
   }
 }
 
-/// All possible info of an APP-QR Code
+/// Scanned QR Code Data from an VisionX App-QR Code
 class QRAppCode {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -55,11 +67,18 @@ class QRAppCode {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  QRAppCode({required this.appName, required this.url, this.password, this.username});
+  QRAppCode({
+    required this.url,
+    required this.appName,
+    this.username,
+    this.password,
+  });
 
-  QRAppCode.fromJson({required Map<String, String> pJson})
-      : username = pJson['USER'],
-        password = pJson['PWD'],
-        appName = pJson['APPNAME']!,
-        url = pJson['URL']!;
+  QRAppCode.fromJson(Map<String, dynamic> json)
+      : this(
+          url: json[QRParser.url]!,
+          appName: json[QRParser.appName]!,
+          username: json[QRParser.user],
+          password: json[QRParser.password],
+        );
 }
