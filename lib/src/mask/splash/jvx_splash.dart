@@ -13,6 +13,7 @@ class JVxSplash extends StatefulWidget {
   final Image? branding;
   final ImageProvider background;
   final AsyncSnapshot? snapshot;
+  final bool centerBranding;
 
   const JVxSplash({
     Key? key,
@@ -20,6 +21,7 @@ class JVxSplash extends StatefulWidget {
     this.showAppName = true,
     this.logo,
     this.branding,
+    this.centerBranding = false,
     required this.background,
   }) : super(key: key);
 
@@ -49,24 +51,22 @@ class _JVxSplashState extends State<JVxSplash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: widget.background,
-              fit: BoxFit.fill,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: widget.background,
+                fit: BoxFit.fill,
+              ),
             ),
           ),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 100),
+          Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Expanded(child: SizedBox.shrink()),
+              Align(
+                alignment: Alignment.topCenter,
                 child: Column(
                   children: [
                     if (widget.logo != null) widget.logo!,
@@ -84,46 +84,96 @@ class _JVxSplashState extends State<JVxSplash> {
                   ],
                 ),
               ),
-            ),
-            const Expanded(child: SizedBox.shrink()),
-            if (widget.snapshot?.connectionState != ConnectionState.done && UiService().getFrames().isEmpty)
-              Container(
-                height: 15,
-                constraints: const BoxConstraints(maxWidth: 500),
-                padding: const EdgeInsets.symmetric(horizontal: 50),
-                child: StreamBuilder<double>(
-                    stream: stream,
-                    builder: (context, snapshot) {
-                      return LiquidLinearProgressIndicator(
-                        value: (snapshot.data ?? 0) / 100,
-                        valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
-                        backgroundColor: Colors.white,
-                        borderRadius: 15.0,
-                        borderWidth: 2.0,
-                        borderColor: Theme.of(context).colorScheme.primary,
-                        direction: Axis.horizontal,
-                        center: Text(
-                          "Starting...",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontSize: 9.0,
+              const Expanded(child: SizedBox.shrink()),
+              if (widget.snapshot?.connectionState != ConnectionState.done && UiService().getFrames().isEmpty)
+                Container(
+                  height: 15,
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: StreamBuilder<double>(
+                      stream: stream,
+                      builder: (context, snapshot) {
+                        return LiquidLinearProgressIndicator(
+                          value: (snapshot.data ?? 0) / 100,
+                          valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
+                          backgroundColor: Colors.white,
+                          borderRadius: 15.0,
+                          borderWidth: 2.0,
+                          borderColor: Theme.of(context).colorScheme.primary,
+                          direction: Axis.horizontal,
+                          center: Text(
+                            "Starting...",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontSize: 9.0,
+                            ),
                           ),
-                        ),
-                      );
-                    }),
-              ),
-            const Expanded(child: SizedBox.shrink()),
-            if (widget.branding != null)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 50),
-                  child: widget.branding,
+                        );
+                      }),
                 ),
+              if (!widget.centerBranding) ..._createBottomBranding(),
+              if (widget.centerBranding) ..._createCenteredBranding(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _createBottomBranding() {
+    return [
+      Expanded(
+        flex: 2,
+        child: widget.branding == null
+            ? const SizedBox.shrink()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: min(50, constraints.maxHeight)),
+                        child: const SizedBox.expand(),
+                      ),
+                    ),
+                  ),
+                  widget.branding!,
+                  Flexible(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: min(50, constraints.maxHeight)),
+                        child: const SizedBox.expand(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-          ],
+      ),
+    ];
+  }
+
+  List<Widget> _createCenteredBranding() {
+    List<Widget> widgets = [
+      const Expanded(child: SizedBox.shrink()),
+    ];
+    if (widget.branding != null) {
+      widgets.addAll([
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: widget.branding,
         ),
-      ],
-    ));
+        Flexible(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: min(50, constraints.maxHeight)),
+                child: const SizedBox.expand(),
+              );
+            },
+          ),
+        ),
+      ]);
+    }
+    return widgets;
   }
 }
