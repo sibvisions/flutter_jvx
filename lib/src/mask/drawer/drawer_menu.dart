@@ -159,6 +159,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         child: AppMenuListGrouped(
           menuModel: menuModel,
           onClick: AppMenu.menuItemPressed,
+          useAlternativeLabel: true,
         ),
       ),
     );

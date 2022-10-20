@@ -23,6 +23,9 @@ class AppMenuListUngroup extends StatelessWidget {
   ///Background Color if Set
   final Color? backgroundColor;
 
+  final bool? decreasedDensity;
+  final bool? useAlternativeLabel;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,6 +36,8 @@ class AppMenuListUngroup extends StatelessWidget {
     required this.onClick,
     this.backgroundImageString,
     this.backgroundColor,
+    this.decreasedDensity,
+    this.useAlternativeLabel,
   }) : super(key: key);
 
   @override
@@ -54,7 +59,8 @@ class AppMenuListUngroup extends StatelessWidget {
                 .map((e) => AppMenuListItem(
                       onClick: onClick,
                       menuItemModel: e,
-                      backgroundOverride: Theme.of(context).primaryColor,
+                      decreasedDensity: decreasedDensity,
+                      useAlternativeLabel: useAlternativeLabel,
                     ))
                 .toList()),
           )

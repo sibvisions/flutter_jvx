@@ -12,11 +12,14 @@ class MenuItemModel {
   /// Id of the screen to open
   final String screenLongName;
 
-  /// Icon to be displayed in the menu
+  /// Icon of the menu item
   final String? image;
 
-  /// Label text of the menu item in the menu
+  /// Label text of the menu item
   final String label;
+
+  /// Alternative label text
+  final String? alternativeLabel;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -25,6 +28,7 @@ class MenuItemModel {
   MenuItemModel({
     required this.screenLongName,
     required this.label,
+    this.alternativeLabel,
     this.image,
   });
 

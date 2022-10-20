@@ -60,6 +60,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
         MenuItemModel menuItem = MenuItemModel(
             screenLongName: responseMenuEntry.componentId,
             label: responseMenuEntry.text,
+            alternativeLabel: responseMenuEntry.quickBarText ?? responseMenuEntry.sideBarText,
             image: responseMenuEntry.image);
         menuItems.add(menuItem);
       }

@@ -46,6 +46,8 @@ abstract class ApiObjectProperty {
 
   //Common Properties -- these may be used by many different Components
   static const String text = "text";
+  static const String sideBarText = "sideBarText";
+  static const String quickBarText = "quickBarText";
   static const String borderOnMouseEntered = "borderOnMouseEntered";
   static const String borderPainted = "borderPainted";
   static const String defaultButton = "defaultButton";

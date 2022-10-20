@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../util/constants/i_color.dart';
-import '../../../drawer/web_menu.dart';
-import '../../list/widget/app_menu_list_group.dart';
 
 class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,9 +49,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return LayoutBuilder(builder: (context, constraints) {
       Widget child;
-      if (constraints.maxWidth <= 50 &&
-          context.findAncestorWidgetOfExactType<AppMenuListGroup>() != null &&
-          WebMenu.maybeOf(context) != null) {
+      if (constraints.maxWidth <= 50) {
         child = Divider(
           color: headerColor ?? ListTileTheme.of(context).iconColor,
           height: 48,

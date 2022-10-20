@@ -24,6 +24,9 @@ class AppMenuListGrouped extends StatelessWidget {
   /// Text color for menu header
   final Color? headerColor;
 
+  final bool? decreasedDensity;
+  final bool? useAlternativeLabel;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,6 +38,8 @@ class AppMenuListGrouped extends StatelessWidget {
     this.layoutMode,
     this.textStyle,
     this.headerColor,
+    this.decreasedDensity,
+    this.useAlternativeLabel,
   }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,6 +57,8 @@ class AppMenuListGrouped extends StatelessWidget {
               layoutMode: layoutMode,
               textStyle: textStyle,
               headerColor: headerColor,
+              decreasedDensity: decreasedDensity,
+              useAlternativeLabel: useAlternativeLabel,
             ),
           )
           .toList(),

@@ -87,6 +87,8 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       textStyle: const TextStyle(fontWeight: FontWeight.normal),
       headerColor: groupTextColor,
       onClick: AppMenu.menuItemPressed,
+      decreasedDensity: true,
+      useAlternativeLabel: true,
     );
 
     //Drawer Menu always stays the same size

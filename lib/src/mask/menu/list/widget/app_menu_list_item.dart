@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
-import '../../../drawer/web_menu.dart';
 import '../../app_menu.dart';
 
 class AppMenuListItem extends StatelessWidget {
@@ -17,11 +16,11 @@ class AppMenuListItem extends StatelessWidget {
   /// Callback to be called when button is pressed
   final ButtonCallback onClick;
 
-  /// Background override color.
-  final Color? backgroundOverride;
-
   /// Text style for inner widgets
   final TextStyle? textStyle;
+
+  final bool decreasedDensity;
+  final bool useAlternativeLabel;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -31,9 +30,12 @@ class AppMenuListItem extends StatelessWidget {
     Key? key,
     required this.menuItemModel,
     required this.onClick,
-    this.backgroundOverride,
     this.textStyle,
-  }) : super(key: key);
+    bool? decreasedDensity,
+    bool? useAlternativeLabel,
+  })  : decreasedDensity = decreasedDensity ?? false,
+        useAlternativeLabel = useAlternativeLabel ?? false,
+        super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -57,11 +59,9 @@ class AppMenuListItem extends StatelessWidget {
 
     onTap() => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context);
 
-    bool isInWebMenu = WebMenu.maybeOf(context) != null;
-
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (isInWebMenu && constraints.maxWidth <= 50) {
+        if (constraints.maxWidth <= 50) {
           var tileThemeData = ListTileTheme.of(context);
           return Material(
             color: selected ? tileThemeData.selectedTileColor : tileThemeData.tileColor,
@@ -78,10 +78,10 @@ class AppMenuListItem extends StatelessWidget {
         return ListTile(
           selected: selected,
           visualDensity:
-              isInWebMenu ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity) : null,
+              decreasedDensity ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity) : null,
           leading: leading,
           title: Text(
-            menuItemModel.label,
+            (useAlternativeLabel ? menuItemModel.alternativeLabel : null) ?? menuItemModel.label,
             overflow: TextOverflow.ellipsis,
             style: textStyle,
           ),
