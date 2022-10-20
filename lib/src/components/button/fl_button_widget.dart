@@ -131,7 +131,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   ButtonStyle createButtonStyle(context) {
     Color? backgroundColor;
 
-    if (!model.isEnabled) {
+    if (model.style == "hyperlink") {
+      backgroundColor = Colors.transparent;
+    } else if (!model.isEnabled) {
       backgroundColor = IColorConstants.COMPONENT_DISABLED;
     } else {
       backgroundColor = model.background;
