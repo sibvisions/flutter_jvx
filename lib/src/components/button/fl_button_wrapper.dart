@@ -99,15 +99,15 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       reason: "Button has been pressed",
     ))
         .then((value) {
-      if (!kIsWeb) {
+      if (model.style == "hyperlink") {
+        openUrl();
+      } else if (!kIsWeb) {
         if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
           goOffline();
         } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
           openQrCodeScanner();
         } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
           callNumber();
-        } else if (model.style == "hyperlink") {
-          openUrl();
         }
       }
     });
