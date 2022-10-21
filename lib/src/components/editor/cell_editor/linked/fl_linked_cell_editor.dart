@@ -54,11 +54,11 @@ class FlLinkedCellEditor
     focusNode.addListener(
       () {
         if (focusNode.hasFocus) {
-          openLinkedCellPicker();
+          _openLinkedCellPicker();
         }
       },
     );
-    subscribe();
+    _subscribe();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +69,7 @@ class FlLinkedCellEditor
   void setValue(dynamic pValue) {
     _value = pValue;
 
-    setValueIntoController();
+    _setValueIntoController();
   }
 
   @override
@@ -87,28 +87,35 @@ class FlLinkedCellEditor
         inTable: pInTable);
   }
 
-  void openLinkedCellPicker() {
+  void _openLinkedCellPicker() {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    IUiService().sendCommand(
+    IUiService()
+        .sendCommand(
       FilterCommand(
           editorId: name!,
           value: "",
           dataProvider: model.linkReference.dataProvider,
           reason: "Opened the linked cell picker"),
-    );
-
-    IUiService()
-        .openDialog(
-            pBuilder: (_) => FlLinkedCellPicker(
-                  model: model,
-                  name: name!,
-                ),
-            pIsDismissible: true)
+    )
         .then((value) {
-      if (value != null) {
-        onEndEditing(value);
-      }
+      IUiService()
+          .openDialog(
+              pBuilder: (_) => FlLinkedCellPicker(
+                    model: model,
+                    name: name!,
+                    editorColumnDefinition: columnDefinition,
+                  ),
+              pIsDismissible: true)
+          .then((value) {
+        if (value != null) {
+          if (value == FlLinkedCellPicker.NULL_OBJECT) {
+            receiveNull(null);
+          } else {
+            onEndEditing(value);
+          }
+        }
+      });
     });
   }
 
@@ -117,7 +124,7 @@ class FlLinkedCellEditor
 
   @override
   void dispose() {
-    unsubscribe();
+    _unsubscribe();
     focusNode.dispose();
     textController.dispose();
   }
@@ -130,7 +137,7 @@ class FlLinkedCellEditor
   @override
   bool get canBeInTable => true;
 
-  void setValueMap(DataChunk pChunkData) {
+  void _setValueMap(DataChunk pChunkData) {
     if (!lastCallbackIntentional && !pChunkData.update) {
       _valueMap.clear();
     }
@@ -151,10 +158,10 @@ class FlLinkedCellEditor
 
     lastCallbackIntentional = false;
 
-    setValueIntoController();
+    _setValueIntoController();
   }
 
-  void subscribe() {
+  void _subscribe() {
     if (model.displayReferencedColumnName != null) {
       lastCallbackIntentional = true;
       if (!isAllFetched) {
@@ -164,23 +171,23 @@ class FlLinkedCellEditor
             dataProvider: model.linkReference.dataProvider,
             from: 0,
             to: pageLoad * currentPage,
-            onDataChunk: setValueMap,
+            onDataChunk: _setValueMap,
           ),
         );
       }
     }
   }
 
-  void unsubscribe() {
+  void _unsubscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.referencedDataBook);
   }
 
-  void increaseValueMap() {
+  void _increaseValueMap() {
     currentPage++;
-    subscribe();
+    _subscribe();
   }
 
-  void setValueIntoController() {
+  void _setValueIntoController() {
     if (_value == null) {
       textController.clear();
     } else {
@@ -192,7 +199,7 @@ class FlLinkedCellEditor
 
       if (showValue == null) {
         textController.clear();
-        increaseValueMap();
+        _increaseValueMap();
       } else {
         if (showValue is! String) {
           showValue = showValue.toString();
@@ -210,14 +217,14 @@ class FlLinkedCellEditor
 
   dynamic receiveNull(dynamic pValue) {
     if (model.linkReference.columnNames.isEmpty) {
-      onEndEditing(pValue);
+      onEndEditing(null);
     } else {
       HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
 
       for (int i = 0; i < model.linkReference.columnNames.length; i++) {
         String columnName = model.linkReference.columnNames[i];
 
-        dataMap[columnName] = pValue;
+        dataMap[columnName] = null;
       }
 
       onEndEditing(dataMap);

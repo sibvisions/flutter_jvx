@@ -13,11 +13,16 @@ import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
+  static const Object NULL_OBJECT = Object();
+
   final String name;
 
   final FlLinkedCellEditorModel model;
 
-  const FlLinkedCellPicker({required this.name, required this.model, Key? key}) : super(key: key);
+  final ColumnDefinition? editorColumnDefinition;
+
+  const FlLinkedCellPicker({required this.name, required this.model, Key? key, this.editorColumnDefinition})
+      : super(key: key);
 
   @override
   State<FlLinkedCellPicker> createState() => _FlLinkedCellPickerState();
@@ -52,7 +57,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     tableModel.columnLabels = [];
     tableModel.tableHeaderVisible = model.tableHeaderVisible;
 
-    subscribe();
+    _subscribe();
   }
 
   @override
@@ -74,6 +79,32 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     FlTextFieldModel searchFieldModel = FlTextFieldModel();
     searchFieldModel.fontSize = 14;
 
+    List<Widget> listBottomButtons = [];
+
+    if (widget.editorColumnDefinition?.nullable == true) {
+      listBottomButtons.add(
+        ElevatedButton(
+          child: Text(
+            FlutterJVx.translate("Null"),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
+          },
+        ),
+      );
+    }
+
+    listBottomButtons.add(
+      ElevatedButton(
+        child: Text(
+          FlutterJVx.translate("CANCEL"),
+        ),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+
     return Dialog(
       insetPadding: paddingInsets,
       elevation: 10.0,
@@ -82,17 +113,12 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
         child: Column(
           children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(5.0), topRight: Radius.circular(5.0))),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                child: Text(
-                  FlutterJVx.translate("SELECT ITEM"),
-                  style: TextStyle(
-                    color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
-                  ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              child: Text(
+                FlutterJVx.translate("SELECT ITEM"),
+                style: TextStyle(
+                  color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
                 ),
               ),
             ),
@@ -103,7 +129,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                 model: searchFieldModel,
                 textController: _controller,
                 keyboardType: TextInputType.text,
-                valueChanged: startTimerValueChanged,
+                valueChanged: _startTimerValueChanged,
                 endEditing: (_) {},
                 focusNode: focusNode,
                 inputDecoration: InputDecoration(
@@ -128,7 +154,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
                           return FlTableWidget(
                             chunkData: _chunkData!,
-                            onEndScroll: increasePageLoad,
+                            onEndScroll: _increasePageLoad,
                             model: tableModel,
                             disableEditors: true,
                             onRowTap: _onRowTapped,
@@ -141,16 +167,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
             ),
             ButtonBar(
               alignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  child: Text(
-                    FlutterJVx.translate("CANCEL"),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+              children: listBottomButtons,
             ),
           ],
         ),
@@ -180,7 +197,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void receiveData(DataChunk pChunkData) {
+  void _receiveData(DataChunk pChunkData) {
     if (pChunkData.update && _chunkData != null) {
       for (int index in pChunkData.data.keys) {
         _chunkData!.data[index] = pChunkData.data[index]!;
@@ -192,7 +209,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     tableModel.columnNames.clear();
     tableModel.columnLabels.clear();
     for (ColumnDefinition colDef
-        in _chunkData!.columnDefinitions.where((element) => columnNamesToShow().contains(element.name))) {
+        in _chunkData!.columnDefinitions.where((element) => _columnNamesToShow().contains(element.name))) {
       tableModel.columnNames.add(colDef.name);
       tableModel.columnLabels.add(colDef.label);
     }
@@ -205,7 +222,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   void _onRowTapped(int index) {
     List<dynamic> data = _chunkData!.data[index]!;
 
-    List<String> columnOrder = columnNamesToSubscribe();
+    List<String> columnOrder = _columnNamesToSubscribe();
 
     if (model.linkReference.columnNames.isEmpty) {
       Navigator.of(context).pop(data[columnOrder.indexOf(model.linkReference.referencedColumnNames[0])]);
@@ -223,7 +240,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
   }
 
-  void startTimerValueChanged(String value) {
+  void _startTimerValueChanged(String value) {
     lastChangedFilter = value;
 
     // Null the filter if the filter is empty.
@@ -235,11 +252,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       filterTimer!.cancel();
     }
 
-    filterTimer = Timer(const Duration(milliseconds: 300), onTextFieldValueChanged);
+    filterTimer = Timer(const Duration(milliseconds: 300), _onTextFieldValueChanged);
   }
 
-  void onTextFieldValueChanged() {
-    List<String> columnOrder = columnNamesToSubscribe();
+  void _onTextFieldValueChanged() {
+    List<String> columnOrder = _columnNamesToSubscribe();
 
     List<String> filterColumns = [];
 
@@ -275,29 +292,25 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     );
   }
 
-  void increasePageLoad() {
+  void _increasePageLoad() {
     scrollingPage++;
-    subscribe();
+    _subscribe();
   }
 
-  void subscribe() {
+  void _subscribe() {
     IUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
         dataProvider: model.linkReference.dataProvider,
-        onDataChunk: receiveData,
-        dataColumns: columnNamesToSubscribe(),
+        onDataChunk: _receiveData,
+        dataColumns: _columnNamesToSubscribe(),
         from: 0,
         to: 100 * scrollingPage,
       ),
     );
   }
 
-  void unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.dataProvider);
-  }
-
-  List<String> columnNamesToShow() {
+  List<String> _columnNamesToShow() {
     if (model.displayReferencedColumnName != null) {
       return [model.displayReferencedColumnName!];
     } else if ((model.columnView?.columnCount ?? 0) >= 1) {
@@ -307,7 +320,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
   }
 
-  List<String> columnNamesToSubscribe() {
+  List<String> _columnNamesToSubscribe() {
     Set<String> columnNames = <String>{};
 
     if (model.columnView != null) {
@@ -321,6 +334,4 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     columnNames.addAll(model.linkReference.referencedColumnNames);
     return columnNames.toList();
   }
-
-  bool hasHeader() => columnNamesToShow().length > 1;
 }
