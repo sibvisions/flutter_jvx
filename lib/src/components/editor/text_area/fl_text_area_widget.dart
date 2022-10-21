@@ -26,8 +26,11 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  int? get minLines => model.rows;
+  int? get minLines => null;
 
   @override
-  int? get maxLines => model.rows != 0 ? model.rows : null;
+  int? get maxLines => null;
+
+  @override
+  bool get isExpandend => true;
 }

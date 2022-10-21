@@ -20,6 +20,12 @@ enum FlTextBorderType {
 
 class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidget<T, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const EdgeInsets DEFAULT_PADDING = EdgeInsets.fromLTRB(10, 15, 10, 15);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -44,7 +50,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   double get iconSize => 16;
 
-  EdgeInsets get contentPadding => inTable ? EdgeInsets.zero : const EdgeInsets.fromLTRB(10, 15, 10, 15);
+  EdgeInsets get contentPadding => inTable ? EdgeInsets.zero : DEFAULT_PADDING;
 
   EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
 
@@ -52,7 +58,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   int? get minLines => null;
 
-  int? get maxLines => model.rows;
+  int? get maxLines => 1;
+
+  bool get isExpandend => false;
 
   List<TextInputFormatter>? get inputFormatters => null;
 
@@ -118,6 +126,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       onEditingComplete: () {
         focusNode.unfocus();
       },
+      expands: isExpandend,
       minLines: minLines,
       maxLines: maxLines,
       keyboardType: keyboardType,
