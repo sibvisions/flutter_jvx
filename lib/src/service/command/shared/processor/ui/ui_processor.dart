@@ -1,6 +1,7 @@
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/delete_frame_command.dart';
 import '../../../../../model/command/ui/download_action_command.dart';
+import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../../../model/command/ui/route_to_login_command.dart';
 import '../../../../../model/command/ui/route_to_menu_command.dart';
 import '../../../../../model/command/ui/route_to_work_command.dart';
@@ -68,7 +69,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _routeToLoginProcessor.processCommand(command);
     } else if (command is OpenServerErrorDialogCommand) {
       return _openServerErrorDialogProcessor.processCommand(command);
-    } else if (command is OpenErrorDialogCommandProcessor) {
+    } else if (command is OpenErrorDialogCommand) {
       return _openErrorDialogProcessor.processCommand(command);
     } else if (command is OpenSessionExpiredDialogCommand) {
       return _openSessionExpiredDialogProcessor.processCommand(command);
