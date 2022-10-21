@@ -75,6 +75,6 @@ abstract class AppManager {
   /// Is called when going to the login.
   void onLoginPage() {}
 
-  /// Is called if a login is successfully completed.
-  void onLoginSuccess() {}
+  // /// Is called if a login is successfully completed.
+  // void onLoginSuccess() {}
 }
