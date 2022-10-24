@@ -57,26 +57,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         heightConstrains: {},
         widthConstrains: {});
 
-    ComponentSubscription componentSubscription = ComponentSubscription(
+    ComponentSubscription componentSubscription = ComponentSubscription<T>(
       compId: model.id,
       subbedObj: this,
-      callback: ({data, newModel}) {
-        if (!mounted) {
-          return;
-        }
-
-        if (data != null) {
-          receiveNewLayoutData(newLayoutData: data);
-        }
-
-        if (newModel != null) {
-          receiveNewModel(newModel: newModel as T);
-        }
-
-        if (newModel == null && data == null) {
-          affected();
-        }
-      },
+      affectedCallback: affected,
+      layoutCallback: receiveNewLayoutData,
+      modelCallback: receiveNewModel,
+      saveCallback: saveEditor,
     );
     IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
   }
@@ -98,6 +85,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  void saveEditor() {}
+
   void affected() {}
 
   /// Returns Positioned Widget according to [layoutData]
@@ -112,24 +101,24 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sets State with new Model
-  void receiveNewModel({required T newModel}) {
-    FlutterJVx.log.d("${newModel.id} received new Model");
+  void receiveNewModel(T pModel) {
+    FlutterJVx.log.d("${pModel.id} received new Model");
 
     setState(() {
       // Set potentially new layout data contained in the new model
-      layoutData.constraints = newModel.constraints;
-      layoutData.preferredSize = newModel.preferredSize;
-      layoutData.minSize = newModel.minimumSize;
-      layoutData.maxSize = newModel.maximumSize;
-      layoutData.parentId = newModel.parent;
-      layoutData.needsRelayout = newModel.isVisible;
-      layoutData.indexOf = newModel.indexOf;
+      layoutData.constraints = pModel.constraints;
+      layoutData.preferredSize = pModel.preferredSize;
+      layoutData.minSize = pModel.minimumSize;
+      layoutData.maxSize = pModel.maximumSize;
+      layoutData.parentId = pModel.parent;
+      layoutData.needsRelayout = pModel.isVisible;
+      layoutData.indexOf = pModel.indexOf;
       layoutData.lastCalculatedSize = layoutData.calculatedSize;
       layoutData.widthConstrains = {};
       layoutData.heightConstrains = {};
       calcPosition = null;
 
-      model = newModel;
+      model = pModel;
 
       // new model may have changed the calc size.
       sentCalcSize = false;
@@ -137,16 +126,16 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sets State with new LayoutData
-  void receiveNewLayoutData({required LayoutData newLayoutData, bool pSetState = true}) {
-    if (newLayoutData.hasPosition && newLayoutData.layoutPosition!.isConstraintCalc) {
-      calcPosition = newLayoutData.layoutPosition;
-      newLayoutData.layoutPosition = layoutData.layoutPosition;
-      layoutData = newLayoutData;
+  void receiveNewLayoutData(LayoutData pLayoutData, [bool pSetState = true]) {
+    if (pLayoutData.hasPosition && pLayoutData.layoutPosition!.isConstraintCalc) {
+      calcPosition = pLayoutData.layoutPosition;
+      pLayoutData.layoutPosition = layoutData.layoutPosition;
+      layoutData = pLayoutData;
     } else {
-      layoutData = newLayoutData;
+      layoutData = pLayoutData;
       calcPosition = null;
     }
-    FlutterJVx.log.d("${layoutData.id} NEW DATA; ${newLayoutData.layoutPosition}");
+    FlutterJVx.log.d("${layoutData.id} NEW DATA; ${pLayoutData.layoutPosition}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (!layoutData.isParent && (layoutData.isNewlyConstraint || calcPosition != null) && lastContext != null) {

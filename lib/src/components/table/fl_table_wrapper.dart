@@ -145,15 +145,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   @override
-  void receiveNewLayoutData({required LayoutData newLayoutData, bool pSetState = true}) {
-    super.receiveNewLayoutData(newLayoutData: newLayoutData, pSetState: false);
+  void receiveNewLayoutData(LayoutData pLayoutData, [bool pSetState = true]) {
+    super.receiveNewLayoutData(pLayoutData, pSetState);
 
     recalculateTableSize(pSetState);
   }
 
   @override
-  receiveNewModel({required FlTableModel newModel}) {
-    super.receiveNewModel(newModel: newModel);
+  receiveNewModel(FlTableModel pModel) {
+    super.receiveNewModel(pModel);
     subscribe();
   }
 

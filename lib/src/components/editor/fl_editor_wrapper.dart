@@ -73,19 +73,19 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   @override
-  receiveNewModel({required T newModel}) {
+  receiveNewModel(T pModel) {
     // If a change of cell editors has occured.
-    if (newModel.changedCellEditor) {
+    if (pModel.changedCellEditor) {
       unsubscribe();
 
-      recreateCellEditor(newModel);
+      recreateCellEditor(pModel);
 
       logCellEditor("RECEIVE_NEW_MODEL");
 
-      newModel.applyComponentInformation(cellEditor.createWidgetModel());
+      pModel.applyComponentInformation(cellEditor.createWidgetModel());
     }
 
-    super.receiveNewModel(newModel: newModel);
+    super.receiveNewModel(pModel);
   }
 
   @override

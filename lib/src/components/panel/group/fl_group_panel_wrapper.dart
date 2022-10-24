@@ -35,11 +35,11 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   }
 
   @override
-  receiveNewModel({required FlGroupPanelModel newModel}) {
-    ILayout originalLayout = ILayout.getLayout(newModel.layout, newModel.layoutData)!;
+  receiveNewModel(FlGroupPanelModel pModel) {
+    ILayout originalLayout = ILayout.getLayout(pModel.layout, pModel.layoutData)!;
     layoutData.layout = GroupLayout(originalLayout: originalLayout, groupHeaderHeight: 0.0);
     layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
-    super.receiveNewModel(newModel: newModel);
+    super.receiveNewModel(pModel);
 
     layoutAfterBuild = true;
 

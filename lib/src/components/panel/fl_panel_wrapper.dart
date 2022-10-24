@@ -33,11 +33,11 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   }
 
   @override
-  receiveNewModel({required FlPanelModel newModel}) {
-    layoutData.layout = ILayout.getLayout(newModel.layout, newModel.layoutData);
+  receiveNewModel(FlPanelModel pModel) {
+    layoutData.layout = ILayout.getLayout(pModel.layout, pModel.layoutData);
     layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
 
-    super.receiveNewModel(newModel: newModel);
+    super.receiveNewModel(pModel);
 
     buildChildren();
     registerParent();

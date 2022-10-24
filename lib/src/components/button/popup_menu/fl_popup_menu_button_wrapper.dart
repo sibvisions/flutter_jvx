@@ -40,12 +40,12 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
   }
 
   @override
-  void receiveNewModel({required T newModel}) {
+  void receiveNewModel(T pModel) {
     //Dispose old subscriptions
     List<FlComponentModel> oldModels = IUiService().getDescendantModels(model.id);
     oldModels.forEach((element) => IUiService().disposeSubscriptions(pSubscriber: element));
 
-    super.receiveNewModel(newModel: newModel);
+    super.receiveNewModel(pModel);
 
     registerDescendantModels();
   }
@@ -57,11 +57,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       ComponentSubscription componentSubscription = ComponentSubscription(
         compId: childModel.id,
         subbedObj: this,
-        callback: ({data, newModel}) {
-          if (newModel != null) {
-            setState(() {});
-          }
-        },
+        modelCallback: (_) => setState,
       );
       IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
     }

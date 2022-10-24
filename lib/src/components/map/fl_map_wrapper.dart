@@ -61,8 +61,8 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   }
 
   @override
-  receiveNewModel({required FlMapModel newModel}) {
-    super.receiveNewModel(newModel: newModel);
+  receiveNewModel(FlMapModel pModel) {
+    super.receiveNewModel(pModel);
     unsubscribe();
     subscribe();
   }

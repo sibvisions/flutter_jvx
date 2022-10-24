@@ -48,8 +48,8 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   @override
-  receiveNewModel({required T newModel}) {
-    super.receiveNewModel(newModel: newModel);
+  receiveNewModel(T pModel) {
+    super.receiveNewModel(pModel);
 
     updateText();
   }

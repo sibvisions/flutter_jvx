@@ -29,8 +29,8 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
   }
 
   @override
-  void receiveNewModel({required FlChartModel newModel}) {
-    super.receiveNewModel(newModel: newModel);
+  void receiveNewModel(FlChartModel pModel) {
+    super.receiveNewModel(pModel);
     unsubscribe();
     subscribe();
   }

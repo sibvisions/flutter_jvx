@@ -79,8 +79,9 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   @override
-  void receiveNewModel({required FlCustomContainerModel newModel}) {
-    super.receiveNewModel(newModel: newModel);
+  void receiveNewModel(FlCustomContainerModel newModel) {
+    super.receiveNewModel(newModel);
+
     unsubscribe();
     subscribe();
   }
