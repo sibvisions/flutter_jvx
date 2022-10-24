@@ -86,11 +86,13 @@ class _WorkScreenState extends State<WorkScreen> {
   Widget build(BuildContext context) {
     List<Widget> actions = [];
 
-    Widget body = Column(
-      children: [
-        if (IConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
-        Expanded(child: _getScreen(context)),
-      ],
+    Widget body = SafeArea(
+      child: Column(
+        children: [
+          if (IConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
+          Expanded(child: _getScreen(context)),
+        ],
+      ),
     );
 
     FrameState? frame = FrameState.of(context);
