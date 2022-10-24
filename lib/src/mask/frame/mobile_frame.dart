@@ -21,6 +21,7 @@ class MobileFrameState extends FrameState {
   @override
   List<Widget> getActions() {
     return [
+      ...super.getActions(),
       Builder(
         builder: (context) => IconButton(
           icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
