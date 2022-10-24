@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../components.dart';
+import '../../../custom/app_manager.dart';
 import '../../../data.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
@@ -271,5 +272,20 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 Old cell editor hashcode: ${oldCellEditor?.hashCode}
 New cell editor hashcode: ${cellEditor.hashCode}
 ----- $pPhase -----""", null, StackTrace.current);
+  }
+
+  @override
+  BaseCommand? createSaveCommand() {
+    dynamic value = cellEditor.getValue();
+    if ((value?.toString() ?? "") == (_currentValue?.toString() ?? "")) {
+      return null;
+    }
+    return SetValuesCommand(
+      componentId: model.id,
+      dataProvider: model.dataProvider,
+      columnNames: [model.columnName],
+      values: [value],
+      reason: "Value of ${model.id} set to $_toSendValue",
+    );
   }
 }

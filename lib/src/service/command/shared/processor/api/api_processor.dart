@@ -21,6 +21,7 @@ import '../../../../../model/command/api/open_tab_command.dart';
 import '../../../../../model/command/api/press_button_command.dart';
 import '../../../../../model/command/api/reload_menu_command.dart';
 import '../../../../../model/command/api/reset_password_command.dart';
+import '../../../../../model/command/api/save_all_editors.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
@@ -50,6 +51,7 @@ import 'open_tab_command_processor.dart';
 import 'press_button_command_processor.dart';
 import 'reload_menu_command_processor.dart';
 import 'reset_password_command_processor.dart';
+import 'save_all_editors_command_processor.dart';
 import 'select_record_command_processor.dart';
 import 'set_value_command_processor.dart';
 import 'set_values_command_processor.dart';
@@ -136,6 +138,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _changesProcessor = ChangesCommandProcessor();
 
+  final ICommandProcessor _saveAllEditorsProcessor = SaveAllEditorsCommandProcessor();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -197,8 +200,9 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _uploadProcessor.processCommand(command);
     } else if (command is ChangesCommand) {
       return _changesProcessor.processCommand(command);
+    } else if (command is SaveAllEditorsCommand) {
+      return _saveAllEditorsProcessor.processCommand(command);
     }
-
     return [];
   }
 }

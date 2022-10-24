@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
+import '../../../custom/app_manager.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../model/command/layout/preferred_size_command.dart';
@@ -46,16 +47,17 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(
-        id: model.id,
-        parentId: model.parent,
-        constraints: model.constraints,
-        preferredSize: model.preferredSize,
-        minSize: model.minimumSize,
-        maxSize: model.maximumSize,
-        needsRelayout: model.isVisible,
-        indexOf: model.indexOf,
-        heightConstrains: {},
-        widthConstrains: {});
+      id: model.id,
+      parentId: model.parent,
+      constraints: model.constraints,
+      preferredSize: model.preferredSize,
+      minSize: model.minimumSize,
+      maxSize: model.maximumSize,
+      needsRelayout: model.isVisible,
+      indexOf: model.indexOf,
+      heightConstrains: {},
+      widthConstrains: {},
+    );
 
     ComponentSubscription componentSubscription = ComponentSubscription<T>(
       compId: model.id,
@@ -63,7 +65,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       affectedCallback: affected,
       layoutCallback: receiveNewLayoutData,
       modelCallback: receiveNewModel,
-      saveCallback: saveEditor,
+      saveCallback: createSaveCommand,
     );
     IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
   }
@@ -85,7 +87,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void saveEditor() {}
+  BaseCommand? createSaveCommand() {
+    return null;
+  }
 
   void affected() {}
 

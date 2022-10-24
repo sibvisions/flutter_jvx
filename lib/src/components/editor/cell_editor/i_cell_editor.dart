@@ -16,8 +16,11 @@ import 'linked/fl_linked_cell_editor.dart';
 typedef CellEditorRecalculateSizeCallback = Function([bool pRecalculate]);
 
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.
-abstract class ICellEditor<WidgetModelType extends FlComponentModel,
-    WidgetType extends FlStatelessWidget<WidgetModelType>, CellEditorModelType extends ICellEditorModel, ReturnValues> {
+abstract class ICellEditor<
+    WidgetModelType extends FlComponentModel,
+    WidgetType extends FlStatelessWidget<WidgetModelType>,
+    CellEditorModelType extends ICellEditorModel,
+    ReturnValueType> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,9 +31,9 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
   /// The cell editor model
   CellEditorModelType model;
 
-  Function(ReturnValues) onValueChange;
+  Function(ReturnValueType) onValueChange;
 
-  Function(ReturnValues) onEndEditing;
+  Function(ReturnValueType) onEndEditing;
 
   ColumnDefinition? columnDefinition;
 
@@ -55,7 +58,7 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel,
 
   void dispose();
 
-  ReturnValues? getValue();
+  ReturnValueType? getValue();
 
   void setValue(dynamic pValue);
 

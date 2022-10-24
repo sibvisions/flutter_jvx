@@ -4,6 +4,8 @@ import '../../dummy/fl_dummy_widget.dart';
 import 'i_cell_editor.dart';
 
 class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEditorModel, dynamic> {
+  dynamic _value;
+
   FlDummyCellEditor()
       : super(
           model: ICellEditorModel(),
@@ -24,10 +26,14 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   FlDummyModel createWidgetModel() => FlDummyModel();
 
   @override
-  void setValue(pValue) {}
+  void setValue(pValue) {
+    _value = pValue;
+  }
 
   @override
-  getValue() {}
+  dynamic getValue() {
+    return _value;
+  }
 
   @override
   String formatValue(Object pValue) {

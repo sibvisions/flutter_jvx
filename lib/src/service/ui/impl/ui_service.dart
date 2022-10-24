@@ -16,6 +16,7 @@ import '../../../exceptions/error_view_exception.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
+import '../../../model/command/api/save_all_editors.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
@@ -441,6 +442,11 @@ class UiService implements IUiService {
         element.subbedObj == pSubscriber && (pDataProvider == null || element.dataProvider == pDataProvider));
   }
 
+  @override
+  List<BaseCommand> collectAllEditorSaveCommands() {
+    return _componentSubscriptions.map((e) => e.saveCallback?.call()).whereNotNull().toList();
+  }
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Methods to notify components about changes to themselves
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -542,57 +548,6 @@ class UiService implements IUiService {
     });
   }
 
-  @override
-  Map<String, MessageDialog> getFrames() {
-    return _activeFrames;
-  }
-
-  @override
-  void showFrame({
-    required String componentId,
-    required MessageDialog pDialog,
-  }) {
-    _activeFrames[componentId] = pDialog;
-    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
-  }
-
-  @override
-  void closeFrame({required String componentId}) {
-    _activeFrames.remove(componentId);
-    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
-  }
-
-  @override
-  void closeFrames() {
-    _activeFrames.clear();
-    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
-  }
-
-  @override
-  List<FrameDialog> getFrameDialogs() {
-    return _activeDialogs;
-  }
-
-  @override
-  void showFrameDialog(FrameDialog pDialog) {
-    _activeDialogs.add(pDialog);
-    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
-  }
-
-  @override
-  void closeFrameDialog(FrameDialog pDialog) {
-    pDialog.onClose();
-    _activeDialogs.remove(pDialog);
-    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
-  }
-
-  @override
-  void closeFrameDialogs() {
-    _activeDialogs.forEach((dialog) => dialog.onClose());
-    _activeDialogs.clear();
-    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -645,5 +600,65 @@ class UiService implements IUiService {
     return _menuModel?.menuGroups
             .any((element) => element.items.any((element) => element.screenLongName == pScreenLongName)) ??
         false;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Unsorted method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  Map<String, MessageDialog> getFrames() {
+    return _activeFrames;
+  }
+
+  @override
+  void showFrame({
+    required String componentId,
+    required MessageDialog pDialog,
+  }) {
+    _activeFrames[componentId] = pDialog;
+    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+  }
+
+  @override
+  void closeFrame({required String componentId}) {
+    _activeFrames.remove(componentId);
+    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+  }
+
+  @override
+  void closeFrames() {
+    _activeFrames.clear();
+    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+  }
+
+  @override
+  List<FrameDialog> getFrameDialogs() {
+    return _activeDialogs;
+  }
+
+  @override
+  void showFrameDialog(FrameDialog pDialog) {
+    _activeDialogs.add(pDialog);
+    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+  }
+
+  @override
+  void closeFrameDialog(FrameDialog pDialog) {
+    pDialog.onClose();
+    _activeDialogs.remove(pDialog);
+    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+  }
+
+  @override
+  void closeFrameDialogs() {
+    _activeDialogs.forEach((dialog) => dialog.onClose());
+    _activeDialogs.clear();
+    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+  }
+
+  @override
+  void saveAllEditorsThen(Function? pFunction, String pReason) {
+    sendCommand(SaveAllEditorsCommand(reason: pReason)).then((value) => pFunction?.call());
   }
 }

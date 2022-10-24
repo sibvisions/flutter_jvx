@@ -158,6 +158,9 @@ abstract class IUiService {
   /// Removes [DataSubscription] from [IUiService]
   void disposeDataSubscription({required Object pSubscriber, String? pDataProvider});
 
+  /// Collects all commands to do to save all editors.
+  List<BaseCommand> collectAllEditorSaveCommands();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -198,6 +201,23 @@ abstract class IUiService {
     required DalMetaDataResponse pMetaData,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Custom
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// If this screen beams or sends an open workscreen command first.
+  bool usesNativeRouting({required String pScreenLongName});
+
+  /// Gets replace-type screen by screenName
+  CustomScreen? getCustomScreen({required String pScreenLongName});
+
+  /// Gets a custom component with given name (ignores screen)
+  CustomComponent? getCustomComponent({required String pComponentName});
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Unsorted method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   Map<String, MessageDialog> getFrames();
 
   void showFrame({
@@ -217,16 +237,5 @@ abstract class IUiService {
 
   void closeFrameDialogs();
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Custom
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// If this screen beams or sends an open workscreen command first.
-  bool usesNativeRouting({required String pScreenLongName});
-
-  /// Gets replace-type screen by screenName
-  CustomScreen? getCustomScreen({required String pScreenLongName});
-
-  /// Gets a custom component with given name (ignores screen)
-  CustomComponent? getCustomComponent({required String pComponentName});
+  void saveAllEditorsThen(Function? pFunction, String pReason);
 }
