@@ -1,3 +1,4 @@
+import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
 import 'api_command.dart';
 
@@ -28,12 +29,17 @@ class StartupCommand extends ApiCommand {
   }) {
     beforeProcessing = () => IUiService().getAppManager()?.onInitStartup();
     afterProcessing = () {
+      routerDelegate.beamingHistory.clear();
       ILayoutService().clear();
       IStorageService().clear();
       IDataService().clear();
       IUiService().clear();
     };
-    onFinish = () => IUiService().getAppManager()?.onSuccessfulStartup();
+    onFinish = () {
+      // We have to clear the history only after routing, as before the past location would have not benn counted as "history".
+      routerDelegate.currentBeamLocation.history.clear();
+      IUiService().getAppManager()?.onSuccessfulStartup();
+    };
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

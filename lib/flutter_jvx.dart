@@ -230,7 +230,6 @@ class FlutterJVxState extends State<FlutterJVx> {
     String? username,
     String? password,
   }) {
-    routerDelegate.beamingHistory.clear();
     setState(() {
       startupFuture = doStartup(
         appName: appName,

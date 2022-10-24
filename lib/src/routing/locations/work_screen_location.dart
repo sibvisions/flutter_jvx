@@ -80,7 +80,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
     }
 
     if (screen == null) {
-      FlutterJVx.log.wtf("Model not found for current work screen");
+      FlutterJVx.log.wtf("Model not found for work screen: $screenLongName");
       screen = Container();
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         IUiService().sendCommand(OpenErrorDialogCommand(
