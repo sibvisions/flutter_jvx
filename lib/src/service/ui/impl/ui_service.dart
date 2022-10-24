@@ -338,7 +338,7 @@ class UiService implements IUiService {
   List<FlComponentModel> getAllComponentsBelow(String id) {
     List<FlComponentModel> children = [];
 
-    for (FlComponentModel componentModel in _componentModels) {
+    for (FlComponentModel componentModel in List<FlComponentModel>.from(_componentModels)) {
       String? parentId = componentModel.parent;
       if (parentId != null && parentId == id) {
         children.add(componentModel);
@@ -443,8 +443,12 @@ class UiService implements IUiService {
   }
 
   @override
-  List<BaseCommand> collectAllEditorSaveCommands() {
-    return _componentSubscriptions.map((e) => e.saveCallback?.call()).whereNotNull().toList();
+  List<BaseCommand> collectAllEditorSaveCommands(String? pId) {
+    return List<ComponentSubscription>.from(_componentSubscriptions)
+        .where((element) => element.compId != pId)
+        .map((e) => e.saveCallback?.call())
+        .whereNotNull()
+        .toList();
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -466,9 +470,10 @@ class UiService implements IUiService {
   void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
-      int index = _componentModels.indexWhere((element) => element.id == updatedModel.id);
-      if (index != -1) {
-        _componentModels[index] = updatedModel;
+
+      if (_componentModels.any((element) => element.id == updatedModel.id)) {
+        _componentModels.removeWhere((element) => element.id == updatedModel.id);
+        _componentModels.add(updatedModel);
       }
 
       // Notify active component
@@ -658,7 +663,10 @@ class UiService implements IUiService {
   }
 
   @override
-  void saveAllEditorsThen(Function? pFunction, String pReason) {
-    sendCommand(SaveAllEditorsCommand(reason: pReason)).then((value) => pFunction?.call());
+  void saveAllEditorsThen(String? pId, Function? pFunction, String pReason) {
+    sendCommand(SaveAllEditorsCommand(componentId: pId, reason: pReason)).then((value) {
+      FlutterJVx.log.i("Save all complete.");
+      pFunction?.call();
+    });
   }
 }

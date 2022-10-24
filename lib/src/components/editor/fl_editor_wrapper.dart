@@ -50,9 +50,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   /// The currently used cell editor.
   ICellEditor cellEditor = FlDummyCellEditor();
 
-  /// The value to send to the server on sendValue.
-  dynamic _toSendValue;
-
   /// Last value;
   dynamic _currentValue;
 
@@ -199,18 +196,35 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       return;
     }
 
-    _toSendValue = pValue;
     setState(() {});
 
-    currentObjectFocused = FocusManager.instance.primaryFocus;
-    if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
-      currentObjectFocused = null;
-      sendValue();
-    } else {
-      FlutterJVx.log.i("Value will be set");
-      currentObjectFocused!.addListener(sendValue);
-      currentObjectFocused!.unfocus();
-    }
+    IUiService().saveAllEditorsThen(
+      model.id,
+      () {
+        if (pValue is HashMap<String, dynamic>) {
+          FlutterJVx.log.d("Values of ${model.id} set to $pValue");
+          IUiService().sendCommand(
+            SetValuesCommand(
+                componentId: model.id,
+                dataProvider: model.dataProvider,
+                columnNames: pValue.keys.toList(),
+                values: pValue.values.toList(),
+                reason: "Value of ${model.id} set to $pValue"),
+          );
+        } else {
+          FlutterJVx.log.d("Value of ${model.id} set to $pValue");
+          IUiService().sendCommand(
+            SetValuesCommand(
+                componentId: model.id,
+                dataProvider: model.dataProvider,
+                columnNames: [model.columnName],
+                values: [pValue],
+                reason: "Value of ${model.id} set to $pValue"),
+          );
+        }
+      },
+      "Value of ${model.id} set to $pValue",
+    );
   }
 
   void recalculateSize([bool pRecalulcate = true]) {
@@ -219,32 +233,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
 
     setState(() {});
-  }
-
-  void sendValue() {
-    if (_toSendValue is HashMap<String, dynamic>) {
-      var map = _toSendValue as HashMap<String, dynamic>;
-
-      FlutterJVx.log.i("Values of ${model.id} set to $_toSendValue");
-      IUiService().sendCommand(SetValuesCommand(
-          componentId: model.id,
-          dataProvider: model.dataProvider,
-          columnNames: map.keys.toList(),
-          values: map.values.toList(),
-          reason: "Value of ${model.id} set to $_toSendValue"));
-    } else {
-      FlutterJVx.log.i("Value of ${model.id} set to $_toSendValue");
-      IUiService().sendCommand(SetValuesCommand(
-          componentId: model.id,
-          dataProvider: model.dataProvider,
-          columnNames: [model.columnName],
-          values: [_toSendValue],
-          reason: "Value of ${model.id} set to $_toSendValue"));
-    }
-
-    if (currentObjectFocused != null) {
-      currentObjectFocused!.removeListener(sendValue);
-    }
   }
 
   /// Recreates the cell editor.
@@ -285,7 +273,7 @@ New cell editor hashcode: ${cellEditor.hashCode}
       dataProvider: model.dataProvider,
       columnNames: [model.columnName],
       values: [value],
-      reason: "Value of ${model.id} set to $_toSendValue",
+      reason: "Value of ${model.id} set to $value",
     );
   }
 }

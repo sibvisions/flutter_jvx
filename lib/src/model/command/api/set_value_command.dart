@@ -21,6 +21,7 @@ class SetValueCommand extends ApiCommand {
     required this.componentName,
     required this.value,
     required super.reason,
+    super.afterProcessing,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

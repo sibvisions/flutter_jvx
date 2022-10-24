@@ -5,7 +5,9 @@ class SaveAllEditorsCommand extends ApiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveAllEditorsCommand({required super.reason});
+  String? componentId;
+
+  SaveAllEditorsCommand({this.componentId, required super.reason});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

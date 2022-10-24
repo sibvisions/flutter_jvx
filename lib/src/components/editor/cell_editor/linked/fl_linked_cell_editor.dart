@@ -55,6 +55,7 @@ class FlLinkedCellEditor
       () {
         if (focusNode.hasFocus) {
           _openLinkedCellPicker();
+          focusNode.unfocus();
         }
       },
     );
@@ -88,8 +89,6 @@ class FlLinkedCellEditor
   }
 
   void _openLinkedCellPicker() {
-    FocusManager.instance.primaryFocus?.unfocus();
-
     IUiService()
         .sendCommand(
       FilterCommand(
@@ -130,7 +129,7 @@ class FlLinkedCellEditor
   }
 
   @override
-  String getValue() {
+  dynamic getValue() {
     return _value;
   }
 

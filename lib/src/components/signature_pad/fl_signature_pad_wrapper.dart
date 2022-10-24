@@ -163,13 +163,14 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
             context: context,
             items: popupMenuEntries)
         .then((val) {
-      WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
       if (val != null) {
-        if (val == SignatureContextMenuCommand.DONE) {
-          sendSignature();
-        } else if (val == SignatureContextMenuCommand.CLEAR) {
-          deleteSignature();
-        }
+        IUiService().saveAllEditorsThen(model.id, () {
+          if (val == SignatureContextMenuCommand.DONE) {
+            sendSignature();
+          } else if (val == SignatureContextMenuCommand.CLEAR) {
+            deleteSignature();
+          }
+        }, "Signature pad closed.");
       }
     });
   }

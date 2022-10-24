@@ -3,22 +3,12 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:queue/queue.dart';
 
+import '../../../../commands.dart';
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
 import '../../../exceptions/error_view_exception.dart';
 import '../../../exceptions/session_expired_exception.dart';
-import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
-import '../../../model/command/config/config_command.dart';
-import '../../../model/command/data/data_command.dart';
-import '../../../model/command/layout/layout_command.dart';
-import '../../../model/command/storage/storage_command.dart';
-import '../../../model/command/ui/route_to_login_command.dart';
-import '../../../model/command/ui/route_to_menu_command.dart';
-import '../../../model/command/ui/route_to_work_command.dart';
-import '../../../model/command/ui/ui_command.dart';
-import '../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
-import '../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
 import '../shared/i_command_processor.dart';
 import '../shared/processor/api/api_processor.dart';
@@ -111,7 +101,9 @@ class CommandService implements ICommandService {
   }
 
   Future<void> processCommand(BaseCommand pCommand) async {
-    FlutterJVx.log.d("Processing ${pCommand.runtimeType}");
+    if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
+      FlutterJVx.log.i("Processing ${pCommand.runtimeType}");
+    }
     pCommand.beforeProcessing?.call();
 
     List<BaseCommand> commands = [];

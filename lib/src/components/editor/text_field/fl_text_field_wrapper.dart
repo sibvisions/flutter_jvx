@@ -1,6 +1,7 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../../custom/app_manager.dart';
 import '../../../../util/parse_util.dart';
 import '../../../model/command/api/set_value_command.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -28,6 +29,8 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  String lastSentValue = "";
+
   final TextEditingController textController = TextEditingController();
 
   final FocusNode focusNode = FocusNode();
@@ -110,10 +113,16 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   void endEditing(String pValue) {
-    if (!model.isReadOnly) {
-      SetValueCommand setValue =
-          SetValueCommand(componentName: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
-      IUiService().sendCommand(setValue);
+    if (!model.isReadOnly && lastSentValue != pValue) {
+      IUiService()
+          .sendCommand(
+            SetValueCommand(
+              componentName: model.name,
+              value: pValue,
+              reason: "Editing has ended on ${model.id}",
+            ),
+          )
+          .then((value) => lastSentValue = pValue);
 
       setState(() {});
     }
@@ -124,6 +133,20 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
       text: model.text,
       selection: TextSelection.collapsed(offset: model.text.characters.length),
       composing: null,
+    );
+  }
+
+  @override
+  BaseCommand? createSaveCommand() {
+    if (lastSentValue == textController.value.text) {
+      return null;
+    }
+
+    return SetValueCommand(
+      componentName: model.name,
+      value: textController.value.text,
+      reason: "Editing has ended on ${model.id}",
+      afterProcessing: () => lastSentValue = textController.value.text,
     );
   }
 }

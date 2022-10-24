@@ -346,15 +346,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       context: context,
       items: popupMenuEntries,
     ).then((val) {
-      WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
-
-      if (val == ContextMenuCommand.NEW) {
-        insertRecord();
-      } else if (val == ContextMenuCommand.DELETE) {
-        deleteRecord();
-      } else if (val == ContextMenuCommand.OFFLINE) {
-        goOffline();
-      }
+      IUiService().saveAllEditorsThen(model.id, () {
+        if (val == ContextMenuCommand.NEW) {
+          insertRecord();
+        } else if (val == ContextMenuCommand.DELETE) {
+          deleteRecord();
+        } else if (val == ContextMenuCommand.OFFLINE) {
+          goOffline();
+        }
+      }, "Table menu item pressed");
     });
   }
 

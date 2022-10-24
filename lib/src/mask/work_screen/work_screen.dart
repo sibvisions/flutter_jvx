@@ -65,8 +65,6 @@ class _WorkScreenState extends State<WorkScreen> {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
-  FocusNode? currentObjectFocused;
-
   @override
   void initState() {
     super.initState();
@@ -155,21 +153,10 @@ class _WorkScreenState extends State<WorkScreen> {
   }
 
   _onBackTap() {
-    currentObjectFocused = FocusManager.instance.primaryFocus;
-    if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
-      _navigateBack();
-    } else {
-      currentObjectFocused!.addListener(_navigateBack);
-      currentObjectFocused!.unfocus();
-    }
+    IUiService().saveAllEditorsThen(null, _navigateBack, "Back pressed");
   }
 
   _navigateBack() {
-    if (currentObjectFocused != null) {
-      currentObjectFocused!.removeListener(_navigateBack);
-      currentObjectFocused = null;
-    }
-
     if (IUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
       _customBack();
     } else {
@@ -178,21 +165,10 @@ class _WorkScreenState extends State<WorkScreen> {
   }
 
   _onDoubleTap() {
-    currentObjectFocused = FocusManager.instance.primaryFocus;
-    if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
-      _navigateBackForcefully();
-    } else {
-      currentObjectFocused!.addListener(_navigateBackForcefully);
-      currentObjectFocused!.unfocus();
-    }
+    IUiService().saveAllEditorsThen(null, _navigateBackForcefully, "Back pressed forcefully");
   }
 
   _navigateBackForcefully() {
-    if (currentObjectFocused != null) {
-      currentObjectFocused!.removeListener(_navigateBackForcefully);
-      currentObjectFocused = null;
-    }
-
     if (IUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
       _customBack();
     } else {

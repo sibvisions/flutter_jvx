@@ -37,6 +37,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       () {
         if (focusNode.hasFocus) {
           openDatePicker();
+          focusNode.unfocus();
         }
       },
     );
@@ -105,8 +106,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void openDatePicker() {
-    FocusManager.instance.primaryFocus?.unfocus();
-
     DateTime initialDate;
     TimeOfDay initialTime;
     if (_value != null) {

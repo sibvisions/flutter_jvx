@@ -159,7 +159,7 @@ abstract class IUiService {
   void disposeDataSubscription({required Object pSubscriber, String? pDataProvider});
 
   /// Collects all commands to do to save all editors.
-  List<BaseCommand> collectAllEditorSaveCommands();
+  List<BaseCommand> collectAllEditorSaveCommands(String? pId);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves
@@ -237,5 +237,5 @@ abstract class IUiService {
 
   void closeFrameDialogs();
 
-  void saveAllEditorsThen(Function? pFunction, String pReason);
+  void saveAllEditorsThen(String? pId, Function? pFunction, String pReason);
 }
