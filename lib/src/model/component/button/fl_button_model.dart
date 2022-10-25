@@ -16,11 +16,11 @@ class FlButtonModel extends FlComponentModel {
   /// The model of the label widget.
   FlLabelModel labelModel = FlLabelModel();
 
-  /// If the border activates on click.
-  bool borderOnMouseEntered = false;
-
   /// If the border is shown.
   bool borderPainted = true;
+
+  /// If, when the borderPainted property is true, to only show the border on mouse over.
+  bool borderOnMouseEntered = false;
 
   /// The aria label.
   String ariaLabel = "";

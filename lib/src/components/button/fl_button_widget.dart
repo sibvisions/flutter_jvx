@@ -131,18 +131,25 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   ButtonStyle createButtonStyle(context) {
     Color? backgroundColor;
 
-    if (model.style == "hyperlink") {
+    if (!model.borderPainted || model.borderOnMouseEntered) {
       backgroundColor = Colors.transparent;
     } else if (!model.isEnabled) {
       backgroundColor = IColorConstants.COMPONENT_DISABLED;
+    } else if (model.style == "hyperlink") {
+      backgroundColor = Colors.transparent;
     } else {
       backgroundColor = model.background;
     }
 
+    bool hasElevation = model.borderPainted && !model.borderOnMouseEntered && model.isEnabled;
+    hasElevation == hasElevation && backgroundColor != Colors.transparent;
+
     return ButtonStyle(
-      elevation: MaterialStateProperty.all(model.borderPainted && model.isEnabled ? 2 : 0),
+      elevation: MaterialStateProperty.all(hasElevation ? 2 : 0),
       backgroundColor: backgroundColor != null ? MaterialStateProperty.all(backgroundColor) : null,
       padding: MaterialStateProperty.all(model.paddings),
+      splashFactory: !model.borderPainted ? NoSplash.splashFactory : null,
+      overlayColor: !model.borderPainted ? MaterialStateProperty.all(Colors.transparent) : null,
     );
   }
 
