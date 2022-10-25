@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_jvx.dart';
-import '../../../../util/constants/i_color.dart';
 import '../../../../util/image/image_loader.dart';
+import '../../../../util/jvx_colors.dart';
 import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';
 import '../../../model/command/api/open_tab_command.dart';
@@ -346,7 +346,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     Widget? image;
     if (imageString.isNotEmpty) {
       image = ImageLoader.loadImage(imageString,
-          pWantedSize: const Size(16, 16), pWantedColor: enabled ? null : IColorConstants.COMPONENT_DISABLED);
+          pWantedSize: const Size(16, 16), pWantedColor: enabled ? null : JVxColors.COMPONENT_DISABLED);
     }
 
     FlLabelModel labelModel = FlLabelModel()
@@ -380,7 +380,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                   child: const Icon(
                     Icons.clear,
                     size: 18,
-                    color: IColorConstants.COMPONENT_DISABLED,
+                    color: JVxColors.COMPONENT_DISABLED,
                   ),
                 ),
               ],

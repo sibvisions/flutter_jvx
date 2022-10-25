@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../util/constants/i_color.dart';
 import '../../../util/image/image_loader.dart';
+import '../../../util/jvx_colors.dart';
 import '../../model/component/icon/fl_icon_model.dart';
 import '../../model/layout/alignments.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
@@ -82,7 +82,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   Widget? getImage() {
     return ImageLoader.loadImage(
       model.image,
-      pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
+      pWantedColor: model.isEnabled ? null : JVxColors.COMPONENT_DISABLED,
       pImageStreamListener: imageStreamListener,
       pImageInBinary: imageInBinary,
       pFit: getBoxFit(),

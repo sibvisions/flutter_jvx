@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../util/constants/i_color.dart';
+import '../../../../util/jvx_colors.dart';
 import '../../../model/component/button/fl_toggle_button_model.dart';
 import '../fl_button_widget.dart';
 
@@ -24,7 +24,7 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
 
     Color? backgroundColor;
     if (!model.isEnabled) {
-      backgroundColor = IColorConstants.COMPONENT_DISABLED;
+      backgroundColor = JVxColors.COMPONENT_DISABLED;
     } else {
       backgroundColor = model.background;
     }
@@ -32,7 +32,7 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
     if (model.isEnabled && model.selected) {
       buttonStyle = buttonStyle.copyWith(
         backgroundColor: MaterialStateProperty.all(
-          IColor.toggleColor(backgroundColor ?? Theme.of(context).colorScheme.primary),
+          JVxColors.toggleColor(backgroundColor ?? Theme.of(context).colorScheme.primary),
         ),
       );
     }

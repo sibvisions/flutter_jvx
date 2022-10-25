@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../util/constants/i_color.dart';
+import '../../../../util/jvx_colors.dart';
 import '../../../model/component/button/fl_radio_button_model.dart';
 import '../fl_button_widget.dart';
 
@@ -14,7 +14,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
     return Builder(builder: (context) {
       return Theme(
         data: Theme.of(context).copyWith(
-          disabledColor: IColorConstants.COMPONENT_DISABLED,
+          disabledColor: JVxColors.COMPONENT_DISABLED,
         ),
         child: Radio<bool>(
           visualDensity: VisualDensity.compact,

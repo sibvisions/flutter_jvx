@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../util/constants/i_color.dart';
+import '../../../../util/jvx_colors.dart';
 import '../../../mask/state/app_style.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
@@ -168,7 +168,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           child: Icon(
             Icons.clear,
             size: iconSize,
-            color: IColorConstants.COMPONENT_DISABLED,
+            color: JVxColors.COMPONENT_DISABLED,
           ),
         ),
       ),
@@ -263,7 +263,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       case FlTextBorderType.enabledBorder:
         return const OutlineInputBorder(
           borderSide: BorderSide(
-            color: IColorConstants.COMPONENT_DISABLED,
+            color: JVxColors.COMPONENT_DISABLED,
           ),
         );
       case FlTextBorderType.focusedBorder:
@@ -272,7 +272,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         return const OutlineInputBorder(
           borderSide: BorderSide(
             width: 1.5,
-            color: IColorConstants.COMPONENT_DISABLED,
+            color: JVxColors.COMPONENT_DISABLED,
           ),
         );
       case FlTextBorderType.focusedErrorBorder:

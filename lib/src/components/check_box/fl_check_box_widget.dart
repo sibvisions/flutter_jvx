@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../util/constants/i_color.dart';
+import '../../../util/jvx_colors.dart';
 import '../../model/component/check_box/fl_check_box_model.dart';
 import '../button/radio/fl_radio_button_widget.dart';
 
@@ -15,7 +15,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
 
     if (!model.isEnabled) {
       borderside = const BorderSide(
-        color: IColorConstants.COMPONENT_DISABLED,
+        color: JVxColors.COMPONENT_DISABLED,
         width: 2,
       );
     }

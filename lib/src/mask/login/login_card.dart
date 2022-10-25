@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../../util/constants/i_color.dart';
+import '../../../util/jvx_colors.dart';
 import '../../model/command/api/login_command.dart';
 import '../../util/loading_handler/progress_button.dart';
 import '../state/app_style.dart';
@@ -106,7 +106,7 @@ class _LoginCardState extends State<LoginCard> {
               radius: 4.0,
               progressIndicator: CircularProgressIndicator.adaptive(
                 backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation(IColor.toggleColor(Theme.of(context).colorScheme.onPrimary)),
+                valueColor: AlwaysStoppedAnimation(JVxColors.toggleColor(Theme.of(context).colorScheme.onPrimary)),
               ),
               textStyle: TextStyle(
                 color: progressButtonState != ButtonState.fail ? Theme.of(context).colorScheme.onPrimary : Colors.white,

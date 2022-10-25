@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-/// Class defining various colors.
-abstract class IColorConstants {
-  static const Color JVX_LIGHTER_BLACK = Color(0xFF424242);
+abstract class JVxColors {
+  static const Color LIGHTER_BLACK = Color(0xFF424242);
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
-}
 
-abstract class IColor extends IColorConstants {
   static Color darken(Color color, [double amount = .1]) {
     assert(amount >= 0 && amount <= 1);
 

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 
-import '../../../util/constants/i_color.dart';
+import '../../../util/jvx_colors.dart';
 import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../layout/alignments.dart';
@@ -331,7 +331,7 @@ abstract class FlComponentModel {
   TextStyle createTextStyle(
       {Color? pForeground, double? pFontSize, FontStyle? pFontStyle, FontWeight? pFontWeight, String? pFontFamily}) {
     return TextStyle(
-      color: pForeground ?? (isEnabled ? foreground : IColor.toggleColor(IColorConstants.COMPONENT_DISABLED)),
+      color: pForeground ?? (isEnabled ? foreground : JVxColors.toggleColor(JVxColors.COMPONENT_DISABLED)),
       fontSize: pFontSize ?? fontSize.toDouble(),
       fontStyle: pFontStyle ?? (isItalic ? FontStyle.italic : FontStyle.normal),
       fontWeight: pFontWeight ?? (isBold ? FontWeight.bold : FontWeight.normal),

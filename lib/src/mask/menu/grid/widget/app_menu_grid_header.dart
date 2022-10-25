@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../util/constants/i_color.dart';
+import '../../../../../util/jvx_colors.dart';
 
 class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,7 +78,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
       return Container(
         // Idk why, but tileColor doesn't seem to do the trick, when scrolling.
         color: ListTileTheme.of(context).tileColor != null
-            ? IColor.lighten(ListTileTheme.of(context).tileColor!)
+            ? JVxColors.lighten(ListTileTheme.of(context).tileColor!)
             : Theme.of(context).bottomAppBarColor,
         child: child,
       );

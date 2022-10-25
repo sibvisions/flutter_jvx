@@ -43,7 +43,7 @@ import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/config_util.dart';
 import 'src/util/loading_handler/loading_progress_handler.dart';
-import 'util/constants/i_color.dart';
+import 'util/jvx_colors.dart';
 import 'util/parse_util.dart';
 
 export 'src/mask/splash/jvx_splash.dart';
@@ -309,13 +309,13 @@ class FlutterJVxState extends State<FlutterJVx> {
       );
 
       if (colorScheme.onPrimary.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onPrimary: IColorConstants.JVX_LIGHTER_BLACK);
+        colorScheme = colorScheme.copyWith(onPrimary: JVxColors.LIGHTER_BLACK);
       }
       if (colorScheme.onBackground.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onBackground: IColorConstants.JVX_LIGHTER_BLACK);
+        colorScheme = colorScheme.copyWith(onBackground: JVxColors.LIGHTER_BLACK);
       }
       if (colorScheme.onSurface.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onSurface: IColorConstants.JVX_LIGHTER_BLACK);
+        colorScheme = colorScheme.copyWith(onSurface: JVxColors.LIGHTER_BLACK);
       }
 
       themeData = ThemeData.from(colorScheme: colorScheme);
@@ -324,8 +324,8 @@ class FlutterJVxState extends State<FlutterJVx> {
       themeData = themeData.copyWith(
         listTileTheme: themeData.listTileTheme.copyWith(
           //TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
-          textColor: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white,
-          iconColor: backgroundColorIsLight ? IColorConstants.JVX_LIGHTER_BLACK : Colors.white,
+          textColor: backgroundColorIsLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+          iconColor: backgroundColorIsLight ? JVxColors.LIGHTER_BLACK : Colors.white,
           // textColor: themeData.colorScheme.onBackground,
           // iconColor: themeData.colorScheme.onBackground,
         ),

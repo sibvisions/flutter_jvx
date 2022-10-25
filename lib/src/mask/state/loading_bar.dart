@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../util/constants/i_color.dart';
+import '../../../util/jvx_colors.dart';
 
 class LoadingBar extends InheritedWidget {
   final bool show;
@@ -21,7 +21,7 @@ class LoadingBar extends InheritedWidget {
       return Stack(children: [
         child,
         if (LoadingBar.of(context)?.show ?? false)
-          LinearProgressIndicator(minHeight: 5, color: IColor.toggleColor(Theme.of(context).colorScheme.primary)),
+          LinearProgressIndicator(minHeight: 5, color: JVxColors.toggleColor(Theme.of(context).colorScheme.primary)),
       ]);
     });
   }
