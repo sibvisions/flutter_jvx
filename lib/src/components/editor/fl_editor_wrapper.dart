@@ -205,21 +205,23 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           FlutterJVx.log.d("Values of ${model.id} set to $pValue");
           IUiService().sendCommand(
             SetValuesCommand(
-                componentId: model.id,
-                dataProvider: model.dataProvider,
-                columnNames: pValue.keys.toList(),
-                values: pValue.values.toList(),
-                reason: "Value of ${model.id} set to $pValue"),
+              componentId: model.id,
+              dataProvider: model.dataProvider,
+              columnNames: pValue.keys.toList(),
+              values: pValue.values.toList(),
+              reason: "Value of ${model.id} set to $pValue",
+            ),
           );
         } else {
           FlutterJVx.log.d("Value of ${model.id} set to $pValue");
           IUiService().sendCommand(
             SetValuesCommand(
-                componentId: model.id,
-                dataProvider: model.dataProvider,
-                columnNames: [model.columnName],
-                values: [pValue],
-                reason: "Value of ${model.id} set to $pValue"),
+              componentId: model.id,
+              dataProvider: model.dataProvider,
+              columnNames: [model.columnName],
+              values: [pValue],
+              reason: "Value of ${model.id} set to $pValue",
+            ),
           );
         }
       },

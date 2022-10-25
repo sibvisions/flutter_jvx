@@ -181,11 +181,14 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       pSubscriber: this,
     );
 
-    IUiService().sendCommand(FilterCommand(
+    IUiService().sendCommand(
+      FilterCommand(
         editorId: widget.name,
         value: "",
         dataProvider: widget.model.linkReference.dataProvider,
-        reason: "Closed the linked cell picker"));
+        reason: "Closed the linked cell picker",
+      ),
+    );
 
     _controller.dispose();
     filterTimer?.cancel();

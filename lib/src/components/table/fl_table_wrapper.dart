@@ -285,7 +285,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       }
 
       IUiService().sendCommand(DeleteRecordCommand(
-          dataProvider: model.dataProvider, selectedRow: lastTouchedIndex, reason: "Swiped", filter: filter));
+        dataProvider: model.dataProvider,
+        selectedRow: lastTouchedIndex,
+        reason: "Swiped",
+        filter: filter,
+      ));
 
       lastTouchedIndex = -1;
       setState(() {});
