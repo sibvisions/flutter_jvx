@@ -29,7 +29,9 @@ class StartupCommand extends ApiCommand {
   }) {
     beforeProcessing = () => IUiService().getAppManager()?.onInitStartup();
     afterProcessing = () {
-      routerDelegate.beamingHistory.clear();
+      if (routerDelegate.beamingHistory.length > 1) {
+        routerDelegate.beamingHistory.removeRange(0, routerDelegate.beamingHistory.length - 1);
+      }
       ILayoutService().clear();
       IStorageService().clear();
       IDataService().clear();

@@ -119,7 +119,7 @@ class UiService implements IUiService {
       return;
     }
 
-    var last = FlutterJVx.getCurrentContext()!.beamingHistory.last;
+    var last = FlutterJVx.getCurrentContext()!.currentBeamLocation;
     if (pReplaceRoute || last.runtimeType == SettingsLocation || last.runtimeType == LoginLocation) {
       FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/menu");
     } else {
@@ -139,7 +139,7 @@ class UiService implements IUiService {
       return;
     }
 
-    BeamLocation lastLocation = FlutterJVx.getCurrentContext()!.beamingHistory.last;
+    BeamLocation lastLocation = FlutterJVx.getCurrentContext()!.currentBeamLocation;
 
     bool justReload = false;
 
