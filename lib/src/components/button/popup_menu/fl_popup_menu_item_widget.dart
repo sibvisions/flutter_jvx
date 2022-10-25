@@ -13,7 +13,6 @@ class FlPopupMenuItemWidget extends PopupMenuItem<String> {
     super.enabled = true,
     super.height = kMinInteractiveDimension,
     super.padding,
-    super.textStyle,
     super.mouseCursor,
     required this.id,
     required super.child,
@@ -22,7 +21,6 @@ class FlPopupMenuItemWidget extends PopupMenuItem<String> {
   factory FlPopupMenuItemWidget.withModel(FlPopupMenuItemModel pModel, bool pForceIconSlot) {
     return FlPopupMenuItemWidget(
       id: pModel.id,
-      textStyle: pModel.createTextStyle(),
       enabled: pModel.isEnabled,
       value: pModel.name,
       child: pForceIconSlot
@@ -38,7 +36,12 @@ class FlPopupMenuItemWidget extends PopupMenuItem<String> {
 
   static Widget _createText(FlPopupMenuItemModel pModel) {
     return Padding(
-        padding: const EdgeInsets.only(left: 5.0), child: Text(pModel.text, style: pModel.createTextStyle()));
+      padding: const EdgeInsets.only(left: 5.0),
+      child: Text(
+        pModel.text,
+        style: pModel.createTextStyle(),
+      ),
+    );
   }
 
   static Widget _createIcon(String? icon) {

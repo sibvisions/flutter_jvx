@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../components.dart';
-import '../../../../util/constants/i_color.dart';
 
 class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButtonWidget<T> {
   final Function(String)? onItemPress;
@@ -23,19 +22,8 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
         Expanded(
           child: super.createDirectButtonChild(context),
         ),
-        SizedBox(
+        const SizedBox(
           width: 10,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              width: 1,
-              decoration: BoxDecoration(
-                border: Border(
-                  left: Divider.createBorderSide(context, color: IColorConstants.JVX_LIGHTER_BLACK, width: 1),
-                ),
-              ),
-            ),
-          ),
         ),
         createPopupIcon(context),
       ],
