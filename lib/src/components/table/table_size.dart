@@ -360,7 +360,7 @@ class TableSize {
     return columnDefinitions.map((e) => e.name).toList();
   }
 
-  bool _fulfillsPriority(_RedistributionPriority pPriority, String pCellEditorClassName) {
+  bool _fulfillsPriority(_RedistributionPriority pPriority, String? pCellEditorClassName) {
     switch (pPriority) {
       case _RedistributionPriority.first:
         return pCellEditorClassName == FlCellEditorClassname.NUMBER_CELL_EDITOR ||

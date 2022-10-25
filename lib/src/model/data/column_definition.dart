@@ -75,7 +75,7 @@ class ColumnDefinition {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  String get cellEditorClassName => cellEditorJson[ApiObjectProperty.className];
+  String? get cellEditorClassName => cellEditorJson[ApiObjectProperty.className];
 
   /// Parse a json list of column definitions into a list of [ColumnDefinition] objects.
   ColumnDefinition.fromJson(Map<String, dynamic> pJson)

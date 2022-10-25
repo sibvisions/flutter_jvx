@@ -94,7 +94,7 @@ abstract class ICellEditor<
     required Function(dynamic) onEndEditing,
     CellEditorRecalculateSizeCallback? pRecalculateSizeCallback,
   }) {
-    String cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
+    String? cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
 
     switch (cellEditorClassName) {
       case FlCellEditorClassname.TEXT_CELL_EDITOR:
