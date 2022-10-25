@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../components.dart';
 import '../../flutter_jvx.dart';
 import '../../services.dart';
 import '../model/command/api/close_screen_command.dart';
@@ -43,7 +44,7 @@ abstract class OfflineUtil {
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
-      String offlineWorkscreenLongName = IConfigService().getOfflineScreen()!;
+      String offlineWorkscreenClassName = IConfigService().getOfflineScreen()!;
       String offlineAppName = IConfigService().getAppName()!;
       String offlineUsername = IConfigService().getUsername()!;
       String offlinePassword = IConfigService().getPassword()!;
@@ -75,7 +76,7 @@ abstract class OfflineUtil {
       );
 
       await ICommandService().sendCommand(
-        OpenScreenCommand(screenLongName: offlineWorkscreenLongName, reason: "We are back online"),
+        OpenScreenCommand(screenClassName: offlineWorkscreenClassName, reason: "We are back online"),
       );
 
       bool successfulSync = true;
@@ -167,7 +168,7 @@ abstract class OfflineUtil {
         await offlineApiRepository.stop();
 
         FlComponentModel? workscreenModel =
-            IUiService().getComponentByScreenName(pScreenLongName: offlineWorkscreenLongName)!;
+            IUiService().getComponentByClassName(pScreenClassName: offlineWorkscreenClassName)!;
         await ICommandService().sendCommand(
           CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
         );
@@ -467,8 +468,8 @@ abstract class OfflineUtil {
       await offlineApiRepository.initDataBooks();
 
       IApiService().setRepository(offlineApiRepository);
-      await IConfigService()
-          .setOfflineScreen(IUiService().getComponentByName(pComponentName: pWorkscreen)!.screenLongName!);
+      var panelModel = IUiService().getComponentByName(pComponentName: pWorkscreen) as FlPanelModel;
+      await IConfigService().setOfflineScreen(panelModel.screenClassName!);
       await onlineApiRepository.stop();
       //Clear menu
       IUiService().setMenuModel(null);

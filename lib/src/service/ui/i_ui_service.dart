@@ -122,6 +122,9 @@ abstract class IUiService {
   /// Returns the top-most panel if a work screen is open
   FlPanelModel? getComponentByScreenName({required String pScreenLongName});
 
+  /// Returns the top-most panel if a work screen is open
+  FlPanelModel? getComponentByClassName({required String pScreenClassName});
+
   /// Save new components to active components,
   /// used for saving components which have not been previously been rendered.
   void saveNewComponents({required List<FlComponentModel> newModels});

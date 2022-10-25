@@ -301,7 +301,16 @@ class UiService implements IUiService {
 
   @override
   FlPanelModel? getComponentByScreenName({required String pScreenLongName}) {
-    return _componentModels.firstWhereOrNull((element) => element.screenLongName == pScreenLongName) as FlPanelModel?;
+    return _componentModels
+        .whereType<FlPanelModel>()
+        .firstWhereOrNull((element) => element.screenLongName == pScreenLongName);
+  }
+
+  @override
+  FlPanelModel? getComponentByClassName({required String pScreenClassName}) {
+    return _componentModels
+        .whereType<FlPanelModel>()
+        .firstWhereOrNull((element) => element.screenClassName == pScreenClassName);
   }
 
   @override
