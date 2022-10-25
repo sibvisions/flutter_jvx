@@ -133,7 +133,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         .openDialog(
             pBuilder: (_) => DatePickerDialog(
                   initialDate: pInitialDate,
-                  firstDate: DateTime(1970),
+                  firstDate: DateTime(1900),
                   lastDate: DateTime(2100),
                 ),
             pIsDismissible: true)
