@@ -42,6 +42,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   /// Additional input decorations not handled by the model.
   final InputDecoration inputDecoration;
 
+  final List<TextInputFormatter>? inputFormatters;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,8 +63,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   int? get maxLines => 1;
 
   bool get isExpandend => false;
-
-  List<TextInputFormatter>? get inputFormatters => null;
 
   MaxLengthEnforcement? get maxLengthEnforcement => null;
 
@@ -85,6 +85,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     required super.endEditing,
     required this.focusNode,
     required this.textController,
+    this.inputFormatters,
     this.keyboardType = TextInputType.text,
     this.inTable = false,
     this.isMandatory = false,

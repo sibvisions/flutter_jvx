@@ -74,6 +74,7 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
       //(value) => onEndEditing(numberFormatter.convertToNumber(value)),
       focusNode: focusNode,
       textController: textController,
+      inputFormatters: [numberFormatter],
       keyboardType: numberFormatter.getKeyboardType(),
       inTable: pInTable,
       isMandatory: columnDefinition?.nullable == false,
