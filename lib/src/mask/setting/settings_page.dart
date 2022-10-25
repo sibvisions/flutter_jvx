@@ -51,7 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
   String? language;
   late int resolution;
 
-  static const double bottomBarHeight = 50;
+  static const double bottomBarHeight = 55;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -119,7 +119,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Expanded(child: _createCancelButton(context, loading)),
                   ConstrainedBox(
-                    constraints: const BoxConstraints.tightFor(width: 80),
+                    constraints: const BoxConstraints.tightFor(width: bottomBarHeight - 2),
                     child: Stack(
                       children: [
                         Positioned.fill(
@@ -137,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         Center(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2.0),
+                            padding: const EdgeInsets.symmetric(vertical: 7.0),
                             child: SizedBox(child: _createFAB(context, loading)),
                           ),
                         ),
@@ -218,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (IConfigService().getAppConfig()?.privacyPolicy != null) {
       SettingItem privacyPolicy = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.link),
-        endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize),
+        endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
         title: FlutterJVx.translate("Privacy Policy"),
         onPressed: (value) => launchUrl(
           IConfigService().getAppConfig()!.privacyPolicy!,
@@ -249,7 +249,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     SettingItem appNameSetting = SettingItem(
       frontIcon: FaIcon(FontAwesomeIcons.server, color: Theme.of(context).colorScheme.primary),
-      endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize),
+      endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
       value: appName ?? "",
       title: appNameTitle,
       enabled: !IConfigService().isOffline(),
@@ -279,7 +279,7 @@ class _SettingsPageState extends State<SettingsPage> {
     String urlTitle = FlutterJVx.translate("URL");
     SettingItem baseUrlSetting = SettingItem(
         frontIcon: FaIcon(FontAwesomeIcons.globe, color: Theme.of(context).colorScheme.primary),
-        endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize),
+        endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
         value: baseUrl ?? "",
         title: urlTitle,
         enabled: !IConfigService().isOffline(),
@@ -330,7 +330,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     SettingItem languageSetting = SettingItem(
       frontIcon: FaIcon(FontAwesomeIcons.language, color: Theme.of(context).colorScheme.primary),
-      endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize),
+      endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
       title: FlutterJVx.translate("Language"),
       //"System" is default
       value: language ?? supportedLanguages[0],
@@ -361,7 +361,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     SettingItem pictureSetting = SettingItem(
       frontIcon: FaIcon(FontAwesomeIcons.image, color: Theme.of(context).colorScheme.primary),
-      endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize),
+      endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
       title: FlutterJVx.translate("Picture Size"),
       value: resolution,
       itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
@@ -403,7 +403,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildVersionInfo() {
     SettingItem appVersionSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.github),
-      endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize),
+      endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
       valueNotifier: appVersionNotifier,
       title: FlutterJVx.translate("App Version"),
       onPressed: (value) => showLicensePage(
