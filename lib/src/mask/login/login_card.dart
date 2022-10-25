@@ -35,6 +35,7 @@ class _LoginCardState extends State<LoginCard> {
   ButtonState progressButtonState = ButtonState.idle;
 
   bool showRememberMe = false;
+  bool _passwordHidden = true;
 
   @override
   void initState() {
@@ -78,8 +79,20 @@ class _LoginCardState extends State<LoginCard> {
               onChanged: (_) => resetButton(),
               onEditingComplete: _onLoginPressed,
               controller: passwordController,
-              decoration: InputDecoration(labelText: "${FlutterJVx.translate("Password")}:"),
-              obscureText: true,
+              decoration: InputDecoration(
+                labelText: "${FlutterJVx.translate("Password")}:",
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _passwordHidden ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _passwordHidden = !_passwordHidden;
+                    });
+                  },
+                ),
+              ),
+              obscureText: _passwordHidden,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             if (showRememberMe)
