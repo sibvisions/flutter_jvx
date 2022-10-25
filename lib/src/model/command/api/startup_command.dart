@@ -1,5 +1,6 @@
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
+import '../../../../util/extensions/list_extensions.dart';
 import 'api_command.dart';
 
 class StartupCommand extends ApiCommand {
@@ -29,9 +30,8 @@ class StartupCommand extends ApiCommand {
   }) {
     beforeProcessing = () => IUiService().getAppManager()?.onInitStartup();
     afterProcessing = () {
-      if (routerDelegate.beamingHistory.length > 1) {
-        routerDelegate.beamingHistory.removeRange(0, routerDelegate.beamingHistory.length - 1);
-      }
+      // Beamer's history also contains the present!
+      routerDelegate.beamingHistory.removeAllExceptLast();
       ILayoutService().clear();
       IStorageService().clear();
       IDataService().clear();
@@ -39,7 +39,7 @@ class StartupCommand extends ApiCommand {
     };
     onFinish = () {
       // We have to clear the history only after routing, as before the past location would have not benn counted as "history".
-      routerDelegate.currentBeamLocation.history.clear();
+      routerDelegate.currentBeamLocation.history.removeAllExceptLast();
       IUiService().getAppManager()?.onSuccessfulStartup();
     };
   }
