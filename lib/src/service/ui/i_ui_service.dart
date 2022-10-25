@@ -51,11 +51,12 @@ abstract class IUiService {
 
   /// Sends [command] to [ICommandService].
   ///
-  /// Do not use the [catchError] Future function. It won't fire. Use [onError].
-  Future<void> sendCommand(BaseCommand command, {Function(Object error, StackTrace stackTrace)? onError});
+  /// ## Do not use any future functions except await because errors are swallowed!
+  /// Alternatively use [ICommandService.sendCommand] to get an unmodified future.
+  Future<void> sendCommand(BaseCommand command);
 
   ///Can be used to handle an async error
-  void handleAsyncError(Object error, StackTrace stackTrace);
+  handleAsyncError(Object error, StackTrace stackTrace);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing

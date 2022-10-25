@@ -76,18 +76,12 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<void> sendCommand(BaseCommand command, {Function(Object error, StackTrace stackTrace)? onError}) {
-    return ICommandService().sendCommand(command).catchError((error, stackTrace) {
-      if (onError != null) {
-        onError.call(error, stackTrace);
-      } else {
-        handleAsyncError(error, stackTrace);
-      }
-    });
+  Future<void> sendCommand(BaseCommand command) {
+    return ICommandService().sendCommand(command).catchError(handleAsyncError);
   }
 
   @override
-  void handleAsyncError(Object error, StackTrace stackTrace) {
+  handleAsyncError(Object error, StackTrace stackTrace) {
     FlutterJVx.log.e("Error while sending async command", error, stackTrace);
 
     if (error is! ErrorViewException) {
@@ -99,6 +93,8 @@ class UiService implements IUiService {
         reason: "Command error in ui service",
       ));
     }
+
+    return null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -673,7 +669,7 @@ class UiService implements IUiService {
 
   @override
   void saveAllEditorsThen(String? pId, Function? pFunction, String pReason) {
-    sendCommand(SaveAllEditorsCommand(componentId: pId, reason: pReason)).then((value) {
+    ICommandService().sendCommand(SaveAllEditorsCommand(componentId: pId, reason: pReason)).then((value) {
       FlutterJVx.log.i("Save all complete.");
       pFunction?.call();
     });

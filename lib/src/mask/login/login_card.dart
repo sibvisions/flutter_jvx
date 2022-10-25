@@ -189,16 +189,17 @@ class _LoginCardState extends State<LoginCard> {
   void _onLoginPressed() {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    IUiService().sendCommand(
-        LoginCommand(
-          loginMode: LoginMode.MANUAL,
-          userName: usernameController.text,
-          password: passwordController.text,
-          reason: "LoginButton",
-          createAuthKey: showRememberMe && checkHolder.isChecked,
-        ), onError: (error, stackTrace) {
+    ICommandService()
+        .sendCommand(LoginCommand(
+      loginMode: LoginMode.MANUAL,
+      userName: usernameController.text,
+      password: passwordController.text,
+      reason: "LoginButton",
+      createAuthKey: showRememberMe && checkHolder.isChecked,
+    ))
+        .catchError((error, stackTrace) {
       setState(() => progressButtonState = ButtonState.fail);
-      IUiService().handleAsyncError(error, stackTrace);
+      return IUiService().handleAsyncError(error, stackTrace);
     });
   }
 

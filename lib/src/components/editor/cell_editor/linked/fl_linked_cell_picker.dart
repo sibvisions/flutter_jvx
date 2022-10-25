@@ -276,7 +276,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       }
     }
 
-    IUiService()
+    ICommandService()
         .sendCommand(
       FilterCommand(
         editorId: widget.name,
@@ -292,7 +292,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           focusNode.requestFocus();
         }
       },
-    );
+    ).catchError(IUiService().handleAsyncError);
   }
 
   void _increasePageLoad() {

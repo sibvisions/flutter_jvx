@@ -89,7 +89,7 @@ class FlLinkedCellEditor
   }
 
   void _openLinkedCellPicker() {
-    IUiService()
+    ICommandService()
         .sendCommand(
       FilterCommand(
           editorId: name!,
@@ -115,7 +115,7 @@ class FlLinkedCellEditor
           }
         }
       });
-    });
+    }).catchError(IUiService().handleAsyncError);
   }
 
   @override
