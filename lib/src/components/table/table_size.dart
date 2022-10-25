@@ -15,15 +15,6 @@ enum _RedistributionPriority { first, second, third }
 /// Represents a table size
 class TableSize {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // Value is multiplied by 1.3 to make sure that the text is not cut off
-  // because the calculated width is too small. Still not sure why, but it works.
-
-  static const double TEXT_PAINTER_MULTIPLIER = 1.3;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -114,7 +105,6 @@ class TableSize {
   calculateTableSize({
     required FlTableModel pTableModel,
     DataChunk? pDataChunk,
-    double pTextScaleFactor = 1.0,
     int pRowsToCalculate = 10,
     double? pAvailableWidth,
   }) {
@@ -134,7 +124,6 @@ class TableSize {
       double calculatedHeaderWidth = _calculateTableTextWidth(
         textStyle.copyWith(fontWeight: FontWeight.bold),
         "$columnLabel*", // Column headers get a * if they are mandatory
-        pTextScaleFactor,
       );
       calculatedColumnWidths[columnName] = _adjustValue(minColumnWidth, calculatedHeaderWidth);
 
@@ -174,7 +163,7 @@ class TableSize {
             } else {
               ICellEditor cellEditor = _createCellEditor(columnDefinition.cellEditorJson);
 
-              calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle, pTextScaleFactor);
+              calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle);
             }
             calculatedColumnWidths[columnName] = _adjustValue(calculatedColumnWidths[columnName]!, calculatedWidth);
           }
@@ -221,7 +210,6 @@ class TableSize {
     List<dynamic> dataColumn,
     ICellEditor pCellEditor,
     TextStyle pTextStyle,
-    double pTextScaleFactor,
   ) {
     double columnWidth = pCellEditor.getEditorSize(null, true) ?? 0.0;
 
@@ -229,7 +217,7 @@ class TableSize {
     for (dynamic value in valuesToCheck) {
       String formattedText = pCellEditor.formatValue(value);
 
-      double rowWidth = _calculateTableTextWidth(pTextStyle, formattedText, pTextScaleFactor);
+      double rowWidth = _calculateTableTextWidth(pTextStyle, formattedText);
 
       columnWidth = _adjustValue(columnWidth, rowWidth);
     }
@@ -242,14 +230,11 @@ class TableSize {
   double _calculateTableTextWidth(
     TextStyle pTextStyle,
     String pText,
-    double pTextScaleFactor,
   ) {
     double width = ParseUtil.getTextWidth(
       text: pText,
       style: pTextStyle,
-      textScaleFactor: pTextScaleFactor,
     );
-    width *= TEXT_PAINTER_MULTIPLIER;
 
     width += cellPadding.horizontal + columnDividerWidth;
 

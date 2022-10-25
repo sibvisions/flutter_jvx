@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../flutter_jvx.dart';
 import '../src/model/layout/layout_position.dart';
 
 abstract class ParseUtil {
@@ -131,12 +132,13 @@ abstract class ParseUtil {
   static TextPainter getTextPainter({
     required String text,
     required TextStyle style,
-    double textScaleFactor = 1.0,
+    double? pTextScaleFactor,
     TextAlign align = TextAlign.left,
     TextDirection textDirection = TextDirection.ltr,
     double maxWidth = double.infinity,
     int maxLines = 1,
   }) {
+    double textScaleFactor = pTextScaleFactor ?? MediaQuery.textScaleFactorOf(FlutterJVx.getCurrentContext()!);
     TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: textDirection,
@@ -151,7 +153,7 @@ abstract class ParseUtil {
   static Size getTextSize({
     required String text,
     required TextStyle style,
-    double textScaleFactor = 1.0,
+    double? pTextScaleFactor,
     TextAlign align = TextAlign.left,
     TextDirection textDirection = TextDirection.ltr,
     double maxWidth = double.infinity,
@@ -160,7 +162,7 @@ abstract class ParseUtil {
     return getTextPainter(
             text: text,
             style: style,
-            textScaleFactor: textScaleFactor,
+            pTextScaleFactor: pTextScaleFactor,
             align: align,
             textDirection: textDirection,
             maxWidth: maxWidth,
@@ -171,7 +173,7 @@ abstract class ParseUtil {
   static double getTextHeight({
     required String text,
     required TextStyle style,
-    double textScaleFactor = 1.0,
+    double? pTextScaleFactor,
     TextAlign align = TextAlign.left,
     TextDirection textDirection = TextDirection.ltr,
     double maxWidth = double.infinity,
@@ -180,7 +182,7 @@ abstract class ParseUtil {
     return getTextPainter(
             text: text,
             style: style,
-            textScaleFactor: textScaleFactor,
+            pTextScaleFactor: pTextScaleFactor,
             align: align,
             textDirection: textDirection,
             maxWidth: maxWidth,
@@ -191,7 +193,7 @@ abstract class ParseUtil {
   static double getTextWidth({
     required String text,
     required TextStyle style,
-    double textScaleFactor = 1.0,
+    double? pTextScaleFactor,
     TextAlign align = TextAlign.left,
     TextDirection textDirection = TextDirection.ltr,
     double maxWidth = double.infinity,
@@ -200,7 +202,7 @@ abstract class ParseUtil {
     return getTextPainter(
             text: text,
             style: style,
-            textScaleFactor: textScaleFactor,
+            pTextScaleFactor: pTextScaleFactor,
             align: align,
             textDirection: textDirection,
             maxWidth: maxWidth,
