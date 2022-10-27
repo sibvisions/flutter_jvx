@@ -77,6 +77,8 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    subject.add(MediaQuery.of(context).size);
+
     return AppStyle(
       applicationStyle: IConfigService().getAppStyle(),
       applicationSettings: IConfigService().getApplicationSettings(),
@@ -87,12 +89,7 @@ class JVxOverlayState extends State<JVxOverlay> {
             show: loading && snapshot.connectionState == ConnectionState.done,
             child: Stack(
               children: [
-                if (widget.child != null)
-                  LayoutBuilder(builder: (context, constraints) {
-                    subject.add(
-                        Size(constraints.maxWidth, constraints.maxHeight + MediaQuery.of(context).viewInsets.bottom));
-                    return widget.child!;
-                  }),
+                widget.child!,
                 FramesWidget(key: framesKey),
                 DialogsWidget(key: dialogsKey),
                 if (loading)
