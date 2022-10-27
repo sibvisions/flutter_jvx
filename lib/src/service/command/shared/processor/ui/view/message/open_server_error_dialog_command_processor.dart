@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:beamer/beamer.dart';
+import 'package:collection/collection.dart';
 
 import '../../../../../../../../flutter_jvx.dart';
 import '../../../../../../../../services.dart';
@@ -21,12 +22,18 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
         goToSettings = false;
       }
 
-      IUiService().showFrameDialog(
-        ServerErrorDialog(
-          command: command,
-          goToSettings: goToSettings,
-        ),
-      );
+      //Check if there isn't already another dialog with the same id
+      if (IUiService()
+          .getFrameDialogs()
+          .whereType<ServerErrorDialog>()
+          .none((dialog) => dialog.command.componentId == command.componentId)) {
+        IUiService().showFrameDialog(
+          ServerErrorDialog(
+            command: command,
+            goToSettings: goToSettings,
+          ),
+        );
+      }
     }
     return [];
   }
