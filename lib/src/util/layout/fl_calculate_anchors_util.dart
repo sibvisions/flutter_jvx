@@ -105,30 +105,4 @@ class FLCalculateAnchorsUtil {
       }
     });
   }
-
-  static void initAutoSize({required HashMap<String, FormLayoutAnchor> pAnchors}) {
-    pAnchors.forEach((anchorName, anchor) {
-      if (anchor.relatedAnchor?.relatedAnchor != null) // relatedAnchor is not the margin anchor
-      {
-        // in case component on margin, init with next gap
-        if (anchor.relatedAnchor!.autoSize &&
-            !anchor.autoSize &&
-            anchor.relatedAnchor!.relatedAnchor!.relatedAnchor == null) {
-          anchor.relatedAnchor!.position = -anchor.position;
-        }
-        // in case component not on margin init with previous (own) gap
-        else if (anchor.autoSize && !anchor.relatedAnchor!.autoSize) {
-          anchor.position = -anchor.relatedAnchor!.position;
-        }
-      }
-
-      // Check if two autoSize anchors are side by side
-      // if (anchor.relatedAnchor != null && anchor.relatedAnchor!.autoSize) {
-      //   FormLayoutAnchor relatedAutoSizeAnchor = anchor.relatedAnchor!;
-      //   if (relatedAutoSizeAnchor.relatedAnchor != null && !relatedAutoSizeAnchor.relatedAnchor!.autoSize) {
-      //     relatedAutoSizeAnchor.position = -anchor.position;
-      //   }
-      // }
-    });
-  }
 }

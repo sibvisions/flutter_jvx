@@ -158,7 +158,15 @@ class FormLayout extends ILayout {
     FLCalculateAnchorsUtil.clearAutoSize(pAnchors: pAnchors);
 
     // Init autoSize Anchor position
-    FLCalculateAnchorsUtil.initAutoSize(pAnchors: pAnchors);
+    pAnchors.forEach((anchorName, anchor) {
+      // Check if two autoSize anchors are side by side
+      if (anchor.relatedAnchor != null && anchor.relatedAnchor!.autoSize) {
+        FormLayoutAnchor relatedAutoSizeAnchor = anchor.relatedAnchor!;
+        if (relatedAutoSizeAnchor.relatedAnchor != null && !relatedAutoSizeAnchor.relatedAnchor!.autoSize) {
+          relatedAutoSizeAnchor.position = -anchor.position;
+        }
+      }
+    });
 
     // Init autoSize Anchors
     for (var component in pComponentData) {
