@@ -77,7 +77,11 @@ class AppLogin extends StatelessWidget {
           Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width / 10 * 8,
-              child: SingleChildScrollView(child: loginCard),
+              child: SingleChildScrollView(
+                // Is there to allow scrolling the login if there is not enough space.
+                // E.g.: Holding a phone horizontally and trying to login needs scrolling to be possible.
+                child: loginCard,
+              ),
             ),
           ),
         ],
