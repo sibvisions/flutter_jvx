@@ -106,6 +106,7 @@ class LayoutService implements ILayoutService {
         }
       }
     } else {
+      FlutterJVx.log.i("Could not find layoutdata for the screen[$pScreenComponentId], creating it.");
       existingLayout = _layoutDataSet[pScreenComponentId] = LayoutData(
           id: pScreenComponentId,
           layoutPosition: position,
