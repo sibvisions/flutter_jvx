@@ -124,23 +124,6 @@ class _WorkScreenState extends State<WorkScreen> {
         body: frame?.wrapBody(body) ?? body,
       ),
     );
-
-    // Used for debugging when selecting widgets via the debugger or debugging
-    // pointer events - because the GestureDetector eats all events
-
-    //   return Scaffold(
-    //     appBar: AppBar(title: Text(screenModel.name)),
-    //     body: Scaffold(
-    //       body: LayoutBuilder(builder: (context, constraints) {
-    //         return Stack(
-    //           children: [screenWidget],
-    //         );
-    //       }),
-    //       resizeToAvoidBottomInset: false,
-    //     ),
-    //     resizeToAvoidBottomInset: false,
-    //   );
-    // }
   }
 
   _setScreenSize(Size size) {
@@ -191,6 +174,7 @@ class _WorkScreenState extends State<WorkScreen> {
     String? backgroundImageString = appStyle['desktop.icon'];
 
     return Scaffold(
+      resizeToAvoidBottomInset: true, // If true, rebuilds and therefore can activate scrolling or not.
       appBar: widget.header,
       bottomNavigationBar: widget.footer,
       backgroundColor: Colors.transparent,
@@ -200,6 +184,7 @@ class _WorkScreenState extends State<WorkScreen> {
             WidgetsBinding.instance.window.viewInsets,
             WidgetsBinding.instance.window.devicePixelRatio,
           );
+
           Widget screenWidget = widget.screenWidget;
           if (!widget.isCustomScreen && screenWidget is FlPanelWrapper) {
             Size size = Size(constraints.maxWidth, constraints.maxHeight + viewInsets.bottom);
@@ -221,6 +206,7 @@ class _WorkScreenState extends State<WorkScreen> {
           }
           return SingleChildScrollView(
             physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
             child: Stack(
               children: [
                 Container(
@@ -240,7 +226,6 @@ class _WorkScreenState extends State<WorkScreen> {
           );
         },
       ),
-      //resizeToAvoidBottomInset: false,
     );
   }
 }
