@@ -89,7 +89,8 @@ class JVxOverlayState extends State<JVxOverlay> {
               children: [
                 if (widget.child != null)
                   LayoutBuilder(builder: (context, constraints) {
-                    subject.add(Size(constraints.maxWidth, constraints.maxHeight));
+                    subject.add(
+                        Size(constraints.maxWidth, constraints.maxHeight + MediaQuery.of(context).viewInsets.bottom));
                     return widget.child!;
                   }),
                 FramesWidget(key: framesKey),

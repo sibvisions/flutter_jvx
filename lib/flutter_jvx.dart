@@ -43,6 +43,7 @@ import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/config_util.dart';
 import 'src/util/loading_handler/loading_progress_handler.dart';
+import 'util/extensions/list_extensions.dart';
 import 'util/jvx_colors.dart';
 import 'util/parse_util.dart';
 
@@ -106,6 +107,23 @@ class FlutterJVx extends StatefulWidget {
 
   static BuildContext? getCurrentContext() {
     return routerDelegate.navigatorKey.currentContext;
+  }
+
+  static void clearHistory() {
+    // Beamer's history also contains the present!
+    routerDelegate.beamingHistory.removeAllExceptLast();
+  }
+
+  static void clearLocationHistory() {
+    // We have to clear the history only after routing, as before the past location would have not benn counted as "history".
+    routerDelegate.currentBeamLocation.history.removeAllExceptLast();
+  }
+
+  static void clearServices() {
+    ILayoutService().clear();
+    IStorageService().clear();
+    IDataService().clear();
+    IUiService().clear();
   }
 
   static start([FlutterJVx pAppToRun = const FlutterJVx()]) async {

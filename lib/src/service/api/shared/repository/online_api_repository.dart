@@ -127,7 +127,7 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.dalMetaData: DalMetaDataResponse.fromJson,
     ApiResponseNames.userData: UserDataResponse.fromJson,
     ApiResponseNames.login: LoginViewResponse.fromJson,
-    ApiResponseNames.error: ErrorViewResponse.fromJson,
+    ApiResponseNames.messageError: ErrorViewResponse.fromJson,
     ApiResponseNames.sessionExpired: SessionExpiredResponse.fromJson,
     ApiResponseNames.dalDataProviderChanged: DalDataProviderChangedResponse.fromJson,
     ApiResponseNames.authenticationData: AuthenticationDataResponse.fromJson,

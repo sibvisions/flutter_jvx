@@ -79,7 +79,7 @@ class ApiController implements IController {
       ApiResponseNames.dalFetch: _dalFetchProcessor,
       ApiResponseNames.userData: _userDataProcessor,
       ApiResponseNames.login: _loginViewProcessor,
-      ApiResponseNames.error: _errorViewProcessor,
+      ApiResponseNames.messageError: _errorViewProcessor,
       ApiResponseNames.sessionExpired: _sessionExpiredProcessor,
       ApiResponseNames.dalDataProviderChanged: _dalDataProviderChangedProcessor,
       ApiResponseNames.authenticationData: _authenticationDataProcessor,
