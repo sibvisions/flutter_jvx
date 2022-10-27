@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../components.dart';
 import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../app_menu.dart';
@@ -48,8 +49,9 @@ class AppMenuListItem extends StatelessWidget {
     String key = "workScreenName";
     var pathSegments = (context.currentBeamLocation.state as BeamState).pathParameters;
     if (pathSegments.containsKey(key)) {
-      selected = IUiService().getComponentByName(pComponentName: pathSegments[key]!)?.screenLongName ==
-          menuItemModel.screenLongName;
+      String screenName = pathSegments[key]!;
+      selected = menuItemModel.screenLongName
+          .contains((IUiService().getComponentByName(pComponentName: screenName) as FlPanelModel?)!.screenClassName!);
     }
 
     var leading = MenuItemModel.getImage(
