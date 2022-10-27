@@ -51,6 +51,9 @@ class AppMenu extends StatefulWidget {
 
   static void menuItemPressed(
       {required String pScreenLongName, required IUiService pUiService, required BuildContext pContext}) {
+    //Always close drawer even on route (e.g. previewer blocks routing)
+    Scaffold.maybeOf(pContext)?.closeEndDrawer();
+
     // Offline screens no not require the server to know that they are open
     if (pUiService.usesNativeRouting(pScreenLongName: pScreenLongName)) {
       pUiService.routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
