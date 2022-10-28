@@ -22,6 +22,7 @@ import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/request/filter.dart';
 import '../../model/response/dal_meta_data_response.dart';
+import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -107,7 +108,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   Widget build(BuildContext context) {
     Widget? widget;
     if (currentState != (ALL_COMPLETE)) {
-      widget = const CircularProgressIndicator();
+      widget = const Center(child: CircularProgressIndicator());
     }
 
     widget ??= FlTableWidget(
@@ -277,7 +278,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Deletes the selected record.
   void deleteRecord() {
     if (lastTouchedIndex != -1) {
-      Filter? filter = createPrimaryFilter(pRowIndex: lastTouchedIndex);
+      Filter? filter = createFilter(pRowIndex: lastTouchedIndex);
 
       if (filter == null) {
         FlutterJVx.log.w("Filter of table(${model.id}) null");
@@ -299,7 +300,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Selects the record.
   Future<void> selectRecord(int pRowIndex) async {
     // if (selectedRow != pRowIndex) {
-    Filter? filter = createPrimaryFilter(pRowIndex: pRowIndex);
+    Filter? filter = createFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
       FlutterJVx.log.w("Filter of table(${model.id}) null");
@@ -390,18 +391,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
-    List<dynamic> listPrimaryKeyValues = [];
-    for (String primaryKeyColumn in metaData!.primaryKeyColumns) {
-      listPrimaryKeyValues.add(_getValue(pColumnName: primaryKeyColumn, pRowIndex: rowIndex));
-    }
-
     IUiService().sendCommand(
       SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataProvider,
         columnNames: pColumnNames,
         values: pValues,
-        filter: createPrimaryFilter(pRowIndex: rowIndex),
+        filter: createFilter(pRowIndex: rowIndex),
         reason: "Values changed in table",
       ),
     );
@@ -427,18 +423,34 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return chunkData.data[rowIndex]![colIndex];
   }
 
-  Filter? createPrimaryFilter({int? pRowIndex}) {
+  Filter? createFilter({int? pRowIndex}) {
     int rowIndex = pRowIndex ?? selectedRow;
     if (rowIndex == -1 || metaData == null) {
       return null;
     }
 
-    List<dynamic> listPrimaryKeyValues = [];
-    for (String primaryKeyColumn in metaData!.primaryKeyColumns) {
-      listPrimaryKeyValues.add(_getValue(pColumnName: primaryKeyColumn, pRowIndex: rowIndex));
+    List<String> listColumnNames = [];
+    List<dynamic> listValues = [];
+
+    if (metaData!.primaryKeyColumns.isNotEmpty) {
+      listColumnNames.addAll(metaData!.primaryKeyColumns);
+    } else if (metaData!.primaryKeyColumns.contains("ID")) {
+      listColumnNames.add("ID");
+    } else {
+      listColumnNames.addAll(
+        metaData!.columns
+            .where((column) =>
+                column.cellEditorClassName == FlCellEditorClassname.TEXT_CELL_EDITOR ||
+                column.cellEditorClassName == FlCellEditorClassname.NUMBER_CELL_EDITOR)
+            .map((column) => column.name),
+      );
     }
 
-    return Filter(values: listPrimaryKeyValues, columnNames: metaData!.primaryKeyColumns);
+    for (String column in listColumnNames) {
+      listValues.add(_getValue(pColumnName: column, pRowIndex: rowIndex));
+    }
+
+    return Filter(values: listValues, columnNames: listColumnNames);
   }
 
   PopupMenuItem<ContextMenuCommand> _getContextMenuItem(IconData icon, String text, ContextMenuCommand value) {
