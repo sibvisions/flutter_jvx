@@ -32,8 +32,8 @@ dependencies:
   shared_preferences: ^2.0.15
 
   # Device Identification
-  package_info_plus: ^1.4.2
-  device_info_plus: ^5.0.5
+  package_info_plus: ^3.0.1
+  device_info_plus: ^8.0.0
   uuid: ^3.0.6
 
   # Util
