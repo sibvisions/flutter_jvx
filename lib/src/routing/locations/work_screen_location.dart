@@ -29,7 +29,9 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
     FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
     String screenLongName = model?.screenLongName ?? workScreenName;
 
-    if (workScreenName != lastWorkscreen || model?.id != lastId) {
+    if (workScreenName != lastWorkscreen) {
+      key = GlobalKey();
+    } else if (model?.id != lastId) {
       key.currentState?.rebuild();
     }
 

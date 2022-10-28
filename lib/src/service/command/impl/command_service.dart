@@ -135,6 +135,7 @@ class CommandService implements ICommandService {
     FlutterJVx.log.d("After processing ${pCommand.runtimeType}");
     pCommand.afterProcessing?.call();
 
+    modifyCommands(commands, pCommand);
     IUiService().getAppManager()?.modifyCommands(commands, pCommand);
 
     if (commands.isNotEmpty) {
@@ -178,6 +179,17 @@ class CommandService implements ICommandService {
         as OpenServerErrorDialogCommand?;
     if (errorCommand != null) {
       throw ErrorViewException(errorCommand);
+    }
+  }
+
+  void modifyCommands(List<BaseCommand> commands, BaseCommand originalCommand) {
+    if (originalCommand is OpenScreenCommand) {
+      DeleteScreenCommand? deleteScreen =
+          commands.firstWhereOrNull((element) => element is DeleteScreenCommand) as DeleteScreenCommand?;
+      if (deleteScreen != null &&
+          commands.any((element) => element is RouteToWorkCommand && element.screenName == deleteScreen.screenName)) {
+        deleteScreen.beamBack = false;
+      }
     }
   }
 }
