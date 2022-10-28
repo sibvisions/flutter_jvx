@@ -157,16 +157,18 @@ class FormLayout extends ILayout {
       required Gaps pGaps}) {
     FLCalculateAnchorsUtil.clearAutoSize(pAnchors: pAnchors);
 
+    /*
+    FormLayout Änderungen von Martin bzgl Gaps der Anchor.
+    pComponentConstraints.forEach((key, value) {
+      value.topAnchor.used = true;
+      value.leftAnchor.used = true;
+      value.bottomAnchor.used = true;
+      value.rightAnchor.used = true;
+    }); 
+    */
+
     // Init autoSize Anchor position
-    pAnchors.forEach((anchorName, anchor) {
-      // Check if two autoSize anchors are side by side
-      if (anchor.relatedAnchor != null && anchor.relatedAnchor!.autoSize) {
-        FormLayoutAnchor relatedAutoSizeAnchor = anchor.relatedAnchor!;
-        if (relatedAutoSizeAnchor.relatedAnchor != null && !relatedAutoSizeAnchor.relatedAnchor!.autoSize) {
-          relatedAutoSizeAnchor.position = -anchor.position;
-        }
-      }
-    });
+    FLCalculateAnchorsUtil.initAnchors(pAnchors);
 
     // Init autoSize Anchors
     for (var component in pComponentData) {

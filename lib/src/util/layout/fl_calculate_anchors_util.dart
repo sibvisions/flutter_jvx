@@ -100,8 +100,25 @@ class FLCalculateAnchorsUtil {
       anchor.relative = anchor.autoSize;
       anchor.autoSizeCalculated = false;
       anchor.firstCalculation = true;
+      /*
+      FormLayout Änderungen von Martin bzgl Gaps der Anchor.
+      anchor.used = false;
+      */
       if (anchor.autoSize) {
         anchor.position = 0;
+      }
+    });
+  }
+
+  static void initAnchors(HashMap<String, FormLayoutAnchor> pAnchors) {
+    // Init autoSize Anchor position
+    pAnchors.forEach((anchorName, anchor) {
+      // Check if two autoSize anchors are side by side
+      if (anchor.relatedAnchor != null && anchor.relatedAnchor!.autoSize) {
+        FormLayoutAnchor relatedAutoSizeAnchor = anchor.relatedAnchor!;
+        if (relatedAutoSizeAnchor.relatedAnchor != null && !relatedAutoSizeAnchor.relatedAnchor!.autoSize) {
+          relatedAutoSizeAnchor.position = -anchor.position;
+        }
       }
     });
   }
