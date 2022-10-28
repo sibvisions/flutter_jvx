@@ -28,7 +28,6 @@ import '../../../model/menu/menu_group_model.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/settings_location.dart';
-import '../../../routing/locations/work_screen_location.dart';
 
 /// Manages all interactions with the UI
 class UiService implements IUiService {
@@ -137,22 +136,10 @@ class UiService implements IUiService {
 
     BeamLocation lastLocation = FlutterJVx.getCurrentContext()!.currentBeamLocation;
 
-    bool justReload = false;
-
-    if (lastLocation.runtimeType == WorkScreenLocation) {
-      BeamState beamState = lastLocation.state as BeamState;
-      if (beamState.pathParameters['workScreenName'] == pScreenName) {
-        justReload = true;
-      }
-    }
-
-    Map<String, dynamic> beamData = {};
-    beamData['reload'] = justReload;
-
     if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
-      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName", data: beamData);
+      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName");
     } else {
-      FlutterJVx.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName", data: beamData);
+      FlutterJVx.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName");
     }
   }
 

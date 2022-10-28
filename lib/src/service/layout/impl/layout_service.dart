@@ -37,7 +37,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    FlutterJVx.log.d("${pLayoutData.id} REPORT: ${pLayoutData.layout}");
+    FlutterJVx.log.d("${pLayoutData.id} REPORT: [${pLayoutData.id}]${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -108,12 +108,13 @@ class LayoutService implements ILayoutService {
     } else {
       FlutterJVx.log.i("Could not find layoutdata for the screen[$pScreenComponentId], creating it.");
       existingLayout = _layoutDataSet[pScreenComponentId] = LayoutData(
-          id: pScreenComponentId,
-          layoutPosition: position,
-          calculatedSize: pSize,
-          lastCalculatedSize: pSize,
-          widthConstrains: {},
-          heightConstrains: {});
+        id: pScreenComponentId,
+        layoutPosition: position,
+        calculatedSize: pSize,
+        lastCalculatedSize: pSize,
+        widthConstrains: {},
+        heightConstrains: {},
+      );
     }
 
     return [
@@ -157,6 +158,21 @@ class LayoutService implements ILayoutService {
     _isValid = isValid;
 
     return _isValid;
+  }
+
+  @override
+  Future<bool> deleteScreen({required String pComponentId}) async {
+    var deleted = _layoutDataSet.remove(pComponentId);
+    if (deleted == null) {
+      return false;
+    }
+
+    List<LayoutData> descendants = _getDescendants(pParentLayout: deleted);
+    descendants.forEach((element) {
+      _layoutDataSet.remove(element);
+    });
+
+    return true;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -262,6 +278,20 @@ class LayoutService implements ILayoutService {
         return null;
       }
     }
+    return childrenData;
+  }
+
+  List<LayoutData> _getDescendants({required LayoutData pParentLayout}) {
+    List<LayoutData> childrenData = [];
+
+    for (String childId in pParentLayout.children) {
+      LayoutData? childData = _layoutDataSet[childId];
+      if (childData != null) {
+        childrenData.add(childData);
+        childrenData.addAll(_getDescendants(pParentLayout: childData));
+      }
+    }
+
     return childrenData;
   }
 }

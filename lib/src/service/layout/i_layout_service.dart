@@ -37,8 +37,7 @@ abstract class ILayoutService {
   /// Marks Layout as Dirty, used to wait for all changing components to re-register themselves to avoid unnecessary re-renders.
   Future<bool> markLayoutAsDirty({required String pComponentId});
 
-  /// Removes a parent.
-  ///
+  /// Removes a component from the layouting system.
   /// Returns `true` if removed and `false` if nothing was removed.
   Future<bool> removeLayout({required String pComponentId});
 
@@ -49,4 +48,7 @@ abstract class ILayoutService {
 
   /// If it is allowed to layout.
   Future<bool> isValid();
+
+  /// Deletes Screen layout data, and all descendants.
+  Future<bool> deleteScreen({required String pComponentId});
 }

@@ -4,6 +4,7 @@ import '../../../isolate/isolate_message.dart';
 import '../../../isolate/isolate_message_wrapper.dart';
 import '../layout_service.dart';
 import 'message/endpoint/clear_message.dart';
+import 'message/endpoint/delete_screen_message.dart';
 import 'message/endpoint/layout_in_process_message.dart';
 import 'message/endpoint/layout_valid_message.dart';
 import 'message/endpoint/mark_as_dirty_message.dart';
@@ -49,6 +50,8 @@ void layoutCallback(SendPort callerSendPort) {
       }
     } else if (isolateMessage is RemoveLayoutMessage) {
       response = await layoutStorage.removeLayout(pComponentId: isolateMessage.componentId);
+    } else if (isolateMessage is DeleteScreenMessage) {
+      response = await layoutStorage.deleteScreen(pComponentId: isolateMessage.componentId);
     }
 
     isolateMessage.sendResponse(pResponse: response, pSendPort: isolateMessageWrapper.sendPort);

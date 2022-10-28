@@ -15,9 +15,10 @@ import '../../model/component/panel/fl_panel_model.dart';
 import 'menu_location.dart';
 
 class WorkScreenLocation extends BeamLocation<BeamState> {
-  GlobalKey<State<WorkScreen>> key = GlobalKey();
+  GlobalKey<WorkScreenState> key = GlobalKey();
 
   String? lastWorkscreen;
+  String? lastId;
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
@@ -29,16 +30,6 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
 
     final String workScreenName = state.pathParameters['workScreenName']!;
     FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
-
-    if (workScreenName != lastWorkscreen) {
-      key = GlobalKey();
-      lastWorkscreen = workScreenName;
-    }
-
-    if (data != null && data is Map<String, dynamic> && (data as Map<String, dynamic>)['reload'] == true) {
-      // ignore: invalid_use_of_protected_member
-      key.currentState?.setState(() {});
-    }
 
     // Header
     PreferredSizeWidget? header;
@@ -54,6 +45,10 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
     if (model != null) {
       screen = ComponentsFactory.buildWidget(model);
       screenTitle = model.screenTitle!;
+    }
+
+    if (workScreenName != lastWorkscreen || model?.id != lastId) {
+      key = GlobalKey();
     }
 
     String screenLongName = model?.screenLongName ?? workScreenName;
@@ -92,6 +87,9 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
     }
 
     IUiService().getAppManager()?.onScreenPage();
+
+    lastWorkscreen = workScreenName;
+    lastId = model?.id;
 
     return [
       BeamPage(

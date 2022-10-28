@@ -10,6 +10,7 @@ import '../../../isolate/isolate_message_wrapper.dart';
 import '../../i_layout_service.dart';
 import 'layout_isolate_callback.dart';
 import 'message/endpoint/clear_message.dart';
+import 'message/endpoint/delete_screen_message.dart';
 import 'message/endpoint/layout_in_process_message.dart';
 import 'message/endpoint/layout_valid_message.dart';
 import 'message/endpoint/mark_as_dirty_message.dart';
@@ -96,6 +97,12 @@ class IsolateLayoutService implements ILayoutService {
   @override
   Future<bool> setValid({required bool isValid}) {
     LayoutValidMessage message = LayoutValidMessage(set: true, value: isValid);
+    return _sendMessage<bool>(message);
+  }
+
+  @override
+  Future<bool> deleteScreen({required String pComponentId}) {
+    DeleteScreenMessage message = DeleteScreenMessage(componentId: pComponentId);
     return _sendMessage<bool>(message);
   }
 

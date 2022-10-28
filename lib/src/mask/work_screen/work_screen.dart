@@ -58,10 +58,10 @@ class WorkScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<WorkScreen> createState() => _WorkScreenState();
+  WorkScreenState createState() => WorkScreenState();
 }
 
-class _WorkScreenState extends State<WorkScreen> {
+class WorkScreenState extends State<WorkScreen> {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
