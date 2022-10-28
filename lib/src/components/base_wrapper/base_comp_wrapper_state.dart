@@ -182,6 +182,10 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Callback called after every build
   void postFrameCallback(BuildContext context) {
+    if (!mounted) {
+      return;
+    }
+
     lastContext = context;
 
     if (!sentCalcSize) {

@@ -28,11 +28,6 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
   }
 
   @override
-  void postFrameCallback(BuildContext context) {
-    super.postFrameCallback(context);
-  }
-
-  @override
   Size calculateSize(BuildContext context) {
     if (ParseUtil.isHTML(model.text)) {
       return const Size(400, 100);

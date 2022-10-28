@@ -1,16 +1,22 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../components.dart';
+import '../../../custom/custom_screen.dart';
+import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
+import '../../components/components_factory.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/device_status_command.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/command/storage/delete_screen_command.dart';
+import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/request/api_navigation_request.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
@@ -25,35 +31,11 @@ class WorkScreen extends StatefulWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Title on top of the screen
-  final String screenTitle;
-
   /// ScreenName of an online-screen - used for sending [ApiNavigationRequest]
   final String screenName;
 
-  /// Screen long name of an screen
-  final String screenLongName;
-
-  /// Widget used as workscreen
-  final Widget screenWidget;
-
-  /// 'True' if this a custom screen, a custom screen will not be registered
-  final bool isCustomScreen;
-
-  /// Header will be sticky displayed on top - header size will shrink space for screen
-  final PreferredSizeWidget? header;
-
-  /// Footer will be sticky displayed on top - footer size will shrink space for screen
-  final Widget? footer;
-
   const WorkScreen({
-    required this.screenTitle,
-    required this.screenWidget,
-    required this.isCustomScreen,
     required this.screenName,
-    required this.screenLongName,
-    this.footer,
-    this.header,
     Key? key,
   }) : super(key: key);
 
@@ -64,6 +46,8 @@ class WorkScreen extends StatefulWidget {
 class WorkScreenState extends State<WorkScreen> {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
+  late FlPanelModel? model;
+  late String screenLongName;
 
   @override
   void initState() {
@@ -78,17 +62,81 @@ class WorkScreenState extends State<WorkScreen> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(covariant WorkScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    sentScreen = false;
+  }
+
+  void rebuild() {
+    sentScreen = false;
+    setState(() {});
+  }
+
   bool sentScreen = false;
 
   @override
   Widget build(BuildContext context) {
+    model = IUiService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
+
+    // Header
+    PreferredSizeWidget? header;
+    // Footer
+    Widget? footer;
+    // Title displayed on the top
+    String screenTitle = "No Title";
+    // Screen Widget
+    Widget? screen;
+
+    bool isCustomScreen = false;
+
+    if (model != null) {
+      screen = ComponentsFactory.buildWidget(model!);
+      screenTitle = model!.screenTitle!;
+    }
+
+    screenLongName = model?.screenLongName ?? widget.screenName;
+
+    // Custom Config for this screen
+    CustomScreen? customScreen = IUiService().getCustomScreen(pScreenLongName: screenLongName);
+
+    if (customScreen != null) {
+      header = customScreen.headerBuilder?.call(context);
+      footer = customScreen.footerBuilder?.call(context);
+
+      Widget? replaceScreen = customScreen.screenBuilder?.call(context, screen);
+      if (replaceScreen != null) {
+        isCustomScreen = true;
+        screen = replaceScreen;
+      }
+
+      String? customTitle = customScreen.screenTitle;
+      if (customTitle != null) {
+        screenTitle = customTitle;
+      } else if (customScreen.menuItemModel != null) {
+        screenTitle = customScreen.menuItemModel!.label;
+      }
+    }
+
+    if (screen == null) {
+      FlutterJVx.log.wtf("Model not found for work screen: $screenLongName");
+      screen = Container();
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        IUiService().sendCommand(OpenErrorDialogCommand(
+          message: "Failed to open screen, please try again.",
+          reason: "Workscreen Model missing",
+        ));
+        IUiService().routeToMenu(pReplaceRoute: true);
+      });
+    }
+
     List<Widget> actions = [];
 
     Widget body = SafeArea(
       child: Column(
         children: [
           if (IConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
-          Expanded(child: _getScreen(context)),
+          Expanded(child: _getScreen(context, header, screen, footer, isCustomScreen)),
         ],
       ),
     );
@@ -113,7 +161,7 @@ class WorkScreenState extends State<WorkScreen> {
                   onDoubleTap: () => _onDoubleTap(),
                   child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
                 ),
-                title: Text(widget.screenTitle),
+                title: Text(screenTitle),
                 actions: actions,
                 elevation: 0,
               ),
@@ -129,7 +177,7 @@ class WorkScreenState extends State<WorkScreen> {
   _setScreenSize(Size size) {
     ILayoutService()
         .setScreenSize(
-          pScreenComponentId: (widget.screenWidget as FlPanelWrapper).id,
+          pScreenComponentId: model!.id,
           pSize: size,
         )
         .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
@@ -140,7 +188,7 @@ class WorkScreenState extends State<WorkScreen> {
   }
 
   _navigateBack() {
-    if (IUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
+    if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
       _customBack();
     } else {
       IUiService().sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
@@ -152,7 +200,7 @@ class WorkScreenState extends State<WorkScreen> {
   }
 
   _navigateBackForcefully() {
-    if (IUiService().usesNativeRouting(pScreenLongName: widget.screenLongName)) {
+    if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
       _customBack();
     } else {
       IUiService().sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
@@ -168,15 +216,17 @@ class WorkScreenState extends State<WorkScreen> {
     }
   }
 
-  Widget _getScreen(BuildContext context) {
+  Widget _getScreen(
+      BuildContext context, PreferredSizeWidget? header, Widget screen, Widget? footer, bool isCustomScreen) {
     var appStyle = AppStyle.of(context)!.applicationStyle!;
     Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
     String? backgroundImageString = appStyle['desktop.icon'];
 
     return Scaffold(
-      resizeToAvoidBottomInset: true, // If true, rebuilds and therefore can activate scrolling or not.
-      appBar: widget.header,
-      bottomNavigationBar: widget.footer,
+      resizeToAvoidBottomInset: true,
+      // If true, rebuilds and therefore can activate scrolling or not.
+      appBar: header,
+      bottomNavigationBar: footer,
       backgroundColor: Colors.transparent,
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -185,8 +235,8 @@ class WorkScreenState extends State<WorkScreen> {
             WidgetsBinding.instance.window.devicePixelRatio,
           );
 
-          Widget screenWidget = widget.screenWidget;
-          if (!widget.isCustomScreen && screenWidget is FlPanelWrapper) {
+          Widget screenWidget = screen;
+          if (!isCustomScreen && screenWidget is FlPanelWrapper) {
             Size size = Size(constraints.maxWidth, constraints.maxHeight + viewInsets.bottom);
             if (!sentScreen) {
               _setScreenSize(size);
