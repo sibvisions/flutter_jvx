@@ -237,9 +237,21 @@ class WorkScreenState extends State<WorkScreen> {
               WidgetsBinding.instance.window.devicePixelRatio,
             );
 
+            final viewPadding = EdgeInsets.fromWindowPadding(
+              WidgetsBinding.instance.window.viewPadding,
+              WidgetsBinding.instance.window.devicePixelRatio,
+            );
+
+            double screenHeight = constraints.maxHeight;
+
+            if (isKeyboardVisible) {
+              screenHeight += viewInsets.bottom;
+              screenHeight -= viewPadding.bottom;
+            }
+
             Widget screenWidget = screen;
             if (!isCustomScreen && screenWidget is FlPanelWrapper) {
-              Size size = Size(constraints.maxWidth, constraints.maxHeight + viewInsets.bottom);
+              Size size = Size(constraints.maxWidth, screenHeight);
               if (!sentScreen) {
                 _setScreenSize(size);
                 sentScreen = true;
@@ -262,7 +274,7 @@ class WorkScreenState extends State<WorkScreen> {
               child: Stack(
                 children: [
                   Container(
-                    height: constraints.maxHeight + viewInsets.bottom,
+                    height: screenHeight,
                     width: constraints.maxWidth,
                     color: backgroundColor,
                     child: backgroundImageString != null
