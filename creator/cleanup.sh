@@ -12,4 +12,4 @@ rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/image_picker_ios-0.8.6+1
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/file_picker-5.2.2
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/device_info_plus-8.0.0
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/flutter_native_splash-2.2.13
-rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/sqflite-2.1.0+1
+rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/sqflite-2.2.0+3
