@@ -75,6 +75,10 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   @override
   void postFrameCallback(BuildContext context) {
+    if (!mounted) {
+      return;
+    }
+
     GroupLayout layout = (layoutData.layout as GroupLayout);
 
     double groupHeaderHeight = (context.size != null ? context.size!.height : 0.0) + 16.0;

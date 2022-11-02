@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -228,53 +229,55 @@ class WorkScreenState extends State<WorkScreen> {
       appBar: header,
       bottomNavigationBar: footer,
       backgroundColor: Colors.transparent,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final viewInsets = EdgeInsets.fromWindowPadding(
-            WidgetsBinding.instance.window.viewInsets,
-            WidgetsBinding.instance.window.devicePixelRatio,
-          );
-
-          Widget screenWidget = screen;
-          if (!isCustomScreen && screenWidget is FlPanelWrapper) {
-            Size size = Size(constraints.maxWidth, constraints.maxHeight + viewInsets.bottom);
-            if (!sentScreen) {
-              _setScreenSize(size);
-              sentScreen = true;
-            } else {
-              subject.add(size);
-            }
-          } else {
-            // Wrap custom screen in Positioned
-            screenWidget = Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: screenWidget,
+      body: KeyboardVisibilityBuilder(
+        builder: (context, isKeyboardVisible) => LayoutBuilder(
+          builder: (context, constraints) {
+            final viewInsets = EdgeInsets.fromWindowPadding(
+              WidgetsBinding.instance.window.viewInsets,
+              WidgetsBinding.instance.window.devicePixelRatio,
             );
-          }
-          return SingleChildScrollView(
-            physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            child: Stack(
-              children: [
-                Container(
-                  height: constraints.maxHeight + viewInsets.bottom,
-                  width: constraints.maxWidth,
-                  color: backgroundColor,
-                  child: backgroundImageString != null
-                      ? ImageLoader.loadImage(
-                          backgroundImageString,
-                          pFit: BoxFit.scaleDown,
-                        )
-                      : null,
-                ),
-                screenWidget
-              ],
-            ),
-          );
-        },
+
+            Widget screenWidget = screen;
+            if (!isCustomScreen && screenWidget is FlPanelWrapper) {
+              Size size = Size(constraints.maxWidth, constraints.maxHeight + viewInsets.bottom);
+              if (!sentScreen) {
+                _setScreenSize(size);
+                sentScreen = true;
+              } else {
+                subject.add(size);
+              }
+            } else {
+              // Wrap custom screen in Positioned
+              screenWidget = Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: screenWidget,
+              );
+            }
+            return SingleChildScrollView(
+              physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              child: Stack(
+                children: [
+                  Container(
+                    height: constraints.maxHeight + viewInsets.bottom,
+                    width: constraints.maxWidth,
+                    color: backgroundColor,
+                    child: backgroundImageString != null
+                        ? ImageLoader.loadImage(
+                            backgroundImageString,
+                            pFit: BoxFit.scaleDown,
+                          )
+                        : null,
+                  ),
+                  screenWidget
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
