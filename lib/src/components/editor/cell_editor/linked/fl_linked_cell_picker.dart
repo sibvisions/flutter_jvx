@@ -85,7 +85,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       listBottomButtons.add(
         ElevatedButton(
           child: Text(
-            FlutterJVx.translate("Null"),
+            FlutterJVx.translate("EMPTY"),
           ),
           onPressed: () {
             Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
