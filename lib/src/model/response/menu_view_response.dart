@@ -19,7 +19,8 @@ class MenuViewResponse extends ApiResponse {
   MenuViewResponse.fromJson(super.json)
       : componentId = json[ApiObjectProperty.componentId],
         responseMenuItems =
-            (json[ApiObjectProperty.entries] as List<dynamic>).map((e) => MenuEntryResponse.fromJson(e)).toList(),
+            (json[ApiObjectProperty.entries] as List<dynamic>?)?.map((e) => MenuEntryResponse.fromJson(e)).toList() ??
+                [],
         super.fromJson();
 }
 
