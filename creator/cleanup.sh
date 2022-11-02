@@ -13,3 +13,4 @@ rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/file_picker-5.2.2
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/device_info_plus-8.0.0
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/flutter_native_splash-2.2.13
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/sqflite-2.2.0+3
+rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/flutter_keyboard_visibility-5.4.0
