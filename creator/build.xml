@@ -394,6 +394,7 @@ the License.
   <target name="update">
     <get src="https://raw.githubusercontent.com/sibvisions/flutterclient/main/creator/build.xml" dest="build.xml" usetimestamp="true"/>
     <get src="https://raw.githubusercontent.com/sibvisions/flutterclient/main/creator/addons.jar" dest="addons.jar" usetimestamp="true"/>
+    <get src="https://raw.githubusercontent.com/sibvisions/flutterclient/main/creator/cleanup.sh" dest="cleanup.sh" usetimestamp="true"/>
   </target>
 
 </project>
