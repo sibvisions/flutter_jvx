@@ -213,7 +213,9 @@ class StorageService implements IStorageService {
 
     for (FlComponentModel componentModel in toCheck) {
       String? parentId = componentModel.parent;
-      if (parentId != null && parentId == id && (ignoreVisibility || componentModel.isVisible)) {
+      if (parentId != null &&
+          parentId == id &&
+          (ignoreVisibility || componentModel.isVisible || (componentModel.parent?.startsWith("TP") ?? false))) {
         children.add(componentModel);
         children.addAll(_getAllComponentsBelow(componentModel.id, ignoreVisibility, includeRemoved));
       }
