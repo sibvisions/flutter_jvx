@@ -203,8 +203,9 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
     List<Widget> rowWidgets = [];
 
-    List<ColumnDefinition> columnsToShow =
-        model.columnNames.map((e) => chunkData.columnDefinitions.firstWhere((element) => element.name == e)).toList();
+    List<ColumnDefinition> columnsToShow = tableSize.columnWidths.keys
+        .map((e) => chunkData.columnDefinitions.firstWhere((element) => element.name == e))
+        .toList();
 
     for (ColumnDefinition colDef in columnsToShow) {
       int dataIndex = chunkData.columnDefinitions.indexOf(colDef);
@@ -292,6 +293,11 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
     for (int colIndex = 0; colIndex < model.columnNames.length; colIndex++) {
       String columnName = model.columnNames[colIndex];
+
+      if (!tableSize.columnWidths.keys.contains(columnName)) {
+        // No size calculated for this column
+        continue;
+      }
 
       String headerText = model.columnLabels[colIndex];
 

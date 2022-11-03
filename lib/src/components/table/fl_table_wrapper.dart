@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
@@ -96,7 +97,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     layoutData.isFixedSize = true;
 
-    tableSize = TableSize.direct(tableModel: model);
+    tableSize = TableSize.direct(tableModel: model, dataChunk: chunkData);
 
     tableHorizontalController = linkedScrollGroup.addAndGet();
     headerHorizontalController = linkedScrollGroup.addAndGet();
@@ -252,15 +253,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Receives the meta data of the table.
   void receiveMetaData(DalMetaDataResponse pMetaData) {
-    // Future.delayed(
-    //   const Duration(seconds: 5),
-    //   () {
+    log("New metadata with columns: ${pMetaData.columns.map((e) => e.name).join(";")}");
+
     currentState |= LOADED_META_DATA;
 
     metaData = pMetaData;
-    setState(() {});
-    //   },
-    // );
+    recalculateTableSize(true);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

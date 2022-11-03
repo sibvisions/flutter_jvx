@@ -84,7 +84,7 @@ class TableSize {
     this.choiceCellWidth = 50.0,
     this.cellPadding = const EdgeInsets.only(left: 4.0, right: 4.0),
     required FlTableModel tableModel,
-    DataChunk? dataChunk,
+    required DataChunk dataChunk,
     double? availableWidth,
   }) {
     calculateTableSize(pTableModel: tableModel, pAvailableWidth: availableWidth, pDataChunk: dataChunk);
@@ -104,7 +104,7 @@ class TableSize {
 
   calculateTableSize({
     required FlTableModel pTableModel,
-    DataChunk? pDataChunk,
+    required DataChunk pDataChunk,
     int pRowsToCalculate = 10,
     double? pAvailableWidth,
   }) {
@@ -116,10 +116,14 @@ class TableSize {
     TextStyle textStyle = pTableModel.createTextStyle();
 
     // How far you can calculate with the data we currently have.
-
     for (int i = 0; i < pTableModel.columnNames.length; i++) {
       String columnName = pTableModel.columnNames[i];
       String columnLabel = pTableModel.columnLabels[i];
+
+      if (pDataChunk.columnDefinitions.firstWhereOrNull((element) => element.name == columnName) == null) {
+        // Dont calculate this table column
+        continue;
+      }
 
       double calculatedHeaderWidth = _calculateTableTextWidth(
         textStyle.copyWith(fontWeight: FontWeight.bold),
@@ -127,46 +131,44 @@ class TableSize {
       );
       calculatedColumnWidths[columnName] = _adjustValue(minColumnWidth, calculatedHeaderWidth);
 
-      if (pDataChunk != null) {
-        int calculateUntilRowIndex = math.min(
-          pDataChunk.data.length,
-          pRowsToCalculate,
-        );
+      int calculateUntilRowIndex = math.min(
+        pDataChunk.data.length,
+        pRowsToCalculate,
+      );
 
-        int? colIndex;
-        ColumnDefinition? columnDefinition = pDataChunk.columnDefinitions.firstWhereIndexedOrNull((index, colDef) {
-          if (colDef.name == columnName) {
-            colIndex = index;
-            return true;
-          }
-          return false;
-        });
+      int? colIndex;
+      ColumnDefinition? columnDefinition = pDataChunk.columnDefinitions.firstWhereIndexedOrNull((index, colDef) {
+        if (colDef.name == columnName) {
+          colIndex = index;
+          return true;
+        }
+        return false;
+      });
 
-        // If there is no column definition found for this column, cant calculate the width.
-        if (columnDefinition != null) {
-          if (columnDefinition.width != null) {
-            calculatedColumnWidths[columnName] = columnDefinition.width!;
+      // If there is no column definition found for this column, cant calculate the width.
+      if (columnDefinition != null) {
+        if (columnDefinition.width != null) {
+          calculatedColumnWidths[columnName] = columnDefinition.width!;
+        } else {
+          // Get all rows before [calculateUntilRowIndex]
+          Iterable<List<dynamic>> dataRows = pDataChunk.data.values.take(calculateUntilRowIndex);
+
+          // Isolate the column from the rows.
+          List<dynamic> dataColumn = dataRows.map<dynamic>((e) => e[colIndex!]).toList();
+
+          double calculatedWidth;
+          if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHECK_BOX_CELL_EDITOR) {
+            calculatedWidth = checkCellWidth;
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHOICE_CELL_EDITOR) {
+            calculatedWidth = choiceCellWidth;
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER) {
+            calculatedWidth = imageCellWidth;
           } else {
-            // Get all rows before [calculateUntilRowIndex]
-            Iterable<List<dynamic>> dataRows = pDataChunk.data.values.take(calculateUntilRowIndex);
+            ICellEditor cellEditor = _createCellEditor(columnDefinition.cellEditorJson);
 
-            // Isolate the column from the rows.
-            List<dynamic> dataColumn = dataRows.map<dynamic>((e) => e[colIndex!]).toList();
-
-            double calculatedWidth;
-            if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHECK_BOX_CELL_EDITOR) {
-              calculatedWidth = checkCellWidth;
-            } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHOICE_CELL_EDITOR) {
-              calculatedWidth = choiceCellWidth;
-            } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER) {
-              calculatedWidth = imageCellWidth;
-            } else {
-              ICellEditor cellEditor = _createCellEditor(columnDefinition.cellEditorJson);
-
-              calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle);
-            }
-            calculatedColumnWidths[columnName] = _adjustValue(calculatedColumnWidths[columnName]!, calculatedWidth);
+            calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle);
           }
+          calculatedColumnWidths[columnName] = _adjustValue(calculatedColumnWidths[columnName]!, calculatedWidth);
         }
       }
     }
@@ -184,7 +186,7 @@ class TableSize {
     // Redistribute the remaining width. AutoSize forces all columns inside the table.
     if (remainingWidth > 0.0) {
       List<String> columnsToRedistribute =
-          _getColumnsToRedistribute(pTableModel.columnNames, pDataChunk) ?? pTableModel.columnNames;
+          _getColumnsToRedistribute(columnWidths.keys.toList(), pDataChunk) ?? columnWidths.keys.toList();
       _redistributeRemainingWidth(columnsToRedistribute, remainingWidth);
     } else if (pTableModel.autoResize && remainingWidth < 0.0) {
       int i = 0;
@@ -192,11 +194,11 @@ class TableSize {
       while (remainingWidth < 0.0 && i < 30) {
         List<String>? columnsToRedistribute;
         if (useMinWidth) {
-          columnsToRedistribute = _getColumnsToRedistribute(pTableModel.columnNames, pDataChunk, minColumnWidth);
+          columnsToRedistribute = _getColumnsToRedistribute(columnWidths.keys.toList(), pDataChunk, minColumnWidth);
           useMinWidth = columnsToRedistribute != null;
         }
-        columnsToRedistribute ??= _getColumnsToRedistribute(pTableModel.columnNames, pDataChunk);
-        columnsToRedistribute = pTableModel.columnNames;
+        columnsToRedistribute ??= _getColumnsToRedistribute(columnWidths.keys.toList(), pDataChunk);
+        columnsToRedistribute = columnWidths.keys.toList();
 
         _redistributeRemainingWidth(columnsToRedistribute, remainingWidth);
 

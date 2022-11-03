@@ -146,7 +146,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                         builder: ((context, constraints) {
                           TableSize tableSize = TableSize.direct(
                             tableModel: tableModel,
-                            dataChunk: _chunkData,
+                            dataChunk: _chunkData!,
                             availableWidth: constraints.maxWidth,
                           );
                           tableModel.stickyHeaders =
