@@ -5,6 +5,7 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../api/shared/api_object_property.dart';
+import '../../../api/shared/fl_component_classname.dart';
 import '../../i_storage_service.dart';
 
 class StorageService implements IStorageService {
@@ -213,9 +214,12 @@ class StorageService implements IStorageService {
 
     for (FlComponentModel componentModel in toCheck) {
       String? parentId = componentModel.parent;
+      FlComponentModel? parentModel = _componentMap[parentId];
       if (parentId != null &&
           parentId == id &&
-          (ignoreVisibility || componentModel.isVisible || (componentModel.parent?.startsWith("TP") ?? false))) {
+          (ignoreVisibility ||
+              componentModel.isVisible ||
+              (parentModel?.className == FlContainerClassname.TABSET_PANEL))) {
         children.add(componentModel);
         children.addAll(_getAllComponentsBelow(componentModel.id, ignoreVisibility, includeRemoved));
       }
