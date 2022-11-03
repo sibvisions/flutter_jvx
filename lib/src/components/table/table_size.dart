@@ -123,7 +123,7 @@ class TableSize {
 
       double calculatedHeaderWidth = _calculateTableTextWidth(
         textStyle.copyWith(fontWeight: FontWeight.bold),
-        "$columnLabel*", // Column headers get a * if they are mandatory
+        "$columnLabel *", // Column headers get a * if they are mandatory
       );
       calculatedColumnWidths[columnName] = _adjustValue(minColumnWidth, calculatedHeaderWidth);
 

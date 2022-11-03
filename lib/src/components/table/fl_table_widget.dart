@@ -298,7 +298,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       ColumnDefinition? colDef = metaData?.columns.firstWhereOrNull((element) => element.name == columnName);
 
       if (colDef != null && colDef.nullable != true) {
-        headerText += "*";
+        headerText += " *";
       }
 
       rowWidgets.add(
