@@ -68,28 +68,34 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   void sendButtonPressed([String? overwrittenButtonPressId]) {
+    _overwrittenButtonPressId = overwrittenButtonPressId;
+
     IUiService().saveAllEditorsThen(model.id, _sendButtonCommand, "Button pressed");
   }
 
   void _sendButtonCommand() {
-    ICommandService()
-        .sendCommand(PressButtonCommand(
-      componentName: _overwrittenButtonPressId ?? model.name,
-      reason: "Button has been pressed",
-    ))
-        .then((value) {
-      if (model.style == "hyperlink") {
-        openUrl();
-      } else if (!kIsWeb) {
-        if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
-          goOffline();
-        } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
-          openQrCodeScanner();
-        } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
-          callNumber();
+    try {
+      ICommandService()
+          .sendCommand(PressButtonCommand(
+        componentName: _overwrittenButtonPressId ?? model.name,
+        reason: "Button has been pressed",
+      ))
+          .then((value) {
+        if (model.style == "hyperlink") {
+          openUrl();
+        } else if (!kIsWeb) {
+          if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
+            goOffline();
+          } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
+            openQrCodeScanner();
+          } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
+            callNumber();
+          }
         }
-      }
-    }).catchError(IUiService().handleAsyncError);
+      }).catchError(IUiService().handleAsyncError);
+    } finally {
+      _overwrittenButtonPressId = null;
+    }
   }
 
   void openQrCodeScanner() {
