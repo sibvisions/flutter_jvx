@@ -105,8 +105,8 @@ class _LoginCardState extends State<LoginCard> {
             ProgressButton.icon(
               radius: 4.0,
               progressIndicator: CircularProgressIndicator.adaptive(
-                backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation(JVxColors.toggleColor(Theme.of(context).colorScheme.onPrimary)),
+                backgroundColor: JVxColors.toggleColor(Theme.of(context).colorScheme.onPrimary),
+                valueColor: const AlwaysStoppedAnimation(Colors.white),
               ),
               textStyle: TextStyle(
                 color: progressButtonState != ButtonState.fail ? Theme.of(context).colorScheme.onPrimary : Colors.white,
