@@ -52,7 +52,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   double get iconSize => 16;
 
-  EdgeInsets get contentPadding => inTable ? EdgeInsets.zero : DEFAULT_PADDING;
+  EdgeInsets get contentPadding => inTable ? const EdgeInsets.only(top: 8) : DEFAULT_PADDING;
 
   EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
 
@@ -120,7 +120,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         filled: isFilled,
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
-      textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
+      textAlignVertical: inTable ? TextAlignVertical.center : VerticalAlignmentE.toTextAlign(model.verticalAlignment),
       readOnly: model.isReadOnly,
       style: model.createTextStyle(),
       onChanged: valueChanged,
@@ -207,7 +207,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           EdgeInsets padding = iconPadding;
 
           if (suffixItem is GestureDetector || suffixItem is InkResponse) {
-            padding = padding.copyWith(right: max(padding.right - (clickableClearArea - iconSize), 0.0));
+            padding = padding.copyWith(right: max(padding.right - ((clickableClearArea - iconSize) / 2), 0.0));
           }
 
           return Padding(
