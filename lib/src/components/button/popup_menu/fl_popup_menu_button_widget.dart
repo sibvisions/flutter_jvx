@@ -34,10 +34,12 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     return InkWell(
       enableFeedback: model.isEnabled,
       onTap: () => openMenu(context),
-      child: Center(
-        widthFactor: 2.0,
+      child: Container(
+        alignment: Alignment.center,
+        width: 24,
         child: FaIcon(
           FontAwesomeIcons.caretDown,
+          size: 24.0,
           color: model.createTextStyle().color,
         ),
       ),
