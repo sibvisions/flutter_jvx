@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
@@ -253,8 +252,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Receives the meta data of the table.
   void receiveMetaData(DalMetaDataResponse pMetaData) {
-    log("New metadata with columns: ${pMetaData.columns.map((e) => e.name).join(";")}");
-
     currentState |= LOADED_META_DATA;
 
     metaData = pMetaData;
