@@ -1,12 +1,12 @@
 import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/layout/alignments.dart';
 import '../../model/response/dal_meta_data_response.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
@@ -245,12 +245,11 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       rowWidgets.add(
         IgnorePointer(
           ignoring: colDef.readonly || (metaData?.readOnly ?? false),
-          child: SizedBox(
+          child: Container(
             width: tableSize.columnWidths[colDef.name]!.toDouble(),
-            child: Padding(
-              padding: tableSize.cellPadding,
-              child: widget,
-            ),
+            alignment: FLUTTER_ALIGNMENT[colDef.cellEditorHorizontalAlignment.index][VerticalAlignment.CENTER.index],
+            padding: tableSize.cellPadding,
+            child: widget,
           ),
         ),
       );
@@ -301,17 +300,18 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
       String headerText = model.columnLabels[colIndex];
 
-      ColumnDefinition? colDef = metaData?.columns.firstWhereOrNull((element) => element.name == columnName);
+      ColumnDefinition colDef = chunkData.columnDefinitions.firstWhere((element) => element.name == columnName);
 
-      if (colDef != null && colDef.nullable != true) {
+      if (colDef.nullable != true) {
         headerText += " *";
       }
 
       rowWidgets.add(
         SizedBox(
           width: tableSize.columnWidths[columnName]!.toDouble(),
-          child: Padding(
+          child: Container(
             padding: tableSize.cellPadding,
+            alignment: FLUTTER_ALIGNMENT[colDef.cellEditorHorizontalAlignment.index][VerticalAlignment.CENTER.index],
             child: Text(
               headerText,
               style: model.createTextStyle(pFontWeight: FontWeight.bold),

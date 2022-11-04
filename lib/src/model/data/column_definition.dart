@@ -1,4 +1,6 @@
+import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
+import '../layout/alignments.dart';
 import '../response/dal_meta_data_response.dart';
 
 /// The definition of a column of a dataBook. Received from the server in a [DalMetaDataResponse]
@@ -76,6 +78,17 @@ class ColumnDefinition {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   String? get cellEditorClassName => cellEditorJson[ApiObjectProperty.className];
+
+  HorizontalAlignment get cellEditorHorizontalAlignment {
+    return ParseUtil.getPropertyValue(
+      pJson: cellEditorJson,
+      pKey: ApiObjectProperty.horizontalAlignment,
+      pDefault: HorizontalAlignment.LEFT,
+      pCurrent: HorizontalAlignment.LEFT,
+      pCondition: (pValue) => pValue < HorizontalAlignment.values.length && pValue >= 0,
+      pConversion: HorizontalAlignmentE.fromDynamic,
+    );
+  }
 
   /// Parse a json list of column definitions into a list of [ColumnDefinition] objects.
   ColumnDefinition.fromJson(Map<String, dynamic> pJson)

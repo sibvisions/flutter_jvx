@@ -39,7 +39,11 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
 
-    return FlCheckBoxWidget(model: widgetModel, onPress: onPress);
+    return FlCheckBoxWidget(
+      model: widgetModel,
+      onPress: onPress,
+      inTable: pInTable,
+    );
   }
 
   @override

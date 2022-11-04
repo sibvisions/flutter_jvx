@@ -27,13 +27,23 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overrideable widget defaults
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   InteractiveInkFeatureFactory? get splashFactory => NoSplash.splashFactory;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  bool inTable;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlRadioButtonWidget({super.key, required super.model, required super.onPress});
+  FlRadioButtonWidget({super.key, required super.model, required super.onPress, this.inTable = false});
 
   @override
   ButtonStyle createButtonStyle(context) {
@@ -56,7 +66,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
       child = InkWell(
         onTap: super.getOnPressed(context),
         child: Ink(
-          padding: const EdgeInsets.only(right: 10),
+          padding: inTable ? EdgeInsets.zero : const EdgeInsets.only(right: 10),
           child: child,
         ),
       );
