@@ -18,8 +18,6 @@ class DeleteRowCommandProcessor implements ICommandProcessor<DeleteRowCommand> {
     if (success) {
       IUiService().notifyDataChange(
         pDataProvider: command.dataProvider,
-        pFrom: -1,
-        pTo: -1,
       );
     } else {
       return [

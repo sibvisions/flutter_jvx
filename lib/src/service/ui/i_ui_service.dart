@@ -181,8 +181,12 @@ abstract class IUiService {
   /// data may have changed.
   void notifyDataChange({
     required String pDataProvider,
-    required int pFrom,
-    required int pTo,
+  });
+
+  /// Notify all components belonging to [pDataProvider] that their underlying
+  /// meta data may have changed.
+  void notifyMetaDataChange({
+    required String pDataProvider,
   });
 
   /// Calls the callback of all subscribed [DataSubscription]s which are subscribed to [pDataProvider]

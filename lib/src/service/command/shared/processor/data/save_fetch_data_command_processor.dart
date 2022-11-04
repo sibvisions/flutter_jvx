@@ -10,8 +10,6 @@ class SaveFetchDataCommandProcessor implements ICommandProcessor<SaveFetchDataCo
 
     IUiService().notifyDataChange(
       pDataProvider: command.response.dataProvider,
-      pFrom: command.response.from,
-      pTo: command.response.to,
     );
 
     return [];

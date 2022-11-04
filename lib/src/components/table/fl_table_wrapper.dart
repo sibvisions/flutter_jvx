@@ -221,14 +221,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void receiveTableData(DataChunk pChunkData) {
     currentState |= LOADED_DATA;
 
-    bool hasToCalc = false;
+    List<String> newColumns = pChunkData.columnDefinitions.map((e) => e.name).toList();
+    List<String> oldColumns = chunkData.columnDefinitions.map((e) => e.name).toList();
+    bool hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
+        oldColumns.any((element) => (!newColumns.contains(element)));
+
     if (pChunkData.update) {
       for (int index in pChunkData.data.keys) {
         chunkData.data[index] = pChunkData.data[index]!;
       }
     } else {
-      hasToCalc = chunkData.columnDefinitions.isEmpty && chunkData.data.isEmpty && chunkData.to == 0;
-
       chunkData = pChunkData;
     }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
@@ -479,8 +480,6 @@ class UiService implements IUiService {
   @override
   void notifyDataChange({
     required String pDataProvider,
-    required int pFrom,
-    required int pTo,
   }) {
     _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
       // Check if selected data changed
@@ -500,6 +499,21 @@ class UiService implements IUiService {
           dataColumns: sub.dataColumns,
         ));
       }
+    });
+  }
+
+  @override
+  void notifyMetaDataChange({
+    required String pDataProvider,
+  }) {
+    log(_dataSubscriptions.map((e) => e.id).join(";"));
+    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
+      // Check if selected data changed
+      sendCommand(GetMetaDataCommand(
+        subId: sub.id,
+        reason: "Notify data was called with pFrom -1",
+        dataProvider: sub.dataProvider,
+      ));
     });
   }
 

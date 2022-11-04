@@ -62,7 +62,7 @@ class DataSubscription {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   bool same(DataSubscription subscription) {
-    if (subscription.id == id && subscription.dataProvider == dataProvider) {
+    if (subscription.subbedObj == subbedObj && subscription.dataProvider == dataProvider) {
       return true;
     }
     return false;

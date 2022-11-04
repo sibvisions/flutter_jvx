@@ -17,8 +17,6 @@ class ChangeSelectedRowCommandProcessor implements ICommandProcessor<ChangeSelec
     if (success) {
       IUiService().notifyDataChange(
         pDataProvider: command.dataProvider,
-        pFrom: -1,
-        pTo: -1,
       );
     } else {
       return [
