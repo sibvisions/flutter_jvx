@@ -148,7 +148,7 @@ class TableSize {
       // If there is no column definition found for this column, cant calculate the width.
       if (columnDefinition != null) {
         if (columnDefinition.width != null) {
-          calculatedColumnWidths[columnName] = columnDefinition.width!;
+          calculatedColumnWidths[columnName] = columnDefinition.width! * 2.0;
         } else {
           // Get all rows before [calculateUntilRowIndex]
           Iterable<List<dynamic>> dataRows = pDataChunk.data.values.take(calculateUntilRowIndex);
