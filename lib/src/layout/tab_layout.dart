@@ -33,12 +33,6 @@ class TabLayout implements ILayout {
       }
 
       childData.layoutPosition = childrenPosition;
-
-      // if (childData.indexOf == selectedIndex) {
-      //   childData.layoutPosition = childrenPosition;
-      // } else {
-      //   childData.layoutPosition = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
-      // }
     }
 
     pParent.calculatedSize = Size(calcWidth, calcHeight + tabHeaderHeight);

@@ -96,10 +96,10 @@ abstract class ParseUtil {
     if (pValue != null) {
       var splitString = pValue.split(",");
       if (splitString.isNotEmpty && splitString.length == 4) {
-        int left = int.tryParse(splitString[0]) ?? 0;
-        int top = int.tryParse(splitString[1]) ?? 0;
-        int right = int.tryParse(splitString[2]) ?? 0;
-        int bottom = int.tryParse(splitString[3]) ?? 0;
+        int top = int.tryParse(splitString[0]) ?? 0;
+        int left = int.tryParse(splitString[1]) ?? 0;
+        int bottom = int.tryParse(splitString[2]) ?? 0;
+        int right = int.tryParse(splitString[3]) ?? 0;
 
         return EdgeInsets.fromLTRB(left.toDouble(), top.toDouble(), right.toDouble(), bottom.toDouble());
       }
