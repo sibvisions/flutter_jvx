@@ -106,8 +106,7 @@ class UiService implements IUiService {
   void routeToMenu({bool pReplaceRoute = false}) {
     if (FlutterJVx.getCurrentContext() == null) {
       // TODO fix workScreen web reload (e.g. send OpenScreenCommand)
-      // Potential Idea -> Go to menu on workscreen but send an OpenScreenCommand,
-      // which will route to the work screen once it is finished and returned.
+      // Potential Idea -> FS#3063
       //if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
       routerDelegate.setNewRoutePath(const RouteInformation(location: "/menu"));
       //}
