@@ -27,7 +27,7 @@ class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateCompon
     stopwatch.stop();
 
     if (stopwatch.elapsedMilliseconds > 50) {
-      FlutterJVx.log.w("Layout was busy for ${stopwatch.elapsedMilliseconds}ms");
+      FlutterJVx.logUI.w("Layout was busy for ${stopwatch.elapsedMilliseconds}ms");
     }
 
     List<Future> futureList = [];

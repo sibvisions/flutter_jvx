@@ -185,7 +185,7 @@ class OnlineApiRepository implements IRepository {
 
     var uri = _getWebSocketUri(reconnect);
     try {
-      FlutterJVx.log.i("Connecting to Websocket on $uri");
+      FlutterJVx.logAPI.i("Connecting to Websocket on $uri");
 
       webSocket = UniversalWebSocketChannel.create(
         uri,
@@ -198,17 +198,17 @@ class OnlineApiRepository implements IRepository {
           manualClose = false;
           if (data.isNotEmpty) {
             try {
-              FlutterJVx.log.d("Received data via websocket: $data");
+              FlutterJVx.logAPI.d("Received data via websocket: $data");
               if (data == "api/changes") {
                 ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
               }
             } catch (e) {
-              FlutterJVx.log.e("Error handling websocket message:", e);
+              FlutterJVx.logAPI.e("Error handling websocket message:", e);
             }
           }
         },
         onError: (error) {
-          FlutterJVx.log.w("Connection to Websocket failed", error);
+          FlutterJVx.logAPI.w("Connection to Websocket failed", error);
 
           //Cancel reconnect if manually closed
           if (manualClose) {
@@ -222,7 +222,7 @@ class OnlineApiRepository implements IRepository {
           reconnectWebSocket();
         },
         onDone: () {
-          FlutterJVx.log.w(
+          FlutterJVx.logAPI.w(
             "Connection to Websocket closed (${webSocket?.closeCode})${webSocket?.closeReason != null ? ": ${webSocket?.closeReason}" : ""}",
           );
 
@@ -241,7 +241,7 @@ class OnlineApiRepository implements IRepository {
         cancelOnError: true,
       );
     } catch (e) {
-      FlutterJVx.log.e("Connection to Websocket could not be established!", e);
+      FlutterJVx.logAPI.e("Connection to Websocket could not be established!", e);
       rethrow;
     }
   }
@@ -256,9 +256,9 @@ class OnlineApiRepository implements IRepository {
 
   void reconnectWebSocket() {
     lastDelay = min(lastDelay << 1, 120);
-    FlutterJVx.log.i("Retrying Websocket connection in $lastDelay seconds...");
+    FlutterJVx.logAPI.i("Retrying Websocket connection in $lastDelay seconds...");
     Timer(Duration(seconds: lastDelay), () {
-      FlutterJVx.log.i("Retrying Websocket connection");
+      FlutterJVx.logAPI.i("Retrying Websocket connection");
       startWebSocket(true);
     });
   }
@@ -325,7 +325,7 @@ class OnlineApiRepository implements IRepository {
 
         if (response.statusCode >= 400 && response.statusCode <= 599) {
           var body = await _decodeBody(response);
-          FlutterJVx.log.e("Server sent HTTP ${response.statusCode}: $body");
+          FlutterJVx.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
           if (response.statusCode == 404) {
             throw Exception("Application not found (404)");
           } else if (response.statusCode == 410) {
@@ -379,7 +379,7 @@ class OnlineApiRepository implements IRepository {
 
         return apiInteraction;
       } catch (e) {
-        FlutterJVx.log.e("Error while sending ${pRequest.runtimeType}");
+        FlutterJVx.logAPI.e("Error while sending ${pRequest.runtimeType}");
         rethrow;
       }
     } else {

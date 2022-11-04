@@ -58,7 +58,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
                 pImageInBinary: true, pImageInBase64: false, pFit: BoxFit.scaleDown);
           }
         } catch (error, stacktrace) {
-          FlutterJVx.log.e("Failed to show image", error, stacktrace);
+          FlutterJVx.logUI.e("Failed to show image", error, stacktrace);
         }
       }
 

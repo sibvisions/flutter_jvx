@@ -19,7 +19,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    FlutterJVx.log.d("Building the workscreen location");
+    FlutterJVx.logUI.d("Building the workscreen location");
 
     if (context.beamingHistory.every((element) => element is WorkScreenLocation)) {
       context.beamingHistory.insert(0, MenuLocation());

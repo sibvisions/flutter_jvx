@@ -79,7 +79,7 @@ class OfflineDatabase {
         }
 
         String createTableSQL = _createTable(table);
-        FlutterJVx.log.d("Create Table SQL:\n$createTableSQL");
+        FlutterJVx.logAPI.d("Create Table SQL:\n$createTableSQL");
         // Run the CREATE TABLE statement on the database.
         return db.execute(createTableSQL);
       })

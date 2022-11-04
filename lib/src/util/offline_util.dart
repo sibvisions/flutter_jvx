@@ -86,7 +86,7 @@ abstract class OfflineUtil {
 
       var dataBooks = IDataService().getDataBooks();
       for (DataBook dataBook in dataBooks.values) {
-        FlutterJVx.log.i("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
+        FlutterJVx.logAPI.i("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
         List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
 
         Map<String, List<Map<String, Object?>>> groupedRows =
@@ -128,7 +128,7 @@ abstract class OfflineUtil {
             ) &&
             successfulSync;
 
-        FlutterJVx.log.i("Marking ${successfulSyncedPrimaryKeys.length} rows as synced");
+        FlutterJVx.logAPI.i("Marking ${successfulSyncedPrimaryKeys.length} rows as synced");
         await offlineApiRepository.resetStates(dataBook.dataProvider, pResetRows: successfulSyncedPrimaryKeys);
         successfulSyncedRows += successfulSyncedPrimaryKeys.length;
 
@@ -138,7 +138,7 @@ abstract class OfflineUtil {
       String syncResult = successfulSync ? "successful" : "failed";
       int failedRowCount = changedRowsSum - successfulSyncedRows;
 
-      FlutterJVx.log.i("Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
+      FlutterJVx.logAPI.i("Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
 
       if (successfulSyncedRows > 0 || failedRowCount > 0) {
         dialogKey.currentState!.update(
@@ -186,7 +186,7 @@ abstract class OfflineUtil {
         IApiService().setRepository(offlineApiRepository);
       }
     } catch (e, stackTrace) {
-      FlutterJVx.log.e("Error while syncing offline data", e, stackTrace);
+      FlutterJVx.logAPI.e("Error while syncing offline data", e, stackTrace);
 
       //Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
@@ -227,7 +227,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (insertedRows != null) {
-      FlutterJVx.log.i("Syncing ${insertedRows.length} inserted rows");
+      FlutterJVx.logAPI.i("Syncing ${insertedRows.length} inserted rows");
       for (var row in insertedRows) {
         try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
@@ -239,7 +239,7 @@ abstract class OfflineUtil {
             progress: successfulSyncedPrimaryKeys.length,
           ));
         } catch (e, stack) {
-          FlutterJVx.log.e("Error while syncing inserted row: $row", e, stack);
+          FlutterJVx.logAPI.e("Error while syncing inserted row: $row", e, stack);
           successful = false;
         }
       }
@@ -255,7 +255,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (updatedRows != null) {
-      FlutterJVx.log.i("Syncing ${updatedRows.length} updated rows");
+      FlutterJVx.logAPI.i("Syncing ${updatedRows.length} updated rows");
       for (var row in updatedRows) {
         try {
           var oldColumns = {
@@ -272,7 +272,7 @@ abstract class OfflineUtil {
             progress: successfulSyncedPrimaryKeys.length,
           ));
         } catch (e, stack) {
-          FlutterJVx.log.e("Error while syncing updated row: $row", e, stack);
+          FlutterJVx.logAPI.e("Error while syncing updated row: $row", e, stack);
           successful = false;
         }
       }
@@ -288,7 +288,7 @@ abstract class OfflineUtil {
   }) async {
     bool successful = true;
     if (deletedRows != null) {
-      FlutterJVx.log.i("Syncing ${deletedRows.length} deleted rows");
+      FlutterJVx.logAPI.i("Syncing ${deletedRows.length} deleted rows");
       for (var row in deletedRows) {
         try {
           Map<String, Object?> primaryColumns = _getPrimaryColumns(row, dataBook);
@@ -300,7 +300,7 @@ abstract class OfflineUtil {
             progress: successfulSyncedPrimaryKeys.length,
           ));
         } catch (e, stack) {
-          FlutterJVx.log.e("Error while syncing deleted row: $row", e, stack);
+          FlutterJVx.logAPI.e("Error while syncing deleted row: $row", e, stack);
           successful = false;
         }
       }
@@ -388,7 +388,7 @@ abstract class OfflineUtil {
   }) async {
     int fetchCounter = 1;
     for (String dataProvider in activeDataProviders) {
-      FlutterJVx.log.i("Start fetching $dataProvider");
+      FlutterJVx.logAPI.i("Start fetching $dataProvider");
 
       progressUpdate?.call(fetchCounter++, activeDataProviders.length);
 
@@ -403,7 +403,7 @@ abstract class OfflineUtil {
       );
     }
 
-    FlutterJVx.log.i("Finished fetching data");
+    FlutterJVx.logAPI.i("Finished fetching data");
   }
 
   static initOffline(String pWorkscreen) async {
@@ -477,7 +477,7 @@ abstract class OfflineUtil {
       ProgressDialogWidget.close(FlutterJVx.getCurrentContext()!);
       await ICommandService().sendCommand(RouteToMenuCommand(replaceRoute: true, reason: "We are going offline"));
     } catch (e, stack) {
-      FlutterJVx.log.e("Error while downloading offline data", e, stack);
+      FlutterJVx.logAPI.e("Error while downloading offline data", e, stack);
 
       //Revert all changes
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {

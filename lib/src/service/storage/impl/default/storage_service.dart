@@ -158,11 +158,11 @@ class StorageService implements IStorageService {
       }
     }
 
-    FlutterJVx.log.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
-    FlutterJVx.log.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
-    FlutterJVx.log
+    FlutterJVx.logUI.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
+    FlutterJVx.logUI.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
+    FlutterJVx.logUI
         .d("Changed {${changedUiComponents.length}}:${changedUiComponents.map((e) => e.id).toList()..sort()}");
-    FlutterJVx.log
+    FlutterJVx.logUI
         .d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.map((e) => e.id).toList()..sort()}");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
@@ -178,9 +178,9 @@ class StorageService implements IStorageService {
 
   @override
   void deleteScreen({required String screenName}) {
-    FlutterJVx.log.d("Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+    FlutterJVx.logUI.d("Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
 
-    FlutterJVx.log.d(_componentMap.keys.toList().toString());
+    FlutterJVx.logUI.d(_componentMap.keys.toList().toString());
 
     var list = _componentMap.values.where((componentModel) => componentModel.name == screenName).toList();
 
@@ -194,7 +194,7 @@ class StorageService implements IStorageService {
       });
     }
 
-    FlutterJVx.log.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+    FlutterJVx.logUI.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -233,7 +233,7 @@ class StorageService implements IStorageService {
     List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.name == name).toList();
 
     if (screenModels.length >= 2) {
-      FlutterJVx.log.wtf("The same screen is found twice in the storage service!!!!");
+      FlutterJVx.logUI.wtf("The same screen is found twice in the storage service!!!!");
     } else if (screenModels.length == 1 && (ignoreVisibility || screenModels.first.isVisible)) {
       list.addAll(_getAllComponentsBelow(screenModels.first.id, ignoreVisibility, includeRemoved));
       //Return after the first was found.

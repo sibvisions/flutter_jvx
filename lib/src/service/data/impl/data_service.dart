@@ -261,10 +261,10 @@ class DataService implements IDataService {
 
   @override
   void clearData(String pWorkscreen) {
-    FlutterJVx.log.i("Clearing all data books of prefix: $pWorkscreen");
-    FlutterJVx.log.i("Pre clearing: ${dataBooks.values}");
+    FlutterJVx.logUI.i("Clearing all data books of prefix: $pWorkscreen");
+    FlutterJVx.logUI.i("Pre clearing: ${dataBooks.values}");
     dataBooks.removeWhere((key, value) => key.startsWith(pWorkscreen, key.indexOf("/") + 1));
-    FlutterJVx.log.i("Post clearing: ${dataBooks.values}");
+    FlutterJVx.logUI.i("Post clearing: ${dataBooks.values}");
   }
 
   @override

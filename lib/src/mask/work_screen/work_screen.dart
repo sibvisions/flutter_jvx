@@ -120,7 +120,7 @@ class WorkScreenState extends State<WorkScreen> {
     }
 
     if (screen == null) {
-      FlutterJVx.log.wtf("Model not found for work screen: $screenLongName");
+      FlutterJVx.logUI.wtf("Model not found for work screen: $screenLongName");
       screen = Container();
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         IUiService().sendCommand(OpenErrorDialogCommand(

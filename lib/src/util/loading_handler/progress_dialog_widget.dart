@@ -27,7 +27,7 @@ class ProgressDialogWidget extends StatefulWidget {
       try {
         ProgressDialogWidget.close(globalKey.currentContext!);
       } catch (e, stackTrace) {
-        FlutterJVx.log.e("Error while safely closing progress dialog", e, stackTrace);
+        FlutterJVx.logUI.e("Error while safely closing progress dialog", e, stackTrace);
       }
     }
   }

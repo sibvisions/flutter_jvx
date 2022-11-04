@@ -469,7 +469,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void _openQRScanner() {
     IUiService().openDialog(
       pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) async {
-        FlutterJVx.log.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
+        FlutterJVx.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
         try {
           QRAppCode code = QRParser.parseCode(barcode.rawValue!);
           appName = code.appName;
@@ -481,7 +481,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
           setState(() {});
         } on FormatException catch (e) {
-          FlutterJVx.log.w("Error parsing QR Code", e);
+          FlutterJVx.logUI.w("Error parsing QR Code", e);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(FlutterJVx.translate(e.message)),
           ));

@@ -81,7 +81,7 @@ class UiService implements IUiService {
 
   @override
   handleAsyncError(Object error, StackTrace stackTrace) {
-    FlutterJVx.log.e("Error while sending async command", error, stackTrace);
+    FlutterJVx.logUI.e("Error while sending async command", error, stackTrace);
 
     if (error is! ErrorViewException) {
       bool isTimeout = error is TimeoutException || error is SocketException;
@@ -124,7 +124,7 @@ class UiService implements IUiService {
 
   @override
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
-    FlutterJVx.log.i("Routing to workscreen: $pScreenName");
+    FlutterJVx.logUI.i("Routing to workscreen: $pScreenName");
 
     if (FlutterJVx.getCurrentContext() == null) {
       // TODO: See [routeToMenu]
@@ -298,7 +298,7 @@ class UiService implements IUiService {
 
   @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
-    FlutterJVx.log.d("Save new components: ${newModels.map((e) => e.id).toList()}");
+    FlutterJVx.logUI.d("Save new components: ${newModels.map((e) => e.id).toList()}");
     _componentModels.addAll(newModels);
   }
 
@@ -657,7 +657,7 @@ class UiService implements IUiService {
   @override
   void saveAllEditorsThen(String? pId, Function? pFunction, String pReason) {
     ICommandService().sendCommand(SaveAllEditorsCommand(componentId: pId, reason: pReason)).then((value) {
-      FlutterJVx.log.i("Save all complete.");
+      FlutterJVx.logUI.i("Save all complete.");
       pFunction?.call();
     });
   }

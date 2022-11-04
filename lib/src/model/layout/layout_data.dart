@@ -44,7 +44,7 @@ class LayoutData implements ICloneable {
   Size? _calculatedSize;
 
   set calculatedSize(Size? newCalcSize) {
-    FlutterJVx.log.d("$id CHANGED CALC TO: $newCalcSize");
+    FlutterJVx.logUI.d("$id CHANGED CALC TO: $newCalcSize");
 
     _calculatedSize = newCalcSize;
   }

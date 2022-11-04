@@ -43,6 +43,7 @@ import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/config_util.dart';
 import 'src/util/loading_handler/loading_progress_handler.dart';
+import 'util/extensions/jvx_printers.dart';
 import 'util/extensions/list_extensions.dart';
 import 'util/jvx_colors.dart';
 import 'util/parse_util.dart';
@@ -58,9 +59,45 @@ class FlutterJVx extends StatefulWidget {
   /// Loads assets with packages prefix
   static bool package = true;
 
+  /// General logger
   static final Logger log = Logger(
     level: Level.info,
-    printer: PrettyPrinter(
+    printer: JVxPrettyPrinter(
+      prefix: "GENERAL",
+      printTime: true,
+      methodCount: 0,
+      errorMethodCount: 30,
+    ),
+  );
+
+  /// API logger
+  static final Logger logAPI = Logger(
+    level: Level.info,
+    printer: JVxPrettyPrinter(
+      prefix: "API",
+      printTime: true,
+      methodCount: 0,
+      errorMethodCount: 30,
+    ),
+  );
+
+  /// Command logger
+  static final Logger logCommand = Logger(
+    level: Level.info,
+    printer: JVxPrettyPrinter(
+      prefix: "COMMAND",
+      printTime: true,
+      methodCount: 0,
+      errorMethodCount: 30,
+    ),
+  );
+
+  /// UI logger
+  static final Logger logUI = Logger(
+    level: Level.warning,
+    printer: JVxPrettyPrinter(
+      prefix: "UI",
+      printTime: true,
       methodCount: 0,
       errorMethodCount: 30,
     ),

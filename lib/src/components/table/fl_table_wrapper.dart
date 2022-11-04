@@ -276,7 +276,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       Filter? filter = createFilter(pRowIndex: lastTouchedIndex);
 
       if (filter == null) {
-        FlutterJVx.log.w("Filter of table(${model.id}) null");
+        FlutterJVx.logUI.w("Filter of table(${model.id}) null");
         return;
       }
 
@@ -298,7 +298,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     Filter? filter = createFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
-      FlutterJVx.log.w("Filter of table(${model.id}) null");
+      FlutterJVx.logUI.w("Filter of table(${model.id}) null");
       return;
     }
 

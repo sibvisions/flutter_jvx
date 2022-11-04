@@ -202,7 +202,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       model.id,
       () {
         if (pValue is HashMap<String, dynamic>) {
-          FlutterJVx.log.d("Values of ${model.id} set to $pValue");
+          FlutterJVx.logUI.d("Values of ${model.id} set to $pValue");
           IUiService().sendCommand(
             SetValuesCommand(
               componentId: model.id,
@@ -213,7 +213,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
             ),
           );
         } else {
-          FlutterJVx.log.d("Value of ${model.id} set to $pValue");
+          FlutterJVx.logUI.d("Value of ${model.id} set to $pValue");
           IUiService().sendCommand(
             SetValuesCommand(
               componentId: model.id,
@@ -257,7 +257,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Logs the cell editor for debug purposes.
   void logCellEditor(String pPhase) {
-    FlutterJVx.log.d("""
+    FlutterJVx.logUI.d("""
 ----- $pPhase -----
 Old cell editor hashcode: ${oldCellEditor?.hashCode}
 New cell editor hashcode: ${cellEditor.hashCode}

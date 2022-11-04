@@ -93,7 +93,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       List<dynamic> values = [];
       values.add(pngBytes);
 
-      FlutterJVx.log.i("Sending Signature");
+      FlutterJVx.logUI.i("Sending Signature");
 
       SetValuesCommand setValues = SetValuesCommand(
           componentId: model.id,
@@ -109,7 +109,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     signatureController.clear();
 
     if (model.dataProvider != null && model.columnName != null) {
-      FlutterJVx.log.i("Deleting Signature");
+      FlutterJVx.logUI.i("Deleting Signature");
 
       SetValuesCommand setValues = SetValuesCommand(
           componentId: model.id,

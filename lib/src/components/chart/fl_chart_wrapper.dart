@@ -109,7 +109,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
   num createYData(dynamic pData, int? pIndex, int pColumnIndex) {
     if (pData.length <= pColumnIndex) {
-      FlutterJVx.log.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
+      FlutterJVx.logUI.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
       return pIndex ?? 0;
     }
 
@@ -123,7 +123,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
   num createXData(dynamic pData, int? pIndex, int pColumnIndex) {
     if (pData.length <= pColumnIndex) {
-      FlutterJVx.log.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
+      FlutterJVx.logUI.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
       return pIndex ?? 0;
     }
 

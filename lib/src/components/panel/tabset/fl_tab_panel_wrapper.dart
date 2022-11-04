@@ -146,13 +146,13 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       tabHeaderList.add(createTab(tabContentList[i], i));
     }
 
-    FlutterJVx.log.d("BUILD CHILDREN");
-    FlutterJVx.log.d("Children count: ${children.values.length}");
-    FlutterJVx.log.d("Tabcontentlist: $tabContentList");
-    FlutterJVx.log.d("Tabheaderlist: $tabHeaderList");
-    FlutterJVx.log.d("Model Selected index:${model.selectedIndex}");
-    FlutterJVx.log.d("Tabcontroller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
-    FlutterJVx.log.d("Set state: $returnValue");
+    FlutterJVx.logUI.d("BUILD CHILDREN");
+    FlutterJVx.logUI.d("Children count: ${children.values.length}");
+    FlutterJVx.logUI.d("Tabcontentlist: $tabContentList");
+    FlutterJVx.logUI.d("Tabheaderlist: $tabHeaderList");
+    FlutterJVx.logUI.d("Model Selected index:${model.selectedIndex}");
+    FlutterJVx.logUI.d("Tabcontroller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
+    FlutterJVx.logUI.d("Set state: $returnValue");
 
     if (returnValue && pSetStateOnChange) {
       setState(() {});
@@ -166,7 +166,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     List<Widget> childrenToHide = tabContentList.where((e) {
       return !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e));
     }).toList();
-    FlutterJVx.log.d("ChildrenToHide: $childrenToHide");
+    FlutterJVx.logUI.d("ChildrenToHide: $childrenToHide");
 
     return getPositioned(
       child: Wrap(
@@ -390,7 +390,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   void closeTab(int index) {
-    FlutterJVx.log.i("Closing tab $index");
+    FlutterJVx.logUI.i("Closing tab $index");
     lastDeletedTab = index;
     IUiService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }

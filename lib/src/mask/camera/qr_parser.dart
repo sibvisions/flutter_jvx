@@ -23,7 +23,7 @@ class QRParser {
     try {
       json = jsonDecode(rawQRCode);
     } on FormatException {
-      FlutterJVx.log.d("Failed to parse valid json from qr code, falling back to line format.");
+      FlutterJVx.logUI.d("Failed to parse valid json from qr code, falling back to line format.");
 
       LineSplitter ls = const LineSplitter();
       List<String> properties = ls.convert(rawQRCode);

@@ -76,12 +76,12 @@ class CommandService implements ICommandService {
     progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
 
     try {
-      FlutterJVx.log.d("Started ${pCommand.runtimeType}-chain");
+      FlutterJVx.logCommand.d("Started ${pCommand.runtimeType}-chain");
       await processCommand(pCommand);
       pCommand.onFinish?.call();
-      FlutterJVx.log.d("Finished ${pCommand.runtimeType}-chain");
+      FlutterJVx.logCommand.d("Finished ${pCommand.runtimeType}-chain");
     } catch (error) {
-      FlutterJVx.log.e("Error processing ${pCommand.runtimeType}-chain");
+      FlutterJVx.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
       rethrow;
     } finally {
       progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
@@ -102,7 +102,7 @@ class CommandService implements ICommandService {
 
   Future<void> processCommand(BaseCommand pCommand) async {
     if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
-      FlutterJVx.log.i("Processing ${pCommand.runtimeType}");
+      FlutterJVx.logCommand.i("Processing ${pCommand.runtimeType}");
     }
     pCommand.beforeProcessing?.call();
 
@@ -122,24 +122,24 @@ class CommandService implements ICommandService {
       } else if (pCommand is DataCommand) {
         commands = await _dataProcessor.processCommand(pCommand);
       } else {
-        FlutterJVx.log.w("Command (${pCommand.runtimeType}) without Processor found");
+        FlutterJVx.logCommand.w("Command (${pCommand.runtimeType}) without Processor found");
         return;
       }
     } on SessionExpiredException catch (e) {
-      FlutterJVx.log.w("Server sent HTTP ${e.statusCode}, session seems to be expired.");
+      FlutterJVx.logCommand.w("Server sent HTTP ${e.statusCode}, session seems to be expired.");
       commands.add(OpenSessionExpiredDialogCommand(
         reason: "Server sent HTTP ${e.statusCode}",
       ));
     }
 
-    FlutterJVx.log.d("After processing ${pCommand.runtimeType}");
+    FlutterJVx.logCommand.d("After processing ${pCommand.runtimeType}");
     pCommand.afterProcessing?.call();
 
     modifyCommands(commands, pCommand);
     IUiService().getAppManager()?.modifyCommands(commands, pCommand);
 
     if (commands.isNotEmpty) {
-      FlutterJVx.log.d("$pCommand\n->\n\t$commands");
+      FlutterJVx.logCommand.d("$pCommand\n->\n\t$commands");
     }
 
     // Executes Commands resulting from incoming command.
@@ -171,7 +171,7 @@ class CommandService implements ICommandService {
         }
       }
     } catch (error) {
-      FlutterJVx.log.e("Error processing follow-up ${pCommand.runtimeType}");
+      FlutterJVx.logCommand.e("Error processing follow-up ${pCommand.runtimeType}");
       rethrow;
     }
 

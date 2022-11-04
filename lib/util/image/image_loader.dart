@@ -75,7 +75,7 @@ abstract class ImageLoader {
 
   static ImageErrorWidgetBuilder _createImageErrorBuilder(String path) {
     return (BuildContext context, Object error, StackTrace? stackTrace) {
-      FlutterJVx.log.e("Failed to load network image ($path)", error, stackTrace);
+      FlutterJVx.logUI.e("Failed to load network image ($path)", error, stackTrace);
       return ImageLoader.DEFAULT_IMAGE;
     };
   }

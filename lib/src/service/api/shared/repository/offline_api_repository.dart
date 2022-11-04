@@ -10,9 +10,9 @@ import '../../../../model/request/api_delete_record_request.dart';
 import '../../../../model/request/api_fetch_request.dart';
 import '../../../../model/request/api_filter_request.dart';
 import '../../../../model/request/api_insert_record_request.dart';
+import '../../../../model/request/api_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/filter.dart';
-import '../../../../model/request/api_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../model/response/dal_meta_data_response.dart';
@@ -67,7 +67,7 @@ class OfflineApiRepository implements IRepository {
     await offlineDatabase!.dropTables(dalMetaData);
     offlineDatabase!.createTables(dalMetaData);
 
-    FlutterJVx.log.d(
+    FlutterJVx.logAPI.d(
         "Sum of all dataBook entries: ${dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element)}");
 
     await offlineDatabase!.db.transaction((txn) async {
@@ -94,7 +94,7 @@ class OfflineApiRepository implements IRepository {
       return batch.commit();
     });
 
-    FlutterJVx.log.i("done inserting offline data");
+    FlutterJVx.logAPI.i("done inserting offline data");
   }
 
   /// Deletes all currently used dataBooks

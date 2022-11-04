@@ -106,7 +106,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new Model
   void receiveNewModel(T pModel) {
-    FlutterJVx.log.d("${pModel.id} received new Model");
+    FlutterJVx.logUI.d("${pModel.id} received new Model");
 
     setState(() {
       // Set potentially new layout data contained in the new model
@@ -139,7 +139,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData = pLayoutData;
       calcPosition = null;
     }
-    FlutterJVx.log.d("${layoutData.id} NEW DATA; ${pLayoutData.layoutPosition}");
+    FlutterJVx.logUI.d("${layoutData.id} NEW DATA; ${pLayoutData.layoutPosition}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (!layoutData.isParent && (layoutData.isNewlyConstraint || calcPosition != null) && lastContext != null) {

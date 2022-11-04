@@ -162,7 +162,7 @@ Future<File?> pick(UploadType type) async {
         break;
     }
   } catch (e, stack) {
-    FlutterJVx.log.e("Failed to pick file", e, stack);
+    FlutterJVx.logUI.e("Failed to pick file", e, stack);
   }
 
   return file;
