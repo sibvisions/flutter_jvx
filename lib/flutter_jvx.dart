@@ -43,7 +43,7 @@ import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 import 'src/util/config_util.dart';
 import 'src/util/loading_handler/loading_progress_handler.dart';
-import 'util/extensions/jvx_printers.dart';
+import 'util/extensions/jvx_logger_extensions.dart';
 import 'util/extensions/list_extensions.dart';
 import 'util/jvx_colors.dart';
 import 'util/parse_util.dart';
@@ -61,7 +61,8 @@ class FlutterJVx extends StatefulWidget {
 
   /// General logger
   static final Logger log = Logger(
-    level: Level.info,
+    level: kDebugMode ? Level.debug : Level.info,
+    filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "GENERAL",
       printTime: true,
@@ -73,6 +74,7 @@ class FlutterJVx extends StatefulWidget {
   /// API logger
   static final Logger logAPI = Logger(
     level: Level.info,
+    filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "API",
       printTime: true,
@@ -84,6 +86,7 @@ class FlutterJVx extends StatefulWidget {
   /// Command logger
   static final Logger logCommand = Logger(
     level: Level.info,
+    filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "COMMAND",
       printTime: true,
@@ -95,6 +98,7 @@ class FlutterJVx extends StatefulWidget {
   /// UI logger
   static final Logger logUI = Logger(
     level: Level.warning,
+    filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "UI",
       printTime: true,

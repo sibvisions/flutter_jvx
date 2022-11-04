@@ -1,5 +1,12 @@
 import 'package:logger/logger.dart';
 
+class JVxFilter extends LogFilter {
+  @override
+  bool shouldLog(LogEvent event) {
+    return event.level.index >= level!.index;
+  }
+}
+
 /// A decorator for a [LogPrinter] that allows for prefixing the logger
 class JVxPrefixPrinter extends LogPrinter {
   final LogPrinter _realPrinter;
