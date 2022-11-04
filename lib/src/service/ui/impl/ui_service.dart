@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
@@ -506,7 +505,6 @@ class UiService implements IUiService {
   void notifyMetaDataChange({
     required String pDataProvider,
   }) {
-    log(_dataSubscriptions.map((e) => e.id).join(";"));
     _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
       // Check if selected data changed
       sendCommand(GetMetaDataCommand(
