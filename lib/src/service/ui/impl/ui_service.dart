@@ -115,6 +115,7 @@ class UiService implements IUiService {
 
     var last = FlutterJVx.getCurrentContext()!.currentBeamLocation;
     if (pReplaceRoute || last.runtimeType == SettingsLocation || last.runtimeType == LoginLocation) {
+      FlutterJVx.clearHistory();
       FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/menu");
     } else {
       FlutterJVx.getCurrentContext()!.beamToNamed("/menu");
@@ -152,6 +153,7 @@ class UiService implements IUiService {
       return;
     }
 
+    FlutterJVx.clearHistory();
     FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/login/$mode", data: pLoginProps);
   }
 
@@ -163,6 +165,7 @@ class UiService implements IUiService {
     }
 
     if (pReplaceRoute) {
+      FlutterJVx.clearHistory();
       FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/settings");
     } else {
       FlutterJVx.getCurrentContext()!.beamToNamed("/settings");
