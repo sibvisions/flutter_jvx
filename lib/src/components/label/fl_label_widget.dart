@@ -22,12 +22,12 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       child = getTextWidget(model);
     }
 
-    double topPadding = kIsWeb ? 14 : 13;
+    double padding = kIsWeb ? 14 : 13;
 
     return GestureDetector(
       onTap: onPress,
       child: Container(
-        padding: EdgeInsets.fromLTRB(0, topPadding, 0, 0),
+        padding: EdgeInsets.fromLTRB(0, padding, 0, padding),
         decoration: BoxDecoration(
           color: model.background,
         ),
