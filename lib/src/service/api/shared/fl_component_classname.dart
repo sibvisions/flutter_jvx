@@ -26,6 +26,7 @@ abstract class FlContainerClassname {
   static const String SCROLL_PANEL = "ScrollPanel";
   static const String SPLIT_PANEL = "SplitPanel";
   static const String TABSET_PANEL = "TabsetPanel";
+  static const String TOOLBAR_PANEL = "ToolBarPanel";
   static const String CUSTOM_CONTAINER = "CustomContainer";
 }
 

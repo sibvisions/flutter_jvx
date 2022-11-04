@@ -30,6 +30,7 @@ abstract class ModelFactory {
     switch (className) {
       // Containers
       case FlContainerClassname.PANEL:
+      case FlContainerClassname.TOOLBAR_PANEL:
         return FlPanelModel();
       case FlContainerClassname.GROUP_PANEL:
         return FlGroupPanelModel();
