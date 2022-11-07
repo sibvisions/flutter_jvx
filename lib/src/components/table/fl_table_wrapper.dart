@@ -147,9 +147,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   @override
   void receiveNewLayoutData(LayoutData pLayoutData, [bool pSetState = true]) {
+    bool newConstraint = pLayoutData.layoutPosition?.width != layoutData.layoutPosition?.width;
     super.receiveNewLayoutData(pLayoutData, pSetState);
 
-    recalculateTableSize(pSetState);
+    if (newConstraint) {
+      recalculateTableSize(pSetState);
+    }
   }
 
   @override
@@ -256,8 +259,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void receiveMetaData(DalMetaDataResponse pMetaData) {
     currentState |= LOADED_META_DATA;
 
+    List<String> newColumns = pMetaData.columns.map((e) => e.name).toList();
+    List<String> oldColumns = metaData?.columns.map((e) => e.name).toList() ?? [];
+    bool hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
+        oldColumns.any((element) => (!newColumns.contains(element)));
+
     metaData = pMetaData;
-    recalculateTableSize(true);
+
+    if (hasToCalc) {
+      recalculateTableSize(true);
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
