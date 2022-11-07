@@ -39,18 +39,23 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return Opacity(
       opacity: IConfigService().getOpacitySideMenu(),
       child: Drawer(
-        backgroundColor: Theme.of(context).backgroundColor,
-        child: Column(
-          children: [
-            _buildDrawerHeader(context, isNormalSize),
-            Expanded(child: _buildMenu(context, isNormalSize)),
-            if (isNormalSize) ...footerEntries,
-            if (!isNormalSize)
-              SizedBox(
-                height: 55,
-                child: Row(children: footerEntries),
-              ),
-          ],
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: SafeArea(
+          top: false,
+          left: false,
+          right: false,
+          child: Column(
+            children: [
+              _buildDrawerHeader(context, isNormalSize),
+              Expanded(child: _buildMenu(context, isNormalSize)),
+              if (isNormalSize) ...footerEntries,
+              if (!isNormalSize)
+                SizedBox(
+                  height: 55,
+                  child: Row(children: footerEntries),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -148,18 +153,21 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
   Widget _buildMenu(BuildContext context, bool isNormalSize) {
     MenuModel menuModel = IUiService().getMenuModel();
-    return ListTileTheme.merge(
-      iconColor: Theme.of(context).colorScheme.primary,
-      style: ListTileStyle.drawer,
-      dense: !isNormalSize,
-      child: IconTheme(
-        data: IconTheme.of(context).copyWith(
-          size: 32,
-        ),
-        child: AppMenuListGrouped(
-          menuModel: menuModel,
-          onClick: AppMenu.menuItemPressed,
-          useAlternativeLabel: true,
+    return ColoredBox(
+      color: Theme.of(context).backgroundColor,
+      child: ListTileTheme.merge(
+        iconColor: Theme.of(context).colorScheme.primary,
+        style: ListTileStyle.drawer,
+        dense: !isNormalSize,
+        child: IconTheme(
+          data: IconTheme.of(context).copyWith(
+            size: 32,
+          ),
+          child: AppMenuListGrouped(
+            menuModel: menuModel,
+            onClick: AppMenu.menuItemPressed,
+            useAlternativeLabel: true,
+          ),
         ),
       ),
     );
