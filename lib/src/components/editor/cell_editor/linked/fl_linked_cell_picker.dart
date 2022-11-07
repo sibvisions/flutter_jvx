@@ -86,11 +86,18 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         Flexible(
           child: Align(
             alignment: Alignment.centerLeft,
-            child: ElevatedButton(
+            child: InkWell(
               child: Text(
-                FlutterJVx.translate("EMPTY"),
+                style: TextStyle(
+                  shadows: const [Shadow(offset: Offset(0, -2))],
+                  color: Colors.transparent,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Theme.of(context).colorScheme.onPrimary,
+                  decorationThickness: 1,
+                ),
+                FlutterJVx.translate("No value"),
               ),
-              onPressed: () {
+              onTap: () {
                 Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
               },
             ),
@@ -106,7 +113,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           alignment: Alignment.centerRight,
           child: ElevatedButton(
             child: Text(
-              FlutterJVx.translate("CANCEL"),
+              FlutterJVx.translate("Cancel"),
             ),
             onPressed: () {
               Navigator.of(context).pop();
@@ -128,7 +135,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              FlutterJVx.translate("SELECT ITEM"),
+              FlutterJVx.translate("Select value"),
               style: TextStyle(
                 color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
               ),
@@ -172,7 +179,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                     )
                   : Container(),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 8),
             Row(
               children: listBottomButtons,
             ),
