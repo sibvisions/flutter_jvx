@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../../../../../flutter_jvx.dart';
@@ -18,7 +17,7 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
     if (FlutterJVx.getCurrentContext() != null) {
       bool goToSettings = command.userError;
       //Don't show "Go to Settings" while in settings
-      if (FlutterJVx.getCurrentContext()?.currentBeamLocation.runtimeType == SettingsLocation) {
+      if (FlutterJVx.getBeamerDelegate().currentBeamLocation.runtimeType == SettingsLocation) {
         goToSettings = false;
       }
 

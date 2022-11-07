@@ -59,6 +59,9 @@ class FlutterJVx extends StatefulWidget {
   /// Loads assets with packages prefix
   static bool package = true;
 
+  /// Have we ever had a context?
+  static bool initiated = false;
+
   /// General logger
   static final Logger log = Logger(
     level: kDebugMode ? Level.debug : Level.info,
@@ -144,6 +147,10 @@ class FlutterJVx extends StatefulWidget {
   /// Translates any text through the translation files loaded by the application.
   static String translate(String? pText) {
     return IConfigService().translateText(pText ?? "");
+  }
+
+  static BeamerDelegate getBeamerDelegate() {
+    return routerDelegate;
   }
 
   static BuildContext? getCurrentContext() {
@@ -321,6 +328,7 @@ class FlutterJVxState extends State<FlutterJVx> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.none ||
                       snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                    FlutterJVx.initiated = true;
                     return JVxOverlay(child: child ?? const SizedBox.shrink());
                   }
 
@@ -526,7 +534,7 @@ class FlutterJVxState extends State<FlutterJVx> {
           actions: [
             TextButton(
               onPressed: () {
-                routerDelegate.setNewRoutePath(const RouteInformation(location: "/settings"));
+                IUiService().routeToSettings(pReplaceRoute: true);
                 setState(() {
                   startupFuture = null;
                 });

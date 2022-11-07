@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../commands.dart';
@@ -102,79 +102,66 @@ class UiService implements IUiService {
   // Beaming history will be cleared when it should not be possible to go back,
   // as you should not be able to go back to the splash screen or back to menu when u logged out
 
+  /// If we are currently in splash and never had a context before (initiated = false),
+  /// then ignore route request while in settings (and later also while in work screen)
+  static bool checkFirstSplash() {
+    if (FlutterJVx.getCurrentContext() == null && !FlutterJVx.initiated) {
+      // TODO fix workScreen web reload (e.g. send OpenScreenCommand); Potential Idea -> FS#3063
+      if (kIsWeb && (Uri.base.fragment == "/settings" /*|| Uri.base.fragment.startsWith("/workScreen")*/)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
-    if (FlutterJVx.getCurrentContext() == null) {
-      // TODO fix workScreen web reload (e.g. send OpenScreenCommand)
-      // Potential Idea -> FS#3063
-      //if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
-      routerDelegate.setNewRoutePath(const RouteInformation(location: "/menu"));
-      //}
-      return;
-    }
+    if (!checkFirstSplash()) return;
 
-    var last = FlutterJVx.getCurrentContext()!.currentBeamLocation;
-    if (pReplaceRoute || last.runtimeType == SettingsLocation || last.runtimeType == LoginLocation) {
+    var lastLocation = FlutterJVx.getBeamerDelegate().currentBeamLocation;
+    if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
       FlutterJVx.clearHistory();
-      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/menu");
+      FlutterJVx.getBeamerDelegate().beamToReplacementNamed("/menu");
     } else {
-      FlutterJVx.getCurrentContext()!.beamToNamed("/menu");
+      FlutterJVx.getBeamerDelegate().beamToNamed("/menu");
     }
   }
 
   @override
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
+    if (!checkFirstSplash()) return;
+
     FlutterJVx.logUI.i("Routing to workscreen: $pScreenName");
 
-    if (FlutterJVx.getCurrentContext() == null) {
-      // TODO: See [routeToMenu]
-      //if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
-      routerDelegate.setNewRoutePath(RouteInformation(location: "/workScreen/$pScreenName"));
-      //}
-      return;
-    }
-
-    BeamLocation lastLocation = FlutterJVx.getCurrentContext()!.currentBeamLocation;
-
+    var lastLocation = FlutterJVx.getBeamerDelegate().currentBeamLocation;
     if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
-      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/workScreen/$pScreenName");
+      FlutterJVx.getBeamerDelegate().beamToReplacementNamed("/workScreen/$pScreenName");
     } else {
-      FlutterJVx.getCurrentContext()!.beamToNamed("/workScreen/$pScreenName");
+      FlutterJVx.getBeamerDelegate().beamToNamed("/workScreen/$pScreenName");
     }
   }
 
   @override
   void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
-    if (FlutterJVx.getCurrentContext() == null) {
-      // TODO: See [routeToMenu]
-      // if (!kIsWeb || Uri.base.fragment != "/settings" /* && !Uri.base.fragment.startsWith("/workScreen")*/) {
-      routerDelegate.setNewRoutePath(RouteInformation(location: "/login/$mode"));
-      // }
-      return;
-    }
+    if (!checkFirstSplash()) return;
 
     FlutterJVx.clearHistory();
-    FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/login/$mode", data: pLoginProps);
+    FlutterJVx.getBeamerDelegate().beamToReplacementNamed("/login/$mode", data: pLoginProps);
   }
 
   @override
   void routeToSettings({bool pReplaceRoute = false}) {
-    if (FlutterJVx.getCurrentContext() == null) {
-      routerDelegate.setNewRoutePath(const RouteInformation(location: "/settings"));
-      return;
-    }
-
     if (pReplaceRoute) {
       FlutterJVx.clearHistory();
-      FlutterJVx.getCurrentContext()!.beamToReplacementNamed("/settings");
+      FlutterJVx.getBeamerDelegate().beamToReplacementNamed("/settings");
     } else {
-      FlutterJVx.getCurrentContext()!.beamToNamed("/settings");
+      FlutterJVx.getBeamerDelegate().beamToNamed("/settings");
     }
   }
 
   @override
   void routeToCustom({required String pFullPath}) {
-    FlutterJVx.getCurrentContext()!.beamToNamed(pFullPath);
+    FlutterJVx.getBeamerDelegate().beamToNamed(pFullPath);
   }
 
   @override
@@ -324,7 +311,7 @@ class UiService implements IUiService {
     }
 
     if (pBeamBack) {
-      FlutterJVx.getCurrentContext()!.beamBack();
+      FlutterJVx.getBeamerDelegate().beamBack();
     }
   }
 
