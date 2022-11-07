@@ -195,6 +195,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
           onTap: widget.onLogoutPressed,
           isNormalSize: isNormalSize,
         ),
+        _buildFooterDivider(context),
       ]);
     }
 
@@ -205,6 +206,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return Divider(
       color: Theme.of(context).colorScheme.onPrimary,
       height: 1,
+      thickness: 1,
     );
   }
 
