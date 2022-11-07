@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
+import '../../../util/jvx_colors.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
@@ -212,9 +213,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
   Divider _buildFooterDivider(BuildContext context) {
     return Divider(
-      color: Theme.of(context).colorScheme.onPrimary,
+      //Specifically requested color mix
+      color: JVxColors.lighten(Theme.of(context).colorScheme.onPrimary, 0.4),
       height: 1,
-      thickness: 1,
     );
   }
 
