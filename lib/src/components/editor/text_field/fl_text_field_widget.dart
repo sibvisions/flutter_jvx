@@ -237,7 +237,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     }
 
     return Container(
-      height: double.infinity,
+      // Only on multiline editors.
+      height: keyboardType == TextInputType.multiline ? double.infinity : null,
       padding: padding,
       child: Row(
         crossAxisAlignment: crossAxisAlignment,

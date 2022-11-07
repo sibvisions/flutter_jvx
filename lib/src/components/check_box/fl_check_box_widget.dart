@@ -20,6 +20,11 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
       );
     }
 
+    Switch.adaptive(
+      value: model.selected,
+      onChanged: model.isEnabled ? (_) => onPress?.call() : null,
+    );
+
     return Checkbox(
       side: borderside,
       visualDensity: VisualDensity.compact,
@@ -32,5 +37,5 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlCheckBoxWidget({super.key, required super.model, required super.onPress, super.inTable = false});
+  const FlCheckBoxWidget({super.key, required super.model, required super.onPress, super.inTable = false});
 }

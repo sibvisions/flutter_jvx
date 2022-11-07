@@ -37,13 +37,13 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  bool inTable;
+  final bool inTable;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlRadioButtonWidget({super.key, required super.model, required super.onPress, this.inTable = false});
+  const FlRadioButtonWidget({super.key, required super.model, required super.onPress, this.inTable = false});
 
   @override
   ButtonStyle createButtonStyle(context) {

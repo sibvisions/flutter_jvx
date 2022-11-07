@@ -83,25 +83,36 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     if (widget.editorColumnDefinition?.nullable == true) {
       listBottomButtons.add(
-        ElevatedButton(
-          child: Text(
-            FlutterJVx.translate("EMPTY"),
+        Flexible(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: ElevatedButton(
+              child: Text(
+                FlutterJVx.translate("EMPTY"),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
+              },
+            ),
           ),
-          onPressed: () {
-            Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
-          },
         ),
       );
     }
 
     listBottomButtons.add(
-      ElevatedButton(
-        child: Text(
-          FlutterJVx.translate("CANCEL"),
+      Flexible(
+        flex: 1,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: ElevatedButton(
+            child: Text(
+              FlutterJVx.translate("CANCEL"),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
       ),
     );
 
@@ -110,63 +121,59 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       elevation: 10.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       child: Container(
+        clipBehavior: Clip.hardEdge,
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
         decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-              child: Text(
-                FlutterJVx.translate("SELECT ITEM"),
-                style: TextStyle(
-                  color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
-                ),
+            Text(
+              FlutterJVx.translate("SELECT ITEM"),
+              style: TextStyle(
+                color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: FlTextFieldWidget(
-                key: widget.key,
-                model: searchFieldModel,
-                textController: _controller,
-                keyboardType: TextInputType.text,
-                valueChanged: _startTimerValueChanged,
-                endEditing: (_) {},
-                focusNode: focusNode,
-                inputDecoration: InputDecoration(
-                  labelText: FlutterJVx.translate("Search"),
-                  labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
-                ),
+            const SizedBox(height: 8),
+            FlTextFieldWidget(
+              key: widget.key,
+              model: searchFieldModel,
+              textController: _controller,
+              keyboardType: TextInputType.text,
+              valueChanged: _startTimerValueChanged,
+              endEditing: (_) {},
+              focusNode: focusNode,
+              inputDecoration: InputDecoration(
+                labelText: FlutterJVx.translate("Search"),
+                labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
               ),
             ),
+            const SizedBox(height: 8),
             Expanded(
               child: _chunkData != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 16),
-                      child: LayoutBuilder(
-                        builder: ((context, constraints) {
-                          TableSize tableSize = TableSize.direct(
-                            tableModel: tableModel,
-                            dataChunk: _chunkData!,
-                            availableWidth: constraints.maxWidth,
-                          );
-                          tableModel.stickyHeaders =
-                              constraints.maxHeight > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
+                  ? LayoutBuilder(
+                      builder: ((context, constraints) {
+                        TableSize tableSize = TableSize.direct(
+                          tableModel: tableModel,
+                          dataChunk: _chunkData!,
+                          availableWidth: constraints.maxWidth,
+                        );
+                        tableModel.stickyHeaders =
+                            constraints.maxHeight > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
 
-                          return FlTableWidget(
-                            chunkData: _chunkData!,
-                            onEndScroll: _increasePageLoad,
-                            model: tableModel,
-                            disableEditors: true,
-                            onRowTap: _onRowTapped,
-                            tableSize: tableSize,
-                          );
-                        }),
-                      ),
+                        return FlTableWidget(
+                          chunkData: _chunkData!,
+                          onEndScroll: _increasePageLoad,
+                          model: tableModel,
+                          disableEditors: true,
+                          onRowTap: _onRowTapped,
+                          tableSize: tableSize,
+                        );
+                      }),
                     )
                   : Container(),
             ),
-            ButtonBar(
-              alignment: MainAxisAlignment.center,
+            const SizedBox(height: 2),
+            Row(
               children: listBottomButtons,
             ),
           ],
