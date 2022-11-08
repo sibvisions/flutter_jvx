@@ -63,6 +63,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
                 backgroundDecoration: const BoxDecoration(
                   color: Colors.transparent,
                 ),
+                initialScale: PhotoViewComputedScale.contained * 0.75,
                 minScale: PhotoViewComputedScale.contained * 0.1,
                 imageProvider: getImageProvider(),
               ),
