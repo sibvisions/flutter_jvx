@@ -16,10 +16,10 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     Widget child;
 
+    child = getTextWidget(model, pSelectable: true);
+
     if (model.toolTipText != null) {
-      child = getTooltipWidget();
-    } else {
-      child = getTextWidget(model);
+      child = getTooltipWidget(child);
     }
 
     double padding = kIsWeb ? 14 : 13;
@@ -37,17 +37,31 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Tooltip getTooltipWidget() {
-    return Tooltip(message: model.toolTipText!, child: getTextWidget(model));
+  Tooltip getTooltipWidget(Widget pChild) {
+    return Tooltip(message: model.toolTipText!, child: pChild);
   }
 
-  static Widget getTextWidget(FlLabelModel pModel, [TextStyle? pTextStyle]) {
-    return ParseUtil.isHTML(pModel.text)
-        ? SelectableHtml(data: pModel.text)
-        : SelectableText(
-            pModel.text,
-            style: pTextStyle ?? pModel.createTextStyle(),
-            textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
-          );
+  static Widget getTextWidget(FlLabelModel pModel, {TextStyle? pTextStyle, bool pSelectable = false}) {
+    Widget textWidget;
+
+    if (ParseUtil.isHTML(pModel.text) && pSelectable) {
+      textWidget = SelectableHtml(data: pModel.text);
+    } else if (ParseUtil.isHTML(pModel.text)) {
+      textWidget = Html(data: pModel.text);
+    } else if (pSelectable) {
+      textWidget = SelectableText(
+        pModel.text,
+        style: pTextStyle ?? pModel.createTextStyle(),
+        textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
+      );
+    } else {
+      textWidget = Text(
+        pModel.text,
+        style: pTextStyle ?? pModel.createTextStyle(),
+        textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
+      );
+    }
+
+    return textWidget;
   }
 }

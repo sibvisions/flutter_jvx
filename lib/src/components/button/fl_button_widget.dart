@@ -124,7 +124,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       textStyle = textStyle.copyWith(color: Colors.blue);
     }
 
-    return FlLabelWidget.getTextWidget(model.labelModel, textStyle);
+    return FlLabelWidget.getTextWidget(
+      model.labelModel,
+      pTextStyle: textStyle,
+    );
   }
 
   /// Gets the button style.
