@@ -32,8 +32,8 @@ class MenuItemModel {
     this.image,
   });
 
-  static Widget getImage({
-    required BuildContext pContext,
+  static Widget getImage(
+    BuildContext context, {
     required MenuItemModel pMenuItemModel,
     double? pSize,
     Color? pColor,

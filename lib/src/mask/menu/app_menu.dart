@@ -19,7 +19,9 @@ import 'tab/app_menu_tab.dart';
 
 /// Each menu item does get this callback
 typedef ButtonCallback = void Function(
-    {required String pScreenLongName, required IUiService pUiService, required BuildContext pContext});
+  BuildContext context, {
+  required String pScreenLongName,
+});
 
 /// Used for menuFactory map
 typedef MenuFactory = Widget Function({
@@ -49,16 +51,15 @@ class AppMenu extends StatefulWidget {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static void menuItemPressed(
-      {required String pScreenLongName, required IUiService pUiService, required BuildContext pContext}) {
+  static void menuItemPressed(BuildContext context, {required String pScreenLongName}) {
     //Always close drawer even on route (e.g. previewer blocks routing)
-    Scaffold.maybeOf(pContext)?.closeEndDrawer();
+    Scaffold.maybeOf(context)?.closeEndDrawer();
 
     // Offline screens no not require the server to know that they are open
-    if (pUiService.usesNativeRouting(pScreenLongName: pScreenLongName)) {
-      pUiService.routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
+    if (UiService().usesNativeRouting(pScreenLongName: pScreenLongName)) {
+      UiService().routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
     } else {
-      pUiService.sendCommand(OpenScreenCommand(screenLongName: pScreenLongName, reason: "Menu Item was pressed"));
+      UiService().sendCommand(OpenScreenCommand(screenLongName: pScreenLongName, reason: "Menu Item was pressed"));
     }
   }
 }
@@ -75,7 +76,7 @@ class _AppMenuState extends State<AppMenu> {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
-  Widget build(BuildContext pContext) {
+  Widget build(BuildContext context) {
     List<Widget> actions = [];
 
     if (IConfigService().isOffline()) {

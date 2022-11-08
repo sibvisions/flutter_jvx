@@ -33,7 +33,7 @@ class AppMenuGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context),
+      onTap: () => onClick(context, pScreenLongName: menuItemModel.screenLongName),
       child: Ink(
         color: Theme.of(context).primaryColor.withOpacity(IConfigService().getOpacityMenu()),
         child: Column(
@@ -68,7 +68,7 @@ class AppMenuGridItem extends StatelessWidget {
               child: Container(
                 color: Colors.black.withOpacity(0.1),
                 child: MenuItemModel.getImage(
-                  pContext: context,
+                  context,
                   pMenuItemModel: menuItemModel,
                   pSize: 72,
                   pColor: Theme.of(context).cardColor,

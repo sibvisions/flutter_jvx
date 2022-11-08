@@ -55,11 +55,11 @@ class AppMenuListItem extends StatelessWidget {
     }
 
     var leading = MenuItemModel.getImage(
-      pContext: context,
+      context,
       pMenuItemModel: menuItemModel,
     );
 
-    onTap() => onClick(pScreenLongName: menuItemModel.screenLongName, pUiService: IUiService(), pContext: context);
+    onTap() => onClick(context, pScreenLongName: menuItemModel.screenLongName);
 
     return LayoutBuilder(
       builder: (context, constraints) {

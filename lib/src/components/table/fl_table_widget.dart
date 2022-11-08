@@ -112,7 +112,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Widget createTable(BuildContext pContext) {
+  Widget createTable(BuildContext context) {
     return LayoutBuilder(
       builder: ((context, constraints) {
         double maxWidth = max(max(tableSize.size.width, constraints.maxWidth), 0);
@@ -153,7 +153,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
           children.add(
             SizedBox(
               height: tableSize.tableHeaderHeight,
-              child: buildHeaderRow(pContext, canScrollHorizontally),
+              child: buildHeaderRow(context, canScrollHorizontally),
             ),
           );
         }
@@ -173,17 +173,17 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   }
 
   /// The item builder of the scrollable positioned list.
-  Widget itemBuilder(BuildContext pContext, int pIndex) {
+  Widget itemBuilder(BuildContext context, int pIndex) {
     int index = pIndex;
     if (model.tableHeaderVisible && !model.stickyHeaders) {
       index--;
       if (pIndex == 0) {
         // Header gets a false scrollable as it is already handled by the item scroller.
-        return buildHeaderRow(pContext, false);
+        return buildHeaderRow(context, false);
       }
     }
 
-    return buildDataRow(index, pContext);
+    return buildDataRow(index, context);
   }
 
   /// How many items the scrollable list should build.
