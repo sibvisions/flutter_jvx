@@ -41,7 +41,7 @@ class LoginLocation extends BeamLocation<BeamState> {
         ),
       if (state.uri.pathSegments.contains("changePassword"))
         BeamPage(
-          title: FlutterJVx.translate("Change Password"),
+          title: FlutterJVx.translate("Change password"),
           key: const ValueKey("login_change_password"),
           child: AppLogin(
             loginCard: ChangePassword(

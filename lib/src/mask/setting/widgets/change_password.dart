@@ -26,7 +26,7 @@ class ChangePassword extends StatelessWidget {
     passwordController.text = password ?? "";
 
     return AlertDialog(
-      title: Text(FlutterJVx.translate("Change Password")),
+      title: Text(FlutterJVx.translate("Change password")),
       content: SingleChildScrollView(
         child: Column(
           children: [
@@ -128,7 +128,7 @@ class ChangePassword extends StatelessWidget {
           IUiService().openDialog(pBuilder: (_) => passwordError(), pIsDismissible: true);
         }
       },
-      child: Text(FlutterJVx.translate("Change Password")),
+      child: Text(FlutterJVx.translate("Change password")),
     ));
 
     return widgetList;
