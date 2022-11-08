@@ -43,8 +43,8 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
 
   static Widget getTextWidget(FlLabelModel pModel, [TextStyle? pTextStyle]) {
     return ParseUtil.isHTML(pModel.text)
-        ? Html(data: pModel.text)
-        : Text(
+        ? SelectableHtml(data: pModel.text)
+        : SelectableText(
             pModel.text,
             style: pTextStyle ?? pModel.createTextStyle(),
             textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
