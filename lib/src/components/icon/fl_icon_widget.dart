@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
@@ -43,13 +44,34 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       child = Tooltip(message: model.toolTipText!, child: child);
     }
 
-    return GestureDetector(
-      onTap: model.isEnabled ? onPress : null,
-      // child: DecoratedBox(
-      //   decoration: BoxDecoration(color: model.background),
-      child: child,
-      // ),
-    );
+    if (onPress != null || directImage != null) {
+      return GestureDetector(
+        onTap: model.isEnabled ? onPress : null,
+        // child: DecoratedBox(
+        //   decoration: BoxDecoration(color: model.background),
+        child: child,
+        // ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () => showDialog(
+          context: context,
+          builder: (context) {
+            return GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: PhotoView(
+                backgroundDecoration: const BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                minScale: PhotoViewComputedScale.contained * 0.1,
+                imageProvider: getImageProvider(),
+              ),
+            );
+          },
+        ),
+        child: child,
+      );
+    }
   }
 
   BoxFit getBoxFit() {
@@ -87,6 +109,14 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       pImageInBinary: imageInBinary,
       pFit: getBoxFit(),
       pAlignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+    );
+  }
+
+  ImageProvider getImageProvider() {
+    return ImageLoader.loadImageProvider(
+      model.image,
+      pImageStreamListener: imageStreamListener,
+      pImageInBinary: imageInBinary,
     );
   }
 }

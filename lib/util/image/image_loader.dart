@@ -138,6 +138,21 @@ abstract class ImageLoader {
     }
   }
 
+  /// Loads any server sent image string.
+  static ImageProvider loadImageProvider(
+    String pImageString, {
+    Function(Size, bool)? pImageStreamListener,
+    bool pImageInBinary = false,
+    bool pImageInBase64 = true,
+  }) {
+    return _createImageProvider(
+      pPath: pImageString,
+      pImageStreamListener: pImageStreamListener,
+      pImageInBinary: pImageInBinary,
+      pImageInBase64: pImageInBase64,
+    );
+  }
+
   static ImageStreamListener createListener(Function(Size, bool)? pImageStreamListener) {
     return ImageStreamListener((imageInfo, synchronousCall) {
       pImageStreamListener?.call(
