@@ -104,6 +104,9 @@ abstract class FlComponentModel {
   /// Screen long name
   String? screenLongName;
 
+  /// Styles
+  Set<String> styles = {};
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -289,6 +292,13 @@ abstract class FlComponentModel {
       pDefault: defaultModel.classNameEventSourceRef,
       pCurrent: classNameEventSourceRef,
     );
+    styles = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.style,
+      pDefault: defaultModel.styles,
+      pConversion: _parseStyle,
+      pCurrent: styles,
+    );
 
     _parseFont(pJson, defaultModel);
   }
@@ -376,5 +386,11 @@ abstract class FlComponentModel {
         isItalic = pDefaultModel.isItalic;
       }
     }
+  }
+
+  Set<String> _parseStyle(dynamic pStyle) {
+    String sStyle = (pStyle as String);
+
+    return sStyle.split(",").toSet();
   }
 }

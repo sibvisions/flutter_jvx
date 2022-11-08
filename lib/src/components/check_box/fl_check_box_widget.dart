@@ -6,11 +6,24 @@ import '../button/radio/fl_radio_button_widget.dart';
 
 class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String SWITCH_STYLE = "switch";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget get image {
+    if (model.styles.contains(SWITCH_STYLE)) {
+      return Switch.adaptive(
+        value: model.selected,
+        onChanged: model.isEnabled ? (_) => onPress?.call() : null,
+      );
+    }
+
     BorderSide? borderside;
 
     if (!model.isEnabled) {
@@ -19,11 +32,6 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
         width: 2,
       );
     }
-
-    Switch.adaptive(
-      value: model.selected,
-      onChanged: model.isEnabled ? (_) => onPress?.call() : null,
-    );
 
     return Checkbox(
       side: borderside,
