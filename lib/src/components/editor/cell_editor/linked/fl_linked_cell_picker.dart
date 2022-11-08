@@ -270,6 +270,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
 
     filterTimer = Timer(const Duration(milliseconds: 300), _onTextFieldValueChanged);
+
+    setState(() {});
   }
 
   void _onTextFieldValueChanged() {
