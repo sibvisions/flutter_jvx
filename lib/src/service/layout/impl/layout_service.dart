@@ -50,7 +50,7 @@ class LayoutService implements ILayoutService {
 
     // Handle possible re-layout
     if (_isLegalState(pParentLayout: pLayoutData)) {
-      return _performLayout(pParentLayout: pLayoutData);
+      return _performLayout(pLayoutData: pLayoutData);
     }
 
     return [];
@@ -71,7 +71,7 @@ class LayoutService implements ILayoutService {
       LayoutData? parentData = _layoutDataSet[parentId];
       if (parentData != null) {
         if (_isLegalState(pParentLayout: parentData)) {
-          return _performLayout(pParentLayout: parentData);
+          return _performLayout(pLayoutData: parentData);
         }
       }
     }
@@ -102,7 +102,7 @@ class LayoutService implements ILayoutService {
         existingLayout.heightConstrains = {};
 
         if (_isLegalState(pParentLayout: existingLayout)) {
-          commands.addAll(_performLayout(pParentLayout: existingLayout));
+          commands.addAll(_performLayout(pLayoutData: existingLayout));
         }
       }
     } else {
@@ -180,16 +180,16 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Performs a layout operation.
-  List<BaseCommand> _performLayout({required LayoutData pParentLayout}) {
-    FlutterJVx.logUI.d("${pParentLayout.id} PERFORM LAYOUT");
-    _currentlyLayouting.add(pParentLayout.id);
+  List<BaseCommand> _performLayout({required LayoutData pLayoutData}) {
+    FlutterJVx.logUI.d("${pLayoutData.id} PERFORM LAYOUT");
+    _currentlyLayouting.add(pLayoutData.id);
 
     try {
       // Copy of parent
-      LayoutData parent = LayoutData.from(pParentLayout);
+      LayoutData panel = LayoutData.from(pLayoutData);
 
       // Copy of children with deleted positions
-      List<LayoutData> children = _getChildrenOrNull(pParentLayout: parent)!.map((data) {
+      List<LayoutData> children = _getChildrenOrNull(pParentLayout: panel)!.map((data) {
         LayoutData copy = LayoutData.from(data);
         return copy;
       }).toList();
@@ -198,11 +198,11 @@ class LayoutService implements ILayoutService {
       List<LayoutData> newlyConstraintChildren = [];
 
       // Needs to register again if this layout has been newly constraint by its parent.
-      parent.lastCalculatedSize = parent.calculatedSize;
-      parent.layout!.calculateLayout(parent, children);
+      panel.lastCalculatedSize = panel.calculatedSize;
+      panel.layout!.calculateLayout(panel, children);
 
       FlutterJVx.logUI.d(
-          "${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
+          "${panel.id} CALC SIZE: ${panel.calculatedSize} ; OLD CALC SIZE: ${panel.lastCalculatedSize} ; HAS NEW: ${panel.hasNewCalculatedSize}");
 
       // Check if any children have been newly constrained.
       for (LayoutData child in children) {
@@ -219,17 +219,17 @@ class LayoutService implements ILayoutService {
       }
 
       /// Only save information AFTER calculations after constrained children.
-      _layoutDataSet[parent.id] = parent;
+      _layoutDataSet[panel.id] = panel;
 
       // Nothing has been "newly" constrained meaning now, i can tell my parent exactly how big i want to be.
       // So if my calc size has changed - tell parent, if not, tell children their position.
       var commands = <BaseCommand>[];
 
-      if (parent.isChild && parent.hasNewCalculatedSize) {
-        return [PreferredSizeCommand(layoutData: parent, reason: "Has new calc size")];
+      if (panel.isChild && panel.hasNewCalculatedSize) {
+        return [PreferredSizeCommand(layoutData: panel, reason: "Has new calc size")];
       } else {
         // Bugfix: Update layout position always has to come first.
-        commands.add(UpdateLayoutPositionCommand(layoutDataList: [parent, ...children], reason: "New position"));
+        commands.add(UpdateLayoutPositionCommand(layoutDataList: [panel, ...children], reason: "New position"));
 
         for (LayoutData child in children) {
           if (child.isParent) {
@@ -240,7 +240,7 @@ class LayoutService implements ILayoutService {
 
       return commands;
     } finally {
-      _currentlyLayouting.remove(pParentLayout.id);
+      _currentlyLayouting.remove(pLayoutData.id);
     }
   }
 
