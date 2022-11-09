@@ -36,7 +36,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   receiveNewModel(FlPanelModel pModel) {
     ILayout originalLayout = ILayout.getLayout(pModel.layout, pModel.layoutData)!;
     layoutData.layout = ScrollLayout(originalLayout);
-    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
     super.receiveNewModel(pModel);
 
     buildChildren();

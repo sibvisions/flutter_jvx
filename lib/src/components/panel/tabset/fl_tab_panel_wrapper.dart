@@ -69,7 +69,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   @override
   receiveNewModel(FlTabPanelModel pModel) {
-    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
     super.receiveNewModel(pModel);
 
     // Performance optimization.

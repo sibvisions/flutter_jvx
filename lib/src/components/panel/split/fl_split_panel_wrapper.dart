@@ -44,7 +44,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
   @override
   receiveNewModel(FlSplitPanelModel pModel) {
     layoutData.layout = SplitLayout(splitAlignment: pModel.orientation, leftTopRatio: pModel.dividerPosition);
-    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
     super.receiveNewModel(pModel);
 
     buildChildren();
