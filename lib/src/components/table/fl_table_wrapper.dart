@@ -8,12 +8,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../../../commands.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../model/command/api/delete_record_command.dart';
-import '../../model/command/api/insert_record_command.dart';
-import '../../model/command/api/select_record_command.dart';
-import '../../model/command/api/set_values_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -158,7 +155,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   @override
   receiveNewModel(FlTableModel pModel) {
     super.receiveNewModel(pModel);
+
     subscribe();
+
+    if (pModel.lastChangedProperties.contains(ApiObjectProperty.columnNames) ||
+        pModel.lastChangedProperties.contains(ApiObjectProperty.columnLabels)) {
+      recalculateTableSize(true);
+    }
   }
 
   @override
