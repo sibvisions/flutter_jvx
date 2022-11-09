@@ -75,9 +75,10 @@ class _LoginCardState extends State<LoginCard> {
               decoration: InputDecoration(labelText: "${FlutterJVx.translate("Username")}:"),
             ),
             TextFormField(
+              textInputAction: TextInputAction.done,
               onTap: resetButton,
               onChanged: (_) => resetButton(),
-              onEditingComplete: _onLoginPressed,
+              onFieldSubmitted: (_) => _onLoginPressed(),
               controller: passwordController,
               decoration: InputDecoration(
                 labelText: "${FlutterJVx.translate("Password")}:",
