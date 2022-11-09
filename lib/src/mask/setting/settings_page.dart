@@ -157,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _createCancelButton(BuildContext context, bool loading) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
-      child: IConfigService().getUserInfo() != null && context.canBeamBack
+      child: context.canBeamBack
           ? InkWell(
               onTap: loading ? null : context.beamBack,
               child: SizedBox.shrink(
