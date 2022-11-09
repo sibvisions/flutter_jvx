@@ -57,7 +57,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       ComponentSubscription componentSubscription = ComponentSubscription(
         compId: childModel.id,
         subbedObj: this,
-        modelCallback: (_) => setState,
+        modelCallback: (_) => setState(() {}),
       );
       IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
     }
