@@ -25,7 +25,7 @@ class MenuItemModel {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  MenuItemModel({
+  const MenuItemModel({
     required this.screenLongName,
     required this.label,
     this.alternativeLabel,

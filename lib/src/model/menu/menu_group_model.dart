@@ -4,7 +4,7 @@ class MenuGroupModel {
   final String name;
   final List<MenuItemModel> items;
 
-  MenuGroupModel({
+  const MenuGroupModel({
     required this.name,
     required this.items,
   });

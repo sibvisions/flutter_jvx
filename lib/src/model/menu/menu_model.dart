@@ -2,9 +2,9 @@ import 'menu_group_model.dart';
 import 'menu_item_model.dart';
 
 class MenuModel {
-  List<MenuGroupModel> menuGroups;
+  final List<MenuGroupModel> menuGroups;
 
-  MenuModel({this.menuGroups = const []});
+  const MenuModel({this.menuGroups = const []});
 
   get count => menuGroups.expand((element) => element.items).length;
 
