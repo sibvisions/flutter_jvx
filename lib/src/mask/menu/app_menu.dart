@@ -8,6 +8,7 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/open_screen_command.dart';
+import '../../model/menu/menu_group_model.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
 import '../state/app_style.dart';
@@ -74,37 +75,75 @@ class _AppMenuState extends State<AppMenu> {
     MenuMode.TABS: _getTabMenu
   };
 
+  late final TextEditingController searchController;
+  bool isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    searchController = TextEditingController();
+    searchController.addListener(() {
+      _updateFilter();
+    });
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
     List<Widget> actions = [];
 
+    if (!isSearching) {
+      actions.add(IconButton(
+        onPressed: () {
+          isSearching = true;
+          searchController.clear();
+          setState(() {});
+        },
+        icon: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 22),
+      ));
+    }
+
     if (IConfigService().isOffline()) {
-      actions.add(
-        Builder(
-          builder: (context) => IconButton(
-            onPressed: () {
-              showSyncDialog().then(
-                (value) {
-                  if (value == SyncDialogResult.DISCARD_CHANGES) {
-                    OfflineUtil.discardChanges(context);
-                    OfflineUtil.initOnline();
-                  } else if (value == SyncDialogResult.YES) {
-                    OfflineUtil.initOnline();
-                  }
-                },
-              );
-            },
-            icon: const FaIcon(FontAwesomeIcons.towerBroadcast),
-          ),
+      actions.add(Builder(
+        builder: (context) => IconButton(
+          onPressed: () {
+            showSyncDialog().then(
+              (value) {
+                if (value == SyncDialogResult.DISCARD_CHANGES) {
+                  OfflineUtil.discardChanges(context);
+                  OfflineUtil.initOnline();
+                } else if (value == SyncDialogResult.YES) {
+                  OfflineUtil.initOnline();
+                }
+              },
+            );
+          },
+          icon: const FaIcon(FontAwesomeIcons.towerBroadcast),
         ),
-      );
+      ));
+    }
+
+    var menuModel = IUiService().getMenuModel();
+
+    if (isSearching) {
+      final String searchValue = searchController.text.trim().toLowerCase();
+      List<MenuGroupModel> menuGroupModels = [...menuModel.menuGroups.map((e) => e.copy())];
+
+      menuGroupModels.forEach((group) {
+        if (!group.name.toLowerCase().contains(searchValue)) {
+          group.items.removeWhere((item) => !item.label.toLowerCase().contains(searchValue));
+        }
+      });
+      menuGroupModels.removeWhere((group) => group.items.isEmpty);
+
+      menuModel = MenuModel(menuGroups: menuGroupModels);
     }
 
     Widget body = Column(
       children: [
         if (IConfigService().isOffline()) OfflineUtil.getOfflineBar(context),
-        Expanded(child: _getMenu()),
+        Expanded(child: _getMenu(menuModel)),
       ],
     );
 
@@ -113,14 +152,89 @@ class _AppMenuState extends State<AppMenu> {
       actions.addAll(frame.getActions());
     }
 
-    return Scaffold(
-      drawerEnableOpenDragGesture: false,
-      endDrawerEnableOpenDragGesture: false,
-      drawer: frame?.getDrawer(context),
-      endDrawer: frame?.getEndDrawer(context),
-      appBar: frame?.getAppBar(actions),
-      body: frame?.wrapBody(body) ?? body,
+    return WillPopScope(
+      onWillPop: () async {
+        if (isSearching) {
+          isSearching = false;
+          setState(() {});
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        drawerEnableOpenDragGesture: false,
+        endDrawerEnableOpenDragGesture: false,
+        drawer: frame?.getDrawer(context),
+        endDrawer: frame?.getEndDrawer(context),
+        appBar: frame?.getAppBar(
+          leading: isSearching
+              ? IconButton(
+                  onPressed: () {
+                    isSearching = false;
+                    setState(() {});
+                  },
+                  icon: const FaIcon(FontAwesomeIcons.arrowLeft))
+              : null,
+          title: !isSearching ? Text(FlutterJVx.translate("Menu")) : _buildSearch(context),
+          titleSpacing: isSearching ? 0.0 : null,
+          backgroundColor: IConfigService().isOffline() ? Colors.grey.shade500 : null,
+          actions: actions,
+        ),
+        body: frame?.wrapBody(body) ?? body,
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildSearch(BuildContext context) {
+    return Focus(
+      onFocusChange: (hasFocus) {
+        if (!hasFocus && searchController.text.isEmpty) {
+          isSearching = false;
+          setState(() {});
+        }
+      },
+      child: TextField(
+        textAlignVertical: TextAlignVertical.center,
+        decoration: InputDecoration(
+          hintText: FlutterJVx.translate("Search"),
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          border: InputBorder.none,
+          suffixIcon: searchController.text.isNotEmpty
+              ? IconButton(
+                  onPressed: () {
+                    searchController.clear();
+                    setState(() {});
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+        cursorColor: Theme.of(context).colorScheme.onPrimary,
+        style: TextStyle(
+          fontSize: 20,
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+        autofocus: true,
+        controller: searchController,
+        onSubmitted: (_) => _updateFilter(),
+        textInputAction: TextInputAction.search,
+      ),
+    );
+  }
+
+  void _updateFilter() {
+    setState(() {});
   }
 
   Future<SyncDialogResult?> showSyncDialog() {
@@ -186,7 +300,7 @@ class _AppMenuState extends State<AppMenu> {
     );
   }
 
-  Widget _getMenu() {
+  Widget _getMenu(MenuModel menuModel) {
     MenuMode menuMode = IConfigService().getMenuMode();
 
     // Overriding menu mode
@@ -200,7 +314,7 @@ class _AppMenuState extends State<AppMenu> {
     String? menuBackgroundImage = appStyle['desktop.icon'];
 
     return menuBuilder(
-      menuModel: IUiService().getMenuModel(),
+      menuModel: menuModel,
       onClick: AppMenu.menuItemPressed,
       backgroundImageString: menuBackgroundImage,
       menuBackgroundColor: menuBackgroundColor,

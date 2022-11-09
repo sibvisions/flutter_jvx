@@ -6,6 +6,8 @@ class MenuModel {
 
   MenuModel({this.menuGroups = const []});
 
+  get count => menuGroups.expand((element) => element.items).length;
+
   bool containsScreen(String pScreenLongName) {
     return menuGroups.any((group) => group.items.any((item) => item.screenLongName == pScreenLongName));
   }

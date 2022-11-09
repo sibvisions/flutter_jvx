@@ -97,7 +97,13 @@ abstract class FrameState extends State<Frame> {
 
   Widget? getEndDrawer(BuildContext context) => null;
 
-  PreferredSizeWidget getAppBar(List<Widget>? actions);
+  PreferredSizeWidget getAppBar({
+    Widget? leading,
+    Widget? title,
+    double? titleSpacing,
+    Color? backgroundColor,
+    List<Widget>? actions,
+  });
 
   Widget wrapBody(Widget body) => body;
 }

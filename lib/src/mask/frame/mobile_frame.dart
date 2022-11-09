@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
 import '../drawer/drawer_menu.dart';
 import '../state/loading_bar.dart';
 import 'frame.dart';
@@ -32,12 +30,20 @@ class MobileFrameState extends FrameState {
   }
 
   @override
-  PreferredSizeWidget getAppBar(List<Widget>? actions) {
+  PreferredSizeWidget getAppBar({
+    Widget? leading,
+    Widget? title,
+    double? titleSpacing,
+    Color? backgroundColor,
+    List<Widget>? actions,
+  }) {
     return AppBar(
-      title: Text(FlutterJVx.translate("Menu")),
+      leading: leading,
+      title: title,
       centerTitle: false,
+      titleSpacing: titleSpacing,
       actions: actions,
-      backgroundColor: IConfigService().isOffline() ? Colors.grey.shade500 : null,
+      backgroundColor: backgroundColor,
       elevation: 0,
     );
   }

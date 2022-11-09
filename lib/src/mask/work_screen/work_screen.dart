@@ -21,7 +21,6 @@ import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/request/api_navigation_request.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
-import '../frame/web_frame.dart';
 import '../state/app_style.dart';
 
 /// Screen used to show workScreens either custom or from the server,
@@ -153,19 +152,16 @@ class WorkScreenState extends State<WorkScreen> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: frame is WebFrameState
-            ? frame.getAppBar(actions)
-            : AppBar(
-                leading: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: () => _onBackTap(),
-                  onDoubleTap: () => _onDoubleTap(),
-                  child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
-                ),
-                title: Text(screenTitle),
-                actions: actions,
-                elevation: 0,
-              ),
+        appBar: frame?.getAppBar(
+          leading: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () => _onBackTap(),
+            onDoubleTap: () => _onDoubleTap(),
+            child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
+          ),
+          title: Text(screenTitle),
+          actions: actions,
+        ),
         drawerEnableOpenDragGesture: false,
         endDrawerEnableOpenDragGesture: false,
         drawer: frame?.getDrawer(context),
