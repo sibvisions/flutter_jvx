@@ -151,6 +151,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     }
 
     return InkWell(
+      canRequestFocus: false,
       onTap: () {
         if (!model.isReadOnly) {
           if (focusNode.hasFocus) {
