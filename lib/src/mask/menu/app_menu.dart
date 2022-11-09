@@ -8,8 +8,8 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/open_screen_command.dart';
-import '../../model/menu/menu_group_model.dart';
 import '../../util/offline_util.dart';
+import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../state/app_style.dart';
 import 'grid/app_menu_grid_grouped.dart';
@@ -65,7 +65,7 @@ class AppMenu extends StatefulWidget {
   }
 }
 
-class _AppMenuState extends State<AppMenu> {
+class _AppMenuState extends State<AppMenu> with SearchMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   late final Map<MenuMode, MenuFactory> menuFactory = {
     MenuMode.GRID_GROUPED: _getGroupedGridMenu,
@@ -74,19 +74,6 @@ class _AppMenuState extends State<AppMenu> {
     MenuMode.LIST: _getListMenuUngrouped,
     MenuMode.TABS: _getTabMenu
   };
-
-  late final TextEditingController searchController;
-  bool isSearching = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    searchController = TextEditingController();
-    searchController.addListener(() {
-      _updateFilter();
-    });
-  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
@@ -97,11 +84,11 @@ class _AppMenuState extends State<AppMenu> {
         builder: (context, isOffline) {
           List<Widget> actions = [];
 
-          if (!isSearching) {
+          if (!isMenuSearchEnabled) {
             actions.add(IconButton(
               onPressed: () {
-                isSearching = true;
-                searchController.clear();
+                isMenuSearchEnabled = true;
+                menuSearchController.clear();
                 setState(() {});
               },
               icon: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 22),
@@ -135,7 +122,7 @@ class _AppMenuState extends State<AppMenu> {
                 child: ValueListenableBuilder<MenuModel>(
                   valueListenable: IUiService().getMenuNotifier(),
                   builder: (context, _, child) {
-                    return _getMenu(_applyFilter(IUiService().getMenuModel()));
+                    return _getMenu(applyMenuFilter(IUiService().getMenuModel(), (item) => item.label));
                   },
                 ),
               ),
@@ -149,8 +136,8 @@ class _AppMenuState extends State<AppMenu> {
 
           return WillPopScope(
             onWillPop: () async {
-              if (isSearching) {
-                isSearching = false;
+              if (isMenuSearchEnabled) {
+                isMenuSearchEnabled = false;
                 setState(() {});
                 return false;
               }
@@ -162,16 +149,16 @@ class _AppMenuState extends State<AppMenu> {
               drawer: frame?.getDrawer(context),
               endDrawer: frame?.getEndDrawer(context),
               appBar: frame?.getAppBar(
-                leading: isSearching
+                leading: isMenuSearchEnabled
                     ? IconButton(
                         onPressed: () {
-                          isSearching = false;
+                          isMenuSearchEnabled = false;
                           setState(() {});
                         },
                         icon: const FaIcon(FontAwesomeIcons.arrowLeft))
                     : null,
-                title: !isSearching ? Text(FlutterJVx.translate("Menu")) : _buildSearch(context),
-                titleSpacing: isSearching ? 0.0 : null,
+                title: !isMenuSearchEnabled ? Text(FlutterJVx.translate("Menu")) : _buildSearch(context),
+                titleSpacing: isMenuSearchEnabled ? 0.0 : null,
                 backgroundColor: isOffline ? Colors.grey.shade500 : null,
                 actions: actions,
               ),
@@ -181,17 +168,11 @@ class _AppMenuState extends State<AppMenu> {
         });
   }
 
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
-
   Widget _buildSearch(BuildContext context) {
     return Focus(
       onFocusChange: (hasFocus) {
-        if (!hasFocus && searchController.text.isEmpty) {
-          isSearching = false;
+        if (!hasFocus && menuSearchController.text.isEmpty) {
+          isMenuSearchEnabled = false;
           setState(() {});
         }
       },
@@ -202,10 +183,10 @@ class _AppMenuState extends State<AppMenu> {
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           border: InputBorder.none,
-          suffixIcon: searchController.text.isNotEmpty
+          suffixIcon: menuSearchController.text.isNotEmpty
               ? IconButton(
                   onPressed: () {
-                    searchController.clear();
+                    menuSearchController.clear();
                     setState(() {});
                   },
                   icon: Icon(
@@ -222,32 +203,11 @@ class _AppMenuState extends State<AppMenu> {
           color: Theme.of(context).colorScheme.onPrimary,
         ),
         autofocus: true,
-        controller: searchController,
-        onSubmitted: (_) => _updateFilter(),
+        controller: menuSearchController,
+        onSubmitted: (_) => updateMenuFilter(),
         textInputAction: TextInputAction.search,
       ),
     );
-  }
-
-  void _updateFilter() {
-    setState(() {});
-  }
-
-  MenuModel _applyFilter(MenuModel menuModel) {
-    if (isSearching) {
-      final String searchValue = searchController.text.trim().toLowerCase();
-      List<MenuGroupModel> menuGroupModels = [...menuModel.menuGroups.map((e) => e.copy())];
-
-      menuGroupModels.forEach((group) {
-        if (!group.name.toLowerCase().contains(searchValue)) {
-          group.items.removeWhere((item) => !item.label.toLowerCase().contains(searchValue));
-        }
-      });
-      menuGroupModels.removeWhere((group) => group.items.isEmpty);
-
-      menuModel = MenuModel(menuGroups: menuGroupModels);
-    }
-    return menuModel;
   }
 
   Future<SyncDialogResult?> showSyncDialog() {

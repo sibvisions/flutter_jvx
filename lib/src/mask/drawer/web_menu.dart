@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/parse_util.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/device_status_response.dart';
+import '../../util/search_mixin.dart';
 import '../menu/app_menu.dart';
 import '../menu/list/app_menu_list_grouped.dart';
 import '../state/app_style.dart';
@@ -24,7 +26,7 @@ class WebMenu extends StatefulWidget {
   State<WebMenu> createState() => _WebMenuState();
 }
 
-class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
+class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, SearchMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   final TextStyle boldStyle = const TextStyle(
     fontWeight: FontWeight.bold,
@@ -35,6 +37,8 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    isMenuSearchEnabled = true;
 
     animationController = AnimationController(
       value: widget.showWebMenu ? 1.0 : 0.0,
@@ -58,7 +62,12 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       child: RepaintBoundary(
         child: ValueListenableBuilder<LayoutMode>(
           valueListenable: IConfigService().getLayoutMode(),
-          builder: (context, layoutMode, child) => _buildMenu(context, layoutMode),
+          builder: (context, layoutMode, child) {
+            return ValueListenableBuilder<MenuModel>(
+              valueListenable: IUiService().getMenuNotifier(),
+              builder: (context, _, child) => _buildMenu(context, layoutMode),
+            );
+          },
         ),
       ),
     );
@@ -80,17 +89,24 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
     Color? selectionColor =
         ParseUtil.parseHexColor(appStyle['web.sidemenu.selectionColor']) ?? Theme.of(context).colorScheme.primary;
 
-    Widget menu = ValueListenableBuilder<MenuModel>(
-      valueListenable: IUiService().getMenuNotifier(),
-      builder: (context, _, child) => AppMenuListGrouped(
-        menuModel: IUiService().getMenuModel(),
-        layoutMode: layoutMode,
-        textStyle: const TextStyle(fontWeight: FontWeight.normal),
-        headerColor: groupTextColor,
-        onClick: AppMenu.menuItemPressed,
-        decreasedDensity: true,
-        useAlternativeLabel: true,
-      ),
+    final MenuModel originalMenu = IUiService().getMenuModel();
+    var menuModel = applyMenuFilter(originalMenu, (item) => item.alternativeLabel ?? item.label);
+
+    Widget menu = Column(
+      children: [
+        if (originalMenu.count > 10 && layoutMode != LayoutMode.Small) _buildSearchField(textColor: textColor),
+        Expanded(
+          child: AppMenuListGrouped(
+            menuModel: menuModel,
+            layoutMode: layoutMode,
+            textStyle: const TextStyle(fontWeight: FontWeight.normal),
+            headerColor: groupTextColor,
+            onClick: AppMenu.menuItemPressed,
+            decreasedDensity: true,
+            useAlternativeLabel: true,
+          ),
+        ),
+      ],
     );
 
     //Drawer Menu always stays the same size
@@ -131,6 +147,43 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSearchField({required Color textColor}) {
+    return TextField(
+      textAlignVertical: TextAlignVertical.center,
+      cursorColor: textColor,
+      style: TextStyle(
+        fontSize: 20,
+        color: textColor,
+      ),
+      decoration: InputDecoration(
+        hintText: FlutterJVx.translate("Search"),
+        focusedBorder: _createSearchBorder(),
+        enabledBorder: _createSearchBorder(),
+        border: _createSearchBorder(),
+        suffixIcon: menuSearchController.text.isNotEmpty
+            ? IconButton(
+                onPressed: () {
+                  menuSearchController.clear();
+                  setState(() {});
+                },
+                icon: Icon(
+                  Icons.clear,
+                  size: 20,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              )
+            : const SizedBox.shrink(),
+      ),
+      controller: menuSearchController,
+    );
+  }
+
+  InputBorder _createSearchBorder() {
+    return const OutlineInputBorder(
+      borderSide: BorderSide(width: 3, color: Colors.transparent),
     );
   }
 }
