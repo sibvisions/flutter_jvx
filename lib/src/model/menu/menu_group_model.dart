@@ -10,7 +10,7 @@ class MenuGroupModel {
   });
 
   ///Makes a deep copy of this object but keeps shallow copies of child objects
-  copy() {
+  MenuGroupModel copy() {
     return MenuGroupModel(name: name, items: [...items]);
   }
 }
