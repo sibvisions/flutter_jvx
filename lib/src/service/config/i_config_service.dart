@@ -153,6 +153,8 @@ abstract class IConfigService {
 
   bool isOffline();
 
+  ValueNotifier<bool> getOfflineNotifier();
+
   Future<bool> setOffline(bool pOffline);
 
   /// Gets the last screen before going offline

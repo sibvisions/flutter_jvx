@@ -35,7 +35,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
   @override
   Widget build(BuildContext context) {
     bool isNormalSize = MediaQuery.of(context).size.height > 650;
-    List<Widget> footerEntries = _buildDrawerFooter(context, isNormalSize);
 
     return Opacity(
       opacity: IConfigService().getOpacitySideMenu(),
@@ -45,17 +44,22 @@ class _DrawerMenuState extends State<DrawerMenu> {
           top: false,
           left: false,
           right: false,
-          child: Column(
-            children: [
-              _buildDrawerHeader(context, isNormalSize),
-              Expanded(child: _buildMenu(context, isNormalSize)),
-              if (isNormalSize) ...footerEntries,
-              if (!isNormalSize)
-                SizedBox(
-                  height: 55,
-                  child: Row(children: footerEntries),
-                ),
-            ],
+          child: ValueListenableBuilder<bool>(
+            valueListenable: IConfigService().getOfflineNotifier(),
+            builder: (context, isOffline, child) {
+              return Column(
+                children: [
+                  _buildDrawerHeader(context, isNormalSize),
+                  Expanded(child: _buildMenu(context, isNormalSize)),
+                  if (isNormalSize) ..._buildDrawerFooter(context, isOffline, isNormalSize),
+                  if (!isNormalSize)
+                    SizedBox(
+                      height: 55,
+                      child: Row(children: _buildDrawerFooter(context, isOffline, isNormalSize)),
+                    ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -153,28 +157,32 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }
 
   Widget _buildMenu(BuildContext context, bool isNormalSize) {
-    MenuModel menuModel = IUiService().getMenuModel();
-    return ColoredBox(
-      color: Theme.of(context).backgroundColor,
-      child: ListTileTheme.merge(
-        iconColor: Theme.of(context).colorScheme.primary,
-        style: ListTileStyle.drawer,
-        dense: !isNormalSize,
-        child: IconTheme(
-          data: IconTheme.of(context).copyWith(
-            size: 32,
+    return ValueListenableBuilder<MenuModel>(
+      valueListenable: IUiService().getMenuNotifier(),
+      builder: (context, _, child) {
+        return ColoredBox(
+          color: Theme.of(context).backgroundColor,
+          child: ListTileTheme.merge(
+            iconColor: Theme.of(context).colorScheme.primary,
+            style: ListTileStyle.drawer,
+            dense: !isNormalSize,
+            child: IconTheme(
+              data: IconTheme.of(context).copyWith(
+                size: 32,
+              ),
+              child: AppMenuListGrouped(
+                menuModel: IUiService().getMenuModel(),
+                onClick: AppMenu.menuItemPressed,
+                useAlternativeLabel: true,
+              ),
+            ),
           ),
-          child: AppMenuListGrouped(
-            menuModel: menuModel,
-            onClick: AppMenu.menuItemPressed,
-            useAlternativeLabel: true,
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  List<Widget> _buildDrawerFooter(BuildContext context, bool isNormalSize) {
+  List<Widget> _buildDrawerFooter(BuildContext context, bool isOffline, bool isNormalSize) {
     var footerEntries = [
       _buildFooterDivider(context),
       _buildFooterEntry(
@@ -186,7 +194,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       ),
     ];
 
-    if (!IConfigService().isOffline()) {
+    if (!isOffline) {
       footerEntries.addAll([
         _buildFooterDivider(context),
         _buildFooterEntry(

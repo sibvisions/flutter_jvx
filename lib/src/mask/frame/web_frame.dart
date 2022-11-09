@@ -18,6 +18,7 @@ class WebFrame extends Frame {
   const WebFrame({
     super.key,
     required super.builder,
+    required super.isOffline,
   });
 
   @override

@@ -97,8 +97,12 @@ abstract class IUiService {
   // Meta data management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Returns the current menu, if none was found - throws exception
+  /// Returns the current menu
   MenuModel getMenuModel();
+
+  /// Returns the value notifier for the menu model
+  /// DO NOT USE THE VALUE DIRECTLY, call [getMenuModel] instead to get a correctly modified instance.
+  ValueNotifier<MenuModel> getMenuNotifier();
 
   /// Set menu model to be used when opening the menu
   void setMenuModel(MenuModel? pMenuModel);

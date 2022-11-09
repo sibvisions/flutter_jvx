@@ -8,12 +8,16 @@ import '../setting/widgets/change_password.dart';
 import 'mobile_frame.dart';
 import 'web_frame.dart';
 
+typedef FrameBuilder = Widget Function(BuildContext context, bool isOffline);
+
 abstract class Frame extends StatefulWidget {
-  final WidgetBuilder builder;
+  final FrameBuilder builder;
+  final bool isOffline;
 
   const Frame({
     super.key,
     required this.builder,
+    required this.isOffline,
   });
 
   void openSettings(BuildContext context) {
@@ -37,38 +41,50 @@ abstract class Frame extends StatefulWidget {
   factory Frame.getFrame(
     bool isWeb, {
     Key? key,
-    required WidgetBuilder builder,
+    required FrameBuilder builder,
+    required bool isOffline,
   }) {
     if (isWeb) {
-      return WebFrame(key: key, builder: builder);
+      return WebFrame(
+        key: key,
+        builder: builder,
+        isOffline: isOffline,
+      );
     } else {
-      return MobileFrame(key: key, builder: builder);
+      return MobileFrame(
+        key: key,
+        builder: builder,
+        isOffline: isOffline,
+      );
     }
   }
 
   static Widget wrapWithFrame(
-      {Key? key, required bool forceMobile, required bool forceWeb, required WidgetBuilder builder}) {
-    if (forceMobile) {
-      return Frame.getFrame(
-        key: key,
-        false,
-        builder: builder,
-      );
-    }
-    if (forceWeb) {
-      return Frame.getFrame(
-        key: key,
-        true,
-        builder: builder,
-      );
-    }
-    return ValueListenableBuilder(
-      valueListenable: IConfigService().getLayoutMode(),
-      builder: (context, value, child) {
+      {Key? key, required bool forceMobile, required bool forceWeb, required FrameBuilder builder}) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: IConfigService().getOfflineNotifier(),
+      builder: (context, isOffline, child) {
+        if (forceMobile) {
+          return Frame.getFrame(
+            key: key,
+            false,
+            builder: builder,
+            isOffline: isOffline,
+          );
+        }
+        if (forceWeb) {
+          return Frame.getFrame(
+            key: key,
+            true,
+            builder: builder,
+            isOffline: isOffline,
+          );
+        }
         return Frame.getFrame(
           key: key,
           kIsWeb,
           builder: builder,
+          isOffline: isOffline,
         );
       },
     );
@@ -79,7 +95,12 @@ abstract class FrameState extends State<Frame> {
   static FrameState? of(BuildContext context) => context.findAncestorStateOfType<FrameState>();
 
   @override
-  Widget build(BuildContext context) => widget.builder.call(context);
+  Widget build(BuildContext context) => Builder(
+        builder: (context) => widget.builder.call(
+          context,
+          widget.isOffline,
+        ),
+      );
 
   List<Widget> getActions() => [
         if (kDebugMode)

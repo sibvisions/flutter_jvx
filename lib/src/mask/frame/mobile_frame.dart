@@ -9,6 +9,7 @@ class MobileFrame extends Frame {
   const MobileFrame({
     super.key,
     required super.builder,
+    required super.isOffline,
   });
 
   @override

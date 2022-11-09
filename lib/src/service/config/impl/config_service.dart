@@ -66,6 +66,9 @@ class ConfigService implements IConfigService {
   /// The last layoutMode from the server
   ValueNotifier<LayoutMode> layoutMode = ValueNotifier(kIsWeb ? LayoutMode.Full : LayoutMode.Mini);
 
+  /// The current offline state
+  ValueNotifier<bool>? offlineNotifier;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -314,11 +317,18 @@ class ConfigService implements IConfigService {
 
   @override
   bool isOffline() {
-    return sharedPrefs.getBool("${getAppName()}.offline") ?? false;
+    return offlineNotifier?.value ?? sharedPrefs.getBool("${getAppName()}.offline") ?? false;
+  }
+
+  @override
+  ValueNotifier<bool> getOfflineNotifier() {
+    offlineNotifier ??= ValueNotifier(isOffline());
+    return offlineNotifier!;
   }
 
   @override
   Future<bool> setOffline(bool pOffline) {
+    offlineNotifier?.value = pOffline;
     return sharedPrefs.setBool("${getAppName()}.offline", pOffline);
   }
 

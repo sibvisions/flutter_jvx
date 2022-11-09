@@ -1,12 +1,8 @@
-import 'dart:async';
-
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../commands.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../mask/frame/frame.dart';
 import '../../mask/work_screen/work_screen.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import 'menu_location.dart';
@@ -27,7 +23,6 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
 
     final String workScreenName = state.pathParameters['workScreenName']!;
     FlPanelModel? model = IUiService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
-    String screenLongName = model?.screenLongName ?? workScreenName;
 
     if (workScreenName != lastWorkscreen) {
       key = GlobalKey();
@@ -44,23 +39,9 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
       BeamPage(
         title: model?.screenTitle ?? FlutterJVx.translate("Workscreen"),
         key: ValueKey(workScreenName),
-        child: WillPopScope(
-          onWillPop: () async {
-            if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-              unawaited(IUiService()
-                  .sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName)));
-              return false;
-            }
-            return true;
-          },
-          child: Frame.wrapWithFrame(
-            forceWeb: IConfigService().isWebOnly(),
-            forceMobile: IConfigService().isMobileOnly(),
-            builder: (context) => WorkScreen(
-              key: key,
-              screenName: workScreenName,
-            ),
-          ),
+        child: WorkScreen(
+          key: key,
+          screenName: workScreenName,
         ),
       )
     ];

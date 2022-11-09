@@ -35,8 +35,11 @@ class UiService implements IUiService {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// All current menu items
-  MenuModel? _menuModel;
+  /// Unmodified menu model sent from server
+  MenuModel? _originalMenuModel;
+
+  /// Current menu model
+  final ValueNotifier<MenuModel> _menuNotifier = ValueNotifier(const MenuModel());
 
   /// List of all known models
   final List<FlComponentModel> _componentModels = [];
@@ -62,7 +65,7 @@ class UiService implements IUiService {
 
   @override
   void clear() {
-    _menuModel = null;
+    _menuNotifier.value = const MenuModel();
     _componentModels.clear();
     _componentSubscriptions.clear();
     _dataSubscriptions.clear();
@@ -203,7 +206,30 @@ class UiService implements IUiService {
 
   @override
   MenuModel getMenuModel() {
-    List<MenuGroupModel> menuGroupModels = [...?_menuModel?.menuGroups.map((e) => e.copy())];
+    return _updateMenuModel(_originalMenuModel);
+  }
+
+  @override
+  ValueNotifier<MenuModel> getMenuNotifier() {
+    return _menuNotifier;
+  }
+
+  @override
+  void setMenuModel(MenuModel? pMenuModel) {
+    _originalMenuModel = pMenuModel;
+    _menuNotifier.value = _originalMenuModel ?? const MenuModel();
+  }
+
+  /// Modifies the original menu model to include custom screens and replace screens.
+  ///
+  /// We have to deliver it "fresh" because of the offline state change, possible solution, connect with offlineNotifier
+  /// ```dart
+  ///IConfigService().getOfflineNotifier().addListener(() {
+  ///  _menuNotifier.value = _updateMenuModel(_originalMenuModel);
+  ///});
+  /// ```
+  MenuModel _updateMenuModel(MenuModel? pMenuModel) {
+    List<MenuGroupModel> menuGroupModels = [...?pMenuModel?.copy().menuGroups];
 
     // Add all custom menuItems
     if (appManager != null) {
@@ -234,14 +260,10 @@ class UiService implements IUiService {
     }
 
     MenuModel menuModel = MenuModel(menuGroups: menuGroupModels);
+
     appManager?.modifyMenuModel(menuModel);
 
     return menuModel;
-  }
-
-  @override
-  void setMenuModel(MenuModel? pMenuModel) {
-    _menuModel = pMenuModel;
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -595,9 +617,9 @@ class UiService implements IUiService {
   }
 
   bool _hasReplaced({required String pScreenLongName}) {
-    return _menuModel?.menuGroups
-            .any((element) => element.items.any((element) => element.screenLongName == pScreenLongName)) ??
-        false;
+    return getMenuModel()
+        .menuGroups
+        .any((element) => element.items.any((element) => element.screenLongName == pScreenLongName));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
