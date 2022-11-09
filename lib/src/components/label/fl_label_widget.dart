@@ -22,7 +22,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       child = getTooltipWidget(child);
     }
 
-    double padding = kIsWeb ? 14 : 13;
+    double padding = kIsWeb ? 15 : 14;
 
     return GestureDetector(
       onTap: onPress,
