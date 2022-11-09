@@ -678,8 +678,13 @@ class UiService implements IUiService {
   }
 
   @override
+  Future<void> saveAllEditors(String? pId, String pReason) {
+    return ICommandService().sendCommand(SaveAllEditorsCommand(componentId: pId, reason: pReason));
+  }
+
+  @override
   void saveAllEditorsThen(String? pId, Function? pFunction, String pReason) {
-    ICommandService().sendCommand(SaveAllEditorsCommand(componentId: pId, reason: pReason)).then((value) {
+    saveAllEditors(pId, pReason).then((value) {
       FlutterJVx.logUI.i("Save all complete.");
       pFunction?.call();
     });
