@@ -58,7 +58,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin {
       child: RepaintBoundary(
         child: ValueListenableBuilder<LayoutMode>(
           valueListenable: IConfigService().getLayoutMode(),
-          builder: (context, newValue, child) => _buildMenu(context, newValue),
+          builder: (context, layoutMode, child) => _buildMenu(context, layoutMode),
         ),
       ),
     );
