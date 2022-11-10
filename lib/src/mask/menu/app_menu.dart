@@ -79,12 +79,16 @@ class _AppMenuState extends State<AppMenu> with SearchMixin {
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
-        forceWeb: IConfigService().isWebOnly(),
-        forceMobile: IConfigService().isMobileOnly(),
-        builder: (context, isOffline) {
+      forceWeb: IConfigService().isWebOnly(),
+      forceMobile: IConfigService().isMobileOnly(),
+      builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
+        valueListenable: IUiService().getMenuNotifier(),
+        builder: (context, _, child) {
           List<Widget> actions = [];
 
-          if (!isMenuSearchEnabled) {
+          var menuModel = IUiService().getMenuModel();
+
+          if (!isMenuSearchEnabled && menuModel.count >= 8) {
             actions.add(IconButton(
               onPressed: () {
                 isMenuSearchEnabled = true;
@@ -119,12 +123,7 @@ class _AppMenuState extends State<AppMenu> with SearchMixin {
             children: [
               if (isOffline) OfflineUtil.getOfflineBar(context),
               Expanded(
-                child: ValueListenableBuilder<MenuModel>(
-                  valueListenable: IUiService().getMenuNotifier(),
-                  builder: (context, _, child) {
-                    return _getMenu(applyMenuFilter(IUiService().getMenuModel(), (item) => item.label));
-                  },
-                ),
+                child: _getMenu(applyMenuFilter(menuModel, (item) => item.label)),
               ),
             ],
           );
@@ -155,7 +154,7 @@ class _AppMenuState extends State<AppMenu> with SearchMixin {
                           isMenuSearchEnabled = false;
                           setState(() {});
                         },
-                        icon: const FaIcon(FontAwesomeIcons.arrowLeft))
+                        icon: const FaIcon(FontAwesomeIcons.circleXmark))
                     : null,
                 title: !isMenuSearchEnabled ? Text(FlutterJVx.translate("Menu")) : _buildSearch(context),
                 titleSpacing: isMenuSearchEnabled ? 0.0 : null,
@@ -165,7 +164,9 @@ class _AppMenuState extends State<AppMenu> with SearchMixin {
               body: frame?.wrapBody(body) ?? body,
             ),
           );
-        });
+        },
+      ),
+    );
   }
 
   Widget _buildSearch(BuildContext context) {
@@ -180,6 +181,9 @@ class _AppMenuState extends State<AppMenu> with SearchMixin {
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
           hintText: FlutterJVx.translate("Search"),
+          hintStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.4),
+          ),
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           border: InputBorder.none,

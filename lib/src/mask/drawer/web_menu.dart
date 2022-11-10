@@ -94,7 +94,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
 
     Widget menu = Column(
       children: [
-        if (originalMenu.count > 10 && layoutMode != LayoutMode.Small) _buildSearchField(textColor: textColor),
+        if (originalMenu.count >= 12 && layoutMode != LayoutMode.Small) _buildSearchField(textColor: textColor),
         Expanded(
           child: AppMenuListGrouped(
             menuModel: menuModel,
@@ -151,39 +151,47 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
   }
 
   Widget _buildSearchField({required Color textColor}) {
-    return TextField(
-      textAlignVertical: TextAlignVertical.center,
-      cursorColor: textColor,
-      style: TextStyle(
-        fontSize: 20,
-        color: textColor,
+    return SizedBox(
+      height: 48,
+      child: TextField(
+        textAlignVertical: TextAlignVertical.center,
+        cursorColor: textColor,
+        style: TextStyle(
+          fontSize: 20,
+          color: textColor,
+        ),
+        decoration: InputDecoration(
+          hintText: FlutterJVx.translate("Search"),
+          hintStyle: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.4),
+          ),
+          //Needed to keep vertical align centered
+          contentPadding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
+          focusedBorder: _createSearchBorder(),
+          enabledBorder: _createSearchBorder(),
+          border: _createSearchBorder(),
+          suffixIcon: menuSearchController.text.isNotEmpty
+              ? IconButton(
+                  onPressed: () {
+                    menuSearchController.clear();
+                    setState(() {});
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+        controller: menuSearchController,
       ),
-      decoration: InputDecoration(
-        hintText: FlutterJVx.translate("Search"),
-        focusedBorder: _createSearchBorder(),
-        enabledBorder: _createSearchBorder(),
-        border: _createSearchBorder(),
-        suffixIcon: menuSearchController.text.isNotEmpty
-            ? IconButton(
-                onPressed: () {
-                  menuSearchController.clear();
-                  setState(() {});
-                },
-                icon: Icon(
-                  Icons.clear,
-                  size: 20,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              )
-            : const SizedBox.shrink(),
-      ),
-      controller: menuSearchController,
     );
   }
 
   InputBorder _createSearchBorder() {
     return const OutlineInputBorder(
-      borderSide: BorderSide(width: 3, color: Colors.transparent),
+      borderSide: BorderSide(color: Colors.transparent),
     );
   }
 }
