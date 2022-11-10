@@ -306,12 +306,6 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   @override
-  void dispose() {
-    IApiService().getRepository()?.stop();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: themeData,
@@ -362,6 +356,12 @@ class FlutterJVxState extends State<FlutterJVx> {
         GlobalCupertinoLocalizations.delegate,
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    IApiService().getRepository()?.stop();
+    super.dispose();
   }
 
   void changeStyle(Map<String, String> styleMap) {
@@ -459,6 +459,7 @@ class FlutterJVxState extends State<FlutterJVx> {
     configService.disposeImagesCallbacks();
     configService.registerImagesCallback(changedImages);
 
+    //Update style to reflect web colors for theme
     configService.getLayoutMode().addListener(() {
       changeStyle(IConfigService().getAppStyle());
       setState(() {});
