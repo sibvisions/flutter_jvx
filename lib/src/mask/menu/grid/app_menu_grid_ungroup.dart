@@ -2,38 +2,21 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../util/image/image_loader.dart';
 import '../../../model/menu/menu_item_model.dart';
-import '../../../model/menu/menu_model.dart';
-import '../app_menu.dart';
+import '../menu.dart';
 import 'widget/app_menu_grid_item.dart';
 
-class AppMenuGridUnGroup extends StatelessWidget {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Model of this menu
-  final MenuModel menuModel;
-
-  /// Callback when a button was pressed
-  final ButtonCallback onClick;
-
-  ///ImageString of Background Image if Set
-  final String? backgroundImageString;
-
-  ///Background Color if Set
-  final Color? backgroundColor;
-
+class AppMenuGridUnGroup extends Menu {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const AppMenuGridUnGroup({
-    Key? key,
-    required this.menuModel,
-    required this.onClick,
-    this.backgroundImageString,
-    this.backgroundColor,
-  }) : super(key: key);
+    super.key,
+    required super.menuModel,
+    required super.onClick,
+    super.backgroundColor,
+    super.backgroundImageString,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -58,7 +41,8 @@ class AppMenuGridUnGroup extends StatelessWidget {
             crossAxisSpacing: 1,
           ),
           delegate: SliverChildListDelegate.fixed(
-              _getAllMenuItems().map((e) => AppMenuGridItem(onClick: onClick, menuItemModel: e)).toList()),
+            _getAllMenuItems().map((e) => AppMenuGridItem(onClick: onClick, menuItemModel: e)).toList(),
+          ),
         ),
       ]),
     ]);

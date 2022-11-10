@@ -12,11 +12,7 @@ import '../../util/offline_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../state/app_style.dart';
-import 'grid/app_menu_grid_grouped.dart';
-import 'grid/app_menu_grid_ungroup.dart';
-import 'list/app_menu_list_grouped.dart';
-import 'list/app_menu_list_ungroup.dart';
-import 'tab/app_menu_tab.dart';
+import 'menu.dart';
 
 /// Each menu item does get this callback
 typedef ButtonCallback = void Function(
@@ -24,33 +20,12 @@ typedef ButtonCallback = void Function(
   required String pScreenLongName,
 });
 
-/// Used for menuFactory map
-typedef MenuFactory = Widget Function({
-  required MenuModel menuModel,
-  required ButtonCallback onClick,
-  Color? menuBackgroundColor,
-  String? backgroundImageString,
-});
-
-/// Menu Widget - will display menu items accordingly to the menu mode set in
-/// [IConfigService]
+/// Menu Widget - will display menu items accordingly to the menu mode set in [IConfigService]
 class AppMenu extends StatefulWidget {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   const AppMenu({super.key});
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   State<AppMenu> createState() => _AppMenuState();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static void menuItemPressed(BuildContext context, {required String pScreenLongName}) {
     //Always close drawer even on route (e.g. previewer blocks routing)
@@ -66,16 +41,6 @@ class AppMenu extends StatefulWidget {
 }
 
 class _AppMenuState extends State<AppMenu> with SearchMixin {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  late final Map<MenuMode, MenuFactory> menuFactory = {
-    MenuMode.GRID_GROUPED: _getGroupedGridMenu,
-    MenuMode.GRID: _getGridMenuUngrouped,
-    MenuMode.LIST_GROUPED: _getListMenuGrouped,
-    MenuMode.LIST: _getListMenuUngrouped,
-    MenuMode.TABS: _getTabMenu
-  };
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
@@ -284,85 +249,16 @@ class _AppMenuState extends State<AppMenu> with SearchMixin {
     AppManager? customAppManager = IUiService().getAppManager();
     menuMode = customAppManager?.getMenuMode(menuMode) ?? menuMode;
 
-    MenuFactory menuBuilder = menuFactory[menuMode]!;
-
     var appStyle = AppStyle.of(context)!.applicationStyle!;
     Color? menuBackgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
     String? menuBackgroundImage = appStyle['desktop.icon'];
 
-    return menuBuilder(
+    return Menu.fromMode(
+      menuMode,
       menuModel: menuModel,
       onClick: AppMenu.menuItemPressed,
       backgroundImageString: menuBackgroundImage,
       menuBackgroundColor: menuBackgroundColor,
-    );
-  }
-
-  Widget _getGroupedGridMenu({
-    required MenuModel menuModel,
-    required ButtonCallback onClick,
-    Color? menuBackgroundColor,
-    String? backgroundImageString,
-  }) {
-    return AppMenuGridGrouped(
-      onClick: onClick,
-      menuModel: menuModel,
-      backgroundColor: menuBackgroundColor,
-      backgroundImageString: backgroundImageString,
-    );
-  }
-
-  Widget _getGridMenuUngrouped({
-    required MenuModel menuModel,
-    required ButtonCallback onClick,
-    Color? menuBackgroundColor,
-    String? backgroundImageString,
-  }) {
-    return AppMenuGridUnGroup(
-      menuModel: menuModel,
-      onClick: onClick,
-      backgroundColor: menuBackgroundColor,
-      backgroundImageString: backgroundImageString,
-    );
-  }
-
-  Widget _getListMenuGrouped({
-    required MenuModel menuModel,
-    required ButtonCallback onClick,
-    Color? menuBackgroundColor,
-    String? backgroundImageString,
-  }) {
-    return AppMenuListGrouped(
-      menuModel: menuModel,
-      onClick: onClick,
-    );
-  }
-
-  Widget _getListMenuUngrouped({
-    required MenuModel menuModel,
-    required ButtonCallback onClick,
-    Color? menuBackgroundColor,
-    String? backgroundImageString,
-  }) {
-    return AppMenuListUngroup(
-      menuModel: menuModel,
-      onClick: onClick,
-      backgroundColor: menuBackgroundColor,
-      backgroundImageString: backgroundImageString,
-    );
-  }
-
-  Widget _getTabMenu({
-    required MenuModel menuModel,
-    required ButtonCallback onClick,
-    Color? menuBackgroundColor,
-    String? backgroundImageString,
-  }) {
-    return AppMenuTab(
-      menuModel: menuModel,
-      onClick: onClick,
-      backgroundColor: menuBackgroundColor,
-      backgroundImageString: backgroundImageString,
     );
   }
 }
