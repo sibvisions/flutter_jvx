@@ -3,14 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../model/component/table/fl_table_model.dart';
+import '../../../components.dart';
+import '../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/layout/alignments.dart';
 import '../../model/response/dal_meta_data_response.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import 'table_size.dart';
 
 class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -233,6 +232,13 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
           tableWidget.model.applyCellEditorOverrides(model.json);
 
           widget = tableWidget;
+
+          if (((cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) &&
+                  cellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) ||
+              ((cellEditor is FlCheckBoxCellEditor || cellEditor is FlChoiceCellEditor) &&
+                  !cellEditor.model.directCellEditor)) {
+            widget = IgnorePointer(child: widget);
+          }
         }
       }
 
