@@ -6,7 +6,6 @@ import 'grid/app_menu_grid_grouped.dart';
 import 'grid/app_menu_grid_ungroup.dart';
 import 'list/app_menu_list_grouped.dart';
 import 'list/app_menu_list_ungroup.dart';
-import 'menu_mode.dart';
 import 'tab/app_menu_tab.dart';
 
 abstract class Menu extends StatelessWidget {
@@ -76,4 +75,14 @@ abstract class Menu extends StatelessWidget {
         );
     }
   }
+}
+
+enum MenuMode {
+  GRID,
+  GRID_GROUPED,
+  LIST,
+  LIST_GROUPED,
+  DRAWER,
+  SWIPER,
+  TABS,
 }

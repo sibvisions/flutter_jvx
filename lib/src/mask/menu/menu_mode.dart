@@ -1,9 +1,0 @@
-enum MenuMode {
-  GRID,
-  GRID_GROUPED,
-  LIST,
-  LIST_GROUPED,
-  DRAWER,
-  SWIPER,
-  TABS,
-}

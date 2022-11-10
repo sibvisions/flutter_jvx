@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../config/app_config.dart';
 import '../../../../flutter_jvx.dart';
-import '../../../mask/menu/menu_mode.dart';
+import '../../../mask/menu/menu.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
 import '../../../model/response/application_meta_data_response.dart';

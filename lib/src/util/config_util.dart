@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../config/app_config.dart';
 import '../../flutter_jvx.dart';
-import '../mask/menu/menu_mode.dart';
+import '../mask/menu/menu.dart';
 
 abstract class ConfigUtil {
   /// Tries to read app config

@@ -1,13 +1,13 @@
 import 'package:universal_io/io.dart';
 
-import '../src/mask/menu/menu_mode.dart';
+import '../src/mask/menu/menu.dart';
 import '../src/model/api_interaction.dart';
 import '../src/model/command/base_command.dart';
 import '../src/model/menu/menu_model.dart';
 import '../src/model/request/api_request.dart';
 import 'custom_screen.dart';
 
-export '../src/mask/menu/menu_mode.dart';
+export '../src/mask/menu/menu.dart';
 export '../src/model/command/base_command.dart';
 export '../src/model/menu/menu_model.dart';
 export '../src/model/request/api_request.dart';
