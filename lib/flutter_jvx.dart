@@ -369,14 +369,19 @@ class FlutterJVxState extends State<FlutterJVx> {
 
     Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
     styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
+
     if (styleColor != null) {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);
 
       ColorScheme colorScheme = ColorScheme.fromSwatch(
         primarySwatch: materialColor,
-        backgroundColor: Colors.grey.shade50,
       );
 
+      bool isBackgroundLight = ThemeData.estimateBrightnessForColor(colorScheme.background) == Brightness.light;
+
+      if (isBackgroundLight) {
+        colorScheme = colorScheme.copyWith(background: Colors.grey.shade50);
+      }
       if (colorScheme.onPrimary.computeLuminance() == 0.0) {
         colorScheme = colorScheme.copyWith(onPrimary: JVxColors.LIGHTER_BLACK);
       }
@@ -389,12 +394,11 @@ class FlutterJVxState extends State<FlutterJVx> {
 
       themeData = ThemeData.from(colorScheme: colorScheme);
 
-      bool backgroundColorIsLight = ThemeData.estimateBrightnessForColor(themeData.backgroundColor) == Brightness.light;
       themeData = themeData.copyWith(
         listTileTheme: themeData.listTileTheme.copyWith(
           //TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
-          textColor: backgroundColorIsLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-          iconColor: backgroundColorIsLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+          textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+          iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
           // textColor: themeData.colorScheme.onBackground,
           // iconColor: themeData.colorScheme.onBackground,
         ),
