@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
 import '../../../../util/image/image_loader.dart';
 import '../../../model/menu/menu_group_model.dart';
 import '../grid/widget/grid_menu_item.dart';
@@ -28,10 +27,19 @@ class TabMenu extends Menu {
     return DefaultTabController(
       length: menuModel.menuGroups.length,
       child: Scaffold(
-        appBar: TabBar(
-          labelColor: Theme.of(context).primaryColor,
-          indicatorColor: Theme.of(context).primaryColor,
-          tabs: menuModel.menuGroups.map((e) => Tab(text: FlutterJVx.translate(e.name))).toList(),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: ColoredBox(
+            color: Theme.of(context).colorScheme.background,
+            child: TabBar(
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              tabs: menuModel.menuGroups.map((e) => Tab(text: e.name)).toList(),
+            ),
+          ),
         ),
         body: TabBarView(
           children: menuModel.menuGroups.map((e) => _getMenuGrid(model: e)).toList(),
