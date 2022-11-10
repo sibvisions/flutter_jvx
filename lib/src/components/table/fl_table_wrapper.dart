@@ -9,16 +9,12 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../commands.dart';
+import '../../../data.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/table/fl_table_model.dart';
-import '../../model/data/subscriptions/data_chunk.dart';
-import '../../model/data/subscriptions/data_record.dart';
-import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
-import '../../model/request/filter.dart';
-import '../../model/response/dal_meta_data_response.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -262,10 +258,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void receiveMetaData(DalMetaDataResponse pMetaData) {
     currentState |= LOADED_META_DATA;
 
-    List<String> newColumns = pMetaData.columns.map((e) => e.name).toList();
-    List<String> oldColumns = metaData?.columns.map((e) => e.name).toList() ?? [];
-    bool hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
-        oldColumns.any((element) => (!newColumns.contains(element)));
+    List<ColumnDefinition> newColumns = pMetaData.columns;
+    List<ColumnDefinition> oldColumns = metaData?.columns ?? [];
+
+    bool hasToCalc = newColumns.any((newColumn) => (!oldColumns.any((oldColumn) => newColumn.name == oldColumn.name)));
+    hasToCalc |= oldColumns.any((oldColumn) => (!newColumns.any((newColumn) => newColumn.name == oldColumn.name)));
+
+    if (!hasToCalc) {
+      hasToCalc = newColumns.any((newColumn) {
+        ColumnDefinition oldColumn = oldColumns.firstWhere((oldColumn) => oldColumn.name == newColumn.name);
+
+        return oldColumn.width != newColumn.width;
+      });
+    }
 
     metaData = pMetaData;
 
