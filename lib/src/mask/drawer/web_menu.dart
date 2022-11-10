@@ -7,7 +7,7 @@ import '../../model/menu/menu_model.dart';
 import '../../model/response/device_status_response.dart';
 import '../../util/search_mixin.dart';
 import '../menu/list/grouped_list_menu.dart';
-import '../menu/menu_page.dart';
+import '../menu/menu.dart';
 import '../state/app_style.dart';
 
 class WebMenu extends StatefulWidget {
@@ -101,7 +101,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
             layoutMode: layoutMode,
             textStyle: const TextStyle(fontWeight: FontWeight.normal),
             headerColor: groupTextColor,
-            onClick: MenuPage.menuItemPressed,
+            onClick: Menu.menuItemPressed,
             decreasedDensity: true,
             useAlternativeLabel: true,
           ),

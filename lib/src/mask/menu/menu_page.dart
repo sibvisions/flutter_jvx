@@ -7,7 +7,6 @@ import '../../../custom/app_manager.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/parse_util.dart';
-import '../../model/command/api/open_screen_command.dart';
 import '../../util/offline_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
@@ -28,18 +27,6 @@ class MenuPage extends StatefulWidget {
 
   @override
   State<MenuPage> createState() => _MenuPageState();
-
-  static void menuItemPressed(BuildContext context, {required String pScreenLongName}) {
-    //Always close drawer even on route (e.g. previewer blocks routing)
-    Scaffold.maybeOf(context)?.closeEndDrawer();
-
-    // Offline screens no not require the server to know that they are open
-    if (UiService().usesNativeRouting(pScreenLongName: pScreenLongName)) {
-      UiService().routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
-    } else {
-      UiService().sendCommand(OpenScreenCommand(screenLongName: pScreenLongName, reason: "Menu Item was pressed"));
-    }
-  }
 }
 
 class _MenuPageState extends State<MenuPage> with SearchMixin {
@@ -258,7 +245,6 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     return Menu.fromMode(
       menuMode,
       menuModel: menuModel,
-      onClick: MenuPage.menuItemPressed,
       backgroundImageString: menuBackgroundImage,
       menuBackgroundColor: menuBackgroundColor,
     );
