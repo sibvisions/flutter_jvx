@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../util/jvx_colors.dart';
 
-class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
+class GridMenuHeader extends SliverPersistentHeaderDelegate {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,7 +23,7 @@ class AppMenuGridHeader extends SliverPersistentHeaderDelegate {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuGridHeader({
+  const GridMenuHeader({
     required this.height,
     this.headerColor,
     required this.headerText,

@@ -3,11 +3,11 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../../flutter_jvx.dart';
 import '../../../../model/menu/menu_group_model.dart';
-import '../../app_menu.dart';
-import 'app_menu_grid_header.dart';
-import 'app_menu_grid_item.dart';
+import '../../menu_page.dart';
+import 'grid_menu_header.dart';
+import 'grid_menu_item.dart';
 
-class AppMenuGridGroup extends StatelessWidget {
+class GridMenuGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,7 +22,7 @@ class AppMenuGridGroup extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuGridGroup({Key? key, required this.menuGroupModel, required this.onClick}) : super(key: key);
+  const GridMenuGroup({Key? key, required this.menuGroupModel, required this.onClick}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class AppMenuGridGroup extends StatelessWidget {
       children: [
         SliverPersistentHeader(
             pinned: true,
-            delegate: AppMenuGridHeader(
+            delegate: GridMenuHeader(
               headerText: FlutterJVx.translate(menuGroupModel.name),
               height: 48,
             )),
@@ -42,7 +42,7 @@ class AppMenuGridGroup extends StatelessWidget {
             crossAxisSpacing: 1,
           ),
           delegate: SliverChildListDelegate.fixed(
-            menuGroupModel.items.map((e) => AppMenuGridItem(menuItemModel: e, onClick: onClick)).toList(),
+            menuGroupModel.items.map((e) => GridMenuItem(menuItemModel: e, onClick: onClick)).toList(),
           ),
         ),
       ],

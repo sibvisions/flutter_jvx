@@ -20,12 +20,14 @@ typedef ButtonCallback = void Function(
   required String pScreenLongName,
 });
 
-/// Menu Widget - will display menu items accordingly to the menu mode set in [IConfigService]
-class AppMenu extends StatefulWidget {
-  const AppMenu({super.key});
+/// Menu Page
+///
+/// Displays menu items accordingly to the menu mode set in [IConfigService]
+class MenuPage extends StatefulWidget {
+  const MenuPage({super.key});
 
   @override
-  State<AppMenu> createState() => _AppMenuState();
+  State<MenuPage> createState() => _MenuPageState();
 
   static void menuItemPressed(BuildContext context, {required String pScreenLongName}) {
     //Always close drawer even on route (e.g. previewer blocks routing)
@@ -40,7 +42,7 @@ class AppMenu extends StatefulWidget {
   }
 }
 
-class _AppMenuState extends State<AppMenu> with SearchMixin {
+class _MenuPageState extends State<MenuPage> with SearchMixin {
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
@@ -256,7 +258,7 @@ class _AppMenuState extends State<AppMenu> with SearchMixin {
     return Menu.fromMode(
       menuMode,
       menuModel: menuModel,
-      onClick: AppMenu.menuItemPressed,
+      onClick: MenuPage.menuItemPressed,
       backgroundImageString: menuBackgroundImage,
       menuBackgroundColor: menuBackgroundColor,
     );

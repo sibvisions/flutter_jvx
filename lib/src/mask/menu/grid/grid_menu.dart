@@ -3,14 +3,14 @@ import 'package:flutter/widgets.dart';
 import '../../../../util/image/image_loader.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../menu.dart';
-import 'widget/app_menu_grid_item.dart';
+import 'widget/grid_menu_item.dart';
 
-class AppMenuGridUnGroup extends Menu {
+class GridMenu extends Menu {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuGridUnGroup({
+  const GridMenu({
     super.key,
     required super.menuModel,
     required super.onClick,
@@ -41,7 +41,7 @@ class AppMenuGridUnGroup extends Menu {
             crossAxisSpacing: 1,
           ),
           delegate: SliverChildListDelegate.fixed(
-            _getAllMenuItems().map((e) => AppMenuGridItem(onClick: onClick, menuItemModel: e)).toList(),
+            _getAllMenuItems().map((e) => GridMenuItem(onClick: onClick, menuItemModel: e)).toList(),
           ),
         ),
       ]),

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
-import '../../app_menu.dart';
+import '../../menu_page.dart';
 
-class AppMenuGridItem extends StatelessWidget {
+class GridMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,7 +20,7 @@ class AppMenuGridItem extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuGridItem({
+  const GridMenuItem({
     Key? key,
     required this.menuItemModel,
     required this.onClick,

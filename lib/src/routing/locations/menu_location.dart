@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../mask/menu/app_menu.dart';
+import '../../mask/menu/menu_page.dart';
 
 /// Displays all possible screens of the menu
 class MenuLocation extends BeamLocation<BeamState> {
@@ -19,7 +19,7 @@ class MenuLocation extends BeamLocation<BeamState> {
       BeamPage(
         title: FlutterJVx.translate("Menu"),
         key: const ValueKey("Menu"),
-        child: const AppMenu(),
+        child: const MenuPage(),
       ),
     ];
   }

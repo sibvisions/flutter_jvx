@@ -2,14 +2,14 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../util/image/image_loader.dart';
 import '../menu.dart';
-import 'widget/app_menu_grid_group.dart';
+import 'widget/grid_menu_group.dart';
 
-class AppMenuGridGrouped extends Menu {
+class GroupedGridMenu extends Menu {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuGridGrouped({
+  const GroupedGridMenu({
     super.key,
     required super.menuModel,
     required super.onClick,
@@ -34,7 +34,7 @@ class AppMenuGridGrouped extends Menu {
           ),
         ),
         CustomScrollView(
-          slivers: menuModel.menuGroups.map((e) => AppMenuGridGroup(menuGroupModel: e, onClick: onClick)).toList(),
+          slivers: menuModel.menuGroups.map((e) => GridMenuGroup(menuGroupModel: e, onClick: onClick)).toList(),
         ),
       ],
     );

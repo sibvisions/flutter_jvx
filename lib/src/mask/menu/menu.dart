@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 
 import '../../model/menu/menu_model.dart';
-import 'app_menu.dart';
-import 'grid/app_menu_grid_grouped.dart';
-import 'grid/app_menu_grid_ungroup.dart';
-import 'list/app_menu_list_grouped.dart';
-import 'list/app_menu_list_ungroup.dart';
-import 'tab/app_menu_tab.dart';
+import 'grid/grid_menu.dart';
+import 'grid/grouped_grid_menu.dart';
+import 'list/grouped_list_menu.dart';
+import 'list/list_menu.dart';
+import 'menu_page.dart';
+import 'tab/tab_menu.dart';
 
 abstract class Menu extends StatelessWidget {
   /// Model of this menu
@@ -38,26 +38,26 @@ abstract class Menu extends StatelessWidget {
   }) {
     switch (menuMode) {
       case MenuMode.GRID:
-        return AppMenuGridUnGroup(
+        return GridMenu(
           menuModel: menuModel,
           onClick: onClick,
           backgroundColor: menuBackgroundColor,
           backgroundImageString: backgroundImageString,
         );
       case MenuMode.LIST:
-        return AppMenuListUngroup(
+        return ListMenu(
           menuModel: menuModel,
           onClick: onClick,
           backgroundColor: menuBackgroundColor,
           backgroundImageString: backgroundImageString,
         );
       case MenuMode.LIST_GROUPED:
-        return AppMenuListGrouped(
+        return GroupedListMenu(
           menuModel: menuModel,
           onClick: onClick,
         );
       case MenuMode.TABS:
-        return AppMenuTab(
+        return TabMenu(
           menuModel: menuModel,
           onClick: onClick,
           backgroundColor: menuBackgroundColor,
@@ -67,7 +67,7 @@ abstract class Menu extends StatelessWidget {
       case MenuMode.SWIPER:
       case MenuMode.GRID_GROUPED:
       default:
-        return AppMenuGridGrouped(
+        return GroupedGridMenu(
           menuModel: menuModel,
           onClick: onClick,
           backgroundColor: menuBackgroundColor,

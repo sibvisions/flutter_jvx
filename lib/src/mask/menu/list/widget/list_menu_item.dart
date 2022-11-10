@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import '../../../../../components.dart';
 import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
-import '../../app_menu.dart';
+import '../../menu_page.dart';
 
-class AppMenuListItem extends StatelessWidget {
+class ListMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,7 +27,7 @@ class AppMenuListItem extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuListItem({
+  const ListMenuItem({
     Key? key,
     required this.menuItemModel,
     required this.onClick,

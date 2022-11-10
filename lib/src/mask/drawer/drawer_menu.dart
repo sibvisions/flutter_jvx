@@ -5,8 +5,8 @@ import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/jvx_colors.dart';
 import '../../model/menu/menu_model.dart';
-import '../menu/app_menu.dart';
-import '../menu/list/app_menu_list_grouped.dart';
+import '../menu/list/grouped_list_menu.dart';
+import '../menu/menu_page.dart';
 import '../state/app_style.dart';
 
 class DrawerMenu extends StatefulWidget {
@@ -170,9 +170,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
               data: IconTheme.of(context).copyWith(
                 size: 32,
               ),
-              child: AppMenuListGrouped(
+              child: GroupedListMenu(
                 menuModel: IUiService().getMenuModel(),
-                onClick: AppMenu.menuItemPressed,
+                onClick: MenuPage.menuItemPressed,
                 useAlternativeLabel: true,
               ),
             ),

@@ -2,9 +2,9 @@ import 'package:flutter/widgets.dart';
 
 import '../../../model/response/device_status_response.dart';
 import '../menu.dart';
-import 'widget/app_menu_list_group.dart';
+import 'widget/list_menu_group.dart';
 
-class AppMenuListGrouped extends Menu {
+class GroupedListMenu extends Menu {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +24,7 @@ class AppMenuListGrouped extends Menu {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuListGrouped({
+  const GroupedListMenu({
     super.key,
     required super.menuModel,
     required super.onClick,
@@ -44,7 +44,7 @@ class AppMenuListGrouped extends Menu {
     return CustomScrollView(
       slivers: menuModel.menuGroups
           .map(
-            (e) => AppMenuListGroup(
+            (e) => ListMenuGroup(
               menuGroupModel: e,
               onClick: onClick,
               layoutMode: layoutMode,

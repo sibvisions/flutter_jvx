@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../util/image/image_loader.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../menu.dart';
-import 'widget/app_menu_list_item.dart';
+import 'widget/list_menu_item.dart';
 
-class AppMenuListUngroup extends Menu {
+class ListMenu extends Menu {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +17,7 @@ class AppMenuListUngroup extends Menu {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuListUngroup({
+  const ListMenu({
     super.key,
     required super.menuModel,
     required super.onClick,
@@ -44,7 +44,7 @@ class AppMenuListUngroup extends Menu {
             itemExtent: 50,
             delegate: SliverChildListDelegate.fixed(
               _getAllMenuItems()
-                  .map((e) => AppMenuListItem(
+                  .map((e) => ListMenuItem(
                         onClick: onClick,
                         menuItemModel: e,
                         decreasedDensity: decreasedDensity,

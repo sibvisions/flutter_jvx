@@ -5,11 +5,11 @@ import '../../../../../flutter_jvx.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/response/device_status_response.dart';
 import '../../../drawer/web_menu.dart';
-import '../../app_menu.dart';
-import '../../grid/widget/app_menu_grid_header.dart';
-import 'app_menu_list_item.dart';
+import '../../grid/widget/grid_menu_header.dart';
+import '../../menu_page.dart';
+import 'list_menu_item.dart';
 
-class AppMenuListGroup extends StatelessWidget {
+class ListMenuGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,7 +34,7 @@ class AppMenuListGroup extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuListGroup({
+  const ListMenuGroup({
     Key? key,
     required this.onClick,
     required this.menuGroupModel,
@@ -54,7 +54,7 @@ class AppMenuListGroup extends StatelessWidget {
         height: 1,
       ));
 
-      listGroupItems.add(AppMenuListItem(
+      listGroupItems.add(ListMenuItem(
         menuItemModel: menuGroupModel.items.elementAt(i),
         onClick: onClick,
         textStyle: textStyle,
@@ -68,7 +68,7 @@ class AppMenuListGroup extends StatelessWidget {
       children: [
         SliverPersistentHeader(
           pinned: WebMenu.maybeOf(context) == null || layoutMode != LayoutMode.Small,
-          delegate: AppMenuGridHeader(
+          delegate: GridMenuHeader(
             headerText: FlutterJVx.translate(menuGroupModel.name),
             headerColor: headerColor,
             height: 48,

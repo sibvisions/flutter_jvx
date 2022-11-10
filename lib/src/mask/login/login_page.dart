@@ -7,15 +7,18 @@ import '../state/app_style.dart';
 import 'arc_clipper.dart';
 
 /// Login page of the app, also used for reset/change password
-class AppLogin extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The Widget displayed in the middle of the screen
-  final Widget loginCard;
+  final Widget loginWidget;
 
-  const AppLogin({Key? key, required this.loginCard}) : super(key: key);
+  const LoginPage({
+    super.key,
+    required this.loginWidget,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +83,7 @@ class AppLogin extends StatelessWidget {
               child: SingleChildScrollView(
                 // Is there to allow scrolling the login if there is not enough space.
                 // E.g.: Holding a phone horizontally and trying to login needs scrolling to be possible.
-                child: loginCard,
+                child: loginWidget,
               ),
             ),
           ),
