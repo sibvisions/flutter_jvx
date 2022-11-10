@@ -364,7 +364,9 @@ class FlutterJVxState extends State<FlutterJVx> {
     super.dispose();
   }
 
-  void changeStyle(Map<String, String> styleMap) {
+  void changedTheme() {
+    Map<String, String> styleMap = IConfigService().getAppStyle();
+
     Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
     styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
     if (styleColor != null) {
@@ -453,7 +455,7 @@ class FlutterJVxState extends State<FlutterJVx> {
 
     //Register callbacks
     configService.disposeStyleCallbacks();
-    configService.registerStyleCallback(changeStyle);
+    configService.registerStyleCallback(changedTheme);
     configService.disposeLanguageCallbacks();
     configService.registerLanguageCallback(changeLanguage);
     configService.disposeImagesCallbacks();
@@ -461,7 +463,7 @@ class FlutterJVxState extends State<FlutterJVx> {
 
     //Update style to reflect web colors for theme
     configService.getLayoutMode().addListener(() {
-      changeStyle(IConfigService().getAppStyle());
+      changedTheme();
       setState(() {});
     });
 

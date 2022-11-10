@@ -276,7 +276,7 @@ class ConfigService implements IConfigService {
 
     bool success = await setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
 
-    callbacks['style']?.forEach((element) => element.call(pAppStyle));
+    callbacks['style']?.forEach((element) => element.call());
     return success;
   }
 
@@ -417,12 +417,12 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void registerStyleCallback(Function(Map<String, String> style) pCallback) {
+  void registerStyleCallback(Function() pCallback) {
     registerCallback("style", pCallback);
   }
 
   @override
-  void disposeStyleCallback(Function(Map<String, String> style) pCallback) {
+  void disposeStyleCallback(Function() pCallback) {
     disposeCallback("style", pCallback);
   }
 
@@ -490,7 +490,7 @@ class ConfigService implements IConfigService {
   void setApplicationSettings(ApplicationSettingsResponse pApplicationSettings) {
     applicationSettings = pApplicationSettings;
     //Trigger setState
-    callbacks['style']?.forEach((element) => element.call(applicationStyle));
+    callbacks['style']?.forEach((element) => element.call());
   }
 
   @override

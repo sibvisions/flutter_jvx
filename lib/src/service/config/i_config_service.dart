@@ -187,10 +187,10 @@ abstract class IConfigService {
   Future<bool> setString(String key, String? value);
 
   /// Callback will be called when style has been set
-  void registerStyleCallback(Function(Map<String, String> style) pCallback);
+  void registerStyleCallback(Function() pCallback);
 
   /// Removes the callback
-  void disposeStyleCallback(Function(Map<String, String> style) pCallback);
+  void disposeStyleCallback(Function() pCallback);
 
   /// Removes all style callbacks
   void disposeStyleCallbacks();
