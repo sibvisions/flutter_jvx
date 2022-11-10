@@ -7,8 +7,6 @@ import '../../i_command_processor.dart';
 class CloseScreenCommandProcessor implements ICommandProcessor<CloseScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command) async {
-    await IUiService().saveAllEditors(null, "Closing screen");
-
     return IApiService().sendRequest(
       ApiCloseScreenRequest(
         screenName: command.screenName,
