@@ -11,7 +11,6 @@ import '../../util/offline_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../state/app_style.dart';
-import 'menu.dart';
 
 /// Each menu item does get this callback
 typedef ButtonCallback = void Function(

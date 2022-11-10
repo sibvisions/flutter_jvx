@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../../../util/parse_util.dart';
 import '../../../components/button/fl_button_widget.dart';
