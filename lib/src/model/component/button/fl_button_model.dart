@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../../util/parse_util.dart';
@@ -58,6 +59,7 @@ class FlButtonModel extends FlComponentModel {
 
   /// Initializes the [FlButtonModel]
   FlButtonModel() : super() {
+    minimumSize = const Size.square(kMinInteractiveDimension);
     labelModel.verticalAlignment = VerticalAlignment.CENTER;
     labelModel.horizontalAlignment = HorizontalAlignment.RIGHT;
   }
