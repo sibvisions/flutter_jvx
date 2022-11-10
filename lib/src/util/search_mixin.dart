@@ -33,7 +33,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
       List<MenuGroupModel> menuGroupModels = [...menuModel.menuGroups.map((e) => e.copy())];
 
       menuGroupModels.forEach((group) {
-        if (!group.name.toLowerCase().contains(searchValue)) {
+        if (!group.name.toLowerCase().startsWith(searchValue)) {
           group.items.removeWhere((item) => !(labelFunction(item)?.toLowerCase().contains(searchValue) ?? false));
         }
       });
