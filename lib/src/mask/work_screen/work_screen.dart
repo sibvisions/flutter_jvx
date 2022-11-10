@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -159,8 +157,11 @@ class WorkScreenState extends State<WorkScreen> {
             child: WillPopScope(
               onWillPop: () async {
                 if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-                  unawaited(IUiService()
-                      .sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: widget.screenName)));
+                  IUiService().saveAllEditorsThen(null, () {
+                    IUiService()
+                        .sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: widget.screenName));
+                  }, "Closing screen");
+
                   return false;
                 }
                 return true;
