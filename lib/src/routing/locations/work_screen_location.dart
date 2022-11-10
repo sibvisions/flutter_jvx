@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
@@ -47,8 +45,9 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
         child: WillPopScope(
           onWillPop: () async {
             if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-              unawaited(IUiService()
-                  .sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName)));
+              IUiService().saveAllEditorsThen(null, () {
+                IUiService().sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: workScreenName));
+              }, "Closing screen");
               return false;
             }
             return true;
