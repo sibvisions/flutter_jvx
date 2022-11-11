@@ -291,12 +291,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
       );
     } else {
       return Flexible(
-        child: Material(
-          child: InkWell(
-            onTap: onTap,
-            child: Center(
-              child: FaIcon(leadingIcon),
-            ),
+        child: InkWell(
+          onTap: onTap,
+          child: Center(
+            child: FaIcon(leadingIcon),
           ),
         ),
       );
