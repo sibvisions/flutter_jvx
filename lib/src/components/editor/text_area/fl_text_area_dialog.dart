@@ -80,7 +80,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
           alignment: Alignment.centerRight,
           child: ElevatedButton(
             child: Text(
-              FlutterJVx.translate("Done"),
+              FlutterJVx.translate("OK"),
             ),
             onPressed: () {
               Navigator.of(context).pop();
