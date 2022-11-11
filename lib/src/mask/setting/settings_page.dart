@@ -186,7 +186,7 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Center(
             child: Text(
               FlutterJVx.translate(
-                  IConfigService().getUserInfo() != null ? (_changesPending() ? "Save" : "OK") : "Open"),
+                  IConfigService().getClientId() != null ? (_changesPending() ? "Save" : "OK") : "Open"),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
