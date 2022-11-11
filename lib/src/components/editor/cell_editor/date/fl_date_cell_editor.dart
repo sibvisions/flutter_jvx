@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../util/parse_util.dart';
-import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_editor_model.dart';
 import '../../../../service/ui/i_ui_service.dart';
@@ -107,10 +106,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void openDatePicker() {
-    if (model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
-      return;
-    }
-
     DateTime initialDate;
     TimeOfDay initialTime;
     if (_value != null) {

@@ -89,10 +89,6 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void onPress() {
-    if (!model.directCellEditor) {
-      return;
-    }
-
     if (_value == model.selectedValue) {
       onEndEditing(model.deselectedValue);
     } else {
