@@ -53,7 +53,7 @@ class _LoginCardState extends State<LoginCard> {
     showRememberMe = (IConfigService().getMetaData()?.rememberMeEnabled ?? false) ||
         (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
     return Card(
-      color: Colors.white.withOpacity(0.9),
+      color: Theme.of(context).cardColor.withOpacity(0.9),
       elevation: 10,
       child: Padding(
         padding: const EdgeInsets.all(16.0),

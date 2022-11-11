@@ -39,7 +39,7 @@ class LoginPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: bottomColor ?? Colors.white,
+      backgroundColor: bottomColor,
       body: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -52,7 +52,7 @@ class LoginPage extends StatelessWidget {
                   clipper: ArcClipper(),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: topColor ?? Colors.white,
+                      color: topColor ?? Colors.transparent,
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: Center(
@@ -72,7 +72,7 @@ class LoginPage extends StatelessWidget {
               Expanded(
                 flex: 6,
                 child: ColoredBox(
-                  color: bottomColor ?? Colors.white,
+                  color: bottomColor ?? Colors.transparent,
                 ),
               ),
             ],

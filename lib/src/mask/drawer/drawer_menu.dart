@@ -39,7 +39,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return Opacity(
       opacity: IConfigService().getOpacitySideMenu(),
       child: Drawer(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).brightness == Brightness.light
+            ? Theme.of(context).colorScheme.primary
+            : JVxColors.darken(Theme.of(context).cardColor, 0.05),
         child: SafeArea(
           top: false,
           left: false,
@@ -120,7 +122,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
       child: DrawerHeader(
         margin: EdgeInsets.zero,
         padding: isNormalSize ? const EdgeInsets.all(12.0) : const EdgeInsets.all(7.0).copyWith(left: 12.0),
-        decoration: BoxDecoration(color: Theme.of(context).primaryColor),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -245,7 +246,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
         child: Text(
           text,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary,
             fontWeight: fontWeight,
           ),
         ),
@@ -272,13 +272,13 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }) {
     if (isNormalSize) {
       return ListTile(
-        tileColor: Theme.of(context).colorScheme.primary,
-        textColor: Theme.of(context).colorScheme.onPrimary,
-        leading: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          child: FaIcon(
-            leadingIcon,
-            color: Theme.of(context).colorScheme.onPrimary,
+        leading: Builder(
+          builder: (context) => CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: FaIcon(
+              leadingIcon,
+              color: ListTileTheme.of(context).iconColor,
+            ),
           ),
         ),
         title: isNormalSize
@@ -292,14 +292,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
     } else {
       return Flexible(
         child: Material(
-          color: Theme.of(context).colorScheme.primary,
           child: InkWell(
             onTap: onTap,
             child: Center(
-              child: FaIcon(
-                leadingIcon,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+              child: FaIcon(leadingIcon),
             ),
           ),
         ),

@@ -109,7 +109,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         },
                         icon: const FaIcon(FontAwesomeIcons.circleXmark))
                     : null,
-                title: !isMenuSearchEnabled ? Text(FlutterJVx.translate("Menu")) : _buildSearch(context),
+                title: !isMenuSearchEnabled
+                    ? Text(FlutterJVx.translate("Menu"))
+                    : Builder(builder: (context) => _buildSearch(context)),
                 titleSpacing: isMenuSearchEnabled ? 0.0 : null,
                 backgroundColor: isOffline ? Colors.grey.shade500 : null,
                 actions: actions,
@@ -135,7 +137,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
         decoration: InputDecoration(
           hintText: FlutterJVx.translate("Search"),
           hintStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.4),
+            color: DefaultTextStyle.of(context).style.color?.withOpacity(0.4),
           ),
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -149,15 +151,15 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   icon: Icon(
                     Icons.clear,
                     size: 20,
-                    color: Theme.of(context).colorScheme.onPrimary,
+                    color: DefaultTextStyle.of(context).style.color,
                   ),
                 )
               : const SizedBox.shrink(),
         ),
-        cursorColor: Theme.of(context).colorScheme.onPrimary,
+        cursorColor: DefaultTextStyle.of(context).style.color,
         style: TextStyle(
           fontSize: 20,
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: DefaultTextStyle.of(context).style.color,
         ),
         autofocus: true,
         controller: menuSearchController,

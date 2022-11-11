@@ -87,16 +87,22 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: InkWell(
-              child: Text(
-                style: TextStyle(
-                  shadows: const [Shadow(offset: Offset(0, -2))],
-                  color: Colors.transparent,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Theme.of(context).colorScheme.onPrimary,
-                  decorationThickness: 1,
-                ),
-                FlutterJVx.translate("No value"),
-              ),
+              child: Builder(
+                  builder: (context) => Text(
+                        style: TextStyle(
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(0, -2),
+                              color: DefaultTextStyle.of(context).style.color!,
+                            )
+                          ],
+                          color: Colors.transparent,
+                          decoration: TextDecoration.underline,
+                          decorationColor: DefaultTextStyle.of(context).style.color,
+                          decorationThickness: 1,
+                        ),
+                        FlutterJVx.translate("No value"),
+                      )),
               onTap: () {
                 Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
               },
@@ -136,9 +142,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           children: <Widget>[
             Text(
               FlutterJVx.translate("Select value"),
-              style: TextStyle(
-                color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
-              ),
+              style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
             const SizedBox(height: 8),
             FlTextFieldWidget(

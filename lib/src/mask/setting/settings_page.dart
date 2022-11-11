@@ -110,7 +110,9 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         body: body,
         bottomNavigationBar: Material(
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).colorScheme.brightness == Brightness.light
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).bottomAppBarColor,
           child: SafeArea(
             child: SizedBox(
               height: bottomBarHeight,
@@ -164,10 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Center(
                   child: Text(
                     FlutterJVx.translate("Cancel"),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -185,10 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Center(
             child: Text(
               FlutterJVx.translate(IConfigService().getUserInfo() != null ? "Save" : "Open"),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -370,14 +366,15 @@ class _SettingsPageState extends State<SettingsPage> {
             cancelText: FlutterJVx.translate("Cancel"),
             confirmText: FlutterJVx.translate("Confirm"),
             selecteds: [resolutions.indexOf(value)],
-            adapter: PickerDataAdapter<int>(
-              data: resolutions.map((e) => PickerItem(text: Text("$e px"), value: e)).toList(growable: false),
+            adapter: PickerDataAdapter<String>(
+              //Using data breaks theme styling!
+              pickerdata: resolutions.map((e) => "$e px").toList(),
             ),
             confirmTextStyle: const TextStyle(fontSize: 16),
             cancelTextStyle: const TextStyle(fontSize: 16),
             onConfirm: (Picker picker, List<int> values) {
               if (values.isNotEmpty) {
-                resolution = picker.getSelectedValues()[0];
+                resolution = int.parse((picker.getSelectedValues()[0] as String).split(" ")[0]);
                 setState(() {});
               }
             });

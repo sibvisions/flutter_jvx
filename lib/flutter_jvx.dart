@@ -392,9 +392,32 @@ class FlutterJVxState extends State<FlutterJVx> {
         colorScheme = colorScheme.copyWith(onSurface: JVxColors.LIGHTER_BLACK);
       }
 
+      //Override tealAccent
+      colorScheme = colorScheme.copyWith(
+        secondary: colorScheme.primary,
+        onSecondary: colorScheme.onPrimary,
+        secondaryContainer: colorScheme.primaryContainer,
+        onSecondaryContainer: colorScheme.onPrimaryContainer,
+        tertiary: colorScheme.primary,
+        onTertiary: colorScheme.onPrimary,
+        tertiaryContainer: colorScheme.primaryContainer,
+        onTertiaryContainer: colorScheme.onPrimaryContainer,
+      );
+
       themeData = ThemeData.from(colorScheme: colorScheme);
 
+      if (themeData.textTheme.bodyText1?.color?.computeLuminance() == 0.0) {
+        themeData = themeData.copyWith(
+          textTheme: themeData.textTheme.apply(
+            bodyColor: JVxColors.LIGHTER_BLACK,
+            displayColor: JVxColors.LIGHTER_BLACK,
+          ),
+        );
+      }
+
       themeData = themeData.copyWith(
+        //Override for dark mode
+        toggleableActiveColor: themeData.colorScheme.primary,
         listTileTheme: themeData.listTileTheme.copyWith(
           //TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
           textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,

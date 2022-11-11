@@ -71,7 +71,7 @@ class GridMenuItem extends StatelessWidget {
                   context,
                   pMenuItemModel: menuItemModel,
                   pSize: 72,
-                  pColor: Theme.of(context).cardColor,
+                  pColor: Colors.white,
                 ),
               ),
             )
