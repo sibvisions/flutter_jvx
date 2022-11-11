@@ -78,10 +78,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   bool get canBeInTable => true;
 
   void onPress() {
-    if (!model.directCellEditor) {
-      return;
-    }
-
     currentIndex++;
     if (currentIndex >= model.listValues.length) {
       currentIndex = 0;
