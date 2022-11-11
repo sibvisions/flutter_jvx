@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -51,10 +50,10 @@ class _QRScannerOverlayState extends State<QRScannerOverlay> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: context.canBeamBack
+        leading: Navigator.canPop(context)
             ? IconButton(
                 icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                onPressed: () => context.beamBack(),
+                onPressed: () => Navigator.pop(context),
               )
             : null,
         title: Text(FlutterJVx.translate("QR Scanner")),
