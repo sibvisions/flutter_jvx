@@ -324,61 +324,49 @@ class _SettingsPageState extends State<SettingsPage> {
       "en",
     ]);
 
-    SettingItem languageSetting = SettingItem(
-      frontIcon: FaIcon(FontAwesomeIcons.language, color: Theme.of(context).colorScheme.primary),
-      endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
-      title: FlutterJVx.translate("Language"),
+    SettingItem languageSetting = _buildPickerItem<String>(
+      frontIcon: FontAwesomeIcons.language,
+      title: "Language",
       //"System" is default
       value: language ?? supportedLanguages[0],
       onPressed: (value) {
-        Picker picker = Picker(
-            cancelText: FlutterJVx.translate("Cancel"),
-            confirmText: FlutterJVx.translate("Confirm"),
-            confirmTextStyle: const TextStyle(fontSize: 16),
-            cancelTextStyle: const TextStyle(fontSize: 16),
-            selecteds: [supportedLanguages.indexOf(value)],
-            adapter: PickerDataAdapter<String>(
-              pickerdata: supportedLanguages,
-            ),
-            onConfirm: (Picker picker, List<int> values) {
-              if (values.isNotEmpty) {
-                String? selectedLanguage = picker.getSelectedValues()[0];
-                if (selectedLanguage == supportedLanguages[0]) {
-                  //"System" selected
-                  selectedLanguage = null;
-                }
-                language = selectedLanguage;
-                setState(() {});
+        _buildPicker(
+          adapter: PickerDataAdapter<String>(pickerdata: supportedLanguages),
+          selecteds: [supportedLanguages.indexOf(value!)],
+          onConfirm: (Picker picker, List<int> values) {
+            if (values.isNotEmpty) {
+              String? selectedLanguage = picker.getSelectedValues()[0];
+              if (selectedLanguage == supportedLanguages[0]) {
+                //"System" selected
+                selectedLanguage = null;
               }
-            });
-        picker.showModal(context, themeData: Theme.of(context));
+              language = selectedLanguage;
+              setState(() {});
+            }
+          },
+        ).showModal(context, themeData: Theme.of(context));
       },
     );
 
-    SettingItem pictureSetting = SettingItem(
-      frontIcon: FaIcon(FontAwesomeIcons.image, color: Theme.of(context).colorScheme.primary),
-      endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
-      title: FlutterJVx.translate("Picture Size"),
+    SettingItem pictureSetting = _buildPickerItem<int>(
+      frontIcon: FontAwesomeIcons.image,
+      title: "Picture Size",
       value: resolution,
       itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
       onPressed: (value) {
-        Picker picker = Picker(
-            cancelText: FlutterJVx.translate("Cancel"),
-            confirmText: FlutterJVx.translate("Confirm"),
-            selecteds: [resolutions.indexOf(value)],
-            adapter: PickerDataAdapter<String>(
-              //Using data breaks theme styling!
-              pickerdata: resolutions.map((e) => "$e px").toList(),
-            ),
-            confirmTextStyle: const TextStyle(fontSize: 16),
-            cancelTextStyle: const TextStyle(fontSize: 16),
-            onConfirm: (Picker picker, List<int> values) {
-              if (values.isNotEmpty) {
-                resolution = int.parse((picker.getSelectedValues()[0] as String).split(" ")[0]);
-                setState(() {});
-              }
-            });
-        picker.showModal(context, themeData: Theme.of(context));
+        _buildPicker(
+          selecteds: [resolutions.indexOf(value!)],
+          adapter: PickerDataAdapter<String>(
+            //Using data breaks theme styling!
+            pickerdata: resolutions.map((e) => "$e px").toList(),
+          ),
+          onConfirm: (Picker picker, List<int> values) {
+            if (values.isNotEmpty) {
+              resolution = int.parse((picker.getSelectedValues()[0] as String).split(" ")[0]);
+              setState(() {});
+            }
+          },
+        ).showModal(context, themeData: Theme.of(context));
       },
     );
 
@@ -396,6 +384,37 @@ class _SettingsPageState extends State<SettingsPage> {
       items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
     );
   }
+
+  SettingItem _buildPickerItem<T>({
+    required IconData frontIcon,
+    required String title,
+    required T value,
+    required Function(T? value) onPressed,
+    ValueWidgetBuilder<T>? itemBuilder,
+  }) =>
+      SettingItem<T>(
+        frontIcon: FaIcon(frontIcon, color: Theme.of(context).colorScheme.primary),
+        endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
+        title: FlutterJVx.translate(title),
+        value: value,
+        itemBuilder: itemBuilder,
+        onPressed: onPressed,
+      );
+
+  Picker _buildPicker({
+    required PickerDataAdapter adapter,
+    List<int>? selecteds,
+    void Function(Picker, List<int>)? onConfirm,
+  }) =>
+      Picker(
+        selecteds: selecteds,
+        adapter: adapter,
+        onConfirm: onConfirm,
+        confirmText: FlutterJVx.translate("Confirm"),
+        cancelText: FlutterJVx.translate("Cancel"),
+        confirmTextStyle: const TextStyle(fontSize: 16),
+        cancelTextStyle: const TextStyle(fontSize: 16),
+      );
 
   Widget _buildVersionInfo() {
     SettingItem appVersionSetting = SettingItem(
