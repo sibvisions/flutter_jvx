@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -484,6 +485,21 @@ class ConfigService implements IConfigService {
   @override
   Future<bool> setWebOnly(bool pWebOnly) {
     return sharedPrefs.setBool("${getAppName()}.webOnly", pWebOnly);
+  }
+
+  @override
+  ThemeMode getThemePreference() {
+    ThemeMode? themeMode;
+    String? theme = getString("theme");
+    if (theme != null) {
+      themeMode = ThemeMode.values.firstWhereOrNull((e) => e.name == theme);
+    }
+    return themeMode ?? ThemeMode.system;
+  }
+
+  @override
+  Future<bool> setThemePreference(ThemeMode themeMode) {
+    return setString("theme", themeMode == ThemeMode.system ? null : themeMode.name);
   }
 
   @override

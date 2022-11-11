@@ -49,7 +49,6 @@ class _SettingsPageState extends State<SettingsPage> {
   String? appName;
   String? baseUrl;
   String? language;
-  late int resolution;
 
   static const double bottomBarHeight = 55;
 
@@ -72,7 +71,6 @@ class _SettingsPageState extends State<SettingsPage> {
     appName = IConfigService().getAppName();
     baseUrl = IConfigService().getBaseUrl();
     language = IConfigService().getUserLanguage();
-    resolution = IConfigService().getPictureResolution() ?? resolutions.last;
   }
 
   @override
@@ -84,6 +82,10 @@ class _SettingsPageState extends State<SettingsPage> {
           IconTheme.merge(
             data: IconThemeData(color: Theme.of(context).colorScheme.primary),
             child: Builder(builder: (context) => _buildApplicationSettings(context)),
+          ),
+          IconTheme.merge(
+            data: IconThemeData(color: Theme.of(context).colorScheme.primary),
+            child: Builder(builder: (context) => _buildDeviceSettings(context)),
           ),
           _buildVersionInfo(),
           const SizedBox(height: 5),
@@ -159,7 +161,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _createCancelButton(BuildContext context, bool loading) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
-      child: context.canBeamBack
+      child: context.canBeamBack && _changesPending()
           ? InkWell(
               onTap: loading ? null : context.beamBack,
               child: SizedBox.shrink(
@@ -183,7 +185,8 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SizedBox.shrink(
           child: Center(
             child: Text(
-              FlutterJVx.translate(IConfigService().getUserInfo() != null ? "Save" : "Open"),
+              FlutterJVx.translate(
+                  IConfigService().getUserInfo() != null ? (_changesPending() ? "Save" : "Done") : "Open"),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -348,6 +351,56 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
+    return SettingGroup(
+      groupHeader: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text(
+          FlutterJVx.translate("Application"),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      items: [appNameSetting, baseUrlSetting, languageSetting],
+    );
+  }
+
+  _buildDeviceSettings(BuildContext context) {
+    final Map<ThemeMode, String> themeMapping = {
+      ThemeMode.system: FlutterJVx.translate("System"),
+      ThemeMode.light: FlutterJVx.translate("Light"),
+      ThemeMode.dark: FlutterJVx.translate("Dark"),
+    };
+
+    var theme = IConfigService().getThemePreference();
+    IconData themeIcon = FontAwesomeIcons.sun;
+    if (theme == ThemeMode.light) themeIcon = FontAwesomeIcons.solidSun;
+    if (theme == ThemeMode.dark) themeIcon = FontAwesomeIcons.solidMoon;
+
+    SettingItem themeSetting = _buildPickerItem<ThemeMode>(
+      frontIcon: themeIcon,
+      title: "Theme",
+      value: theme,
+      itemBuilder: (BuildContext context, value, Widget? widget) => Text(themeMapping[value]!),
+      onPressed: (value) {
+        _buildPicker(
+          selecteds: [ThemeMode.values.indexOf(value!)],
+          adapter: PickerDataAdapter<String>(
+            pickerdata: ThemeMode.values.map((e) => themeMapping[e]).toList(),
+          ),
+          onConfirm: (Picker picker, List<int> values) {
+            if (values.isNotEmpty) {
+              theme = themeMapping.entries.firstWhere((entry) => entry.value == picker.getSelectedValues()[0]).key;
+              IConfigService().setThemePreference(theme);
+              FlutterJVxState.of(context)?.changedTheme();
+            }
+          },
+        ).showModal(context, themeData: Theme.of(context));
+      },
+    );
+
+    var resolution = IConfigService().getPictureResolution() ?? resolutions.last;
     SettingItem pictureSetting = _buildPickerItem<int>(
       frontIcon: FontAwesomeIcons.image,
       title: "Picture Size",
@@ -363,6 +416,7 @@ class _SettingsPageState extends State<SettingsPage> {
           onConfirm: (Picker picker, List<int> values) {
             if (values.isNotEmpty) {
               resolution = int.parse((picker.getSelectedValues()[0] as String).split(" ")[0]);
+              IConfigService().setPictureResolution(resolution);
               setState(() {});
             }
           },
@@ -374,14 +428,14 @@ class _SettingsPageState extends State<SettingsPage> {
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterJVx.translate("Application"),
+          FlutterJVx.translate("Device"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
+      items: [themeSetting, pictureSetting],
     );
   }
 
@@ -506,20 +560,20 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  bool _changesPending() {
+    return appName != IConfigService().getAppName() ||
+        baseUrl != IConfigService().getBaseUrl() ||
+        language != IConfigService().getUserLanguage();
+  }
+
   /// Will send a [StartupCommand] with current values
   void _saveClicked() async {
     if (appName?.isNotEmpty == true && baseUrl?.isNotEmpty == true) {
       try {
-        if (!context.canBeamBack ||
-            IConfigService().getClientId() == null ||
-            appName != IConfigService().getAppName() ||
-            baseUrl != IConfigService().getBaseUrl() ||
-            language != IConfigService().getUserLanguage() ||
-            resolution != (IConfigService().getPictureResolution() ?? resolutions.last)) {
+        if (!context.canBeamBack || IConfigService().getClientId() == null || _changesPending()) {
           await IConfigService().setAppName(appName);
           await IConfigService().setBaseUrl(baseUrl);
           await IConfigService().setUserLanguage(language);
-          await IConfigService().setPictureResolution(resolution);
 
           FlutterJVxState.of(FlutterJVx.getCurrentContext())?.restart(
             username: username,

@@ -254,7 +254,7 @@ class FlutterJVx extends StatefulWidget {
 
 late BeamerDelegate routerDelegate;
 
-class FlutterJVxState extends State<FlutterJVx> {
+class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
   /// Gets the [FlutterJVxState] widget.
   static FlutterJVxState? of(BuildContext? context) => context?.findAncestorStateOfType();
 
@@ -359,6 +359,11 @@ class FlutterJVxState extends State<FlutterJVx> {
   }
 
   @override
+  void didChangePlatformBrightness() {
+    changedTheme();
+  }
+
+  @override
   void dispose() {
     IApiService().getRepository()?.stop();
     super.dispose();
@@ -373,8 +378,22 @@ class FlutterJVxState extends State<FlutterJVx> {
     if (styleColor != null) {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);
 
+      Brightness selectedBrightness;
+      switch (IConfigService().getThemePreference()) {
+        case ThemeMode.light:
+          selectedBrightness = Brightness.light;
+          break;
+        case ThemeMode.dark:
+          selectedBrightness = Brightness.dark;
+          break;
+        case ThemeMode.system:
+        default:
+          selectedBrightness = MediaQueryData.fromWindow(WidgetsBinding.instance.window).platformBrightness;
+      }
+
       ColorScheme colorScheme = ColorScheme.fromSwatch(
         primarySwatch: materialColor,
+        brightness: selectedBrightness,
       );
 
       bool isBackgroundLight = ThemeData.estimateBrightnessForColor(colorScheme.background) == Brightness.light;

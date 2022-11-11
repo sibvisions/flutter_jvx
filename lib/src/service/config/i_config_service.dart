@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_io/io.dart' as universal_io;
 
@@ -179,6 +179,12 @@ abstract class IConfigService {
   bool isWebOnly();
 
   Future<bool> setWebOnly(bool pWebOnly);
+
+  /// Returns theme preference
+  ThemeMode getThemePreference();
+
+  /// Set theme preference
+  Future<bool> setThemePreference(ThemeMode themeMode);
 
   /// Get a general app setting
   String? getString(String key);
