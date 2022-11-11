@@ -50,9 +50,11 @@ class ListMenuGroup extends StatelessWidget {
     List<Widget> listGroupItems = [];
 
     for (int i = 0; i < menuGroupModel.items.length; i++) {
-      listGroupItems.add(const Divider(
-        height: 1,
-      ));
+      if (i > 0) {
+        listGroupItems.add(const Divider(
+          height: 1,
+        ));
+      }
 
       listGroupItems.add(ListMenuItem(
         menuItemModel: menuGroupModel.items.elementAt(i),
