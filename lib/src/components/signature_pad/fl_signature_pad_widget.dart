@@ -41,10 +41,10 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
 
   @override
   Widget build(BuildContext context) {
+    Widget? image;
     if (showImage) {
       dynamic imageValue = dataRecord?.values[0];
 
-      Widget? image;
       if (imageValue != null) {
         try {
           if (imageValue is String && imageValue.startsWith("[")) {
@@ -61,24 +61,9 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
           FlutterJVx.logUI.e("Failed to show image", error, stacktrace);
         }
       }
-
       image ??= ImageLoader.DEFAULT_IMAGE;
-
-      return GestureDetector(
-        onLongPress: () => onLongPress?.call(),
-        onLongPressDown: (details) => onLongPressDown?.call(details),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.onPrimary),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: image,
-          ),
-        ),
-      );
     }
+
     return GestureDetector(
       onLongPress: () => onLongPress?.call(),
       onLongPressDown: (details) => onLongPressDown?.call(details),
@@ -86,17 +71,19 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
         decoration: BoxDecoration(
           border: Border.all(color: Theme.of(context).colorScheme.onPrimary),
           borderRadius: BorderRadius.circular(5),
+          color: model.background ?? Colors.white.withOpacity(0.7),
         ),
         child: Padding(
           padding: const EdgeInsets.all(3.0),
-          child: Signature(
-            key: UniqueKey(),
-            //TODO Remove after initState fix for width and height
-            width: width,
-            height: height,
-            controller: controller,
-            backgroundColor: model.background ?? Theme.of(context).backgroundColor,
-          ),
+          child: image ??
+              Signature(
+                key: UniqueKey(),
+                //TODO Remove after initState fix for width and height
+                width: width,
+                height: height,
+                controller: controller,
+                backgroundColor: Colors.transparent,
+              ),
         ),
       ),
     );
