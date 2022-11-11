@@ -74,6 +74,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   bool get showSuffixIcon => true;
 
+  bool get isMultiLine => keyboardType == TextInputType.multiline;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,19 +103,18 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     Color? fillColor = model.background ??
         (isMandatory ? AppStyle.of(context)!.applicationSettings.colors?.mandatoryBackground : null);
     bool isFilled = fillColor != null && !inTable;
-
     return TextField(
       controller: textController,
       decoration: inputDecoration.copyWith(
         enabled: model.isEnabled,
         hintText: model.placeholder,
         contentPadding: inTable ? null : contentPadding,
-        border: createBorder(context, FlTextBorderType.border),
-        errorBorder: createBorder(context, FlTextBorderType.errorBorder),
-        enabledBorder: createBorder(context, FlTextBorderType.enabledBorder),
-        focusedBorder: createBorder(context, FlTextBorderType.focusedBorder),
-        disabledBorder: createBorder(context, FlTextBorderType.disabledBorder),
-        focusedErrorBorder: createBorder(context, FlTextBorderType.focusedBorder),
+        border: createBorder(FlTextBorderType.border),
+        errorBorder: createBorder(FlTextBorderType.errorBorder),
+        enabledBorder: createBorder(FlTextBorderType.enabledBorder),
+        focusedBorder: createBorder(FlTextBorderType.focusedBorder),
+        disabledBorder: createBorder(FlTextBorderType.disabledBorder),
+        focusedErrorBorder: createBorder(FlTextBorderType.focusedBorder),
         suffixIcon: createSuffixIcon(),
         suffix: createSuffix(),
         fillColor: fillColor,
@@ -124,9 +125,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       readOnly: model.isReadOnly,
       style: model.createTextStyle(),
       onChanged: valueChanged,
-      onEditingComplete: () {
-        focusNode.unfocus();
-      },
+      onEditingComplete: focusNode.unfocus,
       expands: isExpandend,
       minLines: minLines,
       maxLines: maxLines,
@@ -239,7 +238,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     return Container(
       // Only on multiline editors.
-      height: keyboardType == TextInputType.multiline ? double.infinity : null,
+      height: isMultiLine ? double.infinity : null,
       padding: padding,
       child: Row(
         crossAxisAlignment: crossAxisAlignment,
@@ -254,7 +253,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return null;
   }
 
-  InputBorder? createBorder(BuildContext context, FlTextBorderType pBorderType) {
+  InputBorder? createBorder(FlTextBorderType pBorderType) {
     if (inTable) {
       return InputBorder.none;
     }
