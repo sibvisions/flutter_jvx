@@ -145,7 +145,11 @@ Future<File?> pick(UploadType type) async {
       case UploadType.CAMERA:
         ImagePicker picker = ImagePicker();
 
-        final pickedFile = await picker.pickImage(source: ImageSource.camera, maxWidth: maxPictureWidth);
+        final pickedFile = await picker.pickImage(
+          source: ImageSource.camera,
+          maxWidth: maxPictureWidth,
+          requestFullMetadata: false,
+        );
 
         if (pickedFile != null) {
           file = File(pickedFile.path);
@@ -154,7 +158,10 @@ Future<File?> pick(UploadType type) async {
       case UploadType.GALLERY:
         ImagePicker picker = ImagePicker();
 
-        final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+        final pickedFile = await picker.pickImage(
+          source: ImageSource.gallery,
+          requestFullMetadata: false,
+        );
 
         if (pickedFile != null) {
           file = File(pickedFile.path);
