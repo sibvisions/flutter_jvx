@@ -4,6 +4,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../beamer.dart';
 import '../../../commands.dart';
 import '../../../components.dart';
 import '../../../custom/custom_screen.dart';
@@ -155,61 +156,96 @@ class WorkScreenState extends State<WorkScreen> {
           },
           child: WillPopScope(
             onWillPop: () async {
+              void completeNavigation() {
+                isForced = false;
+                isNavigating = false;
+              }
+
               if (isNavigating) {
                 return false;
               }
 
               isNavigating = true;
 
-              return IUiService().saveAllEditors(null, "Closing Screen").then<bool>((_) {
-                if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-                  return true;
-                } else {
-                  if (isForced) {
-                    IUiService()
-                        .sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
-                    IUiService()
-                        .sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
+              return IUiService().saveAllEditors(null, "Closing Screen").then<bool>(
+                (_) {
+                  if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
+                    completeNavigation();
+                    return true;
                   } else {
-                    IUiService().sendCommand(
-                      NavigationCommand(
-                        reason: "Back button pressed",
-                        openScreen: widget.screenName,
-                      ),
-                    );
+                    Future commandFuture;
+                    if (isForced) {
+                      commandFuture = ICommandService()
+                          .sendCommand(CloseScreenCommand(
+                            reason: "Work screen back",
+                            screenName: widget.screenName,
+                          ))
+                          .then((value) => IUiService().sendCommand(
+                                DeleteScreenCommand(
+                                  reason: "Work screen back",
+                                  screenName: widget.screenName,
+                                ),
+                              ));
+                    } else {
+                      commandFuture = ICommandService().sendCommand(
+                        NavigationCommand(
+                          reason: "Back button pressed",
+                          openScreen: widget.screenName,
+                        ),
+                      );
+                    }
+                    commandFuture.catchError(IUiService().handleAsyncError).whenComplete(completeNavigation);
+                    return false;
                   }
+                },
+              ).catchError(
+                (error, stacktrace) {
+                  completeNavigation();
+                  IUiService().handleAsyncError(error, stacktrace);
                   return false;
-                }
-              }).whenComplete(() {
-                isForced = false;
-                isNavigating = false;
-              });
+                },
+              );
             },
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: frame?.getAppBar(
-                leading: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: () => Navigator.pop(context),
-                  onDoubleTap: () {
-                    isForced = true;
-                    Navigator.pop(context);
-                  },
-                  child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
+            child: Builder(builder: (context) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: frame?.getAppBar(
+                  leading: InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: () {
+                      _back();
+                    },
+                    onDoubleTap: () {
+                      _back(true);
+                    },
+                    child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
+                  ),
+                  title: Text(screenTitle),
+                  actions: actions,
                 ),
-                title: Text(screenTitle),
-                actions: actions,
-              ),
-              drawerEnableOpenDragGesture: false,
-              endDrawerEnableOpenDragGesture: false,
-              drawer: frame?.getDrawer(context),
-              endDrawer: frame?.getEndDrawer(context),
-              body: frame?.wrapBody(body) ?? body,
-            ),
+                drawerEnableOpenDragGesture: false,
+                endDrawerEnableOpenDragGesture: false,
+                drawer: frame?.getDrawer(context),
+                endDrawer: frame?.getEndDrawer(context),
+                body: frame?.wrapBody(body) ?? body,
+              );
+            }),
           ),
         );
       },
     );
+  }
+
+  Future<void> _back([bool pForced = false]) async {
+    if (isNavigating) {
+      return;
+    }
+
+    isForced = pForced;
+
+    if (!(await Navigator.of(context).maybePop())) {
+      context.beamBack();
+    }
   }
 
   _setScreenSize(Size size) {
