@@ -597,23 +597,23 @@ class UiService implements IUiService {
   bool usesNativeRouting({required String pScreenLongName}) {
     CustomScreen? customScreen = getCustomScreen(pScreenLongName: pScreenLongName);
 
-    if (customScreen != null) {
-      if (_hasReplaced(pScreenLongName: pScreenLongName)) {
-        if (IConfigService().isOffline()) {
-          // Offline + Replace => Beam
-          return true;
-        } else {
-          // Online + Replace => can choose
-          return !customScreen.sendOpenScreenRequests;
-        }
-      } else {
-        // No Replace => Beam
-        return true;
-      }
+    if (customScreen == null) {
+      // Full VisionX-Screen => Send
+      return false;
     }
 
-    // Full VisionX-Screen => Send
-    return false;
+    if (_hasReplaced(pScreenLongName: pScreenLongName)) {
+      if (IConfigService().isOffline()) {
+        // Offline + Replace => Beam
+        return true;
+      } else {
+        // Online + Replace => can choose
+        return !customScreen.sendOpenScreenRequests;
+      }
+    } else {
+      // No Replace => Beam
+      return true;
+    }
   }
 
   bool _hasReplaced({required String pScreenLongName}) {

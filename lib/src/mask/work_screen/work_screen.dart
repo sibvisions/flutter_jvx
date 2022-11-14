@@ -1,10 +1,10 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../commands.dart';
 import '../../../components.dart';
 import '../../../custom/custom_screen.dart';
 import '../../../flutter_jvx.dart';
@@ -13,11 +13,6 @@ import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../../components/components_factory.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
-import '../../model/command/api/close_screen_command.dart';
-import '../../model/command/api/device_status_command.dart';
-import '../../model/command/api/navigation_command.dart';
-import '../../model/command/storage/delete_screen_command.dart';
-import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/request/api_navigation_request.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
@@ -49,6 +44,10 @@ class WorkScreenState extends State<WorkScreen> {
   late FlPanelModel? model;
   late String screenLongName;
 
+  /// Navigating booleans.
+  bool isNavigating = false;
+  bool isForced = false;
+
   @override
   void initState() {
     super.initState();
@@ -78,115 +77,139 @@ class WorkScreenState extends State<WorkScreen> {
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
-        forceWeb: IConfigService().isWebOnly(),
-        forceMobile: IConfigService().isMobileOnly(),
-        builder: (context, isOffline) {
-          model = IUiService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
+      forceWeb: IConfigService().isWebOnly(),
+      forceMobile: IConfigService().isMobileOnly(),
+      builder: (context, isOffline) {
+        model = IUiService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
 
-          // Header
-          PreferredSizeWidget? header;
-          // Footer
-          Widget? footer;
-          // Title displayed on the top
-          String screenTitle = "No Title";
-          // Screen Widget
-          Widget? screen;
+        // Header
+        PreferredSizeWidget? header;
+        // Footer
+        Widget? footer;
+        // Title displayed on the top
+        String screenTitle = "No Title";
+        // Screen Widget
+        Widget? screen;
 
-          bool isCustomScreen = false;
+        bool isCustomScreen = false;
 
-          if (model != null) {
-            screen = ComponentsFactory.buildWidget(model!);
-            screenTitle = model!.screenTitle!;
+        if (model != null) {
+          screen = ComponentsFactory.buildWidget(model!);
+          screenTitle = model!.screenTitle!;
+        }
+
+        screenLongName = model?.screenLongName ?? widget.screenName;
+
+        // Custom Config for this screen
+        CustomScreen? customScreen = IUiService().getCustomScreen(pScreenLongName: screenLongName);
+
+        if (customScreen != null) {
+          header = customScreen.headerBuilder?.call(context);
+          footer = customScreen.footerBuilder?.call(context);
+
+          Widget? replaceScreen = customScreen.screenBuilder?.call(context, screen);
+          if (replaceScreen != null) {
+            isCustomScreen = true;
+            screen = replaceScreen;
           }
 
-          screenLongName = model?.screenLongName ?? widget.screenName;
-
-          // Custom Config for this screen
-          CustomScreen? customScreen = IUiService().getCustomScreen(pScreenLongName: screenLongName);
-
-          if (customScreen != null) {
-            header = customScreen.headerBuilder?.call(context);
-            footer = customScreen.footerBuilder?.call(context);
-
-            Widget? replaceScreen = customScreen.screenBuilder?.call(context, screen);
-            if (replaceScreen != null) {
-              isCustomScreen = true;
-              screen = replaceScreen;
-            }
-
-            String? customTitle = customScreen.screenTitle;
-            if (customTitle != null) {
-              screenTitle = customTitle;
-            } else if (customScreen.menuItemModel != null) {
-              screenTitle = customScreen.menuItemModel!.label;
-            }
+          String? customTitle = customScreen.screenTitle;
+          if (customTitle != null) {
+            screenTitle = customTitle;
+          } else if (customScreen.menuItemModel != null) {
+            screenTitle = customScreen.menuItemModel!.label;
           }
+        }
 
-          if (screen == null) {
-            FlutterJVx.logUI.wtf("Model not found for work screen: $screenLongName");
-            screen = Container();
-            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-              IUiService().sendCommand(OpenErrorDialogCommand(
-                message: "Failed to open screen, please try again.",
-                reason: "Workscreen Model missing",
-              ));
-              IUiService().routeToMenu(pReplaceRoute: true);
-            });
-          }
+        if (screen == null) {
+          FlutterJVx.logUI.wtf("Model not found for work screen: $screenLongName");
+          screen = Container();
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            IUiService().sendCommand(OpenErrorDialogCommand(
+              message: "Failed to open screen, please try again.",
+              reason: "Workscreen Model missing",
+            ));
+            IUiService().routeToMenu(pReplaceRoute: true);
+          });
+        }
 
-          List<Widget> actions = [];
+        List<Widget> actions = [];
 
-          Widget body = SafeArea(
-            child: Column(
-              children: [
-                if (isOffline) OfflineUtil.getOfflineBar(context),
-                Expanded(child: _getScreen(context, header, screen, footer, isCustomScreen)),
-              ],
-            ),
-          );
+        Widget body = SafeArea(
+          child: Column(
+            children: [
+              if (isOffline) OfflineUtil.getOfflineBar(context),
+              Expanded(child: _getScreen(context, header, screen, footer, isCustomScreen)),
+            ],
+          ),
+        );
 
-          FrameState? frame = FrameState.of(context);
-          if (frame != null) {
-            actions.addAll(frame.getActions());
-          }
+        FrameState? frame = FrameState.of(context);
+        if (frame != null) {
+          actions.addAll(frame.getActions());
+        }
 
-          return GestureDetector(
-            onTap: () {
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-            child: WillPopScope(
-              onWillPop: () async {
-                if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-                  IUiService().saveAllEditorsThen(null, () {
+        return GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: WillPopScope(
+            onWillPop: () async {
+              if (isNavigating) {
+                return false;
+              }
+
+              isNavigating = true;
+
+              return IUiService().saveAllEditors(null, "Closing Screen").then<bool>((_) {
+                if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
+                  return true;
+                } else {
+                  if (isForced) {
                     IUiService()
-                        .sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: widget.screenName));
-                  }, "Closing screen");
-
+                        .sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
+                    IUiService()
+                        .sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
+                  } else {
+                    IUiService().sendCommand(
+                      NavigationCommand(
+                        reason: "Back button pressed",
+                        openScreen: widget.screenName,
+                      ),
+                    );
+                  }
                   return false;
                 }
-                return true;
-              },
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: frame?.getAppBar(
-                  leading: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: () => _onBackTap(),
-                    onDoubleTap: () => _onDoubleTap(),
-                    child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
-                  ),
-                  title: Text(screenTitle),
-                  actions: actions,
+              }).whenComplete(() {
+                isForced = false;
+                isNavigating = false;
+              });
+            },
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: frame?.getAppBar(
+                leading: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => Navigator.pop(context),
+                  onDoubleTap: () {
+                    isForced = true;
+                    Navigator.pop(context);
+                  },
+                  child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
                 ),
-                drawerEnableOpenDragGesture: false,
-                endDrawerEnableOpenDragGesture: false,
-                drawer: frame?.getDrawer(context),
-                endDrawer: frame?.getEndDrawer(context),
-                body: frame?.wrapBody(body) ?? body,
+                title: Text(screenTitle),
+                actions: actions,
               ),
+              drawerEnableOpenDragGesture: false,
+              endDrawerEnableOpenDragGesture: false,
+              drawer: frame?.getDrawer(context),
+              endDrawer: frame?.getEndDrawer(context),
+              body: frame?.wrapBody(body) ?? body,
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   _setScreenSize(Size size) {
@@ -196,39 +219,6 @@ class WorkScreenState extends State<WorkScreen> {
           pSize: size,
         )
         .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
-  }
-
-  _onBackTap() {
-    IUiService().saveAllEditorsThen(null, _navigateBack, "Back pressed");
-  }
-
-  _navigateBack() {
-    if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-      _customBack();
-    } else {
-      IUiService().sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
-    }
-  }
-
-  _onDoubleTap() {
-    IUiService().saveAllEditorsThen(null, _navigateBackForcefully, "Back pressed forcefully");
-  }
-
-  _navigateBackForcefully() {
-    if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-      _customBack();
-    } else {
-      IUiService().sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
-      IUiService().sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
-    }
-  }
-
-  _customBack() async {
-    bool handled = await Navigator.of(context).maybePop();
-    if (!handled) {
-      // ignore: use_build_context_synchronously
-      context.beamBack();
-    }
   }
 
   Widget _getScreen(
