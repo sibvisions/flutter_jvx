@@ -5,10 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/jvx_colors.dart';
-import '../../model/command/api/login_command.dart';
 import '../../util/loading_handler/progress_button.dart';
 import '../state/app_style.dart';
 import '../state/loading_bar.dart';
+import 'login_page.dart';
 import 'remember_me_checkbox.dart';
 
 class LoginCard extends StatefulWidget {
@@ -16,7 +16,7 @@ class LoginCard extends StatefulWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const LoginCard({Key? key}) : super(key: key);
+  const LoginCard({super.key});
 
   @override
   State<LoginCard> createState() => _LoginCardState();
@@ -183,15 +183,11 @@ class _LoginCardState extends State<LoginCard> {
   void _onLoginPressed() {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    ICommandService()
-        .sendCommand(LoginCommand(
-      loginMode: LoginMode.MANUAL,
-      userName: usernameController.text,
+    LoginPage.doLogin(
+      username: usernameController.text,
       password: passwordController.text,
-      reason: "LoginButton",
       createAuthKey: showRememberMe && checkHolder.isChecked,
-    ))
-        .catchError((error, stackTrace) {
+    ).catchError((error, stackTrace) {
       setState(() => progressButtonState = ButtonState.fail);
       return IUiService().handleAsyncError(error, stackTrace);
     });

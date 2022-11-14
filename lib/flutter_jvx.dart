@@ -50,6 +50,12 @@ import 'util/parse_util.dart';
 
 export 'src/mask/splash/jvx_splash.dart';
 
+typedef DoLogin = Future<void> Function({
+  required String username,
+  required String password,
+  bool createAuthKey,
+});
+
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterJVx extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,6 +125,9 @@ class FlutterJVx extends StatefulWidget {
   /// Builder function for custom splash widget
   final Widget Function(BuildContext context, AsyncSnapshot? snapshot)? splashBuilder;
 
+  /// Builder function for custom login widget
+  final Widget Function(BuildContext context, DoLogin)? loginBuilder;
+
   static late PackageInfo packageInfo;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,6 +138,7 @@ class FlutterJVx extends StatefulWidget {
     this.appConfig,
     this.appManager,
     this.splashBuilder,
+    this.loginBuilder,
   }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

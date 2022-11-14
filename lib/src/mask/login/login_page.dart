@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
+import '../../model/command/api/login_command.dart';
 import '../state/app_style.dart';
 import 'arc_clipper.dart';
 
@@ -97,5 +99,19 @@ class LoginPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  static Future<void> doLogin({
+    required String username,
+    required String password,
+    bool createAuthKey = false,
+  }) {
+    return ICommandService().sendCommand(LoginCommand(
+      loginMode: LoginMode.MANUAL,
+      userName: username,
+      password: password,
+      reason: "LoginButton",
+      createAuthKey: createAuthKey,
+    ));
   }
 }

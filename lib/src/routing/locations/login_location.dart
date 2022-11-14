@@ -25,7 +25,9 @@ class LoginLocation extends BeamLocation<BeamState> {
       BeamPage(
         title: FlutterJVx.translate("Login"),
         key: const ValueKey("login"),
-        child: const LoginPage(loginWidget: LoginCard()),
+        child: LoginPage(
+          loginWidget: FlutterJVx.of(context)?.loginBuilder?.call(context, LoginPage.doLogin) ?? const LoginCard(),
+        ),
       ),
       if (state.uri.pathSegments.contains("lostPassword"))
         BeamPage(
