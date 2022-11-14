@@ -116,8 +116,8 @@ class FlutterJVx extends StatefulWidget {
   /// The application manager of this app.
   final AppManager? appManager;
 
-  /// Builder function for custom loading widget
-  final Widget Function(BuildContext context, AsyncSnapshot? snapshot)? loadingBuilder;
+  /// Builder function for custom splash widget
+  final Widget Function(BuildContext context, AsyncSnapshot? snapshot)? splashBuilder;
 
   static late PackageInfo packageInfo;
 
@@ -128,7 +128,7 @@ class FlutterJVx extends StatefulWidget {
     Key? key,
     this.appConfig,
     this.appManager,
-    this.loadingBuilder,
+    this.splashBuilder,
   }) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -329,7 +329,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
                   return Theme(
                     data: splashTheme,
                     child: Stack(children: [
-                      Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
+                      Splash(loadingBuilder: widget.splashBuilder, snapshot: snapshot),
                       if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
                         _getStartupErrorDialog(context, snapshot),
                     ]),
@@ -341,7 +341,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
             return Theme(
               data: splashTheme,
               child: Stack(children: [
-                Splash(loadingBuilder: widget.loadingBuilder, snapshot: snapshot),
+                Splash(loadingBuilder: widget.splashBuilder, snapshot: snapshot),
                 if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
                   _getFatalErrorDialog(context, snapshot),
               ]),
