@@ -20,7 +20,7 @@ void layoutCallback(SendPort callerSendPort) {
   // Provide the caller with the reference of THIS isolate's SendPort
   callerSendPort.send(isolateReceivePort.sendPort);
 
-  final LayoutService layoutStorage = LayoutService();
+  final LayoutService layoutStorage = LayoutService.create();
 
   // Handle incoming requests
   isolateReceivePort.listen((message) async {

@@ -23,7 +23,7 @@ class DataService implements IDataService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Creates an [DataService] Instance
-  DataService();
+  DataService.create();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

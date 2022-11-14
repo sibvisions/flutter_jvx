@@ -23,6 +23,8 @@ class StorageService implements IStorageService {
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  StorageService.create();
+
   @override
   void clear() {
     _componentMap.clear();

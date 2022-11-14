@@ -63,6 +63,8 @@ class UiService implements IUiService {
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  UiService.create();
+
   @override
   void clear() {
     _menuNotifier.value = const MenuModel();

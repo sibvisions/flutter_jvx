@@ -184,35 +184,35 @@ class FlutterJVx extends StatefulWidget {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // Config
-    IConfigService configService = ConfigService(
+    IConfigService configService = ConfigService.create(
       sharedPrefs: await SharedPreferences.getInstance(),
       fileManager: await IFileManager.getFileManager(),
     );
     services.registerSingleton(configService);
 
     // Layout
-    ILayoutService layoutService = kIsWeb ? LayoutService() : await IsolateLayoutService.create();
+    ILayoutService layoutService = kIsWeb ? LayoutService.create() : await IsolateLayoutService.create();
     services.registerSingleton(layoutService);
 
     // Storage
-    IStorageService storageService = StorageService();
+    IStorageService storageService = StorageService.create();
     services.registerSingleton(storageService);
 
     // Data
-    IDataService dataService = DataService();
+    IDataService dataService = DataService.create();
     services.registerSingleton(dataService);
 
     // Command
-    ICommandService commandService = CommandService();
+    ICommandService commandService = CommandService.create();
     services.registerSingleton(commandService);
     (commandService as CommandService).progressHandler.add(LoadingProgressHandler());
 
     // UI
-    IUiService uiService = UiService();
+    IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
     // API
-    IApiService apiService = ApiService();
+    IApiService apiService = ApiService.create();
     apiService.setController(ApiController());
     services.registerSingleton(apiService);
 

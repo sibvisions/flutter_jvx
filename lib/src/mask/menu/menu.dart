@@ -83,10 +83,10 @@ abstract class Menu extends StatelessWidget {
     Scaffold.maybeOf(context)?.closeEndDrawer();
 
     // Offline screens no not require the server to know that they are open
-    if (UiService().usesNativeRouting(pScreenLongName: pScreenLongName)) {
-      UiService().routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
+    if (IUiService().usesNativeRouting(pScreenLongName: pScreenLongName)) {
+      IUiService().routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
     } else {
-      UiService().sendCommand(OpenScreenCommand(screenLongName: pScreenLongName, reason: "Menu Item was pressed"));
+      IUiService().sendCommand(OpenScreenCommand(screenLongName: pScreenLongName, reason: "Menu Item was pressed"));
     }
   }
 }

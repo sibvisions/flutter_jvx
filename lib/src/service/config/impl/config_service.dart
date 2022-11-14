@@ -74,7 +74,7 @@ class ConfigService implements IConfigService {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ConfigService({
+  ConfigService.create({
     required this.fileManager,
     required this.sharedPrefs,
   });

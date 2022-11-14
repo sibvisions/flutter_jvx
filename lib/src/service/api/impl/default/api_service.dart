@@ -24,7 +24,7 @@ class ApiService implements IApiService {
 
   /// Initializes a Instance where [repository] and [controller] are null
   /// and need to be set before any request can be sent.
-  ApiService();
+  ApiService.create();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

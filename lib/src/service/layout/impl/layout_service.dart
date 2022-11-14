@@ -28,6 +28,8 @@ class LayoutService implements ILayoutService {
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  LayoutService.create();
+
   @override
   void clear() {
     _isValid = true;
