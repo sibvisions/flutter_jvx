@@ -85,7 +85,7 @@ class _JVxSplashState extends State<JVxSplash> {
                 ),
               ),
               const Expanded(child: SizedBox.shrink()),
-              if (widget.snapshot?.connectionState != ConnectionState.done && UiService().getFrames().isEmpty)
+              if (widget.snapshot?.connectionState != ConnectionState.done && IUiService().getFrames().isEmpty)
                 Container(
                   height: 15,
                   constraints: const BoxConstraints(maxWidth: 500),
