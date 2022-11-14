@@ -29,50 +29,49 @@ class LostPasswordCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+    return Column(
+      children: [
+        Text(
+          FlutterJVx.translate("Welcome"),
+          style: Theme.of(context).textTheme.headline5,
+        ),
+        Text(
+          FlutterJVx.translate("Please enter your e-mail address."),
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        TextFormField(
+          decoration: InputDecoration(labelText: "${FlutterJVx.translate("Email")}:"),
+          controller: identifierController,
+          onFieldSubmitted: (_) => _sendRequest(),
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              FlutterJVx.translate("Please enter Email"),
-              style: Theme.of(context).textTheme.headline5,
+            ElevatedButton(
+              onPressed: () => _sendRequest(),
+              child: Row(
+                children: [
+                  const FaIcon(FontAwesomeIcons.paperPlane),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  Text(FlutterJVx.translate("Reset password")),
+                ],
+              ),
             ),
-            const Padding(padding: EdgeInsets.all(5)),
-            TextFormField(
-              decoration: InputDecoration(labelText: FlutterJVx.translate("Email: ")),
-              controller: identifierController,
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _sendRequest(),
-                  child: Row(
-                    children: [
-                      const FaIcon(FontAwesomeIcons.paperPlane),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      Text(FlutterJVx.translate("Reset password")),
-                    ],
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(2)),
-                ElevatedButton(
-                  onPressed: () => context.beamBack(),
-                  child: Row(
-                    children: [
-                      const FaIcon(FontAwesomeIcons.arrowLeft),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      Text(FlutterJVx.translate("Cancel")),
-                    ],
-                  ),
-                ),
-              ],
+            const Padding(padding: EdgeInsets.all(2)),
+            ElevatedButton(
+              onPressed: () => context.beamBack(),
+              child: Row(
+                children: [
+                  const FaIcon(FontAwesomeIcons.arrowLeft),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  Text(FlutterJVx.translate("Cancel")),
+                ],
+              ),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 

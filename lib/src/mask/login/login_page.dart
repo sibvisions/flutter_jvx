@@ -83,7 +83,14 @@ class LoginPage extends StatelessWidget {
               child: SingleChildScrollView(
                 // Is there to allow scrolling the login if there is not enough space.
                 // E.g.: Holding a phone horizontally and trying to login needs scrolling to be possible.
-                child: loginWidget,
+                child: Card(
+                  color: Theme.of(context).cardColor.withOpacity(0.9),
+                  elevation: 10,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: loginWidget,
+                  ),
+                ),
               ),
             ),
           ),

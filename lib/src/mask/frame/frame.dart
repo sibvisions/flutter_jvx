@@ -26,7 +26,7 @@ abstract class Frame extends StatefulWidget {
 
   void changePassword() {
     IUiService().openDialog(
-      pBuilder: (_) => ChangePassword(
+      pBuilder: (_) => ChangePassword.asDialog(
         username: IConfigService().getUserInfo()?.userName,
       ),
       pIsDismissible: true,

@@ -52,96 +52,89 @@ class _LoginCardState extends State<LoginCard> {
 
     showRememberMe = (IConfigService().getMetaData()?.rememberMeEnabled ?? false) ||
         (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
-    return Card(
-      color: Theme.of(context).cardColor.withOpacity(0.9),
-      elevation: 10,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              loginTitle ?? IConfigService().getAppName()!.toUpperCase(),
-              style: Theme.of(context).textTheme.headline6,
-              textAlign: TextAlign.center,
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            TextFormField(
-              textInputAction: TextInputAction.next,
-              onTap: resetButton,
-              onChanged: (_) => resetButton(),
-              controller: usernameController,
-              decoration: InputDecoration(labelText: "${FlutterJVx.translate("Username")}:"),
-            ),
-            TextFormField(
-              textInputAction: TextInputAction.done,
-              onTap: resetButton,
-              onChanged: (_) => resetButton(),
-              onFieldSubmitted: (_) => _onLoginPressed(),
-              controller: passwordController,
-              decoration: InputDecoration(
-                labelText: "${FlutterJVx.translate("Password")}:",
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _passwordHidden ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _passwordHidden = !_passwordHidden;
-                    });
-                  },
-                ),
-              ),
-              obscureText: _passwordHidden,
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            if (showRememberMe)
-              Center(
-                child: RememberMeCheckbox(
-                  checkHolder: checkHolder,
-                ),
-              ),
-            const Padding(padding: EdgeInsets.all(5)),
-            ProgressButton.icon(
-              radius: 4.0,
-              progressIndicator: CircularProgressIndicator.adaptive(
-                backgroundColor: JVxColors.toggleColor(Theme.of(context).colorScheme.onPrimary),
-                valueColor: const AlwaysStoppedAnimation(Colors.white),
-              ),
-              textStyle: TextStyle(
-                color: progressButtonState != ButtonState.fail ? Theme.of(context).colorScheme.onPrimary : Colors.white,
-              ),
-              iconedButtons: {
-                ButtonState.idle: IconedButton(
-                  text: FlutterJVx.translate("Login"),
-                  icon: Icon(Icons.login, color: Theme.of(context).colorScheme.onPrimary),
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                ButtonState.loading: IconedButton(
-                  text: FlutterJVx.translate("Loading"),
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                ButtonState.fail: IconedButton(
-                  text: FlutterJVx.translate("Failed"),
-                  icon: const Icon(Icons.cancel, color: Colors.white),
-                  color: Colors.red.shade600,
-                ),
-                //Unused but not removable
-                ButtonState.success: IconedButton(
-                  text: FlutterJVx.translate("Success"),
-                  icon: const Icon(Icons.check_circle, color: Colors.white),
-                  color: Colors.green.shade600,
-                ),
-              },
-              onPressed: _onLoginPressed,
-              state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            _createBottomRow(),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          loginTitle ?? IConfigService().getAppName()!.toUpperCase(),
+          style: Theme.of(context).textTheme.headline6,
+          textAlign: TextAlign.center,
         ),
-      ),
+        const Padding(padding: EdgeInsets.all(5)),
+        TextFormField(
+          textInputAction: TextInputAction.next,
+          onTap: resetButton,
+          onChanged: (_) => resetButton(),
+          controller: usernameController,
+          decoration: InputDecoration(labelText: "${FlutterJVx.translate("Username")}:"),
+        ),
+        TextFormField(
+          textInputAction: TextInputAction.done,
+          onTap: resetButton,
+          onChanged: (_) => resetButton(),
+          onFieldSubmitted: (_) => _onLoginPressed(),
+          controller: passwordController,
+          decoration: InputDecoration(
+            labelText: "${FlutterJVx.translate("Password")}:",
+            suffixIcon: IconButton(
+              icon: Icon(
+                _passwordHidden ? Icons.visibility : Icons.visibility_off,
+              ),
+              onPressed: () {
+                setState(() {
+                  _passwordHidden = !_passwordHidden;
+                });
+              },
+            ),
+          ),
+          obscureText: _passwordHidden,
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        if (showRememberMe)
+          Center(
+            child: RememberMeCheckbox(
+              checkHolder: checkHolder,
+            ),
+          ),
+        const Padding(padding: EdgeInsets.all(5)),
+        ProgressButton.icon(
+          radius: 4.0,
+          progressIndicator: CircularProgressIndicator.adaptive(
+            backgroundColor: JVxColors.toggleColor(Theme.of(context).colorScheme.onPrimary),
+            valueColor: const AlwaysStoppedAnimation(Colors.white),
+          ),
+          textStyle: TextStyle(
+            color: progressButtonState != ButtonState.fail ? Theme.of(context).colorScheme.onPrimary : Colors.white,
+          ),
+          iconedButtons: {
+            ButtonState.idle: IconedButton(
+              text: FlutterJVx.translate("Login"),
+              icon: Icon(Icons.login, color: Theme.of(context).colorScheme.onPrimary),
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            ButtonState.loading: IconedButton(
+              text: FlutterJVx.translate("Loading"),
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            ButtonState.fail: IconedButton(
+              text: FlutterJVx.translate("Failed"),
+              icon: const Icon(Icons.cancel, color: Colors.white),
+              color: Colors.red.shade600,
+            ),
+            //Unused but not removable
+            ButtonState.success: IconedButton(
+              text: FlutterJVx.translate("Success"),
+              icon: const Icon(Icons.check_circle, color: Colors.white),
+              color: Colors.green.shade600,
+            ),
+          },
+          onPressed: _onLoginPressed,
+          state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        _createBottomRow(),
+      ],
     );
   }
 

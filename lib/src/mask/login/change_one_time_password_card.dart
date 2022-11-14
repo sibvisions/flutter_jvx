@@ -35,67 +35,62 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+    return Column(
+      children: [
+        Text(
+          FlutterJVx.translate("Welcome"),
+          style: Theme.of(context).textTheme.headline5,
+        ),
+        Text(
+          FlutterJVx.translate("Please enter and confirm the new password."),
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        TextFormField(
+          decoration: InputDecoration(labelText: "${FlutterJVx.translate("Username")}:"),
+          controller: userNameController,
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        TextFormField(
+          decoration: InputDecoration(labelText: "${FlutterJVx.translate("One-time password")}:"),
+          controller: oneTimeController,
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        TextFormField(
+          decoration: InputDecoration(labelText: "${FlutterJVx.translate("New Password")}:"),
+          controller: newPasswordController,
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        TextFormField(
+          decoration: InputDecoration(labelText: "${FlutterJVx.translate("Confirm new password")}:"),
+          controller: newPasswordConfController,
+        ),
+        const Padding(padding: EdgeInsets.all(5)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text(
-              FlutterJVx.translate("Welcome"),
-              style: Theme.of(context).textTheme.headline5,
+            ElevatedButton(
+              onPressed: () => context.beamBack(),
+              child: Row(
+                children: [
+                  const FaIcon(FontAwesomeIcons.arrowLeft),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  Text(FlutterJVx.translate("Cancel")),
+                ],
+              ),
             ),
-            Text(
-              FlutterJVx.translate("Please enter and confirm the new password"),
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            TextFormField(
-              decoration: InputDecoration(labelText: FlutterJVx.translate("Username: ")),
-              controller: userNameController,
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            TextFormField(
-              decoration: InputDecoration(labelText: FlutterJVx.translate("One time password: ")),
-              controller: oneTimeController,
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            TextFormField(
-              decoration: InputDecoration(labelText: FlutterJVx.translate("New password: ")),
-              controller: newPasswordController,
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            TextFormField(
-              decoration: InputDecoration(labelText: FlutterJVx.translate("Confirm new password: ")),
-              controller: newPasswordConfController,
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () => context.beamBack(),
-                  child: Row(
-                    children: [
-                      const FaIcon(FontAwesomeIcons.arrowLeft),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      Text(FlutterJVx.translate("Cancel")),
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () => _sendRequest(),
-                  child: Row(
-                    children: [
-                      const FaIcon(FontAwesomeIcons.paperPlane),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      Text(FlutterJVx.translate("Send Request")),
-                    ],
-                  ),
-                ),
-              ],
+            ElevatedButton(
+              onPressed: () => _sendRequest(),
+              child: Row(
+                children: [
+                  const FaIcon(FontAwesomeIcons.paperPlane),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  Text(FlutterJVx.translate("Send Request")),
+                ],
+              ),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 
@@ -106,7 +101,9 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
   void _sendRequest() {
     if (newPasswordController.text != newPasswordConfController.text) {
       IUiService().openDialog(
-          pBuilder: (_) => Text(FlutterJVx.translate("The new Passwords do not match!")), pIsDismissible: true);
+        pBuilder: (_) => Text(FlutterJVx.translate("The new Passwords do not match!")),
+        pIsDismissible: true,
+      );
     }
     LoginCommand loginCommand = LoginCommand(
       loginMode: LoginMode.CHANGE_ONE_TIME_PASSWORD,
