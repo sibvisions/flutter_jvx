@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -13,10 +12,7 @@ import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../../components/components_factory.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
-import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/device_status_command.dart';
-import '../../model/command/api/navigation_command.dart';
-import '../../model/command/storage/delete_screen_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/request/api_navigation_request.dart';
 import '../../util/offline_util.dart';
@@ -32,10 +28,13 @@ class WorkScreen extends StatefulWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  final Future<void> Function(BuildContext context, bool pForced) onBackFunction;
+
   /// ScreenName of an online-screen - used for sending [ApiNavigationRequest]
   final String screenName;
 
   const WorkScreen({
+    required this.onBackFunction,
     required this.screenName,
     Key? key,
   }) : super(key: key);
@@ -158,8 +157,8 @@ class WorkScreenState extends State<WorkScreen> {
             : AppBar(
                 leading: InkWell(
                   customBorder: const CircleBorder(),
-                  onTap: () => _onBackTap(),
-                  onDoubleTap: () => _onDoubleTap(),
+                  onTap: () => widget.onBackFunction(context, false),
+                  onDoubleTap: () => widget.onBackFunction(context, true),
                   child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
                 ),
                 title: Text(screenTitle),
@@ -182,39 +181,6 @@ class WorkScreenState extends State<WorkScreen> {
           pSize: size,
         )
         .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
-  }
-
-  _onBackTap() {
-    IUiService().saveAllEditorsThen(null, _navigateBack, "Back pressed");
-  }
-
-  _navigateBack() {
-    if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-      _customBack();
-    } else {
-      IUiService().sendCommand(NavigationCommand(reason: "Work screen back", openScreen: widget.screenName));
-    }
-  }
-
-  _onDoubleTap() {
-    IUiService().saveAllEditorsThen(null, _navigateBackForcefully, "Back pressed forcefully");
-  }
-
-  _navigateBackForcefully() {
-    if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-      _customBack();
-    } else {
-      IUiService().sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: widget.screenName));
-      IUiService().sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: widget.screenName));
-    }
-  }
-
-  _customBack() async {
-    bool handled = await Navigator.of(context).maybePop();
-    if (!handled) {
-      // ignore: use_build_context_synchronously
-      context.beamBack();
-    }
   }
 
   Widget _getScreen(
