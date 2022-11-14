@@ -42,7 +42,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           style: Theme.of(context).textTheme.headline5,
         ),
         Text(
-          FlutterJVx.translate("Please enter and confirm the new password."),
+          FlutterJVx.translate("Please enter your one-time password and set a new password"),
         ),
         const Padding(padding: EdgeInsets.all(5)),
         TextFormField(
