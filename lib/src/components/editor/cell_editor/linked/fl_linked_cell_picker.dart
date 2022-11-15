@@ -178,6 +178,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                           disableEditors: true,
                           onRowTap: _onRowTapped,
                           tableSize: tableSize,
+                          showFloatingButton: false,
                         );
                       }),
                     )
