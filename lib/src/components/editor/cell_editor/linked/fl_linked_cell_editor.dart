@@ -42,14 +42,13 @@ class FlLinkedCellEditor
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlLinkedCellEditor({
-    required String name,
+    required super.name,
     required super.columnDefinition,
     required super.pCellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
     this.recalculateSizeCallback,
   }) : super(
-          name: name,
           model: FlLinkedCellEditorModel(),
         ) {
     focusNode.addListener(

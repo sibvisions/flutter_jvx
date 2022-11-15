@@ -16,13 +16,12 @@ class FlTabController extends TabController {
   FlTabController(
       {int initialIndex = 0,
       required this.tabs,
-      required TickerProvider vsync,
+      required super.vsync,
       required this.changedIndexTo,
       FlTabController? lastController})
       : super(
           initialIndex: initialIndex,
           length: tabs.length,
-          vsync: vsync,
         ) {
     if (initialIndex >= 0 && initialIndex < tabs.length) {
       widgetsSelectedOnce.add(initialIndex);
