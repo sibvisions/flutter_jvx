@@ -141,5 +141,3 @@ flutter_native_splash:
 
     # The branding property allows you to specify an image used as branding in the splash screen.
     branding: assets/images/branding_sib_visions.png
-
-  fullscreen: true
