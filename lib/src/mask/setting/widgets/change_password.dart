@@ -14,21 +14,19 @@ class ChangePassword extends StatelessWidget {
   final String? username;
   final String? password;
 
-  bool asDialog = false;
+  final bool asDialog;
 
   ChangePassword({
     super.key,
     this.username,
     this.password,
-  });
+  }) : asDialog = false;
 
   ChangePassword.asDialog({
     super.key,
     this.username,
     this.password,
-  }) {
-    asDialog = true;
-  }
+  }) : asDialog = true;
 
   @override
   Widget build(BuildContext context) {
