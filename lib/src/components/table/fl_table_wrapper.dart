@@ -120,6 +120,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onRowSwipe: deleteRecord,
       onRowTap: selectRecord,
       onRowTapDown: onRowDown,
+      showFloatingButton: _isInsertEnabled && ((layoutData.layoutPosition?.height ?? 0.0) >= 150),
+      floatingOnPress: insertRecord,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -343,11 +345,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   showContextMenu() {
     List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
 
-    if (metaData?.insertEnabled ?? true) {
+    if (_isInsertEnabled) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, "New", ContextMenuCommand.NEW));
     }
 
-    if ((metaData?.deleteEnabled ?? true) && lastTouchedIndex != -1) {
+    if (_isDeleteEnabled && lastTouchedIndex != -1) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", ContextMenuCommand.DELETE));
     }
 
@@ -378,6 +380,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       }, "Table menu item pressed");
     });
   }
+
+  bool get _isDeleteEnabled => metaData?.deleteEnabled ?? true;
+
+  bool get _isInsertEnabled => metaData?.insertEnabled ?? true;
 
   void setValueEnd(dynamic pValue, int pRow, String pColumnName) {
     selectRecord(pRow).then((value) {

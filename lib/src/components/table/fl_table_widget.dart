@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../components.dart';
@@ -61,6 +62,11 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   /// The meta data of the data book.
   final DalMetaDataResponse? metaData;
 
+  /// If a button is shown at the bottom.
+  final bool showFloatingButton;
+
+  /// The action the floating button calls.
+  final VoidCallback? floatingOnPress;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,6 +89,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.onValueChanged,
     this.metaData,
     this.disableEditors = false,
+    this.showFloatingButton = false,
+    this.floatingOnPress,
   }) : super(key: key, model: model);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,6 +101,24 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   Widget build(BuildContext context) {
     BorderRadius borderRadius = BorderRadius.circular(5.0);
 
+    List<Widget> children = [createTable(context)];
+
+    if (showFloatingButton && floatingOnPress != null) {
+      children.add(
+        Positioned(
+          right: 10,
+          bottom: 10,
+          child: FloatingActionButton(
+            onPressed: floatingOnPress,
+            child: FaIcon(
+              FontAwesomeIcons.squarePlus,
+              color: Colors.grey[600],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
@@ -102,7 +128,9 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       child: ClipRRect(
         // The clip rect is there to stop the rendering of the children.
         borderRadius: borderRadius, // Otherwise the children would clip the border of the parent container.
-        child: createTable(context),
+        child: Stack(
+          children: children,
+        ),
       ),
     );
   }
