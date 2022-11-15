@@ -13,6 +13,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
     required super.valueChanged,
     required super.endEditing,
     super.inTable,
+    super.hideClearIcon,
   }) : super(keyboardType: TextInputType.none);
 
   @override

@@ -13,6 +13,7 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
     required super.valueChanged,
     required super.endEditing,
     super.inTable,
+    super.hideClearIcon,
   }) : super(keyboardType: TextInputType.none);
 
   @override

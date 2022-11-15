@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../../../../../services.dart';
 import '../../../../../util/parse_util.dart';
 import '../../../../model/command/api/filter_command.dart';
+import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
@@ -80,12 +81,14 @@ class FlLinkedCellEditor
     ICellEditor.applyEditorJson(widgetModel, pJson);
 
     return FlLinkedEditorWidget(
-        model: widgetModel,
-        endEditing: receiveNull,
-        valueChanged: onValueChange,
-        textController: textController,
-        focusNode: focusNode,
-        inTable: pInTable);
+      model: widgetModel,
+      endEditing: receiveNull,
+      valueChanged: onValueChange,
+      textController: textController,
+      focusNode: focusNode,
+      inTable: pInTable,
+      hideClearIcon: model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK,
+    );
   }
 
   void _openLinkedCellPicker() {
