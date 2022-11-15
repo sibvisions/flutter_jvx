@@ -44,6 +44,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   final List<TextInputFormatter>? inputFormatters;
 
+  final bool hideClearIcon;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,6 +91,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     this.inTable = false,
     this.isMandatory = false,
     this.inputDecoration = const InputDecoration(),
+    this.hideClearIcon = false,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,7 +148,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   /// Creates the clear icon at the end of a textfield.
   Widget? createClearIcon([bool pForce = false]) {
-    if (textController.text.isEmpty && !pForce) {
+    if ((textController.text.isEmpty || hideClearIcon) && !pForce) {
       return null;
     }
 
