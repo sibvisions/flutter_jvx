@@ -3,11 +3,11 @@ import 'package:flutter/widgets.dart';
 
 class MultiValueListenableBuilder extends StatelessWidget {
   const MultiValueListenableBuilder({
+    super.key,
     required this.valueListenables,
-    Key? key,
     required this.builder,
     this.child,
-  }) : super(key: key);
+  });
 
   final List<ValueListenable> valueListenables;
   final Widget Function(BuildContext context, List<dynamic> values, Widget? child) builder;

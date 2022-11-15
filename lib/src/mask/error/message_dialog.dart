@@ -36,9 +36,9 @@ class MessageDialog extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const MessageDialog({
+    super.key,
     required this.command,
-    Key? key,
-  }) : super(key: key);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

@@ -21,10 +21,10 @@ class GridMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const GridMenuItem({
-    Key? key,
+    super.key,
     required this.menuItemModel,
     required this.onClick,
-  }) : super(key: key);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

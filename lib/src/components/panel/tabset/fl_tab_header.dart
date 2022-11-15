@@ -6,9 +6,12 @@ class FlTabHeader extends StatelessWidget {
   final List<Widget> tabHeaderList;
   final Function(BuildContext) postFrameCallback;
 
-  const FlTabHeader(
-      {Key? key, required this.tabHeaderList, required this.postFrameCallback, required this.tabController})
-      : super(key: key);
+  const FlTabHeader({
+    super.key,
+    required this.tabHeaderList,
+    required this.postFrameCallback,
+    required this.tabController,
+  });
 
   @override
   Widget build(BuildContext context) {

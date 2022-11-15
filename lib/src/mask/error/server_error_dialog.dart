@@ -22,9 +22,9 @@ class ServerErrorDialog extends FrameDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const ServerErrorDialog({
+    super.key,
     required this.command,
     this.goToSettings = false,
-    super.key,
   }) : super(dismissible: true);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

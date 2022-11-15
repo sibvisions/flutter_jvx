@@ -7,9 +7,9 @@ class ProgressDialogWidget extends StatefulWidget {
   final Config config;
 
   const ProgressDialogWidget({
-    Key? key,
+    super.key,
     required this.config,
-  }) : super(key: key);
+  });
 
   @override
   State<ProgressDialogWidget> createState() => ProgressDialogState();

@@ -10,7 +10,7 @@ class FlRadioButtonWrapper extends FlButtonWrapper<FlRadioButtonModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlRadioButtonWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlRadioButtonWrapper({super.key, required super.id});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

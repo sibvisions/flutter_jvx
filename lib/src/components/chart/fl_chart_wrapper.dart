@@ -13,7 +13,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_chart_widget.dart';
 
 class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
-  const FlChartWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlChartWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlChartWrapperState();

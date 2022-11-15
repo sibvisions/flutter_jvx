@@ -8,8 +8,11 @@ import '../../label/fl_label_widget.dart';
 class FlGroupPanelHeaderWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   final Function(BuildContext) postFrameCallback;
 
-  const FlGroupPanelHeaderWidget({Key? key, required T model, required this.postFrameCallback})
-      : super(key: key, model: model);
+  const FlGroupPanelHeaderWidget({
+    super.key,
+    required super.model,
+    required this.postFrameCallback,
+  });
 
   @override
   Widget build(BuildContext context) {

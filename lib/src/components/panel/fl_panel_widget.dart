@@ -3,7 +3,11 @@ import 'package:flutter/widgets.dart';
 import '../../../components.dart';
 
 class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
-  const FlPanelWidget({super.key, required super.model, required this.children});
+  const FlPanelWidget({
+    super.key,
+    required super.model,
+    required this.children,
+  });
 
   final List<Widget> children;
 

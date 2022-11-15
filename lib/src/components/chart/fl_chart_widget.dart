@@ -8,10 +8,10 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   final List<Series<dynamic, num>> series;
 
   const FlChartWidget({
-    Key? key,
-    required T model,
+    super.key,
+    required super.model,
     required this.series,
-  }) : super(key: key, model: model);
+  });
 
   @override
   Widget build(BuildContext context) {

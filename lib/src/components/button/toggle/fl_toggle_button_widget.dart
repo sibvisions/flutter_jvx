@@ -11,8 +11,11 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [FlButtonWidget]
-  const FlToggleButtonWidget({Key? key, required FlToggleButtonModel model, required Function()? onPress})
-      : super(key: key, model: model, onPress: onPress);
+  const FlToggleButtonWidget({
+    super.key,
+    required super.model,
+    required super.onPress,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

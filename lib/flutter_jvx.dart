@@ -134,12 +134,12 @@ class FlutterJVx extends StatefulWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   const FlutterJVx({
-    Key? key,
+    super.key,
     this.appConfig,
     this.appManager,
     this.splashBuilder,
     this.loginBuilder,
-  }) : super(key: key);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

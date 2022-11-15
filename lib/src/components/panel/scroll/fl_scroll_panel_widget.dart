@@ -4,8 +4,14 @@ import 'package:flutter/widgets.dart';
 import '../../../../components.dart';
 
 class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
-  const FlScrollPanelWidget(
-      {super.key, required super.children, this.width, this.height, required this.isScrollable, required super.model});
+  const FlScrollPanelWidget({
+    super.key,
+    required super.model,
+    required super.children,
+    required this.isScrollable,
+    this.width,
+    this.height,
+  });
 
   final bool isScrollable;
   final double? width;

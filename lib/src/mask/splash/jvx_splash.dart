@@ -16,14 +16,14 @@ class JVxSplash extends StatefulWidget {
   final bool centerBranding;
 
   const JVxSplash({
-    Key? key,
+    super.key,
     this.snapshot,
     this.showAppName = true,
     this.logo,
     this.branding,
     this.centerBranding = false,
     required this.background,
-  }) : super(key: key);
+  });
 
   @override
   State<JVxSplash> createState() => _JVxSplashState();

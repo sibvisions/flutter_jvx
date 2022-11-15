@@ -26,8 +26,8 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
   final Function(LongPressDownDetails?)? onLongPressDown;
 
   const FlSignaturePadWidget({
-    Key? key,
-    required FlCustomContainerModel model,
+    super.key,
+    required super.model,
     required this.controller,
     required this.width,
     required this.height,
@@ -37,7 +37,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
     this.dataRecord,
     this.onLongPress,
     this.onLongPressDown,
-  }) : super(key: key, model: model);
+  });
 
   @override
   Widget build(BuildContext context) {

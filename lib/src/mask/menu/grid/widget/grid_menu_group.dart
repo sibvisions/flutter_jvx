@@ -22,7 +22,11 @@ class GridMenuGroup extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const GridMenuGroup({Key? key, required this.menuGroupModel, required this.onClick}) : super(key: key);
+  const GridMenuGroup({
+    super.key,
+    required this.menuGroupModel,
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {

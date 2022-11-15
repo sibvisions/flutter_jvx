@@ -28,15 +28,14 @@ class ListMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const ListMenuItem({
-    Key? key,
+    super.key,
     required this.menuItemModel,
     required this.onClick,
     this.textStyle,
     bool? decreasedDensity,
     bool? useAlternativeLabel,
   })  : decreasedDensity = decreasedDensity ?? false,
-        useAlternativeLabel = useAlternativeLabel ?? false,
-        super(key: key);
+        useAlternativeLabel = useAlternativeLabel ?? false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

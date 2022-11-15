@@ -15,11 +15,11 @@ class DrawerMenu extends StatefulWidget {
   final void Function() onLogoutPressed;
 
   const DrawerMenu({
-    Key? key,
+    super.key,
     required this.onSettingsPressed,
     required this.onChangePasswordPressed,
     required this.onLogoutPressed,
-  }) : super(key: key);
+  });
 
   @override
   State<DrawerMenu> createState() => _DrawerMenuState();

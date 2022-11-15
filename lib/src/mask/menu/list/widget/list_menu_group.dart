@@ -35,7 +35,7 @@ class ListMenuGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const ListMenuGroup({
-    Key? key,
+    super.key,
     required this.onClick,
     required this.menuGroupModel,
     this.layoutMode,
@@ -43,7 +43,7 @@ class ListMenuGroup extends StatelessWidget {
     this.headerColor,
     this.decreasedDensity,
     this.useAlternativeLabel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

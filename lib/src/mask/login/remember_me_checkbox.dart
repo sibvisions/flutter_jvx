@@ -14,9 +14,9 @@ class RememberMeCheckbox extends StatefulWidget {
   final CheckHolder checkHolder;
 
   const RememberMeCheckbox({
+    super.key,
     required this.checkHolder,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   State<RememberMeCheckbox> createState() => _RememberMeCheckboxState();

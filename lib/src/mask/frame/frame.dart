@@ -59,8 +59,12 @@ abstract class Frame extends StatefulWidget {
     }
   }
 
-  static Widget wrapWithFrame(
-      {Key? key, required bool forceMobile, required bool forceWeb, required FrameBuilder builder}) {
+  static Widget wrapWithFrame({
+    Key? key,
+    required bool forceMobile,
+    required bool forceWeb,
+    required FrameBuilder builder,
+  }) {
     return ValueListenableBuilder<bool>(
       valueListenable: IConfigService().getOfflineNotifier(),
       builder: (context, isOffline, child) {

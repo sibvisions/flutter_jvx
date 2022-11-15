@@ -9,7 +9,12 @@ import '../../base_wrapper/base_comp_wrapper_widget.dart';
 class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
   final SplitLayout layout;
 
-  const FlSplitPanelWidget({super.key, required super.model, required this.layout, required super.children});
+  const FlSplitPanelWidget({
+    super.key,
+    required super.model,
+    required this.layout,
+    required super.children,
+  });
 
   @override
   Widget build(BuildContext context) {

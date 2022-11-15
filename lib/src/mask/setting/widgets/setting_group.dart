@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'setting_item.dart';
 
 class SettingGroup extends StatelessWidget {
-  const SettingGroup({Key? key, required this.groupHeader, required this.items}) : super(key: key);
+  const SettingGroup({
+    super.key,
+    required this.groupHeader,
+    required this.items,
+  });
 
   /// Name of the settings name
   final Widget groupHeader;

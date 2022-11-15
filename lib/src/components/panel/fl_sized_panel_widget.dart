@@ -5,7 +5,13 @@ import 'package:flutter/widgets.dart';
 import '../../../components.dart';
 
 class FlSizedPanelWidget extends FlPanelWidget {
-  const FlSizedPanelWidget({super.key, required super.model, required super.children, this.width, this.height});
+  const FlSizedPanelWidget({
+    super.key,
+    required super.model,
+    required super.children,
+    this.width,
+    this.height,
+  });
 
   final double? width;
   final double? height;

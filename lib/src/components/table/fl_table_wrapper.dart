@@ -25,7 +25,7 @@ import 'table_size.dart';
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
 
-  const FlTableWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlTableWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlTableWrapperState();

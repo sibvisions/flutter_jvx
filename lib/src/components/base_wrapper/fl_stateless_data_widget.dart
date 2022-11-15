@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 import '../../model/component/fl_component_model.dart';
 import 'fl_stateless_widget.dart';
 
@@ -18,6 +16,10 @@ abstract class FlStatelessDataWidget<T extends FlComponentModel, C> extends FlSt
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlStatelessDataWidget({Key? key, required T model, required this.valueChanged, required this.endEditing})
-      : super(key: key, model: model);
+  const FlStatelessDataWidget({
+    super.key,
+    required super.model,
+    required this.valueChanged,
+    required this.endEditing,
+  });
 }

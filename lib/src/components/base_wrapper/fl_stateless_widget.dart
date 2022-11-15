@@ -14,5 +14,5 @@ abstract class FlStatelessWidget<T extends FlComponentModel> extends StatelessWi
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlStatelessWidget({Key? key, required this.model}) : super(key: key);
+  const FlStatelessWidget({super.key, required this.model});
 }

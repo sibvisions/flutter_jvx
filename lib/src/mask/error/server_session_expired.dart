@@ -17,9 +17,9 @@ class ServerSessionExpired extends FrameDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const ServerSessionExpired({
+    super.key,
     required this.command,
     super.dismissible,
-    super.key,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

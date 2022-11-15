@@ -17,7 +17,7 @@ class FlPopupMenuButtonWrapper extends FlButtonWrapper<FlPopupMenuButtonModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlPopupMenuButtonWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlPopupMenuButtonWrapper({super.key, required super.id});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

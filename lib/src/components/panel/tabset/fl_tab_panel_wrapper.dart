@@ -24,7 +24,7 @@ import 'fl_tab_view.dart';
 enum TabPlacements { WRAP, TOP, LEFT, BOTTOM, RIGHT }
 
 class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
-  const FlTabPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlTabPanelWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlTabPanelWrapperState();

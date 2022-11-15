@@ -25,7 +25,7 @@ class FlEditorWrapper<T extends FlEditorModel> extends BaseCompWrapperWidget<T> 
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlEditorWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlEditorWrapper({super.key, required super.id});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

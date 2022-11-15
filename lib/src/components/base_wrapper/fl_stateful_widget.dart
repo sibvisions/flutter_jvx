@@ -10,7 +10,7 @@ class FlStatefulWidget<T extends FlComponentModel> extends StatefulWidget {
   // The model containing every information to build the button.
   final T model;
 
-  const FlStatefulWidget({Key? key, required this.model}) : super(key: key);
+  const FlStatefulWidget({super.key, required this.model});
 
   @override
   FlStatefulWidgetState createState() => FlStatefulWidgetState();

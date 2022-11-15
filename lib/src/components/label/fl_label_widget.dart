@@ -10,7 +10,11 @@ import '../base_wrapper/fl_stateless_widget.dart';
 class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   final VoidCallback? onPress;
 
-  const FlLabelWidget({Key? key, required T model, this.onPress}) : super(key: key, model: model);
+  const FlLabelWidget({
+    super.key,
+    required super.model,
+    this.onPress,
+  });
 
   @override
   Widget build(BuildContext context) {

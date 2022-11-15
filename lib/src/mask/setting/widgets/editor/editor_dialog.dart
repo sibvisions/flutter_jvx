@@ -29,12 +29,12 @@ class EditorDialog extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const EditorDialog({
+    super.key,
     required this.titleText,
     required this.editorBuilder,
     required this.controller,
     this.titleIcon,
-    Key? key,
-  }) : super(key: key);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

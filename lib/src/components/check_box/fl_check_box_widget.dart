@@ -45,5 +45,10 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlCheckBoxWidget({super.key, required super.model, required super.onPress, super.inTable = false});
+  const FlCheckBoxWidget({
+    super.key,
+    required super.model,
+    required super.onPress,
+    super.inTable = false,
+  });
 }

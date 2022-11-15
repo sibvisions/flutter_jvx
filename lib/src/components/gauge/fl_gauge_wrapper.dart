@@ -8,7 +8,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_gauge_widget.dart';
 
 class FlGaugeWrapper extends BaseCompWrapperWidget<FlGaugeModel> {
-  const FlGaugeWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlGaugeWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlGaugeWrapperState();

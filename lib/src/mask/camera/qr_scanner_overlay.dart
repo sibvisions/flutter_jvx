@@ -21,9 +21,9 @@ class QRScannerOverlay extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const QRScannerOverlay({
-    Key? key,
+    super.key,
     required this.callback,
-  }) : super(key: key);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

@@ -7,7 +7,7 @@ import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 
 class FlCustomWrapper<T extends FlComponentModel> extends BaseCompWrapperWidget<T> {
-  const FlCustomWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlCustomWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlCustomWrapperState();

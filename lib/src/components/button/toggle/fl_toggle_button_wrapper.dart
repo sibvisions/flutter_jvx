@@ -6,7 +6,7 @@ import '../fl_button_wrapper.dart';
 import 'fl_toggle_button_widget.dart';
 
 class FlToggleButtonWrapper<T extends FlToggleButtonModel> extends FlButtonWrapper<T> {
-  const FlToggleButtonWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlToggleButtonWrapper({super.key, required super.id});
 
   @override
   FlToggleButtonWrapperState createState() => FlToggleButtonWrapperState();

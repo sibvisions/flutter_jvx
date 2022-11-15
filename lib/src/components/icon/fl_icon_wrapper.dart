@@ -9,7 +9,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_icon_widget.dart';
 
 class FlIconWrapper extends BaseCompWrapperWidget<FlIconModel> {
-  const FlIconWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlIconWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlIconWrapperState();

@@ -4,7 +4,7 @@ import '../../../services.dart';
 import '../../model/component/fl_component_model.dart';
 
 abstract class BaseCompWrapperWidget<T extends FlComponentModel> extends StatefulWidget {
-  const BaseCompWrapperWidget({Key? key, required this.id}) : super(key: key);
+  const BaseCompWrapperWidget({super.key, required this.id});
 
   final String id;
 

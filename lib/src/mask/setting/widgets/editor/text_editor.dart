@@ -18,12 +18,12 @@ class TextEditor extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const TextEditor({
+    super.key,
     required this.title,
     required this.hintText,
     required this.controller,
     this.onConfirm,
-    Key? key,
-  }) : super(key: key);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

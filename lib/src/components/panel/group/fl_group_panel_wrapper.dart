@@ -12,7 +12,7 @@ import '../fl_sized_panel_widget.dart';
 import 'fl_group_panel_header_widget.dart';
 
 class FlGroupPanelWrapper extends BaseCompWrapperWidget<FlGroupPanelModel> {
-  const FlGroupPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlGroupPanelWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlGroupPanelWrapperState();

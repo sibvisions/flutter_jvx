@@ -15,10 +15,10 @@ class WebMenu extends StatefulWidget {
   final bool inDrawer;
 
   const WebMenu({
-    Key? key,
+    super.key,
     required this.showWebMenu,
     required this.inDrawer,
-  }) : super(key: key);
+  });
 
   static WebMenu? maybeOf(BuildContext? context) => context?.findAncestorWidgetOfExactType<WebMenu>();
 

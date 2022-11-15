@@ -27,14 +27,14 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const FlIconWidget({
-    Key? key,
-    required T model,
+    super.key,
+    required super.model,
     this.imageInBinary = false,
     this.imageStreamListener,
     this.directImage,
     this.onPress,
     this.inTable = false,
-  }) : super(key: key, model: model);
+  });
 
   @override
   Widget build(BuildContext context) {

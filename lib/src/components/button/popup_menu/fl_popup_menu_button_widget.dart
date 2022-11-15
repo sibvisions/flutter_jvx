@@ -13,7 +13,12 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlPopupMenuButtonWidget({super.key, required super.model, this.onItemPress, required this.popupItems});
+  const FlPopupMenuButtonWidget({
+    super.key,
+    required super.model,
+    this.onItemPress,
+    required this.popupItems,
+  });
 
   @override
   Widget createDirectButtonChild(BuildContext context) {

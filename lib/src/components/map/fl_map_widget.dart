@@ -13,9 +13,14 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
 
   final Function? onPressed;
 
-  const FlMapWidget(
-      {Key? key, required T model, required this.markers, required this.polygons, this.mapController, this.onPressed})
-      : super(key: key, model: model);
+  const FlMapWidget({
+    super.key,
+    required super.model,
+    required this.markers,
+    required this.polygons,
+    this.mapController,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {

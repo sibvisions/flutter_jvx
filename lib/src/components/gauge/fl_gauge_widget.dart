@@ -5,10 +5,7 @@ import '../../model/component/gauge/fl_gauge_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
-  const FlGaugeWidget({
-    Key? key,
-    required T model,
-  }) : super(key: key, model: model);
+  const FlGaugeWidget({super.key, required super.model});
 
   @override
   Widget build(BuildContext context) {

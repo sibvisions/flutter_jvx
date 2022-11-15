@@ -67,13 +67,14 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
   /// The action the floating button calls.
   final VoidCallback? floatingOnPress;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const FlTableWidget({
-    Key? key,
-    required FlTableModel model,
+    super.key,
+    required super.model,
     required this.chunkData,
     required this.tableSize,
     this.tableHorizontalController,
@@ -91,7 +92,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.disableEditors = false,
     this.showFloatingButton = false,
     this.floatingOnPress,
-  }) : super(key: key, model: model);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

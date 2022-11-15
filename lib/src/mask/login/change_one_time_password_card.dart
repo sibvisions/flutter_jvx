@@ -27,7 +27,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ChangeOneTimePasswordCard({Key? key}) : super(key: key);
+  ChangeOneTimePasswordCard({super.key});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

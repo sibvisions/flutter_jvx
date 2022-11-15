@@ -14,7 +14,7 @@ import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_split_panel_widget.dart';
 
 class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
-  const FlSplitPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlSplitPanelWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlSplitPanelWrapperState();

@@ -10,7 +10,7 @@ import '../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_panel_widget.dart';
 
 class FlPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
-  const FlPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlPanelWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlPanelWrapperState();

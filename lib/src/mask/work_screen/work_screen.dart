@@ -31,9 +31,9 @@ class WorkScreen extends StatefulWidget {
   final String screenName;
 
   const WorkScreen({
+    super.key,
     required this.screenName,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   WorkScreenState createState() => WorkScreenState();

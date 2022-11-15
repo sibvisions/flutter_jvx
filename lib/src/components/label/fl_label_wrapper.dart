@@ -9,7 +9,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_label_widget.dart';
 
 class FlLabelWrapper extends BaseCompWrapperWidget<FlLabelModel> {
-  const FlLabelWrapper({Key? key, required String id}) : super(key: key, id: id);
+  const FlLabelWrapper({super.key, required super.id});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlLabelWrapperState();

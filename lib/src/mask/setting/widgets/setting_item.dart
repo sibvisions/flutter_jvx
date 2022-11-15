@@ -35,7 +35,7 @@ class SettingItem<T> extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const SettingItem({
-    Key? key,
+    super.key,
     required this.title,
     this.value,
     this.valueNotifier,
@@ -44,7 +44,7 @@ class SettingItem<T> extends StatelessWidget {
     this.endIcon,
     this.onPressed,
     this.itemBuilder,
-  }) : super(key: key);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

@@ -21,8 +21,12 @@ class FlLinkedCellPicker extends StatefulWidget {
 
   final ColumnDefinition? editorColumnDefinition;
 
-  const FlLinkedCellPicker({required this.name, required this.model, Key? key, this.editorColumnDefinition})
-      : super(key: key);
+  const FlLinkedCellPicker({
+    super.key,
+    required this.name,
+    required this.model,
+    this.editorColumnDefinition,
+  });
 
   @override
   State<FlLinkedCellPicker> createState() => _FlLinkedCellPickerState();

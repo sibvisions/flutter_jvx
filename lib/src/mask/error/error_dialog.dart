@@ -30,13 +30,13 @@ class ErrorDialog extends FrameDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const ErrorDialog({
+    super.key,
     required this.message,
     this.title,
     this.goToSettings = false,
     this.dismissibleViaButton = true,
     this.retry = false,
     super.dismissible,
-    super.key,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../custom/custom_header.dart';
 
 class CustomHeaderExample extends CustomHeader {
-  const CustomHeaderExample({Key? key}) : super(key: key);
+  const CustomHeaderExample({super.key});
 
   @override
   Widget build(BuildContext context) {

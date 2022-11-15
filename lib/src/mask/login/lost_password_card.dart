@@ -19,9 +19,7 @@ class LostPasswordCard extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  LostPasswordCard({
-    Key? key,
-  }) : super(key: key);
+  LostPasswordCard({super.key});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
