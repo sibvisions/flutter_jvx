@@ -84,7 +84,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
                 children: [
                   const FaIcon(FontAwesomeIcons.paperPlane),
                   const Padding(padding: EdgeInsets.all(5)),
-                  Text(FlutterJVx.translate("Send Request")),
+                  Text(FlutterJVx.translate("Change password")),
                 ],
               ),
             ),
