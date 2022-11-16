@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 
 import '../../../../services.dart';
@@ -128,8 +130,18 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   }
 
   void _recreateNumericFormatter() {
+    List<String> formatParts = model.numberFormat.split(";").first.split(".");
+    String format = formatParts.first;
+
+    // https://github.com/dart-lang/intl/issues/511
+    if (formatParts.length >= 2) {
+      String fractionDigits = formatParts.last;
+      fractionDigits = fractionDigits.substring(0, min(fractionDigits.length, 20));
+      format += ".$fractionDigits";
+    }
+
     numberFormatter = NumericTextFormatter(
-      numberFormat: model.numberFormat,
+      numberFormat: format,
       length: columnDefinition?.length,
       precision: columnDefinition?.precision,
       scale: columnDefinition?.scale,
