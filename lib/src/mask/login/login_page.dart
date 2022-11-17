@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
+import '../../../util/jvx_colors.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/reset_password_command.dart';
@@ -60,6 +61,16 @@ class LoginPage extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: topColor ?? Colors.transparent,
+                      gradient: topColor != null
+                          ? LinearGradient(
+                              begin: Alignment.topCenter,
+                              colors: [
+                                topColor,
+                                JVxColors.lighten(topColor, 0.2),
+                              ],
+                              end: Alignment.bottomCenter,
+                            )
+                          : null,
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: Center(
