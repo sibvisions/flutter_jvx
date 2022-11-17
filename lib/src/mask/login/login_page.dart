@@ -7,10 +7,11 @@ import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/reset_password_command.dart';
-import '../setting/widgets/change_password.dart';
+import '../../service/api/shared/api_object_property.dart';
 import '../state/app_style.dart';
 import 'arc_clipper.dart';
 import 'cards/change_one_time_password_card.dart';
+import 'cards/change_password.dart';
 import 'cards/login_card.dart';
 import 'cards/lost_password_card.dart';
 
@@ -116,14 +117,14 @@ class LoginPage extends StatelessWidget {
         widget = LostPasswordCard();
         break;
       case LoginMode.ChangePassword:
-        widget = ChangeOneTimePasswordCard();
-        break;
-      case LoginMode.ChangeOneTimePassword:
         Map<String, String?>? dataMap = context.currentBeamLocation.data as Map<String, String?>?;
         widget = ChangePassword(
-          username: dataMap?.entries.elementAt(0).value,
-          password: dataMap?.entries.elementAt(1).value,
+          username: dataMap?[ApiObjectProperty.username],
+          password: dataMap?[ApiObjectProperty.password],
         );
+        break;
+      case LoginMode.ChangeOneTimePassword:
+        widget = ChangeOneTimePasswordCard();
         break;
       case LoginMode.Manual:
       default:
