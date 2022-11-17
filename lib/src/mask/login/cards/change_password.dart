@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
 import '../../../model/command/api/change_password_command.dart';
-import '../../../model/command/api/login_command.dart';
 
 class ChangePassword extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
@@ -152,13 +151,11 @@ class ChangePassword extends StatelessWidget {
   void _submitNewPassword() {
     if (newPasswordController.text == repeatPasswordController.text) {
       if (IConfigService().getUserInfo() == null) {
-        IUiService().sendCommand(LoginCommand(
-          userName: usernameController.text,
+        LoginPage.doChangePassword(
+          username: usernameController.text,
           password: passwordController.text,
-          loginMode: LoginMode.ChangePassword,
           newPassword: newPasswordController.text,
-          reason: "Password Expired",
-        ));
+        ).catchError(IUiService().handleAsyncError);
       } else {
         IUiService().sendCommand(ChangePasswordCommand(
           username: usernameController.text,

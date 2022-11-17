@@ -145,8 +145,8 @@ class LoginPage extends StatelessWidget {
         loginMode: LoginMode.Manual,
         userName: username,
         password: password,
-        reason: "LoginButton",
         createAuthKey: createAuthKey,
+        reason: "LoginButton",
       ));
 
   /// Sends a [ResetPasswordCommand]
@@ -154,10 +154,30 @@ class LoginPage extends StatelessWidget {
   /// Server responses:
   /// * If user logged in, sends message view
   /// * If user not logged in, sends new login view
-  static Future<void> doResetPassword({required String identifier}) =>
+  static Future<void> doResetPassword({
+    required String identifier,
+  }) =>
       ICommandService().sendCommand(ResetPasswordCommand(
-        reason: "User reset password",
         identifier: identifier,
+        reason: "User reset password",
+      ));
+
+  /// Sends a [LoginCommand] with changed password
+  ///
+  /// Server responses:
+  /// * If user logged in, sends message view
+  /// * If user not logged in, continues login
+  static Future<void> doChangePassword({
+    required String username,
+    required String password,
+    required String newPassword,
+  }) =>
+      ICommandService().sendCommand(LoginCommand(
+        loginMode: LoginMode.ChangePassword,
+        userName: username,
+        password: password,
+        newPassword: newPassword,
+        reason: "Password Change",
       ));
 
   /// Sends a [LoginCommand] with changed password and otp
@@ -165,14 +185,14 @@ class LoginPage extends StatelessWidget {
   /// Normally the user is logged in after that
   static Future<void> doChangePasswordOTP({
     required String username,
-    required String newPassword,
     required String password,
+    required String newPassword,
   }) =>
       ICommandService().sendCommand(LoginCommand(
         loginMode: LoginMode.ChangeOneTimePassword,
         userName: username,
-        newPassword: newPassword,
         password: password,
-        reason: "Password reset",
+        newPassword: newPassword,
+        reason: "Password Reset",
       ));
 }

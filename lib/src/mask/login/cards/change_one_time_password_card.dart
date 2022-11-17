@@ -103,8 +103,8 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
 
     LoginPage.doChangePasswordOTP(
       username: userNameController.text,
-      newPassword: newPasswordController.text,
       password: oneTimeController.text,
+      newPassword: newPasswordController.text,
     ).catchError(IUiService().handleAsyncError);
   }
 }
