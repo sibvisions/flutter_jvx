@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
@@ -47,7 +49,7 @@ class LoginPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: bottomColor,
+      backgroundColor: bottomColor ?? JVxColors.lighten(Theme.of(context).scaffoldBackgroundColor, 0.05),
       body: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -74,15 +76,18 @@ class LoginPage extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: Center(
-                      child: loginLogo != null
-                          ? ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown)
-                          : Image.asset(
-                              ImageLoader.getAssetPath(
-                                FlutterJVx.package,
-                                "assets/images/branding_sib_visions.png",
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints.loose(const Size.fromWidth(650)),
+                        child: loginLogo != null
+                            ? ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown)
+                            : Image.asset(
+                                ImageLoader.getAssetPath(
+                                  FlutterJVx.package,
+                                  "assets/images/branding_sib_visions.png",
+                                ),
+                                fit: BoxFit.scaleDown,
                               ),
-                              fit: BoxFit.scaleDown,
-                            ),
+                      ),
                     ),
                   ),
                 ),
@@ -97,16 +102,19 @@ class LoginPage extends StatelessWidget {
           ),
           Center(
             child: SizedBox(
-              width: MediaQuery.of(context).size.width / 10 * 8,
-              child: SingleChildScrollView(
-                // Is there to allow scrolling the login if there is not enough space.
-                // E.g.: Holding a phone horizontally and trying to login needs scrolling to be possible.
-                child: Card(
-                  color: Theme.of(context).cardColor.withOpacity(0.9),
-                  elevation: 10,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: _buildCard(context, loginMode),
+              width: min(600, MediaQuery.of(context).size.width / 10 * 8),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: SingleChildScrollView(
+                  // Is there to allow scrolling the login if there is not enough space.
+                  // E.g.: Holding a phone horizontally and trying to login needs scrolling to be possible.
+                  child: Card(
+                    color: Theme.of(context).cardColor.withOpacity(0.9),
+                    // elevation: 10,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: _buildCard(context, loginMode),
+                    ),
                   ),
                 ),
               ),

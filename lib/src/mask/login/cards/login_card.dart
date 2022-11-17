@@ -87,9 +87,7 @@ class _LoginCardState extends State<LoginCard> {
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         if (showRememberMe)
           Center(
-            child: RememberMeCheckbox(
-              checkHolder: checkHolder,
-            ),
+            child: RememberMeCheckbox(checkHolder: checkHolder),
           ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         ProgressButton.icon(
@@ -118,6 +116,17 @@ class _LoginCardState extends State<LoginCard> {
           state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (IConfigService().getMetaData()?.lostPasswordEnabled == true)
+          Align(
+            alignment: Alignment.center,
+            child: TextButton(
+              onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
+              child: Text(
+                "${FlutterJVx.translate("Reset password")}?",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
         _createBottomRow(),
       ],
     );
@@ -127,21 +136,7 @@ class _LoginCardState extends State<LoginCard> {
     setState(() => progressButtonState = ButtonState.idle);
   }
 
-  Widget? _createLostPasswordButton() {
-    if (IConfigService().getMetaData()?.lostPasswordEnabled == true) {
-      return TextButton(
-        onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
-        child: Text(
-          "${FlutterJVx.translate("Reset password")}?",
-          overflow: TextOverflow.ellipsis,
-        ),
-      );
-    }
-    return null;
-  }
-
   Widget _createBottomRow() {
-    Widget? lostPasswordButton = _createLostPasswordButton();
     Widget textButton = TextButton.icon(
       onPressed: () => IUiService().routeToSettings(),
       icon: const FaIcon(FontAwesomeIcons.gear),
@@ -151,20 +146,10 @@ class _LoginCardState extends State<LoginCard> {
       ),
     );
 
-    if (lostPasswordButton != null) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(child: lostPasswordButton),
-          Flexible(child: textButton),
-        ],
-      );
-    } else {
-      return Align(
-        alignment: Alignment.centerRight,
-        child: textButton,
-      );
-    }
+    return Align(
+      alignment: Alignment.centerRight,
+      child: textButton,
+    );
   }
 
   void _onLoginPressed() {
