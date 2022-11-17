@@ -49,6 +49,7 @@ import 'util/extensions/list_extensions.dart';
 import 'util/jvx_colors.dart';
 import 'util/parse_util.dart';
 
+export 'src/mask/login/login_page.dart';
 export 'src/mask/splash/jvx_splash.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
