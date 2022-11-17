@@ -2,9 +2,9 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../model/command/api/login_command.dart';
+import '../../../../flutter_jvx.dart';
+import '../../../../services.dart';
+import '../login_page.dart';
 
 class ChangeOneTimePasswordCard extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,15 +104,13 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
         pBuilder: (_) => Text(FlutterJVx.translate("The new Passwords do not match!")),
         pIsDismissible: true,
       );
+      return;
     }
-    LoginCommand loginCommand = LoginCommand(
-      loginMode: LoginMode.CHANGE_ONE_TIME_PASSWORD,
-      userName: userNameController.text,
+
+    LoginPage.doChangePasswordOTP(
+      username: userNameController.text,
       newPassword: newPasswordController.text,
       password: oneTimeController.text,
-      reason: "Password reset",
-    );
-
-    IUiService().sendCommand(loginCommand);
+    ).catchError(IUiService().handleAsyncError);
   }
 }

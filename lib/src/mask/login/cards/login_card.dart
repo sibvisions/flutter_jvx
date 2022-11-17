@@ -1,15 +1,15 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../../util/jvx_colors.dart';
-import '../../util/loading_handler/progress_button.dart';
-import '../state/app_style.dart';
-import '../state/loading_bar.dart';
-import 'login_page.dart';
-import 'remember_me_checkbox.dart';
+import '../../../../flutter_jvx.dart';
+import '../../../../services.dart';
+import '../../../../util/jvx_colors.dart';
+import '../../../model/command/api/login_command.dart';
+import '../../../util/loading_handler/progress_button.dart';
+import '../../state/app_style.dart';
+import '../../state/loading_bar.dart';
+import '../login_page.dart';
+import '../remember_me_checkbox.dart';
 
 class LoginCard extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,7 +145,7 @@ class _LoginCardState extends State<LoginCard> {
   Widget? _createLostPasswordButton() {
     if (IConfigService().getMetaData()?.lostPasswordEnabled == true) {
       return TextButton(
-        onPressed: () => context.beamToNamed("/login/lostPassword"),
+        onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
         child: Text(
           "${FlutterJVx.translate("Reset password")}?",
           overflow: TextOverflow.ellipsis,
@@ -158,7 +158,7 @@ class _LoginCardState extends State<LoginCard> {
   Widget _createBottomRow() {
     Widget? lostPasswordButton = _createLostPasswordButton();
     Widget textButton = TextButton.icon(
-      onPressed: () => _onSettingsPressed(context: context),
+      onPressed: () => IUiService().routeToSettings(),
       icon: const FaIcon(FontAwesomeIcons.gear),
       label: Text(
         FlutterJVx.translate("Settings"),
@@ -191,9 +191,5 @@ class _LoginCardState extends State<LoginCard> {
       setState(() => progressButtonState = ButtonState.fail);
       return IUiService().handleAsyncError(error, stackTrace);
     });
-  }
-
-  void _onSettingsPressed({required BuildContext context}) {
-    context.beamToNamed("/settings");
   }
 }

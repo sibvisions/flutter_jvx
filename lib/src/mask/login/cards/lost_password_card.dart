@@ -1,10 +1,10 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../model/command/api/reset_password_command.dart';
+import '../../../../flutter_jvx.dart';
+import '../../../model/command/api/login_command.dart';
+import '../../../service/ui/i_ui_service.dart';
+import '../login_page.dart';
 
 /// Card to be displayed in app-login for resetting the password
 class LostPasswordCard extends StatelessWidget {
@@ -58,7 +58,7 @@ class LostPasswordCard extends StatelessWidget {
             ),
             const Padding(padding: EdgeInsets.all(2)),
             ElevatedButton(
-              onPressed: () => context.beamBack(),
+              onPressed: () => IUiService().routeToLogin(mode: LoginMode.Manual),
               child: Row(
                 children: [
                   const FaIcon(FontAwesomeIcons.arrowLeft),
@@ -77,10 +77,9 @@ class LostPasswordCard extends StatelessWidget {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Sends [ResetPasswordCommand]
   void _sendRequest() {
-    ResetPasswordCommand resetPasswordCommand =
-        ResetPasswordCommand(reason: "User reset password", identifier: identifierController.text);
-    IUiService().sendCommand(resetPasswordCommand);
+    LoginPage.doResetPassword(
+      identifier: identifierController.text,
+    ).catchError(IUiService().handleAsyncError);
   }
 }

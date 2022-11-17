@@ -1,3 +1,4 @@
+import '../api/login_command.dart';
 import 'ui_command.dart';
 
 /// Command to route to login
@@ -7,7 +8,7 @@ class RouteToLoginCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Login mode
-  final String mode;
+  final LoginMode? mode;
 
   /// Username and password
   final Map<String, String?> loginData;
@@ -17,7 +18,7 @@ class RouteToLoginCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   RouteToLoginCommand({
-    required this.mode,
+    this.mode,
     required this.loginData,
     required super.reason,
   });

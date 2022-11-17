@@ -1,65 +1,48 @@
 import 'package:beamer/beamer.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
-import '../../mask/login/change_one_time_password_card.dart';
-import '../../mask/login/login_card.dart';
 import '../../mask/login/login_page.dart';
-import '../../mask/login/lost_password_card.dart';
-import '../../mask/setting/widgets/change_password.dart';
+import '../../model/command/api/login_command.dart';
 
 /// Displays all possible screens the login can show0
 class LoginLocation extends BeamLocation<BeamState> {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  final ValueNotifier<LoginMode> modeNotifier = ValueNotifier(LoginMode.Manual);
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    Map<String, String?>? dataMap = data as Map<String, String?>?;
-
     IUiService().getAppManager()?.onLoginPage();
+
+    _updateLoginMode(state);
 
     return [
       BeamPage(
         title: FlutterJVx.translate("Login"),
         key: const ValueKey("login"),
-        child: LoginPage(
-          loginWidget: FlutterJVx.of(context)?.loginBuilder?.call(context, LoginPage.doLogin) ?? const LoginCard(),
+        child: ValueListenableBuilder<LoginMode>(
+          valueListenable: modeNotifier,
+          builder: (context, mode, child) => LoginPage(loginMode: mode),
         ),
       ),
-      if (state.uri.pathSegments.contains("lostPassword"))
-        BeamPage(
-          title: FlutterJVx.translate("Password Reset"),
-          key: const ValueKey("login_password_reset"),
-          child: LoginPage(loginWidget: LostPasswordCard()),
-        ),
-      if (state.uri.pathSegments.contains("changeOneTimePassword"))
-        BeamPage(
-          title: FlutterJVx.translate("Change One Time Password"),
-          key: const ValueKey("login_change_otp"),
-          child: LoginPage(loginWidget: ChangeOneTimePasswordCard()),
-        ),
-      if (state.uri.pathSegments.contains("changePassword"))
-        BeamPage(
-          title: FlutterJVx.translate("Change password"),
-          key: const ValueKey("login_change_password"),
-          child: LoginPage(
-            loginWidget: ChangePassword(
-              username: dataMap?.entries.elementAt(0).value,
-              password: dataMap?.entries.elementAt(1).value,
-            ),
-          ),
-        ),
     ];
+  }
+
+  void _updateLoginMode(BeamState state) {
+    String? mode = state.queryParameters["mode"]?.toLowerCase();
+    LoginMode? loginMode;
+    if (mode != null) {
+      loginMode = LoginMode.values.firstWhereOrNull((e) => e.name.toLowerCase() == mode);
+    }
+    loginMode ??= LoginMode.Manual;
+    if (modeNotifier.value != loginMode) {
+      modeNotifier.value = loginMode;
+    }
   }
 
   @override
   List<Pattern> get pathPatterns => [
-        "/login/manual",
-        "/login/lostPassword",
-        "/login/changeOneTimePassword",
-        "/login/changePassword",
+        "/login",
       ];
 }

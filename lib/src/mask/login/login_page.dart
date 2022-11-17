@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
@@ -5,8 +6,13 @@ import '../../../services.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/parse_util.dart';
 import '../../model/command/api/login_command.dart';
+import '../../model/command/api/reset_password_command.dart';
+import '../setting/widgets/change_password.dart';
 import '../state/app_style.dart';
 import 'arc_clipper.dart';
+import 'cards/change_one_time_password_card.dart';
+import 'cards/login_card.dart';
+import 'cards/lost_password_card.dart';
 
 /// Login page of the app, also used for reset/change password
 class LoginPage extends StatelessWidget {
@@ -14,16 +20,18 @@ class LoginPage extends StatelessWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The Widget displayed in the middle of the screen
-  final Widget loginWidget;
+  final LoginMode loginMode;
 
   const LoginPage({
     super.key,
-    required this.loginWidget,
+    required this.loginMode,
   });
 
   @override
   Widget build(BuildContext context) {
+    var widget = FlutterJVx.of(context)?.loginBuilder?.call(context, loginMode);
+    if (widget != null) return widget;
+
     var appStyle = AppStyle.of(context)!.applicationStyle!;
     String? loginLogo = appStyle['login.logo'];
 
@@ -90,7 +98,7 @@ class LoginPage extends StatelessWidget {
                   elevation: 10,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: loginWidget,
+                    child: _buildCard(context, loginMode),
                   ),
                 ),
               ),
@@ -101,17 +109,67 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+  _buildCard(BuildContext context, LoginMode? loginMode) {
+    Widget widget;
+    switch (loginMode) {
+      case LoginMode.LostPassword:
+        widget = LostPasswordCard();
+        break;
+      case LoginMode.ChangePassword:
+        widget = ChangeOneTimePasswordCard();
+        break;
+      case LoginMode.ChangeOneTimePassword:
+        Map<String, String?>? dataMap = context.currentBeamLocation.data as Map<String, String?>?;
+        widget = ChangePassword(
+          username: dataMap?.entries.elementAt(0).value,
+          password: dataMap?.entries.elementAt(1).value,
+        );
+        break;
+      case LoginMode.Manual:
+      default:
+        widget = const LoginCard();
+        break;
+    }
+    return widget;
+  }
+
+  /// Sends a [LoginCommand]
+  ///
+  /// Example error handling:
+  /// ```dart
+  /// .catchError(IUiService().handleAsyncError);
+  /// ```
   static Future<void> doLogin({
     required String username,
     required String password,
     bool createAuthKey = false,
-  }) {
-    return ICommandService().sendCommand(LoginCommand(
-      loginMode: LoginMode.MANUAL,
-      userName: username,
-      password: password,
-      reason: "LoginButton",
-      createAuthKey: createAuthKey,
-    ));
-  }
+  }) =>
+      ICommandService().sendCommand(LoginCommand(
+        loginMode: LoginMode.Manual,
+        userName: username,
+        password: password,
+        reason: "LoginButton",
+        createAuthKey: createAuthKey,
+      ));
+
+  /// Sends a [ResetPasswordCommand]
+  static Future<void> doResetPassword({required String identifier}) =>
+      ICommandService().sendCommand(ResetPasswordCommand(
+        reason: "User reset password",
+        identifier: identifier,
+      ));
+
+  /// Sends a [LoginCommand] with changed password and otp
+  static Future<void> doChangePasswordOTP({
+    required String username,
+    required String newPassword,
+    required String password,
+  }) =>
+      ICommandService().sendCommand(LoginCommand(
+        loginMode: LoginMode.ChangeOneTimePassword,
+        userName: username,
+        newPassword: newPassword,
+        password: password,
+        reason: "Password reset",
+      ));
 }

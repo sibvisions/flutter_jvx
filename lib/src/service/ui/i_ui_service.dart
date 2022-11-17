@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:universal_io/io.dart';
 
+import '../../../commands.dart';
 import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
 import '../../../custom/custom_screen.dart';
@@ -74,7 +75,7 @@ abstract class IUiService {
   void routeToSettings({bool pReplaceRoute = false});
 
   /// Route to Login page
-  void routeToLogin({String mode, required Map<String, String?> pLoginProps});
+  void routeToLogin({LoginMode? mode, Map<String, String?>? pLoginProps});
 
   /// Route to the provided full path, used for routing to offline screens
   void routeToCustom({required String pFullPath});

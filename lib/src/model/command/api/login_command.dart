@@ -1,18 +1,39 @@
 import 'api_command.dart';
 
 /// All available login request modes
-class LoginMode {
-  static const String MANUAL = "manual";
-  static const String CHANGE_PASSWORD = "changePassword";
-  static const String CHANGE_ONE_TIME_PASSWORD = "changeOneTimePassword";
-  static const String AUTOMATIC = "automatic";
-  static const String LOST_PASSWORD = "lostPassword";
+enum LoginMode {
+  /// manual login.
+  Manual,
+
+  /// change password.
+  ChangePassword,
+
+  /// change one-time password.
+  ChangeOneTimePassword,
+
+  /// lost password.
+  LostPassword,
+
+  /// automatic login.
+  Automatic,
+
+  /// multi-factor text input.
+  MFTextInput,
+
+  /// multi-factor wait.
+  MFWait,
+
+  /// multi-factor URL.
+  MFURL,
 }
 
 class LoginCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// See [LoginMode] class
+  final LoginMode loginMode;
 
   /// Username
   final String userName;
@@ -23,9 +44,6 @@ class LoginCommand extends ApiCommand {
   /// Either one-time-password or new password
   final String? newPassword;
 
-  /// See [LoginMode] class
-  final String loginMode;
-
   /// "Remember me"
   final bool createAuthKey;
 
@@ -34,9 +52,9 @@ class LoginCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   LoginCommand({
+    required this.loginMode,
     required this.userName,
     required this.password,
-    required this.loginMode,
     this.createAuthKey = false,
     this.newPassword,
     required super.reason,

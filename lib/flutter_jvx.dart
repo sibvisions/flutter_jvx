@@ -16,6 +16,7 @@ import 'custom/app_manager.dart';
 import 'src/exceptions/error_view_exception.dart';
 import 'src/mask/jvx_overlay.dart';
 import 'src/mask/splash/splash.dart';
+import 'src/model/command/api/login_command.dart';
 import 'src/model/command/api/startup_command.dart';
 import 'src/routing/locations/login_location.dart';
 import 'src/routing/locations/menu_location.dart';
@@ -49,12 +50,6 @@ import 'util/jvx_colors.dart';
 import 'util/parse_util.dart';
 
 export 'src/mask/splash/jvx_splash.dart';
-
-typedef DoLogin = Future<void> Function({
-  required String username,
-  required String password,
-  bool createAuthKey,
-});
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterJVx extends StatefulWidget {
@@ -126,7 +121,7 @@ class FlutterJVx extends StatefulWidget {
   final Widget Function(BuildContext context, AsyncSnapshot? snapshot)? splashBuilder;
 
   /// Builder function for custom login widget
-  final Widget Function(BuildContext context, DoLogin)? loginBuilder;
+  final Widget Function(BuildContext context, LoginMode mode)? loginBuilder;
 
   static late PackageInfo packageInfo;
 

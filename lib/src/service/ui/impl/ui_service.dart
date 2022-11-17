@@ -12,6 +12,7 @@ import '../../../../custom/custom_menu_item.dart';
 import '../../../../custom/custom_screen.dart';
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
+import '../../../../util/extensions/string_extensions.dart';
 import '../../../exceptions/error_view_exception.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
@@ -147,11 +148,15 @@ class UiService implements IUiService {
   }
 
   @override
-  void routeToLogin({String mode = "manual", required Map<String, String?> pLoginProps}) {
+  void routeToLogin({LoginMode? mode, Map<String, String?>? pLoginProps}) {
     if (!checkFirstSplash()) return;
 
     FlutterJVx.clearHistory();
-    FlutterJVx.getBeamerDelegate().beamToReplacementNamed("/login/$mode", data: pLoginProps);
+
+    FlutterJVx.getBeamerDelegate().beamToReplacementNamed(
+      "/login${mode != null ? "?mode=${mode.name.firstCharLower()}" : ""}",
+      data: pLoginProps,
+    );
   }
 
   @override

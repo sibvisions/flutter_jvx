@@ -150,7 +150,7 @@ class ChangePassword extends StatelessWidget {
         IUiService().sendCommand(LoginCommand(
           userName: usernameController.text,
           password: passwordController.text,
-          loginMode: LoginMode.CHANGE_PASSWORD,
+          loginMode: LoginMode.ChangePassword,
           newPassword: newPasswordController.text,
           reason: "Password Expired",
         ));
