@@ -157,13 +157,15 @@ class ChangePassword extends StatelessWidget {
           newPassword: newPasswordController.text,
         ).catchError(IUiService().handleAsyncError);
       } else {
-        IUiService().sendCommand(ChangePasswordCommand(
-          username: usernameController.text,
-          newPassword: newPasswordController.text,
-          password: passwordController.text,
-          reason: "Change Password Request",
-        ));
-        //TODO close or route
+        ICommandService()
+            .sendCommand(ChangePasswordCommand(
+              username: usernameController.text,
+              newPassword: newPasswordController.text,
+              password: passwordController.text,
+              reason: "Change Password Request",
+            ))
+            .then((value) => Navigator.of(FlutterJVx.getCurrentContext()!).pop())
+            .catchError(IUiService().handleAsyncError);
       }
     } else {
       IUiService().openDialog(pBuilder: (context) => passwordError(context), pIsDismissible: true);
