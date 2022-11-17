@@ -86,7 +86,7 @@ class FlLinkedCellEditor
       textController: textController,
       focusNode: focusNode,
       inTable: pInTable,
-      hideClearIcon: model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK,
+      hideClearIcon: model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK && pInTable,
     );
   }
 

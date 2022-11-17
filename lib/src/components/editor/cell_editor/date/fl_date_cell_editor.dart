@@ -82,7 +82,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       endEditing: onEndEditing,
       valueChanged: onValueChange,
       inTable: pInTable,
-      hideClearIcon: model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK,
+      hideClearIcon: model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK && pInTable,
     );
   }
 
