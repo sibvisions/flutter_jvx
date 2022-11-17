@@ -1,4 +1,4 @@
-extension BoolParsing on String {
+extension StringExtension on String {
   /// Returns `true` if the string equals 'true', returns `false` if the string equals 'false' otherwise throws an exception.
   bool parseBool() {
     if (toLowerCase() == "true") {
