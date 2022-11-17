@@ -17,10 +17,6 @@ import 'cards/lost_password_card.dart';
 
 /// Login page of the app, also used for reset/change password
 class LoginPage extends StatelessWidget {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   final LoginMode loginMode;
 
   const LoginPage({
@@ -154,6 +150,10 @@ class LoginPage extends StatelessWidget {
       ));
 
   /// Sends a [ResetPasswordCommand]
+  ///
+  /// Server responses:
+  /// * If user logged in, sends message view
+  /// * If user not logged in, sends new login view
   static Future<void> doResetPassword({required String identifier}) =>
       ICommandService().sendCommand(ResetPasswordCommand(
         reason: "User reset password",
@@ -161,6 +161,8 @@ class LoginPage extends StatelessWidget {
       ));
 
   /// Sends a [LoginCommand] with changed password and otp
+  ///
+  /// Normally the user is logged in after that
   static Future<void> doChangePasswordOTP({
     required String username,
     required String newPassword,

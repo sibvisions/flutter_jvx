@@ -35,65 +35,57 @@ class ChangePassword extends StatelessWidget {
 
     Widget body = Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(FlutterJVx.translate("Please enter and confirm the new password.")),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextField(
-            enabled: false,
-            controller: usernameController,
-            decoration: InputDecoration(
-              labelText: "${FlutterJVx.translate("Username")}:",
-              border: const OutlineInputBorder(),
-            ),
+        if (!asDialog)
+          Text(
+            FlutterJVx.translate("Change password"),
+            style: Theme.of(context).textTheme.headline6,
+            textAlign: TextAlign.center,
+          ),
+        if (!asDialog) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        Text(FlutterJVx.translate("Please enter and confirm the new password.")),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        TextFormField(
+          enabled: false,
+          controller: usernameController,
+          decoration: InputDecoration(
+            labelText: "${FlutterJVx.translate("Username")}:",
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextField(
-            enabled: password == null,
-            obscureText: true,
-            controller: passwordController,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: "${FlutterJVx.translate("Password")}:",
-              hintText: FlutterJVx.translate("Enter Password"),
-              border: const OutlineInputBorder(),
-            ),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        TextFormField(
+          enabled: password == null,
+          obscureText: true,
+          controller: passwordController,
+          textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            labelText: "${FlutterJVx.translate("Password")}:",
+            hintText: FlutterJVx.translate("Enter Password"),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextField(
-            obscureText: true,
-            controller: newPasswordController,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: FlutterJVx.translate("Password (new):"),
-              hintText: FlutterJVx.translate("New Password"),
-              border: const OutlineInputBorder(),
-            ),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        TextFormField(
+          obscureText: true,
+          controller: newPasswordController,
+          textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            labelText: FlutterJVx.translate("Password (new):"),
+            hintText: FlutterJVx.translate("New Password"),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: TextField(
-            obscureText: true,
-            controller: repeatPasswordController,
-            textInputAction: TextInputAction.done,
-            onSubmitted: (_) => _submitNewPassword(),
-            decoration: InputDecoration(
-              labelText: FlutterJVx.translate("Password (confirm):"),
-              hintText: FlutterJVx.translate("New Password"),
-              border: const OutlineInputBorder(),
-            ),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        TextFormField(
+          obscureText: true,
+          controller: repeatPasswordController,
+          textInputAction: TextInputAction.done,
+          onFieldSubmitted: (_) => _submitNewPassword(),
+          decoration: InputDecoration(
+            labelText: FlutterJVx.translate("Password (confirm):"),
+            hintText: FlutterJVx.translate("New Password"),
           ),
         ),
         if (!asDialog)
           Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: _createButtons(context),
@@ -104,9 +96,15 @@ class ChangePassword extends StatelessWidget {
 
     if (asDialog) {
       return AlertDialog(
-        title: Text(FlutterJVx.translate("Change password")),
+        title: Text(
+          FlutterJVx.translate("Change password"),
+          textAlign: TextAlign.center,
+        ),
         content: SingleChildScrollView(child: body),
+        contentPadding: const EdgeInsets.all(16.0),
         actions: _createButtons(context),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
+        actionsPadding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
       );
     } else {
       return body;
@@ -116,7 +114,7 @@ class ChangePassword extends StatelessWidget {
   Widget passwordError(BuildContext context) {
     return AlertDialog(
       title: Text(FlutterJVx.translate("Error")),
-      content: Text(FlutterJVx.translate("The passwords don't match!")),
+      content: Text(FlutterJVx.translate("The passwords are different!")),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -136,10 +134,17 @@ class ChangePassword extends StatelessWidget {
       ));
     }
 
-    widgetList.add(TextButton(
-      onPressed: () => _submitNewPassword(),
-      child: Text(FlutterJVx.translate("Change password")),
-    ));
+    if (!asDialog) {
+      widgetList.add(ElevatedButton(
+        onPressed: _submitNewPassword,
+        child: Text(FlutterJVx.translate("OK")),
+      ));
+    } else {
+      widgetList.add(TextButton(
+        onPressed: _submitNewPassword,
+        child: Text(FlutterJVx.translate("OK")),
+      ));
+    }
 
     return widgetList;
   }

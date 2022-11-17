@@ -8,14 +8,9 @@ import '../../../model/command/api/login_command.dart';
 import '../../../util/loading_handler/progress_button.dart';
 import '../../state/app_style.dart';
 import '../../state/loading_bar.dart';
-import '../login_page.dart';
 import '../remember_me_checkbox.dart';
 
 class LoginCard extends StatefulWidget {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   const LoginCard({super.key});
 
   @override
@@ -45,7 +40,6 @@ class _LoginCardState extends State<LoginCard> {
     checkHolder = CheckHolder(isChecked: IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false);
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
     String? loginTitle = AppStyle.of(context)!.applicationStyle!['login.title'];
@@ -61,7 +55,7 @@ class _LoginCardState extends State<LoginCard> {
           style: Theme.of(context).textTheme.headline6,
           textAlign: TextAlign.center,
         ),
-        const Padding(padding: EdgeInsets.all(5)),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextFormField(
           textInputAction: TextInputAction.next,
           onTap: resetButton,
@@ -90,14 +84,14 @@ class _LoginCardState extends State<LoginCard> {
           ),
           obscureText: _passwordHidden,
         ),
-        const Padding(padding: EdgeInsets.all(5)),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         if (showRememberMe)
           Center(
             child: RememberMeCheckbox(
               checkHolder: checkHolder,
             ),
           ),
-        const Padding(padding: EdgeInsets.all(5)),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         ProgressButton.icon(
           radius: 4.0,
           progressIndicator: CircularProgressIndicator.adaptive(
@@ -123,7 +117,7 @@ class _LoginCardState extends State<LoginCard> {
           onPressed: _onLoginPressed,
           state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
         ),
-        const Padding(padding: EdgeInsets.all(5)),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         _createBottomRow(),
       ],
     );
@@ -158,10 +152,13 @@ class _LoginCardState extends State<LoginCard> {
     );
 
     if (lostPasswordButton != null) {
-      return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Flexible(child: lostPasswordButton),
-        Flexible(child: textButton),
-      ]);
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(child: lostPasswordButton),
+          Flexible(child: textButton),
+        ],
+      );
     } else {
       return Align(
         alignment: Alignment.centerRight,
@@ -170,7 +167,6 @@ class _LoginCardState extends State<LoginCard> {
     }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   void _onLoginPressed() {
     FocusManager.instance.primaryFocus?.unfocus();
 

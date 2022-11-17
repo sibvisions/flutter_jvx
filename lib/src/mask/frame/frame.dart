@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../services.dart';
 import '../../model/command/api/logout_command.dart';
-import '../setting/widgets/change_password.dart';
+import '../login/cards/change_password.dart';
 import 'mobile_frame.dart';
 import 'web_frame.dart';
 
