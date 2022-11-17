@@ -104,29 +104,20 @@ class _LoginCardState extends State<LoginCard> {
             backgroundColor: JVxColors.toggleColor(Theme.of(context).colorScheme.onPrimary),
             valueColor: const AlwaysStoppedAnimation(Colors.white),
           ),
-          textStyle: TextStyle(
-            color: progressButtonState != ButtonState.fail ? Theme.of(context).colorScheme.onPrimary : Colors.white,
-          ),
-          iconedButtons: {
-            ButtonState.idle: IconedButton(
-              text: FlutterJVx.translate("Login"),
-              icon: Icon(Icons.login, color: Theme.of(context).colorScheme.onPrimary),
-              color: Theme.of(context).colorScheme.primary,
+          stateButtons: {
+            ButtonState.idle: StateButton(
+              child: IconedButton(
+                text: FlutterJVx.translate("Login"),
+                icon: const Icon(Icons.login),
+              ),
             ),
-            ButtonState.loading: IconedButton(
-              text: FlutterJVx.translate("Loading"),
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            ButtonState.fail: IconedButton(
-              text: FlutterJVx.translate("Failed"),
-              icon: const Icon(Icons.cancel, color: Colors.white),
+            ButtonState.fail: StateButton(
               color: Colors.red.shade600,
-            ),
-            //Unused but not removable
-            ButtonState.success: IconedButton(
-              text: FlutterJVx.translate("Success"),
-              icon: const Icon(Icons.check_circle, color: Colors.white),
-              color: Colors.green.shade600,
+              textStyle: const TextStyle(color: Colors.white),
+              child: IconedButton(
+                text: FlutterJVx.translate("Failed"),
+                icon: const Icon(Icons.cancel),
+              ),
             ),
           },
           onPressed: _onLoginPressed,

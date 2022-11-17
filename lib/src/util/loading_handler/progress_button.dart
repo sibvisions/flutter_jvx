@@ -4,140 +4,112 @@ enum ButtonState { idle, loading, success, fail }
 
 /// Source: https://github.com/slm/progress-state-button
 class ProgressButton extends StatefulWidget {
-  final Map<ButtonState, Widget> stateWidgets;
-  final Map<ButtonState, Color> stateColors;
-  final Function? onPressed;
-  final Function? onAnimationEnd;
-  final ButtonState? state;
+  /// [StateButton]s for different [ButtonState]s
+  final Map<ButtonState, StateButton> stateButtons;
+
+  /// Default text style for buttons
+  final TextStyle? textStyle;
+
+  /// Current state of button
+  final ButtonState state;
+
+  /// onPressed from [MaterialButton]
+  final Function()? onPressed;
+
+  /// Will be called when animation ended
+  final Function(AnimationStatus status, ButtonState state)? onAnimationEnd;
+
+  /// Min width when used with [minWidthStates]
   final double minWidth;
+
+  /// Max button width, will be used when [state] is not in [minWidthStates]
   final double maxWidth;
+
+  /// Button radius
   final double radius;
+
+  /// Button height
   final double height;
+
+  /// Custom progress indicator
   final ProgressIndicator? progressIndicator;
-  final double progressIndicatorSize;
+
+  /// Size of progress indicator
+  final Size progressIndicatorSize;
+
+  /// ProgressIndicator alignment
   final MainAxisAlignment progressIndicatorAlignment;
+
+  /// Padding of button
   final EdgeInsets padding;
+
+  /// List of min width states, [ButtonState.loading] is the default. If you want to make small only icon states define them on this.
   final List<ButtonState> minWidthStates;
+
+  /// Transition animation duration
   final Duration animationDuration;
 
   ProgressButton({
     super.key,
-    required this.stateWidgets,
-    required this.stateColors,
-    this.state = ButtonState.idle,
+    required this.stateButtons,
     this.onPressed,
+    this.state = ButtonState.idle,
+    this.textStyle,
     this.onAnimationEnd,
     this.minWidth = 200.0,
     this.maxWidth = 400.0,
     this.radius = 16.0,
     this.height = 53.0,
-    this.progressIndicatorSize = 35.0,
+    this.progressIndicatorSize = const Size.square(35.0),
     this.progressIndicator,
-    this.progressIndicatorAlignment = MainAxisAlignment.spaceBetween,
+    this.progressIndicatorAlignment = MainAxisAlignment.center,
     this.padding = EdgeInsets.zero,
     this.minWidthStates = const [ButtonState.loading],
-    this.animationDuration = const Duration(milliseconds: 500),
-  })  : assert(
-          stateWidgets.keys.toSet().containsAll(ButtonState.values.toSet()),
-          'Must be non-null widgets provided in map of stateWidgets. Missing keys => ${ButtonState.values.toSet().difference(stateWidgets.keys.toSet())}',
-        ),
-        assert(
-          stateColors.keys.toSet().containsAll(ButtonState.values.toSet()),
-          'Must be non-null widgets provided in map of stateWidgets. Missing keys => ${ButtonState.values.toSet().difference(stateColors.keys.toSet())}',
+    this.animationDuration = const Duration(milliseconds: 250),
+  }) : assert(
+          stateButtons.keys.contains(ButtonState.idle),
+          "Must be non-null widgets provided in map of stateWidgets. Minimum required states => ${ButtonState.idle}",
+        );
+
+  ProgressButton.icon({
+    super.key,
+    required this.stateButtons,
+    this.onPressed,
+    this.state = ButtonState.idle,
+    this.textStyle,
+    this.onAnimationEnd,
+    this.maxWidth = 170.0,
+    this.minWidth = 58.0,
+    this.height = 53.0,
+    this.radius = 100.0,
+    this.progressIndicatorSize = const Size.square(35.0),
+    this.progressIndicator,
+    this.progressIndicatorAlignment = MainAxisAlignment.center,
+    this.padding = EdgeInsets.zero,
+    this.minWidthStates = const [ButtonState.loading],
+    this.animationDuration = const Duration(milliseconds: 250),
+  }) : assert(
+          stateButtons.keys.contains(ButtonState.idle),
+          "Must be non-null widgets provided in map of stateWidgets. Minimum required states => ${ButtonState.idle}",
         );
 
   @override
   State<StatefulWidget> createState() {
     return _ProgressButtonState();
   }
-
-  factory ProgressButton.icon({
-    Key? key,
-    required Map<ButtonState, IconedButton> iconedButtons,
-    Function? onPressed,
-    ButtonState? state = ButtonState.idle,
-    Function? animationEnd,
-    maxWidth = 170.0,
-    minWidth = 58.0,
-    height = 53.0,
-    radius = 100.0,
-    progressIndicatorSize = 35.0,
-    double iconPadding = 4.0,
-    TextStyle? textStyle,
-    CircularProgressIndicator? progressIndicator,
-    MainAxisAlignment? progressIndicatorAlignment,
-    EdgeInsets padding = EdgeInsets.zero,
-    List<ButtonState> minWidthStates = const <ButtonState>[ButtonState.loading],
-  }) {
-    assert(
-      iconedButtons.keys.toSet().containsAll(ButtonState.values.toSet()),
-      'Must be non-null widgets provided in map of stateWidgets. Missing keys => ${ButtonState.values.toSet().difference(iconedButtons.keys.toSet())}',
-    );
-
-    textStyle ??= const TextStyle(color: Colors.white, fontWeight: FontWeight.w500);
-
-    Map<ButtonState, Widget> stateWidgets = {
-      ButtonState.idle: buildChildWithIcon(iconedButtons[ButtonState.idle]!, iconPadding, textStyle),
-      ButtonState.loading: Column(),
-      ButtonState.fail: buildChildWithIcon(iconedButtons[ButtonState.fail]!, iconPadding, textStyle),
-      ButtonState.success: buildChildWithIcon(iconedButtons[ButtonState.success]!, iconPadding, textStyle)
-    };
-
-    Map<ButtonState, Color> stateColors = {
-      ButtonState.idle: iconedButtons[ButtonState.idle]!.color,
-      ButtonState.loading: iconedButtons[ButtonState.loading]!.color,
-      ButtonState.fail: iconedButtons[ButtonState.fail]!.color,
-      ButtonState.success: iconedButtons[ButtonState.success]!.color,
-    };
-
-    return ProgressButton(
-      key: key,
-      stateWidgets: stateWidgets,
-      stateColors: stateColors,
-      state: state,
-      onPressed: onPressed,
-      onAnimationEnd: animationEnd,
-      maxWidth: maxWidth,
-      minWidth: minWidth,
-      radius: radius,
-      height: height,
-      progressIndicatorSize: progressIndicatorSize,
-      progressIndicatorAlignment: MainAxisAlignment.center,
-      progressIndicator: progressIndicator,
-      minWidthStates: minWidthStates,
-    );
-  }
 }
 
 class _ProgressButtonState extends State<ProgressButton> with TickerProviderStateMixin {
   late AnimationController colorAnimationController;
   Animation<Color?>? colorAnimation;
-  double? width;
 
-  void startAnimations(ButtonState? oldState, ButtonState? newState) {
-    Color? begin = widget.stateColors[oldState!];
-    Color? end = widget.stateColors[newState!];
-    if (widget.minWidthStates.contains(newState)) {
-      width = widget.minWidth;
-    } else {
-      width = widget.maxWidth;
-    }
-    colorAnimation = ColorTween(begin: begin, end: end).animate(CurvedAnimation(
-      parent: colorAnimationController,
-      curve: const Interval(0, 1, curve: Curves.easeIn),
-    ));
-    colorAnimationController.forward();
+  Color? getStateColor(BuildContext context, ButtonState buttonState) {
+    return widget.stateButtons[buttonState]?.color ?? Theme.of(context).colorScheme.primary;
   }
-
-  Color? get backgroundColor => colorAnimation == null
-      ? widget.stateColors[widget.state!]
-      : colorAnimation!.value ?? widget.stateColors[widget.state!];
 
   @override
   void initState() {
     super.initState();
-
-    width = widget.maxWidth;
 
     colorAnimationController = AnimationController(duration: widget.animationDuration, vsync: this);
     colorAnimationController.addStatusListener((status) {
@@ -145,12 +117,6 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
         widget.onAnimationEnd!(status, widget.state);
       }
     });
-  }
-
-  @override
-  void dispose() {
-    colorAnimationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -165,27 +131,15 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     }
   }
 
-  Widget getButtonChild(bool visibility) {
-    Widget? buttonChild = widget.stateWidgets[widget.state!];
-    if (widget.state == ButtonState.loading) {
-      return Row(
-        mainAxisAlignment: widget.progressIndicatorAlignment,
-        children: [
-          SizedBox(
-            width: widget.progressIndicatorSize,
-            height: widget.progressIndicatorSize,
-            child: widget.progressIndicator ??
-                CircularProgressIndicator(
-                  backgroundColor: widget.stateColors[widget.state!],
-                  valueColor: const AlwaysStoppedAnimation(Colors.white),
-                ),
-          ),
-          buttonChild ?? const SizedBox.shrink(),
-        ],
-      );
-    }
-    return AnimatedOpacity(
-        opacity: visibility ? 1.0 : 0.0, duration: const Duration(milliseconds: 250), child: buttonChild);
+  void startAnimations(ButtonState oldState, ButtonState newState) {
+    Color? begin = getStateColor(context, oldState);
+    Color? end = getStateColor(context, newState);
+
+    colorAnimation = ColorTween(begin: begin, end: end).animate(CurvedAnimation(
+      parent: colorAnimationController,
+      curve: const Interval(0, 1, curve: Curves.easeIn),
+    ));
+    colorAnimationController.forward();
   }
 
   @override
@@ -193,55 +147,111 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     return AnimatedBuilder(
       animation: colorAnimationController,
       builder: (context, child) {
+        final TextStyle mergedTextStyle = const TextStyle(fontWeight: FontWeight.w500)
+            .merge(widget.textStyle)
+            .merge(widget.stateButtons[widget.state]?.textStyle);
         return AnimatedContainer(
-            width: width,
-            height: widget.height,
-            duration: widget.animationDuration,
-            child: MaterialButton(
-              padding: widget.padding,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(widget.radius),
-                  side: const BorderSide(color: Colors.transparent, width: 0)),
-              color: backgroundColor,
-              onPressed: widget.onPressed as void Function()?,
+          width: (widget.minWidthStates.contains(widget.state)) ? widget.minWidth : widget.maxWidth,
+          height: widget.height,
+          duration: widget.animationDuration,
+          child: MaterialButton(
+            padding: widget.padding,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(widget.radius),
+              side: const BorderSide(color: Colors.transparent, width: 0),
+            ),
+            color: colorAnimation == null
+                ? getStateColor(context, widget.state)
+                : colorAnimation!.value ?? getStateColor(context, widget.state),
+            textColor: mergedTextStyle.color ?? Theme.of(context).colorScheme.onPrimary,
+            onPressed: widget.onPressed,
+            child: DefaultTextStyle.merge(
+              style: mergedTextStyle,
               child: getButtonChild(colorAnimation == null ? true : colorAnimation!.isCompleted),
-            ));
+            ),
+          ),
+        );
       },
     );
   }
+
+  Widget getButtonChild(bool visibility) {
+    StateButton? buttonChild = widget.stateButtons[widget.state];
+
+    if (widget.state == ButtonState.loading) {
+      return Row(
+        mainAxisAlignment: widget.progressIndicatorAlignment,
+        children: [
+          SizedBox(
+            width: widget.progressIndicatorSize.width,
+            height: widget.progressIndicatorSize.height,
+            child: widget.progressIndicator ??
+                CircularProgressIndicator(
+                  backgroundColor: getStateColor(context, widget.state),
+                  valueColor: const AlwaysStoppedAnimation(Colors.white),
+                ),
+          ),
+          buttonChild?.child ?? const SizedBox.shrink(),
+        ],
+      );
+    }
+
+    return AnimatedOpacity(
+      opacity: visibility ? 1.0 : 0.0,
+      duration: widget.animationDuration,
+      child: buttonChild?.child ?? widget.stateButtons[ButtonState.idle]!.child!,
+    );
+  }
+
+  @override
+  void dispose() {
+    colorAnimationController.dispose();
+    super.dispose();
+  }
 }
 
-class IconedButton {
-  final String? text;
-  final Icon? icon;
-  final Color color;
+class StateButton {
+  /// Background color, used by the animations, defaults to [Theme.primary]
+  final Color? color;
 
-  const IconedButton({
-    this.text,
-    this.icon,
-    required this.color,
+  /// Text style
+  final TextStyle? textStyle;
+
+  /// Widget that will be placed inside a MaterialButton, often used with [IconedButton]
+  final Widget? child;
+
+  const StateButton({
+    this.child,
+    this.color,
+    this.textStyle,
   });
 }
 
-Widget buildChildWithIcon(IconedButton iconedButton, double iconPadding, TextStyle textStyle) {
-  return buildChildWithIC(iconedButton.text, iconedButton.icon, iconPadding, textStyle);
-}
+class IconedButton extends StatelessWidget {
+  final String? text;
+  final Widget? icon;
+  final double iconPadding;
 
-Widget buildChildWithIC(String? text, Icon? icon, double gap, TextStyle textStyle) {
-  List<Widget> children = [];
-  children.add(icon ?? const SizedBox.shrink());
-  if (text != null) {
-    children.add(Padding(padding: EdgeInsets.all(gap)));
-    children.add(buildText(text, textStyle));
+  const IconedButton({
+    super.key,
+    this.text,
+    this.icon,
+    this.iconPadding = 4.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    children.add(icon ?? const SizedBox.shrink());
+    if (text != null) {
+      children.add(Padding(padding: EdgeInsets.all(iconPadding)));
+      children.add(Text(text!));
+    }
+
+    return Wrap(
+      direction: Axis.horizontal,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: children,
+    );
   }
-
-  return Wrap(
-    direction: Axis.horizontal,
-    crossAxisAlignment: WrapCrossAlignment.center,
-    children: children,
-  );
-}
-
-Widget buildText(String text, TextStyle style) {
-  return Text(text, style: style);
 }
