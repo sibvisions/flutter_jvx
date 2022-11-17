@@ -29,6 +29,7 @@ class _RememberMeCheckboxState extends State<RememberMeCheckbox> {
       title: Text(FlutterJVx.translate("Remember me?")),
       value: widget.checkHolder.isChecked,
       contentPadding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
       onChanged: (newValue) => _onPress(),
       controlAffinity: ListTileControlAffinity.leading,
     );
