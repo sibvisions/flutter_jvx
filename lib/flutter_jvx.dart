@@ -51,6 +51,8 @@ import 'util/parse_util.dart';
 
 export 'src/mask/login/login_page.dart';
 export 'src/mask/splash/jvx_splash.dart';
+export 'src/mask/state/app_style.dart';
+export 'src/mask/state/loading_bar.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterJVx extends StatefulWidget {

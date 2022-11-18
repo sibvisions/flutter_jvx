@@ -17,7 +17,6 @@ import '../../components/panel/fl_panel_wrapper.dart';
 import '../../model/request/api_navigation_request.dart';
 import '../../util/offline_util.dart';
 import '../frame/frame.dart';
-import '../state/app_style.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for

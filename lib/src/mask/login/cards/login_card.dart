@@ -4,10 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../flutter_jvx.dart';
 import '../../../../services.dart';
 import '../../../../util/jvx_colors.dart';
+import '../../../../util/progress/progress_button.dart';
 import '../../../model/command/api/login_command.dart';
-import '../../../util/loading_handler/progress_button.dart';
-import '../../state/app_style.dart';
-import '../../state/loading_bar.dart';
 import '../remember_me_checkbox.dart';
 
 class LoginCard extends StatefulWidget {

@@ -10,8 +10,6 @@ import '../../../util/parse_util.dart';
 import '../../model/response/device_status_response.dart';
 import '../drawer/web_menu.dart';
 import '../setting/settings_page.dart';
-import '../state/app_style.dart';
-import '../state/loading_bar.dart';
 import 'frame.dart';
 
 class WebFrame extends Frame {

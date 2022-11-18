@@ -6,6 +6,7 @@ import 'package:wakelock/wakelock.dart';
 import '../../components.dart';
 import '../../flutter_jvx.dart';
 import '../../services.dart';
+import '../../util/progress/progress_dialog_widget.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';
 import '../model/command/api/fetch_command.dart';
@@ -20,7 +21,6 @@ import '../model/request/filter.dart';
 import '../service/api/shared/repository/offline/offline_database.dart';
 import '../service/api/shared/repository/offline_api_repository.dart';
 import '../service/api/shared/repository/online_api_repository.dart';
-import 'loading_handler/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
   static Widget getOfflineBar(BuildContext context, {bool useElevation = false}) {

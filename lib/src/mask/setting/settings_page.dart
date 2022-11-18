@@ -13,7 +13,6 @@ import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_overlay.dart';
-import '../state/loading_bar.dart';
 import 'widgets/editor/editor_dialog.dart';
 import 'widgets/editor/text_editor.dart';
 import 'widgets/setting_group.dart';

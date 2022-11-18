@@ -11,7 +11,6 @@ import '../../../util/parse_util.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/reset_password_command.dart';
 import '../../service/api/shared/api_object_property.dart';
-import '../state/app_style.dart';
 import 'arc_clipper.dart';
 import 'cards/change_one_time_password_card.dart';
 import 'cards/change_password.dart';

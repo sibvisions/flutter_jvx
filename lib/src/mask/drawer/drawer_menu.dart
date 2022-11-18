@@ -7,7 +7,6 @@ import '../../../util/jvx_colors.dart';
 import '../../model/menu/menu_model.dart';
 import '../menu/list/grouped_list_menu.dart';
 import '../menu/menu.dart';
-import '../state/app_style.dart';
 
 class DrawerMenu extends StatefulWidget {
   final void Function() onSettingsPressed;
