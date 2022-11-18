@@ -110,7 +110,7 @@ class LoginPage extends StatelessWidget {
                   // E.g.: Holding a phone horizontally and trying to login needs scrolling to be possible.
                   child: Card(
                     color: Theme.of(context).cardColor.withOpacity(0.9),
-                    // elevation: 10,
+                    elevation: 10,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: _buildCard(context, loginMode),
