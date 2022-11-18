@@ -26,32 +26,41 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          FlutterJVx.translate("Reset one-time password"),
+          FlutterJVx.translate("Change password"),
           style: Theme.of(context).textTheme.headline6,
           textAlign: TextAlign.center,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         Text(
-          FlutterJVx.translate("Please enter your one-time password and set a new password"),
+          FlutterJVx.translate("Please enter your one-time password and set a new password."),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextFormField(
           textInputAction: TextInputAction.next,
           controller: userNameController,
-          decoration: InputDecoration(labelText: "${FlutterJVx.translate("Username")}:"),
+          decoration: InputDecoration(
+            labelText: FlutterJVx.translate("Username:"),
+            hintText: FlutterJVx.translate("Username"),
+          ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextFormField(
           textInputAction: TextInputAction.next,
           controller: oneTimeController,
-          decoration: InputDecoration(labelText: "${FlutterJVx.translate("One-time password")}:"),
+          decoration: InputDecoration(
+            labelText: FlutterJVx.translate("One-time password:"),
+            hintText: FlutterJVx.translate("One-time password"),
+          ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextFormField(
           textInputAction: TextInputAction.next,
           obscureText: true,
           controller: newPasswordController,
-          decoration: InputDecoration(labelText: "${FlutterJVx.translate("New Password")}:"),
+          decoration: InputDecoration(
+            labelText: FlutterJVx.translate("Password (new):"),
+            hintText: FlutterJVx.translate("New Password"),
+          ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextFormField(
@@ -59,7 +68,10 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           obscureText: true,
           controller: newPasswordConfController,
           onFieldSubmitted: (_) => _onResetOTPPressed(),
-          decoration: InputDecoration(labelText: "${FlutterJVx.translate("Confirm new password")}:"),
+          decoration: InputDecoration(
+            labelText: FlutterJVx.translate("Password (confirm):"),
+            hintText: FlutterJVx.translate("Confirm Password"),
+          ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
         _createBottomRow(),
@@ -95,7 +107,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
 
     if (newPasswordController.text != newPasswordConfController.text) {
       IUiService().openDialog(
-        pBuilder: (_) => Text(FlutterJVx.translate("The new Passwords do not match!")),
+        pBuilder: (_) => Text(FlutterJVx.translate("The passwords are different!")),
         pIsDismissible: true,
       );
       return;

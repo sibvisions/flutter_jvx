@@ -47,7 +47,8 @@ class ChangePassword extends StatelessWidget {
           enabled: false,
           controller: usernameController,
           decoration: InputDecoration(
-            labelText: "${FlutterJVx.translate("Username")}:",
+            labelText: FlutterJVx.translate("Username:"),
+            hintText: FlutterJVx.translate("Username"),
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
@@ -57,8 +58,8 @@ class ChangePassword extends StatelessWidget {
           controller: passwordController,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
-            labelText: "${FlutterJVx.translate("Password")}:",
-            hintText: FlutterJVx.translate("Enter Password"),
+            labelText: FlutterJVx.translate("Password:"),
+            hintText: FlutterJVx.translate("Password"),
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
@@ -79,7 +80,7 @@ class ChangePassword extends StatelessWidget {
           onFieldSubmitted: (_) => _submitNewPassword(),
           decoration: InputDecoration(
             labelText: FlutterJVx.translate("Password (confirm):"),
-            hintText: FlutterJVx.translate("New Password"),
+            hintText: FlutterJVx.translate("Confirm Password"),
           ),
         ),
         if (!asDialog)
