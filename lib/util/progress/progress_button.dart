@@ -20,16 +20,16 @@ class ProgressButton extends StatefulWidget {
   final Function(AnimationStatus status, ButtonState state)? onAnimationEnd;
 
   /// Min width when used with [minWidthStates]
-  final double minWidth;
+  final double? minWidth;
 
   /// Max button width, will be used when [state] is not in [minWidthStates]
-  final double maxWidth;
+  final double? maxWidth;
 
   /// Button radius
   final double radius;
 
   /// Button height
-  final double height;
+  final double? height;
 
   /// Custom progress indicator
   final ProgressIndicator? progressIndicator;
@@ -41,7 +41,9 @@ class ProgressButton extends StatefulWidget {
   final MainAxisAlignment progressIndicatorAlignment;
 
   /// Padding of button
-  final EdgeInsets padding;
+  final EdgeInsetsGeometry padding;
+  final double? elevation;
+  final ShapeBorder? shape;
 
   /// List of min width states, [ButtonState.loading] is the default. If you want to make small only icon states define them on this.
   final List<ButtonState> minWidthStates;
@@ -58,12 +60,14 @@ class ProgressButton extends StatefulWidget {
     this.onAnimationEnd,
     this.minWidth = 200.0,
     this.maxWidth = 400.0,
-    this.radius = 16.0,
     this.height = 53.0,
+    this.radius = 16.0,
     this.progressIndicatorSize = const Size.square(35.0),
     this.progressIndicator,
     this.progressIndicatorAlignment = MainAxisAlignment.center,
     this.padding = EdgeInsets.zero,
+    this.elevation,
+    this.shape,
     this.minWidthStates = const [ButtonState.loading],
     this.animationDuration = const Duration(milliseconds: 250),
   }) : assert(
@@ -86,6 +90,8 @@ class ProgressButton extends StatefulWidget {
     this.progressIndicator,
     this.progressIndicatorAlignment = MainAxisAlignment.center,
     this.padding = EdgeInsets.zero,
+    this.elevation,
+    this.shape,
     this.minWidthStates = const [ButtonState.loading],
     this.animationDuration = const Duration(milliseconds: 250),
   }) : assert(
@@ -144,22 +150,26 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    StateButton? stateButton = widget.stateButtons[widget.state];
     return AnimatedBuilder(
       animation: colorAnimationController,
       builder: (context, child) {
-        final TextStyle mergedTextStyle = const TextStyle(fontWeight: FontWeight.w500)
-            .merge(widget.textStyle)
-            .merge(widget.stateButtons[widget.state]?.textStyle);
+        final TextStyle mergedTextStyle =
+            const TextStyle(fontWeight: FontWeight.w500).merge(widget.textStyle).merge(stateButton?.textStyle);
         return AnimatedContainer(
           width: (widget.minWidthStates.contains(widget.state)) ? widget.minWidth : widget.maxWidth,
-          height: widget.height,
           duration: widget.animationDuration,
           child: MaterialButton(
-            padding: widget.padding,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(widget.radius),
-              side: const BorderSide(color: Colors.transparent, width: 0),
-            ),
+            minWidth: 0,
+            height: widget.height,
+            padding: stateButton?.padding ?? widget.padding,
+            elevation: stateButton?.elevation ?? widget.elevation,
+            shape: stateButton?.shape ??
+                widget.shape ??
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(widget.radius),
+                  side: const BorderSide(color: Colors.transparent, width: 0),
+                ),
             color: colorAnimation == null
                 ? getStateColor(context, widget.state)
                 : colorAnimation!.value ?? getStateColor(context, widget.state),
@@ -167,7 +177,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
             onPressed: widget.onPressed,
             child: DefaultTextStyle.merge(
               style: mergedTextStyle,
-              child: getButtonChild(colorAnimation == null ? true : colorAnimation!.isCompleted),
+              child: getButtonChild(stateButton, colorAnimation == null ? true : colorAnimation!.isCompleted),
             ),
           ),
         );
@@ -175,9 +185,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     );
   }
 
-  Widget getButtonChild(bool visibility) {
-    StateButton? buttonChild = widget.stateButtons[widget.state];
-
+  Widget getButtonChild(StateButton? stateButton, bool visibility) {
     if (widget.state == ButtonState.loading) {
       return Row(
         mainAxisAlignment: widget.progressIndicatorAlignment,
@@ -191,7 +199,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
                   valueColor: const AlwaysStoppedAnimation(Colors.white),
                 ),
           ),
-          buttonChild?.child ?? const SizedBox.shrink(),
+          stateButton?.child ?? const SizedBox.shrink(),
         ],
       );
     }
@@ -199,7 +207,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     return AnimatedOpacity(
       opacity: visibility ? 1.0 : 0.0,
       duration: widget.animationDuration,
-      child: buttonChild?.child ?? widget.stateButtons[ButtonState.idle]!.child!,
+      child: stateButton?.child ?? widget.stateButtons[ButtonState.idle]!.child!,
     );
   }
 
@@ -211,6 +219,10 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
 }
 
 class StateButton {
+  final EdgeInsetsGeometry? padding;
+  final double? elevation;
+  final ShapeBorder? shape;
+
   /// Background color, used by the animations, defaults to [Theme.primary]
   final Color? color;
 
@@ -221,9 +233,12 @@ class StateButton {
   final Widget? child;
 
   const StateButton({
-    this.child,
+    this.padding,
+    this.elevation,
+    this.shape,
     this.color,
     this.textStyle,
+    this.child,
   });
 }
 
