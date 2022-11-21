@@ -100,8 +100,8 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  String formatValue(Object pValue) {
-    return pValue.toString();
+  String formatValue(dynamic pValue) {
+    return pValue?.toString() ?? "";
   }
 
   @override

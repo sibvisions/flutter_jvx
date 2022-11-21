@@ -195,7 +195,7 @@ class FlLinkedCellEditor
       dynamic showValue = _value;
 
       if (model.displayReferencedColumnName != null) {
-        showValue = _valueMap[_value];
+        showValue = _valueMap[showValue];
       }
 
       if (showValue == null) {
@@ -233,8 +233,8 @@ class FlLinkedCellEditor
   }
 
   @override
-  String formatValue(Object pValue) {
-    return pValue.toString();
+  String formatValue(dynamic pValue) {
+    return pValue?.toString() ?? "";
   }
 
   @override

@@ -75,7 +75,7 @@ abstract class ICellEditor<
   /// If the cell editor can be inside a table.
   bool get canBeInTable => false;
 
-  String formatValue(Object pValue);
+  String formatValue(dynamic pValue);
 
   double getContentPadding(Map<String, dynamic>? pJson, bool pInTable);
 

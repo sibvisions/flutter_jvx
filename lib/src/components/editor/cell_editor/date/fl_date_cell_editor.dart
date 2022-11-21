@@ -230,11 +230,11 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  String formatValue(pValue) {
+  String formatValue(dynamic pValue) {
     if (pValue is int) {
       return DateFormat(model.dateFormat).format(DateTime.fromMillisecondsSinceEpoch(pValue));
     }
-    return pValue.toString();
+    return pValue?.toString() ?? "";
   }
 
   @override

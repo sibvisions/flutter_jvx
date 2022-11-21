@@ -39,10 +39,15 @@ class NumericTextFormatter extends TextInputFormatter {
 
   String getFormattedString(dynamic value) {
     if (value != null) {
-      if (value is String) {
-        return value;
-      } else if (value is int || value is double) {
+      if (value is int || value is double) {
         return numberFormatter.format(value);
+      } else if (value is String) {
+        try {
+          num numValue = numberFormatter.parse(value);
+          return numberFormatter.format(numValue);
+        } catch (_) {}
+
+        return value;
       }
     }
     return "";
@@ -53,7 +58,10 @@ class NumericTextFormatter extends TextInputFormatter {
     if (pValue is String) {
       if (pValue.isEmpty) return null;
       // Append zeroes to allow the user to enter a comma only
-      number = numberFormatter.parse("0${pValue}0");
+      if (pValue.endsWith(numberFormatter.symbols.DECIMAL_SEP)) {
+        pValue += "0";
+      }
+      number = numberFormatter.parse("0$pValue");
     }
     return number;
   }

@@ -192,12 +192,11 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state of the widget and sends a set value command.
   void onEndEditing(dynamic pValue) {
-    if ((pValue?.toString() ?? "") == (_currentValue?.toString() ?? "")) {
+    if (_isDifferentValue(pValue)) {
+      cellEditor.setValue(_currentValue);
+      setState(() {});
       return;
     }
-
-    setState(() {});
-
     IUiService().saveAllEditorsThen(
       model.id,
       () {
@@ -227,6 +226,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       },
       "Value of ${model.id} set to $pValue",
     );
+
+    setState(() {});
   }
 
   void recalculateSize([bool pRecalulcate = true]) {
@@ -267,7 +268,8 @@ New cell editor hashcode: ${cellEditor.hashCode}
   @override
   BaseCommand? createSaveCommand() {
     dynamic value = cellEditor.getValue();
-    if ((value?.toString() ?? "") == (_currentValue?.toString() ?? "")) {
+    //cellEditor.formatValue(pValue)
+    if (_isDifferentValue(value)) {
       return null;
     }
     return SetValuesCommand(
@@ -277,5 +279,9 @@ New cell editor hashcode: ${cellEditor.hashCode}
       values: [value],
       reason: "Value of ${model.id} set to $value",
     );
+  }
+
+  bool _isDifferentValue(dynamic value) {
+    return cellEditor.formatValue(value) == cellEditor.formatValue(_currentValue);
   }
 }

@@ -11,7 +11,7 @@ import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, FlNumberCellEditorModel, String> {
+class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, FlNumberCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +107,7 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   }
 
   @override
-  String formatValue(Object pValue) {
+  String formatValue(dynamic pValue) {
     return numberFormatter.getFormattedString(pValue);
   }
 

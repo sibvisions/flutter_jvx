@@ -105,8 +105,8 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   }
 
   @override
-  String formatValue(Object pValue) {
-    return pValue.toString();
+  String formatValue(dynamic pValue) {
+    return pValue?.toString() ?? "";
   }
 
   @override

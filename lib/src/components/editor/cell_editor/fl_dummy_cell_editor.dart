@@ -36,8 +36,8 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   }
 
   @override
-  String formatValue(Object pValue) {
-    return pValue.toString();
+  String formatValue(dynamic pValue) {
+    return pValue?.toString() ?? "";
   }
 
   @override

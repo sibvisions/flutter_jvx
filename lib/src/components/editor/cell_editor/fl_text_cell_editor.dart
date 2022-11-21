@@ -143,8 +143,8 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
   }
 
   @override
-  String formatValue(Object pValue) {
-    return pValue.toString();
+  String formatValue(dynamic pValue) {
+    return pValue?.toString() ?? "";
   }
 
   @override
