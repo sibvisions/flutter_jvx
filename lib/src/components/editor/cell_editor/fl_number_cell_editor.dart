@@ -36,7 +36,7 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
         ) {
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
-        onEndEditing(textController.text);
+        onEndEditing(numberFormatter.numberFormatter.parse(textController.text));
       }
     });
 

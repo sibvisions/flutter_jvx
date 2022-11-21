@@ -18,13 +18,18 @@ class NumericTextFormatter extends TextInputFormatter {
       String newString = newValue.text;
 
       try {
+        RegExp regEndingZeros = RegExp(r"^.*" + numberFormatter.symbols.DECIMAL_SEP + r".*(?<!0)(0*)$");
+        String endingZeroes = regEndingZeros.firstMatch(newString)?.group(1) ?? "";
         num? number = convertToNumber(newString);
         if (number != null) {
+          if (!number.toString().contains(".") && endingZeroes.isNotEmpty) {
+            endingZeroes = ".$endingZeroes";
+          }
           if (precision != null && precision! > 0 && scale != null) {
             int localPrecision = precision! - scale!;
             String allowedScale = scale! > 0 ? r"\d{0," + scale!.toString() + r"}" : "0";
             RegExp regExp = RegExp(r"^(\d{0," + localPrecision.toString() + r"}|0)(\." + allowedScale + r")?$");
-            if (!regExp.hasMatch(number.toString())) {
+            if (!regExp.hasMatch(number.toString() + endingZeroes)) {
               return newValue.copyWith(text: oldValue.text, selection: oldValue.selection);
             }
           }
