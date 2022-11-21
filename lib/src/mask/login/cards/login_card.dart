@@ -54,18 +54,18 @@ class _LoginCardState extends State<LoginCard> {
           textAlign: TextAlign.center,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           textInputAction: TextInputAction.next,
           onTap: resetButton,
           onChanged: (_) => resetButton(),
           controller: usernameController,
           decoration: InputDecoration(labelText: "${FlutterJVx.translate("Username")}:"),
         ),
-        TextFormField(
+        TextField(
           textInputAction: TextInputAction.done,
           onTap: resetButton,
           onChanged: (_) => resetButton(),
-          onFieldSubmitted: (_) => _onLoginPressed(),
+          onSubmitted: (_) => _onLoginPressed(),
           controller: passwordController,
           decoration: InputDecoration(
             labelText: "${FlutterJVx.translate("Password")}:",

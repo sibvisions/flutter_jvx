@@ -35,7 +35,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           FlutterJVx.translate("Please enter your one-time password and set a new password."),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           textInputAction: TextInputAction.next,
           controller: userNameController,
           decoration: InputDecoration(
@@ -44,7 +44,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           textInputAction: TextInputAction.next,
           controller: oneTimeController,
           decoration: InputDecoration(
@@ -53,7 +53,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           textInputAction: TextInputAction.next,
           obscureText: true,
           controller: newPasswordController,
@@ -63,11 +63,11 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           textInputAction: TextInputAction.done,
           obscureText: true,
           controller: newPasswordConfController,
-          onFieldSubmitted: (_) => _onResetOTPPressed(),
+          onSubmitted: (_) => _onResetOTPPressed(),
           decoration: InputDecoration(
             labelText: FlutterJVx.translate("Password (confirm):"),
             hintText: FlutterJVx.translate("Confirm Password"),

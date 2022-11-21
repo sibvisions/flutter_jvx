@@ -27,10 +27,10 @@ class LostPasswordCard extends StatelessWidget {
           FlutterJVx.translate("Please enter your e-mail address."),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           textInputAction: TextInputAction.done,
           controller: identifierController,
-          onFieldSubmitted: (_) => _onResetPasswordPressed(),
+          onSubmitted: (_) => _onResetPasswordPressed(),
           decoration: InputDecoration(
             labelText: FlutterJVx.translate("E-Mail:"),
             hintText: FlutterJVx.translate("E-Mail:"),

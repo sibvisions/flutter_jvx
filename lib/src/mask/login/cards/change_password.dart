@@ -43,7 +43,7 @@ class ChangePassword extends StatelessWidget {
         if (!asDialog) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         Text(FlutterJVx.translate("Please enter and confirm the new password.")),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           enabled: false,
           controller: usernameController,
           decoration: InputDecoration(
@@ -52,7 +52,7 @@ class ChangePassword extends StatelessWidget {
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           enabled: password == null,
           obscureText: true,
           controller: passwordController,
@@ -63,7 +63,7 @@ class ChangePassword extends StatelessWidget {
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           obscureText: true,
           controller: newPasswordController,
           textInputAction: TextInputAction.next,
@@ -73,11 +73,11 @@ class ChangePassword extends StatelessWidget {
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        TextFormField(
+        TextField(
           obscureText: true,
           controller: repeatPasswordController,
           textInputAction: TextInputAction.done,
-          onFieldSubmitted: (_) => _submitNewPassword(),
+          onSubmitted: (_) => _submitNewPassword(),
           decoration: InputDecoration(
             labelText: FlutterJVx.translate("Password (confirm):"),
             hintText: FlutterJVx.translate("Confirm Password"),
