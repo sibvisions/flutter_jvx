@@ -23,7 +23,7 @@ class _LoginCardState extends State<LoginCard> {
   late TextEditingController passwordController;
 
   /// Value holder for the checkbox
-  late CheckHolder checkHolder;
+  late bool rememberMeChecked;
 
   ButtonState progressButtonState = ButtonState.idle;
 
@@ -35,7 +35,7 @@ class _LoginCardState extends State<LoginCard> {
     super.initState();
     usernameController = TextEditingController(text: IConfigService().getUsername());
     passwordController = TextEditingController();
-    checkHolder = CheckHolder(isChecked: IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false);
+    rememberMeChecked = IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
   }
 
   @override
@@ -85,7 +85,10 @@ class _LoginCardState extends State<LoginCard> {
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         if (showRememberMe)
           Center(
-            child: RememberMeCheckbox(checkHolder: checkHolder),
+            child: RememberMeCheckbox(
+              rememberMeChecked,
+              onToggle: () => setState(() => rememberMeChecked = !rememberMeChecked),
+            ),
           ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         ProgressButton.icon(
@@ -156,7 +159,7 @@ class _LoginCardState extends State<LoginCard> {
     LoginPage.doLogin(
       username: usernameController.text,
       password: passwordController.text,
-      createAuthKey: showRememberMe && checkHolder.isChecked,
+      createAuthKey: showRememberMe && rememberMeChecked,
     ).catchError((error, stackTrace) {
       setState(() => progressButtonState = ButtonState.fail);
       return IUiService().handleAsyncError(error, stackTrace);
