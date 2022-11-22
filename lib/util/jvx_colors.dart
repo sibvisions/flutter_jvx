@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 abstract class JVxColors {
   static const Color LIGHTER_BLACK = Color(0xFF424242);
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
+  static const Color COMPONENT_DISABLED_LIGHTER = Color.fromARGB(255, 230, 230, 230);
 
   static Color darken(Color color, [double amount = .1]) {
     assert(amount >= 0 && amount <= 1);
