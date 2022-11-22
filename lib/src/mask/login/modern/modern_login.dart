@@ -16,6 +16,7 @@ import '../login.dart';
 import 'cards/change_password_card.dart';
 import 'cards/lost_password_card.dart';
 import 'cards/manual_card.dart';
+import 'middle_clipper_with_double_curve.dart';
 
 class ModernLogin extends StatelessWidget implements Login {
   final LoginMode mode;
@@ -127,11 +128,9 @@ class ModernLogin extends StatelessWidget implements Login {
                 begin: Alignment.topLeft,
                 colors: [
                   topColor,
-                  if (bottomColor != null) bottomColor,
-                  if (bottomColor == null) JVxColors.lighten(topColor, 0.2),
+                  JVxColors.lighten(topColor, 0.2),
                 ],
                 end: Alignment.bottomRight,
-                tileMode: TileMode.repeated,
               )
             : null,
       ),
@@ -158,9 +157,26 @@ class ModernLogin extends StatelessWidget implements Login {
               ),
             ),
           ),
-          const Expanded(
+          Expanded(
             flex: 8,
-            child: SizedBox(),
+            child: ClipPath(
+              clipper: MiddleClipperWithDoubleCurve(),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: bottomColor ?? JVxColors.lighten(Theme.of(context).scaffoldBackgroundColor, 0.05),
+                  gradient: bottomColor != null
+                      ? LinearGradient(
+                          begin: Alignment.topLeft,
+                          colors: [
+                            bottomColor,
+                            JVxColors.lighten(bottomColor, 0.2),
+                          ],
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                ),
+              ),
+            ),
           ),
         ],
       ),
