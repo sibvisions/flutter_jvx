@@ -66,9 +66,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    ColorScheme colorScheme = theme.colorScheme;
-
     Size screenSize = MediaQuery.of(context).size;
 
     EdgeInsets paddingInsets;
