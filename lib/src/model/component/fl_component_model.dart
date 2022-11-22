@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/widgets.dart';
 
 import '../../../util/jvx_colors.dart';
@@ -7,7 +5,6 @@ import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
-import 'editor/fl_editor_model.dart';
 import 'i_font_style.dart';
 
 /// The base component model.
@@ -247,7 +244,7 @@ abstract class FlComponentModel {
       pKey: ApiObjectProperty.background,
       pDefault: defaultModel.background,
       pCurrent: background,
-      pConversion: ParseUtil.parseServerColor,
+      pConversion: ParseUtil.parseBackgroundColor,
     );
     foreground = getPropertyValue(
       pJson: pJson,
@@ -264,14 +261,6 @@ abstract class FlComponentModel {
       pCondition: (pValue) => pValue < VerticalAlignment.values.length && pValue >= 0,
       pConversion: VerticalAlignmentE.fromDynamic,
     );
-    if (this is FlEditorModel) {
-      if (pJson[ApiObjectProperty.verticalAlignment] != null) {
-        log(pJson[ApiObjectProperty.verticalAlignment].toString());
-      }
-      if (pJson[ApiObjectProperty.horizontalAlignment] != null) {
-        log(pJson[ApiObjectProperty.horizontalAlignment].toString());
-      }
-    }
     horizontalAlignment = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.horizontalAlignment,
@@ -305,36 +294,24 @@ abstract class FlComponentModel {
 
   /// If this component is used in a cell editor, some values are overriden.
   void applyCellEditorOverrides(Map<String, dynamic> pJson) {
-    var jsonCellEditorHorizontalAlignment = pJson[ApiObjectProperty.cellEditorHorizontalAlignment];
-    if (jsonCellEditorHorizontalAlignment != null) {
-      horizontalAlignment = HorizontalAlignment.values[jsonCellEditorHorizontalAlignment];
+    Map<String, dynamic> overrideJson = {};
+    if (pJson.containsKey(ApiObjectProperty.cellEditorHorizontalAlignment)) {
+      overrideJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.cellEditorHorizontalAlignment];
+    }
+    if (pJson.containsKey(ApiObjectProperty.cellEditorVerticalAlignment)) {
+      overrideJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.cellEditorVerticalAlignment];
+    }
+    if (pJson.containsKey(ApiObjectProperty.cellEditorBackground)) {
+      overrideJson[ApiObjectProperty.background] = pJson[ApiObjectProperty.cellEditorBackground];
+    }
+    if (pJson.containsKey(ApiObjectProperty.cellEditorForeground)) {
+      overrideJson[ApiObjectProperty.foreground] = pJson[ApiObjectProperty.cellEditorForeground];
+    }
+    if (pJson.containsKey(ApiObjectProperty.cellEditorFont)) {
+      overrideJson[ApiObjectProperty.font] = pJson[ApiObjectProperty.cellEditorFont];
     }
 
-    var jsonCellEditorVerticalAlignment = pJson[ApiObjectProperty.cellEditorVerticalAlignment];
-    if (jsonCellEditorVerticalAlignment != null) {
-      verticalAlignment = VerticalAlignment.values[jsonCellEditorVerticalAlignment];
-    }
-
-    var jsonCellEditorBackground = pJson[ApiObjectProperty.cellEditorBackground];
-    if (jsonCellEditorBackground != null) {
-      background = ParseUtil.parseServerColor(jsonCellEditorBackground)!;
-    }
-
-    var jsonCellEditorForeground = pJson[ApiObjectProperty.cellEditorForeground];
-    if (jsonCellEditorForeground != null) {
-      foreground = ParseUtil.parseServerColor(jsonCellEditorForeground)!;
-    }
-
-    var jsonCellEditorFont = pJson[ApiObjectProperty.cellEditorFont];
-    if (jsonCellEditorFont != null) {
-      var fontValuesList = (jsonCellEditorFont as String).split(",");
-      if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
-        fontName = fontValuesList[0];
-        fontSize = int.parse(fontValuesList[2]);
-        isBold = (int.parse(fontValuesList[1]) & IFontStyle.TEXT_BOLD) == IFontStyle.TEXT_BOLD;
-        isItalic = (int.parse(fontValuesList[1]) & IFontStyle.TEXT_ITALIC) == IFontStyle.TEXT_ITALIC;
-      }
-    }
+    applyFromJson(overrideJson);
   }
 
   /// Returns the textstyle of the component.
