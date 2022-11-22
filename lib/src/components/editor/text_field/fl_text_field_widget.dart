@@ -4,10 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../../util/jvx_colors.dart';
-import '../../../mask/state/app_style.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
+import '../../../model/response/application_settings_response.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
 
 enum FlTextBorderType {
@@ -103,8 +104,17 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   @override
   Widget build(BuildContext context) {
-    Color? fillColor = model.background ??
-        (isMandatory ? AppStyle.of(context)!.applicationSettings.colors?.mandatoryBackground : null);
+    Color? fillColor = model.background;
+
+    if (fillColor == null && isMandatory) {
+      ApplicationSettingsResponse applicationSettings = AppStyle.of(context)!.applicationSettings;
+      if (Theme.of(context).brightness == Brightness.light) {
+        fillColor = applicationSettings.colors?.mandatoryBackground;
+      } else {
+        fillColor = applicationSettings.darkColors?.mandatoryBackground;
+      }
+    }
+
     bool isFilled = fillColor != null && !inTable;
     return TextField(
       controller: textController,
@@ -152,6 +162,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       return null;
     }
 
+    bool isLight = Theme.of(FlutterJVx.getCurrentContext()!).brightness == Brightness.light;
+
     return InkWell(
       canRequestFocus: false,
       onTap: () {
@@ -171,7 +183,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           child: Icon(
             Icons.clear,
             size: iconSize,
-            color: JVxColors.COMPONENT_DISABLED,
+            color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
           ),
         ),
       ),
