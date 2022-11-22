@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
-import '../../../../services.dart';
-import '../../../model/command/api/change_password_command.dart';
+import '../../../../../flutter_jvx.dart';
+import '../../../../../services.dart';
+import '../../../../model/command/api/change_password_command.dart';
 
 class ChangePassword extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
@@ -150,6 +150,8 @@ class ChangePassword extends StatelessWidget {
   }
 
   void _submitNewPassword() {
+    FocusManager.instance.primaryFocus?.unfocus();
+
     if (newPasswordController.text == repeatPasswordController.text) {
       if (IConfigService().getUserInfo() == null) {
         LoginPage.doChangePassword(
@@ -161,8 +163,8 @@ class ChangePassword extends StatelessWidget {
         ICommandService()
             .sendCommand(ChangePasswordCommand(
               username: usernameController.text,
-              newPassword: newPasswordController.text,
               password: passwordController.text,
+              newPassword: newPasswordController.text,
               reason: "Change Password Request",
             ))
             .then((value) => Navigator.of(FlutterJVx.getCurrentContext()!).pop())

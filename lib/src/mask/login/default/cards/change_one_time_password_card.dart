@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
-import '../../../../services.dart';
-import '../../../model/command/api/login_command.dart';
+import '../../../../../flutter_jvx.dart';
+import '../../../../../services.dart';
+import '../../../../model/command/api/login_command.dart';
 
 class ChangeOneTimePasswordCard extends StatelessWidget {
   /// Controller for username text field

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../flutter_jvx.dart';
-import '../../../../services.dart';
-import '../../../../util/jvx_colors.dart';
-import '../../../../util/progress/progress_button.dart';
-import '../../../model/command/api/login_command.dart';
+import '../../../../../flutter_jvx.dart';
+import '../../../../../services.dart';
+import '../../../../../util/jvx_colors.dart';
+import '../../../../../util/progress/progress_button.dart';
+import '../../../../model/command/api/login_command.dart';
 import '../remember_me_checkbox.dart';
 
-class LoginCard extends StatefulWidget {
-  const LoginCard({super.key});
+class ManualCard extends StatefulWidget {
+  const ManualCard({super.key});
 
   @override
-  State<LoginCard> createState() => _LoginCardState();
+  State<ManualCard> createState() => _ManualCardState();
 }
 
-class _LoginCardState extends State<LoginCard> {
+class _ManualCardState extends State<ManualCard> {
   /// Controller for username text field
   late TextEditingController usernameController;
 
