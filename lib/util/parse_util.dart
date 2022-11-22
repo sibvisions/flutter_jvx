@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../commands.dart';
 import '../flutter_jvx.dart';
 import '../src/model/layout/layout_position.dart';
+import '../src/model/response/application_settings_response.dart';
 
 abstract class ParseUtil {
   static T? castOrNull<T>(dynamic x) => x is T ? x : null;
@@ -37,13 +39,20 @@ abstract class ParseUtil {
     return null;
   }
 
-  static Color? parseServerColor(dynamic pValue) {
-    if (pValue == null || pValue is! String) {
+  static Color? parseBackgroundColor(dynamic pValue) {
+    String? jsonBackground = pValue?.toString();
+    List<String> listBackgroundValues = jsonBackground?.split(";") ?? [];
+
+    List<String> exludedBackgroundColors = [ApiObjectProperty.mandatoryBackground];
+
+    if (listBackgroundValues.length >= 2 && exludedBackgroundColors.contains(listBackgroundValues[1])) {
       return null;
     }
+    return parseServerColor(pValue);
+  }
 
-    var values = pValue.split(";");
-    return parseHexColor(values[0]);
+  static Color? parseServerColor(dynamic pValue) {
+    return ColorConverter.fromJson(pValue?.toString());
   }
 
   /// Parses 6 or 8 digit hex-integers to colors.
@@ -218,19 +227,22 @@ abstract class ParseUtil {
     dynamic Function(dynamic)? pConversion,
     bool Function(dynamic)? pCondition,
   }) {
-    if (pJson.containsKey(pKey)) {
-      dynamic value = pJson[pKey];
-      if (value != null && (pCondition == null || pCondition.call(value))) {
-        if (pConversion != null) {
-          return pConversion.call(value);
-        } else {
-          return value;
-        }
-      } else {
-        return pDefault;
-      }
+    if (!pJson.containsKey(pKey)) {
+      return pCurrent;
     }
-    return pCurrent;
+
+    dynamic value = pJson[pKey];
+
+    // Explicitly null values reset the value back to the default.
+    if (value == null) {
+      return pDefault;
+    }
+
+    if ((pCondition == null || pCondition.call(value)) && pConversion != null) {
+      return pConversion.call(value);
+    } else {
+      return value;
+    }
   }
 
   static applyJsonToJson(Map<String, dynamic> pSource, Map<String, dynamic> pDestination) {
