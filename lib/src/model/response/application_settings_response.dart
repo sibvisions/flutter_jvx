@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
@@ -20,6 +20,7 @@ class ApplicationSettingsResponse extends ApiResponse {
   final bool logoutVisible;
   final bool userSettingsVisible;
   final ApplicationColors? colors;
+  final ApplicationColors? darkColors;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -36,6 +37,7 @@ class ApplicationSettingsResponse extends ApiResponse {
     required this.logoutVisible,
     required this.userSettingsVisible,
     this.colors,
+    this.darkColors,
     required super.name,
   });
 
@@ -50,6 +52,7 @@ class ApplicationSettingsResponse extends ApiResponse {
         logoutVisible = true,
         userSettingsVisible = true,
         colors = null,
+        darkColors = null,
         super(name: ApiResponseNames.applicationSettings);
 
   ApplicationSettingsResponse.fromJson(super.json)
@@ -65,10 +68,15 @@ class ApplicationSettingsResponse extends ApiResponse {
         colors = json[ApiObjectProperty.colors] == null
             ? null
             : ApplicationColors.fromJson(json[ApiObjectProperty.colors] as Map<String, dynamic>),
+        darkColors = json[ApiObjectProperty.colors] == null
+            ? null
+            : ApplicationColors.fromJson(json[ApiObjectProperty.colors] as Map<String, dynamic>, true),
         super.fromJson();
 }
 
 class ApplicationColors {
+  static const String DARK_PREFIX = "dark_";
+
   /// Map with typeName and color as string
   /// e.g. mandatoryBackground, readOnlyBackground, invalidEditorBackground, alternateBackground, ...
   final Color? background;
@@ -95,17 +103,41 @@ class ApplicationColors {
     this.invalidEditorBackground,
   });
 
-  ApplicationColors.fromJson(Map<String, dynamic> json)
-      : background = ColorConverter.fromJson(json[ApiObjectProperty.background]),
-        alternateBackground = ColorConverter.fromJson(json[ApiObjectProperty.alternateBackground]),
-        foreground = ColorConverter.fromJson(json[ApiObjectProperty.foreground]),
-        activeSelectionBackground = ColorConverter.fromJson(json[ApiObjectProperty.activeSelectionBackground]),
-        activeSelectionForeground = ColorConverter.fromJson(json[ApiObjectProperty.activeSelectionForeground]),
-        inactiveSelectionBackground = ColorConverter.fromJson(json[ApiObjectProperty.inactiveSelectionBackground]),
-        inactiveSelectionForeground = ColorConverter.fromJson(json[ApiObjectProperty.inactiveSelectionForeground]),
-        mandatoryBackground = ColorConverter.fromJson(json[ApiObjectProperty.mandatoryBackground]),
-        readOnlyBackground = ColorConverter.fromJson(json[ApiObjectProperty.readOnlyBackground]),
-        invalidEditorBackground = ColorConverter.fromJson(json[ApiObjectProperty.invalidEditorBackground]);
+  ApplicationColors.fromJson(Map<String, dynamic> json, [bool isDark = false])
+      : background = _handleJsonColor(json, ApiObjectProperty.background, isDark),
+        alternateBackground = _handleJsonColor(json, ApiObjectProperty.alternateBackground, isDark),
+        foreground = _handleJsonColor(json, ApiObjectProperty.foreground, isDark),
+        activeSelectionBackground = _handleJsonColor(json, ApiObjectProperty.activeSelectionBackground, isDark),
+        activeSelectionForeground = _handleJsonColor(json, ApiObjectProperty.activeSelectionForeground, isDark),
+        inactiveSelectionBackground = _handleJsonColor(json, ApiObjectProperty.inactiveSelectionBackground, isDark),
+        inactiveSelectionForeground = _handleJsonColor(json, ApiObjectProperty.inactiveSelectionForeground, isDark),
+        mandatoryBackground = _handleJsonColor(json, ApiObjectProperty.mandatoryBackground, isDark),
+        readOnlyBackground = _handleJsonColor(json, ApiObjectProperty.readOnlyBackground, isDark),
+        invalidEditorBackground = _handleJsonColor(json, ApiObjectProperty.invalidEditorBackground, isDark);
+
+  static Color? _handleJsonColor(Map<String, dynamic> pJson, String pPropertyName, bool pIsDark) {
+    String propertyName = pPropertyName;
+    String darkPropertyName = DARK_PREFIX + propertyName;
+
+    if (pIsDark) {
+      if (pJson.keys.contains(darkPropertyName)) {
+        return ColorConverter.fromJson(pJson[darkPropertyName]);
+      } else {
+        Color? lightColor = ColorConverter.fromJson(pJson[pPropertyName]);
+        Color? darkColor;
+        if (lightColor != null) {
+          HSVColor hsvColor = HSVColor.fromColor(lightColor);
+          hsvColor = hsvColor.withSaturation((hsvColor.saturation + 0.1).clamp(0.0, 1.0));
+          hsvColor = hsvColor.withValue((hsvColor.value - 0.2).clamp(0.0, 1.0));
+
+          darkColor = hsvColor.toColor();
+        }
+        return darkColor;
+      }
+    } else {
+      return ColorConverter.fromJson(pJson[pPropertyName]);
+    }
+  }
 }
 
 abstract class ColorConverter {
