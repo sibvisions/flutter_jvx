@@ -22,6 +22,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   // The function to call on the press of the button.
   final VoidCallback? onPress;
 
+  // The function to call if the focus changes.
+  final Function(bool)? onFocusChange;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +41,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [FlButtonWidget]
-  const FlButtonWidget({super.key, required super.model, this.onPress});
+  const FlButtonWidget({super.key, required super.model, this.onPress, this.onFocusChange});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -47,6 +50,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      onFocusChange: onFocusChange,
       onPressed: getOnPressed(context),
       style: createButtonStyle(context),
       child: createDirectButtonChild(context),
