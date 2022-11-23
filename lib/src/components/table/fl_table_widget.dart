@@ -113,7 +113,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
             onPressed: floatingOnPress,
             child: FaIcon(
               FontAwesomeIcons.squarePlus,
-              color: Colors.grey[600],
+              color: model.foreground,
             ),
           ),
         ),
