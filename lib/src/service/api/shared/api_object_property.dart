@@ -85,6 +85,8 @@ abstract class ApiObjectProperty {
   static const String latitudeColumnName = "latitudeColumnName";
   static const String groupColumnName = "groupColumnName";
   static const String defaultMenuItem = "defaultMenuItem";
+  static const String eventFocusGained = "eventFocusGained";
+  static const String eventFocusLost = "eventFocusLost";
 
   //Can occur in both request & response
   static const String clientId = "clientId";

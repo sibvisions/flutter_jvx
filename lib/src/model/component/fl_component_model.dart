@@ -104,6 +104,12 @@ abstract class FlComponentModel {
   /// Styles
   Set<String> styles = {};
 
+  /// If the component sends focus gained events.
+  bool eventFocusGained = false;
+
+  /// If the component sends focus lost events.
+  bool eventFocusLost = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -287,6 +293,22 @@ abstract class FlComponentModel {
       pDefault: defaultModel.styles,
       pConversion: _parseStyle,
       pCurrent: styles,
+    );
+
+    eventFocusGained = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.eventFocusGained,
+      pDefault: defaultModel.eventFocusGained,
+      pConversion: ParseUtil.parseBool,
+      pCurrent: eventFocusGained,
+    );
+
+    eventFocusLost = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.eventFocusLost,
+      pDefault: defaultModel.eventFocusLost,
+      pConversion: ParseUtil.parseBool,
+      pCurrent: eventFocusLost,
     );
 
     _parseFont(pJson, defaultModel);
