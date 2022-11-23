@@ -23,7 +23,9 @@ class FlIconModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes the [FlButtonModel]
-  FlIconModel() : super();
+  FlIconModel() : super() {
+    minimumSize = const Size(16, 16);
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
