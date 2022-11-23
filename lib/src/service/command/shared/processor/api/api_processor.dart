@@ -12,9 +12,12 @@ import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/api/filter_command.dart';
+import '../../../../../model/command/api/focus_gained_command.dart';
+import '../../../../../model/command/api/focus_lost_command.dart';
 import '../../../../../model/command/api/insert_record_command.dart';
 import '../../../../../model/command/api/login_command.dart';
 import '../../../../../model/command/api/logout_command.dart';
+import '../../../../../model/command/api/mouse_command.dart';
 import '../../../../../model/command/api/navigation_command.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/api/open_tab_command.dart';
@@ -42,9 +45,12 @@ import 'download_style_command_processor.dart';
 import 'download_translation_command_processor.dart';
 import 'fetch_command_processor.dart';
 import 'filter_command_processor.dart';
+import 'focus_gained_command_processor.dart';
+import 'focus_lost_command_processor.dart';
 import 'insert_record_command_processor.dart';
 import 'login_command_processor.dart';
 import 'logout_command_processor.dart';
+import 'mouse_command_processor.dart';
 import 'navigation_command_processor.dart';
 import 'open_screen_command_processor.dart';
 import 'open_tab_command_processor.dart';
@@ -139,6 +145,12 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   final ICommandProcessor _changesProcessor = ChangesCommandProcessor();
 
   final ICommandProcessor _saveAllEditorsProcessor = SaveAllEditorsCommandProcessor();
+
+  final ICommandProcessor _mouseProcessor = MouseCommandProcessor();
+
+  final ICommandProcessor _focusGainedProcessor = FocusGainedCommandProcessor();
+
+  final ICommandProcessor _focusLostProcessor = FocusLostCommandProcessor();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -202,6 +214,12 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _changesProcessor.processCommand(command);
     } else if (command is SaveAllEditorsCommand) {
       return _saveAllEditorsProcessor.processCommand(command);
+    } else if (command is MouseCommand) {
+      return _mouseProcessor.processCommand(command);
+    } else if (command is FocusGainedCommand) {
+      return _focusGainedProcessor.processCommand(command);
+    } else if (command is FocusLostCommand) {
+      return _focusLostProcessor.processCommand(command);
     }
     return [];
   }

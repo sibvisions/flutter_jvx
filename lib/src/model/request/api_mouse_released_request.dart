@@ -1,29 +1,15 @@
-import '../../../commands.dart';
-import 'session_request.dart';
+import 'api_mouse_request.dart';
 
-class ApiMouseReleasedRequest extends SessionRequest {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Component name of the button clicked
-  final String componentName;
-
+class ApiMouseReleasedRequest extends ApiMouseRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiMouseReleasedRequest({
-    required this.componentName,
+    required super.componentName,
+    super.button,
+    super.clickCount,
+    super.x,
+    super.y,
   });
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  Map<String, dynamic> toJson() => {
-        ...super.toJson(),
-        ApiObjectProperty.componentId: componentName,
-      };
 }

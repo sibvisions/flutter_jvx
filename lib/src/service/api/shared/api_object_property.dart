@@ -87,6 +87,10 @@ abstract class ApiObjectProperty {
   static const String defaultMenuItem = "defaultMenuItem";
   static const String eventFocusGained = "eventFocusGained";
   static const String eventFocusLost = "eventFocusLost";
+  static const String button = "button";
+  static const String clickCount = "clickCount";
+  static const String x = "x";
+  static const String y = "y";
 
   //Can occur in both request & response
   static const String clientId = "clientId";
