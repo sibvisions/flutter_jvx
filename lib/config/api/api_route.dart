@@ -33,11 +33,11 @@ class APIRoute {
   static const APIRoute POST_DOWNLOAD = APIRoute(Method.POST, "download");
   static const APIRoute POST_UPLOAD = APIRoute(Method.POST, "upload");
   static const APIRoute POST_CHANGES = APIRoute(Method.POST, "api/changes");
-  static const APIRoute POST_mouseClicked = APIRoute(Method.POST, "api/mouseClicked");
-  static const APIRoute POST_mousePressed = APIRoute(Method.POST, "api/mousePressed");
-  static const APIRoute POST_mouseReleased = APIRoute(Method.POST, "api/mouseReleased");
-  static const APIRoute POST_focusGained = APIRoute(Method.POST, "api/focusGained");
-  static const APIRoute POST_focusLost = APIRoute(Method.POST, "api/focusLost");
+  static const APIRoute POST_MOUSE_CLICKED = APIRoute(Method.POST, "api/mouseClicked");
+  static const APIRoute POST_MOUSE_PRESSED = APIRoute(Method.POST, "api/mousePressed");
+  static const APIRoute POST_MOUSE_RELEASED = APIRoute(Method.POST, "api/mouseReleased");
+  static const APIRoute POST_FOCUS_GAINED = APIRoute(Method.POST, "api/focusGained");
+  static const APIRoute POST_FOCUS_LOST = APIRoute(Method.POST, "api/focusLost");
 
   final String route;
   final Method method;
