@@ -42,6 +42,10 @@ abstract class ImageLoader {
 
     ImageProvider imageProvider;
 
+    if (pPath.startsWith("/")) {
+      pPath = pPath.substring(1);
+    }
+
     File? file = fileManager.getFileSync(pPath: "${IFileManager.IMAGES_PATH}/$pPath");
 
     if (pImageInBinary) {
