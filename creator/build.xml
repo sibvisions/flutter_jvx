@@ -370,6 +370,8 @@ the License.
       </fileset>
     </copy> 
 
+    <zip basedir="${install}/web" destfile="${install}/web.zip" />
+
   </target>
 
   <!-- 
