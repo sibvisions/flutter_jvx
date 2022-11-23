@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 import '../../../custom/app_manager.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
+import '../../model/command/api/focus_gained_command.dart';
+import '../../model/command/api/focus_lost_command.dart';
 import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
@@ -228,5 +230,17 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   double getHeightForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.height : 0.0;
+  }
+
+  void sendFocusGainedCommand() {
+    if (model.eventFocusGained) {
+      IUiService().sendCommand(FocusGainedCommand(componentName: model.name, reason: "Component focused gained"));
+    }
+  }
+
+  void sendFocusLostCommand() {
+    if (model.eventFocusLost) {
+      IUiService().sendCommand(FocusLostCommand(componentName: model.name, reason: "Component focus lost"));
+    }
   }
 }
