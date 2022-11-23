@@ -12,17 +12,31 @@ abstract class ParseUtil {
     return text != null && text.length >= 6 && text.substring(0, 6).toLowerCase().startsWith("<html>");
   }
 
-  /// Will return true if string == "true", false if string == "false"
+  /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
   /// otherwise returns null.
   static bool? parseBool(dynamic pBool) {
     if (pBool != null) {
-      if (pBool == "true") {
+      if (pBool is bool) {
+        return pBool;
+      } else if (pBool == "true") {
         return true;
       } else if (pBool == "false") {
         return false;
       }
     }
     return null;
+  }
+
+  /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
+  /// otherwise returns false.
+  static bool parseBoolOrFalse(dynamic pBool) {
+    return parseBool(pBool) ?? false;
+  }
+
+  /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
+  /// otherwise returns true.
+  static bool parseBoolOrTrue(dynamic pBool) {
+    return parseBool(pBool) ?? true;
   }
 
   /// Parses a [Size] object from a string, will only parse correctly if provided string was formatted :
