@@ -29,9 +29,14 @@ import '../../../../model/request/api_download_style_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
 import '../../../../model/request/api_fetch_request.dart';
 import '../../../../model/request/api_filter_request.dart';
+import '../../../../model/request/api_focus_gained_request.dart';
+import '../../../../model/request/api_focus_lost_request.dart';
 import '../../../../model/request/api_insert_record_request.dart';
 import '../../../../model/request/api_login_request.dart';
 import '../../../../model/request/api_logout_request.dart';
+import '../../../../model/request/api_mouse_clicked_request.dart';
+import '../../../../model/request/api_mouse_pressed_request.dart';
+import '../../../../model/request/api_mouse_released_request.dart';
 import '../../../../model/request/api_navigation_request.dart';
 import '../../../../model/request/api_open_screen_request.dart';
 import '../../../../model/request/api_open_tab_request.dart';
@@ -113,6 +118,11 @@ class OnlineApiRepository implements IRepository {
     ApiUploadRequest: (_) => APIRoute.POST_UPLOAD,
     ApiDownloadRequest: (_) => APIRoute.POST_DOWNLOAD,
     ApiChangesRequest: (_) => APIRoute.POST_CHANGES,
+    ApiMousePressedRequest: (_) => APIRoute.POST_MOUSE_PRESSED,
+    ApiMouseClickedRequest: (_) => APIRoute.POST_MOUSE_CLICKED,
+    ApiMouseReleasedRequest: (_) => APIRoute.POST_MOUSE_RELEASED,
+    ApiFocusGainedRequest: (_) => APIRoute.POST_FOCUS_GAINED,
+    ApiFocusLostRequest: (_) => APIRoute.POST_FOCUS_LOST,
   };
 
   static final Map<String, ResponseFactory> maps = {
