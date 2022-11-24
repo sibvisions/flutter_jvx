@@ -24,28 +24,32 @@ class GridMenu extends Menu {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      SizedBox.expand(
-        child: Container(
-          color: backgroundColor,
-          child: Center(
-            child: backgroundImageString != null ? ImageLoader.loadImage(backgroundImageString!) : null,
+    return Stack(
+      children: [
+        SizedBox.expand(
+          child: Container(
+            color: backgroundColor,
+            child: Center(
+              child: backgroundImageString != null ? ImageLoader.loadImage(backgroundImageString!) : null,
+            ),
           ),
         ),
-      ),
-      CustomScrollView(slivers: [
-        SliverGrid(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 200,
-            mainAxisSpacing: 1,
-            crossAxisSpacing: 1,
-          ),
-          delegate: SliverChildListDelegate.fixed(
-            _getAllMenuItems().map((e) => GridMenuItem(onClick: onClick, menuItemModel: e)).toList(),
-          ),
+        CustomScrollView(
+          slivers: [
+            SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200,
+                mainAxisSpacing: 1,
+                crossAxisSpacing: 1,
+              ),
+              delegate: SliverChildListDelegate.fixed(
+                _getAllMenuItems().map((e) => GridMenuItem(onClick: onClick, menuItemModel: e)).toList(),
+              ),
+            ),
+          ],
         ),
-      ]),
-    ]);
+      ],
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
