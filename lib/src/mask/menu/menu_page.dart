@@ -75,7 +75,10 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             children: [
               if (isOffline) OfflineUtil.getOfflineBar(context),
               Expanded(
-                child: _getMenu(applyMenuFilter(menuModel, (item) => item.label)),
+                child: _getMenu(
+                  key: const PageStorageKey('MainMenu'),
+                  applyMenuFilter(menuModel, (item) => item.label),
+                ),
               ),
             ],
           );
@@ -231,7 +234,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     );
   }
 
-  Widget _getMenu(MenuModel menuModel) {
+  Widget _getMenu(MenuModel menuModel, {Key? key}) {
     MenuMode menuMode = IConfigService().getMenuMode();
 
     // Overriding menu mode
@@ -243,6 +246,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     String? menuBackgroundImage = appStyle['desktop.icon'];
 
     return Menu.fromMode(
+      key: key,
       menuMode,
       menuModel: menuModel,
       backgroundImageString: menuBackgroundImage,

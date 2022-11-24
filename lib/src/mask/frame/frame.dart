@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../model/command/api/logout_command.dart';
 import '../login/default/cards/change_password.dart';
@@ -99,10 +100,13 @@ abstract class FrameState extends State<Frame> {
   static FrameState? of(BuildContext context) => context.findAncestorStateOfType<FrameState>();
 
   @override
-  Widget build(BuildContext context) => Builder(
-        builder: (context) => widget.builder.call(
-          context,
-          widget.isOffline,
+  Widget build(BuildContext context) => PageStorage(
+        bucket: pageStorageBucket,
+        child: Builder(
+          builder: (context) => widget.builder.call(
+            context,
+            widget.isOffline,
+          ),
         ),
       );
 

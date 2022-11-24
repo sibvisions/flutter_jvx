@@ -171,6 +171,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 size: 32,
               ),
               child: GroupedListMenu(
+                key: const PageStorageKey('DrawerMenu'),
                 menuModel: IUiService().getMenuModel(),
                 onClick: Menu.menuItemPressed,
                 useAlternativeLabel: true,

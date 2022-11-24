@@ -33,6 +33,7 @@ abstract class Menu extends StatelessWidget {
 
   factory Menu.fromMode(
     MenuMode menuMode, {
+    Key? key,
     required MenuModel menuModel,
     ButtonCallback onClick = Menu.menuItemPressed,
     Color? menuBackgroundColor,
@@ -41,6 +42,7 @@ abstract class Menu extends StatelessWidget {
     switch (menuMode) {
       case MenuMode.GRID:
         return GridMenu(
+          key: key,
           menuModel: menuModel,
           onClick: onClick,
           backgroundColor: menuBackgroundColor,
@@ -48,6 +50,7 @@ abstract class Menu extends StatelessWidget {
         );
       case MenuMode.LIST:
         return ListMenu(
+          key: key,
           menuModel: menuModel,
           onClick: onClick,
           backgroundColor: menuBackgroundColor,
@@ -55,11 +58,13 @@ abstract class Menu extends StatelessWidget {
         );
       case MenuMode.LIST_GROUPED:
         return GroupedListMenu(
+          key: key,
           menuModel: menuModel,
           onClick: onClick,
         );
       case MenuMode.TABS:
         return TabMenu(
+          key: key,
           menuModel: menuModel,
           onClick: onClick,
           backgroundColor: menuBackgroundColor,
@@ -70,6 +75,7 @@ abstract class Menu extends StatelessWidget {
       case MenuMode.GRID_GROUPED:
       default:
         return GroupedGridMenu(
+          key: key,
           menuModel: menuModel,
           onClick: onClick,
           backgroundColor: menuBackgroundColor,

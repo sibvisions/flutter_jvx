@@ -182,6 +182,10 @@ class FlutterJVx extends StatefulWidget {
     IUiService().clear();
   }
 
+  static void resetPageBucket() {
+    pageStorageBucket = PageStorageBucket();
+  }
+
   static start([FlutterJVx pAppToRun = const FlutterJVx()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -261,6 +265,8 @@ class FlutterJVx extends StatefulWidget {
 }
 
 late BeamerDelegate routerDelegate;
+// Global Bucket to persist the storage between different locations
+PageStorageBucket pageStorageBucket = PageStorageBucket();
 
 class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
   /// Gets the [FlutterJVxState] widget.
