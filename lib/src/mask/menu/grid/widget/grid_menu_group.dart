@@ -18,6 +18,8 @@ class GridMenuGroup extends StatelessWidget {
   /// Model of this group
   final MenuGroupModel menuGroupModel;
 
+  final bool sticky;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,6 +28,7 @@ class GridMenuGroup extends StatelessWidget {
     super.key,
     required this.menuGroupModel,
     required this.onClick,
+    required this.sticky,
   });
 
   @override
@@ -34,7 +37,7 @@ class GridMenuGroup extends StatelessWidget {
       pushPinnedChildren: true,
       children: [
         SliverPersistentHeader(
-            pinned: true,
+            pinned: sticky,
             delegate: GridMenuHeader(
               headerText: FlutterJVx.translate(menuGroupModel.name),
               height: 48,

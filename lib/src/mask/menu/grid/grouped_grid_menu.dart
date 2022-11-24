@@ -5,6 +5,8 @@ import '../menu.dart';
 import 'widget/grid_menu_group.dart';
 
 class GroupedGridMenu extends Menu {
+  final bool sticky;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,6 +17,7 @@ class GroupedGridMenu extends Menu {
     required super.onClick,
     super.backgroundColor,
     super.backgroundImageString,
+    this.sticky = true,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,7 +37,9 @@ class GroupedGridMenu extends Menu {
           ),
         ),
         CustomScrollView(
-          slivers: menuModel.menuGroups.map((e) => GridMenuGroup(menuGroupModel: e, onClick: onClick)).toList(),
+          slivers: menuModel.menuGroups
+              .map((e) => GridMenuGroup(menuGroupModel: e, onClick: onClick, sticky: sticky))
+              .toList(),
         ),
       ],
     );

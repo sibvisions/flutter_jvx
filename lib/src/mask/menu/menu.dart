@@ -36,6 +36,7 @@ abstract class Menu extends StatelessWidget {
     Key? key,
     required MenuModel menuModel,
     ButtonCallback onClick = Menu.menuItemPressed,
+    bool sticky = true,
     Color? menuBackgroundColor,
     String? backgroundImageString,
   }) {
@@ -61,6 +62,7 @@ abstract class Menu extends StatelessWidget {
           key: key,
           menuModel: menuModel,
           onClick: onClick,
+          sticky: sticky,
         );
       case MenuMode.TABS:
         return TabMenu(
@@ -78,6 +80,7 @@ abstract class Menu extends StatelessWidget {
           key: key,
           menuModel: menuModel,
           onClick: onClick,
+          sticky: sticky,
           backgroundColor: menuBackgroundColor,
           backgroundImageString: backgroundImageString,
         );

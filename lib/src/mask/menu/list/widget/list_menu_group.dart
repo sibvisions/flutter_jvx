@@ -4,7 +4,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../../../../flutter_jvx.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/response/device_status_response.dart';
-import '../../../drawer/web_menu.dart';
 import '../../grid/widget/grid_menu_header.dart';
 import '../../menu_page.dart';
 import 'list_menu_item.dart';
@@ -30,6 +29,8 @@ class ListMenuGroup extends StatelessWidget {
   final bool? decreasedDensity;
   final bool? useAlternativeLabel;
 
+  final bool sticky;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +39,7 @@ class ListMenuGroup extends StatelessWidget {
     super.key,
     required this.onClick,
     required this.menuGroupModel,
+    required this.sticky,
     this.layoutMode,
     this.textStyle,
     this.headerColor,
@@ -69,7 +71,7 @@ class ListMenuGroup extends StatelessWidget {
       pushPinnedChildren: true,
       children: [
         SliverPersistentHeader(
-          pinned: WebMenu.maybeOf(context) == null || layoutMode != LayoutMode.Small,
+          pinned: sticky,
           delegate: GridMenuHeader(
             headerText: FlutterJVx.translate(menuGroupModel.name),
             headerColor: headerColor,

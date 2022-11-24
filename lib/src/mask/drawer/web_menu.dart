@@ -97,10 +97,11 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
         Expanded(
           child: GroupedListMenu(
             menuModel: menuModel,
+            onClick: Menu.menuItemPressed,
+            sticky: layoutMode != LayoutMode.Small,
             layoutMode: layoutMode,
             textStyle: const TextStyle(fontWeight: FontWeight.normal),
             headerColor: groupTextColor,
-            onClick: Menu.menuItemPressed,
             decreasedDensity: true,
             useAlternativeLabel: true,
           ),

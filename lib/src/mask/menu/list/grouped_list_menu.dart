@@ -20,6 +20,8 @@ class GroupedListMenu extends Menu {
   final bool? decreasedDensity;
   final bool? useAlternativeLabel;
 
+  final bool sticky;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,6 +30,7 @@ class GroupedListMenu extends Menu {
     super.key,
     required super.menuModel,
     required super.onClick,
+    this.sticky = true,
     this.layoutMode,
     this.textStyle,
     this.headerColor,
@@ -47,6 +50,7 @@ class GroupedListMenu extends Menu {
             (e) => ListMenuGroup(
               menuGroupModel: e,
               onClick: onClick,
+              sticky: sticky,
               layoutMode: layoutMode,
               textStyle: textStyle,
               headerColor: headerColor,
