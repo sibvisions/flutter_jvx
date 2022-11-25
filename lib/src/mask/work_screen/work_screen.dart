@@ -135,12 +135,14 @@ class WorkScreenState extends State<WorkScreen> {
 
         List<Widget> actions = [];
 
-        Widget body = SafeArea(
-          child: Column(
-            children: [
-              if (isOffline) OfflineUtil.getOfflineBar(context),
-              Expanded(child: _getScreen(context, header, screen, footer, isCustomScreen)),
-            ],
+        Widget body = FocusTraversalGroup(
+          child: SafeArea(
+            child: Column(
+              children: [
+                if (isOffline) OfflineUtil.getOfflineBar(context),
+                Expanded(child: _getScreen(context, header, screen, footer, isCustomScreen)),
+              ],
+            ),
           ),
         );
 
