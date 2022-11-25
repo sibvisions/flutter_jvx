@@ -22,8 +22,17 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   // The function to call on the press of the button.
   final VoidCallback? onPress;
 
-  // The function to call if the focus changes.
-  final Function(bool)? onFocusChange;
+  // The function if the button gained focus.
+  final VoidCallback? onFocusGained;
+
+  // The function if the button lost focus.
+  final VoidCallback? onFocusLost;
+
+  // The function if the mouse was pressed down.
+  final Function(DragDownDetails)? onPressDown;
+
+  // The function if the mouse click is released.
+  final Function(DragEndDetails)? onPressUp;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
@@ -36,12 +45,22 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     return null;
   }
 
+  bool get isButtonFocusable => model.isFocusable;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [FlButtonWidget]
-  const FlButtonWidget({super.key, required super.model, this.onPress, this.onFocusChange});
+  const FlButtonWidget({
+    super.key,
+    required super.model,
+    this.onPress,
+    this.onFocusGained,
+    this.onFocusLost,
+    this.onPressDown,
+    this.onPressUp,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -49,11 +68,18 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onFocusChange: onFocusChange,
-      onPressed: getOnPressed(context),
-      style: createButtonStyle(context),
-      child: createDirectButtonChild(context),
+    Function()? pressEvent = getOnPressed(context);
+
+    return GestureDetector(
+      onPanDown: pressEvent != null ? onPressDown : null,
+      onPanEnd: pressEvent != null ? onPressUp : null,
+      child: ElevatedButton(
+        focusNode: FocusNode(canRequestFocus: isButtonFocusable),
+        onFocusChange: _onFocusChange,
+        onPressed: pressEvent,
+        style: createButtonStyle(context),
+        child: createDirectButtonChild(context),
+      ),
     );
   }
 
@@ -165,5 +191,13 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       return onPress;
     }
     return null;
+  }
+
+  void _onFocusChange(bool pFocus) {
+    if (pFocus) {
+      onFocusGained?.call();
+    } else {
+      onFocusLost?.call();
+    }
   }
 }

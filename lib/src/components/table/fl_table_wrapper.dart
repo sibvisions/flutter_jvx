@@ -9,6 +9,7 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../commands.dart';
+import '../../../custom/app_manager.dart';
 import '../../../data.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
@@ -296,23 +297,30 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Deletes the selected record.
   void deleteRecord() {
     if (lastTouchedIndex != -1) {
-      Filter? filter = createFilter(pRowIndex: lastTouchedIndex);
+      BaseCommand? command = _createDeleteCommand();
 
-      if (filter == null) {
-        FlutterJVx.logUI.w("Filter of table(${model.id}) null");
-        return;
+      if (command != null) {
+        IUiService().sendCommand(command);
       }
-
-      IUiService().sendCommand(DeleteRecordCommand(
-        dataProvider: model.dataProvider,
-        selectedRow: lastTouchedIndex,
-        reason: "Swiped",
-        filter: filter,
-      ));
 
       lastTouchedIndex = -1;
       setState(() {});
     }
+  }
+
+  DeleteRecordCommand? _createDeleteCommand() {
+    Filter? filter = createFilter(pRowIndex: lastTouchedIndex);
+
+    if (filter == null) {
+      FlutterJVx.logUI.w("Filter of table(${model.id}) null");
+      return null;
+    }
+    return DeleteRecordCommand(
+      dataProvider: model.dataProvider,
+      selectedRow: lastTouchedIndex,
+      reason: "Swiped",
+      filter: filter,
+    );
   }
 
   /// Selects the record.
@@ -369,15 +377,24 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       context: context,
       items: popupMenuEntries,
     ).then((val) {
-      IUiService().saveAllEditorsThen(model.id, () {
-        if (val == ContextMenuCommand.NEW) {
-          insertRecord();
-        } else if (val == ContextMenuCommand.DELETE) {
-          deleteRecord();
-        } else if (val == ContextMenuCommand.OFFLINE) {
-          goOffline();
-        }
-      }, "Table menu item pressed");
+      IUiService()
+          .saveAllEditors(
+              pId: model.id,
+              pFunction: () async {
+                if (val == ContextMenuCommand.NEW) {
+                  return [_createInsertCommand()];
+                } else if (val == ContextMenuCommand.DELETE) {
+                  BaseCommand? command = _createDeleteCommand();
+                  if (command != null) {
+                    return [command];
+                  }
+                } else if (val == ContextMenuCommand.OFFLINE) {
+                  goOffline();
+                }
+                return [];
+              },
+              pReason: "Table menu item pressed")
+          .catchError(IUiService().handleAsyncError);
     });
   }
 
@@ -427,7 +444,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Inserts a new record.
   void insertRecord() {
-    IUiService().sendCommand(InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted"));
+    IUiService().sendCommand(_createInsertCommand());
+  }
+
+  InsertRecordCommand _createInsertCommand() {
+    return InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted");
   }
 
   dynamic _getValue({required String pColumnName, int? pRowIndex}) {

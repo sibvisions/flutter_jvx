@@ -18,6 +18,11 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     required super.model,
     this.onItemPress,
     required this.popupItems,
+    super.onPress,
+    super.onFocusGained,
+    super.onFocusLost,
+    super.onPressDown,
+    super.onPressUp,
   });
 
   @override
@@ -37,6 +42,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
 
   Widget createPopupIcon(BuildContext context) {
     return InkWell(
+      canRequestFocus: false,
       enableFeedback: model.isEnabled,
       onTap: () => openMenu(context),
       child: Container(
@@ -52,19 +58,19 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   }
 
   void openMenu(BuildContext context) {
-    // Copied from [PopupMenuButtonState]
-    final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
-    final RenderBox button = context.findRenderObject()! as RenderBox;
-    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
-
     if (popupItems.isNotEmpty) {
+      // Copied from [PopupMenuButtonState]
+      final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
+      final RenderBox button = context.findRenderObject()! as RenderBox;
+      final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+      final RelativeRect position = RelativeRect.fromRect(
+        Rect.fromPoints(
+          button.localToGlobal(Offset.zero, ancestor: overlay),
+          button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+        ),
+        Offset.zero & overlay.size,
+      );
+
       showMenu<String>(
         context: context,
         items: popupItems,

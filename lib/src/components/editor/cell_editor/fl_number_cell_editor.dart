@@ -22,6 +22,8 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
 
   final FocusNode focusNode = FocusNode();
 
+  FlTextFieldModel? lastWidgetModel;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,12 +33,25 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
     required super.pCellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.onFocusChanged,
   }) : super(
           model: FlNumberCellEditorModel(),
         ) {
     focusNode.addListener(() {
-      if (!focusNode.hasFocus) {
-        onEndEditing(numberFormatter.numberFormatter.parse(textController.text));
+      if (lastWidgetModel == null) {
+        return;
+      }
+
+      var widgetModel = lastWidgetModel!;
+
+      if (!widgetModel.isReadOnly) {
+        if (!focusNode.hasFocus) {
+          onEndEditing(numberFormatter.numberFormatter.parse(textController.text));
+        }
+      }
+
+      if (widgetModel.isFocusable) {
+        onFocusChanged(focusNode.hasFocus);
       }
     });
 
@@ -67,6 +82,8 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
     FlTextFieldModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
+
+    lastWidgetModel = widgetModel;
 
     return FlTextFieldWidget(
       model: widgetModel,

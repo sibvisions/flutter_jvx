@@ -33,7 +33,7 @@ class FlLinkedCellEditor
 
   TextEditingController textController = TextEditingController();
 
-  FocusNode focusNode = FocusNode();
+  FocusNode focusNode = FocusNode(skipTraversal: true);
 
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
@@ -47,6 +47,7 @@ class FlLinkedCellEditor
     required super.pCellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.onFocusChanged,
     this.recalculateSizeCallback,
   }) : super(
           model: FlLinkedCellEditorModel(),
@@ -54,6 +55,7 @@ class FlLinkedCellEditor
     focusNode.addListener(
       () {
         if (focusNode.hasFocus) {
+          onFocusChanged(true);
           _openLinkedCellPicker();
           focusNode.unfocus();
         }

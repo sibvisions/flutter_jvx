@@ -2,10 +2,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../model/component/check_box/fl_check_box_model.dart';
-import '../button/fl_button_wrapper.dart';
+import '../button/radio/fl_radio_button_wrapper.dart';
 import 'fl_check_box_widget.dart';
 
-class FlCheckBoxWrapper extends FlButtonWrapper<FlCheckBoxModel> {
+class FlCheckBoxWrapper extends FlRadioButtonWrapper<FlCheckBoxModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,7 +20,7 @@ class FlCheckBoxWrapper extends FlButtonWrapper<FlCheckBoxModel> {
   FlCheckBoxWrapperState createState() => FlCheckBoxWrapperState();
 }
 
-class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlButtonWrapperState<T> {
+class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlRadioButtonWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,6 +28,7 @@ class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlButtonWrapperS
   @override
   Widget build(BuildContext context) {
     FlCheckBoxWidget checkboxWidget = FlCheckBoxWidget(
+      focusNode: focusNode,
       model: model,
       onPress: sendButtonPressed,
     );

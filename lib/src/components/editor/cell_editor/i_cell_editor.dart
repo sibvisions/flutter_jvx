@@ -35,6 +35,8 @@ abstract class ICellEditor<
 
   Function(ReturnValueType) onEndEditing;
 
+  Function(bool) onFocusChanged;
+
   ColumnDefinition? columnDefinition;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +48,7 @@ abstract class ICellEditor<
     required Map<String, dynamic> pCellEditorJson,
     required this.onValueChange,
     required this.onEndEditing,
+    required this.onFocusChanged,
     this.name,
     this.columnDefinition,
   }) {
@@ -92,6 +95,7 @@ abstract class ICellEditor<
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
+    required Function(bool) onFocusChanged,
     CellEditorRecalculateSizeCallback? pRecalculateSizeCallback,
   }) {
     String? cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
@@ -103,6 +107,7 @@ abstract class ICellEditor<
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
+          onFocusChanged: onFocusChanged,
         );
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(
@@ -110,6 +115,7 @@ abstract class ICellEditor<
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
+          onFocusChanged: onFocusChanged,
         );
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         return FlNumberCellEditor(
@@ -117,6 +123,7 @@ abstract class ICellEditor<
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
+          onFocusChanged: onFocusChanged,
         );
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
@@ -124,6 +131,7 @@ abstract class ICellEditor<
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
+          onFocusChanged: onFocusChanged,
           recalculateSizeCallback: pRecalculateSizeCallback,
         );
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
@@ -132,6 +140,7 @@ abstract class ICellEditor<
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
+          onFocusChanged: onFocusChanged,
           recalculateSizeCallback: pRecalculateSizeCallback,
         );
       case FlCellEditorClassname.DATE_CELL_EDITOR:
@@ -140,6 +149,7 @@ abstract class ICellEditor<
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
+          onFocusChanged: onFocusChanged,
           recalculateSizeCallback: pRecalculateSizeCallback,
         );
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
@@ -149,6 +159,7 @@ abstract class ICellEditor<
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
+          onFocusChanged: onFocusChanged,
           recalculateSizeCallback: pRecalculateSizeCallback,
         );
 

@@ -19,6 +19,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   Widget get image {
     if (model.styles.contains(SWITCH_STYLE)) {
       return Switch.adaptive(
+        focusNode: focusNode,
         value: model.selected,
         onChanged: model.isEnabled ? (_) => onPress?.call() : null,
       );
@@ -35,6 +36,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
 
     return Checkbox(
       side: borderside,
+      focusNode: focusNode,
       visualDensity: VisualDensity.compact,
       value: model.selected,
       onChanged: model.isEnabled ? (_) => onPress?.call() : null,
@@ -48,7 +50,10 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   const FlCheckBoxWidget({
     super.key,
     required super.model,
-    required super.onPress,
+    required super.focusNode,
     super.inTable = false,
+    super.onPress,
+    super.onPressDown,
+    super.onPressUp,
   });
 }

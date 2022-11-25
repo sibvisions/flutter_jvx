@@ -19,6 +19,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
         child: Radio<bool>(
           visualDensity: VisualDensity.compact,
           value: true,
+          focusNode: focusNode,
           groupValue: model.selected,
           onChanged: model.isEnabled ? (_) => onPress?.call() : null,
           toggleable: true,
@@ -26,6 +27,9 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
       );
     });
   }
+
+  @override
+  bool get isButtonFocusable => false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
@@ -39,6 +43,8 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
 
   final bool inTable;
 
+  final FocusNode focusNode;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,12 +52,17 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   const FlRadioButtonWidget({
     super.key,
     required super.model,
-    required super.onPress,
+    required this.focusNode,
+    super.onPress,
+    super.onPressDown,
+    super.onPressUp,
     this.inTable = false,
   });
 
   @override
   ButtonStyle createButtonStyle(context) {
+    focusNode.canRequestFocus = model.isFocusable;
+
     return ButtonStyle(
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
       backgroundColor: MaterialStateProperty.all(model.background ?? Colors.transparent),
@@ -68,6 +79,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
 
     if (child != null) {
       child = InkWell(
+        canRequestFocus: false,
         onTap: super.getOnPressed(context),
         child: Ink(
           padding: inTable ? EdgeInsets.zero : const EdgeInsets.only(right: 10),

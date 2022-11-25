@@ -115,6 +115,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       }
     }
 
+    focusNode.canRequestFocus = model.isFocusable;
+
     bool isFilled = fillColor != null && !inTable;
     return TextField(
       controller: textController,
@@ -143,7 +145,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       minLines: minLines,
       maxLines: maxLines,
       keyboardType: keyboardType,
-      focusNode: !model.isReadOnly ? focusNode : null,
+      focusNode: focusNode,
       maxLength: maxLength,
       maxLengthEnforcement: maxLengthEnforcement,
       inputFormatters: inputFormatters,

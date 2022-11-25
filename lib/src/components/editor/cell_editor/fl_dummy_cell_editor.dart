@@ -12,6 +12,7 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
           pCellEditorJson: {},
           onValueChange: _doNothing,
           onEndEditing: _doNothing,
+          onFocusChanged: _doNothing,
         );
 
   @override

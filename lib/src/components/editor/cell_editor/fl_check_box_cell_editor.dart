@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
 import '../../check_box/fl_check_box_widget.dart';
@@ -8,9 +10,12 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  FocusNode focusNode = FocusNode();
+
   /// The value of the check box.
   dynamic _value;
 
+  FlCheckBoxModel? lastWidgetModel;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,9 +25,22 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
     required super.pCellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.onFocusChanged,
   }) : super(
           model: FlCheckBoxCellEditorModel(),
-        );
+        ) {
+    focusNode.addListener(() {
+      if (lastWidgetModel == null) {
+        return;
+      }
+
+      var widgetModel = lastWidgetModel!;
+
+      if (widgetModel.isFocusable) {
+        onFocusChanged(focusNode.hasFocus);
+      }
+    });
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -39,7 +57,10 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
 
+    lastWidgetModel = widgetModel;
+
     return FlCheckBoxWidget(
+      focusNode: focusNode, // TODO: FOCUS NODE
       model: widgetModel,
       onPress: onPress,
       inTable: pInTable,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
@@ -15,7 +17,13 @@ class FlToggleButtonWrapper<T extends FlToggleButtonModel> extends FlButtonWrapp
 class FlToggleButtonWrapperState<T extends FlToggleButtonModel> extends FlButtonWrapperState<T> {
   @override
   Widget build(BuildContext context) {
+    log(model.isFocusable.toString());
+
     final FlToggleButtonWidget buttonWidget = FlToggleButtonWidget(
+      onPressDown: (p0) => log("pressed down"),
+      onPressUp: (p0) => log("press lifted"),
+      onFocusGained: sendFocusGainedCommand,
+      onFocusLost: sendFocusLostCommand,
       model: model,
       onPress: sendButtonPressed,
     );

@@ -247,6 +247,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
         pCellEditorJson: colDef.cellEditorJson,
         onChange: (value) => onValueChanged?.call(value, pIndex, colDef.name),
         onEndEditing: (value) => onEndEditing?.call(value, pIndex, colDef.name),
+        onFocusChanged: (_) {},
       );
 
       var formattedValue = cellEditor.formatValue(rawValue);

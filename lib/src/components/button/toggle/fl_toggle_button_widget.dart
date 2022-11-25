@@ -14,7 +14,11 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
   const FlToggleButtonWidget({
     super.key,
     required super.model,
-    required super.onPress,
+    super.onPress,
+    super.onFocusGained,
+    super.onFocusLost,
+    super.onPressDown,
+    super.onPressUp,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

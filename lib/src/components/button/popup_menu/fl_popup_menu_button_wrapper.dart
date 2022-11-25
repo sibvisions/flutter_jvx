@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -72,6 +74,10 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
   @override
   Widget build(BuildContext context) {
     FlPopupMenuButtonWidget popupButtonWidget = FlPopupMenuButtonWidget(
+      onPressDown: (p0) => log("pressed down"),
+      onPressUp: (p0) => log("press lifted"),
+      onFocusGained: sendFocusGainedCommand,
+      onFocusLost: sendFocusLostCommand,
       model: model,
       onItemPress: sendButtonPressed,
       popupItems: _createPopupItems(),

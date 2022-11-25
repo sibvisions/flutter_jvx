@@ -302,6 +302,7 @@ class TableSize {
       pCellEditorJson: pJson,
       onChange: _doNothing,
       onEndEditing: _doNothing,
+      onFocusChanged: _doNothing,
     );
   }
 

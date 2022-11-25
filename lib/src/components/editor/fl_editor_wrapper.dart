@@ -197,35 +197,38 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       setState(() {});
       return;
     }
-    IUiService().saveAllEditorsThen(
-      model.id,
-      () {
-        if (pValue is HashMap<String, dynamic>) {
-          FlutterJVx.logUI.d("Values of ${model.id} set to $pValue");
-          IUiService().sendCommand(
-            SetValuesCommand(
-              componentId: model.id,
-              dataProvider: model.dataProvider,
-              columnNames: pValue.keys.toList(),
-              values: pValue.values.toList(),
-              reason: "Value of ${model.id} set to $pValue",
-            ),
-          );
-        } else {
-          FlutterJVx.logUI.d("Value of ${model.id} set to $pValue");
-          IUiService().sendCommand(
-            SetValuesCommand(
-              componentId: model.id,
-              dataProvider: model.dataProvider,
-              columnNames: [model.columnName],
-              values: [pValue],
-              reason: "Value of ${model.id} set to $pValue",
-            ),
-          );
-        }
-      },
-      "Value of ${model.id} set to $pValue",
-    );
+
+    IUiService()
+        .saveAllEditors(
+          pId: model.id,
+          pFunction: () async {
+            if (pValue is HashMap<String, dynamic>) {
+              FlutterJVx.logUI.d("Values of ${model.id} set to $pValue");
+              return [
+                SetValuesCommand(
+                  componentId: model.id,
+                  dataProvider: model.dataProvider,
+                  columnNames: pValue.keys.toList(),
+                  values: pValue.values.toList(),
+                  reason: "Value of ${model.id} set to $pValue",
+                ),
+              ];
+            } else {
+              FlutterJVx.logUI.d("Value of ${model.id} set to $pValue");
+              return [
+                SetValuesCommand(
+                  componentId: model.id,
+                  dataProvider: model.dataProvider,
+                  columnNames: [model.columnName],
+                  values: [pValue],
+                  reason: "Value of ${model.id} set to $pValue",
+                ),
+              ];
+            }
+          },
+          pReason: "Value of ${model.id} set to $pValue",
+        )
+        .catchError(IUiService().handleAsyncError);
 
     setState(() {});
   }
@@ -248,6 +251,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       pCellEditorJson: jsonCellEditor,
       onChange: onChange,
       onEndEditing: onEndEditing,
+      onFocusChanged: _onFocusChange,
       pRecalculateSizeCallback: recalculateSize,
     );
 
@@ -283,5 +287,13 @@ New cell editor hashcode: ${cellEditor.hashCode}
 
   bool _isDifferentValue(dynamic value) {
     return cellEditor.formatValue(value) == cellEditor.formatValue(_currentValue);
+  }
+
+  void _onFocusChange(bool pFocus) {
+    if (pFocus) {
+      sendFocusGainedCommand();
+    } else {
+      sendFocusLostCommand();
+    }
   }
 }

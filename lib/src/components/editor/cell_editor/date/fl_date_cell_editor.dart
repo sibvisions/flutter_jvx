@@ -17,7 +17,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
 
   TextEditingController textController = TextEditingController();
 
-  FocusNode focusNode = FocusNode();
+  FocusNode focusNode = FocusNode(skipTraversal: true);
 
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
@@ -30,6 +30,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     required super.pCellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.onFocusChanged,
     this.recalculateSizeCallback,
   }) : super(
           model: FlDateCellEditorModel(),
@@ -37,6 +38,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     focusNode.addListener(
       () {
         if (focusNode.hasFocus) {
+          onFocusChanged(true);
           openDatePicker();
           focusNode.unfocus();
         }

@@ -5,7 +5,7 @@ import '../../../model/component/button/fl_radio_button_model.dart';
 import '../fl_button_wrapper.dart';
 import 'fl_radio_button_widget.dart';
 
-class FlRadioButtonWrapper extends FlButtonWrapper<FlRadioButtonModel> {
+class FlRadioButtonWrapper<T extends FlRadioButtonModel> extends FlButtonWrapper<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,12 +22,34 @@ class FlRadioButtonWrapper extends FlButtonWrapper<FlRadioButtonModel> {
 
 class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  FocusNode focusNode = FocusNode();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  void initState() {
+    super.initState();
+
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        sendFocusGainedCommand();
+      } else {
+        sendFocusLostCommand();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    focusNode.canRequestFocus = model.isFocusable;
+
     FlRadioButtonWidget radioButtonWidget = FlRadioButtonWidget(
+      focusNode: focusNode,
       model: model,
       onPress: sendButtonPressed,
     );
@@ -37,5 +59,12 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
     });
 
     return getPositioned(child: radioButtonWidget);
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+
+    super.dispose();
   }
 }

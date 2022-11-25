@@ -37,6 +37,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   /// The position to calculate width constraints.
   LayoutPosition? calcPosition;
 
+  /// The last sent focus value
+  bool isFocused = false;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -233,14 +235,20 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   void sendFocusGainedCommand() {
-    if (model.eventFocusGained) {
-      IUiService().sendCommand(FocusGainedCommand(componentName: model.name, reason: "Component focused gained"));
+    if (model.eventFocusGained && !isFocused) {
+      ICommandService()
+          .sendCommand(FocusGainedCommand(componentName: model.name, reason: "Component focused gained"))
+          .then((value) => isFocused = true)
+          .catchError(IUiService().handleAsyncError);
     }
   }
 
   void sendFocusLostCommand() {
-    if (model.eventFocusLost) {
-      IUiService().sendCommand(FocusLostCommand(componentName: model.name, reason: "Component focus lost"));
+    if (model.eventFocusLost && isFocused) {
+      ICommandService()
+          .sendCommand(FocusLostCommand(componentName: model.name, reason: "Component focus lost"))
+          .then((value) => isFocused = false)
+          .catchError(IUiService().handleAsyncError);
     }
   }
 }
