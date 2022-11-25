@@ -239,18 +239,20 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       int dataIndex = chunkData.columnDefinitions.indexOf(colDef);
 
       Widget? widget;
-      var value = data[dataIndex];
+      var rawValue = data[dataIndex];
+
+      ICellEditor cellEditor = ICellEditor.getCellEditor(
+        pName: model.name,
+        columnDefinition: colDef,
+        pCellEditorJson: colDef.cellEditorJson,
+        onChange: (value) => onValueChanged?.call(value, pIndex, colDef.name),
+        onEndEditing: (value) => onEndEditing?.call(value, pIndex, colDef.name),
+      );
+
+      var formattedValue = cellEditor.formatValue(rawValue);
 
       if (!disableEditors) {
-        ICellEditor cellEditor = ICellEditor.getCellEditor(
-          pName: model.name,
-          columnDefinition: colDef,
-          pCellEditorJson: colDef.cellEditorJson,
-          onChange: (value) => onValueChanged?.call(value, pIndex, colDef.name),
-          onEndEditing: (value) => onEndEditing?.call(value, pIndex, colDef.name),
-        );
-
-        cellEditor.setValue(value);
+        cellEditor.setValue(rawValue);
 
         if (cellEditor.canBeInTable) {
           FlStatelessWidget tableWidget = cellEditor.createWidget(null, true);
@@ -272,7 +274,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       }
 
       widget ??= Text(
-        (value ?? "").toString(),
+        (formattedValue).toString(),
         style: model.createTextStyle(),
         overflow: TextOverflow.ellipsis,
       );
