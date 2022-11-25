@@ -321,7 +321,7 @@ class UiService implements IUiService {
   }
 
   @override
-  void closeScreen({required String pScreenName, required bool pBeamBack}) {
+  void closeScreen({required String pScreenName}) {
     FlComponentModel? screenModel = _componentModels.firstWhereOrNull((element) => element.name == pScreenName);
 
     if (screenModel != null) {
@@ -337,10 +337,6 @@ class UiService implements IUiService {
           children.any((compToDelete) => compToDelete.id == currentComp.compId));
       _dataSubscriptions.removeWhere((currentComp) =>
           currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
-    }
-
-    if (pBeamBack) {
-      FlutterJVx.getBeamerDelegate().beamBack();
     }
   }
 

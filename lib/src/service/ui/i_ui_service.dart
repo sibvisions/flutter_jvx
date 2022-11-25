@@ -136,7 +136,7 @@ abstract class IUiService {
   void saveNewComponents({required List<FlComponentModel> newModels});
 
   /// Called when the current workScreen is closed, will delete all relevant data(models, subscriptions,...) from [IUiService]
-  void closeScreen({required String pScreenName, required bool pBeamBack});
+  void closeScreen({required String pScreenName});
 
   /// Gets all children and the children below recursively.
   List<FlComponentModel> getAllComponentsBelow(String id);
