@@ -17,4 +17,7 @@ abstract class ICommandService {
 
   /// Process the incoming [BaseCommand].
   Future<void> sendCommand(BaseCommand command);
+
+  /// Process the incoming [BaseCommand]s and returns after the last command finished executing.
+  Future<void> sendCommands(List<BaseCommand> commands);
 }

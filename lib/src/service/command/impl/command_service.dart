@@ -72,6 +72,17 @@ class CommandService implements ICommandService {
     }
   }
 
+  @override
+  Future<void> sendCommands(List<BaseCommand> pCommands) {
+    executeCommands() => Future.wait(pCommands.map((e) => _sendCommand(e)));
+    // Only queue api commands
+    if (pCommands.whereType<ApiCommand>().isNotEmpty) {
+      return _apiCommandsQueue.add(executeCommands);
+    } else {
+      return executeCommands.call();
+    }
+  }
+
   Future<void> _sendCommand(BaseCommand pCommand) async {
     progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
 
