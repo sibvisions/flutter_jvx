@@ -18,7 +18,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  flutter_native_splash: ^2.2.11
+  flutter_native_splash: ^2.2.15
 
   # iOS Dep
   cupertino_icons: ^1.0.2
@@ -134,10 +134,12 @@ flutter_native_splash:
     image: assets/images/J.png
 
     # Splash screen background color.
-    color: "#E3E3E3"
+    color: "#DADADA"
+    color_dark: "#353535"
 
     # App icon background color.
-    icon_background_color: "#DADADA"
+    icon_background_color: "#E3E3E3"
+    icon_background_color_dark: "#3b3b3b"
 
     # The branding property allows you to specify an image used as branding in the splash screen.
     branding: assets/images/branding_sib_visions.png
