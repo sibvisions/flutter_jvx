@@ -181,7 +181,7 @@ class WorkScreenState extends State<WorkScreen> {
                             reason: "Work screen back",
                             screenName: widget.screenName,
                           ))
-                          .then((value) => IUiService().sendCommand(
+                          .then((value) => ICommandService().sendCommand(
                                 DeleteScreenCommand(
                                   reason: "Work screen back",
                                   screenName: widget.screenName,
