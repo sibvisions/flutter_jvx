@@ -7,6 +7,7 @@ import 'package:rxdart/rxdart.dart';
 import '../../../beamer.dart';
 import '../../../commands.dart';
 import '../../../components.dart';
+import '../../../custom/app_manager.dart';
 import '../../../custom/custom_screen.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
@@ -157,55 +158,21 @@ class WorkScreenState extends State<WorkScreen> {
           },
           child: WillPopScope(
             onWillPop: () async {
-              void completeNavigation() {
-                isForced = false;
-                isNavigating = false;
-              }
-
               if (isNavigating) {
                 return false;
               }
 
               isNavigating = true;
 
-              return IUiService().saveAllEditors(null, "Closing Screen").then<bool>(
-                (_) {
-                  if (IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-                    completeNavigation();
-                    return true;
-                  } else {
-                    Future commandFuture;
-                    if (isForced) {
-                      commandFuture = ICommandService()
-                          .sendCommand(CloseScreenCommand(
-                            reason: "Work screen back",
-                            screenName: widget.screenName,
-                          ))
-                          .then((value) => ICommandService().sendCommand(
-                                DeleteScreenCommand(
-                                  reason: "Work screen back",
-                                  screenName: widget.screenName,
-                                ),
-                              ));
-                    } else {
-                      commandFuture = ICommandService().sendCommand(
-                        NavigationCommand(
-                          reason: "Back button pressed",
-                          openScreen: widget.screenName,
-                        ),
-                      );
-                    }
-                    commandFuture.catchError(IUiService().handleAsyncError).whenComplete(completeNavigation);
-                    return false;
-                  }
-                },
-              ).catchError(
-                (error, stacktrace) {
-                  completeNavigation();
-                  IUiService().handleAsyncError(error, stacktrace);
-                  return false;
-                },
-              );
+              await IUiService()
+                  .saveAllEditors(pReason: "Closing Screen", pFunction: _willPopScope)
+                  .catchError(IUiService().handleAsyncError)
+                  .whenComplete(() {
+                isForced = false;
+                isNavigating = false;
+              });
+
+              return IUiService().usesNativeRouting(pScreenLongName: screenLongName);
             },
             child: Builder(builder: (context) {
               return Scaffold(
@@ -235,6 +202,34 @@ class WorkScreenState extends State<WorkScreen> {
         );
       },
     );
+  }
+
+  Future<List<BaseCommand>> _willPopScope() async {
+    List<BaseCommand> commands = [];
+    if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
+      if (isForced) {
+        commands.addAll(
+          [
+            CloseScreenCommand(
+              reason: "Work screen back",
+              screenName: widget.screenName,
+            ),
+            DeleteScreenCommand(
+              reason: "Work screen back",
+              screenName: widget.screenName,
+            )
+          ],
+        );
+      } else {
+        commands.add(
+          NavigationCommand(
+            reason: "Back button pressed",
+            openScreen: widget.screenName,
+          ),
+        );
+      }
+    }
+    return commands;
   }
 
   Future<void> _back([bool pForced = false]) async {

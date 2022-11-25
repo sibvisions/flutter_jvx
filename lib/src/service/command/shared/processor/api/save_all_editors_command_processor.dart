@@ -6,6 +6,12 @@ import '../../i_command_processor.dart';
 class SaveAllEditorsCommandProcessor implements ICommandProcessor<SaveAllEditorsCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveAllEditorsCommand command) async {
-    return IUiService().collectAllEditorSaveCommands(command.componentId);
+    List<BaseCommand> commands = IUiService().collectAllEditorSaveCommands(command.componentId);
+
+    if (command.thenFunctionCommand != null) {
+      commands.add(command.thenFunctionCommand!);
+    }
+
+    return commands;
   }
 }

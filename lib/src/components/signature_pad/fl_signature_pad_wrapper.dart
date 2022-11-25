@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:signature/signature.dart';
 
+import '../../../custom/app_manager.dart';
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/custom/fl_custom_container_model.dart';
@@ -59,8 +60,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
       showImage: _dataRecord?.values.isNotEmpty == true && _dataRecord?.values[0] != null,
-      sendSignature: sendSignature,
-      deleteSignature: deleteSignature,
       dataRecord: _dataRecord,
       onLongPress: showContextMenu,
       onLongPressDown: (details) => this.details = details,
@@ -86,7 +85,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     subscribe();
   }
 
-  Future<void> sendSignature() async {
+  Future<List<BaseCommand>> sendSignature() async {
     if (model.dataProvider != null && model.columnName != null) {
       Uint8List? pngBytes = await signatureController.toPngBytes();
 
@@ -95,30 +94,34 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
       FlutterJVx.logUI.i("Sending Signature");
 
-      SetValuesCommand setValues = SetValuesCommand(
-          componentId: model.id,
-          dataProvider: model.dataProvider!,
-          columnNames: [model.columnName!],
-          values: values,
-          reason: "Drawing has ended on ${model.id}");
-      await IUiService().sendCommand(setValues);
+      return [
+        SetValuesCommand(
+            componentId: model.id,
+            dataProvider: model.dataProvider!,
+            columnNames: [model.columnName!],
+            values: values,
+            reason: "Drawing has ended on ${model.id}")
+      ];
     }
+    return List.empty();
   }
 
-  Future<void> deleteSignature() async {
+  Future<List<BaseCommand>> deleteSignature() async {
     signatureController.clear();
 
     if (model.dataProvider != null && model.columnName != null) {
       FlutterJVx.logUI.i("Deleting Signature");
 
-      SetValuesCommand setValues = SetValuesCommand(
-          componentId: model.id,
-          dataProvider: model.dataProvider!,
-          columnNames: [model.columnName!],
-          values: [],
-          reason: "Drawing has ended on ${model.id}");
-      await IUiService().sendCommand(setValues);
+      return [
+        SetValuesCommand(
+            componentId: model.id,
+            dataProvider: model.dataProvider!,
+            columnNames: [model.columnName!],
+            values: [],
+            reason: "Drawing has ended on ${model.id}"),
+      ];
     }
+    return List.empty();
   }
 
   void subscribe() {
@@ -164,13 +167,17 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
             items: popupMenuEntries)
         .then((val) {
       if (val != null) {
-        IUiService().saveAllEditorsThen(model.id, () {
-          if (val == SignatureContextMenuCommand.DONE) {
-            sendSignature();
-          } else if (val == SignatureContextMenuCommand.CLEAR) {
-            deleteSignature();
-          }
-        }, "Signature pad closed.");
+        IUiService().saveAllEditors(
+            pId: model.id,
+            pFunction: () async {
+              if (val == SignatureContextMenuCommand.DONE) {
+                return await sendSignature();
+              } else if (val == SignatureContextMenuCommand.CLEAR) {
+                return await deleteSignature();
+              }
+              return [];
+            },
+            pReason: "Signature pad closed.");
       }
     });
   }

@@ -20,8 +20,6 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
   final double? height;
   final bool showImage;
   final DataRecord? dataRecord;
-  final VoidCallback sendSignature;
-  final VoidCallback deleteSignature;
   final VoidCallback? onLongPress;
   final Function(LongPressDownDetails?)? onLongPressDown;
 
@@ -31,8 +29,6 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
     required this.controller,
     required this.width,
     required this.height,
-    required this.sendSignature,
-    required this.deleteSignature,
     required this.showImage,
     this.dataRecord,
     this.onLongPress,

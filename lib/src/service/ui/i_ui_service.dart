@@ -250,7 +250,5 @@ abstract class IUiService {
 
   void closeFrameDialogs();
 
-  Future<void> saveAllEditors(String? pId, String pReason);
-
-  void saveAllEditorsThen(String? pId, Function? pFunction, String pReason);
+  Future<void> saveAllEditors({String? pId, required String pReason, Future<List<BaseCommand>> Function()? pFunction});
 }
