@@ -42,25 +42,26 @@ abstract class ImageLoader {
 
     ImageProvider imageProvider;
 
-    if (pPath.startsWith("/")) {
-      pPath = pPath.substring(1);
-    }
-
-    File? file = fileManager.getFileSync(pPath: "${IFileManager.IMAGES_PATH}/$pPath");
-
     if (pImageInBinary) {
       Uint8List imageValues = pImageInBase64 ? base64Decode(pPath) : Uint8List.fromList(pPath.codeUnits);
       imageProvider = MemoryImage(imageValues);
-    } else if (file != null) {
-      imageProvider = FileImage(file);
     } else {
-      imageProvider = NetworkImage("$baseUrl/resource/$appName/$pPath");
-    }
+      if (pPath.startsWith("/")) {
+        pPath = pPath.substring(1);
+      }
 
-    if (pImageStreamListener != null) {
-      imageProvider.resolve(const ImageConfiguration()).addListener(ImageLoader.createListener(pImageStreamListener));
-    }
+      File? file = fileManager.getFileSync(pPath: "${IFileManager.IMAGES_PATH}/$pPath");
 
+      if (file != null) {
+        imageProvider = FileImage(file);
+      } else {
+        imageProvider = NetworkImage("$baseUrl/resource/$appName/$pPath");
+      }
+
+      if (pImageStreamListener != null) {
+        imageProvider.resolve(const ImageConfiguration()).addListener(ImageLoader.createListener(pImageStreamListener));
+      }
+    }
     return imageProvider;
   }
 
