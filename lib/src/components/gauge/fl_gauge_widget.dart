@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gauges/gauges.dart';
 
+import '../../../util/jvx_colors.dart';
 import '../../model/component/gauge/fl_gauge_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
@@ -46,7 +47,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
               RadialTicks(
                 interval: (model.maxValue - model.minValue) / 5,
                 alignment: RadialTickAxisAlignment.below,
-                color: Colors.black,
+                color: JVxColors.LIGHTER_BLACK,
                 length: 0.2,
                 children: [
                   RadialTicks(
@@ -87,7 +88,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
               RadialTicks(
                 interval: (model.maxValue - model.minValue) / 10,
                 alignment: RadialTickAxisAlignment.inside,
-                color: Colors.black,
+                color: JVxColors.LIGHTER_BLACK,
                 length: 0.3,
                 children: [
                   RadialTicks(ticksInBetween: 3, length: 0.25, color: Colors.black54),

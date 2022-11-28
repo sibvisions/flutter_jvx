@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../util/jvx_colors.dart';
 import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -61,7 +62,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
       child: Wrap(
         children: [
           FlGroupPanelHeaderWidget(model: model, postFrameCallback: postFrameCallback),
-          const Divider(color: Colors.black),
+          const Divider(color: JVxColors.LIGHTER_BLACK),
           FlSizedPanelWidget(
             model: model,
             width: widthOfGroupPanel,
