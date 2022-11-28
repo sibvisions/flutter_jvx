@@ -3,14 +3,19 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-import '../../../../../components.dart';
-import '../../../../../flutter_jvx.dart';
-import '../../../../../services.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
+import '../../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../../../model/component/table/fl_table_model.dart';
 import '../../../../model/data/column_definition.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
+import '../../../../service/command/i_command_service.dart';
+import '../../../../service/ui/i_ui_service.dart';
+import '../../../table/fl_table_widget.dart';
+import '../../../table/table_size.dart';
+import '../../text_field/fl_text_field_widget.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
   static const Object NULL_OBJECT = Object();

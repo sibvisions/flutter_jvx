@@ -1,9 +1,9 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
+import '../../flutter_jvx.dart';
 import '../../mask/menu/menu_page.dart';
+import '../../service/ui/i_ui_service.dart';
 
 /// Displays all possible screens of the menu
 class MenuLocation extends BeamLocation<BeamState> {

@@ -1,23 +1,29 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../beamer.dart';
-import '../../../commands.dart';
-import '../../../components.dart';
-import '../../../custom/app_manager.dart';
-import '../../../custom/custom_screen.dart';
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../../util/image/image_loader.dart';
-import '../../../util/parse_util.dart';
 import '../../components/components_factory.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
+import '../../custom/custom_screen.dart';
+import '../../flutter_jvx.dart';
+import '../../model/command/api/close_screen_command.dart';
+import '../../model/command/api/navigation_command.dart';
+import '../../model/command/base_command.dart';
+import '../../model/command/storage/delete_screen_command.dart';
+import '../../model/command/ui/open_error_dialog_command.dart';
+import '../../model/component/panel/fl_panel_model.dart';
 import '../../model/request/api_navigation_request.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/layout/i_layout_service.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/image/image_loader.dart';
 import '../../util/offline_util.dart';
+import '../../util/parse_util.dart';
 import '../frame/frame.dart';
+import '../state/app_style.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for

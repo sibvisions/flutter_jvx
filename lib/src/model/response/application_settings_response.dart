@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
+import '../../util/parse_util.dart';
 import 'api_response.dart';
 
 class ApplicationSettingsResponse extends ApiResponse {

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_jvx.dart';
-import '../../src/service/config/i_config_service.dart';
-import '../../src/service/file/file_manager.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/file/file_manager.dart';
 import '../font_awesome_util.dart';
 
 //TODO investigate loading delays

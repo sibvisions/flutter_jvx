@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../flutter_jvx.dart';
 import '../model/layout/alignments.dart';
 import '../model/layout/form_layout/form_layout_anchor.dart';
 import '../model/layout/form_layout/form_layout_constraints.dart';

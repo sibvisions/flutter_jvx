@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../commands.dart';
-import '../../../../../flutter_jvx.dart';
-import '../../../../../services.dart';
-import '../../../../../util/jvx_colors.dart';
-import '../../../../../util/progress/progress_button.dart';
+import '../../../../flutter_jvx.dart';
+import '../../../../model/command/api/login_command.dart';
+import '../../../../service/config/i_config_service.dart';
+import '../../../../service/ui/i_ui_service.dart';
+import '../../../../util/jvx_colors.dart';
+import '../../../../util/progress/progress_button.dart';
+import '../../../state/loading_bar.dart';
+import '../../login_page.dart';
 
 class ManualCard extends StatefulWidget {
   final bool showSettings;

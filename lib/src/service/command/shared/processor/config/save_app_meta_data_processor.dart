@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import '../../../../../../services.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_app_meta_data_command.dart';
+import '../../../../api/i_api_service.dart';
 import '../../../../api/shared/repository/online_api_repository.dart';
+import '../../../../config/i_config_service.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 

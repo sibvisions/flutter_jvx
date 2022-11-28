@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 
-import '../../../../../../services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_images_command.dart';
+import '../../../../config/i_config_service.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 

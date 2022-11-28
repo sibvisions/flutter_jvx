@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../util/jvx_colors.dart';
 import '../../../model/component/button/fl_toggle_button_model.dart';
+import '../../../util/jvx_colors.dart';
 import '../fl_button_widget.dart';
 
 /// The widget representing a button.

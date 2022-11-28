@@ -4,13 +4,13 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../services.dart';
-import '../../../util/image/image_loader.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/map/fl_map_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/image/image_loader.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_map_widget.dart';

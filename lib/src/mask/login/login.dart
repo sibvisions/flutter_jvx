@@ -2,10 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../model/command/api/login_command.dart';
 
-export 'default/default_login.dart';
-export 'login_page.dart';
-export 'modern/modern_login.dart';
-
 abstract class Login {
   /// Returns a background widget.
   ///

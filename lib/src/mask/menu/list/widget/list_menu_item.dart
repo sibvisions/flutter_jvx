@@ -1,9 +1,9 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../components.dart';
-import '../../../../../services.dart';
+import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
+import '../../../../service/ui/i_ui_service.dart';
 import '../../menu_page.dart';
 
 class ListMenuItem extends StatelessWidget {

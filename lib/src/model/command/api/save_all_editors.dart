@@ -1,4 +1,4 @@
-import '../../../../custom/app_manager.dart';
+import '../base_command.dart';
 import '../ui/function_command.dart';
 import 'api_command.dart';
 

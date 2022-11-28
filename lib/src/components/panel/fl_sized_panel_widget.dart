@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../../../components.dart';
+import 'fl_panel_widget.dart';
 
 class FlSizedPanelWidget extends FlPanelWidget {
   const FlSizedPanelWidget({

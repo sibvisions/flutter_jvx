@@ -4,9 +4,9 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../util/i_clonable.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
+import '../util/i_clonable.dart';
 import 'i_layout.dart';
 
 /// The BorderLayout allows the positioning of container in 5 different Positions.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../util/jvx_colors.dart';
 import '../../model/component/check_box/fl_check_box_model.dart';
+import '../../util/jvx_colors.dart';
 import '../button/radio/fl_radio_button_widget.dart';
 
 class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {

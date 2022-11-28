@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_jvx.dart';
 
 class QRParser {
   static const String url = "URL";

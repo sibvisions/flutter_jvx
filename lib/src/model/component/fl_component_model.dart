@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../util/jvx_colors.dart';
-import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
+import '../../util/jvx_colors.dart';
+import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
 import 'i_font_style.dart';

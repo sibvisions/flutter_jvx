@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../flutter_jvx.dart';
-import '../../../../../services.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../../model/command/api/change_password_command.dart';
+import '../../../../service/command/i_command_service.dart';
+import '../../../../service/config/i_config_service.dart';
+import '../../../../service/ui/i_ui_service.dart';
+import '../../login_page.dart';
 
 class ChangePassword extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();

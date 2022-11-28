@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
+import '../../flutter_jvx.dart';
 import '../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
 
 class ServerSessionExpired extends FrameDialog {

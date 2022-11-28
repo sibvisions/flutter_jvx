@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_io/io.dart' as universal_io;
 
-import '../../../config/app_config.dart';
+import '../../config/app_config.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/response/application_meta_data_response.dart';
 import '../../model/response/application_settings_response.dart';

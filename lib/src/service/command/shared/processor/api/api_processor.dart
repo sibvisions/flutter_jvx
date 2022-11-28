@@ -151,6 +151,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   final ICommandProcessor _focusGainedProcessor = FocusGainedCommandProcessor();
 
   final ICommandProcessor _focusLostProcessor = FocusLostCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

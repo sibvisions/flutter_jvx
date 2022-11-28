@@ -1,4 +1,3 @@
-import '../../../../../services.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route_to_work_command.dart';
@@ -7,6 +6,7 @@ import '../../../../model/model_factory.dart';
 import '../../../../model/request/api_open_screen_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
+import '../../../config/i_config_service.dart';
 import '../api_object_property.dart';
 import '../i_response_processor.dart';
 

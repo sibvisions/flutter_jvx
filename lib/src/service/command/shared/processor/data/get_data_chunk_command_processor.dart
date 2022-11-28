@@ -1,7 +1,9 @@
-import '../../../../../../commands.dart';
-import '../../../../../../services.dart';
+import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/data/get_data_chunk_command.dart';
 import '../../../../../model/data/subscriptions/data_chunk.dart';
+import '../../../../data/i_data_service.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class GetDataChunkCommandProcessor implements ICommandProcessor<GetDataChunkCommand> {

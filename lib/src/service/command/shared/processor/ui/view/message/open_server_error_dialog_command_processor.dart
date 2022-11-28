@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 
-import '../../../../../../../../flutter_jvx.dart';
-import '../../../../../../../../services.dart';
+import '../../../../../../../flutter_jvx.dart';
 import '../../../../../../../mask/error/server_error_dialog.dart';
 import '../../../../../../../model/command/base_command.dart';
 import '../../../../../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../../../../../routing/locations/settings_location.dart';
+import '../../../../../../ui/i_ui_service.dart';
 import '../../../../i_command_processor.dart';
 
 class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServerErrorDialogCommand> {

@@ -1,6 +1,4 @@
-import '../../../../../flutter_jvx.dart';
-import '../../../../../services.dart';
-import '../../../../../util/parse_util.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../../model/api_interaction.dart';
 import '../../../../model/data/data_book.dart';
 import '../../../../model/data/filter_condition.dart';
@@ -16,6 +14,8 @@ import '../../../../model/request/filter.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../model/response/dal_meta_data_response.dart';
+import '../../../../util/parse_util.dart';
+import '../../../data/i_data_service.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
 

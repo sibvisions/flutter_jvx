@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gauges/gauges.dart';
 
-import '../../../util/jvx_colors.dart';
 import '../../model/component/gauge/fl_gauge_model.dart';
+import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {

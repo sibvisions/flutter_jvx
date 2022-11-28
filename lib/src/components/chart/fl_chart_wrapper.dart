@@ -2,12 +2,12 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
+import '../../flutter_jvx.dart';
 import '../../model/component/chart/fl_chart_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_chart_widget.dart';

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../services.dart';
 import '../model/command/api/device_status_command.dart';
+import '../service/config/i_config_service.dart';
+import '../service/ui/i_ui_service.dart';
 import 'state/app_style.dart';
 import 'state/loading_bar.dart';
 

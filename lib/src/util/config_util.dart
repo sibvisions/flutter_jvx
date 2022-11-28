@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../config/app_config.dart';
-import '../../flutter_jvx.dart';
+import '../config/app_config.dart';
+import '../flutter_jvx.dart';
 import '../mask/menu/menu.dart';
 
 abstract class ConfigUtil {

@@ -6,13 +6,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../../util/image/image_loader.dart';
+import '../../flutter_jvx.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/image/image_loader.dart';
 import '../camera/qr_parser.dart';
 import '../camera/qr_scanner_overlay.dart';
+import '../state/loading_bar.dart';
 import 'widgets/editor/editor_dialog.dart';
 import 'widgets/editor/text_editor.dart';
 import 'widgets/setting_group.dart';

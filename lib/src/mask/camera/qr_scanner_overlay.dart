@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_jvx.dart';
 
 /// Definition of the callback for the QR-scanner
 typedef QRCallback = void Function(Barcode barcode, MobileScannerArguments? arguments);

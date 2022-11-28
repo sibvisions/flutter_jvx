@@ -2,9 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
-import '../../../../util/image/image_loader.dart';
-import '../../../../util/jvx_colors.dart';
+import '../../../flutter_jvx.dart';
 import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';
 import '../../../model/command/api/open_tab_command.dart';
@@ -13,6 +11,8 @@ import '../../../model/component/label/fl_label_model.dart';
 import '../../../model/component/panel/fl_tab_panel_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../service/ui/i_ui_service.dart';
+import '../../../util/image/image_loader.dart';
+import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';

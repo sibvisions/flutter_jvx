@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../util/parse_util.dart';
 import '../../../components/button/fl_button_widget.dart';
 import '../../../service/api/shared/api_object_property.dart';
+import '../../../util/parse_util.dart';
 import '../../layout/alignments.dart';
 import '../fl_component_model.dart';
 import '../label/fl_label_model.dart';

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../../util/jvx_colors.dart';
+import '../../flutter_jvx.dart';
 import '../../model/menu/menu_model.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/jvx_colors.dart';
 import '../menu/list/list_menu.dart';
 import '../menu/menu.dart';
+import '../state/app_style.dart';
 
 class DrawerMenu extends StatefulWidget {
   final void Function() onSettingsPressed;

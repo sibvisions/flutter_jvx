@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../services.dart';
 import '../../../../model/menu/menu_item_model.dart';
+import '../../../../service/config/i_config_service.dart';
 import '../../menu_page.dart';
 
 class GridMenuItem extends StatelessWidget {

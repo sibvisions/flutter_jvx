@@ -1,4 +1,4 @@
-import '../../../../../flutter_jvx.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../../service/api/shared/api_object_property.dart';
 import 'message_view.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../util/i_clonable.dart';
+import '../../flutter_jvx.dart';
 import '../../layout/i_layout.dart';
+import '../../util/i_clonable.dart';
 import 'layout_position.dart';
 
 enum LayoutState { DIRTY, VALID }

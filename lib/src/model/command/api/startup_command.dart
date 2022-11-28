@@ -1,5 +1,5 @@
-import '../../../../flutter_jvx.dart';
-import '../../../../services.dart';
+import '../../../flutter_jvx.dart';
+import '../../../service/ui/i_ui_service.dart';
 import 'api_command.dart';
 
 class StartupCommand extends ApiCommand {

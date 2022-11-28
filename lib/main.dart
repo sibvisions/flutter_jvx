@@ -1,4 +1,4 @@
-import 'flutter_jvx.dart';
+import 'src/flutter_jvx.dart';
 
 void main() async {
   FlutterJVx.package = false;

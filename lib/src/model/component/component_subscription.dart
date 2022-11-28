@@ -1,4 +1,4 @@
-import '../../../custom/app_manager.dart';
+import '../command/base_command.dart';
 import '../layout/layout_data.dart';
 import 'fl_component_model.dart';
 

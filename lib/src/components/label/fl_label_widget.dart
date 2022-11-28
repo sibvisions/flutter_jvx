@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import '../../../util/parse_util.dart';
 import '../../model/component/label/fl_label_model.dart';
 import '../../model/layout/alignments.dart';
+import '../../util/parse_util.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {

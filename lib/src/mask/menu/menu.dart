@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../services.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/menu/menu_model.dart';
+import '../../service/ui/i_ui_service.dart';
 import 'grid/grid_menu.dart';
 import 'list/list_menu.dart';
 import 'menu_page.dart';

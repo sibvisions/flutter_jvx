@@ -1,5 +1,5 @@
-import '../../../util/parse_util.dart';
 import '../../service/api/shared/api_object_property.dart';
+import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
 import '../response/dal_meta_data_response.dart';
 

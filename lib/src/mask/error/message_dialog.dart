@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../../util/parse_util.dart';
+import '../../flutter_jvx.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/ui/view/message/open_message_dialog_command.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/parse_util.dart';
 
 /// This is a standard template for a server side message.
 class MessageDialog extends StatelessWidget {

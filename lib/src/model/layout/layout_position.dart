@@ -1,4 +1,4 @@
-import '../../../util/i_clonable.dart';
+import '../../util/i_clonable.dart';
 
 /// The [LayoutPosition] are the constraints actually getting applied to a component.
 class LayoutPosition implements ICloneable {

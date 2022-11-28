@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import '../../../../../../services.dart';
 import '../../../../../model/command/api/upload_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/upload_action_command.dart';
 import '../../../../../util/file_picker_dialog.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class UploadActionCommandProcessor implements ICommandProcessor<UploadActionCommand> {

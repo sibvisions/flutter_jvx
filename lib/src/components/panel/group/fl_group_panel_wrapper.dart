@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../util/jvx_colors.dart';
 import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_group_panel_model.dart';
 import '../../../service/ui/i_ui_service.dart';
+import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';

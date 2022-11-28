@@ -1,7 +1,8 @@
-import '../../../../../../services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/delete_row_command.dart';
 import '../../../../../model/command/ui/open_error_dialog_command.dart';
+import '../../../../data/i_data_service.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class DeleteRowCommandProcessor implements ICommandProcessor<DeleteRowCommand> {

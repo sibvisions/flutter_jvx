@@ -1,7 +1,7 @@
-import '../../../../../../services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_user_data_command.dart';
 import '../../../../../model/config/user/user_info.dart';
+import '../../../../config/i_config_service.dart';
 import '../../i_command_processor.dart';
 
 class SaveUserDataCommandProcessor implements ICommandProcessor<SaveUserDataCommand> {

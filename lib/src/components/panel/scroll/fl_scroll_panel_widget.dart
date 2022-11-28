@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../../components.dart';
+import '../../../model/component/panel/fl_panel_model.dart';
+import '../fl_panel_widget.dart';
 
 class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
   const FlScrollPanelWidget({

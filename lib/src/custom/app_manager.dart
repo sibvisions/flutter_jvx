@@ -1,17 +1,11 @@
 import 'package:universal_io/io.dart';
 
-import '../src/mask/menu/menu.dart';
-import '../src/model/api_interaction.dart';
-import '../src/model/command/base_command.dart';
-import '../src/model/menu/menu_model.dart';
-import '../src/model/request/api_request.dart';
+import '../mask/menu/menu.dart';
+import '../model/api_interaction.dart';
+import '../model/command/base_command.dart';
+import '../model/menu/menu_model.dart';
+import '../model/request/api_request.dart';
 import 'custom_screen.dart';
-
-export '../src/mask/menu/menu.dart';
-export '../src/model/command/base_command.dart';
-export '../src/model/menu/menu_model.dart';
-export '../src/model/request/api_request.dart';
-export '../src/model/response/api_response.dart';
 
 abstract class AppManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,6 +69,6 @@ abstract class AppManager {
   /// Is called when going to the login.
   void onLoginPage() {}
 
-  // /// Is called if a login is successfully completed.
-  // void onLoginSuccess() {}
+// /// Is called if a login is successfully completed.
+// void onLoginSuccess() {}
 }

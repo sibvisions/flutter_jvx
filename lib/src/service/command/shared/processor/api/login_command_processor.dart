@@ -1,8 +1,9 @@
-import '../../../../../../services.dart';
 import '../../../../../model/command/api/login_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_login_request.dart';
+import '../../../../api/i_api_service.dart';
+import '../../../../config/i_config_service.dart';
 import '../../i_command_processor.dart';
 
 class LoginCommandProcessor implements ICommandProcessor<LoginCommand> {

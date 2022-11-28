@@ -1,8 +1,9 @@
-import '../../../../../../services.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/change_selected_row_command.dart';
 import '../../../../../model/request/api_select_record_request.dart';
+import '../../../../api/i_api_service.dart';
+import '../../../../config/i_config_service.dart';
 import '../../i_command_processor.dart';
 
 class SelectRecordCommandProcessor implements ICommandProcessor<SelectRecordCommand> {

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../../../../../util/image/image_loader.dart';
 import '../../../../service/api/shared/api_object_property.dart';
+import '../../../../util/image/image_loader.dart';
 import 'cell_editor_model.dart';
 
 class FlChoiceCellEditorModel extends ICellEditorModel {

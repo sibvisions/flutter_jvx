@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-import '../../../services.dart';
+import '../config/i_config_service.dart';
 import 'file_manager_mobile.dart';
 import 'file_manager_web.dart';
 

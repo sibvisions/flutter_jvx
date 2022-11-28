@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../custom/custom_menu_item.dart';
-import '../../../util/font_awesome_util.dart';
+import '../../custom/custom_menu_item.dart';
+import '../../util/font_awesome_util.dart';
 
 class MenuItemModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

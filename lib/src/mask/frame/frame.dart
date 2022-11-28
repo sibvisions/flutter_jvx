@@ -2,9 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
+import '../../flutter_jvx.dart';
 import '../../model/command/api/logout_command.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../login/default/cards/change_password.dart';
 import 'mobile_frame.dart';
 import 'web_frame.dart';

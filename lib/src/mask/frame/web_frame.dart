@@ -3,13 +3,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../../util/image/image_loader.dart';
-import '../../../util/parse_util.dart';
+import '../../flutter_jvx.dart';
 import '../../model/response/device_status_response.dart';
+import '../../service/config/i_config_service.dart';
+import '../../util/image/image_loader.dart';
+import '../../util/parse_util.dart';
 import '../drawer/web_menu.dart';
 import '../setting/settings_page.dart';
+import '../state/app_style.dart';
+import '../state/loading_bar.dart';
 import 'frame.dart';
 
 class WebFrame extends Frame {

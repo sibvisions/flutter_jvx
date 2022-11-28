@@ -1,7 +1,7 @@
-import '../../../../../services.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/application_settings_response.dart';
+import '../../../config/i_config_service.dart';
 import '../i_response_processor.dart';
 
 class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSettingsResponse> {

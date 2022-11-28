@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import '../../../../../flutter_jvx.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';

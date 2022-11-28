@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
+import '../../flutter_jvx.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
 
 /// This is a standard template for an error message.

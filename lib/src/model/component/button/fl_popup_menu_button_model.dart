@@ -1,5 +1,5 @@
-import '../../../../commands.dart';
-import '../../../../components.dart';
+import '../../../service/api/shared/api_object_property.dart';
+import 'fl_button_model.dart';
 
 /// The model for [FlPopupMenuButtonWidget]
 class FlPopupMenuButtonModel extends FlButtonModel {

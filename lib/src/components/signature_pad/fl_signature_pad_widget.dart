@@ -4,10 +4,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../util/image/image_loader.dart';
+import '../../flutter_jvx.dart';
 import '../../model/component/custom/fl_custom_container_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
+import '../../util/image/image_loader.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {

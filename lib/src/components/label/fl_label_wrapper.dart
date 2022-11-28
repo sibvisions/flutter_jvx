@@ -1,9 +1,9 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../util/parse_util.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/label/fl_label_model.dart';
+import '../../util/parse_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_label_widget.dart';

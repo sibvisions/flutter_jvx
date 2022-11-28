@@ -1,4 +1,4 @@
-import '../../../../custom/app_manager.dart';
+import '../base_command.dart';
 import 'ui_command.dart';
 
 /// Command to execute a custom function as a command.

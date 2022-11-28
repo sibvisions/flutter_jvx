@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../components.dart';
-import '../../../util/image/image_loader.dart';
-import '../../../util/jvx_colors.dart';
+import '../../model/component/button/fl_button_model.dart';
 import '../../model/layout/alignments.dart';
+import '../../util/image/image_loader.dart';
+import '../../util/jvx_colors.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
+import '../label/fl_label_widget.dart';
 
 /// The widget representing a button.
 class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../flutter_jvx.dart';
-import '../../../../../services.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../../model/command/api/login_command.dart';
+import '../../../../service/ui/i_ui_service.dart';
+import '../../login_page.dart';
 
 /// Card to be displayed in app-login for resetting the password
 class LostPasswordCard extends StatelessWidget {

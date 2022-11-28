@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../../util/jvx_colors.dart';
-import '../../../../util/parse_util.dart';
 import '../../../service/api/shared/api_object_property.dart';
+import '../../../util/jvx_colors.dart';
+import '../../../util/parse_util.dart';
 import '../fl_component_model.dart';
 
 class FlMapModel extends FlComponentModel {

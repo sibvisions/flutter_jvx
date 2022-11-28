@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import '../../../../flutter_jvx.dart';
+import '../../../flutter_jvx.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';

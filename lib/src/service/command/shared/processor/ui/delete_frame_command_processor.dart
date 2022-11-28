@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import '../../../../../../services.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/delete_frame_command.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class DeleteFrameCommandProcessor implements ICommandProcessor<DeleteFrameCommand> {

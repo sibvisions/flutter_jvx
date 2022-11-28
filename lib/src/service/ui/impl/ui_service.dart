@@ -5,19 +5,23 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../commands.dart';
-import '../../../../custom/app_manager.dart';
-import '../../../../custom/custom_component.dart';
-import '../../../../custom/custom_menu_item.dart';
-import '../../../../custom/custom_screen.dart';
-import '../../../../flutter_jvx.dart';
-import '../../../../services.dart';
-import '../../../../util/extensions/string_extensions.dart';
+import '../../../custom/app_manager.dart';
+import '../../../custom/custom_component.dart';
+import '../../../custom/custom_menu_item.dart';
+import '../../../custom/custom_screen.dart';
 import '../../../exceptions/error_view_exception.dart';
+import '../../../flutter_jvx.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
+import '../../../model/command/api/fetch_command.dart';
+import '../../../model/command/api/login_command.dart';
 import '../../../model/command/api/save_all_editors.dart';
+import '../../../model/command/base_command.dart';
+import '../../../model/command/data/get_data_chunk_command.dart';
+import '../../../model/command/data/get_meta_data_command.dart';
+import '../../../model/command/data/get_selected_data_command.dart';
+import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
@@ -26,9 +30,15 @@ import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_group_model.dart';
+import '../../../model/menu/menu_model.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/settings_location.dart';
+import '../../../util/extensions/string_extensions.dart';
+import '../../command/i_command_service.dart';
+import '../../config/i_config_service.dart';
+import '../../data/i_data_service.dart';
+import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
 class UiService implements IUiService {

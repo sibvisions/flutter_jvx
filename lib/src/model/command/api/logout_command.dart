@@ -1,4 +1,4 @@
-import '../../../../flutter_jvx.dart';
+import '../../../flutter_jvx.dart';
 import 'api_command.dart';
 
 class LogoutCommand extends ApiCommand {

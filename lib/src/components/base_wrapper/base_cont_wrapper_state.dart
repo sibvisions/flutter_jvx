@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../custom/custom_component.dart';
+import '../../custom/custom_component.dart';
 import '../../model/command/layout/register_parent_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';

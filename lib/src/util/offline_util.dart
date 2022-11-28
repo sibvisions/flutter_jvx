@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
-import '../../components.dart';
-import '../../flutter_jvx.dart';
-import '../../services.dart';
-import '../../util/progress/progress_dialog_widget.dart';
+import '../flutter_jvx.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';
 import '../model/command/api/fetch_command.dart';
@@ -16,11 +13,18 @@ import '../model/command/api/set_values_command.dart';
 import '../model/command/api/startup_command.dart';
 import '../model/command/ui/route_to_menu_command.dart';
 import '../model/component/fl_component_model.dart';
+import '../model/component/panel/fl_panel_model.dart';
 import '../model/data/data_book.dart';
 import '../model/request/filter.dart';
+import '../service/api/i_api_service.dart';
 import '../service/api/shared/repository/offline/offline_database.dart';
 import '../service/api/shared/repository/offline_api_repository.dart';
 import '../service/api/shared/repository/online_api_repository.dart';
+import '../service/command/i_command_service.dart';
+import '../service/config/i_config_service.dart';
+import '../service/data/i_data_service.dart';
+import '../service/ui/i_ui_service.dart';
+import 'progress/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
   static Widget getOfflineBar(BuildContext context, {bool useElevation = false}) {

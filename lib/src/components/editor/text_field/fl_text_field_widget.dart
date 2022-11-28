@@ -4,11 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../flutter_jvx.dart';
-import '../../../../util/jvx_colors.dart';
+import '../../../flutter_jvx.dart';
+import '../../../mask/state/app_style.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/application_settings_response.dart';
+import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
 
 enum FlTextBorderType {
@@ -47,6 +48,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   final List<TextInputFormatter>? inputFormatters;
 
   final bool hideClearIcon;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

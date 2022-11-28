@@ -24,6 +24,7 @@ export 'src/model/command/api/select_record_command.dart';
 export 'src/model/command/api/set_value_command.dart';
 export 'src/model/command/api/set_values_command.dart';
 export 'src/model/command/api/startup_command.dart';
+export 'src/model/command/base_command.dart';
 export 'src/model/command/config/config_command.dart';
 export 'src/model/command/config/save_app_meta_data_command.dart';
 export 'src/model/command/config/save_application_images_command.dart';

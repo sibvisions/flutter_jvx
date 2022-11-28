@@ -3,12 +3,13 @@ import 'dart:math';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
-import '../../../../util/image/image_loader.dart';
-import '../../../../util/jvx_colors.dart';
-import '../../../../util/parse_util.dart';
+import '../../../flutter_jvx.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../service/api/shared/api_object_property.dart';
+import '../../../util/image/image_loader.dart';
+import '../../../util/jvx_colors.dart';
+import '../../../util/parse_util.dart';
+import '../../state/app_style.dart';
 import '../login.dart';
 import 'arc_clipper.dart';
 import 'cards/change_one_time_password_card.dart';

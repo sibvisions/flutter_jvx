@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../src/model/menu/menu_item_model.dart';
+import '../model/menu/menu_item_model.dart';
 
 /// Custom menu item
 class CustomMenuItem extends MenuItemModel {

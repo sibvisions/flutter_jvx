@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../util/image/image_loader.dart';
+import '../../flutter_jvx.dart';
+import '../../util/image/image_loader.dart';
+import 'jvx_splash.dart';
 
 class Splash extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

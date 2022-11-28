@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../util/parse_util.dart';
+import '../../../util/parse_util.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 
 class FlTabController extends TabController {

@@ -1,9 +1,9 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
+import '../../flutter_jvx.dart';
 import '../../mask/setting/settings_page.dart';
+import '../../service/ui/i_ui_service.dart';
 
 class SettingsLocation extends BeamLocation {
   @override

@@ -8,14 +8,14 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../../custom/app_manager.dart';
-import '../../../services.dart';
 import '../../mask/camera/qr_scanner_overlay.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
+import '../../model/command/base_command.dart';
 import '../../model/component/button/fl_button_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';

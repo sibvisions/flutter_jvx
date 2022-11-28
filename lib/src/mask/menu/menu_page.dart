@@ -3,14 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../custom/app_manager.dart';
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
-import '../../../util/parse_util.dart';
+import '../../custom/app_manager.dart';
+import '../../flutter_jvx.dart';
+import '../../model/menu/menu_model.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../../util/config_util.dart';
 import '../../util/offline_util.dart';
+import '../../util/parse_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
+import '../state/app_style.dart';
+import 'menu.dart';
 
 /// Each menu item does get this callback
 typedef ButtonCallback = void Function(

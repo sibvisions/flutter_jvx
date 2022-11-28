@@ -1,4 +1,4 @@
-import '../../../../commands.dart';
+import 'ui_command.dart';
 
 class DeleteFrameCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

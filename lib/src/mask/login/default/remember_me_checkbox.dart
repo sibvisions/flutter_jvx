@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../flutter_jvx.dart';
 
 class RememberMeCheckbox extends StatelessWidget {
   final bool value;

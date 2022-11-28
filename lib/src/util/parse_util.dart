@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../commands.dart';
 import '../flutter_jvx.dart';
-import '../src/model/layout/layout_position.dart';
-import '../src/model/response/application_settings_response.dart';
+import '../model/layout/layout_position.dart';
+import '../model/response/application_settings_response.dart';
+import '../service/api/shared/api_object_property.dart';
 
 abstract class ParseUtil {
   static T? castOrNull<T>(dynamic x) => x is T ? x : null;

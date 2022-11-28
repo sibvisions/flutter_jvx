@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../custom/custom_header.dart';
-import '../util/jvx_colors.dart';
+import '../flutter_jvx.dart';
 
 class CustomHeaderExample extends CustomHeader {
   const CustomHeaderExample({super.key});

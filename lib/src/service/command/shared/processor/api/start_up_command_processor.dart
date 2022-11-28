@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../../../flutter_jvx.dart';
-import '../../../../../../services.dart';
-import '../../../../../../util/device_info/device_info.dart';
+import '../../../../../flutter_jvx.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_startup_request.dart';
+import '../../../../../util/device_info/device_info.dart';
+import '../../../../api/i_api_service.dart';
+import '../../../../config/i_config_service.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService

@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
-import '../../../services.dart';
+import '../config/i_config_service.dart';
 import 'fake_file.dart';
 import 'file_manager.dart';
 

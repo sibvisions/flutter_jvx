@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../services.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../service/ui/i_ui_service.dart';
 
 abstract class BaseCompWrapperWidget<T extends FlComponentModel> extends StatefulWidget {
   const BaseCompWrapperWidget({super.key, required this.id});

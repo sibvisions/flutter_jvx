@@ -1,5 +1,4 @@
-import '../../../flutter_jvx.dart';
-import '../../../services.dart';
+import '../../flutter_jvx.dart';
 import '../../mask/jvx_overlay.dart';
 import '../../model/command/api/api_command.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -11,6 +10,7 @@ import '../../model/command/config/config_command.dart';
 import '../../model/command/data/data_command.dart';
 import '../../model/command/layout/layout_command.dart';
 import '../../model/command/ui/ui_command.dart';
+import '../../service/config/i_config_service.dart';
 import 'i_command_progress_handler.dart';
 
 /// The [LoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
