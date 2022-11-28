@@ -25,8 +25,13 @@ class FlPopupMenuItemWidget extends PopupMenuItem<String> {
       value: pModel.name,
       child: pForceIconSlot
           ? Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _createIcon(pModel.icon),
+                Container(
+                  width: 24,
+                  alignment: Alignment.center,
+                  child: _createIcon(pModel.icon),
+                ),
                 _createText(pModel),
               ],
             )
