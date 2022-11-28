@@ -30,7 +30,7 @@ class SaveDownloadCommandProcessor implements ICommandProcessor<SaveDownloadComm
         FileSaver.instance.saveAs(
           path.basenameWithoutExtension(command.fileName),
           command.bodyBytes,
-          "extension",
+          extension,
           MimeType.OTHER,
         ),
       );
