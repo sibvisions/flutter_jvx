@@ -48,6 +48,9 @@ abstract class ConfigUtil {
       case "list":
         menuMode = MenuMode.LIST;
         break;
+      case "list_grouped":
+        menuMode = MenuMode.LIST_GROUPED;
+        break;
       case "tabs":
         menuMode = MenuMode.TABS;
         break;
