@@ -448,6 +448,14 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
         );
       }
 
+      if (themeData.iconTheme.color?.computeLuminance() == 0.0) {
+        themeData = themeData.copyWith(
+          iconTheme: themeData.iconTheme.copyWith(
+            color: JVxColors.LIGHTER_BLACK,
+          ),
+        );
+      }
+
       themeData = themeData.copyWith(
         //Override for dark mode
         toggleableActiveColor: themeData.colorScheme.primary,
