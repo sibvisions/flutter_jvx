@@ -4,8 +4,6 @@ import '../../../services.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/menu/menu_model.dart';
 import 'grid/grid_menu.dart';
-import 'grid/grouped_grid_menu.dart';
-import 'list/grouped_list_menu.dart';
 import 'list/list_menu.dart';
 import 'menu_page.dart';
 import 'tab/tab_menu.dart';
@@ -36,33 +34,24 @@ abstract class Menu extends StatelessWidget {
     Key? key,
     required MenuModel menuModel,
     ButtonCallback onClick = Menu.menuItemPressed,
+    bool grouped = false,
     bool sticky = true,
+    bool groupOnlyOnMultiple = true,
     Color? menuBackgroundColor,
     String? backgroundImageString,
   }) {
     switch (menuMode) {
-      case MenuMode.GRID:
-        return GridMenu(
-          key: key,
-          menuModel: menuModel,
-          onClick: onClick,
-          backgroundColor: menuBackgroundColor,
-          backgroundImageString: backgroundImageString,
-        );
       case MenuMode.LIST:
+      case MenuMode.LIST_GROUPED:
         return ListMenu(
           key: key,
           menuModel: menuModel,
           onClick: onClick,
+          grouped: grouped,
+          sticky: sticky,
+          groupOnlyOnMultiple: groupOnlyOnMultiple,
           backgroundColor: menuBackgroundColor,
           backgroundImageString: backgroundImageString,
-        );
-      case MenuMode.LIST_GROUPED:
-        return GroupedListMenu(
-          key: key,
-          menuModel: menuModel,
-          onClick: onClick,
-          sticky: sticky,
         );
       case MenuMode.TABS:
         return TabMenu(
@@ -74,13 +63,16 @@ abstract class Menu extends StatelessWidget {
         );
       case MenuMode.DRAWER:
       case MenuMode.SWIPER:
+      case MenuMode.GRID:
       case MenuMode.GRID_GROUPED:
       default:
-        return GroupedGridMenu(
+        return GridMenu(
           key: key,
           menuModel: menuModel,
           onClick: onClick,
+          grouped: grouped,
           sticky: sticky,
+          groupOnlyOnMultiple: groupOnlyOnMultiple,
           backgroundColor: menuBackgroundColor,
           backgroundImageString: backgroundImageString,
         );
@@ -102,8 +94,10 @@ abstract class Menu extends StatelessWidget {
 
 enum MenuMode {
   GRID,
+  // Legacy mode
   GRID_GROUPED,
   LIST,
+  // Legacy mode
   LIST_GROUPED,
   DRAWER,
   SWIPER,

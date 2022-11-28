@@ -7,6 +7,7 @@ import '../../../custom/app_manager.dart';
 import '../../../flutter_jvx.dart';
 import '../../../services.dart';
 import '../../../util/parse_util.dart';
+import '../../util/config_util.dart';
 import '../../util/offline_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
@@ -235,20 +236,28 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   }
 
   Widget _getMenu(MenuModel menuModel, {Key? key}) {
-    MenuMode menuMode = IConfigService().getMenuMode();
+    var appStyle = AppStyle.of(context)!.applicationStyle!;
+
+    MenuMode menuMode = ConfigUtil.getMenuMode(appStyle['menu.mode']);
 
     // Overriding menu mode
     AppManager? customAppManager = IUiService().getAppManager();
     menuMode = customAppManager?.getMenuMode(menuMode) ?? menuMode;
 
-    var appStyle = AppStyle.of(context)!.applicationStyle!;
     Color? menuBackgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
     String? menuBackgroundImage = appStyle['desktop.icon'];
+
+    bool? grouped = ParseUtil.parseBool(appStyle['menu.grouped']) ?? false;
+    bool? sticky = ParseUtil.parseBool(appStyle['menu.sticky']) ?? true;
+    bool? groupOnlyOnMultiple = ParseUtil.parseBool(appStyle['menu.group_only_on_multiple']) ?? false;
 
     return Menu.fromMode(
       key: key,
       menuMode,
       menuModel: menuModel,
+      grouped: [MenuMode.GRID_GROUPED, MenuMode.LIST_GROUPED].contains(menuMode) || grouped,
+      sticky: sticky,
+      groupOnlyOnMultiple: groupOnlyOnMultiple,
       backgroundImageString: menuBackgroundImage,
       menuBackgroundColor: menuBackgroundColor,
     );

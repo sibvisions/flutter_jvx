@@ -6,7 +6,7 @@ import '../../../util/parse_util.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/device_status_response.dart';
 import '../../util/search_mixin.dart';
-import '../menu/list/grouped_list_menu.dart';
+import '../menu/list/list_menu.dart';
 import '../menu/menu.dart';
 
 class WebMenu extends StatefulWidget {
@@ -95,7 +95,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
       children: [
         if (originalMenu.count >= 12 && layoutMode != LayoutMode.Small) _buildSearchField(textColor: textColor),
         Expanded(
-          child: GroupedListMenu(
+          child: ListMenu(
             menuModel: menuModel,
             onClick: Menu.menuItemPressed,
             sticky: layoutMode != LayoutMode.Small,
@@ -104,6 +104,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
             headerColor: groupTextColor,
             decreasedDensity: true,
             useAlternativeLabel: true,
+            grouped: true,
           ),
         ),
       ],
