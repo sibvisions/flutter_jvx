@@ -136,7 +136,7 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
     // https://github.com/dart-lang/intl/issues/511
     if (formatParts.length >= 2) {
       String fractionDigits = formatParts.last;
-      fractionDigits = fractionDigits.substring(0, min(fractionDigits.length, 20));
+      fractionDigits = fractionDigits.substring(0, min(fractionDigits.length, 18));
       format += ".$fractionDigits";
     }
 
