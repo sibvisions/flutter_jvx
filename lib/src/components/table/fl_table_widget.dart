@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../components.dart';
+import '../../../util/jvx_colors.dart';
 import '../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -362,7 +363,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
         border: const Border(
-          bottom: BorderSide(color: Colors.black),
+          bottom: BorderSide(color: JVxColors.LIGHTER_BLACK),
         ),
       ),
       height: tableSize.tableHeaderHeight,

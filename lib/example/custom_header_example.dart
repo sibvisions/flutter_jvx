@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../custom/custom_header.dart';
+import '../util/jvx_colors.dart';
 
 class CustomHeaderExample extends CustomHeader {
   const CustomHeaderExample({super.key});
@@ -8,7 +9,7 @@ class CustomHeaderExample extends CustomHeader {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black,
+      color: JVxColors.LIGHTER_BLACK,
     );
   }
 
