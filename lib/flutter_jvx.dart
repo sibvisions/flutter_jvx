@@ -1,4 +1,5 @@
 export 'package:beamer/beamer.dart';
+export 'package:latlong2/latlong.dart';
 
 // Config
 export 'src/config/api/api_route.dart';
