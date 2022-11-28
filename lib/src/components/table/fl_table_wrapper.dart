@@ -482,9 +482,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          FaIcon(
-            icon,
-            color: Colors.grey[600],
+          Container(
+            width: 24,
+            alignment: Alignment.center,
+            child: FaIcon(
+              icon,
+              size: 20,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 5),
