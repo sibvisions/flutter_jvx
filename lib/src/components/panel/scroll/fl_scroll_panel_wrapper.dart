@@ -49,6 +49,8 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
       model: model,
       width: widthOfScrollPanel,
       height: heightOfScrollPanel,
+      viewWidth: layoutData.layoutPosition?.width ?? widthOfScrollPanel,
+      viewHeight: layoutData.layoutPosition?.height ?? heightOfScrollPanel,
       isScrollable: isScrollable,
       children: children.values.toList(),
     );
