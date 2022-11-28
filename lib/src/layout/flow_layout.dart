@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import '../../util/extensions/string_extensions.dart';
+import '../../util/parse_util.dart';
 import '../model/layout/alignments.dart';
 import '../model/layout/gaps.dart';
 import '../model/layout/layout_data.dart';
@@ -52,7 +52,7 @@ class FlowLayout extends ILayout {
     outerHa = HorizontalAlignmentE.fromString(splitLayoutString[8]);
     outerVa = VerticalAlignmentE.fromString(splitLayoutString[9]);
     innerAlignment = int.parse(splitLayoutString[10]);
-    autoWrap = splitLayoutString[11].parseBoolDefault(false);
+    autoWrap = ParseUtil.parseBoolOrFalse(splitLayoutString[11]);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
