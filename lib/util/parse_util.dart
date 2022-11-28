@@ -252,7 +252,11 @@ abstract class ParseUtil {
       return pDefault;
     }
 
-    if ((pCondition == null || pCondition.call(value)) && pConversion != null) {
+    if (pCondition != null && pCondition.call(value) == false) {
+      return pDefault;
+    }
+
+    if (pConversion != null) {
       return pConversion.call(value);
     } else {
       return value;
