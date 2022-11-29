@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 
 abstract class JVxColors {
   static const Color LIGHTER_BLACK = Color(0xFF424242);
+
+  static const Color COMPONENT_BORDER = Color.fromARGB(255, 135, 135, 135);
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
   static const Color COMPONENT_DISABLED_LIGHTER = Color.fromARGB(255, 230, 230, 230);
 
