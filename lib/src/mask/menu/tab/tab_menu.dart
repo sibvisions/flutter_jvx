@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../model/menu/menu_group_model.dart';
-import '../../../util/image/image_loader.dart';
 import '../grid/widget/grid_menu_item.dart';
 import '../menu.dart';
 
@@ -14,8 +13,6 @@ class TabMenu extends Menu {
     super.key,
     required super.menuModel,
     required super.onClick,
-    super.backgroundColor,
-    super.backgroundImageString,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,29 +50,19 @@ class TabMenu extends Menu {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _getMenuGrid({required MenuGroupModel model}) {
-    return Stack(children: [
-      SizedBox.expand(
-        child: Container(
-          color: backgroundColor,
-          child: Center(
-            child: backgroundImageString != null ? ImageLoader.loadImage(backgroundImageString!) : null,
+    return CustomScrollView(
+      slivers: [
+        SliverGrid(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 200,
+            mainAxisSpacing: 5,
+            crossAxisSpacing: 5,
+          ),
+          delegate: SliverChildListDelegate.fixed(
+            model.items.map((e) => GridMenuItem(menuItemModel: e, onClick: onClick)).toList(),
           ),
         ),
-      ),
-      CustomScrollView(
-        slivers: [
-          SliverGrid(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-            ),
-            delegate: SliverChildListDelegate.fixed(
-              model.items.map((e) => GridMenuItem(menuItemModel: e, onClick: onClick)).toList(),
-            ),
-          ),
-        ],
-      ),
-    ]);
+      ],
+    );
   }
 }

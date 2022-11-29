@@ -41,6 +41,22 @@ class WorkScreen extends StatefulWidget {
     required this.screenName,
   });
 
+  static Widget buildBackground(Color? backgroundColor, String? backgroundImage) {
+    return SizedBox.expand(
+      child: Container(
+        color: backgroundColor,
+        child: Center(
+          child: backgroundImage != null
+              ? ImageLoader.loadImage(
+                  backgroundImage,
+                  pFit: BoxFit.scaleDown,
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
   @override
   WorkScreenState createState() => WorkScreenState();
 }
@@ -147,7 +163,15 @@ class WorkScreenState extends State<WorkScreen> {
             child: Column(
               children: [
                 if (isOffline) OfflineUtil.getOfflineBar(context),
-                Expanded(child: _getScreen(context, header, screen, footer, isCustomScreen)),
+                Expanded(
+                  child: _getScreen(
+                    context,
+                    header,
+                    screen,
+                    footer,
+                    isCustomScreen,
+                  ),
+                ),
               ],
             ),
           ),
@@ -260,7 +284,12 @@ class WorkScreenState extends State<WorkScreen> {
   }
 
   Widget _getScreen(
-      BuildContext context, PreferredSizeWidget? header, Widget screen, Widget? footer, bool isCustomScreen) {
+    BuildContext context,
+    PreferredSizeWidget? header,
+    Widget screen,
+    Widget? footer,
+    bool isCustomScreen,
+  ) {
     var appStyle = AppStyle.of(context)!.applicationStyle!;
     Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
     String? backgroundImageString = appStyle['desktop.icon'];
@@ -315,16 +344,10 @@ class WorkScreenState extends State<WorkScreen> {
               scrollDirection: Axis.vertical,
               child: Stack(
                 children: [
-                  Container(
+                  SizedBox(
                     height: screenHeight,
                     width: constraints.maxWidth,
-                    color: backgroundColor,
-                    child: backgroundImageString != null
-                        ? ImageLoader.loadImage(
-                            backgroundImageString,
-                            pFit: BoxFit.scaleDown,
-                          )
-                        : null,
+                    child: WorkScreen.buildBackground(backgroundColor, backgroundImageString),
                   ),
                   screenWidget
                 ],

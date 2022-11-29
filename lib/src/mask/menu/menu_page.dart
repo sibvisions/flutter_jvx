@@ -14,6 +14,7 @@ import '../../util/parse_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../state/app_style.dart';
+import '../work_screen/work_screen.dart';
 import 'menu.dart';
 
 /// Each menu item does get this callback
@@ -76,13 +77,24 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             ));
           }
 
+          var appStyle = AppStyle.of(context)!.applicationStyle!;
+          Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
+          String? backgroundImage = appStyle['desktop.icon'];
+
           Widget body = Column(
             children: [
               if (isOffline) OfflineUtil.getOfflineBar(context),
               Expanded(
-                child: _getMenu(
-                  key: const PageStorageKey('MainMenu'),
-                  applyMenuFilter(menuModel, (item) => item.label),
+                child: Stack(
+                  children: [
+                    if (backgroundColor != null || backgroundImage != null)
+                      WorkScreen.buildBackground(backgroundColor, backgroundImage),
+                    _getMenu(
+                      key: const PageStorageKey('MainMenu'),
+                      appStyle: appStyle,
+                      applyMenuFilter(menuModel, (item) => item.label),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -239,17 +251,18 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     );
   }
 
-  Widget _getMenu(MenuModel menuModel, {Key? key}) {
-    var appStyle = AppStyle.of(context)!.applicationStyle!;
-
+  Widget _getMenu(
+    MenuModel menuModel, {
+    Key? key,
+    required Map<String, String> appStyle,
+  }) {
     MenuMode menuMode = ConfigUtil.getMenuMode(appStyle['menu.mode']);
 
     // Overriding menu mode
     AppManager? customAppManager = IUiService().getAppManager();
     menuMode = customAppManager?.getMenuMode(menuMode) ?? menuMode;
 
-    Color? menuBackgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
-    String? menuBackgroundImage = appStyle['desktop.icon'];
+    if (menuMode == MenuMode.DRAWER) return const SizedBox();
 
     bool? grouped = ParseUtil.parseBool(appStyle['menu.grouped']) ?? false;
     bool? sticky = ParseUtil.parseBool(appStyle['menu.sticky']) ?? true;
@@ -262,8 +275,6 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
       grouped: [MenuMode.GRID_GROUPED, MenuMode.LIST_GROUPED].contains(menuMode) || grouped,
       sticky: sticky,
       groupOnlyOnMultiple: groupOnlyOnMultiple,
-      backgroundImageString: menuBackgroundImage,
-      menuBackgroundColor: menuBackgroundColor,
     );
   }
 }
