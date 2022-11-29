@@ -10,7 +10,7 @@ import '../../i_command_processor.dart';
 class UploadActionCommandProcessor implements ICommandProcessor<UploadActionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UploadActionCommand command) async {
-    unawaited(openFilePicker().then((value) {
+    unawaited(FilePickerDialog.openFilePicker().then((value) {
       if (value != null) {
         IUiService().sendCommand(UploadCommand(fileId: command.fileId, file: value, reason: "Uploading file"));
       }
