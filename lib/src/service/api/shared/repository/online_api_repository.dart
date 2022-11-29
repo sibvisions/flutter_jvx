@@ -372,13 +372,17 @@ class OnlineApiRepository implements IRepository {
           }
         }
 
-        if (response.headers.contentType?.value != ContentType.json.value) {
-          throw FormatException("Invalid server response"
-              "\nType: ${response.headers.contentType?.subType}"
-              "\nStatus: ${response.statusCode}");
+        List<dynamic> jsonResponse = [];
+
+        if (response.statusCode != 204) {
+          if (response.headers.contentType?.value != ContentType.json.value) {
+            throw FormatException("Invalid server response"
+                "\nType: ${response.headers.contentType?.subType}"
+                "\nStatus: ${response.statusCode}");
+          }
+          jsonResponse = _parseAndCheckJson(responseBody);
         }
 
-        List<dynamic> jsonResponse = _parseAndCheckJson(responseBody);
         ApiInteraction apiInteraction = _responseParser(jsonResponse, request: pRequest);
 
         IUiService().getAppManager()?.modifyResponses(apiInteraction);
