@@ -114,8 +114,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         fillColor = applicationSettings.darkColors?.mandatoryBackground;
       }
     }
+    ThemeData themeData = Theme.of(context);
 
-    bool isFilled = fillColor != null && !inTable;
+    fillColor ??= themeData.inputDecorationTheme.fillColor ?? themeData.backgroundColor;
+
+    bool isFilled = !inTable;
     return TextField(
       controller: textController,
       decoration: inputDecoration.copyWith(
