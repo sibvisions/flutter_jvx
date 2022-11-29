@@ -116,10 +116,13 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         fillColor = applicationSettings.darkColors?.mandatoryBackground;
       }
     }
+    ThemeData themeData = Theme.of(context);
+
+    fillColor ??= themeData.inputDecorationTheme.fillColor ?? themeData.backgroundColor;
 
     focusNode.canRequestFocus = model.isFocusable;
 
-    bool isFilled = fillColor != null && !inTable;
+    bool isFilled = !inTable;
     return TextField(
       controller: textController,
       decoration: inputDecoration.copyWith(
