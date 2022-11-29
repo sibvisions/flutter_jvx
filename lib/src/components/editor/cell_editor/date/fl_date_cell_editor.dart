@@ -243,7 +243,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  double getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+  double getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);

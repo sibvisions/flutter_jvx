@@ -62,7 +62,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
       child: Wrap(
         children: [
           FlGroupPanelHeaderWidget(model: model, postFrameCallback: postFrameCallback),
-          const Divider(color: JVxColors.LIGHTER_BLACK),
+          const Divider(color: JVxColors.COMPONENT_BORDER),
           FlSizedPanelWidget(
             model: model,
             width: widthOfGroupPanel,

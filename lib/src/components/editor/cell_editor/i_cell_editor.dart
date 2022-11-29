@@ -79,7 +79,7 @@ abstract class ICellEditor<
 
   double getContentPadding(Map<String, dynamic>? pJson, bool pInTable);
 
-  double? getEditorSize(Map<String, dynamic>? pJson, bool pInTable);
+  double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods

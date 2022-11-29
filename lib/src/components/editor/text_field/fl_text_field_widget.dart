@@ -279,7 +279,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       case FlTextBorderType.enabledBorder:
         return const OutlineInputBorder(
           borderSide: BorderSide(
-            color: JVxColors.LIGHTER_BLACK,
+            color: JVxColors.COMPONENT_BORDER,
           ),
         );
       case FlTextBorderType.focusedBorder:

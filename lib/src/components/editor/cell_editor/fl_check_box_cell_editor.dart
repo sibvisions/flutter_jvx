@@ -80,7 +80,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   }
 
   @override
-  double? getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+  double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
     return null;
   }
 
