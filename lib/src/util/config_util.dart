@@ -42,17 +42,23 @@ abstract class ConfigUtil {
   static MenuMode getMenuMode(String? menuModeString) {
     MenuMode menuMode;
     switch (menuModeString) {
-      case "grid":
-        menuMode = MenuMode.GRID;
-        break;
       case "list":
         menuMode = MenuMode.LIST;
         break;
       case "list_grouped":
         menuMode = MenuMode.LIST_GROUPED;
         break;
+      case "drawer":
+        menuMode = MenuMode.DRAWER;
+        break;
+      case "swiper":
+        menuMode = MenuMode.SWIPER;
+        break;
       case "tabs":
         menuMode = MenuMode.TABS;
+        break;
+      case "grid":
+        menuMode = MenuMode.GRID;
         break;
       case "grid_grouped":
       default:
