@@ -130,7 +130,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onRowSwipe: deleteRecord,
       onRowTap: selectRecord,
       onRowTapDown: onRowDown,
-      showFloatingButton: _isInsertEnabled && ((layoutData.layoutPosition?.height ?? 0.0) >= 150),
+      showFloatingButton: _isInsertEnabled &&
+          ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
+          ((layoutData.layoutPosition?.width ?? 0.0) >= 100) &&
+          model.showFloatButton,
       floatingOnPress: insertRecord,
     );
 
