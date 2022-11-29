@@ -511,7 +511,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       value: value,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
+        children: [
           Container(
             width: 24,
             alignment: Alignment.center,

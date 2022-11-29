@@ -99,7 +99,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           textBaseline: TextBaseline.alphabetic,
           textDirection: // If the text is aligned to the left, the text comes before the icon
               model.labelModel.verticalAlignment == VerticalAlignment.TOP ? TextDirection.rtl : TextDirection.ltr,
-          children: <Widget>[
+          children: [
             image!,
             SizedBox(height: model.imageTextGap.toDouble()),
             Flexible(child: createTextWidget()),
@@ -112,10 +112,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           textBaseline: TextBaseline.alphabetic,
           textDirection: // If the text is aligned to the left, the text comes before the icon
               model.labelModel.horizontalAlignment == HorizontalAlignment.LEFT ? TextDirection.rtl : TextDirection.ltr,
-          children: <Widget>[
+          children: [
             image!,
             SizedBox(width: model.imageTextGap.toDouble()),
-            Flexible(child: createTextWidget())
+            Flexible(child: createTextWidget()),
           ],
         );
       }

@@ -145,7 +145,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
+          children: [
             Text(
               FlutterJVx.translate("Select value"),
               style: Theme.of(context).dialogTheme.titleTextStyle,

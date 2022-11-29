@@ -189,7 +189,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       value: value,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
+        children: [
           FaIcon(
             icon,
             color: Colors.grey[600],

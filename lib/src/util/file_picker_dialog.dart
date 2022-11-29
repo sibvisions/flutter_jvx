@@ -29,10 +29,10 @@ abstract class FilePickerDialog {
               height: 230,
               width: double.infinity,
               child: Column(
-                children: <Widget>[
+                children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
+                    children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 16),
                         child: Text(
@@ -57,7 +57,7 @@ abstract class FilePickerDialog {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
+                        children: [
                           FaIcon(
                             FontAwesomeIcons.camera,
                             color: Theme.of(context).primaryColor,
@@ -82,7 +82,7 @@ abstract class FilePickerDialog {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
+                        children: [
                           FaIcon(
                             FontAwesomeIcons.images,
                             color: Theme.of(context).primaryColor,
@@ -107,7 +107,7 @@ abstract class FilePickerDialog {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
+                        children: [
                           FaIcon(FontAwesomeIcons.folderOpen, color: Theme.of(context).primaryColor),
                           const SizedBox(
                             width: 15,
