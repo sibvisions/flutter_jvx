@@ -5,7 +5,7 @@ import '../config/i_config_service.dart';
 import 'fake_file.dart';
 import 'file_manager.dart';
 
-/// File manger for web
+/// File manager for web
 class FileManagerWeb extends IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

@@ -13,7 +13,7 @@ abstract class IFileManager {
 
   ///Constructs a FileManager depending on the platform
   static Future<IFileManager> getFileManager() async {
-    return kIsWeb ? FileManagerWeb() : await FileMangerMobile.create();
+    return kIsWeb ? FileManagerWeb() : await FileManagerMobile.create();
   }
 
   /// Returns if all requirements are set to successfully access files

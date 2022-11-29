@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import '../config/i_config_service.dart';
 import 'file_manager.dart';
 
-class FileMangerMobile extends IFileManager {
+class FileManagerMobile extends IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,13 +18,13 @@ class FileMangerMobile extends IFileManager {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static Future<FileMangerMobile> create() async {
+  static Future<FileManagerMobile> create() async {
     Directory directory = await getApplicationDocumentsDirectory();
 
-    return FileMangerMobile(directory: directory);
+    return FileManagerMobile(directory: directory);
   }
 
-  FileMangerMobile({
+  FileManagerMobile({
     required this.directory,
   });
 

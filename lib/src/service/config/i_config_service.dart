@@ -69,7 +69,7 @@ abstract class IConfigService {
   IFileManager getFileManager();
 
   /// Set instance of [IFileManager]
-  void setFileManger(IFileManager pFileManger);
+  void setFileManager(IFileManager pFileManager);
 
   static String getPlatformLocale() {
     int? end = universal_io.Platform.localeName.indexOf(RegExp("[_-]"));

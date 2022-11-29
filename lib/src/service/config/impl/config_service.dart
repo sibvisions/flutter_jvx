@@ -152,8 +152,8 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  void setFileManger(IFileManager pFileManger) {
-    fileManager = pFileManger;
+  void setFileManager(IFileManager pFileManager) {
+    fileManager = pFileManager;
   }
 
   @override
