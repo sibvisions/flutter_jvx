@@ -47,7 +47,7 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   }
 
   @override
-  double? getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+  double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
     return null;
   }
 

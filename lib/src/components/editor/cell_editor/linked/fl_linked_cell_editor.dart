@@ -246,7 +246,7 @@ class FlLinkedCellEditor
   }
 
   @override
-  double getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
+  double getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);

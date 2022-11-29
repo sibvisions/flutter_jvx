@@ -120,7 +120,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
     Size? newCalcSize;
 
-    double? width = cellEditor.getEditorSize(model.json, false);
+    double? width = cellEditor.getEditorWidth(model.json, false);
     if (width != null) {
       width += cellEditor.getContentPadding(model.json, false);
 

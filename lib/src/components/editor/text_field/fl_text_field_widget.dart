@@ -119,6 +119,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     focusNode.canRequestFocus = model.isFocusable;
 
+    FlutterJVx.log.i("${model.id} now is enabled: ${model.isEnabled}");
+
     bool isFilled = fillColor != null && !inTable;
     return TextField(
       controller: textController,
@@ -283,7 +285,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       case FlTextBorderType.enabledBorder:
         return const OutlineInputBorder(
           borderSide: BorderSide(
-            color: JVxColors.LIGHTER_BLACK,
+            color: JVxColors.COMPONENT_BORDER,
           ),
         );
       case FlTextBorderType.focusedBorder:

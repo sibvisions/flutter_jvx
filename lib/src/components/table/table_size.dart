@@ -213,7 +213,7 @@ class TableSize {
     ICellEditor pCellEditor,
     TextStyle pTextStyle,
   ) {
-    double columnWidth = pCellEditor.getEditorSize(null, true) ?? 0.0;
+    double columnWidth = pCellEditor.getEditorWidth(null, true) ?? 0.0;
 
     Iterable<dynamic> valuesToCheck = dataColumn.whereNotNull();
     for (dynamic value in valuesToCheck) {

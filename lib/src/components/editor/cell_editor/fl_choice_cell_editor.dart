@@ -18,9 +18,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   /// The image loading callback to the editor.
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
-  /// The size of the image.
-  late Size imageSize;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,7 +33,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
           model: FlChoiceCellEditorModel(),
         ) {
     model.imageLoadingCallback = recalculateSizeCallback;
-    imageSize = model.maxImageSize;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,8 +60,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
     } else {
       image = model.defaultImage;
     }
-
-    imageSize = model.maxImageSize;
 
     return FlIconWidget(
       model: widgetModel,
@@ -111,7 +105,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  double? getEditorSize(Map<String, dynamic>? pJson, bool pInTable) {
-    return imageSize.width;
+  double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
+    return model.maxImageSize;
   }
 }
