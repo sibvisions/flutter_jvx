@@ -1,4 +1,4 @@
-import 'package:universal_io/io.dart';
+import 'package:cross_file/cross_file.dart';
 
 import 'api_command.dart';
 
@@ -11,7 +11,7 @@ class UploadCommand extends ApiCommand {
   final String fileId;
 
   /// The file to send.
-  final File file;
+  final XFile file;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

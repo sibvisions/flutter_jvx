@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -499,7 +500,7 @@ class OnlineApiRepository implements IRepository {
     return '$header\r\n\r\n';
   }
 
-  Stream<List<int>> _addContent(Map<String, String> fields, Map<String, File> files, String boundary) async* {
+  Stream<List<int>> _addContent(Map<String, String> fields, Map<String, XFile> files, String boundary) async* {
     const line = [13, 10]; // \r\n
     final separator = utf8.encode('--$boundary\r\n');
     final close = utf8.encode('--$boundary--\r\n');
@@ -514,7 +515,7 @@ class OnlineApiRepository implements IRepository {
     for (final file in files.entries) {
       yield separator;
       yield utf8.encode(_headerForFile(file.key, basename(file.value.path)));
-      yield* Stream.fromIterable([file.value.readAsBytesSync()]);
+      yield* Stream.fromIterable([await file.value.readAsBytes()]);
       yield line;
     }
     yield close;

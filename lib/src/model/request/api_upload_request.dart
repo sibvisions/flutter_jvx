@@ -1,4 +1,4 @@
-import 'package:universal_io/io.dart';
+import 'package:cross_file/cross_file.dart';
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
@@ -17,7 +17,7 @@ class ApiUploadRequest extends SessionRequest {
   final String fileId;
 
   /// The file to send.
-  final File file;
+  final XFile file;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

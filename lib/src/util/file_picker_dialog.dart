@@ -1,8 +1,8 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:universal_io/io.dart';
 
 import '../flutter_jvx.dart';
 import '../service/config/i_config_service.dart';
@@ -14,14 +14,16 @@ enum UploadType {
 }
 
 abstract class FilePickerDialog {
-  static Future<File?> openFilePicker() async {
+  static Future<XFile?> openFilePicker() {
     BuildContext context = FlutterJVx.getCurrentContext()!;
 
-    File? file;
-
-    await showModalBottomSheet(
+    return showModalBottomSheet<XFile?>(
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
+        ),
         context: context,
         builder: (BuildContext context) {
           return SingleChildScrollView(
@@ -48,11 +50,7 @@ abstract class FilePickerDialog {
                     ],
                   ),
                   InkWell(
-                    onTap: () => pick(UploadType.CAMERA).then((val) async {
-                      if (val != null) file = val;
-
-                      Navigator.of(context).pop();
-                    }),
+                    onTap: () => pick(UploadType.CAMERA).then((val) => Navigator.of(context).pop(val)),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
@@ -62,9 +60,7 @@ abstract class FilePickerDialog {
                             FontAwesomeIcons.camera,
                             color: Theme.of(context).primaryColor,
                           ),
-                          const SizedBox(
-                            width: 15,
-                          ),
+                          const SizedBox(width: 15),
                           Text(
                             FlutterJVx.translate("Camera"),
                             style: const TextStyle(fontSize: 18),
@@ -74,10 +70,7 @@ abstract class FilePickerDialog {
                     ),
                   ),
                   InkWell(
-                    onTap: () => pick(UploadType.GALLERY).then((val) {
-                      if (val != null) file = val;
-                      Navigator.of(context).pop();
-                    }),
+                    onTap: () => pick(UploadType.GALLERY).then((val) => Navigator.of(context).pop(val)),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
@@ -87,9 +80,7 @@ abstract class FilePickerDialog {
                             FontAwesomeIcons.images,
                             color: Theme.of(context).primaryColor,
                           ),
-                          const SizedBox(
-                            width: 15,
-                          ),
+                          const SizedBox(width: 15),
                           Text(
                             FlutterJVx.translate("Gallery"),
                             style: const TextStyle(fontSize: 18),
@@ -99,19 +90,14 @@ abstract class FilePickerDialog {
                     ),
                   ),
                   InkWell(
-                    onTap: () => pick(UploadType.FILE_SYSTEM).then((val) {
-                      if (val != null) file = val;
-                      Navigator.of(context).pop();
-                    }),
+                    onTap: () => pick(UploadType.FILE_SYSTEM).then((val) => Navigator.of(context).pop(val)),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           FaIcon(FontAwesomeIcons.folderOpen, color: Theme.of(context).primaryColor),
-                          const SizedBox(
-                            width: 15,
-                          ),
+                          const SizedBox(width: 15),
                           Text(
                             FlutterJVx.translate("Filesystem"),
                             style: const TextStyle(fontSize: 18),
@@ -125,24 +111,13 @@ abstract class FilePickerDialog {
             ),
           );
         });
-
-    return file;
   }
 
-  static Future<File?> pick(UploadType type) async {
+  static Future<XFile?> pick(UploadType type) async {
     double? maxPictureWidth = IConfigService().getPictureResolution()?.toDouble();
-
-    File? file;
 
     try {
       switch (type) {
-        case UploadType.FILE_SYSTEM:
-          FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-          if (result != null) {
-            file = File(result.files.single.path!);
-          }
-          break;
         case UploadType.CAMERA:
           ImagePicker picker = ImagePicker();
 
@@ -152,10 +127,7 @@ abstract class FilePickerDialog {
             requestFullMetadata: false,
           );
 
-          if (pickedFile != null) {
-            file = File(pickedFile.path);
-          }
-          break;
+          return pickedFile;
         case UploadType.GALLERY:
           ImagePicker picker = ImagePicker();
 
@@ -164,15 +136,28 @@ abstract class FilePickerDialog {
             requestFullMetadata: false,
           );
 
+          return pickedFile;
+        case UploadType.FILE_SYSTEM:
+          FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+          // https://github.com/miguelpruivo/flutter_file_picker/issues/875
+          PlatformFile? pickedFile = result?.files.single;
           if (pickedFile != null) {
-            file = File(pickedFile.path);
+            if (kIsWeb) {
+              return XFile.fromData(
+                pickedFile.bytes!,
+                name: pickedFile.name,
+              );
+            }
+            return XFile(
+              pickedFile.path!,
+              name: pickedFile.name,
+            );
           }
-          break;
       }
     } catch (e, stack) {
       FlutterJVx.logUI.e("Failed to pick file", e, stack);
     }
-
-    return file;
+    return null;
   }
 }
