@@ -1,12 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../../model/component/panel/fl_panel_model.dart';
 import '../fl_panel_widget.dart';
 
 class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
+  final ScrollController horizontalScrollController;
+
+  final ScrollController verticalScrollController;
+
   const FlScrollPanelWidget({
     super.key,
     required super.model,
@@ -16,6 +18,8 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
     required this.height,
     required this.viewWidth,
     required this.viewHeight,
+    required this.horizontalScrollController,
+    required this.verticalScrollController,
   });
 
   final bool isScrollable;
@@ -41,23 +45,23 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
         ],
       );
 
-      log("Viewheight: $viewHeight");
-      log("height: $height");
-
-      log("Viewwidth: $viewWidth");
-      log("width: $width");
-
       if (kIsWeb) {
-        return SingleChildScrollView(
-          child: SizedBox(
-            height: height,
-            width: viewWidth,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                height: viewHeight,
-                width: width,
-                child: child,
+        return Scrollbar(
+          thumbVisibility: true,
+          controller: horizontalScrollController,
+          child: Scrollbar(
+            controller: verticalScrollController,
+            notificationPredicate: (notification) => notification.depth == 1,
+            child: SizedBox(
+              width: viewWidth,
+              height: viewHeight,
+              child: SingleChildScrollView(
+                controller: horizontalScrollController,
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  controller: verticalScrollController,
+                  child: child,
+                ),
               ),
             ),
           ),

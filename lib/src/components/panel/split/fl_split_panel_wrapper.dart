@@ -23,6 +23,11 @@ class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
 class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> {
   final BehaviorSubject subject = BehaviorSubject();
 
+  final ScrollController firstVerticalcontroller = ScrollController();
+  final ScrollController firstHorizontalController = ScrollController();
+  final ScrollController secondVerticalController = ScrollController();
+  final ScrollController secondHorizontalController = ScrollController();
+
   MouseCursor mouseCursor = MouseCursor.defer;
 
   @override
@@ -58,6 +63,10 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         cursor: mouseCursor,
         child: FlSplitPanelWidget(
           model: model,
+          firstVerticalcontroller: firstVerticalcontroller,
+          firstHorizontalController: firstHorizontalController,
+          secondVerticalController: secondVerticalController,
+          secondHorizontalController: secondHorizontalController,
           layout: layoutData.layout as SplitLayout,
           children: [
             ...children.values.toList(),
@@ -70,6 +79,10 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   @override
   void dispose() {
+    firstVerticalcontroller.dispose();
+    firstHorizontalController.dispose();
+    secondVerticalController.dispose();
+    secondHorizontalController.dispose();
     subject.close();
     super.dispose();
   }

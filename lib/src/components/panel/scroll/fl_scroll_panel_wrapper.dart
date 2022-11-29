@@ -20,6 +20,9 @@ class FlScrollPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
 }
 
 class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
+  final ScrollController _horizontalController = ScrollController();
+  final ScrollController _vertictalController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -52,11 +55,25 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
       viewWidth: layoutData.layoutPosition?.width ?? widthOfScrollPanel,
       viewHeight: layoutData.layoutPosition?.height ?? heightOfScrollPanel,
       isScrollable: isScrollable,
+      horizontalScrollController: _horizontalController,
+      verticalScrollController: _vertictalController,
       children: children.values.toList(),
     );
 
     return (getPositioned(child: panelWidget));
   }
+
+  @override
+  void dispose() {
+    _horizontalController.dispose();
+    _vertictalController.dispose();
+
+    super.dispose();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   double get widthOfScrollPanel {
     double width = ScrollLayout.widthOfScrollPanel(layoutData);
