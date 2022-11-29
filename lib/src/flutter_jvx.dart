@@ -16,6 +16,7 @@ import 'custom/app_manager.dart';
 import 'exceptions/error_view_exception.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/splash/splash.dart';
+import 'model/command/api/alive_command.dart';
 import 'model/command/api/login_command.dart';
 import 'model/command/api/startup_command.dart';
 import 'routing/locations/login_location.dart';
@@ -264,6 +265,8 @@ late BeamerDelegate routerDelegate;
 PageStorageBucket pageStorageBucket = PageStorageBucket();
 
 class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
+  AppLifecycleState? lastState;
+
   /// Gets the [FlutterJVxState] widget.
   static FlutterJVxState? of(BuildContext? context) => context?.findAncestorStateOfType();
 
@@ -372,6 +375,22 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() {
     changedTheme();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (lastState != null) {
+      if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
+        // App was resumed from a paused state (Permission overlay is not paused)
+        if (!IConfigService().isOffline()) {
+          ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"));
+        }
+      }
+    }
+
+    lastState = state;
   }
 
   @override

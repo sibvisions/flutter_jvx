@@ -15,6 +15,7 @@ import '../../../../exceptions/session_expired_exception.dart';
 import '../../../../flutter_jvx.dart';
 import '../../../../model/api_interaction.dart';
 import '../../../../model/command/api/changes_command.dart';
+import '../../../../model/request/api_alive_request.dart';
 import '../../../../model/request/api_change_password_request.dart';
 import '../../../../model/request/api_changes_request.dart';
 import '../../../../model/request/api_close_frame_request.dart';
@@ -125,6 +126,7 @@ class OnlineApiRepository implements IRepository {
     ApiMouseReleasedRequest: (_) => APIRoute.POST_MOUSE_RELEASED,
     ApiFocusGainedRequest: (_) => APIRoute.POST_FOCUS_GAINED,
     ApiFocusLostRequest: (_) => APIRoute.POST_FOCUS_LOST,
+    ApiAliveRequest: (_) => APIRoute.POST_ALIVE,
   };
 
   static final Map<String, ResponseFactory> maps = {

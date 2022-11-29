@@ -38,6 +38,7 @@ class APIRoute {
   static const APIRoute POST_MOUSE_RELEASED = APIRoute(Method.POST, "api/mouseReleased");
   static const APIRoute POST_FOCUS_GAINED = APIRoute(Method.POST, "api/focusGained");
   static const APIRoute POST_FOCUS_LOST = APIRoute(Method.POST, "api/focusLost");
+  static const APIRoute POST_ALIVE = APIRoute(Method.POST, "api/alive");
 
   final String route;
   final Method method;

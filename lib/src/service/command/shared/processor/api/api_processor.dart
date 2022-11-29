@@ -1,3 +1,4 @@
+import '../../../../../model/command/api/alive_command.dart';
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/change_password_command.dart';
 import '../../../../../model/command/api/changes_command.dart';
@@ -32,6 +33,7 @@ import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/api/upload_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
+import 'alive_command_processor.dart';
 import 'change_password_command_processor.dart';
 import 'changes_command_processor.dart';
 import 'close_frame_command_processor.dart';
@@ -152,6 +154,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _focusLostProcessor = FocusLostCommandProcessor();
 
+  final ICommandProcessor _aliveProcessor = AliveCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -221,6 +225,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _focusGainedProcessor.processCommand(command);
     } else if (command is FocusLostCommand) {
       return _focusLostProcessor.processCommand(command);
+    } else if (command is AliveCommand) {
+      return _aliveProcessor.processCommand(command);
     }
     return [];
   }
