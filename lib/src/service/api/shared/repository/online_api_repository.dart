@@ -439,14 +439,15 @@ class OnlineApiRepository implements IRepository {
         charset: "utf-8",
         parameters: {"boundary": boundary},
       );
-      await request.addStream(_addContent(
+      var content = _addContent(
         {
           "clientId": pRequest.clientId,
           "fileId": pRequest.fileId,
         },
         {"data": pRequest.file},
         boundary,
-      ));
+      );
+      await request.addStream(content);
     } else if (route.method != Method.GET) {
       request.headers.contentType = ContentType("application", "json", charset: "utf-8");
       request.write(jsonEncode(pRequest));
