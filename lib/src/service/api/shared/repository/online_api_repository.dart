@@ -447,7 +447,11 @@ class OnlineApiRepository implements IRepository {
         {"data": pRequest.file},
         boundary,
       );
-      await request.addStream(content);
+      // await request.addStream(content);
+      // Workaround https://github.com/dint-dev/universal_io/issues/35
+      await for (List<int> c in content) {
+        request.add(c);
+      }
     } else if (route.method != Method.GET) {
       request.headers.contentType = ContentType("application", "json", charset: "utf-8");
       request.write(jsonEncode(pRequest));
