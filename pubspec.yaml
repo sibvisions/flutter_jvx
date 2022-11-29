@@ -45,7 +45,6 @@ dependencies:
 
   # IO handling
   universal_io: ^2.0.4
-  universal_html: ^2.0.8
 
   web_socket_channel: ^2.2.0
 
