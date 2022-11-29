@@ -47,11 +47,8 @@ abstract class Menu extends StatelessWidget {
           menuModel: menuModel,
           onClick: onClick,
         );
-      case MenuMode.DRAWER:
-      case MenuMode.SWIPER:
       case MenuMode.GRID:
       case MenuMode.GRID_GROUPED:
-      default:
         return GridMenu(
           key: key,
           menuModel: menuModel,
@@ -59,6 +56,17 @@ abstract class Menu extends StatelessWidget {
           grouped: grouped,
           sticky: sticky,
           groupOnlyOnMultiple: groupOnlyOnMultiple,
+        );
+      case MenuMode.DRAWER:
+      case MenuMode.SWIPER:
+      default:
+        return GridMenu(
+          key: key,
+          menuModel: menuModel,
+          onClick: onClick,
+          grouped: true,
+          sticky: true,
+          groupOnlyOnMultiple: false,
         );
     }
   }
