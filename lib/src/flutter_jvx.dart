@@ -294,6 +294,8 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
           (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate()),
     );
 
+    WidgetsBinding.instance.addObserver(this);
+
     initAppFuture = initApp().catchError(createErrorHandler("Failed to initialize")).then((value) {
       //Activate second future
       restart();
@@ -375,6 +377,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
   @override
   void dispose() {
     IApiService().getRepository()?.stop();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
