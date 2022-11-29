@@ -296,15 +296,15 @@ class FlowLayout extends ILayout {
 
     for (LayoutData child in pChildren) {
       if (isRowOrientationHorizontal) {
-        if (child.calculatedSize!.height > maxHeight) {
-          maxHeight = child.calculatedSize!.height;
+        if (child.bestSize.height > maxHeight) {
+          maxHeight = child.bestSize.height;
         }
-        maxWidth += child.calculatedSize!.width;
+        maxWidth += child.bestSize.width;
       } else {
-        if (child.calculatedSize!.width > maxWidth) {
-          maxWidth = child.calculatedSize!.width;
+        if (child.bestSize.width > maxWidth) {
+          maxWidth = child.bestSize.width;
         }
-        maxHeight += child.calculatedSize!.height;
+        maxHeight += child.bestSize.height;
       }
     }
     return Size(maxWidth + pParent.insets.left + pParent.insets.right + margins.marginLeft + margins.marginRight,
