@@ -119,8 +119,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     focusNode.canRequestFocus = model.isFocusable;
 
-    FlutterJVx.log.i("${model.id} now is enabled: ${model.isEnabled}");
-
     bool isFilled = fillColor != null && !inTable;
     return TextField(
       controller: textController,
