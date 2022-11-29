@@ -313,7 +313,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
             border: Border(
               bottom: BorderSide(
                 color: Theme.of(context).primaryColor,
-                width: 1.0,
+                width: 0.3,
               ),
             ),
           ),
@@ -363,7 +363,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
         border: const Border(
-          bottom: BorderSide(color: JVxColors.LIGHTER_BLACK),
+          bottom: BorderSide(color: JVxColors.COMPONENT_BORDER),
         ),
       ),
       height: tableSize.tableHeaderHeight,

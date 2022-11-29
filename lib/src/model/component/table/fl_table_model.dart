@@ -43,6 +43,8 @@ class FlTableModel extends FlComponentModel implements IDataModel {
   /// Word wrap
   bool wordWrapEnabled = false;
 
+  /// If the table hides the floating insert button.
+  bool get showFloatButton => !styles.contains("f_no_float_insert");
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
