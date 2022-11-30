@@ -65,8 +65,8 @@ class SplitLayout implements ILayout, ICloneable {
     // Only set position on children if layout has a position set.
     if (position != null) {
       if (splitAlignment == SplitOrientation.VERTICAL) {
-        double leftTopWidth = position.width / 100 * leftTopRatio - splitterSize / 2;
-        double rightBottomWidth = position.width / 100 * (100 - leftTopRatio) - splitterSize / 2;
+        double leftTopWidth = max(position.width / 100 * leftTopRatio - splitterSize / 2, 0.0);
+        double rightBottomWidth = max(position.width / 100 * (100 - leftTopRatio) - splitterSize / 2, 0.0);
 
         firstComponentViewer =
             LayoutPosition(width: leftTopWidth, height: position.height, top: 0, left: 0, isComponentSize: false);
@@ -77,8 +77,8 @@ class SplitLayout implements ILayout, ICloneable {
             left: leftTopWidth + splitterSize,
             isComponentSize: false);
       } else {
-        double leftTopHeight = position.height / 100 * leftTopRatio - splitterSize / 2;
-        double rightBottomHeight = position.height / 100 * (100 - leftTopRatio) - splitterSize / 2;
+        double leftTopHeight = max(position.height / 100 * leftTopRatio - splitterSize / 2, 0.0);
+        double rightBottomHeight = max(position.height / 100 * (100 - leftTopRatio) - splitterSize / 2, 0.0);
 
         firstComponentViewer =
             LayoutPosition(width: position.width, height: leftTopHeight, top: 0, left: 0, isComponentSize: false);
