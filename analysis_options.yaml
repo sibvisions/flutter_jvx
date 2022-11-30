@@ -27,6 +27,7 @@ linter:
     unawaited_futures: true
     avoid_relative_lib_imports: true
     prefer_relative_imports: true
+    avoid_void_async: true
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
