@@ -102,7 +102,7 @@ class UiService implements IUiService {
     if (error is! ErrorViewException) {
       bool isTimeout = error is TimeoutException || error is SocketException;
       ICommandService().sendCommand(OpenErrorDialogCommand(
-        message: IUiService.getErrorMessage(error),
+        message: FlutterJVx.translate(IUiService.getErrorMessage(error)),
         error: error,
         canBeFixedInSettings: isTimeout,
         reason: "Command error in ui service",

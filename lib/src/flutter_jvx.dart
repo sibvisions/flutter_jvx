@@ -618,7 +618,9 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
           title: Text(errorView?.errorCommand.title?.isNotEmpty ?? false
               ? errorView!.errorCommand.title!
               : FlutterJVx.translate("Error")),
-          content: Text(errorView?.errorCommand.message ?? IUiService.getErrorMessage(snapshot.error!)),
+          content: Text(
+            errorView?.errorCommand.message ?? FlutterJVx.translate(IUiService.getErrorMessage(snapshot.error!)),
+          ),
           actions: [
             TextButton(
               onPressed: () {

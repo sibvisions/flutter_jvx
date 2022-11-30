@@ -39,9 +39,10 @@ abstract class IUiService {
   void clear();
 
   static String getErrorMessage(Object error) {
-    if (error is TimeoutException) {
-      return "Connection to remote server timed out";
-    } else if (error is SocketException) {
+    if (error is SocketException) {
+      if (error.message.contains("timed out")) {
+        return "Connection to remote server timed out";
+      }
       return "Could not connect to remote server";
     } else {
       return error.toString();
