@@ -513,7 +513,7 @@ abstract class OfflineUtil {
     }
   }
 
-  static void discardChanges(BuildContext context) async {
+  static Future<void> discardChanges(BuildContext context) async {
     var offlineApiRepository = IApiService().getRepository();
     if (offlineApiRepository is OfflineApiRepository && !offlineApiRepository.isStopped()) {
       await offlineApiRepository.deleteDatabase();

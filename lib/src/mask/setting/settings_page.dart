@@ -568,7 +568,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   /// Will send a [StartupCommand] with current values
-  void _saveClicked() async {
+  Future<void> _saveClicked() async {
     if (appName?.isNotEmpty == true && baseUrl?.isNotEmpty == true) {
       try {
         if (!context.canBeamBack || IConfigService().getClientId() == null || _changesPending()) {

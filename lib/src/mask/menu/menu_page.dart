@@ -62,9 +62,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               builder: (context) => IconButton(
                 onPressed: () {
                   showSyncDialog().then(
-                    (value) {
+                    (value) async {
                       if (value == SyncDialogResult.DISCARD_CHANGES) {
-                        OfflineUtil.discardChanges(context);
+                        await OfflineUtil.discardChanges(context);
                         OfflineUtil.initOnline();
                       } else if (value == SyncDialogResult.YES) {
                         OfflineUtil.initOnline();
