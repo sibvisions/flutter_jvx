@@ -384,7 +384,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
     if (lastState != null) {
       if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
         // App was resumed from a paused state (Permission overlay is not paused)
-        if (!IConfigService().isOffline()) {
+        if (IConfigService().getClientId() != null && !IConfigService().isOffline()) {
           ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"));
         }
       }
