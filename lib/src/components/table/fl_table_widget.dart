@@ -21,6 +21,12 @@ import 'table_size.dart';
 
 class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String NO_FLOATING_BUTTON_STYLE = "f_no_float_insert";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -285,6 +291,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
         (formattedValue).toString(),
         style: model.createTextStyle(),
         overflow: TextOverflow.ellipsis,
+        maxLines: 1,
       );
 
       rowWidgets.add(

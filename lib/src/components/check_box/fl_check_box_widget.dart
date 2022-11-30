@@ -9,7 +9,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static const String SWITCH_STYLE = "switch";
+  static const String SWITCH_STYLE = "f_switch";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults

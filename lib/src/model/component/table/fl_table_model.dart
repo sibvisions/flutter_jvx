@@ -1,3 +1,4 @@
+import '../../../../components.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../util/parse_util.dart';
 import '../fl_component_model.dart';
@@ -44,7 +45,7 @@ class FlTableModel extends FlComponentModel implements IDataModel {
   bool wordWrapEnabled = false;
 
   /// If the table hides the floating insert button.
-  bool get showFloatButton => !styles.contains("f_no_float_insert");
+  bool get showFloatButton => !styles.contains(FlTableWidget.NO_FLOATING_BUTTON_STYLE);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
