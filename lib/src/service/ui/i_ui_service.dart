@@ -45,7 +45,13 @@ abstract class IUiService {
       }
       return "Could not connect to remote server";
     } else {
-      return error.toString();
+      const String messageStart = "Exception: ";
+
+      String message = error.toString();
+      if (message.startsWith(messageStart)) {
+        return message.substring(messageStart.length);
+      }
+      return message;
     }
   }
 
