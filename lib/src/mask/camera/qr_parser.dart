@@ -17,6 +17,24 @@ class QRParser {
     "PWD": QRParser.password,
   };
 
+  /// The following formats are supported:
+  /// * JSON
+  /// * Custom "JSON" (=)
+  /// ```
+  /// {
+  ///   URL=http://localhost:8080/JVx.mobile/services/mobile
+  ///   APPNAME=demo
+  ///   USER=features
+  ///   PWD=features
+  /// }
+  /// ```
+  /// * Simple Properties (: )
+  /// ```
+  /// Application: demo
+  /// URL: http://localhost:8080/JVx.mobile/services/mobile
+  /// USER: features
+  /// PWD: features
+  /// ```
   static QRAppCode parseCode(String rawQRCode) {
     Map<String, dynamic> json = {};
 
