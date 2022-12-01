@@ -77,6 +77,7 @@ import '../../../../model/response/view/message/error_view_response.dart';
 import '../../../../model/response/view/message/message_dialog_response.dart';
 import '../../../../model/response/view/message/message_view.dart';
 import '../../../../model/response/view/message/session_expired_response.dart';
+import '../../../../util/external/retry.dart';
 import '../../../command/i_command_service.dart';
 import '../../../config/i_config_service.dart';
 import '../../../ui/i_ui_service.dart';
@@ -336,7 +337,15 @@ class OnlineApiRepository implements IRepository {
           }
         }
 
-        HttpClientResponse response = await _sendPostRequest(route, pRequest);
+        HttpClientResponse response = await retry(
+          () => _sendPostRequest(route, pRequest),
+          retryIf: (e) => e is SocketException,
+          retryIfResult: (response) => response.statusCode == 503,
+          onRetry: (e) => FlutterJVx.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
+          onRetryResult: (response) => FlutterJVx.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
+          maxAttempts: 3,
+          maxDelay: Duration(seconds: IConfigService().getAppConfig()!.requestTimeout!),
+        );
 
         if (response.statusCode >= 400 && response.statusCode <= 599) {
           var body = await _decodeBody(response);
