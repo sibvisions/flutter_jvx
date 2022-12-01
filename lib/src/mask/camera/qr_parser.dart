@@ -12,6 +12,7 @@ class QRParser {
     "URL": QRParser.url,
     "Applikation": QRParser.appName,
     "Application": QRParser.appName,
+    "APPNAME": QRParser.appName,
     "USER": QRParser.user,
     "PWD": QRParser.password,
   };
@@ -29,7 +30,7 @@ class QRParser {
       List<String> properties = ls.convert(rawQRCode);
 
       for (String prop in properties) {
-        List<String> splitProp = prop.split(": ");
+        List<String> splitProp = prop.split(RegExp(r"(: )|(=)"));
         String? propertyName = propertyNameMap[splitProp[0]];
         if (propertyName != null && splitProp.length >= 2) {
           String propertyValue = splitProp[1];
