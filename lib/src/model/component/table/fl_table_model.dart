@@ -1,4 +1,4 @@
-import '../../../../components.dart';
+import '../../../components/table/fl_table_widget.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../util/parse_util.dart';
 import '../fl_component_model.dart';

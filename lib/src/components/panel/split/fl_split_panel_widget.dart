@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../components.dart';
 import '../../../layout/split_layout.dart';
+import '../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../model/layout/layout_position.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../fl_panel_widget.dart';
+import '../scroll/fl_scroll_panel_widget.dart';
 
 class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
   final SplitLayout layout;

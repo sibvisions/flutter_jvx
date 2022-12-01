@@ -23,6 +23,7 @@ export 'src/mask/menu/menu.dart';
 export 'src/mask/splash/jvx_splash.dart';
 export 'src/mask/state/app_style.dart';
 export 'src/mask/state/loading_bar.dart';
+// Model
 export 'src/model/command/base_command.dart';
 export 'src/model/menu/menu_model.dart';
 export 'src/model/request/api_request.dart';
