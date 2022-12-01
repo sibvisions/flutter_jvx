@@ -13,6 +13,8 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   @override
   String text = "";
 
+  bool get isFlatStyle => styles.contains(FlGroupPanelWrapper.FLAT_STYLE);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

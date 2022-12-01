@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_group_panel_model.dart';
-import '../../../service/ui/i_ui_service.dart';
-import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
@@ -13,23 +12,42 @@ import '../fl_sized_panel_widget.dart';
 import 'fl_group_panel_header_widget.dart';
 
 class FlGroupPanelWrapper extends BaseCompWrapperWidget<FlGroupPanelModel> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String FLAT_STYLE = "f_panel_flat";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   const FlGroupPanelWrapper({super.key, required super.id});
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlGroupPanelWrapperState();
 }
 
 class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   bool layoutAfterBuild = false;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void initState() {
     super.initState();
 
-    ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData)!;
-    layoutData.layout = GroupLayout(originalLayout: originalLayout, groupHeaderHeight: 0.0);
-    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
-
+    _createGroupLayout(model);
     layoutAfterBuild = true;
 
     buildChildren(pSetStateOnChange: false);
@@ -37,9 +55,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   @override
   receiveNewModel(FlGroupPanelModel pModel) {
-    ILayout originalLayout = ILayout.getLayout(pModel.layout, pModel.layoutData)!;
-    layoutData.layout = GroupLayout(originalLayout: originalLayout, groupHeaderHeight: 0.0);
-    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
+    _createGroupLayout(pModel);
     super.receiveNewModel(pModel);
 
     layoutAfterBuild = true;
@@ -58,11 +74,27 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   @override
   Widget build(BuildContext context) {
+    if (model.isFlatStyle) {
+      return _buildFlat(context);
+    } else {
+      return _buildModern(context);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Widget _buildFlat(BuildContext context) {
     return (getPositioned(
-      child: Wrap(
+      child: Column(
         children: [
           FlGroupPanelHeaderWidget(model: model, postFrameCallback: postFrameCallback),
-          const Divider(color: JVxColors.COMPONENT_BORDER),
+          const Divider(
+            color: JVxColors.COMPONENT_BORDER,
+            height: 0.0,
+            thickness: 1.0,
+          ),
           FlSizedPanelWidget(
             model: model,
             width: widthOfGroupPanel,
@@ -74,6 +106,50 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     ));
   }
 
+  Widget _buildModern(BuildContext context) {
+    double groupHeaderHeight = (layoutData.layout as GroupLayout).groupHeaderHeight;
+
+    return getPositioned(
+      child: Padding(
+        padding: EdgeInsets.only(top: groupHeaderHeight / 2),
+        child: Material(
+          borderRadius: BorderRadius.circular(3.0),
+          elevation: 3,
+          child: Column(children: [
+            Container(
+              height: groupHeaderHeight / 2,
+              clipBehavior: Clip.none,
+              child: OverflowBox(
+                maxHeight: groupHeaderHeight,
+                minHeight: groupHeaderHeight,
+                alignment: Alignment.bottomCenter,
+                child: FlGroupPanelHeaderWidget(
+                  model: model,
+                  postFrameCallback: postFrameCallback,
+                ),
+              ),
+            ),
+            FlSizedPanelWidget(
+              model: model,
+              width: widthOfGroupPanel,
+              height: heightOfGroupPanel,
+              children: children.values.toList(),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  void _createGroupLayout(FlGroupPanelModel pModel) {
+    ILayout originalLayout = ILayout.getLayout(pModel.layout, pModel.layoutData)!;
+    layoutData.layout = GroupLayout(
+      originalLayout: originalLayout,
+      groupHeaderHeight: 0.0,
+    );
+    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
+  }
+
   @override
   void postFrameCallback(BuildContext context) {
     if (!mounted) {
@@ -82,7 +158,9 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
     GroupLayout layout = (layoutData.layout as GroupLayout);
 
-    double groupHeaderHeight = (context.size != null ? context.size!.height : 0.0) + 16.0;
+    Size calculatedSize = calculateSize(context);
+
+    double groupHeaderHeight = calculatedSize.height;
 
     if (groupHeaderHeight != layout.groupHeaderHeight) {
       layout.groupHeaderHeight = groupHeaderHeight;
