@@ -100,6 +100,18 @@ dependencies:
   gauges: ^1.0.0
   flutter_keyboard_visibility: ^5.4.0
 
+dependency_overrides:
+  # https://github.com/dint-dev/universal_io/pull/37
+  universal_io:
+    git:
+      url: https://github.com/dint-dev/universal_io.git
+      ref: c4ce2ab
+  # https://github.com/rknell/dart_queue/pull/14
+  queue:
+    git:
+      url: https://github.com/rknell/dart_queue.git
+      ref: 5fe55f2
+
 dev_dependencies:
   flutter_lints: ^2.0.1
 
