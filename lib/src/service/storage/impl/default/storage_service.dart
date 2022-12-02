@@ -42,12 +42,9 @@ class StorageService implements IStorageService {
     // List of all affected models
     Set<String> affectedModels = {};
 
-    Set<String> destroyedModels = {};
+    Set<String> destroyedOrRemovedModels = {};
 
     List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName, ignoreVisibility: false);
-
-    List<FlComponentModel> oldAndRemovedScreenComps =
-        _getAllComponentsBelowByName(name: screenName, ignoreVisibility: true, includeRemoved: true);
 
     // Handle new Components
     if (newComponents != null) {
@@ -57,7 +54,7 @@ class StorageService implements IStorageService {
         if (parentId != null) {
           affectedModels.add(parentId);
         }
-        _addNewComponent(componentModel);
+        _componentMap[componentModel.id] = componentModel;
       }
     }
 
@@ -65,48 +62,46 @@ class StorageService implements IStorageService {
     if (componentsToUpdate != null) {
       for (Map<String, dynamic> changedData in componentsToUpdate) {
         String changedId = changedData[ApiObjectProperty.id];
-        if (oldAndRemovedScreenComps.any((element) => element.id == changedId)) {
-          // If a removed component changes it is no longer removed
-          FlComponentModel? removedModel = _removedComponents[changedData[ApiObjectProperty.id]];
-          if (removedModel != null) {
-            _componentMap[removedModel.id] = removedModel;
-            _removedComponents.remove(removedModel.id);
-          }
 
-          // Get old Model
-          FlComponentModel? model = _componentMap[changedData[ApiObjectProperty.id]];
-          if (model != null) {
-            // Update Component and add to changedModels
-            String? oldParentId = model.parent;
-            bool wasVisible = model.isVisible;
-            bool wasRemoved = model.isRemoved;
-            model.isRemoved = false;
+        // If a removed component changes it is no longer removed
+        FlComponentModel? removedModel = _removedComponents[changedId];
+        if (removedModel != null) {
+          _componentMap[removedModel.id] = removedModel;
+          _removedComponents.remove(removedModel.id);
+        }
 
-            model.lastChangedProperties = changedData.keys.toSet();
-            model.applyFromJson(changedData);
-            changedModels.add(model.id);
+        // Get old Model
+        FlComponentModel? model = _componentMap[changedId];
+        if (model != null) {
+          // Update Component and add to changedModels
+          String? oldParentId = model.parent;
+          bool wasVisible = model.isVisible;
+          bool wasRemoved = model.isRemoved;
+          model.isRemoved = false;
 
-            // Handle component removed
-            if (model.isDestroyed) {
-              _componentMap.remove(model.id);
-              _removedComponents.remove(model.id);
-              destroyedModels.add(model.id);
-            } else if (model.isRemoved) {
-              _componentMap.remove(model.id);
+          model.lastChangedProperties = changedData.keys.toSet();
+          model.applyFromJson(changedData);
+          changedModels.add(model.id);
+
+          // Handle component removed
+          if (model.isDestroyed || model.isRemoved) {
+            _componentMap.remove(model.id);
+            if (model.isRemoved) {
               _removedComponents[model.id] = model;
             }
+            destroyedOrRemovedModels.add(model.id);
+          }
 
-            // Handle parent change, notify old parent of change
-            if (oldParentId != null && model.parent != oldParentId) {
-              FlComponentModel? oldParent = _componentMap[oldParentId];
-              if (oldParent != null) {
-                affectedModels.add(oldParent.id);
-              }
+          // Handle parent change, notify old parent of change
+          if (oldParentId != null && model.parent != oldParentId) {
+            FlComponentModel? oldParent = _componentMap[oldParentId];
+            if (oldParent != null) {
+              affectedModels.add(oldParent.id);
             }
+          }
 
-            if (model.isVisible != wasVisible || model.isRemoved != wasRemoved) {
-              affectedModels.add(model.parent!);
-            }
+          if (model.isVisible != wasVisible || model.isRemoved != wasRemoved) {
+            affectedModels.add(model.parent!);
           }
         }
       }
@@ -116,8 +111,12 @@ class StorageService implements IStorageService {
 
     List<FlComponentModel> newUiComponents = [];
     List<FlComponentModel> changedUiComponents = [];
-    Set<String> deletedUiComponents = {...destroyedModels};
+    Set<String> deletedUiComponents = {...destroyedOrRemovedModels};
     Set<String> affectedUiComponents = {};
+
+    for (String remDelId in destroyedOrRemovedModels) {
+      deletedUiComponents.addAll(_getAllComponentsBelow(remDelId).map((e) => e.id));
+    }
 
     // Build UI Notification
     // Check for new or changed active components
@@ -243,10 +242,5 @@ class StorageService implements IStorageService {
     }
 
     return list;
-  }
-
-  /// Adds new Component
-  void _addNewComponent(FlComponentModel newComponent) {
-    _componentMap[newComponent.id] = newComponent;
   }
 }
