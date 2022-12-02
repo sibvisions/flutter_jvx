@@ -18,6 +18,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  flutter_web_plugins:
+    sdk: flutter
+
   flutter_native_splash: ^2.2.16
 
   # iOS Dep
