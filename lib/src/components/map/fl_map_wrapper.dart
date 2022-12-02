@@ -31,6 +31,8 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
 
   MapController mapController = MapController();
 
+  _FlMapWrapperState() : super();
+
   @override
   void initState() {
     super.initState();
@@ -61,8 +63,8 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   }
 
   @override
-  receiveNewModel(FlMapModel pModel) {
-    super.receiveNewModel(pModel);
+  modelUpdated() {
+    super.modelUpdated();
     unsubscribe();
     subscribe();
   }

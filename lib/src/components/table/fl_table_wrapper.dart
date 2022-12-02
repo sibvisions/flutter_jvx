@@ -89,6 +89,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The scroll group to synchronize sticky header scrolling.
   final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
 
+  _FlTableWrapperState() : super();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -164,13 +165,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   @override
-  receiveNewModel(FlTableModel pModel) {
-    super.receiveNewModel(pModel);
+  modelUpdated() {
+    super.modelUpdated();
 
     subscribe();
 
-    if (pModel.lastChangedProperties.contains(ApiObjectProperty.columnNames) ||
-        pModel.lastChangedProperties.contains(ApiObjectProperty.columnLabels)) {
+    if (model.lastChangedProperties.contains(ApiObjectProperty.columnNames) ||
+        model.lastChangedProperties.contains(ApiObjectProperty.columnLabels)) {
       recalculateTableSize(true);
     }
   }

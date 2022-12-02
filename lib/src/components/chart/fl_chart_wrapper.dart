@@ -22,6 +22,8 @@ class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
 class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
   DataChunk? _chunkData;
 
+  _FlChartWrapperState() : super();
+
   @override
   void initState() {
     super.initState();
@@ -29,8 +31,8 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
   }
 
   @override
-  void receiveNewModel(FlChartModel pModel) {
-    super.receiveNewModel(pModel);
+  void modelUpdated() {
+    super.modelUpdated();
     unsubscribe();
     subscribe();
   }

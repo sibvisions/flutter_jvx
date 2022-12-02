@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../layout/split_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../model/layout/layout_position.dart';
-import '../../../service/ui/i_ui_service.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
@@ -30,12 +30,15 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   MouseCursor mouseCursor = MouseCursor.defer;
 
+  _FlSplitPanelWrapperState() : super();
+
   @override
   void initState() {
     super.initState();
 
     layoutData.layout = SplitLayout(splitAlignment: model.orientation, leftTopRatio: model.dividerPosition);
-    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
     subject.throttleTime(SplitLayout.UPDATE_INTERVALL, trailing: true).listen((_) {
       mouseCursor = SystemMouseCursors.resizeLeftRight;
@@ -47,10 +50,11 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
   }
 
   @override
-  receiveNewModel(FlSplitPanelModel pModel) {
-    layoutData.layout = SplitLayout(splitAlignment: pModel.orientation, leftTopRatio: pModel.dividerPosition);
-    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
-    super.receiveNewModel(pModel);
+  modelUpdated() {
+    layoutData.layout = SplitLayout(splitAlignment: model.orientation, leftTopRatio: model.dividerPosition);
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+    super.modelUpdated();
 
     buildChildren();
     registerParent();

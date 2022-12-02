@@ -33,6 +33,8 @@ class FlGroupPanelWrapper extends BaseCompWrapperWidget<FlGroupPanelModel> {
 }
 
 class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> {
+  _FlGroupPanelWrapperState() : super();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,16 +49,16 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   void initState() {
     super.initState();
 
-    _createGroupLayout(model);
+    _createGroupLayout();
     layoutAfterBuild = true;
 
     buildChildren(pSetStateOnChange: false);
   }
 
   @override
-  receiveNewModel(FlGroupPanelModel pModel) {
-    _createGroupLayout(pModel);
-    super.receiveNewModel(pModel);
+  modelUpdated() {
+    _createGroupLayout();
+    super.modelUpdated();
 
     layoutAfterBuild = true;
 
@@ -141,13 +143,14 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     );
   }
 
-  void _createGroupLayout(FlGroupPanelModel pModel) {
-    ILayout originalLayout = ILayout.getLayout(pModel.layout, pModel.layoutData)!;
+  void _createGroupLayout() {
+    ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData)!;
     layoutData.layout = GroupLayout(
       originalLayout: originalLayout,
       groupHeaderHeight: 0.0,
     );
-    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
   }
 
   @override

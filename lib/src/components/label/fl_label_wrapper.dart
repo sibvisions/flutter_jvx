@@ -16,6 +16,8 @@ class FlLabelWrapper extends BaseCompWrapperWidget<FlLabelModel> {
 }
 
 class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
+  _FlLabelWrapperState() : super();
+
   @override
   Widget build(BuildContext context) {
     final FlLabelWidget widget = FlLabelWidget(model: model);

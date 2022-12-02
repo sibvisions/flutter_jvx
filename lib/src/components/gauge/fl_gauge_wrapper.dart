@@ -15,6 +15,8 @@ class FlGaugeWrapper extends BaseCompWrapperWidget<FlGaugeModel> {
 }
 
 class _FlGaugeWrapperState extends BaseCompWrapperState<FlGaugeModel> {
+  _FlGaugeWrapperState() : super();
+
   @override
   Widget build(BuildContext context) {
     final FlGaugeWidget widget = FlGaugeWidget(model: model);

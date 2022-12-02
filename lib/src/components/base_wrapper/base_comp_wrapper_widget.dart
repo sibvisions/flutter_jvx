@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
 
 import '../../model/component/fl_component_model.dart';
-import '../../service/ui/i_ui_service.dart';
+import '../../service/storage/i_storage_service.dart';
 
 abstract class BaseCompWrapperWidget<T extends FlComponentModel> extends StatefulWidget {
   const BaseCompWrapperWidget({super.key, required this.id});
 
   final String id;
 
-  T get model => IUiService().getComponentModel(pComponentId: id)! as T;
+  T get model => IStorageService().getComponentModel(pComponentId: id)! as T;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {

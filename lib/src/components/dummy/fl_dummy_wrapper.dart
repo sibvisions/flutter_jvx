@@ -15,6 +15,8 @@ class FlDummyWrapper<T extends FlDummyModel> extends BaseCompWrapperWidget<T> {
 }
 
 class _FlDummyWrapperState extends BaseCompWrapperState<FlDummyModel> {
+  _FlDummyWrapperState() : super();
+
   @override
   Widget build(BuildContext context) {
     FlDummyWidget dummyWidget = FlDummyWidget(

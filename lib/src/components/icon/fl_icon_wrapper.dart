@@ -16,6 +16,8 @@ class FlIconWrapper extends BaseCompWrapperWidget<FlIconModel> {
 }
 
 class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
+  _FlIconWrapperState() : super();
+
   @override
   Widget build(BuildContext context) {
     final FlIconWidget widget = FlIconWidget(model: model);

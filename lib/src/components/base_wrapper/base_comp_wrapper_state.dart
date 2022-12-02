@@ -2,25 +2,21 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../../flutter_jvx.dart';
 import '../../model/command/api/focus_gained_command.dart';
 import '../../model/command/api/focus_lost_command.dart';
-import '../../model/command/base_command.dart';
 import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
-import '../../service/command/i_command_service.dart';
-import '../../service/config/i_config_service.dart';
-import '../../service/ui/i_ui_service.dart';
 import 'base_comp_wrapper_widget.dart';
 
 /// Base state class for all component_wrappers, houses following functionality:
 /// Model and layout init
 /// Subscription handling in UiService
 /// Getters for componentSize
-abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget> {
+abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget<T>> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +39,12 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   bool isFocused = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  BaseCompWrapperState();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -50,7 +52,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   void initState() {
     super.initState();
     // Models need to be same type, dart doesn't see that both extend [FlComponentModel]
-    model = IUiService().getComponentModel(pComponentId: widget.id)! as T;
+    model = widget.model;
 
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(
@@ -71,7 +73,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       subbedObj: this,
       affectedCallback: affected,
       layoutCallback: receiveNewLayoutData,
-      modelCallback: receiveNewModel,
+      modelCallback: modelUpdated,
       saveCallback: createSaveCommand,
     );
     IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
@@ -112,24 +114,22 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sets State with new Model
-  void receiveNewModel(T pModel) {
-    FlutterJVx.logUI.d("${pModel.id} received new Model");
+  void modelUpdated() {
+    FlutterJVx.logUI.d("${model.id} received new Model");
 
     setState(() {
       // Set potentially new layout data contained in the new model
-      layoutData.constraints = pModel.constraints;
-      layoutData.preferredSize = pModel.preferredSize;
-      layoutData.minSize = pModel.minimumSize;
-      layoutData.maxSize = pModel.maximumSize;
-      layoutData.parentId = pModel.parent;
-      layoutData.needsRelayout = pModel.isVisible;
-      layoutData.indexOf = pModel.indexOf;
+      layoutData.constraints = model.constraints;
+      layoutData.preferredSize = model.preferredSize;
+      layoutData.minSize = model.minimumSize;
+      layoutData.maxSize = model.maximumSize;
+      layoutData.parentId = model.parent;
+      layoutData.needsRelayout = model.isVisible;
+      layoutData.indexOf = model.indexOf;
       layoutData.lastCalculatedSize = layoutData.calculatedSize;
       layoutData.widthConstrains = {};
       layoutData.heightConstrains = {};
       calcPosition = null;
-
-      model = pModel;
 
       // new model may have changed the calc size.
       sentCalcSize = false;

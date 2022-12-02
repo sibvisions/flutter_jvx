@@ -11,8 +11,6 @@ import '../../mask/frame_dialog.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../model/component/panel/fl_panel_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
@@ -118,39 +116,6 @@ abstract class IUiService {
   void setMenuModel(MenuModel? pMenuModel);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Management of component models
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Returns all [FlComponentModel] children of provided id.
-  List<FlComponentModel> getChildrenModels(String id);
-
-  /// Returns all [FlComponentModel] descendants of provided id.
-  List<FlComponentModel> getDescendantModels(String id);
-
-  /// Returns component model with matching componentId,
-  /// if none was found returns null
-  FlComponentModel? getComponentModel({required String pComponentId});
-
-  /// Get the screen (top-most-parent)
-  FlComponentModel? getComponentByName({required String pComponentName});
-
-  /// Returns the top-most panel if a work screen is open
-  FlPanelModel? getComponentByScreenName({required String pScreenLongName});
-
-  /// Returns the top-most panel if a work screen is open
-  FlPanelModel? getComponentByClassName({required String pScreenClassName});
-
-  /// Save new components to active components,
-  /// used for saving components which have not been previously been rendered.
-  void saveNewComponents({required List<FlComponentModel> newModels});
-
-  /// Called when the current workScreen is closed, will delete all relevant data(models, subscriptions,...) from [IUiService]
-  void closeScreen({required String pScreenName});
-
-  /// Gets all children and the children below recursively.
-  List<FlComponentModel> getAllComponentsBelow(String id);
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // LayoutData management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -166,9 +131,6 @@ abstract class IUiService {
 
   /// Register to receive a subscriptions of data from a specific dataProvider
   void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true});
-
-  /// Not to be used from ui, only used when components are no l onger to be displayed in UI
-  void deleteInactiveComponent({required Set<String> inactiveIds});
 
   /// Removes all active subscriptions
   void disposeSubscriptions({required Object pSubscriber});
@@ -189,7 +151,7 @@ abstract class IUiService {
 
   /// Notify changed live components that their model has changed, will give
   /// them their new model.
-  void notifyChangedComponents({required List<FlComponentModel> updatedModels});
+  void notifyChangedComponents({required List<String> updatedModels});
 
   /// Notify all components belonging to [pDataProvider] that their underlying
   /// data may have changed.

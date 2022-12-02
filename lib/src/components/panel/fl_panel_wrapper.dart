@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../layout/i_layout.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/base_cont_wrapper_state.dart';
@@ -17,6 +17,7 @@ class FlPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
 }
 
 class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
+  _FlPanelWrapperState() : super();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,18 +27,20 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     super.initState();
 
     layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
-    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
     buildChildren(pSetStateOnChange: false);
     registerParent();
   }
 
   @override
-  receiveNewModel(FlPanelModel pModel) {
-    layoutData.layout = ILayout.getLayout(pModel.layout, pModel.layoutData);
-    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
+  modelUpdated() {
+    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
-    super.receiveNewModel(pModel);
+    super.modelUpdated();
 
     buildChildren();
     registerParent();

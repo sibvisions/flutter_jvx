@@ -13,7 +13,7 @@ class ComponentSubscription<T extends FlComponentModel> {
   final Function()? affectedCallback;
 
   /// Component callback to receive new model data.
-  final Function(T pNewModel)? modelCallback;
+  final Function()? modelCallback;
 
   /// Component callback to receive new layout data
   final Function(LayoutData pLayout)? layoutCallback;

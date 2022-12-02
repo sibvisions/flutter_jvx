@@ -33,17 +33,12 @@ class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateCompon
 
     List<Future> futureList = [];
     futureList.addAll(command.affectedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
-    futureList.addAll(command.changedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e.id)));
+    futureList.addAll(command.changedComponents.map((e) => ILayoutService().markLayoutAsDirty(pComponentId: e)));
     futureList.addAll(command.deletedComponents.map((e) => ILayoutService().removeLayout(pComponentId: e)));
 
     // Update Components in UI after all are marked as dirty
     await Future.wait(futureList).then((value) {
-      IUiService().deleteInactiveComponent(inactiveIds: command.deletedComponents);
-
-      IUiService().saveNewComponents(newModels: command.newComponents.reversed.toList());
-
-      // List is reversed as to update all children before their respective parents.
-      IUiService().notifyChangedComponents(updatedModels: command.changedComponents.reversed.toList());
+      IUiService().notifyChangedComponents(updatedModels: command.changedComponents);
 
       IUiService().notifyAffectedComponents(affectedIds: command.affectedComponents);
     });

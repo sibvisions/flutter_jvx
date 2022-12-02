@@ -36,6 +36,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
   final FocusNode focusNode = FocusNode();
 
+  FlTextFieldWrapperState() : super();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,8 +53,8 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   @override
-  receiveNewModel(T pModel) {
-    super.receiveNewModel(pModel);
+  modelUpdated() {
+    super.modelUpdated();
 
     updateText();
   }

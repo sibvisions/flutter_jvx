@@ -10,6 +10,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/label/fl_label_model.dart';
 import '../../../model/component/panel/fl_tab_panel_model.dart';
 import '../../../model/layout/alignments.dart';
+import '../../../service/storage/i_storage_service.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
@@ -50,6 +51,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   /// The list of tab views.
   List<BaseCompWrapperWidget> tabContentList = [];
 
+  _FlTabPanelWrapperState() : super();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,7 +61,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     super.initState();
 
     layoutData.layout = TabLayout(tabHeaderHeight: 0.0); //, selectedIndex: model.selectedIndex);
-    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
     layoutAfterBuild = true;
     tabController = FlTabController(tabs: [], vsync: this, changedIndexTo: changedIndexTo);
@@ -68,9 +71,10 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   @override
-  receiveNewModel(FlTabPanelModel pModel) {
-    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
-    super.receiveNewModel(pModel);
+  modelUpdated() {
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+    super.modelUpdated();
 
     // Performance optimization.
     // If ever inplemented, need to add a callback to the layout service "cleaning" itself from the "dirty" status.

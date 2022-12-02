@@ -7,7 +7,6 @@ import '../../../../../model/component/fl_component_model.dart';
 import '../../../../data/i_data_service.dart';
 import '../../../../layout/i_layout_service.dart';
 import '../../../../storage/i_storage_service.dart';
-import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class DeleteScreenCommandProcessor implements ICommandProcessor<DeleteScreenCommand> {
@@ -16,12 +15,11 @@ class DeleteScreenCommandProcessor implements ICommandProcessor<DeleteScreenComm
     if (command.beamBack) {
       FlutterJVx.getBeamerDelegate().beamBack();
     }
-    FlComponentModel? screenModel = IUiService().getComponentByName(pComponentName: command.screenName);
+    FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: command.screenName);
     IStorageService().deleteScreen(screenName: command.screenName);
     if (screenModel != null) {
       await ILayoutService().deleteScreen(pComponentId: screenModel.id);
     }
-    IUiService().closeScreen(pScreenName: command.screenName);
     IDataService().clearData(command.screenName);
 
     return [];

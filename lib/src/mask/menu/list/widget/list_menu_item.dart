@@ -1,9 +1,8 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../flutter_jvx.dart';
 import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
-import '../../../../service/ui/i_ui_service.dart';
 import '../../menu_page.dart';
 
 class ListMenuItem extends StatelessWidget {
@@ -49,8 +48,8 @@ class ListMenuItem extends StatelessWidget {
     var pathSegments = (context.currentBeamLocation.state as BeamState).pathParameters;
     if (pathSegments.containsKey(key)) {
       String screenName = pathSegments[key]!;
-      selected = menuItemModel.screenLongName
-          .contains((IUiService().getComponentByName(pComponentName: screenName) as FlPanelModel?)!.screenClassName!);
+      selected = menuItemModel.screenLongName.contains(
+          (IStorageService().getComponentByName(pComponentName: screenName) as FlPanelModel?)!.screenClassName!);
     }
 
     var leading = MenuItemModel.getImage(

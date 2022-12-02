@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../model/component/button/fl_popup_menu_button_model.dart';
 import '../../../model/component/button/fl_popup_menu_item_model.dart';
 import '../../../model/component/button/fl_popup_menu_model.dart';
 import '../../../model/component/button/fl_separator.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
-import '../../../service/ui/i_ui_service.dart';
 import '../fl_button_wrapper.dart';
 import 'fl_popup_menu_button_widget.dart';
 import 'fl_popup_menu_item_widget.dart';
@@ -42,24 +42,21 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
   }
 
   @override
-  void receiveNewModel(T pModel) {
-    //Dispose old subscriptions
-    List<FlComponentModel> oldModels = IUiService().getDescendantModels(model.id);
-    oldModels.forEach((element) => IUiService().disposeSubscriptions(pSubscriber: element));
-
-    super.receiveNewModel(pModel);
+  void modelUpdated() {
+    super.modelUpdated();
 
     registerDescendantModels();
   }
 
   ///Register descendant models to receive ui updates
   void registerDescendantModels() {
-    List<FlComponentModel> descendantModels = IUiService().getDescendantModels(model.id);
+    List<FlComponentModel> descendantModels = IStorageService().getAllComponentsBelowById(pParentId: model.id);
     for (var childModel in descendantModels) {
+      IUiService().disposeSubscriptions(pSubscriber: childModel.id);
       ComponentSubscription componentSubscription = ComponentSubscription(
         compId: childModel.id,
         subbedObj: this,
-        modelCallback: (_) => setState(() {}),
+        modelCallback: () => setState(() {}),
       );
       IUiService().registerAsLiveComponent(pComponentSubscription: componentSubscription);
     }
@@ -96,12 +93,14 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       List<FlComponentModel> menuItems = [];
 
       // Get all children models
-      List<FlComponentModel> listOfPopupMenuModels = IUiService().getChildrenModels(model.id);
+      List<FlComponentModel> listOfPopupMenuModels =
+          IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false);
       // Remove all non popup menu models
       listOfPopupMenuModels.removeWhere((element) => element is! FlPopupMenuModel);
 
       for (FlComponentModel popupMenuModel in listOfPopupMenuModels) {
-        List<FlComponentModel> listOfPopupMenuItems = IUiService().getChildrenModels(popupMenuModel.id);
+        List<FlComponentModel> listOfPopupMenuItems =
+            IStorageService().getAllComponentsBelowById(pParentId: popupMenuModel.id, pRecursively: false);
         // Remove all non popup menu item models
         listOfPopupMenuItems.removeWhere((element) => element is! FlPopupMenuItemModel && element is! FlSeparatorModel);
 

@@ -29,6 +29,8 @@ class FlButtonWrapper<T extends FlButtonModel> extends BaseCompWrapperWidget<T> 
 }
 
 class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState<T> {
+  FlButtonWrapperState() : super();
+
   DataRecord? dataRecord;
 
   @override

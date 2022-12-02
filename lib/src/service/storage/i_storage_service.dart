@@ -1,5 +1,6 @@
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/component/panel/fl_panel_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../service.dart';
 
@@ -22,8 +23,46 @@ abstract class IStorageService {
   /// Updates [FlComponentModel]
   /// Returns [BaseCommand] to update UI with all effected components.
   List<BaseCommand> saveComponents(
-      List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName);
+    List<dynamic>? componentsToUpdate,
+    List<FlComponentModel>? newComponents,
+    String screenName,
+  );
 
   /// Deletes Screen Model, and all descendants.
-  void deleteScreen({required String screenName});
+  void deleteScreen({
+    required String screenName,
+  });
+
+  /// Returns List of all [FlComponentModel] below it.
+  List<FlComponentModel> getAllComponentsBelowById({
+    required String pParentId,
+    bool pIgnoreVisibility = false,
+    bool pIncludeRemoved = false,
+    bool pRecursively = true,
+  });
+
+  /// Returns List of all [FlComponentModel] below it.
+  List<FlComponentModel> getAllComponentsBelow({
+    required FlComponentModel pParentModel,
+    bool pIgnoreVisibility = false,
+    bool pIncludeRemoved = false,
+    bool pRecursively = true,
+  });
+
+  /// Returns List of all [FlComponentModel] below it.
+  List<FlComponentModel> getAllComponentsBelowByName({
+    required String name,
+    bool pIgnoreVisibility = false,
+    bool pIncludeRemoved = false,
+    bool pRecursively = true,
+  });
+
+  /// Returns component model with matching id
+  FlComponentModel? getComponentModel({required String pComponentId});
+
+  /// Returns component model with matching name
+  FlComponentModel? getComponentByName({required String pComponentName});
+
+  /// Returns panel model with matching screenClassName
+  FlPanelModel? getComponentByScreenClassName({required String pScreenClassName});
 }

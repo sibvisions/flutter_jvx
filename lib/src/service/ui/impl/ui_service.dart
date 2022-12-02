@@ -5,40 +5,28 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../custom/app_manager.dart';
-import '../../../custom/custom_component.dart';
-import '../../../custom/custom_menu_item.dart';
-import '../../../custom/custom_screen.dart';
+import '../../../../flutter_jvx.dart';
 import '../../../exceptions/error_view_exception.dart';
-import '../../../flutter_jvx.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
 import '../../../model/command/api/fetch_command.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../model/command/api/save_all_editors.dart';
-import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
-import '../../../model/component/panel/fl_panel_model.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_group_model.dart';
-import '../../../model/menu/menu_model.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/settings_location.dart';
-import '../../../util/extensions/string_extensions.dart';
-import '../../command/i_command_service.dart';
-import '../../config/i_config_service.dart';
-import '../../data/i_data_service.dart';
-import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
 class UiService implements IUiService {
@@ -51,9 +39,6 @@ class UiService implements IUiService {
 
   /// Current menu model
   final ValueNotifier<MenuModel> _menuNotifier = ValueNotifier(const MenuModel());
-
-  /// List of all known models
-  final List<FlComponentModel> _componentModels = [];
 
   /// All component subscriptions
   final List<ComponentSubscription> _componentSubscriptions = [];
@@ -79,7 +64,6 @@ class UiService implements IUiService {
   @override
   void clear() {
     _menuNotifier.value = const MenuModel();
-    _componentModels.clear();
     _componentSubscriptions.clear();
     _dataSubscriptions.clear();
     _activeFrames.clear();
@@ -288,80 +272,8 @@ class UiService implements IUiService {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<FlComponentModel> getChildrenModels(String id) {
-    return _componentModels.where((element) => (element.parent == id)).toList();
-  }
-
-  @override
   List<FlComponentModel> getDescendantModels(String id) {
-    return _componentModels
-        .where((element) => (element.parent == id))
-        .expand((element) => [element, ...getDescendantModels(element.id)])
-        .toList();
-  }
-
-  @override
-  FlComponentModel? getComponentModel({required String pComponentId}) {
-    return _componentModels.firstWhereOrNull((element) => element.id == pComponentId);
-  }
-
-  @override
-  FlComponentModel? getComponentByName({required String pComponentName}) {
-    return _componentModels.firstWhereOrNull((element) => element.name == pComponentName);
-  }
-
-  @override
-  FlPanelModel? getComponentByScreenName({required String pScreenLongName}) {
-    return _componentModels
-        .whereType<FlPanelModel>()
-        .firstWhereOrNull((element) => element.screenLongName == pScreenLongName);
-  }
-
-  @override
-  FlPanelModel? getComponentByClassName({required String pScreenClassName}) {
-    return _componentModels
-        .whereType<FlPanelModel>()
-        .firstWhereOrNull((element) => element.screenClassName == pScreenClassName);
-  }
-
-  @override
-  void saveNewComponents({required List<FlComponentModel> newModels}) {
-    FlutterJVx.logUI.d("Save new components: ${newModels.map((e) => e.id).toList()}");
-    _componentModels.addAll(newModels);
-  }
-
-  @override
-  void closeScreen({required String pScreenName}) {
-    FlComponentModel? screenModel = _componentModels.firstWhereOrNull((element) => element.name == pScreenName);
-
-    if (screenModel != null) {
-      List<FlComponentModel> children = getAllComponentsBelow(screenModel.id);
-
-      // Remove all children and itself
-      _componentModels.removeWhere((currentComp) =>
-          currentComp == screenModel || children.any((compToDelete) => compToDelete.id == currentComp.id));
-
-      // clear lists that get filled when new screen opens anyway
-      _componentSubscriptions.removeWhere((currentComp) =>
-          currentComp.compId == screenModel.id ||
-          children.any((compToDelete) => compToDelete.id == currentComp.compId));
-      _dataSubscriptions.removeWhere((currentComp) =>
-          currentComp.id == screenModel.id || children.any((compToDelete) => compToDelete.id == currentComp.id));
-    }
-  }
-
-  @override
-  List<FlComponentModel> getAllComponentsBelow(String id) {
-    List<FlComponentModel> children = [];
-
-    for (FlComponentModel componentModel in List<FlComponentModel>.from(_componentModels)) {
-      String? parentId = componentModel.parent;
-      if (parentId != null && parentId == id) {
-        children.add(componentModel);
-        children.addAll(getAllComponentsBelow(componentModel.id));
-      }
-    }
-    return children;
+    return IStorageService().getAllComponentsBelowById(pParentId: id, pRecursively: true);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -439,14 +351,6 @@ class UiService implements IUiService {
   }
 
   @override
-  void deleteInactiveComponent({required Set<String> inactiveIds}) {
-    // remove subscription for removed components
-    for (String inactiveId in inactiveIds) {
-      _componentModels.removeWhere((screenComponent) => screenComponent.id == inactiveId);
-    }
-  }
-
-  @override
   void disposeSubscriptions({required Object pSubscriber}) {
     _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
     _componentSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
@@ -483,20 +387,13 @@ class UiService implements IUiService {
   }
 
   @override
-  void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
-    for (FlComponentModel updatedModel in updatedModels) {
-      // Change to new Model
-
-      if (_componentModels.any((element) => element.id == updatedModel.id)) {
-        _componentModels.removeWhere((element) => element.id == updatedModel.id);
-        _componentModels.add(updatedModel);
-      }
-
+  void notifyChangedComponents({required List<String> updatedModels}) {
+    for (String updatedModelId in updatedModels) {
       // Notify active component
       List<ComponentSubscription>.from(_componentSubscriptions)
-          .where((element) => element.compId == updatedModel.id)
+          .where((element) => element.compId == updatedModelId)
           .forEach((element) {
-        element.modelCallback?.call(updatedModel);
+        element.modelCallback?.call();
       });
     }
   }

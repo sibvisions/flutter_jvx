@@ -1,10 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../../custom/custom_component.dart';
+import '../../../flutter_jvx.dart';
 import '../../model/command/layout/register_parent_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../components_factory.dart';
 import 'base_comp_wrapper_state.dart';
 
@@ -15,6 +14,12 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
   /// A map of all children widgets
   Map<String, Widget> children = {};
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  BaseContWrapperState() : super();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -43,7 +48,8 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   /// Will contact [IUiService] to get its children [FlComponentModel], will only call setState if
   /// children were either added or removed.
   bool buildChildren({bool pSetStateOnChange = true}) {
-    List<FlComponentModel> models = IUiService().getChildrenModels(model.id);
+    List<FlComponentModel> models =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false);
     Map<String, Widget> newChildrenList = {};
 
     bool changeDetected = false;

@@ -38,6 +38,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   late final SignatureController signatureController;
   LongPressDownDetails? details;
 
+  _FlSignaturePadWrapperState() : super();
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Overridden methods
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,8 +79,8 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   @override
-  void receiveNewModel(FlCustomContainerModel newModel) {
-    super.receiveNewModel(newModel);
+  void modelUpdated() {
+    super.modelUpdated();
 
     unsubscribe();
     subscribe();

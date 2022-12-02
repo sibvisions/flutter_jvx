@@ -57,6 +57,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   /// Last value;
   dynamic _currentValue;
 
+  FlEditorWrapperState() : super();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,29 +67,31 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void initState() {
     // Exception where we have to do stuff before we init the sate.
     // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
-    recreateCellEditor(widget.model as T, false);
+    model = widget.model;
 
-    (widget.model as FlEditorModel).applyComponentInformation(cellEditor.createWidgetModel());
+    recreateCellEditor(false);
+
+    model.applyComponentInformation(cellEditor.createWidgetModel());
 
     super.initState();
 
-    subscribe(widget.model as T);
+    subscribe();
   }
 
   @override
-  receiveNewModel(T pModel) {
+  modelUpdated() {
     // If a change of cell editors has occured.
-    if (pModel.changedCellEditor) {
+    if (model.changedCellEditor) {
       unsubscribe();
 
-      recreateCellEditor(pModel);
+      recreateCellEditor();
 
       logCellEditor("RECEIVE_NEW_MODEL");
 
-      pModel.applyComponentInformation(cellEditor.createWidgetModel());
+      model.applyComponentInformation(cellEditor.createWidgetModel());
     }
 
-    super.receiveNewModel(pModel);
+    super.modelUpdated();
   }
 
   @override
@@ -153,16 +157,16 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Subscribes to the service and registers the set value call back.
-  void subscribe(T pModel) {
-    if (pModel.dataProvider.isNotEmpty) {
+  void subscribe() {
+    if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
-          dataProvider: pModel.dataProvider,
+          dataProvider: model.dataProvider,
           from: -1,
           onSelectedRecord: setValue,
           onMetaData: setColumnDefinition,
-          dataColumns: [pModel.columnName],
+          dataColumns: [model.columnName],
         ),
       );
     }
@@ -246,12 +250,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Recreates the cell editor.
-  void recreateCellEditor(T pModel, [bool pSubscribe = true]) {
+  void recreateCellEditor([bool pSubscribe = true]) {
     oldCellEditor = cellEditor;
 
-    var jsonCellEditor = Map<String, dynamic>.from(pModel.json[ApiObjectProperty.cellEditor]);
+    var jsonCellEditor = Map<String, dynamic>.from(model.json[ApiObjectProperty.cellEditor]);
     cellEditor = ICellEditor.getCellEditor(
-      pName: pModel.name,
+      pName: model.name,
       pCellEditorJson: jsonCellEditor,
       onChange: onChange,
       onEndEditing: onEndEditing,
@@ -260,7 +264,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     );
 
     if (pSubscribe) {
-      subscribe(pModel);
+      subscribe();
     }
   }
 

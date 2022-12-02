@@ -6,7 +6,7 @@ import '../../../layout/i_layout.dart';
 import '../../../layout/scroll_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
-import '../../../service/ui/i_ui_service.dart';
+import '../../../service/storage/i_storage_service.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../base_wrapper/base_cont_wrapper_state.dart';
@@ -20,6 +20,8 @@ class FlScrollPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
 }
 
 class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
+  _FlScrollPanelWrapperState() : super();
+
   final ScrollController _horizontalController = ScrollController();
   final ScrollController _vertictalController = ScrollController();
 
@@ -29,18 +31,20 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
     ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData)!;
     layoutData.layout = ScrollLayout(originalLayout);
-    layoutData.children = IUiService().getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
     buildChildren(pSetStateOnChange: false);
     registerParent();
   }
 
   @override
-  receiveNewModel(FlPanelModel pModel) {
-    ILayout originalLayout = ILayout.getLayout(pModel.layout, pModel.layoutData)!;
+  modelUpdated() {
+    ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData)!;
     layoutData.layout = ScrollLayout(originalLayout);
-    layoutData.children = IUiService().getChildrenModels(pModel.id).map((e) => e.id).toList();
-    super.receiveNewModel(pModel);
+    layoutData.children =
+        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+    super.modelUpdated();
 
     buildChildren();
     registerParent();

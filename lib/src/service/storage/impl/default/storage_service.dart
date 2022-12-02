@@ -1,9 +1,12 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../../../flutter_jvx.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
+import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../api/shared/api_object_property.dart';
 import '../../../api/shared/fl_component_classname.dart';
 import '../../i_storage_service.dart';
@@ -16,9 +19,8 @@ class StorageService implements IStorageService {
   /// Map of all active components received from server, key set to id of [FlComponentModel].
   final HashMap<String, FlComponentModel> _componentMap = HashMap();
 
-  /// Map of all components with "[ApiObjectProperty.remove]" flag to true, these components are not yet to be deleted.
-  final HashMap<String, FlComponentModel> _removedComponents = HashMap();
-
+  /// Map of the component tree for faster traversal.
+  final HashMap<String, Set<String>> _childrenTree = HashMap();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +30,7 @@ class StorageService implements IStorageService {
   @override
   void clear() {
     _componentMap.clear();
-    _removedComponents.clear();
+    _childrenTree.clear();
   }
 
   @override
@@ -42,9 +44,9 @@ class StorageService implements IStorageService {
     // List of all affected models
     Set<String> affectedModels = {};
 
-    Set<String> destroyedOrRemovedModels = {};
+    Set<FlComponentModel> destroyedOrRemovedModels = {};
 
-    List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName, ignoreVisibility: false);
+    List<FlComponentModel> oldScreenComps = getAllComponentsBelowByName(name: screenName);
 
     // Handle new Components
     if (newComponents != null) {
@@ -55,6 +57,7 @@ class StorageService implements IStorageService {
           affectedModels.add(parentId);
         }
         _componentMap[componentModel.id] = componentModel;
+        _addAsChild(componentModel);
       }
     }
 
@@ -62,13 +65,6 @@ class StorageService implements IStorageService {
     if (componentsToUpdate != null) {
       for (Map<String, dynamic> changedData in componentsToUpdate) {
         String changedId = changedData[ApiObjectProperty.id];
-
-        // If a removed component changes it is no longer removed
-        FlComponentModel? removedModel = _removedComponents[changedId];
-        if (removedModel != null) {
-          _componentMap[removedModel.id] = removedModel;
-          _removedComponents.remove(removedModel.id);
-        }
 
         // Get old Model
         FlComponentModel? model = _componentMap[changedId];
@@ -80,16 +76,19 @@ class StorageService implements IStorageService {
           model.isRemoved = false;
 
           model.lastChangedProperties = changedData.keys.toSet();
+          _removeAsChild(model);
           model.applyFromJson(changedData);
+          if (model.isDestroyed) {
+            _componentMap.remove(model.id);
+          }
+          {
+            _addAsChild(model);
+          }
           changedModels.add(model.id);
 
           // Handle component removed
           if (model.isDestroyed || model.isRemoved) {
-            _componentMap.remove(model.id);
-            if (model.isRemoved) {
-              _removedComponents[model.id] = model;
-            }
-            destroyedOrRemovedModels.add(model.id);
+            destroyedOrRemovedModels.add(model);
           }
 
           // Handle parent change, notify old parent of change
@@ -107,16 +106,12 @@ class StorageService implements IStorageService {
       }
     }
 
-    List<FlComponentModel> currentScreenComps = _getAllComponentsBelowByName(name: screenName, ignoreVisibility: false);
+    List<FlComponentModel> currentScreenComps = getAllComponentsBelowByName(name: screenName);
 
     List<FlComponentModel> newUiComponents = [];
-    List<FlComponentModel> changedUiComponents = [];
-    Set<String> deletedUiComponents = {...destroyedOrRemovedModels};
+    List<String> changedUiComponents = [];
+    Set<String> deletedUiComponents = {...destroyedOrRemovedModels.map((e) => e.id)};
     Set<String> affectedUiComponents = {};
-
-    for (String remDelId in destroyedOrRemovedModels) {
-      deletedUiComponents.addAll(_getAllComponentsBelow(remDelId).map((e) => e.id));
-    }
 
     // Build UI Notification
     // Check for new or changed active components
@@ -132,7 +127,7 @@ class StorageService implements IStorageService {
         bool hasChanged = changedModels.any((changedModels) => changedModels == currentModel.id);
         // If model has been changed and is still in the screen.
         if (hasChanged) {
-          changedUiComponents.add(currentModel);
+          changedUiComponents.add(currentModel.id);
         }
       }
     }
@@ -151,7 +146,7 @@ class StorageService implements IStorageService {
       // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
       for (String affectedModel in affectedModels) {
         bool isExisting = oldScreenComps.any((oldModel) => oldModel.id == affectedModel);
-        bool isChanged = changedUiComponents.any((changedModel) => changedModel.id == affectedModel);
+        bool isChanged = changedUiComponents.any((changedModel) => changedModel == affectedModel);
         bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
         if (!isChanged && !isNew && isExisting) {
           affectedUiComponents.add(affectedModel);
@@ -161,8 +156,7 @@ class StorageService implements IStorageService {
 
     FlutterJVx.logUI.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
     FlutterJVx.logUI.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
-    FlutterJVx.logUI
-        .d("Changed {${changedUiComponents.length}}:${changedUiComponents.map((e) => e.id).toList()..sort()}");
+    FlutterJVx.logUI.d("Changed {${changedUiComponents.length}}:${changedUiComponents.toList()..sort()}");
     FlutterJVx.logUI
         .d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.map((e) => e.id).toList()..sort()}");
 
@@ -170,7 +164,6 @@ class StorageService implements IStorageService {
       affectedComponents: affectedUiComponents,
       changedComponents: changedUiComponents,
       deletedComponents: deletedUiComponents,
-      newComponents: newUiComponents,
       reason: "Server Changed Components",
     );
 
@@ -188,59 +181,127 @@ class StorageService implements IStorageService {
     for (var screenModel in list) {
       _componentMap.remove(screenModel.id);
 
-      List<FlComponentModel> models = _getAllComponentsBelow(screenModel.id, true, true);
+      List<FlComponentModel> models = getAllComponentsBelow(
+        pParentModel: screenModel,
+        pIgnoreVisibility: true,
+        pIncludeRemoved: true,
+      );
       models.forEach((element) {
         _componentMap.remove(element.id);
-        _removedComponents.remove(element.id);
       });
     }
 
     FlutterJVx.logUI.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  @override
+  List<FlComponentModel> getAllComponentsBelow(
+      {required FlComponentModel pParentModel,
+      bool pIgnoreVisibility = false,
+      bool pIncludeRemoved = false,
+      bool pRecursively = true}) {
+    List<FlComponentModel> allDescendants = [];
+    Set<String> directChildren = _childrenTree[pParentModel.id] ?? {};
 
-  /// Returns List of all [FlComponentModel] below it, recursively.
-  List<FlComponentModel> _getAllComponentsBelow(String id,
-      [bool ignoreVisibility = false, bool includeRemoved = false]) {
-    List<FlComponentModel> children = [];
-
-    List<FlComponentModel> toCheck = _componentMap.values.toList();
-
-    if (includeRemoved) {
-      toCheck.addAll(_removedComponents.values);
-    }
-
-    for (FlComponentModel componentModel in toCheck) {
-      String? parentId = componentModel.parent;
-      FlComponentModel? parentModel = _componentMap[parentId];
-      if (parentId != null &&
-          parentId == id &&
-          (ignoreVisibility ||
-              componentModel.isVisible ||
-              (parentModel?.className == FlContainerClassname.TABSET_PANEL))) {
-        children.add(componentModel);
-        children.addAll(_getAllComponentsBelow(componentModel.id, ignoreVisibility, includeRemoved));
+    for (String childId in directChildren) {
+      FlComponentModel? childModel = _componentMap[childId];
+      if (childModel != null && !pIncludeRemoved && childModel.isRemoved) {
+        childModel = null;
+      }
+      if (childModel != null &&
+          (pIgnoreVisibility || childModel.isVisible || pParentModel.className == FlContainerClassname.TABSET_PANEL)) {
+        allDescendants.add(childModel);
+        if (pRecursively) {
+          allDescendants.addAll(
+            getAllComponentsBelow(
+              pParentModel: childModel,
+              pIgnoreVisibility: pIgnoreVisibility,
+              pIncludeRemoved: pIncludeRemoved,
+              pRecursively: pRecursively,
+            ),
+          );
+        }
       }
     }
-    return children;
+
+    return allDescendants;
   }
 
-  List<FlComponentModel> _getAllComponentsBelowByName(
-      {required String name, bool ignoreVisibility = false, bool includeRemoved = false}) {
+  @override
+  List<FlComponentModel> getAllComponentsBelowByName(
+      {required String name, bool pIgnoreVisibility = false, bool pIncludeRemoved = false, bool pRecursively = true}) {
     List<FlComponentModel> list = [];
     List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.name == name).toList();
 
     if (screenModels.length >= 2) {
       FlutterJVx.logUI.wtf("The same screen is found twice in the storage service!!!!");
-    } else if (screenModels.length == 1 && (ignoreVisibility || screenModels.first.isVisible)) {
-      list.addAll(_getAllComponentsBelow(screenModels.first.id, ignoreVisibility, includeRemoved));
-      //Return after the first was found.
-      list.add(screenModels.first);
+    } else if (screenModels.length == 1 && (pIgnoreVisibility || screenModels.first.isVisible)) {
+      list.addAll(getAllComponentsBelow(
+          pParentModel: screenModels.first,
+          pIgnoreVisibility: pIgnoreVisibility,
+          pIncludeRemoved: pIncludeRemoved,
+          pRecursively: pRecursively));
     }
 
     return list;
+  }
+
+  @override
+  List<FlComponentModel> getAllComponentsBelowById(
+      {required String pParentId,
+      bool pIgnoreVisibility = false,
+      bool pIncludeRemoved = false,
+      bool pRecursively = true}) {
+    List<FlComponentModel> list = [];
+    List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.id == pParentId).toList();
+
+    if (screenModels.length >= 2) {
+      FlutterJVx.logUI.wtf("The same screen is found twice in the storage service!!!!");
+    } else if (screenModels.length == 1 && (pIgnoreVisibility || screenModels.first.isVisible)) {
+      list.addAll(getAllComponentsBelow(
+          pParentModel: screenModels.first,
+          pIgnoreVisibility: pIgnoreVisibility,
+          pIncludeRemoved: pIncludeRemoved,
+          pRecursively: pRecursively));
+    }
+
+    return list;
+  }
+
+  @override
+  FlComponentModel? getComponentModel({required String pComponentId}) {
+    return _componentMap[pComponentId];
+  }
+
+  @override
+  FlComponentModel? getComponentByName({required String pComponentName}) {
+    return _componentMap.values.firstWhereOrNull((element) => element.name == pComponentName);
+  }
+
+  @override
+  FlPanelModel? getComponentByScreenClassName({required String pScreenClassName}) {
+    return _componentMap.values
+        .whereType<FlPanelModel>()
+        .firstWhereOrNull((element) => element.screenClassName == pScreenClassName);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  _addAsChild(FlComponentModel pChild) {
+    if (pChild.parent != null && pChild.parent!.isNotEmpty) {
+      Set<String> children = _childrenTree[pChild.parent] ?? {};
+      children.add(pChild.id);
+      _childrenTree[pChild.parent!] = children;
+    }
+  }
+
+  _removeAsChild(FlComponentModel pChild) {
+    if (pChild.parent != null && pChild.parent!.isNotEmpty) {
+      Set<String> children = _childrenTree[pChild.parent] ?? {};
+      children.remove(pChild.id);
+      _childrenTree[pChild.parent!] = children;
+    }
   }
 }

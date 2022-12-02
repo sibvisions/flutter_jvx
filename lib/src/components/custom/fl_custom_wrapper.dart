@@ -16,6 +16,8 @@ class FlCustomWrapper<T extends FlComponentModel> extends BaseCompWrapperWidget<
 class _FlCustomWrapperState extends BaseCompWrapperState<FlComponentModel> {
   late final Widget customWidget;
 
+  _FlCustomWrapperState() : super();
+
   @override
   void initState() {
     super.initState();
