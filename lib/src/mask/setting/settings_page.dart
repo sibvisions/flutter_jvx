@@ -105,7 +105,7 @@ class _SettingsPageState extends State<SettingsPage> {
           leading: context.canBeamBack
               ? IconButton(
                   icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                  onPressed: !loading ? context.beamBack : null,
+                  onPressed: context.beamBack,
                 )
               : null,
           title: Text(FlutterJVx.translate("Settings")),
@@ -122,7 +122,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Expanded(child: _createCancelButton(context, loading)),
+                  Expanded(child: _createCancelButton(context)),
                   ConstrainedBox(
                     constraints: const BoxConstraints.tightFor(width: bottomBarHeight - 2),
                     child: Stack(
@@ -143,13 +143,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 7.0),
-                            child: SizedBox(child: _createFAB(context, loading)),
+                            child: SizedBox(child: _createFAB(context)),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Expanded(child: _createSaveButton(context, loading)),
+                  Expanded(child: _createSaveButton(context)),
                 ],
               ),
             ),
@@ -159,12 +159,12 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _createCancelButton(BuildContext context, bool loading) {
+  Widget _createCancelButton(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: context.canBeamBack && _changesPending()
           ? InkWell(
-              onTap: loading ? null : context.beamBack,
+              onTap: context.beamBack,
               child: SizedBox.shrink(
                 child: Center(
                   child: Text(
@@ -178,11 +178,11 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _createSaveButton(BuildContext context, bool loading) {
+  Widget _createSaveButton(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: InkWell(
-        onTap: loading || IConfigService().isOffline() ? null : _saveClicked,
+        onTap: IConfigService().isOffline() ? () => context.beamBack() : _saveClicked,
         child: SizedBox.shrink(
           child: Center(
             child: Text(
@@ -196,12 +196,12 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget? _createFAB(BuildContext context, bool loading) {
+  Widget? _createFAB(BuildContext context) {
     return !IConfigService().isOffline()
         ? FloatingActionButton(
             elevation: 0.0,
             backgroundColor: Theme.of(context).colorScheme.primary,
-            onPressed: loading ? null : _openQRScanner,
+            onPressed: _openQRScanner,
             child: FaIcon(
               FontAwesomeIcons.qrcode,
               color: Theme.of(context).colorScheme.onPrimary,
