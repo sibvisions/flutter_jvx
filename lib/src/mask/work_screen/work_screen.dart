@@ -24,6 +24,7 @@ import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
 import '../frame/frame.dart';
 import '../state/app_style.dart';
+import '../state/loading_bar.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for
@@ -188,7 +189,7 @@ class WorkScreenState extends State<WorkScreen> {
           },
           child: WillPopScope(
             onWillPop: () async {
-              if (isNavigating) {
+              if (isNavigating || (LoadingBar.of(context)?.show ?? false)) {
                 return false;
               }
 
