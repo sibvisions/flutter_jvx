@@ -68,6 +68,12 @@ class ConfigService implements IConfigService {
   /// The current offline state
   ValueNotifier<bool>? offlineNotifier;
 
+  /// If we run in mobileOnly
+  bool mobileOnly = false;
+
+  /// If we run in webOnly
+  bool webOnly = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -306,6 +312,7 @@ class ConfigService implements IConfigService {
 
   @override
   Future<bool> setPictureResolution(int pictureResolution) {
+    assert(getAppName() != null);
     return sharedPrefs.setInt("${getAppName()}.pictureSize", pictureResolution);
   }
 
@@ -322,6 +329,7 @@ class ConfigService implements IConfigService {
 
   @override
   Future<bool> setOffline(bool pOffline) {
+    assert(getAppName() != null);
     offlineNotifier?.value = pOffline;
     return sharedPrefs.setBool("${getAppName()}.offline", pOffline);
   }
@@ -343,6 +351,7 @@ class ConfigService implements IConfigService {
 
   @override
   Future<bool> setString(String key, String? value) {
+    assert(getAppName() != null);
     if (value != null) {
       return sharedPrefs.setString("${getAppName()}.$key", value);
     } else {
@@ -462,22 +471,22 @@ class ConfigService implements IConfigService {
 
   @override
   bool isMobileOnly() {
-    return sharedPrefs.getBool("${getAppName()}.mobileOnly") ?? false;
+    return mobileOnly;
   }
 
   @override
-  Future<bool> setMobileOnly(bool pMobileOnly) {
-    return sharedPrefs.setBool("${getAppName()}.mobileOnly", pMobileOnly);
+  void setMobileOnly(bool pMobileOnly) {
+    mobileOnly = pMobileOnly;
   }
 
   @override
   bool isWebOnly() {
-    return sharedPrefs.getBool("${getAppName()}.webOnly") ?? false;
+    return webOnly;
   }
 
   @override
-  Future<bool> setWebOnly(bool pWebOnly) {
-    return sharedPrefs.setBool("${getAppName()}.webOnly", pWebOnly);
+  void setWebOnly(bool pWebOnly) {
+    webOnly = pWebOnly;
   }
 
   @override

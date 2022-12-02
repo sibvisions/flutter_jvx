@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:logger/logger.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -229,32 +230,36 @@ class FlutterJVx extends StatefulWidget {
     if (appName != null) {
       await configService.setAppName(appName);
     }
-    String? baseUrl = Uri.base.queryParameters['baseUrl'];
-    if (baseUrl != null) {
-      await configService.setBaseUrl(baseUrl);
-    }
-    String? username = Uri.base.queryParameters['username'];
-    if (username != null) {
-      await configService.setUsername(username);
-    }
-    String? password = Uri.base.queryParameters['password'];
-    if (password != null) {
-      await configService.setPassword(password);
-    }
-    String? language = Uri.base.queryParameters['language'];
-    if (language != null) {
-      await configService.setUserLanguage(language == IConfigService.getPlatformLocale() ? null : language);
+    if (configService.getAppName() != null) {
+      String? baseUrl = Uri.base.queryParameters['baseUrl'];
+      if (baseUrl != null) {
+        await configService.setBaseUrl(baseUrl);
+      }
+      String? username = Uri.base.queryParameters['username'];
+      if (username != null) {
+        await configService.setUsername(username);
+      }
+      String? password = Uri.base.queryParameters['password'];
+      if (password != null) {
+        await configService.setPassword(password);
+      }
+      String? language = Uri.base.queryParameters['language'];
+      if (language != null) {
+        await configService.setUserLanguage(language == IConfigService.getPlatformLocale() ? null : language);
+      }
     }
     String? mobileOnly = Uri.base.queryParameters['mobileOnly'];
     if (mobileOnly != null) {
-      await configService.setMobileOnly(mobileOnly == "true");
+      configService.setMobileOnly(mobileOnly == "true");
     }
     String? webOnly = Uri.base.queryParameters['webOnly'];
     if (webOnly != null) {
-      await configService.setWebOnly(webOnly == "true");
+      configService.setWebOnly(webOnly == "true");
     }
 
     packageInfo = await PackageInfo.fromPlatform();
+
+    setUrlStrategy(const FixedHashUrlStrategy());
 
     runApp(pAppToRun);
   }
@@ -675,5 +680,17 @@ class MyHttpOverrides extends HttpOverrides {
       client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     }
     return client;
+  }
+}
+
+class FixedHashUrlStrategy extends HashUrlStrategy {
+  final PlatformLocation _platformLocation;
+
+  const FixedHashUrlStrategy([this._platformLocation = const BrowserPlatformLocation()]) : super(_platformLocation);
+
+  @override
+  String prepareExternalUrl(String internalUrl) {
+    // Workaround for https://github.com/flutter/flutter/issues/116415
+    return "${_platformLocation.pathname}${_platformLocation.search}${internalUrl.isEmpty ? '' : '#$internalUrl'}";
   }
 }

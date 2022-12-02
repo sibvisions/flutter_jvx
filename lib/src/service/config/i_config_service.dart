@@ -170,11 +170,11 @@ abstract class IConfigService {
 
   bool isMobileOnly();
 
-  Future<bool> setMobileOnly(bool pMobileOnly);
+  void setMobileOnly(bool pMobileOnly);
 
   bool isWebOnly();
 
-  Future<bool> setWebOnly(bool pWebOnly);
+  void setWebOnly(bool pWebOnly);
 
   /// Returns theme preference
   ThemeMode getThemePreference();
