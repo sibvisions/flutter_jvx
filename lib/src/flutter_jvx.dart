@@ -239,7 +239,7 @@ class FlutterJVx extends StatefulWidget {
     }
     String? password = Uri.base.queryParameters['password'];
     if (password != null) {
-      await configService.setUsername(password);
+      await configService.setPassword(password);
     }
     String? language = Uri.base.queryParameters['language'];
     if (language != null) {
