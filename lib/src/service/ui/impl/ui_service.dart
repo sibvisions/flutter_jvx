@@ -23,7 +23,6 @@ import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
-import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
@@ -37,7 +36,6 @@ import '../../../util/extensions/string_extensions.dart';
 import '../../command/i_command_service.dart';
 import '../../config/i_config_service.dart';
 import '../../data/i_data_service.dart';
-import '../../storage/i_storage_service.dart';
 import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
@@ -277,15 +275,6 @@ class UiService implements IUiService {
     appManager?.modifyMenuModel(menuModel);
 
     return menuModel;
-  }
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Management of component models
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  List<FlComponentModel> getDescendantModels(String id) {
-    return IStorageService().getAllComponentsBelowById(pParentId: id, pRecursively: true);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
