@@ -41,7 +41,6 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
     subject.throttleTime(SplitLayout.UPDATE_INTERVALL, trailing: true).listen((_) {
-      mouseCursor = SystemMouseCursors.resizeLeftRight;
       registerParent();
     });
 
@@ -127,8 +126,10 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
           cursor: SystemMouseCursors.resizeLeftRight,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
+            onVerticalDragStart: model.orientation == SplitOrientation.HORIZONTAL ? _dragStart : null,
             onVerticalDragUpdate: model.orientation == SplitOrientation.HORIZONTAL ? _verticalDrag : null,
             onVerticalDragEnd: model.orientation == SplitOrientation.HORIZONTAL ? _dragEnd : null,
+            onHorizontalDragStart: model.orientation == SplitOrientation.VERTICAL ? _dragStart : null,
             onHorizontalDragUpdate: model.orientation == SplitOrientation.VERTICAL ? _horizontalDrag : null,
             onHorizontalDragEnd: model.orientation == SplitOrientation.VERTICAL ? _dragEnd : null,
             child: Container(
@@ -155,10 +156,14 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     }
   }
 
+  void _dragStart(DragStartDetails pDragDetails) {
+    mouseCursor = SystemMouseCursors.resizeLeftRight;
+    setState(() {});
+  }
+
   void _dragEnd(DragEndDetails pDragDetails) {
     mouseCursor = MouseCursor.defer;
     setState(() {});
-    registerParent();
   }
 
   void _verticalDrag(DragUpdateDetails pDragDetails) {
