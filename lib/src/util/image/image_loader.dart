@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/file/file_manager.dart';
 import '../font_awesome_util.dart';
@@ -80,7 +80,7 @@ abstract class ImageLoader {
 
   static ImageErrorWidgetBuilder _createImageErrorBuilder(String path) {
     return (BuildContext context, Object error, StackTrace? stackTrace) {
-      FlutterJVx.logUI.e("Failed to load network image ($path)", error, stackTrace);
+      FlutterUI.logUI.e("Failed to load network image ($path)", error, stackTrace);
       return ImageLoader.DEFAULT_IMAGE;
     };
   }

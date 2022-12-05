@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../../../flutter_jvx.dart';
+import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../../../../model/component/fl_component_model.dart';
@@ -13,7 +13,7 @@ class DeleteScreenCommandProcessor implements ICommandProcessor<DeleteScreenComm
   @override
   Future<List<BaseCommand>> processCommand(DeleteScreenCommand command) async {
     if (command.beamBack) {
-      FlutterJVx.getBeamerDelegate().beamBack();
+      FlutterUI.getBeamerDelegate().beamBack();
     }
     FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: command.screenName);
     IStorageService().deleteScreen(screenName: command.screenName);

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';

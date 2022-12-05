@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../../../flutter_jvx.dart';
+import '../../../../../flutter_ui.dart';
 import '../../../../../model/data/column_definition.dart';
 import '../../../../../model/data/filter_condition.dart';
 import '../../../../../model/response/dal_meta_data_response.dart';
@@ -79,7 +79,7 @@ class OfflineDatabase {
         }
 
         String createTableSQL = _createTable(table);
-        FlutterJVx.logAPI.d("Create Table SQL:\n$createTableSQL");
+        FlutterUI.logAPI.d("Create Table SQL:\n$createTableSQL");
         // Run the CREATE TABLE statement on the database.
         return db.execute(createTableSQL);
       })

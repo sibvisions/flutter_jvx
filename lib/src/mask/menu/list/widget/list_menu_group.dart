@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/response/device_status_response.dart';
 import '../../grid/widget/grid_menu_header.dart';
@@ -73,7 +73,7 @@ class ListMenuGroup extends StatelessWidget {
         SliverPersistentHeader(
           pinned: sticky,
           delegate: GridMenuHeader(
-            headerText: FlutterJVx.translate(menuGroupModel.name),
+            headerText: FlutterUI.translate(menuGroupModel.name),
             headerColor: headerColor,
             height: 48,
             textStyle: textStyle,

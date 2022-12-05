@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/reset_password_command.dart';
 import '../../service/command/i_command_service.dart';
@@ -19,7 +19,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var widget = FlutterJVx.of(context)?.loginBuilder?.call(context, loginMode);
+    var widget = FlutterUI.of(context)?.loginBuilder?.call(context, loginMode);
     if (widget != null) return widget;
 
     var appStyle = AppStyle.of(context)!.applicationStyle!;

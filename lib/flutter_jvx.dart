@@ -13,7 +13,7 @@ export 'src/custom/custom_component.dart';
 export 'src/custom/custom_header.dart';
 export 'src/custom/custom_menu_item.dart';
 export 'src/custom/custom_screen.dart';
-export 'src/flutter_jvx.dart';
+export 'src/flutter_ui.dart';
 // Mask
 export 'src/mask/login/default/default_login.dart';
 export 'src/mask/login/login.dart';

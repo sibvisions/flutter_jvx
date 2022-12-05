@@ -2,7 +2,7 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/component/chart/fl_chart_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
@@ -111,7 +111,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
   num createYData(dynamic pData, int? pIndex, int pColumnIndex) {
     if (pData.length <= pColumnIndex) {
-      FlutterJVx.logUI.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
+      FlutterUI.logUI.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
       return pIndex ?? 0;
     }
 
@@ -125,7 +125,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
   num createXData(dynamic pData, int? pIndex, int pColumnIndex) {
     if (pData.length <= pColumnIndex) {
-      FlutterJVx.logUI.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
+      FlutterUI.logUI.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${pData.length}");
       return pIndex ?? 0;
     }
 

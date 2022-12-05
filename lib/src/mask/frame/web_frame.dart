@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/response/device_status_response.dart';
 import '../../service/config/i_config_service.dart';
 import '../../util/image/image_loader.dart';
@@ -110,7 +110,7 @@ class WebFrameState extends FrameState {
             ? ImageLoader.loadImage(imagePath)
             : Image.asset(
                 ImageLoader.getAssetPath(
-                  FlutterJVx.package,
+                  FlutterUI.package,
                   "assets/images/logo.png",
                 ),
                 fit: BoxFit.scaleDown,

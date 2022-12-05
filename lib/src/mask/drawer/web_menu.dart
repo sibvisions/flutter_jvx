@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/device_status_response.dart';
 import '../../service/config/i_config_service.dart';
@@ -164,7 +164,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
           color: textColor,
         ),
         decoration: InputDecoration(
-          hintText: FlutterJVx.translate("Search"),
+          hintText: FlutterUI.translate("Search"),
           hintStyle: TextStyle(
             color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.4),
           ),

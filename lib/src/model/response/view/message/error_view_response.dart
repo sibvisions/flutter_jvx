@@ -1,4 +1,4 @@
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../service/api/shared/api_object_property.dart';
 import 'message_view.dart';
 
@@ -39,7 +39,7 @@ class ErrorViewResponse extends MessageView {
         details = json[ApiObjectProperty.details],
         exceptions = ServerException.fromJson(json[ApiObjectProperty.exceptions]),
         super.fromJson() {
-    FlutterJVx.log.w(toString());
+    FlutterUI.log.w(toString());
   }
 
   @override

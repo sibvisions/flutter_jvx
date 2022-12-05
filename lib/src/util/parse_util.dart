@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../flutter_jvx.dart';
+import '../flutter_ui.dart';
 import '../model/layout/layout_position.dart';
 import '../model/response/application_settings_response.dart';
 import '../service/api/shared/api_object_property.dart';
@@ -161,7 +161,7 @@ abstract class ParseUtil {
     double maxWidth = double.infinity,
     int maxLines = 1,
   }) {
-    double textScaleFactor = pTextScaleFactor ?? MediaQuery.textScaleFactorOf(FlutterJVx.getCurrentContext()!);
+    double textScaleFactor = pTextScaleFactor ?? MediaQuery.textScaleFactorOf(FlutterUI.getCurrentContext()!);
     TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: textDirection,

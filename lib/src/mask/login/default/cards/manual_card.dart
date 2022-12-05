@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
@@ -63,7 +63,7 @@ class _ManualCardState extends State<ManualCard> {
           onTap: resetButton,
           onChanged: (_) => resetButton(),
           controller: usernameController,
-          decoration: InputDecoration(labelText: "${FlutterJVx.translate("Username")}:"),
+          decoration: InputDecoration(labelText: "${FlutterUI.translate("Username")}:"),
         ),
         TextField(
           textInputAction: TextInputAction.done,
@@ -72,7 +72,7 @@ class _ManualCardState extends State<ManualCard> {
           onSubmitted: (_) => _onLoginPressed(),
           controller: passwordController,
           decoration: InputDecoration(
-            labelText: "${FlutterJVx.translate("Password")}:",
+            labelText: "${FlutterUI.translate("Password")}:",
             suffixIcon: IconButton(
               icon: Icon(
                 _passwordHidden ? Icons.visibility : Icons.visibility_off,
@@ -104,7 +104,7 @@ class _ManualCardState extends State<ManualCard> {
           stateButtons: {
             ButtonState.idle: StateButton(
               child: IconedButton(
-                text: FlutterJVx.translate("Login"),
+                text: FlutterUI.translate("Login"),
                 icon: const Icon(Icons.login),
               ),
             ),
@@ -112,7 +112,7 @@ class _ManualCardState extends State<ManualCard> {
               color: Colors.red.shade600,
               textStyle: const TextStyle(color: Colors.white),
               child: IconedButton(
-                text: FlutterJVx.translate("Failed"),
+                text: FlutterUI.translate("Failed"),
                 icon: const Icon(Icons.cancel),
               ),
             ),
@@ -127,7 +127,7 @@ class _ManualCardState extends State<ManualCard> {
             child: TextButton(
               onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
               child: Text(
-                "${FlutterJVx.translate("Reset password")}?",
+                "${FlutterUI.translate("Reset password")}?",
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -146,7 +146,7 @@ class _ManualCardState extends State<ManualCard> {
       onPressed: () => IUiService().routeToSettings(),
       icon: const FaIcon(FontAwesomeIcons.gear),
       label: Text(
-        FlutterJVx.translate("Settings"),
+        FlutterUI.translate("Settings"),
         overflow: TextOverflow.ellipsis,
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -34,7 +34,7 @@ class ServerErrorDialog extends FrameDialog {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterJVx.translate("Server Error")),
+      title: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterUI.translate("Server Error")),
       content: Text(command.message!),
       actions: _getButtons(context),
     );
@@ -65,7 +65,7 @@ class ServerErrorDialog extends FrameDialog {
             IUiService().routeToSettings(pReplaceRoute: true);
           },
           child: Text(
-            FlutterJVx.translate("Go to Settings"),
+            FlutterUI.translate("Go to Settings"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
@@ -79,7 +79,7 @@ class ServerErrorDialog extends FrameDialog {
             IUiService().closeFrameDialog(this);
           },
           child: Text(
-            FlutterJVx.translate("Ok"),
+            FlutterUI.translate("Ok"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 
 typedef EditorBuilder = Widget Function(
   BuildContext context,
@@ -73,12 +73,12 @@ class EditorDialog extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: Text(FlutterJVx.translate("Cancel"), style: style),
+          child: Text(FlutterUI.translate("Cancel"), style: style),
         ),
         const SizedBox(width: 20),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
-          child: Text(FlutterJVx.translate("Confirm"), style: style),
+          child: Text(FlutterUI.translate("Confirm"), style: style),
         ),
       ],
     );

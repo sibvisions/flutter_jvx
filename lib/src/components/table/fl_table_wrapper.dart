@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/delete_record_command.dart';
 import '../../model/command/api/insert_record_command.dart';
 import '../../model/command/api/select_record_command.dart';
@@ -326,7 +326,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     Filter? filter = createFilter(pRowIndex: lastTouchedIndex);
 
     if (filter == null) {
-      FlutterJVx.logUI.w("Filter of table(${model.id}) null");
+      FlutterUI.logUI.w("Filter of table(${model.id}) null");
       return null;
     }
     return DeleteRecordCommand(
@@ -343,7 +343,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     Filter? filter = createFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
-      FlutterJVx.logUI.w("Filter of table(${model.id}) null");
+      FlutterUI.logUI.w("Filter of table(${model.id}) null");
       return;
     }
 
@@ -528,7 +528,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           Padding(
             padding: const EdgeInsets.only(left: 5),
             child: Text(
-              FlutterJVx.translate(
+              FlutterUI.translate(
                 text,
               ),
             ),

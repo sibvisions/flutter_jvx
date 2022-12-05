@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
@@ -154,10 +154,10 @@ class StorageService implements IStorageService {
       }
     }
 
-    FlutterJVx.logUI.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
-    FlutterJVx.logUI.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
-    FlutterJVx.logUI.d("Changed {${changedUiComponents.length}}:${changedUiComponents.toList()..sort()}");
-    FlutterJVx.logUI
+    FlutterUI.logUI.d("DeletedUiComponents {${deletedUiComponents.length}}:${deletedUiComponents.toList()..sort()}");
+    FlutterUI.logUI.d("Affected {${affectedUiComponents.length}}:${affectedUiComponents.toList()..sort()}");
+    FlutterUI.logUI.d("Changed {${changedUiComponents.length}}:${changedUiComponents.toList()..sort()}");
+    FlutterUI.logUI
         .d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.map((e) => e.id).toList()..sort()}");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
@@ -172,9 +172,9 @@ class StorageService implements IStorageService {
 
   @override
   void deleteScreen({required String screenName}) {
-    FlutterJVx.logUI.d("Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+    FlutterUI.logUI.d("Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
 
-    FlutterJVx.logUI.d(_componentMap.keys.toList().toString());
+    FlutterUI.logUI.d(_componentMap.keys.toList().toString());
 
     var list = _componentMap.values.where((componentModel) => componentModel.name == screenName).toList();
 
@@ -193,7 +193,7 @@ class StorageService implements IStorageService {
       });
     }
 
-    FlutterJVx.logUI.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+    FlutterUI.logUI.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
   }
 
   @override
@@ -239,7 +239,7 @@ class StorageService implements IStorageService {
     List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.name == name).toList();
 
     if (screenModels.length >= 2) {
-      FlutterJVx.logUI.wtf("The same screen is found twice in the storage service!!!!");
+      FlutterUI.logUI.wtf("The same screen is found twice in the storage service!!!!");
     } else if (screenModels.length == 1 && (pIgnoreVisibility || screenModels.first.isVisible)) {
       list.addAll(getAllComponentsBelow(
           pParentModel: screenModels.first,
@@ -261,7 +261,7 @@ class StorageService implements IStorageService {
     List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.id == pParentId).toList();
 
     if (screenModels.length >= 2) {
-      FlutterJVx.logUI.wtf("The same screen is found twice in the storage service!!!!");
+      FlutterUI.logUI.wtf("The same screen is found twice in the storage service!!!!");
     } else if (screenModels.length == 1 && (pIgnoreVisibility || screenModels.first.isVisible)) {
       list.addAll(getAllComponentsBelow(
           pParentModel: screenModels.first,

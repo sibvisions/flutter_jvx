@@ -52,7 +52,7 @@ import 'util/parse_util.dart';
 import 'util/url_strategy/set_url_strategy.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
-class FlutterJVx extends StatefulWidget {
+class FlutterUI extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,7 +128,7 @@ class FlutterJVx extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  const FlutterJVx({
+  const FlutterUI({
     super.key,
     this.appConfig,
     this.appManager,
@@ -140,14 +140,14 @@ class FlutterJVx extends StatefulWidget {
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
-  FlutterJVxState createState() => FlutterJVxState();
+  FlutterUIState createState() => FlutterUIState();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Gets the [FlutterJVx] widget.
-  static FlutterJVx? of(BuildContext context) => context.findAncestorWidgetOfExactType<FlutterJVx>();
+  /// Gets the [FlutterUI] widget.
+  static FlutterUI? of(BuildContext context) => context.findAncestorWidgetOfExactType<FlutterUI>();
 
   /// Translates any text through the translation files loaded by the application.
   static String translate(String? pText) {
@@ -183,7 +183,7 @@ class FlutterJVx extends StatefulWidget {
     pageStorageBucket = PageStorageBucket();
   }
 
-  static start([FlutterJVx pAppToRun = const FlutterJVx()]) async {
+  static start([FlutterUI pAppToRun = const FlutterUI()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     BrowserHttpClientException.verbose = !kReleaseMode;
@@ -269,11 +269,11 @@ late BeamerDelegate routerDelegate;
 // Global Bucket to persist the storage between different locations
 PageStorageBucket pageStorageBucket = PageStorageBucket();
 
-class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
+class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   AppLifecycleState? lastState;
 
-  /// Gets the [FlutterJVxState] widget.
-  static FlutterJVxState? of(BuildContext? context) => context?.findAncestorStateOfType();
+  /// Gets the [FlutterUIState] widget.
+  static FlutterUIState? of(BuildContext? context) => context?.findAncestorStateOfType();
 
   ThemeData themeData = ThemeData(
     backgroundColor: Colors.grey.shade50,
@@ -341,7 +341,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.none ||
                       snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                    FlutterJVx.initiated = true;
+                    FlutterUI.initiated = true;
                     return JVxOverlay(child: child ?? const SizedBox.shrink());
                   }
 
@@ -368,7 +368,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
           },
         );
       },
-      title: widget.appConfig?.title ?? FlutterJVx.packageInfo.appName,
+      title: widget.appConfig?.title ?? FlutterUI.packageInfo.appName,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -503,7 +503,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
 
   Function(Object error, StackTrace stackTrace) createErrorHandler(String pMessage) {
     return (error, stackTrace) {
-      FlutterJVx.log.e(pMessage, error, stackTrace);
+      FlutterUI.log.e(pMessage, error, stackTrace);
       throw error;
     };
   }
@@ -526,7 +526,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
     if (!kReleaseMode) {
       devConfig = await ConfigUtil.readDevConfig();
       if (devConfig != null) {
-        FlutterJVx.log.i("Found dev config, overriding values");
+        FlutterUI.log.i("Found dev config, overriding values");
       }
     }
 
@@ -622,9 +622,9 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
         AlertDialog(
           title: Text(errorView?.errorCommand.title?.isNotEmpty ?? false
               ? errorView!.errorCommand.title!
-              : FlutterJVx.translate("Error")),
+              : FlutterUI.translate("Error")),
           content: Text(
-            errorView?.errorCommand.message ?? FlutterJVx.translate(IUiService.getErrorMessage(snapshot.error!)),
+            errorView?.errorCommand.message ?? FlutterUI.translate(IUiService.getErrorMessage(snapshot.error!)),
           ),
           actions: [
             TextButton(
@@ -635,7 +635,7 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
                 });
               },
               child: Text(
-                FlutterJVx.translate("Go to Settings"),
+                FlutterUI.translate("Go to Settings"),
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),

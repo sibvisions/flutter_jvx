@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../config/app_config.dart';
-import '../flutter_jvx.dart';
+import '../flutter_ui.dart';
 import '../mask/menu/menu.dart';
 
 abstract class ConfigUtil {
@@ -13,7 +13,7 @@ abstract class ConfigUtil {
     try {
       return await _readConfigFile("app.conf.json");
     } catch (e, stack) {
-      FlutterJVx.log.e("AppConfig failed to load:", e, stack);
+      FlutterUI.log.e("AppConfig failed to load:", e, stack);
     }
     return null;
   }
@@ -24,10 +24,10 @@ abstract class ConfigUtil {
       return await _readConfigFile("dev.conf.json");
     } catch (e, stack) {
       if (e is FlutterError && e.message.startsWith("Unable to load asset")) {
-        FlutterJVx.log.d("Unable to load asset", e, stack);
+        FlutterUI.log.d("Unable to load asset", e, stack);
         return null;
       }
-      FlutterJVx.log.e("Dev AppConfig failed to load:", e, stack);
+      FlutterUI.log.e("Dev AppConfig failed to load:", e, stack);
     }
     return null;
   }

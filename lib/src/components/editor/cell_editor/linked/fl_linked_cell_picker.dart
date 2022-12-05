@@ -3,7 +3,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -107,7 +107,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                           decorationColor: DefaultTextStyle.of(context).style.color,
                           decorationThickness: 1,
                         ),
-                        FlutterJVx.translate("No value"),
+                        FlutterUI.translate("No value"),
                       )),
               onTap: () {
                 Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
@@ -125,7 +125,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           alignment: Alignment.centerRight,
           child: ElevatedButton(
             child: Text(
-              FlutterJVx.translate("Cancel"),
+              FlutterUI.translate("Cancel"),
             ),
             onPressed: () {
               Navigator.of(context).pop();
@@ -147,7 +147,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              FlutterJVx.translate("Select value"),
+              FlutterUI.translate("Select value"),
               style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
             const SizedBox(height: 8),
@@ -160,7 +160,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
               endEditing: (_) {},
               focusNode: focusNode,
               inputDecoration: InputDecoration(
-                labelText: FlutterJVx.translate("Search"),
+                labelText: FlutterUI.translate("Search"),
                 labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
               ),
             ),

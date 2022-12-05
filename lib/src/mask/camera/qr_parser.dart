@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 
 class QRParser {
   static const String url = "URL";
@@ -42,7 +42,7 @@ class QRParser {
     try {
       json = jsonDecode(rawQRCode);
     } on FormatException {
-      FlutterJVx.logUI.d("Failed to parse valid json from qr code, falling back to line format.");
+      FlutterUI.logUI.d("Failed to parse valid json from qr code, falling back to line format.");
 
       LineSplitter ls = const LineSplitter();
       List<String> properties = ls.convert(rawQRCode);

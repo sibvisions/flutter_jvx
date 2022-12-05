@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 
 class RememberMeCheckbox extends StatelessWidget {
   final bool value;
@@ -15,7 +15,7 @@ class RememberMeCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: Text(FlutterJVx.translate("Remember me?")),
+      title: Text(FlutterUI.translate("Remember me?")),
       value: value,
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
@@ -78,7 +78,7 @@ class _ManualCardState extends State<ManualCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            FlutterJVx.translate("Login"),
+                            FlutterUI.translate("Login"),
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -102,7 +102,7 @@ class _ManualCardState extends State<ManualCard> {
                       padding: const EdgeInsets.only(top: 4.0, bottom: 10),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(FlutterJVx.translate("Please enter your username and password.")),
+                        child: Text(FlutterUI.translate("Please enter your username and password.")),
                       ),
                     ),
                     Padding(
@@ -118,7 +118,7 @@ class _ManualCardState extends State<ManualCard> {
                             onChanged: (_) => resetButton(),
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.user),
-                              labelText: FlutterJVx.translate("Username"),
+                              labelText: FlutterUI.translate("Username"),
                               border: InputBorder.none,
                             ),
                           ),
@@ -140,7 +140,7 @@ class _ManualCardState extends State<ManualCard> {
                             obscureText: _passwordHidden,
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.key),
-                              labelText: FlutterJVx.translate("Password"),
+                              labelText: FlutterUI.translate("Password"),
                               border: InputBorder.none,
                               suffixIcon: ExcludeFocus(
                                 child: IconButton(
@@ -174,7 +174,7 @@ class _ManualCardState extends State<ManualCard> {
                           Padding(
                             padding: const EdgeInsets.only(left: 10.0),
                             child: Text(
-                              FlutterJVx.translate("Login").toUpperCase(),
+                              FlutterUI.translate("Login").toUpperCase(),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -224,7 +224,7 @@ class _ManualCardState extends State<ManualCard> {
                           ),
                         ),
                         onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
-                        child: Text("${FlutterJVx.translate("Reset password")}?"),
+                        child: Text("${FlutterUI.translate("Reset password")}?"),
                       ),
                   ],
                 ),
@@ -258,7 +258,7 @@ class _ManualCardState extends State<ManualCard> {
                 onChanged: (bool? value) => onTap.call(),
               ),
               Text(
-                FlutterJVx.translate("Remember me?"),
+                FlutterUI.translate("Remember me?"),
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],

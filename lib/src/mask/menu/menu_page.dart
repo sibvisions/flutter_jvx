@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../custom/app_manager.dart';
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -129,7 +129,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         icon: const FaIcon(FontAwesomeIcons.circleXmark))
                     : null,
                 title: !isMenuSearchEnabled
-                    ? Text(FlutterJVx.translate("Menu"))
+                    ? Text(FlutterUI.translate("Menu"))
                     : Builder(builder: (context) => _buildSearch(context)),
                 titleSpacing: isMenuSearchEnabled ? 0.0 : null,
                 backgroundColor: isOffline ? Colors.grey.shade500 : null,
@@ -154,7 +154,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
       child: TextField(
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
-          hintText: FlutterJVx.translate("Search"),
+          hintText: FlutterUI.translate("Search"),
           hintStyle: TextStyle(
             color: DefaultTextStyle.of(context).style.color?.withOpacity(0.4),
           ),
@@ -192,10 +192,10 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     return IUiService().openDialog(
       pBuilder: (context) => AlertDialog(
         title: Text(
-          FlutterJVx.translate("Synchronization"),
+          FlutterUI.translate("Synchronization"),
         ),
         content: Text(
-          FlutterJVx.translate(
+          FlutterUI.translate(
             "Do you want to switch back online and synchronize all the data?",
           ),
         ),
@@ -209,22 +209,22 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   children: [
                     TextButton(
                       style: TextButton.styleFrom(foregroundColor: Colors.red),
-                      child: Text(FlutterJVx.translate("Discard Changes")),
+                      child: Text(FlutterUI.translate("Discard Changes")),
                       onPressed: () async {
                         SyncDialogResult? result = await IUiService().openDialog(
                           pBuilder: (subContext) => AlertDialog(
-                            title: Text(FlutterJVx.translate("Discard Offline Changes")),
-                            content: Text(FlutterJVx.translate(
+                            title: Text(FlutterUI.translate("Discard Offline Changes")),
+                            content: Text(FlutterUI.translate(
                                 "Are you sure you want to discard all the changes you made in offline mode?")),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.NO),
-                                child: Text(FlutterJVx.translate("No")),
+                                child: Text(FlutterUI.translate("No")),
                               ),
                               TextButton(
                                 style: TextButton.styleFrom(foregroundColor: Colors.red),
                                 onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.DISCARD_CHANGES),
-                                child: Text(FlutterJVx.translate("Yes")),
+                                child: Text(FlutterUI.translate("Yes")),
                               ),
                             ],
                           ),
@@ -237,11 +237,11 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 ),
               ),
               TextButton(
-                child: Text(FlutterJVx.translate("No")),
+                child: Text(FlutterUI.translate("No")),
                 onPressed: () => Navigator.of(context).pop(SyncDialogResult.NO),
               ),
               TextButton(
-                child: Text(FlutterJVx.translate("Yes")),
+                child: Text(FlutterUI.translate("Yes")),
                 onPressed: () => Navigator.of(context).pop(SyncDialogResult.YES),
               ),
             ],

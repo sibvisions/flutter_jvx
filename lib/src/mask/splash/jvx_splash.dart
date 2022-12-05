@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../service/ui/i_ui_service.dart';
 
 class JVxSplash extends StatefulWidget {
@@ -74,7 +74,7 @@ class _JVxSplashState extends State<JVxSplash> {
                       Padding(
                         padding: const EdgeInsets.only(top: 15),
                         child: Text(
-                          FlutterJVx.packageInfo.appName,
+                          FlutterUI.packageInfo.appName,
                           style: const TextStyle(
                             fontSize: 32.0,
                             fontWeight: FontWeight.bold,

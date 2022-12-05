@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/config/i_config_service.dart';
@@ -75,7 +75,7 @@ class ModernLogin extends StatelessWidget implements Login {
                     onPressed: () => IUiService().routeToSettings(),
                     icon: const FaIcon(FontAwesomeIcons.gear),
                     label: Text(
-                      FlutterJVx.translate("Settings"),
+                      FlutterUI.translate("Settings"),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -150,7 +150,7 @@ class ModernLogin extends StatelessWidget implements Login {
                       ? ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown)
                       : Image.asset(
                           ImageLoader.getAssetPath(
-                            FlutterJVx.package,
+                            FlutterUI.package,
                             "assets/images/branding_sib_visions.png",
                           ),
                           fit: BoxFit.scaleDown,

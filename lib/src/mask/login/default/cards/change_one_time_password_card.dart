@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
@@ -27,21 +27,21 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          FlutterJVx.translate("Change password"),
+          FlutterUI.translate("Change password"),
           style: Theme.of(context).textTheme.headline6,
           textAlign: TextAlign.center,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         Text(
-          FlutterJVx.translate("Please enter your one-time password and set a new password."),
+          FlutterUI.translate("Please enter your one-time password and set a new password."),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
           textInputAction: TextInputAction.next,
           controller: userNameController,
           decoration: InputDecoration(
-            labelText: FlutterJVx.translate("Username:"),
-            hintText: FlutterJVx.translate("Username"),
+            labelText: FlutterUI.translate("Username:"),
+            hintText: FlutterUI.translate("Username"),
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
@@ -49,8 +49,8 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           textInputAction: TextInputAction.next,
           controller: oneTimeController,
           decoration: InputDecoration(
-            labelText: FlutterJVx.translate("One-time password:"),
-            hintText: FlutterJVx.translate("One-time password"),
+            labelText: FlutterUI.translate("One-time password:"),
+            hintText: FlutterUI.translate("One-time password"),
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
@@ -59,8 +59,8 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           obscureText: true,
           controller: newPasswordController,
           decoration: InputDecoration(
-            labelText: FlutterJVx.translate("Password (new):"),
-            hintText: FlutterJVx.translate("New Password"),
+            labelText: FlutterUI.translate("Password (new):"),
+            hintText: FlutterUI.translate("New Password"),
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
@@ -70,8 +70,8 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           controller: newPasswordConfController,
           onSubmitted: (_) => _onResetOTPPressed(),
           decoration: InputDecoration(
-            labelText: FlutterJVx.translate("Password (confirm):"),
-            hintText: FlutterJVx.translate("Confirm Password"),
+            labelText: FlutterUI.translate("Password (confirm):"),
+            hintText: FlutterUI.translate("Confirm Password"),
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
@@ -83,13 +83,13 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
   Widget _createBottomRow() {
     Widget okButton = ElevatedButton(
       onPressed: _onResetOTPPressed,
-      child: Text(FlutterJVx.translate("OK")),
+      child: Text(FlutterUI.translate("OK")),
     );
 
     Widget backButton = TextButton(
       onPressed: () => IUiService().routeToLogin(mode: LoginMode.Manual),
       child: Text(
-        FlutterJVx.translate("Cancel"),
+        FlutterUI.translate("Cancel"),
         overflow: TextOverflow.ellipsis,
       ),
     );
@@ -108,7 +108,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
 
     if (newPasswordController.text != newPasswordConfController.text) {
       IUiService().openDialog(
-        pBuilder: (_) => Text(FlutterJVx.translate("The passwords are different!")),
+        pBuilder: (_) => Text(FlutterUI.translate("The passwords are different!")),
         pIsDismissible: true,
       );
       return;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
 
@@ -46,7 +46,7 @@ class ErrorDialog extends FrameDialog {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title?.isNotEmpty == true ? title! : FlutterJVx.translate("Error")),
+      title: Text(title?.isNotEmpty == true ? title! : FlutterUI.translate("Error")),
       content: Text(message),
       actions: _getActions(context),
     );
@@ -65,7 +65,7 @@ class ErrorDialog extends FrameDialog {
         TextButton(
           onPressed: () => IUiService().closeFrameDialog(this),
           child: Text(
-            FlutterJVx.translate("Retry"),
+            FlutterUI.translate("Retry"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
@@ -80,7 +80,7 @@ class ErrorDialog extends FrameDialog {
             IUiService().routeToSettings(pReplaceRoute: true);
           },
           child: Text(
-            FlutterJVx.translate("Go to Settings"),
+            FlutterUI.translate("Go to Settings"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
@@ -92,7 +92,7 @@ class ErrorDialog extends FrameDialog {
         TextButton(
           onPressed: () => IUiService().closeFrameDialog(this),
           child: Text(
-            FlutterJVx.translate("Ok"),
+            FlutterUI.translate("Ok"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

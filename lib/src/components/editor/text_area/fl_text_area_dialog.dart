@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import 'fl_text_area_widget.dart';
 
@@ -64,7 +64,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
           alignment: Alignment.centerLeft,
           child: ElevatedButton(
             child: Text(
-              FlutterJVx.translate("Cancel"),
+              FlutterUI.translate("Cancel"),
             ),
             onPressed: () {
               Navigator.of(context).pop(FlTextAreaDialog.CANCEL_OBJECT);
@@ -81,7 +81,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
           alignment: Alignment.centerRight,
           child: ElevatedButton(
             child: Text(
-              FlutterJVx.translate("OK"),
+              FlutterUI.translate("OK"),
             ),
             onPressed: () {
               Navigator.of(context).pop();

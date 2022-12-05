@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../mask/setting/settings_page.dart';
 import '../../service/ui/i_ui_service.dart';
 
@@ -12,7 +12,7 @@ class SettingsLocation extends BeamLocation {
 
     return [
       BeamPage(
-        title: FlutterJVx.translate("Settings"),
+        title: FlutterUI.translate("Settings"),
         key: const ValueKey("Settings"),
         child: const SettingsPage(),
       ),

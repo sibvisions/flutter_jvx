@@ -10,7 +10,7 @@ import '../../../custom/custom_component.dart';
 import '../../../custom/custom_menu_item.dart';
 import '../../../custom/custom_screen.dart';
 import '../../../exceptions/error_view_exception.dart';
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
@@ -91,12 +91,12 @@ class UiService implements IUiService {
 
   @override
   handleAsyncError(Object error, StackTrace stackTrace) {
-    FlutterJVx.logUI.e("Error while sending async command", error, stackTrace);
+    FlutterUI.logUI.e("Error while sending async command", error, stackTrace);
 
     if (error is! ErrorViewException) {
       bool isTimeout = error is TimeoutException || error is SocketException;
       ICommandService().sendCommand(OpenErrorDialogCommand(
-        message: FlutterJVx.translate(IUiService.getErrorMessage(error)),
+        message: FlutterUI.translate(IUiService.getErrorMessage(error)),
         error: error,
         canBeFixedInSettings: isTimeout,
         reason: "Command error in ui service",
@@ -115,7 +115,7 @@ class UiService implements IUiService {
   /// If we are currently in splash and never had a context before (initiated = false),
   /// then ignore route request while in settings (and later also while in work screen)
   static bool checkFirstSplash() {
-    if (FlutterJVx.getCurrentContext() == null && !FlutterJVx.initiated) {
+    if (FlutterUI.getCurrentContext() == null && !FlutterUI.initiated) {
       // TODO fix workScreen web reload (e.g. send OpenScreenCommand); Potential Idea -> FS#3063
       if (kIsWeb && (Uri.base.fragment == "/settings" /*|| Uri.base.fragment.startsWith("/workScreen")*/)) {
         return false;
@@ -128,12 +128,12 @@ class UiService implements IUiService {
   void routeToMenu({bool pReplaceRoute = false}) {
     if (!checkFirstSplash()) return;
 
-    var lastLocation = FlutterJVx.getBeamerDelegate().currentBeamLocation;
+    var lastLocation = FlutterUI.getBeamerDelegate().currentBeamLocation;
     if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
-      FlutterJVx.clearHistory();
-      FlutterJVx.getBeamerDelegate().beamToReplacementNamed("/menu");
+      FlutterUI.clearHistory();
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/menu");
     } else {
-      FlutterJVx.getBeamerDelegate().beamToNamed("/menu");
+      FlutterUI.getBeamerDelegate().beamToNamed("/menu");
     }
   }
 
@@ -141,13 +141,13 @@ class UiService implements IUiService {
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     if (!checkFirstSplash()) return;
 
-    FlutterJVx.logUI.i("Routing to workscreen: $pScreenName");
+    FlutterUI.logUI.i("Routing to workscreen: $pScreenName");
 
-    var lastLocation = FlutterJVx.getBeamerDelegate().currentBeamLocation;
+    var lastLocation = FlutterUI.getBeamerDelegate().currentBeamLocation;
     if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
-      FlutterJVx.getBeamerDelegate().beamToReplacementNamed("/workScreen/$pScreenName");
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/workScreen/$pScreenName");
     } else {
-      FlutterJVx.getBeamerDelegate().beamToNamed("/workScreen/$pScreenName");
+      FlutterUI.getBeamerDelegate().beamToNamed("/workScreen/$pScreenName");
     }
   }
 
@@ -155,9 +155,9 @@ class UiService implements IUiService {
   void routeToLogin({LoginMode? mode, Map<String, String?>? pLoginProps}) {
     if (!checkFirstSplash()) return;
 
-    FlutterJVx.clearHistory();
+    FlutterUI.clearHistory();
 
-    FlutterJVx.getBeamerDelegate().beamToReplacementNamed(
+    FlutterUI.getBeamerDelegate().beamToReplacementNamed(
       "/login${mode != null ? "?mode=${mode.name.firstCharLower()}" : ""}",
       data: pLoginProps,
     );
@@ -166,16 +166,16 @@ class UiService implements IUiService {
   @override
   void routeToSettings({bool pReplaceRoute = false}) {
     if (pReplaceRoute) {
-      FlutterJVx.clearHistory();
-      FlutterJVx.getBeamerDelegate().beamToReplacementNamed("/settings");
+      FlutterUI.clearHistory();
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/settings");
     } else {
-      FlutterJVx.getBeamerDelegate().beamToNamed("/settings");
+      FlutterUI.getBeamerDelegate().beamToNamed("/settings");
     }
   }
 
   @override
   void routeToCustom({required String pFullPath}) {
-    FlutterJVx.getBeamerDelegate().beamToNamed(pFullPath);
+    FlutterUI.getBeamerDelegate().beamToNamed(pFullPath);
   }
 
   @override
@@ -196,7 +196,7 @@ class UiService implements IUiService {
     Locale? pLocale,
   }) =>
       showDialog(
-          context: context ?? FlutterJVx.getCurrentContext()!,
+          context: context ?? FlutterUI.getCurrentContext()!,
           barrierDismissible: pIsDismissible,
           builder: (BuildContext context) {
             Widget child = pBuilder.call(context);
@@ -548,19 +548,19 @@ class UiService implements IUiService {
     required MessageDialog pDialog,
   }) {
     _activeFrames[componentId] = pDialog;
-    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    JVxOverlayState.of(FlutterUI.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
   void closeFrame({required String componentId}) {
     _activeFrames.remove(componentId);
-    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    JVxOverlayState.of(FlutterUI.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
   void closeFrames() {
     _activeFrames.clear();
-    JVxOverlayState.of(FlutterJVx.getCurrentContext()!)?.refreshFrames();
+    JVxOverlayState.of(FlutterUI.getCurrentContext()!)?.refreshFrames();
   }
 
   @override
@@ -571,21 +571,21 @@ class UiService implements IUiService {
   @override
   void showFrameDialog(FrameDialog pDialog) {
     _activeDialogs.add(pDialog);
-    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+    JVxOverlayState.of(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialog(FrameDialog pDialog) {
     pDialog.onClose();
     _activeDialogs.remove(pDialog);
-    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+    JVxOverlayState.of(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialogs() {
     _activeDialogs.forEach((dialog) => dialog.onClose());
     _activeDialogs.clear();
-    JVxOverlayState.of(FlutterJVx.getCurrentContext())?.refreshDialogs();
+    JVxOverlayState.of(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
   @override

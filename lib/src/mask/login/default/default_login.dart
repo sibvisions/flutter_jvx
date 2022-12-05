@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../util/image/image_loader.dart';
@@ -105,7 +105,7 @@ class DefaultLogin extends StatelessWidget implements Login {
                       ? ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown)
                       : Image.asset(
                           ImageLoader.getAssetPath(
-                            FlutterJVx.package,
+                            FlutterUI.package,
                             "assets/images/branding_sib_visions.png",
                           ),
                           fit: BoxFit.scaleDown,

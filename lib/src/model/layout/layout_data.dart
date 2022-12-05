@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../layout/i_layout.dart';
 import '../../util/i_clonable.dart';
 import 'layout_position.dart';
@@ -44,7 +44,7 @@ class LayoutData implements ICloneable {
   Size? _calculatedSize;
 
   set calculatedSize(Size? newCalcSize) {
-    FlutterJVx.logUI.d("$id CHANGED CALC TO: $newCalcSize");
+    FlutterUI.logUI.d("$id CHANGED CALC TO: $newCalcSize");
 
     _calculatedSize = newCalcSize;
   }

@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../mask/menu/menu_page.dart';
 import '../../service/ui/i_ui_service.dart';
 
@@ -17,7 +17,7 @@ class MenuLocation extends BeamLocation<BeamState> {
 
     return [
       BeamPage(
-        title: FlutterJVx.translate("Menu"),
+        title: FlutterUI.translate("Menu"),
         key: const ValueKey("Menu"),
         child: const MenuPage(),
       ),

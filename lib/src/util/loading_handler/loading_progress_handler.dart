@@ -1,4 +1,4 @@
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../mask/jvx_overlay.dart';
 import '../../model/command/api/api_command.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -30,7 +30,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
   void notifyProgressStart(BaseCommand pCommand) {
     if (isSupported(pCommand) && !IConfigService().isOffline()) {
       _loadingCommandAmount++;
-      JVxOverlayState.of(FlutterJVx.getCurrentContext())?.showLoading(pCommand.loadingDelay);
+      JVxOverlayState.of(FlutterUI.getCurrentContext())?.showLoading(pCommand.loadingDelay);
     }
   }
 
@@ -41,7 +41,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
         _loadingCommandAmount--;
       }
       if (_loadingCommandAmount == 0) {
-        JVxOverlayState.of(FlutterJVx.getCurrentContext())?.hideLoading();
+        JVxOverlayState.of(FlutterUI.getCurrentContext())?.hideLoading();
       }
     }
   }

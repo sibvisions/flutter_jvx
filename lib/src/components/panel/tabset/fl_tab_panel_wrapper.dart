@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';
 import '../../../model/command/api/open_tab_command.dart';
@@ -150,13 +150,13 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       tabHeaderList.add(createTab(tabContentList[i], i));
     }
 
-    FlutterJVx.logUI.d("BUILD CHILDREN");
-    FlutterJVx.logUI.d("Children count: ${children.values.length}");
-    FlutterJVx.logUI.d("Tabcontentlist: $tabContentList");
-    FlutterJVx.logUI.d("Tabheaderlist: $tabHeaderList");
-    FlutterJVx.logUI.d("Model Selected index:${model.selectedIndex}");
-    FlutterJVx.logUI.d("Tabcontroller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
-    FlutterJVx.logUI.d("Set state: $returnValue");
+    FlutterUI.logUI.d("BUILD CHILDREN");
+    FlutterUI.logUI.d("Children count: ${children.values.length}");
+    FlutterUI.logUI.d("Tabcontentlist: $tabContentList");
+    FlutterUI.logUI.d("Tabheaderlist: $tabHeaderList");
+    FlutterUI.logUI.d("Model Selected index:${model.selectedIndex}");
+    FlutterUI.logUI.d("Tabcontroller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
+    FlutterUI.logUI.d("Set state: $returnValue");
 
     if (returnValue && pSetStateOnChange) {
       setState(() {});
@@ -170,7 +170,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     List<Widget> childrenToHide = tabContentList.where((e) {
       return !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e));
     }).toList();
-    FlutterJVx.logUI.d("ChildrenToHide: $childrenToHide");
+    FlutterUI.logUI.d("ChildrenToHide: $childrenToHide");
 
     return getPositioned(
       child: Wrap(
@@ -394,7 +394,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   void closeTab(int index) {
-    FlutterJVx.logUI.i("Closing tab $index");
+    FlutterUI.logUI.i("Closing tab $index");
     lastDeletedTab = index;
     IUiService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }

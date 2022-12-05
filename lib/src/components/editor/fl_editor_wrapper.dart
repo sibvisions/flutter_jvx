@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
@@ -211,7 +211,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           pId: model.id,
           pFunction: () async {
             if (pValue is HashMap<String, dynamic>) {
-              FlutterJVx.logUI.d("Values of ${model.id} set to $pValue");
+              FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
               return [
                 SetValuesCommand(
                   componentId: model.id,
@@ -222,7 +222,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
                 ),
               ];
             } else {
-              FlutterJVx.logUI.d("Value of ${model.id} set to $pValue");
+              FlutterUI.logUI.d("Value of ${model.id} set to $pValue");
               return [
                 SetValuesCommand(
                   componentId: model.id,
@@ -270,7 +270,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Logs the cell editor for debug purposes.
   void logCellEditor(String pPhase) {
-    FlutterJVx.logUI.d("""
+    FlutterUI.logUI.d("""
 ----- $pPhase -----
 Old cell editor hashcode: ${oldCellEditor?.hashCode}
 New cell editor hashcode: ${cellEditor.hashCode}

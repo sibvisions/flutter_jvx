@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../util/image/image_loader.dart';
 import 'jvx_splash.dart';
 
@@ -32,7 +32,7 @@ class Splash extends StatelessWidget {
           logo: Image(
             image: Svg(
               ImageLoader.getAssetPath(
-                FlutterJVx.package,
+                FlutterUI.package,
                 "assets/images/J.svg",
               ),
               size: const Size(138, 145),
@@ -40,13 +40,13 @@ class Splash extends StatelessWidget {
           ),
           background: Svg(
             ImageLoader.getAssetPath(
-              FlutterJVx.package,
+              FlutterUI.package,
               "assets/images/JVx_Bg.svg",
             ),
           ),
           branding: Image.asset(
             ImageLoader.getAssetPath(
-              FlutterJVx.package,
+              FlutterUI.package,
               "assets/images/logo.png",
             ),
             width: 200,

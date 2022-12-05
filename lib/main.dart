@@ -1,6 +1,6 @@
-import 'src/flutter_jvx.dart';
+import 'src/flutter_ui.dart';
 
 void main() async {
-  FlutterJVx.package = false;
-  await FlutterJVx.start();
+  FlutterUI.package = false;
+  await FlutterUI.start();
 }

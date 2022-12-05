@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../mask/state/app_style.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
@@ -169,7 +169,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       return null;
     }
 
-    bool isLight = Theme.of(FlutterJVx.getCurrentContext()!).brightness == Brightness.light;
+    bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
 
     return InkWell(
       canRequestFocus: false,

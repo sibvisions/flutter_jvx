@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/focus_gained_command.dart';
 import '../../model/command/api/focus_lost_command.dart';
 import '../../model/command/base_command.dart';
@@ -119,7 +119,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new Model
   void modelUpdated() {
-    FlutterJVx.logUI.d("${model.id} received new Model");
+    FlutterUI.logUI.d("${model.id} received new Model");
 
     setState(() {
       // Set potentially new layout data contained in the new model
@@ -150,7 +150,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData = pLayoutData;
       calcPosition = null;
     }
-    FlutterJVx.logUI.d("${layoutData.id} NEW DATA; ${pLayoutData.layoutPosition}");
+    FlutterUI.logUI.d("${layoutData.id} NEW DATA; ${pLayoutData.layoutPosition}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (!layoutData.isParent && (layoutData.isNewlyConstraint || calcPosition != null) && lastContext != null) {

@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import '../../components/components_factory.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
 import '../../custom/custom_screen.dart';
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/command/base_command.dart';
@@ -147,7 +147,7 @@ class WorkScreenState extends State<WorkScreen> {
         }
 
         if (screen == null) {
-          FlutterJVx.logUI.wtf("Model not found for work screen: $screenLongName");
+          FlutterUI.logUI.wtf("Model not found for work screen: $screenLongName");
           screen = Container();
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
             IUiService().sendCommand(OpenErrorDialogCommand(

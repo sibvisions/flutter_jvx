@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
@@ -78,7 +78,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          FlutterJVx.translate("Change password"),
+                          FlutterUI.translate("Change password"),
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -89,7 +89,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                       padding: const EdgeInsets.only(top: 4.0, bottom: 10),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(FlutterJVx.translate(
+                        child: Text(FlutterUI.translate(
                           widget.useOTP
                               ? "Please enter your one-time password and set a new password."
                               : "Please enter and confirm the new password.",
@@ -110,7 +110,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                             onChanged: (_) => resetButton(),
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.user),
-                              labelText: FlutterJVx.translate("Username"),
+                              labelText: FlutterUI.translate("Username"),
                               border: InputBorder.none,
                             ),
                           ),
@@ -133,7 +133,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                               obscureText: _passwordHidden,
                               decoration: InputDecoration(
                                 icon: const FaIcon(FontAwesomeIcons.key),
-                                labelText: FlutterJVx.translate("Password"),
+                                labelText: FlutterUI.translate("Password"),
                                 border: InputBorder.none,
                                 suffixIcon: ExcludeFocus(
                                   child: IconButton(
@@ -162,7 +162,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                               onChanged: (_) => resetButton(),
                               decoration: InputDecoration(
                                 icon: const FaIcon(FontAwesomeIcons.userSecret),
-                                labelText: FlutterJVx.translate("One-time password"),
+                                labelText: FlutterUI.translate("One-time password"),
                                 border: InputBorder.none,
                               ),
                             ),
@@ -183,7 +183,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                             obscureText: _newPasswordHidden,
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.key),
-                              labelText: FlutterJVx.translate("New Password"),
+                              labelText: FlutterUI.translate("New Password"),
                               border: InputBorder.none,
                               suffixIcon: ExcludeFocus(
                                 child: IconButton(
@@ -213,7 +213,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                             obscureText: _confirmPasswordHidden,
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.key),
-                              labelText: FlutterJVx.translate("Confirm Password"),
+                              labelText: FlutterUI.translate("Confirm Password"),
                               border: InputBorder.none,
                               suffixIcon: ExcludeFocus(
                                 child: IconButton(
@@ -236,7 +236,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                           Padding(
                             padding: const EdgeInsets.only(left: 10.0),
                             child: Text(
-                              FlutterJVx.translate("Change Password").toUpperCase(),
+                              FlutterUI.translate("Change Password").toUpperCase(),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -285,7 +285,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                         ),
                       ),
                       onPressed: () => IUiService().routeToLogin(mode: LoginMode.Manual),
-                      child: Text(FlutterJVx.translate("Back")),
+                      child: Text(FlutterUI.translate("Back")),
                     ),
                   ],
                 ),
@@ -322,12 +322,12 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
       IUiService().openDialog(
         pIsDismissible: true,
         pBuilder: (context) => AlertDialog(
-          title: Text(FlutterJVx.translate("Error")),
-          content: Text(FlutterJVx.translate("The passwords are different!")),
+          title: Text(FlutterUI.translate("Error")),
+          content: Text(FlutterUI.translate("The passwords are different!")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(FlutterJVx.translate("Ok")),
+              child: Text(FlutterUI.translate("Ok")),
             ),
           ],
         ),

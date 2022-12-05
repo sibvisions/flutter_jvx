@@ -2,7 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../mask/login/login_page.dart';
 import '../../model/command/api/login_command.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -19,7 +19,7 @@ class LoginLocation extends BeamLocation<BeamState> {
 
     return [
       BeamPage(
-        title: FlutterJVx.translate("Login"),
+        title: FlutterUI.translate("Login"),
         key: const ValueKey("login"),
         child: ValueListenableBuilder<LoginMode>(
           valueListenable: modeNotifier,

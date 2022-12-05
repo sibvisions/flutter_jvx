@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
@@ -29,14 +29,14 @@ class ServerSessionExpired extends FrameDialog {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(command.title?.isNotEmpty == true ? command.title! : FlutterJVx.translate("Session Expired")),
+      title: Text(command.title?.isNotEmpty == true ? command.title! : FlutterUI.translate("Session Expired")),
       content:
-          Text(command.message?.isNotEmpty == true ? command.message! : FlutterJVx.translate("Session has expired")),
+          Text(command.message?.isNotEmpty == true ? command.message! : FlutterUI.translate("Session has expired")),
       actions: [
         TextButton(
           onPressed: () => _restartApp(),
           child: Text(
-            FlutterJVx.translate("Restart App"),
+            FlutterUI.translate("Restart App"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
@@ -50,6 +50,6 @@ class ServerSessionExpired extends FrameDialog {
 
   void _restartApp() {
     IUiService().closeFrameDialog(this);
-    FlutterJVxState.of(FlutterJVx.getCurrentContext())?.restart();
+    FlutterUIState.of(FlutterUI.getCurrentContext())?.restart();
   }
 }

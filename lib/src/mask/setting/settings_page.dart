@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../service/config/i_config_service.dart';
@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
 
     // Load Version
-    appVersionNotifier = ValueNotifier("${FlutterJVx.translate("Loading")}...");
+    appVersionNotifier = ValueNotifier("${FlutterUI.translate("Loading")}...");
     PackageInfo.fromPlatform().then((packageInfo) {
       int? buildNumber = IConfigService().getAppConfig()?.versionConfig?.buildNumber;
       return appVersionNotifier.value =
@@ -108,7 +108,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onPressed: context.beamBack,
                 )
               : null,
-          title: Text(FlutterJVx.translate("Settings")),
+          title: Text(FlutterUI.translate("Settings")),
           elevation: 0,
         ),
         body: body,
@@ -168,7 +168,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: SizedBox.shrink(
                 child: Center(
                   child: Text(
-                    FlutterJVx.translate("Cancel"),
+                    FlutterUI.translate("Cancel"),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -186,7 +186,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SizedBox.shrink(
           child: Center(
             child: Text(
-              FlutterJVx.translate(
+              FlutterUI.translate(
                   IConfigService().getClientId() != null ? (_changesPending() ? "Save" : "OK") : "Open"),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -219,7 +219,7 @@ class _SettingsPageState extends State<SettingsPage> {
       SettingItem privacyPolicy = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.link),
         endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
-        title: FlutterJVx.translate("Privacy Policy"),
+        title: FlutterUI.translate("Privacy Policy"),
         onPressed: (value) => launchUrl(
           IConfigService().getAppConfig()!.privacyPolicy!,
           mode: LaunchMode.externalApplication,
@@ -230,7 +230,7 @@ class _SettingsPageState extends State<SettingsPage> {
         groupHeader: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            FlutterJVx.translate("Info"),
+            FlutterUI.translate("Info"),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -245,7 +245,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildApplicationSettings(BuildContext context) {
-    String appNameTitle = FlutterJVx.translate("App Name");
+    String appNameTitle = FlutterUI.translate("App Name");
 
     SettingItem appNameSetting = SettingItem(
       frontIcon: FaIcon(FontAwesomeIcons.server, color: Theme.of(context).colorScheme.primary),
@@ -260,7 +260,7 @@ class _SettingsPageState extends State<SettingsPage> {
           context,
           pEditorBuilder: (context, onConfirm) => TextEditor(
             title: appNameTitle,
-            hintText: FlutterJVx.translate("Enter new App Name"),
+            hintText: FlutterUI.translate("Enter new App Name"),
             controller: controller,
             onConfirm: onConfirm,
           ),
@@ -276,7 +276,7 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
-    String urlTitle = FlutterJVx.translate("URL");
+    String urlTitle = FlutterUI.translate("URL");
     SettingItem baseUrlSetting = SettingItem(
         frontIcon: FaIcon(FontAwesomeIcons.globe, color: Theme.of(context).colorScheme.primary),
         endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
@@ -314,7 +314,7 @@ class _SettingsPageState extends State<SettingsPage> {
               } catch (e) {
                 await IUiService().sendCommand(OpenErrorDialogCommand(
                   error: e.toString(),
-                  message: FlutterJVx.translate("URL is invalid"),
+                  message: FlutterUI.translate("URL is invalid"),
                   reason: "parseURl failed",
                 ));
               }
@@ -324,7 +324,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     var supportedLanguages = IConfigService().getSupportedLanguages().toList();
     supportedLanguages.insertAll(0, [
-      "${FlutterJVx.translate("System")} (${IConfigService.getPlatformLocale()})",
+      "${FlutterUI.translate("System")} (${IConfigService.getPlatformLocale()})",
       "en",
     ]);
 
@@ -356,7 +356,7 @@ class _SettingsPageState extends State<SettingsPage> {
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterJVx.translate("Application"),
+          FlutterUI.translate("Application"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -369,9 +369,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   _buildDeviceSettings(BuildContext context) {
     final Map<ThemeMode, String> themeMapping = {
-      ThemeMode.system: FlutterJVx.translate("System"),
-      ThemeMode.light: FlutterJVx.translate("Light"),
-      ThemeMode.dark: FlutterJVx.translate("Dark"),
+      ThemeMode.system: FlutterUI.translate("System"),
+      ThemeMode.light: FlutterUI.translate("Light"),
+      ThemeMode.dark: FlutterUI.translate("Dark"),
     };
 
     var theme = IConfigService().getThemePreference();
@@ -394,7 +394,7 @@ class _SettingsPageState extends State<SettingsPage> {
             if (values.isNotEmpty) {
               theme = themeMapping.entries.firstWhere((entry) => entry.value == picker.getSelectedValues()[0]).key;
               IConfigService().setThemePreference(theme);
-              FlutterJVxState.of(context)?.changedTheme();
+              FlutterUIState.of(context)?.changedTheme();
             }
           },
         ).showModal(context, themeData: Theme.of(context));
@@ -406,7 +406,7 @@ class _SettingsPageState extends State<SettingsPage> {
       frontIcon: FontAwesomeIcons.image,
       title: "Picture Size",
       value: resolution,
-      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterJVx.translate("$value px")),
+      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterUI.translate("$value px")),
       onPressed: (value) {
         _buildPicker(
           selecteds: [resolutions.indexOf(value!)],
@@ -429,7 +429,7 @@ class _SettingsPageState extends State<SettingsPage> {
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterJVx.translate("Device"),
+          FlutterUI.translate("Device"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -450,7 +450,7 @@ class _SettingsPageState extends State<SettingsPage> {
       SettingItem<T>(
         frontIcon: FaIcon(frontIcon, color: Theme.of(context).colorScheme.primary),
         endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
-        title: FlutterJVx.translate(title),
+        title: FlutterUI.translate(title),
         value: value,
         itemBuilder: itemBuilder,
         onPressed: onPressed,
@@ -465,8 +465,8 @@ class _SettingsPageState extends State<SettingsPage> {
         selecteds: selecteds,
         adapter: adapter,
         onConfirm: onConfirm,
-        confirmText: FlutterJVx.translate("Confirm"),
-        cancelText: FlutterJVx.translate("Cancel"),
+        confirmText: FlutterUI.translate("Confirm"),
+        cancelText: FlutterUI.translate("Cancel"),
         confirmTextStyle: const TextStyle(fontSize: 16),
         cancelTextStyle: const TextStyle(fontSize: 16),
       );
@@ -476,13 +476,13 @@ class _SettingsPageState extends State<SettingsPage> {
       frontIcon: const FaIcon(FontAwesomeIcons.github),
       endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
       valueNotifier: appVersionNotifier,
-      title: FlutterJVx.translate("App Version"),
+      title: FlutterUI.translate("App Version"),
       onPressed: (value) => showLicensePage(
         context: context,
         applicationIcon: Image(
           image: Svg(
             ImageLoader.getAssetPath(
-              FlutterJVx.package,
+              FlutterUI.package,
               "assets/images/J.svg",
             ),
           ),
@@ -493,20 +493,20 @@ class _SettingsPageState extends State<SettingsPage> {
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
       value: IConfigService().getAppConfig()?.versionConfig?.commit ?? "",
-      title: FlutterJVx.translate("RCS"),
+      title: FlutterUI.translate("RCS"),
     );
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
       value: IConfigService().getAppConfig()?.versionConfig?.buildDate ?? "",
-      title: FlutterJVx.translate("Build date"),
+      title: FlutterUI.translate("Build date"),
     );
 
     return SettingGroup(
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterJVx.translate("Version Info"),
+          FlutterUI.translate("Version Info"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -540,7 +540,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void _openQRScanner() {
     IUiService().openDialog(
       pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) async {
-        FlutterJVx.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
+        FlutterUI.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
         try {
           QRAppCode code = QRParser.parseCode(barcode.rawValue!);
           appName = code.appName;
@@ -552,9 +552,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
           setState(() {});
         } on FormatException catch (e) {
-          FlutterJVx.logUI.w("Error parsing QR Code", e);
+          FlutterUI.logUI.w("Error parsing QR Code", e);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(FlutterJVx.translate(e.message)),
+            content: Text(FlutterUI.translate(e.message)),
           ));
         }
       }),
@@ -576,7 +576,7 @@ class _SettingsPageState extends State<SettingsPage> {
           await IConfigService().setBaseUrl(baseUrl);
           await IConfigService().setUserLanguage(language);
 
-          FlutterJVxState.of(FlutterJVx.getCurrentContext())?.restart(
+          FlutterUIState.of(FlutterUI.getCurrentContext())?.restart(
             username: username,
             password: password,
           );
@@ -592,13 +592,13 @@ class _SettingsPageState extends State<SettingsPage> {
     } else {
       await IUiService().openDialog(
         pBuilder: (_) => AlertDialog(
-          title: Text(FlutterJVx.translate("Missing required fields")),
-          content: Text(FlutterJVx.translate("You have to provide an app name and a base url to open an app.")),
+          title: Text(FlutterUI.translate("Missing required fields")),
+          content: Text(FlutterUI.translate("You have to provide an app name and a base url to open an app.")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                FlutterJVx.translate("Ok"),
+                FlutterUI.translate("Ok"),
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),

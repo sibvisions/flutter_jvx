@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
@@ -19,13 +19,13 @@ class LostPasswordCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          FlutterJVx.translate("Reset password"),
+          FlutterUI.translate("Reset password"),
           style: Theme.of(context).textTheme.headline6,
           textAlign: TextAlign.center,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         Text(
-          FlutterJVx.translate("Please enter your e-mail address."),
+          FlutterUI.translate("Please enter your e-mail address."),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
@@ -33,8 +33,8 @@ class LostPasswordCard extends StatelessWidget {
           controller: identifierController,
           onSubmitted: (_) => _onResetPasswordPressed(),
           decoration: InputDecoration(
-            labelText: FlutterJVx.translate("E-Mail:"),
-            hintText: FlutterJVx.translate("E-Mail:"),
+            labelText: FlutterUI.translate("E-Mail:"),
+            hintText: FlutterUI.translate("E-Mail:"),
           ),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
@@ -46,13 +46,13 @@ class LostPasswordCard extends StatelessWidget {
   Widget _createBottomRow() {
     Widget okButton = ElevatedButton(
       onPressed: _onResetPasswordPressed,
-      child: Text(FlutterJVx.translate("OK")),
+      child: Text(FlutterUI.translate("OK")),
     );
 
     Widget backButton = TextButton(
       onPressed: () => IUiService().routeToLogin(mode: LoginMode.Manual),
       child: Text(
-        FlutterJVx.translate("Cancel"),
+        FlutterUI.translate("Cancel"),
         overflow: TextOverflow.ellipsis,
       ),
     );

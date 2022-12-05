@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../flutter_jvx.dart';
+import '../flutter_ui.dart';
 import '../service/config/i_config_service.dart';
 
 enum UploadType {
@@ -15,7 +15,7 @@ enum UploadType {
 
 abstract class FilePickerDialog {
   static Future<XFile?> openFilePicker() {
-    BuildContext context = FlutterJVx.getCurrentContext()!;
+    BuildContext context = FlutterUI.getCurrentContext()!;
 
     return showModalBottomSheet<XFile?>(
         shape: const RoundedRectangleBorder(
@@ -38,7 +38,7 @@ abstract class FilePickerDialog {
                       Padding(
                         padding: const EdgeInsets.only(left: 16),
                         child: Text(
-                          FlutterJVx.translate("Choose file"),
+                          FlutterUI.translate("Choose file"),
                           style: const TextStyle(fontSize: 20),
                         ),
                       ),
@@ -62,7 +62,7 @@ abstract class FilePickerDialog {
                           ),
                           const SizedBox(width: 15),
                           Text(
-                            FlutterJVx.translate("Camera"),
+                            FlutterUI.translate("Camera"),
                             style: const TextStyle(fontSize: 18),
                           ),
                         ],
@@ -82,7 +82,7 @@ abstract class FilePickerDialog {
                           ),
                           const SizedBox(width: 15),
                           Text(
-                            FlutterJVx.translate("Gallery"),
+                            FlutterUI.translate("Gallery"),
                             style: const TextStyle(fontSize: 18),
                           ),
                         ],
@@ -99,7 +99,7 @@ abstract class FilePickerDialog {
                           FaIcon(FontAwesomeIcons.folderOpen, color: Theme.of(context).primaryColor),
                           const SizedBox(width: 15),
                           Text(
-                            FlutterJVx.translate("Filesystem"),
+                            FlutterUI.translate("Filesystem"),
                             style: const TextStyle(fontSize: 18),
                           ),
                         ],
@@ -156,7 +156,7 @@ abstract class FilePickerDialog {
           }
       }
     } catch (e, stack) {
-      FlutterJVx.logUI.e("Failed to pick file", e, stack);
+      FlutterUI.logUI.e("Failed to pick file", e, stack);
     }
     return null;
   }

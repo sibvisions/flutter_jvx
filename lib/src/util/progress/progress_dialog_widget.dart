@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 
 class ProgressDialogWidget extends StatefulWidget {
   final Config config;
@@ -27,7 +27,7 @@ class ProgressDialogWidget extends StatefulWidget {
       try {
         ProgressDialogWidget.close(globalKey.currentContext!);
       } catch (e, stackTrace) {
-        FlutterJVx.logUI.e("Error while safely closing progress dialog", e, stackTrace);
+        FlutterUI.logUI.e("Error while safely closing progress dialog", e, stackTrace);
       }
     }
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -91,7 +91,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
             children: [
               _buildHeaderText(
                 flex: 1,
-                text: "${FlutterJVx.translate("Logged in as")}:",
+                text: "${FlutterUI.translate("Logged in as")}:",
                 context: context,
               ),
               const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
@@ -191,7 +191,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       _buildFooterDivider(context),
       _buildFooterEntry(
         context: context,
-        text: FlutterJVx.translate("Settings"),
+        text: FlutterUI.translate("Settings"),
         leadingIcon: FontAwesomeIcons.gear,
         onTap: widget.onSettingsPressed,
         isNormalSize: isNormalSize,
@@ -203,7 +203,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         _buildFooterDivider(context),
         _buildFooterEntry(
           context: context,
-          text: FlutterJVx.translate("Change password"),
+          text: FlutterUI.translate("Change password"),
           leadingIcon: FontAwesomeIcons.key,
           onTap: widget.onChangePasswordPressed,
           isNormalSize: isNormalSize,
@@ -211,7 +211,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         _buildFooterDivider(context),
         _buildFooterEntry(
           context: context,
-          text: FlutterJVx.translate("Logout"),
+          text: FlutterUI.translate("Logout"),
           leadingIcon: FontAwesomeIcons.rightFromBracket,
           onTap: widget.onLogoutPressed,
           isNormalSize: isNormalSize,

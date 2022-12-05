@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../flutter_jvx.dart';
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
@@ -52,7 +52,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          FlutterJVx.translate("Reset password"),
+                          FlutterUI.translate("Reset password"),
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -63,7 +63,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                       padding: const EdgeInsets.only(top: 4.0, bottom: 10),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(FlutterJVx.translate("Please enter your e-mail address.")),
+                        child: Text(FlutterUI.translate("Please enter your e-mail address.")),
                       ),
                     ),
                     Padding(
@@ -81,7 +81,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                             onChanged: (_) => resetButton(),
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.envelope),
-                              labelText: "${FlutterJVx.translate("E-Mail")}/${FlutterJVx.translate("Username")}",
+                              labelText: "${FlutterUI.translate("E-Mail")}/${FlutterUI.translate("Username")}",
                               border: InputBorder.none,
                             ),
                           ),
@@ -96,7 +96,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                           Padding(
                             padding: const EdgeInsets.only(left: 10.0),
                             child: Text(
-                              FlutterJVx.translate("Reset Password").toUpperCase(),
+                              FlutterUI.translate("Reset Password").toUpperCase(),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -145,7 +145,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                         ),
                       ),
                       onPressed: () => IUiService().routeToLogin(mode: LoginMode.Manual),
-                      child: Text(FlutterJVx.translate("Back")),
+                      child: Text(FlutterUI.translate("Back")),
                     ),
                   ],
                 ),

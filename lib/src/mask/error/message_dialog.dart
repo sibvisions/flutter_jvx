@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/ui/view/message/open_message_dialog_command.dart';
@@ -76,7 +76,7 @@ class MessageDialog extends StatelessWidget {
           _getYesButton(context),
           TextButton(
             onPressed: () => _pressButton(context, command.notOkComponentId!),
-            child: Text(command.notOkText ?? FlutterJVx.translate("No")),
+            child: Text(command.notOkText ?? FlutterUI.translate("No")),
           ),
           _getCancelButton(context),
         ]);
@@ -86,7 +86,7 @@ class MessageDialog extends StatelessWidget {
           _getYesButton(context),
           TextButton(
             onPressed: () => _pressButton(context, command.cancelComponentId!),
-            child: Text(command.cancelText ?? FlutterJVx.translate("No")),
+            child: Text(command.cancelText ?? FlutterUI.translate("No")),
           ),
         ]);
         break;
@@ -98,7 +98,7 @@ class MessageDialog extends StatelessWidget {
         buttonList.add(
           TextButton(
             onPressed: () => _pressButton(context, command.okComponentId!),
-            child: Text(command.okText ?? FlutterJVx.translate("Ok")),
+            child: Text(command.okText ?? FlutterUI.translate("Ok")),
           ),
         );
         break;
@@ -112,14 +112,14 @@ class MessageDialog extends StatelessWidget {
   Widget _getYesButton(BuildContext context) {
     return TextButton(
       onPressed: () => _pressButton(context, command.okComponentId!),
-      child: Text(command.okText ?? FlutterJVx.translate("Yes")),
+      child: Text(command.okText ?? FlutterUI.translate("Yes")),
     );
   }
 
   Widget _getCancelButton(BuildContext context) {
     return TextButton(
       onPressed: () => _pressButton(context, command.cancelComponentId!),
-      child: Text(command.cancelText ?? FlutterJVx.translate("Cancel")),
+      child: Text(command.cancelText ?? FlutterUI.translate("Cancel")),
     );
   }
 }

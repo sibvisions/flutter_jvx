@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:ui';
 
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/layout/preferred_size_command.dart';
 import '../../../model/command/layout/register_parent_command.dart';
@@ -39,7 +39,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    FlutterJVx.logUI.d("${pLayoutData.id} REPORT: [${pLayoutData.id}]${pLayoutData.layout}");
+    FlutterUI.logUI.d("${pLayoutData.id} REPORT: [${pLayoutData.id}]${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -60,7 +60,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
-    FlutterJVx.logUI.d(
+    FlutterUI.logUI.d(
         "Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
     pLayoutData.layoutState = LayoutState.VALID;
 
@@ -108,7 +108,7 @@ class LayoutService implements ILayoutService {
         }
       }
     } else {
-      FlutterJVx.logUI.i("Could not find layoutdata for the screen[$pScreenComponentId], creating it.");
+      FlutterUI.logUI.i("Could not find layoutdata for the screen[$pScreenComponentId], creating it.");
       existingLayout = _layoutDataSet[pScreenComponentId] = LayoutData(
         id: pScreenComponentId,
         layoutPosition: position,
@@ -131,7 +131,7 @@ class LayoutService implements ILayoutService {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if (data != null) {
-      FlutterJVx.logUI.d("$pComponentId was marked as DIRTY");
+      FlutterUI.logUI.d("$pComponentId was marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
 
       return true;
@@ -183,7 +183,7 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   List<BaseCommand> _performLayout({required LayoutData pLayoutData}) {
-    FlutterJVx.logUI.d("${pLayoutData.id} PERFORM LAYOUT");
+    FlutterUI.logUI.d("${pLayoutData.id} PERFORM LAYOUT");
     _currentlyLayouting.add(pLayoutData.id);
 
     try {
@@ -203,7 +203,7 @@ class LayoutService implements ILayoutService {
       panel.lastCalculatedSize = panel.calculatedSize;
       panel.layout!.calculateLayout(panel, children);
 
-      FlutterJVx.logUI.d(
+      FlutterUI.logUI.d(
           "${panel.id} CALC SIZE: ${panel.calculatedSize} ; OLD CALC SIZE: ${panel.lastCalculatedSize} ; HAS NEW: ${panel.hasNewCalculatedSize}");
 
       // Check if any children have been newly constrained.
@@ -249,7 +249,7 @@ class LayoutService implements ILayoutService {
   /// Returns true if conditions to perform the layout are met.
   bool _isLegalState({required LayoutData pParentLayout}) {
     if (!_isValid) {
-      FlutterJVx.logUI.d("I am not valid. ${pParentLayout.id}");
+      FlutterUI.logUI.d("I am not valid. ${pParentLayout.id}");
       return false;
     }
 
@@ -258,7 +258,7 @@ class LayoutService implements ILayoutService {
     if (pParentLayout.layoutState == LayoutState.VALID && children != null) {
       for (LayoutData child in children) {
         if (!(child.layoutState == LayoutState.VALID && (child.hasCalculatedSize || child.hasPreferredSize))) {
-          FlutterJVx.logUI.d(
+          FlutterUI.logUI.d(
               "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
           return false;
         }

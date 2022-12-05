@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:signature/signature.dart';
 
-import '../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/custom/fl_custom_container_model.dart';
@@ -93,7 +93,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       List<dynamic> values = [];
       values.add(pngBytes);
 
-      FlutterJVx.logUI.i("Sending Signature");
+      FlutterUI.logUI.i("Sending Signature");
 
       return [
         SetValuesCommand(
@@ -111,7 +111,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     signatureController.clear();
 
     if (model.dataProvider != null && model.columnName != null) {
-      FlutterJVx.logUI.i("Deleting Signature");
+      FlutterUI.logUI.i("Deleting Signature");
 
       return [
         SetValuesCommand(

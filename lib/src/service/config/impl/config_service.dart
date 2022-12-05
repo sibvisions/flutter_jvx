@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../config/app_config.dart';
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../model/config/translation/translation.dart';
 import '../../../model/config/user/user_info.dart';
 import '../../../model/response/application_meta_data_response.dart';
@@ -542,7 +542,7 @@ class ConfigService implements IConfigService {
     if (pLanguage != "en") {
       File? transFile = fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation_$pLanguage.json");
       if (transFile == null) {
-        FlutterJVx.logUI.v("Translation file for code $pLanguage could not be found");
+        FlutterUI.logUI.v("Translation file for code $pLanguage could not be found");
       } else {
         langTrans.merge(transFile);
       }

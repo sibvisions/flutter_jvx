@@ -1,4 +1,4 @@
-import '../../../flutter_jvx.dart';
+import '../../../flutter_ui.dart';
 import '../../../service/ui/i_ui_service.dart';
 import 'api_command.dart';
 
@@ -30,13 +30,13 @@ class StartupCommand extends ApiCommand {
     beforeProcessing = () => IUiService().getAppManager()?.onInitStartup();
     afterProcessing = () {
       // Beamer's history also contains the present!
-      FlutterJVx.clearHistory();
-      FlutterJVx.clearServices();
-      FlutterJVx.resetPageBucket();
+      FlutterUI.clearHistory();
+      FlutterUI.clearServices();
+      FlutterUI.resetPageBucket();
     };
     onFinish = () {
       // We have to clear the history only after routing, as before the past location would have not benn counted as "history".
-      FlutterJVx.clearLocationHistory();
+      FlutterUI.clearLocationHistory();
       IUiService().getAppManager()?.onSuccessfulStartup();
     };
   }
