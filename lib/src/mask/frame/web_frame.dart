@@ -88,10 +88,11 @@ class WebFrameState extends FrameState {
     List<Widget>? actions,
   }) {
     var profileImage = IConfigService().getUserInfo()?.profileImage;
-    var appStyle = AppStyle.of(context)!.applicationStyle!;
-    Color? topMenuColor = ParseUtil.parseHexColor(appStyle['web.topmenu.color']);
-    Color? iconColor = ParseUtil.parseHexColor(appStyle['web.topmenu.iconColor']);
-    String? imagePath = appStyle['web.topmenu.image'];
+    var appStyle = AppStyle.of(context)!;
+    var applicationStyle = appStyle.applicationStyle!;
+    Color? topMenuColor = ParseUtil.parseHexColor(applicationStyle['web.topmenu.color']);
+    Color? iconColor = ParseUtil.parseHexColor(applicationStyle['web.topmenu.iconColor']);
+    String? imagePath = applicationStyle['web.topmenu.image'];
 
     return AppBar(
       leading: Builder(
@@ -118,36 +119,39 @@ class WebFrameState extends FrameState {
       ),
       centerTitle: false,
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: spacing),
-          child: IconButton(
-            icon: FaIcon(
-              FontAwesomeIcons.gear,
-              color: iconColor,
+        if (appStyle.applicationSettings.userSettingsVisible)
+          Padding(
+            padding: const EdgeInsets.only(right: spacing),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.gear,
+                color: iconColor,
+              ),
+              onPressed: () => widget.openSettings(context),
             ),
-            onPressed: () => widget.openSettings(context),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: spacing),
-          child: IconButton(
-            icon: FaIcon(
-              FontAwesomeIcons.key,
-              color: iconColor,
+        if (appStyle.applicationSettings.changePasswordVisible)
+          Padding(
+            padding: const EdgeInsets.only(right: spacing),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.key,
+                color: iconColor,
+              ),
+              onPressed: () => widget.changePassword(),
             ),
-            onPressed: () => widget.changePassword(),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: spacing),
-          child: IconButton(
-            icon: FaIcon(
-              FontAwesomeIcons.rightFromBracket,
-              color: iconColor,
+        if (appStyle.applicationSettings.logoutVisible)
+          Padding(
+            padding: const EdgeInsets.only(right: spacing),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.rightFromBracket,
+                color: iconColor,
+              ),
+              onPressed: () => widget.logout(),
             ),
-            onPressed: () => widget.logout(),
           ),
-        ),
         Padding(
           padding: const EdgeInsets.only(right: spacing),
           child: Builder(
