@@ -180,6 +180,7 @@ class StorageService implements IStorageService {
 
     for (var screenModel in list) {
       _componentMap.remove(screenModel.id);
+      _childrenTree.remove(screenModel.id);
 
       List<FlComponentModel> models = getAllComponentsBelow(
         pParentModel: screenModel,
@@ -188,6 +189,7 @@ class StorageService implements IStorageService {
       );
       models.forEach((element) {
         _componentMap.remove(element.id);
+        _childrenTree.remove(element.id);
       });
     }
 
