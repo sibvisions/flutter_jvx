@@ -118,8 +118,9 @@ class WebFrameState extends FrameState {
       ),
       centerTitle: false,
       actions: [
-        Builder(
-          builder: (context) => IconButton(
+        Padding(
+          padding: const EdgeInsets.only(right: spacing),
+          child: IconButton(
             icon: FaIcon(
               FontAwesomeIcons.gear,
               color: iconColor,
@@ -127,37 +128,42 @@ class WebFrameState extends FrameState {
             onPressed: () => widget.openSettings(context),
           ),
         ),
-        const Padding(padding: EdgeInsets.only(right: spacing)),
-        IconButton(
-          icon: FaIcon(
-            FontAwesomeIcons.key,
-            color: iconColor,
+        Padding(
+          padding: const EdgeInsets.only(right: spacing),
+          child: IconButton(
+            icon: FaIcon(
+              FontAwesomeIcons.key,
+              color: iconColor,
+            ),
+            onPressed: () => widget.changePassword(),
           ),
-          onPressed: () => widget.changePassword(),
         ),
-        const Padding(padding: EdgeInsets.only(right: spacing)),
-        IconButton(
-          icon: FaIcon(
-            FontAwesomeIcons.rightFromBracket,
-            color: iconColor,
+        Padding(
+          padding: const EdgeInsets.only(right: spacing),
+          child: IconButton(
+            icon: FaIcon(
+              FontAwesomeIcons.rightFromBracket,
+              color: iconColor,
+            ),
+            onPressed: () => widget.logout(),
           ),
-          onPressed: () => widget.logout(),
         ),
-        const Padding(padding: EdgeInsets.only(right: spacing)),
-        Builder(builder: (context) {
-          return CircleAvatar(
-            backgroundColor: Theme.of(context).backgroundColor,
-            backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
-            child: profileImage == null
-                ? FaIcon(
-                    FontAwesomeIcons.solidUser,
-                    color: Colors.grey.shade400,
-                    size: 23,
-                  )
-                : null,
-          );
-        }),
-        const Padding(padding: EdgeInsets.only(right: spacing)),
+        Padding(
+          padding: const EdgeInsets.only(right: spacing),
+          child: Builder(
+            builder: (context) => CircleAvatar(
+              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
+              child: profileImage == null
+                  ? FaIcon(
+                      FontAwesomeIcons.solidUser,
+                      color: Colors.grey.shade400,
+                      size: 23,
+                    )
+                  : null,
+            ),
+          ),
+        ),
       ],
       backgroundColor: IConfigService().isOffline() ? Colors.grey.shade500 : topMenuColor,
       elevation: IConfigService().isOffline() ? 0 : null,
