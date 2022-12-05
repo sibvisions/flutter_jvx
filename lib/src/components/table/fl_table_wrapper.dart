@@ -25,6 +25,7 @@ import '../../model/request/filter.dart';
 import '../../model/response/dal_meta_data_response.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/fl_component_classname.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -129,7 +130,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onEndScroll: loadMore,
       onLongPress: showContextMenu,
       onRowSwipe: deleteRecord,
-      onRowTap: selectRecord,
+      onRowTap: (rowIndex) => selectRecord(rowIndex).catchError(IUiService().handleAsyncError),
       onRowTapDown: onRowDown,
       showFloatingButton: _isInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
@@ -346,7 +347,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
-    return IUiService().sendCommand(SelectRecordCommand(
+    return ICommandService().sendCommand(SelectRecordCommand(
         dataProvider: model.dataProvider, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
   }
 
@@ -426,7 +427,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           sendRow(pRow, [pColumnName], [pValue]);
         }
       }
-    });
+    }).catchError(IUiService().handleAsyncError);
   }
 
   void setValueChanged(dynamic pValue, int pRow, String pColumnName) {
