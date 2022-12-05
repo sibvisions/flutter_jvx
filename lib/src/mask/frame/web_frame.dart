@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../flutter_ui.dart';
 import '../../model/response/device_status_response.dart';
 import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/parse_util.dart';
 import '../drawer/web_menu.dart';
@@ -119,6 +120,17 @@ class WebFrameState extends FrameState {
       ),
       centerTitle: false,
       actions: [
+        if (appStyle.applicationSettings.homeVisible)
+          Padding(
+            padding: const EdgeInsets.only(right: spacing),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.house,
+                color: iconColor,
+              ),
+              onPressed: () => IUiService().routeToMenu(),
+            ),
+          ),
         if (appStyle.applicationSettings.userSettingsVisible)
           Padding(
             padding: const EdgeInsets.only(right: spacing),
