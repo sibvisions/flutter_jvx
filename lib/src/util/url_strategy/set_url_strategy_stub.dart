@@ -1,0 +1,3 @@
+void setHashUrlStrategy() {
+  // No-op.
+}

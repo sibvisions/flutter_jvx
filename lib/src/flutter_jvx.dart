@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:logger/logger.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -50,6 +49,7 @@ import 'util/extensions/list_extensions.dart';
 import 'util/jvx_colors.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
+import 'util/url_strategy/set_url_strategy.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterJVx extends StatefulWidget {
@@ -259,7 +259,7 @@ class FlutterJVx extends StatefulWidget {
 
     packageInfo = await PackageInfo.fromPlatform();
 
-    setUrlStrategy(const FixedHashUrlStrategy());
+    fixUrlStrategy();
 
     runApp(pAppToRun);
   }
@@ -680,17 +680,5 @@ class MyHttpOverrides extends HttpOverrides {
       client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     }
     return client;
-  }
-}
-
-class FixedHashUrlStrategy extends HashUrlStrategy {
-  final PlatformLocation _platformLocation;
-
-  const FixedHashUrlStrategy([this._platformLocation = const BrowserPlatformLocation()]) : super(_platformLocation);
-
-  @override
-  String prepareExternalUrl(String internalUrl) {
-    // Workaround for https://github.com/flutter/flutter/issues/116415
-    return "${_platformLocation.pathname}${_platformLocation.search}${internalUrl.isEmpty ? '' : '#$internalUrl'}";
   }
 }
