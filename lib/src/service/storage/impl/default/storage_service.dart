@@ -210,6 +210,9 @@ class StorageService implements IStorageService {
       if (childModel != null && !pIncludeRemoved && childModel.isRemoved) {
         childModel = null;
       }
+      // Tabsetpanels set non selected sub-panels as invisible.
+      // We always render them though, even the invisible panels,
+      // therefore tabset-children are always visible for us.
       if (childModel != null &&
           (pIgnoreVisibility || childModel.isVisible || pParentModel.className == FlContainerClassname.TABSET_PANEL)) {
         allDescendants.add(childModel);
