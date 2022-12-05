@@ -2,14 +2,18 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_jvx.dart';
 import '../../model/command/api/focus_gained_command.dart';
 import '../../model/command/api/focus_lost_command.dart';
+import '../../model/command/base_command.dart';
 import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
+import '../../service/command/i_command_service.dart';
+import '../../service/config/i_config_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import 'base_comp_wrapper_widget.dart';
 
 /// Base state class for all component_wrappers, houses following functionality:

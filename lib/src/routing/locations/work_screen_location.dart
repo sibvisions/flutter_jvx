@@ -1,8 +1,11 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_jvx.dart';
 import '../../mask/work_screen/work_screen.dart';
 import '../../model/component/panel/fl_panel_model.dart';
+import '../../service/storage/i_storage_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import 'menu_location.dart';
 
 class WorkScreenLocation extends BeamLocation<BeamState> {
