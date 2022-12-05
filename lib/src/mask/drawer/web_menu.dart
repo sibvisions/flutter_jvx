@@ -98,6 +98,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
         if (originalMenu.count >= 12 && layoutMode != LayoutMode.Small) _buildSearchField(textColor: textColor),
         Expanded(
           child: ListMenu(
+            key: const PageStorageKey('WebMenu'),
             menuModel: menuModel,
             onClick: Menu.menuItemPressed,
             sticky: layoutMode != LayoutMode.Small,
