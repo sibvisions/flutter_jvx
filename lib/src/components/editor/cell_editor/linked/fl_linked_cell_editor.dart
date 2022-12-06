@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/widgets.dart';
 
 import '../../../../model/command/api/filter_command.dart';
+import '../../../../model/command/api/select_record_command.dart';
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
@@ -38,6 +39,7 @@ class FlLinkedCellEditor
 
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
+  bool isOpen = false;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,7 +57,7 @@ class FlLinkedCellEditor
         ) {
     focusNode.addListener(
       () {
-        if (focusNode.hasFocus) {
+        if (focusNode.hasPrimaryFocus) {
           onFocusChanged(true);
           _openLinkedCellPicker();
           focusNode.unfocus();
@@ -94,33 +96,40 @@ class FlLinkedCellEditor
   }
 
   void _openLinkedCellPicker() {
-    ICommandService()
-        .sendCommand(
-      FilterCommand(
-          editorId: name!,
-          value: "",
-          dataProvider: model.linkReference.dataProvider,
-          reason: "Opened the linked cell picker"),
-    )
-        .then((value) {
-      IUiService()
-          .openDialog(
-              pBuilder: (_) => FlLinkedCellPicker(
-                    model: model,
-                    name: name!,
-                    editorColumnDefinition: columnDefinition,
-                  ),
-              pIsDismissible: true)
+    if (!isOpen) {
+      isOpen = true;
+      ICommandService()
+          .sendCommand(
+        FilterCommand(
+            editorId: name!,
+            value: "",
+            dataProvider: model.linkReference.dataProvider,
+            reason: "Opened the linked cell picker"),
+      )
           .then((value) {
-        if (value != null) {
-          if (value == FlLinkedCellPicker.NULL_OBJECT) {
-            receiveNull(null);
-          } else {
-            onEndEditing(value);
+        IUiService()
+            .openDialog(
+                pBuilder: (_) => FlLinkedCellPicker(
+                      model: model,
+                      name: name!,
+                      editorColumnDefinition: columnDefinition,
+                    ),
+                pIsDismissible: true)
+            .then((value) {
+          isOpen = false;
+          if (value != null) {
+            if (value == FlLinkedCellPicker.NULL_OBJECT) {
+              receiveNull(null);
+            } else {
+              onEndEditing(value);
+            }
           }
-        }
+        });
+      }).catchError((error, stacktrace) {
+        isOpen = false;
+        IUiService().handleAsyncError(error, stacktrace);
       });
-    }).catchError(IUiService().handleAsyncError);
+    }
   }
 
   @override
@@ -220,19 +229,30 @@ class FlLinkedCellEditor
   }
 
   dynamic receiveNull(dynamic pValue) {
-    if (model.linkReference.columnNames.isEmpty) {
-      onEndEditing(null);
-    } else {
-      HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
+    return ICommandService()
+        .sendCommand(
+      SelectRecordCommand(
+        dataProvider: model.linkReference.dataProvider,
+        selectedRecord: -1,
+        reason: "Tapped",
+        filter: null,
+      ),
+    )
+        .then((value) {
+      if (model.linkReference.columnNames.isEmpty) {
+        onEndEditing(null);
+      } else {
+        HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
 
-      for (int i = 0; i < model.linkReference.columnNames.length; i++) {
-        String columnName = model.linkReference.columnNames[i];
+        for (int i = 0; i < model.linkReference.columnNames.length; i++) {
+          String columnName = model.linkReference.columnNames[i];
 
-        dataMap[columnName] = null;
+          dataMap[columnName] = null;
+        }
+
+        onEndEditing(dataMap);
       }
-
-      onEndEditing(dataMap);
-    }
+    }).catchError(IUiService().handleAsyncError);
   }
 
   @override

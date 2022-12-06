@@ -24,7 +24,6 @@ import '../../model/layout/layout_data.dart';
 import '../../model/request/filter.dart';
 import '../../model/response/dal_meta_data_response.dart';
 import '../../service/api/shared/api_object_property.dart';
-import '../../service/api/shared/fl_component_classname.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
@@ -489,7 +488,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     List<String> listColumnNames = [];
     List<dynamic> listValues = [];
 
-    if (metaData!.primaryKeyColumns.isNotEmpty) {
+    /* Old way of doing it.
+     if (metaData!.primaryKeyColumns.isNotEmpty) {
       listColumnNames.addAll(metaData!.primaryKeyColumns);
     } else if (metaData!.primaryKeyColumns.contains("ID")) {
       listColumnNames.add("ID");
@@ -500,7 +500,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
                 column.cellEditorClassName == FlCellEditorClassname.TEXT_CELL_EDITOR ||
                 column.cellEditorClassName == FlCellEditorClassname.NUMBER_CELL_EDITOR)
             .map((column) => column.name),
-      );
+      ); 
+    */
+
+    if (metaData!.primaryKeyColumns.isNotEmpty) {
+      listColumnNames.addAll(metaData!.primaryKeyColumns);
+    } else {
+      listColumnNames.addAll(metaData!.columns.map((e) => e.name));
     }
 
     for (String column in listColumnNames) {

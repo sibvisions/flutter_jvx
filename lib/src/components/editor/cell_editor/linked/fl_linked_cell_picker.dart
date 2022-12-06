@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/filter_command.dart';
+import '../../../../model/command/api/select_record_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../../model/component/table/fl_table_model.dart';
 import '../../../../model/data/column_definition.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
+import '../../../../model/request/filter.dart';
+import '../../../../model/response/dal_meta_data_response.dart';
 import '../../../../service/command/i_command_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../table/fl_table_widget.dart';
@@ -54,6 +57,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   Timer? filterTimer; // 200-300 Milliseconds
   String? lastChangedFilter;
   DataChunk? _chunkData;
+  DalMetaDataResponse? _metaData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -93,25 +97,24 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: InkWell(
+              onTap: _onNoValue,
               child: Builder(
-                  builder: (context) => Text(
-                        style: TextStyle(
-                          shadows: [
-                            Shadow(
-                              offset: const Offset(0, -2),
-                              color: DefaultTextStyle.of(context).style.color!,
-                            )
-                          ],
-                          color: Colors.transparent,
-                          decoration: TextDecoration.underline,
-                          decorationColor: DefaultTextStyle.of(context).style.color,
-                          decorationThickness: 1,
-                        ),
-                        FlutterUI.translate("No value"),
-                      )),
-              onTap: () {
-                Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
-              },
+                builder: (context) => Text(
+                  style: TextStyle(
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(0, -2),
+                        color: DefaultTextStyle.of(context).style.color!,
+                      )
+                    ],
+                    color: Colors.transparent,
+                    decoration: TextDecoration.underline,
+                    decorationColor: DefaultTextStyle.of(context).style.color,
+                    decorationThickness: 1,
+                  ),
+                  FlutterUI.translate("No value"),
+                ),
+              ),
             ),
           ),
         ),
@@ -247,25 +250,89 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
   }
 
+  void _receiveMetaData(DalMetaDataResponse pMetaData) {
+    _metaData = pMetaData;
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _onNoValue() {
+    Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
+  }
+
   void _onRowTapped(int index) {
     List<dynamic> data = _chunkData!.data[index]!;
 
     List<String> columnOrder = _columnNamesToSubscribe();
 
-    if (model.linkReference.columnNames.isEmpty) {
-      Navigator.of(context).pop(data[columnOrder.indexOf(model.linkReference.referencedColumnNames[0])]);
-    } else {
-      HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
+    selectRecord(index).then((value) {
+      if (model.linkReference.columnNames.isEmpty) {
+        Navigator.of(context).pop(data[columnOrder.indexOf(model.linkReference.referencedColumnNames[0])]);
+      } else {
+        HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
 
-      for (int i = 0; i < model.linkReference.columnNames.length; i++) {
-        String columnName = model.linkReference.columnNames[i];
-        String referencedColumnName = model.linkReference.referencedColumnNames[i];
+        for (int i = 0; i < model.linkReference.columnNames.length; i++) {
+          String columnName = model.linkReference.columnNames[i];
+          String referencedColumnName = model.linkReference.referencedColumnNames[i];
 
-        dataMap[columnName] = data[columnOrder.indexOf(referencedColumnName)];
+          dataMap[columnName] = data[columnOrder.indexOf(referencedColumnName)];
+        }
+
+        Navigator.of(context).pop(dataMap);
       }
+    }).catchError(IUiService().handleAsyncError);
+  }
 
-      Navigator.of(context).pop(dataMap);
+  /// Selects the record.
+  Future<void> selectRecord(int pRowIndex) async {
+    if (_metaData == null && _chunkData == null) {
+      return;
+    } else if (pRowIndex == -1) {
+      return ICommandService().sendCommand(
+        SelectRecordCommand(
+          dataProvider: model.linkReference.dataProvider,
+          selectedRecord: -1,
+          reason: "Tapped",
+          filter: null,
+        ),
+      );
     }
+
+    List<String> listColumnNames = [];
+    List<dynamic> listValues = [];
+
+    if (_metaData!.primaryKeyColumns.isNotEmpty) {
+      listColumnNames.addAll(_metaData!.primaryKeyColumns);
+    } else {
+      listColumnNames.addAll(model.linkReference.referencedColumnNames);
+    }
+
+    for (String column in listColumnNames) {
+      listValues.add(_getValue(pColumnName: column, pRowIndex: pRowIndex));
+    }
+
+    var filter = Filter(values: listValues, columnNames: listColumnNames);
+
+    return ICommandService().sendCommand(
+      SelectRecordCommand(
+        dataProvider: model.linkReference.dataProvider,
+        selectedRecord: pRowIndex,
+        reason: "Tapped",
+        filter: filter,
+      ),
+    );
+  }
+
+  dynamic _getValue({required String pColumnName, required int pRowIndex}) {
+    int colIndex = _chunkData!.columnDefinitions.indexWhere((element) => element.name == pColumnName);
+
+    if (colIndex == -1) {
+      return null;
+    }
+
+    return _chunkData!.data[pRowIndex]![colIndex];
   }
 
   void _startTimerValueChanged(String value) {
@@ -333,6 +400,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         subbedObj: this,
         dataProvider: model.linkReference.dataProvider,
         onDataChunk: _receiveData,
+        onMetaData: _receiveMetaData,
         dataColumns: _columnNamesToSubscribe(),
         from: 0,
         to: 100 * scrollingPage,
