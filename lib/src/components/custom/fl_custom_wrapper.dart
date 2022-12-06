@@ -1,27 +1,40 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../custom/app_manager.dart';
+import '../../custom/custom_component.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 
-class FlCustomWrapper<T extends FlComponentModel> extends BaseCompWrapperWidget<T> {
-  const FlCustomWrapper({super.key, required super.id});
+/// A custom wrapper is a component wrapper which wraps widgets which were added or replaced via the [AppManager].
+class FlCustomWrapper<M extends FlComponentModel> extends BaseCompWrapperWidget<M> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final CustomComponent customComponent;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  const FlCustomWrapper({super.key, required super.id, required this.customComponent});
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  BaseCompWrapperState<FlComponentModel> createState() => _FlCustomWrapperState();
+  FlCustomWrapperState<M> createState() => FlCustomWrapperState();
 }
 
-class _FlCustomWrapperState extends BaseCompWrapperState<FlComponentModel> {
-  late final Widget customWidget;
-
-  _FlCustomWrapperState() : super();
+class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperState<M> {
+  FlCustomWrapperState() : super();
 
   @override
   void initState() {
     super.initState();
-    customWidget = IUiService().getCustomComponent(pComponentName: model.name)!.componentBuilder.call();
   }
 
   @override
@@ -30,6 +43,6 @@ class _FlCustomWrapperState extends BaseCompWrapperState<FlComponentModel> {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: customWidget);
+    return getPositioned(child: (widget as FlCustomWrapper).customComponent.componentBuilder.call());
   }
 }

@@ -1,4 +1,3 @@
-export '../src/components/base_wrapper/fl_stateful_widget.dart';
 export '../src/components/base_wrapper/fl_stateless_data_widget.dart';
 export '../src/components/base_wrapper/fl_stateless_widget.dart';
 export '../src/components/button/fl_button_widget.dart';

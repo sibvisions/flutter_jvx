@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../flutter_jvx.dart';
 import '../model/component/fl_component_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'button/fl_button_wrapper.dart';
@@ -93,7 +94,7 @@ abstract class ComponentsFactory {
   }
 
   /// Used for replace components
-  static buildCustomWidget(FlComponentModel model) {
-    return FlCustomWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+  static buildCustomWidget(String pId, CustomComponent pCustomComponent) {
+    return FlCustomWrapper(id: pId, key: GlobalKey(debugLabel: pId), customComponent: pCustomComponent);
   }
 }

@@ -2,13 +2,21 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../commands.dart';
 import '../../../model/component/button/fl_popup_menu_button_model.dart';
 import '../fl_button_widget.dart';
 import 'fl_popup_menu_item_widget.dart';
 
+/// A popup menu button. Is itself a button that either sends a [PressButtonCommand] or opens a menu.
 class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButtonWidget<T> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The function to call if an item has been pressed.
   final Function(String)? onItemPress;
 
+  /// The menu entries for the popup menu.
   final List<PopupMenuEntry<String>> popupItems;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,6 +35,25 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     super.onPressUp,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  Function()? getOnPressed(BuildContext context) {
+    if (model.isEnabled) {
+      FlPopupMenuItemWidget? popupItem = popupItems
+          .whereType<FlPopupMenuItemWidget>()
+          .firstWhereOrNull((element) => element.id == model.defaultMenuItem);
+
+      if (popupItem != null) {
+        return () => onItemPress?.call(popupItem.value!);
+      }
+      return () => openMenu(context);
+    }
+    return null;
+  }
+
   @override
   Widget createDirectButtonChild(BuildContext context) {
     return Row(
@@ -42,6 +69,11 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     );
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Creates a [FontAwesomeIcons.caretDown] icon which, when pressed, opens a menu showing the [popupItems].
   Widget createPopupIcon(BuildContext context) {
     return InkWell(
       canRequestFocus: false,
@@ -59,6 +91,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
     );
   }
 
+  /// Opens the menu via [showMenu] with all the [popupItems].
   void openMenu(BuildContext context) {
     if (popupItems.isNotEmpty) {
       // Copied from [PopupMenuButtonState]
@@ -87,20 +120,5 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
         },
       );
     }
-  }
-
-  @override
-  Function()? getOnPressed(BuildContext context) {
-    if (model.isEnabled) {
-      FlPopupMenuItemWidget? popupItem = popupItems
-          .whereType<FlPopupMenuItemWidget>()
-          .firstWhereOrNull((element) => element.id == model.defaultMenuItem);
-
-      if (popupItem != null) {
-        return () => onItemPress?.call(popupItem.value!);
-      }
-      return () => openMenu(context);
-    }
-    return null;
   }
 }

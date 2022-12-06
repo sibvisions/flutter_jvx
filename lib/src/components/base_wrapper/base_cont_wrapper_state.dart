@@ -9,6 +9,15 @@ import '../../service/ui/i_ui_service.dart';
 import '../components_factory.dart';
 import 'base_comp_wrapper_state.dart';
 
+/// The base class for all states of FlutterJVx's container wrapper.
+///
+/// A container is a class which holds one or more children components
+/// and has all the information on how to layout them.
+///
+/// A wrapper is a stateful widget that wraps FlutterJVx widgets and handles all JVx specific implementations and functionality.
+/// e.g:
+///
+/// Model inits/updates; Layout inits/updates; Size calculation; Subscription handling for data widgets.
 abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -37,8 +46,8 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Will Send [RegisterParentCommand] to [IUiService] sending its current
-  /// layoutData.
+  /// Will send a [RegisterParentCommand] to [IUiService] sending its current
+  /// layoutData and, if possible, initiates a layout cycle.
   void registerParent() {
     RegisterParentCommand registerParentCommand = RegisterParentCommand(
       layoutData: layoutData.clone(),
@@ -47,7 +56,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
     IUiService().sendCommand(registerParentCommand);
   }
 
-  /// Will contact [IUiService] to get its children [FlComponentModel], will only call setState if
+  /// Will contact [IStorageService] to get its children [FlComponentModel], will only call setState if
   /// children were either added or removed.
   bool buildChildren({bool pSetStateOnChange = true}) {
     List<FlComponentModel> models =
@@ -56,13 +65,13 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
     bool changeDetected = false;
 
-    // Only New Children will be used
+    // Only new children will be checked
     for (FlComponentModel model in models) {
       if (!children.containsKey(model.id)) {
-        // If Custom component with name exits create a custom widget instead of a normal one
+        // If custom component with name exits create a custom widget instead of a normal one
         CustomComponent? customComp = IUiService().getCustomComponent(pComponentName: model.name);
         if (customComp != null) {
-          newChildrenList[model.id] = ComponentsFactory.buildCustomWidget(model);
+          newChildrenList[model.id] = ComponentsFactory.buildCustomWidget(model.id, customComp);
         } else {
           newChildrenList[model.id] = ComponentsFactory.buildWidget(model);
         }
