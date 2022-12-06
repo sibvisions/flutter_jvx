@@ -109,7 +109,10 @@ class WebFrameState extends FrameState {
       title: SizedBox(
         height: kToolbarHeight,
         child: imagePath != null
-            ? ImageLoader.loadImage(imagePath)
+            ? ImageLoader.loadImage(
+                imagePath,
+                imageProvider: ImageLoader.getImageProvider(imagePath),
+              )
             : Image.asset(
                 ImageLoader.getAssetPath(
                   FlutterUI.package,

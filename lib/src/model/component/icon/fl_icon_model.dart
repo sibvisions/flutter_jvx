@@ -56,8 +56,12 @@ class FlIconModel extends FlComponentModel {
         List<String> arr = value.split(",");
         image = arr[0];
 
-        if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {
-          originalSize = Size(double.parse(arr[1]), double.parse(arr[2]));
+        if (arr.length >= 3) {
+          double? width = double.tryParse(arr[1]);
+          double? height = double.tryParse(arr[2]);
+          if (width != null && height != null) {
+            originalSize = Size(width, height);
+          }
         }
       } else {
         image = pDefaultModel.image;

@@ -51,6 +51,7 @@ class WorkScreen extends StatefulWidget {
           child: backgroundImage != null
               ? ImageLoader.loadImage(
                   backgroundImage,
+                  imageProvider: ImageLoader.getImageProvider(backgroundImage),
                   pFit: BoxFit.scaleDown,
                 )
               : null,

@@ -38,7 +38,14 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
       pKey: ApiObjectProperty.defaultImageName,
       pDefault: defaultModel.defaultImage,
       pCurrent: defaultImage,
-      pConversion: (value) => ImageLoader.loadImage(value, pImageStreamListener: newMaxSize),
+      pConversion: (value) => ImageLoader.loadImage(
+        value,
+        pImageStreamListener: newMaxSize,
+        imageProvider: ImageLoader.getImageProvider(
+          value,
+          pImageStreamListener: newMaxSize,
+        ),
+      ),
     );
 
     listValues = getPropertyValue(
@@ -67,6 +74,10 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
           ImageLoader.loadImage(
             jsonValue,
             pImageStreamListener: newMaxSize,
+            imageProvider: ImageLoader.getImageProvider(
+              jsonValue,
+              pImageStreamListener: newMaxSize,
+            ),
           ),
         );
       }
@@ -74,7 +85,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
     return imageList;
   }
 
-  void newMaxSize(Size pInfo, bool pSyncronous) {
+  void newMaxSize(Size pInfo, bool pSynchronous) {
     if (pInfo.width.toDouble() > maxImageSize || pInfo.height.toDouble() > maxImageSize) {
       maxImageSize = max(
         max(
@@ -83,7 +94,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
         ),
         maxImageSize,
       );
-      if (!pSyncronous) {
+      if (!pSynchronous) {
         imageLoadingCallback?.call();
       }
     }

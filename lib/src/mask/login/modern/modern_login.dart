@@ -147,7 +147,11 @@ class ModernLogin extends StatelessWidget implements Login {
                 child: ConstrainedBox(
                   constraints: BoxConstraints.tight(const Size.fromWidth(650)),
                   child: loginLogo != null
-                      ? ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown)
+                      ? ImageLoader.loadImage(
+                          loginLogo,
+                          imageProvider: ImageLoader.getImageProvider(loginLogo),
+                          pFit: BoxFit.scaleDown,
+                        )
                       : Image.asset(
                           ImageLoader.getAssetPath(
                             FlutterUI.package,

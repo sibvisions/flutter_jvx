@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/icon/fl_icon_model.dart';
 import '../../model/layout/layout_data.dart';
+import '../../util/image/image_loader.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_icon_widget.dart';
@@ -16,11 +17,29 @@ class FlIconWrapper extends BaseCompWrapperWidget<FlIconModel> {
 }
 
 class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
+  ImageProvider? imageProvider;
+
   _FlIconWrapperState() : super();
 
   @override
+  void initState() {
+    super.initState();
+    createImageProvider();
+  }
+
+  @override
+  void modelUpdated() {
+    createImageProvider();
+    super.modelUpdated();
+  }
+
+  void createImageProvider() {
+    imageProvider = ImageLoader.getImageProvider(model.image);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final FlIconWidget widget = FlIconWidget(model: model);
+    final FlIconWidget widget = FlIconWidget(model: model, imageProvider: imageProvider);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);

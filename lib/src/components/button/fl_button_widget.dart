@@ -42,7 +42,11 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   Widget? get image {
     if (model.image != null) {
-      return ImageLoader.loadImage(model.image!, pWantedColor: model.createTextStyle().color);
+      return ImageLoader.loadImage(
+        model.image!,
+        imageProvider: ImageLoader.getImageProvider(model.image!),
+        pWantedColor: model.createTextStyle().color,
+      );
     }
     return null;
   }

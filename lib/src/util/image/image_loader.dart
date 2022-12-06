@@ -29,42 +29,6 @@ abstract class ImageLoader {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Creates either a MemoryImage, a FileImage or a NetworkImage
-  static ImageProvider _createImageProvider({
-    required String pPath,
-    Function(Size, bool)? pImageStreamListener,
-    required bool pImageInBinary,
-    required bool pImageInBase64,
-  }) {
-    String appName = IConfigService().getAppName()!;
-    String baseUrl = IConfigService().getBaseUrl()!;
-    IFileManager fileManager = IConfigService().getFileManager();
-
-    ImageProvider imageProvider;
-
-    if (pImageInBinary) {
-      Uint8List imageValues = pImageInBase64 ? base64Decode(pPath) : Uint8List.fromList(pPath.codeUnits);
-      imageProvider = MemoryImage(imageValues);
-    } else {
-      if (pPath.startsWith("/")) {
-        pPath = pPath.substring(1);
-      }
-
-      File? file = fileManager.getFileSync(pPath: "${IFileManager.IMAGES_PATH}/$pPath");
-
-      if (file != null) {
-        imageProvider = FileImage(file);
-      } else {
-        imageProvider = NetworkImage("$baseUrl/resource/$appName/$pPath");
-      }
-
-      if (pImageStreamListener != null) {
-        imageProvider.resolve(const ImageConfiguration()).addListener(ImageLoader.createListener(pImageStreamListener));
-      }
-    }
-    return imageProvider;
-  }
-
   static ImageLoadingBuilder _createImageLoadingBuilder() {
     return (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
       if (loadingProgress == null) return child;
@@ -78,9 +42,9 @@ abstract class ImageLoader {
     };
   }
 
-  static ImageErrorWidgetBuilder _createImageErrorBuilder(String path) {
+  static ImageErrorWidgetBuilder _createImageErrorBuilder(ImageProvider provider) {
     return (BuildContext context, Object error, StackTrace? stackTrace) {
-      FlutterUI.logUI.e("Failed to load network image ($path)", error, stackTrace);
+      FlutterUI.logUI.e("Failed to load image $provider", error, stackTrace);
       return ImageLoader.DEFAULT_IMAGE;
     };
   }
@@ -88,74 +52,107 @@ abstract class ImageLoader {
   /// Loads any server sent image string.
   static Widget loadImage(
     String pImageString, {
+    required ImageProvider? imageProvider,
+    Function(Size, bool)? pImageStreamListener,
     Size? pWantedSize,
     Color? pWantedColor,
-    Function(Size, bool)? pImageStreamListener,
-    bool pImageInBinary = false,
-    bool pImageInBase64 = true,
     BoxFit pFit = BoxFit.none,
     AlignmentGeometry pAlignment = Alignment.center,
   }) {
-    if (pImageString.isEmpty) {
-      try {
-        return DEFAULT_IMAGE;
-      } finally {
-        pImageStreamListener?.call(const Size.square(16), true);
-      }
-    } else if (FontAwesomeUtil.checkFontAwesome(pImageString)) {
-      return FontAwesomeUtil.getFontAwesomeIcon(
-        pText: pImageString,
-        pIconSize: pWantedSize?.width,
-        pColor: pWantedColor,
-      );
-    } else {
-      String path = pImageString;
-      Size? size;
-      if (!pImageInBinary) {
-        List<String> arr = pImageString.split(",");
+    if (pImageString.isNotEmpty) {
+      if (FontAwesomeUtil.checkFontAwesome(pImageString)) {
+        FaIcon faIcon = FontAwesomeUtil.getFontAwesomeIcon(
+          pText: pImageString,
+          pIconSize: pWantedSize?.width,
+          pColor: pWantedColor,
+        );
+        pImageStreamListener?.call(Size.square(faIcon.size!), true);
+        return faIcon;
+      } else if (imageProvider != null) {
+        List<String> split = pImageString.split(",");
 
-        path = arr[0];
-
-        if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {
-          size = Size(double.parse(arr[1]), double.parse(arr[2]));
+        Size? size;
+        if (split.length >= 3) {
+          double? width = double.tryParse(split[1]);
+          double? height = double.tryParse(split[2]);
+          if (width != null && height != null) {
+            size = Size(width, height);
+          }
         }
 
-        if (pWantedSize != null) {
-          size = pWantedSize;
-        }
-      }
+        size ??= pWantedSize;
 
-      return Image(
-        image: _createImageProvider(
-          pPath: path,
-          pImageStreamListener: pImageStreamListener,
-          pImageInBinary: pImageInBinary,
-          pImageInBase64: pImageInBase64,
-        ),
-        loadingBuilder: _createImageLoadingBuilder(),
-        errorBuilder: _createImageErrorBuilder(path),
-        width: size?.width,
-        height: size?.height,
-        color: pWantedColor,
-        fit: pFit,
-        alignment: pAlignment,
-      );
+        return Image(
+          image: imageProvider,
+          loadingBuilder: _createImageLoadingBuilder(),
+          errorBuilder: _createImageErrorBuilder(imageProvider),
+          width: size?.width,
+          height: size?.height,
+          color: pWantedColor,
+          fit: pFit,
+          alignment: pAlignment,
+        );
+      }
     }
+
+    pImageStreamListener?.call(const Size.square(16), true);
+    return DEFAULT_IMAGE;
   }
 
-  /// Loads any server sent image string.
-  static ImageProvider loadImageProvider(
-    String pImageString, {
+  static ImageProvider? getBinaryImageProvider(
+    Uint8List pBytes, {
     Function(Size, bool)? pImageStreamListener,
-    bool pImageInBinary = false,
-    bool pImageInBase64 = true,
   }) {
-    return _createImageProvider(
-      pPath: pImageString,
-      pImageStreamListener: pImageStreamListener,
-      pImageInBinary: pImageInBinary,
-      pImageInBase64: pImageInBase64,
-    );
+    ImageProvider imageProvider = MemoryImage(pBytes);
+    _addImageListener(imageProvider, pImageStreamListener);
+    return imageProvider;
+  }
+
+  /// Creates either a MemoryImage, a FileImage or a NetworkImage
+  static ImageProvider? getImageProvider(
+    String? pImageString, {
+    Function(Size, bool)? pImageStreamListener,
+    bool pImageInBase64 = false,
+  }) {
+    if (pImageString == null || pImageString.isEmpty) {
+      return null;
+    }
+
+    IFileManager fileManager = IConfigService().getFileManager();
+    ImageProvider imageProvider;
+
+    if (pImageInBase64) {
+      imageProvider = MemoryImage(base64Decode(pImageString));
+    } else {
+      //Cut away optional size
+      int commaIndex = pImageString.indexOf(",");
+      if (commaIndex >= 0) {
+        pImageString = pImageString.substring(0, commaIndex);
+      }
+
+      if (pImageString.startsWith("/")) {
+        pImageString = pImageString.substring(1);
+      }
+
+      File? file = fileManager.getFileSync(pPath: "${IFileManager.IMAGES_PATH}/$pImageString");
+
+      if (file != null) {
+        imageProvider = FileImage(file);
+      } else {
+        String appName = IConfigService().getAppName()!;
+        String baseUrl = IConfigService().getBaseUrl()!;
+        imageProvider = NetworkImage("$baseUrl/resource/$appName/$pImageString");
+      }
+
+      _addImageListener(imageProvider, pImageStreamListener);
+    }
+    return imageProvider;
+  }
+
+  static void _addImageListener(ImageProvider imageProvider, Function(Size, bool)? imageStreamListener) {
+    if (imageStreamListener != null) {
+      imageProvider.resolve(const ImageConfiguration()).addListener(ImageLoader.createListener(imageStreamListener));
+    }
   }
 
   static ImageStreamListener createListener(Function(Size, bool)? pImageStreamListener) {

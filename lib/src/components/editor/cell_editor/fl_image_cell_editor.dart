@@ -5,6 +5,7 @@ import '../../../model/component/icon/fl_icon_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../util/i_types.dart';
+import '../../../util/image/image_loader.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
@@ -14,7 +15,9 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The image of the icon.
-  dynamic _value;
+  String? _value;
+
+  ImageProvider? imageProvider;
 
   /// The image loading callback to the editor.
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
@@ -26,7 +29,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   late Function(Size, bool)? imageStreamListener = onImage;
 
   /// If the cell editor is currently showing the default image.
-  bool pDefaultImageUsed = false;
+  bool defaultImageUsed = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -49,8 +52,12 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
 
   @override
   void setValue(dynamic pValue) {
+    String? oldValue = _value;
     _value = pValue;
 
+    if (oldValue != pValue) {
+      _updateImageProvider();
+    }
     recalculateSizeCallback?.call(true);
   }
 
@@ -58,7 +65,21 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
     super.setColumnDefinition(pColumnDefinition);
 
+    _updateImageProvider();
     recalculateSizeCallback?.call(true);
+  }
+
+  void _updateImageProvider() {
+    defaultImageUsed = false;
+    if (_value?.isEmpty ?? true) {
+      defaultImageUsed = true;
+    }
+
+    imageProvider = ImageLoader.getImageProvider(
+      !defaultImageUsed ? _value : model.defaultImageName,
+      pImageStreamListener: imageStreamListener,
+      pImageInBase64: !defaultImageUsed && columnDefinition?.dataTypeIdentifier == Types.BINARY,
+    );
   }
 
   @override
@@ -73,8 +94,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
 
     return FlIconWidget(
       model: widgetModel,
-      imageStreamListener: imageStreamListener,
-      imageInBinary: !pDefaultImageUsed && columnDefinition?.dataTypeIdentifier == Types.BINARY,
+      imageProvider: imageProvider,
       inTable: pInTable,
     );
   }
@@ -86,10 +106,8 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
     widgetModel.image = _value ?? "";
     widgetModel.preserveAspectRatio = model.preserveAspectRatio;
 
-    pDefaultImageUsed = false;
-    if (widgetModel.image.isEmpty) {
+    if (defaultImageUsed) {
       widgetModel.image = model.defaultImageName;
-      pDefaultImageUsed = true;
     }
 
     return widgetModel;

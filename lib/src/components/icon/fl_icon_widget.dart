@@ -14,11 +14,9 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   final VoidCallback? onPress;
 
+  final ImageProvider? imageProvider;
+
   final Widget? directImage;
-
-  final bool imageInBinary;
-
-  final Function(Size, bool)? imageStreamListener;
 
   final bool inTable;
 
@@ -29,8 +27,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   const FlIconWidget({
     super.key,
     required super.model,
-    this.imageInBinary = false,
-    this.imageStreamListener,
+    this.imageProvider,
     this.directImage,
     this.onPress,
     this.inTable = false,
@@ -38,7 +35,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    Widget? child = directImage ?? getImage();
+    Widget? child = directImage ?? getImage(imageProvider);
 
     if (model.toolTipText != null) {
       child = Tooltip(message: model.toolTipText!, child: child);
@@ -54,22 +51,24 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       );
     } else {
       return GestureDetector(
-        onTap: () => showDialog(
-          context: context,
-          builder: (context) {
-            return GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: PhotoView(
-                backgroundDecoration: const BoxDecoration(
-                  color: Colors.transparent,
-                ),
-                initialScale: PhotoViewComputedScale.contained * 0.75,
-                minScale: PhotoViewComputedScale.contained * 0.1,
-                imageProvider: getImageProvider(),
-              ),
-            );
-          },
-        ),
+        onTap: imageProvider != null
+            ? () => showDialog(
+                  context: context,
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: PhotoView(
+                        backgroundDecoration: const BoxDecoration(
+                          color: Colors.transparent,
+                        ),
+                        initialScale: PhotoViewComputedScale.contained * 0.75,
+                        minScale: PhotoViewComputedScale.contained * 0.1,
+                        imageProvider: imageProvider,
+                      ),
+                    );
+                  },
+                )
+            : null,
         child: child,
       );
     }
@@ -102,22 +101,13 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     return BoxFit.none;
   }
 
-  Widget? getImage() {
+  Widget? getImage(ImageProvider? imageProvider) {
     return ImageLoader.loadImage(
       model.image,
+      imageProvider: imageProvider,
       pWantedColor: model.isEnabled ? null : JVxColors.COMPONENT_DISABLED,
-      pImageStreamListener: imageStreamListener,
-      pImageInBinary: imageInBinary,
       pFit: getBoxFit(),
       pAlignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-    );
-  }
-
-  ImageProvider getImageProvider() {
-    return ImageLoader.loadImageProvider(
-      model.image,
-      pImageStreamListener: imageStreamListener,
-      pImageInBinary: imageInBinary,
     );
   }
 }
