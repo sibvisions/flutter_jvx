@@ -200,7 +200,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state of the widget and sends a set value command.
   void onEndEditing(dynamic pValue) {
-    if (_isDifferentValue(pValue)) {
+    if (_isSameValue(pValue)) {
       cellEditor.setValue(_currentValue);
       setState(() {});
       return;
@@ -281,7 +281,7 @@ New cell editor hashcode: ${cellEditor.hashCode}
   BaseCommand? createSaveCommand() {
     dynamic value = cellEditor.getValue();
     //cellEditor.formatValue(pValue)
-    if (_isDifferentValue(value)) {
+    if (_isSameValue(value)) {
       return null;
     }
     return SetValuesCommand(
@@ -293,7 +293,7 @@ New cell editor hashcode: ${cellEditor.hashCode}
     );
   }
 
-  bool _isDifferentValue(dynamic value) {
+  bool _isSameValue(dynamic value) {
     return cellEditor.formatValue(value) == cellEditor.formatValue(_currentValue);
   }
 
