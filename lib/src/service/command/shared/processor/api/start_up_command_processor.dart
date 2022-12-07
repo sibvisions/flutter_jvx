@@ -4,7 +4,7 @@ import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_startup_request.dart';
-import '../../../../../util/device_info/device_info.dart';
+import '../../../../../util/device_info.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../config/i_config_service.dart';
 import '../../../../ui/i_ui_service.dart';
@@ -26,8 +26,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       await configService.setPassword(command.password!);
     }
 
-    DeviceInfo deviceInfo = DeviceInfo();
-    await deviceInfo.setSystemInfo();
+    DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
 
     //Close frames on (re-)start
     if (FlutterUI.getCurrentContext() != null) {
