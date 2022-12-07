@@ -1,7 +1,9 @@
 import '../../../../model/command/base_command.dart';
+import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/application_settings_response.dart';
 import '../../../config/i_config_service.dart';
+import '../api_response_names.dart';
 import '../i_response_processor.dart';
 
 class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSettingsResponse> {
@@ -9,6 +11,12 @@ class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSett
   List<BaseCommand> processResponse(ApplicationSettingsResponse pResponse, ApiRequest? pRequest) {
     IConfigService().setApplicationSettings(pResponse);
 
-    return [];
+    return [
+      SaveComponentsCommand.fromJson(
+        components: pResponse.components,
+        screenName: "flutter_desktop",
+        reason: "${ApiResponseNames.applicationSettings} was sent",
+      )
+    ];
   }
 }

@@ -39,6 +39,11 @@ class StorageService implements IStorageService {
     List<FlComponentModel>? newComponents,
     String screenName,
   ) {
+    if ((componentsToUpdate == null || componentsToUpdate.isEmpty) &&
+        (newComponents == null || newComponents.isEmpty)) {
+      return [];
+    }
+
     // List of all changed models
     Set<String> changedModels = {};
     // List of all affected models

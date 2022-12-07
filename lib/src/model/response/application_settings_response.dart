@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../../service/api/shared/api_object_property.dart';
@@ -21,7 +23,7 @@ class ApplicationSettingsResponse extends ApiResponse {
   final bool userSettingsVisible;
   final ApplicationColors? colors;
   final ApplicationColors? darkColors;
-
+  final List<dynamic>? components;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +40,7 @@ class ApplicationSettingsResponse extends ApiResponse {
     required this.userSettingsVisible,
     this.colors,
     this.darkColors,
+    this.components,
     required super.name,
   });
 
@@ -53,6 +56,7 @@ class ApplicationSettingsResponse extends ApiResponse {
         userSettingsVisible = true,
         colors = null,
         darkColors = null,
+        components = null,
         super(name: ApiResponseNames.applicationSettings);
 
   ApplicationSettingsResponse.fromJson(super.json)
@@ -71,7 +75,12 @@ class ApplicationSettingsResponse extends ApiResponse {
         darkColors = json[ApiObjectProperty.colors] == null
             ? null
             : ApplicationColors.fromJson(json[ApiObjectProperty.colors] as Map<String, dynamic>, true),
-        super.fromJson();
+        components = json[ApiObjectProperty.desktop],
+        super.fromJson() {
+    json.forEach((key, value) {
+      log("$key:$value");
+    });
+  }
 }
 
 class ApplicationColors {

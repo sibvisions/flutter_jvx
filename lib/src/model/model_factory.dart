@@ -1,4 +1,5 @@
 import '../model/component/fl_component_model.dart';
+import '../service/api/shared/api_object_property.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'component/button/fl_button_model.dart';
 import 'component/button/fl_popup_menu_button_model.dart';
@@ -24,13 +25,13 @@ import 'component/panel/fl_split_panel_model.dart';
 import 'component/panel/fl_tab_panel_model.dart';
 import 'component/table/fl_table_model.dart';
 
-//GlobalKey()
 abstract class ModelFactory {
-  static FlComponentModel buildModel(dynamic pJson, String className) {
+  static FlComponentModel buildModel(String className) {
     switch (className) {
       // Containers
       case FlContainerClassname.PANEL:
       case FlContainerClassname.TOOLBAR_PANEL:
+      case FlContainerClassname.DESKTOP_PANEL:
         return FlPanelModel();
       case FlContainerClassname.GROUP_PANEL:
         return FlGroupPanelModel();
@@ -86,5 +87,46 @@ abstract class ModelFactory {
       default:
         return FlDummyModel();
     }
+  }
+
+  /// Returns a list of changed component jsons, or null if none are found.
+  ///
+  /// A component is only recognized as updated if the [ApiObjectProperty.className] is not supplied.
+  static List<dynamic>? retrieveChangedComponents(List<dynamic>? pChangedComponents) {
+    if (pChangedComponents != null) {
+      List<dynamic> changedComponents = [];
+
+      for (dynamic component in pChangedComponents) {
+        if (component[ApiObjectProperty.className] == null) {
+          changedComponents.add(component);
+        }
+      }
+
+      if (changedComponents.isNotEmpty) {
+        return changedComponents;
+      }
+    }
+    return null;
+  }
+
+  /// Returns a list of new [FlComponentModel] models parsed from json, or null if none are found.
+  ///
+  /// Components with a [ApiObjectProperty.className] are considered new,
+  static List<FlComponentModel>? retrieveNewComponents(List<dynamic>? pChangedComponents) {
+    if (pChangedComponents != null) {
+      List<FlComponentModel> models = [];
+      for (dynamic changedComponent in pChangedComponents) {
+        String? className = changedComponent[ApiObjectProperty.className];
+        if (className != null) {
+          FlComponentModel model = ModelFactory.buildModel(className);
+          model.applyFromJson(changedComponent);
+          models.add(model);
+        }
+      }
+      if (models.isNotEmpty) {
+        return models;
+      }
+    }
+    return null;
   }
 }

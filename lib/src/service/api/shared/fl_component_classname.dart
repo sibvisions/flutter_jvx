@@ -22,6 +22,7 @@ abstract class FlComponentClassname {
 
 abstract class FlContainerClassname {
   static const String PANEL = "Panel";
+  static const String DESKTOP_PANEL = "DesktopPanel";
   static const String GROUP_PANEL = "GroupPanel";
   static const String SCROLL_PANEL = "ScrollPanel";
   static const String SPLIT_PANEL = "SplitPanel";

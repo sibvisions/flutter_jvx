@@ -24,6 +24,17 @@ class LayoutService implements ILayoutService {
   /// If layouting is currently allowed.
   bool _isValid = true;
 
+  /// Last set screen size.
+  Size screenSize = Size.zero;
+
+  /// Last set screen size.
+  LayoutPosition get screenSizePosition => LayoutPosition(
+        width: screenSize.width,
+        height: screenSize.height,
+        top: 0,
+        left: 0,
+        isComponentSize: true,
+      );
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,9 +55,7 @@ class LayoutService implements ILayoutService {
 
     // Set object with new data, if component isn't a child its treated as the top most panel
     if (!pLayoutData.isChild) {
-      LayoutData data = _layoutDataSet[pLayoutData.id]!;
-      pLayoutData.layoutPosition = data.layoutPosition;
-      pLayoutData.calculatedSize = Size(data.layoutPosition!.width, data.layoutPosition!.height);
+      applyScreenSize(pLayoutData);
     }
     _layoutDataSet[pLayoutData.id] = pLayoutData;
 
@@ -83,47 +92,21 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) async {
-    LayoutPosition position = LayoutPosition(
-      width: pSize.width,
-      height: pSize.height,
-      top: 0,
-      left: 0,
-      isComponentSize: true,
-    );
-
-    List<BaseCommand> commands = [];
+    screenSize = pSize;
 
     LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
     if (existingLayout != null) {
       Size? currentSize = existingLayout.calculatedSize;
-      if (currentSize == null || (currentSize != pSize)) {
-        existingLayout.calculatedSize = pSize;
-        existingLayout.layoutPosition = position;
-
-        existingLayout.widthConstrains = {};
-        existingLayout.heightConstrains = {};
+      if (currentSize == null || (currentSize != screenSize)) {
+        applyScreenSize(existingLayout);
 
         if (_isLegalState(pParentLayout: existingLayout)) {
-          commands.addAll(_performLayout(pLayoutData: existingLayout));
+          return _performLayout(pLayoutData: existingLayout);
         }
       }
-    } else {
-      FlutterUI.logUI.i("Could not find layoutdata for the screen[$pScreenComponentId], creating it.");
-      existingLayout = _layoutDataSet[pScreenComponentId] = LayoutData(
-        id: pScreenComponentId,
-        layoutPosition: position,
-        calculatedSize: pSize,
-        lastCalculatedSize: pSize,
-        widthConstrains: {},
-        heightConstrains: {},
-      );
     }
 
-    return [
-      // Update layout position always has to come first.
-      UpdateLayoutPositionCommand(layoutDataList: [existingLayout], reason: "ScreenSize"),
-      ...commands
-    ];
+    return [];
   }
 
   @override
@@ -180,6 +163,14 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Applies the current screen size to the given [LayoutData]
+  void applyScreenSize(LayoutData pLayoutData) {
+    pLayoutData.layoutPosition = screenSizePosition;
+    pLayoutData.calculatedSize = screenSize;
+    pLayoutData.widthConstrains = {};
+    pLayoutData.heightConstrains = {};
+  }
 
   /// Performs a layout operation.
   List<BaseCommand> _performLayout({required LayoutData pLayoutData}) {
