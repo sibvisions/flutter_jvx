@@ -69,6 +69,7 @@ import '../../../../model/response/download_response.dart';
 import '../../../../model/response/download_style_response.dart';
 import '../../../../model/response/download_translation_response.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
+import '../../../../model/response/language_response.dart';
 import '../../../../model/response/login_view_response.dart';
 import '../../../../model/response/menu_view_response.dart';
 import '../../../../model/response/upload_action_response.dart';
@@ -135,6 +136,7 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.applicationMetaData: ApplicationMetaDataResponse.fromJson,
     ApiResponseNames.applicationParameters: ApplicationParametersResponse.fromJson,
     ApiResponseNames.applicationSettings: ApplicationSettingsResponse.fromJson,
+    ApiResponseNames.language: LanguageResponse.fromJson,
     ApiResponseNames.closeScreen: CloseScreenResponse.fromJson,
     ApiResponseNames.closeFrame: CloseFrameResponse.fromJson,
     ApiResponseNames.dalFetch: DalFetchResponse.fromJson,

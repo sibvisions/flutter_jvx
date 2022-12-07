@@ -15,6 +15,9 @@ class ApplicationMetaDataResponse extends ApiResponse {
   /// Lang code of the app
   final String langCode;
 
+  /// Time zone code of the app
+  final String? timeZoneCode;
+
   /// Whether lost password feature is enabled.
   final bool lostPasswordEnabled;
 
@@ -29,6 +32,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
     required this.clientId,
     required this.version,
     required this.langCode,
+    this.timeZoneCode,
     required this.lostPasswordEnabled,
     this.rememberMeEnabled,
     required super.name,
@@ -38,12 +42,13 @@ class ApplicationMetaDataResponse extends ApiResponse {
       : clientId = json[ApiObjectProperty.clientId],
         version = json[ApiObjectProperty.version],
         langCode = json[ApiObjectProperty.langCode],
+        timeZoneCode = json[ApiObjectProperty.timeZoneCode],
         lostPasswordEnabled = json[ApiObjectProperty.lostPasswordEnabled],
         rememberMeEnabled = json[ApiObjectProperty.rememberMe],
         super.fromJson();
 
   @override
   String toString() {
-    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, langCode: $langCode, lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled}';
+    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, langCode: $langCode, timeZoneCode: $timeZoneCode, lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled}';
   }
 }

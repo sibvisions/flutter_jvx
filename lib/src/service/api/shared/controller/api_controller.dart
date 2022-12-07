@@ -23,6 +23,7 @@ import '../processor/download_style_processor.dart';
 import '../processor/download_translation_processor.dart';
 import '../processor/error_view_processor.dart';
 import '../processor/generic_screen_view_processor.dart';
+import '../processor/language_processor.dart';
 import '../processor/login_view_processor.dart';
 import '../processor/menu_view_processor.dart';
 import '../processor/message_dialog_processor.dart';
@@ -38,6 +39,7 @@ class ApiController implements IController {
   final IResponseProcessor _applicationParameterProcessor = ApplicationParametersProcessor();
   final IResponseProcessor _applicationMetaDataProcessor = ApplicationMetaDataProcessor();
   final IResponseProcessor _applicationSettingsProcessor = ApplicationSettingsProcessor();
+  final IResponseProcessor _languageProcessor = LanguageProcessor();
   final IResponseProcessor _menuViewProcessor = MenuViewProcessor();
   final IResponseProcessor _closeScreenProcessor = CloseScreenProcessor();
   final IResponseProcessor _closeFrameProcessor = CloseFrameProcessor();
@@ -71,6 +73,7 @@ class ApiController implements IController {
       ApiResponseNames.applicationParameters: _applicationParameterProcessor,
       ApiResponseNames.applicationMetaData: _applicationMetaDataProcessor,
       ApiResponseNames.applicationSettings: _applicationSettingsProcessor,
+      ApiResponseNames.language: _languageProcessor,
       ApiResponseNames.menu: _menuViewProcessor,
       ApiResponseNames.screenGeneric: _genericScreenViewProcessor,
       ApiResponseNames.closeScreen: _closeScreenProcessor,

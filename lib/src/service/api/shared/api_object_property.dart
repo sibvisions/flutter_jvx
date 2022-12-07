@@ -149,6 +149,7 @@ abstract class ApiObjectProperty {
   static const String data = "data";
   static const String columnLabel = "columnLabel";
   static const String langCode = "langCode";
+  static const String languageResource = "languageResource";
 
   //Response Properties
   static const String authenticated = "authenticated";
@@ -257,6 +258,7 @@ abstract class ApiObjectProperty {
 
   // Date cell editor
   static const String dateFormat = "dateFormat";
+  static const String timeZoneCode = "timeZoneCode";
   static const String isDateEditor = "isDateEditor";
   static const String isTimeEditor = "isTimeEditor";
   static const String isHourEditor = "isHourEditor";
