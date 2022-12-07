@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_web_plugins/flutter_web_plugins.dart' as web_plugins;
 import 'package:timezone/browser.dart' as tz;
 import 'package:web_socket_channel/html.dart';
@@ -5,7 +7,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// Web "Implementation" of [ImportHandler]
 class ImportHandler {
-  static Future<void> initializeTimeZones() {
+  static FutureOr<void> initializeTimeZones() {
     return tz.initializeTimeZone();
   }
 

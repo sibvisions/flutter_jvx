@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'import_handler_stub.dart'
     if (dart.library.html) 'import_handler_web.dart'
     if (dart.library.io) 'import_handler_mobile.dart' as platform;
 
-Future<void> initTimeZones() {
+FutureOr<void> initTimeZones() {
   return platform.ImportHandler.initializeTimeZones();
 }
 

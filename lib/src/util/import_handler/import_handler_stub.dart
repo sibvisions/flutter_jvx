@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// [ImportHandler] Stub
 class ImportHandler {
-  static Future<void> initializeTimeZones() {
+  static FutureOr<void> initializeTimeZones() {
     throw UnsupportedError("Not supported on this platform.");
   }
 
