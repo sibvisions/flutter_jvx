@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
@@ -53,8 +51,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   @override
   Widget build(BuildContext context) {
     final FlButtonWidget buttonWidget = FlButtonWidget(
-      onPressDown: (p0) => log("pressed down"),
-      onPressUp: (p0) => log("press lifted"),
       onFocusGained: sendFocusGainedCommand,
       onFocusLost: sendFocusLostCommand,
       model: model,
