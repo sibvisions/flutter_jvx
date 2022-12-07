@@ -98,7 +98,6 @@ abstract class IUiService {
     required WidgetBuilder pBuilder,
     BuildContext? context,
     bool pIsDismissible = true,
-    Locale? pLocale,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

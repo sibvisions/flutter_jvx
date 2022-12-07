@@ -328,9 +328,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: themeData,
+      supportedLocales: [Locale(IConfigService().getDisplayLanguage())],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routeInformationParser: BeamerParser(),
       routerDelegate: routerDelegate,
       backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
+      title: widget.appConfig?.title ?? FlutterUI.packageInfo.appName,
       builder: (context, child) {
         return FutureBuilder(
           future: initAppFuture,
@@ -368,12 +371,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           },
         );
       },
-      title: widget.appConfig?.title ?? FlutterUI.packageInfo.appName,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
     );
   }
 

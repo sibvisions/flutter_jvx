@@ -193,23 +193,15 @@ class UiService implements IUiService {
     required WidgetBuilder pBuilder,
     BuildContext? context,
     bool pIsDismissible = true,
-    Locale? pLocale,
   }) =>
       showDialog(
-          context: context ?? FlutterUI.getCurrentContext()!,
-          barrierDismissible: pIsDismissible,
-          builder: (BuildContext context) {
-            Widget child = pBuilder.call(context);
-
-            if (pLocale != null) {
-              child = Localizations.override(context: context, locale: pLocale, child: child);
-            }
-
-            return WillPopScope(
-              child: child,
-              onWillPop: () async => pIsDismissible,
-            );
-          });
+        context: context ?? FlutterUI.getCurrentContext()!,
+        barrierDismissible: pIsDismissible,
+        builder: (BuildContext context) => WillPopScope(
+          child: pBuilder.call(context),
+          onWillPop: () async => pIsDismissible,
+        ),
+      );
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Meta data management
