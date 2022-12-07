@@ -10,7 +10,6 @@ import 'package:logger/logger.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timezone/browser.dart' as tz;
 import 'package:universal_io/io.dart';
 
 import 'config/app_config.dart';
@@ -48,10 +47,10 @@ import 'service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
 import 'util/extensions/jvx_logger_extensions.dart';
 import 'util/extensions/list_extensions.dart';
+import 'util/import_handler/import_handler.dart';
 import 'util/jvx_colors.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
-import 'util/url_strategy/set_url_strategy.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterUI extends StatefulWidget {
@@ -263,7 +262,7 @@ class FlutterUI extends StatefulWidget {
 
     fixUrlStrategy();
 
-    await tz.initializeTimeZone();
+    await initTimeZones();
 
     runApp(pAppToRun);
   }

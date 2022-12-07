@@ -79,13 +79,13 @@ import '../../../../model/response/view/message/message_dialog_response.dart';
 import '../../../../model/response/view/message/message_view.dart';
 import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
+import '../../../../util/import_handler/import_handler.dart';
 import '../../../command/i_command_service.dart';
 import '../../../config/i_config_service.dart';
 import '../../../ui/i_ui_service.dart';
 import '../api_object_property.dart';
 import '../api_response_names.dart';
 import '../i_repository.dart';
-import 'web_socket/universal_web_socket.dart';
 
 typedef ResponseFactory = ApiResponse Function(Map<String, dynamic> json);
 
@@ -205,7 +205,7 @@ class OnlineApiRepository implements IRepository {
     try {
       FlutterUI.logAPI.i("Connecting to Websocket on $uri");
 
-      webSocket = UniversalWebSocketChannel.create(
+      webSocket = createWebSocket(
         uri,
         {"Cookie": _cookies.map((e) => "${e.name}=${e.value}").join(";")},
       );
