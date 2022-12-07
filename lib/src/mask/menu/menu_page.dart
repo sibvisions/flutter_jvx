@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rxdart/subjects.dart';
 
 import '../../custom/app_manager.dart';
 import '../../flutter_ui.dart';
@@ -35,14 +34,14 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> with SearchMixin {
-  /// Debounce re-layouts if keyboard opens.
-  final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
+  /// Debounce re-layouts
+  // final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
   @override
   void initState() {
     super.initState();
 
-    subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
+    // subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
   }
 
   @override
