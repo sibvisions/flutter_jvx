@@ -163,7 +163,7 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
       precision: columnDefinition?.precision,
       scale: columnDefinition?.scale,
       signed: columnDefinition?.signed,
-      locale: IConfigService().getDisplayLanguage(),
+      locale: model.locale ?? IConfigService().getDisplayLanguage(),
     );
   }
 }

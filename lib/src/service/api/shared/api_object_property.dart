@@ -259,6 +259,8 @@ abstract class ApiObjectProperty {
   // Date cell editor
   static const String dateFormat = "dateFormat";
   static const String timeZoneCode = "timeZoneCode";
+  static const String timeZone = "timeZone";
+  static const String locale = "locale";
   static const String isDateEditor = "isDateEditor";
   static const String isTimeEditor = "isTimeEditor";
   static const String isHourEditor = "isHourEditor";

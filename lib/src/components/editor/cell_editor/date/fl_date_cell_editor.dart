@@ -245,7 +245,10 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   @override
   String formatValue(dynamic pValue) {
     if (pValue is int) {
-      return DateFormat(model.dateFormat, IConfigService().getDisplayLanguage()).format(_createDateTime(pValue));
+      return DateFormat(
+        model.dateFormat,
+        model.locale ?? IConfigService().getDisplayLanguage(),
+      ).format(_createDateTime(pValue));
     }
     return pValue?.toString() ?? "";
   }

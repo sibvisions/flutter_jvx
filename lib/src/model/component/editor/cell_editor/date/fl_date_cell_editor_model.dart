@@ -10,6 +10,8 @@ class FlDateCellEditorModel extends ICellEditorModel {
 
   String? timeZoneCode;
 
+  String? locale;
+
   bool isDateEditor = true;
 
   bool isTimeEditor = true;
@@ -43,11 +45,16 @@ class FlDateCellEditorModel extends ICellEditorModel {
 
     timeZoneCode = getPropertyValue(
       pJson: pJson,
-      //TODO await final name
-      pKey: "timeZone",
-      // pKey: ApiObjectProperty.timeZoneCode,
+      pKey: ApiObjectProperty.timeZone,
       pDefault: defaultModel.timeZoneCode,
       pCurrent: timeZoneCode,
+    );
+
+    locale = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.locale,
+      pDefault: defaultModel.locale,
+      pCurrent: locale,
     );
 
     isDateEditor = getPropertyValue(

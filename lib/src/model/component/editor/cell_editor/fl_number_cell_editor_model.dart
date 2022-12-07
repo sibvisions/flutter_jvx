@@ -8,6 +8,8 @@ class FlNumberCellEditorModel extends ICellEditorModel {
 
   String numberFormat = "";
 
+  String? locale;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,6 +25,13 @@ class FlNumberCellEditorModel extends ICellEditorModel {
       pKey: ApiObjectProperty.numberFormat,
       pDefault: defaultModel.numberFormat,
       pCurrent: numberFormat,
+    );
+
+    locale = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.locale,
+      pDefault: defaultModel.locale,
+      pCurrent: locale,
     );
   }
 }
