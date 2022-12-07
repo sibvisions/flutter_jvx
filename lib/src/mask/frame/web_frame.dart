@@ -137,12 +137,14 @@ class WebFrameState extends FrameState {
         if (appStyle.applicationSettings.userSettingsVisible)
           Padding(
             padding: const EdgeInsets.only(right: spacing),
-            child: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.gear,
-                color: iconColor,
+            child: Builder(
+              builder: (context) => IconButton(
+                icon: FaIcon(
+                  FontAwesomeIcons.gear,
+                  color: iconColor,
+                ),
+                onPressed: () => widget.openSettings(context),
               ),
-              onPressed: () => widget.openSettings(context),
             ),
           ),
         if (appStyle.applicationSettings.changePasswordVisible)
