@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_io/io.dart' as universal_io;
 
 import '../../../config/app_config.dart';
 import '../../../flutter_ui.dart';
@@ -18,6 +19,8 @@ import '../i_config_service.dart';
 
 /// Stores all config and session based data.
 class ConfigService implements IConfigService {
+  static final RegExp langRegex = RegExp("_(?<name>[a-z]+)");
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,6 +52,8 @@ class ConfigService implements IConfigService {
 
   /// Current display language
   String? language;
+
+  String? localTimeZone;
 
   /// Current translation, base translation + overlaid language
   Translation translation = Translation.empty();
@@ -82,6 +87,22 @@ class ConfigService implements IConfigService {
     required this.fileManager,
     required this.sharedPrefs,
   });
+
+  @override
+  String getPlatformLocale() {
+    int? end = universal_io.Platform.localeName.indexOf(RegExp("[_-]"));
+    return universal_io.Platform.localeName.substring(0, end == -1 ? null : end);
+  }
+
+  @override
+  String getPlatformTimeZone() {
+    return localTimeZone!;
+  }
+
+  @override
+  void setLocalTimeZone(String? timeZone) {
+    localTimeZone = timeZone;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation -- GETTER/SETTER
@@ -118,7 +139,7 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  setVersion(String? pVersion) {
+  Future<bool> setVersion(String? pVersion) {
     return setString("version", pVersion);
   }
 
@@ -164,7 +185,7 @@ class ConfigService implements IConfigService {
 
   @override
   String getDisplayLanguage() {
-    return getLanguage() ?? getUserLanguage() ?? IConfigService.getPlatformLocale();
+    return getLanguage() ?? getUserLanguage() ?? IConfigService().getPlatformLocale();
   }
 
   @override
@@ -213,11 +234,26 @@ class ConfigService implements IConfigService {
 
     for (File file in listFiles) {
       String fileName = file.path.split("/").last;
-      RegExpMatch? match = IConfigService.langRegex.firstMatch(fileName);
+      RegExpMatch? match = langRegex.firstMatch(fileName);
       if (match != null) {
         supportedLanguages.add(match.namedGroup("name")!);
       }
     }
+  }
+
+  @override
+  String getDisplayTimezone() {
+    return getTimeZone() ?? IConfigService().getPlatformTimeZone();
+  }
+
+  @override
+  String? getTimeZone() {
+    return getString("timeZoneCode");
+  }
+
+  @override
+  Future<bool> setTimeZone(String? timeZoneCode) {
+    return setString("timeZoneCode", timeZoneCode);
   }
 
   @override

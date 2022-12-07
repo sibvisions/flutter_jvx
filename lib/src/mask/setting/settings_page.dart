@@ -324,7 +324,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     var supportedLanguages = IConfigService().getSupportedLanguages().toList();
     supportedLanguages.insertAll(0, [
-      "${FlutterUI.translate("System")} (${IConfigService.getPlatformLocale()})",
+      "${FlutterUI.translate("System")} (${IConfigService().getPlatformLocale()})",
       "en",
     ]);
 

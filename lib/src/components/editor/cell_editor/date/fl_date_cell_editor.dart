@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_editor_model.dart';
+import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';
 import '../i_cell_editor.dart';
@@ -58,7 +60,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       textController.clear();
     } else {
       if (pValue is! String) {
-        pValue = DateFormat(model.dateFormat).format(DateTime.fromMillisecondsSinceEpoch(pValue));
+        pValue = formatValue(pValue);
       }
 
       textController.value = textController.value.copyWith(
@@ -109,11 +111,19 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  tz.Location _getLocation() {
+    return tz.getLocation(model.timeZoneCode ?? IConfigService().getDisplayTimezone());
+  }
+
+  DateTime _createDateTime(dynamic value) {
+    return tz.TZDateTime.fromMillisecondsSinceEpoch(_getLocation(), value);
+  }
+
   void openDatePicker() {
     DateTime initialDate;
     TimeOfDay initialTime;
     if (_value != null) {
-      initialDate = DateTime.fromMillisecondsSinceEpoch(_value);
+      initialDate = _createDateTime(_value);
       initialTime = TimeOfDay.fromDateTime(initialDate);
     } else {
       initialDate = DateTime.now();
@@ -207,19 +217,20 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   void _setDatePart(DateTime date) {
-    TimeOfDay timePart = TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0));
+    TimeOfDay timePart = TimeOfDay.fromDateTime(_createDateTime(_value ?? 0));
 
     _setDateTime(date, timePart);
   }
 
   void _setTimePart(TimeOfDay timePart) {
-    DateTime date = DateTime.fromMillisecondsSinceEpoch(_value ?? 0);
+    DateTime date = _createDateTime(_value ?? 0);
 
     _setDateTime(date, timePart);
   }
 
   void _setDateTime(DateTime pDate, TimeOfDay pTimePart) {
-    _value = DateTime(
+    _value = tz.TZDateTime(
+      _getLocation(),
       pDate.year,
       pDate.month,
       pDate.day,
@@ -234,7 +245,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   @override
   String formatValue(dynamic pValue) {
     if (pValue is int) {
-      return DateFormat(model.dateFormat).format(DateTime.fromMillisecondsSinceEpoch(pValue));
+      return DateFormat(model.dateFormat, IConfigService().getDisplayLanguage()).format(_createDateTime(pValue));
     }
     return pValue?.toString() ?? "";
   }

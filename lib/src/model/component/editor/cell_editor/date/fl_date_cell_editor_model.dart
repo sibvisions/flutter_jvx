@@ -8,6 +8,8 @@ class FlDateCellEditorModel extends ICellEditorModel {
 
   String dateFormat = "d. MMMM yyyy HH:mm";
 
+  String? timeZoneCode;
+
   bool isDateEditor = true;
 
   bool isTimeEditor = true;
@@ -37,6 +39,15 @@ class FlDateCellEditorModel extends ICellEditorModel {
       pDefault: defaultModel.dateFormat,
       pCurrent: dateFormat,
       pConversion: (value) => value.replaceAll("Y", "y"),
+    );
+
+    timeZoneCode = getPropertyValue(
+      pJson: pJson,
+      //TODO await final name
+      pKey: "timeZone",
+      // pKey: ApiObjectProperty.timeZoneCode,
+      pDefault: defaultModel.timeZoneCode,
+      pCurrent: timeZoneCode,
     );
 
     isDateEditor = getPropertyValue(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:universal_io/io.dart' as universal_io;
 
 import '../../config/app_config.dart';
 import '../../model/config/user/user_info.dart';
@@ -14,8 +13,6 @@ import '../service.dart';
 /// Config service is used to store & access all configurable data,
 /// also stores session based data such as clientId and userData.
 abstract class IConfigService {
-  static final RegExp langRegex = RegExp("_(?<name>[a-z]+)");
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,6 +22,13 @@ abstract class IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  String getPlatformLocale();
+
+  String getPlatformTimeZone();
+
+  /// Save the native time zone for later use (to avoid async calls)
+  void setLocalTimeZone(String? timeZone);
 
   SharedPreferences getSharedPreferences();
 
@@ -71,11 +75,6 @@ abstract class IConfigService {
   /// Set instance of [IFileManager]
   void setFileManager(IFileManager pFileManager);
 
-  static String getPlatformLocale() {
-    int? end = universal_io.Platform.localeName.indexOf(RegExp("[_-]"));
-    return universal_io.Platform.localeName.substring(0, end == -1 ? null : end);
-  }
-
   /// Returns current display language code
   String getDisplayLanguage();
 
@@ -101,6 +100,13 @@ abstract class IConfigService {
 
   /// Translates text in current translation, will return the original text if not translation was found
   String translateText(String pText);
+
+  String getDisplayTimezone();
+
+  /// Get last set TimeZone (server-controlled)
+  String? getTimeZone();
+
+  Future<bool> setTimeZone(String? timeZoneCode);
 
   /// Gets the saved base url
   String? getBaseUrl();

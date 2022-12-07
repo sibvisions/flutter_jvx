@@ -34,6 +34,9 @@ class ApiStartUpRequest extends ApiRequest {
   /// Language code
   final String langCode;
 
+  /// Time zone code (e.g. Europe/Vienna)
+  final String timeZoneCode;
+
   /// How many records the app should fetch ahead
   final int? readAheadLimit;
 
@@ -70,6 +73,7 @@ class ApiStartUpRequest extends ApiRequest {
     required this.deviceMode,
     required this.applicationName,
     required this.langCode,
+    required this.timeZoneCode,
     this.screenHeight,
     this.screenWidth,
     this.username,
@@ -101,6 +105,7 @@ class ApiStartUpRequest extends ApiRequest {
         ApiObjectProperty.screenHeight: screenHeight,
         ApiObjectProperty.authKey: authKey,
         ApiObjectProperty.langCode: langCode,
+        ApiObjectProperty.timeZoneCode: timeZoneCode,
         ApiObjectProperty.readAheadLimit: readAheadLimit,
         ApiObjectProperty.deviceId: deviceId,
         ApiObjectProperty.technology: technology,

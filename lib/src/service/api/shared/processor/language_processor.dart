@@ -8,6 +8,8 @@ class LanguageProcessor implements IResponseProcessor<LanguageResponse> {
   @override
   List<BaseCommand> processResponse(LanguageResponse pResponse, ApiRequest? pRequest) {
     IConfigService().setLanguage(pResponse.langCode);
+    //TODO add async
+    IConfigService().setTimeZone(pResponse.timeZoneCode);
     return [];
   }
 }

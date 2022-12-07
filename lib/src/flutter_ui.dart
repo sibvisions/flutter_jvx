@@ -5,10 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:logger/logger.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/browser.dart' as tz;
 import 'package:universal_io/io.dart';
 
 import 'config/app_config.dart';
@@ -245,7 +247,7 @@ class FlutterUI extends StatefulWidget {
       }
       String? language = Uri.base.queryParameters['language'];
       if (language != null) {
-        await configService.setUserLanguage(language == IConfigService.getPlatformLocale() ? null : language);
+        await configService.setUserLanguage(language == IConfigService().getPlatformLocale() ? null : language);
       }
     }
     String? mobileOnly = Uri.base.queryParameters['mobileOnly'];
@@ -260,6 +262,8 @@ class FlutterUI extends StatefulWidget {
     packageInfo = await PackageInfo.fromPlatform();
 
     fixUrlStrategy();
+
+    await tz.initializeTimeZone();
 
     runApp(pAppToRun);
   }
@@ -584,6 +588,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     IConfigService configService = IConfigService();
     ICommandService commandService = ICommandService();
     IUiService uiService = IUiService();
+
+    // Update native timezone
+    configService.setLocalTimeZone(await FlutterNativeTimezone.getLocalTimezone());
 
     if (configService.getAppName() == null || configService.getBaseUrl() == null) {
       uiService.routeToSettings(pReplaceRoute: true);
