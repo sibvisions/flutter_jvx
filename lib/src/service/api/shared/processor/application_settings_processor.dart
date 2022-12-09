@@ -14,8 +14,8 @@ class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSett
     return [
       SaveComponentsCommand.fromJson(
         components: pResponse.components,
-        screenName: "flutter_desktop",
         reason: "${ApiResponseNames.applicationSettings} was sent",
+        originRequest: pRequest,
       )
     ];
   }

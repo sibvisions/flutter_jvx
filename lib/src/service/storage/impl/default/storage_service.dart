@@ -21,6 +21,8 @@ class StorageService implements IStorageService {
 
   /// Map of the component tree for faster traversal.
   final HashMap<String, Set<String>> _childrenTree = HashMap();
+
+  FlComponentModel? desktopPanel;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,7 +53,7 @@ class StorageService implements IStorageService {
 
     Set<FlComponentModel> destroyedOrRemovedModels = {};
 
-    List<FlComponentModel> oldScreenComps = getAllComponentsBelowByName(name: screenName);
+    List<FlComponentModel> oldScreenComps = _getAllComponentsBelowScreen(screenName);
 
     // Handle new Components
     if (newComponents != null) {
@@ -60,6 +62,10 @@ class StorageService implements IStorageService {
         String? parentId = componentModel.parent;
         if (parentId != null) {
           affectedModels.add(parentId);
+        }
+        if (componentModel.className == FlContainerClassname.DESKTOP_PANEL) {
+          desktopPanel = componentModel;
+          desktopPanel!.parent = null;
         }
         _componentMap[componentModel.id] = componentModel;
         _addAsChild(componentModel);
@@ -111,7 +117,7 @@ class StorageService implements IStorageService {
       }
     }
 
-    List<FlComponentModel> currentScreenComps = getAllComponentsBelowByName(name: screenName);
+    List<FlComponentModel> currentScreenComps = _getAllComponentsBelowScreen(screenName);
 
     List<FlComponentModel> newUiComponents = [];
     List<String> changedUiComponents = [];
@@ -295,9 +301,27 @@ class StorageService implements IStorageService {
         .firstWhereOrNull((element) => element.screenClassName == pScreenClassName);
   }
 
+  @override
+  FlComponentModel? getDesktopPanel() {
+    return desktopPanel;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  List<FlComponentModel> _getAllComponentsBelowScreen(String screenName) {
+    if (screenName == FlContainerClassname.DESKTOP_PANEL) {
+      FlComponentModel? desktopPanel = getDesktopPanel();
+      if (desktopPanel == null) {
+        return [];
+      } else {
+        return getAllComponentsBelowByName(name: desktopPanel.name);
+      }
+    } else {
+      return getAllComponentsBelowByName(name: screenName);
+    }
+  }
 
   _addAsChild(FlComponentModel pChild) {
     if (pChild.parent != null && pChild.parent!.isNotEmpty) {

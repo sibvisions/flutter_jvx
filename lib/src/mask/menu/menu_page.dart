@@ -1,18 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rxdart/subjects.dart';
+import 'package:rxdart/transformers.dart';
 
+import '../../components/components_factory.dart';
 import '../../custom/app_manager.dart';
 import '../../flutter_ui.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/config/i_config_service.dart';
+import '../../service/layout/i_layout_service.dart';
+import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/config_util.dart';
 import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
+import '../frame/web_frame.dart';
 import '../state/app_style.dart';
 import '../work_screen/work_screen.dart';
 import 'menu.dart';
@@ -35,13 +43,17 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> with SearchMixin {
   /// Debounce re-layouts
-  // final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
+  final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
+
+  FlComponentModel? desktopPanel;
+
+  bool sentScreen = false;
 
   @override
   void initState() {
     super.initState();
 
-    // subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
+    subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
   }
 
   @override
@@ -91,7 +103,23 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
           Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
           String? backgroundImage = appStyle['desktop.icon'];
 
-          Widget body = Column(
+          FrameState? frameState = FrameState.of(context);
+          if (frameState != null) {
+            actions.addAll(frameState.getActions());
+          }
+
+          Widget? body;
+
+          if (frameState is WebFrameState) {
+            desktopPanel = IStorageService().getDesktopPanel();
+            if (desktopPanel != null) {
+              Widget screen = ComponentsFactory.buildWidget(desktopPanel!);
+
+              body = getScreen(screen);
+            }
+          }
+
+          body ??= Column(
             children: [
               if (isOffline) OfflineUtil.getOfflineBar(context),
               Expanded(
@@ -110,11 +138,6 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             ],
           );
 
-          FrameState? frame = FrameState.of(context);
-          if (frame != null) {
-            actions.addAll(frame.getActions());
-          }
-
           return WillPopScope(
             onWillPop: () async {
               if (isMenuSearchEnabled) {
@@ -127,9 +150,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             child: Scaffold(
               drawerEnableOpenDragGesture: false,
               endDrawerEnableOpenDragGesture: false,
-              drawer: frame?.getDrawer(context),
-              endDrawer: frame?.getEndDrawer(context),
-              appBar: frame?.getAppBar(
+              drawer: frameState?.getDrawer(context),
+              endDrawer: frameState?.getEndDrawer(context),
+              appBar: frameState?.getAppBar(
                 leading: isMenuSearchEnabled
                     ? IconButton(
                         onPressed: () {
@@ -145,7 +168,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 backgroundColor: isOffline ? Colors.grey.shade500 : null,
                 actions: actions,
               ),
-              body: frame?.wrapBody(body) ?? body,
+              body: frameState?.wrapBody(body) ?? body,
             ),
           );
         },
@@ -285,6 +308,62 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
       grouped: [MenuMode.GRID_GROUPED, MenuMode.LIST_GROUPED].contains(menuMode) || grouped,
       sticky: sticky,
       groupOnlyOnMultiple: groupOnlyOnMultiple,
+    );
+  }
+
+  _setScreenSize(Size size) {
+    ILayoutService()
+        .setScreenSize(
+          pScreenComponentId: desktopPanel!.id,
+          pSize: size,
+        )
+        .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
+  }
+
+  Widget? getScreen(Widget screen) {
+    return KeyboardVisibilityBuilder(
+      builder: (context, isKeyboardVisible) => LayoutBuilder(
+        builder: (context, constraints) {
+          final viewInsets = EdgeInsets.fromWindowPadding(
+            WidgetsBinding.instance.window.viewInsets,
+            WidgetsBinding.instance.window.devicePixelRatio,
+          );
+
+          final viewPadding = EdgeInsets.fromWindowPadding(
+            WidgetsBinding.instance.window.viewPadding,
+            WidgetsBinding.instance.window.devicePixelRatio,
+          );
+
+          double screenHeight = constraints.maxHeight;
+
+          if (isKeyboardVisible) {
+            screenHeight += viewInsets.bottom;
+            screenHeight -= viewPadding.bottom;
+          }
+
+          Size size = Size(constraints.maxWidth, screenHeight);
+          if (!sentScreen) {
+            _setScreenSize(size);
+            sentScreen = true;
+          } else {
+            subject.add(size);
+          }
+
+          return SingleChildScrollView(
+            physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: screenHeight,
+                  width: constraints.maxWidth,
+                ),
+                screen
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

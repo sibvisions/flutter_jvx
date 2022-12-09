@@ -32,6 +32,7 @@ abstract class ComponentsFactory {
     switch (model.className) {
       // Containers
       case FlContainerClassname.PANEL:
+      case FlContainerClassname.DESKTOP_PANEL:
       case FlContainerClassname.TOOLBAR_PANEL:
         return FlPanelWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
       case FlContainerClassname.GROUP_PANEL:

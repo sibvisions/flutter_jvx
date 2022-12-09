@@ -2,6 +2,7 @@ import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import '../../model/menu/menu_model.dart';
+import '../api/shared/fl_component_classname.dart';
 import '../service.dart';
 
 /// Defines the base construct of a [IStorageService],
@@ -65,4 +66,7 @@ abstract class IStorageService {
 
   /// Returns panel model with matching screenClassName
   FlPanelModel? getComponentByScreenClassName({required String pScreenClassName});
+
+  /// Returns component model with name matching [FlContainerClassname.DESKTOP_PANEL].
+  FlComponentModel? getDesktopPanel();
 }
