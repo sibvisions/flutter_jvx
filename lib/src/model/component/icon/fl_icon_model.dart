@@ -12,7 +12,7 @@ class FlIconModel extends FlComponentModel {
   String image = "";
 
   /// If the aspect ratio of the image should be preserved.
-  bool preserveAspectRatio = true;
+  bool preserveAspectRatio = false;
 
   /// Original size of the image.
   /// This is used to calculate the size of the image in the layout.

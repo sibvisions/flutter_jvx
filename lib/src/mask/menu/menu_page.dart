@@ -321,48 +321,50 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   }
 
   Widget? getScreen(Widget screen) {
-    return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisible) => LayoutBuilder(
-        builder: (context, constraints) {
-          final viewInsets = EdgeInsets.fromWindowPadding(
-            WidgetsBinding.instance.window.viewInsets,
-            WidgetsBinding.instance.window.devicePixelRatio,
-          );
+    return IgnorePointer(
+      child: KeyboardVisibilityBuilder(
+        builder: (context, isKeyboardVisible) => LayoutBuilder(
+          builder: (context, constraints) {
+            final viewInsets = EdgeInsets.fromWindowPadding(
+              WidgetsBinding.instance.window.viewInsets,
+              WidgetsBinding.instance.window.devicePixelRatio,
+            );
 
-          final viewPadding = EdgeInsets.fromWindowPadding(
-            WidgetsBinding.instance.window.viewPadding,
-            WidgetsBinding.instance.window.devicePixelRatio,
-          );
+            final viewPadding = EdgeInsets.fromWindowPadding(
+              WidgetsBinding.instance.window.viewPadding,
+              WidgetsBinding.instance.window.devicePixelRatio,
+            );
 
-          double screenHeight = constraints.maxHeight;
+            double screenHeight = constraints.maxHeight;
 
-          if (isKeyboardVisible) {
-            screenHeight += viewInsets.bottom;
-            screenHeight -= viewPadding.bottom;
-          }
+            if (isKeyboardVisible) {
+              screenHeight += viewInsets.bottom;
+              screenHeight -= viewPadding.bottom;
+            }
 
-          Size size = Size(constraints.maxWidth, screenHeight);
-          if (!sentScreen) {
-            _setScreenSize(size);
-            sentScreen = true;
-          } else {
-            subject.add(size);
-          }
+            Size size = Size(constraints.maxWidth, screenHeight);
+            if (!sentScreen) {
+              _setScreenSize(size);
+              sentScreen = true;
+            } else {
+              subject.add(size);
+            }
 
-          return SingleChildScrollView(
-            physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            child: Stack(
-              children: [
-                SizedBox(
-                  height: screenHeight,
-                  width: constraints.maxWidth,
-                ),
-                screen
-              ],
-            ),
-          );
-        },
+            return SingleChildScrollView(
+              physics: isKeyboardVisible ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              child: Stack(
+                children: [
+                  SizedBox(
+                    height: screenHeight,
+                    width: constraints.maxWidth,
+                  ),
+                  screen
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
