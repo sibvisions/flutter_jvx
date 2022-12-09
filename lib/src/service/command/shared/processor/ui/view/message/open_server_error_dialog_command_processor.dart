@@ -22,10 +22,11 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
       }
 
       //Check if there isn't already another dialog with the same id
-      if (IUiService()
-          .getFrameDialogs()
-          .whereType<ServerErrorDialog>()
-          .none((dialog) => dialog.command.componentId == command.componentId)) {
+      if (command.componentId == null ||
+          IUiService()
+              .getFrameDialogs()
+              .whereType<ServerErrorDialog>()
+              .none((dialog) => dialog.command.componentId == command.componentId)) {
         IUiService().showFrameDialog(
           ServerErrorDialog(
             command: command,
