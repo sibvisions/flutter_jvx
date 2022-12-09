@@ -29,7 +29,7 @@ class DeviceInfo {
 
     if (kIsWeb) {
       var webBrowserInfo = await DeviceInfoPlugin().webBrowserInfo;
-      return DeviceInfo(
+      deviceInfo = DeviceInfo(
         osName: webBrowserInfo.platform,
         deviceType: webBrowserInfo.browserName.name,
         deviceTypeModel: webBrowserInfo.userAgent,
