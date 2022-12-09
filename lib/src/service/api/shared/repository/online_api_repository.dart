@@ -57,6 +57,7 @@ import '../../../../model/response/application_meta_data_response.dart';
 import '../../../../model/response/application_parameters_response.dart';
 import '../../../../model/response/application_settings_response.dart';
 import '../../../../model/response/authentication_data_response.dart';
+import '../../../../model/response/bad_client_response.dart';
 import '../../../../model/response/close_frame_response.dart';
 import '../../../../model/response/close_screen_response.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
@@ -153,6 +154,7 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.deviceStatus: DeviceStatusResponse.fromJson,
     ApiResponseNames.upload: UploadActionResponse.fromJson,
     ApiResponseNames.download: DownloadActionResponse.fromJson,
+    ApiResponseNames.badClient: BadClientResponse.fromJson,
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

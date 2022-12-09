@@ -20,6 +20,7 @@ import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/command/api/login_command.dart';
 import 'model/command/api/startup_command.dart';
+import 'model/request/api_startup_request.dart';
 import 'routing/locations/login_location.dart';
 import 'routing/locations/menu_location.dart';
 import 'routing/locations/settings_location.dart';
@@ -57,6 +58,9 @@ class FlutterUI extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Determines the supported server version which will be sent in the [ApiStartUpRequest]
+  static const String supportedServerVersion = "2.2.0";
 
   /// Loads assets with packages prefix
   static bool package = true;

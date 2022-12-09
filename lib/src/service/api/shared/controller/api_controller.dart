@@ -10,6 +10,7 @@ import '../processor/application_meta_data_processor.dart';
 import '../processor/application_parameters_processor.dart';
 import '../processor/application_settings_processor.dart';
 import '../processor/authentication_data_processor.dart';
+import '../processor/bad_client_processor.dart';
 import '../processor/close_frame_processor.dart';
 import '../processor/close_screen_processor.dart';
 import '../processor/dal_data_provider_changed_processor.dart';
@@ -60,6 +61,7 @@ class ApiController implements IController {
   final IResponseProcessor _uploadActionProcessor = UploadActionProcessor();
   final IResponseProcessor _downloadActionProcessor = DownloadActionProcessor();
   final IResponseProcessor _downloadProcessor = DownloadProcessor();
+  final IResponseProcessor _badClientProcessor = BadClientProcessor();
 
   /// Maps response names to their processor
   late final HashMap<String, IResponseProcessor> responseToProcessorMap;
@@ -94,6 +96,7 @@ class ApiController implements IController {
       ApiResponseNames.upload: _uploadActionProcessor,
       ApiResponseNames.download: _downloadActionProcessor,
       ApiResponseNames.downloadResponse: _downloadProcessor,
+      ApiResponseNames.badClient: _badClientProcessor,
     });
   }
 

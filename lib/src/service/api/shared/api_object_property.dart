@@ -171,6 +171,7 @@ abstract class ApiObjectProperty {
   static const String mode = "mode";
   static const String profileImage = "profileImage";
   static const String layoutMode = "layoutMode";
+  static const String info = "info";
 
   //ApplicationSettings
   static const String save = "save";
@@ -317,6 +318,7 @@ abstract class ApiObjectProperty {
   static const String appVersion = "appVersion";
   static const String deviceType = "deviceType";
   static const String deviceTypeModel = "deviceTypeModel";
+  static const String serverVersion = "serverVersion";
 
   static const String file = "file";
   static const String fileName = "fileName";

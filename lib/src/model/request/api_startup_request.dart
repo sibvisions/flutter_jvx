@@ -61,6 +61,9 @@ class ApiStartUpRequest extends ApiRequest {
   /// The device type model this app runs on.
   final String? deviceTypeModel;
 
+  /// The supported server version.
+  final String? serverVersion;
+
   /// Custom startup parameters
   final Map<String, dynamic>? startUpParameters;
 
@@ -88,6 +91,7 @@ class ApiStartUpRequest extends ApiRequest {
     this.appVersion,
     this.deviceType,
     this.deviceTypeModel,
+    this.serverVersion,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,6 +118,7 @@ class ApiStartUpRequest extends ApiRequest {
         ApiObjectProperty.appVersion: appVersion,
         ApiObjectProperty.deviceType: deviceType,
         ApiObjectProperty.deviceTypeModel: deviceTypeModel,
+        ApiObjectProperty.serverVersion: serverVersion,
         ...?startUpParameters
       };
 }

@@ -54,6 +54,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       deviceType: deviceInfo.deviceType,
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
+      serverVersion: FlutterUI.supportedServerVersion,
       startUpParameters: IConfigService().getStartupParameters(),
     );
 
