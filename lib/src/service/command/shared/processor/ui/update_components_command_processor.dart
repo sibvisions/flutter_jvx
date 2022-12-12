@@ -1,10 +1,7 @@
 import 'dart:async';
 
-import '../../../../../flutter_ui.dart';
-import '../../../../../model/command/base_command.dart';
+import '../../../../../../flutter_jvx.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
-import '../../../../layout/i_layout_service.dart';
-import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateComponentsCommand> {
@@ -41,6 +38,8 @@ class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateCompon
       IUiService().notifyChangedComponents(updatedModels: command.changedComponents);
 
       IUiService().notifyAffectedComponents(affectedIds: command.affectedComponents);
+
+      IStorageService().getDesktopPanelNotifier().value = command.newDesktopPanel;
     });
 
     return [];

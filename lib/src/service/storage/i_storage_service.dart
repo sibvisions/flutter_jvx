@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
@@ -70,5 +72,5 @@ abstract class IStorageService {
   FlPanelModel? getComponentByScreenClassName({required String pScreenClassName});
 
   /// Returns component model with name matching [FlContainerClassname.DESKTOP_PANEL].
-  FlComponentModel? getDesktopPanel();
+  ValueNotifier<FlComponentModel?> getDesktopPanelNotifier();
 }

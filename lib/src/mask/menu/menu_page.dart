@@ -45,8 +45,6 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   /// Debounce re-layouts
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
-  FlComponentModel? desktopPanel;
-
   bool sentScreen = false;
 
   @override
@@ -63,115 +61,115 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
       forceMobile: IConfigService().isMobileOnly(),
       builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
         valueListenable: IUiService().getMenuNotifier(),
-        builder: (context, _, child) {
-          List<Widget> actions = [];
+        builder: (context, _, child) => ValueListenableBuilder<FlComponentModel?>(
+          valueListenable: IStorageService().getDesktopPanelNotifier(),
+          builder: (context, desktopPanel, child) {
+            List<Widget> actions = [];
 
-          var menuModel = IUiService().getMenuModel();
+            var menuModel = IUiService().getMenuModel();
 
-          if (!isMenuSearchEnabled && menuModel.count >= 8) {
-            actions.add(IconButton(
-              onPressed: () {
-                isMenuSearchEnabled = true;
-                menuSearchController.clear();
-                setState(() {});
-              },
-              icon: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 22),
-            ));
-          }
-
-          if (isOffline) {
-            actions.add(Builder(
-              builder: (context) => IconButton(
+            if (!isMenuSearchEnabled && menuModel.count >= 8) {
+              actions.add(IconButton(
                 onPressed: () {
-                  showSyncDialog().then(
-                    (value) async {
-                      if (value == SyncDialogResult.DISCARD_CHANGES) {
-                        await OfflineUtil.discardChanges(context);
-                        OfflineUtil.initOnline();
-                      } else if (value == SyncDialogResult.YES) {
-                        OfflineUtil.initOnline();
-                      }
-                    },
-                  );
+                  isMenuSearchEnabled = true;
+                  menuSearchController.clear();
+                  setState(() {});
                 },
-                icon: const FaIcon(FontAwesomeIcons.towerBroadcast),
-              ),
-            ));
-          }
+                icon: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 22),
+              ));
+            }
 
-          var appStyle = AppStyle.of(context)!.applicationStyle!;
-          Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
-          String? backgroundImage = appStyle['desktop.icon'];
+            if (isOffline) {
+              actions.add(Builder(
+                builder: (context) => IconButton(
+                  onPressed: () {
+                    showSyncDialog().then(
+                      (value) async {
+                        if (value == SyncDialogResult.DISCARD_CHANGES) {
+                          await OfflineUtil.discardChanges(context);
+                          OfflineUtil.initOnline();
+                        } else if (value == SyncDialogResult.YES) {
+                          OfflineUtil.initOnline();
+                        }
+                      },
+                    );
+                  },
+                  icon: const FaIcon(FontAwesomeIcons.towerBroadcast),
+                ),
+              ));
+            }
 
-          FrameState? frameState = FrameState.of(context);
-          if (frameState != null) {
-            actions.addAll(frameState.getActions());
-          }
+            var appStyle = AppStyle.of(context)!.applicationStyle!;
+            Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
+            String? backgroundImage = appStyle['desktop.icon'];
 
-          Widget? body;
+            FrameState? frameState = FrameState.of(context);
+            if (frameState != null) {
+              actions.addAll(frameState.getActions());
+            }
 
-          if (frameState is WebFrameState) {
-            desktopPanel = IStorageService().getDesktopPanel();
-            if (desktopPanel != null) {
-              Widget screen = ComponentsFactory.buildWidget(desktopPanel!);
+            Widget? body;
+
+            if (frameState is WebFrameState && desktopPanel != null) {
+              Widget screen = ComponentsFactory.buildWidget(desktopPanel);
 
               body = getScreen(screen);
             }
-          }
 
-          body ??= Column(
-            children: [
-              if (isOffline) OfflineUtil.getOfflineBar(context),
-              Expanded(
-                child: Stack(
-                  children: [
-                    if (backgroundColor != null || backgroundImage != null)
-                      WorkScreen.buildBackground(backgroundColor, backgroundImage),
-                    _getMenu(
-                      key: const PageStorageKey('MainMenu'),
-                      appStyle: appStyle,
-                      applyMenuFilter(menuModel, (item) => item.label),
-                    ),
-                  ],
+            body ??= Column(
+              children: [
+                if (isOffline) OfflineUtil.getOfflineBar(context),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      if (backgroundColor != null || backgroundImage != null)
+                        WorkScreen.buildBackground(backgroundColor, backgroundImage),
+                      _getMenu(
+                        key: const PageStorageKey('MainMenu'),
+                        appStyle: appStyle,
+                        applyMenuFilter(menuModel, (item) => item.label),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
+              ],
+            );
 
-          return WillPopScope(
-            onWillPop: () async {
-              if (isMenuSearchEnabled) {
-                isMenuSearchEnabled = false;
-                setState(() {});
-                return false;
-              }
-              return true;
-            },
-            child: Scaffold(
-              drawerEnableOpenDragGesture: false,
-              endDrawerEnableOpenDragGesture: false,
-              drawer: frameState?.getDrawer(context),
-              endDrawer: frameState?.getEndDrawer(context),
-              appBar: frameState?.getAppBar(
-                leading: isMenuSearchEnabled
-                    ? IconButton(
-                        onPressed: () {
-                          isMenuSearchEnabled = false;
-                          setState(() {});
-                        },
-                        icon: const FaIcon(FontAwesomeIcons.circleXmark))
-                    : null,
-                title: !isMenuSearchEnabled
-                    ? Text(FlutterUI.translate("Menu"))
-                    : Builder(builder: (context) => _buildSearch(context)),
-                titleSpacing: isMenuSearchEnabled ? 0.0 : null,
-                backgroundColor: isOffline ? Colors.grey.shade500 : null,
-                actions: actions,
+            return WillPopScope(
+              onWillPop: () async {
+                if (isMenuSearchEnabled) {
+                  isMenuSearchEnabled = false;
+                  setState(() {});
+                  return false;
+                }
+                return true;
+              },
+              child: Scaffold(
+                drawerEnableOpenDragGesture: false,
+                endDrawerEnableOpenDragGesture: false,
+                drawer: frameState?.getDrawer(context),
+                endDrawer: frameState?.getEndDrawer(context),
+                appBar: frameState?.getAppBar(
+                  leading: isMenuSearchEnabled
+                      ? IconButton(
+                          onPressed: () {
+                            isMenuSearchEnabled = false;
+                            setState(() {});
+                          },
+                          icon: const FaIcon(FontAwesomeIcons.circleXmark))
+                      : null,
+                  title: !isMenuSearchEnabled
+                      ? Text(FlutterUI.translate("Menu"))
+                      : Builder(builder: (context) => _buildSearch(context)),
+                  titleSpacing: isMenuSearchEnabled ? 0.0 : null,
+                  backgroundColor: isOffline ? Colors.grey.shade500 : null,
+                  actions: actions,
+                ),
+                body: frameState?.wrapBody(body) ?? body,
               ),
-              body: frameState?.wrapBody(body) ?? body,
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -314,7 +312,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   _setScreenSize(Size size) {
     ILayoutService()
         .setScreenSize(
-          pScreenComponentId: desktopPanel!.id,
+          pScreenComponentId: IStorageService().getDesktopPanelNotifier().value!.id,
           pSize: size,
         )
         .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));

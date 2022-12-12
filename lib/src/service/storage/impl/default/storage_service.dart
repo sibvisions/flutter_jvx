@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/base_command.dart';
@@ -22,7 +23,8 @@ class StorageService implements IStorageService {
   /// Map of the component tree for faster traversal.
   final HashMap<String, Set<String>> _childrenTree = HashMap();
 
-  FlComponentModel? desktopPanel;
+  /// The value notifier triggers rebuilds of the menu.
+  final ValueNotifier<FlComponentModel?> _desktopNotifier = ValueNotifier(null);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,6 +57,7 @@ class StorageService implements IStorageService {
 
     List<FlComponentModel> oldScreenComps = _getAllComponentsBelowScreen(screenName);
 
+    FlComponentModel? newDesktopPanel;
     // Handle new Components
     if (newComponents != null) {
       for (FlComponentModel componentModel in newComponents) {
@@ -64,7 +67,7 @@ class StorageService implements IStorageService {
           affectedModels.add(parentId);
         }
         if (componentModel.className == FlContainerClassname.DESKTOP_PANEL) {
-          desktopPanel = componentModel;
+          newDesktopPanel = componentModel;
         }
         _componentMap[componentModel.id] = componentModel;
         _addAsChild(componentModel);
@@ -174,6 +177,7 @@ class StorageService implements IStorageService {
       affectedComponents: affectedUiComponents,
       changedComponents: changedUiComponents,
       deletedComponents: deletedUiComponents,
+      newDesktopPanel: newDesktopPanel,
       reason: "Server Changed Components",
     );
 
@@ -321,8 +325,8 @@ class StorageService implements IStorageService {
   }
 
   @override
-  FlComponentModel? getDesktopPanel() {
-    return desktopPanel;
+  ValueNotifier<FlComponentModel?> getDesktopPanelNotifier() {
+    return _desktopNotifier;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -331,10 +335,10 @@ class StorageService implements IStorageService {
 
   List<FlComponentModel> _getAllComponentsBelowScreen(String screenName) {
     if (screenName == FlContainerClassname.DESKTOP_PANEL) {
-      if (desktopPanel == null) {
+      if (_desktopNotifier.value == null) {
         return [];
       } else {
-        return getAllComponentsBelowByName(name: desktopPanel!.name, pIncludeItself: true);
+        return getAllComponentsBelowByName(name: _desktopNotifier.value!.name, pIncludeItself: true);
       }
     } else {
       return getAllComponentsBelowByName(name: screenName, pIncludeItself: true);
