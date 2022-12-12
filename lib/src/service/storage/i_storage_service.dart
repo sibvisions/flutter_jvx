@@ -35,14 +35,6 @@ abstract class IStorageService {
   });
 
   /// Returns List of all [FlComponentModel] below it.
-  List<FlComponentModel> getAllComponentsBelowById({
-    required String pParentId,
-    bool pIgnoreVisibility = false,
-    bool pIncludeRemoved = false,
-    bool pRecursively = true,
-  });
-
-  /// Returns List of all [FlComponentModel] below it.
   List<FlComponentModel> getAllComponentsBelow({
     required FlComponentModel pParentModel,
     bool pIgnoreVisibility = false,
@@ -51,11 +43,21 @@ abstract class IStorageService {
   });
 
   /// Returns List of all [FlComponentModel] below it.
+  List<FlComponentModel> getAllComponentsBelowById({
+    required String pParentId,
+    bool pIgnoreVisibility = false,
+    bool pIncludeRemoved = false,
+    bool pRecursively = true,
+    bool pIncludeItself = false,
+  });
+
+  /// Returns List of all [FlComponentModel] below it.
   List<FlComponentModel> getAllComponentsBelowByName({
     required String name,
     bool pIgnoreVisibility = false,
     bool pIncludeRemoved = false,
     bool pRecursively = true,
+    bool pIncludeItself = false,
   });
 
   /// Returns component model with matching id

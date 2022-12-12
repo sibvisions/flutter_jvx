@@ -207,11 +207,12 @@ class StorageService implements IStorageService {
   }
 
   @override
-  List<FlComponentModel> getAllComponentsBelow(
-      {required FlComponentModel pParentModel,
-      bool pIgnoreVisibility = false,
-      bool pIncludeRemoved = false,
-      bool pRecursively = true}) {
+  List<FlComponentModel> getAllComponentsBelow({
+    required FlComponentModel pParentModel,
+    bool pIgnoreVisibility = false,
+    bool pIncludeRemoved = false,
+    bool pRecursively = true,
+  }) {
     List<FlComponentModel> allDescendants = [];
     Set<String> directChildren = _childrenTree[pParentModel.id] ?? {};
 
@@ -243,36 +244,55 @@ class StorageService implements IStorageService {
   }
 
   @override
-  List<FlComponentModel> getAllComponentsBelowByName(
-      {required String name, bool pIgnoreVisibility = false, bool pIncludeRemoved = false, bool pRecursively = true}) {
-    List<FlComponentModel> list = [];
-    List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.name == name).toList();
-
-    if (screenModels.length >= 2) {
-      FlutterUI.logUI.wtf("The same screen is found twice in the storage service!!!!");
-    } else if (screenModels.length == 1 && (pIgnoreVisibility || screenModels.first.isVisible)) {
-      list.addAll(getAllComponentsBelow(
-          pParentModel: screenModels.first,
-          pIgnoreVisibility: pIgnoreVisibility,
-          pIncludeRemoved: pIncludeRemoved,
-          pRecursively: pRecursively));
-    }
-
-    return list;
+  List<FlComponentModel> getAllComponentsBelowByName({
+    required String name,
+    bool pIgnoreVisibility = false,
+    bool pIncludeRemoved = false,
+    bool pRecursively = true,
+    bool pIncludeItself = false,
+  }) {
+    return _getAllComponentsBelowByWhere(
+      pWhere: (element) => element.name == name,
+      pIgnoreVisibility: pIgnoreVisibility,
+      pIncludeRemoved: pIncludeRemoved,
+      pRecursively: pRecursively,
+      pIncludeItself: pIncludeItself,
+    );
   }
 
   @override
-  List<FlComponentModel> getAllComponentsBelowById(
-      {required String pParentId,
-      bool pIgnoreVisibility = false,
-      bool pIncludeRemoved = false,
-      bool pRecursively = true}) {
+  List<FlComponentModel> getAllComponentsBelowById({
+    required String pParentId,
+    bool pIgnoreVisibility = false,
+    bool pIncludeRemoved = false,
+    bool pRecursively = true,
+    bool pIncludeItself = false,
+  }) {
+    return _getAllComponentsBelowByWhere(
+      pWhere: (element) => element.id == pParentId,
+      pIgnoreVisibility: pIgnoreVisibility,
+      pIncludeRemoved: pIncludeRemoved,
+      pRecursively: pRecursively,
+      pIncludeItself: pIncludeItself,
+    );
+  }
+
+  List<FlComponentModel> _getAllComponentsBelowByWhere({
+    required bool Function(FlComponentModel) pWhere,
+    bool pIgnoreVisibility = false,
+    bool pIncludeRemoved = false,
+    bool pRecursively = true,
+    bool pIncludeItself = false,
+  }) {
     List<FlComponentModel> list = [];
-    List<FlComponentModel> screenModels = _componentMap.values.where((element) => element.id == pParentId).toList();
+    List<FlComponentModel> screenModels = _componentMap.values.where(pWhere).toList();
 
     if (screenModels.length >= 2) {
       FlutterUI.logUI.wtf("The same screen is found twice in the storage service!!!!");
     } else if (screenModels.length == 1 && (pIgnoreVisibility || screenModels.first.isVisible)) {
+      if (pIncludeItself) {
+        list.add(screenModels.first);
+      }
       list.addAll(getAllComponentsBelow(
           pParentModel: screenModels.first,
           pIgnoreVisibility: pIgnoreVisibility,
@@ -311,14 +331,13 @@ class StorageService implements IStorageService {
 
   List<FlComponentModel> _getAllComponentsBelowScreen(String screenName) {
     if (screenName == FlContainerClassname.DESKTOP_PANEL) {
-      FlComponentModel? desktopPanel = getDesktopPanel();
       if (desktopPanel == null) {
         return [];
       } else {
-        return getAllComponentsBelowByName(name: desktopPanel.name);
+        return getAllComponentsBelowByName(name: desktopPanel!.name, pIncludeItself: true);
       }
     } else {
-      return getAllComponentsBelowByName(name: screenName);
+      return getAllComponentsBelowByName(name: screenName, pIncludeItself: true);
     }
   }
 
