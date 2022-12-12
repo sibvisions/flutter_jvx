@@ -62,6 +62,7 @@ class _ManualCardState extends State<ManualCard> {
           textTheme: Theme.of(context).textTheme.copyWith(
                 subtitle1: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.bold),
               ),
+          canvasColor: JVxColors.darken(Theme.of(context).canvasColor, 0.05),
         ),
         child: DefaultTextStyle.merge(
           style: const TextStyle(fontWeight: FontWeight.bold),
