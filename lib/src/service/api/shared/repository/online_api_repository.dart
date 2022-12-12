@@ -42,9 +42,11 @@ import '../../../../model/request/api_navigation_request.dart';
 import '../../../../model/request/api_open_screen_request.dart';
 import '../../../../model/request/api_open_tab_request.dart';
 import '../../../../model/request/api_press_button_request.dart';
-import '../../../../model/request/api_reload_menu_request.dart';
+import '../../../../model/request/api_reload_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/request/api_reset_password_request.dart';
+import '../../../../model/request/api_rollback_request.dart';
+import '../../../../model/request/api_save_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
 import '../../../../model/request/api_set_value_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
@@ -110,7 +112,6 @@ class OnlineApiRepository implements IRepository {
     ApiChangePasswordRequest: (_) => APIRoute.POST_CHANGE_PASSWORD,
     ApiResetPasswordRequest: (_) => APIRoute.POST_RESET_PASSWORD,
     ApiNavigationRequest: (_) => APIRoute.POST_NAVIGATION,
-    ApiReloadMenuRequest: (_) => APIRoute.POST_MENU,
     ApiFetchRequest: (_) => APIRoute.POST_FETCH,
     ApiLogoutRequest: (_) => APIRoute.POST_LOGOUT,
     ApiFilterRequest: (_) => APIRoute.POST_FILTER,
@@ -131,6 +132,9 @@ class OnlineApiRepository implements IRepository {
     ApiFocusGainedRequest: (_) => APIRoute.POST_FOCUS_GAINED,
     ApiFocusLostRequest: (_) => APIRoute.POST_FOCUS_LOST,
     ApiAliveRequest: (_) => APIRoute.POST_ALIVE,
+    ApiSaveRequest: (_) => APIRoute.POST_SAVE,
+    ApiReloadRequest: (_) => APIRoute.POST_RELOAD,
+    ApiRollbackRequest: (_) => APIRoute.POST_ROLLBACK,
   };
 
   static final Map<String, ResponseFactory> maps = {

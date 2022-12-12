@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
+import '../../model/command/api/reload_command.dart';
+import '../../model/command/api/rollback_command.dart';
+import '../../model/command/api/save_command.dart';
 import '../../model/response/device_status_response.dart';
+import '../../routing/locations/work_screen_location.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -95,6 +99,8 @@ class WebFrameState extends FrameState {
     Color? iconColor = ParseUtil.parseHexColor(applicationStyle['web.topmenu.iconColor']);
     String? imagePath = applicationStyle['web.topmenu.image'];
 
+    bool inWorkscreen = FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == WorkScreenLocation;
+
     return AppBar(
       leading: Builder(
         builder: (context) => IconButton(
@@ -123,6 +129,42 @@ class WebFrameState extends FrameState {
       ),
       centerTitle: false,
       actions: [
+        if (appStyle.applicationSettings.rollbackVisible)
+          Padding(
+            padding: const EdgeInsets.only(right: spacing),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.arrowRotateLeft,
+                color: iconColor,
+              ),
+              onPressed:
+                  inWorkscreen ? (() => IUiService().sendCommand(RollbackCommand(reason: "Clicked in topbar"))) : null,
+            ),
+          ),
+        if (appStyle.applicationSettings.saveVisible)
+          Padding(
+            padding: const EdgeInsets.only(right: spacing),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.floppyDisk,
+                color: iconColor,
+              ),
+              onPressed:
+                  inWorkscreen ? (() => IUiService().sendCommand(SaveCommand(reason: "Clicked in topbar"))) : null,
+            ),
+          ),
+        if (appStyle.applicationSettings.reloadVisible)
+          Padding(
+            padding: const EdgeInsets.only(right: spacing),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.arrowRotateRight,
+                color: iconColor,
+              ),
+              onPressed:
+                  inWorkscreen ? (() => IUiService().sendCommand(ReloadCommand(reason: "Clicked in topbar"))) : null,
+            ),
+          ),
         if (appStyle.applicationSettings.homeVisible)
           Padding(
             padding: const EdgeInsets.only(right: spacing),

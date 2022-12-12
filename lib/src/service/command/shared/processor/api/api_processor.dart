@@ -23,9 +23,11 @@ import '../../../../../model/command/api/navigation_command.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/api/open_tab_command.dart';
 import '../../../../../model/command/api/press_button_command.dart';
-import '../../../../../model/command/api/reload_menu_command.dart';
+import '../../../../../model/command/api/reload_command.dart';
 import '../../../../../model/command/api/reset_password_command.dart';
+import '../../../../../model/command/api/rollback_command.dart';
 import '../../../../../model/command/api/save_all_editors.dart';
+import '../../../../../model/command/api/save_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
@@ -57,9 +59,11 @@ import 'navigation_command_processor.dart';
 import 'open_screen_command_processor.dart';
 import 'open_tab_command_processor.dart';
 import 'press_button_command_processor.dart';
-import 'reload_menu_command_processor.dart';
+import 'reload_command_processor.dart';
 import 'reset_password_command_processor.dart';
+import 'rollback_command_processor.dart';
 import 'save_all_editors_command_processor.dart';
+import 'save_command_processor.dart';
 import 'select_record_command_processor.dart';
 import 'set_value_command_processor.dart';
 import 'set_values_command_processor.dart';
@@ -81,9 +85,6 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   /// Processes [OpenScreenCommand]
   final ICommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
-
-  /// Processes [ReloadMenuCommand]
-  final ICommandProcessor _reloadMenuCommandProcessor = ReloadMenuCommandProcessor();
 
   /// Processes [DeviceStatusCommand]
   final ICommandProcessor _deviceStatusProcessor = DeviceStatusCommandProcessor();
@@ -156,6 +157,12 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _aliveProcessor = AliveCommandProcessor();
 
+  final ICommandProcessor _saveProcessor = SaveCommandProcessor();
+
+  final ICommandProcessor _reloadProcessor = ReloadCommandProcessor();
+
+  final ICommandProcessor _rollbackProcessor = RollbackCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,8 +176,6 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _loginCommandProcessor.processCommand(command);
     } else if (command is OpenScreenCommand) {
       return _openScreenCommandProcessor.processCommand(command);
-    } else if (command is ReloadMenuCommand) {
-      return _reloadMenuCommandProcessor.processCommand(command);
     } else if (command is DeviceStatusCommand) {
       return _deviceStatusProcessor.processCommand(command);
     } else if (command is PressButtonCommand) {
@@ -227,7 +232,14 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _focusLostProcessor.processCommand(command);
     } else if (command is AliveCommand) {
       return _aliveProcessor.processCommand(command);
+    } else if (command is SaveCommand) {
+      return _saveProcessor.processCommand(command);
+    } else if (command is ReloadCommand) {
+      return _reloadProcessor.processCommand(command);
+    } else if (command is RollbackCommand) {
+      return _rollbackProcessor.processCommand(command);
     }
+
     return [];
   }
 }
