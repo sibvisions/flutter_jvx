@@ -21,7 +21,11 @@ class LoadingBar extends InheritedWidget {
       return Stack(children: [
         child,
         if (LoadingBar.of(context)?.show ?? false)
-          LinearProgressIndicator(minHeight: 5, color: JVxColors.toggleColor(Theme.of(context).colorScheme.primary)),
+          LinearProgressIndicator(
+            minHeight: 5,
+            color: JVxColors.toggleColor(Theme.of(context).colorScheme.primary),
+            backgroundColor: Colors.transparent,
+          ),
       ]);
     });
   }
