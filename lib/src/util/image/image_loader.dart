@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
+import '../../service/api/i_api_service.dart';
+import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/file/file_manager.dart';
 import '../font_awesome_util.dart';
@@ -141,7 +143,17 @@ abstract class ImageLoader {
       } else {
         String appName = IConfigService().getAppName()!;
         String baseUrl = IConfigService().getBaseUrl()!;
-        imageProvider = NetworkImage("$baseUrl/resource/$appName/$pImageString");
+
+        Map<String, String> headers = {};
+        var repository = IApiService().getRepository();
+        if (repository is OnlineApiRepository) {
+          headers.addAll(repository.getHeaders());
+          if (repository.getCookies().isNotEmpty) {
+            headers[HttpHeaders.cookieHeader] = repository.getCookies().map((e) => "${e.name}=${e.value}").join("; ");
+          }
+        }
+
+        imageProvider = NetworkImage("$baseUrl/resource/$appName/$pImageString", headers: headers);
       }
 
       _addImageListener(imageProvider, pImageStreamListener);

@@ -326,6 +326,12 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  Set<Cookie> getCookies() => _cookies;
+
+  @override
+  Map<String, String> getHeaders() => _headers;
+
+  @override
   Future<ApiInteraction> sendRequest(ApiRequest pRequest) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
@@ -444,6 +450,7 @@ class OnlineApiRepository implements IRepository {
     IUiService().getAppManager()?.modifyCookies(request.cookies);
 
     _headers.forEach((key, value) => request.headers.set(key, value));
+    IUiService().getAppManager()?.modifyHeaders(request.headers);
 
     if (pRequest is ApiUploadRequest) {
       request.headers.contentType = ContentType(

@@ -1,3 +1,5 @@
+import 'package:universal_io/io.dart';
+
 import '../../../../flutter_ui.dart';
 import '../../../../model/api_interaction.dart';
 import '../../../../model/data/data_book.dart';
@@ -56,6 +58,12 @@ class OfflineApiRepository implements IRepository {
   bool isStopped() {
     return offlineDatabase?.isClosed() ?? true;
   }
+
+  @override
+  Set<Cookie> getCookies() => {};
+
+  @override
+  Map<String, String> getHeaders() => {};
 
   /// Init database with currently available dataBooks
   Future<void> initDatabase(

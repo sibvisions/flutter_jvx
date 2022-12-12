@@ -36,6 +36,9 @@ abstract class AppManager {
   /// Gets called on menu model selection. Default implementation returns original [pMenuModel]
   void modifyMenuModel(MenuModel pMenuModel) {}
 
+  /// Can be used to modify the headers for each request
+  void modifyHeaders(HttpHeaders headers) {}
+
   /// Can be used to modify the cookie list for each request
   void modifyCookies(List<Cookie> cookies) {}
 

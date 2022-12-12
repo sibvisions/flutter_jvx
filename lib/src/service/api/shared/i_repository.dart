@@ -1,3 +1,5 @@
+import 'package:universal_io/io.dart';
+
 import '../../../model/api_interaction.dart';
 import '../../../model/request/api_request.dart';
 
@@ -15,6 +17,12 @@ abstract class IRepository {
 
   /// Returns if the repository has already been closed with [stop]
   bool isStopped();
+
+  /// Returns all saved headers used for requests
+  Map<String, String> getHeaders();
+
+  /// Returns all saved cookies used for requests
+  Set<Cookie> getCookies();
 
   /// Executes [pRequest],
   /// will throw an exception if request fails to be executed
