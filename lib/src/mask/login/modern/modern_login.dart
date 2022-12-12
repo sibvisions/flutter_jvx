@@ -169,7 +169,12 @@ class ModernLogin extends StatelessWidget implements Login {
               clipper: MiddleClipperWithDoubleCurve(),
               child: Container(
                 decoration: BoxDecoration(
-                  color: bottomColor ?? JVxColors.lighten(Theme.of(context).scaffoldBackgroundColor, 0.05),
+                  color: bottomColor ??
+                      JVxColors.adjustByBrightness(
+                        Theme.of(context).brightness,
+                        Theme.of(context).scaffoldBackgroundColor,
+                        0.05,
+                      ),
                   gradient: bottomColor != null
                       ? LinearGradient(
                           begin: Alignment.topLeft,

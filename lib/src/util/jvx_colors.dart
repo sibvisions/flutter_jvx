@@ -8,6 +8,16 @@ abstract class JVxColors {
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
   static const Color COMPONENT_DISABLED_LIGHTER = Color.fromARGB(255, 230, 230, 230);
 
+  /// Use [lighten] or [darken] depending on the [brightness].
+  static Color adjustByBrightness(Brightness brightness, Color color, [double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+    if (brightness == Brightness.dark) {
+      return lighten(color, amount);
+    } else {
+      return darken(color, amount);
+    }
+  }
+
   static Color darken(Color color, [double amount = .1]) {
     assert(amount >= 0 && amount <= 1);
 
