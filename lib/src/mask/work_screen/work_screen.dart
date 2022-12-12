@@ -185,53 +185,48 @@ class WorkScreenState extends State<WorkScreen> {
           actions.addAll(frame.getActions());
         }
 
-        return GestureDetector(
-          onTap: () {
-            FocusManager.instance.primaryFocus?.unfocus();
+        return WillPopScope(
+          onWillPop: () async {
+            if (isNavigating || (LoadingBar.of(context)?.show ?? false)) {
+              return false;
+            }
+
+            isNavigating = true;
+
+            await IUiService()
+                .saveAllEditors(pReason: "Closing Screen", pFunction: _willPopScope)
+                .catchError(IUiService().handleAsyncError)
+                .whenComplete(() {
+              isForced = false;
+              isNavigating = false;
+            });
+
+            return IUiService().usesNativeRouting(pScreenLongName: screenLongName);
           },
-          child: WillPopScope(
-            onWillPop: () async {
-              if (isNavigating || (LoadingBar.of(context)?.show ?? false)) {
-                return false;
-              }
-
-              isNavigating = true;
-
-              await IUiService()
-                  .saveAllEditors(pReason: "Closing Screen", pFunction: _willPopScope)
-                  .catchError(IUiService().handleAsyncError)
-                  .whenComplete(() {
-                isForced = false;
-                isNavigating = false;
-              });
-
-              return IUiService().usesNativeRouting(pScreenLongName: screenLongName);
-            },
-            child: Builder(builder: (context) {
-              return Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: frame?.getAppBar(
-                  leading: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: () {
-                      _back();
-                    },
-                    onDoubleTap: () {
-                      _back(true);
-                    },
-                    child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
-                  ),
-                  title: Text(screenTitle),
-                  actions: actions,
+          child: Builder(builder: (context) {
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: frame?.getAppBar(
+                leading: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () {
+                    _back();
+                  },
+                  onDoubleTap: () {
+                    _back(true);
+                  },
+                  child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
                 ),
-                drawerEnableOpenDragGesture: false,
-                endDrawerEnableOpenDragGesture: false,
-                drawer: frame?.getDrawer(context),
-                endDrawer: frame?.getEndDrawer(context),
-                body: frame?.wrapBody(body) ?? body,
-              );
-            }),
-          ),
+                title: Text(screenTitle),
+                actions: actions,
+              ),
+              drawerEnableOpenDragGesture: false,
+              endDrawerEnableOpenDragGesture: false,
+              drawer: frame?.getDrawer(context),
+              endDrawer: frame?.getEndDrawer(context),
+              body: frame?.wrapBody(body) ?? body,
+            );
+          }),
         );
       },
     );

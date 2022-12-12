@@ -80,27 +80,32 @@ class JVxOverlayState extends State<JVxOverlay> {
   Widget build(BuildContext context) {
     subject.add(MediaQuery.of(context).size);
 
-    return AppStyle(
-      applicationStyle: IConfigService().getAppStyle(),
-      applicationSettings: IConfigService().getApplicationSettings(),
-      child: FutureBuilder(
-        future: _loadingDelayFuture,
-        builder: (context, snapshot) {
-          return LoadingBar(
-            show: loading && snapshot.connectionState == ConnectionState.done,
-            child: Stack(
-              children: [
-                widget.child!,
-                FramesWidget(key: framesKey),
-                DialogsWidget(key: dialogsKey),
-                if (loading)
-                  const ModalBarrier(
-                    dismissible: false,
-                  ),
-              ],
-            ),
-          );
-        },
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: AppStyle(
+        applicationStyle: IConfigService().getAppStyle(),
+        applicationSettings: IConfigService().getApplicationSettings(),
+        child: FutureBuilder(
+          future: _loadingDelayFuture,
+          builder: (context, snapshot) {
+            return LoadingBar(
+              show: loading && snapshot.connectionState == ConnectionState.done,
+              child: Stack(
+                children: [
+                  widget.child!,
+                  FramesWidget(key: framesKey),
+                  DialogsWidget(key: dialogsKey),
+                  if (loading)
+                    const ModalBarrier(
+                      dismissible: false,
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
