@@ -121,6 +121,14 @@ class _ManualCardState extends State<ManualCard> {
                               icon: const FaIcon(FontAwesomeIcons.user),
                               labelText: FlutterUI.translate("Username"),
                               border: InputBorder.none,
+                              suffixIcon: usernameController.text.isNotEmpty
+                                  ? ExcludeFocus(
+                                      child: IconButton(
+                                        icon: const Icon(Icons.clear),
+                                        onPressed: () => setState(() => usernameController.clear()),
+                                      ),
+                                    )
+                                  : null,
                             ),
                           ),
                         ),
@@ -143,14 +151,16 @@ class _ManualCardState extends State<ManualCard> {
                               icon: const FaIcon(FontAwesomeIcons.key),
                               labelText: FlutterUI.translate("Password"),
                               border: InputBorder.none,
-                              suffixIcon: ExcludeFocus(
-                                child: IconButton(
-                                  icon: Icon(
-                                    _passwordHidden ? Icons.visibility : Icons.visibility_off,
-                                  ),
-                                  onPressed: () => setState(() => _passwordHidden = !_passwordHidden),
-                                ),
-                              ),
+                              suffixIcon: passwordController.text.isNotEmpty
+                                  ? ExcludeFocus(
+                                      child: IconButton(
+                                        icon: Icon(
+                                          _passwordHidden ? Icons.visibility : Icons.visibility_off,
+                                        ),
+                                        onPressed: () => setState(() => _passwordHidden = !_passwordHidden),
+                                      ),
+                                    )
+                                  : null,
                             ),
                           ),
                         ),

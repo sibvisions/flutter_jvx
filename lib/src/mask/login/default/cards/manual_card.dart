@@ -63,7 +63,17 @@ class _ManualCardState extends State<ManualCard> {
           onTap: resetButton,
           onChanged: (_) => resetButton(),
           controller: usernameController,
-          decoration: InputDecoration(labelText: "${FlutterUI.translate("Username")}:"),
+          decoration: InputDecoration(
+            labelText: "${FlutterUI.translate("Username")}:",
+            suffixIcon: usernameController.text.isNotEmpty
+                ? ExcludeFocus(
+                    child: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => setState(() => usernameController.clear()),
+                    ),
+                  )
+                : null,
+          ),
         ),
         TextField(
           textInputAction: TextInputAction.done,
@@ -73,16 +83,16 @@ class _ManualCardState extends State<ManualCard> {
           controller: passwordController,
           decoration: InputDecoration(
             labelText: "${FlutterUI.translate("Password")}:",
-            suffixIcon: IconButton(
-              icon: Icon(
-                _passwordHidden ? Icons.visibility : Icons.visibility_off,
-              ),
-              onPressed: () {
-                setState(() {
-                  _passwordHidden = !_passwordHidden;
-                });
-              },
-            ),
+            suffixIcon: passwordController.text.isNotEmpty
+                ? ExcludeFocus(
+                    child: IconButton(
+                      icon: Icon(
+                        _passwordHidden ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () => setState(() => _passwordHidden = !_passwordHidden),
+                    ),
+                  )
+                : null,
           ),
           obscureText: _passwordHidden,
         ),
