@@ -42,9 +42,9 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
     required super.onEndEditing,
     required super.onFocusChanged,
     this.recalculateSizeCallback,
-  }) : super(
-          model: FlImageCellEditorModel(),
-        );
+  }) : super(model: FlImageCellEditorModel()) {
+    _updateImageProvider();
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
