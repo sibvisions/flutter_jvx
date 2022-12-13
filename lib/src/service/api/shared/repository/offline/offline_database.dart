@@ -184,16 +184,18 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
     //TODO Check default value
 
-    if (pColumn.length != null) {
-      columnDef.write(' CHECK(length("$pColumnName") <= ${pColumn.length})');
-    }
+    if (IConfigService().getAppConfig()?.offlineConfig!.checkConstraints ?? true) {
+      if (pColumn.length != null) {
+        columnDef.write(' CHECK(length("$pColumnName") <= ${pColumn.length})');
+      }
 
-    if (pColumn.precision != null) {
-      columnDef.write(' CHECK("$pColumnName" = ROUND("$pColumnName", ${pColumn.precision}))');
-    }
+      if (pColumn.precision != null) {
+        columnDef.write(' CHECK("$pColumnName" = ROUND("$pColumnName", ${pColumn.precision}))');
+      }
 
-    if (!(pColumn.signed ?? true)) {
-      columnDef.write(' CHECK("$pColumnName") >= 0)');
+      if (!(pColumn.signed ?? true)) {
+        columnDef.write(' CHECK("$pColumnName") >= 0)');
+      }
     }
 
     columnDef.write(",\n");
