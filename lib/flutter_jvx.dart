@@ -13,6 +13,9 @@
  * the License.
  */
 
+/// FlutterJVx: Bridge between Flutter and [JVx](https://sourceforge.net/projects/jvx/).
+library flutter_jvx;
+
 export 'package:beamer/beamer.dart';
 export 'package:latlong2/latlong.dart';
 
