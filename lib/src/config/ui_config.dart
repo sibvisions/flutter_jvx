@@ -15,10 +15,11 @@ class UiConfig {
     this.rememberMeChecked,
   });
 
-  const UiConfig.empty({
-    this.showRememberMe = false,
-    this.rememberMeChecked = false,
-  });
+  const UiConfig.empty()
+      : this(
+          showRememberMe: false,
+          rememberMeChecked: false,
+        );
 
   UiConfig.fromJson(Map<String, dynamic> json)
       : this(
