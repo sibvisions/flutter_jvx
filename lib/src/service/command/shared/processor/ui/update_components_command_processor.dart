@@ -15,9 +15,13 @@
 
 import 'dart:async';
 
-import '../../../../../../flutter_jvx.dart';
+import '../../../../../flutter_ui.dart';
+import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../../../api/shared/fl_component_classname.dart';
+import '../../../../layout/i_layout_service.dart';
+import '../../../../storage/i_storage_service.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateComponentsCommand> {
