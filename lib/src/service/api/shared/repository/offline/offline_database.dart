@@ -420,7 +420,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
           txn,
           offlineTableName,
           updateColumns,
-          where,
+          where?[0],
           [ROW_STATE_UPDATED, ...?where?[1]],
         );
       }
@@ -429,15 +429,18 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Updates all [updateColumns] in [tableName].
+  ///
+  /// [updateColumns.values] are supposed to be column names only.
+  /// If you need to supply a value, use `null` and add it to [args].
   Future<void> _updateOfflineColumns(
     Transaction txn,
     String tableName,
     Map<String, dynamic> updateColumns,
-    List<dynamic>? where,
-    List<dynamic> whereArgs,
+    String? where,
+    List<dynamic> args,
   ) async {
     String updateClause = updateColumns.entries.map((entry) => '${entry.key} = ${entry.value ?? "?"}').join(", ");
-    await txn.rawUpdate('UPDATE "$tableName" SET $updateClause WHERE ${where?[0]}', whereArgs);
+    await txn.rawUpdate('UPDATE "$tableName" SET $updateClause WHERE $where', args);
   }
 
   /// Executes a SQL DELETE query for [pTableName] and returns the number of changes made.
@@ -468,7 +471,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
             txn,
             offlineTableName,
             updateColumns,
-            where,
+            where?[0],
             where?[1],
           );
         }
