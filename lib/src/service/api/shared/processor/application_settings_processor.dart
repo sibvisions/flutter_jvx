@@ -31,6 +31,7 @@ class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSett
         components: pResponse.components,
         reason: "${ApiResponseNames.applicationSettings} was sent",
         originRequest: pRequest,
+        originResponse: pResponse,
       )
     ];
   }

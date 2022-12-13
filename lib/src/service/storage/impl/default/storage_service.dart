@@ -193,6 +193,7 @@ class StorageService implements IStorageService {
       changedComponents: changedUiComponents,
       deletedComponents: deletedUiComponents,
       newDesktopPanel: newDesktopPanel,
+      screenName: screenName,
       reason: "Server Changed Components",
     );
 

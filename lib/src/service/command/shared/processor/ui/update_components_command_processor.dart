@@ -17,6 +17,7 @@ import 'dart:async';
 
 import '../../../../../../flutter_jvx.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
+import '../../../../api/shared/fl_component_classname.dart';
 import '../../i_command_processor.dart';
 
 class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateComponentsCommand> {
@@ -54,7 +55,9 @@ class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateCompon
 
       IUiService().notifyAffectedComponents(affectedIds: command.affectedComponents);
 
-      IStorageService().getDesktopPanelNotifier().value = command.newDesktopPanel;
+      if (command.screenName == FlContainerClassname.DESKTOP_PANEL) {
+        IStorageService().getDesktopPanelNotifier().value = command.newDesktopPanel;
+      }
     });
 
     return [];

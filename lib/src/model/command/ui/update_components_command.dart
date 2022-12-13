@@ -22,6 +22,9 @@ class UpdateComponentsCommand extends UiCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The screenname that caused this update.
+  final String screenName;
+
   /// List of components whose model changed
   final List<String> changedComponents;
 
@@ -43,6 +46,7 @@ class UpdateComponentsCommand extends UiCommand {
     this.changedComponents = const [],
     this.deletedComponents = const {},
     this.newDesktopPanel,
+    required this.screenName,
     required super.reason,
   });
 
