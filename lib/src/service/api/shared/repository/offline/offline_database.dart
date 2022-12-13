@@ -16,7 +16,7 @@ import '../../../../config/i_config_service.dart';
 /// Table and column names are escaped via double quotes.<br>
 /// https://www.sqlite.org/lang_keywords.html
 ///
-/// Has to be closed with [close()]
+/// Has to be closed with [close]
 class OfflineDatabase {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
