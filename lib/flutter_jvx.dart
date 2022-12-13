@@ -19,6 +19,8 @@ library flutter_jvx;
 export 'package:beamer/beamer.dart';
 export 'package:latlong2/latlong.dart';
 
+export 'src/commands.dart';
+export 'src/components.dart';
 // Config
 export 'src/config/api/api_route.dart';
 export 'src/config/app_config.dart';
@@ -43,9 +45,18 @@ export 'src/mask/state/app_style.dart';
 export 'src/mask/state/loading_bar.dart';
 // Model
 export 'src/model/command/base_command.dart';
+// Data
+export 'src/model/data/column_definition.dart';
+export 'src/model/data/data_book.dart';
+export 'src/model/data/filter_condition.dart';
+export 'src/model/data/subscriptions/data_chunk.dart';
+export 'src/model/data/subscriptions/data_record.dart';
+export 'src/model/data/subscriptions/data_subscription.dart';
 export 'src/model/menu/menu_model.dart';
 export 'src/model/request/api_request.dart';
+export 'src/model/request/filter.dart';
 export 'src/model/response/api_response.dart';
+export 'src/model/response/dal_meta_data_response.dart';
 // Services
 export 'src/service/api/i_api_service.dart';
 export 'src/service/api/impl/default/api_service.dart';
