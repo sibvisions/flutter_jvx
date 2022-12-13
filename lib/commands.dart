@@ -19,6 +19,7 @@ export 'src/model/command/api/open_screen_command.dart';
 export 'src/model/command/api/open_tab_command.dart';
 export 'src/model/command/api/press_button_command.dart';
 export 'src/model/command/api/reload_command.dart';
+export 'src/model/command/api/reload_menu_command.dart';
 export 'src/model/command/api/reset_password_command.dart';
 export 'src/model/command/api/rollback_command.dart';
 export 'src/model/command/api/save_command.dart';

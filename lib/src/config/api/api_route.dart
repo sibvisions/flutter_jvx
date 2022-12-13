@@ -21,6 +21,7 @@ class APIRoute {
   static const APIRoute POST_CHANGE_PASSWORD = APIRoute(Method.POST, "api/changePassword");
   static const APIRoute POST_RESET_PASSWORD = APIRoute(Method.POST, "api/resetPassword");
   static const APIRoute POST_NAVIGATION = APIRoute(Method.POST, "api/navigation");
+  static const APIRoute POST_MENU = APIRoute(Method.POST, "api/menu");
   static const APIRoute POST_FETCH = APIRoute(Method.POST, "api/dal/fetch");
   static const APIRoute POST_LOGOUT = APIRoute(Method.POST, "api/logout");
   static const APIRoute POST_FILTER = APIRoute(Method.POST, "api/dal/filter");
