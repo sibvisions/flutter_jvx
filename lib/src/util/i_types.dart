@@ -119,10 +119,10 @@ abstract class Types {
       case BLOB:
         return "BLOB";
 
-      //Date/Time
+      // Date/Time
       case DATE:
       case TIME:
-      //Text
+      // Text
       case CHAR:
       case VARCHAR:
       case LONGVARCHAR:
@@ -132,7 +132,7 @@ abstract class Types {
       case LONGNVARCHAR:
       case NCLOB:
       case SQLXML:
-      //Fallback
+      // Fallback
       default:
         return "TEXT";
     }

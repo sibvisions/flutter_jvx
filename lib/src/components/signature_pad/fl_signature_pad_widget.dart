@@ -88,7 +88,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
           child: image ??
               Signature(
                 key: UniqueKey(),
-                //TODO Remove after initState fix for width and height
+                // TODO Remove after initState fix for width and height
                 width: width,
                 height: height,
                 controller: controller,

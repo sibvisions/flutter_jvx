@@ -227,9 +227,9 @@ class UiService implements IUiService {
   ///
   /// We have to deliver it "fresh" because of the offline state change, possible solution, connect with offlineNotifier
   /// ```dart
-  ///IConfigService().getOfflineNotifier().addListener(() {
-  ///  _menuNotifier.value = _updateMenuModel(_originalMenuModel);
-  ///});
+  /// IConfigService().getOfflineNotifier().addListener(() {
+  ///   _menuNotifier.value = _updateMenuModel(_originalMenuModel);
+  /// });
   /// ```
   MenuModel _updateMenuModel(MenuModel? pMenuModel) {
     List<MenuGroupModel> menuGroupModels = [...?pMenuModel?.copy().menuGroups];

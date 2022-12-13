@@ -78,7 +78,7 @@ abstract class IUiService {
   /// Alternatively use [ICommandService.sendCommand] to get an unmodified future.
   Future<void> sendCommand(BaseCommand command);
 
-  ///Can be used to handle an async error
+  /// Can be used to handle an async error
   handleAsyncError(Object error, StackTrace stackTrace);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

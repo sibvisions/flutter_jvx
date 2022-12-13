@@ -131,7 +131,7 @@ abstract class FrameState extends State<Frame> {
           Builder(
             builder: (context) => IconButton(
               onPressed: () async {
-                //Add your debug code here
+                // Add your debug code here
               },
               icon: const FaIcon(FontAwesomeIcons.bug),
             ),

@@ -327,7 +327,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     initAppFuture = initApp().catchError(createErrorHandler("Failed to initialize")).then((value) {
-      //Activate second future
+      // Activate second future
       restart();
     });
   }
@@ -466,7 +466,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         colorScheme = colorScheme.copyWith(onSurface: JVxColors.LIGHTER_BLACK);
       }
 
-      //Override tealAccent
+      // Override tealAccent
       colorScheme = colorScheme.copyWith(
         secondary: colorScheme.primary,
         onSecondary: colorScheme.onPrimary,
@@ -498,10 +498,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       }
 
       themeData = themeData.copyWith(
-        //Override for dark mode
+        // Override for dark mode
         toggleableActiveColor: themeData.colorScheme.primary,
         listTileTheme: themeData.listTileTheme.copyWith(
-          //TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
+          // TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
           textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
           iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
           // textColor: themeData.colorScheme.onBackground,

@@ -14,7 +14,7 @@
  */
 
 abstract class ApiObjectProperty {
-  //General Properties -- any Component can have these
+  // General Properties -- any Component can have these
   // Basic Data
   static const String id = "id";
   static const String name = "name";
@@ -47,11 +47,11 @@ abstract class ApiObjectProperty {
   static const String font = "font";
   static const String toolTipText = "toolTipText";
 
-  //Parent Properties -- any Component which can have children have these
+  // Parent Properties -- any Component which can have children have these
   static const String layout = "layout";
   static const String layoutData = "layoutData";
 
-  //Screen Properties -- only the most top Panel will have these
+  // Screen Properties -- only the most top Panel will have these
   static const String classNameEventSourceRef = "classNameEventSourceRef";
   static const String mobileAutoClose = "mobile.autoclose";
   static const String screenTitle = "screen_title_";
@@ -59,7 +59,7 @@ abstract class ApiObjectProperty {
   static const String screenModal = "screen_modal_";
   static const String screenClassName = "screen_className_";
 
-  //Common Properties -- these may be used by many different Components
+  // Common Properties -- these may be used by many different Components
   static const String text = "text";
   static const String sideBarText = "sideBarText";
   static const String quickBarText = "quickBarText";
@@ -107,11 +107,11 @@ abstract class ApiObjectProperty {
   static const String x = "x";
   static const String y = "y";
 
-  //Can occur in both request & response
+  // Can occur in both request & response
   static const String clientId = "clientId";
   static const String componentId = "componentId";
 
-  //Request Properties
+  // Request Properties
   static const String deviceMode = "deviceMode";
   static const String applicationName = "applicationName";
   static const String username = "username";
@@ -166,7 +166,7 @@ abstract class ApiObjectProperty {
   static const String langCode = "langCode";
   static const String languageResource = "languageResource";
 
-  //Response Properties
+  // Response Properties
   static const String authenticated = "authenticated";
   static const String openScreen = "openScreen";
   static const String group = "group";
@@ -188,7 +188,7 @@ abstract class ApiObjectProperty {
   static const String layoutMode = "layoutMode";
   static const String info = "info";
 
-  //ApplicationSettings
+  // ApplicationSettings
   static const String save = "save";
   static const String rollback = "rollback";
   static const String changePassword = "changePassword";

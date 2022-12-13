@@ -251,7 +251,7 @@ class OnlineApiRepository implements IRepository {
         onError: (error) {
           FlutterUI.logAPI.w("Connection to Websocket failed", error);
 
-          //Cancel reconnect if manually closed
+          // Cancel reconnect if manually closed
           if (manualClose) {
             manualClose = false;
             return;
@@ -461,7 +461,7 @@ class OnlineApiRepository implements IRepository {
 
     if (kIsWeb) {
       if (request is BrowserHttpClientRequest) {
-        //Handles cookies in browser
+        // Handles cookies in browser
         request.browserCredentialsMode = true;
       }
     } else {
@@ -501,7 +501,7 @@ class OnlineApiRepository implements IRepository {
     HttpClientResponse res = await request.close();
 
     if (!kIsWeb) {
-      //Extract the session-id cookie to be sent in future
+      // Extract the session-id cookie to be sent in future
       _cookies.addAll(res.cookies);
     }
     return res;

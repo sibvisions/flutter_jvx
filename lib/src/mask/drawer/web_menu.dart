@@ -128,7 +128,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
       ],
     );
 
-    //Drawer Menu always stays the same size
+    // Drawer Menu always stays the same size
     if (!widget.inDrawer && layoutMode != LayoutMode.Full) {
       menu = ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 50),
@@ -184,7 +184,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
           hintStyle: TextStyle(
             color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.4),
           ),
-          //Needed to keep vertical align centered
+          // Needed to keep vertical align centered
           contentPadding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
           focusedBorder: _createSearchBorder(),
           enabledBorder: _createSearchBorder(),

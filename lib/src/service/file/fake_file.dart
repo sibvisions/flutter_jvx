@@ -94,7 +94,7 @@ class FakeFile implements File {
     return utf8.decode(byteContent);
   }
 
-  //----------------------------------- NO IMPL -------------------------------
+  // ----------------------------------- NO IMPL -------------------------------
 
   @override
   Future<File> copy(String newPath) async {

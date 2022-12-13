@@ -58,7 +58,7 @@ class Filter {
     ));
   }
 
-  ///Returns this filter as list of filter conditions
+  /// Returns this filter as list of filter conditions
   List<FilterCondition> asFilterConditions() => asMap()
       .entries
       .map((entry) => FilterCondition(

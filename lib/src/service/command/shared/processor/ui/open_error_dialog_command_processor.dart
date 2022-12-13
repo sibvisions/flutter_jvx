@@ -29,7 +29,7 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
     //Will be displayed in Splash if context is null
     if (FlutterUI.getCurrentContext() != null) {
       bool goToSettings = command.isTimeout || command.canBeFixedInSettings;
-      //Don't show "Go to Settings" while in settings
+      // Don't show "Go to Settings" while in settings
       if (FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == SettingsLocation) {
         goToSettings = false;
       }

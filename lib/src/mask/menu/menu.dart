@@ -87,7 +87,7 @@ abstract class Menu extends StatelessWidget {
   }
 
   static void menuItemPressed(BuildContext context, {required String pScreenLongName}) {
-    //Always close drawer even on route (e.g. previewer blocks routing)
+    // Always close drawer even on route (e.g. previewer blocks routing)
     Scaffold.maybeOf(context)?.closeEndDrawer();
 
     // Offline screens no not require the server to know that they are open

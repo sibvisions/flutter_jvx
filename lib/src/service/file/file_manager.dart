@@ -26,7 +26,7 @@ abstract class IFileManager {
   static const String IMAGES_PATH = "images";
   static const String LANGUAGES_PATH = "languages";
 
-  ///Constructs a FileManager depending on the platform
+  /// Constructs a FileManager depending on the platform
   static Future<IFileManager> getFileManager() async {
     return kIsWeb ? FileManagerWeb() : await FileManagerMobile.create();
   }

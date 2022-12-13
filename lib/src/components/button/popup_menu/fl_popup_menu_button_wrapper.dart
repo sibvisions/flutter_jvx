@@ -62,7 +62,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
     registerDescendantModels();
   }
 
-  ///Register descendant models to receive ui updates
+  /// Register descendant models to receive ui updates
   void registerDescendantModels() {
     List<FlComponentModel> descendantModels = IStorageService().getAllComponentsBelowById(pParentId: model.id);
     for (var childModel in descendantModels) {

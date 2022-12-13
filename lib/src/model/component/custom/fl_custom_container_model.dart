@@ -45,7 +45,7 @@ class FlCustomContainerModel extends FlComponentModel {
 
     properties = pJson;
 
-    //Currently only used for signature pad
+    // Currently only used for signature pad
     dataProvider = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.dataRow,

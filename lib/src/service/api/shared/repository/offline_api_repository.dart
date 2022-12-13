@@ -52,7 +52,7 @@ class OfflineApiRepository implements IRepository {
     if (isStopped()) {
       offlineDatabase = await OfflineDatabase.open();
 
-      //Init all databooks because there is no OpenScreenCommand offline
+      // Init all databooks because there is no OpenScreenCommand offline
       await initDataBooks();
     }
   }
@@ -86,7 +86,7 @@ class OfflineApiRepository implements IRepository {
     void Function(int value, int max, {int? progress})? progressUpdate,
   ) async {
     var dalMetaData = dataBooks.map((e) => e.metaData!).toList(growable: false);
-    //Drop old data + possible old scheme
+    // Drop old data + possible old scheme
     await offlineDatabase!.dropTables(dalMetaData);
     offlineDatabase!.createTables(dalMetaData);
 
@@ -179,13 +179,13 @@ class OfflineApiRepository implements IRepository {
       filters.add(FilterCondition(columnName: "ROWID", value: pRequest.selectedRow));
     }
 
-    //Fallback
+    // Fallback
     if (filters.isEmpty) {
       Filter? selectedRowFilter = _createSelectedRowFilter(pDataProvider: pRequest.dataProvider);
       if (selectedRowFilter != null) {
         filters.addAll(selectedRowFilter.asFilterConditions());
       } else {
-        //Cancel when no filter
+        // Cancel when no filter
         return _refetchMaximum(pRequest.dataProvider);
       }
     }
@@ -292,13 +292,13 @@ class OfflineApiRepository implements IRepository {
     List<FilterCondition> filters = _getLastFilter(pRequest.dataProvider);
     filters.addAll([...?_getFilter(pRequest.filter, pRequest.filterCondition)]);
 
-    //Fallback
+    // Fallback
     if (filters.isEmpty) {
       Filter? selectedRowFilter = _createSelectedRowFilter(pDataProvider: pRequest.dataProvider);
       if (selectedRowFilter != null) {
         filters.addAll(selectedRowFilter.asFilterConditions());
       } else {
-        //Cancel when no filter
+        // Cancel when no filter
         return _refetchMaximum(pRequest.dataProvider);
       }
     }
@@ -341,7 +341,7 @@ class OfflineApiRepository implements IRepository {
     if (pFilterCondition != null) {
       return [pFilterCondition];
     } else if (!(pFilter?.isEmpty ?? true)) {
-      //Not null and not empty
+      // Not null and not empty
       return pFilter!.asFilterConditions();
     }
     return null;

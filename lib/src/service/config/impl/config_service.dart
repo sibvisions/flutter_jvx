@@ -426,7 +426,7 @@ class ConfigService implements IConfigService {
     return appConfig;
   }
 
-  ///Only call if you know what you do!
+  /// Only call if you know what you do!
   setAppConfig(AppConfig? pAppConfig, [bool devConfig = false]) async {
     appConfig = pAppConfig;
     if (devConfig) {
@@ -558,7 +558,7 @@ class ConfigService implements IConfigService {
   @override
   void setApplicationSettings(ApplicationSettingsResponse pApplicationSettings) {
     applicationSettings = pApplicationSettings;
-    //Trigger setState
+    // Trigger setState
     callbacks['style']?.forEach((element) => element.call());
   }
 

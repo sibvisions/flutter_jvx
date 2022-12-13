@@ -43,7 +43,7 @@ class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
 
   @override
   Widget build(BuildContext context) {
-    //All layout information of our children.
+    // All layout information of our children.
     List<BaseCompWrapperWidget> childrenToWrap = [];
 
     for (Widget childWidget in children) {

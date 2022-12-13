@@ -240,7 +240,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
   Divider _buildFooterDivider(BuildContext context) {
     return Divider(
-      //Specifically requested color mix
+      // Specifically requested color mix
       color: JVxColors.lighten(Theme.of(context).colorScheme.onPrimary, 0.4),
       height: 1,
     );

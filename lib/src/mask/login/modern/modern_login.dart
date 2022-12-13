@@ -38,7 +38,7 @@ import 'middle_clipper_with_double_curve.dart';
 class ModernLogin extends StatelessWidget implements Login {
   final LoginMode mode;
 
-  //Parameter workaround
+  // Parameter workaround
   late bool showSettingsInCard;
 
   ModernLogin({

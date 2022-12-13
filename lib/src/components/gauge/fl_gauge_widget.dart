@@ -332,7 +332,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
   }
 }
 
-//Syncfusion Widget
+// Syncfusion Widget
 // Widget createSpeedometer() {
 //   return SfRadialGauge(
 //     axes: [

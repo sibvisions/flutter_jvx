@@ -28,7 +28,7 @@ class FlEditorModel extends FlComponentModel implements IDataModel {
 
   Map<String, dynamic> json = {};
 
-  //ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
+  // ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
 
   FlEditorModel();
 

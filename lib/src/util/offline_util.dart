@@ -80,7 +80,7 @@ abstract class OfflineUtil {
       );
 
       offlineApiRepository = IApiService().getRepository() as OfflineApiRepository;
-      //Set online api repository to handle commands
+      // Set online api repository to handle commands
       onlineApiRepository = OnlineApiRepository();
       await onlineApiRepository.start();
       IApiService().setRepository(onlineApiRepository);
@@ -207,12 +207,12 @@ abstract class OfflineUtil {
     } catch (e, stackTrace) {
       FlutterUI.logAPI.e("Error while syncing offline data", e, stackTrace);
 
-      //Revert all changes in case we have an in-tact offline state
+      // Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
         await onlineApiRepository?.stop();
         IApiService().setRepository(offlineApiRepository);
         await IConfigService().setOffline(true);
-        //Clear menu
+        // Clear menu
         IUiService().setMenuModel(null);
       }
 
@@ -233,7 +233,7 @@ abstract class OfflineUtil {
       );
     } finally {
       await Wakelock.disable();
-      //In case it hasn't been closed yet
+      // In case it hasn't been closed yet
       ProgressDialogWidget.safeClose(dialogKey);
     }
   }
@@ -391,7 +391,7 @@ abstract class OfflineUtil {
   }
 
   static Set<String> getActiveDataProviders(String offlineWorkscreen) {
-    //String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
+    // String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
     return IDataService().getDataBooks().keys.toList().where((element) {
       var prefixes = element.split("/");
       if (prefixes.length >= 2) {
@@ -431,7 +431,7 @@ abstract class OfflineUtil {
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
-      //Set already here to receive errors from api responses
+      // Set already here to receive errors from api responses
       await IConfigService().setOffline(true);
 
       unawaited(IUiService().openDialog(
@@ -482,7 +482,7 @@ abstract class OfflineUtil {
         ));
       });
 
-      //Clear databooks for offline usage
+      // Clear databooks for offline usage
       IDataService().clearDataBooks();
       await offlineApiRepository.initDataBooks();
 
@@ -490,7 +490,7 @@ abstract class OfflineUtil {
       var panelModel = IStorageService().getComponentByName(pComponentName: pWorkscreen) as FlPanelModel;
       await IConfigService().setOfflineScreen(panelModel.screenClassName!);
       await onlineApiRepository.stop();
-      //Clear menu
+      // Clear menu
       IUiService().setMenuModel(null);
 
       ProgressDialogWidget.close(FlutterUI.getCurrentContext()!);
@@ -498,7 +498,7 @@ abstract class OfflineUtil {
     } catch (e, stack) {
       FlutterUI.logAPI.e("Error while downloading offline data", e, stack);
 
-      //Revert all changes
+      // Revert all changes
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
         await offlineApiRepository.deleteDatabase();
       }
@@ -523,7 +523,7 @@ abstract class OfflineUtil {
       );
     } finally {
       await Wakelock.disable();
-      //In case it hasn't been closed yet
+      // In case it hasn't been closed yet
       ProgressDialogWidget.safeClose(dialogKey);
     }
   }

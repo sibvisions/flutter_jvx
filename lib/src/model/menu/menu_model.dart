@@ -34,7 +34,7 @@ class MenuModel {
         .firstWhere((element) => element.screenLongName.contains(pClassName));
   }
 
-  ///Makes a deep copy of this object but keeps shallow copies of child objects
+  /// Makes a deep copy of this object but keeps shallow copies of child objects
   MenuModel copy() {
     return MenuModel(menuGroups: [...menuGroups.map((e) => e.copy())]);
   }

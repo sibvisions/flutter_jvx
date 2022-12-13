@@ -53,7 +53,7 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
           }
         },
         zoom: model.zoomLevel,
-        //Seems to be necessary even though it's the fallback
+        // Seems to be necessary even though it's the fallback
         minZoom: 0,
         maxZoom: 18,
         center: model.center,

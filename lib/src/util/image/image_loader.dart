@@ -27,7 +27,7 @@ import '../../service/config/i_config_service.dart';
 import '../../service/file/file_manager.dart';
 import '../font_awesome_util.dart';
 
-//TODO investigate loading delays
+// TODO investigate loading delays
 abstract class ImageLoader {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
@@ -141,7 +141,7 @@ abstract class ImageLoader {
     if (pImageInBase64) {
       imageProvider = MemoryImage(base64Decode(pImageString));
     } else {
-      //Cut away optional size
+      // Cut away optional size
       int commaIndex = pImageString.indexOf(",");
       if (commaIndex >= 0) {
         pImageString = pImageString.substring(0, commaIndex);

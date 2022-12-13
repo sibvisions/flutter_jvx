@@ -24,7 +24,7 @@ class MenuGroupModel {
     required this.items,
   });
 
-  ///Makes a deep copy of this object but keeps shallow copies of child objects
+  /// Makes a deep copy of this object but keeps shallow copies of child objects
   MenuGroupModel copy() {
     return MenuGroupModel(name: name, items: [...items]);
   }

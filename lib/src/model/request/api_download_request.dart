@@ -54,7 +54,7 @@ class ApiDownloadRequest extends DownloadRequest {
         ...super.toJson(),
         ApiObjectProperty.name: name,
         ApiObjectProperty.fileId: fileId,
-        //ApiObjectProperty.fileName: fileName,
-        //ApiObjectProperty.url: url,
+        // ApiObjectProperty.fileName: fileName,
+        // ApiObjectProperty.url: url,
       };
 }

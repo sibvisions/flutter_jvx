@@ -72,7 +72,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
 
   @override
   Future<List<BaseCommand>> processCommand(UiCommand command) async {
-    //Switch-Case doesn't work for types
+    // Switch-Case doesn't work for types
     if (command is UpdateComponentsCommand) {
       return _updateComponentsProcessor.processCommand(command);
     } else if (command is UpdateLayoutPositionCommand) {

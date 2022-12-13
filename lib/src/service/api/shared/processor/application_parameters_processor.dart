@@ -22,7 +22,7 @@ class ApplicationParametersProcessor implements IResponseProcessor<ApplicationPa
   @override
   List<BaseCommand> processResponse(ApplicationParametersResponse pResponse, ApiRequest? pRequest) {
     List<BaseCommand> commands = [];
-    //TODO use application parameters
+    // TODO use application parameters
 
     return commands;
   }

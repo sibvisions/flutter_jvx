@@ -108,7 +108,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                   : LiquidLinearProgressIndicator(
                       value: progress,
                       valueColor: AlwaysStoppedAnimation(effectiveValueColor),
-                      //Workaround to disable wave on 100%
+                      // Workaround to disable wave on 100%
                       backgroundColor: progress >= 1 ? effectiveValueColor : _config.progressBgColor,
                       borderRadius: 15.0,
                       borderWidth: 2.0,

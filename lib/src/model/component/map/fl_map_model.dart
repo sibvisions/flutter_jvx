@@ -30,35 +30,35 @@ class FlMapModel extends FlComponentModel {
   //Where the map should be centered
   LatLng? center = LatLng(48, 17);
 
-  //List of Markers that will be shown on the map
+  // List of Markers that will be shown on the map
   List<Marker> markers = [];
 
-  //List of Polygons that will be shown on the map
+  // List of Polygons that will be shown on the map
   List<Polygon> polygons = [];
 
-  //Zoom factor of map
+  // Zoom factor of map
   double zoomLevel = 13;
 
-  //Fill Color
+  // Fill Color
   Color fillColor = Colors.white;
 
-  //Line Color
+  // Line Color
   Color lineColor = JVxColors.LIGHTER_BLACK;
 
-  //bool PointSelectionEnabled
+  // bool PointSelectionEnabled
   bool pointSelectionEnabled = true;
 
-  //bool pointSelectionLockedOnCenter
+  // bool pointSelectionLockedOnCenter
   bool pointSelectionLockedOnCenter = false;
 
-  //TitleProvider
+  // TitleProvider
   String tileProvider = "OpenStreetMap";
 
   String? groupDataBook;
   String? pointsDataBook;
 
-  //layoutVal?:CSSProperties,
-  //centerPosition?:MapLocation
+  // layoutVal?:CSSProperties,
+  // centerPosition?:MapLocation
   String groupColumnName = "GROUP";
 
   String latitudeColumnName = "LATITUDE";

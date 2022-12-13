@@ -31,12 +31,12 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
     //Will be displayed in Splash if context is null
     if (FlutterUI.getCurrentContext() != null) {
       bool goToSettings = command.userError;
-      //Don't show "Go to Settings" while in settings
+      // Don't show "Go to Settings" while in settings
       if (FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == SettingsLocation) {
         goToSettings = false;
       }
 
-      //Check if there isn't already another dialog with the same id
+      // Check if there isn't already another dialog with the same id
       if (command.componentId == null ||
           IUiService()
               .getFrameDialogs()

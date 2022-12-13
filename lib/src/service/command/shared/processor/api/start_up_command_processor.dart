@@ -43,7 +43,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
 
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
 
-    //Close frames on (re-)start
+    // Close frames on (re-)start
     if (FlutterUI.getCurrentContext() != null) {
       IUiService().closeFrames();
       IUiService().closeFrameDialogs();

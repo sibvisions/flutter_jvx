@@ -346,7 +346,7 @@ class _SettingsPageState extends State<SettingsPage> {
     SettingItem languageSetting = _buildPickerItem<String>(
       frontIcon: FontAwesomeIcons.language,
       title: "Language",
-      //"System" is default
+      // "System" is default
       value: language ?? supportedLanguages[0],
       onPressed: (value) {
         _buildPicker(
@@ -356,7 +356,7 @@ class _SettingsPageState extends State<SettingsPage> {
             if (values.isNotEmpty) {
               String? selectedLanguage = picker.getSelectedValues()[0];
               if (selectedLanguage == supportedLanguages[0]) {
-                //"System" selected
+                // "System" selected
                 selectedLanguage = null;
               }
               language = selectedLanguage;
@@ -426,7 +426,7 @@ class _SettingsPageState extends State<SettingsPage> {
         _buildPicker(
           selecteds: [resolutions.indexOf(value!)],
           adapter: PickerDataAdapter<String>(
-            //Using data breaks theme styling!
+            // Using data breaks theme styling!
             pickerdata: resolutions.map((e) => "$e px").toList(),
           ),
           onConfirm: (Picker picker, List<int> values) {

@@ -94,7 +94,7 @@ class OfflineDatabase {
       onUpgrade: (db, oldVersion, newVersion) => _initStructTables(db),
       // Set the version. This executes the onCreate/onUpgrade function and provides a
       // path to perform database upgrades and downgrades.
-      //TODO check version (sync with app_version?)
+      // TODO check version (sync with app_version?)
       version: 1,
     );
   }
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     var columnDef = StringBuffer('"$pColumnName" ');
     columnDef.write(Types.convertToSQLite(pColumn.dataTypeIdentifier, scale: pColumn.scale));
 
-    //TODO Check default value
+    // TODO Check default value
 
     if (IConfigService().getAppConfig()?.offlineConfig!.checkConstraints ?? true) {
       if (pColumn.length != null) {
