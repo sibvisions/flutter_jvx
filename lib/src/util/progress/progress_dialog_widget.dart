@@ -177,7 +177,7 @@ class Config {
 
   /// Determines whether the dialog closes when the back button or screen is clicked.
   ///
-  /// (Default: [false])
+  /// (Default: `false`)
   final bool? barrierDismissible;
   final EdgeInsetsGeometry? contentPadding;
   final EdgeInsetsGeometry? buttonPadding;

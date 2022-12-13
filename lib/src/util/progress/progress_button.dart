@@ -238,7 +238,7 @@ class StateButton {
   final double? elevation;
   final ShapeBorder? shape;
 
-  /// Background color, used by the animations, defaults to [Theme.primary]
+  /// Background color, used by the animations, defaults to [ColorScheme.primary]
   final Color? color;
 
   /// Text style

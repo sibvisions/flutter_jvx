@@ -13,10 +13,11 @@
  * the License.
  */
 
+import '../../../components/button/popup_menu/fl_popup_menu_item_widget.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../fl_component_model.dart';
 
-/// The model for [FlPopupMenuWidget]
+/// The model for [FlPopupMenuItemWidget]
 class FlPopupMenuItemModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
