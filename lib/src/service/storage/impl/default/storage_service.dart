@@ -83,6 +83,7 @@ class StorageService implements IStorageService {
         }
         if (componentModel.className == FlContainerClassname.DESKTOP_PANEL) {
           newDesktopPanel = componentModel;
+          componentModel.parent = null;
         }
         _componentMap[componentModel.id] = componentModel;
         _addAsChild(componentModel);
