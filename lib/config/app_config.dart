@@ -1,3 +1,4 @@
+import 'offline_config.dart';
 import 'server_config.dart';
 import 'ui_config.dart';
 import 'version_config.dart';
@@ -15,6 +16,7 @@ class AppConfig {
   final UiConfig? uiConfig;
   final ServerConfig? serverConfig;
   final VersionConfig? versionConfig;
+  final OfflineConfig? offlineConfig;
 
   final Map<String, dynamic>? startupParameters;
 
@@ -30,6 +32,7 @@ class AppConfig {
     this.uiConfig,
     this.serverConfig,
     this.versionConfig,
+    this.offlineConfig,
     this.startupParameters,
   });
 
@@ -41,6 +44,7 @@ class AppConfig {
           uiConfig: const UiConfig.empty(),
           serverConfig: const ServerConfig.empty(),
           versionConfig: const VersionConfig.empty(),
+          offlineConfig: const OfflineConfig.empty(),
         );
 
   AppConfig.fromJson(Map<String, dynamic> json)
@@ -52,6 +56,7 @@ class AppConfig {
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
           serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json['serverConfig']) : null,
           versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json['versionConfig']) : null,
+          offlineConfig: json['offlineConfig'] != null ? OfflineConfig.fromJson(json['offlineConfig']) : null,
           startupParameters: json['startupParameters'],
         );
 
@@ -66,6 +71,7 @@ class AppConfig {
       uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
       serverConfig: serverConfig?.merge(other.serverConfig) ?? other.serverConfig,
       versionConfig: versionConfig?.merge(other.versionConfig) ?? other.versionConfig,
+      offlineConfig: offlineConfig?.merge(other.offlineConfig) ?? other.offlineConfig,
       startupParameters: (startupParameters ?? {})..addAll(other.startupParameters ?? {}),
     );
   }
