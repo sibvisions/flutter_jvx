@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 abstract class JVxColors {
   static const Color LIGHTER_BLACK = Color(0xFF424242);
