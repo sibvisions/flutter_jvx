@@ -90,6 +90,7 @@ abstract class Types {
 
   static const int SQLXML = 2009;
 
+  /// Transforms a server given [dataType] to an SQLite-conform datatype.
   static String convertToSQLite(int dataType, {int? scale}) {
     switch (dataType) {
       case NULL:
