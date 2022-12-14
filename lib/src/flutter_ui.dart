@@ -30,6 +30,7 @@ import 'package:universal_io/io.dart';
 import 'config/app_config.dart';
 import 'custom/app_manager.dart';
 import 'exceptions/error_view_exception.dart';
+import 'mask/debug_overlay.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
@@ -363,7 +364,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
       title: widget.appConfig?.title ?? FlutterUI.packageInfo.appName,
       builder: (context, child) {
-        return FutureBuilder(
+        Widget futureBuilder = FutureBuilder(
           future: initAppFuture,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
@@ -390,6 +391,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             ]);
           },
         );
+
+        if (kDebugMode) {
+          futureBuilder = DebugOverlay(
+            callback: () {
+              widget.appManager?.onDebugTrigger();
+            },
+            child: futureBuilder,
+          );
+        }
+
+        return futureBuilder;
       },
     );
   }

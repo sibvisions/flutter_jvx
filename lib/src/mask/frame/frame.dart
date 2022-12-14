@@ -15,7 +15,6 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/api/logout_command.dart';
@@ -126,17 +125,7 @@ abstract class FrameState extends State<Frame> {
         ),
       );
 
-  List<Widget> getActions() => [
-        if (kDebugMode)
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () async {
-                // Add your debug code here
-              },
-              icon: const FaIcon(FontAwesomeIcons.bug),
-            ),
-          )
-      ];
+  List<Widget> getActions() => [];
 
   Widget? getDrawer(BuildContext context) => null;
 
