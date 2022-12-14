@@ -304,15 +304,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   Future<void> selectRecord(int pRowIndex) async {
     if (_metaData == null && _chunkData == null) {
       return;
-    } else if (pRowIndex == -1) {
-      return ICommandService().sendCommand(
-        SelectRecordCommand(
-          dataProvider: model.linkReference.dataProvider,
-          selectedRecord: -1,
-          reason: "Tapped",
-          filter: null,
-        ),
-      );
     }
 
     List<String> listColumnNames = [];
@@ -416,7 +407,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         dataProvider: model.linkReference.dataProvider,
         onDataChunk: _receiveData,
         onMetaData: _receiveMetaData,
-        dataColumns: _columnNamesToSubscribe(),
         from: 0,
         to: 100 * scrollingPage,
       ),
