@@ -415,7 +415,6 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
     if (kIsWeb) {
       return Scrollbar(
-        thumbVisibility: true,
         controller: headerHorizontalController,
         child: header,
       );
