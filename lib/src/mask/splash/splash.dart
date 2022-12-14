@@ -14,20 +14,25 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 import '../../flutter_ui.dart';
 import '../../util/image/image_loader.dart';
 import 'jvx_splash.dart';
 
+typedef SplashBuilder = Widget Function(
+  BuildContext context,
+  AsyncSnapshot? snapshot,
+);
+
 class Splash extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final Widget Function(BuildContext context, AsyncSnapshot? snapshot)? loadingBuilder;
+  final SplashBuilder? splashBuilder;
   final AsyncSnapshot? snapshot;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -35,13 +40,14 @@ class Splash extends StatelessWidget {
 
   const Splash({
     super.key,
-    this.loadingBuilder,
+    required this.navigatorKey,
+    this.splashBuilder,
     this.snapshot,
   });
 
   @override
   Widget build(BuildContext context) {
-    return loadingBuilder?.call(context, snapshot) ??
+    return splashBuilder?.call(context, snapshot) ??
         JVxSplash(
           snapshot: snapshot,
           logo: Image(

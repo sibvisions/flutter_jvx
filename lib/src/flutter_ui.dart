@@ -137,7 +137,7 @@ class FlutterUI extends StatefulWidget {
   final AppManager? appManager;
 
   /// Builder function for custom splash widget
-  final Widget Function(BuildContext context, AsyncSnapshot? snapshot)? splashBuilder;
+  final SplashBuilder? splashBuilder;
 
   /// Builder function for custom login widget
   final Widget Function(BuildContext context, LoginMode mode)? loginBuilder;
@@ -179,6 +179,11 @@ class FlutterUI extends StatefulWidget {
 
   static BuildContext? getCurrentContext() {
     return routerDelegate.navigatorKey.currentContext;
+  }
+
+  /// Returns the context of the navigator while we are in the splash.
+  static BuildContext? getSplashContext() {
+    return splashNavigatorKey.currentContext;
   }
 
   static void clearHistory() {
@@ -287,7 +292,9 @@ class FlutterUI extends StatefulWidget {
 }
 
 late BeamerDelegate routerDelegate;
-// Global Bucket to persist the storage between different locations
+final GlobalKey<NavigatorState> splashNavigatorKey = GlobalKey();
+
+/// Global Bucket to persist the storage between different locations
 PageStorageBucket pageStorageBucket = PageStorageBucket();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
@@ -369,29 +376,38 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                     return JVxOverlay(child: child ?? const SizedBox.shrink());
                   }
 
-                  return Theme(
-                    data: splashTheme,
-                    child: Stack(children: [
-                      Splash(loadingBuilder: widget.splashBuilder, snapshot: snapshot),
-                      if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                        _getStartupErrorDialog(context, snapshot),
-                    ]),
-                  );
+                  return _buildSplash(snapshot, children: [
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                      _getStartupErrorDialog(context, snapshot),
+                  ]);
                 },
               );
             }
 
-            return Theme(
-              data: splashTheme,
-              child: Stack(children: [
-                Splash(loadingBuilder: widget.splashBuilder, snapshot: snapshot),
-                if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                  _getFatalErrorDialog(context, snapshot),
-              ]),
-            );
+            return _buildSplash(snapshot, children: [
+              if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                _getFatalErrorDialog(context, snapshot),
+            ]);
           },
         );
       },
+    );
+  }
+
+  Widget _buildSplash(AsyncSnapshot snapshot, {List<Widget>? children}) {
+    return MaterialApp(
+      navigatorKey: splashNavigatorKey,
+      theme: splashTheme,
+      home: Stack(
+        children: [
+          Splash(
+            navigatorKey: splashNavigatorKey,
+            splashBuilder: widget.splashBuilder,
+            snapshot: snapshot,
+          ),
+          ...?children,
+        ],
+      ),
     );
   }
 
