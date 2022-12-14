@@ -16,13 +16,13 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/component/panel/fl_panel_model.dart';
+import '../../../../util/misc/jvx_notifier.dart';
 import '../../../api/shared/api_object_property.dart';
 import '../../../api/shared/fl_component_classname.dart';
 import '../../i_storage_service.dart';
@@ -39,7 +39,9 @@ class StorageService implements IStorageService {
   final HashMap<String, Set<String>> _childrenTree = HashMap();
 
   /// The value notifier triggers rebuilds of the menu.
-  final ValueNotifier<FlComponentModel?> _desktopNotifier = ValueNotifier(null);
+  late final JVxNotifier<FlComponentModel?> _desktopNotifier = JVxNotifier(
+    () => _componentMap.values.firstWhereOrNull((element) => element.className == FlContainerClassname.DESKTOP_PANEL),
+  );
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,6 +50,9 @@ class StorageService implements IStorageService {
 
   @override
   void clear() {
+    // The desktoppanel is kept after logging out so we have to exlude it from cleaning.
+    // List<FlComponentModel> desktopComponentList = _getAllComponentsBelowScreen(FlContainerClassname.DESKTOP_PANEL);
+
     _componentMap.clear();
     _childrenTree.clear();
   }
@@ -72,7 +77,6 @@ class StorageService implements IStorageService {
 
     List<FlComponentModel> oldScreenComps = _getAllComponentsBelowScreen(screenName);
 
-    FlComponentModel? newDesktopPanel;
     // Handle new Components
     if (newComponents != null) {
       for (FlComponentModel componentModel in newComponents) {
@@ -80,9 +84,6 @@ class StorageService implements IStorageService {
         String? parentId = componentModel.parent;
         if (parentId != null) {
           affectedModels.add(parentId);
-        }
-        if (componentModel.className == FlContainerClassname.DESKTOP_PANEL) {
-          newDesktopPanel = componentModel;
         }
         _componentMap[componentModel.id] = componentModel;
         _addAsChild(componentModel);
@@ -192,7 +193,6 @@ class StorageService implements IStorageService {
       affectedComponents: affectedUiComponents,
       changedComponents: changedUiComponents,
       deletedComponents: deletedUiComponents,
-      newDesktopPanel: newDesktopPanel,
       screenName: screenName,
       reason: "Server Changed Components",
     );
@@ -309,7 +309,9 @@ class StorageService implements IStorageService {
 
     if (screenModels.length >= 2) {
       FlutterUI.logUI.wtf("The same screen is found twice in the storage service!!!!");
-    } else if (screenModels.length == 1 && (pIgnoreVisibility || screenModels.first.isVisible)) {
+    } else if (screenModels.length == 1 &&
+        (pIgnoreVisibility || screenModels.first.isVisible) &&
+        (pIncludeRemoved || !screenModels.first.isRemoved)) {
       if (pIncludeItself) {
         list.add(screenModels.first);
       }
@@ -341,7 +343,7 @@ class StorageService implements IStorageService {
   }
 
   @override
-  ValueNotifier<FlComponentModel?> getDesktopPanelNotifier() {
+  JVxNotifier<FlComponentModel?> getDesktopPanelNotifier() {
     return _desktopNotifier;
   }
 
@@ -351,11 +353,10 @@ class StorageService implements IStorageService {
 
   List<FlComponentModel> _getAllComponentsBelowScreen(String screenName) {
     if (screenName == FlContainerClassname.DESKTOP_PANEL) {
-      if (_desktopNotifier.value == null) {
-        return [];
-      } else {
-        return getAllComponentsBelowByName(name: _desktopNotifier.value!.name, pIncludeItself: true);
-      }
+      return _getAllComponentsBelowByWhere(
+        pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
+        pIncludeItself: true,
+      );
     } else {
       return getAllComponentsBelowByName(name: screenName, pIncludeItself: true);
     }

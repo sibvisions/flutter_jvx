@@ -13,7 +13,6 @@
  * the License.
  */
 
-import '../../component/fl_component_model.dart';
 import 'ui_command.dart';
 
 /// Command to update components.
@@ -34,9 +33,6 @@ class UpdateComponentsCommand extends UiCommand {
   /// The affected component models.
   final Set<String> affectedComponents;
 
-  /// A new desktop panel.
-  final FlComponentModel? newDesktopPanel;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +41,6 @@ class UpdateComponentsCommand extends UiCommand {
     this.affectedComponents = const {},
     this.changedComponents = const [],
     this.deletedComponents = const {},
-    this.newDesktopPanel,
     required this.screenName,
     required super.reason,
   });

@@ -60,7 +60,7 @@ class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateCompon
       IUiService().notifyAffectedComponents(affectedIds: command.affectedComponents);
 
       if (command.screenName == FlContainerClassname.DESKTOP_PANEL) {
-        IStorageService().getDesktopPanelNotifier().value = command.newDesktopPanel;
+        IStorageService().getDesktopPanelNotifier().notify();
       }
     });
 
