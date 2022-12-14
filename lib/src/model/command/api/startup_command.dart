@@ -46,7 +46,7 @@ class StartupCommand extends ApiCommand {
     afterProcessing = () {
       // Beamer's history also contains the present!
       FlutterUI.clearHistory();
-      FlutterUI.clearServices();
+      FlutterUI.clearServices(true);
       FlutterUI.resetPageBucket();
     };
     onFinish = () {

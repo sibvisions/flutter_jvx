@@ -191,9 +191,9 @@ class FlutterUI extends StatefulWidget {
     routerDelegate.currentBeamLocation.history.removeAllExceptLast();
   }
 
-  static void clearServices() {
+  static void clearServices(bool pFullClear) {
     ILayoutService().clear();
-    IStorageService().clear();
+    IStorageService().clear(pFullClear);
     IDataService().clear();
     IUiService().clear();
   }

@@ -49,14 +49,17 @@ class StorageService implements IStorageService {
   StorageService.create();
 
   @override
-  void clear() {
+  void clear(bool pFullClear) {
     // The desktoppanel is kept after logging out so we have to exlude it from cleaning.
-    List<FlComponentModel> desktopComponentList = _getAllComponentsBelowByWhere(
-      pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
-      pIncludeItself: true,
-      pIgnoreVisibility: true,
-      pIncludeRemoved: true,
-    );
+
+    List<FlComponentModel> desktopComponentList = pFullClear
+        ? [] // Don't keep desktop panel on full clear.
+        : _getAllComponentsBelowByWhere(
+            pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
+            pIncludeItself: true,
+            pIgnoreVisibility: true,
+            pIncludeRemoved: true,
+          );
 
     _componentMap.clear();
     _childrenTree.clear();
