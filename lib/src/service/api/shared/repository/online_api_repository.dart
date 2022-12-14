@@ -100,7 +100,7 @@ import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
 import '../../../../util/import_handler/import_handler.dart';
 import '../../../command/i_command_service.dart';
-import '../../../config/i_config_service.dart';
+import '../../../config/config_service.dart';
 import '../../../ui/i_ui_service.dart';
 import '../api_object_property.dart';
 import '../api_response_names.dart';
@@ -214,7 +214,7 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<void> start() async {
-    client ??= HttpClient()..connectionTimeout = Duration(seconds: IConfigService().getAppConfig()!.requestTimeout!);
+    client ??= HttpClient()..connectionTimeout = Duration(seconds: ConfigService().getAppConfig()!.requestTimeout!);
   }
 
   Future<void> startWebSocket([bool reconnect = false]) async {
@@ -288,7 +288,7 @@ class OnlineApiRepository implements IRepository {
   }
 
   void showStatus(String message) {
-    if (!IConfigService().isOffline()) {
+    if (!ConfigService().isOffline()) {
       ScaffoldMessenger.of(FlutterUI.getCurrentContext()!).showSnackBar(SnackBar(
         content: Text(message),
       ));
@@ -305,7 +305,7 @@ class OnlineApiRepository implements IRepository {
   }
 
   Uri _getWebSocketUri(bool reconnect) {
-    Uri location = Uri.parse(IConfigService().getBaseUrl()!);
+    Uri location = Uri.parse(ConfigService().getBaseUrl()!);
 
     const String subPath = "/services/mobile";
     int? end = location.path.lastIndexOf(subPath);
@@ -315,7 +315,7 @@ class OnlineApiRepository implements IRepository {
       scheme: location.scheme == "https" ? "wss" : "ws",
       path: "${location.path.substring(0, end)}/pushlistener",
       queryParameters: {
-        "clientId": IConfigService().getClientId()!,
+        "clientId": ConfigService().getClientId()!,
         if (reconnect) "reconnect": null,
       },
     );
@@ -361,8 +361,8 @@ class OnlineApiRepository implements IRepository {
     if (route != null) {
       try {
         if (pRequest is SessionRequest) {
-          if (IConfigService().getClientId()?.isNotEmpty == true) {
-            pRequest.clientId = IConfigService().getClientId()!;
+          if (ConfigService().getClientId()?.isNotEmpty == true) {
+            pRequest.clientId = ConfigService().getClientId()!;
           } else {
             throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
           }
@@ -375,7 +375,7 @@ class OnlineApiRepository implements IRepository {
           onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
           onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
           maxAttempts: 3,
-          maxDelay: Duration(seconds: IConfigService().getAppConfig()!.requestTimeout!),
+          maxDelay: Duration(seconds: ConfigService().getAppConfig()!.requestTimeout!),
         );
 
         if (response.statusCode >= 400 && response.statusCode <= 599) {
@@ -428,7 +428,7 @@ class OnlineApiRepository implements IRepository {
 
         IUiService().getAppManager()?.modifyResponses(apiInteraction);
 
-        if (IConfigService().isOffline()) {
+        if (ConfigService().isOffline()) {
           var viewResponse = apiInteraction.responses.firstWhereOrNull((element) => element is MessageView);
           if (viewResponse != null) {
             var messageViewResponse = viewResponse as MessageView;
@@ -456,7 +456,7 @@ class OnlineApiRepository implements IRepository {
 
   /// Send post request to remote server, applies timeout.
   Future<HttpClientResponse> _sendPostRequest(APIRoute route, ApiRequest pRequest) async {
-    Uri uri = Uri.parse("${IConfigService().getBaseUrl()!}/${route.route}");
+    Uri uri = Uri.parse("${ConfigService().getBaseUrl()!}/${route.route}");
     HttpClientRequest request = await connect(uri, route.method);
 
     if (kIsWeb) {

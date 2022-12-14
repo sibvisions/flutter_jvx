@@ -47,8 +47,7 @@ import 'service/api/shared/repository/offline_api_repository.dart';
 import 'service/api/shared/repository/online_api_repository.dart';
 import 'service/command/i_command_service.dart';
 import 'service/command/impl/command_service.dart';
-import 'service/config/i_config_service.dart';
-import 'service/config/impl/config_service.dart';
+import 'service/config/config_service.dart';
 import 'service/data/i_data_service.dart';
 import 'service/data/impl/data_service.dart';
 import 'service/file/file_manager.dart';
@@ -171,7 +170,7 @@ class FlutterUI extends StatefulWidget {
 
   /// Translates any text through the translation files loaded by the application.
   static String translate(String? pText) {
-    return IConfigService().translateText(pText ?? "");
+    return ConfigService().translateText(pText ?? "");
   }
 
   static BeamerDelegate getBeamerDelegate() {
@@ -213,7 +212,7 @@ class FlutterUI extends StatefulWidget {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // Config
-    IConfigService configService = ConfigService.create(
+    ConfigService configService = ConfigService.create(
       sharedPrefs: await SharedPreferences.getInstance(),
       fileManager: await IFileManager.getFileManager(),
     );
@@ -265,7 +264,7 @@ class FlutterUI extends StatefulWidget {
       }
       String? language = Uri.base.queryParameters['language'];
       if (language != null) {
-        await configService.setUserLanguage(language == IConfigService().getPlatformLocale() ? null : language);
+        await configService.setUserLanguage(language == ConfigService().getPlatformLocale() ? null : language);
       }
     }
     String? mobileOnly = Uri.base.queryParameters['mobileOnly'];
@@ -350,7 +349,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: themeData,
-      supportedLocales: [Locale(IConfigService().getDisplayLanguage())],
+      supportedLocales: [Locale(ConfigService().getDisplayLanguage())],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routeInformationParser: BeamerParser(),
       routerDelegate: routerDelegate,
@@ -408,7 +407,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (lastState != null) {
       if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
         // App was resumed from a paused state (Permission overlay is not paused)
-        if (IConfigService().getClientId() != null && !IConfigService().isOffline()) {
+        if (ConfigService().getClientId() != null && !ConfigService().isOffline()) {
           ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"));
         }
       }
@@ -425,7 +424,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   void changedTheme() {
-    Map<String, String> styleMap = IConfigService().getAppStyle();
+    Map<String, String> styleMap = ConfigService().getAppStyle();
 
     Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
     styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
@@ -434,7 +433,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);
 
       Brightness selectedBrightness;
-      switch (IConfigService().getThemePreference()) {
+      switch (ConfigService().getThemePreference()) {
         case ThemeMode.light:
           selectedBrightness = Brightness.light;
           break;
@@ -530,7 +529,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   Future<void> initApp() async {
     HttpOverrides.global = MyHttpOverrides();
 
-    IConfigService configService = IConfigService();
+    ConfigService configService = ConfigService();
     IUiService uiService = IUiService();
     IApiService apiService = IApiService();
 
@@ -552,7 +551,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     AppConfig appConfig =
         const AppConfig.empty().merge(widget.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
 
-    await (configService as ConfigService).setAppConfig(appConfig, devConfig != null);
+    await configService.setAppConfig(appConfig, devConfig != null);
 
     if (appConfig.serverConfig!.baseUrl != null) {
       var baseUri = Uri.parse(appConfig.serverConfig!.baseUrl!);
@@ -571,7 +570,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     configService.registerImagesCallback(changedImages);
 
     //Update style to reflect web colors for theme
-    configService.getLayoutMode().addListener(() {
+    configService.getLayoutModeNotifier().addListener(() {
       changedTheme();
       setState(() {});
     });
@@ -588,7 +587,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       configService.loadLanguages();
     }
 
-    configService.setPhoneSize(MediaQueryData.fromWindow(WidgetsBinding.instance.window).size);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // API init
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -603,7 +601,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     String? username,
     String? password,
   }) async {
-    IConfigService configService = IConfigService();
+    ConfigService configService = ConfigService();
     ICommandService commandService = ICommandService();
     IUiService uiService = IUiService();
 

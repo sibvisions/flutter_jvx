@@ -13,9 +13,10 @@
  * the License.
  */
 
+import '../../../service/config/config_service.dart';
 import '../base_command.dart';
 
-/// BaseType of any command interacting with the [IConfigService]
+/// BaseType of any command interacting with the [ConfigService]
 abstract class ConfigCommand extends BaseCommand {
   ConfigCommand({
     required super.reason,

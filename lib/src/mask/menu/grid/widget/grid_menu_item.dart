@@ -17,7 +17,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../model/menu/menu_item_model.dart';
-import '../../../../service/config/i_config_service.dart';
+import '../../../../service/config/config_service.dart';
 import '../../menu_page.dart';
 
 class GridMenuItem extends StatelessWidget {
@@ -50,7 +50,7 @@ class GridMenuItem extends StatelessWidget {
     return InkWell(
       onTap: () => onClick(context, pScreenLongName: menuItemModel.screenLongName),
       child: Ink(
-        color: Theme.of(context).primaryColor.withOpacity(IConfigService().getOpacityMenu()),
+        color: Theme.of(context).primaryColor.withOpacity(ConfigService().getOpacityMenu()),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

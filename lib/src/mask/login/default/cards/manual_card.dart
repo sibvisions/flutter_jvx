@@ -18,7 +18,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
-import '../../../../service/config/i_config_service.dart';
+import '../../../../service/config/config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/progress/progress_button.dart';
@@ -52,23 +52,23 @@ class _ManualCardState extends State<ManualCard> {
   @override
   void initState() {
     super.initState();
-    usernameController = TextEditingController(text: IConfigService().getUsername());
+    usernameController = TextEditingController(text: ConfigService().getUsername());
     passwordController = TextEditingController();
-    rememberMeChecked = IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
+    rememberMeChecked = ConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
     String? loginTitle = AppStyle.of(context)!.applicationStyle!['login.title'];
 
-    showRememberMe = (IConfigService().getMetaData()?.rememberMeEnabled ?? false) ||
-        (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
+    showRememberMe = (ConfigService().getMetaData()?.rememberMeEnabled ?? false) ||
+        (ConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          loginTitle ?? IConfigService().getAppName()!.toUpperCase(),
+          loginTitle ?? ConfigService().getAppName()!.toUpperCase(),
           style: Theme.of(context).textTheme.headline6,
           textAlign: TextAlign.center,
         ),
@@ -146,7 +146,7 @@ class _ManualCardState extends State<ManualCard> {
           state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        if (IConfigService().getMetaData()?.lostPasswordEnabled == true)
+        if (ConfigService().getMetaData()?.lostPasswordEnabled == true)
           Align(
             alignment: Alignment.center,
             child: TextButton(

@@ -17,14 +17,14 @@ import 'package:archive/archive.dart';
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_translation_command.dart';
-import '../../../../config/i_config_service.dart';
+import '../../../../config/config_service.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
 class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<SaveApplicationTranslationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationTranslationCommand command) async {
-    IFileManager fileManager = IConfigService().getFileManager();
+    IFileManager fileManager = ConfigService().getFileManager();
     List<Future> saveFutures = [];
 
     for (ArchiveFile translation in command.translations) {
@@ -35,10 +35,10 @@ class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<Sa
     // Wait till all files are saved
     await Future.wait(saveFutures);
 
-    IConfigService().reloadSupportedLanguages();
+    ConfigService().reloadSupportedLanguages();
 
     // Trigger load language
-    IConfigService().loadLanguages();
+    ConfigService().loadLanguages();
 
     return [];
   }

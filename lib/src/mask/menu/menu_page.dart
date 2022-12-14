@@ -26,7 +26,7 @@ import '../../custom/app_manager.dart';
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
-import '../../service/config/i_config_service.dart';
+import '../../service/config/config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -48,7 +48,7 @@ typedef ButtonCallback = void Function(
 
 /// Menu Page
 ///
-/// Displays menu items accordingly to the menu mode set in [IConfigService]
+/// Displays menu items accordingly to the menu mode set in [ConfigService]
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
 
@@ -72,8 +72,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
-      forceWeb: IConfigService().isWebOnly(),
-      forceMobile: IConfigService().isMobileOnly(),
+      forceWeb: ConfigService().isWebOnly(),
+      forceMobile: ConfigService().isMobileOnly(),
       builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
         valueListenable: IUiService().getMenuNotifier(),
         builder: (context, _, child) => ValueListenableBuilder<FlComponentModel?>(

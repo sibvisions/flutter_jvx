@@ -16,7 +16,7 @@
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_user_data_command.dart';
 import '../../../../../model/config/user/user_info.dart';
-import '../../../../config/i_config_service.dart';
+import '../../../../config/config_service.dart';
 import '../../i_command_processor.dart';
 
 class SaveUserDataCommandProcessor implements ICommandProcessor<SaveUserDataCommand> {
@@ -28,7 +28,7 @@ class SaveUserDataCommandProcessor implements ICommandProcessor<SaveUserDataComm
       eMail: command.userData.eMail,
       profileImage: command.userData.profileImage,
     );
-    await IConfigService().setUserInfo(
+    await ConfigService().setUserInfo(
       pUserInfo: userInfo,
       pJson: command.userData.json,
     );

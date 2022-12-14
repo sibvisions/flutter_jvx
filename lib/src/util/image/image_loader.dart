@@ -23,7 +23,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../flutter_ui.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
-import '../../service/config/i_config_service.dart';
+import '../../service/config/config_service.dart';
 import '../../service/file/file_manager.dart';
 import '../font_awesome_util.dart';
 
@@ -134,7 +134,7 @@ abstract class ImageLoader {
       return null;
     }
 
-    IFileManager fileManager = IConfigService().getFileManager();
+    IFileManager fileManager = ConfigService().getFileManager();
     ImageProvider imageProvider;
 
     if (pImageInBase64) {
@@ -155,8 +155,8 @@ abstract class ImageLoader {
       if (file != null) {
         imageProvider = FileImage(file);
       } else {
-        String appName = IConfigService().getAppName()!;
-        String baseUrl = IConfigService().getBaseUrl()!;
+        String appName = ConfigService().getAppName()!;
+        String baseUrl = ConfigService().getBaseUrl()!;
 
         Map<String, String> headers = {};
         var repository = IApiService().getRepository();

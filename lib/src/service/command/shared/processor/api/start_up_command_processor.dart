@@ -21,7 +21,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_startup_request.dart';
 import '../../../../../util/device_info.dart';
 import '../../../../api/i_api_service.dart';
-import '../../../../config/i_config_service.dart';
+import '../../../../config/config_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
@@ -29,7 +29,7 @@ import '../../i_command_processor.dart';
 class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
-    IConfigService configService = IConfigService();
+    ConfigService configService = ConfigService();
 
     if (command.appName != null) {
       await configService.setAppName(command.appName!);
@@ -57,11 +57,11 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       screenWidth: configService.getPhoneSize()?.width.toInt(),
       readAheadLimit: 100,
       deviceMode:
-          (kIsWeb && !IConfigService().isMobileOnly()) || IConfigService().isWebOnly() ? "mobileDesktop" : "mobile",
+          (kIsWeb && !ConfigService().isMobileOnly()) || ConfigService().isWebOnly() ? "mobileDesktop" : "mobile",
       username: command.username,
       password: command.password,
-      langCode: IConfigService().getUserLanguage() ?? IConfigService().getPlatformLocale(),
-      timeZoneCode: IConfigService().getPlatformTimeZone(),
+      langCode: ConfigService().getUserLanguage() ?? ConfigService().getPlatformLocale(),
+      timeZoneCode: ConfigService().getPlatformTimeZone(),
       technology: deviceInfo.technology,
       osName: deviceInfo.osName,
       osVersion: deviceInfo.osVersion,
@@ -70,7 +70,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
       serverVersion: FlutterUI.supportedServerVersion,
-      startUpParameters: IConfigService().getStartupParameters(),
+      startUpParameters: ConfigService().getStartupParameters(),
     );
 
     return IApiService().sendRequest(startUpRequest);

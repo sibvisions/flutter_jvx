@@ -24,7 +24,7 @@ import '../../model/command/api/rollback_command.dart';
 import '../../model/command/api/save_command.dart';
 import '../../model/response/device_status_response.dart';
 import '../../routing/locations/work_screen_location.dart';
-import '../../service/config/i_config_service.dart';
+import '../../service/config/config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/parse_util.dart';
@@ -58,14 +58,14 @@ class WebFrameState extends FrameState {
   @override
   void initState() {
     super.initState();
-    showWebMenu = IConfigService().getLayoutMode().value != LayoutMode.Mini;
-    lastMode = IConfigService().getLayoutMode().value;
-    IConfigService().getLayoutMode().addListener(updatedLayoutMode);
+    showWebMenu = ConfigService().getLayoutModeNotifier().value != LayoutMode.Mini;
+    lastMode = ConfigService().getLayoutModeNotifier().value;
+    ConfigService().getLayoutModeNotifier().addListener(updatedLayoutMode);
   }
 
   @override
   void dispose() {
-    IConfigService().getLayoutMode().removeListener(updatedLayoutMode);
+    ConfigService().getLayoutModeNotifier().removeListener(updatedLayoutMode);
     super.dispose();
   }
 
@@ -74,7 +74,7 @@ class WebFrameState extends FrameState {
   /// * Close menu when changing to [LayoutMode.Mini]
   /// * Reopen menu when changing from [LayoutMode.Mini]
   void updatedLayoutMode() {
-    var newMode = IConfigService().getLayoutMode().value;
+    var newMode = ConfigService().getLayoutModeNotifier().value;
     if (lastMode != newMode) {
       if (newMode == LayoutMode.Mini && showWebMenu) {
         showWebMenu = false;
@@ -107,7 +107,7 @@ class WebFrameState extends FrameState {
     Color? backgroundColor,
     List<Widget>? actions,
   }) {
-    var profileImage = IConfigService().getUserInfo()?.profileImage;
+    var profileImage = ConfigService().getUserInfo()?.profileImage;
     var appStyle = AppStyle.of(context)!;
     var applicationStyle = appStyle.applicationStyle!;
     Color? topMenuColor = ParseUtil.parseHexColor(applicationStyle['web.topmenu.color']);
@@ -243,8 +243,8 @@ class WebFrameState extends FrameState {
           ),
         ),
       ],
-      backgroundColor: IConfigService().isOffline() ? Colors.grey.shade500 : topMenuColor,
-      elevation: IConfigService().isOffline() ? 0 : null,
+      backgroundColor: ConfigService().isOffline() ? Colors.grey.shade500 : topMenuColor,
+      elevation: ConfigService().isOffline() ? 0 : null,
     );
   }
 
@@ -265,7 +265,7 @@ class WebFrameState extends FrameState {
   @override
   Widget wrapBody(Widget body) {
     return LoadingBar.wrapLoadingBar(ValueListenableBuilder<LayoutMode>(
-      valueListenable: IConfigService().getLayoutMode(),
+      valueListenable: ConfigService().getLayoutModeNotifier(),
       builder: (context, value, child) {
         bool showMenu = InheritedWebFrame.of(context).showMenu;
         return Stack(

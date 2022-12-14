@@ -21,7 +21,7 @@ import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/menu_view_response.dart';
-import '../../../config/i_config_service.dart';
+import '../../../config/config_service.dart';
 import '../i_response_processor.dart';
 
 /// Processes the menu response into a [MenuModel], will try to route to menu,
@@ -45,7 +45,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     SaveMenuCommand saveMenuCommand = SaveMenuCommand(menuModel: menuModel, reason: "Server sent menu items");
     commands.add(saveMenuCommand);
 
-    if (!IConfigService().isOffline()) {
+    if (!ConfigService().isOffline()) {
       RouteToMenuCommand routeToMenuCommand =
           RouteToMenuCommand(replaceRoute: true, reason: "Server sent a menu, likely on login");
       commands.add(routeToMenuCommand);

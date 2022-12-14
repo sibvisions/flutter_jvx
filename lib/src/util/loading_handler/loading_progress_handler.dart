@@ -25,7 +25,7 @@ import '../../model/command/config/config_command.dart';
 import '../../model/command/data/data_command.dart';
 import '../../model/command/layout/layout_command.dart';
 import '../../model/command/ui/ui_command.dart';
-import '../../service/config/i_config_service.dart';
+import '../../service/config/config_service.dart';
 import 'i_command_progress_handler.dart';
 
 /// The [LoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
@@ -43,7 +43,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
 
   @override
   void notifyProgressStart(BaseCommand pCommand) {
-    if (isSupported(pCommand) && !IConfigService().isOffline()) {
+    if (isSupported(pCommand) && !ConfigService().isOffline()) {
       _loadingCommandAmount++;
       JVxOverlayState.of(FlutterUI.getCurrentContext())?.showLoading(pCommand.loadingDelay);
     }

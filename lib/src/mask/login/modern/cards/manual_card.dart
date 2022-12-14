@@ -18,7 +18,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
-import '../../../../service/config/i_config_service.dart';
+import '../../../../service/config/config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/progress/progress_button.dart';
@@ -53,11 +53,11 @@ class _ManualCardState extends State<ManualCard> {
   @override
   void initState() {
     super.initState();
-    usernameController = TextEditingController(text: IConfigService().getUsername());
+    usernameController = TextEditingController(text: ConfigService().getUsername());
 
-    showRememberMe = (IConfigService().getMetaData()?.rememberMeEnabled ?? false) ||
-        (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
-    rememberMeChecked = IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
+    showRememberMe = (ConfigService().getMetaData()?.rememberMeEnabled ?? false) ||
+        (ConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
+    rememberMeChecked = ConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
   }
 
   @override
@@ -242,7 +242,7 @@ class _ManualCardState extends State<ManualCard> {
                         ],
                       ),
                     ),
-                    if (IConfigService().getMetaData()?.lostPasswordEnabled == true)
+                    if (ConfigService().getMetaData()?.lostPasswordEnabled == true)
                       TextButton(
                         style: TextButton.styleFrom(
                           shape: RoundedRectangleBorder(

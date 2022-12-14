@@ -18,7 +18,7 @@ import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route_to_work_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
-import '../../../config/i_config_service.dart';
+import '../../../config/config_service.dart';
 import '../i_response_processor.dart';
 
 /// Processes [GenericScreenViewResponse], will separate (and parse) new and changed components, can also open screens
@@ -46,7 +46,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
 
     // Handle Screen Opening
     // if update == false => new screen that should be routed to
-    if (!pResponse.update && !IConfigService().isOffline()) {
+    if (!pResponse.update && !ConfigService().isOffline()) {
       RouteToWorkCommand workCommand = RouteToWorkCommand(
         screenName: pResponse.screenName,
         reason: "Server sent screen.generic response with update = 'false'",

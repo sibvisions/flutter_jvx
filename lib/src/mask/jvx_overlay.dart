@@ -18,7 +18,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../model/command/api/device_status_command.dart';
-import '../service/config/i_config_service.dart';
+import '../service/config/config_service.dart';
 import '../service/ui/i_ui_service.dart';
 import 'state/app_style.dart';
 import 'state/loading_bar.dart';
@@ -81,7 +81,7 @@ class JVxOverlayState extends State<JVxOverlay> {
     super.initState();
 
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
-      if (IConfigService().getClientId() != null && !IConfigService().isOffline()) {
+      if (ConfigService().getClientId() != null && !ConfigService().isOffline()) {
         IUiService().sendCommand(DeviceStatusCommand(
           screenWidth: size.width,
           screenHeight: size.height,
@@ -100,8 +100,8 @@ class JVxOverlayState extends State<JVxOverlay> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: AppStyle(
-        applicationStyle: IConfigService().getAppStyle(),
-        applicationSettings: IConfigService().getApplicationSettings(),
+        applicationStyle: ConfigService().getAppStyle(),
+        applicationSettings: ConfigService().getApplicationSettings(),
         child: FutureBuilder(
           future: _loadingDelayFuture,
           builder: (context, snapshot) {

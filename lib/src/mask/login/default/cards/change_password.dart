@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/change_password_command.dart';
 import '../../../../service/command/i_command_service.dart';
-import '../../../../service/config/i_config_service.dart';
+import '../../../../service/config/config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
 
@@ -145,7 +145,7 @@ class ChangePassword extends StatelessWidget {
   List<Widget> _createButtons(BuildContext context) {
     List<Widget> widgetList = [];
 
-    if (IConfigService().getUserInfo() != null) {
+    if (ConfigService().getUserInfo() != null) {
       widgetList.add(TextButton(
         onPressed: () => Navigator.of(context).pop(),
         child: Text(FlutterUI.translate("Cancel")),
@@ -171,7 +171,7 @@ class ChangePassword extends StatelessWidget {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (newPasswordController.text == repeatPasswordController.text) {
-      if (IConfigService().getUserInfo() == null) {
+      if (ConfigService().getUserInfo() == null) {
         LoginPage.doChangePassword(
           username: usernameController.text,
           password: passwordController.text,

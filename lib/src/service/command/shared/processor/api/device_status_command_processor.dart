@@ -19,7 +19,7 @@ import '../../../../../model/request/api_device_status_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-/// Calls [IApiService] deviceStatus and [IConfigService] for current clientId
+/// Calls [IApiService] deviceStatus and [ConfigService] for current clientId
 class DeviceStatusCommandProcessor implements ICommandProcessor<DeviceStatusCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

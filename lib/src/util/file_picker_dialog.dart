@@ -20,7 +20,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../flutter_ui.dart';
-import '../service/config/i_config_service.dart';
+import '../service/config/config_service.dart';
 
 enum UploadType {
   FILE_SYSTEM,
@@ -129,7 +129,7 @@ abstract class FilePickerDialog {
   }
 
   static Future<XFile?> pick(UploadType type) async {
-    double? maxPictureWidth = IConfigService().getPictureResolution()?.toDouble();
+    double? maxPictureWidth = ConfigService().getPictureResolution()?.toDouble();
 
     try {
       switch (type) {
