@@ -127,7 +127,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   tz.Location _getLocation() {
-    return tz.getLocation(model.timeZoneCode ?? ConfigService().getDisplayTimezone());
+    return tz.getLocation(model.timeZoneCode ?? ConfigService().getTimezone());
   }
 
   DateTime _createDateTime(dynamic value) {
@@ -262,7 +262,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     if (pValue is int) {
       return DateFormat(
         model.dateFormat,
-        model.locale ?? ConfigService().getDisplayLanguage(),
+        model.locale ?? ConfigService().getLanguage(),
       ).format(_createDateTime(pValue));
     }
     return pValue?.toString() ?? "";

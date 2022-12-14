@@ -349,7 +349,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: themeData,
-      supportedLocales: [Locale(ConfigService().getDisplayLanguage())],
+      supportedLocales: [Locale(ConfigService().getLanguage())],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routeInformationParser: BeamerParser(),
       routerDelegate: routerDelegate,

@@ -193,19 +193,19 @@ class ConfigService {
   /// * The server set language (which in most cases the same as we send in the startup).
   /// * The user chosen language.
   /// * The platform locale (determined by [getPlatformLocale]).
-  String getDisplayLanguage() {
-    return getLanguage() ?? getUserLanguage() ?? ConfigService().getPlatformLocale();
+  String getLanguage() {
+    return getApplicationLanguage() ?? getUserLanguage() ?? getPlatformLocale();
   }
 
   /// Returns the application language code returned by the server.
   ///
   /// Returns `null` before initial startup.
-  String? getLanguage() {
+  String? getApplicationLanguage() {
     return _language;
   }
 
   /// Sets the application language code returned by the server.
-  void setLanguage(String? pLanguage) {
+  void setApplicationLanguage(String? pLanguage) {
     _language = pLanguage;
     if (_fileManager.isSatisfied()) {
       loadLanguages();
@@ -214,7 +214,7 @@ class ConfigService {
 
   /// Returns the user defined language code.
   ///
-  /// To get the really used language, use [getDisplayLanguage].
+  /// To get the really used language, use [getLanguage].
   String? getUserLanguage() {
     return getString("language");
   }
@@ -228,9 +228,9 @@ class ConfigService {
     return success;
   }
 
-  /// Initializes the current language defined by [getDisplayLanguage].
+  /// Initializes the current language defined by [getLanguage].
   void loadLanguages() {
-    _loadLanguage(getDisplayLanguage());
+    _loadLanguage(getLanguage());
   }
 
   /// Returns all currently supported languages by this application.
@@ -262,17 +262,17 @@ class ConfigService {
   /// This is either:
   /// * The server defined timezone (which in most cases the same as we send in the [ApiStartUpRequest]).
   /// * The platform timezone (determined by [getPlatformTimeZone]).
-  String getDisplayTimezone() {
-    return getTimeZone() ?? ConfigService().getPlatformTimeZone();
+  String getTimezone() {
+    return getApplicationTimeZone() ?? getPlatformTimeZone();
   }
 
   /// Returns the application timezone returned by the server.
-  String? getTimeZone() {
+  String? getApplicationTimeZone() {
     return getString("timeZoneCode");
   }
 
   /// Set the application defined timezone.
-  Future<bool> setTimeZone(String? timeZoneCode) {
+  Future<bool> setApplicationTimeZone(String? timeZoneCode) {
     return setString("timeZoneCode", timeZoneCode);
   }
 
@@ -449,7 +449,7 @@ class ConfigService {
 
   // ------------------------------
 
-  /// Translates [pText] using the current language as defined by [getDisplayLanguage].
+  /// Translates [pText] using the current language as defined by [getLanguage].
   ///
   /// Returns the original value if not translation was found.
   String translateText(String pText) {
@@ -513,7 +513,7 @@ class ConfigService {
   /// Register a callback that will be called when the current language changes.
   ///
   /// See also:
-  /// * [getDisplayLanguage]
+  /// * [getLanguage]
   void registerLanguageCallback(Function(String language) pCallback) {
     _registerCallback("language", pCallback);
   }

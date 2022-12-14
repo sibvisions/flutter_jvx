@@ -35,8 +35,8 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
     ConfigService().setClientId(command.metaData.clientId);
     await ConfigService().setVersion(version);
 
-    ConfigService().setLanguage(command.metaData.langCode);
-    await ConfigService().setTimeZone(command.metaData.timeZoneCode);
+    ConfigService().setApplicationLanguage(command.metaData.langCode);
+    await ConfigService().setApplicationTimeZone(command.metaData.timeZoneCode);
 
     ConfigService().setMetaData(command.metaData);
 
