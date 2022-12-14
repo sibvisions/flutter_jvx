@@ -382,7 +382,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       ..verticalAlignment = VerticalAlignment.CENTER
       ..isEnabled = enabled;
 
-    Widget textChild = FlLabelWidget(model: labelModel);
+    Widget textChild = FlLabelWidget.getTextWidget(labelModel);
 
     return Tab(
       iconMargin: const EdgeInsets.all(5),
