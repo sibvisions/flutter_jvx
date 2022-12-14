@@ -15,6 +15,7 @@
 
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -173,7 +174,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       builder: ((context, constraints) {
         double maxWidth = max(max(tableSize.size.width, constraints.maxWidth), 0);
 
-        bool canScrollHorizontally = tableSize.size.width > constraints.maxWidth;
+        bool canScrollHorizontally = tableSize.size.width.ceil() > constraints.maxWidth.ceil();
 
         Widget table = GestureDetector(
           onLongPress: model.isEnabled ? onLongPress : null,
@@ -405,12 +406,22 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       return header;
     }
 
-    return SingleChildScrollView(
+    header = SingleChildScrollView(
       physics: pCanScroll ? null : const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       controller: headerHorizontalController,
       child: header,
     );
+
+    if (kIsWeb) {
+      return Scrollbar(
+        thumbVisibility: true,
+        controller: headerHorizontalController,
+        child: header,
+      );
+    }
+
+    return header;
   }
 
   bool onInternalEndScroll(ScrollEndNotification notification) {
