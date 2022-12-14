@@ -165,6 +165,11 @@ class FlutterJVx extends StatefulWidget {
     return routerDelegate.navigatorKey.currentContext;
   }
 
+  /// Returns the context of the navigator while we are in the splash.
+  static BuildContext? getSplashContext() {
+    return splashNavigatorKey.currentContext;
+  }
+
   static void clearHistory() {
     // Beamer's history also contains the present!
     routerDelegate.beamingHistory.removeAllExceptLast();
@@ -261,6 +266,7 @@ class FlutterJVx extends StatefulWidget {
 }
 
 late BeamerDelegate routerDelegate;
+final GlobalKey splashNavigatorKey = GlobalKey();
 
 class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
   /// Gets the [FlutterJVxState] widget.
@@ -336,26 +342,18 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
                     return JVxOverlay(child: child ?? const SizedBox.shrink());
                   }
 
-                  return Theme(
-                    data: splashTheme,
-                    child: Stack(children: [
-                      Splash(loadingBuilder: widget.splashBuilder, snapshot: snapshot),
-                      if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                        _getStartupErrorDialog(context, snapshot),
-                    ]),
-                  );
+                  return _buildSplash(snapshot, children: [
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                      _getStartupErrorDialog(context, snapshot),
+                  ]);
                 },
               );
             }
 
-            return Theme(
-              data: splashTheme,
-              child: Stack(children: [
-                Splash(loadingBuilder: widget.splashBuilder, snapshot: snapshot),
-                if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                  _getFatalErrorDialog(context, snapshot),
-              ]),
-            );
+            return _buildSplash(snapshot, children: [
+              if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                _getFatalErrorDialog(context, snapshot),
+            ]);
           },
         );
       },
@@ -365,6 +363,26 @@ class FlutterJVxState extends State<FlutterJVx> with WidgetsBindingObserver {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+    );
+  }
+
+  Widget _buildSplash(AsyncSnapshot snapshot, {List<Widget>? children}) {
+    return MaterialApp(
+      theme: splashTheme,
+      home: Builder(
+        key: splashNavigatorKey,
+        builder: (context) {
+          return Stack(
+            children: [
+              Splash(
+                loadingBuilder: widget.splashBuilder,
+                snapshot: snapshot,
+              ),
+              ...?children,
+            ],
+          );
+        },
+      ),
     );
   }
 
