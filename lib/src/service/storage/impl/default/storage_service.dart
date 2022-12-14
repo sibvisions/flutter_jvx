@@ -127,7 +127,7 @@ class StorageService implements IStorageService {
             }
           }
 
-          if (model.isVisible != wasVisible || model.isRemoved != wasRemoved) {
+          if ((model.isVisible != wasVisible || model.isRemoved != wasRemoved) && model.parent != null) {
             affectedModels.add(model.parent!);
           }
         }
