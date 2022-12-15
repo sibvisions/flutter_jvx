@@ -126,6 +126,8 @@ class SplitLayout implements ILayout, ICloneable {
       rightBottomChild.layoutPosition = LayoutPosition(
           width: secondComponentSize.width, height: secondComponentSize.height, top: 0, left: 0, isComponentSize: true);
     } else {
+      firstComponentViewer.isComponentSize = true;
+      secondComponentViewer.isComponentSize = true;
       leftTopChild.layoutPosition = firstComponentViewer;
       rightBottomChild.layoutPosition = secondComponentViewer;
     }
