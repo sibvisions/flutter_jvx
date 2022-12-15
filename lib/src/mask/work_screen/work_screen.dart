@@ -167,7 +167,7 @@ class WorkScreenState extends State<WorkScreen> {
           screen = Container();
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
             IUiService().sendCommand(OpenErrorDialogCommand(
-              message: "Failed to open screen, please try again.",
+              message: FlutterUI.translate("Failed to load screen, please try again."),
               reason: "Workscreen Model missing",
             ));
             IUiService().routeToMenu(pReplaceRoute: true);
