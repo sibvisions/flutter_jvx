@@ -121,7 +121,9 @@ class WorkScreenState extends State<WorkScreen> {
       forceWeb: ConfigService().isWebOnly(),
       forceMobile: ConfigService().isMobileOnly(),
       builder: (context, isOffline) {
-        model = IStorageService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
+        if (model?.name != widget.screenName) {
+          model = IStorageService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
+        }
 
         // Header
         PreferredSizeWidget? header;
