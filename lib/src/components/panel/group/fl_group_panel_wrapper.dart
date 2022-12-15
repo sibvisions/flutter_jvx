@@ -30,12 +30,6 @@ import 'fl_group_panel_header_widget.dart';
 
 class FlGroupPanelWrapper extends BaseCompWrapperWidget<FlGroupPanelModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static const String FLAT_STYLE = "f_panel_flat";
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

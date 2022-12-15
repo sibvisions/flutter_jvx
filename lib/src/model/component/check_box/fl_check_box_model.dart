@@ -22,6 +22,25 @@ import '../button/fl_radio_button_model.dart';
 /// The model of a checkbox
 class FlCheckBoxModel extends FlRadioButtonModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String SWITCH_STYLE = "f_switch";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Checkbox never draws a border.
+  @override
+  bool get borderPainted => false;
+
+  @override
+  FlCheckBoxModel get defaultModel => FlCheckBoxModel();
+
+  bool get isSwitch => styles.contains(SWITCH_STYLE);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -29,19 +48,4 @@ class FlCheckBoxModel extends FlRadioButtonModel {
     paddings = const EdgeInsets.all(2);
     horizontalAlignment = HorizontalAlignment.LEFT;
   }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden widget defaults
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // Checkbox never draws a border.
-  @override
-  bool get borderPainted => false;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  FlCheckBoxModel get defaultModel => FlCheckBoxModel();
 }

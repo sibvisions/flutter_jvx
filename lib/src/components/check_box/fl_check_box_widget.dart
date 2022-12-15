@@ -22,18 +22,12 @@ import '../button/radio/fl_radio_button_widget.dart';
 
 class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static const String SWITCH_STYLE = "f_switch";
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget get image {
-    if (model.styles.contains(SWITCH_STYLE)) {
+    if (model.isSwitch) {
       return Switch.adaptive(
         focusNode: focusNode,
         value: model.selected,

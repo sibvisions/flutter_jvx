@@ -22,6 +22,12 @@ import 'fl_panel_model.dart';
 
 class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String FLAT_STYLE = "f_panel_flat";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -29,7 +35,7 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   @override
   String text = "";
 
-  bool get isFlatStyle => styles.contains(FlGroupPanelWrapper.FLAT_STYLE);
+  bool get isFlatStyle => styles.contains(FLAT_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

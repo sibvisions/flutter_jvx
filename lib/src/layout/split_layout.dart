@@ -59,11 +59,17 @@ class SplitLayout implements ILayout, ICloneable {
 
   Size secondComponentSize = Size.zero;
 
+  bool calculateLikeScroll;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SplitLayout({this.splitterSize = 10, this.splitAlignment = SplitOrientation.VERTICAL, this.leftTopRatio = 50});
+  SplitLayout({
+    this.splitterSize = 10,
+    this.splitAlignment = SplitOrientation.VERTICAL,
+    this.leftTopRatio = 50,
+    this.calculateLikeScroll = false,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -107,17 +113,22 @@ class SplitLayout implements ILayout, ICloneable {
       }
     }
 
-    firstComponentSize = Size(max(leftTopChild.bestSize.width, firstComponentViewer.width),
-        max(leftTopChild.bestSize.height, firstComponentViewer.height));
+    if (calculateLikeScroll) {
+      firstComponentSize = Size(max(leftTopChild.bestSize.width, firstComponentViewer.width),
+          max(leftTopChild.bestSize.height, firstComponentViewer.height));
 
-    leftTopChild.layoutPosition = LayoutPosition(
-        width: firstComponentSize.width, height: firstComponentSize.height, top: 0, left: 0, isComponentSize: true);
+      leftTopChild.layoutPosition = LayoutPosition(
+          width: firstComponentSize.width, height: firstComponentSize.height, top: 0, left: 0, isComponentSize: true);
 
-    secondComponentSize = Size(max(rightBottomChild.bestSize.width, secondComponentViewer.width),
-        max(rightBottomChild.bestSize.height, secondComponentViewer.height));
+      secondComponentSize = Size(max(rightBottomChild.bestSize.width, secondComponentViewer.width),
+          max(rightBottomChild.bestSize.height, secondComponentViewer.height));
 
-    rightBottomChild.layoutPosition = LayoutPosition(
-        width: secondComponentSize.width, height: secondComponentSize.height, top: 0, left: 0, isComponentSize: true);
+      rightBottomChild.layoutPosition = LayoutPosition(
+          width: secondComponentSize.width, height: secondComponentSize.height, top: 0, left: 0, isComponentSize: true);
+    } else {
+      leftTopChild.layoutPosition = firstComponentViewer;
+      rightBottomChild.layoutPosition = secondComponentViewer;
+    }
 
     // preferred width & height
     double width = splitAlignment == SplitOrientation.VERTICAL ? splitterSize : 0;

@@ -52,7 +52,11 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
   void initState() {
     super.initState();
 
-    layoutData.layout = SplitLayout(splitAlignment: model.orientation, leftTopRatio: model.dividerPosition);
+    layoutData.layout = SplitLayout(
+      splitAlignment: model.orientation,
+      leftTopRatio: model.dividerPosition,
+      calculateLikeScroll: model.isScrollStyle,
+    );
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
@@ -66,7 +70,11 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   @override
   modelUpdated() {
-    layoutData.layout = SplitLayout(splitAlignment: model.orientation, leftTopRatio: model.dividerPosition);
+    layoutData.layout = SplitLayout(
+      splitAlignment: model.orientation,
+      leftTopRatio: model.dividerPosition,
+      calculateLikeScroll: model.isScrollStyle,
+    );
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
     super.modelUpdated();
@@ -199,6 +207,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     double containerPixel = pHorizontal ? container.size.width : container.size.height;
 
     splitLayout.leftTopRatio = max(0.0, min(1.0, positionalPixel / containerPixel)) * 100;
+    //model.dividerPosition = splitLayout.leftTopRatio;
 
     subject.add(null);
   }

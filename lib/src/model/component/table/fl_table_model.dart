@@ -14,13 +14,22 @@
  * the License.
  */
 
-import '../../../components/table/fl_table_widget.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../util/parse_util.dart';
 import '../fl_component_model.dart';
 import '../interface/i_data_model.dart';
 
 class FlTableModel extends FlComponentModel implements IDataModel {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String NO_FLOATING_BUTTON_STYLE = "f_no_float_insert";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   Map<String, dynamic> json = {};
 
   @override
@@ -61,7 +70,7 @@ class FlTableModel extends FlComponentModel implements IDataModel {
   bool wordWrapEnabled = false;
 
   /// If the table hides the floating insert button.
-  bool get showFloatButton => !styles.contains(FlTableWidget.NO_FLOATING_BUTTON_STYLE);
+  bool get showFloatButton => !styles.contains(NO_FLOATING_BUTTON_STYLE);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

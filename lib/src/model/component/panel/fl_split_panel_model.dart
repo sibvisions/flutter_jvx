@@ -21,6 +21,12 @@ enum SplitOrientation { HORIZONTAL, VERTICAL }
 
 class FlSplitPanelModel extends FlPanelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String SCROLL_PANEL_STYLE = "f_scroll";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -29,6 +35,9 @@ class FlSplitPanelModel extends FlPanelModel {
 
   /// The way the panels are split up.
   SplitOrientation orientation = SplitOrientation.VERTICAL;
+
+  /// If this split panel behaves like a scroll panel
+  bool get isScrollStyle => styles.contains(SCROLL_PANEL_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
