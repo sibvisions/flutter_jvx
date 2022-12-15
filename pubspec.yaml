@@ -45,7 +45,7 @@ dependencies:
   logger: ^1.1.0
   collection: ^1.16.0
   rxdart: ^0.27.5
-  queue: ^3.1.0+1
+  queue: ^3.1.0+2
   flutter_html: 3.0.0-alpha.5
 
   # IO handling
@@ -111,11 +111,6 @@ dependency_overrides:
     git:
       url: https://github.com/dint-dev/universal_io.git
       ref: c4ce2ab
-  # https://github.com/rknell/dart_queue/pull/14
-  queue:
-    git:
-      url: https://github.com/rknell/dart_queue.git
-      ref: 5fe55f2
 
 dev_dependencies:
   flutter_lints: ^2.0.1
