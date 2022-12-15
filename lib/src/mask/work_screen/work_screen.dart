@@ -82,7 +82,7 @@ class WorkScreen extends StatefulWidget {
 class WorkScreenState extends State<WorkScreen> {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
-  late FlPanelModel? model;
+  FlPanelModel? model;
   late String screenLongName;
 
   /// Navigating booleans.
@@ -121,8 +121,11 @@ class WorkScreenState extends State<WorkScreen> {
       forceWeb: ConfigService().isWebOnly(),
       forceMobile: ConfigService().isMobileOnly(),
       builder: (context, isOffline) {
-        if (model?.name != widget.screenName) {
-          model = IStorageService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
+        FlPanelModel? newModel =
+            IStorageService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
+
+        if (model?.name != widget.screenName || newModel != null) {
+          model = newModel;
         }
 
         // Header
