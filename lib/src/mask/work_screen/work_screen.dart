@@ -89,6 +89,8 @@ class WorkScreenState extends State<WorkScreen> {
   bool isNavigating = false;
   bool isForced = false;
 
+  bool sentScreen = false;
+
   @override
   void initState() {
     super.initState();
@@ -113,8 +115,6 @@ class WorkScreenState extends State<WorkScreen> {
     setState(() {});
   }
 
-  bool sentScreen = false;
-
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
@@ -124,10 +124,8 @@ class WorkScreenState extends State<WorkScreen> {
         // Replace the model if a new one is found.
         // If there is no model, then just use the old one.
         // Happens when you close a screen but Flutter rebuilds it.
-
         FlPanelModel? newModel =
             IStorageService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
-
         model = newModel ?? model;
 
         // Header
