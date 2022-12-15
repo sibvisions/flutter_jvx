@@ -121,12 +121,14 @@ class WorkScreenState extends State<WorkScreen> {
       forceWeb: ConfigService().isWebOnly(),
       forceMobile: ConfigService().isMobileOnly(),
       builder: (context, isOffline) {
+        // Replace the model if a new one is found.
+        // If there is no model, then just use the old one.
+        // Happens when you close a screen but Flutter rebuilds it.
+
         FlPanelModel? newModel =
             IStorageService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
 
-        if (model?.name != widget.screenName || newModel != null) {
-          model = newModel;
-        }
+        model = newModel ?? model;
 
         // Header
         PreferredSizeWidget? header;
