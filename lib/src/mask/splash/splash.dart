@@ -33,7 +33,6 @@ class Splash extends StatelessWidget {
 
   final SplashBuilder? splashBuilder;
   final AsyncSnapshot? snapshot;
-  final GlobalKey<NavigatorState> navigatorKey;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -41,7 +40,6 @@ class Splash extends StatelessWidget {
 
   const Splash({
     super.key,
-    required this.navigatorKey,
     this.splashBuilder,
     this.snapshot,
   });

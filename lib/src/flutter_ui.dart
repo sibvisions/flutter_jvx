@@ -414,7 +414,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       home: Stack(
         children: [
           Splash(
-            navigatorKey: splashNavigatorKey,
             splashBuilder: widget.splashBuilder,
             snapshot: snapshot,
           ),
