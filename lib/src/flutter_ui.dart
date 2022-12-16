@@ -356,9 +356,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    List<Locale> supportedLocales = [Locale(ConfigService().getLanguage())];
     return MaterialApp.router(
       theme: themeData,
-      supportedLocales: [Locale(ConfigService().getLanguage())],
+      // Fixes https://github.com/flutter/flutter/issues/117210
+      locale: supportedLocales[0],
+      supportedLocales: supportedLocales,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routeInformationParser: BeamerParser(),
       routerDelegate: routerDelegate,
