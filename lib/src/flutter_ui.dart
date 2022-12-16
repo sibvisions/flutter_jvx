@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:beamer/beamer.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -356,11 +357,16 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    List<Locale> supportedLocales = [Locale(ConfigService().getLanguage())];
+    List<Locale> supportedLocales = {
+      ConfigService().getApplicationLanguage(),
+      ConfigService().getPlatformLocale(),
+      ...ConfigService().getSupportedLanguages(),
+      "en",
+    }.whereNotNull().map((e) => Locale(e)).toList();
+
     return MaterialApp.router(
       theme: themeData,
-      // Fixes https://github.com/flutter/flutter/issues/117210
-      locale: supportedLocales[0],
+      locale: Locale(ConfigService().getLanguage()),
       supportedLocales: supportedLocales,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routeInformationParser: BeamerParser(),
