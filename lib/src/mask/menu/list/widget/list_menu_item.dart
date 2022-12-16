@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../service/storage/i_storage_service.dart';
+import '../../../../service/ui/i_ui_service.dart';
 import '../../menu_page.dart';
 
 class ListMenuItem extends StatelessWidget {
@@ -65,8 +66,18 @@ class ListMenuItem extends StatelessWidget {
     var pathSegments = (context.currentBeamLocation.state as BeamState).pathParameters;
     if (pathSegments.containsKey(key)) {
       String screenName = pathSegments[key]!;
-      selected = menuItemModel.screenLongName.contains(
-          (IStorageService().getComponentByName(pComponentName: screenName) as FlPanelModel?)!.screenClassName!);
+
+      FlPanelModel? flPanelModel = (IStorageService().getComponentByName(pComponentName: screenName) as FlPanelModel?);
+      if (flPanelModel == null) {
+        if (IUiService().getAppManager() != null) {
+          selected = IUiService()
+              .getAppManager()!
+              .customScreens
+              .any((customScreen) => customScreen.screenLongName == menuItemModel.screenLongName);
+        }
+      } else {
+        selected = menuItemModel.screenLongName.contains(flPanelModel.screenClassName!);
+      }
     }
 
     var leading = MenuItemModel.getImage(
