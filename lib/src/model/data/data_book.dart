@@ -15,6 +15,7 @@
  */
 
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 
@@ -26,6 +27,7 @@ import '../command/api/insert_record_command.dart';
 import '../command/api/select_record_command.dart';
 import '../command/api/set_values_command.dart';
 import '../request/filter.dart';
+import '../response/dal_data_provider_changed_response.dart';
 import '../response/dal_fetch_response.dart';
 import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
@@ -112,6 +114,34 @@ class DataBook {
         records.remove(0);
       }
     }
+  }
+
+  /// Saves all data from a [DalDataProviderChangedResponse]
+  bool saveFromChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
+    if (pChangedResponse.changedColumnNames == null ||
+        pChangedResponse.changedValues == null ||
+        pChangedResponse.selectedRow == null) {
+      return false;
+    }
+
+    List<dynamic>? rowData = records[pChangedResponse.selectedRow!];
+    if (rowData == null) {
+      return false;
+    }
+
+    for (int index = 0;
+        index < min(pChangedResponse.changedColumnNames!.length, pChangedResponse.changedValues!.length);
+        index++) {
+      String columnName = pChangedResponse.changedColumnNames![index];
+      dynamic columnData = pChangedResponse.changedValues![index];
+
+      int intColIndex = columnDefinitions.indexWhere((element) => element.name == columnName);
+      if (intColIndex >= 0) {
+        rowData[intColIndex] = columnData;
+      }
+    }
+
+    return true;
   }
 
   /// Get the selected record,

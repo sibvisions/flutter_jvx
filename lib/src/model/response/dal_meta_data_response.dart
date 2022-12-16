@@ -24,28 +24,28 @@ class DalMetaDataResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// All column definitions in this dataBook
-  final List<ColumnDefinition> columns;
+  List<ColumnDefinition> columns;
 
   /// All visible columns of this this dataBook if shown in a table
-  final List<String> columnViewTable;
+  List<String> columnViewTable;
 
   /// The path to the dataBook
-  final String dataProvider;
+  String dataProvider;
 
   /// If the databook is readonly.
-  final bool readOnly;
+  bool readOnly;
 
   /// If deletion is allowed.
-  final bool deleteEnabled;
+  bool deleteEnabled;
 
   /// If updating a row is allowed.
-  final bool updateEnabled;
+  bool updateEnabled;
 
   /// If inserting a row is allowed.
-  final bool insertEnabled;
+  bool insertEnabled;
 
   /// The primary key columns of the dataBook
-  final List<String> primaryKeyColumns;
+  List<String> primaryKeyColumns;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

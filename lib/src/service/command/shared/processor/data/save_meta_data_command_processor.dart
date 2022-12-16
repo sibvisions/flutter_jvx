@@ -23,7 +23,7 @@ import '../../i_command_processor.dart';
 class SaveMetaDataCommandProcessor implements ICommandProcessor<SaveMetaDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveMetaDataCommand command) async {
-    await IDataService().updateMetaData(pMetaData: command.response);
+    await IDataService().updateMetaData(pChangedResponse: command.response);
 
     IUiService().notifyMetaDataChange(
       pDataProvider: command.response.dataProvider,

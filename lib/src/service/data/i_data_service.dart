@@ -20,6 +20,7 @@ import '../../model/command/base_command.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
+import '../../model/response/dal_data_provider_changed_response.dart';
 import '../../model/response/dal_fetch_response.dart';
 import '../../model/response/dal_meta_data_response.dart';
 import '../service.dart';
@@ -40,10 +41,16 @@ abstract class IDataService {
   void clear();
 
   /// Establishes the meta data of the given dataBook
-  Future<bool> updateMetaData({required DalMetaDataResponse pMetaData});
+  Future<bool> updateMetaData({required DalMetaDataResponse pChangedResponse});
+
+  /// Updates parts of the meta data of a given dataBook
+  bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Updates dataBook with fetched data,
   Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch});
+
+  /// Updates parts of dataBook with changed data.
+  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Returns column data of the selected row of the dataProvider
   Future<DataRecord?> getSelectedRowData({

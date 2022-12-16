@@ -16,12 +16,15 @@
 
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../../flutter_ui.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
+import '../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../model/response/dal_fetch_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../i_data_service.dart';
@@ -68,27 +71,97 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<bool> updateMetaData({required DalMetaDataResponse pMetaData}) async {
-    DataBook? dataBook = dataBooks[pMetaData.dataProvider];
+  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
+    DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
+    if (dataBook == null) {
+      return false;
+    }
+
+    return dataBook.saveFromChangedResponse(pChangedResponse: pChangedResponse);
+  }
+
+  @override
+  Future<bool> updateMetaData({required DalMetaDataResponse pChangedResponse}) async {
+    DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
 
     if (dataBook == null) {
       dataBook = DataBook(
-        dataProvider: pMetaData.dataProvider,
+        dataProvider: pChangedResponse.dataProvider,
         records: HashMap(),
-        columnDefinitions: pMetaData.columns,
+        columnDefinitions: pChangedResponse.columns,
         isAllFetched: false,
         selectedRow: -1,
-        columnViewTable: pMetaData.columnViewTable,
-        metaData: pMetaData,
+        columnViewTable: pChangedResponse.columnViewTable,
+        metaData: pChangedResponse,
       );
       dataBooks[dataBook.dataProvider] = dataBook;
     } else {
-      dataBook.columnDefinitions = pMetaData.columns;
-      dataBook.columnViewTable = pMetaData.columnViewTable;
-      dataBook.metaData = pMetaData;
+      dataBook.columnDefinitions = pChangedResponse.columns;
+      dataBook.columnViewTable = pChangedResponse.columnViewTable;
+      dataBook.metaData = pChangedResponse;
     }
 
     return true;
+  }
+
+  @override
+  bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
+    DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
+    DalMetaDataResponse? metaData = dataBook?.metaData;
+    if (metaData == null) {
+      return false;
+    }
+
+    bool anyChanges = false;
+    if (pChangedResponse.insertEnabled != null && metaData.insertEnabled != pChangedResponse.insertEnabled) {
+      metaData.insertEnabled = pChangedResponse.insertEnabled!;
+      anyChanges = true;
+    }
+    if (pChangedResponse.updateEnabled != null && metaData.updateEnabled != pChangedResponse.updateEnabled) {
+      metaData.updateEnabled = pChangedResponse.updateEnabled!;
+      anyChanges = true;
+    }
+
+    if (pChangedResponse.deleteEnabled != null && metaData.deleteEnabled != pChangedResponse.deleteEnabled) {
+      metaData.deleteEnabled = pChangedResponse.deleteEnabled!;
+      anyChanges = true;
+    }
+
+    if (pChangedResponse.readOnly != null && metaData.readOnly != pChangedResponse.readOnly) {
+      metaData.readOnly = pChangedResponse.readOnly!;
+      anyChanges = true;
+    }
+
+    if (pChangedResponse.changedColumns != null) {
+      pChangedResponse.changedColumns!.forEach((changedColumn) {
+        ColumnDefinition? foundColumn =
+            metaData.columns.firstWhereOrNull((element) => element.name == changedColumn.name);
+        if (foundColumn != null) {
+          if (changedColumn.label != null && changedColumn.label != foundColumn.label) {
+            foundColumn.label = changedColumn.label!;
+            anyChanges = true;
+          }
+          if (changedColumn.readOnly != null && changedColumn.readOnly != foundColumn.readOnly) {
+            foundColumn.readOnly = changedColumn.readOnly!;
+            anyChanges = true;
+          }
+          if (changedColumn.movable != null && changedColumn.movable != foundColumn.movable) {
+            foundColumn.movable = changedColumn.movable!;
+            anyChanges = true;
+          }
+          if (changedColumn.sortable != null && changedColumn.sortable != foundColumn.sortable) {
+            foundColumn.sortable = changedColumn.sortable!;
+            anyChanges = true;
+          }
+          if (changedColumn.cellEditorJson != null) {
+            foundColumn.cellEditorJson = changedColumn.cellEditorJson!;
+            anyChanges = true;
+          }
+        }
+      });
+    }
+
+    return anyChanges;
   }
 
   @override

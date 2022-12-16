@@ -60,7 +60,7 @@ class OfflineApiRepository implements IRepository {
 
   Future<void> initDataBooks() async {
     List<DalMetaDataResponse> metaData = await offlineDatabase!.getMetaData();
-    await Future.wait(metaData.map((element) => IDataService().updateMetaData(pMetaData: element)));
+    await Future.wait(metaData.map((element) => IDataService().updateMetaData(pChangedResponse: element)));
   }
 
   @override

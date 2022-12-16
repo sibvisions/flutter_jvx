@@ -188,6 +188,9 @@ abstract class ApiObjectProperty {
   static const String profileImage = "profileImage";
   static const String layoutMode = "layoutMode";
   static const String info = "info";
+  static const String changedColumns = "changedColumns";
+  static const String treePath = "treePath";
+  static const String selectedColumn = "selectedColumn";
 
   // ApplicationSettings
   static const String save = "save";

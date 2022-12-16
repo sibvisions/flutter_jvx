@@ -36,8 +36,8 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// The deleted row
   final int? deletedRow;
 
-  /// Name of columns of the data book, only not null if [changedValues] is provided
-  final List<String>? columnNames;
+  /// All column definitions in this dataBook
+  final List<ChangedColumn>? changedColumns;
 
   /// Name of all changed columns, only not null if [changedValues] is provided
   final List<String>? changedColumnNames;
@@ -57,36 +57,48 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// If data book has insert enabled
   final bool? insertEnabled;
 
+  /// The tree path, TODO implement treePath
+  final List<int>? treePath;
+
+  /// The selected column, TODO implement selected column
+  final String? selectedColumn;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DalDataProviderChangedResponse({
-    required this.dataProvider,
-    this.reload,
-    this.columnNames,
-    this.selectedRow,
-    this.deletedRow,
-    this.changedColumnNames,
-    this.changedValues,
-    this.deleteEnabled,
-    this.insertEnabled,
-    this.readOnly,
-    this.updateEnabled,
-    required super.name,
-  });
-
   DalDataProviderChangedResponse.fromJson(super.json)
       : dataProvider = json[ApiObjectProperty.dataProvider],
         reload = json[ApiObjectProperty.reload],
-        columnNames = json[ApiObjectProperty.columnNames],
+        changedColumns = json[ApiObjectProperty.changedColumns],
         selectedRow = json[ApiObjectProperty.selectedRow],
         deletedRow = json[ApiObjectProperty.deletedRow],
-        changedColumnNames = json[ApiObjectProperty.changedColumnNames]?.cast<String>(),
+        changedColumnNames = json[ApiObjectProperty.changedColumnNames] != null
+            ? List<String>.from(json[ApiObjectProperty.changedColumnNames])
+            : null,
         changedValues = json[ApiObjectProperty.changedValues],
         deleteEnabled = json[ApiObjectProperty.deleteEnabled],
         insertEnabled = json[ApiObjectProperty.insertEnabled],
         readOnly = json[ApiObjectProperty.readOnly],
         updateEnabled = json[ApiObjectProperty.updateEnabled],
+        treePath = json[ApiObjectProperty.treePath],
+        selectedColumn = json[ApiObjectProperty.selectedColumn],
         super.fromJson();
+}
+
+class ChangedColumn {
+  String name;
+  String? label;
+  bool? readOnly;
+  bool? movable;
+  bool? sortable;
+  Map<String, dynamic>? cellEditorJson;
+
+  ChangedColumn.fromJson(Map<String, dynamic> json)
+      : name = json[ApiObjectProperty.name],
+        label = json[ApiObjectProperty.label],
+        readOnly = json[ApiObjectProperty.readOnly],
+        movable = json[ApiObjectProperty.movable],
+        sortable = json[ApiObjectProperty.sortable],
+        cellEditorJson = json[ApiObjectProperty.cellEditor];
 }

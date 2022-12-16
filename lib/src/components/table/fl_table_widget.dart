@@ -307,7 +307,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
       rowWidgets.add(
         IgnorePointer(
-          ignoring: colDef.readonly || (metaData?.readOnly ?? false),
+          ignoring: colDef.readOnly || (metaData?.readOnly ?? false),
           child: Container(
             width: tableSize.columnWidths[colDef.name]!.toDouble(),
             alignment: FLUTTER_ALIGNMENT[colDef.cellEditorHorizontalAlignment.index][VerticalAlignment.CENTER.index],

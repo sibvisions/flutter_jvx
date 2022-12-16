@@ -29,65 +29,65 @@ class ColumnDefinition {
   final String name;
 
   /// Identifier of the columns datatype
-  final int dataTypeIdentifier;
+  int dataTypeIdentifier;
 
   /// Label of the column
-  final String label;
+  String label;
 
   /// If this column is nullable
-  final bool nullable;
+  bool nullable;
 
   /// The comment of this ColumnDefinition
-  final String comment = "";
+  String comment = "";
 
   /// If this column is readonly
-  final bool readonly;
+  bool readOnly;
 
   /// If this column is writeable
-  final bool writeable = true;
+  bool writeable = true;
 
   /// If this column is filterable
-  final bool filterable = true;
+  bool filterable = true;
 
   /// Width of the column in a table
-  final double? width;
+  double? width;
 
   /// If it is allowed to resize this column if present in a table
-  final bool resizable;
+  bool resizable;
 
   /// If it is allowed to sort by this column if present in a table
-  final bool sortable;
+  bool sortable;
 
   /// If it is allowed to move this column if present in a table
-  final bool movable;
+  bool movable;
 
   /// The cell editor json of this column.
-  late final Map<String, dynamic> cellEditorJson;
+  Map<String, dynamic> cellEditorJson;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Datatype specific information
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The length of the datatype.
-  final int? length;
+  int? length;
 
   /// If zero or positive, the scale is the number of digits to the right of the decimal point. If negative, the unscaled value of the number is multiplied by ten to the power of the negation of the scale. For example, a scale of -3 means the unscaled value is multiplied by 1000.
-  final int? scale;
+  int? scale;
 
   /// The precision is the number of digits in the unscaled value. For instance, for the number 123.45, the precision returned is 5.
-  final int? precision;
+  int? precision;
 
   /// If the number type is signed.
-  final bool? signed;
+  bool? signed;
 
   /// Enable autotrim to avoid whitespaces at the begin and end of texts
-  final bool autoTrim;
+  bool autoTrim;
 
   /// The encoding of binary data types.
-  final String encoding;
+  String encoding;
 
   /// The fractional seconds precision.
-  final int iFractionalSecondsPrecision;
+  int iFractionalSecondsPrecision;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
@@ -112,7 +112,7 @@ class ColumnDefinition {
         label = pJson[ApiObjectProperty.label] ?? "",
         dataTypeIdentifier = pJson[ApiObjectProperty.dataTypeIdentifier] ?? 0,
         width = pJson[ApiObjectProperty.width] != 0 ? (pJson[ApiObjectProperty.width] as int).toDouble() : null,
-        readonly = pJson[ApiObjectProperty.readOnly] ?? true,
+        readOnly = pJson[ApiObjectProperty.readOnly] ?? true,
         nullable = pJson[ApiObjectProperty.nullable] ?? true,
         resizable = pJson[ApiObjectProperty.resizable] ?? true,
         sortable = pJson[ApiObjectProperty.sortable] ?? false,

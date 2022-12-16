@@ -14,12 +14,7 @@
  * the License.
  */
 
-import '../../../../model/command/api/fetch_command.dart';
-import '../../../../model/command/base_command.dart';
-import '../../../../model/command/data/change_selected_row_command.dart';
-import '../../../../model/command/data/delete_provider_data_command.dart';
-import '../../../../model/command/data/delete_row_command.dart';
-import '../../../../model/request/api_request.dart';
+import '../../../../../flutter_jvx.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../i_response_processor.dart';
 
@@ -27,6 +22,14 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
   @override
   List<BaseCommand> processResponse(DalDataProviderChangedResponse pResponse, ApiRequest? pRequest) {
     List<BaseCommand> commands = [];
+
+    if (IDataService().updateMetaDataChanged(pChangedResponse: pResponse)) {
+      IUiService().notifyMetaDataChange(pDataProvider: pResponse.dataProvider);
+    }
+
+    if (IDataService().updateDataChanged(pChangedResponse: pResponse)) {
+      IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
+    }
 
     // If -1 then delete all saved data and re-fetch
     if (pResponse.reload == -1) {
