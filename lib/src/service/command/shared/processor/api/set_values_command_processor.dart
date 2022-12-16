@@ -28,6 +28,7 @@ class SetValuesCommandProcessor implements ICommandProcessor<SetValuesCommand> {
         componentId: command.componentId,
         dataProvider: command.dataProvider,
         columnNames: command.columnNames,
+        editorColumnName: command.editorColumnName,
         values: command.values,
         filter: command.filter,
         filterCondition: command.filterCondition,

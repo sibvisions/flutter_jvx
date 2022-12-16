@@ -42,6 +42,8 @@ class ApiSetValuesRequest extends SessionRequest {
 
   final FilterCondition? filterCondition;
 
+  /// The column the server has to check against if it is readOnly
+  final String? editorColumnName;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,6 +55,7 @@ class ApiSetValuesRequest extends SessionRequest {
     required this.values,
     this.filter,
     this.filterCondition,
+    this.editorColumnName,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,5 +71,6 @@ class ApiSetValuesRequest extends SessionRequest {
         ApiObjectProperty.values: values,
         ApiObjectProperty.filter: filter?.toJson(),
         ApiObjectProperty.filterCondition: filterCondition?.toJson(),
+        if (editorColumnName != null) ApiObjectProperty.editorColumnName: editorColumnName,
       };
 }

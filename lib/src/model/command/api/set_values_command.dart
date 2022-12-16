@@ -34,6 +34,9 @@ class SetValuesCommand extends ApiCommand {
   /// List of columns, order of which corresponds to order of values list
   final List<String> columnNames;
 
+  /// The column the server has to check against if it is readOnly
+  final String? editorColumnName;
+
   /// List of values, order of which corresponds to order of columnsName list
   final List<dynamic> values;
 
@@ -51,6 +54,7 @@ class SetValuesCommand extends ApiCommand {
     required this.dataProvider,
     required this.columnNames,
     required this.values,
+    this.editorColumnName,
     this.filter,
     this.filterCondition,
     required super.reason,
@@ -62,6 +66,6 @@ class SetValuesCommand extends ApiCommand {
 
   @override
   String toString() {
-    return "SetValuesCommand{componentId: $componentId, dataProvider: $dataProvider, columnNames: $columnNames, values: $values, filter: $filter, filterCondition: $filterCondition, ${super.toString()}}";
+    return "SetValuesCommand{componentId: $componentId, dataProvider: $dataProvider, columnNames: $columnNames, values: $values, filter: $filter, filterCondition: $filterCondition, editorColumnName: $editorColumnName ${super.toString()}}";
   }
 }

@@ -115,6 +115,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         SetValuesCommand(
             componentId: model.id,
             dataProvider: model.dataProvider!,
+            editorColumnName: model.columnName,
             columnNames: [model.columnName!],
             values: values,
             reason: "Drawing has ended on ${model.id}")
@@ -133,6 +134,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         SetValuesCommand(
             componentId: model.id,
             dataProvider: model.dataProvider!,
+            editorColumnName: model.columnName,
             columnNames: [model.columnName!],
             values: [],
             reason: "Drawing has ended on ${model.id}"),

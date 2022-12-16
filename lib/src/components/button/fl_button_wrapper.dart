@@ -128,6 +128,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataProvider,
+        editorColumnName: model.columnName,
         columnNames: [model.columnName],
         values: [pBarcode.rawValue],
         reason: "Qr code was scanned",

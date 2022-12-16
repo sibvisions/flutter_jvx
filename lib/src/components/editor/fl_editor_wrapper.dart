@@ -231,6 +231,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
               return [
                 SetValuesCommand(
                   componentId: model.id,
+                  editorColumnName: model.columnName,
                   dataProvider: model.dataProvider,
                   columnNames: pValue.keys.toList(),
                   values: pValue.values.toList(),
@@ -243,6 +244,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
                 SetValuesCommand(
                   componentId: model.id,
                   dataProvider: model.dataProvider,
+                  editorColumnName: model.columnName,
                   columnNames: [model.columnName],
                   values: [pValue],
                   reason: "Value of ${model.id} set to $pValue",
@@ -303,6 +305,7 @@ New cell editor hashcode: ${cellEditor.hashCode}
     return SetValuesCommand(
       componentId: model.id,
       dataProvider: model.dataProvider,
+      editorColumnName: model.columnName,
       columnNames: [model.columnName],
       values: [value],
       reason: "Value of ${model.id} set to $value",
