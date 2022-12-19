@@ -28,6 +28,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   bool loading = false;
   Future? _loadingDelayFuture;
+  bool forceDisableBarrier = false;
 
   static JVxOverlayState? of(BuildContext? context) => context?.findAncestorStateOfType<JVxOverlayState>();
 
@@ -37,6 +38,15 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   void refreshDialogs() {
     dialogsKey.currentState?.setState(() {});
+  }
+
+  /// Overrides the modal barrier while [loading] is true.
+  ///
+  /// Do not forget to re-enable it with [overrideModalBarrier(false)]!
+  void overrideModalBarrier(bool forceDisableBarrier) {
+    setState(() {
+      this.forceDisableBarrier = forceDisableBarrier;
+    });
   }
 
   void showLoading(Duration delay) {
@@ -92,7 +102,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                 widget.child!,
                 FramesWidget(key: framesKey),
                 DialogsWidget(key: dialogsKey),
-                if (loading)
+                if (loading && !forceDisableBarrier)
                   const ModalBarrier(
                     dismissible: false,
                   ),
