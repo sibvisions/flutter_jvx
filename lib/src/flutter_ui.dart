@@ -525,9 +525,26 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         );
       }
 
+      if (themeData.primaryTextTheme.bodyText1?.color?.computeLuminance() == 0.0) {
+        themeData = themeData.copyWith(
+          primaryTextTheme: themeData.primaryTextTheme.apply(
+            bodyColor: JVxColors.LIGHTER_BLACK,
+            displayColor: JVxColors.LIGHTER_BLACK,
+          ),
+        );
+      }
+
       if (themeData.iconTheme.color?.computeLuminance() == 0.0) {
         themeData = themeData.copyWith(
           iconTheme: themeData.iconTheme.copyWith(
+            color: JVxColors.LIGHTER_BLACK,
+          ),
+        );
+      }
+
+      if (themeData.primaryIconTheme.color?.computeLuminance() == 0.0) {
+        themeData = themeData.copyWith(
+          iconTheme: themeData.primaryIconTheme.copyWith(
             color: JVxColors.LIGHTER_BLACK,
           ),
         );
