@@ -54,6 +54,8 @@ class ICellEditorModel {
   /// If this editor should open in a popup
   bool autoOpenPopup = false;
 
+  /// Styles
+  Set<String> styles = {};
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -131,6 +133,15 @@ class ICellEditorModel {
       pDefault: defaultModel.autoOpenPopup,
       pCurrent: autoOpenPopup,
     );
+
+    // Styles
+    styles = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.style,
+      pDefault: defaultModel.styles,
+      pConversion: _parseStyle,
+      pCurrent: styles,
+    );
   }
 
   dynamic getPropertyValue({
@@ -149,5 +160,11 @@ class ICellEditorModel {
       pConversion: pConversion,
       pCondition: pCondition,
     );
+  }
+
+  Set<String> _parseStyle(dynamic pStyle) {
+    String sStyle = (pStyle as String);
+
+    return sStyle.split(",").toSet();
   }
 }

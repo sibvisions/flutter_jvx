@@ -352,7 +352,9 @@ abstract class FlComponentModel {
     if (pJson.containsKey(ApiObjectProperty.cellEditorFont)) {
       overrideJson[ApiObjectProperty.font] = pJson[ApiObjectProperty.cellEditorFont];
     }
-
+    if (pJson.containsKey(ApiObjectProperty.cellEditorStyle)) {
+      overrideJson[ApiObjectProperty.style] = pJson[ApiObjectProperty.cellEditorStyle];
+    }
     applyFromJson(overrideJson);
   }
 

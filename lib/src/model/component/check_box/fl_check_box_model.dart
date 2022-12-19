@@ -27,6 +27,7 @@ class FlCheckBoxModel extends FlRadioButtonModel {
 
   static const String SWITCH_STYLE = "f_switch";
 
+  static const String CHECKBOX_STYLE = "f_checkbox";
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +39,7 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   @override
   FlCheckBoxModel get defaultModel => FlCheckBoxModel();
 
-  bool get isSwitch => styles.contains(SWITCH_STYLE);
+  bool get isSwitch => styles.contains(SWITCH_STYLE) && !styles.contains(CHECKBOX_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
