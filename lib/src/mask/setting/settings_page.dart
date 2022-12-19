@@ -110,45 +110,51 @@ class _SettingsPageState extends State<SettingsPage> {
           elevation: 0,
         ),
         body: body,
-        bottomNavigationBar: Material(
-          color: Theme.of(context).colorScheme.brightness == Brightness.light
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).bottomAppBarColor,
-          child: SafeArea(
-            child: SizedBox(
-              height: bottomBarHeight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(child: _createCancelButton(context, loading)),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints.tightFor(width: bottomBarHeight - 2),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          top: -(bottomBarHeight / 10),
-                          bottom: -(bottomBarHeight / 10),
-                          child: Opacity(
-                            opacity: 0.8,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                shape: BoxShape.circle,
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(
+            textTheme: Theme.of(context).primaryTextTheme,
+            iconTheme: Theme.of(context).primaryIconTheme,
+          ),
+          child: Material(
+            color: Theme.of(context).colorScheme.brightness == Brightness.light
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).bottomAppBarColor,
+            child: SafeArea(
+              child: SizedBox(
+                height: bottomBarHeight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(child: _createCancelButton(context, loading)),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints.tightFor(width: bottomBarHeight - 2),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            top: -(bottomBarHeight / 10),
+                            bottom: -(bottomBarHeight / 10),
+                            child: Opacity(
+                              opacity: 0.8,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 7.0),
-                            child: SizedBox(child: _createFAB(context, loading)),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 7.0),
+                              child: SizedBox(child: _createFAB(context, loading)),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(child: _createSaveButton(context, loading)),
-                ],
+                    Expanded(child: _createSaveButton(context, loading)),
+                  ],
+                ),
               ),
             ),
           ),

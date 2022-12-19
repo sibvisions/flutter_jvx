@@ -118,39 +118,45 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
     return SizedBox(
       height: isNormalSize ? 170 : 100,
-      child: DrawerHeader(
-        margin: EdgeInsets.zero,
-        padding: isNormalSize ? const EdgeInsets.all(12.0) : const EdgeInsets.all(7.0).copyWith(left: 12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: isNormalSize
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: headerItems,
-                    )
-                  : Row(
-                      children: headerItems,
-                    ),
-            ),
-            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-            AspectRatio(
-              aspectRatio: 1.0,
-              child: CircleAvatar(
-                radius: 100,
-                backgroundColor: Theme.of(context).backgroundColor,
-                backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
-                child: profileImage == null
-                    ? FaIcon(
-                        FontAwesomeIcons.solidUser,
-                        color: Colors.grey.shade400,
-                        size: 60,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          textTheme: Theme.of(context).primaryTextTheme,
+          iconTheme: Theme.of(context).primaryIconTheme,
+        ),
+        child: DrawerHeader(
+          margin: EdgeInsets.zero,
+          padding: isNormalSize ? const EdgeInsets.all(12.0) : const EdgeInsets.all(7.0).copyWith(left: 12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: isNormalSize
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: headerItems,
                       )
-                    : null,
+                    : Row(
+                        children: headerItems,
+                      ),
               ),
-            )
-          ],
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+              AspectRatio(
+                aspectRatio: 1.0,
+                child: CircleAvatar(
+                  radius: 100,
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
+                  child: profileImage == null
+                      ? FaIcon(
+                          FontAwesomeIcons.solidUser,
+                          color: Colors.grey.shade400,
+                          size: 60,
+                        )
+                      : null,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -271,21 +277,18 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }) {
     if (isNormalSize) {
       return ListTile(
+        textColor: Theme.of(context).colorScheme.onPrimary,
+        iconColor: Theme.of(context).colorScheme.onPrimary,
         leading: Builder(
           builder: (context) => CircleAvatar(
             backgroundColor: Colors.transparent,
             child: FaIcon(
               leadingIcon,
-              color: ListTileTheme.of(context).iconColor,
+              color: IconTheme.of(context).color,
             ),
           ),
         ),
-        title: isNormalSize
-            ? Text(
-                text,
-                overflow: TextOverflow.ellipsis,
-              )
-            : null,
+        title: isNormalSize ? Text(text, overflow: TextOverflow.ellipsis) : null,
         onTap: onTap,
       );
     } else {
@@ -293,7 +296,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
         child: InkWell(
           onTap: onTap,
           child: Center(
-            child: FaIcon(leadingIcon),
+            child: FaIcon(
+              leadingIcon,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
           ),
         ),
       );
