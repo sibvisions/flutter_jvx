@@ -34,7 +34,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
 
   Widget defaultImage = ImageLoader.DEFAULT_IMAGE;
 
-  double maxImageSize = 32;
+  double imageSize = 32;
 
   VoidCallback? imageLoadingCallback;
 
@@ -102,13 +102,13 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
   }
 
   void newMaxSize(Size pInfo, bool pSynchronous) {
-    if (pInfo.width.toDouble() > maxImageSize || pInfo.height.toDouble() > maxImageSize) {
-      maxImageSize = max(
+    if (pInfo.width.toDouble() > imageSize || pInfo.height.toDouble() > imageSize) {
+      imageSize = max(
         max(
           pInfo.width.toDouble(),
           pInfo.height.toDouble(),
         ),
-        maxImageSize,
+        imageSize,
       );
       if (!pSynchronous) {
         imageLoadingCallback?.call();

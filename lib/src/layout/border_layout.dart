@@ -20,8 +20,10 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
+import '../model/layout/gaps.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
+import '../model/layout/margins.dart';
 import '../util/i_clonable.dart';
 import 'i_layout.dart';
 
@@ -56,14 +58,11 @@ class BorderLayout implements ILayout, ICloneable {
   /// The original layout string.
   final String layoutString;
 
-  /// The horizontal gap between components.
-  int iHorizontalGap = 0;
+  /// Margins of the BorderLayout
+  late final Margins margins;
 
-  /// The vertical gap between components.
-  int iVerticalGap = 0;
-
-  /// The layout margins.
-  EdgeInsets eiMargins = const EdgeInsets.all(0);
+  /// Gaps between the components
+  late final Gaps gaps;
 
   /// Map of all positions of the children.
   final Map<String, LayoutPosition> _positions = HashMap<String, LayoutPosition>();
@@ -116,20 +115,23 @@ class BorderLayout implements ILayout, ICloneable {
 
     pParent.calculatedSize = preferredSize;
 
-    double x = pParent.insets.left + eiMargins.left;
-    double y = pParent.insets.top + eiMargins.top;
-    double width = preferredSize.width - x - pParent.insets.right + eiMargins.right;
-    double height = preferredSize.height - y - pParent.insets.bottom + eiMargins.bottom;
+    double x = pParent.insets.left + margins.marginLeft;
+    double y = pParent.insets.top + margins.marginTop;
+    double width = preferredSize.width - x - pParent.insets.right + margins.marginRight;
+    double height = preferredSize.height - y - pParent.insets.bottom + margins.marginBottom;
 
     // If parent has forced this into a size, cant exceed these values.
     if (pParent.hasPosition) {
       if (pParent.layoutPosition!.isComponentSize) {
-        width = pParent.layoutPosition!.width - x - pParent.insets.right - eiMargins.right;
-        height = pParent.layoutPosition!.height - y - pParent.insets.bottom - eiMargins.bottom;
+        width = pParent.layoutPosition!.width - x - pParent.insets.right - margins.marginRight;
+        height = pParent.layoutPosition!.height - y - pParent.insets.bottom - margins.marginBottom;
       } else {
-        width = max(pParent.layoutPosition!.width, preferredSize.width) - x - pParent.insets.right - eiMargins.right;
-        height =
-            max(pParent.layoutPosition!.height, preferredSize.height) - y - pParent.insets.bottom - eiMargins.bottom;
+        width =
+            max(pParent.layoutPosition!.width, preferredSize.width) - x - pParent.insets.right - margins.marginRight;
+        height = max(pParent.layoutPosition!.height, preferredSize.height) -
+            y -
+            pParent.insets.bottom -
+            margins.marginBottom;
       }
     }
 
@@ -139,8 +141,8 @@ class BorderLayout implements ILayout, ICloneable {
       _childNorth!.layoutPosition =
           LayoutPosition(left: x, top: y, width: width, height: bestSize.height, isComponentSize: true);
 
-      y += bestSize.height + iVerticalGap;
-      height -= bestSize.height + iVerticalGap;
+      y += bestSize.height + gaps.verticalGap;
+      height -= bestSize.height + gaps.verticalGap;
     }
 
     if (_childSouth != null) {
@@ -149,7 +151,7 @@ class BorderLayout implements ILayout, ICloneable {
       _childSouth!.layoutPosition = LayoutPosition(
           left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
 
-      height -= bestSize.height + iVerticalGap;
+      height -= bestSize.height + gaps.verticalGap;
     }
 
     if (_childWest != null) {
@@ -158,8 +160,8 @@ class BorderLayout implements ILayout, ICloneable {
       _childWest!.layoutPosition =
           LayoutPosition(left: x, top: y, width: bestSize.width, height: height, isComponentSize: true);
 
-      x += bestSize.width + iHorizontalGap;
-      width -= bestSize.width + iHorizontalGap;
+      x += bestSize.width + gaps.horizontalGap;
+      width -= bestSize.width + gaps.horizontalGap;
     }
 
     if (_childEast != null) {
@@ -168,7 +170,7 @@ class BorderLayout implements ILayout, ICloneable {
       _childEast!.layoutPosition = LayoutPosition(
           left: x + width - bestSize.width, top: y, width: bestSize.width, height: height, isComponentSize: true);
 
-      width -= bestSize.width + iHorizontalGap;
+      width -= bestSize.width + gaps.horizontalGap;
     }
 
     if (_childCenter != null) {
@@ -207,14 +209,8 @@ class BorderLayout implements ILayout, ICloneable {
   void _updateValuesFromString(String layout) {
     List<String> parameter = layout.split(",");
 
-    double top = double.parse(parameter[1]);
-    double left = double.parse(parameter[2]);
-    double bottom = double.parse(parameter[3]);
-    double right = double.parse(parameter[4]);
-
-    eiMargins = EdgeInsets.fromLTRB(left, top, right, bottom);
-    iHorizontalGap = int.parse(parameter[5]);
-    iVerticalGap = int.parse(parameter[6]);
+    margins = Margins.fromList(marginList: parameter.sublist(1, 5));
+    gaps = Gaps.createFromList(gapsList: parameter.sublist(5, 7));
   }
 
   /// Returns the preferred layout size
@@ -231,7 +227,7 @@ class BorderLayout implements ILayout, ICloneable {
         Size size = _childNorth!.bestSize;
 
         maxWidth = size.width;
-        height += size.height + iVerticalGap;
+        height += size.height + gaps.verticalGap;
       }
       if (_childSouth != null && (_childSouth!.hasPreferredSize || _childSouth!.hasCalculatedSize)) {
         Size size = _childSouth!.bestSize;
@@ -239,13 +235,13 @@ class BorderLayout implements ILayout, ICloneable {
         if (size.width > maxWidth) {
           maxWidth = size.width;
         }
-        height += size.height + iVerticalGap;
+        height += size.height + gaps.verticalGap;
       }
       if (_childEast != null && (_childEast!.hasPreferredSize || _childEast!.hasCalculatedSize)) {
         Size size = _childEast!.bestSize;
 
         maxHeight = size.height;
-        width += size.width + iHorizontalGap;
+        width += size.width + gaps.horizontalGap;
       }
       if (_childWest != null && (_childWest!.hasPreferredSize || _childWest!.hasCalculatedSize)) {
         Size size = _childWest!.bestSize;
@@ -253,7 +249,7 @@ class BorderLayout implements ILayout, ICloneable {
         if (size.height > maxHeight) {
           maxHeight = size.height;
         }
-        width += size.width + iHorizontalGap;
+        width += size.width + gaps.horizontalGap;
       }
       if (_childCenter != null && (_childCenter!.hasPreferredSize || _childCenter!.hasCalculatedSize)) {
         Size size = _childCenter!.bestSize;
@@ -267,7 +263,7 @@ class BorderLayout implements ILayout, ICloneable {
         width = maxWidth;
       }
 
-      return Size(width + eiMargins.left + eiMargins.right, height + eiMargins.top + eiMargins.bottom);
+      return Size(width + margins.marginLeft + margins.marginRight, height + margins.marginTop + margins.marginBottom);
     }
   }
 }

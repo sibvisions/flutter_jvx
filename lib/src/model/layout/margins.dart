@@ -14,18 +14,20 @@
  * the License.
  */
 
+import '../../layout/i_layout.dart';
+
 class Margins {
   /// The top margin
-  final double marginTop;
+  double marginTop;
 
   /// The left margin
-  final double marginLeft;
+  double marginLeft;
 
   /// The bottom margin
-  final double marginBottom;
+  double marginBottom;
 
   /// The right margin
-  final double marginRight;
+  double marginRight;
 
   Margins({
     required this.marginBottom,
@@ -35,8 +37,8 @@ class Margins {
   });
 
   Margins.fromList({required List<String> marginList})
-      : marginTop = double.parse(marginList[0]),
-        marginLeft = double.parse(marginList[1]),
-        marginBottom = double.parse(marginList[2]),
-        marginRight = double.parse(marginList[3]);
+      : marginTop = double.parse(marginList[0]) * ILayout.LAYOUT_MULTIPLIER,
+        marginLeft = double.parse(marginList[1]) * ILayout.LAYOUT_MULTIPLIER,
+        marginBottom = double.parse(marginList[2]) * ILayout.LAYOUT_MULTIPLIER,
+        marginRight = double.parse(marginList[3]) * ILayout.LAYOUT_MULTIPLIER;
 }

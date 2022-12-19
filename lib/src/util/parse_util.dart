@@ -55,20 +55,6 @@ abstract class ParseUtil {
     return parseBool(pBool) ?? true;
   }
 
-  /// Parses a [Size] object from a string, will only parse correctly if provided string was formatted :
-  /// "x,y" - e.g. "200,400" -> Size(200,400), if provided String was null, returned size will also be null
-  static Size? parseSize(dynamic pSize) {
-    if (pSize != null && pSize is String) {
-      List<String> split = pSize.split(",");
-
-      double width = double.parse(split[0]);
-      double height = double.parse(split[1]);
-
-      return Size(width, height);
-    }
-    return null;
-  }
-
   static Color? parseBackgroundColor(dynamic pValue) {
     String? jsonBackground = pValue?.toString();
     List<String> listBackgroundValues = jsonBackground?.split(";") ?? [];

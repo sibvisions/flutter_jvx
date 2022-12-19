@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
+
 import '../model/layout/layout_data.dart';
 import '../util/i_clonable.dart';
 import 'border_layout.dart';
@@ -27,6 +29,9 @@ import 'split_layout.dart';
 /// Defines the base construct of a [ILayout].
 /// It is generally advised to use this class as an interface and not as a superclass.
 abstract class ILayout implements ICloneable {
+  /// Layout values (margins, anchors) will be multiplied by this value.
+  static const double LAYOUT_MULTIPLIER = kIsWeb ? 1.0 : 2.0;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

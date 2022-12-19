@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../service/api/shared/api_object_property.dart';
@@ -25,6 +26,9 @@ import 'i_font_style.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
+  /// The server sizes will be multiplied by this value.
+  static const double SIZE_MULTIPLIER = kIsWeb ? 1.0 : 2.0;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -238,21 +242,21 @@ abstract class FlComponentModel {
       pKey: ApiObjectProperty.preferredSize,
       pDefault: defaultModel.preferredSize,
       pCurrent: preferredSize,
-      pConversion: ParseUtil.parseSize,
+      pConversion: _parseSize,
     );
     minimumSize = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.minimumSize,
       pDefault: defaultModel.minimumSize,
       pCurrent: minimumSize,
-      pConversion: ParseUtil.parseSize,
+      pConversion: _parseSize,
     );
     maximumSize = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.maximumSize,
       pDefault: defaultModel.maximumSize,
       pCurrent: maximumSize,
-      pConversion: ParseUtil.parseSize,
+      pConversion: _parseSize,
     );
     bounds = getPropertyValue(
       pJson: pJson,
@@ -407,5 +411,16 @@ abstract class FlComponentModel {
     String sStyle = (pStyle as String);
 
     return sStyle.split(",").toSet();
+  }
+
+  /// Parses a [Size] object from a string, will only parse correctly if provided string was formatted :
+  /// "x,y" - e.g. "200,400" -> Size(200,400), if provided String was null, returned size will also be null
+  static Size _parseSize(dynamic pSize) {
+    List<String> split = pSize.split(",");
+
+    double width = double.parse(split[0]);
+    double height = double.parse(split[1]);
+
+    return Size(width, height) * SIZE_MULTIPLIER;
   }
 }

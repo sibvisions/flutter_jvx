@@ -14,12 +14,14 @@
  * the License.
  */
 
+import '../../layout/i_layout.dart';
+
 class Gaps {
   /// The vertical gap of a layout
-  final int verticalGap;
+  int verticalGap;
 
   /// The horizontal gap of a layout
-  final int horizontalGap;
+  int horizontalGap;
 
   Gaps({required this.horizontalGap, required this.verticalGap});
 
@@ -29,7 +31,9 @@ class Gaps {
     if (gapsList == null) {
       gaps = Gaps(horizontalGap: 0, verticalGap: 0);
     } else {
-      gaps = Gaps(horizontalGap: int.parse(gapsList[0]), verticalGap: int.parse(gapsList[1]));
+      gaps = Gaps(
+          horizontalGap: (int.parse(gapsList[0]) * ILayout.LAYOUT_MULTIPLIER).ceil(),
+          verticalGap: (int.parse(gapsList[1]) * ILayout.LAYOUT_MULTIPLIER).ceil());
     }
     return gaps;
   }

@@ -36,7 +36,7 @@ class FlowLayout extends ILayout {
   /// The split layout string.
   final List<String> splitLayoutString;
 
-  /// Margins of the BorderLayout
+  /// Margins of the layout
   late final Margins margins;
 
   /// Gaps between the components
