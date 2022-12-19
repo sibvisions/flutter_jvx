@@ -418,16 +418,20 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   Widget _buildSplash(AsyncSnapshot snapshot, {List<Widget>? children}) {
     return MaterialApp(
-      navigatorKey: splashNavigatorKey,
       theme: splashTheme,
-      home: Stack(
-        children: [
-          Splash(
-            splashBuilder: widget.splashBuilder,
-            snapshot: snapshot,
-          ),
-          ...?children,
-        ],
+      home: Builder(
+        key: splashNavigatorKey,
+        builder: (context) {
+          return Stack(
+            children: [
+              Splash(
+                splashBuilder: widget.splashBuilder,
+                snapshot: snapshot,
+              ),
+              ...?children,
+            ],
+          );
+        },
       ),
     );
   }
