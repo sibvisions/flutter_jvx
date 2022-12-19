@@ -26,4 +26,7 @@ abstract class IStorageService {
 
   /// Deletes Screen Model, and all descendants.
   void deleteScreen({required String screenName});
+
+  /// Returns component model with matching name
+  FlComponentModel? getComponentByName({required String pComponentName});
 }

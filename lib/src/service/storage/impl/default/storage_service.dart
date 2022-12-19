@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../../../../flutter_jvx.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
@@ -196,6 +198,11 @@ class StorageService implements IStorageService {
     }
 
     FlutterJVx.logUI.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+  }
+
+  @override
+  FlComponentModel? getComponentByName({required String pComponentName}) {
+    return _componentMap.values.firstWhereOrNull((element) => element.name == pComponentName);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
