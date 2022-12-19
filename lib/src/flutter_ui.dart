@@ -295,7 +295,7 @@ class FlutterUI extends StatefulWidget {
 }
 
 late BeamerDelegate routerDelegate;
-final GlobalKey<NavigatorState> splashNavigatorKey = GlobalKey();
+final GlobalKey splashNavigatorKey = GlobalKey();
 
 /// Global Bucket to persist the storage between different locations
 PageStorageBucket pageStorageBucket = PageStorageBucket();
