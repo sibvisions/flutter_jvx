@@ -110,6 +110,11 @@ abstract class Frame extends StatefulWidget {
       },
     );
   }
+
+  /// Whether the currently used frame is [WebFrame].
+  static bool isWebFrame() {
+    return (!ConfigService().isMobileOnly() && kIsWeb) || ConfigService().isWebOnly() || kIsWeb;
+  }
 }
 
 abstract class FrameState extends State<Frame> {
