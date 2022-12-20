@@ -30,6 +30,7 @@ class DefaultLogin extends StatelessWidget implements Login {
     String? loginLogo = appStyle['login.logo'];
 
     bool inverseColor = ParseUtil.parseBool(appStyle['login.inverseColor']) ?? false;
+    bool colorGradient = ParseUtil.parseBool(appStyle['login.colorGradient']) ?? true;
 
     Color? topColor = ParseUtil.parseHexColor(appStyle['login.topColor']) ??
         ParseUtil.parseHexColor(appStyle['login.background']) ??
@@ -47,7 +48,7 @@ class DefaultLogin extends StatelessWidget implements Login {
       body: Stack(
         clipBehavior: Clip.none,
         children: [
-          buildBackground(context, loginLogo, topColor, bottomColor),
+          buildBackground(context, loginLogo, topColor, bottomColor, colorGradient),
           Center(
             child: SizedBox(
               width: min(600, MediaQuery.of(context).size.width / 10 * 8),
@@ -74,7 +75,13 @@ class DefaultLogin extends StatelessWidget implements Login {
   }
 
   @override
-  Widget buildBackground(BuildContext context, String? loginLogo, Color? topColor, Color? bottomColor) {
+  Widget buildBackground(
+    BuildContext context,
+    String? loginLogo,
+    Color? topColor,
+    Color? bottomColor,
+    bool colorGradient,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -85,7 +92,7 @@ class DefaultLogin extends StatelessWidget implements Login {
             child: Container(
               decoration: BoxDecoration(
                 color: topColor ?? Colors.transparent,
-                gradient: topColor != null
+                gradient: colorGradient && topColor != null
                     ? LinearGradient(
                         begin: Alignment.topCenter,
                         colors: [

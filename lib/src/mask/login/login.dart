@@ -7,14 +7,19 @@ export 'login_page.dart';
 export 'modern/modern_login.dart';
 
 abstract class Login {
-  /// Returns a background widget.
+  /// Returns the background widget.
   ///
-  /// [loginLogo] is the path to the logo sent by the server
-  ///
-  /// [topColor] is either the `logo.topColor`, the `logo.background` or the primary theme color.
-  ///
-  /// [bottomColor] is `logo.bottomColor`
-  Widget buildBackground(BuildContext context, String? loginLogo, Color? topColor, Color? bottomColor);
+  /// * [loginLogo] is derived from `login.logo` and represents the path to the logo.
+  /// * [topColor] is either derived from `logo.topColor`, `logo.background` or the primary theme color.
+  /// * [bottomColor] is derived from `logo.bottomColor` and controls the bottom color.
+  /// * [colorGradient] is derived from `login.colorGradient` and controls the background gradient.
+  Widget buildBackground(
+    BuildContext context,
+    String? loginLogo,
+    Color? topColor,
+    Color? bottomColor,
+    bool colorGradient,
+  );
 
   /// Returns a card widget depending on the [LoginMode].
   ///
