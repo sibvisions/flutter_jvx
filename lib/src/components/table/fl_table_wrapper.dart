@@ -437,9 +437,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
       if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
         if (pValue is HashMap<String, dynamic>) {
-          sendRow(pRow, pValue.keys.toList(), pValue.values.toList());
+          sendRow(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName);
         } else {
-          sendRow(pRow, [pColumnName], [pValue]);
+          sendRow(pRow, [pColumnName], [pValue], pColumnName);
         }
       }
     }).catchError(IUiService().handleAsyncError);
@@ -453,7 +453,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void sendRow(int? pRowIndex, List<String> pColumnNames, List<dynamic> pValues) {
+  void sendRow(int? pRowIndex, List<String> pColumnNames, List<dynamic> pValues, String pEditorColumnName) {
     int rowIndex = pRowIndex ?? selectedRow;
     if (rowIndex < 0 || rowIndex >= chunkData.data.length) {
       return;
@@ -464,6 +464,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         componentId: model.id,
         dataProvider: model.dataProvider,
         columnNames: pColumnNames,
+        editorColumnName: pEditorColumnName,
         values: pValues,
         filter: createFilter(pRowIndex: rowIndex),
         reason: "Values changed in table",
