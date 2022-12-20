@@ -54,6 +54,7 @@ class ModernLogin extends StatelessWidget implements Login {
     String? loginTitle = appStyle['login.title'];
 
     bool inverseColor = ParseUtil.parseBool(appStyle['login.inverseColor']) ?? false;
+    bool colorGradient = ParseUtil.parseBool(appStyle['login.colorGradient']) ?? true;
 
     Color? topColor = ParseUtil.parseHexColor(appStyle['login.topColor']) ??
         ParseUtil.parseHexColor(appStyle['login.background']) ??
@@ -72,7 +73,7 @@ class ModernLogin extends StatelessWidget implements Login {
           showSettingsInCard = ManualCard.showSettingsInCard(constraints);
           return Stack(
             children: [
-              buildBackground(context, loginLogo, topColor, bottomColor),
+              buildBackground(context, loginLogo, topColor, bottomColor, colorGradient),
               if (mode == LoginMode.Manual && !showSettingsInCard)
                 Positioned(
                   right: 0,
@@ -137,11 +138,17 @@ class ModernLogin extends StatelessWidget implements Login {
   }
 
   @override
-  Widget buildBackground(BuildContext context, String? loginLogo, Color? topColor, Color? bottomColor) {
+  Widget buildBackground(
+    BuildContext context,
+    String? loginLogo,
+    Color? topColor,
+    Color? bottomColor,
+    bool colorGradient,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: topColor ?? Colors.transparent,
-        gradient: topColor != null
+        gradient: colorGradient && topColor != null
             ? LinearGradient(
                 begin: Alignment.topLeft,
                 colors: [
@@ -191,7 +198,7 @@ class ModernLogin extends StatelessWidget implements Login {
                         Theme.of(context).scaffoldBackgroundColor,
                         0.05,
                       ),
-                  gradient: bottomColor != null
+                  gradient: colorGradient && bottomColor != null
                       ? LinearGradient(
                           begin: Alignment.topLeft,
                           colors: [
