@@ -26,6 +26,7 @@ import '../../mask/camera/qr_scanner_overlay.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
+import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/button/fl_button_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
@@ -90,7 +91,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     IUiService()
         .saveAllEditors(
       pId: model.id,
-      pFunction: () => _sendButtonCommand(overwrittenButtonPressId),
+      pFunction: () => _createButtonCommands(overwrittenButtonPressId),
       pReason: "Button pressed",
     )
         .then((value) {
@@ -108,13 +109,21 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     }).catchError(IUiService().handleAsyncError);
   }
 
-  Future<List<BaseCommand>> _sendButtonCommand(String? pOverwrittenButtonPressId) async {
-    return [
+  Future<List<BaseCommand>> _createButtonCommands(String? pOverwrittenButtonPressId) async {
+    List<BaseCommand> commands = [];
+
+    commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus"));
+
+    commands.add(
       PressButtonCommand(
         componentName: pOverwrittenButtonPressId ?? model.name,
         reason: "Button has been pressed",
       ),
-    ];
+    );
+
+    commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Focus"));
+
+    return commands;
   }
 
   void openQrCodeScanner() {

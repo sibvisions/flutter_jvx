@@ -27,6 +27,7 @@ import '../../mask/frame_dialog.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
@@ -237,4 +238,12 @@ abstract class IUiService {
   void closeFrameDialogs();
 
   Future<void> saveAllEditors({String? pId, required String pReason, Future<List<BaseCommand>> Function()? pFunction});
+
+  void setFocus(String pComponentId);
+
+  bool hasFocus(String pComponentId);
+
+  FlComponentModel? getFocus();
+
+  void removeFocus([String? pComponentId]);
 }

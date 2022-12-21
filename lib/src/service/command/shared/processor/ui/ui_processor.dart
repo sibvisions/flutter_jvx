@@ -23,6 +23,7 @@ import '../../../../../model/command/ui/route_to_login_command.dart';
 import '../../../../../model/command/ui/route_to_menu_command.dart';
 import '../../../../../model/command/ui/route_to_work_command.dart';
 import '../../../../../model/command/ui/save_menu_command.dart';
+import '../../../../../model/command/ui/set_focus_command.dart';
 import '../../../../../model/command/ui/ui_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../../../../model/command/ui/update_layout_position_command.dart';
@@ -39,6 +40,7 @@ import 'route_to_login_command_processor.dart';
 import 'route_to_menu_command_processor.dart';
 import 'route_to_work_command_processor.dart';
 import 'save_menu_command_processor.dart';
+import 'set_focus_command_processor.dart';
 import 'update_components_command_processor.dart';
 import 'update_layout_position_command_processor.dart';
 import 'upload_action_command_processor.dart';
@@ -66,6 +68,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   final ICommandProcessor _downloadActionProcessor = DownloadActionCommandProcessor();
   final ICommandProcessor _deleteFrameProcessor = DeleteFrameCommandProcessor();
   final ICommandProcessor _functionProcessor = FunctionCommandProcessor();
+  final ICommandProcessor _setFocusProcessor = SetFocusCommandProcessor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -102,6 +105,8 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _deleteFrameProcessor.processCommand(command);
     } else if (command is FunctionCommand) {
       return _functionProcessor.processCommand(command);
+    } else if (command is SetFocusCommand) {
+      return _setFocusProcessor.processCommand(command);
     }
 
     return [];

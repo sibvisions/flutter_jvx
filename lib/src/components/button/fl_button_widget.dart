@@ -92,16 +92,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     Function()? pressEvent = getOnPressed(context);
 
-    return GestureDetector(
-      onPanDown: pressEvent != null ? onPressDown : null,
-      onPanEnd: pressEvent != null ? onPressUp : null,
-      child: ElevatedButton(
-        focusNode: FocusNode(canRequestFocus: isButtonFocusable),
-        onFocusChange: _onFocusChange,
-        onPressed: pressEvent,
-        style: createButtonStyle(context),
-        child: createDirectButtonChild(context),
-      ),
+    return ElevatedButton(
+      focusNode: FocusNode(canRequestFocus: false),
+      onFocusChange: _onFocusChange,
+      onPressed: pressEvent,
+      style: createButtonStyle(context),
+      child: createDirectButtonChild(context),
     );
   }
 

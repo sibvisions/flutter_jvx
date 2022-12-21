@@ -19,15 +19,13 @@ import 'dart:math';
 import 'package:flutter/widgets.dart';
 
 import '../../flutter_ui.dart';
-import '../../model/command/api/focus_gained_command.dart';
-import '../../model/command/api/focus_lost_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/command/layout/preferred_size_command.dart';
+import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
-import '../../service/command/i_command_service.dart';
 import '../../service/config/config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -58,9 +56,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// 'True' if the calc size has been sent.
   bool sentCalcSize = false;
-
-  /// If the component is currently focused.
-  bool isFocused = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -278,21 +273,11 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sends a focus gained command via [ICommandService].
   void sendFocusGainedCommand() {
-    if (model.eventFocusGained && !isFocused) {
-      ICommandService()
-          .sendCommand(FocusGainedCommand(componentName: model.name, reason: "Component focused gained"))
-          .then((value) => isFocused = true)
-          .catchError(IUiService().handleAsyncError);
-    }
+    IUiService().sendCommand(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus"));
   }
 
   /// Sends a focus lost command via [ICommandService].
   void sendFocusLostCommand() {
-    if (model.eventFocusLost && isFocused) {
-      ICommandService()
-          .sendCommand(FocusLostCommand(componentName: model.name, reason: "Component focus lost"))
-          .then((value) => isFocused = false)
-          .catchError(IUiService().handleAsyncError);
-    }
+    IUiService().sendCommand(SetFocusCommand(componentId: model.id, focus: false, reason: "Focus"));
   }
 }

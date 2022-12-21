@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../../../flutter_jvx.dart';
 import 'api_command.dart';
 
 class FocusLostCommand extends ApiCommand {
@@ -31,7 +32,6 @@ class FocusLostCommand extends ApiCommand {
   FocusLostCommand({
     required this.componentName,
     required super.reason,
-    super.afterProcessing,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

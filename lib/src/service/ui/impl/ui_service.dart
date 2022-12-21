@@ -23,6 +23,7 @@ import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
@@ -36,6 +37,7 @@ import '../../../util/extensions/string_extensions.dart';
 import '../../command/i_command_service.dart';
 import '../../config/config_service.dart';
 import '../../data/i_data_service.dart';
+import '../../storage/i_storage_service.dart';
 import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
@@ -62,6 +64,9 @@ class UiService implements IUiService {
 
   /// Holds all custom screen modifications
   AppManager? appManager;
+
+  /// The currently focused object.
+  String? focusedComponentId;
 
   /// TODO: Holds previously calculated TableSizes
 
@@ -589,5 +594,32 @@ class UiService implements IUiService {
         pFunction: pFunction,
       ),
     );
+  }
+
+  @override
+  void setFocus(String pComponentId) {
+    removeFocus();
+    focusedComponentId = pComponentId;
+  }
+
+  @override
+  bool hasFocus(String pComponentId) {
+    return focusedComponentId == pComponentId;
+  }
+
+  @override
+  FlComponentModel? getFocus() {
+    if (focusedComponentId == null) {
+      return null;
+    }
+
+    return IStorageService().getComponentModel(pComponentId: focusedComponentId!);
+  }
+
+  @override
+  void removeFocus([String? pComponentId]) {
+    if (pComponentId == null || hasFocus(pComponentId)) {
+      focusedComponentId = null;
+    }
   }
 }

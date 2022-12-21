@@ -14,22 +14,26 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'ui_command.dart';
 
-class FocusGainedCommand extends ApiCommand {
+/// Command to set the focus
+class SetFocusCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of the component from which the value is set
-  final String componentName;
+  /// The internal id of which component has been focused.
+  final String componentId;
 
+  /// Whether to focus or unfocus
+  bool focus;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FocusGainedCommand({
-    required this.componentName,
+  SetFocusCommand({
+    required this.componentId,
+    required this.focus,
     required super.reason,
   });
 
@@ -38,7 +42,10 @@ class FocusGainedCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  Duration get loadingDelay => Duration.zero;
+
+  @override
   String toString() {
-    return "FocusGainedCommand{componentName: $componentName, ${super.toString()}}";
+    return "SetFocusCommand{componentId: $componentId, ${super.toString()}}";
   }
 }

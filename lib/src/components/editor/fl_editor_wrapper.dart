@@ -23,6 +23,7 @@ import 'package:flutter/widgets.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
+import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -226,9 +227,13 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         .saveAllEditors(
           pId: model.id,
           pFunction: () async {
+            List<BaseCommand> commands = [];
+
+            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus"));
+
             if (pValue is HashMap<String, dynamic>) {
               FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
-              return [
+              commands.add(
                 SetValuesCommand(
                   componentId: model.id,
                   editorColumnName: model.columnName,
@@ -237,10 +242,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
                   values: pValue.values.toList(),
                   reason: "Value of ${model.id} set to $pValue",
                 ),
-              ];
+              );
             } else {
               FlutterUI.logUI.d("Value of ${model.id} set to $pValue");
-              return [
+              commands.add(
                 SetValuesCommand(
                   componentId: model.id,
                   dataProvider: model.dataProvider,
@@ -249,8 +254,11 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
                   values: [pValue],
                   reason: "Value of ${model.id} set to $pValue",
                 ),
-              ];
+              );
             }
+
+            commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Focus"));
+            return commands;
           },
           pReason: "Value of ${model.id} set to $pValue",
         )
