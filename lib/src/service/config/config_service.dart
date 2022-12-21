@@ -363,7 +363,7 @@ class ConfigService {
     }
 
     _loadAppStyle();
-    return double.parse(_applicationStyle!['mobile.scaling'] ?? '2.0');
+    return double.parse(_applicationStyle!['options.mobilescaling'] ?? '2.0');
   }
 
   // TODO: Replace usages with [AppStyle]
