@@ -25,6 +25,7 @@ export 'src/components.dart';
 // Config
 export 'src/config/api/api_route.dart';
 export 'src/config/app_config.dart';
+export 'src/config/offline_config.dart';
 export 'src/config/server_config.dart';
 export 'src/config/ui_config.dart';
 export 'src/config/version_config.dart';
