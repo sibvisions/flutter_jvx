@@ -230,7 +230,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
             List<BaseCommand> commands = [];
 
             var oldFocus = IUiService().getFocus();
-            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus"));
+            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
 
             if (pValue is HashMap<String, dynamic>) {
               FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
@@ -258,7 +258,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
               );
             }
 
-            commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Focus"));
+            commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Value edit Focus"));
             return commands;
           },
           pReason: "Value of ${model.id} set to $pValue",
@@ -327,9 +327,9 @@ New cell editor hashcode: ${cellEditor.hashCode}
 
   void _onFocusChange(bool pFocus) {
     if (pFocus) {
-      sendFocusGainedCommand();
+      focus();
     } else {
-      sendFocusLostCommand();
+      unfocus();
     }
   }
 }

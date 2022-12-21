@@ -271,13 +271,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     return layoutData.hasPosition ? layoutData.layoutPosition!.height : 0.0;
   }
 
-  /// Sends a focus gained command via [ICommandService].
-  void sendFocusGainedCommand() {
-    IUiService().sendCommand(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus"));
+  /// Focuses this component.
+  void focus() {
+    IUiService().sendCommand(SetFocusCommand(componentId: model.id, focus: true, reason: "Sending Focus"));
   }
 
-  /// Sends a focus lost command via [ICommandService].
-  void sendFocusLostCommand() {
-    IUiService().sendCommand(SetFocusCommand(componentId: model.id, focus: false, reason: "Focus"));
+  /// Unfocuses this component.
+  void unfocus() {
+    IUiService().sendCommand(SetFocusCommand(componentId: model.id, focus: false, reason: "Sending Focus"));
   }
 }

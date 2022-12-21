@@ -53,9 +53,9 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
 
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
-        sendFocusGainedCommand();
+        focus();
       } else {
-        sendFocusLostCommand();
+        unfocus();
       }
     });
   }

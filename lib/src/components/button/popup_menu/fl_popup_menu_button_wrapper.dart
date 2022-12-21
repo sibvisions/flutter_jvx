@@ -86,8 +86,8 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
   @override
   Widget build(BuildContext context) {
     FlPopupMenuButtonWidget popupButtonWidget = FlPopupMenuButtonWidget(
-      onFocusGained: sendFocusGainedCommand,
-      onFocusLost: sendFocusLostCommand,
+      onFocusGained: focus,
+      onFocusLost: unfocus,
       model: model,
       focusNode: buttonFocusNode,
       onItemPress: sendButtonPressed,

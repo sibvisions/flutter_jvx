@@ -32,8 +32,8 @@ class FlToggleButtonWrapperState<T extends FlToggleButtonModel> extends FlButton
   @override
   Widget build(BuildContext context) {
     final FlToggleButtonWidget buttonWidget = FlToggleButtonWidget(
-      onFocusGained: sendFocusGainedCommand,
-      onFocusLost: sendFocusLostCommand,
+      onFocusGained: focus,
+      onFocusLost: unfocus,
       focusNode: buttonFocusNode,
       model: model,
       onPress: sendButtonPressed,

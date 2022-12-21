@@ -70,8 +70,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   @override
   Widget build(BuildContext context) {
     final FlButtonWidget buttonWidget = FlButtonWidget(
-      onFocusGained: sendFocusGainedCommand,
-      onFocusLost: sendFocusLostCommand,
+      onFocusGained: focus,
+      onFocusLost: unfocus,
       model: model,
       focusNode: buttonFocusNode,
       onPress: sendButtonPressed,
@@ -126,7 +126,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     List<BaseCommand> commands = [];
 
     var oldFocus = IUiService().getFocus();
-    commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus"));
+    commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Button clicked Focus"));
 
     commands.add(
       PressButtonCommand(
@@ -135,7 +135,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       ),
     );
 
-    commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Focus"));
+    commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Button clicked Focus"));
 
     return commands;
   }

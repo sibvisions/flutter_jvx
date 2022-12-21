@@ -87,6 +87,12 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
           endEditing(textController.text);
         });
       }
+
+      if (focusNode.hasFocus) {
+        focus();
+      } else {
+        unfocus();
+      }
     });
   }
 
