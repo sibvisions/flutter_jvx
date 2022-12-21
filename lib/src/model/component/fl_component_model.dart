@@ -16,20 +16,13 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../mask/frame/frame.dart';
-import '../../service/api/shared/api_object_property.dart';
-import '../../util/jvx_colors.dart';
-import '../../util/parse_util.dart';
+import '../../../flutter_jvx.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
 import 'i_font_style.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
-  /// The server sizes will be multiplied by this value.
-  // ignore: non_constant_identifier_names
-  static double SIZE_MULTIPLIER = Frame.isWebFrame() ? 1.0 : 2.0;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -424,6 +417,6 @@ abstract class FlComponentModel {
     double width = double.parse(split[0]);
     double height = double.parse(split[1]);
 
-    return Size(width, height) * SIZE_MULTIPLIER;
+    return Size(width, height) * ConfigService().getScaling();
   }
 }

@@ -15,7 +15,6 @@
  */
 
 import '../../flutter_jvx.dart';
-import '../mask/frame/frame.dart';
 import '../model/layout/layout_data.dart';
 import 'border_layout.dart';
 import 'flow_layout.dart';
@@ -28,10 +27,6 @@ import 'split_layout.dart';
 /// Defines the base construct of a [ILayout].
 /// It is generally advised to use this class as an interface and not as a superclass.
 abstract class ILayout implements ICloneable {
-  /// Layout values (margins, anchors) will be multiplied by this value.
-  // ignore: non_constant_identifier_names
-  static double LAYOUT_MULTIPLIER = Frame.isWebFrame() ? 1.0 : 2.0;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

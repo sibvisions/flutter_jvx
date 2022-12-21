@@ -355,6 +355,16 @@ class ConfigService {
     return success;
   }
 
+  /// Returns the scaling multiplier for server sent sizes
+  double getScaling() {
+    if (Frame.isWebFrame()) {
+      return 1.0;
+    }
+
+    _loadAppStyle();
+    return double.parse(_applicationStyle!['mobile.scaling'] ?? '2.0');
+  }
+
   // TODO: Replace usages with [AppStyle]
   double getOpacityMenu() {
     _loadAppStyle();

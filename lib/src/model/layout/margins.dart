@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../../layout/i_layout.dart';
+import '../../service/config/config_service.dart';
 
 class Margins {
   /// The top margin
@@ -37,8 +37,8 @@ class Margins {
   });
 
   Margins.fromList({required List<String> marginList})
-      : marginTop = double.parse(marginList[0]) * ILayout.LAYOUT_MULTIPLIER,
-        marginLeft = double.parse(marginList[1]) * ILayout.LAYOUT_MULTIPLIER,
-        marginBottom = double.parse(marginList[2]) * ILayout.LAYOUT_MULTIPLIER,
-        marginRight = double.parse(marginList[3]) * ILayout.LAYOUT_MULTIPLIER;
+      : marginTop = double.parse(marginList[0]) * ConfigService().getScaling(),
+        marginLeft = double.parse(marginList[1]) * ConfigService().getScaling(),
+        marginBottom = double.parse(marginList[2]) * ConfigService().getScaling(),
+        marginRight = double.parse(marginList[3]) * ConfigService().getScaling();
 }

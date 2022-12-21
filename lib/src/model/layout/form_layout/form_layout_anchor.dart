@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../../../layout/i_layout.dart';
+import '../../../service/config/config_service.dart';
 import '../alignments.dart';
 
 class FormLayoutAnchor {
@@ -78,7 +78,7 @@ class FormLayoutAnchor {
         autoSizeCalculated = false,
         firstCalculation = true,
         relative = false,
-        position = double.parse(pAnchorData.split(",")[4]) * ILayout.LAYOUT_MULTIPLIER,
+        position = double.parse(pAnchorData.split(",")[4]) * ConfigService().getScaling(),
         orientation = getOrientationFromData(anchorName: pAnchorData.split(",")[0]);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

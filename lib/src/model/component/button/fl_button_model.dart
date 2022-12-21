@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 import '../../../components/button/fl_button_widget.dart';
 import '../../../service/api/shared/api_object_property.dart';
+import '../../../service/config/config_service.dart';
 import '../../../util/parse_util.dart';
 import '../../layout/alignments.dart';
 import '../fl_component_model.dart';
@@ -157,7 +158,7 @@ class FlButtonModel extends FlComponentModel {
       pKey: ApiObjectProperty.imageTextGap,
       pDefault: defaultModel.imageTextGap,
       pCurrent: imageTextGap,
-      pConversion: (imageTextGap) => imageTextGap! * FlComponentModel.SIZE_MULTIPLIER,
+      pConversion: (imageTextGap) => imageTextGap! * ConfigService().getScaling(),
     );
     mousePressedImage = getPropertyValue(
       pJson: pJson,
@@ -177,7 +178,7 @@ class FlButtonModel extends FlComponentModel {
         pKey: ApiObjectProperty.margins,
         pDefault: defaultModel.paddings,
         pCurrent: paddings,
-        pConversion: (value) => ParseUtil.parseMargins(value)! * FlComponentModel.SIZE_MULTIPLIER);
+        pConversion: (value) => ParseUtil.parseMargins(value)! * ConfigService().getScaling());
 
     // var jsonMargins = ParseUtil.parseMargins(pJson[ApiObjectProperty.margins]);
     // if (jsonMargins != null) {

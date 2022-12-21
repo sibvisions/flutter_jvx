@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../../layout/i_layout.dart';
+import '../../service/config/config_service.dart';
 
 class Gaps {
   /// The vertical gap of a layout
@@ -32,8 +32,8 @@ class Gaps {
       gaps = Gaps(horizontalGap: 0, verticalGap: 0);
     } else {
       gaps = Gaps(
-          horizontalGap: (int.parse(gapsList[0]) * ILayout.LAYOUT_MULTIPLIER).ceil(),
-          verticalGap: (int.parse(gapsList[1]) * ILayout.LAYOUT_MULTIPLIER).ceil());
+          horizontalGap: (int.parse(gapsList[0]) * ConfigService().getScaling()).ceil(),
+          verticalGap: (int.parse(gapsList[1]) * ConfigService().getScaling()).ceil());
     }
     return gaps;
   }
