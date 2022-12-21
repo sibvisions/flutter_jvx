@@ -186,7 +186,7 @@ class FlutterUI extends StatefulWidget {
 
   /// Returns the context of the navigator while we are in the splash.
   static BuildContext? getSplashContext() {
-    return splashNavigatorKey.currentContext;
+    return splashNavigatorKey?.currentContext;
   }
 
   static void clearHistory() {
@@ -295,7 +295,7 @@ class FlutterUI extends StatefulWidget {
 }
 
 late BeamerDelegate routerDelegate;
-final GlobalKey splashNavigatorKey = GlobalKey();
+GlobalKey<NavigatorState>? splashNavigatorKey;
 
 /// Global Bucket to persist the storage between different locations
 PageStorageBucket pageStorageBucket = PageStorageBucket();
@@ -387,18 +387,24 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                     return JVxOverlay(child: child ?? const SizedBox.shrink());
                   }
 
-                  return _buildSplash(snapshot, children: [
-                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                      _getStartupErrorDialog(context, snapshot),
-                  ]);
+                  return _buildSplash(
+                    startupFuture!,
+                    childrenBuilder: (snapshot) => [
+                      if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                        _getStartupErrorDialog(context, snapshot),
+                    ],
+                  );
                 },
               );
             }
 
-            return _buildSplash(snapshot, children: [
-              if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                _getFatalErrorDialog(context, snapshot),
-            ]);
+            return _buildSplash(
+              initAppFuture,
+              childrenBuilder: (snapshot) => [
+                if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                  _getFatalErrorDialog(context, snapshot),
+              ],
+            );
           },
         );
 
@@ -416,22 +422,34 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildSplash(AsyncSnapshot snapshot, {List<Widget>? children}) {
-    return MaterialApp(
-      theme: splashTheme,
-      home: Builder(
-        key: splashNavigatorKey,
-        builder: (context) {
-          return Stack(
-            children: [
-              Splash(
-                splashBuilder: widget.splashBuilder,
-                snapshot: snapshot,
-              ),
-              ...?children,
-            ],
-          );
-        },
+  /// Builds a Navigator with a custom theme to push dialogs in the splash.
+  ///
+  /// This uses a Navigator instead of full blown MaterialApp to not touch existing routes, see [Navigator.reportsRouteUpdateToEngine].
+  /// It also connects the [NavigatorState] to the [future] object, so this can be re-used by multiple futures.
+  ///
+  /// [AsyncSnapshot] from the parent [FutureBuilder] can't be used, because [Navigator.onGenerateRoute]
+  /// is only called once-ish, therefore we have to trigger the update from inside.
+  Widget _buildSplash(Future future, {List<Widget> Function(AsyncSnapshot snapshot)? childrenBuilder}) {
+    return Theme(
+      data: splashTheme,
+      child: Navigator(
+        // Update key to force Navigator update, which in turn re-generates the route with the new future.
+        key: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          settings: settings,
+          builder: (context) => FutureBuilder(
+            future: future,
+            builder: (context, snapshot) => Stack(
+              children: [
+                Splash(
+                  splashBuilder: widget.splashBuilder,
+                  snapshot: snapshot,
+                ),
+                ...?childrenBuilder?.call(snapshot),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
