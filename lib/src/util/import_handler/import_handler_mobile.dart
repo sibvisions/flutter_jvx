@@ -14,18 +14,11 @@
  * the License.
  */
 
-import 'dart:async';
-
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// Mobile "Implementation" of [ImportHandler]
 class ImportHandler {
-  static FutureOr<void> initializeTimeZones() async {
-    tz.initializeTimeZones();
-  }
-
   static void setHashUrlStrategy() {
     // No-op.
   }

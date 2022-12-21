@@ -27,6 +27,7 @@ import 'package:logger/logger.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:universal_io/io.dart';
 
 import 'config/app_config.dart';
@@ -288,7 +289,7 @@ class FlutterUI extends StatefulWidget {
 
     fixUrlStrategy();
 
-    await initTimeZones();
+    tz.initializeTimeZones();
 
     runApp(pAppToRun);
   }
