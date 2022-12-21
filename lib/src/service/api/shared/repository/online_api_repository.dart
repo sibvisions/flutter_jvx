@@ -292,8 +292,8 @@ class OnlineApiRepository implements IRepository {
             } else {
               showStatus("Server Connection lost");
             }
-            wsManualClose = false;
           }
+          wsManualClose = false;
         },
         cancelOnError: true,
       );
