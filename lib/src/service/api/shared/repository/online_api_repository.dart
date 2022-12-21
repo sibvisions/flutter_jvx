@@ -100,6 +100,7 @@ import '../../../../model/response/view/message/message_view.dart';
 import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
 import '../../../../util/import_handler/import_handler.dart';
+import '../../../../util/jvx_colors.dart';
 import '../../../command/i_command_service.dart';
 import '../../../config/config_service.dart';
 import '../../../ui/i_ui_service.dart';
@@ -186,9 +187,6 @@ class OnlineApiRepository implements IRepository {
   /// Http client for outgoing connection
   HttpClient? client;
 
-  /// Http client for outside connection
-  WebSocketChannel? webSocket;
-
   /// Header fields, used for sessionId
   final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
 
@@ -204,8 +202,12 @@ class OnlineApiRepository implements IRepository {
   /// ASCII-compatible characters.
   final _asciiOnly = RegExp(r'^[\x00-\x7F]+$');
 
-  int lastDelay = 2;
-  bool manualClose = false;
+  /// Http client for outside connection
+  WebSocketChannel? webSocket;
+
+  int wsLastDelay = 2;
+  bool wsManualClose = false;
+  bool wsConnected = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -236,30 +238,42 @@ class OnlineApiRepository implements IRepository {
 
       webSocket!.stream.listen(
         (data) {
-          lastDelay = 2;
-          manualClose = false;
+          wsLastDelay = 2;
+          wsManualClose = false;
           if (data.isNotEmpty) {
             try {
               FlutterUI.logAPI.d("Received data via websocket: $data");
+              if (data == "OPEN_OK") {
+                wsConnected = true;
+                FlutterUI.logAPI.i("Connected to Websocket");
+                if (reconnect) {
+                  showStatus("Server Connection restored");
+                } else {
+                  hideStatus();
+                }
+              }
               if (data == "api/changes") {
                 ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
               }
-            } catch (e) {
-              FlutterUI.logAPI.e("Error handling websocket message:", e);
+            } catch (e, stack) {
+              FlutterUI.logAPI.e("Error handling websocket message:", e, stack);
             }
           }
         },
         onError: (error) {
           FlutterUI.logAPI.w("Connection to Websocket failed", error);
 
+          wsConnected = false;
+
           // Cancel reconnect if manually closed
-          if (manualClose) {
-            manualClose = false;
+          if (wsManualClose) {
+            wsManualClose = false;
             return;
           }
 
-          if (lastDelay == 2) {
-            showStatus("Server Connection lost, retrying...");
+          // Only show on first reconnect attempt
+          if (wsLastDelay == 2) {
+            showStatus("Server Connection lost, retrying...", true);
           }
           reconnectWebSocket();
         },
@@ -268,16 +282,17 @@ class OnlineApiRepository implements IRepository {
             "Connection to Websocket closed (${webSocket?.closeCode})${webSocket?.closeReason != null ? ": ${webSocket?.closeReason}" : ""}",
           );
 
-          lastDelay = 2;
+          wsConnected = false;
+          wsLastDelay = 2;
 
-          if (!manualClose) {
+          if (!wsManualClose) {
             if (webSocket?.closeCode != status.abnormalClosure && webSocket?.closeCode != status.goingAway) {
-              showStatus("Server Connection lost, retrying...");
+              showStatus("Server Connection lost, retrying...", true);
               reconnectWebSocket();
             } else {
               showStatus("Server Connection lost");
             }
-            manualClose = false;
+            wsManualClose = false;
           }
         },
         cancelOnError: true,
@@ -288,18 +303,36 @@ class OnlineApiRepository implements IRepository {
     }
   }
 
-  void showStatus(String message) {
+  void showStatus(String message, [bool showIndefinitely = false]) {
     if (!ConfigService().isOffline()) {
-      ScaffoldMessenger.of(FlutterUI.getCurrentContext()!).showSnackBar(SnackBar(
-        content: Text(message),
-      ));
+      BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
+      if (effectiveContext != null) {
+        ScaffoldMessenger.maybeOf(effectiveContext)?.hideCurrentSnackBar();
+        ScaffoldMessenger.maybeOf(effectiveContext)?.showSnackBar(SnackBar(
+          content: Text(FlutterUI.translate(message)),
+          backgroundColor: JVxColors.lighten(
+            Theme.of(effectiveContext).snackBarTheme.backgroundColor ??
+                Theme.of(effectiveContext).colorScheme.onSurface,
+            0.3,
+          ),
+          // There is no infinite
+          duration: showIndefinitely ? const Duration(days: 365) : const Duration(seconds: 4),
+        ));
+      }
+    }
+  }
+
+  void hideStatus() {
+    BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
+    if (effectiveContext != null) {
+      ScaffoldMessenger.maybeOf(effectiveContext)?.hideCurrentSnackBar();
     }
   }
 
   void reconnectWebSocket() {
-    lastDelay = min(lastDelay << 1, 120);
-    FlutterUI.logAPI.i("Retrying Websocket connection in $lastDelay seconds...");
-    Timer(Duration(seconds: lastDelay), () {
+    wsLastDelay = min(wsLastDelay << 1, 120);
+    FlutterUI.logAPI.i("Retrying Websocket connection in $wsLastDelay seconds...");
+    Timer(Duration(seconds: wsLastDelay), () {
       FlutterUI.logAPI.i("Retrying Websocket connection");
       startWebSocket(true);
     });
@@ -318,12 +351,15 @@ class OnlineApiRepository implements IRepository {
       queryParameters: {
         "clientId": ConfigService().getClientId()!,
         if (reconnect) "reconnect": null,
+        "confirmOpen": true.toString(),
       },
     );
   }
 
   Future<void> stopWebSocket() async {
-    manualClose = true;
+    if (webSocket != null && wsConnected) {
+      wsManualClose = true;
+    }
     // Workaround for never finishing future in some cases
     // https://github.com/dart-lang/web_socket_channel/issues/231
     try {
