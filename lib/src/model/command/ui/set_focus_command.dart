@@ -23,7 +23,7 @@ class SetFocusCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The internal id of which component has been focused.
-  final String componentId;
+  final String? componentId;
 
   /// Whether to focus or unfocus
   bool focus;
@@ -32,7 +32,7 @@ class SetFocusCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SetFocusCommand({
-    required this.componentId,
+    this.componentId,
     required this.focus,
     required super.reason,
   });

@@ -229,6 +229,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           pFunction: () async {
             List<BaseCommand> commands = [];
 
+            var oldFocus = IUiService().getFocus();
             commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus"));
 
             if (pValue is HashMap<String, dynamic>) {
@@ -257,7 +258,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
               );
             }
 
-            commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Focus"));
+            commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Focus"));
             return commands;
           },
           pReason: "Value of ${model.id} set to $pValue",

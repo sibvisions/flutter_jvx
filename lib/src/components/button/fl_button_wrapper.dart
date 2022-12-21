@@ -48,6 +48,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   DataRecord? dataRecord;
 
+  FocusNode buttonFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +73,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       onFocusGained: sendFocusGainedCommand,
       onFocusLost: sendFocusLostCommand,
       model: model,
+      focusNode: buttonFocusNode,
       onPress: sendButtonPressed,
     );
 
@@ -80,6 +83,16 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
     return getPositioned(child: buttonWidget);
   }
+
+  @override
+  void dispose() {
+    buttonFocusNode.dispose();
+    super.dispose();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void setSelectedRecord(DataRecord? pDataRecord) {
     dataRecord = pDataRecord;
@@ -112,6 +125,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   Future<List<BaseCommand>> _createButtonCommands(String? pOverwrittenButtonPressId) async {
     List<BaseCommand> commands = [];
 
+    var oldFocus = IUiService().getFocus();
     commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Focus"));
 
     commands.add(
@@ -121,7 +135,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       ),
     );
 
-    commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Focus"));
+    commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Focus"));
 
     return commands;
   }

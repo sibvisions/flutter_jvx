@@ -41,6 +41,7 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
   const FlPopupMenuButtonWidget({
     super.key,
     required super.model,
+    required super.focusNode,
     this.onItemPress,
     required this.popupItems,
     super.onPress,

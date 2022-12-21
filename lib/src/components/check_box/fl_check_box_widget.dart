@@ -29,7 +29,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
   Widget get image {
     if (model.isSwitch) {
       return Switch.adaptive(
-        focusNode: focusNode,
+        focusNode: radioFocusNode,
         value: model.selected,
         onChanged: model.isEnabled ? (_) => onPress?.call() : null,
       );
@@ -46,7 +46,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
 
     return Checkbox(
       side: borderside,
-      focusNode: focusNode,
+      focusNode: radioFocusNode,
       visualDensity: VisualDensity.compact,
       value: model.selected,
       onChanged: model.isEnabled ? (_) => onPress?.call() : null,
@@ -61,6 +61,7 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
     super.key,
     required super.model,
     required super.focusNode,
+    required super.radioFocusNode,
     super.inTable = false,
     super.onPress,
     super.onPressDown,

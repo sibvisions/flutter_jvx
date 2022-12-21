@@ -31,36 +31,38 @@ class SetFocusCommandProcessor implements ICommandProcessor<SetFocusCommand> {
     }
   }
 
-  Future<List<BaseCommand>> focus(String pComponentId) async {
-    if (IUiService().hasFocus(pComponentId)) {
+  Future<List<BaseCommand>> focus(String? pComponentId) async {
+    if (pComponentId != null && IUiService().hasFocus(pComponentId)) {
       return [];
     }
-    FlComponentModel? component = IStorageService().getComponentModel(pComponentId: pComponentId);
-    if (component == null || !component.isFocusable) {
-      return [];
-    }
-
-    IUiService().setFocus(pComponentId);
+    FlComponentModel? previousFocus = IUiService().getFocus();
 
     List<BaseCommand> commands = [];
 
-    FlComponentModel? previousFocus = IUiService().getFocus();
     if (previousFocus != null) {
       if (previousFocus.eventFocusLost) {
         commands
             .add(FocusLostCommand(componentName: previousFocus.name, reason: "Unfocused, next focus: $pComponentId"));
       }
+      IUiService().removeFocus(previousFocus.id);
     }
 
-    if (component.eventFocusGained) {
-      commands.add(FocusGainedCommand(componentName: component.name, reason: "Focused"));
+    FlComponentModel? component;
+    if (pComponentId != null) {
+      component = IStorageService().getComponentModel(pComponentId: pComponentId);
+      if (component?.isFocusable == true) {
+        IUiService().setFocus(pComponentId);
+        if (component!.eventFocusGained) {
+          commands.add(FocusGainedCommand(componentName: component.name, reason: "Focused"));
+        }
+      }
     }
 
     return commands;
   }
 
-  Future<List<BaseCommand>> unfocus(String pComponentId) async {
-    if (!IUiService().hasFocus(pComponentId)) {
+  Future<List<BaseCommand>> unfocus(String? pComponentId) async {
+    if (pComponentId == null || !IUiService().hasFocus(pComponentId)) {
       return [];
     }
     IUiService().removeFocus(pComponentId);

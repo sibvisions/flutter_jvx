@@ -89,6 +89,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       onFocusGained: sendFocusGainedCommand,
       onFocusLost: sendFocusLostCommand,
       model: model,
+      focusNode: buttonFocusNode,
       onItemPress: sendButtonPressed,
       popupItems: _createPopupItems(),
     );

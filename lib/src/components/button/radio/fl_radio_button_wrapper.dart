@@ -65,7 +65,8 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
     focusNode.canRequestFocus = model.isFocusable;
 
     FlRadioButtonWidget radioButtonWidget = FlRadioButtonWidget(
-      focusNode: focusNode,
+      radioFocusNode: focusNode,
+      focusNode: buttonFocusNode,
       model: model,
       onPress: sendButtonPressed,
     );
@@ -80,7 +81,6 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
   @override
   void dispose() {
     focusNode.dispose();
-
     super.dispose();
   }
 }

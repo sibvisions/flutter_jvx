@@ -44,7 +44,8 @@ class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlRadioButtonWra
   @override
   Widget build(BuildContext context) {
     FlCheckBoxWidget checkboxWidget = FlCheckBoxWidget(
-      focusNode: focusNode,
+      focusNode: buttonFocusNode,
+      radioFocusNode: focusNode,
       model: model,
       onPress: sendButtonPressed,
     );

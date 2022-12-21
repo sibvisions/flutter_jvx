@@ -37,20 +37,23 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // The function to call on the press of the button.
+  /// The function to call on the press of the button.
   final VoidCallback? onPress;
 
-  // The function if the button gained focus.
+  /// The function if the button gained focus.
   final VoidCallback? onFocusGained;
 
-  // The function if the button lost focus.
+  /// The function if the button lost focus.
   final VoidCallback? onFocusLost;
 
-  // The function if the mouse was pressed down.
+  /// The function if the mouse was pressed down.
   final Function(DragDownDetails)? onPressDown;
 
-  // The function if the mouse click is released.
+  /// The function if the mouse click is released.
   final Function(DragEndDetails)? onPressUp;
+
+  /// The focus node of the button.
+  final FocusNode buttonFocusNode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
@@ -77,6 +80,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   const FlButtonWidget({
     super.key,
     required super.model,
+    required this.buttonFocusNode,
     this.onPress,
     this.onFocusGained,
     this.onFocusLost,
@@ -92,8 +96,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     Function()? pressEvent = getOnPressed(context);
 
+    buttonFocusNode.canRequestFocus = isButtonFocusable;
+
     return ElevatedButton(
-      focusNode: FocusNode(canRequestFocus: false),
+      focusNode: buttonFocusNode,
       onFocusChange: _onFocusChange,
       onPressed: pressEvent,
       style: createButtonStyle(context),

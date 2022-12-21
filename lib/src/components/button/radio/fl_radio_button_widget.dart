@@ -35,7 +35,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
         child: Radio<bool>(
           visualDensity: VisualDensity.compact,
           value: true,
-          focusNode: focusNode,
+          focusNode: radioFocusNode,
           groupValue: model.selected,
           onChanged: model.isEnabled ? (_) => onPress?.call() : null,
           toggleable: true,
@@ -59,7 +59,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
 
   final bool inTable;
 
-  final FocusNode focusNode;
+  final FocusNode radioFocusNode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -68,7 +68,8 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   const FlRadioButtonWidget({
     super.key,
     required super.model,
-    required this.focusNode,
+    required super.focusNode,
+    required this.radioFocusNode,
     super.onPress,
     super.onPressDown,
     super.onPressUp,
@@ -77,7 +78,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
 
   @override
   ButtonStyle createButtonStyle(context) {
-    focusNode.canRequestFocus = model.isFocusable;
+    radioFocusNode.canRequestFocus = model.isFocusable;
 
     return ButtonStyle(
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),

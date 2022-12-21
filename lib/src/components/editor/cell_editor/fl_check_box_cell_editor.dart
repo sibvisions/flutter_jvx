@@ -26,6 +26,8 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  FocusNode buttonFocusNode = FocusNode();
+
   FocusNode focusNode = FocusNode();
 
   /// The value of the check box.
@@ -77,7 +79,8 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
     lastWidgetModel = widgetModel;
 
     return FlCheckBoxWidget(
-      focusNode: focusNode, // TODO: FOCUS NODE
+      radioFocusNode: focusNode,
+      focusNode: buttonFocusNode,
       model: widgetModel,
       onPress: onPress,
       inTable: pInTable,
@@ -101,7 +104,8 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
 
   @override
   void dispose() {
-    // do nothing
+    buttonFocusNode.dispose();
+    focusNode.dispose();
   }
 
   @override

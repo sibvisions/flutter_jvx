@@ -34,6 +34,7 @@ class FlToggleButtonWrapperState<T extends FlToggleButtonModel> extends FlButton
     final FlToggleButtonWidget buttonWidget = FlToggleButtonWidget(
       onFocusGained: sendFocusGainedCommand,
       onFocusLost: sendFocusLostCommand,
+      focusNode: buttonFocusNode,
       model: model,
       onPress: sendButtonPressed,
     );
