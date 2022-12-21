@@ -53,7 +53,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   final Function(DragEndDetails)? onPressUp;
 
   /// The focus node of the button.
-  final FocusNode buttonFocusNode;
+  final FocusNode focusNode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
@@ -80,7 +80,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   const FlButtonWidget({
     super.key,
     required super.model,
-    required this.buttonFocusNode,
+    required this.focusNode,
     this.onPress,
     this.onFocusGained,
     this.onFocusLost,
@@ -96,10 +96,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     Function()? pressEvent = getOnPressed(context);
 
-    buttonFocusNode.canRequestFocus = isButtonFocusable;
+    focusNode.canRequestFocus = isButtonFocusable;
 
     return ElevatedButton(
-      focusNode: buttonFocusNode,
+      focusNode: focusNode,
       onFocusChange: _onFocusChange,
       onPressed: pressEvent,
       style: createButtonStyle(context),
