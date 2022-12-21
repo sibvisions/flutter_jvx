@@ -55,6 +55,9 @@ class BorderLayout implements ILayout, ICloneable {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The modifier with which to scale the layout.
+  final double scaling;
+
   /// The original layout string.
   final String layoutString;
 
@@ -90,7 +93,7 @@ class BorderLayout implements ILayout, ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [BorderLayout].
-  BorderLayout({required this.layoutString}) {
+  BorderLayout({required this.layoutString, required this.scaling}) {
     _updateValuesFromString(layoutString);
   }
 
@@ -182,7 +185,7 @@ class BorderLayout implements ILayout, ICloneable {
   /// Makes a deep copy of this [BorderLayout].
   @override
   BorderLayout clone() {
-    return BorderLayout(layoutString: layoutString);
+    return BorderLayout(layoutString: layoutString, scaling: scaling);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -209,8 +212,8 @@ class BorderLayout implements ILayout, ICloneable {
   void _updateValuesFromString(String layout) {
     List<String> parameter = layout.split(",");
 
-    margins = Margins.fromList(marginList: parameter.sublist(1, 5));
-    gaps = Gaps.createFromList(gapsList: parameter.sublist(5, 7));
+    margins = Margins.fromList(marginList: parameter.sublist(1, 5), scaling: scaling);
+    gaps = Gaps.createFromList(gapsList: parameter.sublist(5, 7), scaling: scaling);
   }
 
   /// Returns the preferred layout size

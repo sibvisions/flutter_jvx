@@ -56,13 +56,16 @@ class FlowLayout extends ILayout {
 
   late final bool isRowOrientationHorizontal;
 
+  /// The modifier with which to scale the layout.
+  final double scaling;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlowLayout({required this.layoutString}) : splitLayoutString = layoutString.split(",") {
-    margins = Margins.fromList(marginList: splitLayoutString.sublist(1, 5));
-    gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7));
+  FlowLayout({required this.layoutString, required this.scaling}) : splitLayoutString = layoutString.split(",") {
+    margins = Margins.fromList(marginList: splitLayoutString.sublist(1, 5), scaling: scaling);
+    gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7), scaling: scaling);
     isRowOrientationHorizontal =
         AlignmentOrientationE.fromString(splitLayoutString[7]) == AlignmentOrientation.HORIZONTAL;
     outerHa = HorizontalAlignmentE.fromString(splitLayoutString[8]);
@@ -77,7 +80,7 @@ class FlowLayout extends ILayout {
 
   @override
   ILayout clone() {
-    return FlowLayout(layoutString: layoutString);
+    return FlowLayout(layoutString: layoutString, scaling: scaling);
   }
 
   @override

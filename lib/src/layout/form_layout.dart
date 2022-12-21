@@ -66,13 +66,16 @@ class FormLayout extends ILayout {
   /// Anchors
   late final HashMap<String, FormLayoutAnchor> anchors;
 
+  /// The modifier with which to scale the layout.
+  final double scaling;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FormLayout({required this.layoutData, required this.layoutString}) : splitLayoutString = layoutString.split(",") {
-    margins = Margins.fromList(marginList: splitLayoutString.sublist(1, 5));
-    gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7));
+  FormLayout({required this.layoutData, required this.layoutString, required this.scaling})
+      : splitLayoutString = layoutString.split(",") {
+    margins = Margins.fromList(marginList: splitLayoutString.sublist(1, 5), scaling: scaling);
+    gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7), scaling: scaling);
     alignment = splitLayoutString.sublist(7, 9);
     anchors = _getAnchors(layoutData);
     horizontalAlignment = HorizontalAlignmentE.fromString(alignment[0]);
@@ -85,7 +88,7 @@ class FormLayout extends ILayout {
 
   @override
   ILayout clone() {
-    return FormLayout(layoutData: layoutData, layoutString: layoutString);
+    return FormLayout(layoutData: layoutData, layoutString: layoutString, scaling: scaling);
   }
 
   @override
@@ -571,7 +574,7 @@ class FormLayout extends ILayout {
     final List<String> splitAnchors = layoutData.split(";");
     for (var stringAnchor in splitAnchors) {
       String name = stringAnchor.substring(0, stringAnchor.indexOf(","));
-      anchors[name] = FormLayoutAnchor.fromAnchorData(pAnchorData: stringAnchor);
+      anchors[name] = FormLayoutAnchor.fromAnchorData(pAnchorData: stringAnchor, scaling: scaling);
     }
 
     // Establish relatedAnchors

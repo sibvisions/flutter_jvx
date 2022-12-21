@@ -14,8 +14,6 @@
  * the License.
  */
 
-import '../../service/config/config_service.dart';
-
 class Gaps {
   /// The vertical gap of a layout
   int verticalGap;
@@ -26,14 +24,14 @@ class Gaps {
   Gaps({required this.horizontalGap, required this.verticalGap});
 
   /// Returns Gaps instance, if provided List is null the gaps will be set to 0.
-  static Gaps createFromList({required List<String>? gapsList}) {
+  static Gaps createFromList({required List<String>? gapsList, required double scaling}) {
     Gaps gaps;
     if (gapsList == null) {
       gaps = Gaps(horizontalGap: 0, verticalGap: 0);
     } else {
       gaps = Gaps(
-          horizontalGap: (int.parse(gapsList[0]) * ConfigService().getScaling()).ceil(),
-          verticalGap: (int.parse(gapsList[1]) * ConfigService().getScaling()).ceil());
+          horizontalGap: (int.parse(gapsList[0]) * scaling).ceil(),
+          verticalGap: (int.parse(gapsList[1]) * scaling).ceil());
     }
     return gaps;
   }

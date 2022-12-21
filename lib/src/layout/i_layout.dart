@@ -42,19 +42,19 @@ abstract class ILayout implements ICloneable {
   /// Current implementations are:
   ///
   /// [BorderLayout] , [FormLayout], [FlowLayout], [GridLayout]
-  static ILayout? getLayout(String? pLayout, String? pLayoutData) {
+  static ILayout? getLayout(String? pLayout, String? pLayoutData, double pScaling) {
     if (pLayout != null) {
       final list = pLayout.split(",");
 
       switch (list.first) {
         case "BorderLayout":
-          return BorderLayout(layoutString: pLayout);
+          return BorderLayout(layoutString: pLayout, scaling: pScaling);
         case "FormLayout":
-          return FormLayout(layoutData: pLayoutData!, layoutString: pLayout);
+          return FormLayout(layoutData: pLayoutData!, layoutString: pLayout, scaling: pScaling);
         case "GridLayout":
-          return GridLayout(layoutString: pLayout);
+          return GridLayout(layoutString: pLayout, scaling: pScaling);
         case "FlowLayout":
-          return FlowLayout(layoutString: pLayout);
+          return FlowLayout(layoutString: pLayout, scaling: pScaling);
         case "SplitLayout":
           return SplitLayout();
         default:

@@ -32,6 +32,12 @@ class GridLayout extends ILayout {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The original layout string
+  final String layoutString;
+
+  /// The modifier with which to scale the layout.
+  final double scaling;
+
   /// Margins of the Grid Layout
   late final Margins margins;
 
@@ -41,17 +47,17 @@ class GridLayout extends ILayout {
   /// Size of the grid
   late final GridSize gridSize;
 
-  GridLayout({required String layoutString}) {
+  GridLayout({required this.layoutString, required this.scaling}) {
     List<String> splitLayout = layoutString.split(",");
 
-    margins = Margins.fromList(marginList: splitLayout.sublist(1, 5));
-    gaps = Gaps.createFromList(gapsList: splitLayout.sublist(5, 7));
+    margins = Margins.fromList(marginList: splitLayout.sublist(1, 5), scaling: scaling);
+    gaps = Gaps.createFromList(gapsList: splitLayout.sublist(5, 7), scaling: scaling);
     gridSize = GridSize.fromList(list: splitLayout.sublist(7, 9));
   }
 
   @override
   ILayout clone() {
-    return this;
+    return GridLayout(layoutString: layoutString, scaling: scaling);
   }
 
   @override
@@ -67,11 +73,11 @@ class GridLayout extends ILayout {
       // Generate constraints
       List<String> splitConstraint = data.constraints!.split(RegExp("[;,]"));
       CellConstraint componentConstraint = CellConstraint(
-          margins: Margins.fromList(marginList: splitConstraint.sublist(4)),
-          gridHeight: int.parse(splitConstraint[3]),
-          gridWidth: int.parse(splitConstraint[2]),
-          gridY: int.parse(splitConstraint[1]),
-          gridX: int.parse(splitConstraint[0]));
+          margins: Margins.fromList(marginList: splitConstraint.sublist(4), scaling: scaling),
+          gridHeight: (int.parse(splitConstraint[3]) * scaling).ceil(),
+          gridWidth: (int.parse(splitConstraint[2]) * scaling).ceil(),
+          gridY: (int.parse(splitConstraint[1]) * scaling).ceil(),
+          gridX: (int.parse(splitConstraint[0]) * scaling).ceil());
 
       cellConstraints[data.id] = componentConstraint;
 

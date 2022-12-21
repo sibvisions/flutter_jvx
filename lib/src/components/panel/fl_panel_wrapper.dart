@@ -16,14 +16,12 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../layout/i_layout.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/component/panel/fl_panel_model.dart';
-import '../../service/storage/i_storage_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/base_cont_wrapper_state.dart';
-import 'fl_panel_widget.dart';
 
 class FlPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
   const FlPanelWrapper({super.key, required super.id});
@@ -43,7 +41,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   void initState() {
     super.initState();
 
-    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
+    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData, ConfigService().getScaling());
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
@@ -53,7 +51,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
   @override
   modelUpdated() {
-    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
+    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData, ConfigService().getScaling());
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 

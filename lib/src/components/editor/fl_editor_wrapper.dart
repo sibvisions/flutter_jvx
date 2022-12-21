@@ -34,10 +34,12 @@ import '../../service/api/shared/api_object_property.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import 'cell_editor/date/fl_date_cell_editor.dart';
 import 'cell_editor/fl_choice_cell_editor.dart';
 import 'cell_editor/fl_dummy_cell_editor.dart';
 import 'cell_editor/fl_image_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
+import 'cell_editor/linked/fl_linked_cell_editor.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layouting wrapper of various non layouting widgets.
@@ -258,6 +260,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
               );
             }
 
+            if (cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) {
+              SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus");
+            }
             commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Value edit Focus"));
             return commands;
           },

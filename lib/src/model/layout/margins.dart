@@ -14,8 +14,6 @@
  * the License.
  */
 
-import '../../service/config/config_service.dart';
-
 class Margins {
   /// The top margin
   double marginTop;
@@ -36,9 +34,9 @@ class Margins {
     required this.marginTop,
   });
 
-  Margins.fromList({required List<String> marginList})
-      : marginTop = double.parse(marginList[0]) * ConfigService().getScaling(),
-        marginLeft = double.parse(marginList[1]) * ConfigService().getScaling(),
-        marginBottom = double.parse(marginList[2]) * ConfigService().getScaling(),
-        marginRight = double.parse(marginList[3]) * ConfigService().getScaling();
+  Margins.fromList({required List<String> marginList, required double scaling})
+      : marginTop = double.parse(marginList[0]) * scaling,
+        marginLeft = double.parse(marginList[1]) * scaling,
+        marginBottom = double.parse(marginList[2]) * scaling,
+        marginRight = double.parse(marginList[3]) * scaling;
 }

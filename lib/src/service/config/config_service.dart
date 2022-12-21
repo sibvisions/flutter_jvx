@@ -352,6 +352,7 @@ class ConfigService {
     bool success = await setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
 
     _callbacks['style']?.forEach((element) => element.call());
+
     return success;
   }
 
