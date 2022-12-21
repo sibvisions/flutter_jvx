@@ -14,9 +14,9 @@
  * the License.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../mask/frame/frame.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
@@ -27,7 +27,8 @@ import 'i_font_style.dart';
 /// The base component model.
 abstract class FlComponentModel {
   /// The server sizes will be multiplied by this value.
-  static const double SIZE_MULTIPLIER = kIsWeb ? 1.0 : 2.0;
+  // ignore: non_constant_identifier_names
+  static double SIZE_MULTIPLIER = Frame.isWebFrame() ? 1.0 : 2.0;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
