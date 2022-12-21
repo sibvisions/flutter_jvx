@@ -296,9 +296,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
     bool isNormalSize = true,
   }) {
     if (isNormalSize) {
+      var isBrightnessLight = Theme.of(context).brightness == Brightness.light;
       return ListTile(
-        textColor: Theme.of(context).colorScheme.onPrimary,
-        iconColor: Theme.of(context).colorScheme.onPrimary,
+        textColor: isBrightnessLight ? Theme.of(context).colorScheme.onPrimary : null,
+        iconColor: isBrightnessLight ? Theme.of(context).colorScheme.onPrimary : null,
         leading: Builder(
           builder: (context) => CircleAvatar(
             backgroundColor: Colors.transparent,
