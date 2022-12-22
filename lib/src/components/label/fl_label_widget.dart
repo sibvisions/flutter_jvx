@@ -18,6 +18,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+import '../../mask/frame/frame.dart';
 import '../../model/component/label/fl_label_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../util/parse_util.dart';
@@ -42,12 +43,22 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       child = getTooltipWidget(child);
     }
 
-    double padding = kIsWeb ? 15 : 14;
+    EdgeInsets? padding;
+
+    if (Frame.isWebFrame()) {
+      padding = const EdgeInsets.fromLTRB(0, 7, 0, 7);
+    } else {
+      if (kIsWeb) {
+        padding = const EdgeInsets.fromLTRB(0, 15, 0, 15);
+      } else {
+        padding = const EdgeInsets.fromLTRB(0, 14, 0, 14);
+      }
+    }
 
     return GestureDetector(
       onTap: onPress,
       child: Container(
-        padding: EdgeInsets.fromLTRB(0, padding, 0, padding),
+        padding: padding,
         decoration: BoxDecoration(
           color: model.background,
         ),

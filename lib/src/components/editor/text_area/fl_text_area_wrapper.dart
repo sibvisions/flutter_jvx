@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../flutter_ui.dart';
+import '../../../mask/frame/frame.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
@@ -74,11 +75,13 @@ class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
 
     double height = size.height;
 
+    EdgeInsets paddings = Frame.isWebFrame() ? FlTextFieldWidget.WEBFRAME_PADDING : FlTextFieldWidget.MOBILE_PADDING;
+
     if (model.rows > 1) {
-      height -= FlTextFieldWidget.DEFAULT_PADDING.vertical;
+      height -= paddings.vertical;
       calculatedRowSize ??= height;
       height = calculatedRowSize! * model.rows;
-      height += FlTextFieldWidget.DEFAULT_PADDING.vertical;
+      height += paddings.vertical;
     }
 
     return Size(size.width, height);

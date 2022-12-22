@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../flutter_ui.dart';
+import '../../../mask/frame/frame.dart';
 import '../../../mask/state/app_style.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
@@ -42,8 +43,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static const EdgeInsets DEFAULT_PADDING = EdgeInsets.fromLTRB(10, 15, 10, 15);
+  static const EdgeInsets MOBILE_PADDING = EdgeInsets.fromLTRB(10, 15, 10, 15);
 
+  static const EdgeInsets WEBFRAME_PADDING = EdgeInsets.fromLTRB(10, 12, 10, 12);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,7 +75,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   double get iconSize => 16;
 
-  EdgeInsets get contentPadding => DEFAULT_PADDING;
+  EdgeInsets get contentPadding => Frame.isWebFrame() ? WEBFRAME_PADDING : MOBILE_PADDING;
 
   EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
 
@@ -138,13 +140,21 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     focusNode.canRequestFocus = model.isFocusable;
 
+    EdgeInsets? paddings;
+
+    if (inTable && kIsWeb) {
+      paddings = const EdgeInsets.only(top: 8);
+    } else if (!inTable) {
+      paddings = contentPadding;
+    }
+
     bool isFilled = !inTable;
     return TextField(
       controller: textController,
       decoration: inputDecoration.copyWith(
         enabled: model.isEnabled,
         hintText: model.placeholder,
-        contentPadding: inTable ? (kIsWeb ? const EdgeInsets.only(top: 8) : null) : contentPadding,
+        contentPadding: paddings,
         border: createBorder(FlTextBorderType.border),
         errorBorder: createBorder(FlTextBorderType.errorBorder),
         enabledBorder: createBorder(FlTextBorderType.enabledBorder),
@@ -152,9 +162,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         disabledBorder: createBorder(FlTextBorderType.disabledBorder),
         focusedErrorBorder: createBorder(FlTextBorderType.focusedBorder),
         suffixIcon: createSuffixIcon(),
+        suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 24),
         suffix: createSuffix(),
         fillColor: fillColor,
         filled: isFilled,
+        isDense: !inTable && Frame.isWebFrame(),
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
       textAlignVertical: inTable ? TextAlignVertical.center : VerticalAlignmentE.toTextAlign(model.verticalAlignment),
@@ -233,10 +245,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     List<Widget> suffixIconItems = createSuffixIconItems();
 
-    if (suffixIconItems.isEmpty) {
-      return null;
-    }
-
     if (suffixIconItems.length > 1) {
       Widget lastWidget = suffixIconItems.removeLast();
 
@@ -272,6 +280,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           );
         }
       }
+    }
+
+    if (suffixIconItems.isEmpty) {
+      suffixIconItems.add(const Center());
     }
 
     return Container(

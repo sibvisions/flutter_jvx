@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../components/button/fl_button_widget.dart';
+import '../../../mask/frame/frame.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/config/config_service.dart';
 import '../../../util/parse_util.dart';
@@ -75,7 +76,11 @@ class FlButtonModel extends FlComponentModel {
 
   /// Initializes the [FlButtonModel]
   FlButtonModel() : super() {
-    minimumSize = const Size.square(kMinInteractiveDimension);
+    if (Frame.isWebFrame()) {
+      minimumSize = const Size.square(32);
+    } else {
+      minimumSize = const Size.square(kMinInteractiveDimension);
+    }
     labelModel.verticalAlignment = VerticalAlignment.CENTER;
     labelModel.horizontalAlignment = HorizontalAlignment.RIGHT;
   }
