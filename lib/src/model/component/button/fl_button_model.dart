@@ -77,6 +77,7 @@ class FlButtonModel extends FlComponentModel {
   /// Initializes the [FlButtonModel]
   FlButtonModel() : super() {
     if (Frame.isWebFrame()) {
+      // 32 is the wanted height of our dense Textfields in the webframe
       minimumSize = const Size.square(32);
     } else {
       minimumSize = const Size.square(kMinInteractiveDimension);

@@ -199,22 +199,22 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
 
-    return InkWell(
-      canRequestFocus: false,
-      onTap: () {
-        if (!model.isReadOnly) {
-          if (focusNode.hasFocus) {
-            textController.clear();
-            valueChanged("");
-          } else {
-            endEditing("");
+    return Center(
+      child: InkWell(
+        canRequestFocus: false,
+        onTap: () {
+          if (!model.isReadOnly) {
+            if (focusNode.hasFocus) {
+              textController.clear();
+              valueChanged("");
+            } else {
+              endEditing("");
+            }
           }
-        }
-      },
-      child: SizedBox(
-        width: clickableClearArea,
-        height: clickableClearArea,
-        child: Center(
+        },
+        child: SizedBox(
+          width: clickableClearArea,
+          height: clickableClearArea,
           child: Icon(
             Icons.clear,
             size: iconSize,
@@ -282,6 +282,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       }
     }
 
+    // All our suffix icons are centered which makes the textfield expanding.
+    // If we have no icons, just insert a center and voilá, textfield is expanding without
+    // setting "expanding" to true.
     if (suffixIconItems.isEmpty) {
       suffixIconItems.add(const Center());
     }
