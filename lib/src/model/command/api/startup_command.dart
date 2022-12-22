@@ -44,10 +44,10 @@ class StartupCommand extends ApiCommand {
     required super.reason,
   }) {
     beforeProcessing = () => IUiService().getAppManager()?.onInitStartup();
-    afterProcessing = () {
+    afterProcessing = () async {
       // Beamer's history also contains the present!
       FlutterUI.clearHistory();
-      FlutterUI.clearServices(true);
+      await FlutterUI.clearServices(true);
       FlutterUI.resetPageBucket();
     };
     onFinish = () {

@@ -200,11 +200,15 @@ class FlutterUI extends StatefulWidget {
     routerDelegate.currentBeamLocation.history.removeAllExceptLast();
   }
 
-  static void clearServices(bool pFullClear) {
-    ILayoutService().clear();
-    IStorageService().clear(pFullClear);
-    IDataService().clear();
-    IUiService().clear();
+  /// Clears all service depending on [pFullClear].
+  ///
+  /// When [pFullClear] is `true`, then a full app restart/change happened.
+  /// If `false`, just a logout.
+  static FutureOr<void> clearServices(bool pFullClear) async {
+    await ILayoutService().clear();
+    await IStorageService().clear(pFullClear);
+    await IDataService().clear();
+    await IUiService().clear();
   }
 
   static void resetPageBucket() {

@@ -25,10 +25,10 @@ class LogoutCommand extends ApiCommand {
   LogoutCommand({
     required super.reason,
   }) {
-    afterProcessing = () {
+    afterProcessing = () async {
       // Beamer's history also contains the present!
       FlutterUI.clearHistory();
-      FlutterUI.clearServices(false);
+      await FlutterUI.clearServices(false);
     };
     onFinish = () {
       // We have to clear the history only after routing, as before the past location would have not benn counted as "history".

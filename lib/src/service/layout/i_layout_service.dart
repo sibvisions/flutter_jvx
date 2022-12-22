@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:ui';
 
 import '../../model/command/base_command.dart';
@@ -33,7 +34,7 @@ abstract class ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  void clear();
+  FutureOr<void> clear();
 
   /// Registers a parent for receiving child constraint changes.
   ///

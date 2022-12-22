@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:collection';
 
 import '../../model/command/base_command.dart';
@@ -38,7 +39,7 @@ abstract class IDataService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  void clear();
+  FutureOr<void> clear();
 
   /// Establishes the meta data of the given dataBook
   Future<bool> updateMetaData({required DalMetaDataResponse pChangedResponse});

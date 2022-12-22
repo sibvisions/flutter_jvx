@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
@@ -36,7 +38,7 @@ abstract class IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  void clear(bool pFullClear);
+  FutureOr<void> clear(bool pFullClear);
 
   /// Updates [FlComponentModel]
   /// Returns [BaseCommand] to update UI with all effected components.

@@ -51,7 +51,7 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  void clear();
+  FutureOr<void> clear();
 
   static String getErrorMessage(Object error) {
     if (error is SocketException) {

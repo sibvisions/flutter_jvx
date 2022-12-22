@@ -119,7 +119,7 @@ class CommandService implements ICommandService {
     try {
       FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
       await processCommand(pCommand);
-      pCommand.onFinish?.call();
+      await pCommand.onFinish?.call();
       FlutterUI.logCommand.d("Finished ${pCommand.runtimeType}-chain");
     } catch (error) {
       FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
@@ -145,7 +145,7 @@ class CommandService implements ICommandService {
     if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
       FlutterUI.logCommand.i("Processing ${pCommand.runtimeType}");
     }
-    pCommand.beforeProcessing?.call();
+    await pCommand.beforeProcessing?.call();
 
     List<BaseCommand> commands = [];
     try {
@@ -174,7 +174,7 @@ class CommandService implements ICommandService {
     }
 
     FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");
-    pCommand.afterProcessing?.call();
+    await pCommand.afterProcessing?.call();
 
     modifyCommands(commands, pCommand);
     IUiService().getAppManager()?.modifyCommands(commands, pCommand);

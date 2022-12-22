@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/widgets.dart';
+import 'dart:async';
 
 ///
 /// Base Class for communication between services, every [BaseCommand] should always be directed at a specific Service.
@@ -35,13 +35,13 @@ abstract class BaseCommand {
   final bool showLoading;
 
   /// Will be called when the command is being processed.
-  VoidCallback? beforeProcessing;
+  FutureOr<void> Function()? beforeProcessing;
 
   /// Will be called when the command is done processing.
-  VoidCallback? afterProcessing;
+  FutureOr<void> Function()? afterProcessing;
 
   /// Internal callback, when all follow-up commands have been fully processed and the command therefore is done processing.
-  VoidCallback? onFinish;
+  FutureOr<void> Function()? onFinish;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
