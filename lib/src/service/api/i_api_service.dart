@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import '../../model/command/base_command.dart';
 import '../../model/request/api_request.dart';
 import '../service.dart';
@@ -33,11 +35,14 @@ abstract class IApiService {
 
   /// Any API Request will be sent to an [IRepository] to execute the request
   /// after which it will be processed to [BaseCommand]s in an [IController]
-  Future<List<BaseCommand>> sendRequest(ApiRequest request);
+  Future<List<BaseCommand>> sendRequest(ApiRequest request, [bool? retryRequest]);
 
   IRepository? getRepository();
 
   void setRepository(IRepository pRepository);
 
   void setController(IController pController);
+
+  /// Basically resets the service
+  FutureOr<void> clear(bool pFullClear);
 }

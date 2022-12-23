@@ -78,7 +78,7 @@ class FlutterUI extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Determines the supported server version which will be sent in the [ApiStartUpRequest]
-  static const String supportedServerVersion = "2.1.0";
+  static const String supportedServerVersion = "2.2.0";
 
   /// Loads assets with packages prefix
   static bool package = true;
@@ -209,6 +209,7 @@ class FlutterUI extends StatefulWidget {
     await IStorageService().clear(pFullClear);
     await IDataService().clear();
     await IUiService().clear();
+    await IApiService().clear(pFullClear);
   }
 
   static void resetPageBucket() {

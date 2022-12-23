@@ -25,6 +25,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
+import '../../service/api/i_api_service.dart';
+import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/config/config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -105,6 +107,10 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Builder(builder: (context) => _buildDeviceSettings(context)),
           ),
           _buildVersionInfo(),
+          IconTheme.merge(
+            data: IconThemeData(color: Theme.of(context).colorScheme.primary),
+            child: Builder(builder: (context) => _buildStatus(context)),
+          ),
           const SizedBox(height: 5),
         ],
       ),
@@ -535,6 +541,35 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       items: [appVersionSetting, commitSetting, buildDataSetting],
+    );
+  }
+
+  _buildStatus(BuildContext context) {
+    var repository = IApiService().getRepository();
+    bool? webSocketAvailable;
+    if (repository is OnlineApiRepository) {
+      webSocketAvailable = repository.isWebSocketAvailable();
+    }
+
+    SettingItem webSocketStatus = SettingItem(
+      frontIcon: const FaIcon(FontAwesomeIcons.circleNodes),
+      value: FlutterUI.translate(
+          webSocketAvailable != null ? (webSocketAvailable ? "Available" : "Not available") : "Unknown"),
+      title: FlutterUI.translate("Web Socket"),
+    );
+
+    return SettingGroup(
+      groupHeader: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text(
+          FlutterUI.translate("Status"),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      items: [webSocketStatus],
     );
   }
 

@@ -42,5 +42,5 @@ abstract class IRepository {
 
   /// Executes [pRequest],
   /// will throw an exception if request fails to be executed
-  Future<ApiInteraction> sendRequest(ApiRequest pRequest);
+  Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]);
 }

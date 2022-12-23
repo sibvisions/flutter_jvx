@@ -135,7 +135,7 @@ class OfflineApiRepository implements IRepository {
   }
 
   @override
-  Future<ApiInteraction> sendRequest(ApiRequest pRequest) async {
+  Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
     ApiResponse? response;

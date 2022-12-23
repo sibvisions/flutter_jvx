@@ -17,11 +17,14 @@
 import 'api_command.dart';
 
 class AliveCommand extends ApiCommand {
+  bool? retryRequest;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   AliveCommand({
+    this.retryRequest,
     required super.reason,
   });
 
@@ -31,6 +34,6 @@ class AliveCommand extends ApiCommand {
 
   @override
   String toString() {
-    return "AliveCommand{${super.toString()}}";
+    return 'AliveCommand{retryRequest: $retryRequest, ${super.toString()}}';
   }
 }

@@ -14,17 +14,16 @@
  * the License.
  */
 
-import 'dart:async';
+class InvalidServerResponseException implements Exception {
+  final dynamic message;
+  final int? statusCode;
 
-import '../../../../../model/command/api/alive_command.dart';
-import '../../../../../model/command/base_command.dart';
-import '../../../../../model/request/api_alive_request.dart';
-import '../../../../api/i_api_service.dart';
-import '../../i_command_processor.dart';
+  InvalidServerResponseException(this.message, [this.statusCode]);
 
-class AliveCommandProcessor implements ICommandProcessor<AliveCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(AliveCommand command) async {
-    return IApiService().sendRequest(ApiAliveRequest(), command.retryRequest);
+  String toString() {
+    Object? message = this.message;
+    if (message == null) return "InvalidServerResponseException";
+    return "$message";
   }
 }

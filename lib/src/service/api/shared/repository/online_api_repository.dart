@@ -28,9 +28,11 @@ import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../../config/api/api_route.dart';
+import '../../../../exceptions/invalid_server_response_exception.dart';
 import '../../../../exceptions/session_expired_exception.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/api_interaction.dart';
+import '../../../../model/command/api/alive_command.dart';
 import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/request/api_alive_request.dart';
 import '../../../../model/request/api_change_password_request.dart';
@@ -100,7 +102,6 @@ import '../../../../model/response/view/message/message_view.dart';
 import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
 import '../../../../util/import_handler/import_handler.dart';
-import '../../../../util/jvx_colors.dart';
 import '../../../command/i_command_service.dart';
 import '../../../config/config_service.dart';
 import '../../../ui/i_ui_service.dart';
@@ -184,8 +185,9 @@ class OnlineApiRepository implements IRepository {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Http client for outgoing connection
-  HttpClient? client;
+  // Whether we ever had a connection
+  bool _everConnected = false;
+  bool _connected = false;
 
   /// Header fields, used for sessionId
   final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
@@ -202,12 +204,13 @@ class OnlineApiRepository implements IRepository {
   /// ASCII-compatible characters.
   final _asciiOnly = RegExp(r'^[\x00-\x7F]+$');
 
-  /// Http client for outside connection
-  WebSocketChannel? webSocket;
+  /// Http client for outgoing connection
+  HttpClient? client;
 
-  int wsLastDelay = 2;
-  bool wsManualClose = false;
-  bool wsConnected = false;
+  int _lastDelay = 0;
+  Timer? _reconnectTimer;
+
+  JVxWebSocket? jvxWebSocket;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -218,104 +221,109 @@ class OnlineApiRepository implements IRepository {
   @override
   Future<void> start() async {
     client ??= HttpClient()..connectionTimeout = Duration(seconds: ConfigService().getAppConfig()!.requestTimeout!);
+    // WebSocket gets started in first request after startup as soon as we get an clientId.
   }
 
-  Future<void> startWebSocket([bool reconnect = false]) async {
+  @override
+  Future<void> stop() async {
+    // Cancel reconnects
+    _cancelHTTPReconnect();
     await stopWebSocket();
 
-    if (reconnect && isStopped()) {
-      return;
+    _everConnected = false;
+    _connected = false;
+
+    client?.close();
+    client = null;
+  }
+
+  @override
+  bool isStopped() {
+    return client == null;
+  }
+
+  void _setConnected(bool connected) {
+    if (_connected != connected) {
+      FlutterUI.logAPI.i("$runtimeType ${connected ? "connected" : "disconnected"}");
     }
 
-    var uri = _getWebSocketUri(reconnect);
-    try {
-      FlutterUI.logAPI.i("Connecting to Websocket on $uri");
-
-      webSocket = createWebSocket(
-        uri,
-        {"Cookie": _cookies.map((e) => "${e.name}=${e.value}").join(";")},
-      );
-
-      webSocket!.stream.listen(
-        (data) {
-          wsLastDelay = 2;
-          wsManualClose = false;
-          if (data.isNotEmpty) {
-            try {
-              FlutterUI.logAPI.d("Received data via websocket: $data");
-              if (data == "OPEN_OK") {
-                wsConnected = true;
-                FlutterUI.logAPI.i("Connected to Websocket");
-                if (reconnect) {
-                  showStatus("Server Connection restored");
-                } else {
-                  hideStatus();
-                }
-              }
-              if (data == "api/changes") {
-                ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
-              }
-            } catch (e, stack) {
-              FlutterUI.logAPI.e("Error handling websocket message:", e, stack);
-            }
-          }
-        },
-        onError: (error) {
-          FlutterUI.logAPI.w("Connection to Websocket failed", error);
-
-          wsConnected = false;
-
-          // Cancel reconnect if manually closed
-          if (wsManualClose) {
-            wsManualClose = false;
-            return;
-          }
-
-          // Only show on first reconnect attempt
-          if (wsLastDelay == 2) {
-            showStatus("Server Connection lost, retrying...", true);
-          }
-          reconnectWebSocket();
-        },
-        onDone: () {
-          FlutterUI.logAPI.w(
-            "Connection to Websocket closed (${webSocket?.closeCode})${webSocket?.closeReason != null ? ": ${webSocket?.closeReason}" : ""}",
-          );
-
-          wsConnected = false;
-          wsLastDelay = 2;
-
-          if (!wsManualClose) {
-            if (webSocket?.closeCode != status.abnormalClosure && webSocket?.closeCode != status.goingAway) {
-              showStatus("Server Connection lost, retrying...", true);
-              reconnectWebSocket();
-            } else {
-              showStatus("Server Connection lost");
-            }
-          }
-          wsManualClose = false;
-        },
-        cancelOnError: true,
-      );
-    } catch (e) {
-      FlutterUI.logAPI.e("Connection to Websocket could not be established!", e);
-      rethrow;
+    if (_connected && !connected) {
+      // Only show on first reconnect attempt
+      showStatus("Server Connection lost, retrying...", true);
+      _reconnectHTTP();
+    } else if (!_connected && connected && _everConnected) {
+      showStatus("Server Connection restored");
+    } else if (_connected != connected) {
+      hideStatus();
     }
+
+    if (connected) {
+      _everConnected = true;
+      _cancelHTTPReconnect();
+
+      // Bad idea, results in more problems than it solves.
+      // E.g. no guarantee for a working session
+      // Let the web socket handle such a situation.
+      // if (wsAvailable && !wsConnected) {
+      //   startWebSocket();
+      // }
+    }
+
+    _connected = connected;
+  }
+
+  void _reconnectHTTP() {
+    _lastDelay = min(_lastDelay + 5, 30);
+    FlutterUI.logAPI.i("Retrying HTTP Alive request in $_lastDelay seconds...");
+    _reconnectTimer?.cancel();
+    _reconnectTimer = Timer(Duration(seconds: _lastDelay), () async {
+      try {
+        await ICommandService().sendCommand(AliveCommand(reason: "Periodic check", retryRequest: false));
+        // The CommandService already resets the connected state and the timer.
+        FlutterUI.logAPI.i("Alive Request succeeded");
+      } on SocketException catch (e, stack) {
+        FlutterUI.logAPI.w("Alive Request failed", e, stack);
+        _reconnectHTTP();
+      }
+    });
+  }
+
+  void _cancelHTTPReconnect() {
+    _lastDelay = 0;
+
+    if (_reconnectTimer != null) {
+      _reconnectTimer?.cancel();
+      _reconnectTimer = null;
+      FlutterUI.logAPI.i("Canceled HTTP reconnect");
+    }
+  }
+
+  bool isWebSocketAvailable() {
+    return jvxWebSocket?.available ?? false;
+  }
+
+  Future<void> startWebSocket() async {
+    await stopWebSocket();
+    return (jvxWebSocket = JVxWebSocket(this)).startWebSocket();
+  }
+
+  Future<void> stopWebSocket() async {
+    jvxWebSocket?.dispose();
+    jvxWebSocket = null;
   }
 
   void showStatus(String message, [bool showIndefinitely = false]) {
     if (!ConfigService().isOffline()) {
-      BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
+      // If we would want it in the splash too.
+      BuildContext? effectiveContext = FlutterUI.getCurrentContext(); //?? FlutterUI.getSplashContext();
       if (effectiveContext != null) {
         ScaffoldMessenger.maybeOf(effectiveContext)?.hideCurrentSnackBar();
         ScaffoldMessenger.maybeOf(effectiveContext)?.showSnackBar(SnackBar(
           content: Text(FlutterUI.translate(message)),
-          backgroundColor: JVxColors.lighten(
-            Theme.of(effectiveContext).snackBarTheme.backgroundColor ??
-                Theme.of(effectiveContext).colorScheme.onSurface,
-            0.3,
-          ),
-          // There is no infinite
+          backgroundColor: (Theme.of(effectiveContext).snackBarTheme.backgroundColor ??
+                  Theme.of(effectiveContext).colorScheme.onSurface)
+              .withOpacity(0.7),
+          // There is no infinite.
           duration: showIndefinitely ? const Duration(days: 365) : const Duration(seconds: 4),
         ));
       }
@@ -329,56 +337,6 @@ class OnlineApiRepository implements IRepository {
     }
   }
 
-  void reconnectWebSocket() {
-    wsLastDelay = min(wsLastDelay << 1, 120);
-    FlutterUI.logAPI.i("Retrying Websocket connection in $wsLastDelay seconds...");
-    Timer(Duration(seconds: wsLastDelay), () {
-      FlutterUI.logAPI.i("Retrying Websocket connection");
-      startWebSocket(true);
-    });
-  }
-
-  Uri _getWebSocketUri(bool reconnect) {
-    Uri location = Uri.parse(ConfigService().getBaseUrl()!);
-
-    const String subPath = "/services/mobile";
-    int? end = location.path.lastIndexOf(subPath);
-    if (end == -1) end = null;
-
-    return location.replace(
-      scheme: location.scheme == "https" ? "wss" : "ws",
-      path: "${location.path.substring(0, end)}/pushlistener",
-      queryParameters: {
-        "clientId": ConfigService().getClientId()!,
-        if (reconnect) "reconnect": null,
-        "confirmOpen": true.toString(),
-      },
-    );
-  }
-
-  Future<void> stopWebSocket() async {
-    if (webSocket != null && wsConnected) {
-      wsManualClose = true;
-    }
-    // Workaround for never finishing future in some cases
-    // https://github.com/dart-lang/web_socket_channel/issues/231
-    try {
-      await webSocket?.sink.close().timeout(const Duration(seconds: 2));
-    } on TimeoutException catch (_) {}
-  }
-
-  @override
-  Future<void> stop() async {
-    client?.close();
-    client = null;
-    await stopWebSocket();
-  }
-
-  @override
-  bool isStopped() {
-    return client == null;
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -390,96 +348,101 @@ class OnlineApiRepository implements IRepository {
   Map<String, String> getHeaders() => _headers;
 
   @override
-  Future<ApiInteraction> sendRequest(ApiRequest pRequest) async {
+  Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
     if (isStopped()) throw Exception("Repository not initialized");
 
-    APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
+    try {
+      if (pRequest is SessionRequest) {
+        if (ConfigService().getClientId()?.isNotEmpty == true) {
+          pRequest.clientId = ConfigService().getClientId()!;
+        } else {
+          throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
+        }
+      }
 
-    if (route != null) {
+      HttpClientResponse response;
       try {
-        if (pRequest is SessionRequest) {
-          if (ConfigService().getClientId()?.isNotEmpty == true) {
-            pRequest.clientId = ConfigService().getClientId()!;
-          } else {
-            throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
-          }
+        if (retryRequest ?? true) {
+          response = await retry(
+            () => _sendRequest(pRequest),
+            retryIf: (e) => e is SocketException,
+            retryIfResult: (response) => response.statusCode == 503,
+            onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
+            onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
+            maxAttempts: 3,
+            maxDelay: Duration(seconds: ConfigService().getAppConfig()!.requestTimeout!),
+          );
+        } else {
+          response = await _sendRequest(pRequest);
         }
-
-        HttpClientResponse response = await retry(
-          () => _sendPostRequest(route, pRequest),
-          retryIf: (e) => e is SocketException,
-          retryIfResult: (response) => response.statusCode == 503,
-          onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
-          onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
-          maxAttempts: 3,
-          maxDelay: Duration(seconds: ConfigService().getAppConfig()!.requestTimeout!),
-        );
-
-        if (response.statusCode >= 400 && response.statusCode <= 599) {
-          var body = await _decodeBody(response);
-          FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
-          if (response.statusCode == 404) {
-            throw Exception("Application not found (404)");
-          } else if (response.statusCode == 410) {
-            throw SessionExpiredException(response.statusCode);
-          } else if (response.statusCode == 500) {
-            throw Exception("General Server Error (500)");
-          } else {
-            throw Exception("Request Error (${response.statusCode}):\n$body");
-          }
-        }
-
-        // Download Request needs different handling
-        if (pRequest is DownloadRequest) {
-          var parsedDownloadObject = _handleDownload(
-              pBody: Uint8List.fromList(await response.expand((element) => element).toList()), pRequest: pRequest);
-          return parsedDownloadObject;
-        }
-
-        String responseBody = await _decodeBody(response);
-
-        if (IUiService().getAppManager() != null) {
-          var overrideResponse = await IUiService().getAppManager()?.handleResponse(
-                pRequest,
-                responseBody,
-                () => _sendPostRequest(route, pRequest),
-              );
-          if (overrideResponse != null) {
-            response = overrideResponse;
-            responseBody = await _decodeBody(overrideResponse);
-          }
-        }
-
-        List<dynamic> jsonResponse = [];
-
-        if (response.statusCode != 204) {
-          if (response.headers.contentType?.value != ContentType.json.value) {
-            throw FormatException("Invalid server response"
-                "\nType: ${response.headers.contentType?.subType}"
-                "\nStatus: ${response.statusCode}");
-          }
-          jsonResponse = _parseAndCheckJson(responseBody);
-        }
-
-        ApiInteraction apiInteraction = _responseParser(jsonResponse, request: pRequest);
-
-        IUiService().getAppManager()?.modifyResponses(apiInteraction);
-
-        if (ConfigService().isOffline()) {
-          var viewResponse = apiInteraction.responses.firstWhereOrNull((element) => element is MessageView);
-          if (viewResponse != null) {
-            var messageViewResponse = viewResponse as MessageView;
-            throw StateError("Server sent error: $messageViewResponse");
-          }
-        }
-
-        return apiInteraction;
-      } catch (e) {
-        FlutterUI.logAPI.e("Error while sending ${pRequest.runtimeType}");
+        _setConnected(true);
+      } catch (_) {
+        _setConnected(false);
         rethrow;
       }
-    } else {
-      throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
+
+      if (response.statusCode >= 400 && response.statusCode <= 599) {
+        var body = await _decodeBody(response);
+        FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
+        if (response.statusCode == 404) {
+          throw InvalidServerResponseException("Application not found (404)", response.statusCode);
+        } else if (response.statusCode == 410) {
+          throw SessionExpiredException(response.statusCode);
+        } else if (response.statusCode == 500) {
+          throw InvalidServerResponseException("General Server Error (500)", response.statusCode);
+        } else {
+          throw InvalidServerResponseException("Request Error (${response.statusCode}):\n$body", response.statusCode);
+        }
+      }
+
+      // Download Request needs different handling
+      if (pRequest is DownloadRequest) {
+        var parsedDownloadObject = _handleDownload(
+            pBody: Uint8List.fromList(await response.expand((element) => element).toList()), pRequest: pRequest);
+        return parsedDownloadObject;
+      }
+
+      String responseBody = await _decodeBody(response);
+
+      if (IUiService().getAppManager() != null) {
+        var overrideResponse = await IUiService().getAppManager()?.handleResponse(
+              pRequest,
+              responseBody,
+              () => _sendRequest(pRequest),
+            );
+        if (overrideResponse != null) {
+          response = overrideResponse;
+          responseBody = await _decodeBody(overrideResponse);
+        }
+      }
+
+      List<dynamic> jsonResponse = [];
+
+      if (response.statusCode != 204) {
+        if (response.headers.contentType?.value != ContentType.json.value) {
+          throw FormatException("Invalid server response"
+              "\nType: ${response.headers.contentType?.subType}"
+              "\nStatus: ${response.statusCode}");
+        }
+        jsonResponse = _parseAndCheckJson(responseBody);
+      }
+
+      ApiInteraction apiInteraction = _responseParser(jsonResponse, request: pRequest);
+
+      IUiService().getAppManager()?.modifyResponses(apiInteraction);
+
+      if (ConfigService().isOffline()) {
+        var viewResponse = apiInteraction.responses.firstWhereOrNull((element) => element is MessageView);
+        if (viewResponse != null) {
+          var messageViewResponse = viewResponse as MessageView;
+          throw StateError("Server sent error: $messageViewResponse");
+        }
+      }
+
+      return apiInteraction;
+    } catch (_) {
+      FlutterUI.logAPI.e("Error while sending ${pRequest.runtimeType}");
+      rethrow;
     }
   }
 
@@ -492,9 +455,15 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Send post request to remote server, applies timeout.
-  Future<HttpClientResponse> _sendPostRequest(APIRoute route, ApiRequest pRequest) async {
+  Future<HttpClientResponse> _sendRequest(ApiRequest pRequest) async {
+    APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
+
+    if (route == null) {
+      throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
+    }
+
     Uri uri = Uri.parse("${ConfigService().getBaseUrl()!}/${route.route}");
-    HttpClientRequest request = await connect(uri, route.method);
+    HttpClientRequest request = await createRequest(uri, route.method);
 
     if (kIsWeb) {
       if (request is BrowserHttpClientRequest) {
@@ -544,7 +513,7 @@ class OnlineApiRepository implements IRepository {
     return res;
   }
 
-  Future<HttpClientRequest> connect(Uri pUri, Method method) {
+  Future<HttpClientRequest> createRequest(Uri pUri, Method method) {
     switch (method) {
       case Method.GET:
         return client!.getUrl(pUri);
@@ -659,5 +628,204 @@ class OnlineApiRepository implements IRepository {
     }
 
     return ApiInteraction(responses: parsedResponse, request: pRequest);
+  }
+}
+
+class JVxWebSocket {
+  final OnlineApiRepository _repository;
+
+  /// Web Socket for incoming connection
+  WebSocketChannel? _webSocket;
+
+  /// Describes the current status of the currently active websocket.
+  ///
+  /// Yes there can be multiple, because we can't close them reliably...
+  bool _connected = false;
+
+  /// If we know that the current server has an web socket available.
+  bool _available = false;
+
+  /// Current retry delay, gets doubled after ever failed attempt until 60.
+  int _retryDelay = 0;
+
+  /// Controls if we should try to reconnect after the socket closes.
+  bool _manualClose = false;
+
+  Timer? _reconnectTimer;
+
+  JVxWebSocket(this._repository);
+
+  bool get available => _available;
+
+  /// Not reliable without a readyState
+  bool get connected => _connected;
+
+  Future<void> startWebSocket() async {
+    await stopWebSocket();
+    return _openWebSocket();
+  }
+
+  Future<void> stopWebSocket() async {
+    _retryDelay = 0;
+
+    if (_reconnectTimer != null) {
+      _reconnectTimer?.cancel();
+      _reconnectTimer = null;
+      FlutterUI.logAPI.i("Canceled WebSocket reconnect");
+    }
+
+    await _closeWebSocket();
+  }
+
+  FutureOr<void> dispose() async {
+    await stopWebSocket();
+  }
+
+  Uri _getWebSocketUri() {
+    Uri location = Uri.parse(ConfigService().getBaseUrl()!);
+
+    const String subPath = "/services/mobile";
+    int? end = location.path.lastIndexOf(subPath);
+    if (end == -1) end = null;
+
+    return location.replace(
+      scheme: location.scheme == "https" ? "wss" : "ws",
+      path: "${location.path.substring(0, end)}/pushlistener",
+      queryParameters: {
+        "clientId": ConfigService().getClientId()!,
+        // Reconnect forces the server to respond to invalid session with close instead of an error.
+        "reconnect": true.toString(),
+        "confirmOpen": true.toString(),
+      },
+    );
+  }
+
+  Future<void> _openWebSocket() async {
+    await _closeWebSocket();
+
+    if (ConfigService().getClientId() == null) {
+      FlutterUI.logAPI.i("Canceled WebSocket connect because clientId is missing");
+      return;
+    }
+
+    var uri = _getWebSocketUri();
+    try {
+      FlutterUI.logAPI.i("Connecting to WebSocket on $uri");
+
+      var webSocket = _webSocket = createWebSocket(
+        uri,
+        {
+          "Cookie": _repository.getCookies().map((e) => "${e.name}=${e.value}").join(";"),
+        },
+      );
+
+      webSocket.stream.listen(
+        (data) {
+          // Block all state changes for non-active web sockets.
+          if (_webSocket != webSocket) return;
+
+          _available = true;
+          if (!_connected) {
+            // onReady
+            FlutterUI.logAPI.i("Connected to WebSocket#${webSocket.hashCode}");
+
+            _connected = true;
+            _retryDelay = 2;
+            _manualClose = false;
+          }
+
+          // Re-set to possibly override a single failing http request.
+          _repository._setConnected(true);
+
+          if (data.isNotEmpty) {
+            try {
+              FlutterUI.logAPI.d("Received data via WebSocket#${webSocket.hashCode}: $data");
+              if (data == "api/changes") {
+                ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
+              }
+            } catch (e, stack) {
+              FlutterUI.logAPI.e("Error handling websocket message:", e, stack);
+            }
+          }
+        },
+        onError: (error) {
+          // As there is no cancel of a currently connection websocket (yet),
+          // this is only triggered when the connection websocket fails to initially connect.
+          FlutterUI.logAPI.w("Connection to WebSocket#${webSocket.hashCode} failed", error);
+          if (_webSocket != webSocket) return;
+
+          _connected = false;
+
+          if (error is WebSocketChannelException &&
+              error.inner is WebSocketChannelException &&
+              (error.inner as WebSocketChannelException).inner is WebSocketException) {
+            // Server probably doesn't support web sockets.
+            _available = false;
+            FlutterUI.logAPI.i("Connection to WebSocket#${webSocket.hashCode} was determined as unavailable");
+          } else {
+            _reconnectWebSocket();
+          }
+        },
+        onDone: () {
+          FlutterUI.logAPI.w(
+            "Connection to WebSocket#${webSocket.hashCode} closed ${_manualClose ? "manually " : ""}(${webSocket.closeCode})${webSocket.closeReason?.isNotEmpty ?? false ? ": ${webSocket.closeReason}" : ""}",
+          );
+          if (_webSocket != webSocket) return;
+
+          _connected = false;
+          _retryDelay = 2;
+
+          if (webSocket.closeCode != status.policyViolation) {
+            // Invalid session shouldn't trigger a offline warning.
+            //
+            // The following scenario can happen:
+            // Connection gets interrupted (trying reconnect)
+            // Server restarts in the meantime (Session gets invalid)
+            // Connections gets restored but clientId is invalid
+            // Connection is ready but Web Socket gets closed because of invalid session
+            _repository._setConnected(false);
+          }
+
+          // Don't retry if server goes down because the clientId will be invalid anyway, which triggers a restart on its own.
+          // Don't retry if we closed the socket (indicated either trough manualClose or status.normalClosure)
+          if (!_manualClose &&
+              ![status.normalClosure, status.goingAway, status.policyViolation].contains(webSocket.closeCode)) {
+            _reconnectWebSocket();
+          }
+
+          _manualClose = false;
+        },
+        cancelOnError: true,
+      );
+    } catch (e) {
+      FlutterUI.logAPI.e("Connection to WebSocket could not be established!", e);
+      rethrow;
+    }
+  }
+
+  void _reconnectWebSocket() {
+    _retryDelay = min(_retryDelay << 1, 60);
+    FlutterUI.logAPI.i("Retrying WebSocket connection in $_retryDelay seconds...");
+    _reconnectTimer?.cancel();
+    _reconnectTimer = Timer(Duration(seconds: _retryDelay), () {
+      FlutterUI.logAPI.i("Retrying WebSocket connection");
+      _openWebSocket();
+    });
+  }
+
+  Future<void> _closeWebSocket() async {
+    // Only needed for `onError`
+    if (_webSocket != null && _connected) {
+      _manualClose = true;
+    }
+
+    // Workaround for never finishing future in some cases
+    // https://github.com/dart-lang/web_socket_channel/issues/231
+    try {
+      await _webSocket?.sink.close(WebSocketStatus.normalClosure, "Client stopped").timeout(const Duration(seconds: 2));
+    } on TimeoutException catch (_) {
+    } finally {
+      _connected = false;
+    }
   }
 }

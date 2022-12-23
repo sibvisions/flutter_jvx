@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import '../../../../model/command/base_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../i_api_service.dart';
@@ -47,10 +49,10 @@ class ApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> sendRequest(ApiRequest request) {
+  Future<List<BaseCommand>> sendRequest(ApiRequest request, [bool? retryRequest]) {
     if (repository == null) throw Exception("Repository not initialized");
     if (controller == null) throw Exception("Controller not initialized");
-    return repository!.sendRequest(request).then((value) => controller!.processResponse(value));
+    return repository!.sendRequest(request, retryRequest).then((value) => controller!.processResponse(value));
   }
 
   @override
@@ -66,5 +68,11 @@ class ApiService implements IApiService {
   @override
   void setController(IController pController) {
     controller = pController;
+  }
+
+  @override
+  FutureOr<void> clear(bool pFullClear) async {
+    await repository?.stop();
+    return repository?.start();
   }
 }

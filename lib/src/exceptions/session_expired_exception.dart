@@ -18,4 +18,9 @@ class SessionExpiredException implements Exception {
   final int statusCode;
 
   SessionExpiredException(this.statusCode);
+
+  @override
+  String toString() {
+    return "SessionExpiredException: $statusCode";
+  }
 }
