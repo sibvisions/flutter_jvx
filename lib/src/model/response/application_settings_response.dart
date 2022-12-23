@@ -84,12 +84,11 @@ class ApplicationSettingsResponse extends ApiResponse {
         homeVisible = json[ApiObjectProperty.home] ?? true,
         logoutVisible = json[ApiObjectProperty.logout] ?? true,
         userSettingsVisible = json[ApiObjectProperty.userSettings] ?? true,
-        colors = json[ApiObjectProperty.colors] == null
-            ? null
-            : ApplicationColors.fromJson(json[ApiObjectProperty.colors] as Map<String, dynamic>),
+        colors =
+            json[ApiObjectProperty.colors] == null ? null : ApplicationColors.fromJson(json[ApiObjectProperty.colors]),
         darkColors = json[ApiObjectProperty.colors] == null
             ? null
-            : ApplicationColors.fromJson(json[ApiObjectProperty.colors] as Map<String, dynamic>, true),
+            : ApplicationColors.fromJson(json[ApiObjectProperty.colors], true),
         components = json[ApiObjectProperty.desktop],
         super.fromJson();
 }

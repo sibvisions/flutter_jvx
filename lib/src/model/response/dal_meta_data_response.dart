@@ -53,9 +53,7 @@ class DalMetaDataResponse extends ApiResponse {
 
   DalMetaDataResponse.fromJson(super.json)
       : columnViewTable = json[ApiObjectProperty.columnViewTable].cast<String>(),
-        columns = (json[ApiObjectProperty.columns] as List<dynamic>)
-            .map((e) => ColumnDefinition.fromJson(e as Map<String, dynamic>))
-            .toList(),
+        columns = (json[ApiObjectProperty.columns] as List<dynamic>).map((e) => ColumnDefinition.fromJson(e)).toList(),
         dataProvider = json[ApiObjectProperty.dataProvider],
         readOnly = json[ApiObjectProperty.readOnly] ?? false,
         deleteEnabled = json[ApiObjectProperty.deleteEnabled] ?? true,
