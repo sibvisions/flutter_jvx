@@ -19,6 +19,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../model/command/api/device_status_command.dart';
+import '../service/command/i_command_service.dart';
 import '../service/config/config_service.dart';
 import '../service/ui/i_ui_service.dart';
 import 'state/app_style.dart';
@@ -93,7 +94,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
       if (ConfigService().getClientId() != null && !ConfigService().isOffline()) {
-        IUiService().sendCommand(DeviceStatusCommand(
+        ICommandService().sendCommand(DeviceStatusCommand(
           screenWidth: size.width,
           screenHeight: size.height,
           reason: "Device Size changed",
