@@ -164,7 +164,7 @@ class FlButtonModel extends FlComponentModel {
       pKey: ApiObjectProperty.imageTextGap,
       pDefault: defaultModel.imageTextGap,
       pCurrent: imageTextGap,
-      pConversion: (imageTextGap) => imageTextGap! * ConfigService().getScaling(),
+      pConversion: (imageTextGap) => (imageTextGap! * ConfigService().getScaling()).toInt(),
     );
     mousePressedImage = getPropertyValue(
       pJson: pJson,
