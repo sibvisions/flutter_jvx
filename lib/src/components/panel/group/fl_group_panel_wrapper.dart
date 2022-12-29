@@ -34,7 +34,7 @@ class FlGroupPanelWrapper extends BaseCompWrapperWidget<FlGroupPanelModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlGroupPanelWrapper({super.key, required super.id});
+  const FlGroupPanelWrapper({super.key, required super.model});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

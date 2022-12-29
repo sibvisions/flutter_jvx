@@ -27,7 +27,7 @@ class FlPasswordFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlPasswordFieldWrapper({super.key, required super.id});
+  const FlPasswordFieldWrapper({super.key, required super.model});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

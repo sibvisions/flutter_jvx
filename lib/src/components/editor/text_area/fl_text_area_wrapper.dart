@@ -31,7 +31,7 @@ class FlTextAreaWrapper extends BaseCompWrapperWidget<FlTextAreaModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlTextAreaWrapper({super.key, required super.id});
+  const FlTextAreaWrapper({super.key, required super.model});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

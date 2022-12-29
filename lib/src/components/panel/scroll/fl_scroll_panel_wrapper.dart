@@ -30,7 +30,7 @@ import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_scroll_panel_widget.dart';
 
 class FlScrollPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
-  const FlScrollPanelWrapper({super.key, required super.id});
+  const FlScrollPanelWrapper({super.key, required super.model});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlScrollPanelWrapperState();

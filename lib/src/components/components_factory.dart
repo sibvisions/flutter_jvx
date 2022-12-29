@@ -17,6 +17,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../flutter_jvx.dart';
+import '../model/component/dummy/fl_dummy_model.dart';
+import '../model/component/editor/fl_editor_model.dart';
 import '../model/component/fl_component_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'button/fl_button_wrapper.dart';
@@ -50,68 +52,68 @@ abstract class ComponentsFactory {
       case FlContainerClassname.PANEL:
       case FlContainerClassname.DESKTOP_PANEL:
       case FlContainerClassname.TOOLBAR_PANEL:
-        return FlPanelWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlPanelWrapper(model: model as FlPanelModel, key: GlobalKey(debugLabel: model.id));
       case FlContainerClassname.GROUP_PANEL:
-        return FlGroupPanelWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlGroupPanelWrapper(model: model as FlGroupPanelModel, key: GlobalKey(debugLabel: model.id));
       case FlContainerClassname.SCROLL_PANEL:
-        return FlScrollPanelWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlScrollPanelWrapper(model: model as FlPanelModel, key: GlobalKey(debugLabel: model.id));
       case FlContainerClassname.SPLIT_PANEL:
-        return FlSplitPanelWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: GlobalKey(debugLabel: model.id));
       case FlContainerClassname.TABSET_PANEL:
-        return FlTabPanelWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlTabPanelWrapper(model: model as FlTabPanelModel, key: GlobalKey(debugLabel: model.id));
       case FlContainerClassname.CUSTOM_CONTAINER:
         switch (model.classNameEventSourceRef) {
           case "SignaturePad":
-            return FlSignaturePadWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+            return FlSignaturePadWrapper(model: model as FlCustomContainerModel, key: GlobalKey(debugLabel: model.id));
         }
         continue alsoDefault;
 
       // Components
       case FlComponentClassname.BUTTON:
-        return FlButtonWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlButtonWrapper(model: model as FlButtonModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.TOGGLE_BUTTON:
-        return FlToggleButtonWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlToggleButtonWrapper(model: model as FlToggleButtonModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.LABEL:
-        return FlLabelWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlLabelWrapper(model: model as FlLabelModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.TEXT_FIELD:
-        return FlTextFieldWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlTextFieldWrapper(model: model as FlTextFieldModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.TEXT_AREA:
-        return FlTextAreaWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlTextAreaWrapper(model: model as FlTextAreaModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.ICON:
-        return FlIconWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlIconWrapper(model: model as FlIconModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.POPUP_MENU:
         continue alsoDefault;
       case FlComponentClassname.MENU_ITEM:
         continue alsoDefault;
       case FlComponentClassname.POPUP_MENU_BUTTON:
-        return FlPopupMenuButtonWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlPopupMenuButtonWrapper(model: model as FlPopupMenuButtonModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.CHECK_BOX:
-        return FlCheckBoxWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlCheckBoxWrapper(model: model as FlCheckBoxModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.PASSWORD_FIELD:
-        return FlPasswordFieldWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlPasswordFieldWrapper(model: model as FlTextFieldModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.TABLE:
-        return FlTableWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlTableWrapper(model: model as FlTableModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.RADIO_BUTTON:
-        return FlRadioButtonWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlRadioButtonWrapper(model: model as FlRadioButtonModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.MAP:
-        return FlMapWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlMapWrapper(model: model as FlMapModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.CHART:
-        return FlChartWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlChartWrapper(model: model as FlChartModel, key: GlobalKey(debugLabel: model.id));
       case FlComponentClassname.GAUGE:
-        return FlGaugeWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlGaugeWrapper(model: model as FlGaugeModel, key: GlobalKey(debugLabel: model.id));
 
       // Cell editors:
       case FlComponentClassname.EDITOR:
-        return FlEditorWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlEditorWrapper(model: model as FlEditorModel, key: GlobalKey(debugLabel: model.id));
 
       alsoDefault:
       default:
-        return FlDummyWrapper(id: model.id, key: GlobalKey(debugLabel: model.id));
+        return FlDummyWrapper(model: model as FlDummyModel, key: GlobalKey(debugLabel: model.id));
     }
   }
 
   /// Used for replace components
-  static buildCustomWidget(String pId, CustomComponent pCustomComponent) {
-    return FlCustomWrapper(id: pId, key: GlobalKey(debugLabel: pId), customComponent: pCustomComponent);
+  static buildCustomWidget(FlComponentModel pModel, CustomComponent pCustomComponent) {
+    return FlCustomWrapper(model: pModel, key: GlobalKey(debugLabel: pModel.id), customComponent: pCustomComponent);
   }
 }
