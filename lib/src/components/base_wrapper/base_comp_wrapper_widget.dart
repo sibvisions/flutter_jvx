@@ -17,7 +17,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../model/component/fl_component_model.dart';
-import '../../service/storage/i_storage_service.dart';
 
 /// The base class for all of FlutterJVx's component wrapper.
 ///
@@ -30,17 +29,14 @@ abstract class BaseCompWrapperWidget<M extends FlComponentModel> extends Statefu
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The id of the component.
-  final String id;
-
   /// The model of the component.
-  M get model => IStorageService().getComponentModel(pComponentId: id)! as M;
+  final M model;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const BaseCompWrapperWidget({super.key, required this.id});
+  const BaseCompWrapperWidget({super.key, required this.model});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -48,6 +44,6 @@ abstract class BaseCompWrapperWidget<M extends FlComponentModel> extends Statefu
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return ("$id $key");
+    return ("${model.id} $key");
   }
 }

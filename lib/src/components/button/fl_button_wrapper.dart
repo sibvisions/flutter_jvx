@@ -37,7 +37,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_button_widget.dart';
 
 class FlButtonWrapper<T extends FlButtonModel> extends BaseCompWrapperWidget<T> {
-  const FlButtonWrapper({super.key, required super.id});
+  const FlButtonWrapper({super.key, required super.model});
 
   @override
   FlButtonWrapperState createState() => FlButtonWrapperState();

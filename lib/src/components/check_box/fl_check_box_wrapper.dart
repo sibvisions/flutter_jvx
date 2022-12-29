@@ -26,7 +26,7 @@ class FlCheckBoxWrapper extends FlRadioButtonWrapper<FlCheckBoxModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlCheckBoxWrapper({super.key, required super.id});
+  const FlCheckBoxWrapper({super.key, required super.model});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

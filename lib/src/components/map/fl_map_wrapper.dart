@@ -32,7 +32,7 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_map_widget.dart';
 
 class FlMapWrapper extends BaseCompWrapperWidget<FlMapModel> {
-  const FlMapWrapper({super.key, required super.id});
+  const FlMapWrapper({super.key, required super.model});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlMapWrapperState();

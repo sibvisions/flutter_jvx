@@ -35,7 +35,7 @@ class FlCustomWrapper<M extends FlComponentModel> extends BaseCompWrapperWidget<
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlCustomWrapper({super.key, required super.id, required this.customComponent});
+  const FlCustomWrapper({super.key, required super.model, required this.customComponent});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

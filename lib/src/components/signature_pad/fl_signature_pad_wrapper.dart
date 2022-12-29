@@ -39,7 +39,7 @@ class FlSignaturePadWrapper extends BaseCompWrapperWidget<FlCustomContainerModel
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlSignaturePadWrapper({super.key, required super.id});
+  const FlSignaturePadWrapper({super.key, required super.model});
 
   @override
   BaseCompWrapperState<FlComponentModel> createState() => _FlSignaturePadWrapperState();
