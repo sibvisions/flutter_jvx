@@ -246,7 +246,7 @@ class _FlTableCellState extends State<FlTableCell> {
       cellText,
       style: style,
       overflow: TextOverflow.ellipsis,
-      maxLines: 1,
+      maxLines: widget.model.wordWrapEnabled ? null : 1,
     );
   }
 }
