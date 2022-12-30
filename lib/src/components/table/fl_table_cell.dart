@@ -30,18 +30,21 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   // Callbacks
 
   /// The callback if a value has ended beeing changed in the table.
-  final Function(dynamic value, int row, String column)? onEndEditing;
+  final TableValueChangedCallback? onEndEditing;
 
   /// The callback if a value has been changed in the table.
-  final Function(dynamic value, int row, String column)? onValueChanged;
+  final TableValueChangedCallback? onValueChanged;
 
   /// Gets called with the index of the row and name of column when the user taps a cell.
   /// Provides the celleditor of this cell, allowing to click the cell editor.
   /// Allows validation of the click before allowing the cell editor to be clicked.
-  final Function(int rowIndex, String column, ICellEditor cellEditor)? onTap;
+  final TableTapCallback? onTap;
 
   /// Gets called with the index of the row and name of column when the user long presses a cell.
-  final Function(int rowIndex, String column, LongPressStartDetails details)? onLongPress;
+  final TableLongPressCallback? onLongPress;
+
+  /// Gets called when an action cell editor makes an action.
+  final CellEditorActionCallback? onAction;
 
   // Fields
 
@@ -81,6 +84,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     this.onValueChanged,
     this.onLongPress,
     this.onTap,
+    this.onAction,
     required this.columnDefinition,
     required this.width,
     required this.paddings,
@@ -157,19 +161,17 @@ class _FlTableCellState extends State<FlTableCell> {
 
     return GestureDetector(
       onLongPressStart: widget.onLongPress != null
-          ? (details) => widget.onLongPress!(widget.rowIndex, widget.columnDefinition.name, details)
+          ? (details) => widget.onLongPress!(widget.rowIndex, widget.columnDefinition.name, cellEditor, details)
           : null,
       onTap:
           widget.onTap != null ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor) : null,
-      child: AbsorbPointer(
-        child: Container(
-          decoration: BoxDecoration(border: border),
-          width: widget.width,
-          alignment: FLUTTER_ALIGNMENT[widget.columnDefinition.cellEditorHorizontalAlignment.index]
-              [VerticalAlignment.CENTER.index],
-          padding: widget.paddings,
-          child: cellChild,
-        ),
+      child: Container(
+        decoration: BoxDecoration(border: border),
+        width: widget.width,
+        alignment: FLUTTER_ALIGNMENT[widget.columnDefinition.cellEditorHorizontalAlignment.index]
+            [VerticalAlignment.CENTER.index],
+        padding: widget.paddings,
+        child: cellChild,
       ),
     );
   }
@@ -198,6 +200,10 @@ class _FlTableCellState extends State<FlTableCell> {
       onChange: (value) => widget.onValueChanged?.call(value, widget.rowIndex, widget.columnDefinition.name),
       onEndEditing: (value) => widget.onEndEditing?.call(value, widget.rowIndex, widget.columnDefinition.name),
       onFocusChanged: (_) {},
+      onAction: widget.onAction != null
+          ? (action) => widget.onAction!(widget.rowIndex, widget.columnDefinition.name, action)
+          : null,
+      isInTable: true,
     );
   }
 
@@ -209,7 +215,7 @@ class _FlTableCellState extends State<FlTableCell> {
 
     cellEditor.setValue(widget.value);
 
-    FlStatelessWidget tableWidget = cellEditor.createWidget(null, true);
+    FlStatelessWidget tableWidget = cellEditor.createWidget(null);
 
     tableWidget.model.applyFromJson(widget.model.json);
     // Some parts of a json have to take priority.

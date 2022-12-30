@@ -35,7 +35,7 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   void dispose() {}
 
   @override
-  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+  createWidget(Map<String, dynamic>? pJson) {
     return FlDummyWidget(model: createWidgetModel());
   }
 
@@ -58,12 +58,12 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+  double getContentPadding(Map<String, dynamic>? pJson) {
     return 0.0;
   }
 
   @override
-  double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
+  double? getEditorWidth(Map<String, dynamic>? pJson) {
     return null;
   }
 

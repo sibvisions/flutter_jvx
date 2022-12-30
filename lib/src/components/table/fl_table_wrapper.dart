@@ -119,6 +119,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// If inserting a row is allowed.
   bool get _isInsertEnabled => metaData?.insertEnabled ?? true;
 
+  /// If update a row is allowed.
+  bool get _isUpdateAllowed => metaData?.updateEnabled ?? true;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,7 +142,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     tableHorizontalController = linkedScrollGroup.addAndGet();
     headerHorizontalController = linkedScrollGroup.addAndGet();
 
-    subscribe();
+    _subscribe();
   }
 
   @override
@@ -158,12 +160,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       chunkData: chunkData,
       tableSize: tableSize,
       selectedRowIndex: selectedRow,
-      onEndEditing: setValueEnd,
-      onValueChanged: setValueChanged,
-      onEndScroll: loadMore,
+      onEndEditing: _setValueEnd,
+      onValueChanged: _setValueChanged,
+      onEndScroll: _loadMore,
       onLongPress: showContextMenu,
-      onTap: onCellTap,
-      onHeaderTap: onHeaderTap,
+      onTap: _onCellTap,
+      onHeaderTap: _onCellTap,
+      onAction: _onAction,
       showFloatingButton: _isInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
           ((layoutData.layoutPosition?.width ?? 0.0) >= 100) &&
@@ -180,7 +183,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   @override
   void dispose() {
-    unsubscribe();
+    _unsubscribe();
 
     tableHorizontalController.dispose();
     headerHorizontalController.dispose();
@@ -193,7 +196,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     super.receiveNewLayoutData(pLayoutData, pSetState);
 
     if (newConstraint) {
-      recalculateTableSize(pSetState);
+      _recalculateTableSize(pSetState);
     }
   }
 
@@ -201,11 +204,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   modelUpdated() {
     super.modelUpdated();
 
-    subscribe();
+    _subscribe();
 
     if (model.lastChangedProperties.contains(ApiObjectProperty.columnNames) ||
         model.lastChangedProperties.contains(ApiObjectProperty.columnLabels)) {
-      recalculateTableSize(true);
+      _recalculateTableSize(true);
     }
   }
 
@@ -219,7 +222,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Recalculates the size of the table.
-  void recalculateTableSize([bool pSetState = false]) {
+  void _recalculateTableSize([bool pSetState = false]) {
     tableSize.calculateTableSize(
       pTableModel: model,
       pDataChunk: chunkData,
@@ -238,7 +241,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Subscribes to the data service.
-  void subscribe() {
+  void _subscribe() {
     if (model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -246,9 +249,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           dataProvider: model.dataProvider,
           from: 0,
           to: FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount,
-          onSelectedRecord: receiveSelectedRecord,
-          onDataChunk: receiveTableData,
-          onMetaData: receiveMetaData,
+          onSelectedRecord: _receiveSelectedRecord,
+          onDataChunk: _receiveTableData,
+          onMetaData: _receiveMetaData,
           dataColumns: null,
         ),
       );
@@ -260,7 +263,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Unsubscribes from the data service.
-  void unsubscribe() {
+  void _unsubscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
 
     currentState &= ~LOADED_META_DATA;
@@ -269,7 +272,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Loads data from the server.
-  void receiveTableData(DataChunk pChunkData) {
+  void _receiveTableData(DataChunk pChunkData) {
     currentState |= LOADED_DATA;
 
     List<String> newColumns = pChunkData.columnDefinitions.map((e) => e.name).toList();
@@ -286,12 +289,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     if (hasToCalc) {
-      recalculateTableSize(true);
+      _recalculateTableSize(true);
     }
   }
 
   /// Receives which row is selected.
-  void receiveSelectedRecord(DataRecord? pRecord) {
+  void _receiveSelectedRecord(DataRecord? pRecord) {
     currentState |= LOADED_SELECTED_RECORD;
 
     if (pRecord != null) {
@@ -304,7 +307,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Receives the meta data of the table.
-  void receiveMetaData(DalMetaDataResponse pMetaData) {
+  void _receiveMetaData(DalMetaDataResponse pMetaData) {
     currentState |= LOADED_META_DATA;
 
     List<ColumnDefinition> newColumns = pMetaData.columns;
@@ -324,7 +327,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     metaData = pMetaData;
 
     if (hasToCalc) {
-      recalculateTableSize(true);
+      _recalculateTableSize(true);
     }
   }
 
@@ -332,8 +335,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   // Action methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void setValueEnd(dynamic pValue, int pRow, String pColumnName) {
-    selectRecord(pRow).then((_) {
+  void _setValueEnd(dynamic pValue, int pRow, String pColumnName) {
+    _selectRecord(pRow).then((_) {
       int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
 
       if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
@@ -346,32 +349,31 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }).catchError(IUiService().handleAsyncError);
   }
 
-  void setValueChanged(dynamic pValue, int pRow, String pColumnName) {
+  void _setValueChanged(dynamic pValue, int pRow, String pColumnName) {
     // Do nothing
   }
 
   /// Increments the page count and loads more data.
-  void loadMore() {
+  void _loadMore() {
     if (!chunkData.isAllFetched) {
       pageCount++;
-      subscribe();
+      _subscribe();
     }
   }
 
-  /// Handles a tap on the header.
-  onHeaderTap(String column) {
-    // TODO sort by this header.
+  void _onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    if (pRowIndex == -1 || pColumnName.isEmpty) {
+      _sortColumn();
+    } else {
+      _selectRecord(pRowIndex).then((_) {
+        if (pCellEditor.allowedInTable && pCellEditor.allowedTableEdit && _isUpdateAllowed == true) {
+          pCellEditor.click();
+        }
+      }).catchError(IUiService().handleAsyncError);
+    }
   }
 
-  void onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    selectRecord(pRowIndex).then((_) {
-      if (pCellEditor.allowedInTable && pCellEditor.allowedTableEdit && metaData?.updateEnabled == true) {
-        pCellEditor.click();
-      }
-    }).catchError(IUiService().handleAsyncError);
-  }
-
-  showContextMenu(int pRowIndex, String pColumnName, LongPressStartDetails pPressDetails) {
+  showContextMenu(int pRowIndex, String pColumnName, ICellEditor pCellEditor, LongPressStartDetails pPressDetails) {
     List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
 
     if (_isInsertEnabled) {
@@ -387,9 +389,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", ContextMenuCommand.SORT));
     }
 
-    // if (pRowIndex >= 0 && pColumnName.isNotEmpty) {
-    //   popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", ContextMenuCommand.EDIT));
-    // }
+    if (pRowIndex >= 0 && pColumnName.isNotEmpty && _isUpdateAllowed) {
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", ContextMenuCommand.EDIT));
+    }
 
     if (kDebugMode) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.powerOff, "Offline", ContextMenuCommand.OFFLINE));
@@ -417,8 +419,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
                     }
                   } else if (val == ContextMenuCommand.OFFLINE) {
                     _goOffline();
-                  } else if (val == ContextMenuCommand.EDIT) {
+                  } else if (val == ContextMenuCommand.SORT) {
                     _sortColumn();
+                  } else if (val == ContextMenuCommand.EDIT) {
+                    _editColumn();
                   }
                   return [];
                 },
@@ -433,7 +437,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Selects the record.
-  Future<void> selectRecord(int pRowIndex) async {
+  Future<void> _selectRecord(int pRowIndex) async {
     Filter? filter = _createFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
@@ -578,6 +582,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void _sortColumn() {}
+
+  void _editColumn() {}
+
+  void _onAction(int pRowIndex, String pColumnName, Function pAction) {
+    _selectRecord(pRowIndex).then((value) => pAction.call()).catchError(IUiService().handleAsyncError);
+  }
 }
 
 enum ContextMenuCommand { INSERT, DELETE, OFFLINE, EDIT, SORT }

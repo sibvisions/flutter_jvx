@@ -47,6 +47,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
+    super.isInTable,
   }) : super(
           model: FlCheckBoxCellEditorModel(),
         ) {
@@ -73,7 +74,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+  createWidget(Map<String, dynamic>? pJson) {
     FlCheckBoxModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
@@ -85,7 +86,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
       focusNode: buttonFocusNode,
       model: widgetModel,
       onPress: _onPress,
-      inTable: pInTable,
+      inTable: isInTable,
     );
   }
 
@@ -119,12 +120,12 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+  double getContentPadding(Map<String, dynamic>? pJson) {
     return 0.0;
   }
 
   @override
-  double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
+  double? getEditorWidth(Map<String, dynamic>? pJson) {
     return null;
   }
 

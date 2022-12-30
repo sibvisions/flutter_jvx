@@ -24,10 +24,17 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
+import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_header.dart';
 import 'fl_table_row.dart';
 import 'table_size.dart';
+
+typedef TableLongPressCallback = void Function(
+    int rowIndex, String column, ICellEditor cellEditor, LongPressStartDetails details);
+typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
+typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
+typedef CellEditorActionCallback = void Function(int rowIndex, String column, Function action);
 
 class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,22 +55,25 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   // Callbacks
 
   /// The callback if a value has ended beeing changed in the table.
-  final Function(dynamic value, int row, String column)? onEndEditing;
+  final TableValueChangedCallback? onEndEditing;
 
   /// The callback if a value has been changed in the table.
-  final Function(dynamic value, int row, String column)? onValueChanged;
+  final TableValueChangedCallback? onValueChanged;
 
   /// Gets called with the index of the row athat was touched when the user tapped a row.
-  final Function(int rowIndex, String column, ICellEditor cellEditor)? onTap;
+  final TableTapCallback? onTap;
 
   /// Gets called with the name of the header column that was pressed.
-  final Function(String column)? onHeaderTap;
+  final TableTapCallback? onHeaderTap;
 
   /// Gets called when the user long presses the table or a row/column.
-  final Function(int rowIndex, String column, LongPressStartDetails details)? onLongPress;
+  final TableLongPressCallback? onLongPress;
 
   /// Gets called when the user scrolled to the edge of the table.
   final VoidCallback? onEndScroll;
+
+  /// Gets called when an action cell editor makes an action.
+  final CellEditorActionCallback? onAction;
 
   // Fields
 
@@ -111,6 +121,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.onTap,
     this.onHeaderTap,
     this.onLongPress,
+    this.onAction,
     this.onEndScroll,
     this.itemScrollController,
     this.onEndEditing,
@@ -212,7 +223,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   /// Creates the list of the table.
   Widget createTableList(bool canScrollHorizontally, double maxWidth) {
     return GestureDetector(
-      onLongPressStart: onLongPress != null ? (details) => onLongPress?.call(-1, "", details) : null,
+      onLongPressStart:
+          onLongPress != null ? (details) => onLongPress?.call(-1, "", FlDummyCellEditor(), details) : null,
       child: NotificationListener<ScrollEndNotification>(
         onNotification: onInternalEndScroll,
         child: SingleChildScrollView(
@@ -251,6 +263,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       columnDefinitions: chunkData.columnDefinitions,
       onLongPress: onLongPress,
       onTap: onTap,
+      onAction: onAction,
       tableSize: tableSize,
       values: chunkData.data[index]!,
       index: index,

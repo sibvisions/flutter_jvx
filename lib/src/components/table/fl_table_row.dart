@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
-import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_cell.dart';
 
 class FlTableRow extends FlStatefulWidget<FlTableModel> {
@@ -29,18 +28,21 @@ class FlTableRow extends FlStatefulWidget<FlTableModel> {
   // Callbacks
 
   /// The callback if a value has ended beeing changed in the table.
-  final Function(dynamic value, int row, String column)? onEndEditing;
+  final TableValueChangedCallback? onEndEditing;
 
   /// The callback if a value has been changed in the table.
-  final Function(dynamic value, int row, String column)? onValueChanged;
+  final TableValueChangedCallback? onValueChanged;
 
   /// Gets called with the index of the row and name of column that was touched when the user taps a cell.
   /// Provides the celleditor of this cell, allowing to click the cell editor.
   /// Allows validation of the click before allowing the cell editor to be clicked.
-  final Function(int rowIndex, String column, ICellEditor cellEditor)? onTap;
+  final TableTapCallback? onTap;
 
   /// Gets called with the index of the row and name of column when the user long presses a cell.
-  final Function(int rowIndex, String column, LongPressStartDetails details)? onLongPress;
+  final TableLongPressCallback? onLongPress;
+
+  /// Gets called when an action cell editor makes an action.
+  final CellEditorActionCallback? onAction;
 
   // Fields
 
@@ -72,6 +74,7 @@ class FlTableRow extends FlStatefulWidget<FlTableModel> {
     this.onValueChanged,
     this.onTap,
     this.onLongPress,
+    this.onAction,
     required this.columnDefinitions,
     required this.tableSize,
     required this.values,
@@ -109,6 +112,7 @@ class _FlTableRowState extends State<FlTableRow> {
         onValueChanged: widget.onValueChanged,
         onLongPress: widget.onLongPress,
         onTap: widget.onTap,
+        onAction: widget.onAction,
         columnDefinition: columnDefinition,
         width: widget.tableSize.columnWidths[columnDefinition.name]!,
         paddings: widget.tableSize.cellPaddings,

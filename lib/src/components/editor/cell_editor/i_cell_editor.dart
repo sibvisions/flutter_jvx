@@ -61,6 +61,7 @@ abstract class ICellEditor<
   /// If the cell editor can be edited inside a table.
   bool get allowedTableEdit => false;
 
+  bool isInTable;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +72,7 @@ abstract class ICellEditor<
     required this.onValueChange,
     required this.onEndEditing,
     required this.onFocusChanged,
+    this.isInTable = false,
     this.name,
     this.columnDefinition,
   }) {
@@ -92,16 +94,16 @@ abstract class ICellEditor<
   ColumnDefinition? getColumnDefinition() => columnDefinition;
 
   /// Returns the widget representing the cell editor.
-  WidgetType createWidget(Map<String, dynamic>? pJson, bool pInTable);
+  WidgetType createWidget(Map<String, dynamic>? pJson);
 
   /// Returns the model of the widget representing the cell editor.
   WidgetModelType createWidgetModel();
 
   String formatValue(dynamic pValue);
 
-  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable);
+  double getContentPadding(Map<String, dynamic>? pJson);
 
-  double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable);
+  double? getEditorWidth(Map<String, dynamic>? pJson);
 
   void click() {}
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,6 +118,8 @@ abstract class ICellEditor<
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     required Function(bool) onFocusChanged,
+    Function(Function action)? onAction,
+    required bool isInTable,
     CellEditorRecalculateSizeCallback? pRecalculateSizeCallback,
   }) {
     String? cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
@@ -128,6 +132,7 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
+          isInTable: isInTable,
         );
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(
@@ -136,6 +141,7 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
+          isInTable: isInTable,
         );
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         return FlNumberCellEditor(
@@ -144,6 +150,7 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
+          isInTable: isInTable,
         );
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
@@ -152,6 +159,7 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
+          isInTable: isInTable,
           recalculateSizeCallback: pRecalculateSizeCallback,
         );
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
@@ -161,6 +169,7 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
+          isInTable: isInTable,
           recalculateSizeCallback: pRecalculateSizeCallback,
         );
       case FlCellEditorClassname.DATE_CELL_EDITOR:
@@ -170,7 +179,9 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
+          isInTable: isInTable,
           recalculateSizeCallback: pRecalculateSizeCallback,
+          onAction: onAction,
         );
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
@@ -180,7 +191,9 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
+          isInTable: isInTable,
           recalculateSizeCallback: pRecalculateSizeCallback,
+          onAction: onAction,
         );
 
       default:

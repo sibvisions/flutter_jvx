@@ -58,6 +58,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
     required super.onEndEditing,
     required super.onFocusChanged,
     this.recalculateSizeCallback,
+    super.isInTable,
   }) : super(model: FlImageCellEditorModel()) {
     _updateImageProvider();
   }
@@ -99,25 +100,25 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+  createWidget(Map<String, dynamic>? pJson) {
     FlIconModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
 
-    if (pInTable) {
-      widgetModel.horizontalAlignment = HorizontalAlignment.LEFT;
-    }
-
     return FlIconWidget(
       model: widgetModel,
       imageProvider: imageProvider,
-      inTable: pInTable,
+      inTable: isInTable,
     );
   }
 
   @override
   createWidgetModel() {
     FlIconModel widgetModel = FlIconModel();
+
+    if (isInTable) {
+      widgetModel.horizontalAlignment = HorizontalAlignment.LEFT;
+    }
 
     widgetModel.image = _value ?? "";
     widgetModel.preserveAspectRatio = model.preserveAspectRatio;
@@ -145,12 +146,12 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+  double getContentPadding(Map<String, dynamic>? pJson) {
     return 0.0;
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
+  double getEditorWidth(Map<String, dynamic>? pJson) {
     return imageSize.width;
   }
 

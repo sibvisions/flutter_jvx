@@ -30,10 +30,10 @@ class FlTableHeader extends FlStatefulWidget<FlTableModel> {
   /// Gets called with the index of the row and name of column that was touched when the user taps a cell.
   /// Provides the celleditor of this cell, allowing to click the cell editor.
   /// Allows validation of the click before allowing the cell editor to be clicked.
-  final Function(String column)? onTap;
+  final TableTapCallback? onTap;
 
   /// Gets called with the index of the row and name of column when the user long presses a cell.
-  final Function(int rowIndex, String column, LongPressStartDetails details)? onLongPress;
+  final TableLongPressCallback? onLongPress;
 
   // Fields
   /// The colum definitions to build.
@@ -78,7 +78,7 @@ class _FlTableHeaderState extends State<FlTableHeader> {
       return FlTableCell(
         model: widget.model,
         onLongPress: widget.onLongPress,
-        onTap: widget.onTap != null ? ((rowIndex, column, cellEditor) => widget.onTap!(column)) : null,
+        onTap: widget.onTap,
         columnDefinition: columnDefinition,
         width: widget.tableSize.columnWidths[columnDefinition.name]!,
         paddings: widget.tableSize.cellPaddings,

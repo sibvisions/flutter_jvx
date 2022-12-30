@@ -62,6 +62,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
+    super.isInTable,
   }) : super(
           model: ICellEditorModel(),
         ) {
@@ -106,7 +107,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+  createWidget(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
@@ -122,7 +123,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
-          inTable: pInTable,
+          inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
         );
       case (TEXT_PLAIN_PASSWORD):
@@ -132,7 +133,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
-          inTable: pInTable,
+          inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
         );
       case (TEXT_PLAIN_SINGLELINE):
@@ -143,7 +144,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
-          inTable: pInTable,
+          inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
         );
     }
@@ -181,16 +182,16 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
-    if (!pInTable) {
-      return createWidget(pJson, false).extraWidthPaddings();
+  double getContentPadding(Map<String, dynamic>? pJson) {
+    if (!isInTable) {
+      return createWidget(pJson).extraWidthPaddings();
     }
 
     return 0.0;
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
+  double getEditorWidth(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);

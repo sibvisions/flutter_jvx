@@ -63,6 +63,7 @@ class FlLinkedCellEditor
   @override
   bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
 
+  Function(Function)? onAction;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,6 +75,8 @@ class FlLinkedCellEditor
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
+    this.onAction,
+    super.isInTable,
     this.recalculateSizeCallback,
   }) : super(
           model: FlLinkedCellEditorModel(),
@@ -81,7 +84,11 @@ class FlLinkedCellEditor
     focusNode.addListener(
       () {
         if (focusNode.hasPrimaryFocus) {
-          _openLinkedCellPicker();
+          if (onAction != null) {
+            onAction!(_openLinkedCellPicker);
+          } else {
+            _openLinkedCellPicker();
+          }
           focusNode.unfocus();
         }
       },
@@ -101,7 +108,7 @@ class FlLinkedCellEditor
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+  createWidget(Map<String, dynamic>? pJson) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
@@ -112,14 +119,14 @@ class FlLinkedCellEditor
       valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
-      inTable: pInTable,
-      hideClearIcon: model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK && pInTable,
+      inTable: isInTable,
+      hideClearIcon: allowedTableEdit && isInTable,
     );
   }
 
   void _openLinkedCellPicker() {
-    onFocusChanged(true);
     if (!isOpen) {
+      onFocusChanged(true);
       isOpen = true;
       ICommandService()
           .sendCommand(
@@ -281,19 +288,19 @@ class FlLinkedCellEditor
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
-    return createWidget(pJson, pInTable).extraWidthPaddings();
+  double getContentPadding(Map<String, dynamic>? pJson) {
+    return createWidget(pJson).extraWidthPaddings();
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
+  double getEditorWidth(Map<String, dynamic>? pJson) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
 
     double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
 
-    if (pInTable) {
+    if (isInTable) {
       return colWidth * widgetModel.columns / 2;
     }
     return colWidth * widgetModel.columns;

@@ -35,9 +35,13 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
 
   TextEditingController textController = TextEditingController();
 
+  bool isOpen = false;
+
   FocusNode focusNode = FocusNode(skipTraversal: true);
 
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
+
+  Function(Function)? onAction;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -49,14 +53,20 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
+    super.isInTable,
     this.recalculateSizeCallback,
+    this.onAction,
   }) : super(
           model: FlDateCellEditorModel(),
         ) {
     focusNode.addListener(
       () {
         if (focusNode.hasFocus) {
-          _openDatePicker();
+          if (onAction != null) {
+            onAction!(_openDatePicker);
+          } else {
+            _openDatePicker();
+          }
           focusNode.unfocus();
         }
       },
@@ -89,7 +99,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+  createWidget(Map<String, dynamic>? pJson) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
@@ -100,8 +110,8 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       focusNode: focusNode,
       endEditing: onEndEditing,
       valueChanged: onValueChange,
-      inTable: pInTable,
-      hideClearIcon: model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK && pInTable,
+      inTable: isInTable,
+      hideClearIcon: allowedTableEdit && isInTable,
     );
   }
 
@@ -137,24 +147,27 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   void _openDatePicker() {
-    onFocusChanged(true);
+    if (!isOpen) {
+      onFocusChanged(true);
+      isOpen = true;
 
-    DateTime initialDate;
-    TimeOfDay initialTime;
-    if (_value != null) {
-      initialDate = _createDateTime(_value);
-      initialTime = TimeOfDay.fromDateTime(initialDate);
-    } else {
-      initialDate = DateTime.now();
-      initialTime = TimeOfDay.now();
-    }
+      DateTime initialDate;
+      TimeOfDay initialTime;
+      if (_value != null) {
+        initialDate = _createDateTime(_value);
+        initialTime = TimeOfDay.fromDateTime(initialDate);
+      } else {
+        initialDate = DateTime.now();
+        initialTime = TimeOfDay.now();
+      }
 
-    if (model.isDateEditor && model.isTimeEditor) {
-      _openDateAndTimeEditors(initialDate, initialTime);
-    } else if (model.isDateEditor) {
-      _openDateEditor(initialDate);
-    } else if (model.isTimeEditor) {
-      _openTimeEditor(initialTime);
+      if (model.isDateEditor && model.isTimeEditor) {
+        _openDateAndTimeEditors(initialDate, initialTime);
+      } else if (model.isDateEditor) {
+        _openDateEditor(initialDate);
+      } else if (model.isTimeEditor) {
+        _openTimeEditor(initialTime);
+      }
     }
   }
 
@@ -179,6 +192,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     }).then((_) {
       if (cancelled) {
         _value = originalValue;
+        isOpen = false;
         return;
       }
       IUiService()
@@ -199,6 +213,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         } else {
           onEndEditing(_value);
         }
+        isOpen = false;
       });
     });
   }
@@ -217,6 +232,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         _setDatePart(value);
         onEndEditing(_value);
       }
+      isOpen = false;
     });
   }
 
@@ -232,6 +248,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         _setTimePart(value);
         onEndEditing(_value);
       }
+      isOpen = false;
     });
   }
 
@@ -273,19 +290,19 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
-    return createWidget(pJson, pInTable).extraWidthPaddings();
+  double getContentPadding(Map<String, dynamic>? pJson) {
+    return createWidget(pJson).extraWidthPaddings();
   }
 
   @override
-  double getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
+  double getEditorWidth(Map<String, dynamic>? pJson) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
 
     double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
 
-    if (pInTable) {
+    if (isInTable) {
       return colWidth * widgetModel.columns / 2;
     }
     return colWidth * widgetModel.columns;

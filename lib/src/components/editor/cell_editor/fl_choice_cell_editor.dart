@@ -46,6 +46,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
+    super.isInTable,
     this.recalculateSizeCallback,
   }) : super(
           model: FlChoiceCellEditorModel(),
@@ -67,7 +68,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson, bool pInTable) {
+  createWidget(Map<String, dynamic>? pJson) {
     FlIconModel widgetModel = createWidgetModel();
 
     ICellEditor.applyEditorJson(widgetModel, pJson);
@@ -82,7 +83,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
     return FlIconWidget(
       model: widgetModel,
       directImage: image,
-      inTable: pInTable,
+      inTable: isInTable,
       onPress: _onPress,
     );
   }
@@ -118,12 +119,12 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson, bool pInTable) {
+  double getContentPadding(Map<String, dynamic>? pJson) {
     return 0.0;
   }
 
   @override
-  double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
+  double? getEditorWidth(Map<String, dynamic>? pJson) {
     return model.imageSize;
   }
 

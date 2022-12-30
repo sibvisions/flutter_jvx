@@ -121,7 +121,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     logCellEditor("BUILD");
 
-    return getPositioned(child: cellEditor.createWidget(model.json, false));
+    return getPositioned(child: cellEditor.createWidget(model.json));
   }
 
   @override
@@ -143,9 +143,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
     Size? newCalcSize;
 
-    double? width = cellEditor.getEditorWidth(model.json, false);
+    double? width = cellEditor.getEditorWidth(model.json);
     if (width != null) {
-      width += cellEditor.getContentPadding(model.json, false);
+      width += cellEditor.getContentPadding(model.json);
 
       if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
         newCalcSize = Size.square(width);
@@ -293,6 +293,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       onEndEditing: onEndEditing,
       onFocusChanged: _onFocusChange,
       pRecalculateSizeCallback: recalculateSize,
+      isInTable: false,
     );
 
     if (pSubscribe) {

@@ -229,7 +229,7 @@ class TableSize {
     ICellEditor pCellEditor,
     TextStyle pTextStyle,
   ) {
-    double columnWidth = pCellEditor.getEditorWidth(null, true) ?? 0.0;
+    double columnWidth = pCellEditor.getEditorWidth(null) ?? 0.0;
 
     Iterable<dynamic> valuesToCheck = dataColumn.whereNotNull();
     for (dynamic value in valuesToCheck) {
@@ -240,7 +240,7 @@ class TableSize {
       columnWidth = _adjustValue(columnWidth, rowWidth);
     }
 
-    columnWidth = _adjustValue(columnWidth, columnWidth + pCellEditor.getContentPadding(null, true));
+    columnWidth = _adjustValue(columnWidth, columnWidth + pCellEditor.getContentPadding(null));
 
     return columnWidth;
   }
@@ -319,6 +319,7 @@ class TableSize {
       onChange: _doNothing,
       onEndEditing: _doNothing,
       onFocusChanged: _doNothing,
+      isInTable: true,
     );
   }
 
