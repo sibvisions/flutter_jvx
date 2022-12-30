@@ -140,7 +140,6 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
       double splitterWidth = model.orientation == SplitOrientation.VERTICAL ? width : width * 0.3;
       double splitterHeight = model.orientation == SplitOrientation.VERTICAL ? height * 0.3 : height;
 
-      // TODO: On drag the mouse pointer gets switched back to a normal pointer
       return Positioned(
         top: top,
         left: left,
