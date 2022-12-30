@@ -53,7 +53,7 @@ class TableSize {
   double rowHeight;
 
   /// The cell padding
-  EdgeInsets cellPadding;
+  EdgeInsets cellPaddings;
 
   /// The width of a image cell editor.
   double imageCellWidth;
@@ -84,7 +84,7 @@ class TableSize {
     this.checkCellWidth = 50.0,
     this.imageCellWidth = 50.0,
     this.choiceCellWidth = 50.0,
-    this.cellPadding = const EdgeInsets.only(left: 4.0, right: 4.0),
+    this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0),
   });
 
   /// Always calculates the table size.
@@ -98,7 +98,7 @@ class TableSize {
     this.checkCellWidth = 50.0,
     this.imageCellWidth = 50.0,
     this.choiceCellWidth = 50.0,
-    this.cellPadding = const EdgeInsets.only(left: 4.0, right: 4.0),
+    this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0),
     required FlTableModel tableModel,
     required DataChunk dataChunk,
     double? availableWidth,
@@ -254,7 +254,7 @@ class TableSize {
       style: pTextStyle,
     );
 
-    width += cellPadding.horizontal + columnDividerWidth;
+    width += cellPaddings.horizontal + columnDividerWidth;
 
     return width;
   }

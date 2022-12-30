@@ -45,6 +45,7 @@ import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_widget.dart';
 import 'table_size.dart';
 
@@ -58,24 +59,31 @@ class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
 }
 
 class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The bit signaling the meta data has been loaded.
   static const int LOADED_META_DATA = 1;
+
+  /// The bit signaling the selected data has been loaded.
   static const int LOADED_SELECTED_RECORD = 2;
+
+  /// The bit signaling the data has been loaded.
   static const int LOADED_DATA = 4;
+
+  /// The bit signaling the table size has been loaded.
   static const int CALCULATION_COMPLETE = 8;
+
+  /// The result of all being loaded.
   static const int ALL_COMPLETE = 15;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The current status of the table wrapper.
   int currentState = 0;
-
-  /// The last touched index describes the index of the initially touched row in complex movements.
-  /// This is used as e.g. a way to know which row to apply the [deleteRecord].
-  int lastTouchedIndex = -1;
-
-  /// The last position of the tab of the table.
-  DragDownDetails? _lastDragDownDetails;
 
   /// How many "pages" of the table data have been loaded multiplied by: [FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE]
   int pageCount = 1;
@@ -105,7 +113,18 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The scroll group to synchronize sticky header scrolling.
   final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
 
+  /// If deletion of a row is allowed.
+  bool get _isDeleteEnabled => metaData?.deleteEnabled ?? true;
+
+  /// If inserting a row is allowed.
+  bool get _isInsertEnabled => metaData?.insertEnabled ?? true;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   _FlTableWrapperState() : super();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,22 +155,20 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       itemScrollController: itemScrollController,
       tableHorizontalController: tableHorizontalController,
       model: model,
-      metaData: metaData,
       chunkData: chunkData,
       tableSize: tableSize,
-      selectedRow: selectedRow,
+      selectedRowIndex: selectedRow,
       onEndEditing: setValueEnd,
       onValueChanged: setValueChanged,
       onEndScroll: loadMore,
       onLongPress: showContextMenu,
-      onRowSwipe: deleteRecord,
-      onRowTap: (rowIndex) => selectRecord(rowIndex).catchError(IUiService().handleAsyncError),
-      onRowTapDown: onRowDown,
+      onTap: onCellTap,
+      onHeaderTap: onHeaderTap,
       showFloatingButton: _isInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
           ((layoutData.layoutPosition?.width ?? 0.0) >= 100) &&
           model.showFloatButton,
-      floatingOnPress: insertRecord,
+      floatingOnPress: _insertRecord,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -315,6 +332,24 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   // Action methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  void setValueEnd(dynamic pValue, int pRow, String pColumnName) {
+    selectRecord(pRow).then((_) {
+      int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
+
+      if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
+        if (pValue is HashMap<String, dynamic>) {
+          _setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName);
+        } else {
+          _setValues(pRow, [pColumnName], [pValue], pColumnName);
+        }
+      }
+    }).catchError(IUiService().handleAsyncError);
+  }
+
+  void setValueChanged(dynamic pValue, int pRow, String pColumnName) {
+    // Do nothing
+  }
+
   /// Increments the page count and loads more data.
   void loadMore() {
     if (!chunkData.isAllFetched) {
@@ -323,39 +358,83 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
   }
 
-  /// Deletes the selected record.
-  void deleteRecord() {
-    if (lastTouchedIndex != -1) {
-      BaseCommand? command = _createDeleteCommand();
+  /// Handles a tap on the header.
+  onHeaderTap(String column) {
+    // TODO sort by this header.
+  }
 
-      if (command != null) {
-        IUiService().sendCommand(command);
+  void onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    selectRecord(pRowIndex).then((_) {
+      if (pCellEditor.allowedInTable && pCellEditor.allowedTableEdit && metaData?.updateEnabled == true) {
+        pCellEditor.click();
       }
-
-      lastTouchedIndex = -1;
-      setState(() {});
-    }
+    }).catchError(IUiService().handleAsyncError);
   }
 
-  DeleteRecordCommand? _createDeleteCommand() {
-    Filter? filter = createFilter(pRowIndex: lastTouchedIndex);
+  showContextMenu(int pRowIndex, String pColumnName, LongPressStartDetails pPressDetails) {
+    List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
 
-    if (filter == null) {
-      FlutterUI.logUI.w("Filter of table(${model.id}) null");
-      return null;
+    if (_isInsertEnabled) {
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squarePlus, "New", ContextMenuCommand.INSERT));
     }
-    return DeleteRecordCommand(
-      dataProvider: model.dataProvider,
-      selectedRow: lastTouchedIndex,
-      reason: "Swiped",
-      filter: filter,
-    );
+
+    int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
+    if (_isDeleteEnabled && indexToDelete >= 0) {
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", ContextMenuCommand.DELETE));
+    }
+
+    if (pRowIndex == -1 && pColumnName.isNotEmpty) {
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", ContextMenuCommand.SORT));
+    }
+
+    // if (pRowIndex >= 0 && pColumnName.isNotEmpty) {
+    //   popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", ContextMenuCommand.EDIT));
+    // }
+
+    if (kDebugMode) {
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.powerOff, "Offline", ContextMenuCommand.OFFLINE));
+    }
+
+    showMenu(
+      position: RelativeRect.fromRect(
+        pPressDetails.globalPosition & const Size(40, 40),
+        Offset.zero & MediaQuery.of(context).size,
+      ),
+      context: context,
+      items: popupMenuEntries,
+    ).then((val) {
+      if (val != null) {
+        IUiService()
+            .saveAllEditors(
+                pId: model.id,
+                pFunction: () async {
+                  if (val == ContextMenuCommand.INSERT) {
+                    return [_createInsertCommand()];
+                  } else if (val == ContextMenuCommand.DELETE) {
+                    BaseCommand? command = _createDeleteCommand(indexToDelete);
+                    if (command != null) {
+                      return [command];
+                    }
+                  } else if (val == ContextMenuCommand.OFFLINE) {
+                    _goOffline();
+                  } else if (val == ContextMenuCommand.EDIT) {
+                    _sortColumn();
+                  }
+                  return [];
+                },
+                pReason: "Table menu item pressed")
+            .catchError(IUiService().handleAsyncError);
+      }
+    });
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Selects the record.
   Future<void> selectRecord(int pRowIndex) async {
-    // if (selectedRow != pRowIndex) {
-    Filter? filter = createFilter(pRowIndex: pRowIndex);
+    Filter? filter = _createFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
       FlutterUI.logUI.w("Filter of table(${model.id}) null");
@@ -366,98 +445,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         dataProvider: model.dataProvider, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
   }
 
-  /// Saves the last touched row.
-  void onRowDown(int pRowIndex, DragDownDetails? pDetails) {
-    if (_lastDragDownDetails != null &&
-        pDetails != null &&
-        _lastDragDownDetails!.globalPosition == pDetails.globalPosition &&
-        pRowIndex == -1) {
-      return;
-    }
-
-    _lastDragDownDetails = pDetails;
-    lastTouchedIndex = pRowIndex;
-  }
-
-  showContextMenu() {
-    List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
-
-    if (_isInsertEnabled) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, "New", ContextMenuCommand.NEW));
-    }
-
-    if (_isDeleteEnabled && lastTouchedIndex != -1) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", ContextMenuCommand.DELETE));
-    }
-
-    if (kDebugMode) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.powerOff, "Offline", ContextMenuCommand.OFFLINE));
-    }
-
-    if (_lastDragDownDetails == null) {
-      return;
-    }
-
-    showMenu(
-      position: RelativeRect.fromRect(
-        _lastDragDownDetails!.globalPosition & const Size(40, 40),
-        Offset.zero & MediaQuery.of(context).size,
-      ),
-      context: context,
-      items: popupMenuEntries,
-    ).then((val) {
-      IUiService()
-          .saveAllEditors(
-              pId: model.id,
-              pFunction: () async {
-                if (val == ContextMenuCommand.NEW) {
-                  return [_createInsertCommand()];
-                } else if (val == ContextMenuCommand.DELETE) {
-                  BaseCommand? command = _createDeleteCommand();
-                  if (command != null) {
-                    return [command];
-                  }
-                } else if (val == ContextMenuCommand.OFFLINE) {
-                  goOffline();
-                }
-                return [];
-              },
-              pReason: "Table menu item pressed")
-          .catchError(IUiService().handleAsyncError);
-    });
-  }
-
-  bool get _isDeleteEnabled => metaData?.deleteEnabled ?? true;
-
-  bool get _isInsertEnabled => metaData?.insertEnabled ?? true;
-
-  void setValueEnd(dynamic pValue, int pRow, String pColumnName) {
-    selectRecord(pRow).then((value) {
-      int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
-
-      if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
-        if (pValue is HashMap<String, dynamic>) {
-          sendRow(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName);
-        } else {
-          sendRow(pRow, [pColumnName], [pValue], pColumnName);
-        }
-      }
-    }).catchError(IUiService().handleAsyncError);
-  }
-
-  void setValueChanged(dynamic pValue, int pRow, String pColumnName) {
-    // Do nothing
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  void sendRow(int? pRowIndex, List<String> pColumnNames, List<dynamic> pValues, String pEditorColumnName) {
-    int rowIndex = pRowIndex ?? selectedRow;
-    if (rowIndex < 0 || rowIndex >= chunkData.data.length) {
-      return;
-    }
+  /// Sends a [SetValuesCommand] for this row.
+  void _setValues(int pRowIndex, List<String> pColumnNames, List<dynamic> pValues, String pEditorColumnName) {
+    int rowIndex = pRowIndex;
 
     IUiService().sendCommand(
       SetValuesCommand(
@@ -466,14 +456,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         columnNames: pColumnNames,
         editorColumnName: pEditorColumnName,
         values: pValues,
-        filter: createFilter(pRowIndex: rowIndex),
+        filter: _createFilter(pRowIndex: rowIndex),
         reason: "Values changed in table",
       ),
     );
   }
 
   /// Inserts a new record.
-  void insertRecord() {
+  void _insertRecord() {
     IUiService().sendCommand(_createInsertCommand());
   }
 
@@ -481,6 +471,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return InsertRecordCommand(dataProvider: model.dataProvider, reason: "Inserted");
   }
 
+  /// Gets the value of a specified column
   dynamic _getValue({required String pColumnName, int? pRowIndex}) {
     int rowIndex = pRowIndex ?? selectedRow;
     if (rowIndex == -1) {
@@ -496,9 +487,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return chunkData.data[rowIndex]![colIndex];
   }
 
-  Filter? createFilter({int? pRowIndex}) {
-    int rowIndex = pRowIndex ?? selectedRow;
-    if (rowIndex == -1 || metaData == null) {
+  /// Creates an identifying filter for this row.
+  Filter? _createFilter({required int pRowIndex}) {
+    int rowIndex = pRowIndex;
+    if (metaData == null) {
       return null;
     }
 
@@ -533,7 +525,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return Filter(values: listValues, columnNames: listColumnNames);
   }
 
-  PopupMenuItem<ContextMenuCommand> _getContextMenuItem(IconData icon, String text, ContextMenuCommand value) {
+  PopupMenuItem<ContextMenuCommand> _createContextMenuItem(IconData icon, String text, ContextMenuCommand value) {
     return PopupMenuItem<ContextMenuCommand>(
       enabled: true,
       value: value,
@@ -554,6 +546,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
               FlutterUI.translate(
                 text,
               ),
+              style: model.createTextStyle(),
             ),
           ),
         ],
@@ -561,11 +554,30 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     );
   }
 
-  void goOffline() {
+  /// Debug feature -> Takes one dataprovider offline
+  void _goOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workscreenName = state.pathParameters['workScreenName']!;
     OfflineUtil.initOffline(workscreenName);
   }
+
+  /// Creates a delete command for this row.
+  DeleteRecordCommand? _createDeleteCommand(int pIndex) {
+    Filter? filter = _createFilter(pRowIndex: pIndex);
+
+    if (filter == null) {
+      FlutterUI.logUI.w("Filter of table(${model.id}) null");
+      return null;
+    }
+    return DeleteRecordCommand(
+      dataProvider: model.dataProvider,
+      selectedRow: pIndex,
+      reason: "Swiped",
+      filter: filter,
+    );
+  }
+
+  void _sortColumn() {}
 }
 
-enum ContextMenuCommand { NEW, DELETE, OFFLINE }
+enum ContextMenuCommand { INSERT, DELETE, OFFLINE, EDIT, SORT }

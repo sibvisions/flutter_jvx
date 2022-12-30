@@ -35,6 +35,7 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../../../table/fl_table_widget.dart';
 import '../../../table/table_size.dart';
 import '../../text_field/fl_text_field_widget.dart';
+import '../i_cell_editor.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
   static const Object NULL_OBJECT = Object();
@@ -201,7 +202,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                           onEndScroll: _increasePageLoad,
                           model: tableModel,
                           disableEditors: true,
-                          onRowTap: _onRowTapped,
+                          onTap: _onRowTapped,
                           tableSize: tableSize,
                           showFloatingButton: false,
                         );
@@ -278,12 +279,12 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     Navigator.of(context).pop(FlLinkedCellPicker.NULL_OBJECT);
   }
 
-  void _onRowTapped(int index) {
-    List<dynamic> data = _chunkData!.data[index]!;
+  void _onRowTapped(int pIndex, String pColumnName, ICellEditor pCellEditor) {
+    List<dynamic> data = _chunkData!.data[pIndex]!;
 
     List<String> columnOrder = _columnNamesToSubscribe();
 
-    selectRecord(index).then((value) {
+    selectRecord(pIndex).then((_) {
       if (model.linkReference.columnNames.isEmpty) {
         Navigator.of(context).pop(data[columnOrder.indexOf(model.linkReference.referencedColumnNames[0])]);
       } else {
