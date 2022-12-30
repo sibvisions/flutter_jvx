@@ -36,6 +36,7 @@ import 'cards/lost_password_card.dart';
 import 'cards/manual_card.dart';
 import 'middle_clipper_with_double_curve.dart';
 
+// ignore: must_be_immutable
 class ModernLogin extends StatelessWidget implements Login {
   final LoginMode mode;
 
