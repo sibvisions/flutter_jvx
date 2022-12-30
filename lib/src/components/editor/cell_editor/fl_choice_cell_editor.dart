@@ -34,6 +34,8 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   /// The image loading callback to the editor.
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
+  @override
+  bool get allowedTableEdit => model.directCellEditor;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,14 +83,14 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
       model: widgetModel,
       directImage: image,
       inTable: pInTable,
-      onPress: onPress,
+      onPress: _onPress,
     );
   }
 
   @override
-  bool get canBeInTable => true;
+  bool get allowedInTable => true;
 
-  void onPress() {
+  void _onPress() {
     int index = currentIndex + 1;
     if (index >= model.listValues.length) {
       index = 0;
@@ -123,5 +125,10 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   @override
   double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable) {
     return model.imageSize;
+  }
+
+  @override
+  void click() {
+    _onPress();
   }
 }

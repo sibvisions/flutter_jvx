@@ -55,6 +55,12 @@ abstract class ICellEditor<
 
   ColumnDefinition? columnDefinition;
 
+  /// If the cell editor can be inside a table.
+  bool get allowedInTable => false;
+
+  /// If the cell editor can be edited inside a table.
+  bool get allowedTableEdit => false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,15 +97,13 @@ abstract class ICellEditor<
   /// Returns the model of the widget representing the cell editor.
   WidgetModelType createWidgetModel();
 
-  /// If the cell editor can be inside a table.
-  bool get canBeInTable => false;
-
   String formatValue(dynamic pValue);
 
   double getContentPadding(Map<String, dynamic>? pJson, bool pInTable);
 
   double? getEditorWidth(Map<String, dynamic>? pJson, bool pInTable);
 
+  void click() {}
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

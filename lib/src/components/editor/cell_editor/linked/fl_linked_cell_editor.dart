@@ -56,6 +56,13 @@ class FlLinkedCellEditor
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
   bool isOpen = false;
+
+  @override
+  bool get allowedInTable => true;
+
+  @override
+  bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,7 +81,6 @@ class FlLinkedCellEditor
     focusNode.addListener(
       () {
         if (focusNode.hasPrimaryFocus) {
-          onFocusChanged(true);
           _openLinkedCellPicker();
           focusNode.unfocus();
         }
@@ -112,6 +118,7 @@ class FlLinkedCellEditor
   }
 
   void _openLinkedCellPicker() {
+    onFocusChanged(true);
     if (!isOpen) {
       isOpen = true;
       ICommandService()
@@ -162,9 +169,6 @@ class FlLinkedCellEditor
   dynamic getValue() {
     return _value;
   }
-
-  @override
-  bool get canBeInTable => true;
 
   void _setValueMap(DataChunk pChunkData) {
     if (!lastCallbackIntentional && !pChunkData.update) {
@@ -293,5 +297,10 @@ class FlLinkedCellEditor
       return colWidth * widgetModel.columns / 2;
     }
     return colWidth * widgetModel.columns;
+  }
+
+  @override
+  void click() {
+    _openLinkedCellPicker();
   }
 }

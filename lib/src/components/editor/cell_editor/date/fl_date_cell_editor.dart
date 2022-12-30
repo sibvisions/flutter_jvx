@@ -56,8 +56,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     focusNode.addListener(
       () {
         if (focusNode.hasFocus) {
-          onFocusChanged(true);
-          openDatePicker();
+          _openDatePicker();
           focusNode.unfocus();
         }
       },
@@ -121,8 +120,10 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  bool get canBeInTable => true;
+  bool get allowedInTable => true;
 
+  @override
+  bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,7 +136,9 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     return tz.TZDateTime.fromMillisecondsSinceEpoch(_getLocation(), value);
   }
 
-  void openDatePicker() {
+  void _openDatePicker() {
+    onFocusChanged(true);
+
     DateTime initialDate;
     TimeOfDay initialTime;
     if (_value != null) {
@@ -286,5 +289,10 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       return colWidth * widgetModel.columns / 2;
     }
     return colWidth * widgetModel.columns;
+  }
+
+  @override
+  void click() {
+    _openDatePicker();
   }
 }

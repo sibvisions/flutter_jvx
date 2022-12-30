@@ -35,6 +35,8 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
 
   FlCheckBoxModel? lastWidgetModel;
 
+  @override
+  bool get allowedTableEdit => model.directCellEditor;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,7 +84,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
       radioFocusNode: focusNode,
       focusNode: buttonFocusNode,
       model: widgetModel,
-      onPress: onPress,
+      onPress: _onPress,
       inTable: pInTable,
     );
   }
@@ -109,7 +111,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   }
 
   @override
-  bool get canBeInTable => true;
+  bool get allowedInTable => true;
 
   @override
   String formatValue(dynamic pValue) {
@@ -130,11 +132,16 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void onPress() {
+  void _onPress() {
     if (_value == model.selectedValue) {
       onEndEditing(model.deselectedValue);
     } else {
       onEndEditing(model.selectedValue);
     }
+  }
+
+  @override
+  void click() {
+    _onPress();
   }
 }

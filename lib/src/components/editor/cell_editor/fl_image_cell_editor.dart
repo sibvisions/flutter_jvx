@@ -155,7 +155,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   }
 
   @override
-  bool get canBeInTable => true;
+  bool get allowedInTable => true;
 
   void onImage(Size pImageInfo, bool pSynchronousCall) {
     bool newSize = false;
