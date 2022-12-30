@@ -38,27 +38,27 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DataCommand command) async {
     if (command is SaveMetaDataCommand) {
-      return saveMetaData(command);
+      return _saveMetaData(command);
     } else if (command is SaveFetchDataCommand) {
-      return saveFetchData(command);
+      return _saveFetchData(command);
     } else if (command is GetSelectedDataCommand) {
-      return getSelectedData(command);
+      return _getSelectedData(command);
     } else if (command is GetDataChunkCommand) {
-      return getDataChunk(command);
+      return _getDataChunk(command);
     } else if (command is DeleteProviderDataCommand) {
-      return deleteDataProviderData(command);
+      return _deleteDataProviderData(command);
     } else if (command is ChangeSelectedRowCommand) {
-      return changeSelectedRow(command);
+      return _changeSelectedRow(command);
     } else if (command is GetMetaDataCommand) {
-      return getMetaData(command);
+      return _getMetaData(command);
     } else if (command is DeleteRowCommand) {
-      return deleteRow(command);
+      return _deleteRow(command);
     }
 
     return [];
   }
 
-  Future<List<BaseCommand>> deleteRow(DeleteRowCommand command) async {
+  Future<List<BaseCommand>> _deleteRow(DeleteRowCommand command) async {
     // set selected row of databook
     bool success = await IDataService().deleteRow(
       pDataProvider: command.dataProvider,
@@ -82,7 +82,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     return [];
   }
 
-  Future<List<BaseCommand>> getMetaData(GetMetaDataCommand command) async {
+  Future<List<BaseCommand>> _getMetaData(GetMetaDataCommand command) async {
     bool needFetch = IDataService().getDataBook(command.dataProvider) == null;
 
     if (needFetch) {
@@ -107,7 +107,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     return [];
   }
 
-  Future<List<BaseCommand>> changeSelectedRow(ChangeSelectedRowCommand command) async {
+  Future<List<BaseCommand>> _changeSelectedRow(ChangeSelectedRowCommand command) async {
     // set selected row of databook
     bool success = IDataService().setSelectedRow(
       pDataProvider: command.dataProvider,
@@ -130,7 +130,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     return [];
   }
 
-  Future<List<BaseCommand>> deleteDataProviderData(DeleteProviderDataCommand command) async {
+  Future<List<BaseCommand>> _deleteDataProviderData(DeleteProviderDataCommand command) async {
     await IDataService().deleteDataFromDataBook(
       pDataProvider: command.dataProvider,
       pFrom: command.fromIndex,
@@ -140,7 +140,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     return [];
   }
 
-  Future<List<BaseCommand>> saveMetaData(SaveMetaDataCommand pCommand) async {
+  Future<List<BaseCommand>> _saveMetaData(SaveMetaDataCommand pCommand) async {
     await IDataService().updateMetaData(pChangedResponse: pCommand.response);
 
     IUiService().notifyMetaDataChange(
@@ -150,7 +150,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     return [];
   }
 
-  Future<List<BaseCommand>> saveFetchData(SaveFetchDataCommand pCommand) async {
+  Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand pCommand) async {
     await IDataService().updateData(pFetch: pCommand.response);
 
     IUiService().notifyDataChange(
@@ -160,7 +160,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     return [];
   }
 
-  Future<List<BaseCommand>> getSelectedData(GetSelectedDataCommand pCommand) async {
+  Future<List<BaseCommand>> _getSelectedData(GetSelectedDataCommand pCommand) async {
     bool needFetch = IDataService().getDataBook(pCommand.dataProvider) == null;
 
     if (needFetch) {
@@ -189,7 +189,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     return [];
   }
 
-  Future<List<BaseCommand>> getDataChunk(GetDataChunkCommand command) async {
+  Future<List<BaseCommand>> _getDataChunk(GetDataChunkCommand command) async {
     bool needFetch = await IDataService().checkIfFetchPossible(
       pFrom: command.from,
       pTo: command.to,
