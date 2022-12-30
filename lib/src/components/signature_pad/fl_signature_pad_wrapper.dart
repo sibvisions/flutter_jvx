@@ -186,17 +186,19 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
             items: popupMenuEntries)
         .then((val) {
       if (val != null) {
-        IUiService().saveAllEditors(
-            pId: model.id,
-            pFunction: () async {
-              if (val == SignatureContextMenuCommand.DONE) {
-                return await sendSignature();
-              } else if (val == SignatureContextMenuCommand.CLEAR) {
-                return await deleteSignature();
-              }
-              return [];
-            },
-            pReason: "Signature pad closed.");
+        IUiService()
+            .saveAllEditors(
+                pId: model.id,
+                pFunction: () async {
+                  if (val == SignatureContextMenuCommand.DONE) {
+                    return await sendSignature();
+                  } else if (val == SignatureContextMenuCommand.CLEAR) {
+                    return await deleteSignature();
+                  }
+                  return [];
+                },
+                pReason: "Signature pad closed.")
+            .catchError(IUiService().handleAsyncError);
       }
     });
   }
