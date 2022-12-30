@@ -126,7 +126,7 @@ class _FlTableRowState extends State<FlTableRow> {
 
     double opacity = widget.index % 2 == 0 ? 0.00 : 0.05;
 
-    if (widget.isSelected) {
+    if (widget.isSelected && widget.model.showSelection) {
       opacity = 0.25;
     }
 
