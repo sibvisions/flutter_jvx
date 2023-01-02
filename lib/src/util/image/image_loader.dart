@@ -69,7 +69,7 @@ abstract class ImageLoader {
   /// Loads any server sent image string.
   static Widget loadImage(
     String pImageString, {
-    required ImageProvider? imageProvider,
+    ImageProvider? imageProvider,
     Function(Size, bool)? pImageStreamListener,
     Size? pWantedSize,
     Color? pWantedColor,
@@ -77,6 +77,8 @@ abstract class ImageLoader {
     AlignmentGeometry pAlignment = Alignment.center,
   }) {
     if (pImageString.isNotEmpty) {
+      imageProvider ??= ImageLoader.getImageProvider(pImageString, pImageStreamListener: pImageStreamListener);
+
       if (FontAwesomeUtil.checkFontAwesome(pImageString)) {
         FaIcon faIcon = FontAwesomeUtil.getFontAwesomeIcon(
           pText: pImageString,

@@ -266,6 +266,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       onAction: onAction,
       tableSize: tableSize,
       values: chunkData.data[index]!,
+      recordFormats: chunkData.recordFormats?[model.name],
       index: index,
       isSelected: index == selectedRowIndex,
       disableEditors: disableEditors,

@@ -98,7 +98,7 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   createWidget(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     lastWidgetModel = widgetModel;
 
@@ -158,7 +158,7 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   double getEditorWidth(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
   }

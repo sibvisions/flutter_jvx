@@ -237,6 +237,7 @@ class DataService implements IDataService {
       columnDefinitions: columnDefinitions,
       from: pFrom,
       to: pTo,
+      recordFormats: dataBook.recordFormats,
     );
   }
 

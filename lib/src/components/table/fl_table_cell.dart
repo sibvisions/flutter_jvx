@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/layout/alignments.dart';
+import '../../model/response/dal_fetch_response.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
@@ -74,6 +75,9 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
 
   /// If the cell is in the header row.
   final bool isHeader;
+
+  /// The format of the cell.
+  final CellFormat? cellFormat;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,6 +98,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     required this.cellDividerWidth,
     this.disableEditor = false,
     this.isHeader = false,
+    this.cellFormat,
   }) : super(key: UniqueKey());
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,8 +127,14 @@ class _FlTableCellState extends State<FlTableCell> {
 
     Widget? cellChild;
 
+    if (widget.cellFormat?.imageString.isNotEmpty == true) {
+      cellChild = ImageLoader.loadImage(
+        widget.cellFormat!.imageString,
+      );
+    }
+
     if (!widget.disableEditor) {
-      cellChild = _createCellEditorWidget();
+      cellChild ??= _createCellEditorWidget();
     }
 
     cellChild ??= _createTextWidget();
@@ -166,7 +177,10 @@ class _FlTableCellState extends State<FlTableCell> {
       onTap:
           widget.onTap != null ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor) : null,
       child: Container(
-        decoration: BoxDecoration(border: border),
+        decoration: BoxDecoration(
+          border: border,
+          color: widget.cellFormat?.background,
+        ),
         width: widget.width,
         alignment: FLUTTER_ALIGNMENT[widget.columnDefinition.cellEditorHorizontalAlignment.index]
             [VerticalAlignment.CENTER.index],
@@ -205,6 +219,8 @@ class _FlTableCellState extends State<FlTableCell> {
           : null,
       isInTable: true,
     );
+
+    cellEditor.cellFormat = widget.cellFormat;
   }
 
   /// Creates the cell editor widget for the cell if possible
@@ -215,14 +231,12 @@ class _FlTableCellState extends State<FlTableCell> {
 
     cellEditor.setValue(widget.value);
 
-    FlStatelessWidget tableWidget = cellEditor.createWidget(null);
+    FlStatelessWidget tableWidget = cellEditor.createWidget(widget.model.json);
 
-    tableWidget.model.applyFromJson(widget.model.json);
-    // Some parts of a json have to take priority.
-    // As they override the properties.
-    tableWidget.model.applyCellEditorOverrides(widget.model.json);
-
-    return tableWidget;
+    return AbsorbPointer(
+      absorbing: !cellEditor.allowedTableEdit,
+      child: tableWidget,
+    );
   }
 
   /// Creates a normale textwidget for the cell.
@@ -241,6 +255,15 @@ class _FlTableCellState extends State<FlTableCell> {
       cellText = cellEditor.formatValue(widget.value);
       style = widget.model.createTextStyle();
     }
+
+    style = style.copyWith(
+      backgroundColor: widget.cellFormat?.background,
+      color: widget.cellFormat?.foreground,
+      fontWeight: widget.cellFormat?.font?.isBold == true ? FontWeight.bold : null,
+      fontStyle: widget.cellFormat?.font?.isItalic == true ? FontStyle.italic : null,
+      fontFamily: widget.cellFormat?.font?.fontName,
+      fontSize: widget.cellFormat?.font?.fontSize.toDouble(),
+    );
 
     return Text(
       cellText,

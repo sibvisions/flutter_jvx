@@ -17,6 +17,7 @@
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
+import '../../../model/response/dal_fetch_response.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
@@ -62,6 +63,9 @@ abstract class ICellEditor<
   bool get allowedTableEdit => false;
 
   bool isInTable;
+
+  /// The cellformat of this cellEditor
+  CellFormat? cellFormat;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -201,10 +205,13 @@ abstract class ICellEditor<
     }
   }
 
-  static void applyEditorJson(FlComponentModel pModel, Map<String, dynamic>? pJson) {
+  void applyEditorJson(FlComponentModel pModel, Map<String, dynamic>? pJson) {
     if (pJson != null) {
       pModel.applyFromJson(pJson);
       pModel.applyCellEditorOverrides(pJson);
+      if (cellFormat != null) {
+        pModel.applyCellFormat(cellFormat!);
+      }
     }
   }
 }

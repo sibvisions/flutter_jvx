@@ -157,7 +157,7 @@ class OnlineApiRepository implements IRepository {
     ApiRollbackRequest: (_) => APIRoute.POST_ROLLBACK,
   };
 
-  static final Map<String, ResponseFactory> maps = {
+  static const Map<String, ResponseFactory> maps = {
     ApiResponseNames.applicationMetaData: ApplicationMetaDataResponse.fromJson,
     ApiResponseNames.applicationParameters: ApplicationParametersResponse.fromJson,
     ApiResponseNames.applicationSettings: ApplicationSettingsResponse.fromJson,
@@ -196,7 +196,7 @@ class OnlineApiRepository implements IRepository {
   final Set<Cookie> _cookies = {};
 
   /// Maps response names with a corresponding factory
-  late final Map<String, ResponseFactory> responseFactoryMap = maps;
+  final Map<String, ResponseFactory> responseFactoryMap = maps;
 
   static const String boundary = "--dart-http-boundary--";
 

@@ -71,7 +71,6 @@ class FlPopupMenuItemWidget extends PopupMenuItem<String> {
     } else {
       return ImageLoader.loadImage(
         icon,
-        imageProvider: ImageLoader.getImageProvider(icon),
         pWantedSize: const Size.square(16),
       );
     }

@@ -103,7 +103,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   createWidget(Map<String, dynamic>? pJson) {
     FlIconModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     return FlIconWidget(
       model: widgetModel,

@@ -133,7 +133,6 @@ class WebFrameState extends FrameState {
         child: imagePath != null
             ? ImageLoader.loadImage(
                 imagePath,
-                imageProvider: ImageLoader.getImageProvider(imagePath),
               )
             : Image.asset(
                 ImageLoader.getAssetPath(

@@ -261,6 +261,8 @@ abstract class ApiObjectProperty {
   static const String onlySelected = "onlySelected";
   static const String primaryKeyColumns = "primaryKeyColumns";
   static const String clear = "clear";
+  static const String recordFormat = "recordFormat";
+  static const String format = "format";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";

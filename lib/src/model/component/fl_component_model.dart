@@ -19,6 +19,7 @@ import 'package:flutter/widgets.dart';
 import '../../../flutter_jvx.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
+import '../response/dal_fetch_response.dart';
 import 'i_font_style.dart';
 
 /// The base component model.
@@ -385,15 +386,13 @@ abstract class FlComponentModel {
 
   void _parseFont(Map<String, dynamic> pJson, FlComponentModel pDefaultModel) {
     if (pJson.containsKey(ApiObjectProperty.font)) {
-      dynamic value = pJson[ApiObjectProperty.font];
+      String? value = pJson[ApiObjectProperty.font];
       if (value != null) {
-        var fontValuesList = (value as String).split(",");
-        if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
-          fontName = fontValuesList[0];
-          fontSize = int.parse(fontValuesList[2]);
-          isBold = (int.parse(fontValuesList[1]) & IFontStyle.TEXT_BOLD) == IFontStyle.TEXT_BOLD;
-          isItalic = (int.parse(fontValuesList[1]) & IFontStyle.TEXT_ITALIC) == IFontStyle.TEXT_ITALIC;
-        }
+        JVxFont font = JVxFont.fromString(value);
+        fontName = font.fontName;
+        fontSize = font.fontSize;
+        isBold = font.isBold;
+        isItalic = font.isItalic;
       } else {
         fontName = pDefaultModel.fontName;
         fontSize = pDefaultModel.fontSize;
@@ -418,5 +417,14 @@ abstract class FlComponentModel {
     double height = double.parse(split[1]);
 
     return Size(width, height) * ConfigService().getScaling();
+  }
+
+  void applyCellFormat(CellFormat cellFormat) {
+    background = cellFormat.background ?? background;
+    foreground = cellFormat.foreground ?? foreground;
+    isBold = cellFormat.font?.isBold ?? isBold;
+    isItalic = cellFormat.font?.isItalic ?? isItalic;
+    fontName = cellFormat.font?.fontName ?? fontName;
+    fontSize = cellFormat.font?.fontSize ?? fontSize;
   }
 }

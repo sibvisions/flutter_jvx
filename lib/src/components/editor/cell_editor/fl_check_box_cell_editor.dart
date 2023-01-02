@@ -77,7 +77,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   createWidget(Map<String, dynamic>? pJson) {
     FlCheckBoxModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     lastWidgetModel = widgetModel;
 

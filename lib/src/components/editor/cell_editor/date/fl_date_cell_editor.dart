@@ -102,7 +102,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   createWidget(Map<String, dynamic>? pJson) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     return FlDateEditorWidget(
       model: widgetModel,
@@ -298,7 +298,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   double getEditorWidth(Map<String, dynamic>? pJson) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
 

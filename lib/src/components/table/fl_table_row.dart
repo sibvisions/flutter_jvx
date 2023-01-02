@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/response/dal_fetch_response.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import 'fl_table_cell.dart';
 
@@ -64,6 +65,9 @@ class FlTableRow extends FlStatefulWidget<FlTableModel> {
   /// If this row is selected.
   final bool isSelected;
 
+  /// The record formats
+  RecordFormat? recordFormats;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,6 +85,7 @@ class FlTableRow extends FlStatefulWidget<FlTableModel> {
     required this.index,
     required this.isSelected,
     this.disableEditors = false,
+    this.recordFormats,
   }) : super(key: UniqueKey());
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,6 +126,8 @@ class _FlTableRowState extends State<FlTableRow> {
         rowIndex: widget.index,
         disableEditor: widget.disableEditors,
         cellIndex: cellIndex,
+        cellFormat:
+            widget.recordFormats?.getCellFormat(widget.index, widget.columnDefinitions.indexOf(columnDefinition)),
       );
     }).toList();
 

@@ -111,7 +111,7 @@ class FlLinkedCellEditor
   createWidget(Map<String, dynamic>? pJson) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     return FlLinkedEditorWidget(
       model: widgetModel,
@@ -296,7 +296,7 @@ class FlLinkedCellEditor
   double getEditorWidth(Map<String, dynamic>? pJson) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
 

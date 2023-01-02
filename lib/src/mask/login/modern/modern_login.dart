@@ -173,7 +173,6 @@ class ModernLogin extends StatelessWidget implements Login {
                   child: loginLogo != null
                       ? ImageLoader.loadImage(
                           loginLogo,
-                          imageProvider: ImageLoader.getImageProvider(loginLogo),
                           pFit: BoxFit.scaleDown,
                         )
                       : Image.asset(

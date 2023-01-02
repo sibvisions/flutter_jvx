@@ -14,7 +14,11 @@
  * the License.
  */
 
-abstract class IFontStyle {
+class JVxFont {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// The plain style constant.
   static const int TEXT_PLAIN = 0;
 
@@ -25,4 +29,36 @@ abstract class IFontStyle {
   /// The italicized style constant.  This can be combined with the other
   /// style constants (except PLAIN) for mixed styles.
   static const int TEXT_ITALIC = 2;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The font of the component.
+  String fontName = "Default";
+
+  /// The size of the component.
+  int fontSize = 14;
+
+  /// If the component is bold;
+  bool isBold = false;
+
+  /// If the component is italic.
+  bool isItalic = false;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  JVxFont({this.fontName = "Default", this.fontSize = 14, this.isBold = false, this.isItalic = false});
+
+  JVxFont.fromString(String pFontString) {
+    var fontValuesList = pFontString.split(",");
+    if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
+      fontName = fontValuesList[0];
+      fontSize = int.parse(fontValuesList[2]);
+      isBold = (int.parse(fontValuesList[1]) & JVxFont.TEXT_BOLD) == JVxFont.TEXT_BOLD;
+      isItalic = (int.parse(fontValuesList[1]) & JVxFont.TEXT_ITALIC) == JVxFont.TEXT_ITALIC;
+    }
+  }
 }

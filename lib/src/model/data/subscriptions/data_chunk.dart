@@ -15,6 +15,7 @@
  */
 
 import '../../../service/data/i_data_service.dart';
+import '../../response/dal_fetch_response.dart';
 import '../column_definition.dart';
 import '../data_book.dart';
 
@@ -43,6 +44,9 @@ class DataChunk {
   /// True if this chunk is only an update on already fetched data
   bool update;
 
+  /// Contains record formats
+  Map<String, RecordFormat>? recordFormats;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,6 +57,7 @@ class DataChunk {
     required this.columnDefinitions,
     required this.from,
     required this.to,
+    this.recordFormats,
     this.update = false,
   });
 

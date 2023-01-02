@@ -213,13 +213,11 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
     if (image != null) {
       img = ImageLoader.loadImage(
         image,
-        imageProvider: ImageLoader.getImageProvider(image),
         pWantedSize: const Size(64, 64),
       );
     } else if (model.markerImage != null) {
       img = ImageLoader.loadImage(
         model.markerImage!,
-        imageProvider: ImageLoader.getImageProvider(model.markerImage!),
         pWantedSize: const Size(64, 64),
       );
     } else {

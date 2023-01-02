@@ -71,7 +71,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   createWidget(Map<String, dynamic>? pJson) {
     FlIconModel widgetModel = createWidgetModel();
 
-    ICellEditor.applyEditorJson(widgetModel, pJson);
+    applyEditorJson(widgetModel, pJson);
 
     Widget image;
     if (currentIndex >= 0) {

@@ -57,10 +57,6 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
       pConversion: (value) => ImageLoader.loadImage(
         value,
         pImageStreamListener: newMaxSize,
-        imageProvider: ImageLoader.getImageProvider(
-          value,
-          pImageStreamListener: newMaxSize,
-        ),
       ),
     );
 
@@ -90,10 +86,6 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
           ImageLoader.loadImage(
             jsonValue,
             pImageStreamListener: newMaxSize,
-            imageProvider: ImageLoader.getImageProvider(
-              jsonValue,
-              pImageStreamListener: newMaxSize,
-            ),
           ),
         );
       }

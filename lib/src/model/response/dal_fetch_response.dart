@@ -14,8 +14,12 @@
  * the License.
  */
 
-import '../../service/api/shared/api_object_property.dart';
-import 'api_response.dart';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+import '../../../flutter_jvx.dart';
+import '../component/i_font_style.dart';
 
 class DalFetchResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +50,8 @@ class DalFetchResponse extends ApiResponse {
   /// Clear data before filling
   final bool clear;
 
+  /// The cell formats for this dataprovider.
+  final Map<String, RecordFormat>? recordFormats;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +66,7 @@ class DalFetchResponse extends ApiResponse {
     required this.to,
     required this.records,
     this.clear = false,
+    this.recordFormats,
     required super.name,
   });
 
@@ -73,5 +80,90 @@ class DalFetchResponse extends ApiResponse {
         selectedRow = json[ApiObjectProperty.selectedRow],
         dataProvider = json[ApiObjectProperty.dataProvider],
         clear = json[ApiObjectProperty.clear] ?? false,
+        recordFormats = json[ApiObjectProperty.recordFormat] != null
+            ? Map.fromIterable((json[ApiObjectProperty.recordFormat] as Map<String, dynamic>).keys,
+                value: (key) => RecordFormat.fromJson(json[ApiObjectProperty.recordFormat]![key]))
+            : null,
         super.fromJson();
+}
+
+class RecordFormat {
+  final List<CellFormat?> _formats = [];
+
+  final List<List<int>> _recordFormatIndexes = [];
+
+  RecordFormat.fromJson(Map<String, dynamic> json) {
+    dynamic formatJson = json[ApiObjectProperty.format];
+
+    if (formatJson != null) {
+      for (String? formatString in List<String?>.from(formatJson)) {
+        _formats.add(CellFormat.fromString(formatString));
+      }
+    }
+
+    dynamic recordsJson = json[ApiObjectProperty.records];
+    if (recordsJson != null) {
+      for (List<dynamic> recordIndexesDynamic in recordsJson) {
+        List<int> recordIndexesInt = recordIndexesDynamic.map<int>((e) {
+          return e;
+        }).toList();
+        _recordFormatIndexes.add(recordIndexesInt);
+      }
+    }
+  }
+
+  CellFormat? getCellFormat(int row, int column) {
+    if (row >= _recordFormatIndexes.length || row < 0) {
+      return null;
+    }
+
+    List<int> rowFormatIndex = _recordFormatIndexes[row];
+
+    if (rowFormatIndex.isEmpty) {
+      return null;
+    }
+
+    // Every row has column indexes. The last one counts for all following columns
+    // E.g. 5 Columns, indexes are 0, 1, 2 -> Format applied is 0, 1, 2, 2, 2
+
+    int formatIndex = rowFormatIndex[min(column, rowFormatIndex.length - 1)];
+
+    return _formats[formatIndex];
+  }
+}
+
+class CellFormat {
+  Color? background;
+  Color? foreground;
+  JVxFont? font;
+  String imageString = "";
+
+  CellFormat.fromString(String? pFormatString) {
+    List<String> entries = pFormatString?.split(";") ?? [];
+
+    for (int entryIndex = 0; entryIndex < entries.length; entryIndex++) {
+      dynamic entryValue = entries[entryIndex];
+      if (entryValue == null) {
+        continue;
+      }
+
+      switch (entryIndex) {
+        case 0:
+          background = ParseUtil.parseServerColor(entryValue);
+          break;
+        case 1:
+          foreground = ParseUtil.parseServerColor(entryValue);
+          break;
+        case 2:
+          font = JVxFont.fromString(entryValue);
+          break;
+        default:
+          if (imageString.isEmpty) {
+            imageString = entryValue.toString();
+          } else {
+            imageString += ";$entryValue";
+          }
+      }
+    }
+  }
 }

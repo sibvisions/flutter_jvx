@@ -63,6 +63,9 @@ class DataBook {
   /// Contains all metadata
   DalMetaDataResponse? metaData;
 
+  /// Contains record formats
+  Map<String, RecordFormat>? recordFormats;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,6 +78,7 @@ class DataBook {
     required this.isAllFetched,
     required this.selectedRow,
     required this.columnViewTable,
+    this.recordFormats,
     this.metaData,
   });
 
@@ -89,7 +93,7 @@ class DataBook {
 
   @override
   String toString() {
-    return 'DataBook{dataProvider: $dataProvider, isAllFetched: $isAllFetched, selectedRow: $selectedRow, records.length: ${records.length}}';
+    return 'DataBook{dataProvider: $dataProvider, isAllFetched: $isAllFetched, selectedRow: $selectedRow, records.length: ${records.length}, recordFormats.length: ${recordFormats?.length}}';
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,6 +105,7 @@ class DataBook {
     dataProvider = pFetchResponse.dataProvider;
     isAllFetched = pFetchResponse.isAllFetched;
     selectedRow = pFetchResponse.selectedRow;
+    recordFormats = pFetchResponse.recordFormats;
 
     // Save records
     for (int i = 0; i < pFetchResponse.records.length; i++) {
