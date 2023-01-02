@@ -163,7 +163,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onEndEditing: _setValueEnd,
       onValueChanged: _setValueChanged,
       onEndScroll: _loadMore,
-      onLongPress: showContextMenu,
+      onLongPress: _onLongPress,
       onTap: _onCellTap,
       onHeaderTap: _onCellTap,
       onAction: _onAction,
@@ -373,7 +373,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
   }
 
-  showContextMenu(int pRowIndex, String pColumnName, ICellEditor pCellEditor, LongPressStartDetails pPressDetails) {
+  _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, LongPressStartDetails pPressDetails) {
     List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
 
     if (_isInsertEnabled) {
@@ -406,30 +406,34 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       items: popupMenuEntries,
     ).then((val) {
       if (val != null) {
-        IUiService()
-            .saveAllEditors(
-                pId: model.id,
-                pFunction: () async {
-                  if (val == ContextMenuCommand.INSERT) {
-                    return [_createInsertCommand()];
-                  } else if (val == ContextMenuCommand.DELETE) {
-                    BaseCommand? command = _createDeleteCommand(indexToDelete);
-                    if (command != null) {
-                      return [command];
-                    }
-                  } else if (val == ContextMenuCommand.OFFLINE) {
-                    _goOffline();
-                  } else if (val == ContextMenuCommand.SORT) {
-                    _sortColumn();
-                  } else if (val == ContextMenuCommand.EDIT) {
-                    _editColumn();
-                  }
-                  return [];
-                },
-                pReason: "Table menu item pressed")
-            .catchError(IUiService().handleAsyncError);
+        _menuItemPressed(val, indexToDelete);
       }
     });
+  }
+
+  void _menuItemPressed(ContextMenuCommand val, int indexToDelete) {
+    IUiService()
+        .saveAllEditors(
+            pId: model.id,
+            pFunction: () async {
+              if (val == ContextMenuCommand.INSERT) {
+                return [_createInsertCommand()];
+              } else if (val == ContextMenuCommand.DELETE) {
+                BaseCommand? command = _createDeleteCommand(indexToDelete);
+                if (command != null) {
+                  return [command];
+                }
+              } else if (val == ContextMenuCommand.OFFLINE) {
+                _goOffline();
+              } else if (val == ContextMenuCommand.SORT) {
+                _sortColumn();
+              } else if (val == ContextMenuCommand.EDIT) {
+                _editColumn();
+              }
+              return [];
+            },
+            pReason: "Table menu item pressed")
+        .catchError(IUiService().handleAsyncError);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
