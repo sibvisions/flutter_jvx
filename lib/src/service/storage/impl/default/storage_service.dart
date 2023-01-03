@@ -124,8 +124,7 @@ class StorageService implements IStorageService {
           model.applyFromJson(changedData);
           if (model.isDestroyed) {
             _componentMap.remove(model.id);
-          }
-          {
+          } else {
             _addAsChild(model);
           }
           changedModels.add(model.id);
