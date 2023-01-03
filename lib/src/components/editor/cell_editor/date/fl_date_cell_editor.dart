@@ -307,9 +307,4 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     }
     return colWidth * widgetModel.columns;
   }
-
-  @override
-  void click() {
-    _openDatePicker();
-  }
 }

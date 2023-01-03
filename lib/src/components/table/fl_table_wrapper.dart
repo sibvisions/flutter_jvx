@@ -26,6 +26,8 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/sort_command.dart';
+import '../../model/command/ui/function_command.dart';
+import '../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/sort_definition.dart';
 import '../../model/layout/layout_data.dart';
@@ -321,17 +323,25 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _setValueEnd(dynamic pValue, int pRow, String pColumnName) {
-    _selectRecord(pRow, pColumnName).then((_) {
-      int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
+    _selectRecord(
+      pRow,
+      pColumnName,
+      pAfterSelect: () async {
+        int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
 
-      if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
-        if (pValue is HashMap<String, dynamic>) {
-          _setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName);
-        } else {
-          _setValues(pRow, [pColumnName], [pValue], pColumnName);
+        if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
+          if (pValue is HashMap<String, dynamic>) {
+            return [_setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName)];
+          } else {
+            return [
+              _setValues(pRow, [pColumnName], [pValue], pColumnName)
+            ];
+          }
         }
-      }
-    }).catchError(IUiService().handleAsyncError);
+
+        return [];
+      },
+    );
   }
 
   void _setValueChanged(dynamic pValue, int pRow, String pColumnName) {
@@ -350,17 +360,27 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (pRowIndex == -1 || pColumnName.isEmpty) {
       _sortColumn(pColumnName);
     } else {
-      _selectRecord(pRowIndex, pColumnName).then((_) {
-        if (pCellEditor.allowedInTable && pCellEditor.allowedTableEdit && _isUpdateAllowed == true) {
-          pCellEditor.click();
-        }
-      }).catchError(IUiService().handleAsyncError);
+      _selectRecord(pRowIndex, pColumnName);
+      if (!pCellEditor.allowedInTable &&
+          _isUpdateAllowed == true &&
+          pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK &&
+          mounted) {
+        pCellEditor.tableEdit(model.json);
+      }
     }
   }
 
   void _onCellDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
     if (pRowIndex == -1 || pColumnName.isEmpty) {
       _sortColumn(pColumnName, true);
+    } else {
+      _selectRecord(pRowIndex, pColumnName);
+      if (!pCellEditor.allowedInTable &&
+          _isUpdateAllowed == true &&
+          pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK &&
+          mounted) {
+        pCellEditor.tableEdit(model.json);
+      }
     }
   }
 
@@ -380,9 +400,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", TableContextMenuItem.SORT));
     }
 
-    if (pRowIndex >= 0 && pColumnName.isNotEmpty && _isUpdateAllowed) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
-    }
+    // if (pRowIndex >= 0 && pColumnName.isNotEmpty && _isUpdateAllowed) {
+    //   popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
+    // }
 
     if (kDebugMode) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.powerOff, "Offline", TableContextMenuItem.OFFLINE));
@@ -442,7 +462,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Selects the record.
-  Future<void> _selectRecord(int pRowIndex, String pColumnName) async {
+  void _selectRecord(int pRowIndex, String pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
     Filter? filter = _createFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
@@ -450,24 +470,26 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
-    return ICommandService().sendCommand(SelectRecordCommand(
-        dataProvider: model.dataProvider, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
+    ICommandService()
+        .sendCommand(SelectRecordCommand(
+            dataProvider: model.dataProvider, selectedRecord: pRowIndex, reason: "Tapped", filter: filter))
+        .then((_) {
+      if (pAfterSelect != null) {
+        return ICommandService().sendCommand(FunctionCommand(function: pAfterSelect, reason: "After selected row"));
+      }
+    }).catchError(IUiService().handleAsyncError);
   }
 
   /// Sends a [SetValuesCommand] for this row.
-  void _setValues(int pRowIndex, List<String> pColumnNames, List<dynamic> pValues, String pEditorColumnName) {
-    int rowIndex = pRowIndex;
-
-    IUiService().sendCommand(
-      SetValuesCommand(
-        componentId: model.id,
-        dataProvider: model.dataProvider,
-        columnNames: pColumnNames,
-        editorColumnName: pEditorColumnName,
-        values: pValues,
-        filter: _createFilter(pRowIndex: rowIndex),
-        reason: "Values changed in table",
-      ),
+  BaseCommand _setValues(int pRowIndex, List<String> pColumnNames, List<dynamic> pValues, String pEditorColumnName) {
+    return SetValuesCommand(
+      componentId: model.id,
+      dataProvider: model.dataProvider,
+      columnNames: pColumnNames,
+      editorColumnName: pEditorColumnName,
+      values: pValues,
+      filter: _createFilter(pRowIndex: pRowIndex),
+      reason: "Values changed in table",
     );
   }
 
@@ -614,13 +636,25 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void _editColumn(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    _selectRecord(pRowIndex, pColumnName)
-        .then((value) => pCellEditor.click())
-        .catchError(IUiService().handleAsyncError);
+    _selectRecord(
+      pRowIndex,
+      pColumnName,
+      pAfterSelect: () async {
+        pCellEditor.tableEdit(model.json);
+        return [];
+      },
+    );
   }
 
   void _onAction(int pRowIndex, String pColumnName, Function pAction) {
-    _selectRecord(pRowIndex, pColumnName).then((value) => pAction.call()).catchError(IUiService().handleAsyncError);
+    _selectRecord(
+      pRowIndex,
+      pColumnName,
+      pAfterSelect: () async {
+        pAction.call();
+        return [];
+      },
+    );
   }
 }
 

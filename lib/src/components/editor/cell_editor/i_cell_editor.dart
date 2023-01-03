@@ -109,7 +109,8 @@ abstract class ICellEditor<
 
   double? getEditorWidth(Map<String, dynamic>? pJson);
 
-  void click() {}
+  void tableEdit(Map<String, dynamic>? pJson) {}
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

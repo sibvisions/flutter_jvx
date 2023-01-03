@@ -140,9 +140,4 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
       onEndEditing(model.selectedValue);
     }
   }
-
-  @override
-  void click() {
-    _onPress();
-  }
 }

@@ -127,9 +127,4 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   double? getEditorWidth(Map<String, dynamic>? pJson) {
     return model.imageSize;
   }
-
-  @override
-  void click() {
-    _onPress();
-  }
 }

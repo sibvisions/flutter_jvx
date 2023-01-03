@@ -305,9 +305,4 @@ class FlLinkedCellEditor
     }
     return colWidth * widgetModel.columns;
   }
-
-  @override
-  void click() {
-    _openLinkedCellPicker();
-  }
 }
