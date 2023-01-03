@@ -45,13 +45,13 @@ abstract class IDataService {
   Future<bool> updateMetaData({required DalMetaDataResponse pChangedResponse});
 
   /// Updates parts of the meta data of a given dataBook
-  bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse});
+  bool updateMetaDataChangedRepsonse({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Updates dataBook with fetched data,
   Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch});
 
   /// Updates parts of dataBook with changed data.
-  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse});
+  bool updateDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Returns column data of the selected row of the dataProvider
   Future<DataRecord?> getSelectedRowData({

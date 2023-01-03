@@ -71,7 +71,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
+  bool updateDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
     DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
     if (dataBook == null) {
       return false;
@@ -105,7 +105,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateMetaDataChanged({required DalDataProviderChangedResponse pChangedResponse}) {
+  bool updateMetaDataChangedRepsonse({required DalDataProviderChangedResponse pChangedResponse}) {
     DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
     DalMetaDataResponse? metaData = dataBook?.metaData;
     if (metaData == null) {
@@ -238,6 +238,7 @@ class DataService implements IDataService {
       from: pFrom,
       to: pTo,
       recordFormats: dataBook.recordFormats,
+      sortDefinitions: dataBook.sortDefinitions,
     );
   }
 

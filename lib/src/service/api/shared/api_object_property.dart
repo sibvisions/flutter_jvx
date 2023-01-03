@@ -236,6 +236,7 @@ abstract class ApiObjectProperty {
   static const String autoOpenPopup = "autoOpenPopup";
   static const String cellEditor = "cellEditor";
   static const String dataProvider = "dataProvider";
+  static const String sortDefinition = "sortDefinition";
   static const String records = "records";
   static const String to = "to";
   static const String from = "from";

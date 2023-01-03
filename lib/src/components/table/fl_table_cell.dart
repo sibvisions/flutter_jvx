@@ -41,6 +41,11 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   /// Allows validation of the click before allowing the cell editor to be clicked.
   final TableTapCallback? onTap;
 
+  /// Gets called with the index of the row and name of column when the user taps a cell.
+  /// Provides the celleditor of this cell, allowing to click the cell editor.
+  /// Allows validation of the click before allowing the cell editor to be clicked.
+  final TableTapCallback? onDoubleTap;
+
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
 
@@ -88,6 +93,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     this.onValueChanged,
     this.onLongPress,
     this.onTap,
+    this.onDoubleTap,
     this.onAction,
     required this.columnDefinition,
     required this.width,
@@ -176,6 +182,9 @@ class _FlTableCellState extends State<FlTableCell> {
           : null,
       onTap:
           widget.onTap != null ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor) : null,
+      onDoubleTap: widget.onDoubleTap != null
+          ? () => widget.onDoubleTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
+          : null,
       child: Container(
         decoration: BoxDecoration(
           border: border,

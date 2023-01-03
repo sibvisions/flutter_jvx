@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../component/i_font_style.dart';
+import '../data/sort_definition.dart';
 
 class DalFetchResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,6 +53,9 @@ class DalFetchResponse extends ApiResponse {
 
   /// The cell formats for this dataprovider.
   final Map<String, RecordFormat>? recordFormats;
+
+  /// The sort definitions
+  final List<SortDefinition>? sortDefinitions;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,6 +71,7 @@ class DalFetchResponse extends ApiResponse {
     required this.records,
     this.clear = false,
     this.recordFormats,
+    this.sortDefinitions,
     required super.name,
   });
 
@@ -84,6 +89,8 @@ class DalFetchResponse extends ApiResponse {
             ? Map.fromIterable((json[ApiObjectProperty.recordFormat] as Map<String, dynamic>).keys,
                 value: (key) => RecordFormat.fromJson(json[ApiObjectProperty.recordFormat]![key]))
             : null,
+        sortDefinitions =
+            (json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList(),
         super.fromJson();
 }
 

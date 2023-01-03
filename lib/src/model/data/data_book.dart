@@ -32,6 +32,7 @@ import '../response/dal_fetch_response.dart';
 import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
 import 'filter_condition.dart';
+import 'sort_definition.dart';
 import 'subscriptions/data_chunk.dart';
 import 'subscriptions/data_record.dart';
 import 'subscriptions/data_subscription.dart';
@@ -65,6 +66,9 @@ class DataBook {
 
   /// Contains record formats
   Map<String, RecordFormat>? recordFormats;
+
+  /// The sort definitions of this databook.
+  List<SortDefinition>? sortDefinitions;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -106,6 +110,7 @@ class DataBook {
     isAllFetched = pFetchResponse.isAllFetched;
     selectedRow = pFetchResponse.selectedRow;
     recordFormats = pFetchResponse.recordFormats;
+    updateSortDefinitions(pFetchResponse.sortDefinitions);
 
     // Save records
     for (int i = 0; i < pFetchResponse.records.length; i++) {
@@ -123,15 +128,17 @@ class DataBook {
 
   /// Saves all data from a [DalDataProviderChangedResponse]
   bool saveFromChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
+    bool changed = updateSortDefinitions(pChangedResponse.sortDefinitions);
+
     if (pChangedResponse.changedColumnNames == null ||
         pChangedResponse.changedValues == null ||
         pChangedResponse.selectedRow == null) {
-      return false;
+      return changed;
     }
 
     List<dynamic>? rowData = records[pChangedResponse.selectedRow!];
     if (rowData == null) {
-      return false;
+      return changed;
     }
 
     for (int index = 0;
@@ -143,10 +150,38 @@ class DataBook {
       int intColIndex = columnDefinitions.indexWhere((element) => element.name == columnName);
       if (intColIndex >= 0) {
         rowData[intColIndex] = columnData;
+        changed = true;
       }
     }
 
-    return true;
+    return changed;
+  }
+
+  /// Sets the sort definition and returns if anything changed
+  bool updateSortDefinitions(List<SortDefinition>? pSortDefinitions) {
+    if (sortDefinitions == null || pSortDefinitions == null) {
+      bool areDifferent = sortDefinitions != pSortDefinitions;
+      sortDefinitions = pSortDefinitions;
+      return areDifferent;
+    }
+
+    bool changeDetected = sortDefinitions!.length != pSortDefinitions.length;
+
+    if (!changeDetected) {
+      for (SortDefinition sortDefinition in pSortDefinitions) {
+        if (changeDetected) {
+          break;
+        }
+
+        var oldSortDefinition =
+            sortDefinitions!.firstWhereOrNull((element) => element.columnName == sortDefinition.columnName);
+
+        changeDetected = oldSortDefinition == null || oldSortDefinition.mode != sortDefinition.mode;
+      }
+    }
+
+    sortDefinitions = pSortDefinitions;
+    return changeDetected;
   }
 
   /// Get the selected record,

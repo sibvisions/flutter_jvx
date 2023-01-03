@@ -16,7 +16,7 @@
 
 import 'dart:collection';
 
-import 'package:beamer/beamer.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -24,30 +24,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../flutter_ui.dart';
-import '../../model/command/api/delete_record_command.dart';
-import '../../model/command/api/insert_record_command.dart';
-import '../../model/command/api/select_record_command.dart';
-import '../../model/command/api/set_values_command.dart';
-import '../../model/command/base_command.dart';
+import '../../../flutter_jvx.dart';
+import '../../model/command/api/sort_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/component/table/fl_table_model.dart';
-import '../../model/data/column_definition.dart';
-import '../../model/data/subscriptions/data_chunk.dart';
-import '../../model/data/subscriptions/data_record.dart';
-import '../../model/data/subscriptions/data_subscription.dart';
+import '../../model/data/sort_definition.dart';
 import '../../model/layout/layout_data.dart';
-import '../../model/request/filter.dart';
-import '../../model/response/dal_meta_data_response.dart';
-import '../../service/api/shared/api_object_property.dart';
-import '../../service/command/i_command_service.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import 'fl_table_widget.dart';
-import 'table_size.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
@@ -95,7 +80,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   DalMetaDataResponse? metaData;
 
   /// The data of the table.
-  DataChunk chunkData =
+  DataChunk dataChunk =
       DataChunk(data: HashMap(), isAllFetched: false, columnDefinitions: [], from: 0, to: 0, update: false);
 
   /// The sizes of the table.
@@ -137,7 +122,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     layoutData.isFixedSize = true;
 
-    tableSize = TableSize.direct(tableModel: model, dataChunk: chunkData);
+    tableSize = TableSize.direct(tableModel: model, dataChunk: dataChunk);
 
     tableHorizontalController = linkedScrollGroup.addAndGet();
     headerHorizontalController = linkedScrollGroup.addAndGet();
@@ -157,7 +142,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       itemScrollController: itemScrollController,
       tableHorizontalController: tableHorizontalController,
       model: model,
-      chunkData: chunkData,
+      chunkData: dataChunk,
       tableSize: tableSize,
       selectedRowIndex: selectedRow,
       onEndEditing: _setValueEnd,
@@ -165,7 +150,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onEndScroll: _loadMore,
       onLongPress: _onLongPress,
       onTap: _onCellTap,
-      onHeaderTap: _onCellTap,
+      onDoubleTap: _onCellDoubleTap,
       onAction: _onAction,
       showFloatingButton: _isInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
@@ -225,7 +210,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _recalculateTableSize([bool pSetState = false]) {
     tableSize.calculateTableSize(
       pTableModel: model,
-      pDataChunk: chunkData,
+      pDataChunk: dataChunk,
       pAvailableWidth: layoutData.layoutPosition?.width,
     );
 
@@ -272,20 +257,20 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Loads data from the server.
-  void _receiveTableData(DataChunk pChunkData) {
+  void _receiveTableData(DataChunk pDataChunk) {
     currentState |= LOADED_DATA;
 
-    List<String> newColumns = pChunkData.columnDefinitions.map((e) => e.name).toList();
-    List<String> oldColumns = chunkData.columnDefinitions.map((e) => e.name).toList();
+    List<String> newColumns = pDataChunk.columnDefinitions.map((e) => e.name).toList();
+    List<String> oldColumns = dataChunk.columnDefinitions.map((e) => e.name).toList();
     bool hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
         oldColumns.any((element) => (!newColumns.contains(element)));
 
-    if (pChunkData.update) {
-      for (int index in pChunkData.data.keys) {
-        chunkData.data[index] = pChunkData.data[index]!;
+    if (pDataChunk.update) {
+      for (int index in pDataChunk.data.keys) {
+        dataChunk.data[index] = pDataChunk.data[index]!;
       }
     } else {
-      chunkData = pChunkData;
+      dataChunk = pDataChunk;
     }
 
     if (hasToCalc) {
@@ -336,10 +321,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _setValueEnd(dynamic pValue, int pRow, String pColumnName) {
-    _selectRecord(pRow).then((_) {
+    _selectRecord(pRow, pColumnName).then((_) {
       int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
 
-      if (colIndex >= 0 && pRow >= 0 && pRow < chunkData.data.length && colIndex < chunkData.data[pRow]!.length) {
+      if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
         if (pValue is HashMap<String, dynamic>) {
           _setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName);
         } else {
@@ -355,7 +340,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Increments the page count and loads more data.
   void _loadMore() {
-    if (!chunkData.isAllFetched) {
+    if (!dataChunk.isAllFetched) {
       pageCount++;
       _subscribe();
     }
@@ -363,9 +348,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   void _onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
     if (pRowIndex == -1 || pColumnName.isEmpty) {
-      _sortColumn();
+      _sortColumn(pColumnName);
     } else {
-      _selectRecord(pRowIndex).then((_) {
+      _selectRecord(pRowIndex, pColumnName).then((_) {
         if (pCellEditor.allowedInTable && pCellEditor.allowedTableEdit && _isUpdateAllowed == true) {
           pCellEditor.click();
         }
@@ -373,28 +358,36 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
   }
 
+  void _onCellDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    if (pRowIndex == -1 || pColumnName.isEmpty) {
+      _sortColumn(pColumnName, true);
+    }
+  }
+
   _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, LongPressStartDetails pPressDetails) {
-    List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
+    List<PopupMenuEntry<TableContextMenuItem>> popupMenuEntries = <PopupMenuEntry<TableContextMenuItem>>[];
 
     if (_isInsertEnabled) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squarePlus, "New", ContextMenuCommand.INSERT));
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squarePlus, "New", TableContextMenuItem.INSERT));
     }
 
     int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
     if (_isDeleteEnabled && indexToDelete >= 0) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", ContextMenuCommand.DELETE));
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", TableContextMenuItem.DELETE));
     }
 
-    if (pRowIndex == -1 && pColumnName.isNotEmpty) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", ContextMenuCommand.SORT));
+    if (pRowIndex == -1 && pColumnName.isNotEmpty && model.sortOnHeaderEnabled) {
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", TableContextMenuItem.SORT));
     }
 
     if (pRowIndex >= 0 && pColumnName.isNotEmpty && _isUpdateAllowed) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", ContextMenuCommand.EDIT));
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
     }
 
     if (kDebugMode) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.powerOff, "Offline", ContextMenuCommand.OFFLINE));
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.powerOff, "Offline", TableContextMenuItem.OFFLINE));
+      popupMenuEntries
+          .add(_createContextMenuItem(FontAwesomeIcons.circleArrowLeft, "Fetch", TableContextMenuItem.FETCH));
     }
 
     showMenu(
@@ -406,29 +399,37 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       items: popupMenuEntries,
     ).then((val) {
       if (val != null) {
-        _menuItemPressed(val, indexToDelete);
+        _menuItemPressed(
+          val,
+          pRowIndex,
+          pColumnName,
+          pCellEditor,
+        );
       }
     });
   }
 
-  void _menuItemPressed(ContextMenuCommand val, int indexToDelete) {
+  void _menuItemPressed(TableContextMenuItem val, int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
     IUiService()
         .saveAllEditors(
             pId: model.id,
             pFunction: () async {
-              if (val == ContextMenuCommand.INSERT) {
+              if (val == TableContextMenuItem.INSERT) {
                 return [_createInsertCommand()];
-              } else if (val == ContextMenuCommand.DELETE) {
+              } else if (val == TableContextMenuItem.DELETE) {
+                int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
                 BaseCommand? command = _createDeleteCommand(indexToDelete);
                 if (command != null) {
                   return [command];
                 }
-              } else if (val == ContextMenuCommand.OFFLINE) {
+              } else if (val == TableContextMenuItem.OFFLINE) {
                 _goOffline();
-              } else if (val == ContextMenuCommand.SORT) {
-                _sortColumn();
-              } else if (val == ContextMenuCommand.EDIT) {
-                _editColumn();
+              } else if (val == TableContextMenuItem.FETCH) {
+                _fetch();
+              } else if (val == TableContextMenuItem.SORT) {
+                _sortColumn(pColumnName);
+              } else if (val == TableContextMenuItem.EDIT) {
+                _editColumn(pRowIndex, pColumnName, pCellEditor);
               }
               return [];
             },
@@ -441,7 +442,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Selects the record.
-  Future<void> _selectRecord(int pRowIndex) async {
+  Future<void> _selectRecord(int pRowIndex, String pColumnName) async {
     Filter? filter = _createFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
@@ -486,13 +487,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
-    int colIndex = chunkData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
+    int colIndex = dataChunk.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
     if (colIndex == -1) {
       return;
     }
 
-    return chunkData.data[rowIndex]![colIndex];
+    return dataChunk.data[rowIndex]![colIndex];
   }
 
   /// Creates an identifying filter for this row.
@@ -533,8 +534,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return Filter(values: listValues, columnNames: listColumnNames);
   }
 
-  PopupMenuItem<ContextMenuCommand> _createContextMenuItem(IconData icon, String text, ContextMenuCommand value) {
-    return PopupMenuItem<ContextMenuCommand>(
+  PopupMenuItem<TableContextMenuItem> _createContextMenuItem(IconData icon, String text, TableContextMenuItem value) {
+    return PopupMenuItem<TableContextMenuItem>(
       enabled: true,
       value: value,
       child: Row(
@@ -569,6 +570,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     OfflineUtil.initOffline(workscreenName);
   }
 
+  void _fetch() {
+    IUiService()
+        .sendCommand(FetchCommand(dataProvider: model.dataProvider, fromRow: 0, rowCount: -1, reason: "debug fetch"));
+  }
+
   /// Creates a delete command for this row.
   DeleteRecordCommand? _createDeleteCommand(int pIndex) {
     Filter? filter = _createFilter(pRowIndex: pIndex);
@@ -585,13 +591,37 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     );
   }
 
-  void _sortColumn() {}
+  void _sortColumn(String pColumnName, [bool pAdditive = false]) {
+    if (!model.sortOnHeaderEnabled) {
+      return;
+    }
 
-  void _editColumn() {}
+    SortDefinition? currentSortDefinition =
+        dataChunk.sortDefinitions?.firstWhereOrNull((sortDef) => sortDef.columnName == pColumnName);
+
+    dataChunk.sortDefinitions?.remove(currentSortDefinition);
+    currentSortDefinition?.mode = currentSortDefinition.nextMode;
+    currentSortDefinition ??= SortDefinition(columnName: pColumnName);
+
+    List<SortDefinition> sortDefs = [currentSortDefinition];
+    if (pAdditive && dataChunk.sortDefinitions != null) {
+      sortDefs.addAll(dataChunk.sortDefinitions!);
+    }
+
+    IUiService().sendCommand(
+      SortCommand(dataProvider: model.dataProvider, sortDefinitions: sortDefs, reason: "sorted"),
+    );
+  }
+
+  void _editColumn(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    _selectRecord(pRowIndex, pColumnName)
+        .then((value) => pCellEditor.click())
+        .catchError(IUiService().handleAsyncError);
+  }
 
   void _onAction(int pRowIndex, String pColumnName, Function pAction) {
-    _selectRecord(pRowIndex).then((value) => pAction.call()).catchError(IUiService().handleAsyncError);
+    _selectRecord(pRowIndex, pColumnName).then((value) => pAction.call()).catchError(IUiService().handleAsyncError);
   }
 }
 
-enum ContextMenuCommand { INSERT, DELETE, OFFLINE, EDIT, SORT }
+enum TableContextMenuItem { INSERT, DELETE, OFFLINE, EDIT, SORT, FETCH }

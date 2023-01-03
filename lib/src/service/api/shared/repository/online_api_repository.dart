@@ -69,6 +69,7 @@ import '../../../../model/request/api_save_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
 import '../../../../model/request/api_set_value_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
+import '../../../../model/request/api_sort_request.dart';
 import '../../../../model/request/api_startup_request.dart';
 import '../../../../model/request/api_upload_request.dart';
 import '../../../../model/request/download_request.dart';
@@ -155,6 +156,7 @@ class OnlineApiRepository implements IRepository {
     ApiSaveRequest: (_) => APIRoute.POST_SAVE,
     ApiReloadRequest: (_) => APIRoute.POST_RELOAD,
     ApiRollbackRequest: (_) => APIRoute.POST_ROLLBACK,
+    ApiSortRequest: (_) => APIRoute.POST_SORT,
   };
 
   static const Map<String, ResponseFactory> maps = {

@@ -145,6 +145,11 @@ class TableSize {
         textStyle.copyWith(fontWeight: FontWeight.bold),
         "$columnLabel *", // Column headers get a * if they are mandatory
       );
+
+      if (pDataChunk.sortDefinitions?.firstWhereOrNull((element) => element.columnName == columnName)?.mode != null) {
+        calculatedHeaderWidth += 21;
+      }
+
       calculatedColumnWidths[columnName] = _adjustValue(minColumnWidth, calculatedHeaderWidth);
 
       int calculateUntilRowIndex = math.min(

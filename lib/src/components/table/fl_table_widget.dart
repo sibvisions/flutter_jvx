@@ -26,7 +26,7 @@ import '../../model/data/subscriptions/data_chunk.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
-import 'fl_table_header.dart';
+import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
 import 'table_size.dart';
 
@@ -60,11 +60,11 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   /// The callback if a value has been changed in the table.
   final TableValueChangedCallback? onValueChanged;
 
-  /// Gets called with the index of the row athat was touched when the user tapped a row.
+  /// Gets called with the index of the row that was touched when the user tapped a row.
   final TableTapCallback? onTap;
 
-  /// Gets called with the name of the header column that was pressed.
-  final TableTapCallback? onHeaderTap;
+  /// Gets called with the index of the row that was touched when the user tapped a row.
+  final TableTapCallback? onDoubleTap;
 
   /// Gets called when the user long presses the table or a row/column.
   final TableLongPressCallback? onLongPress;
@@ -119,7 +119,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.headerHorizontalController,
     this.selectedRowIndex = -1,
     this.onTap,
-    this.onHeaderTap,
+    this.onDoubleTap,
     this.onLongPress,
     this.onAction,
     this.onEndScroll,
@@ -263,6 +263,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       columnDefinitions: chunkData.columnDefinitions,
       onLongPress: onLongPress,
       onTap: onTap,
+      onDoubleTap: onDoubleTap,
       onAction: onAction,
       tableSize: tableSize,
       values: chunkData.data[index]!,
@@ -275,12 +276,14 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
   /// Creates the header row.
   Widget createHeaderRow() {
-    return FlTableHeader(
+    return FlTableHeaderRow(
       model: model,
       columnDefinitions: chunkData.columnDefinitions,
-      onTap: onHeaderTap,
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
       tableSize: tableSize,
       onLongPress: onLongPress,
+      sortDefinitions: chunkData.sortDefinitions,
     );
   }
 

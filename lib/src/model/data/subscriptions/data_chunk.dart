@@ -18,6 +18,7 @@ import '../../../service/data/i_data_service.dart';
 import '../../response/dal_fetch_response.dart';
 import '../column_definition.dart';
 import '../data_book.dart';
+import '../sort_definition.dart';
 
 /// Used as return value when getting subscriptions data from [IDataService]
 class DataChunk {
@@ -47,6 +48,9 @@ class DataChunk {
   /// Contains record formats
   Map<String, RecordFormat>? recordFormats;
 
+  /// The sort definitions
+  List<SortDefinition>? sortDefinitions;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,6 +63,7 @@ class DataChunk {
     required this.to,
     this.recordFormats,
     this.update = false,
+    this.sortDefinitions,
   });
 
   int getColumnIndex(String columnName) {

@@ -18,10 +18,9 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/response/dal_fetch_response.dart';
-import '../base_wrapper/fl_stateful_widget.dart';
 import 'fl_table_cell.dart';
 
-class FlTableRow extends FlStatefulWidget<FlTableModel> {
+class FlTableRow extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +37,11 @@ class FlTableRow extends FlStatefulWidget<FlTableModel> {
   /// Provides the celleditor of this cell, allowing to click the cell editor.
   /// Allows validation of the click before allowing the cell editor to be clicked.
   final TableTapCallback? onTap;
+
+  /// Gets called with the index of the row and name of column that was touched when the user taps a cell.
+  /// Provides the celleditor of this cell, allowing to click the cell editor.
+  /// Allows validation of the click before allowing the cell editor to be clicked.
+  final TableTapCallback? onDoubleTap;
 
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
@@ -66,7 +70,7 @@ class FlTableRow extends FlStatefulWidget<FlTableModel> {
   final bool isSelected;
 
   /// The record formats
-  RecordFormat? recordFormats;
+  final RecordFormat? recordFormats;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -77,6 +81,7 @@ class FlTableRow extends FlStatefulWidget<FlTableModel> {
     this.onEndEditing,
     this.onValueChanged,
     this.onTap,
+    this.onDoubleTap,
     this.onLongPress,
     this.onAction,
     required this.columnDefinitions,
@@ -93,52 +98,42 @@ class FlTableRow extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  State<FlTableRow> createState() => _FlTableRowState();
-}
-
-class _FlTableRowState extends State<FlTableRow> {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
   Widget build(BuildContext context) {
-    List<ColumnDefinition> columnsToShow = widget.tableSize.columnWidths.keys
-        .map((e) => widget.columnDefinitions.firstWhere((element) => element.name == e))
-        .toList();
+    List<ColumnDefinition> columnsToShow =
+        tableSize.columnWidths.keys.map((e) => columnDefinitions.firstWhere((element) => element.name == e)).toList();
 
     int cellIndex = -1;
 
     List<Widget> rowWidgets = columnsToShow.map((columnDefinition) {
       cellIndex += 1;
       return FlTableCell(
-        model: widget.model,
-        onEndEditing: widget.onEndEditing,
-        onValueChanged: widget.onValueChanged,
-        onLongPress: widget.onLongPress,
-        onTap: widget.onTap,
-        onAction: widget.onAction,
+        model: model,
+        onEndEditing: onEndEditing,
+        onValueChanged: onValueChanged,
+        onLongPress: onLongPress,
+        onTap: onTap,
+        onDoubleTap: onDoubleTap,
+        onAction: onAction,
         columnDefinition: columnDefinition,
-        width: widget.tableSize.columnWidths[columnDefinition.name]!,
-        paddings: widget.tableSize.cellPaddings,
-        cellDividerWidth: widget.tableSize.columnDividerWidth,
-        value: widget.values[widget.columnDefinitions.indexOf(columnDefinition)],
-        rowIndex: widget.index,
-        disableEditor: widget.disableEditors,
+        width: tableSize.columnWidths[columnDefinition.name]!,
+        paddings: tableSize.cellPaddings,
+        cellDividerWidth: tableSize.columnDividerWidth,
+        value: values[columnDefinitions.indexOf(columnDefinition)],
+        rowIndex: index,
+        disableEditor: disableEditors,
         cellIndex: cellIndex,
-        cellFormat:
-            widget.recordFormats?.getCellFormat(widget.index, widget.columnDefinitions.indexOf(columnDefinition)),
+        cellFormat: recordFormats?.getCellFormat(index, columnDefinitions.indexOf(columnDefinition)),
       );
     }).toList();
 
-    double opacity = widget.index % 2 == 0 ? 0.00 : 0.05;
+    double opacity = index % 2 == 0 ? 0.00 : 0.05;
 
-    if (widget.isSelected && widget.model.showSelection) {
+    if (isSelected && model.showSelection) {
       opacity = 0.25;
     }
 
     return Container(
-      height: widget.tableSize.rowHeight,
+      height: tableSize.rowHeight,
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor.withOpacity(opacity),
       ),

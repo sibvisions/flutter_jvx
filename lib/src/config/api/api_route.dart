@@ -58,6 +58,7 @@ class APIRoute {
   static const APIRoute POST_SAVE = APIRoute(Method.POST, "api/save");
   static const APIRoute POST_RELOAD = APIRoute(Method.POST, "api/reload");
   static const APIRoute POST_ROLLBACK = APIRoute(Method.POST, "api/rollback");
+  static const APIRoute POST_SORT = APIRoute(Method.POST, "api/dal/sort");
 
   final String route;
   final Method method;

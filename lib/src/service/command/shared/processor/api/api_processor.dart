@@ -48,6 +48,7 @@ import '../../../../../model/command/api/save_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
+import '../../../../../model/command/api/sort_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/api/upload_command.dart';
 import '../../../../../model/command/base_command.dart';
@@ -85,6 +86,7 @@ import 'save_command_processor.dart';
 import 'select_record_command_processor.dart';
 import 'set_value_command_processor.dart';
 import 'set_values_command_processor.dart';
+import 'sort_command_processor.dart';
 import 'start_up_command_processor.dart';
 import 'upload_command_processor.dart';
 
@@ -184,6 +186,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _rollbackProcessor = RollbackCommandProcessor();
 
+  final ICommandProcessor _sortProcessor = SortCommandProcessor();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -261,6 +264,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _reloadProcessor.processCommand(command);
     } else if (command is RollbackCommand) {
       return _rollbackProcessor.processCommand(command);
+    } else if (command is SortCommand) {
+      return _sortProcessor.processCommand(command);
     }
 
     return [];
