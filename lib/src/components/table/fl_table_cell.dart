@@ -136,6 +136,7 @@ class _FlTableCellState extends State<FlTableCell> {
     if (widget.cellFormat?.imageString.isNotEmpty == true) {
       cellChild = ImageLoader.loadImage(
         widget.cellFormat!.imageString,
+        pWantedColor: widget.cellFormat?.foreground,
       );
     }
 
