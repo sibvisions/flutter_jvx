@@ -49,7 +49,7 @@ class FlTableModel extends FlComponentModel implements IDataModel {
   bool tableHeaderVisible = true;
 
   /// the show vertical lines flag.
-  bool showVerticalLines = true;
+  bool showVerticalLines = false;
 
   /// the show horizontal lines flag.
   bool showHorizontalLines = true;
