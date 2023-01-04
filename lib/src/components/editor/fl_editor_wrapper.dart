@@ -184,7 +184,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           dataProvider: model.dataProvider,
           from: -1,
           onSelectedRecord: setValue,
-          onMetaData: setColumnDefinition,
+          onMetaData: receiveMetaData,
           dataColumns: [model.columnName],
         ),
       );
@@ -211,7 +211,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  void setColumnDefinition(DalMetaDataResponse pMetaData) {
+  void receiveMetaData(DalMetaDataResponse pMetaData) {
     ColumnDefinition? newColDef = pMetaData.columns.firstWhereOrNull((element) => element.name == model.columnName);
     cellEditor.setColumnDefinition(newColDef);
     setState(() {});
