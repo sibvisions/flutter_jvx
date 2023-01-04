@@ -104,6 +104,7 @@ dependencies:
       ref: fix_flutter3.0
   gauges: ^1.0.0
   flutter_keyboard_visibility: ^5.4.0
+  flutter_slidable: ^2.0.0
 
 dependency_overrides:
   # https://github.com/dint-dev/universal_io/pull/37

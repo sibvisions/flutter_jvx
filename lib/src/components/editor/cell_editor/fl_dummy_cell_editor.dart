@@ -25,7 +25,7 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   FlDummyCellEditor()
       : super(
           model: ICellEditorModel(),
-          pCellEditorJson: {},
+          cellEditorJson: {},
           onValueChange: _doNothing,
           onEndEditing: _doNothing,
           onFocusChanged: _doNothing,

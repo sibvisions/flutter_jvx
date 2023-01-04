@@ -58,7 +58,7 @@ class FlLinkedCellEditor
   bool isOpen = false;
 
   @override
-  bool get allowedInTable => true;
+  bool get allowedInTable => false;
 
   @override
   bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
@@ -71,7 +71,7 @@ class FlLinkedCellEditor
   FlLinkedCellEditor({
     required super.name,
     required super.columnDefinition,
-    required super.pCellEditorJson,
+    required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
@@ -120,7 +120,7 @@ class FlLinkedCellEditor
       textController: textController,
       focusNode: focusNode,
       inTable: isInTable,
-      hideClearIcon: allowedTableEdit && isInTable,
+      hideClearIcon: !allowedTableEdit && isInTable,
     );
   }
 

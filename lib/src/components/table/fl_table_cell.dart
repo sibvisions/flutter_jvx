@@ -231,6 +231,7 @@ class _FlTableCellState extends State<FlTableCell> {
     );
 
     cellEditor.cellFormat = widget.cellFormat;
+    cellEditor.setValue(widget.value);
   }
 
   /// Creates the cell editor widget for the cell if possible
@@ -238,8 +239,6 @@ class _FlTableCellState extends State<FlTableCell> {
     if (widget.isHeader || !cellEditor.allowedInTable) {
       return null;
     }
-
-    cellEditor.setValue(widget.value);
 
     FlStatelessWidget tableWidget = cellEditor.createWidget(widget.model.json);
 

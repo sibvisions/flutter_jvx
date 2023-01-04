@@ -35,6 +35,7 @@ typedef TableLongPressCallback = void Function(
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
 typedef CellEditorActionCallback = void Function(int rowIndex, String column, Function action);
+typedef TableSlideActionCallback = void Function(int rowIndex, TableRowSlideAction action);
 
 class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,6 +75,9 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
   /// Gets called when an action cell editor makes an action.
   final CellEditorActionCallback? onAction;
+
+  /// Gets called when a row should have all [TableRowSlideAction], only if the row not already scrollable.
+  final TableSlideActionCallback? onSlideAction;
 
   // Fields
 
@@ -123,6 +127,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.onLongPress,
     this.onAction,
     this.onEndScroll,
+    this.onSlideAction,
     this.itemScrollController,
     this.onEndEditing,
     this.onValueChanged,
@@ -236,7 +241,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
             child: ScrollablePositionedList.builder(
               scrollDirection: Axis.vertical,
               itemScrollController: itemScrollController,
-              itemBuilder: tableListItemBuilder,
+              itemBuilder: (context, index) => tableListItemBuilder(context, index, canScrollHorizontally),
               itemCount: _itemCount,
             ),
           ),
@@ -246,7 +251,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   }
 
   /// The item builder of the scrollable positioned list.
-  Widget tableListItemBuilder(BuildContext context, int pIndex) {
+  Widget tableListItemBuilder(BuildContext context, int pIndex, bool canScrollHorizontally) {
     int index = pIndex;
 
     if (model.tableHeaderVisible && !model.stickyHeaders) {
@@ -265,6 +270,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       onTap: onTap,
       onDoubleTap: onDoubleTap,
       onAction: onAction,
+      onSlideAction: !canScrollHorizontally ? onSlideAction : null,
       tableSize: tableSize,
       values: chunkData.data[index]!,
       recordFormats: chunkData.recordFormats?[model.name],

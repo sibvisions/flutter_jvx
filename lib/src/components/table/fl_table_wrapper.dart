@@ -35,6 +35,7 @@ import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
+import 'fl_table_row.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
@@ -154,6 +155,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onTap: _onCellTap,
       onDoubleTap: _onCellDoubleTap,
       onAction: _onAction,
+      onSlideAction: _onSlideAction,
       showFloatingButton: _isInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
           ((layoutData.layoutPosition?.width ?? 0.0) >= 100) &&
@@ -365,7 +367,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           _isUpdateAllowed == true &&
           pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK &&
           mounted) {
-        pCellEditor.tableEdit(model.json);
+        pCellEditor.tableEdit(model.json, pColumnName);
       }
     }
   }
@@ -379,7 +381,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           _isUpdateAllowed == true &&
           pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK &&
           mounted) {
-        pCellEditor.tableEdit(model.json);
+        pCellEditor.tableEdit(model.json, pColumnName);
       }
     }
   }
@@ -640,7 +642,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pRowIndex,
       pColumnName,
       pAfterSelect: () async {
-        pCellEditor.tableEdit(model.json);
+        pCellEditor.tableEdit(model.json, pColumnName);
         return [];
       },
     );
@@ -655,6 +657,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         return [];
       },
     );
+  }
+
+  void _onSlideAction(int pRowIndex, TableRowSlideAction pAction) {
+    if (pAction == TableRowSlideAction.DELETE) {
+      BaseCommand? deleteCommand = _createDeleteCommand(pRowIndex);
+      if (deleteCommand != null) {
+        IUiService().sendCommand(deleteCommand);
+      }
+    }
   }
 }
 

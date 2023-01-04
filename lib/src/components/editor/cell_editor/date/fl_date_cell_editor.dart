@@ -49,7 +49,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
 
   FlDateCellEditor({
     required super.columnDefinition,
-    required super.pCellEditorJson,
+    required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
@@ -130,7 +130,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   @override
-  bool get allowedInTable => true;
+  bool get allowedInTable => false;
 
   @override
   bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;

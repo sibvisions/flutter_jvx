@@ -42,7 +42,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
 
   FlChoiceCellEditor({
     required super.columnDefinition,
-    required super.pCellEditorJson,
+    required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,

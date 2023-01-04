@@ -14,12 +14,16 @@
  * the License.
  */
 
+import 'package:flutter/material.dart';
+
+import '../../../flutter_ui.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/response/dal_fetch_response.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
+import '../../../service/ui/i_ui_service.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import 'date/fl_date_cell_editor.dart';
 import 'fl_check_box_cell_editor.dart';
@@ -39,8 +43,17 @@ abstract class ICellEditor<
     CellEditorModelType extends ICellEditorModel,
     ReturnValueType> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const Object _OK_PRESSED = Object();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The json of this celleditor.
+  Map<String, dynamic> cellEditorJson;
 
   /// The name of the component this cell editor is part of.
   String? name;
@@ -48,9 +61,9 @@ abstract class ICellEditor<
   /// The cell editor model
   CellEditorModelType model;
 
-  Function(ReturnValueType) onValueChange;
+  Function(ReturnValueType?) onValueChange;
 
-  Function(ReturnValueType) onEndEditing;
+  Function(ReturnValueType?) onEndEditing;
 
   Function(bool) onFocusChanged;
 
@@ -72,7 +85,7 @@ abstract class ICellEditor<
 
   ICellEditor({
     required this.model,
-    required Map<String, dynamic> pCellEditorJson,
+    required this.cellEditorJson,
     required this.onValueChange,
     required this.onEndEditing,
     required this.onFocusChanged,
@@ -80,7 +93,7 @@ abstract class ICellEditor<
     this.name,
     this.columnDefinition,
   }) {
-    model.applyFromJson(pCellEditorJson);
+    model.applyFromJson(cellEditorJson);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,10 +122,152 @@ abstract class ICellEditor<
 
   double? getEditorWidth(Map<String, dynamic>? pJson);
 
-  void tableEdit(Map<String, dynamic>? pJson) {}
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void tableEdit(Map<String, dynamic>? pJson, String pColumn) {
+    dynamic cellEditorValue = getValue();
+    ICellEditor cellEditor = ICellEditor.getCellEditor(
+      pName: name ?? "",
+      columnDefinition: columnDefinition,
+      onFocusChanged: (_) {},
+      onChange: (_) {},
+      onEndEditing: (_) {},
+      isInTable: false,
+      pCellEditorJson: cellEditorJson,
+    );
+
+    cellEditor.onEndEditing = (value) {
+      cellEditorValue = value;
+      if (cellEditorValue is Map<String, dynamic>) {
+        cellEditor.setValue(cellEditorValue[pColumn]);
+      } else {
+        cellEditor.setValue(value);
+      }
+    };
+
+    cellEditor.setValue(getValue());
+
+    IUiService()
+        .openDialog(pBuilder: (context) => _buildPopupEditor(context, pJson, cellEditor), pIsDismissible: true)
+        .then((pressed) {
+      if (cellEditorValue != _OK_PRESSED && pressed == _OK_PRESSED && cellEditorValue != getValue()) {
+        onEndEditing(cellEditorValue);
+      }
+
+      cellEditor.dispose();
+    });
+  }
+
+  Dialog _buildPopupEditor(BuildContext context, Map<String, dynamic>? pJson, ICellEditor pCellEditor) {
+    Size screenSize = MediaQuery.of(context).size;
+
+    EdgeInsets paddingInsets;
+
+    paddingInsets = EdgeInsets.fromLTRB(
+      screenSize.width / 16,
+      screenSize.height / 16,
+      screenSize.width / 16,
+      screenSize.height / 16,
+    );
+
+    List<Widget> listBottomButtons = [];
+
+    Widget leftSideButton = const SizedBox();
+
+    if (columnDefinition?.nullable == true) {
+      InkWell(
+        onTap: () => Navigator.of(context).pop(),
+        child: Builder(
+          builder: (context) => Text(
+            style: TextStyle(
+              shadows: [
+                Shadow(
+                  offset: const Offset(0, -2),
+                  color: DefaultTextStyle.of(context).style.color!,
+                )
+              ],
+              color: Colors.transparent,
+              decoration: TextDecoration.underline,
+              decorationColor: DefaultTextStyle.of(context).style.color,
+              decorationThickness: 1,
+            ),
+            FlutterUI.translate("No value"),
+          ),
+        ),
+      );
+    }
+
+    listBottomButtons.add(
+      Flexible(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: leftSideButton,
+        ),
+      ),
+    );
+
+    listBottomButtons.add(
+      Align(
+        alignment: Alignment.centerRight,
+        child: ElevatedButton(
+          child: Text(
+            FlutterUI.translate("Cancel"),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
+
+    listBottomButtons.add(const SizedBox(width: 10));
+
+    listBottomButtons.add(
+      Align(
+        alignment: Alignment.centerRight,
+        child: ElevatedButton(
+          child: Text(
+            FlutterUI.translate("Ok"),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop(_OK_PRESSED);
+          },
+        ),
+      ),
+    );
+
+    return Dialog(
+      insetPadding: paddingInsets,
+      elevation: 10.0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        clipBehavior: Clip.hardEdge,
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              FlutterUI.translate("Edit ${columnDefinition?.label}"),
+              style: Theme.of(context).dialogTheme.titleTextStyle,
+            ),
+            const SizedBox(height: 8),
+            pCellEditor.createWidget(pJson),
+            const SizedBox(height: 8),
+            Row(
+              children: listBottomButtons,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Static methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns a [ICellEditor] based on the cell editor class name
@@ -133,7 +288,7 @@ abstract class ICellEditor<
       case FlCellEditorClassname.TEXT_CELL_EDITOR:
         return FlTextCellEditor(
           columnDefinition: columnDefinition,
-          pCellEditorJson: pCellEditorJson,
+          cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
@@ -142,7 +297,7 @@ abstract class ICellEditor<
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(
           columnDefinition: columnDefinition,
-          pCellEditorJson: pCellEditorJson,
+          cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
@@ -151,7 +306,7 @@ abstract class ICellEditor<
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         return FlNumberCellEditor(
           columnDefinition: columnDefinition,
-          pCellEditorJson: pCellEditorJson,
+          cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
@@ -160,7 +315,7 @@ abstract class ICellEditor<
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
           columnDefinition: columnDefinition,
-          pCellEditorJson: pCellEditorJson,
+          cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
@@ -170,7 +325,7 @@ abstract class ICellEditor<
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         return FlChoiceCellEditor(
           columnDefinition: columnDefinition,
-          pCellEditorJson: pCellEditorJson,
+          cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
@@ -180,7 +335,7 @@ abstract class ICellEditor<
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         return FlDateCellEditor(
           columnDefinition: columnDefinition,
-          pCellEditorJson: pCellEditorJson,
+          cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
@@ -192,7 +347,7 @@ abstract class ICellEditor<
         return FlLinkedCellEditor(
           name: pName,
           columnDefinition: columnDefinition,
-          pCellEditorJson: pCellEditorJson,
+          cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,

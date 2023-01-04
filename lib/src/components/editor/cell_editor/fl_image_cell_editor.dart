@@ -53,7 +53,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
 
   FlImageCellEditor({
     required super.columnDefinition,
-    required super.pCellEditorJson,
+    required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,

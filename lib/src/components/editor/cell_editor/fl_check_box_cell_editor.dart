@@ -43,7 +43,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
 
   FlCheckBoxCellEditor({
     required super.columnDefinition,
-    required super.pCellEditorJson,
+    required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,

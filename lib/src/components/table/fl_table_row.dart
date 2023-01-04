@@ -15,6 +15,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../model/response/dal_fetch_response.dart';
@@ -48,6 +50,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
   /// Gets called when an action cell editor makes an action.
   final CellEditorActionCallback? onAction;
+
+  /// Gets called when the row should have all [TableRowSlideAction].
+  final TableSlideActionCallback? onSlideAction;
 
   // Fields
 
@@ -84,6 +89,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     this.onDoubleTap,
     this.onLongPress,
     this.onAction,
+    this.onSlideAction,
     required this.columnDefinitions,
     required this.tableSize,
     required this.values,
@@ -132,14 +138,33 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
       opacity = 0.25;
     }
 
-    return Container(
-      height: tableSize.rowHeight,
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(opacity),
-      ),
-      child: Row(
-        children: rowWidgets,
+    return Slidable(
+      closeOnScroll: true,
+      direction: Axis.horizontal,
+      enabled: onSlideAction != null,
+      groupTag: onSlideAction,
+      endActionPane: ActionPane(motion: const ScrollMotion(), children: [
+        SlidableAction(
+          onPressed: (context) {
+            onSlideAction?.call(index, TableRowSlideAction.DELETE);
+          },
+          autoClose: true,
+          backgroundColor: Colors.red,
+          label: FlutterUI.translate("Delete"),
+          icon: FontAwesomeIcons.trash,
+        )
+      ]),
+      child: Container(
+        height: tableSize.rowHeight,
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(opacity),
+        ),
+        child: Row(
+          children: rowWidgets,
+        ),
       ),
     );
   }
 }
+
+enum TableRowSlideAction { DELETE }

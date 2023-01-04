@@ -16,11 +16,9 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../flutter_ui.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
-import '../../../service/ui/i_ui_service.dart';
 import '../../../util/parse_util.dart';
 import '../password_field/fl_password_field_widget.dart';
 import '../text_area/fl_text_area_widget.dart';
@@ -60,7 +58,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
 
   FlTextCellEditor({
     required super.columnDefinition,
-    required super.pCellEditorJson,
+    required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
@@ -199,107 +197,5 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
     applyEditorJson(widgetModel, pJson);
 
     return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
-  }
-
-  @override
-  void tableEdit(Map<String, dynamic>? pJson) {
-    IUiService()
-        .openDialog(pBuilder: (context) => _buildPopupEditor(context, pJson), pIsDismissible: true)
-        .then((value) {
-      if (value != null) {
-        onEndEditing(value);
-      }
-    });
-  }
-
-  Dialog _buildPopupEditor(BuildContext context, Map<String, dynamic>? pJson) {
-    Size screenSize = MediaQuery.of(context).size;
-
-    EdgeInsets paddingInsets;
-
-    paddingInsets = EdgeInsets.fromLTRB(
-      screenSize.width / 16,
-      screenSize.height / 16,
-      screenSize.width / 16,
-      screenSize.height / 16,
-    );
-
-    FlTextFieldModel searchFieldModel = FlTextFieldModel();
-    searchFieldModel.fontSize = 14;
-
-    List<Widget> listBottomButtons = [];
-
-    if (columnDefinition?.nullable == true) {
-      listBottomButtons.add(
-        Flexible(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: Builder(
-                builder: (context) => Text(
-                  style: TextStyle(
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(0, -2),
-                        color: DefaultTextStyle.of(context).style.color!,
-                      )
-                    ],
-                    color: Colors.transparent,
-                    decoration: TextDecoration.underline,
-                    decorationColor: DefaultTextStyle.of(context).style.color,
-                    decorationThickness: 1,
-                  ),
-                  FlutterUI.translate("No value"),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    listBottomButtons.add(
-      Flexible(
-        flex: 1,
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: ElevatedButton(
-            child: Text(
-              FlutterUI.translate("Cancel"),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-      ),
-    );
-
-    return Dialog(
-      insetPadding: paddingInsets,
-      elevation: 10.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-      child: Container(
-        clipBehavior: Clip.hardEdge,
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              FlutterUI.translate("Edit ${columnDefinition?.label}"),
-              style: Theme.of(context).dialogTheme.titleTextStyle,
-            ),
-            const SizedBox(height: 8),
-            createWidget(pJson),
-            const SizedBox(height: 8),
-            Row(
-              children: listBottomButtons,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
