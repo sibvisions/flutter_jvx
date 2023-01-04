@@ -37,6 +37,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     required super.endEditing,
     required super.focusNode,
     required super.textController,
+    super.inputFormatters,
     super.inTable,
     super.isMandatory,
     this.onDoubleTap,

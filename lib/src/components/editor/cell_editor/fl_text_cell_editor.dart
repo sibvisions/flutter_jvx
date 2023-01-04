@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
@@ -114,6 +115,9 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
 
     lastWidgetModel = widgetModel;
 
+    var textLimitFormatter =
+        LengthLimitingTextInputFormatter(columnDefinition?.length, maxLengthEnforcement: MaxLengthEnforcement.enforced);
+
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
@@ -125,6 +129,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           textController: textController,
           inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
+          inputFormatters: [textLimitFormatter],
         );
       case (TEXT_PLAIN_PASSWORD):
         return FlPasswordWidget(
@@ -135,6 +140,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           textController: textController,
           inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
+          inputFormatters: [textLimitFormatter],
         );
       case (TEXT_PLAIN_SINGLELINE):
       default:
@@ -146,6 +152,7 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           textController: textController,
           inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
+          inputFormatters: [textLimitFormatter],
         );
     }
   }

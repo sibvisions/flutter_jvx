@@ -87,10 +87,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   bool get isExpandend => false;
 
-  MaxLengthEnforcement? get maxLengthEnforcement => null;
-
-  int? get maxLength => null;
-
   bool get obscureText => false;
 
   String get obscuringCharacter => "•";
@@ -179,8 +175,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       maxLines: maxLines,
       keyboardType: keyboardType,
       focusNode: focusNode,
-      maxLength: maxLength,
-      maxLengthEnforcement: maxLengthEnforcement,
       inputFormatters: inputFormatters,
       obscureText: obscureText,
       obscuringCharacter: obscuringCharacter,
