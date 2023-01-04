@@ -18,6 +18,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -227,22 +228,25 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
   /// Creates the list of the table.
   Widget createTableList(bool canScrollHorizontally, double maxWidth) {
-    return GestureDetector(
-      onLongPressStart:
-          onLongPress != null ? (details) => onLongPress?.call(-1, "", FlDummyCellEditor(), details) : null,
-      child: NotificationListener<ScrollEndNotification>(
-        onNotification: onInternalEndScroll,
-        child: SingleChildScrollView(
-          physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
-          controller: tableHorizontalController,
-          scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxWidth),
-            child: ScrollablePositionedList.builder(
-              scrollDirection: Axis.vertical,
-              itemScrollController: itemScrollController,
-              itemBuilder: (context, index) => tableListItemBuilder(context, index, canScrollHorizontally),
-              itemCount: _itemCount,
+    return SlidableAutoCloseBehavior(
+      closeWhenOpened: true,
+      child: GestureDetector(
+        onLongPressStart:
+            onLongPress != null ? (details) => onLongPress?.call(-1, "", FlDummyCellEditor(), details) : null,
+        child: NotificationListener<ScrollEndNotification>(
+          onNotification: onInternalEndScroll,
+          child: SingleChildScrollView(
+            physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
+            controller: tableHorizontalController,
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: maxWidth),
+              child: ScrollablePositionedList.builder(
+                scrollDirection: Axis.vertical,
+                itemScrollController: itemScrollController,
+                itemBuilder: (context, index) => tableListItemBuilder(context, index, canScrollHorizontally),
+                itemCount: _itemCount,
+              ),
             ),
           ),
         ),
