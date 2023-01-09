@@ -407,21 +407,6 @@ class ConfigController {
     return double.parse(_applicationStyle.value['options.mobilescaling'] ?? '2.0');
   }
 
-  // TODO: Replace usages with [AppStyle]
-  double getOpacityMenu() {
-    return double.parse(_applicationStyle.value['opacity.menu'] ?? '1');
-  }
-
-  // TODO: Replace usages with [AppStyle]
-  double getOpacitySideMenu() {
-    return double.parse(_applicationStyle.value['opacity.sidemenu'] ?? '1');
-  }
-
-  // TODO: Replace usages with [AppStyle]
-  double getOpacityControls() {
-    return double.parse(_applicationStyle.value['opacity.controls'] ?? '1');
-  }
-
   /// Retrieves the configured max. picture resolution.
   ///
   /// This is being used to limit the resolution of pictures taken via the in-app camera.

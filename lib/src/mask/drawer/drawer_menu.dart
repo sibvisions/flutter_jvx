@@ -54,7 +54,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     bool isNormalSize = MediaQuery.of(context).size.height > 650;
 
     return Opacity(
-      opacity: ConfigController().getOpacitySideMenu(),
+      opacity: double.parse(AppStyle.of(context)!.applicationStyle['opacity.sidemenu'] ?? "1"),
       child: Drawer(
         backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Theme.of(context).colorScheme.primary
