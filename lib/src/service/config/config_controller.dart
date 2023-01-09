@@ -243,7 +243,7 @@ class ConfigController {
 
   /// Sets the name of the current app.
   Future<void> updateAppName(String? pAppName) async {
-    await _configService.updateAppName(pAppName);
+    await _configService.updateAppName(pAppName ?? getAppConfig()?.serverConfig!.appName);
     _appName.value = pAppName ?? getAppConfig()?.serverConfig!.appName;
   }
 
