@@ -599,6 +599,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     };
   }
 
+  // TODO Do this during native splash, move before runApp
   Future<void> initApp() async {
     HttpOverrides.global = MyHttpOverrides();
 
