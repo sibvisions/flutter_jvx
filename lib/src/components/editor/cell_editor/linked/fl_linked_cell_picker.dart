@@ -281,11 +281,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   void _onRowTapped(int index) {
     List<dynamic> data = _chunkData!.data[index]!;
 
-    List<String> columnOrder = _columnNamesToSubscribe();
-
     selectRecord(index).then((value) {
       if (model.linkReference.columnNames.isEmpty) {
-        Navigator.of(context).pop(data[columnOrder.indexOf(model.linkReference.referencedColumnNames[0])]);
+        Navigator.of(context).pop(data[_chunkData!.columnDefinitions
+            .indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0])]);
       } else {
         HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
 
@@ -293,7 +292,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           String columnName = model.linkReference.columnNames[i];
           String referencedColumnName = model.linkReference.referencedColumnNames[i];
 
-          dataMap[columnName] = data[columnOrder.indexOf(referencedColumnName)];
+          dataMap[columnName] =
+              data[_chunkData!.columnDefinitions.indexWhere((element) => element.name == referencedColumnName)];
         }
 
         Navigator.of(context).pop(dataMap);
