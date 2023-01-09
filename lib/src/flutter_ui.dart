@@ -316,6 +316,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   ThemeData themeData = ThemeData(
     backgroundColor: Colors.grey.shade50,
   );
+  ThemeData darkThemeData = ThemeData(
+    brightness: Brightness.dark,
+    backgroundColor: Colors.grey.shade50,
+  );
 
   final ThemeData splashTheme = ThemeData();
 
@@ -372,7 +376,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }.whereNotNull().map((e) => Locale(e)).toList();
 
     return MaterialApp.router(
+      themeMode: ConfigController().themePreference.value,
       theme: themeData,
+      darkTheme: darkThemeData,
       locale: Locale(ConfigController().getLanguage()),
       supportedLocales: supportedLocales,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
@@ -462,11 +468,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangePlatformBrightness() {
-    changedTheme();
-  }
-
-  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
@@ -498,100 +499,93 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (styleColor != null) {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);
 
-      Brightness selectedBrightness;
-      switch (ConfigController().themePreference.value) {
-        case ThemeMode.light:
-          selectedBrightness = Brightness.light;
-          break;
-        case ThemeMode.dark:
-          selectedBrightness = Brightness.dark;
-          break;
-        case ThemeMode.system:
-        default:
-          selectedBrightness = MediaQueryData.fromWindow(WidgetsBinding.instance.window).platformBrightness;
-      }
+      themeData = _createTheme(materialColor, Brightness.light);
+      darkThemeData = _createTheme(materialColor, Brightness.dark);
+    }
+    setState(() {});
+  }
 
-      ColorScheme colorScheme = ColorScheme.fromSwatch(
-        primarySwatch: materialColor,
-        brightness: selectedBrightness,
-      );
+  ThemeData _createTheme(MaterialColor materialColor, Brightness selectedBrightness) {
+    ColorScheme colorScheme = ColorScheme.fromSwatch(
+      primarySwatch: materialColor,
+      brightness: selectedBrightness,
+    );
 
-      bool isBackgroundLight = ThemeData.estimateBrightnessForColor(colorScheme.background) == Brightness.light;
+    bool isBackgroundLight = ThemeData.estimateBrightnessForColor(colorScheme.background) == Brightness.light;
 
-      if (isBackgroundLight) {
-        colorScheme = colorScheme.copyWith(background: Colors.grey.shade50);
-      }
-      if (colorScheme.onPrimary.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onPrimary: JVxColors.LIGHTER_BLACK);
-      }
-      if (colorScheme.onBackground.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onBackground: JVxColors.LIGHTER_BLACK);
-      }
-      if (colorScheme.onSurface.computeLuminance() == 0.0) {
-        colorScheme = colorScheme.copyWith(onSurface: JVxColors.LIGHTER_BLACK);
-      }
+    if (isBackgroundLight) {
+      colorScheme = colorScheme.copyWith(background: Colors.grey.shade50);
+    }
+    if (colorScheme.onPrimary.computeLuminance() == 0.0) {
+      colorScheme = colorScheme.copyWith(onPrimary: JVxColors.LIGHTER_BLACK);
+    }
+    if (colorScheme.onBackground.computeLuminance() == 0.0) {
+      colorScheme = colorScheme.copyWith(onBackground: JVxColors.LIGHTER_BLACK);
+    }
+    if (colorScheme.onSurface.computeLuminance() == 0.0) {
+      colorScheme = colorScheme.copyWith(onSurface: JVxColors.LIGHTER_BLACK);
+    }
 
-      // Override tealAccent
-      colorScheme = colorScheme.copyWith(
-        secondary: colorScheme.primary,
-        onSecondary: colorScheme.onPrimary,
-        secondaryContainer: colorScheme.primaryContainer,
-        onSecondaryContainer: colorScheme.onPrimaryContainer,
-        tertiary: colorScheme.primary,
-        onTertiary: colorScheme.onPrimary,
-        tertiaryContainer: colorScheme.primaryContainer,
-        onTertiaryContainer: colorScheme.onPrimaryContainer,
-      );
+    // Override tealAccent
+    colorScheme = colorScheme.copyWith(
+      secondary: colorScheme.primary,
+      onSecondary: colorScheme.onPrimary,
+      secondaryContainer: colorScheme.primaryContainer,
+      onSecondaryContainer: colorScheme.onPrimaryContainer,
+      tertiary: colorScheme.primary,
+      onTertiary: colorScheme.onPrimary,
+      tertiaryContainer: colorScheme.primaryContainer,
+      onTertiaryContainer: colorScheme.onPrimaryContainer,
+    );
 
-      themeData = ThemeData.from(colorScheme: colorScheme);
+    var themeData = ThemeData.from(colorScheme: colorScheme);
 
-      if (themeData.textTheme.bodyText1?.color?.computeLuminance() == 0.0) {
-        themeData = themeData.copyWith(
-          textTheme: themeData.textTheme.apply(
-            bodyColor: JVxColors.LIGHTER_BLACK,
-            displayColor: JVxColors.LIGHTER_BLACK,
-          ),
-        );
-      }
-
-      if (themeData.primaryTextTheme.bodyText1?.color?.computeLuminance() == 0.0) {
-        themeData = themeData.copyWith(
-          primaryTextTheme: themeData.primaryTextTheme.apply(
-            bodyColor: JVxColors.LIGHTER_BLACK,
-            displayColor: JVxColors.LIGHTER_BLACK,
-          ),
-        );
-      }
-
-      if (themeData.iconTheme.color?.computeLuminance() == 0.0) {
-        themeData = themeData.copyWith(
-          iconTheme: themeData.iconTheme.copyWith(
-            color: JVxColors.LIGHTER_BLACK,
-          ),
-        );
-      }
-
-      if (themeData.primaryIconTheme.color?.computeLuminance() == 0.0) {
-        themeData = themeData.copyWith(
-          iconTheme: themeData.primaryIconTheme.copyWith(
-            color: JVxColors.LIGHTER_BLACK,
-          ),
-        );
-      }
-
+    if (themeData.textTheme.bodyText1?.color?.computeLuminance() == 0.0) {
       themeData = themeData.copyWith(
-        // Override for dark mode
-        toggleableActiveColor: themeData.colorScheme.primary,
-        listTileTheme: themeData.listTileTheme.copyWith(
-          // TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
-          textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-          iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-          // textColor: themeData.colorScheme.onBackground,
-          // iconColor: themeData.colorScheme.onBackground,
+        textTheme: themeData.textTheme.apply(
+          bodyColor: JVxColors.LIGHTER_BLACK,
+          displayColor: JVxColors.LIGHTER_BLACK,
         ),
       );
     }
-    setState(() {});
+
+    if (themeData.primaryTextTheme.bodyText1?.color?.computeLuminance() == 0.0) {
+      themeData = themeData.copyWith(
+        primaryTextTheme: themeData.primaryTextTheme.apply(
+          bodyColor: JVxColors.LIGHTER_BLACK,
+          displayColor: JVxColors.LIGHTER_BLACK,
+        ),
+      );
+    }
+
+    if (themeData.iconTheme.color?.computeLuminance() == 0.0) {
+      themeData = themeData.copyWith(
+        iconTheme: themeData.iconTheme.copyWith(
+          color: JVxColors.LIGHTER_BLACK,
+        ),
+      );
+    }
+
+    if (themeData.primaryIconTheme.color?.computeLuminance() == 0.0) {
+      themeData = themeData.copyWith(
+        iconTheme: themeData.primaryIconTheme.copyWith(
+          color: JVxColors.LIGHTER_BLACK,
+        ),
+      );
+    }
+
+    themeData = themeData.copyWith(
+      // Override for dark mode
+      toggleableActiveColor: themeData.colorScheme.primary,
+      listTileTheme: themeData.listTileTheme.copyWith(
+        // TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
+        textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        // textColor: themeData.colorScheme.onBackground,
+        // iconColor: themeData.colorScheme.onBackground,
+      ),
+    );
+    return themeData;
   }
 
   void changedImages() {
