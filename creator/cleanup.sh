@@ -14,3 +14,4 @@ rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/device_info_plus-*
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/flutter_native_splash-*
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/sqflite-*
 rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/flutter_keyboard_visibility-*
+rm -r $flutterDir/../.pub-cache/hosted/pub.dartlang.org/flutter_native_timezone-*
