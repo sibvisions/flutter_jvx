@@ -36,7 +36,7 @@ import '../service/api/shared/repository/offline/offline_database.dart';
 import '../service/api/shared/repository/offline_api_repository.dart';
 import '../service/api/shared/repository/online_api_repository.dart';
 import '../service/command/i_command_service.dart';
-import '../service/config/config_service.dart';
+import '../service/config/config_controller.dart';
 import '../service/data/i_data_service.dart';
 import '../service/storage/i_storage_service.dart';
 import '../service/ui/i_ui_service.dart';
@@ -64,10 +64,10 @@ abstract class OfflineUtil {
     OfflineApiRepository? offlineApiRepository;
     try {
       await Wakelock.enable();
-      String offlineWorkscreenClassName = ConfigService().getOfflineScreen()!;
-      String offlineAppName = ConfigService().getAppName()!;
-      String offlineUsername = ConfigService().getUsername()!;
-      String offlinePassword = ConfigService().getPassword()!;
+      String offlineWorkscreenClassName = ConfigController().offlineScreen.value!;
+      String offlineAppName = ConfigController().appName.value!;
+      String offlineUsername = ConfigController().username.value!;
+      String offlinePassword = ConfigController().password.value!;
 
       var futureDialog = IUiService().openDialog(
         pIsDismissible: false,
@@ -184,7 +184,7 @@ abstract class OfflineUtil {
         await offlineApiRepository.deleteDatabase();
         IDataService().clearDataBooks();
 
-        await ConfigService().setOffline(false);
+        await ConfigController().updateOffline(false);
         await offlineApiRepository.stop();
 
         FlPanelModel? workscreenModel =
@@ -212,7 +212,7 @@ abstract class OfflineUtil {
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
         await onlineApiRepository?.stop();
         IApiService().setRepository(offlineApiRepository);
-        await ConfigService().setOffline(true);
+        await ConfigController().updateOffline(true);
         // Clear menu
         IUiService().setMenuModel(null);
       }
@@ -392,7 +392,7 @@ abstract class OfflineUtil {
   }
 
   static Set<String> getActiveDataProviders(String offlineWorkscreen) {
-    // String databookPrefix = configService.getAppName() + "/" + pWorkscreen;
+    // String databookPrefix = ConfigController.appName + "/" + pWorkscreen;
     return IDataService().getDataBooks().keys.toList().where((element) {
       var prefixes = element.split("/");
       if (prefixes.length >= 2) {
@@ -433,7 +433,7 @@ abstract class OfflineUtil {
     try {
       await Wakelock.enable();
       // Set already here to receive errors from api responses
-      await ConfigService().setOffline(true);
+      await ConfigController().updateOffline(true);
 
       unawaited(IUiService().openDialog(
         pIsDismissible: false,
@@ -489,7 +489,7 @@ abstract class OfflineUtil {
 
       IApiService().setRepository(offlineApiRepository);
       var panelModel = IStorageService().getComponentByName(pComponentName: pWorkscreen) as FlPanelModel;
-      await ConfigService().setOfflineScreen(panelModel.screenClassName!);
+      await ConfigController().updateOfflineScreen(panelModel.screenClassName!);
       await onlineApiRepository.stop();
       // Clear menu
       IUiService().setMenuModel(null);
@@ -505,7 +505,7 @@ abstract class OfflineUtil {
       }
       await offlineApiRepository?.stop();
       IApiService().setRepository(onlineApiRepository);
-      await ConfigService().setOffline(false);
+      await ConfigController().updateOffline(false);
 
       ProgressDialogWidget.safeClose(dialogKey);
       await IUiService().openDialog(

@@ -104,7 +104,7 @@ import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
 import '../../../../util/import_handler/import_handler.dart';
 import '../../../command/i_command_service.dart';
-import '../../../config/config_service.dart';
+import '../../../config/config_controller.dart';
 import '../../../ui/i_ui_service.dart';
 import '../api_object_property.dart';
 import '../api_response_names.dart';
@@ -222,7 +222,7 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<void> start() async {
-    client ??= HttpClient()..connectionTimeout = Duration(seconds: ConfigService().getAppConfig()!.requestTimeout!);
+    client ??= HttpClient()..connectionTimeout = Duration(seconds: ConfigController().getAppConfig()!.requestTimeout!);
     // WebSocket gets started in first request after startup as soon as we get an clientId.
   }
 
@@ -315,7 +315,7 @@ class OnlineApiRepository implements IRepository {
   }
 
   void showStatus(String message, [bool showIndefinitely = false]) {
-    if (!ConfigService().isOffline()) {
+    if (!ConfigController().offline.value) {
       // If we would want it in the splash too.
       BuildContext? effectiveContext = FlutterUI.getCurrentContext(); //?? FlutterUI.getSplashContext();
       if (effectiveContext != null) {
@@ -355,8 +355,8 @@ class OnlineApiRepository implements IRepository {
 
     try {
       if (pRequest is SessionRequest) {
-        if (ConfigService().getClientId()?.isNotEmpty == true) {
-          pRequest.clientId = ConfigService().getClientId()!;
+        if (ConfigController().clientId.value?.isNotEmpty == true) {
+          pRequest.clientId = ConfigController().clientId.value!;
         } else {
           throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
         }
@@ -372,7 +372,7 @@ class OnlineApiRepository implements IRepository {
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
             onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
             maxAttempts: 3,
-            maxDelay: Duration(seconds: ConfigService().getAppConfig()!.requestTimeout!),
+            maxDelay: Duration(seconds: ConfigController().getAppConfig()!.requestTimeout!),
           );
         } else {
           response = await _sendRequest(pRequest);
@@ -433,7 +433,7 @@ class OnlineApiRepository implements IRepository {
 
       IUiService().getAppManager()?.modifyResponses(apiInteraction);
 
-      if (ConfigService().isOffline()) {
+      if (ConfigController().offline.value) {
         var viewResponse = apiInteraction.responses.firstWhereOrNull((element) => element is MessageView);
         if (viewResponse != null) {
           var messageViewResponse = viewResponse as MessageView;
@@ -464,7 +464,7 @@ class OnlineApiRepository implements IRepository {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
 
-    Uri uri = Uri.parse("${ConfigService().getBaseUrl()!}/${route.route}");
+    Uri uri = Uri.parse("${ConfigController().baseUrl.value!}/${route.route}");
     HttpClientRequest request = await createRequest(uri, route.method);
 
     if (kIsWeb) {
@@ -684,7 +684,7 @@ class JVxWebSocket {
   }
 
   Uri _getWebSocketUri() {
-    Uri location = Uri.parse(ConfigService().getBaseUrl()!);
+    Uri location = Uri.parse(ConfigController().baseUrl.value!);
 
     const String subPath = "/services/mobile";
     int? end = location.path.lastIndexOf(subPath);
@@ -694,7 +694,7 @@ class JVxWebSocket {
       scheme: location.scheme == "https" ? "wss" : "ws",
       path: "${location.path.substring(0, end)}/pushlistener",
       queryParameters: {
-        "clientId": ConfigService().getClientId()!,
+        "clientId": ConfigController().clientId.value!,
         // Reconnect forces the server to respond to invalid session with close instead of an error.
         "reconnect": true.toString(),
         "confirmOpen": true.toString(),
@@ -705,7 +705,7 @@ class JVxWebSocket {
   Future<void> _openWebSocket() async {
     await _closeWebSocket();
 
-    if (ConfigService().getClientId() == null) {
+    if (ConfigController().clientId.value == null) {
       FlutterUI.logAPI.i("Canceled WebSocket connect because clientId is missing");
       return;
     }

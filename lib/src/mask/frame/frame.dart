@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/api/logout_command.dart';
-import '../../service/config/config_service.dart';
+import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../login/default/cards/change_password.dart';
 import 'mobile_frame.dart';
@@ -44,7 +44,7 @@ abstract class Frame extends StatefulWidget {
   void changePassword() {
     IUiService().openDialog(
       pBuilder: (_) => ChangePassword.asDialog(
-        username: ConfigService().getUserInfo()?.userName,
+        username: ConfigController().userInfo.value?.userName,
       ),
       pIsDismissible: true,
     );
@@ -83,7 +83,7 @@ abstract class Frame extends StatefulWidget {
     required FrameBuilder builder,
   }) {
     return ValueListenableBuilder<bool>(
-      valueListenable: ConfigService().getOfflineNotifier(),
+      valueListenable: ConfigController().offline,
       builder: (context, isOffline, child) {
         if (forceMobile) {
           return Frame.getFrame(
@@ -113,7 +113,7 @@ abstract class Frame extends StatefulWidget {
 
   /// Whether the currently used frame is [WebFrame].
   static bool isWebFrame() {
-    return (!ConfigService().isMobileOnly() && kIsWeb) || ConfigService().isWebOnly() || kIsWeb;
+    return (!ConfigController().mobileOnly.value && kIsWeb) || ConfigController().webOnly.value || kIsWeb;
   }
 }
 

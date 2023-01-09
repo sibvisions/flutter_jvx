@@ -19,7 +19,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../config/config_service.dart';
+import '../config/config_controller.dart';
 import 'file_manager.dart';
 
 class FileManagerMobile extends IFileManager {
@@ -149,8 +149,8 @@ class FileManagerMobile extends IFileManager {
 
   /// Checks of version & name are set will return "directory/appName/appVersion"
   String _getSavePath({required String pPath}) {
-    String? appName = ConfigService().getAppName();
-    String? version = ConfigService().getVersion();
+    String? appName = ConfigController().appName.value;
+    String? version = ConfigController().version.value;
     if (appName == null || version == null) {
       throw Exception("App Version/Name was not set while trying to save/read files!");
     }

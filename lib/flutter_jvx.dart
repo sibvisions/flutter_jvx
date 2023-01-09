@@ -66,6 +66,7 @@ export 'src/service/api/impl/default/api_service.dart';
 export 'src/service/api/shared/i_repository.dart';
 export 'src/service/command/i_command_service.dart';
 export 'src/service/command/impl/command_service.dart';
+export 'src/service/config/config_controller.dart';
 export 'src/service/config/config_service.dart';
 export 'src/service/data/i_data_service.dart';
 export 'src/service/data/impl/data_service.dart';

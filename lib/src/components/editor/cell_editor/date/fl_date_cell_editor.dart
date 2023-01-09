@@ -21,7 +21,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_editor_model.dart';
-import '../../../../service/config/config_service.dart';
+import '../../../../service/config/config_controller.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';
 import '../i_cell_editor.dart';
@@ -139,7 +139,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   tz.Location _getLocation() {
-    return tz.getLocation(model.timeZoneCode ?? ConfigService().getTimezone());
+    return tz.getLocation(model.timeZoneCode ?? ConfigController().getTimezone());
   }
 
   DateTime _createDateTime(dynamic value) {
@@ -283,7 +283,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     if (pValue is int) {
       return DateFormat(
         model.dateFormat,
-        model.locale ?? ConfigService().getLanguage(),
+        model.locale ?? ConfigController().getLanguage(),
       ).format(_createDateTime(pValue));
     }
     return pValue?.toString() ?? "";

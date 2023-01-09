@@ -19,7 +19,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
-import '../../service/config/config_service.dart';
+import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/jvx_colors.dart';
 import '../menu/list/list_menu.dart';
@@ -54,7 +54,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     bool isNormalSize = MediaQuery.of(context).size.height > 650;
 
     return Opacity(
-      opacity: ConfigService().getOpacitySideMenu(),
+      opacity: ConfigController().getOpacitySideMenu(),
       child: Drawer(
         backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Theme.of(context).colorScheme.primary
@@ -64,7 +64,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
           left: false,
           right: false,
           child: ValueListenableBuilder<bool>(
-            valueListenable: ConfigService().getOfflineNotifier(),
+            valueListenable: ConfigController().offline,
             builder: (context, isOffline, child) {
               return Column(
                 children: [
@@ -87,7 +87,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Widget _buildDrawerHeader(BuildContext context, bool isNormalSize) {
-    var profileImage = ConfigService().getUserInfo()?.profileImage;
+    var profileImage = ConfigController().userInfo.value?.profileImage;
 
     List<Widget> headerItems;
 
@@ -95,7 +95,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       headerItems = [
         _buildHeaderText(
           flex: 5,
-          text: AppStyle.of(context)!.applicationStyle!['login.title'] ?? ConfigService().getAppName()!,
+          text: AppStyle.of(context)!.applicationStyle!['login.title'] ?? ConfigController().appName.value!,
           context: context,
           fontWeight: FontWeight.bold,
         ),
@@ -113,7 +113,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
               const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
               _buildHeaderText(
                 flex: 2,
-                text: ConfigService().getUserInfo()?.displayName ?? " ",
+                text: ConfigController().userInfo.value?.displayName ?? " ",
                 context: context,
                 fontWeight: FontWeight.bold,
               ),
@@ -125,7 +125,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       headerItems = [
         Flexible(
           child: _buildHeaderText(
-            text: ConfigService().getUserInfo()?.displayName ?? " ",
+            text: ConfigController().userInfo.value?.displayName ?? " ",
             context: context,
             constraints: const BoxConstraints(maxWidth: 120),
             fontWeight: FontWeight.bold,

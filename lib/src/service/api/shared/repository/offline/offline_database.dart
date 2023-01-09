@@ -27,7 +27,7 @@ import '../../../../../model/data/column_definition.dart';
 import '../../../../../model/data/filter_condition.dart';
 import '../../../../../model/response/dal_meta_data_response.dart';
 import '../../../../../util/i_types.dart';
-import '../../../../config/config_service.dart';
+import '../../../../config/config_controller.dart';
 
 /// Manages the offline database, has to be closed with [close].
 ///
@@ -103,7 +103,7 @@ class OfflineDatabase {
   /// Creates offline tables for offline data.
   createTables(List<DalMetaDataResponse> dalMetaData, {bool onlyIfNotExists = false}) {
     return Future.wait([
-      _createStructTables(ConfigService().getAppName()!, dalMetaData),
+      _createStructTables(ConfigController().appName.value!, dalMetaData),
       ...dalMetaData.map((table) async {
         if (onlyIfNotExists && (await tableExists(table.dataProvider))) {
           return Future.value(null);
@@ -150,11 +150,11 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
         })));
   }
 
-  /// Drops all [DalMetaDataResponse.dataProvider] tables and removes all metadata entries from the current app (as from: [ConfigService.getAppName]).
+  /// Drops all [DalMetaDataResponse.dataProvider] tables and removes all metadata entries from the current app (as from: [ConfigController.appName]).
   Future<dynamic> dropTables(List<DalMetaDataResponse> dalMetaData) {
     return Future.wait([
       ...dalMetaData.map((table) => dropTable(table.dataProvider)),
-      _dropStructTables(ConfigService().getAppName()!),
+      _dropStructTables(ConfigController().appName.value!),
     ]);
   }
 
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   /// Retrieves all saved [DalMetaDataResponse]s from [OFFLINE_APPS_TABLE].
   Future<List<DalMetaDataResponse>> getMetaData({String? pDataProvider}) {
-    List<String> whereArgs = [ConfigService().getAppName()!];
+    List<String> whereArgs = [ConfigController().appName.value!];
     if (pDataProvider != null) {
       whereArgs.add(pDataProvider);
     }
@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
     // TODO Check default value
 
-    if (ConfigService().getAppConfig()?.offlineConfig!.checkConstraints ?? true) {
+    if (ConfigController().getAppConfig()?.offlineConfig!.checkConstraints ?? true) {
       if (pColumn.length != null) {
         columnDef.write(' CHECK(length("$pColumnName") <= ${pColumn.length})');
       }

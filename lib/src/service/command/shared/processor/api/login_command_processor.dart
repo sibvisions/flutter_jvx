@@ -19,17 +19,17 @@ import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_login_request.dart';
 import '../../../../api/i_api_service.dart';
-import '../../../../config/config_service.dart';
+import '../../../../config/config_controller.dart';
 import '../../i_command_processor.dart';
 
 class LoginCommandProcessor implements ICommandProcessor<LoginCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LoginCommand command) async {
-    String? clientId = ConfigService().getClientId();
+    String? clientId = ConfigController().clientId.value;
 
     if (clientId != null) {
-      await ConfigService().setUsername(command.userName);
-      await ConfigService().setPassword(command.password);
+      await ConfigController().updateUsername(command.userName);
+      await ConfigController().updatePassword(command.password);
 
       ApiLoginRequest loginRequest = ApiLoginRequest(
         createAuthKey: command.createAuthKey,

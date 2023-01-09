@@ -15,7 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import '../../service/config/config_service.dart';
+import '../../service/config/config_controller.dart';
 import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
 import '../response/dal_meta_data_response.dart';
@@ -113,7 +113,7 @@ class ColumnDefinition {
         label = pJson[ApiObjectProperty.label] ?? "",
         dataTypeIdentifier = pJson[ApiObjectProperty.dataTypeIdentifier] ?? 0,
         width = pJson[ApiObjectProperty.width] != 0
-            ? (pJson[ApiObjectProperty.width] as int).toDouble() * ConfigService().getScaling()
+            ? (pJson[ApiObjectProperty.width] as int).toDouble() * ConfigController().getScaling()
             : null,
         readOnly = pJson[ApiObjectProperty.readOnly] ?? true,
         nullable = pJson[ApiObjectProperty.nullable] ?? true,

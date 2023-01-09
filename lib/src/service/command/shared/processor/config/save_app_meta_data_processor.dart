@@ -23,7 +23,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_app_meta_data_command.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../api/shared/repository/online_api_repository.dart';
-import '../../../../config/config_service.dart';
+import '../../../../config/config_controller.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
@@ -33,18 +33,19 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
-    ConfigService().setClientId(command.metaData.clientId);
-    await ConfigService().setVersion(version);
+    await ConfigController().updateClientId(command.metaData.clientId);
+    await ConfigController().updateVersion(version);
 
-    ConfigService().setApplicationLanguage(command.metaData.langCode);
-    await ConfigService().setApplicationTimeZone(command.metaData.timeZoneCode);
+    await ConfigController().updateApplicationLanguage(command.metaData.langCode);
+    await ConfigController().updateApplicationTimeZone(command.metaData.timeZoneCode);
 
-    ConfigService().setMetaData(command.metaData);
+    await ConfigController().updateMetaData(command.metaData);
 
     bool doLangExits =
-        ConfigService().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/")?.existsSync() ?? false;
+        ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/")?.existsSync() ??
+            false;
     bool doImgExits =
-        ConfigService().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/")?.existsSync() ?? false;
+        ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/")?.existsSync() ?? false;
 
     await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
 
@@ -52,8 +53,8 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
     if (!doLangExits) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
     } else {
-      ConfigService().reloadSupportedLanguages();
-      ConfigService().loadLanguages();
+      ConfigController().reloadSupportedLanguages();
+      ConfigController().loadLanguages();
     }
     if (!doImgExits) {
       commands.add(DownloadImagesCommand(reason: "Resources should be downloaded"));

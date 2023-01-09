@@ -18,14 +18,14 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/application_settings_response.dart';
-import '../../../config/config_service.dart';
+import '../../../config/config_controller.dart';
 import '../api_response_names.dart';
 import '../i_response_processor.dart';
 
 class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSettingsResponse> {
   @override
   List<BaseCommand> processResponse(ApplicationSettingsResponse pResponse, ApiRequest? pRequest) {
-    ConfigService().setApplicationSettings(pResponse);
+    ConfigController().updateApplicationSettings(pResponse);
 
     return [
       SaveComponentsCommand.fromJson(

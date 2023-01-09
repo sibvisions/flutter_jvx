@@ -416,7 +416,7 @@ abstract class FlComponentModel {
     double width = double.parse(split[0]);
     double height = double.parse(split[1]);
 
-    return Size(width, height) * ConfigService().getScaling();
+    return Size(width, height) * ConfigController().getScaling();
   }
 
   void applyCellFormat(CellFormat cellFormat) {

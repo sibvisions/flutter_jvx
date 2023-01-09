@@ -22,7 +22,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_startup_request.dart';
 import '../../../../../util/device_info.dart';
 import '../../../../api/i_api_service.dart';
-import '../../../../config/config_service.dart';
+import '../../../../config/config_controller.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
@@ -30,16 +30,14 @@ import '../../i_command_processor.dart';
 class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
-    ConfigService configService = ConfigService();
-
     if (command.appName != null) {
-      await configService.setAppName(command.appName!);
+      await ConfigController().updateAppName(command.appName!);
     }
     if (command.username != null) {
-      await configService.setUsername(command.username!);
+      await ConfigController().updateUsername(command.username!);
     }
     if (command.password != null) {
-      await configService.setPassword(command.password!);
+      await ConfigController().updatePassword(command.password!);
     }
 
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
@@ -52,17 +50,18 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
       appMode: "full",
-      applicationName: configService.getAppName()!,
-      authKey: configService.getAuthCode(),
-      screenHeight: configService.getPhoneSize()?.height.toInt(),
-      screenWidth: configService.getPhoneSize()?.width.toInt(),
+      applicationName: ConfigController().appName.value!,
+      authKey: ConfigController().authKey.value,
+      screenHeight: ConfigController().getPhoneSize()?.height.toInt(),
+      screenWidth: ConfigController().getPhoneSize()?.width.toInt(),
       readAheadLimit: 100,
-      deviceMode:
-          (kIsWeb && !ConfigService().isMobileOnly()) || ConfigService().isWebOnly() ? "mobileDesktop" : "mobile",
+      deviceMode: (kIsWeb && !ConfigController().mobileOnly.value) || ConfigController().webOnly.value
+          ? "mobileDesktop"
+          : "mobile",
       username: command.username,
       password: command.password,
-      langCode: ConfigService().getUserLanguage() ?? ConfigService().getPlatformLocale(),
-      timeZoneCode: ConfigService().getPlatformTimeZone(),
+      langCode: ConfigController().userLanguage.value ?? ConfigController().getPlatformLocale(),
+      timeZoneCode: ConfigController().getPlatformTimeZone()!,
       technology: deviceInfo.technology,
       osName: deviceInfo.osName,
       osVersion: deviceInfo.osVersion,
@@ -71,7 +70,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
       serverVersion: FlutterUI.supportedServerVersion,
-      startUpParameters: ConfigService().getStartupParameters(),
+      startUpParameters: ConfigController().getStartupParameters(),
     );
 
     return IApiService().sendRequest(startUpRequest);

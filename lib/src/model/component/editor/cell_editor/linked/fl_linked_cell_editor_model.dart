@@ -17,7 +17,7 @@
 import 'package:flutter/animation.dart';
 
 import '../../../../../service/api/shared/api_object_property.dart';
-import '../../../../../service/config/config_service.dart';
+import '../../../../../service/config/config_controller.dart';
 import '../cell_editor_model.dart';
 import 'column_view.dart';
 import 'link_reference.dart';
@@ -166,6 +166,6 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
 
     num width = pJson['width'];
     num height = pJson['height'];
-    return Size(width.toDouble(), height.toDouble()) * ConfigService().getScaling();
+    return Size(width.toDouble(), height.toDouble()) * ConfigController().getScaling();
   }
 }

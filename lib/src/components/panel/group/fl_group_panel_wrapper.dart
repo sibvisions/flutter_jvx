@@ -20,7 +20,7 @@ import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_group_panel_model.dart';
-import '../../../service/config/config_service.dart';
+import '../../../service/config/config_controller.dart';
 import '../../../service/storage/i_storage_service.dart';
 import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
@@ -156,7 +156,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   }
 
   void _createGroupLayout() {
-    ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData, ConfigService().getScaling())!;
+    ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData, ConfigController().getScaling())!;
     layoutData.layout = GroupLayout(
       originalLayout: originalLayout,
       groupHeaderHeight: 0.0,

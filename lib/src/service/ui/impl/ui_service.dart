@@ -35,7 +35,7 @@ import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../util/extensions/string_extensions.dart';
 import '../../command/i_command_service.dart';
-import '../../config/config_service.dart';
+import '../../config/config_controller.dart';
 import '../../data/i_data_service.dart';
 import '../../storage/i_storage_service.dart';
 import '../i_ui_service.dart';
@@ -232,7 +232,7 @@ class UiService implements IUiService {
   ///
   /// We have to deliver it "fresh" because of the offline state change, possible solution, connect with offlineNotifier
   /// ```dart
-  /// ConfigService().getOfflineNotifier().addListener(() {
+  /// ConfigController().getOfflineNotifier().addListener(() {
   ///   _menuNotifier.value = _updateMenuModel(_originalMenuModel);
   /// });
   /// ```
@@ -248,8 +248,8 @@ class UiService implements IUiService {
         menuGroupModels.forEach((menuGroup) =>
             menuGroup.items.removeWhere((menuItem) => menuItem.screenLongName == customMenuItem.screenLongName));
 
-        if ((customScreen.showOnline && !ConfigService().isOffline()) ||
-            (customScreen.showOffline && ConfigService().isOffline())) {
+        if ((customScreen.showOnline && !ConfigController().offline.value) ||
+            (customScreen.showOffline && ConfigController().offline.value)) {
           // Check if group already exists
           MenuGroupModel? menuGroupModel =
               menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem.group);
@@ -511,7 +511,7 @@ class UiService implements IUiService {
     }
 
     if (_hasReplaced(pScreenLongName: pScreenLongName)) {
-      if (ConfigService().isOffline()) {
+      if (ConfigController().offline.value) {
         // Offline + Replace => Beam
         return true;
       } else {

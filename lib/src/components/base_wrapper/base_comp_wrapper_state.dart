@@ -26,7 +26,7 @@ import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
-import '../../service/config/config_service.dart';
+import '../../service/config/config_controller.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import 'base_comp_wrapper_widget.dart';
@@ -125,7 +125,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       left: getLeftForPositioned(),
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
-      child: Opacity(opacity: ConfigService().getOpacityControls(), child: child),
+      child: Opacity(opacity: ConfigController().getOpacityControls(), child: child),
     );
   }
 

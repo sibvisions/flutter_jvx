@@ -18,10 +18,10 @@ import '../../../../../model/command/api/device_status_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_device_status_request.dart';
 import '../../../../api/i_api_service.dart';
-import '../../../../config/config_service.dart';
+import '../../../../config/config_controller.dart';
 import '../../i_command_processor.dart';
 
-/// Calls [IApiService] deviceStatus and [ConfigService] for current clientId
+/// Calls [IApiService] deviceStatus and [ConfigController] for current clientId
 class DeviceStatusCommandProcessor implements ICommandProcessor<DeviceStatusCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -33,8 +33,8 @@ class DeviceStatusCommandProcessor implements ICommandProcessor<DeviceStatusComm
   @override
   Future<List<BaseCommand>> processCommand(DeviceStatusCommand command) async {
     if ((lastSentWidth != command.screenWidth || lastSentHeight != command.screenHeight) &&
-        ConfigService().getClientId() != null &&
-        !ConfigService().isOffline()) {
+        ConfigController().clientId.value != null &&
+        !ConfigController().offline.value) {
       lastSentWidth = command.screenWidth;
       lastSentHeight = command.screenHeight;
 

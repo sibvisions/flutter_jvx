@@ -19,7 +19,7 @@ import 'package:flutter/scheduler.dart';
 
 import '../../../model/component/panel/fl_group_panel_model.dart';
 import '../../../model/response/device_status_response.dart';
-import '../../../service/config/config_service.dart';
+import '../../../service/config/config_controller.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../label/fl_label_widget.dart';
 
@@ -59,7 +59,7 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
         ),
       );
     }
-    LayoutMode layoutMode = ConfigService().getLayoutModeNotifier().value;
+    LayoutMode layoutMode = ConfigController().layoutMode.value;
 
     if (layoutMode == LayoutMode.Mini) {
       return labelWidget;

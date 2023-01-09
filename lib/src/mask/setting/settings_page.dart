@@ -27,7 +27,7 @@ import '../../model/command/api/startup_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
-import '../../service/config/config_service.dart';
+import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../camera/qr_parser.dart';
@@ -82,14 +82,14 @@ class _SettingsPageState extends State<SettingsPage> {
     // Load Version
     appVersionNotifier = ValueNotifier("${FlutterUI.translate("Loading")}...");
     PackageInfo.fromPlatform().then((packageInfo) {
-      int? buildNumber = ConfigService().getAppConfig()?.versionConfig?.buildNumber;
+      int? buildNumber = ConfigController().getAppConfig()?.versionConfig?.buildNumber;
       return appVersionNotifier.value =
           "${packageInfo.version}-${buildNumber != null && buildNumber >= 0 ? buildNumber : packageInfo.buildNumber}";
     });
 
-    appName = ConfigService().getAppName();
-    baseUrl = ConfigService().getBaseUrl();
-    language = ConfigService().getUserLanguage();
+    appName = ConfigController().appName.value;
+    baseUrl = ConfigController().baseUrl.value;
+    language = ConfigController().userLanguage.value;
   }
 
   @override
@@ -210,11 +210,12 @@ class _SettingsPageState extends State<SettingsPage> {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: InkWell(
-        onTap: ConfigService().isOffline() ? () => context.beamBack() : _saveClicked,
+        onTap: ConfigController().offline.value ? () => context.beamBack() : _saveClicked,
         child: SizedBox.shrink(
           child: Center(
             child: Text(
-              FlutterUI.translate(ConfigService().getClientId() != null ? (_changesPending() ? "Save" : "OK") : "Open"),
+              FlutterUI.translate(
+                  ConfigController().clientId.value != null ? (_changesPending() ? "Save" : "OK") : "Open"),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -224,7 +225,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget? _createFAB(BuildContext context) {
-    return !ConfigService().isOffline()
+    return !ConfigController().offline.value
         ? FloatingActionButton(
             elevation: 0.0,
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -242,13 +243,13 @@ class _SettingsPageState extends State<SettingsPage> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _buildApplicationInfo() {
-    if (ConfigService().getAppConfig()?.privacyPolicy != null) {
+    if (ConfigController().getAppConfig()?.privacyPolicy != null) {
       SettingItem privacyPolicy = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.link),
         endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
         title: FlutterUI.translate("Privacy Policy"),
         onPressed: (value) => launchUrl(
-          ConfigService().getAppConfig()!.privacyPolicy!,
+          ConfigController().getAppConfig()!.privacyPolicy!,
           mode: LaunchMode.externalApplication,
         ),
       );
@@ -279,7 +280,7 @@ class _SettingsPageState extends State<SettingsPage> {
       endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
       value: appName ?? "",
       title: appNameTitle,
-      enabled: !ConfigService().isOffline(),
+      enabled: !ConfigController().offline.value,
       onPressed: (value) {
         TextEditingController controller = TextEditingController(text: value);
 
@@ -309,7 +310,7 @@ class _SettingsPageState extends State<SettingsPage> {
         endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
         value: baseUrl ?? "",
         title: urlTitle,
-        enabled: !ConfigService().isOffline(),
+        enabled: !ConfigController().offline.value,
         onPressed: (value) {
           TextEditingController controller = TextEditingController(text: value);
 
@@ -349,9 +350,9 @@ class _SettingsPageState extends State<SettingsPage> {
           });
         });
 
-    var supportedLanguages = ConfigService().getSupportedLanguages().toList();
+    var supportedLanguages = ConfigController().supportedLanguages.value.toList();
     supportedLanguages.insertAll(0, [
-      "${FlutterUI.translate("System")} (${ConfigService().getPlatformLocale()})",
+      "${FlutterUI.translate("System")} (${ConfigController().getPlatformLocale()})",
       "en",
     ]);
 
@@ -401,7 +402,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ThemeMode.dark: FlutterUI.translate("Dark"),
     };
 
-    var theme = ConfigService().getThemePreference();
+    var theme = ConfigController().themePreference.value;
     IconData themeIcon = FontAwesomeIcons.sun;
     if (theme == ThemeMode.light) themeIcon = FontAwesomeIcons.solidSun;
     if (theme == ThemeMode.dark) themeIcon = FontAwesomeIcons.solidMoon;
@@ -417,18 +418,17 @@ class _SettingsPageState extends State<SettingsPage> {
           adapter: PickerDataAdapter<String>(
             pickerdata: ThemeMode.values.map((e) => themeMapping[e]).toList(),
           ),
-          onConfirm: (Picker picker, List<int> values) {
+          onConfirm: (Picker picker, List<int> values) async {
             if (values.isNotEmpty) {
               theme = themeMapping.entries.firstWhere((entry) => entry.value == picker.getSelectedValues()[0]).key;
-              ConfigService().setThemePreference(theme);
-              FlutterUIState.of(context)?.changedTheme();
+              await ConfigController().updateThemePreference(theme);
             }
           },
         ).showModal(context, themeData: Theme.of(context));
       },
     );
 
-    var resolution = ConfigService().getPictureResolution() ?? resolutions.last;
+    var resolution = ConfigController().pictureResolution.value ?? resolutions.last;
     SettingItem pictureSetting = _buildPickerItem<int>(
       frontIcon: FontAwesomeIcons.image,
       title: "Picture Size",
@@ -441,10 +441,10 @@ class _SettingsPageState extends State<SettingsPage> {
             // Using data breaks theme styling!
             pickerdata: resolutions.map((e) => "$e px").toList(),
           ),
-          onConfirm: (Picker picker, List<int> values) {
+          onConfirm: (Picker picker, List<int> values) async {
             if (values.isNotEmpty) {
               resolution = int.parse((picker.getSelectedValues()[0] as String).split(" ")[0]);
-              ConfigService().setPictureResolution(resolution);
+              await ConfigController().updatePictureResolution(resolution);
               setState(() {});
             }
           },
@@ -519,13 +519,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
-      value: ConfigService().getAppConfig()?.versionConfig?.commit ?? "",
+      value: ConfigController().getAppConfig()?.versionConfig?.commit ?? "",
       title: FlutterUI.translate("RCS"),
     );
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
-      value: ConfigService().getAppConfig()?.versionConfig?.buildDate ?? "",
+      value: ConfigController().getAppConfig()?.versionConfig?.buildDate ?? "",
       title: FlutterUI.translate("Build date"),
     );
 
@@ -618,19 +618,19 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   bool _changesPending() {
-    return appName != ConfigService().getAppName() ||
-        baseUrl != ConfigService().getBaseUrl() ||
-        language != ConfigService().getUserLanguage();
+    return appName != ConfigController().appName.value ||
+        baseUrl != ConfigController().baseUrl.value ||
+        language != ConfigController().userLanguage.value;
   }
 
   /// Will send a [StartupCommand] with current values
   Future<void> _saveClicked() async {
     if (appName?.isNotEmpty == true && baseUrl?.isNotEmpty == true) {
       try {
-        if (!context.canBeamBack || ConfigService().getClientId() == null || _changesPending()) {
-          await ConfigService().setAppName(appName);
-          await ConfigService().setBaseUrl(baseUrl);
-          await ConfigService().setUserLanguage(language);
+        if (!context.canBeamBack || ConfigController().clientId.value == null || _changesPending()) {
+          await ConfigController().updateAppName(appName);
+          await ConfigController().updateBaseUrl(baseUrl);
+          await ConfigController().updateUserLanguage(language);
 
           FlutterUIState.of(FlutterUI.getCurrentContext())?.restart(
             username: username,

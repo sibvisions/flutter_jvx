@@ -24,7 +24,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../service/api/shared/api_object_property.dart';
-import '../../../service/config/config_service.dart';
+import '../../../service/config/config_controller.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
@@ -116,7 +116,7 @@ class ModernLogin extends StatelessWidget implements Login {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 28.0),
                               child: Text(
-                                loginTitle ?? ConfigService().getAppName()!.toUpperCase(),
+                                loginTitle ?? ConfigController().appName.value!.toUpperCase(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,

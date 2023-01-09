@@ -22,7 +22,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:logger/logger.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -51,6 +50,7 @@ import 'service/api/shared/repository/offline_api_repository.dart';
 import 'service/api/shared/repository/online_api_repository.dart';
 import 'service/command/i_command_service.dart';
 import 'service/command/impl/command_service.dart';
+import 'service/config/config_controller.dart';
 import 'service/config/config_service.dart';
 import 'service/data/i_data_service.dart';
 import 'service/data/impl/data_service.dart';
@@ -174,7 +174,7 @@ class FlutterUI extends StatefulWidget {
 
   /// Translates any text through the translation files loaded by the application.
   static String translate(String? pText) {
-    return ConfigService().translateText(pText ?? "");
+    return ConfigController().translateText(pText ?? "");
   }
 
   static BeamerDelegate getBeamerDelegate() {
@@ -226,11 +226,12 @@ class FlutterUI extends StatefulWidget {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // Config
-    ConfigService configService = ConfigService.create(
-      sharedPrefs: await SharedPreferences.getInstance(),
+    ConfigController configController = ConfigController.create(
+      configService: ConfigService.create(sharedPrefs: await SharedPreferences.getInstance()),
       fileManager: await IFileManager.getFileManager(),
     );
-    services.registerSingleton(configService);
+    await configController.loadConfig();
+    services.registerSingleton(configController);
 
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService.create() : await IsolateLayoutService.create();
@@ -261,33 +262,33 @@ class FlutterUI extends StatefulWidget {
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
     String? appName = Uri.base.queryParameters['appName'];
     if (appName != null) {
-      await configService.setAppName(appName);
+      await configController.updateAppName(appName);
     }
-    if (configService.getAppName() != null) {
+    if (configController.appName.value != null) {
       String? baseUrl = Uri.base.queryParameters['baseUrl'];
       if (baseUrl != null) {
-        await configService.setBaseUrl(baseUrl);
+        await configController.updateBaseUrl(baseUrl);
       }
       String? username = Uri.base.queryParameters['username'];
       if (username != null) {
-        await configService.setUsername(username);
+        await configController.updateUsername(username);
       }
       String? password = Uri.base.queryParameters['password'];
       if (password != null) {
-        await configService.setPassword(password);
+        await configController.updatePassword(password);
       }
       String? language = Uri.base.queryParameters['language'];
       if (language != null) {
-        await configService.setUserLanguage(language == ConfigService().getPlatformLocale() ? null : language);
+        await configController.updateUserLanguage(language == ConfigController().getPlatformLocale() ? null : language);
       }
     }
     String? mobileOnly = Uri.base.queryParameters['mobileOnly'];
     if (mobileOnly != null) {
-      configService.setMobileOnly(mobileOnly == "true");
+      await configController.updateMobileOnly(mobileOnly == "true");
     }
     String? webOnly = Uri.base.queryParameters['webOnly'];
     if (webOnly != null) {
-      configService.setWebOnly(webOnly == "true");
+      await configController.updateWebOnly(webOnly == "true");
     }
 
     packageInfo = await PackageInfo.fromPlatform();
@@ -364,15 +365,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     List<Locale> supportedLocales = {
-      ConfigService().getApplicationLanguage(),
-      ConfigService().getPlatformLocale(),
-      ...ConfigService().getSupportedLanguages(),
+      ConfigController().applicationLanguage.value,
+      ConfigController().getPlatformLocale(),
+      ...ConfigController().supportedLanguages.value,
       "en",
     }.whereNotNull().map((e) => Locale(e)).toList();
 
     return MaterialApp.router(
       theme: themeData,
-      locale: Locale(ConfigService().getLanguage()),
+      locale: Locale(ConfigController().getLanguage()),
       supportedLocales: supportedLocales,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       routeInformationParser: BeamerParser(),
@@ -472,7 +473,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (lastState != null) {
       if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
         // App was resumed from a paused state (Permission overlay is not paused)
-        if (ConfigService().getClientId() != null && !ConfigService().isOffline()) {
+        if (ConfigController().clientId.value != null && !ConfigController().offline.value) {
           ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"));
         }
       }
@@ -489,7 +490,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   void changedTheme() {
-    Map<String, String> styleMap = ConfigService().getAppStyle();
+    Map<String, String> styleMap = ConfigController().applicationStyle.value!;
 
     Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
     styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
@@ -498,7 +499,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);
 
       Brightness selectedBrightness;
-      switch (ConfigService().getThemePreference()) {
+      switch (ConfigController().themePreference.value) {
         case ThemeMode.light:
           selectedBrightness = Brightness.light;
           break;
@@ -593,10 +594,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     setState(() {});
   }
 
-  void changeLanguage(String pLanguage) {
-    setState(() {});
-  }
-
   void changedImages() {
     setState(() {});
   }
@@ -611,7 +608,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   Future<void> initApp() async {
     HttpOverrides.global = MyHttpOverrides();
 
-    ConfigService configService = ConfigService();
+    ConfigController configController = ConfigController();
     IUiService uiService = IUiService();
     IApiService apiService = IApiService();
 
@@ -633,47 +630,41 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     AppConfig appConfig =
         const AppConfig.empty().merge(widget.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
 
-    await configService.setAppConfig(appConfig, devConfig != null);
+    await configController.setAppConfig(appConfig, devConfig != null);
 
     if (appConfig.serverConfig!.baseUrl != null) {
       var baseUri = Uri.parse(appConfig.serverConfig!.baseUrl!);
       //If no https on a remote host, you have to use localhost because of secure cookies
       if (kIsWeb && kDebugMode && baseUri.host != "localhost" && !baseUri.isScheme("https")) {
-        await configService.setBaseUrl(baseUri.replace(host: "localhost").toString());
+        await configController.updateBaseUrl(baseUri.replace(host: "localhost").toString());
       }
     }
 
     //Register callbacks
-    configService.disposeStyleCallbacks();
-    configService.registerStyleCallback(changedTheme);
-    configService.disposeLanguageCallbacks();
-    configService.registerLanguageCallback(changeLanguage);
-    configService.disposeImagesCallbacks();
-    configService.registerImagesCallback(changedImages);
+    configController.disposeLanguageCallbacks();
+    configController.registerLanguageCallback((pLanguage) => setState(() {}));
+    configController.disposeImagesCallbacks();
+    configController.registerImagesCallback(changedImages);
 
     //Update style to reflect web colors for theme
-    configService.getLayoutModeNotifier().addListener(() {
-      changedTheme();
-      setState(() {});
-    });
+    configController.layoutMode.addListener(() => changedTheme());
+    configController.themePreference.addListener(() => changedTheme());
+    configController.applicationStyle.addListener(() => changedTheme());
+    configController.applicationSettings.addListener(() => setState(() {}));
 
-    //Init saved app style
-    var appStyle = configService.getAppStyle();
-    if (appStyle.isNotEmpty) {
-      await configService.setAppStyle(appStyle);
-    }
+    changedTheme();
 
-    if (configService.getFileManager().isSatisfied()) {
+    if (configController.getFileManager().isSatisfied()) {
       // Only try to load if FileManager is available
-      configService.reloadSupportedLanguages();
-      configService.loadLanguages();
+      configController.reloadSupportedLanguages();
+      configController.loadLanguages();
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // API init
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    var repository = configService.isOffline() ? OfflineApiRepository() : OnlineApiRepository();
+    var repository = configController.offline.value ? OfflineApiRepository() : OnlineApiRepository();
     await repository.start();
     apiService.setRepository(repository);
   }
@@ -683,19 +674,16 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     String? username,
     String? password,
   }) async {
-    ConfigService configService = ConfigService();
+    ConfigController configController = ConfigController();
     ICommandService commandService = ICommandService();
     IUiService uiService = IUiService();
 
-    // Update native timezone
-    configService.setLocalTimeZone(await FlutterNativeTimezone.getLocalTimezone());
-
-    if (configService.getAppName() == null || configService.getBaseUrl() == null) {
+    if (configController.appName.value == null || configController.baseUrl.value == null) {
       uiService.routeToSettings(pReplaceRoute: true);
       return;
     }
 
-    if (configService.isOffline()) {
+    if (configController.offline.value) {
       uiService.routeToMenu(pReplaceRoute: true);
       return;
     }
@@ -704,8 +692,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     await commandService.sendCommand(StartupCommand(
       reason: "InitApp",
       appName: appName,
-      username: username ?? configService.getAppConfig()!.serverConfig!.username,
-      password: password ?? configService.getAppConfig()!.serverConfig!.password,
+      username: username ?? configController.getAppConfig()!.serverConfig!.username,
+      password: password ?? configController.getAppConfig()!.serverConfig!.password,
     ));
   }
 

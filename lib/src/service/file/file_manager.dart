@@ -18,7 +18,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-import '../config/config_service.dart';
+import '../config/config_controller.dart';
 import 'file_manager_mobile.dart';
 import 'file_manager_web.dart';
 
@@ -34,7 +34,7 @@ abstract class IFileManager {
 
   /// Returns if all requirements are set to successfully access files
   bool isSatisfied() {
-    return ConfigService().getAppName() != null && ConfigService().getVersion() != null;
+    return ConfigController().appName.value != null && ConfigController().version.value != null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -41,7 +41,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   void initState() {
     super.initState();
 
-    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData, ConfigService().getScaling());
+    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData, ConfigController().getScaling());
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
@@ -51,7 +51,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
   @override
   modelUpdated() {
-    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData, ConfigService().getScaling());
+    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData, ConfigController().getScaling());
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
