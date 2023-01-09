@@ -573,8 +573,6 @@ class ConfigController {
   /// Sets the [ApplicationSettingsResponse].
   Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) async {
     _applicationSettings.value = pApplicationSettings;
-    // Trigger setState
-    _callbacks['style']?.forEach((element) => element.call());
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
