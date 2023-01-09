@@ -60,7 +60,7 @@ class _ManualCardState extends State<ManualCard> {
 
   @override
   Widget build(BuildContext context) {
-    String? loginTitle = AppStyle.of(context)!.applicationStyle!['login.title'];
+    String? loginTitle = AppStyle.of(context)!.applicationStyle['login.title'];
 
     showRememberMe = (ConfigController().metaData.value?.rememberMeEnabled ?? false) ||
         (ConfigController().getAppConfig()?.uiConfig!.showRememberMe ?? false);

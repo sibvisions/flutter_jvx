@@ -382,7 +382,7 @@ class ConfigController {
   /// See also:
   /// * [AppStyle]
   /// * [updateApplicationStyle]
-  ValueNotifier<Map<String, String>?> get applicationStyle => _applicationStyle;
+  ValueNotifier<Map<String, String>> get applicationStyle => _applicationStyle;
 
   /// Sets the app style.
   ///

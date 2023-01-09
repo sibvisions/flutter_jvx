@@ -50,7 +50,7 @@ class ModernLogin extends StatelessWidget implements Login {
 
   @override
   Widget build(BuildContext context) {
-    var appStyle = AppStyle.of(context)!.applicationStyle!;
+    var appStyle = AppStyle.of(context)!.applicationStyle;
     String? loginLogo = appStyle['login.logo'];
     String? loginTitle = appStyle['login.title'];
 

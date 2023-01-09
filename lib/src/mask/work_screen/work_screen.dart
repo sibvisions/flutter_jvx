@@ -307,7 +307,7 @@ class WorkScreenState extends State<WorkScreen> {
     Widget? footer,
     bool isCustomScreen,
   ) {
-    var appStyle = AppStyle.of(context)!.applicationStyle!;
+    var appStyle = AppStyle.of(context)!.applicationStyle;
     Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
     String? backgroundImageString = appStyle['desktop.icon'];
 

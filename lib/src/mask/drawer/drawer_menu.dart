@@ -95,7 +95,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       headerItems = [
         _buildHeaderText(
           flex: 5,
-          text: AppStyle.of(context)!.applicationStyle!['login.title'] ?? ConfigController().appName.value!,
+          text: AppStyle.of(context)!.applicationStyle['login.title'] ?? ConfigController().appName.value!,
           context: context,
           fontWeight: FontWeight.bold,
         ),

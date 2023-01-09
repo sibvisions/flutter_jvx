@@ -110,7 +110,7 @@ class WebFrameState extends FrameState {
   }) {
     var profileImage = ConfigController().userInfo.value?.profileImage;
     var appStyle = AppStyle.of(context)!;
-    var applicationStyle = appStyle.applicationStyle!;
+    var applicationStyle = appStyle.applicationStyle;
     Color? topMenuColor = ParseUtil.parseHexColor(applicationStyle['web.topmenu.color']);
     Color? iconColor = ParseUtil.parseHexColor(applicationStyle['web.topmenu.iconColor']);
     String? imagePath = applicationStyle['web.topmenu.image'];

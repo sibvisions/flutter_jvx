@@ -43,7 +43,7 @@ class DefaultLogin extends StatelessWidget implements Login {
 
   @override
   Widget build(BuildContext context) {
-    var appStyle = AppStyle.of(context)!.applicationStyle!;
+    var appStyle = AppStyle.of(context)!.applicationStyle;
     String? loginLogo = appStyle['login.logo'];
 
     bool inverseColor = ParseUtil.parseBool(appStyle['login.inverseColor']) ?? false;

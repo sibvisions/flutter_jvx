@@ -491,7 +491,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   void changedTheme() {
-    Map<String, String> styleMap = ConfigController().applicationStyle.value!;
+    Map<String, String> styleMap = ConfigController().applicationStyle.value;
 
     Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
     styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);

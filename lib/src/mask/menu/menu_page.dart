@@ -115,7 +115,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               ));
             }
 
-            var appStyle = AppStyle.of(context)!.applicationStyle!;
+            var appStyle = AppStyle.of(context)!.applicationStyle;
             Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
             String? backgroundImage = appStyle['desktop.icon'];
 
