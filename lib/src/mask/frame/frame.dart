@@ -37,6 +37,30 @@ abstract class Frame extends StatefulWidget {
     required this.isOffline,
   });
 
+  /// Finds the [FrameState] from the closest instance of this class that
+  /// encloses the given context.
+  static FrameState of(BuildContext context) {
+    final FrameState? result = maybeOf(context);
+    if (result != null) {
+      return result;
+    }
+    throw FlutterError.fromParts([
+      ErrorSummary(
+        "FlutterUI.of() called with a context that does not contain a FlutterUI.",
+      ),
+      context.describeElement("The context used was"),
+    ]);
+  }
+
+  /// Finds the [FrameState] from the closest instance of this class that
+  /// encloses the given context.
+  ///
+  /// If no instance of this class encloses the given context, will return null.
+  /// To throw an exception instead, use [of] instead of this function.
+  static FrameState? maybeOf(BuildContext? context) {
+    return context?.findAncestorStateOfType<FrameState>();
+  }
+
   void openSettings(BuildContext context) {
     IUiService().routeToSettings();
   }
@@ -118,8 +142,6 @@ abstract class Frame extends StatefulWidget {
 }
 
 abstract class FrameState extends State<Frame> {
-  static FrameState? of(BuildContext context) => context.findAncestorStateOfType<FrameState>();
-
   @override
   Widget build(BuildContext context) => PageStorage(
         bucket: pageStorageBucket,

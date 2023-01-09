@@ -27,7 +27,20 @@ class LoadingBar extends InheritedWidget {
     required super.child,
   });
 
-  static LoadingBar? of(BuildContext? context) => context?.dependOnInheritedWidgetOfExactType<LoadingBar>();
+  /// The closest instance of this class that encloses the given context.
+  static LoadingBar of(BuildContext context) {
+    final LoadingBar? result = maybeOf(context);
+    assert(result != null, "No LoadingBar found in context");
+    return result!;
+  }
+
+  /// The closest instance of this class that encloses the given context.
+  ///
+  /// If no instance of this class encloses the given context, will return null.
+  /// To throw an exception instead, use [of] instead of this function.
+  static LoadingBar? maybeOf(BuildContext? context) {
+    return context?.dependOnInheritedWidgetOfExactType<LoadingBar>();
+  }
 
   @override
   bool updateShouldNotify(covariant LoadingBar oldWidget) => show != oldWidget.show;
@@ -36,7 +49,7 @@ class LoadingBar extends InheritedWidget {
     return Builder(builder: (context) {
       return Stack(children: [
         child,
-        if (LoadingBar.of(context)?.show ?? false)
+        if (LoadingBar.maybeOf(context)?.show ?? false)
           LinearProgressIndicator(
             minHeight: 5,
             color: JVxColors.toggleColor(Theme.of(context).colorScheme.primary),

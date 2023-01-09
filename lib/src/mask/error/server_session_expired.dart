@@ -66,6 +66,6 @@ class ServerSessionExpired extends FrameDialog {
 
   void _restartApp() {
     IUiService().closeFrameDialog(this);
-    FlutterUIState.of(FlutterUI.getCurrentContext())?.restart();
+    FlutterUI.of(FlutterUI.getCurrentContext()!).restart();
   }
 }

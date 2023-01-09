@@ -169,8 +169,29 @@ class FlutterUI extends StatefulWidget {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Gets the [FlutterUI] widget.
-  static FlutterUI? of(BuildContext context) => context.findAncestorWidgetOfExactType<FlutterUI>();
+  /// Finds the [FlutterUIState] from the closest instance of this class that
+  /// encloses the given context.
+  static FlutterUIState of(BuildContext context) {
+    final FlutterUIState? result = maybeOf(context);
+    if (result != null) {
+      return result;
+    }
+    throw FlutterError.fromParts([
+      ErrorSummary(
+        "FlutterUI.of() called with a context that does not contain a FlutterUI.",
+      ),
+      context.describeElement("The context used was"),
+    ]);
+  }
+
+  /// Finds the [FlutterUIState] from the closest instance of this class that
+  /// encloses the given context.
+  ///
+  /// If no instance of this class encloses the given context, will return null.
+  /// To throw an exception instead, use [of] instead of this function.
+  static FlutterUIState? maybeOf(BuildContext? context) {
+    return context?.findAncestorStateOfType<FlutterUIState>();
+  }
 
   /// Translates any text through the translation files loaded by the application.
   static String translate(String? pText) {
@@ -309,9 +330,6 @@ PageStorageBucket pageStorageBucket = PageStorageBucket();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   AppLifecycleState? lastState;
-
-  /// Gets the [FlutterUIState] widget.
-  static FlutterUIState? of(BuildContext? context) => context?.findAncestorStateOfType();
 
   ThemeData themeData = ThemeData(
     backgroundColor: Colors.grey.shade50,

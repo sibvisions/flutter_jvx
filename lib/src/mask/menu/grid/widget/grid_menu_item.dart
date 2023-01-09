@@ -53,7 +53,7 @@ class GridMenuItem extends StatelessWidget {
       child: Ink(
         color: Theme.of(context)
             .primaryColor
-            .withOpacity(double.parse(AppStyle.of(context)!.applicationStyle['opacity.menu'] ?? "1")),
+            .withOpacity(double.parse(AppStyle.of(context).applicationStyle['opacity.menu'] ?? "1")),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

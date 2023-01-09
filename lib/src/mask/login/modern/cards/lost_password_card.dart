@@ -148,7 +148,9 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                                 ),
                               },
                               onPressed: () => _onResetPasswordPressed(),
-                              state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
+                              state: LoadingBar.maybeOf(context)?.show ?? false
+                                  ? ButtonState.loading
+                                  : progressButtonState,
                             ),
                           ),
                         ],

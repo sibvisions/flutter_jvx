@@ -109,7 +109,7 @@ class WebFrameState extends FrameState {
     List<Widget>? actions,
   }) {
     var profileImage = ConfigController().userInfo.value?.profileImage;
-    var appStyle = AppStyle.of(context)!;
+    var appStyle = AppStyle.of(context);
     var applicationStyle = appStyle.applicationStyle;
     Color? topMenuColor = ParseUtil.parseHexColor(applicationStyle['web.topmenu.color']);
     Color? iconColor = ParseUtil.parseHexColor(applicationStyle['web.topmenu.iconColor']);
@@ -305,7 +305,20 @@ class InheritedWebFrame extends InheritedFrame {
     required super.child,
   });
 
-  static InheritedWebFrame of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<InheritedWebFrame>()!;
+  /// The closest instance of this class that encloses the given context.
+  static InheritedWebFrame of(BuildContext context) {
+    final InheritedWebFrame? result = maybeOf(context);
+    assert(result != null, "No InheritedWebFrame found in context");
+    return result!;
+  }
+
+  /// The closest instance of this class that encloses the given context.
+  ///
+  /// If no instance of this class encloses the given context, will return null.
+  /// To throw an exception instead, use [of] instead of this function.
+  static InheritedWebFrame? maybeOf(BuildContext? context) {
+    return context?.dependOnInheritedWidgetOfExactType<InheritedWebFrame>();
+  }
 
   @override
   bool updateShouldNotify(covariant InheritedWebFrame oldWidget) {

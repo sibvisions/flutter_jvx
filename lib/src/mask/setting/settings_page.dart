@@ -118,7 +118,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     body = LoadingBar.wrapLoadingBar(body);
 
-    bool loading = LoadingBar.of(context)?.show ?? false;
+    bool loading = LoadingBar.maybeOf(context)?.show ?? false;
 
     return WillPopScope(
       onWillPop: () async => !loading,
@@ -632,7 +632,7 @@ class _SettingsPageState extends State<SettingsPage> {
           await ConfigController().updateBaseUrl(baseUrl);
           await ConfigController().updateUserLanguage(language);
 
-          FlutterUIState.of(FlutterUI.getCurrentContext())?.restart(
+          FlutterUI.of(FlutterUI.getCurrentContext()!).restart(
             username: username,
             password: password,
           );

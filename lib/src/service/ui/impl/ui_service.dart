@@ -545,19 +545,19 @@ class UiService implements IUiService {
     required MessageDialog pDialog,
   }) {
     _activeFrames[componentId] = pDialog;
-    JVxOverlayState.of(FlutterUI.getCurrentContext()!)?.refreshFrames();
+    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshFrames();
   }
 
   @override
   void closeFrame({required String componentId}) {
     _activeFrames.remove(componentId);
-    JVxOverlayState.of(FlutterUI.getCurrentContext()!)?.refreshFrames();
+    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshFrames();
   }
 
   @override
   void closeFrames() {
     _activeFrames.clear();
-    JVxOverlayState.of(FlutterUI.getCurrentContext()!)?.refreshFrames();
+    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshFrames();
   }
 
   @override
@@ -568,21 +568,21 @@ class UiService implements IUiService {
   @override
   void showFrameDialog(FrameDialog pDialog) {
     _activeDialogs.add(pDialog);
-    JVxOverlayState.of(FlutterUI.getCurrentContext())?.refreshDialogs();
+    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialog(FrameDialog pDialog) {
     pDialog.onClose();
     _activeDialogs.remove(pDialog);
-    JVxOverlayState.of(FlutterUI.getCurrentContext())?.refreshDialogs();
+    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
   @override
   void closeFrameDialogs() {
     _activeDialogs.forEach((dialog) => dialog.onClose());
     _activeDialogs.clear();
-    JVxOverlayState.of(FlutterUI.getCurrentContext())?.refreshDialogs();
+    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
   @override

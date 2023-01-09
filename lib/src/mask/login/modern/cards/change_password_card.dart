@@ -288,7 +288,9 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                                 ),
                               },
                               onPressed: () => _onChangePasswordPressed(),
-                              state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
+                              state: LoadingBar.maybeOf(context)?.show ?? false
+                                  ? ButtonState.loading
+                                  : progressButtonState,
                             ),
                           ),
                         ],

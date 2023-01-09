@@ -37,8 +37,6 @@ class WebMenu extends StatefulWidget {
     required this.inDrawer,
   });
 
-  static WebMenu? maybeOf(BuildContext? context) => context?.findAncestorWidgetOfExactType<WebMenu>();
-
   @override
   State<WebMenu> createState() => _WebMenuState();
 }
@@ -99,7 +97,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
   }
 
   Widget _buildMenu(BuildContext context, LayoutMode layoutMode) {
-    var appStyle = AppStyle.of(context)!.applicationStyle;
+    var appStyle = AppStyle.of(context).applicationStyle;
     Color? tileColor = ParseUtil.parseHexColor(appStyle['web.sidemenu.color']) ?? const Color(0xFF3d3d3d);
     Color? groupTextColor = ParseUtil.parseHexColor(appStyle['web.sidemenu.groupColor']) ?? Colors.white;
     Color? textColor = ParseUtil.parseHexColor(appStyle['web.sidemenu.textColor']) ?? Colors.white;

@@ -60,7 +60,7 @@ class _ManualCardState extends State<ManualCard> {
 
   @override
   Widget build(BuildContext context) {
-    String? loginTitle = AppStyle.of(context)!.applicationStyle['login.title'];
+    String? loginTitle = AppStyle.of(context).applicationStyle['login.title'];
 
     showRememberMe = (ConfigController().metaData.value?.rememberMeEnabled ?? false) ||
         (ConfigController().getAppConfig()?.uiConfig!.showRememberMe ?? false);
@@ -144,7 +144,7 @@ class _ManualCardState extends State<ManualCard> {
             ),
           },
           onPressed: _onLoginPressed,
-          state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
+          state: LoadingBar.maybeOf(context)?.show ?? false ? ButtonState.loading : progressButtonState,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         if (ConfigController().metaData.value?.lostPasswordEnabled == true)

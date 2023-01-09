@@ -35,10 +35,10 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var widget = FlutterUI.of(context)?.loginBuilder?.call(context, loginMode);
+    var widget = FlutterUI.of(context).widget.loginBuilder?.call(context, loginMode);
     if (widget != null) return widget;
 
-    var appStyle = AppStyle.of(context)!.applicationStyle;
+    var appStyle = AppStyle.of(context).applicationStyle;
     String? loginLayout = appStyle['login.layout'];
 
     if (loginLayout == "modern") {

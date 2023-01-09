@@ -123,7 +123,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     Color? fillColor = model.background;
 
     if (fillColor == null && isMandatory) {
-      ApplicationSettingsResponse applicationSettings = AppStyle.of(context)!.applicationSettings;
+      ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
       if (Theme.of(context).brightness == Brightness.light) {
         fillColor = applicationSettings.colors?.mandatoryBackground;
       } else {

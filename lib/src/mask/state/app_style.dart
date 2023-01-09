@@ -30,7 +30,20 @@ class AppStyle extends InheritedWidget {
     required super.child,
   });
 
-  static AppStyle? of(BuildContext? context) => context?.dependOnInheritedWidgetOfExactType<AppStyle>();
+  /// The closest instance of this class that encloses the given context.
+  static AppStyle of(BuildContext context) {
+    final AppStyle? result = maybeOf(context);
+    assert(result != null, "No AppStyle found in context");
+    return result!;
+  }
+
+  /// The closest instance of this class that encloses the given context.
+  ///
+  /// If no instance of this class encloses the given context, will return null.
+  /// To throw an exception instead, use [of] instead of this function.
+  static AppStyle? maybeOf(BuildContext? context) {
+    return context?.dependOnInheritedWidgetOfExactType<AppStyle>();
+  }
 
   @override
   bool updateShouldNotify(covariant AppStyle oldWidget) =>

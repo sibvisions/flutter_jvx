@@ -33,6 +33,30 @@ class JVxOverlay extends StatefulWidget {
     required this.child,
   });
 
+  /// Finds the [JVxOverlayState] from the closest instance of this class that
+  /// encloses the given context.
+  static JVxOverlayState of(BuildContext context) {
+    final JVxOverlayState? result = maybeOf(context);
+    if (result != null) {
+      return result;
+    }
+    throw FlutterError.fromParts([
+      ErrorSummary(
+        "FlutterUI.of() called with a context that does not contain a FlutterUI.",
+      ),
+      context.describeElement("The context used was"),
+    ]);
+  }
+
+  /// Finds the [JVxOverlayState] from the closest instance of this class that
+  /// encloses the given context.
+  ///
+  /// If no instance of this class encloses the given context, will return null.
+  /// To throw an exception instead, use [of] instead of this function.
+  static JVxOverlayState? maybeOf(BuildContext? context) {
+    return context?.findAncestorStateOfType<JVxOverlayState>();
+  }
+
   @override
   State<JVxOverlay> createState() => JVxOverlayState();
 }
@@ -47,8 +71,6 @@ class JVxOverlayState extends State<JVxOverlay> {
   bool loading = false;
   Future? _loadingDelayFuture;
   bool forceDisableBarrier = false;
-
-  static JVxOverlayState? of(BuildContext? context) => context?.findAncestorStateOfType<JVxOverlayState>();
 
   void refreshFrames() {
     framesKey.currentState?.setState(() {});

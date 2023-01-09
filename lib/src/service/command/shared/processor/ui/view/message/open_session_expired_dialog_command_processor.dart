@@ -32,7 +32,7 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
     if (!ConfigController().getAppConfig()!.autoRestartOnSessionExpired!) {
       IUiService().showFrameDialog(ServerSessionExpired(command: command));
     } else {
-      FlutterUIState.of(FlutterUI.getCurrentContext())!.restart();
+      FlutterUI.maybeOf(FlutterUI.getCurrentContext())?.restart();
     }
 
     return [];

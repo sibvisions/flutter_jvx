@@ -237,7 +237,9 @@ class _ManualCardState extends State<ManualCard> {
                                 ),
                               },
                               onPressed: () => _onLoginPressed(),
-                              state: LoadingBar.of(context)?.show ?? false ? ButtonState.loading : progressButtonState,
+                              state: LoadingBar.maybeOf(context)?.show ?? false
+                                  ? ButtonState.loading
+                                  : progressButtonState,
                             ),
                           ),
                         ],

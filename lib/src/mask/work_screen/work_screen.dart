@@ -199,14 +199,14 @@ class WorkScreenState extends State<WorkScreen> {
           ),
         );
 
-        FrameState? frame = FrameState.of(context);
+        FrameState? frame = Frame.maybeOf(context);
         if (frame != null) {
           actions.addAll(frame.getActions());
         }
 
         return WillPopScope(
           onWillPop: () async {
-            if (isNavigating || (LoadingBar.of(context)?.show ?? false)) {
+            if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
               return false;
             }
 
@@ -307,7 +307,7 @@ class WorkScreenState extends State<WorkScreen> {
     Widget? footer,
     bool isCustomScreen,
   ) {
-    var appStyle = AppStyle.of(context)!.applicationStyle;
+    var appStyle = AppStyle.of(context).applicationStyle;
     Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
     String? backgroundImageString = appStyle['desktop.icon'];
 
