@@ -321,7 +321,7 @@ abstract class ParseUtil {
     return string;
   }
 
-  static String? isNotEmptyOrNull(String? value) {
-    return value?.isNotEmpty ?? false ? value : null;
+  static String? ensureNullOnEmpty(String? value) {
+    return value == "" ? null : value;
   }
 }

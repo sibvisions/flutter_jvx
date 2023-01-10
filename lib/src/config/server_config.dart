@@ -41,10 +41,10 @@ class ServerConfig {
 
   ServerConfig.fromJson(Map<String, dynamic> json)
       : this(
-          baseUrl: ParseUtil.isNotEmptyOrNull(json['baseUrl']),
-          appName: ParseUtil.isNotEmptyOrNull(json['appName']),
-          username: ParseUtil.isNotEmptyOrNull(json['username']),
-          password: ParseUtil.isNotEmptyOrNull(json['password']),
+          baseUrl: ParseUtil.ensureNullOnEmpty(json['baseUrl']),
+          appName: ParseUtil.ensureNullOnEmpty(json['appName']),
+          username: ParseUtil.ensureNullOnEmpty(json['username']),
+          password: ParseUtil.ensureNullOnEmpty(json['password']),
         );
 
   ServerConfig merge(ServerConfig? other) {
