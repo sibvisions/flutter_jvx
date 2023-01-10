@@ -73,7 +73,7 @@ class QRParser {
       }
     }
 
-    if (json.containsKey(QRParser.appName) && json.containsKey(QRParser.url)) {
+    if (json.isNotEmpty) {
       return QRAppCode.fromJson(json);
     }
     throw const FormatException("Invalid QR Code");

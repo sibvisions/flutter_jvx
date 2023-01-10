@@ -14,6 +14,8 @@
  * the License.
  */
 
+import '../util/parse_util.dart';
+
 class ServerConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -39,10 +41,10 @@ class ServerConfig {
 
   ServerConfig.fromJson(Map<String, dynamic> json)
       : this(
-          baseUrl: json['baseUrl'],
-          appName: json['appName'],
-          username: json['username'],
-          password: json['password'],
+          baseUrl: ParseUtil.isNotEmptyOrNull(json['baseUrl']),
+          appName: ParseUtil.isNotEmptyOrNull(json['appName']),
+          username: ParseUtil.isNotEmptyOrNull(json['username']),
+          password: ParseUtil.isNotEmptyOrNull(json['password']),
         );
 
   ServerConfig merge(ServerConfig? other) {

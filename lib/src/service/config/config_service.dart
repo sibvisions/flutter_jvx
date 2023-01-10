@@ -38,6 +38,54 @@ class ConfigService {
     required SharedPreferences sharedPrefs,
   }) : _sharedPrefs = sharedPrefs;
 
+  /// Returns the current in use [SharedPreferences] instance.
+  SharedPreferences getSharedPreferences() {
+    return _sharedPrefs;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Preferences
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Retrieves the [ThemeMode] preference.
+  ///
+  /// Returns [ThemeMode.system] if none is configured.
+  Future<ThemeMode> themePreference() async {
+    ThemeMode? themeMode;
+    String? theme = _sharedPrefs.getString("theme");
+    if (theme != null) {
+      themeMode = ThemeMode.values.firstWhereOrNull((e) => e.name == theme);
+    }
+    return themeMode ?? ThemeMode.system;
+  }
+
+  /// Sets the current [ThemeMode] preference.
+  ///
+  /// If [themeMode] is [ThemeMode.system], the preference will be set to `null`.
+  Future<void> updateThemePreference(ThemeMode themeMode) async {
+    if (themeMode == ThemeMode.system) {
+      await _sharedPrefs.remove("theme");
+    } else {
+      await _sharedPrefs.setString("theme", themeMode.name);
+    }
+  }
+
+  /// Retrieves the configured max. picture resolution.
+  ///
+  /// This is being used to limit the resolution of pictures taken via the in-app camera.
+  Future<int?> pictureResolution() async {
+    return _sharedPrefs.getInt("pictureResolution");
+  }
+
+  /// Sets the max. picture resolution.
+  Future<void> updatePictureResolution(int pictureResolution) async {
+    await _sharedPrefs.setInt("pictureResolution", pictureResolution);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Preferences that are saved under the app key
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// Retrieves a string value by it's key in connection to the current app name from [SharedPreferences].
   ///
   /// The key is structured as follows:
@@ -45,7 +93,12 @@ class ConfigService {
   /// "$appName.$key"
   /// ```
   Future<String?> getString(String key) async {
-    return _sharedPrefs.getString("${await appName()}.$key");
+    String? prefix = await appName();
+    if (prefix != null) {
+      return _sharedPrefs.getString("$prefix.$key");
+    } else {
+      return null;
+    }
   }
 
   /// Persists a string value by it's key in connection to the current app name in [SharedPreferences].
@@ -59,37 +112,15 @@ class ConfigService {
   Future<bool> setString(String key, String? value) async {
     String? prefix = await appName();
     assert(prefix != null);
-    if (value != null) {
-      return _sharedPrefs.setString("$prefix.$key", value);
-    } else {
-      return _sharedPrefs.remove("$prefix.$key");
+
+    if (prefix != null) {
+      if (value != null) {
+        return _sharedPrefs.setString("$prefix.$key", value);
+      } else {
+        return _sharedPrefs.remove("$prefix.$key");
+      }
     }
-  }
-
-  /// Returns the current in use [SharedPreferences] instance.
-  SharedPreferences getSharedPreferences() {
-    return _sharedPrefs;
-  }
-
-  /// Retrieves version of the current app.
-  Future<String?> version() {
-    return getString("version");
-  }
-
-  /// Sets the version of the current app.
-  Future<void> updateVersion(String? pVersion) async {
-    await setString("version", pVersion);
-  }
-
-  /// Returns info about the current user.
-  Future<UserInfo?> userInfo() async {
-    String? jsonMap = await getString("userInfo");
-    return jsonMap != null ? UserInfo.fromJson(pJson: jsonDecode(jsonMap)) : null;
-  }
-
-  /// Sets the current user info.
-  Future<void> updateUserInfo(Map<String, dynamic>? pJson) {
-    return setString("userInfo", pJson != null ? jsonEncode(pJson) : null);
+    return false;
   }
 
   /// Returns the name of the current app.
@@ -101,26 +132,6 @@ class ConfigService {
   Future<void> updateAppName(String? pAppName) {
     if (pAppName == null) return _sharedPrefs.remove("appName");
     return _sharedPrefs.setString("appName", pAppName);
-  }
-
-  /// Returns the user defined language code.
-  Future<String?> userLanguage() {
-    return getString("language");
-  }
-
-  /// Set the user defined language code.
-  Future<void> updateUserLanguage(String? pLanguage) async {
-    await setString("language", pLanguage);
-  }
-
-  /// Returns the application timezone returned by the server.
-  Future<String?> applicationTimeZone() {
-    return getString("timeZoneCode");
-  }
-
-  /// Set the application defined timezone.
-  Future<void> updateApplicationTimeZone(String? timeZoneCode) async {
-    await setString("timeZoneCode", timeZoneCode);
   }
 
   /// Returns the last saved base url.
@@ -163,6 +174,47 @@ class ConfigService {
     return setString("authKey", pAuthKey);
   }
 
+  /// Retrieves version of the current app.
+  Future<String?> version() {
+    return getString("version");
+  }
+
+  /// Sets the version of the current app.
+  Future<void> updateVersion(String? pVersion) async {
+    await setString("version", pVersion);
+  }
+
+  /// Returns info about the current user.
+  Future<UserInfo?> userInfo() async {
+    String? jsonMap = await getString("userInfo");
+    return jsonMap != null ? UserInfo.fromJson(pJson: jsonDecode(jsonMap)) : null;
+  }
+
+  /// Sets the current user info.
+  Future<void> updateUserInfo(Map<String, dynamic>? pJson) {
+    return setString("userInfo", pJson != null ? jsonEncode(pJson) : null);
+  }
+
+  /// Returns the user defined language code.
+  Future<String?> userLanguage() {
+    return getString("language");
+  }
+
+  /// Set the user defined language code.
+  Future<void> updateUserLanguage(String? pLanguage) async {
+    await setString("language", pLanguage);
+  }
+
+  /// Returns the application timezone returned by the server.
+  Future<String?> applicationTimeZone() {
+    return getString("timeZoneCode");
+  }
+
+  /// Set the application defined timezone.
+  Future<void> updateApplicationTimeZone(String? timeZoneCode) async {
+    await setString("timeZoneCode", timeZoneCode);
+  }
+
   /// Returns the last saved app style.
   Future<Map<String, String>> applicationStyle() async {
     String? jsonMap = await getString("applicationStyle");
@@ -174,30 +226,24 @@ class ConfigService {
     await setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
   }
 
-  /// Retrieves the configured max. picture resolution.
-  ///
-  /// This is being used to limit the resolution of pictures taken via the in-app camera.
-  Future<int?> pictureResolution() async {
-    return _sharedPrefs.getInt("${await appName()}.pictureSize");
-  }
-
-  /// Sets the max. picture resolution.
-  Future<void> updatePictureResolution(int pictureResolution) async {
-    String? prefix = await appName();
-    assert(prefix != null);
-    await _sharedPrefs.setInt("$prefix.pictureSize", pictureResolution);
-  }
-
   /// Returns if the app is currently in offline mode.
   Future<bool> offline() async {
-    return _sharedPrefs.getBool("${await appName()}.offline") ?? false;
+    String? prefix = await appName();
+    if (prefix != null) {
+      return _sharedPrefs.getBool("$prefix.offline") ?? false;
+    } else {
+      return false;
+    }
   }
 
   /// Sets the offline mode.
   Future<void> updateOffline(bool pOffline) async {
     String? prefix = await appName();
     assert(prefix != null);
-    await _sharedPrefs.setBool("$prefix.offline", pOffline);
+
+    if (prefix != null) {
+      await _sharedPrefs.setBool("$prefix.offline", pOffline);
+    }
   }
 
   Future<String?> offlineScreen() async {
@@ -206,24 +252,5 @@ class ConfigService {
 
   Future<void> updateOfflineScreen(String pWorkscreen) async {
     await setString("offlineScreen", pWorkscreen);
-  }
-
-  /// Retrieves the [ThemeMode] preference.
-  ///
-  /// Returns [ThemeMode.system] if none is configured.
-  Future<ThemeMode> themePreference() async {
-    ThemeMode? themeMode;
-    String? theme = await getString("theme");
-    if (theme != null) {
-      themeMode = ThemeMode.values.firstWhereOrNull((e) => e.name == theme);
-    }
-    return themeMode ?? ThemeMode.system;
-  }
-
-  /// Sets the current [ThemeMode] preference.
-  ///
-  /// If [themeMode] is [ThemeMode.system], the preference will be set to `null`.
-  Future<void> updateThemePreference(ThemeMode themeMode) async {
-    await setString("theme", themeMode == ThemeMode.system ? null : themeMode.name);
   }
 }

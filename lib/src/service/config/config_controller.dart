@@ -133,12 +133,38 @@ class ConfigController {
   })  : _configService = configService,
         _fileManager = fileManager;
 
-  Future<void> loadConfig() async {
+  /// Loads the initial config.
+  ///
+  /// If [devConfig] is true, this call removes all saved values for [ServerConfig]
+  /// which would prevent the default config to be used.
+  Future<void> loadConfig(AppConfig pAppConfig, [bool devConfig = false]) async {
+    _appConfig = pAppConfig;
+
+    // DevConfig resets persistent fields to enable config-fallback logic.
+    if (devConfig) {
+      if (_appConfig!.serverConfig!.appName != null) {
+        // Set appName first to enable the removal of the related settings.
+        await _configService.updateAppName(_appConfig!.serverConfig!.appName);
+
+        if (_appConfig!.serverConfig!.baseUrl != null) {
+          await _configService.updateBaseUrl(null);
+        }
+        if (_appConfig!.serverConfig!.username != null) {
+          await _configService.updateUsername(null);
+        }
+        if (_appConfig!.serverConfig!.password != null) {
+          await _configService.updatePassword(null);
+        }
+      }
+    }
+
     _themePreference = ValueNotifier(await _configService.themePreference());
+    _pictureResolution = ValueNotifier(await _configService.pictureResolution());
+
     _appName = ValueNotifier(await _configService.appName());
-    _baseUrl = ValueNotifier(await _configService.baseUrl());
-    _username = ValueNotifier(await _configService.username());
-    _password = ValueNotifier(await _configService.password());
+    _baseUrl = ValueNotifier(await _configService.baseUrl() ?? _appConfig!.serverConfig!.baseUrl);
+    _username = ValueNotifier(await _configService.username() ?? _appConfig!.serverConfig!.username);
+    _password = ValueNotifier(await _configService.password() ?? _appConfig!.serverConfig!.password);
     _version = ValueNotifier(await _configService.version());
     _authKey = ValueNotifier(await _configService.authKey());
     _userInfo = ValueNotifier(await _configService.userInfo());
@@ -147,7 +173,9 @@ class ConfigController {
     _applicationStyle = ValueNotifier(await _configService.applicationStyle());
     _userLanguage = ValueNotifier(await _configService.userLanguage());
     _applicationTimeZone = ValueNotifier(await _configService.applicationTimeZone());
-    _pictureResolution = ValueNotifier(await _configService.pictureResolution());
+
+    // Trigger persisting so the config service knows about it.
+    await updateAppName(await _configService.appName());
 
     // Update native timezone
     _platformTimeZone = await FlutterNativeTimezone.getLocalTimezone();
@@ -205,6 +233,10 @@ class ConfigController {
     return _appConfig;
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Non-persisting methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// Returns the current clientId.
   ///
   /// `null` if none is present.
@@ -221,21 +253,73 @@ class ConfigController {
     _metaData.value = pMetaData;
   }
 
-  /// Retrieves version of the current app.
-  ValueNotifier<String?> get version => _version;
+  /// Retrieves the last known [ApplicationSettingsResponse].
+  ValueNotifier<ApplicationSettingsResponse> get applicationSettings => _applicationSettings;
 
-  /// Sets the version of the current app.
-  Future<void> updateVersion(String? pVersion) async {
-    _version.value = pVersion;
+  /// Sets the [ApplicationSettingsResponse].
+  Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) async {
+    _applicationSettings.value = pApplicationSettings;
   }
 
-  /// Returns info about the current user.
-  ValueNotifier<UserInfo?> get userInfo => _userInfo;
+  /// Returns the app's layout mode.
+  ///
+  /// See also:
+  /// * [DeviceStatusResponse].
+  ValueNotifier<LayoutMode> get layoutMode => _layoutMode;
 
-  /// Sets the current user info.
-  Future<void> updateUserInfo({UserInfo? pUserInfo, Map<String, dynamic>? pJson}) async {
-    await _configService.updateUserInfo(pJson);
-    _userInfo.value = pUserInfo;
+  /// Sets the layout mode.
+  Future<void> updateLayoutMode(LayoutMode pLayoutMode) async {
+    _layoutMode.value = pLayoutMode;
+  }
+
+  /// Returns if mobile-only mode is currently forced.
+  ///
+  /// See also:
+  /// * [Frame.wrapWithFrame]
+  ValueNotifier<bool> get mobileOnly => _mobileOnly;
+
+  /// Sets the mobile-only mode.
+  Future<void> updateMobileOnly(bool pMobileOnly) async {
+    _mobileOnly.value = pMobileOnly;
+  }
+
+  /// Returns if web-only mode is currently forced.
+  ///
+  /// See also:
+  /// * [Frame.wrapWithFrame]
+  ValueNotifier<bool> get webOnly => _webOnly;
+
+  /// Sets the web-only mode.
+  Future<void> updateWebOnly(bool pWebOnly) async {
+    _webOnly.value = pWebOnly;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Persisting methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Retrieves the current [ThemeMode] preference.
+  ///
+  /// Returns [ThemeMode.system] if none is configured.
+  ValueNotifier<ThemeMode> get themePreference => _themePreference;
+
+  /// Sets the current [ThemeMode] preference.
+  ///
+  /// If [themeMode] is [ThemeMode.system], the preference will be set to `null`.
+  Future<void> updateThemePreference(ThemeMode themeMode) async {
+    await _configService.updateThemePreference(themeMode);
+    _themePreference.value = themeMode;
+  }
+
+  /// Retrieves the configured max. picture resolution.
+  ///
+  /// This is being used to limit the resolution of pictures taken via the in-app camera.
+  ValueNotifier<int?> get pictureResolution => _pictureResolution;
+
+  /// Sets the max. picture resolution.
+  Future<void> updatePictureResolution(int pictureResolution) async {
+    await _configService.updatePictureResolution(pictureResolution);
+    _pictureResolution.value = pictureResolution;
   }
 
   /// Returns the name of the current app.
@@ -243,8 +327,10 @@ class ConfigController {
 
   /// Sets the name of the current app.
   Future<void> updateAppName(String? pAppName) async {
-    await _configService.updateAppName(pAppName ?? getAppConfig()?.serverConfig!.appName);
-    _appName.value = pAppName ?? getAppConfig()?.serverConfig!.appName;
+    String? appName = pAppName ?? getAppConfig()?.serverConfig!.appName;
+    // Only setting that also persists the default value, as this is used in the key for other settings.
+    await _configService.updateAppName(appName);
+    _appName.value = appName;
   }
 
   /// Returns the last saved base url.
@@ -282,6 +368,32 @@ class ConfigController {
   Future<void> updatePassword(String? password) async {
     await _configService.updatePassword(password);
     _password.value = password ?? getAppConfig()?.serverConfig!.password;
+  }
+
+  /// Retrieves the last saved authKey, which will be used on [ApiStartUpRequest].
+  ValueNotifier<String?> get authKey => _authKey;
+
+  /// Sets the authKey.
+  Future<void> updateAuthKey(String? pAuthKey) async {
+    await _configService.updateAuthKey(pAuthKey);
+    _authKey.value = pAuthKey;
+  }
+
+  /// Retrieves version of the current app.
+  ValueNotifier<String?> get version => _version;
+
+  /// Sets the version of the current app.
+  Future<void> updateVersion(String? pVersion) async {
+    _version.value = pVersion;
+  }
+
+  /// Returns info about the current user.
+  ValueNotifier<UserInfo?> get userInfo => _userInfo;
+
+  /// Sets the current user info.
+  Future<void> updateUserInfo({UserInfo? pUserInfo, Map<String, dynamic>? pJson}) async {
+    await _configService.updateUserInfo(pJson);
+    _userInfo.value = pUserInfo;
   }
 
   /// Returns the language which should be used to translate text shown to the user.
@@ -366,15 +478,6 @@ class ConfigController {
     _applicationTimeZone.value = timeZoneCode;
   }
 
-  /// Retrieves the last saved authKey, which will be used on [ApiStartUpRequest].
-  ValueNotifier<String?> get authKey => _authKey;
-
-  /// Sets the authKey.
-  Future<void> updateAuthKey(String? pAuthKey) async {
-    await _configService.updateAuthKey(pAuthKey);
-    _authKey.value = pAuthKey;
-  }
-
   /// Returns the last saved app style.
   ///
   /// Use [AppStyle] instead when used in Widgets.
@@ -407,17 +510,6 @@ class ConfigController {
     return double.parse(_applicationStyle.value['options.mobilescaling'] ?? '2.0');
   }
 
-  /// Retrieves the configured max. picture resolution.
-  ///
-  /// This is being used to limit the resolution of pictures taken via the in-app camera.
-  ValueNotifier<int?> get pictureResolution => _pictureResolution;
-
-  /// Sets the max. picture resolution.
-  Future<void> updatePictureResolution(int pictureResolution) async {
-    await _configService.updatePictureResolution(pictureResolution);
-    _pictureResolution.value = pictureResolution;
-  }
-
   /// Returns if the app is currently in offline mode.
   ValueNotifier<bool> get offline => _offline;
 
@@ -440,29 +532,6 @@ class ConfigController {
   }
 
   // ------------------------------
-
-  /// Sets the initial app config.
-  ///
-  /// DO NOT USE THIS to update [ServerConfig] fields!
-  ///
-  /// If [devConfig] is true, this call removes all saved values which would override this config.
-  Future<void> setAppConfig(AppConfig? pAppConfig, [bool devConfig = false]) async {
-    _appConfig = pAppConfig;
-    if (devConfig) {
-      if (pAppConfig?.serverConfig!.appName != null) {
-        await updateAppName(null);
-      }
-      if (pAppConfig?.serverConfig!.baseUrl != null) {
-        await updateBaseUrl(null);
-      }
-      if (pAppConfig?.serverConfig!.username != null) {
-        await updateUsername(null);
-      }
-      if (pAppConfig?.serverConfig!.password != null) {
-        await updatePassword(null);
-      }
-    }
-  }
 
   /// Returns a map of all custom parameters which are sent on every [ApiStartUpRequest].
   ///
@@ -519,60 +588,6 @@ class ConfigController {
   /// Triggers all image callbacks.
   void imagesChanged() {
     _callbacks['images']?.forEach((element) => element.call());
-  }
-
-  /// Returns the app's layout mode.
-  ///
-  /// See also:
-  /// * [DeviceStatusResponse].
-  ValueNotifier<LayoutMode> get layoutMode => _layoutMode;
-
-  /// Sets the layout mode.
-  Future<void> updateLayoutMode(LayoutMode pLayoutMode) async {
-    _layoutMode.value = pLayoutMode;
-  }
-
-  /// Returns if mobile-only mode is currently forced.
-  ///
-  /// See also:
-  /// * [Frame.wrapWithFrame]
-  ValueNotifier<bool> get mobileOnly => _mobileOnly;
-
-  /// Sets the mobile-only mode.
-  Future<void> updateMobileOnly(bool pMobileOnly) async {
-    _mobileOnly.value = pMobileOnly;
-  }
-
-  /// Returns if web-only mode is currently forced.
-  ///
-  /// See also:
-  /// * [Frame.wrapWithFrame]
-  ValueNotifier<bool> get webOnly => _webOnly;
-
-  /// Sets the web-only mode.
-  Future<void> updateWebOnly(bool pWebOnly) async {
-    _webOnly.value = pWebOnly;
-  }
-
-  /// Retrieves the current [ThemeMode] preference.
-  ///
-  /// Returns [ThemeMode.system] if none is configured.
-  ValueNotifier<ThemeMode> get themePreference => _themePreference;
-
-  /// Sets the current [ThemeMode] preference.
-  ///
-  /// If [themeMode] is [ThemeMode.system], the preference will be set to `null`.
-  Future<void> updateThemePreference(ThemeMode themeMode) async {
-    await _configService.updateThemePreference(themeMode);
-    _themePreference.value = themeMode;
-  }
-
-  /// Retrieves the last known [ApplicationSettingsResponse].
-  ValueNotifier<ApplicationSettingsResponse> get applicationSettings => _applicationSettings;
-
-  /// Sets the [ApplicationSettingsResponse].
-  Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) async {
-    _applicationSettings.value = pApplicationSettings;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

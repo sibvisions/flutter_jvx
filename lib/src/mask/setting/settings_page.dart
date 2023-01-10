@@ -639,7 +639,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   /// Will send a [StartupCommand] with current values
   Future<void> _saveClicked() async {
-    if (appName?.isNotEmpty == true && baseUrl?.isNotEmpty == true) {
+    if ((appName?.isNotEmpty ?? false) && (baseUrl?.isNotEmpty ?? false)) {
       try {
         if (!context.canBeamBack || ConfigController().clientId.value == null || _changesPending()) {
           await ConfigController().updateAppName(appName);

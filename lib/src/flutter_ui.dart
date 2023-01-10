@@ -30,6 +30,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:universal_io/io.dart';
 
 import 'config/app_config.dart';
+import 'config/server_config.dart';
 import 'custom/app_manager.dart';
 import 'exceptions/error_view_exception.dart';
 import 'mask/debug_overlay.dart';
@@ -251,7 +252,29 @@ class FlutterUI extends StatefulWidget {
       configService: ConfigService.create(sharedPrefs: await SharedPreferences.getInstance()),
       fileManager: await IFileManager.getFileManager(),
     );
-    await configController.loadConfig();
+
+    // Load config files
+    AppConfig? devConfig;
+    if (!kReleaseMode) {
+      devConfig = await ConfigUtil.readDevConfig();
+      if (devConfig != null) {
+        FlutterUI.log.i("Found dev config, overriding values");
+      }
+    }
+
+    AppConfig appConfig =
+        const AppConfig.empty().merge(pAppToRun.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
+
+    if (appConfig.serverConfig!.baseUrl != null) {
+      var baseUri = Uri.parse(appConfig.serverConfig!.baseUrl!);
+      // If no https on a remote host, you have to use localhost because of secure cookies
+      if (kIsWeb && kDebugMode && baseUri.host != "localhost" && !baseUri.isScheme("https")) {
+        appConfig = appConfig
+            .merge(AppConfig(serverConfig: ServerConfig(baseUrl: baseUri.replace(host: "localhost").toString())));
+      }
+    }
+
+    await configController.loadConfig(appConfig, devConfig != null);
     services.registerSingleton(configController);
 
     // Layout
@@ -630,28 +653,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     uiService.setAppManager(widget.appManager);
-
-    // Load config files
-    AppConfig? devConfig;
-    if (!kReleaseMode) {
-      devConfig = await ConfigUtil.readDevConfig();
-      if (devConfig != null) {
-        FlutterUI.log.i("Found dev config, overriding values");
-      }
-    }
-
-    AppConfig appConfig =
-        const AppConfig.empty().merge(widget.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
-
-    await configController.setAppConfig(appConfig, devConfig != null);
-
-    if (appConfig.serverConfig!.baseUrl != null) {
-      var baseUri = Uri.parse(appConfig.serverConfig!.baseUrl!);
-      // If no https on a remote host, you have to use localhost because of secure cookies
-      if (kIsWeb && kDebugMode && baseUri.host != "localhost" && !baseUri.isScheme("https")) {
-        await configController.updateBaseUrl(baseUri.replace(host: "localhost").toString());
-      }
-    }
 
     // Register callbacks
     configController.disposeLanguageCallbacks();
