@@ -384,6 +384,7 @@ class ConfigController {
 
   /// Sets the version of the current app.
   Future<void> updateVersion(String? pVersion) async {
+    await _configService.updateVersion(pVersion);
     _version.value = pVersion;
   }
 
