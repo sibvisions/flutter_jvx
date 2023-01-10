@@ -90,4 +90,7 @@ abstract class IStorageService {
 
   /// Returns component model with name matching [FlContainerClassname.DESKTOP_PANEL].
   JVxNotifier<FlComponentModel?> getDesktopPanelNotifier();
+
+  /// Returns if the component model is currently shown in the ui
+  bool isVisibleInUI(String pComponentId);
 }

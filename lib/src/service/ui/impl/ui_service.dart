@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ import '../../../model/menu/menu_model.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/settings_location.dart';
+import '../../../routing/locations/work_screen_location.dart';
 import '../../../util/extensions/string_extensions.dart';
 import '../../command/i_command_service.dart';
 import '../../config/config_controller.dart';
@@ -621,5 +623,13 @@ class UiService implements IUiService {
     if (pComponentId == null || hasFocus(pComponentId)) {
       focusedComponentId = null;
     }
+  }
+
+  @override
+  String? getCurrentWorkscreenName() {
+    if (FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType != WorkScreenLocation) {
+      return null;
+    }
+    return (FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState).pathParameters['workScreenName'];
   }
 }

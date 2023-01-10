@@ -19,13 +19,16 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 
 import '../../../../flutter_ui.dart';
+import '../../../../mask/frame/frame.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/component/panel/fl_panel_model.dart';
+import '../../../../routing/locations/menu_location.dart';
 import '../../../../util/misc/jvx_notifier.dart';
 import '../../../api/shared/api_object_property.dart';
 import '../../../api/shared/fl_component_classname.dart';
+import '../../../ui/i_ui_service.dart';
 import '../../i_storage_service.dart';
 
 class StorageService implements IStorageService {
@@ -359,6 +362,31 @@ class StorageService implements IStorageService {
   @override
   JVxNotifier<FlComponentModel?> getDesktopPanelNotifier() {
     return _desktopNotifier;
+  }
+
+  @override
+  bool isVisibleInUI(String pComponentId) {
+    FlComponentModel? compModel = _componentMap[pComponentId];
+
+    if (compModel == null) {
+      return false;
+    }
+
+    List<FlComponentModel> components = [compModel];
+    while (compModel!.parent != null && _componentMap[compModel.parent] != null) {
+      compModel = _componentMap[compModel.parent];
+      components.add(compModel!);
+    }
+
+    if (components.any((element) => !element.isVisible || element.isRemoved || element.isDestroyed)) {
+      return false;
+    }
+
+    if (components.last.className == FlContainerClassname.DESKTOP_PANEL) {
+      return Frame.isWebFrame() && FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == MenuLocation;
+    } else {
+      return components.last.name == IUiService().getCurrentWorkscreenName();
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

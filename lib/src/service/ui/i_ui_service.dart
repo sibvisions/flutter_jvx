@@ -246,4 +246,6 @@ abstract class IUiService {
   FlComponentModel? getFocus();
 
   void removeFocus([String? pComponentId]);
+
+  String? getCurrentWorkscreenName();
 }
