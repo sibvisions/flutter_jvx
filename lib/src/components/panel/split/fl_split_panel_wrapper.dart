@@ -206,7 +206,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     double containerPixel = pHorizontal ? container.size.width : container.size.height;
 
     splitLayout.leftTopRatio = max(0.0, min(1.0, positionalPixel / containerPixel)) * 100;
-    //model.dividerPosition = splitLayout.leftTopRatio;
+    // model.dividerPosition = splitLayout.leftTopRatio;
 
     subject.add(null);
   }

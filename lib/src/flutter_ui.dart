@@ -647,19 +647,19 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     if (appConfig.serverConfig!.baseUrl != null) {
       var baseUri = Uri.parse(appConfig.serverConfig!.baseUrl!);
-      //If no https on a remote host, you have to use localhost because of secure cookies
+      // If no https on a remote host, you have to use localhost because of secure cookies
       if (kIsWeb && kDebugMode && baseUri.host != "localhost" && !baseUri.isScheme("https")) {
         await configController.updateBaseUrl(baseUri.replace(host: "localhost").toString());
       }
     }
 
-    //Register callbacks
+    // Register callbacks
     configController.disposeLanguageCallbacks();
     configController.registerLanguageCallback((pLanguage) => setState(() {}));
     configController.disposeImagesCallbacks();
     configController.registerImagesCallback(changedImages);
 
-    //Update style to reflect web colors for theme
+    // Update style to reflect web colors for theme
     configController.layoutMode.addListener(() => changedTheme());
     configController.themePreference.addListener(() => changedTheme());
     configController.applicationStyle.addListener(() => changedTheme());

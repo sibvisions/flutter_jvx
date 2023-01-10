@@ -27,7 +27,7 @@ import '../../i_command_processor.dart';
 class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogCommand> {
   @override
   Future<List<BaseCommand>> processCommand(OpenErrorDialogCommand command) async {
-    //Will be displayed in Splash if context is null
+    // Will be displayed in Splash if context is null
     if (FlutterUI.getCurrentContext() != null) {
       bool goToSettings = command.isTimeout || command.canBeFixedInSettings;
       // Don't show "Go to Settings" while in settings
