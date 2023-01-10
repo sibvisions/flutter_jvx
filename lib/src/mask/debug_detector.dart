@@ -19,14 +19,14 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class DebugOverlay extends StatefulWidget {
+class DebugDetector extends StatefulWidget {
   final Widget child;
   final void Function() callback;
   final Duration delay;
   final double maxSquaredMoveDistance;
   final int pointers;
 
-  const DebugOverlay({
+  const DebugDetector({
     super.key,
     required this.child,
     required this.callback,
@@ -36,10 +36,10 @@ class DebugOverlay extends StatefulWidget {
   });
 
   @override
-  State<DebugOverlay> createState() => _DebugOverlayState();
+  State<DebugDetector> createState() => _DebugDetectorState();
 }
 
-class _DebugOverlayState extends State<DebugOverlay> {
+class _DebugDetectorState extends State<DebugDetector> {
   int pointers = 0;
 
   Timer? timer;

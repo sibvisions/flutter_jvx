@@ -33,7 +33,7 @@ import 'config/app_config.dart';
 import 'config/server_config.dart';
 import 'custom/app_manager.dart';
 import 'exceptions/error_view_exception.dart';
-import 'mask/debug_overlay.dart';
+import 'mask/debug_detector.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
@@ -463,7 +463,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         );
 
         if (kDebugMode) {
-          futureBuilder = DebugOverlay(
+          futureBuilder = DebugDetector(
             callback: () {
               widget.appManager?.onDebugTrigger();
             },

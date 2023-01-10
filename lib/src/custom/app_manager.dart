@@ -17,7 +17,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
-import '../mask/debug_overlay.dart';
+import '../mask/debug_detector.dart';
 import '../mask/menu/menu.dart';
 import '../model/api_interaction.dart';
 import '../model/command/base_command.dart';
@@ -93,6 +93,6 @@ abstract class AppManager {
 // /// Is called if a login is successfully completed.
 // void onLoginSuccess() {}
 
-  /// Called when [DebugOverlay] gets triggered (Only used when [kDebugMode] is active).
+  /// Called when [DebugDetector] gets triggered (Only used when [kDebugMode] is active).
   void onDebugTrigger() {}
 }
