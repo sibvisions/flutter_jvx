@@ -61,12 +61,12 @@ class ConfigService {
 
   /// Sets the current [ThemeMode] preference.
   ///
-  /// If [themeMode] is [ThemeMode.system], the preference will be set to `null`.
-  Future<void> updateThemePreference(ThemeMode themeMode) async {
-    if (themeMode == ThemeMode.system) {
+  /// If [pThemeMode] is [ThemeMode.system], the preference will be set to `null`.
+  Future<void> updateThemePreference(ThemeMode pThemeMode) async {
+    if (pThemeMode == ThemeMode.system) {
       await _sharedPrefs.remove("theme");
     } else {
-      await _sharedPrefs.setString("theme", themeMode.name);
+      await _sharedPrefs.setString("theme", pThemeMode.name);
     }
   }
 
@@ -78,8 +78,8 @@ class ConfigService {
   }
 
   /// Sets the max. picture resolution.
-  Future<void> updatePictureResolution(int pictureResolution) async {
-    await _sharedPrefs.setInt("pictureResolution", pictureResolution);
+  Future<void> updatePictureResolution(int pPictureResolution) async {
+    await _sharedPrefs.setInt("pictureResolution", pPictureResolution);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,8 +140,8 @@ class ConfigService {
   }
 
   /// Sets the base url.
-  Future<void> updateBaseUrl(String? baseUrl) async {
-    await setString("baseUrl", baseUrl);
+  Future<void> updateBaseUrl(String? pBaseUrl) async {
+    await setString("baseUrl", pBaseUrl);
   }
 
   /// Retrieves the last saved username or the configured one from [ServerConfig.username].
@@ -150,8 +150,8 @@ class ConfigService {
   }
 
   /// Sets the saved username.
-  Future<void> updateUsername(String? username) async {
-    await setString("username", username);
+  Future<void> updateUsername(String? pUsername) async {
+    await setString("username", pUsername);
   }
 
   /// Retrieves the last saved password or the configured one from [ServerConfig.password].
@@ -160,8 +160,8 @@ class ConfigService {
   }
 
   /// Sets the saved password.
-  Future<void> updatePassword(String? password) {
-    return setString("password", password);
+  Future<void> updatePassword(String? pPassword) {
+    return setString("password", pPassword);
   }
 
   /// Retrieves the last saved authKey, which will be used on [ApiStartUpRequest].
@@ -211,8 +211,8 @@ class ConfigService {
   }
 
   /// Set the application defined timezone.
-  Future<void> updateApplicationTimeZone(String? timeZoneCode) async {
-    await setString("timeZoneCode", timeZoneCode);
+  Future<void> updateApplicationTimeZone(String? pTimeZoneCode) async {
+    await setString("timeZoneCode", pTimeZoneCode);
   }
 
   /// Returns the last saved app style.
