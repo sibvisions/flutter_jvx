@@ -321,6 +321,7 @@ class OnlineApiRepository implements IRepository {
       if (effectiveContext != null) {
         ScaffoldMessenger.maybeOf(effectiveContext)?.hideCurrentSnackBar();
         ScaffoldMessenger.maybeOf(effectiveContext)?.showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
           content: Text(FlutterUI.translate(message)),
           backgroundColor: (Theme.of(effectiveContext).snackBarTheme.backgroundColor ??
                   Theme.of(effectiveContext).colorScheme.onSurface)
