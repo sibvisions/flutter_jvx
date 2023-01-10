@@ -645,14 +645,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     HttpOverrides.global = MyHttpOverrides();
 
     ConfigController configController = ConfigController();
-    IUiService uiService = IUiService();
-    IApiService apiService = IApiService();
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Load config
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    uiService.setAppManager(widget.appManager);
+    IUiService().setAppManager(widget.appManager);
 
     // Register callbacks
     configController.disposeLanguageCallbacks();
@@ -680,7 +674,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     var repository = configController.offline.value ? OfflineApiRepository() : OnlineApiRepository();
     await repository.start();
-    apiService.setRepository(repository);
+    IApiService().setRepository(repository);
   }
 
   Future<void> doStartup({
