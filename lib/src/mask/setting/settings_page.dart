@@ -276,7 +276,7 @@ class _SettingsPageState extends State<SettingsPage> {
     String appNameTitle = FlutterUI.translate("App Name");
 
     SettingItem appNameSetting = SettingItem(
-      frontIcon: FaIcon(FontAwesomeIcons.server, color: Theme.of(context).colorScheme.primary),
+      frontIcon: FaIcon(FontAwesomeIcons.cubes, color: Theme.of(context).colorScheme.primary),
       endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
       value: appName ?? "",
       title: appNameTitle,
@@ -293,7 +293,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onConfirm: onConfirm,
           ),
           controller: controller,
-          pTitleIcon: const FaIcon(FontAwesomeIcons.server),
+          pTitleIcon: const FaIcon(FontAwesomeIcons.cubes),
           pTitleText: appNameTitle,
         ).then((value) {
           if (value == true) {
@@ -545,6 +545,17 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _buildStatus(BuildContext context) {
+    String versionValue = (ConfigController().metaData.value?.serverVersion ?? "Unknown");
+    if (ConfigController().metaData.value?.serverVersion != FlutterUI.supportedServerVersion) {
+      versionValue += " (${FlutterUI.translate("Supported")}: ${FlutterUI.supportedServerVersion})";
+    }
+
+    SettingItem serverVersion = SettingItem(
+      frontIcon: const FaIcon(FontAwesomeIcons.server),
+      title: FlutterUI.translate("Server Version"),
+      value: versionValue,
+    );
+
     var repository = IApiService().getRepository();
     bool? webSocketAvailable;
     if (repository is OnlineApiRepository) {
@@ -553,9 +564,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
     SettingItem webSocketStatus = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.circleNodes),
+      title: FlutterUI.translate("Web Socket"),
       value: FlutterUI.translate(
           webSocketAvailable != null ? (webSocketAvailable ? "Available" : "Not available") : "Unknown"),
-      title: FlutterUI.translate("Web Socket"),
     );
 
     return SettingGroup(
@@ -569,7 +580,10 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      items: [webSocketStatus],
+      items: [
+        serverVersion,
+        webSocketStatus,
+      ],
     );
   }
 
