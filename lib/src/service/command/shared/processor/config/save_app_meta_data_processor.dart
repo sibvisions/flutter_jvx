@@ -15,6 +15,9 @@
  */
 
 import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
@@ -41,22 +44,20 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
 
     await ConfigController().updateMetaData(command.metaData);
 
-    bool doLangExits =
-        ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/")?.existsSync() ??
-            false;
-    bool doImgExits =
-        ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/")?.existsSync() ?? false;
+    Directory? languagesDir =
+        ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");
+    Directory? imagesDir = ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/");
 
     await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
 
     List<BaseCommand> commands = [];
-    if (!doLangExits) {
+    if (kDebugMode || !(languagesDir?.existsSync() ?? false)) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
     } else {
       ConfigController().reloadSupportedLanguages();
       ConfigController().loadLanguages();
     }
-    if (!doImgExits) {
+    if (kDebugMode || !(imagesDir?.existsSync() ?? false)) {
       commands.add(DownloadImagesCommand(reason: "Resources should be downloaded"));
     }
     commands.add(DownloadStyleCommand(reason: "Styles should be downloaded"));
