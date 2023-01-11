@@ -83,8 +83,10 @@ class _SettingsPageState extends State<SettingsPage> {
     appVersionNotifier = ValueNotifier("${FlutterUI.translate("Loading")}...");
     PackageInfo.fromPlatform().then((packageInfo) {
       int? buildNumber = ConfigController().getAppConfig()?.versionConfig?.buildNumber;
+      String effectiveBuildNumber =
+          buildNumber != null && buildNumber >= 0 ? buildNumber.toString() : packageInfo.buildNumber;
       return appVersionNotifier.value =
-          "${packageInfo.version}-${buildNumber != null && buildNumber >= 0 ? buildNumber : packageInfo.buildNumber}";
+          "${packageInfo.version}${effectiveBuildNumber == "" ? "" : "-$effectiveBuildNumber"}";
     });
 
     appName = ConfigController().appName.value;
