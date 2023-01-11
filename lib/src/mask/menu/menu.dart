@@ -74,7 +74,6 @@ abstract class Menu extends StatelessWidget {
           groupOnlyOnMultiple: groupOnlyOnMultiple,
         );
       case MenuMode.DRAWER:
-      case MenuMode.SWIPER:
       default:
         return GridMenu(
           key: key,
@@ -108,6 +107,5 @@ enum MenuMode {
   // Legacy mode
   LIST_GROUPED,
   DRAWER,
-  SWIPER,
   TABS,
 }

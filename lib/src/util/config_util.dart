@@ -67,9 +67,6 @@ abstract class ConfigUtil {
       case "drawer":
         menuMode = MenuMode.DRAWER;
         break;
-      case "swiper":
-        menuMode = MenuMode.SWIPER;
-        break;
       case "tabs":
         menuMode = MenuMode.TABS;
         break;
