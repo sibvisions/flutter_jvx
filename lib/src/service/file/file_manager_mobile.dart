@@ -134,9 +134,9 @@ class FileManagerMobile extends IFileManager {
   List<File> getTranslationFiles() {
     List<File> listFiles = [];
 
-    Directory? dir = getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");
+    Directory dir = Directory(_getSavePath(pPath: "${IFileManager.LANGUAGES_PATH}/"));
 
-    if (dir != null && dir.existsSync()) {
+    if (dir.existsSync()) {
       listFiles.addAll(dir.listSync().whereType<File>().toList());
     }
 
