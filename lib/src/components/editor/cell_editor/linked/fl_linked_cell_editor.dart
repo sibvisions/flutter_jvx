@@ -17,6 +17,7 @@
 import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
@@ -62,6 +63,12 @@ class FlLinkedCellEditor
 
   @override
   bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
+
+  @override
+  bool get tableDeleteIcon => true;
+
+  @override
+  IconData? get tableEditIcon => FontAwesomeIcons.caretDown;
 
   Function(Function)? onAction;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

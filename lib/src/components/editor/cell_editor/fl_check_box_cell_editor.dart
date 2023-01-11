@@ -36,7 +36,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   FlCheckBoxModel? lastWidgetModel;
 
   @override
-  bool get allowedTableEdit => model.directCellEditor;
+  bool get allowedInTable => model.directCellEditor;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,9 +110,6 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
     buttonFocusNode.dispose();
     focusNode.dispose();
   }
-
-  @override
-  bool get allowedInTable => true;
 
   @override
   String formatValue(dynamic pValue) {

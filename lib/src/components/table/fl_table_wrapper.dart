@@ -35,6 +35,7 @@ import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
+import 'fl_table_edit_dialog.dart';
 import 'fl_table_row.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
@@ -109,6 +110,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// If update a row is allowed.
   bool get _isUpdateAllowed => metaData?.updateEnabled ?? true;
+
+  ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
+
+  /// The currently opened editing dialog
+  FlTableEditDialog? currentEditDialog;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -156,6 +163,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onDoubleTap: _onCellDoubleTap,
       onAction: _onAction,
       onSlideAction: _onSlideAction,
+      slideActions: _slideActions(),
       showFloatingButton: _isInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
           ((layoutData.layoutPosition?.width ?? 0.0) >= 100) &&
@@ -366,8 +374,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       if (!pCellEditor.allowedInTable &&
           _isUpdateAllowed == true &&
           pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK &&
-          mounted) {
-        pCellEditor.tableEdit(model.json, pColumnName);
+          mounted &&
+          currentEditDialog != null) {
+        _showDialog(
+          columnDefinitions: [pCellEditor.columnDefinition!],
+          values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+          onEndEditing: _setValueEnd,
+          newValueNotifier: dialogValueNotifier,
+        );
       }
     }
   }
@@ -377,11 +391,18 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       _sortColumn(pColumnName, true);
     } else {
       _selectRecord(pRowIndex, pColumnName);
-      if (!pCellEditor.allowedInTable &&
-          _isUpdateAllowed == true &&
-          pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK &&
-          mounted) {
-        pCellEditor.tableEdit(model.json, pColumnName);
+      if (IStorageService().isVisibleInUI(model.id)) {
+        if (!pCellEditor.allowedInTable &&
+            _isUpdateAllowed == true &&
+            pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK &&
+            mounted) {
+          _showDialog(
+            columnDefinitions: [pCellEditor.columnDefinition!],
+            values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+            onEndEditing: _setValueEnd,
+            newValueNotifier: dialogValueNotifier,
+          );
+        }
       }
     }
   }
@@ -451,7 +472,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
               } else if (val == TableContextMenuItem.SORT) {
                 _sortColumn(pColumnName);
               } else if (val == TableContextMenuItem.EDIT) {
-                _editColumn(pRowIndex, pColumnName, pCellEditor);
+                _editRow(pRowIndex);
               }
               return [];
             },
@@ -637,12 +658,26 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     );
   }
 
-  void _editColumn(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+  void _editRow(int pRowIndex) {
+    List<ColumnDefinition> columnsToShow = tableSize.columnWidths.keys
+        .map((e) => dataChunk.columnDefinitions.firstWhere((element) => element.name == e))
+        .toList();
+
+    Map<String, dynamic> values = {};
+    for (ColumnDefinition colDef in columnsToShow) {
+      values[colDef.name] = dataChunk.getValue(colDef.name, pRowIndex);
+    }
+
     _selectRecord(
       pRowIndex,
-      pColumnName,
+      "",
       pAfterSelect: () async {
-        pCellEditor.tableEdit(model.json, pColumnName);
+        _showDialog(
+          columnDefinitions: columnsToShow,
+          values: values,
+          onEndEditing: _setValueEnd,
+          newValueNotifier: dialogValueNotifier,
+        );
         return [];
       },
     );
@@ -665,6 +700,53 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       if (deleteCommand != null) {
         IUiService().sendCommand(deleteCommand);
       }
+    } else if (pAction == TableRowSlideAction.EDIT) {
+      _editRow(pRowIndex);
+    }
+  }
+
+  Set<TableRowSlideAction> _slideActions() {
+    Set<TableRowSlideAction> actionSet = {};
+
+    if (model.editable && model.isEnabled) {
+      if (_isUpdateAllowed) {
+        actionSet.add(TableRowSlideAction.EDIT);
+      }
+
+      if (_isDeleteEnabled) {
+        actionSet.add(TableRowSlideAction.DELETE);
+      }
+    }
+    return actionSet;
+  }
+
+  void _showDialog({
+    required List<ColumnDefinition> columnDefinitions,
+    required Map<String, dynamic> values,
+    required void Function(dynamic, int, String) onEndEditing,
+    required ValueNotifier<Map<String, dynamic>?> newValueNotifier,
+  }) {
+    if (currentEditDialog == null) {
+      currentEditDialog = FlTableEditDialog(
+        model: model,
+        columnDefinitions: columnDefinitions,
+        values: values,
+        onEndEditing: onEndEditing,
+        newValueNotifier: newValueNotifier,
+      );
+      IUiService()
+          .openDialog(
+        pBuilder: (context) => currentEditDialog!,
+      )
+          .then((_) {
+        return currentEditDialog = null;
+      });
+    }
+  }
+
+  void _closeDialog() {
+    if (currentEditDialog != null) {
+      Navigator.pop(context);
     }
   }
 }

@@ -23,6 +23,9 @@ import '../../model/response/dal_fetch_response.dart';
 import 'fl_table_cell.dart';
 
 class FlTableRow extends FlStatelessWidget<FlTableModel> {
+  /// The width each slideable action should have
+  static const double SLIDEABLE_WIDTH = 125;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +80,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// The record formats
   final RecordFormat? recordFormats;
 
+  /// Which slide actions are to be allowed to the row.
+  final Set<TableRowSlideAction>? slideActions;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,6 +96,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     this.onLongPress,
     this.onAction,
     this.onSlideAction,
+    this.slideActions,
     required this.columnDefinitions,
     required this.tableSize,
     required this.values,
@@ -110,8 +117,10 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
 
     int cellIndex = -1;
 
+    double rowWidth = 0.0;
     List<Widget> rowWidgets = columnsToShow.map((columnDefinition) {
       cellIndex += 1;
+      rowWidth += tableSize.columnWidths[columnDefinition.name]!;
       return FlTableCell(
         model: model,
         onEndEditing: onEndEditing,
@@ -138,13 +147,42 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
       opacity = 0.25;
     }
 
-    return Slidable(
-      closeOnScroll: true,
-      direction: Axis.horizontal,
-      enabled: onSlideAction != null,
-      groupTag: onSlideAction,
-      endActionPane: ActionPane(motion: const ScrollMotion(), children: [
-        SlidableAction(
+    double singleActionExtent = SLIDEABLE_WIDTH / rowWidth;
+    double slideableExtentRatio = singleActionExtent * (slideActions?.length ?? 0.0);
+    slideableExtentRatio = slideableExtentRatio.clamp(0.25, 0.9);
+    return Theme(
+      data: Theme.of(context).copyWith(
+        iconTheme: IconTheme.of(context).copyWith(
+          size: 16,
+        ),
+      ),
+      child: Slidable(
+        closeOnScroll: true,
+        direction: Axis.horizontal,
+        enabled: onSlideAction != null && slideActions?.isNotEmpty == true,
+        groupTag: onSlideAction,
+        endActionPane: ActionPane(
+          extentRatio: slideableExtentRatio,
+          motion: const ScrollMotion(),
+          children: slideActions?.map((e) => buildAction(e)).toList() ?? [],
+        ),
+        child: Container(
+          height: tableSize.rowHeight,
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor.withOpacity(opacity),
+          ),
+          child: Row(
+            children: rowWidgets,
+          ),
+        ),
+      ),
+    );
+  }
+
+  SlidableAction buildAction(TableRowSlideAction pAction) {
+    switch (pAction) {
+      case TableRowSlideAction.DELETE:
+        return SlidableAction(
           onPressed: (context) {
             onSlideAction?.call(index, TableRowSlideAction.DELETE);
           },
@@ -152,19 +190,19 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
           backgroundColor: Colors.red,
           label: FlutterUI.translate("Delete"),
           icon: FontAwesomeIcons.trash,
-        )
-      ]),
-      child: Container(
-        height: tableSize.rowHeight,
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(opacity),
-        ),
-        child: Row(
-          children: rowWidgets,
-        ),
-      ),
-    );
+        );
+      case TableRowSlideAction.EDIT:
+        return SlidableAction(
+          onPressed: (context) {
+            onSlideAction?.call(index, TableRowSlideAction.EDIT);
+          },
+          autoClose: true,
+          backgroundColor: Colors.green,
+          label: FlutterUI.translate("Edit"),
+          icon: FontAwesomeIcons.penToSquare,
+        );
+    }
   }
 }
 
-enum TableRowSlideAction { DELETE }
+enum TableRowSlideAction { DELETE, EDIT }

@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -43,6 +44,17 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
 
   Function(Function)? onAction;
 
+  @override
+  bool get allowedInTable => false;
+
+  @override
+  bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
+
+  @override
+  bool get tableDeleteIcon => true;
+
+  @override
+  IconData? get tableEditIcon => FontAwesomeIcons.calendar;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,11 +141,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     return _value;
   }
 
-  @override
-  bool get allowedInTable => false;
-
-  @override
-  bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

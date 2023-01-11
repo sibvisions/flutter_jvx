@@ -111,6 +111,9 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     return itemCount;
   }
 
+  /// Which slide actions are to be allowed to the row.
+  final Set<TableRowSlideAction>? slideActions;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,6 +132,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.onAction,
     this.onEndScroll,
     this.onSlideAction,
+    this.slideActions,
     this.itemScrollController,
     this.onEndEditing,
     this.onValueChanged,
@@ -275,6 +279,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       onDoubleTap: onDoubleTap,
       onAction: onAction,
       onSlideAction: !canScrollHorizontally ? onSlideAction : null,
+      slideActions: slideActions,
       tableSize: tableSize,
       values: chunkData.data[index]!,
       recordFormats: chunkData.recordFormats?[model.name],

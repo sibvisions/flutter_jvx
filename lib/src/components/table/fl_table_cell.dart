@@ -195,7 +195,14 @@ class _FlTableCellState extends State<FlTableCell> {
         alignment: FLUTTER_ALIGNMENT[widget.columnDefinition.cellEditorHorizontalAlignment.index]
             [VerticalAlignment.CENTER.index],
         padding: widget.paddings,
-        child: cellChild,
+        child: Row(
+          children: [
+            Expanded(
+              child: cellChild,
+            ),
+            ..._createCellIcons(),
+          ],
+        ),
       ),
     );
   }
@@ -243,7 +250,7 @@ class _FlTableCellState extends State<FlTableCell> {
     FlStatelessWidget tableWidget = cellEditor.createWidget(widget.model.json);
 
     return AbsorbPointer(
-      absorbing: !cellEditor.allowedTableEdit,
+      absorbing: !widget.model.isEnabled || !widget.model.editable,
       child: tableWidget,
     );
   }
@@ -280,5 +287,53 @@ class _FlTableCellState extends State<FlTableCell> {
       overflow: TextOverflow.ellipsis,
       maxLines: widget.model.wordWrapEnabled ? null : 1,
     );
+  }
+
+  List<Widget> _createCellIcons() {
+    List<Widget> icons = [];
+
+    bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
+    if (cellEditor.tableDeleteIcon && cellEditor.allowedTableEdit && !_isValueNullOrEmpty()) {
+      icons.add(
+        Center(
+          child: InkWell(
+            canRequestFocus: false,
+            onTap: () {
+              widget.onEndEditing?.call(null, widget.rowIndex, widget.columnDefinition.name);
+            },
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: Icon(
+                Icons.clear,
+                size: 16,
+                color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (cellEditor.tableEditIcon != null) {
+      icons.add(
+        Center(
+          child: Icon(
+            cellEditor.tableEditIcon,
+            size: 16,
+            color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+          ),
+        ),
+      );
+    }
+
+    return icons;
+  }
+
+  bool _isValueNullOrEmpty() {
+    if (widget.value is Map<String, dynamic> || widget.value is List<dynamic>) {
+      return widget.value == null || widget.value.length == 0;
+    }
+    return widget.value == null || "" == widget.value;
   }
 }

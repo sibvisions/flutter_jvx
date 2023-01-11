@@ -35,7 +35,8 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
   @override
-  bool get allowedTableEdit => model.directCellEditor;
+  bool get allowedInTable => model.directCellEditor;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,9 +88,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
       onPress: _onPress,
     );
   }
-
-  @override
-  bool get allowedInTable => true;
 
   void _onPress() {
     int index = currentIndex + 1;
