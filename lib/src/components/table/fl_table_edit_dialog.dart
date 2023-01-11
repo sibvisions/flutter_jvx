@@ -72,18 +72,34 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     }
 
     List<Widget> editorWidgets = [];
+    // double labelColumnWidth = 0.0;
 
     for (int i = 0; i < widget.columnDefinitions.length; i++) {
-      Widget editorWidget = cellEditors[i].createWidget(null);
+      ICellEditor cellEditor = cellEditors[i];
+      Widget editorWidget = cellEditor.createWidget(null);
+
+      if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
+        editorWidget = SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget);
+      }
+
+      // TODO resize all labels to this minimum width
+      // labelColumnWidth = ParseUtil.getTextWidth(
+      //   text: pText,
+      //   style: pTextStyle,
+      // );
 
       if (widget.columnDefinitions.length > 1) {
         editorWidget = Row(
           children: [
-            Text(widget.columnDefinitions[i].label),
-            const SizedBox(
-              width: 10,
+            Flexible(
+              fit: FlexFit.loose,
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Text(widget.columnDefinitions[i].label),
+              ),
             ),
-            Expanded(child: editorWidget),
+            Expanded(flex: 3, child: editorWidget),
           ],
         );
       }
