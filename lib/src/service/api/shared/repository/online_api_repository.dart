@@ -284,7 +284,7 @@ class OnlineApiRepository implements IRepository {
         await ICommandService().sendCommand(AliveCommand(reason: "Periodic check", retryRequest: false));
         // The CommandService already resets the connected state and the timer.
         FlutterUI.logAPI.i("Alive Request succeeded");
-      } on SocketException catch (e, stack) {
+      } on IOException catch (e, stack) {
         FlutterUI.logAPI.w("Alive Request failed", e, stack);
         _reconnectHTTP();
       }
