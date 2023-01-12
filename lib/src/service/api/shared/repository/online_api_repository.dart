@@ -327,7 +327,7 @@ class OnlineApiRepository implements IRepository {
                   Theme.of(effectiveContext).colorScheme.onSurface)
               .withOpacity(0.7),
           // There is no infinite.
-          duration: showIndefinitely ? const Duration(days: 365) : const Duration(seconds: 4),
+          duration: showIndefinitely ? const Duration(days: 365) : const Duration(seconds: 2),
         ));
       }
     }
