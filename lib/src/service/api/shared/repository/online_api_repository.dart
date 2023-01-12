@@ -222,8 +222,11 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<void> start() async {
-    client ??= HttpClient()..connectionTimeout = Duration(seconds: ConfigController().getAppConfig()!.requestTimeout!);
-    // WebSocket gets started in first request after startup as soon as we get an clientId.
+    if (isStopped()) {
+      client ??= HttpClient()
+        ..connectionTimeout = Duration(seconds: ConfigController().getAppConfig()!.requestTimeout!);
+      // WebSocket gets started in first request after startup as soon as we get an clientId.
+    }
   }
 
   @override
@@ -231,6 +234,7 @@ class OnlineApiRepository implements IRepository {
     // Cancel reconnects
     _cancelHTTPReconnect();
     await stopWebSocket();
+    hideStatus();
 
     _everConnected = false;
     _connected = false;

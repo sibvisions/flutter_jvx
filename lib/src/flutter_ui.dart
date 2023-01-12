@@ -673,7 +673,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     var repository = configController.offline.value ? OfflineApiRepository() : OnlineApiRepository();
-    await repository.start();
     IApiService().setRepository(repository);
   }
 
@@ -682,6 +681,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     String? username,
     String? password,
   }) async {
+    // (Re-)start repository
+    if (IApiService().getRepository() is OnlineApiRepository) {
+      if (IApiService().getRepository()?.isStopped() == false) {
+        await IApiService().getRepository()?.stop();
+      }
+    }
+    await IApiService().getRepository()?.start();
+
     ConfigController configController = ConfigController();
     ICommandService commandService = ICommandService();
     IUiService uiService = IUiService();
