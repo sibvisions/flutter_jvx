@@ -31,7 +31,6 @@ import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/filter.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
-import '../../../../model/response/dal_meta_data_response.dart';
 import '../../../../util/parse_util.dart';
 import '../../../data/i_data_service.dart';
 import '../i_repository.dart';
@@ -59,8 +58,8 @@ class OfflineApiRepository implements IRepository {
   }
 
   Future<void> initDataBooks() async {
-    List<DalMetaDataResponse> metaData = await offlineDatabase!.getMetaData();
-    await Future.wait(metaData.map((element) => IDataService().updateMetaData(pChangedResponse: element)));
+    List<DalMetaData> metaData = await offlineDatabase!.getMetaData();
+    await Future.wait(metaData.map((element) => IDataService().setMetaData(pMetaData: element)));
   }
 
   @override
@@ -86,7 +85,7 @@ class OfflineApiRepository implements IRepository {
     List<DataBook> dataBooks,
     void Function(int value, int max, {int? progress})? progressUpdate,
   ) async {
-    var dalMetaData = dataBooks.map((e) => e.metaData!).toList(growable: false);
+    var dalMetaData = dataBooks.map((e) => e.metaData).toList(growable: false);
     // Drop old data + possible old scheme
     await offlineDatabase!.dropTables(dalMetaData);
     offlineDatabase!.createTables(dalMetaData);
@@ -102,8 +101,8 @@ class OfflineApiRepository implements IRepository {
         for (var entry in dataBook.records.entries) {
           Map<String, dynamic> rowData = {};
           entry.value.asMap().forEach((key, value) {
-            if (key < dataBook.columnDefinitions.length) {
-              var columnName = dataBook.columnDefinitions[key].name;
+            if (key < dataBook.metaData.columnDefinitions.length) {
+              var columnName = dataBook.metaData.columnDefinitions[key].name;
               rowData[columnName] = value;
             }
           });
@@ -227,7 +226,7 @@ class OfflineApiRepository implements IRepository {
 
     DataBook dataBook = IDataService().getDataBook(pRequest.dataProvider)!;
 
-    List<String> columnNames = pRequest.columnNames ?? dataBook.columnDefinitions.map((e) => e.name).toList();
+    List<String> columnNames = pRequest.columnNames ?? dataBook.metaData.columnDefinitions.map((e) => e.name).toList();
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
       pColumns: columnNames,
@@ -352,7 +351,7 @@ class OfflineApiRepository implements IRepository {
     DataBook dataBook = IDataService().getDataBook(pDataProvider)!;
 
     DataRecord? dataRecord = dataBook.getRecord(
-      pDataColumnNames: dataBook.metaData!.primaryKeyColumns,
+      pDataColumnNames: dataBook.metaData.primaryKeyColumns,
       pRecordIndex: pSelectedRow ?? dataBook.selectedRow,
     );
 

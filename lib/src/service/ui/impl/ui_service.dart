@@ -25,13 +25,13 @@ import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../model/data/data_book.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_group_model.dart';
 import '../../../model/menu/menu_model.dart';
-import '../../../model/response/dal_meta_data_response.dart';
 import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
@@ -469,7 +469,7 @@ class UiService implements IUiService {
   void setMetaData({
     required String pSubId,
     required String pDataProvider,
-    required DalMetaDataResponse pMetaData,
+    required DalMetaData pMetaData,
   }) {
     _dataSubscriptions
         .where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null)

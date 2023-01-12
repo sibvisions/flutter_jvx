@@ -385,7 +385,7 @@ abstract class OfflineUtil {
   static Map<String, Object?> _getPrimaryColumns(Map<String, Object?> row, DataBook dataBook) {
     var primaryColumns = {
       for (var entry in row.entries.where(
-          (rowColumn) => dataBook.metaData!.primaryKeyColumns.any((primaryColumn) => primaryColumn == rowColumn.key)))
+          (rowColumn) => dataBook.metaData.primaryKeyColumns.any((primaryColumn) => primaryColumn == rowColumn.key)))
         entry.key: entry.value
     };
     return primaryColumns;

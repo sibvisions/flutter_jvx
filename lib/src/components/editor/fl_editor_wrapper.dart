@@ -26,10 +26,10 @@ import '../../model/command/base_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
 import '../../model/data/column_definition.dart';
+import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
-import '../../model/response/dal_meta_data_response.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -211,8 +211,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  void receiveMetaData(DalMetaDataResponse pMetaData) {
-    ColumnDefinition? newColDef = pMetaData.columns.firstWhereOrNull((element) => element.name == model.columnName);
+  void receiveMetaData(DalMetaData pMetaData) {
+    ColumnDefinition? newColDef =
+        pMetaData.columnDefinitions.firstWhereOrNull((element) => element.name == model.columnName);
     cellEditor.setColumnDefinition(newColDef);
     setState(() {});
   }

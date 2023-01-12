@@ -24,6 +24,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/data/column_definition.dart';
+import '../../../../../model/data/data_book.dart';
 import '../../../../../model/data/filter_condition.dart';
 import '../../../../../model/response/dal_meta_data_response.dart';
 import '../../../../../util/i_types.dart';
@@ -101,7 +102,7 @@ class OfflineDatabase {
   }
 
   /// Creates offline tables for offline data.
-  createTables(List<DalMetaDataResponse> dalMetaData, {bool onlyIfNotExists = false}) {
+  createTables(List<DalMetaData> dalMetaData, {bool onlyIfNotExists = false}) {
     return Future.wait([
       _createStructTables(ConfigController().appName.value!, dalMetaData),
       ...dalMetaData.map((table) async {
@@ -139,7 +140,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Creates metadata entries for offline tables.
-  Future<dynamic> _createStructTables(String appName, List<DalMetaDataResponse> dalMetaData) async {
+  Future<dynamic> _createStructTables(String appName, List<DalMetaData> dalMetaData) async {
     var appId = await db.insert(OFFLINE_APPS_TABLE, {"APP": appName});
 
     return Future.wait(dalMetaData.map((metaData) => db.insert(OFFLINE_METADATA_TABLE, {
@@ -151,7 +152,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Drops all [DalMetaDataResponse.dataProvider] tables and removes all metadata entries from the current app (as from: [ConfigController.appName]).
-  Future<dynamic> dropTables(List<DalMetaDataResponse> dalMetaData) {
+  Future<dynamic> dropTables(List<DalMetaData> dalMetaData) {
     return Future.wait([
       ...dalMetaData.map((table) => dropTable(table.dataProvider)),
       _dropStructTables(ConfigController().appName.value!),
@@ -164,7 +165,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Retrieves all saved [DalMetaDataResponse]s from [OFFLINE_APPS_TABLE].
-  Future<List<DalMetaDataResponse>> getMetaData({String? pDataProvider}) {
+  Future<List<DalMetaData>> getMetaData({String? pDataProvider}) {
     List<String> whereArgs = [ConfigController().appName.value!];
     if (pDataProvider != null) {
       whereArgs.add(pDataProvider);
@@ -177,9 +178,10 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
               "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)${pDataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""}",
           whereArgs: whereArgs,
         )
-        .then((result) => result
-            .map((e) => DalMetaDataResponse.fromJson(jsonDecode(e['META_DATA'] as String)))
-            .toList(growable: false));
+        .then((result) => result.map((e) {
+              var metaDataResponse = DalMetaDataResponse.fromJson(jsonDecode(e['META_DATA'] as String));
+              return DalMetaData(metaDataResponse.dataProvider)..applyMetaDataResponse(metaDataResponse);
+            }).toList(growable: false));
   }
 
   /// Closes the database.
@@ -203,10 +205,10 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Creates an offline table on the basis of [pTable].
-  String _createTable(DalMetaDataResponse pTable) {
+  String _createTable(DalMetaData pTable) {
     var sql = StringBuffer('CREATE TABLE "${formatOfflineTableName(pTable.dataProvider)}" (');
 
-    for (var column in pTable.columns) {
+    for (var column in pTable.columnDefinitions) {
       sql.write(_createColumn(column.name, column));
       // Offline/Old columns are always nullable.
       sql.write(_createColumn(formatOfflineColumnName(column.name), column, nullable: true));

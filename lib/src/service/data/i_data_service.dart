@@ -44,6 +44,9 @@ abstract class IDataService {
   /// Establishes the meta data of the given dataBook
   Future<bool> updateMetaData({required DalMetaDataResponse pChangedResponse});
 
+  /// Establishes the meta data of the given dataBook
+  Future<bool> setMetaData({required DalMetaData pMetaData});
+
   /// Updates parts of the meta data of a given dataBook
   bool updateMetaDataChangedRepsonse({required DalDataProviderChangedResponse pChangedResponse});
 
@@ -70,7 +73,7 @@ abstract class IDataService {
   });
 
   /// Returns the full [DalMetaDataResponse] for this dataProvider
-  DalMetaDataResponse getMetaData({required String pDataProvider});
+  DalMetaData getMetaData({required String pDataProvider});
 
   /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
   Future<bool> checkIfFetchPossible({

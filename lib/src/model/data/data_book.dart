@@ -21,6 +21,7 @@ import 'package:collection/collection.dart';
 
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/parse_util.dart';
 import '../command/api/delete_record_command.dart';
 import '../command/api/filter_command.dart';
 import '../command/api/insert_record_command.dart';
@@ -46,12 +47,6 @@ class DataBook {
   /// Link to source of the data,
   String dataProvider;
 
-  /// List of column names which should be shown if this dataBook is to be
-  List<String> columnViewTable;
-
-  /// Definitions for all columns of this dataBook
-  List<ColumnDefinition> columnDefinitions;
-
   /// All fetched records of this dataBook
   HashMap<int, List<dynamic>> records;
 
@@ -62,7 +57,7 @@ class DataBook {
   int selectedRow;
 
   /// Contains all metadata
-  DalMetaDataResponse? metaData;
+  DalMetaData metaData;
 
   /// Contains record formats
   Map<String, RecordFormat>? recordFormats;
@@ -78,22 +73,18 @@ class DataBook {
   DataBook({
     required this.dataProvider,
     required this.records,
-    required this.columnDefinitions,
     required this.isAllFetched,
     required this.selectedRow,
-    required this.columnViewTable,
     this.recordFormats,
-    this.metaData,
-  });
+  }) : metaData = DalMetaData(dataProvider);
 
   /// Creates a [DataBook] with only default values
   DataBook.empty()
       : dataProvider = "",
-        columnViewTable = [],
-        columnDefinitions = [],
         records = HashMap(),
         selectedRow = -1,
-        isAllFetched = false;
+        isAllFetched = false,
+        metaData = DalMetaData("");
 
   @override
   String toString() {
@@ -147,7 +138,7 @@ class DataBook {
       String columnName = pChangedResponse.changedColumnNames![index];
       dynamic columnData = pChangedResponse.changedValues![index];
 
-      int intColIndex = columnDefinitions.indexWhere((element) => element.name == columnName);
+      int intColIndex = metaData.columnDefinitions.indexWhere((element) => element.name == columnName);
       if (intColIndex >= 0) {
         rowData[intColIndex] = columnData;
         changed = true;
@@ -199,13 +190,13 @@ class DataBook {
     }
 
     List<dynamic> selectedRecord = records[pRecordIndex]!;
-    List<ColumnDefinition> definitions = columnDefinitions;
+    List<ColumnDefinition> definitions = metaData.columnDefinitions;
 
     if (pDataColumnNames != null) {
       // Get provided column definitions
       definitions = [];
       for (String columnName in pDataColumnNames) {
-        var colDef = columnDefinitions.firstWhereOrNull((element) => element.name == columnName);
+        var colDef = metaData.columnDefinitions.firstWhereOrNull((element) => element.name == columnName);
         if (colDef != null) {
           definitions.add(colDef);
         }
@@ -214,7 +205,7 @@ class DataBook {
       // Get full selected record, then only take requested columns
       List<dynamic> fullRecord = records[pRecordIndex]!;
       selectedRecord = definitions.map((e) {
-        int indexOfDef = columnDefinitions.indexOf(e);
+        int indexOfDef = metaData.columnDefinitions.indexOf(e);
         return fullRecord[indexOfDef];
       }).toList();
     }
@@ -229,7 +220,7 @@ class DataBook {
   /// Will return all available data from the column in the provided range
   List<dynamic> getDataFromColumn({required String pColumnName, required int pFrom, required int pTo}) {
     List<dynamic> data = [];
-    int indexOfColumn = columnDefinitions.indexWhere((element) => element.name == pColumnName);
+    int indexOfColumn = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
     for (int i = pFrom; i < pTo; i++) {
       var a = records[i];
@@ -352,7 +343,7 @@ class DataBook {
     int pFrom = -1,
     int? pTo,
     void Function(DataChunk)? pOnDataChunk,
-    void Function(DalMetaDataResponse)? pOnMetaData,
+    void Function(DalMetaData)? pOnMetaData,
     void Function(DataRecord?)? pOnSelectedRecord,
   }) {
     IUiService().registerDataSubscription(
@@ -377,5 +368,73 @@ class DataBook {
 
   static int getColumnIndex(List<ColumnDefinition> columnDefinitions, String columnName) {
     return columnDefinitions.indexWhere((colDef) => colDef.name == columnName);
+  }
+}
+
+class DalMetaData {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// All column definitions in this dataBook
+  List<ColumnDefinition> columnDefinitions = [];
+
+  /// The name of the data provider
+  String dataProvider;
+
+  /// All visible columns of this this dataBook if shown in a table
+  List<String> columnViewTable = [];
+
+  /// If the databook is readonly.
+  bool readOnly = false;
+
+  /// If deletion is allowed.
+  bool deleteEnabled = true;
+
+  /// If updating a row is allowed.
+  bool updateEnabled = true;
+
+  /// If inserting a row is allowed.
+  bool insertEnabled = true;
+
+  /// The primary key columns of the dataBook
+  List<String> primaryKeyColumns = [];
+
+  /// Combined json of this metaData
+  Map<String, dynamic> json = {};
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  DalMetaData(this.dataProvider);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void applyMetaDataResponse(DalMetaDataResponse pResponse) {
+    if (pResponse.columnViewTable != null) {
+      columnViewTable = pResponse.columnViewTable!;
+    }
+    if (pResponse.columns != null) {
+      columnDefinitions = pResponse.columns!;
+    }
+    if (pResponse.primaryKeyColumns != null) {
+      primaryKeyColumns = pResponse.primaryKeyColumns!;
+    }
+    if (pResponse.deleteEnabled != null) {
+      deleteEnabled = pResponse.deleteEnabled!;
+    }
+    if (pResponse.insertEnabled != null) {
+      insertEnabled = pResponse.insertEnabled!;
+    }
+    if (pResponse.readOnly != null) {
+      readOnly = pResponse.readOnly!;
+    }
+    if (pResponse.updateEnabled != null) {
+      updateEnabled = pResponse.updateEnabled!;
+    }
+    ParseUtil.applyJsonToJson(json, pResponse.json);
   }
 }

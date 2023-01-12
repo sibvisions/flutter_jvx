@@ -17,13 +17,13 @@
 import 'dart:math';
 
 import '../../../service/ui/i_ui_service.dart';
-import '../../response/dal_meta_data_response.dart';
+import '../data_book.dart';
 import 'data_chunk.dart';
 import 'data_record.dart';
 
 typedef OnSelectedRecordCallback = void Function(DataRecord? dataRecord);
 typedef OnDataChunkCallback = void Function(DataChunk dataChunk);
-typedef OnMetaDataCallback = void Function(DalMetaDataResponse metaData);
+typedef OnMetaDataCallback = void Function(DalMetaData metaData);
 
 /// Used for subscribing in [IUiService] to potentially receive data.
 class DataSubscription {

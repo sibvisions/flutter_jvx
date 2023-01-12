@@ -88,17 +88,29 @@ class DataService implements IDataService {
       dataBook = DataBook(
         dataProvider: pChangedResponse.dataProvider,
         records: HashMap(),
-        columnDefinitions: pChangedResponse.columns,
         isAllFetched: false,
         selectedRow: -1,
-        columnViewTable: pChangedResponse.columnViewTable,
-        metaData: pChangedResponse,
       );
       dataBooks[dataBook.dataProvider] = dataBook;
-    } else {
-      dataBook.columnDefinitions = pChangedResponse.columns;
-      dataBook.columnViewTable = pChangedResponse.columnViewTable;
-      dataBook.metaData = pChangedResponse;
+    }
+
+    dataBook.metaData.applyMetaDataResponse(pChangedResponse);
+
+    return true;
+  }
+
+  @override
+  Future<bool> setMetaData({required DalMetaData pMetaData}) async {
+    DataBook? dataBook = dataBooks[pMetaData.dataProvider];
+
+    if (dataBook == null) {
+      dataBook = DataBook(
+        dataProvider: pMetaData.dataProvider,
+        records: HashMap(),
+        isAllFetched: false,
+        selectedRow: -1,
+      );
+      dataBooks[dataBook.dataProvider] = dataBook;
     }
 
     return true;
@@ -107,7 +119,7 @@ class DataService implements IDataService {
   @override
   bool updateMetaDataChangedRepsonse({required DalDataProviderChangedResponse pChangedResponse}) {
     DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
-    DalMetaDataResponse? metaData = dataBook?.metaData;
+    DalMetaData? metaData = dataBook?.metaData;
     if (metaData == null) {
       return false;
     }
@@ -135,7 +147,7 @@ class DataService implements IDataService {
     if (pChangedResponse.changedColumns != null) {
       pChangedResponse.changedColumns!.forEach((changedColumn) {
         ColumnDefinition? foundColumn =
-            metaData.columns.firstWhereOrNull((element) => element.name == changedColumn.name);
+            metaData.columnDefinitions.firstWhereOrNull((element) => element.name == changedColumn.name);
         if (foundColumn != null) {
           if (changedColumn.label != null && changedColumn.label != foundColumn.label) {
             foundColumn.label = changedColumn.label!;
@@ -196,7 +208,7 @@ class DataService implements IDataService {
     // either same as requested or as received from server
     if (pColumnNames != null) {
       for (String columnName in pColumnNames) {
-        columnDefinitions.add(dataBook.columnDefinitions.firstWhere((element) => element.name == columnName));
+        columnDefinitions.add(dataBook.metaData.columnDefinitions.firstWhere((element) => element.name == columnName));
         columnData.add(dataBook.getDataFromColumn(
           pColumnName: columnName,
           pFrom: pFrom,
@@ -204,7 +216,7 @@ class DataService implements IDataService {
         ));
       }
     } else {
-      columnDefinitions.addAll(dataBook.columnDefinitions);
+      columnDefinitions.addAll(dataBook.metaData.columnDefinitions);
 
       for (ColumnDefinition colDef in columnDefinitions) {
         columnData.add(dataBook.getDataFromColumn(
@@ -243,9 +255,9 @@ class DataService implements IDataService {
   }
 
   @override
-  DalMetaDataResponse getMetaData({required String pDataProvider}) {
+  DalMetaData getMetaData({required String pDataProvider}) {
     DataBook dataBook = dataBooks[pDataProvider]!;
-    return dataBook.metaData!;
+    return dataBook.metaData;
   }
 
   @override

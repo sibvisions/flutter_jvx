@@ -26,10 +26,10 @@ import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_edi
 import '../../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../../model/component/table/fl_table_model.dart';
 import '../../../../model/data/column_definition.dart';
+import '../../../../model/data/data_book.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../../../../model/request/filter.dart';
-import '../../../../model/response/dal_meta_data_response.dart';
 import '../../../../service/command/i_command_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../table/fl_table_widget.dart';
@@ -74,7 +74,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   Timer? filterTimer; // 200-300 Milliseconds
   String? lastChangedFilter;
   DataChunk? _chunkData;
-  DalMetaDataResponse? _metaData;
+  DalMetaData? _metaData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -267,7 +267,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
   }
 
-  void _receiveMetaData(DalMetaDataResponse pMetaData) {
+  void _receiveMetaData(DalMetaData pMetaData) {
     _metaData = pMetaData;
 
     if (mounted) {

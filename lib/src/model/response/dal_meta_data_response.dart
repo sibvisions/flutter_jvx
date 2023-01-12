@@ -24,41 +24,42 @@ class DalMetaDataResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// All column definitions in this dataBook
-  List<ColumnDefinition> columns;
+  List<ColumnDefinition>? columns;
 
   /// All visible columns of this this dataBook if shown in a table
-  List<String> columnViewTable;
+  List<String>? columnViewTable;
 
   /// The path to the dataBook
   String dataProvider;
 
   /// If the databook is readonly.
-  bool readOnly;
+  bool? readOnly;
 
   /// If deletion is allowed.
-  bool deleteEnabled;
+  bool? deleteEnabled;
 
   /// If updating a row is allowed.
-  bool updateEnabled;
+  bool? updateEnabled;
 
   /// If inserting a row is allowed.
-  bool insertEnabled;
+  bool? insertEnabled;
 
   /// The primary key columns of the dataBook
-  List<String> primaryKeyColumns;
+  List<String>? primaryKeyColumns;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DalMetaDataResponse.fromJson(super.json)
-      : columnViewTable = json[ApiObjectProperty.columnViewTable].cast<String>(),
-        columns = (json[ApiObjectProperty.columns] as List<dynamic>).map((e) => ColumnDefinition.fromJson(e)).toList(),
-        dataProvider = json[ApiObjectProperty.dataProvider],
-        readOnly = json[ApiObjectProperty.readOnly] ?? false,
-        deleteEnabled = json[ApiObjectProperty.deleteEnabled] ?? true,
-        updateEnabled = json[ApiObjectProperty.updateEnabled] ?? true,
-        insertEnabled = json[ApiObjectProperty.insertEnabled] ?? true,
-        primaryKeyColumns = List<String>.from(json[ApiObjectProperty.primaryKeyColumns] ?? []),
-        super.fromJson();
+      : dataProvider = json[ApiObjectProperty.dataProvider],
+        super.fromJson() {
+    columnViewTable = json[ApiObjectProperty.columnViewTable].cast<String>();
+    columns = (json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList();
+    readOnly = json[ApiObjectProperty.readOnly];
+    deleteEnabled = json[ApiObjectProperty.deleteEnabled];
+    updateEnabled = json[ApiObjectProperty.updateEnabled];
+    insertEnabled = json[ApiObjectProperty.insertEnabled];
+    primaryKeyColumns = (json[ApiObjectProperty.primaryKeyColumns] as List<String>?);
+  }
 }

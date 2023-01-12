@@ -81,7 +81,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   int selectedRow = -1;
 
   /// The meta data of the table.
-  DalMetaDataResponse? metaData;
+  DalMetaData? metaData;
 
   /// The data of the table.
   DataChunk dataChunk =
@@ -304,11 +304,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Receives the meta data of the table.
-  void _receiveMetaData(DalMetaDataResponse pMetaData) {
+  void _receiveMetaData(DalMetaData pMetaData) {
     currentState |= LOADED_META_DATA;
 
-    List<ColumnDefinition> newColumns = pMetaData.columns;
-    List<ColumnDefinition> oldColumns = metaData?.columns ?? [];
+    List<ColumnDefinition> newColumns = pMetaData.columnDefinitions;
+    List<ColumnDefinition> oldColumns = metaData?.columnDefinitions ?? [];
 
     bool hasToCalc = newColumns.any((newColumn) => (!oldColumns.any((oldColumn) => newColumn.name == oldColumn.name)));
     hasToCalc |= oldColumns.any((oldColumn) => (!newColumns.any((newColumn) => newColumn.name == oldColumn.name)));
@@ -337,7 +337,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pRow,
       pColumnName,
       pAfterSelect: () async {
-        int colIndex = metaData?.columns.indexWhere((element) => element.name == pColumnName) ?? -1;
+        int colIndex = metaData?.columnDefinitions.indexWhere((element) => element.name == pColumnName) ?? -1;
 
         if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
           if (pValue is HashMap<String, dynamic>) {
@@ -569,7 +569,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (metaData!.primaryKeyColumns.isNotEmpty) {
       listColumnNames.addAll(metaData!.primaryKeyColumns);
     } else {
-      listColumnNames.addAll(metaData!.columns.map((e) => e.name));
+      listColumnNames.addAll(metaData!.columnDefinitions.map((e) => e.name));
     }
 
     for (String column in listColumnNames) {

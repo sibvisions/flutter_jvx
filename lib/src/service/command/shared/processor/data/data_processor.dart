@@ -26,9 +26,9 @@ import '../../../../../model/command/data/get_selected_data_command.dart';
 import '../../../../../model/command/data/save_fetch_data_command.dart';
 import '../../../../../model/command/data/save_meta_data_command.dart';
 import '../../../../../model/command/ui/open_error_dialog_command.dart';
+import '../../../../../model/data/data_book.dart';
 import '../../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../../model/data/subscriptions/data_record.dart';
-import '../../../../../model/response/dal_meta_data_response.dart';
 import '../../../../data/i_data_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
@@ -74,8 +74,8 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     } else {
       return [
         OpenErrorDialogCommand(
-          message: "Setting new selected row failed",
-          reason: "Setting new selected row failed",
+          message: "Deleting row failed",
+          reason: "Could not delete the row locally",
         )
       ];
     }
@@ -96,12 +96,12 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       ];
     }
 
-    DalMetaDataResponse meta = IDataService().getMetaData(pDataProvider: command.dataProvider);
+    DalMetaData metaData = IDataService().getMetaData(pDataProvider: command.dataProvider);
 
     IUiService().setMetaData(
       pSubId: command.subId,
       pDataProvider: command.dataProvider,
-      pMetaData: meta,
+      pMetaData: metaData,
     );
 
     return [];
@@ -213,7 +213,6 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       pTo: command.to,
       pDataProvider: command.dataProvider,
     );
-    dataChunk.update = command.isUpdate;
 
     IUiService().setChunkData(
       pDataChunk: dataChunk,

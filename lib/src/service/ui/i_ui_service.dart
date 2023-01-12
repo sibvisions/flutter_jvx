@@ -28,12 +28,12 @@ import '../../model/command/api/login_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/menu/menu_model.dart';
-import '../../model/response/dal_meta_data_response.dart';
 import '../command/i_command_service.dart';
 import '../service.dart';
 
@@ -198,7 +198,7 @@ abstract class IUiService {
   void setMetaData({
     required String pSubId,
     required String pDataProvider,
-    required DalMetaDataResponse pMetaData,
+    required DalMetaData pMetaData,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
