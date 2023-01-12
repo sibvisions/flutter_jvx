@@ -60,6 +60,8 @@ class DalMetaDataResponse extends ApiResponse {
     deleteEnabled = json[ApiObjectProperty.deleteEnabled];
     updateEnabled = json[ApiObjectProperty.updateEnabled];
     insertEnabled = json[ApiObjectProperty.insertEnabled];
-    primaryKeyColumns = (json[ApiObjectProperty.primaryKeyColumns] as List<String>?);
+    if (json.containsKey(json[ApiObjectProperty.primaryKeyColumns])) {
+      primaryKeyColumns = List<String>.from(json[ApiObjectProperty.primaryKeyColumns]);
+    }
   }
 }
