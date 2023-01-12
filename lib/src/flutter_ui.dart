@@ -18,6 +18,7 @@ import 'dart:async';
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -363,6 +364,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   );
 
   final ThemeData splashTheme = ThemeData();
+  late final StreamSubscription<ConnectivityResult> subscription;
 
   late Future<void> initAppFuture;
   Future<void>? startupFuture;
@@ -386,6 +388,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     );
 
     WidgetsBinding.instance.addObserver(this);
+
+    // Workaround for https://github.com/dart-lang/sdk/issues/47807
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
+        FlutterUI.logAPI.i("Connectivity lost");
+        var repository = IApiService().getRepository();
+        if (repository is OnlineApiRepository) {
+          repository.setConnected(false);
+        }
+      }
+    });
 
     initAppFuture = initApp().catchError(createErrorHandler("Failed to initialize")).then((value) {
       // Activate second future
@@ -527,6 +540,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   @override
   void dispose() {
     IApiService().getRepository()?.stop();
+    subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

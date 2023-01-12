@@ -248,7 +248,7 @@ class OnlineApiRepository implements IRepository {
     return client == null;
   }
 
-  void _setConnected(bool connected) {
+  void setConnected(bool connected) {
     if (_connected != connected) {
       FlutterUI.logAPI.i("$runtimeType ${connected ? "connected" : "disconnected"}");
     }
@@ -382,9 +382,9 @@ class OnlineApiRepository implements IRepository {
         } else {
           response = await _sendRequest(pRequest);
         }
-        _setConnected(true);
+        setConnected(true);
       } catch (_) {
-        _setConnected(false);
+        setConnected(false);
         rethrow;
       }
 
@@ -742,7 +742,7 @@ class JVxWebSocket {
           }
 
           // Re-set to possibly override a single failing http request.
-          _repository._setConnected(true);
+          _repository.setConnected(true);
 
           if (data.isNotEmpty) {
             try {
@@ -790,7 +790,7 @@ class JVxWebSocket {
             // Server restarts in the meantime (Session gets invalid)
             // Connections gets restored but clientId is invalid
             // Connection is ready but Web Socket gets closed because of invalid session
-            _repository._setConnected(false);
+            _repository.setConnected(false);
           }
 
           // Don't retry if server goes down because the clientId will be invalid anyway, which triggers a restart on its own.
