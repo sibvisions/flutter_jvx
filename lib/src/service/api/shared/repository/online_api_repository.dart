@@ -214,6 +214,8 @@ class OnlineApiRepository implements IRepository {
 
   JVxWebSocket? jvxWebSocket;
 
+  bool get connected => _connected;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -389,12 +389,19 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addObserver(this);
 
-    // Workaround for https://github.com/dart-lang/sdk/issues/47807
-    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
       if (result == ConnectivityResult.none) {
         FlutterUI.logAPI.i("Connectivity lost");
         var repository = IApiService().getRepository();
-        if (repository is OnlineApiRepository) {
+        if (repository is OnlineApiRepository && repository.connected) {
+          // Workaround for https://github.com/dart-lang/sdk/issues/47807
+          if (Platform.isIOS) {
+            // Force close sockets
+            await repository.stop();
+            await repository.start();
+            await repository.startWebSocket();
+            repository.setConnected(true);
+          }
           repository.setConnected(false);
         }
       }
