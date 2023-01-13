@@ -111,6 +111,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// If update a row is allowed.
   bool get _isUpdateAllowed => metaData?.updateEnabled ?? true;
 
+  /// The value notifier for a potential editing dialog.
   ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
 
   /// The currently opened editing dialog
@@ -157,6 +158,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       selectedRowIndex: selectedRow,
       onEndEditing: _setValueEnd,
       onValueChanged: _setValueChanged,
+      onRefresh: _refresh,
       onEndScroll: _loadMore,
       onLongPress: _onLongPress,
       onTap: _onCellTap,
@@ -285,8 +287,21 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       dataChunk = pDataChunk;
     }
 
+    if (selectedRow >= 0 && selectedRow < dataChunk.data.length) {
+      Map<String, dynamic> valueMap = {};
+
+      for (ColumnDefinition coldef in dataChunk.columnDefinitions) {
+        valueMap[coldef.name] = dataChunk.data[selectedRow]![dataChunk.getColumnIndex(coldef.name)];
+      }
+
+      dialogValueNotifier.value = valueMap;
+    }
+
     if (hasToCalc) {
+      _closeDialog();
       _recalculateTableSize(true);
+    } else {
+      setState(() {});
     }
   }
 
@@ -294,13 +309,18 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _receiveSelectedRecord(DataRecord? pRecord) {
     currentState |= LOADED_SELECTED_RECORD;
 
+    var oldRecordIndex = selectedRow;
+
     if (pRecord != null) {
       selectedRow = pRecord.index;
     } else {
       selectedRow = -1;
     }
 
-    setState(() {});
+    if (oldRecordIndex != selectedRow) {
+      _closeDialog();
+      setState(() {});
+    }
   }
 
   /// Receives the meta data of the table.
@@ -358,6 +378,18 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     // Do nothing
   }
 
+  /// Refreshes this dataprovider
+  Future<void> _refresh() {
+    return IUiService().sendCommand(
+      FetchCommand(
+        fromRow: -1,
+        rowCount: IUiService().getSubscriptionRowcount(pDataProvider: model.dataProvider),
+        dataProvider: model.dataProvider,
+        reason: "Table refreshed",
+      ),
+    );
+  }
+
   /// Increments the page count and loads more data.
   void _loadMore() {
     if (!dataChunk.isAllFetched) {
@@ -371,17 +403,20 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       _sortColumn(pColumnName);
     } else {
       _selectRecord(pRowIndex, pColumnName);
-      if (!pCellEditor.allowedInTable &&
-          _isUpdateAllowed == true &&
-          pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK &&
-          mounted &&
-          currentEditDialog != null) {
-        _showDialog(
-          columnDefinitions: [pCellEditor.columnDefinition!],
-          values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
-          onEndEditing: _setValueEnd,
-          newValueNotifier: dialogValueNotifier,
-        );
+      if (IStorageService().isVisibleInUI(model.id)) {
+        if (!pCellEditor.allowedInTable &&
+            _isUpdateAllowed == true &&
+            pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK &&
+            mounted &&
+            currentEditDialog != null) {
+          _showDialog(
+            rowIndex: pRowIndex,
+            columnDefinitions: [pCellEditor.columnDefinition!],
+            values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+            onEndEditing: _setValueEnd,
+            newValueNotifier: dialogValueNotifier,
+          );
+        }
       }
     }
   }
@@ -397,6 +432,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK &&
             mounted) {
           _showDialog(
+            rowIndex: pRowIndex,
             columnDefinitions: [pCellEditor.columnDefinition!],
             values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
             onEndEditing: _setValueEnd,
@@ -423,9 +459,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", TableContextMenuItem.SORT));
     }
 
-    // if (pRowIndex >= 0 && pColumnName.isNotEmpty && _isUpdateAllowed) {
-    //   popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
-    // }
+    if (pRowIndex >= 0 && _isUpdateAllowed) {
+      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
+    }
 
     if (kDebugMode) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.powerOff, "Offline", TableContextMenuItem.OFFLINE));
@@ -466,9 +502,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
                   return [command];
                 }
               } else if (val == TableContextMenuItem.OFFLINE) {
-                _goOffline();
+                _debugGoOffline();
               } else if (val == TableContextMenuItem.FETCH) {
-                _fetch();
+                _debugFetch();
               } else if (val == TableContextMenuItem.SORT) {
                 _sortColumn(pColumnName);
               } else if (val == TableContextMenuItem.EDIT) {
@@ -609,15 +645,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Debug feature -> Takes one dataprovider offline
-  void _goOffline() {
+  void _debugGoOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workscreenName = state.pathParameters['workScreenName']!;
     OfflineUtil.initOffline(workscreenName);
   }
 
-  void _fetch() {
-    IUiService()
-        .sendCommand(FetchCommand(dataProvider: model.dataProvider, fromRow: 0, rowCount: -1, reason: "debug fetch"));
+  void _debugFetch() {
+    IUiService().sendCommand(FetchCommand(
+      dataProvider: model.dataProvider,
+      fromRow: 0,
+      rowCount: -1,
+      reason: "debug fetch",
+    ));
   }
 
   /// Creates a delete command for this row.
@@ -672,12 +712,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pRowIndex,
       "",
       pAfterSelect: () async {
-        _showDialog(
-          columnDefinitions: columnsToShow,
-          values: values,
-          onEndEditing: _setValueEnd,
-          newValueNotifier: dialogValueNotifier,
-        );
+        if (IStorageService().isVisibleInUI(model.id)) {
+          _showDialog(
+            rowIndex: pRowIndex,
+            columnDefinitions: columnsToShow,
+            values: values,
+            onEndEditing: _setValueEnd,
+            newValueNotifier: dialogValueNotifier,
+          );
+        }
         return [];
       },
     );
@@ -721,6 +764,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void _showDialog({
+    required int rowIndex,
     required List<ColumnDefinition> columnDefinitions,
     required Map<String, dynamic> values,
     required void Function(dynamic, int, String) onEndEditing,
@@ -728,6 +772,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }) {
     if (currentEditDialog == null) {
       currentEditDialog = FlTableEditDialog(
+        rowIndex: rowIndex,
         model: model,
         columnDefinitions: columnDefinitions,
         values: values,

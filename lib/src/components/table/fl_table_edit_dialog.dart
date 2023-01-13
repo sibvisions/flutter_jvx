@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
 class FlTableEditDialog extends StatefulWidget {
+  final int rowIndex;
+
   final ValueNotifier<Map<String, dynamic>?> newValueNotifier;
 
   final List<ColumnDefinition> columnDefinitions;
@@ -16,6 +20,7 @@ class FlTableEditDialog extends StatefulWidget {
 
   const FlTableEditDialog({
     super.key,
+    required this.rowIndex,
     required this.columnDefinitions,
     required this.values,
     required this.onEndEditing,
@@ -42,7 +47,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         pCellEditorJson: colDef.cellEditorJson,
         columnDefinition: colDef,
         onChange: (_) {},
-        onEndEditing: (value) => onCellEditorEndEditing(colDef.name, value),
+        onEndEditing: (value) => widget.onEndEditing(value, widget.rowIndex, colDef.name),
         onFocusChanged: (_) {},
         isInTable: false,
       );
@@ -64,47 +69,65 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       screenSize.height / 16,
     );
 
-    String dialogLabel = "${FlutterUI.translate("Edit")} ";
+    String dialogLabel;
     if (widget.columnDefinitions.length == 1) {
-      dialogLabel += widget.columnDefinitions.first.label;
+      dialogLabel = FlutterUI.translate("Edit");
     } else {
-      dialogLabel += FlutterUI.translate("row");
+      dialogLabel = FlutterUI.translate("Edit row");
     }
 
     List<Widget> editorWidgets = [];
-    // double labelColumnWidth = 0.0;
-
-    for (int i = 0; i < widget.columnDefinitions.length; i++) {
-      ICellEditor cellEditor = cellEditors[i];
+    if (widget.columnDefinitions.length == 1) {
+      ICellEditor cellEditor = cellEditors[0];
       Widget editorWidget = cellEditor.createWidget(null);
 
       if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
         editorWidget = SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget);
       }
+      editorWidgets.add(editorWidget);
+    } else {
+      double labelColumnWidth = 0.0;
 
-      // TODO resize all labels to this minimum width
-      // labelColumnWidth = ParseUtil.getTextWidth(
-      //   text: pText,
-      //   style: pTextStyle,
-      // );
-
-      if (widget.columnDefinitions.length > 1) {
-        editorWidget = Row(
-          children: [
-            Flexible(
-              fit: FlexFit.loose,
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Text(widget.columnDefinitions[i].label),
-              ),
-            ),
-            Expanded(flex: 3, child: editorWidget),
-          ],
+      for (int i = 0; i < widget.columnDefinitions.length; i++) {
+        double labelWidth = ParseUtil.getTextWidth(
+          text: widget.columnDefinitions[i].label,
+          style: widget.model.createTextStyle(),
         );
+
+        labelColumnWidth = max(labelColumnWidth, labelWidth);
       }
 
-      editorWidgets.add(editorWidget);
+      labelColumnWidth += 5;
+
+      for (int i = 0; i < widget.columnDefinitions.length; i++) {
+        ICellEditor cellEditor = cellEditors[i];
+        Widget editorWidget = cellEditor.createWidget(null);
+
+        if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
+          editorWidget = Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget),
+          );
+        }
+
+        editorWidget = Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 4),
+          child: Row(
+            children: [
+              SizedBox(
+                width: labelColumnWidth,
+                child: Text(
+                  widget.columnDefinitions[i].label,
+                  style: widget.model.createTextStyle(),
+                ),
+              ),
+              Expanded(child: editorWidget),
+            ],
+          ),
+        );
+
+        editorWidgets.add(editorWidget);
+      }
     }
 
     return Dialog(
@@ -124,9 +147,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                 dialogLabel,
                 style: Theme.of(context).dialogTheme.titleTextStyle,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               ...editorWidgets,
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
@@ -154,16 +177,16 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     super.dispose();
   }
 
-  void onCellEditorEndEditing(String pColumn, dynamic pValue) {
-    // Linked cell editors sometimes return a map of values, already mapped to their corresponding columns.
-    if (pValue is Map) {
-      pValue.forEach((key, value) {
-        widget.values[key] = value;
-      });
-    } else {
-      widget.values[pColumn] = pValue;
-    }
-  }
+  // void onCellEditorEndEditing(String pColumn, dynamic pValue) {
+  //   // Linked cell editors sometimes return a map of values, already mapped to their corresponding columns.
+  //   if (pValue is Map) {
+  //     pValue.forEach((key, value) {
+  //       widget.values[key] = value;
+  //     });
+  //   } else {
+  //     widget.values[pColumn] = pValue;
+  //   }
+  // }
 
   void receiveNewValues() {
     Map<String, dynamic>? newValues = widget.newValueNotifier.value;

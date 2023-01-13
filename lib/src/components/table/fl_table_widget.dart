@@ -24,7 +24,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../model/component/table/fl_table_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
+import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_header_row.dart';
@@ -38,13 +38,7 @@ typedef TableValueChangedCallback = void Function(dynamic value, int row, String
 typedef CellEditorActionCallback = void Function(int rowIndex, String column, Function action);
 typedef TableSlideActionCallback = void Function(int rowIndex, TableRowSlideAction action);
 
-class FlTableWidget extends FlStatelessWidget<FlTableModel> {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // Controllers
-
+class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The scroll controller of the table.
   final ItemScrollController? itemScrollController;
 
@@ -74,6 +68,9 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   /// Gets called when the user scrolled to the edge of the table.
   final VoidCallback? onEndScroll;
 
+  /// Gets called when the list should refresh
+  final Future<void> Function()? onRefresh;
+
   /// Gets called when an action cell editor makes an action.
   final CellEditorActionCallback? onAction;
 
@@ -100,17 +97,6 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   /// The action the floating button calls.
   final VoidCallback? floatingOnPress;
 
-  /// How many items the scrollable list should build.
-  int get _itemCount {
-    int itemCount = chunkData.data.length;
-
-    if (model.tableHeaderVisible && !model.stickyHeaders) {
-      itemCount += 1;
-    }
-
-    return itemCount;
-  }
-
   /// Which slide actions are to be allowed to the row.
   final Set<TableRowSlideAction>? slideActions;
 
@@ -131,6 +117,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.onLongPress,
     this.onAction,
     this.onEndScroll,
+    this.onRefresh,
     this.onSlideAction,
     this.slideActions,
     this.itemScrollController,
@@ -141,9 +128,21 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.floatingOnPress,
   });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  @override
+  State<FlTableWidget> createState() => _FlTableWidgetState();
+}
+
+class _FlTableWidgetState extends State<FlTableWidget> {
+  /// How many items the scrollable list should build.
+  int get _itemCount {
+    int itemCount = widget.chunkData.data.length;
+
+    if (widget.model.tableHeaderVisible && !widget.model.stickyHeaders) {
+      itemCount += 1;
+    }
+
+    return itemCount;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,14 +150,14 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
-    if (showFloatingButton && floatingOnPress != null) {
+    if (widget.showFloatingButton && widget.floatingOnPress != null) {
       children.add(createFloatinButton());
     }
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        border: Border.all(width: tableSize.borderWidth, color: Theme.of(context).primaryColor),
+        border: Border.all(width: widget.tableSize.borderWidth, color: Theme.of(context).primaryColor),
         color: Theme.of(context).backgroundColor,
       ),
       child: ClipRRect(
@@ -172,20 +171,16 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     );
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   /// Creates the floating button that floats above the table on the bottom right
   Positioned createFloatinButton() {
     return Positioned(
       right: 10,
       bottom: 10,
       child: FloatingActionButton(
-        onPressed: floatingOnPress,
+        onPressed: widget.floatingOnPress,
         child: FaIcon(
           FontAwesomeIcons.squarePlus,
-          color: model.foreground,
+          color: widget.model.foreground,
         ),
       ),
     );
@@ -194,25 +189,46 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   /// The builder for the table.
   Widget createTableBuilder(BuildContext context, BoxConstraints constraints) {
     // Width cant be below 0 and must always fill the area.
-    double maxWidth = max(max(tableSize.size.width, constraints.maxWidth), 0);
+    double maxWidth = max(max(widget.tableSize.size.width, constraints.maxWidth), 0);
 
     // Is the table wider than it can be seen? -> Disables row swipes
-    bool canScrollHorizontally = tableSize.size.width.ceil() > constraints.maxWidth.ceil();
+    bool canScrollHorizontally = widget.tableSize.size.width.ceil() > constraints.maxWidth.ceil();
 
     Widget table = createTableList(canScrollHorizontally, maxWidth);
 
+    if (widget.onRefresh != null) {
+      table = RefreshIndicator(
+        onRefresh: widget.onRefresh!,
+        child: table,
+        notificationPredicate: (notification) => notification.depth == 1,
+      );
+    }
+
+    table = SlidableAutoCloseBehavior(
+      closeWhenOpened: true,
+      child: GestureDetector(
+        onLongPressStart: widget.onLongPress != null
+            ? (details) => widget.onLongPress?.call(-1, "", FlDummyCellEditor(), details)
+            : null,
+        child: NotificationListener<ScrollEndNotification>(
+          onNotification: onInternalEndScroll,
+          child: table,
+        ),
+      ),
+    );
+
     // Sticky headers are fixed above the table, non sticky headers are inserted into the list.
-    if (model.tableHeaderVisible && model.stickyHeaders) {
+    if (widget.model.tableHeaderVisible && widget.model.stickyHeaders) {
       Widget header = SingleChildScrollView(
         physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
-        controller: headerHorizontalController,
+        controller: widget.headerHorizontalController,
         child: createHeaderRow(),
       );
 
       if (kIsWeb) {
         header = Scrollbar(
-          controller: headerHorizontalController,
+          controller: widget.headerHorizontalController,
           child: header,
         );
       }
@@ -232,27 +248,22 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
   /// Creates the list of the table.
   Widget createTableList(bool canScrollHorizontally, double maxWidth) {
-    return SlidableAutoCloseBehavior(
-      closeWhenOpened: true,
-      child: GestureDetector(
-        onLongPressStart:
-            onLongPress != null ? (details) => onLongPress?.call(-1, "", FlDummyCellEditor(), details) : null,
-        child: NotificationListener<ScrollEndNotification>(
-          onNotification: onInternalEndScroll,
-          child: SingleChildScrollView(
-            physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
-            controller: tableHorizontalController,
-            scrollDirection: Axis.horizontal,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: maxWidth),
-              child: ScrollablePositionedList.builder(
-                scrollDirection: Axis.vertical,
-                itemScrollController: itemScrollController,
-                itemBuilder: (context, index) => tableListItemBuilder(context, index, canScrollHorizontally),
-                itemCount: _itemCount,
-              ),
-            ),
-          ),
+    return SingleChildScrollView(
+      physics: canScrollHorizontally ? null : const NeverScrollableScrollPhysics(),
+      controller: widget.tableHorizontalController,
+      scrollDirection: Axis.horizontal,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: Stack(
+          children: [
+            ScrollablePositionedList.builder(
+              scrollDirection: Axis.vertical,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemScrollController: widget.itemScrollController,
+              itemBuilder: (context, index) => tableListItemBuilder(context, index, canScrollHorizontally),
+              itemCount: _itemCount,
+            )
+          ],
         ),
       ),
     );
@@ -262,7 +273,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
   Widget tableListItemBuilder(BuildContext context, int pIndex, bool canScrollHorizontally) {
     int index = pIndex;
 
-    if (model.tableHeaderVisible && !model.stickyHeaders) {
+    if (widget.model.tableHeaderVisible && !widget.model.stickyHeaders) {
       index--;
       if (pIndex == 0) {
         return createHeaderRow();
@@ -270,35 +281,35 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     }
 
     return FlTableRow(
-      model: model,
-      onEndEditing: onEndEditing,
-      onValueChanged: onValueChanged,
-      columnDefinitions: chunkData.columnDefinitions,
-      onLongPress: onLongPress,
-      onTap: onTap,
-      onDoubleTap: onDoubleTap,
-      onAction: onAction,
-      onSlideAction: !canScrollHorizontally ? onSlideAction : null,
-      slideActions: slideActions,
-      tableSize: tableSize,
-      values: chunkData.data[index]!,
-      recordFormats: chunkData.recordFormats?[model.name],
+      model: widget.model,
+      onEndEditing: widget.onEndEditing,
+      onValueChanged: widget.onValueChanged,
+      columnDefinitions: widget.chunkData.columnDefinitions,
+      onLongPress: widget.onLongPress,
+      onTap: widget.onTap,
+      onDoubleTap: widget.onDoubleTap,
+      onAction: widget.onAction,
+      onSlideAction: !canScrollHorizontally ? widget.onSlideAction : null,
+      slideActions: widget.slideActions,
+      tableSize: widget.tableSize,
+      values: widget.chunkData.data[index]!,
+      recordFormats: widget.chunkData.recordFormats?[widget.model.name],
       index: index,
-      isSelected: index == selectedRowIndex,
-      disableEditors: disableEditors,
+      isSelected: index == widget.selectedRowIndex,
+      disableEditors: widget.disableEditors,
     );
   }
 
   /// Creates the header row.
   Widget createHeaderRow() {
     return FlTableHeaderRow(
-      model: model,
-      columnDefinitions: chunkData.columnDefinitions,
-      onTap: onTap,
-      onDoubleTap: onDoubleTap,
-      tableSize: tableSize,
-      onLongPress: onLongPress,
-      sortDefinitions: chunkData.sortDefinitions,
+      model: widget.model,
+      columnDefinitions: widget.chunkData.columnDefinitions,
+      onTap: widget.onTap,
+      onDoubleTap: widget.onDoubleTap,
+      tableSize: widget.tableSize,
+      onLongPress: widget.onLongPress,
+      sortDefinitions: widget.chunkData.sortDefinitions,
     );
   }
 
@@ -307,7 +318,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     if (notification.metrics.pixels > 0 && notification.metrics.atEdge) {
       if (notification.metrics.axis == Axis.vertical) {
         /// Scrolled to the bottom
-        onEndScroll?.call();
+        widget.onEndScroll?.call();
       }
     }
 
