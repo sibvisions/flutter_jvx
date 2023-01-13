@@ -90,7 +90,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
         FetchCommand(
           dataProvider: command.dataProvider,
           fromRow: 0,
-          rowCount: -1,
+          rowCount: IUiService().getSubscriptionRowcount(pDataProvider: command.dataProvider),
           reason: "Fetch for ${command.runtimeType}",
         )
       ];
@@ -168,7 +168,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
         FetchCommand(
           dataProvider: pCommand.dataProvider,
           fromRow: 0,
-          rowCount: -1,
+          rowCount: IUiService().getSubscriptionRowcount(pDataProvider: pCommand.dataProvider),
           reason: "Fetch for ${pCommand.runtimeType}",
         )
       ];
@@ -200,7 +200,9 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       return [
         FetchCommand(
           fromRow: command.from,
-          rowCount: command.to != null ? command.to! - command.from : -1,
+          rowCount: command.to != null
+              ? command.to! - command.from
+              : IUiService().getSubscriptionRowcount(pDataProvider: command.dataProvider),
           dataProvider: command.dataProvider,
           reason: "Fetch for ${command.runtimeType}",
         )
