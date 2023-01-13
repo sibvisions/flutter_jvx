@@ -653,7 +653,7 @@ class JVxWebSocket {
   bool _available = false;
 
   /// Current retry delay, gets doubled after ever failed attempt until 60.
-  int _retryDelay = 0;
+  int _retryDelay = 2;
 
   /// Controls if we should try to reconnect after the socket closes.
   bool _manualClose = false;
@@ -673,7 +673,7 @@ class JVxWebSocket {
   }
 
   Future<void> stopWebSocket() async {
-    _retryDelay = 0;
+    _retryDelay = 2;
 
     if (_reconnectTimer != null) {
       _reconnectTimer?.cancel();
