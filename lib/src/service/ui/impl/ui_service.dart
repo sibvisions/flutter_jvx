@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
@@ -310,7 +311,9 @@ class UiService implements IUiService {
         sendCommand(FetchCommand(
           dataProvider: pDataSubscription.dataProvider,
           fromRow: pDataSubscription.from,
-          rowCount: pDataSubscription.to != null ? pDataSubscription.to! - pDataSubscription.from : -1,
+          rowCount: pDataSubscription.to != null
+              ? pDataSubscription.to! - pDataSubscription.from
+              : IUiService().getSubscriptionRowcount(pDataProvider: pDataSubscription.dataProvider),
           columnNames: pDataSubscription.dataColumns,
           reason: "Fetch for ${pDataSubscription.runtimeType}",
         ));
@@ -476,6 +479,18 @@ class UiService implements IUiService {
         .forEach((element) {
       element.onMetaData!(pMetaData);
     });
+  }
+
+  @override
+  int getSubscriptionRowcount({required String pDataProvider}) {
+    int rowCount = 0;
+
+    var subscriptions = _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider);
+    for (DataSubscription subscription in subscriptions) {
+      rowCount = max(rowCount, subscription.to ?? 0);
+    }
+
+    return rowCount;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

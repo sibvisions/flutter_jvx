@@ -195,11 +195,15 @@ abstract class IUiService {
     required DataChunk pDataChunk,
   });
 
+  /// Directly sets the metadata.
   void setMetaData({
     required String pSubId,
     required String pDataProvider,
     required DalMetaData pMetaData,
   });
+
+  /// Returns the highes row which any component is subscribed to on this dataprovider
+  int getSubscriptionRowcount({required String pDataProvider});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Custom
