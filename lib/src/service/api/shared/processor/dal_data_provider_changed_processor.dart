@@ -43,7 +43,7 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
       FetchCommand fetchCommand = FetchCommand(
         reason: "Data provider changed response was reload -1",
         fromRow: 0,
-        rowCount: 100,
+        rowCount: IUiService().getSubscriptionRowcount(pDataProvider: pResponse.dataProvider),
         dataProvider: pResponse.dataProvider,
       );
       commands.add(fetchCommand);
