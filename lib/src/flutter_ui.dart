@@ -399,7 +399,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             // Force close sockets
             await repository.stop();
             await repository.start();
-            await repository.startWebSocket();
+            try {
+              await repository.startWebSocket();
+            } catch (_) {
+              // Expected to throw, triggers reconnect.
+            }
             repository.setConnected(true);
           }
           repository.setConnected(false);

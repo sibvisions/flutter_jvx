@@ -816,9 +816,13 @@ class JVxWebSocket {
     _retryDelay = min(_retryDelay << 1, 60);
     FlutterUI.logAPI.i("Retrying WebSocket connection in $_retryDelay seconds...");
     _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(Duration(seconds: _retryDelay), () {
-      FlutterUI.logAPI.i("Retrying WebSocket connection");
-      _openWebSocket();
+    _reconnectTimer = Timer(Duration(seconds: _retryDelay), () async {
+      try {
+        FlutterUI.logAPI.i("Retrying WebSocket connection");
+        await _openWebSocket();
+      } catch (e, stack) {
+        FlutterUI.logAPI.w("WebSocket Retry failed", e, stack);
+      }
     });
   }
 
