@@ -16,7 +16,6 @@
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -54,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final List<int> resolutions = [320, 640, 1024];
+  final List<int> resolutions = [1024, 640, 320];
 
   /// App version notifier
   late ValueNotifier<String> appVersionNotifier;
@@ -250,7 +249,7 @@ class _SettingsPageState extends State<SettingsPage> {
         frontIcon: const FaIcon(FontAwesomeIcons.link),
         endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
         title: FlutterUI.translate("Privacy Policy"),
-        onPressed: (value) => launchUrl(
+        onPressed: (context, value) => launchUrl(
           ConfigController().getAppConfig()!.privacyPolicy!,
           mode: LaunchMode.externalApplication,
         ),
@@ -283,7 +282,7 @@ class _SettingsPageState extends State<SettingsPage> {
       value: appName ?? "",
       title: appNameTitle,
       enabled: !ConfigController().offline.value,
-      onPressed: (value) {
+      onPressed: (context, value) {
         TextEditingController controller = TextEditingController(text: value);
 
         _showEditor(
@@ -313,7 +312,7 @@ class _SettingsPageState extends State<SettingsPage> {
         value: baseUrl ?? "",
         title: urlTitle,
         enabled: !ConfigController().offline.value,
-        onPressed: (value) {
+        onPressed: (context, value) {
           TextEditingController controller = TextEditingController(text: value);
 
           _showEditor(
@@ -363,22 +362,16 @@ class _SettingsPageState extends State<SettingsPage> {
       title: "Language",
       // "System" is default
       value: language ?? supportedLanguages[0],
-      onPressed: (value) {
-        _buildPicker(
-          adapter: PickerDataAdapter<String>(pickerdata: supportedLanguages),
-          selecteds: [supportedLanguages.indexOf(value!)],
-          onConfirm: (Picker picker, List<int> values) {
-            if (values.isNotEmpty) {
-              String? selectedLanguage = picker.getSelectedValues()[0];
-              if (selectedLanguage == supportedLanguages[0]) {
-                // "System" selected
-                selectedLanguage = null;
-              }
-              language = selectedLanguage;
-              setState(() {});
-            }
-          },
-        ).showModal(context, themeData: Theme.of(context));
+      onPressed: (context, value) {
+        _openDropdown(context, supportedLanguages, value, onValue: (selectedLanguage) {
+          if (selectedLanguage == supportedLanguages[0]) {
+            // "System" selected
+            language = null;
+          } else {
+            language = selectedLanguage;
+          }
+          setState(() {});
+        });
       },
     );
 
@@ -414,43 +407,29 @@ class _SettingsPageState extends State<SettingsPage> {
       title: "Theme",
       value: theme,
       itemBuilder: (BuildContext context, value, Widget? widget) => Text(themeMapping[value]!),
-      onPressed: (value) {
-        _buildPicker(
-          selecteds: [ThemeMode.values.indexOf(value!)],
-          adapter: PickerDataAdapter<String>(
-            pickerdata: ThemeMode.values.map((e) => themeMapping[e]).toList(),
-          ),
-          onConfirm: (Picker picker, List<int> values) async {
-            if (values.isNotEmpty) {
-              theme = themeMapping.entries.firstWhere((entry) => entry.value == picker.getSelectedValues()[0]).key;
-              await ConfigController().updateThemePreference(theme);
-            }
-          },
-        ).showModal(context, themeData: Theme.of(context));
+      onPressed: (context, value) {
+        var items = ThemeMode.values.where((e) => themeMapping.containsKey(e)).map((e) => themeMapping[e]!).toList();
+        _openDropdown(context, items, themeMapping[value], onValue: (selectedThemeMode) async {
+          theme = themeMapping.entries.firstWhere((entry) => entry.value == selectedThemeMode).key;
+          await ConfigController().updateThemePreference(theme);
+          setState(() {});
+        });
       },
     );
 
-    var resolution = ConfigController().pictureResolution.value ?? resolutions.last;
+    var resolution = ConfigController().pictureResolution.value ?? resolutions[0];
     SettingItem pictureSetting = _buildPickerItem<int>(
       frontIcon: FontAwesomeIcons.image,
       title: "Picture Size",
       value: resolution,
       itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterUI.translate("$value px")),
-      onPressed: (value) {
-        _buildPicker(
-          selecteds: [resolutions.indexOf(value!)],
-          adapter: PickerDataAdapter<String>(
-            // Using data breaks theme styling!
-            pickerdata: resolutions.map((e) => "$e px").toList(),
-          ),
-          onConfirm: (Picker picker, List<int> values) async {
-            if (values.isNotEmpty) {
-              resolution = int.parse((picker.getSelectedValues()[0] as String).split(" ")[0]);
-              await ConfigController().updatePictureResolution(resolution);
-              setState(() {});
-            }
-          },
-        ).showModal(context, themeData: Theme.of(context));
+      onPressed: (context, value) {
+        var items = resolutions.map((e) => "$e px").toList();
+        _openDropdown(context, items, "$value px", onValue: (selectedResolution) async {
+          resolution = int.parse(selectedResolution.split(" ")[0]);
+          await ConfigController().updatePictureResolution(resolution);
+          setState(() {});
+        });
       },
     );
 
@@ -473,7 +452,7 @@ class _SettingsPageState extends State<SettingsPage> {
     required IconData frontIcon,
     required String title,
     required T value,
-    required Function(T? value) onPressed,
+    required Function(BuildContext context, T value) onPressed,
     ValueWidgetBuilder<T>? itemBuilder,
   }) =>
       SettingItem<T>(
@@ -485,20 +464,44 @@ class _SettingsPageState extends State<SettingsPage> {
         onPressed: onPressed,
       );
 
-  Picker _buildPicker({
-    required PickerDataAdapter adapter,
-    List<int>? selecteds,
-    void Function(Picker, List<int>)? onConfirm,
-  }) =>
-      Picker(
-        selecteds: selecteds,
-        adapter: adapter,
-        onConfirm: onConfirm,
-        confirmText: FlutterUI.translate("Confirm"),
-        cancelText: FlutterUI.translate("Cancel"),
-        confirmTextStyle: const TextStyle(fontSize: 16),
-        cancelTextStyle: const TextStyle(fontSize: 16),
+  void _openDropdown(
+    BuildContext context,
+    List<String> items,
+    String? value, {
+    required void Function(String selectedValue) onValue,
+  }) {
+    // Copied from [PopupMenuButtonState]
+    if (items.isNotEmpty) {
+      final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
+      final RenderBox button = context.findRenderObject()! as RenderBox;
+      final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+
+      var offset = value != null
+          ? Offset(button.size.width, 0.0)
+          : Offset(button.size.width, const EdgeInsets.all(6.0).vertical);
+
+      final RelativeRect position = RelativeRect.fromRect(
+        Rect.fromPoints(
+          button.localToGlobal(offset, ancestor: overlay),
+          button.localToGlobal(button.size.bottomRight(Offset.zero) + offset, ancestor: overlay),
+        ),
+        Offset.zero & overlay.size,
       );
+
+      showMenu<String>(
+        context: context,
+        initialValue: value,
+        items: items.map((e) => PopupMenuItem<String>(value: e, child: Text(e))).toList(),
+        position: position,
+        shape: popupMenuTheme.shape,
+        color: popupMenuTheme.color,
+      ).then<void>((String? selectedValue) {
+        if (selectedValue != null) {
+          onValue.call(selectedValue);
+        }
+      });
+    }
+  }
 
   Widget _buildVersionInfo() {
     SettingItem appVersionSetting = SettingItem(
@@ -506,7 +509,7 @@ class _SettingsPageState extends State<SettingsPage> {
       endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
       valueNotifier: appVersionNotifier,
       title: FlutterUI.translate("App Version"),
-      onPressed: (value) => showLicensePage(
+      onPressed: (context, value) => showLicensePage(
         context: context,
         applicationIcon: Image(
           image: Svg(

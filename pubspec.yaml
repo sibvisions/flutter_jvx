@@ -86,7 +86,6 @@ dependencies:
   wakelock: ^0.6.2
 
   # Custom Dependencies
-  flutter_picker: ^2.0.5
   flutter_map: ^3.0.0
   latlong2: ^0.8.1
   scrollable_positioned_list: ^0.3.1
