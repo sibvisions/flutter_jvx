@@ -27,6 +27,9 @@ class ChangeSelectedRowCommand extends DataCommand {
   /// Index of newly selected row
   final int newSelectedRow;
 
+  /// The new selected Column
+  final String? newSelectedColumn;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,6 +37,7 @@ class ChangeSelectedRowCommand extends DataCommand {
   ChangeSelectedRowCommand({
     required this.dataProvider,
     required this.newSelectedRow,
+    this.newSelectedColumn,
     required super.reason,
   });
 

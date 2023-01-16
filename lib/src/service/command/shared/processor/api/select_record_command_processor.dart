@@ -28,7 +28,11 @@ class SelectRecordCommandProcessor implements ICommandProcessor<SelectRecordComm
     if (ConfigController().offline.value) {
       return [
         ChangeSelectedRowCommand(
-            dataProvider: command.dataProvider, newSelectedRow: command.selectedRecord, reason: command.reason)
+          dataProvider: command.dataProvider,
+          newSelectedRow: command.selectedRecord,
+          reason: command.reason,
+          newSelectedColumn: command.selectedColumn,
+        )
       ];
     }
 
@@ -39,6 +43,7 @@ class SelectRecordCommandProcessor implements ICommandProcessor<SelectRecordComm
         fetch: command.fetch,
         filter: command.filter,
         reload: command.reload,
+        selectedColumn: command.selectedColumn,
       ),
     );
   }

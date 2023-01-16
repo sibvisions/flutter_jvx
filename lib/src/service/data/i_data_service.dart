@@ -94,6 +94,7 @@ abstract class IDataService {
   bool setSelectedRow({
     required String pDataProvider,
     required int pNewSelectedRow,
+    String? pNewSelectedColumn,
   });
 
   /// Returns the index of the selected row.

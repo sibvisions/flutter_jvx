@@ -35,6 +35,8 @@ class ApiSelectRecordRequest extends SessionRequest {
 
   final bool reload;
 
+  final String? selectedColumn;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,6 +47,7 @@ class ApiSelectRecordRequest extends SessionRequest {
     this.fetch = false,
     this.reload = false,
     this.filter,
+    this.selectedColumn,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,5 +62,6 @@ class ApiSelectRecordRequest extends SessionRequest {
         ApiObjectProperty.fetch: fetch,
         ApiObjectProperty.reload: reload,
         ApiObjectProperty.filter: filter?.toJson(),
+        if (selectedColumn != null) ApiObjectProperty.selectedColumn: selectedColumn,
       };
 }

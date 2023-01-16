@@ -31,6 +31,8 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
       IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
     }
 
+    // TODO make this one function call
+
     // If -1 then delete all saved data and re-fetch
     if (pResponse.reload == -1) {
       DeleteProviderDataCommand deleteProviderDataCommand = DeleteProviderDataCommand(
@@ -70,6 +72,7 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
       ChangeSelectedRowCommand changeSelectedRowCommand = ChangeSelectedRowCommand(
         dataProvider: pResponse.dataProvider,
         newSelectedRow: pResponse.selectedRow!,
+        newSelectedColumn: pResponse.selectedColumn,
         reason: "Data provider changed - server response",
       );
       commands.add(changeSelectedRowCommand);

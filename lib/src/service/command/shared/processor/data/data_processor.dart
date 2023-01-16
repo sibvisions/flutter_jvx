@@ -112,6 +112,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     bool success = IDataService().setSelectedRow(
       pDataProvider: command.dataProvider,
       pNewSelectedRow: command.newSelectedRow,
+      pNewSelectedColumn: command.newSelectedColumn,
     );
 
     // Notify components that their selected row changed, if setting the row failed show error dialog.

@@ -61,7 +61,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// The tree path, TODO implement treePath
   final List<int>? treePath;
 
-  /// The selected column, TODO implement selected column
+  /// The selected column
   final String? selectedColumn;
 
   /// The changed sort definitions

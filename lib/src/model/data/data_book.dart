@@ -19,6 +19,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
+import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/parse_util.dart';
@@ -65,6 +66,9 @@ class DataBook {
   /// The sort definitions of this databook.
   List<SortDefinition>? sortDefinitions;
 
+  /// The selected column
+  String? selectedColumn;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,6 +104,9 @@ class DataBook {
     dataProvider = pFetchResponse.dataProvider;
     isAllFetched = pFetchResponse.isAllFetched;
     selectedRow = pFetchResponse.selectedRow;
+    if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
+      selectedColumn = pFetchResponse.selectedColumn;
+    }
     recordFormats = pFetchResponse.recordFormats;
     updateSortDefinitions(pFetchResponse.sortDefinitions);
 
@@ -214,6 +221,7 @@ class DataBook {
       columnDefinitions: definitions,
       index: pRecordIndex,
       values: selectedRecord,
+      selectedColumn: selectedColumn,
     );
   }
 

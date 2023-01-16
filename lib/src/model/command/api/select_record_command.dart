@@ -34,6 +34,8 @@ class SelectRecordCommand extends ApiCommand {
 
   final bool fetch;
 
+  final String? selectedColumn;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,6 +46,7 @@ class SelectRecordCommand extends ApiCommand {
     this.reload = false,
     this.fetch = false,
     this.filter,
+    this.selectedColumn,
     required super.reason,
   });
 

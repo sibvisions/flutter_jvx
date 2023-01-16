@@ -318,10 +318,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool setSelectedRow({
-    required String pDataProvider,
-    required int pNewSelectedRow,
-  }) {
+  bool setSelectedRow({required String pDataProvider, required int pNewSelectedRow, String? pNewSelectedColumn}) {
     // get databook, if null return false
     DataBook? dataBook = dataBooks[pDataProvider];
     if (dataBook == null) {
@@ -329,6 +326,7 @@ class DataService implements IDataService {
     }
     // set selected row
     dataBook.selectedRow = pNewSelectedRow;
+    dataBook.selectedColumn = pNewSelectedColumn;
     return true;
   }
 

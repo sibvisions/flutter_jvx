@@ -25,6 +25,9 @@ class DataRecord {
   /// Index of this row in the dataProvider
   final int index;
 
+  /// The name of the selected column
+  final String? selectedColumn;
+
   /// Column info
   final List<ColumnDefinition> columnDefinitions;
 
@@ -39,6 +42,7 @@ class DataRecord {
     required this.columnDefinitions,
     required this.index,
     required this.values,
+    this.selectedColumn,
   });
 
   int getColumnIndex(String columnName) {
