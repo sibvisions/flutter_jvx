@@ -35,6 +35,7 @@ import 'config/server_config.dart';
 import 'custom/app_manager.dart';
 import 'exceptions/error_view_exception.dart';
 import 'mask/debug_detector.dart';
+import 'mask/debug_overlay.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
@@ -148,6 +149,8 @@ class FlutterUI extends StatefulWidget {
   /// Builder function for custom login widget
   final Widget Function(BuildContext context, LoginMode mode)? loginBuilder;
 
+  final bool enableDebugOverlay;
+
   static late PackageInfo packageInfo;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -159,6 +162,7 @@ class FlutterUI extends StatefulWidget {
     this.appManager,
     this.splashBuilder,
     this.loginBuilder,
+    this.enableDebugOverlay = false,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -490,6 +494,13 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           futureBuilder = DebugDetector(
             callback: () {
               widget.appManager?.onDebugTrigger();
+
+              if (widget.enableDebugOverlay) {
+                showDialog(
+                  context: FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext()!,
+                  builder: (context) => const DebugOverlay(useDialog: true),
+                );
+              }
             },
             child: futureBuilder,
           );
