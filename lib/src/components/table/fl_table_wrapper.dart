@@ -402,22 +402,23 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (pRowIndex == -1 || pColumnName.isEmpty) {
       _sortColumn(pColumnName);
     } else {
-      _selectRecord(pRowIndex, pColumnName);
-      if (IStorageService().isVisibleInUI(model.id)) {
-        if (!pCellEditor.allowedInTable &&
-            _isUpdateAllowed == true &&
-            pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK &&
-            mounted &&
-            currentEditDialog != null) {
-          _showDialog(
-            rowIndex: pRowIndex,
-            columnDefinitions: [pCellEditor.columnDefinition!],
-            values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
-            onEndEditing: _setValueEnd,
-            newValueNotifier: dialogValueNotifier,
-          );
+      _selectRecord(pRowIndex, pColumnName, pAfterSelect: () async {
+        if (IStorageService().isVisibleInUI(model.id)) {
+          if (!pCellEditor.allowedInTable &&
+              _isUpdateAllowed == true &&
+              pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK &&
+              mounted) {
+            _showDialog(
+              rowIndex: pRowIndex,
+              columnDefinitions: [pCellEditor.columnDefinition!],
+              values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+              onEndEditing: _setValueEnd,
+              newValueNotifier: dialogValueNotifier,
+            );
+          }
         }
-      }
+        return [];
+      });
     }
   }
 
@@ -425,21 +426,23 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (pRowIndex == -1 || pColumnName.isEmpty) {
       _sortColumn(pColumnName, true);
     } else {
-      _selectRecord(pRowIndex, pColumnName);
-      if (IStorageService().isVisibleInUI(model.id)) {
-        if (!pCellEditor.allowedInTable &&
-            _isUpdateAllowed == true &&
-            pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK &&
-            mounted) {
-          _showDialog(
-            rowIndex: pRowIndex,
-            columnDefinitions: [pCellEditor.columnDefinition!],
-            values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
-            onEndEditing: _setValueEnd,
-            newValueNotifier: dialogValueNotifier,
-          );
+      _selectRecord(pRowIndex, pColumnName, pAfterSelect: () async {
+        if (IStorageService().isVisibleInUI(model.id)) {
+          if (!pCellEditor.allowedInTable &&
+              _isUpdateAllowed == true &&
+              pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK &&
+              mounted) {
+            _showDialog(
+              rowIndex: pRowIndex,
+              columnDefinitions: [pCellEditor.columnDefinition!],
+              values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+              onEndEditing: _setValueEnd,
+              newValueNotifier: dialogValueNotifier,
+            );
+          }
         }
-      }
+        return [];
+      });
     }
   }
 
