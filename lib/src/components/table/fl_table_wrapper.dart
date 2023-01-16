@@ -771,7 +771,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     required ValueNotifier<Map<String, dynamic>?> newValueNotifier,
   }) {
     if (currentEditDialog == null) {
-      currentEditDialog = FlTableEditDialog(
+      var dialog = currentEditDialog = FlTableEditDialog(
         rowIndex: rowIndex,
         model: model,
         columnDefinitions: columnDefinitions,
@@ -781,10 +781,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       );
       IUiService()
           .openDialog(
-        pBuilder: (context) => currentEditDialog!,
+        pBuilder: (context) => dialog,
       )
           .then((_) {
-        return currentEditDialog = null;
+        currentEditDialog = null;
       });
     }
   }
