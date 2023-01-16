@@ -143,7 +143,7 @@ class JVxOverlayState extends State<JVxOverlay> {
               show: loading && snapshot.connectionState == ConnectionState.done,
               child: Stack(
                 children: [
-                  widget.child!,
+                  if (widget.child != null) widget.child!,
                   FramesWidget(key: framesKey),
                   DialogsWidget(key: dialogsKey),
                   if (loading && !forceDisableBarrier)

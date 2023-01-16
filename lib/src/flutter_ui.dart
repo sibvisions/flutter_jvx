@@ -346,6 +346,17 @@ class FlutterUI extends StatefulWidget {
 
     tz.initializeTimeZones();
 
+    HttpOverrides.global = MyHttpOverrides();
+
+    IUiService().setAppManager(pAppToRun.appManager);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // API init
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var repository = configController.offline.value ? OfflineApiRepository() : OnlineApiRepository();
+    IApiService().setRepository(repository);
+
     runApp(pAppToRun);
   }
 }
@@ -370,7 +381,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   final ThemeData splashTheme = ThemeData();
   late final StreamSubscription<ConnectivityResult> subscription;
 
-  late Future<void> initAppFuture;
   Future<void>? startupFuture;
 
   @override
@@ -392,33 +402,25 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     );
 
     WidgetsBinding.instance.addObserver(this);
+    subscription = Connectivity().onConnectivityChanged.listen(didChangeConnectivity);
 
-    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
-      if (result == ConnectivityResult.none) {
-        FlutterUI.logAPI.i("Connectivity lost");
-        var repository = IApiService().getRepository();
-        if (repository is OnlineApiRepository && repository.connected) {
-          // Workaround for https://github.com/dart-lang/sdk/issues/47807
-          if (Platform.isIOS) {
-            // Force close sockets
-            await repository.stop();
-            await repository.start();
-            try {
-              await repository.startWebSocket();
-            } catch (_) {
-              // Expected to throw, triggers reconnect.
-            }
-            repository.setConnected(true);
-          }
-          repository.setConnected(false);
-        }
-      }
-    });
+    // Register callbacks
+    ConfigController().disposeLanguageCallbacks();
+    ConfigController().registerLanguageCallback((pLanguage) => setState(() {}));
+    ConfigController().disposeImagesCallbacks();
+    ConfigController().registerImagesCallback(refresh);
 
-    initAppFuture = initApp().catchError(createErrorHandler("Failed to initialize")).then((value) {
-      // Activate second future
-      restart();
-    });
+    // Update style to reflect web colors for theme
+    // Don't forget to remove them in [dispose]!
+    // ignore: invalid_use_of_protected_member
+    assert(!ConfigController().layoutMode.hasListeners);
+    ConfigController().layoutMode.addListener(changedTheme);
+    ConfigController().themePreference.addListener(changedTheme);
+    ConfigController().applicationStyle.addListener(changedTheme);
+    ConfigController().applicationSettings.addListener(refresh);
+
+    // Init
+    restart();
   }
 
   void restart({
@@ -427,7 +429,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     String? password,
   }) {
     setState(() {
-      startupFuture = doStartup(
+      startupFuture = initStartup(
         appName: appName,
         username: username,
         password: password,
@@ -457,34 +459,19 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       title: widget.appConfig?.title ?? FlutterUI.packageInfo.appName,
       builder: (context, child) {
         Widget futureBuilder = FutureBuilder(
-          future: initAppFuture,
+          future: startupFuture,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
-              return FutureBuilder(
-                future: startupFuture,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.none ||
-                      snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                    FlutterUI.initiated = true;
-                    return JVxOverlay(child: child ?? const SizedBox.shrink());
-                  }
-
-                  return _buildSplash(
-                    startupFuture!,
-                    childrenBuilder: (snapshot) => [
-                      if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                        _getStartupErrorDialog(context, snapshot),
-                    ],
-                  );
-                },
-              );
+            if (snapshot.connectionState == ConnectionState.none ||
+                snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+              FlutterUI.initiated = true;
+              return JVxOverlay(child: child);
             }
 
             return _buildSplash(
-              initAppFuture,
+              startupFuture!,
               childrenBuilder: (snapshot) => [
                 if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                  _getFatalErrorDialog(context, snapshot),
+                  _getStartupErrorDialog(context, snapshot),
               ],
             );
           },
@@ -494,7 +481,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           futureBuilder = DebugDetector(
             callback: () {
               widget.appManager?.onDebugTrigger();
-
               if (widget.enableDebugOverlay) {
                 showDialog(
                   context: FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext()!,
@@ -543,6 +529,28 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     );
   }
 
+  Future<void> didChangeConnectivity(ConnectivityResult result) async {
+    if (result == ConnectivityResult.none) {
+      FlutterUI.logAPI.i("Connectivity lost");
+      var repository = IApiService().getRepository();
+      if (repository is OnlineApiRepository && repository.connected) {
+        // Workaround for https://github.com/dart-lang/sdk/issues/47807
+        if (Platform.isIOS) {
+          // Force close sockets
+          await repository.stop();
+          await repository.start();
+          try {
+            await repository.startWebSocket();
+          } catch (_) {
+            // Expected to throw, triggers reconnect.
+          }
+          repository.setConnected(true);
+        }
+        repository.setConnected(false);
+      }
+    }
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -564,6 +572,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     IApiService().getRepository()?.stop();
     subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
+
+    ConfigController().layoutMode.removeListener(changedTheme);
+    ConfigController().themePreference.removeListener(changedTheme);
+    ConfigController().applicationStyle.removeListener(changedTheme);
+    ConfigController().applicationSettings.removeListener(refresh);
+
     super.dispose();
   }
 
@@ -665,7 +679,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     return themeData;
   }
 
-  void changedImages() {
+  void refresh() {
     setState(() {});
   }
 
@@ -676,47 +690,19 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     };
   }
 
-  // TODO Do this during native splash, move before runApp
-  Future<void> initApp() async {
-    HttpOverrides.global = MyHttpOverrides();
-
-    ConfigController configController = ConfigController();
-
-    IUiService().setAppManager(widget.appManager);
-
-    // Register callbacks
-    configController.disposeLanguageCallbacks();
-    configController.registerLanguageCallback((pLanguage) => setState(() {}));
-    configController.disposeImagesCallbacks();
-    configController.registerImagesCallback(changedImages);
-
-    // Update style to reflect web colors for theme
-    configController.layoutMode.addListener(() => changedTheme());
-    configController.themePreference.addListener(() => changedTheme());
-    configController.applicationStyle.addListener(() => changedTheme());
-    configController.applicationSettings.addListener(() => setState(() {}));
-
-    changedTheme();
-
-    if (configController.getFileManager().isSatisfied()) {
-      // Only try to load if FileManager is available
-      configController.reloadSupportedLanguages();
-      configController.loadLanguages();
-    }
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // API init
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var repository = configController.offline.value ? OfflineApiRepository() : OnlineApiRepository();
-    IApiService().setRepository(repository);
-  }
-
-  Future<void> doStartup({
+  Future<void> initStartup({
     String? appName,
     String? username,
     String? password,
   }) async {
+    changedTheme();
+
+    if (ConfigController().getFileManager().isSatisfied()) {
+      // Only try to load if FileManager is available
+      ConfigController().reloadSupportedLanguages();
+      ConfigController().loadLanguages();
+    }
+
     // (Re-)start repository
     if (IApiService().getRepository() is OnlineApiRepository) {
       if (IApiService().getRepository()?.isStopped() == false) {
@@ -725,26 +711,22 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
     await IApiService().getRepository()?.start();
 
-    ConfigController configController = ConfigController();
-    ICommandService commandService = ICommandService();
-    IUiService uiService = IUiService();
-
-    if (configController.appName.value == null || configController.baseUrl.value == null) {
-      uiService.routeToSettings(pReplaceRoute: true);
+    if (ConfigController().appName.value == null || ConfigController().baseUrl.value == null) {
+      IUiService().routeToSettings(pReplaceRoute: true);
       return;
     }
 
-    if (configController.offline.value) {
-      uiService.routeToMenu(pReplaceRoute: true);
+    if (ConfigController().offline.value) {
+      IUiService().routeToMenu(pReplaceRoute: true);
       return;
     }
 
     // Send startup to server
-    await commandService.sendCommand(StartupCommand(
+    await ICommandService().sendCommand(StartupCommand(
       reason: "InitApp",
       appName: appName,
-      username: username ?? configController.getAppConfig()!.serverConfig!.username,
-      password: password ?? configController.getAppConfig()!.serverConfig!.password,
+      username: username ?? ConfigController().getAppConfig()!.serverConfig!.username,
+      password: password ?? ConfigController().getAppConfig()!.serverConfig!.password,
     ));
   }
 
@@ -783,31 +765,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _getFatalErrorDialog(BuildContext context, AsyncSnapshot snapshot) {
-    return WillPopScope(
-      onWillPop: () async {
-        await SystemNavigator.pop();
-        return false;
-      },
-      child: AlertDialog(
-        title: const Text("FATAL ERROR"),
-        content: Text(snapshot.error.toString()),
-        actions: [
-          if (!kIsWeb)
-            TextButton(
-              onPressed: () {
-                SystemNavigator.pop();
-              },
-              child: const Text(
-                "Exit App",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
