@@ -406,8 +406,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (!pCellEditor.allowedInTable &&
               _isUpdateAllowed == true &&
-              pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK &&
-              mounted) {
+              pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
             _showDialog(
               rowIndex: pRowIndex,
               columnDefinitions: [pCellEditor.columnDefinition!],
@@ -430,8 +429,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (!pCellEditor.allowedInTable &&
               _isUpdateAllowed == true &&
-              pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK &&
-              mounted) {
+              pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
             _showDialog(
               rowIndex: pRowIndex,
               columnDefinitions: [pCellEditor.columnDefinition!],
@@ -532,14 +530,22 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
-    ICommandService()
-        .sendCommand(SelectRecordCommand(
-            dataProvider: model.dataProvider, selectedRecord: pRowIndex, reason: "Tapped", filter: filter))
-        .then((_) {
-      if (pAfterSelect != null) {
-        return ICommandService().sendCommand(FunctionCommand(function: pAfterSelect, reason: "After selected row"));
-      }
-    }).catchError(IUiService().handleAsyncError);
+    IUiService().sendCommand(
+      FunctionCommand(
+          function: () async {
+            return [
+              SelectRecordCommand(
+                dataProvider: model.dataProvider,
+                selectedRecord: pRowIndex,
+                reason: "Tapped",
+                filter: filter,
+                selectedColumn: pColumnName,
+              ),
+              if (pAfterSelect != null) FunctionCommand(function: pAfterSelect, reason: "After selected row"),
+            ];
+          },
+          reason: "Selected row"),
+    );
   }
 
   /// Sends a [SetValuesCommand] for this row.
