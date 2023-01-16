@@ -24,7 +24,6 @@ import '../../../exceptions/session_expired_exception.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/api/device_status_command.dart';
-import '../../../model/command/api/open_screen_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
 import '../../../model/command/data/data_command.dart';
@@ -224,13 +223,10 @@ class CommandService implements ICommandService {
   }
 
   void modifyCommands(List<BaseCommand> commands, BaseCommand originalCommand) {
-    if (originalCommand is OpenScreenCommand) {
-      DeleteScreenCommand? deleteScreen =
-          commands.firstWhereOrNull((element) => element is DeleteScreenCommand) as DeleteScreenCommand?;
-      if (deleteScreen != null &&
-          commands.any((element) => element is RouteToWorkCommand && element.screenName == deleteScreen.screenName)) {
-        deleteScreen.beamBack = false;
-      }
+    if (commands.any((element) => element is RouteToWorkCommand)) {
+      commands.whereType<DeleteScreenCommand>().forEach((element) {
+        element.beamBack = false;
+      });
     }
   }
 }
