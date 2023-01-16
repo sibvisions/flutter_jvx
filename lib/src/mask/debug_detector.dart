@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -23,16 +24,18 @@ class DebugDetector extends StatefulWidget {
   final Widget child;
   final void Function() callback;
   final Duration delay;
-  final double maxSquaredMoveDistance;
+  final double? acceptSlopTolerance;
   final int pointers;
+  final bool useHapticFeedback;
 
   const DebugDetector({
     super.key,
     required this.child,
     required this.callback,
-    this.delay = const Duration(milliseconds: 750),
-    this.maxSquaredMoveDistance = 2,
+    this.delay = kLongPressTimeout,
+    this.acceptSlopTolerance,
     this.pointers = 2,
+    this.useHapticFeedback = true,
   });
 
   @override
@@ -40,38 +43,39 @@ class DebugDetector extends StatefulWidget {
 }
 
 class _DebugDetectorState extends State<DebugDetector> {
-  int pointers = 0;
-
-  Timer? timer;
+  int _pointerCounter = 0;
+  Timer? _timer;
 
   @override
   Widget build(BuildContext context) {
     return Listener(
       onPointerDown: (event) {
-        pointers++;
-        if (pointers == widget.pointers) {
-          timer?.cancel();
-          timer = Timer(widget.delay, () {
-            if (pointers == widget.pointers) {
-              HapticFeedback.vibrate();
+        _pointerCounter++;
+        if (_pointerCounter == widget.pointers) {
+          _timer?.cancel();
+          _timer = Timer(widget.delay, () {
+            if (_pointerCounter == widget.pointers) {
+              if (widget.useHapticFeedback) {
+                HapticFeedback.vibrate();
+              }
               widget.callback.call();
             }
           });
         } else {
-          timer?.cancel();
+          _timer?.cancel();
         }
       },
       onPointerCancel: (event) {
-        pointers--;
-        timer?.cancel();
+        _pointerCounter--;
+        _timer?.cancel();
       },
       onPointerUp: (event) {
-        pointers--;
-        timer?.cancel();
+        _pointerCounter--;
+        _timer?.cancel();
       },
       onPointerMove: (event) {
-        if (event.delta.distanceSquared > widget.maxSquaredMoveDistance) {
-          timer?.cancel();
+        if (widget.acceptSlopTolerance != null && event.delta.distanceSquared > widget.acceptSlopTolerance!) {
+          _timer?.cancel();
         }
       },
       child: widget.child,
