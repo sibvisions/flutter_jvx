@@ -103,6 +103,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   Widget _buildFlat(BuildContext context) {
     return (getPositioned(
       child: Column(
+        verticalDirection: verticalDirection,
         children: [
           FlGroupPanelHeaderWidget(model: model, postFrameCallback: postFrameCallback),
           const Divider(
@@ -124,18 +125,14 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   Widget _buildModern(BuildContext context) {
     double groupHeaderHeight = (layoutData.layout as GroupLayout).groupHeaderHeight;
 
-    VerticalDirection verticalDirection;
     EdgeInsets paddings;
     if (model.verticalAlignment == VerticalAlignment.BOTTOM) {
       paddings = EdgeInsets.only(bottom: groupHeaderHeight / 2);
-      verticalDirection = VerticalDirection.up;
     } else {
       paddings = EdgeInsets.only(top: groupHeaderHeight / 2);
-      verticalDirection = VerticalDirection.down;
     }
 
     double elevation = 3;
-
     if (model.hideBorder) {
       elevation = 0;
     }
@@ -224,5 +221,13 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     }
 
     return 0.0;
+  }
+
+  VerticalDirection get verticalDirection {
+    if (model.verticalAlignment == VerticalAlignment.BOTTOM) {
+      return VerticalDirection.up;
+    } else {
+      return VerticalDirection.down;
+    }
   }
 }
