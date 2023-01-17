@@ -20,6 +20,7 @@ import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_group_panel_model.dart';
+import '../../../model/layout/alignments.dart';
 import '../../../service/config/config_controller.dart';
 import '../../../service/storage/i_storage_service.dart';
 import '../../../util/jvx_colors.dart';
@@ -123,33 +124,48 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   Widget _buildModern(BuildContext context) {
     double groupHeaderHeight = (layoutData.layout as GroupLayout).groupHeaderHeight;
 
+    VerticalDirection verticalDirection;
+    EdgeInsets paddings;
+    if (model.verticalAlignment == VerticalAlignment.BOTTOM) {
+      paddings = EdgeInsets.only(bottom: groupHeaderHeight / 2);
+      verticalDirection = VerticalDirection.up;
+    } else {
+      paddings = EdgeInsets.only(top: groupHeaderHeight / 2);
+      verticalDirection = VerticalDirection.down;
+    }
+
     return getPositioned(
       child: Padding(
-        padding: EdgeInsets.only(top: groupHeaderHeight / 2),
+        padding: paddings,
         child: Material(
           borderRadius: BorderRadius.circular(3.0),
           elevation: 3,
-          child: Column(children: [
-            Container(
-              height: groupHeaderHeight / 2,
-              clipBehavior: Clip.none,
-              child: OverflowBox(
-                maxHeight: groupHeaderHeight,
-                minHeight: groupHeaderHeight,
-                alignment: Alignment.bottomCenter,
-                child: FlGroupPanelHeaderWidget(
-                  model: model,
-                  postFrameCallback: postFrameCallback,
+          child: Column(
+            verticalDirection: verticalDirection,
+            children: [
+              Container(
+                height: groupHeaderHeight / 2,
+                clipBehavior: Clip.none,
+                child: OverflowBox(
+                  maxHeight: groupHeaderHeight,
+                  minHeight: groupHeaderHeight,
+                  alignment: model.verticalAlignment == VerticalAlignment.BOTTOM
+                      ? Alignment.topCenter
+                      : Alignment.bottomCenter,
+                  child: FlGroupPanelHeaderWidget(
+                    model: model,
+                    postFrameCallback: postFrameCallback,
+                  ),
                 ),
               ),
-            ),
-            FlSizedPanelWidget(
-              model: model,
-              width: widthOfGroupPanel,
-              height: heightOfGroupPanel,
-              children: children.values.toList(),
-            ),
-          ]),
+              FlSizedPanelWidget(
+                model: model,
+                width: widthOfGroupPanel,
+                height: heightOfGroupPanel,
+                children: children.values.toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );
