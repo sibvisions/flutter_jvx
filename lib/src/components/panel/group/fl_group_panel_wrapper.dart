@@ -134,12 +134,18 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
       verticalDirection = VerticalDirection.down;
     }
 
+    double elevation = 3;
+
+    if (model.hideBorder) {
+      elevation = 0;
+    }
+
     return getPositioned(
       child: Padding(
         padding: paddings,
         child: Material(
           borderRadius: BorderRadius.circular(3.0),
-          elevation: 3,
+          elevation: elevation,
           child: Column(
             verticalDirection: verticalDirection,
             children: [

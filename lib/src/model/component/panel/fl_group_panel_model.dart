@@ -27,6 +27,8 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
 
   static const String FLAT_STYLE = "f_panel_flat";
 
+  static const String NO_BORDER_STYLE = "f_panel_noborder";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,6 +39,7 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
 
   bool get isFlatStyle => styles.contains(FLAT_STYLE);
 
+  bool get hideBorder => styles.contains(NO_BORDER_STYLE);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
