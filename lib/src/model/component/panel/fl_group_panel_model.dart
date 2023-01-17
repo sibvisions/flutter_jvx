@@ -43,7 +43,7 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
 
   /// Initializes the [FlGroupPanelModel]
   FlGroupPanelModel() : super() {
-    horizontalAlignment = HorizontalAlignment.LEFT;
+    horizontalAlignment = HorizontalAlignment.STRETCH;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

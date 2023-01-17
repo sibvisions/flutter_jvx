@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../model/component/panel/fl_group_panel_model.dart';
+import '../../../model/layout/alignments.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../service/config/config_controller.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
@@ -59,16 +60,26 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
         ),
       );
     }
-    LayoutMode layoutMode = ConfigController().layoutMode.value;
 
-    if (layoutMode == LayoutMode.Mini) {
-      return labelWidget;
-    } else {
-      return Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 15),
-        child: labelWidget,
-      );
-    }
+    return ValueListenableBuilder(
+      valueListenable: ConfigController().layoutMode,
+      builder: (context, value, child) {
+        if (value == LayoutMode.Mini && model.horizontalAlignment == HorizontalAlignment.STRETCH) {
+          return labelWidget;
+        } else {
+          HorizontalAlignment horizontalAlignment = model.horizontalAlignment;
+          // If the alignment was not explicitly set, defaults to left.
+          if (horizontalAlignment == HorizontalAlignment.STRETCH) {
+            horizontalAlignment = HorizontalAlignment.LEFT;
+          }
+
+          return Container(
+            alignment: FLUTTER_ALIGNMENT[horizontalAlignment.index][VerticalAlignment.CENTER.index],
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: labelWidget,
+          );
+        }
+      },
+    );
   }
 }
