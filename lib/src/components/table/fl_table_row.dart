@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -119,9 +117,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     List<Widget> rowWidgets = columnsToShow.map((columnDefinition) {
       cellIndex += 1;
       rowWidth += tableSize.columnWidths[columnDefinition.name]!;
-      if (isSelected) {
-        log("Selected column is: $selectedColumn and i am: ${columnDefinition.name}");
-      }
+
       return FlTableCell(
         model: model,
         onEndEditing: onEndEditing,

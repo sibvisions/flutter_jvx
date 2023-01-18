@@ -359,6 +359,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     if (hasToCalc) {
       _recalculateTableSize(true);
+    } else {
+      setState(() {});
     }
   }
 
