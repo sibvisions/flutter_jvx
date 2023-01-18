@@ -35,7 +35,6 @@ typedef TableLongPressCallback = void Function(
     int rowIndex, String column, ICellEditor cellEditor, LongPressStartDetails details);
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
-typedef CellEditorActionCallback = void Function(int rowIndex, String column, Function action);
 typedef TableSlideActionCallback = void Function(int rowIndex, TableRowSlideAction action);
 
 class FlTableWidget extends FlStatefulWidget<FlTableModel> {
@@ -70,9 +69,6 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
 
   /// Gets called when the list should refresh
   final Future<void> Function()? onRefresh;
-
-  /// Gets called when an action cell editor makes an action.
-  final CellEditorActionCallback? onAction;
 
   /// Gets called when a row should have all [TableRowSlideAction], only if the row not already scrollable.
   final TableSlideActionCallback? onSlideAction;
@@ -115,7 +111,6 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
-    this.onAction,
     this.onEndScroll,
     this.onRefresh,
     this.onSlideAction,
@@ -288,7 +283,6 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       onLongPress: widget.onLongPress,
       onTap: widget.onTap,
       onDoubleTap: widget.onDoubleTap,
-      onAction: widget.onAction,
       onSlideAction: !canScrollHorizontally ? widget.onSlideAction : null,
       slideActions: widget.slideActions,
       tableSize: widget.tableSize,

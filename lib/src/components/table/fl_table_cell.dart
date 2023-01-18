@@ -49,9 +49,6 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
 
-  /// Gets called when an action cell editor makes an action.
-  final CellEditorActionCallback? onAction;
-
   // Fields
 
   /// The [ColumnDefinition] of this table cell.
@@ -94,7 +91,6 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     this.onLongPress,
     this.onTap,
     this.onDoubleTap,
-    this.onAction,
     required this.columnDefinition,
     required this.width,
     required this.paddings,
@@ -231,9 +227,6 @@ class _FlTableCellState extends State<FlTableCell> {
       onChange: (value) => widget.onValueChanged?.call(value, widget.rowIndex, widget.columnDefinition.name),
       onEndEditing: (value) => widget.onEndEditing?.call(value, widget.rowIndex, widget.columnDefinition.name),
       onFocusChanged: (_) {},
-      onAction: widget.onAction != null
-          ? (action) => widget.onAction!(widget.rowIndex, widget.columnDefinition.name, action)
-          : null,
       isInTable: true,
     );
 

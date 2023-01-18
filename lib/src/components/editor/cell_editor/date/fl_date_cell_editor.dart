@@ -42,8 +42,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
 
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
-  Function(Function)? onAction;
-
   @override
   bool get allowedInTable => false;
 
@@ -67,18 +65,14 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     required super.onFocusChanged,
     super.isInTable,
     this.recalculateSizeCallback,
-    this.onAction,
   }) : super(
           model: FlDateCellEditorModel(),
         ) {
     focusNode.addListener(
       () {
         if (focusNode.hasFocus) {
-          if (onAction != null) {
-            onAction!(_openDatePicker);
-          } else {
-            _openDatePicker();
-          }
+          _openDatePicker();
+
           focusNode.unfocus();
         }
       },

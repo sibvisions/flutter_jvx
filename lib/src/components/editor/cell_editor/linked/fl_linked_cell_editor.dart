@@ -70,7 +70,6 @@ class FlLinkedCellEditor
   @override
   IconData? get tableEditIcon => FontAwesomeIcons.caretDown;
 
-  Function(Function)? onAction;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,7 +81,6 @@ class FlLinkedCellEditor
     required super.onValueChange,
     required super.onEndEditing,
     required super.onFocusChanged,
-    this.onAction,
     super.isInTable,
     this.recalculateSizeCallback,
   }) : super(
@@ -91,11 +89,8 @@ class FlLinkedCellEditor
     focusNode.addListener(
       () {
         if (focusNode.hasPrimaryFocus) {
-          if (onAction != null) {
-            onAction!(_openLinkedCellPicker);
-          } else {
-            _openLinkedCellPicker();
-          }
+          _openLinkedCellPicker();
+
           focusNode.unfocus();
         }
       },

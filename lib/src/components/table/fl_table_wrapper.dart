@@ -163,7 +163,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onLongPress: _onLongPress,
       onTap: _onCellTap,
       onDoubleTap: _onCellDoubleTap,
-      onAction: _onAction,
       onSlideAction: _onSlideAction,
       slideActions: _slideActions(),
       showFloatingButton: _isInsertEnabled &&
@@ -730,17 +729,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             newValueNotifier: dialogValueNotifier,
           );
         }
-        return [];
-      },
-    );
-  }
-
-  void _onAction(int pRowIndex, String pColumnName, Function pAction) {
-    _selectRecord(
-      pRowIndex,
-      pColumnName,
-      pAfterSelect: () async {
-        pAction.call();
         return [];
       },
     );

@@ -130,7 +130,6 @@ abstract class ICellEditor<
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     required Function(bool) onFocusChanged,
-    Function(Function action)? onAction,
     required bool isInTable,
     CellEditorRecalculateSizeCallback? pRecalculateSizeCallback,
   }) {
@@ -193,7 +192,6 @@ abstract class ICellEditor<
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           recalculateSizeCallback: pRecalculateSizeCallback,
-          onAction: onAction,
         );
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
@@ -205,7 +203,6 @@ abstract class ICellEditor<
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           recalculateSizeCallback: pRecalculateSizeCallback,
-          onAction: onAction,
         );
 
       default:

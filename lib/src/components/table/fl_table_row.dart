@@ -51,9 +51,6 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
 
-  /// Gets called when an action cell editor makes an action.
-  final CellEditorActionCallback? onAction;
-
   /// Gets called when the row should have all [TableRowSlideAction].
   final TableSlideActionCallback? onSlideAction;
 
@@ -94,7 +91,6 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
-    this.onAction,
     this.onSlideAction,
     this.slideActions,
     required this.columnDefinitions,
@@ -128,7 +124,6 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         onLongPress: onLongPress,
         onTap: onTap,
         onDoubleTap: onDoubleTap,
-        onAction: onAction,
         columnDefinition: columnDefinition,
         width: tableSize.columnWidths[columnDefinition.name]!,
         paddings: tableSize.cellPaddings,
