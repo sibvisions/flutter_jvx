@@ -128,6 +128,16 @@ class DataBook {
   bool saveFromChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
     bool changed = updateSortDefinitions(pChangedResponse.sortDefinitions);
 
+    if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
+      changed = true;
+      selectedColumn = pChangedResponse.selectedColumn;
+    }
+
+    if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedRow) && pChangedResponse.selectedRow != null) {
+      changed = true;
+      selectedRow = pChangedResponse.selectedRow!;
+    }
+
     if (pChangedResponse.changedColumnNames == null ||
         pChangedResponse.changedValues == null ||
         pChangedResponse.selectedRow == null) {
