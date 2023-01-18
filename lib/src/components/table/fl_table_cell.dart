@@ -66,20 +66,17 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   /// The index of the row this column is in.
   final int rowIndex;
 
-  /// If the cell is forced to only display a text widget
-  final bool disableEditor;
-
   /// The index of the cell in the row;
   final int cellIndex;
 
   /// If the cell is not first, has border on the left side.
   final double cellDividerWidth;
 
-  /// If the cell is in the header row.
-  final bool isHeader;
-
   /// The format of the cell.
   final CellFormat? cellFormat;
+
+  /// If this column is selected.
+  final bool isSelected;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,9 +95,8 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     this.rowIndex = -1,
     required this.cellIndex,
     required this.cellDividerWidth,
-    this.disableEditor = false,
-    this.isHeader = false,
     this.cellFormat,
+    this.isSelected = false,
   }) : super(key: UniqueKey());
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,20 +132,12 @@ class _FlTableCellState extends State<FlTableCell> {
       );
     }
 
-    if (!widget.disableEditor) {
-      cellChild ??= _createCellEditorWidget();
-    }
+    cellChild ??= _createCellEditorWidget();
 
     cellChild ??= _createTextWidget();
 
     Border? border;
-    if (widget.isHeader) {
-      border = const Border(
-        bottom: BorderSide(
-          color: JVxColors.COMPONENT_BORDER,
-        ),
-      );
-    } else if (widget.model.showHorizontalLines) {
+    if (widget.model.showHorizontalLines) {
       border = Border(
         bottom: BorderSide(
           color: Theme.of(context).primaryColor,
@@ -173,13 +161,22 @@ class _FlTableCellState extends State<FlTableCell> {
       }
     }
 
+    if (widget.model.showFocusRect && widget.isSelected) {
+      border = Border.all(
+        color: JVxColors.COMPONENT_BORDER,
+        width: 2.0,
+        strokeAlign: StrokeAlign.outside,
+      );
+    }
+
     return GestureDetector(
-      onLongPressStart: widget.onLongPress != null
+      onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
           ? (details) => widget.onLongPress!(widget.rowIndex, widget.columnDefinition.name, cellEditor, details)
           : null,
-      onTap:
-          widget.onTap != null ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor) : null,
-      onDoubleTap: widget.onDoubleTap != null
+      onTap: widget.onTap != null && widget.model.isEnabled
+          ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
+          : null,
+      onDoubleTap: widget.onDoubleTap != null && widget.model.isEnabled
           ? () => widget.onDoubleTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
           : null,
       child: Container(
@@ -215,17 +212,18 @@ class _FlTableCellState extends State<FlTableCell> {
 
   /// Builds the cell editor.
   void _rebuildCellEditor() {
-    if (widget.isHeader) {
-      return;
-    }
-
     cellEditor.dispose();
+
     cellEditor = ICellEditor.getCellEditor(
       pName: widget.model.name,
       columnDefinition: widget.columnDefinition,
       pCellEditorJson: widget.columnDefinition.cellEditorJson,
-      onChange: (value) => widget.onValueChanged?.call(value, widget.rowIndex, widget.columnDefinition.name),
-      onEndEditing: (value) => widget.onEndEditing?.call(value, widget.rowIndex, widget.columnDefinition.name),
+      onChange: widget.model.isEnabled && widget.model.editable
+          ? (value) => widget.onValueChanged?.call(value, widget.rowIndex, widget.columnDefinition.name)
+          : _doNothing,
+      onEndEditing: widget.model.isEnabled && widget.model.editable
+          ? (value) => widget.onEndEditing?.call(value, widget.rowIndex, widget.columnDefinition.name)
+          : _doNothing,
       onFocusChanged: (_) {},
       isInTable: true,
     );
@@ -234,9 +232,11 @@ class _FlTableCellState extends State<FlTableCell> {
     cellEditor.setValue(widget.value);
   }
 
+  void _doNothing(dynamic pNothing) {}
+
   /// Creates the cell editor widget for the cell if possible
   Widget? _createCellEditorWidget() {
-    if (widget.isHeader || !cellEditor.allowedInTable) {
+    if (!cellEditor.allowedInTable) {
       return null;
     }
 
@@ -250,20 +250,8 @@ class _FlTableCellState extends State<FlTableCell> {
 
   /// Creates a normale textwidget for the cell.
   Widget _createTextWidget() {
-    String cellText;
-    TextStyle style;
-    if (widget.isHeader) {
-      cellText = widget.columnDefinition.label;
-
-      if (widget.columnDefinition.nullable != true) {
-        cellText += " *";
-      }
-
-      style = widget.model.createTextStyle(pFontWeight: FontWeight.bold);
-    } else {
-      cellText = cellEditor.formatValue(widget.value);
-      style = widget.model.createTextStyle();
-    }
+    String cellText = cellEditor.formatValue(widget.value);
+    TextStyle style = widget.model.createTextStyle();
 
     style = style.copyWith(
       backgroundColor: widget.cellFormat?.background,

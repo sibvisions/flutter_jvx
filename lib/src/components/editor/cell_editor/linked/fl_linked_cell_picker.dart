@@ -196,12 +196,12 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                         );
                         tableModel.stickyHeaders =
                             constraints.maxHeight > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
+                        tableModel.editable = false;
 
                         return FlTableWidget(
                           chunkData: _chunkData!,
                           onEndScroll: _increasePageLoad,
                           model: tableModel,
-                          disableEditors: true,
                           onTap: _onRowTapped,
                           tableSize: tableSize,
                           showFloatingButton: false,

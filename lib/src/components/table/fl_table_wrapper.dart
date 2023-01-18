@@ -80,6 +80,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
 
+  /// The currently selected column. null is none.
+  String? selectedColumn;
+
   /// The meta data of the table.
   DalMetaData? metaData;
 
@@ -103,13 +106,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
 
   /// If deletion of a row is allowed.
-  bool get _isDeleteEnabled => metaData?.deleteEnabled ?? true;
+  bool get _isDeleteEnabled => (metaData?.deleteEnabled ?? true) && !(metaData?.readOnly ?? false);
 
   /// If inserting a row is allowed.
-  bool get _isInsertEnabled => metaData?.insertEnabled ?? true;
+  bool get _isInsertEnabled => (metaData?.insertEnabled ?? true) && !(metaData?.readOnly ?? false);
 
   /// If update a row is allowed.
-  bool get _isUpdateAllowed => metaData?.updateEnabled ?? true;
+  bool get _isUpdateAllowed => (metaData?.updateEnabled ?? true) && !(metaData?.readOnly ?? false);
 
   /// The value notifier for a potential editing dialog.
   ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
@@ -156,6 +159,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       chunkData: dataChunk,
       tableSize: tableSize,
       selectedRowIndex: selectedRow,
+      selectedColumn: selectedColumn,
       onEndEditing: _setValueEnd,
       onValueChanged: _setValueChanged,
       onRefresh: _refresh,
@@ -202,11 +206,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   modelUpdated() {
     super.modelUpdated();
 
-    _subscribe();
+    if (model.lastChangedProperties.contains(ApiObjectProperty.dataProvider)) {
+      _subscribe();
+    }
 
     if (model.lastChangedProperties.contains(ApiObjectProperty.columnNames) ||
-        model.lastChangedProperties.contains(ApiObjectProperty.columnLabels)) {
+        model.lastChangedProperties.contains(ApiObjectProperty.columnLabels) ||
+        model.lastChangedProperties.contains(ApiObjectProperty.autoResize)) {
       _recalculateTableSize(true);
+    } else {
+      setState(() {});
     }
   }
 
@@ -241,6 +250,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Subscribes to the data service.
   void _subscribe() {
     if (model.dataProvider.isNotEmpty) {
+      IUiService().disposeDataSubscription(pSubscriber: this);
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
@@ -309,15 +319,20 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     currentState |= LOADED_SELECTED_RECORD;
 
     var oldRecordIndex = selectedRow;
+    var oldSelectedColumn = selectedColumn;
 
     if (pRecord != null) {
       selectedRow = pRecord.index;
+      selectedColumn = pRecord.selectedColumn;
     } else {
+      selectedColumn = null;
       selectedRow = -1;
     }
 
-    if (oldRecordIndex != selectedRow) {
-      _closeDialog();
+    if (oldRecordIndex != selectedRow || selectedColumn != oldSelectedColumn) {
+      if (oldRecordIndex != selectedRow) {
+        _closeDialog();
+      }
       setState(() {});
     }
   }
@@ -356,15 +371,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pRow,
       pColumnName,
       pAfterSelect: () async {
-        int colIndex = metaData?.columnDefinitions.indexWhere((element) => element.name == pColumnName) ?? -1;
+        if (_isUpdateAllowed && model.editable) {
+          int colIndex = metaData?.columnDefinitions.indexWhere((element) => element.name == pColumnName) ?? -1;
 
-        if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
-          if (pValue is HashMap<String, dynamic>) {
-            return [_setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName)];
-          } else {
-            return [
-              _setValues(pRow, [pColumnName], [pValue], pColumnName)
-            ];
+          if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
+            if (pValue is HashMap<String, dynamic>) {
+              return [_setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName)];
+            } else {
+              return [
+                _setValues(pRow, [pColumnName], [pValue], pColumnName)
+              ];
+            }
           }
         }
 
@@ -404,7 +421,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       _selectRecord(pRowIndex, pColumnName, pAfterSelect: () async {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (!pCellEditor.allowedInTable &&
-              _isUpdateAllowed == true &&
+              _isUpdateAllowed &&
+              model.editable &&
               pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
             _showDialog(
               rowIndex: pRowIndex,
@@ -427,7 +445,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       _selectRecord(pRowIndex, pColumnName, pAfterSelect: () async {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (!pCellEditor.allowedInTable &&
-              _isUpdateAllowed == true &&
+              _isUpdateAllowed &&
+              model.editable &&
               pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
             _showDialog(
               rowIndex: pRowIndex,

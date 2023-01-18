@@ -81,11 +81,11 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The selected current row.
   final int selectedRowIndex;
 
+  /// The selected column;
+  final String? selectedColumn;
+
   /// The data of the table.
   final DataChunk chunkData;
-
-  /// Whether or not to disable all editors.
-  final bool disableEditors;
 
   /// If a button is shown at the bottom.
   final bool showFloatingButton;
@@ -108,6 +108,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.tableHorizontalController,
     this.headerHorizontalController,
     this.selectedRowIndex = -1,
+    this.selectedColumn,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -118,7 +119,6 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.itemScrollController,
     this.onEndEditing,
     this.onValueChanged,
-    this.disableEditors = false,
     this.showFloatingButton = false,
     this.floatingOnPress,
   });
@@ -202,11 +202,11 @@ class _FlTableWidgetState extends State<FlTableWidget> {
     table = SlidableAutoCloseBehavior(
       closeWhenOpened: true,
       child: GestureDetector(
-        onLongPressStart: widget.onLongPress != null
+        onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
             ? (details) => widget.onLongPress?.call(-1, "", FlDummyCellEditor(), details)
             : null,
         child: NotificationListener<ScrollEndNotification>(
-          onNotification: onInternalEndScroll,
+          onNotification: widget.model.isEnabled ? onInternalEndScroll : null,
           child: table,
         ),
       ),
@@ -290,7 +290,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       recordFormats: widget.chunkData.recordFormats?[widget.model.name],
       index: index,
       isSelected: index == widget.selectedRowIndex,
-      disableEditors: widget.disableEditors,
+      selectedColumn: widget.selectedColumn,
     );
   }
 

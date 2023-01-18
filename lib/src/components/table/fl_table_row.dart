@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -68,11 +70,11 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// The index of the row this column is in.
   final int index;
 
-  /// If the cells are forced to only display text widgets
-  final bool disableEditors;
-
   /// If this row is selected.
   final bool isSelected;
+
+  /// The selected column;
+  final String? selectedColumn;
 
   /// The record formats
   final RecordFormat? recordFormats;
@@ -98,8 +100,8 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     required this.values,
     required this.index,
     required this.isSelected,
-    this.disableEditors = false,
     this.recordFormats,
+    this.selectedColumn,
   }) : super(key: UniqueKey());
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,6 +119,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     List<Widget> rowWidgets = columnsToShow.map((columnDefinition) {
       cellIndex += 1;
       rowWidth += tableSize.columnWidths[columnDefinition.name]!;
+      if (isSelected) {
+        log("Selected column is: $selectedColumn and i am: ${columnDefinition.name}");
+      }
       return FlTableCell(
         model: model,
         onEndEditing: onEndEditing,
@@ -130,9 +135,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         cellDividerWidth: tableSize.columnDividerWidth,
         value: values[columnDefinitions.indexOf(columnDefinition)],
         rowIndex: index,
-        disableEditor: disableEditors,
         cellIndex: cellIndex,
         cellFormat: recordFormats?.getCellFormat(index, columnDefinitions.indexOf(columnDefinition)),
+        isSelected: selectedColumn == columnDefinition.name && isSelected,
       );
     }).toList();
 
@@ -154,7 +159,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
       child: Slidable(
         closeOnScroll: true,
         direction: Axis.horizontal,
-        enabled: onSlideAction != null && slideActions?.isNotEmpty == true,
+        enabled: onSlideAction != null && slideActions?.isNotEmpty == true && model.editable && model.isEnabled,
         groupTag: onSlideAction,
         endActionPane: ActionPane(
           extentRatio: slideableExtentRatio,
