@@ -118,6 +118,13 @@ class FlTableModel extends FlComponentModel implements IDataModel {
       pCurrent: autoResize,
     );
 
+    editable = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.editable,
+      pDefault: defaultModel.editable,
+      pCurrent: editable,
+    );
+
     showVerticalLines = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.showVerticalLines,
