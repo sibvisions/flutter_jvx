@@ -16,16 +16,12 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../flutter_ui.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../text_field/fl_text_field_widget.dart';
+import 'fl_text_area_dialog.dart';
 
 class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  final Function()? onDoubleTap;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,7 +36,6 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     super.inputFormatters,
     super.inTable,
     super.isMandatory,
-    this.onDoubleTap,
   }) : super(
           keyboardType: TextInputType.multiline,
         );
@@ -65,8 +60,37 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onDoubleTap: onDoubleTap,
+      onDoubleTap: model.isReadOnly ? null : _openDialogEditor,
       child: super.build(context),
     );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void _openDialogEditor() {
+    bool hadFocus = focusNode.hasPrimaryFocus;
+    showDialog(
+      context: FlutterUI.getCurrentContext()!,
+      builder: (context) {
+        return FlTextAreaDialog(
+          value: textController.value,
+          model: model,
+        );
+      },
+    ).then((value) {
+      if (value == null) {
+        return;
+      }
+
+      if (value != textController.text) {
+        if (hadFocus) {
+          textController.value = value;
+        } else {
+          endEditing(value);
+        }
+      }
+    });
   }
 }

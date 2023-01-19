@@ -22,39 +22,24 @@ import 'fl_text_area_widget.dart';
 
 class FlTextAreaDialog extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static const Object CANCEL_OBJECT = Object();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final TextEditingController textController;
+  late final TextEditingController textController;
 
-  final FocusNode focusNode;
+  late final FocusNode focusNode;
 
   final FlTextAreaModel model;
-
-  /// The callback notifying that the editor value has changed.
-  final Function(String) valueChanged;
-
-  /// The callback notifying that the editor value has changed and the editing was completed.
-  final Function(String) endEditing;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlTextAreaDialog({
+  FlTextAreaDialog({
     super.key,
-    required this.textController,
-    required this.focusNode,
     required this.model,
-    required this.valueChanged,
-    required this.endEditing,
-  });
+    required TextEditingValue value,
+  }) : textController = TextEditingController.fromValue(value);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -70,6 +55,13 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  void initState() {
+    super.initState();
+
+    widget.focusNode.requestFocus();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<Widget> listBottomButtons = [];
 
@@ -83,7 +75,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
               FlutterUI.translate("Cancel"),
             ),
             onPressed: () {
-              Navigator.of(context).pop(FlTextAreaDialog.CANCEL_OBJECT);
+              Navigator.of(context).pop();
             },
           ),
         ),
@@ -100,14 +92,13 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
               FlutterUI.translate("OK"),
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(widget.textController.text);
             },
           ),
         ),
       ),
     );
 
-    widget.focusNode.requestFocus();
     return Dialog(
       insetPadding: const EdgeInsets.all(0.0),
       child: Padding(
@@ -120,7 +111,6 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
                 textController: widget.textController,
                 focusNode: widget.focusNode,
                 valueChanged: (value) {
-                  widget.valueChanged(value);
                   // Set state to update the textfield widget.
                   setState(() {});
                 },
@@ -136,5 +126,12 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode.dispose();
+    widget.textController.dispose();
+    super.dispose();
   }
 }
