@@ -98,19 +98,15 @@ class FlTextFieldModel extends FlLabelModel {
   void applyCellEditorOverrides(Map<String, dynamic> pJson) {
     super.applyCellEditorOverrides(pJson);
 
-    isEditable = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.cellEditorEditable,
-      pDefault: defaultModel.isEditable,
-      pCurrent: isEditable,
-    );
+    Map<String, dynamic> overrideJson = {};
+    if (pJson.containsKey(ApiObjectProperty.cellEditorEditable)) {
+      overrideJson[ApiObjectProperty.editable] = pJson[ApiObjectProperty.cellEditorEditable];
+    }
+    if (pJson.containsKey(ApiObjectProperty.cellEditorPlaceholder)) {
+      overrideJson[ApiObjectProperty.placeholder] = pJson[ApiObjectProperty.cellEditorPlaceholder];
+    }
 
-    placeholder = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.cellEditorPlaceholder,
-      pDefault: defaultModel.placeholder,
-      pCurrent: placeholder,
-    );
+    applyFromJson(overrideJson);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
