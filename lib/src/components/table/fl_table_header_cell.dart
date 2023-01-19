@@ -67,6 +67,9 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
 
   /// Sort Mode
   final SortMode? sortMode;
+
+  /// The index of the sort.
+  final int? sortIndex;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,6 +85,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
     required this.cellIndex,
     required this.cellDividerWidth,
     this.sortMode,
+    this.sortIndex,
   }) : super(key: UniqueKey());
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,6 +166,11 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
         text,
         const SizedBox(
           width: 5,
+        ),
+        Text(
+          sortIndex!.toString(),
+          style: style.copyWith(fontSize: 8),
+          maxLines: 1,
         ),
         FaIcon(
           sortMode == SortMode.ascending ? FontAwesomeIcons.sortUp : FontAwesomeIcons.sortDown,

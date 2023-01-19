@@ -76,6 +76,10 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
     int cellIndex = -1;
     List<Widget> rowWidgets = columnsToShow.map((columnDefinition) {
       cellIndex += 1;
+
+      SortDefinition? sortDef =
+          sortDefinitions?.firstWhereOrNull((element) => element.columnName == columnDefinition.name);
+
       return FlTableHeaderCell(
         model: model,
         onLongPress: onLongPress,
@@ -86,7 +90,8 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
         paddings: tableSize.cellPaddings,
         cellDividerWidth: tableSize.columnDividerWidth,
         cellIndex: cellIndex,
-        sortMode: sortDefinitions?.firstWhereOrNull((element) => element.columnName == columnDefinition.name)?.mode,
+        sortMode: sortDef?.mode,
+        sortIndex: sortDef != null ? sortDefinitions!.indexOf(sortDef) : -1,
       );
     }).toList();
 
