@@ -187,7 +187,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   /// Creates the clear icon at the end of a textfield.
   Widget? createClearIcon([bool pForce = false]) {
-    if ((textController.text.isEmpty || hideClearIcon) && !pForce) {
+    if ((textController.text.isEmpty || hideClearIcon || !model.isEditable || !model.isEnabled) && !pForce) {
       return null;
     }
 
