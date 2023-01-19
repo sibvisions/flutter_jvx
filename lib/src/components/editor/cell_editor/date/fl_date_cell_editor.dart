@@ -42,6 +42,8 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
 
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
+  FlDateEditorModel? lastWidgetModel;
+
   @override
   bool get allowedInTable => false;
 
@@ -70,10 +72,13 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         ) {
     focusNode.addListener(
       () {
-        if (focusNode.hasFocus) {
-          _openDatePicker();
-
-          focusNode.unfocus();
+        if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
+          if (!lastWidgetModel!.isFocusable) {
+            focusNode.unfocus();
+          } else if (lastWidgetModel!.isEditable && lastWidgetModel!.isEnabled) {
+            _openDatePicker();
+            focusNode.unfocus();
+          }
         }
       },
     );
@@ -109,6 +114,8 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     FlDateEditorModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
+
+    lastWidgetModel = widgetModel;
 
     return FlDateEditorWidget(
       model: widgetModel,

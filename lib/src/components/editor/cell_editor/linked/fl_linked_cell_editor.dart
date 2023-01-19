@@ -58,6 +58,8 @@ class FlLinkedCellEditor
 
   bool isOpen = false;
 
+  FlLinkedEditorModel? lastWidgetModel;
+
   @override
   bool get allowedInTable => false;
 
@@ -88,10 +90,14 @@ class FlLinkedCellEditor
         ) {
     focusNode.addListener(
       () {
-        if (focusNode.hasPrimaryFocus) {
-          _openLinkedCellPicker();
+        if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
+          if (!lastWidgetModel!.isFocusable) {
+            focusNode.unfocus();
+          } else if (lastWidgetModel!.isEditable && lastWidgetModel!.isEnabled) {
+            _openLinkedCellPicker();
 
-          focusNode.unfocus();
+            focusNode.unfocus();
+          }
         }
       },
     );
@@ -115,6 +121,8 @@ class FlLinkedCellEditor
 
     applyEditorJson(widgetModel, pJson);
 
+    lastWidgetModel = widgetModel;
+
     return FlLinkedEditorWidget(
       model: widgetModel,
       endEditing: receiveNull,
@@ -127,7 +135,11 @@ class FlLinkedCellEditor
   }
 
   void _openLinkedCellPicker() {
-    if (!isOpen) {
+    if (!isOpen && lastWidgetModel != null) {
+      if (!lastWidgetModel!.isFocusable || !lastWidgetModel!.isEditable) {
+        return;
+      }
+
       onFocusChanged(true);
       isOpen = true;
       ICommandService()
