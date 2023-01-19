@@ -27,6 +27,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../../flutter_jvx.dart';
 import '../../model/command/api/sort_command.dart';
 import '../../model/command/ui/function_command.dart';
+import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/sort_definition.dart';
@@ -288,6 +289,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     bool hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
         oldColumns.any((element) => (!newColumns.contains(element)));
 
+    List<String> oldSorts = pDataChunk.sortDefinitions?.map((e) => e.columnName).toList() ?? [];
+    List<String> newSorts = dataChunk.sortDefinitions?.map((e) => e.columnName).toList() ?? [];
+
+    hasToCalc |= oldSorts.any((element) => (!newSorts.contains(element))) ||
+        newSorts.any((element) => (!oldSorts.contains(element)));
+
     if (pDataChunk.update) {
       for (int index in pDataChunk.data.keys) {
         dataChunk.data[index] = pDataChunk.data[index]!;
@@ -514,24 +521,28 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         .saveAllEditors(
             pId: model.id,
             pFunction: () async {
+              List<BaseCommand> commands = [];
               if (val == TableContextMenuItem.INSERT) {
-                return [_createInsertCommand()];
+                commands.add(_createInsertCommand());
               } else if (val == TableContextMenuItem.DELETE) {
                 int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
                 BaseCommand? command = _createDeleteCommand(indexToDelete);
                 if (command != null) {
-                  return [command];
+                  commands.add(command);
                 }
               } else if (val == TableContextMenuItem.OFFLINE) {
                 _debugGoOffline();
               } else if (val == TableContextMenuItem.FETCH) {
                 _debugFetch();
               } else if (val == TableContextMenuItem.SORT) {
-                _sortColumn(pColumnName);
+                BaseCommand? command = _createSortColumnCommand(pColumnName);
+                if (command != null) {
+                  commands.add(command);
+                }
               } else if (val == TableContextMenuItem.EDIT) {
                 _editRow(pRowIndex);
               }
-              return [];
+              return commands;
             },
             pReason: "Table menu item pressed")
         .catchError(IUiService().handleAsyncError);
@@ -542,7 +553,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Selects the record.
-  void _selectRecord(int pRowIndex, String pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
+  void _selectRecord(int pRowIndex, String? pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
     Filter? filter = _createFilter(pRowIndex: pRowIndex);
 
     if (filter == null) {
@@ -550,10 +561,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
-    IUiService().sendCommand(
-      FunctionCommand(
-          function: () async {
-            return [
+    IUiService()
+        .saveAllEditors(
+          pReason: "Select row in table",
+          pId: model.id,
+          pFunction: () async {
+            List<BaseCommand> commands = [];
+
+            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+
+            commands.add(
               SelectRecordCommand(
                 dataProvider: model.dataProvider,
                 selectedRecord: pRowIndex,
@@ -561,11 +578,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
                 filter: filter,
                 selectedColumn: pColumnName,
               ),
-              if (pAfterSelect != null) FunctionCommand(function: pAfterSelect, reason: "After selected row"),
-            ];
+            );
+            if (pAfterSelect != null) {
+              commands.add(FunctionCommand(function: pAfterSelect, reason: "After selected row"));
+            }
+
+            return commands;
           },
-          reason: "Selected row"),
-    );
+        )
+        .catchError(IUiService().handleAsyncError);
   }
 
   /// Sends a [SetValuesCommand] for this row.
@@ -583,7 +604,21 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Inserts a new record.
   void _insertRecord() {
-    IUiService().sendCommand(_createInsertCommand());
+    IUiService()
+        .saveAllEditors(
+          pReason: "Insert row in table",
+          pId: model.id,
+          pFunction: () async {
+            List<BaseCommand> commands = [];
+
+            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Insert on table"));
+
+            commands.add(_createInsertCommand());
+
+            return commands;
+          },
+        )
+        .catchError(IUiService().handleAsyncError);
   }
 
   InsertRecordCommand _createInsertCommand() {
@@ -705,26 +740,52 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     );
   }
 
-  void _sortColumn(String pColumnName, [bool pAdditive = false]) {
+  BaseCommand? _createSortColumnCommand(String pColumnName, [bool pAdditive = false]) {
     if (!model.sortOnHeaderEnabled) {
-      return;
+      return null;
     }
 
     SortDefinition? currentSortDefinition =
         dataChunk.sortDefinitions?.firstWhereOrNull((sortDef) => sortDef.columnName == pColumnName);
+    bool exists = currentSortDefinition != null;
 
-    dataChunk.sortDefinitions?.remove(currentSortDefinition);
     currentSortDefinition?.mode = currentSortDefinition.nextMode;
     currentSortDefinition ??= SortDefinition(columnName: pColumnName);
 
-    List<SortDefinition> sortDefs = [currentSortDefinition];
+    List<SortDefinition> sortDefs;
     if (pAdditive && dataChunk.sortDefinitions != null) {
-      sortDefs.addAll(dataChunk.sortDefinitions!);
+      sortDefs = [
+        ...dataChunk.sortDefinitions!,
+        if (!exists) currentSortDefinition,
+      ];
+    } else {
+      sortDefs = [currentSortDefinition];
     }
 
-    IUiService().sendCommand(
-      SortCommand(dataProvider: model.dataProvider, sortDefinitions: sortDefs, reason: "sorted"),
-    );
+    return SortCommand(dataProvider: model.dataProvider, sortDefinitions: sortDefs, reason: "sorted");
+  }
+
+  void _sortColumn(String pColumnName, [bool pAdditive = false]) {
+    BaseCommand? sortCommand = _createSortColumnCommand(pColumnName, pAdditive);
+    if (sortCommand == null) {
+      return;
+    }
+
+    IUiService()
+        .saveAllEditors(
+          pReason: "Select row in table",
+          pId: model.id,
+          pFunction: () async {
+            List<BaseCommand> commands = [];
+
+            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+
+            commands.add(sortCommand);
+
+            return commands;
+          },
+        )
+        .catchError(IUiService().handleAsyncError);
   }
 
   void _editRow(int pRowIndex) {
@@ -739,7 +800,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     _selectRecord(
       pRowIndex,
-      "",
+      null,
       pAfterSelect: () async {
         if (IStorageService().isVisibleInUI(model.id)) {
           _showDialog(
