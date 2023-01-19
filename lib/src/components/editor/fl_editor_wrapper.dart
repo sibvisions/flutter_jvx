@@ -220,7 +220,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state of the widget and sends a set value command.
   void onEndEditing(dynamic pValue) {
-    if (_isSameValue(pValue)) {
+    if (_isSameValue(pValue) || !model.isEnabled) {
       cellEditor.setValue(_currentValue);
       setState(() {});
       return;
