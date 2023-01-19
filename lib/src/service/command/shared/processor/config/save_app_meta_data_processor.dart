@@ -19,6 +19,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
@@ -48,7 +49,10 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
         ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");
     Directory? imagesDir = ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/");
 
-    await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
+    // Start WebSocket
+    unawaited((IApiService().getRepository() as OnlineApiRepository?)
+        ?.startWebSocket()
+        .catchError((e, stack) => FlutterUI.logAPI.w("Initial WebSocket connection failed", e, stack)));
 
     List<BaseCommand> commands = [];
     if (kDebugMode || !(languagesDir?.existsSync() ?? false)) {

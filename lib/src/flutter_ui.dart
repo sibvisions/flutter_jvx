@@ -772,6 +772,10 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     var client = super.createHttpClient(context);
+    // Global connectionTimeout, also used by (IO-)WebSocket
+    if (ConfigController().getAppConfig()?.requestTimeout != null) {
+      client.connectionTimeout = Duration(seconds: ConfigController().getAppConfig()!.requestTimeout!);
+    }
     if (!kIsWeb) {
       // TODO find way to not do this
       client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
