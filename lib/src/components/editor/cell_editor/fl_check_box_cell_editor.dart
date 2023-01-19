@@ -18,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
+import '../../../service/api/shared/api_object_property.dart';
 import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
 
@@ -81,11 +82,16 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
 
     lastWidgetModel = widgetModel;
 
+    bool isEditable = true;
+    if (pJson?.containsKey(ApiObjectProperty.cellEditorEditable) == true) {
+      isEditable = pJson![ApiObjectProperty.cellEditorEditable];
+    }
+
     return FlCheckBoxWidget(
       radioFocusNode: focusNode,
       focusNode: buttonFocusNode,
       model: widgetModel,
-      onPress: _onPress,
+      onPress: isEditable ? _onPress : null,
       inTable: isInTable,
     );
   }
