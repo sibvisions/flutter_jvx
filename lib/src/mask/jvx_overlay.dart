@@ -19,6 +19,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../model/command/api/device_status_command.dart';
+import '../model/command/ui/set_focus_command.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/config_controller.dart';
 import '../service/ui/i_ui_service.dart';
@@ -132,6 +133,10 @@ class JVxOverlayState extends State<JVxOverlay> {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
+
+        IUiService().sendCommand(
+          SetFocusCommand(componentId: IUiService().getFocus()?.id, focus: false, reason: "Unfocus, pressed somewhere"),
+        );
       },
       child: AppStyle(
         applicationStyle: ConfigController().applicationStyle.value,
