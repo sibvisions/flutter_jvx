@@ -83,6 +83,11 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
       if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
         editorWidget = SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget);
+      } else if (cellEditor is FlTextCellEditor && editorWidget is FlTextAreaWidget) {
+        editorWidget = SizedBox(
+          height: 100,
+          child: editorWidget,
+        );
       }
       editorWidgets.add(editorWidget);
     } else {
@@ -107,6 +112,11 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
           editorWidget = Align(
             alignment: Alignment.centerLeft,
             child: SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget),
+          );
+        } else if (cellEditor is FlTextCellEditor && editorWidget is FlTextAreaWidget) {
+          editorWidget = SizedBox(
+            height: 100,
+            child: editorWidget,
           );
         }
 
