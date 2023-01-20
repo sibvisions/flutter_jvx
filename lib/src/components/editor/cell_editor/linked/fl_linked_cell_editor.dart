@@ -94,7 +94,7 @@ class FlLinkedCellEditor
           if (!lastWidgetModel!.isFocusable) {
             focusNode.unfocus();
           } else if (lastWidgetModel!.isEditable && lastWidgetModel!.isEnabled) {
-            _openLinkedCellPicker();
+            openLinkedCellPicker();
 
             focusNode.unfocus();
           }
@@ -134,46 +134,40 @@ class FlLinkedCellEditor
     );
   }
 
-  void _openLinkedCellPicker() {
-    if (!isOpen && lastWidgetModel != null) {
-      if (!lastWidgetModel!.isFocusable || !lastWidgetModel!.isEditable) {
-        return;
-      }
-
+  Future<void>? openLinkedCellPicker() {
+    if (!isOpen) {
       onFocusChanged(true);
       isOpen = true;
-      ICommandService()
-          .sendCommand(
-        FilterCommand(
-            editorId: name!,
-            value: "",
-            dataProvider: model.linkReference.dataProvider,
-            reason: "Opened the linked cell picker"),
-      )
+
+      return ICommandService()
+          .sendCommand(FilterCommand(
+              editorId: name!,
+              value: "",
+              dataProvider: model.linkReference.dataProvider,
+              reason: "Opened the linked cell picker"))
           .then((value) {
-        IUiService()
-            .openDialog(
-                pBuilder: (_) => FlLinkedCellPicker(
-                      model: model,
-                      name: name!,
-                      editorColumnDefinition: columnDefinition,
-                    ),
-                pIsDismissible: true)
-            .then((value) {
-          isOpen = false;
-          if (value != null) {
-            if (value == FlLinkedCellPicker.NULL_OBJECT) {
-              receiveNull(null);
-            } else {
-              onEndEditing(value);
-            }
+        return IUiService().openDialog(
+            pBuilder: (_) => FlLinkedCellPicker(
+                  model: model,
+                  name: name!,
+                  editorColumnDefinition: columnDefinition,
+                ),
+            pIsDismissible: true);
+      }).then((value) {
+        isOpen = false;
+        if (value != null) {
+          if (value == FlLinkedCellPicker.NULL_OBJECT) {
+            receiveNull(null);
+          } else {
+            onEndEditing(value);
           }
-        });
+        }
       }).catchError((error, stacktrace) {
         isOpen = false;
         IUiService().handleAsyncError(error, stacktrace);
       });
     }
+    return null;
   }
 
   @override

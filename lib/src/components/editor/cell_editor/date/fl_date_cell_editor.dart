@@ -76,7 +76,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
           if (!lastWidgetModel!.isFocusable) {
             focusNode.unfocus();
           } else if (lastWidgetModel!.isEditable && lastWidgetModel!.isEnabled) {
-            _openDatePicker();
+            openDatePicker();
             focusNode.unfocus();
           }
         }
@@ -154,7 +154,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     return tz.TZDateTime.fromMillisecondsSinceEpoch(_getLocation(), value);
   }
 
-  void _openDatePicker() {
+  Future<void>? openDatePicker() {
     if (!isOpen) {
       onFocusChanged(true);
       isOpen = true;
@@ -170,20 +170,20 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       }
 
       if (model.isDateEditor && model.isTimeEditor) {
-        _openDateAndTimeEditors(initialDate, initialTime);
+        return _openDateAndTimeEditors(initialDate, initialTime);
       } else if (model.isDateEditor) {
-        _openDateEditor(initialDate);
+        return _openDateEditor(initialDate);
       } else if (model.isTimeEditor) {
-        _openTimeEditor(initialTime);
+        return _openTimeEditor(initialTime);
       }
     }
+    return null;
   }
 
-  void _openDateAndTimeEditors(DateTime pInitialDate, TimeOfDay pInitialTime) {
-    bool cancelled = false;
+  Future<void> _openDateAndTimeEditors(DateTime pInitialDate, TimeOfDay pInitialTime) {
     dynamic originalValue = _value;
 
-    IUiService()
+    return IUiService()
         .openDialog(
             pBuilder: (_) => DatePickerDialog(
                   initialDate: pInitialDate,
@@ -193,41 +193,33 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
             pIsDismissible: true)
         .then((value) {
       if (value == null) {
-        cancelled = true;
-      } else {
-        _setDatePart(value);
-      }
-    }).then((_) {
-      if (cancelled) {
         _value = originalValue;
         isOpen = false;
-        return;
+        return null;
+      } else {
+        _setDatePart(value);
+
+        return IUiService()
+            .openDialog(
+                pBuilder: (_) => TimePickerDialog(
+                      initialTime: pInitialTime,
+                    ),
+                pIsDismissible: true)
+            .then((value) {
+          if (value == null) {
+            _value = originalValue;
+          } else {
+            _setTimePart(value);
+            onEndEditing(_value);
+          }
+          isOpen = false;
+        });
       }
-      IUiService()
-          .openDialog(
-              pBuilder: (_) => TimePickerDialog(
-                    initialTime: pInitialTime,
-                  ),
-              pIsDismissible: true)
-          .then((value) {
-        if (value == null) {
-          cancelled = true;
-        } else {
-          _setTimePart(value);
-        }
-      }).then((_) {
-        if (cancelled) {
-          _value = originalValue;
-        } else {
-          onEndEditing(_value);
-        }
-        isOpen = false;
-      });
     });
   }
 
-  void _openDateEditor(DateTime pInitialDate) {
-    IUiService()
+  Future<void> _openDateEditor(DateTime pInitialDate) {
+    return IUiService()
         .openDialog(
             pBuilder: (_) => DatePickerDialog(
                   initialDate: pInitialDate,
@@ -244,8 +236,8 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     });
   }
 
-  void _openTimeEditor(TimeOfDay pInitialTime) {
-    IUiService()
+  Future<void> _openTimeEditor(TimeOfDay pInitialTime) {
+    return IUiService()
         .openDialog(
             pBuilder: (_) => TimePickerDialog(
                   initialTime: pInitialTime,

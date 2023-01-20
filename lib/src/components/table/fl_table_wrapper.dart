@@ -32,6 +32,7 @@ import '../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/sort_definition.dart';
 import '../../model/layout/layout_data.dart';
+import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/offline_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -119,7 +120,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
 
   /// The currently opened editing dialog
-  FlTableEditDialog? currentEditDialog;
+  Future? currentEditDialog;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -850,26 +851,49 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     required ValueNotifier<Map<String, dynamic>?> newValueNotifier,
   }) {
     if (currentEditDialog == null) {
-      var dialog = currentEditDialog = FlTableEditDialog(
-        rowIndex: rowIndex,
-        model: model,
-        columnDefinitions: columnDefinitions,
-        values: values,
-        onEndEditing: onEndEditing,
-        newValueNotifier: newValueNotifier,
-      );
-      IUiService()
-          .openDialog(
-        pBuilder: (context) => dialog,
-      )
-          .then((_) {
-        currentEditDialog = null;
-      });
+      if (columnDefinitions.length == 1 &&
+          (columnDefinitions.first.cellEditorJson[ApiObjectProperty.className] ==
+                  FlCellEditorClassname.LINKED_CELL_EDITOR ||
+              columnDefinitions.first.cellEditorJson[ApiObjectProperty.className] ==
+                  FlCellEditorClassname.DATE_CELL_EDITOR)) {
+        ColumnDefinition colDef = columnDefinitions.first;
+        ICellEditor cellEditor = ICellEditor.getCellEditor(
+            pName: model.name,
+            pCellEditorJson: columnDefinitions.first.cellEditorJson,
+            columnDefinition: colDef,
+            onChange: (_) {},
+            onEndEditing: (value) => onEndEditing(value, rowIndex, colDef.name),
+            onFocusChanged: (_) {},
+            isInTable: true);
+
+        if (cellEditor is FlDateCellEditor) {
+          currentEditDialog = cellEditor.openDatePicker();
+        } else if (cellEditor is FlLinkedCellEditor) {
+          currentEditDialog = cellEditor.openLinkedCellPicker();
+        }
+        cellEditor.dispose();
+      } else {
+        currentEditDialog = IUiService().openDialog(
+          pBuilder: (context) => FlTableEditDialog(
+            rowIndex: rowIndex,
+            model: model,
+            columnDefinitions: columnDefinitions,
+            values: values,
+            onEndEditing: onEndEditing,
+            newValueNotifier: newValueNotifier,
+          ),
+        );
+      }
+
+      if (currentEditDialog != null) {
+        currentEditDialog!.whenComplete(() => currentEditDialog = null);
+      }
     }
   }
 
   void _closeDialog() {
     if (currentEditDialog != null) {
+      currentEditDialog = null;
       Navigator.pop(context);
     }
   }
