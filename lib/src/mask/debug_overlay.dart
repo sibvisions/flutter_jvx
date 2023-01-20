@@ -14,11 +14,15 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../flutter_ui.dart';
 import '../service/api/i_api_service.dart';
 import '../service/api/shared/repository/online_api_repository.dart';
+import '../service/config/config_controller.dart';
+import '../util/progress/progress_dialog_widget.dart';
 
 class DebugOverlay extends StatelessWidget {
   final List<Widget> debugEntries;
@@ -164,6 +168,19 @@ class JVxDebug extends StatelessWidget {
           ),
           ListTile(
             title: Text(
+              "Client ID",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: OutlinedButton(
+              onPressed: () {
+                // Random invalid client id
+                ConfigController().updateClientId("2b63e617-d407-4b40-81b1-ef034233e26a");
+              },
+              child: const Text("Invalidate"),
+            ),
+          ),
+          ListTile(
+            title: Text(
               "API Service",
               style: Theme.of(context).textTheme.titleMedium,
             ),
@@ -232,6 +249,38 @@ class JVxDebug extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Progress Dialog",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: OutlinedButton(
+              onPressed: () async {
+                var key = GlobalKey<ProgressDialogState>();
+                unawaited(showDialog(
+                  context: context,
+                  builder: (context) => ProgressDialogWidget(
+                      key: key,
+                      config: Config(
+                        progress: 0,
+                        maxProgress: 100,
+                        message: "Loading...",
+                        barrierDismissible: true,
+                      )),
+                ));
+                await Future.delayed(const Duration(seconds: 2));
+
+                for (int i = 0; i <= 100; i++) {
+                  key.currentState!.update(
+                      config: Config(
+                    progress: i,
+                  ));
+                  await Future.delayed(const Duration(milliseconds: 50));
+                }
+              },
+              child: const Text("Test"),
             ),
           ),
         ],
