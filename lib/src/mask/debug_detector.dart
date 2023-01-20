@@ -17,7 +17,6 @@
 import 'dart:async';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class DebugDetector extends StatefulWidget {
@@ -26,7 +25,6 @@ class DebugDetector extends StatefulWidget {
   final Duration delay;
   final double? acceptSlopTolerance;
   final int pointers;
-  final bool useHapticFeedback;
 
   const DebugDetector({
     super.key,
@@ -35,7 +33,6 @@ class DebugDetector extends StatefulWidget {
     this.delay = kLongPressTimeout,
     this.acceptSlopTolerance,
     this.pointers = 2,
-    this.useHapticFeedback = true,
   });
 
   @override
@@ -55,9 +52,6 @@ class _DebugDetectorState extends State<DebugDetector> {
           _timer?.cancel();
           _timer = Timer(widget.delay, () {
             if (_pointerCounter == widget.pointers) {
-              if (widget.useHapticFeedback) {
-                HapticFeedback.vibrate();
-              }
               widget.callback.call();
             }
           });
