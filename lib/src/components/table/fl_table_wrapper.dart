@@ -523,6 +523,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             pId: model.id,
             pFunction: () async {
               List<BaseCommand> commands = [];
+
               if (val == TableContextMenuItem.INSERT) {
                 commands.add(_createInsertCommand());
               } else if (val == TableContextMenuItem.DELETE) {
@@ -542,6 +543,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
                 }
               } else if (val == TableContextMenuItem.EDIT) {
                 _editRow(pRowIndex);
+              }
+              if (commands.isNotEmpty) {
+                commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
               }
               return commands;
             },
@@ -804,13 +808,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       null,
       pAfterSelect: () async {
         if (IStorageService().isVisibleInUI(model.id)) {
-          _showDialog(
-            rowIndex: pRowIndex,
-            columnDefinitions: columnsToShow,
-            values: values,
-            onEndEditing: _setValueEnd,
-            newValueNotifier: dialogValueNotifier,
-          );
+          if (_isUpdateAllowed && model.editable) {
+            _showDialog(
+              rowIndex: pRowIndex,
+              columnDefinitions: columnsToShow,
+              values: values,
+              onEndEditing: _setValueEnd,
+              newValueNotifier: dialogValueNotifier,
+            );
+          }
         }
         return [];
       },
