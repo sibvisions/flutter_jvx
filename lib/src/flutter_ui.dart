@@ -556,6 +556,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
+    _checkAlive(state);
+  }
+
+  /// If the app is resumed, sends an [AliveCommand] to check server session.
+  ///
+  /// Ignores [AppLifecycleState.inactive] as it is not really reliable on different platforms.
+  /// * iOS: inactive -> paused -> inactive -> resumed
+  /// * Android: inactive -> paused -> resumed
+  void _checkAlive(AppLifecycleState state) {
     if (lastState != null) {
       if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
         // App was resumed from a paused state (Permission overlay is not paused)
@@ -565,7 +574,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       }
     }
 
-    lastState = state;
+    if (state != AppLifecycleState.inactive) {
+      lastState = state;
+    }
   }
 
   @override
