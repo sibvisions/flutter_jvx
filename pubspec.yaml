@@ -51,7 +51,7 @@ dependencies:
   # IO handling
   universal_io: ^2.0.4
 
-  web_socket_channel: ^2.2.0
+  web_socket_channel: ^2.3.0
   connectivity_plus: ^3.0.2
 
   cross_file: ^0.3.3+2
