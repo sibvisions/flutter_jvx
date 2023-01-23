@@ -86,6 +86,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
 
       if (value != textController.text) {
         if (hadFocus) {
+          focusNode.requestFocus();
           textController.value = value;
         } else {
           endEditing(value);

@@ -27,7 +27,7 @@ class FlTextAreaDialog extends StatefulWidget {
 
   late final TextEditingController textController;
 
-  late final FocusNode focusNode;
+  final FocusNode focusNode = FocusNode();
 
   final FlTextAreaModel model;
 
