@@ -24,5 +24,5 @@ void fixUrlStrategy() {
   platform.ImportHandler.setHashUrlStrategy();
 }
 
-WebSocketChannel createWebSocket(Uri uri, Map<String, dynamic> headers) =>
+WebSocketChannel createWebSocket(Uri uri, Map<String, dynamic>? headers) =>
     platform.ImportHandler.getWebSocketChannel(uri, headers);
