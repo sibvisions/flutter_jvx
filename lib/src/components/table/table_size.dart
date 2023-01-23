@@ -84,7 +84,7 @@ class TableSize {
     this.checkCellWidth = 50.0,
     this.imageCellWidth = 50.0,
     this.choiceCellWidth = 50.0,
-    this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0),
+    this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0, top: 4.0, bottom: 4.0),
   });
 
   /// Always calculates the table size.
@@ -98,7 +98,7 @@ class TableSize {
     this.checkCellWidth = 50.0,
     this.imageCellWidth = 50.0,
     this.choiceCellWidth = 50.0,
-    this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0),
+    this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0, top: 4.0, bottom: 4.0),
     required FlTableModel tableModel,
     required DataChunk dataChunk,
     double? availableWidth,

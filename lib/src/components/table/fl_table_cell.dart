@@ -161,12 +161,13 @@ class _FlTableCellState extends State<FlTableCell> {
       }
     }
 
+    EdgeInsets paddings = widget.paddings;
     if (widget.model.showFocusRect && widget.isSelected) {
       border = Border.all(
         color: JVxColors.COMPONENT_BORDER,
         width: 2.0,
-        strokeAlign: StrokeAlign.outside,
       );
+      paddings = paddings - const EdgeInsets.all(2);
     }
 
     return GestureDetector(
@@ -187,7 +188,7 @@ class _FlTableCellState extends State<FlTableCell> {
         width: widget.width,
         alignment: FLUTTER_ALIGNMENT[widget.columnDefinition.cellEditorHorizontalAlignment.index]
             [VerticalAlignment.CENTER.index],
-        padding: widget.paddings,
+        padding: paddings,
         child: Row(
           children: [
             Expanded(
@@ -262,11 +263,19 @@ class _FlTableCellState extends State<FlTableCell> {
       fontSize: widget.cellFormat?.font?.fontSize.toDouble(),
     );
 
+    TextAlign textAlign;
+    if (cellEditor.model.horizontalAlignment == HorizontalAlignment.RIGHT) {
+      textAlign = TextAlign.right;
+    } else {
+      textAlign = TextAlign.left;
+    }
+
     return Text(
       cellText,
       style: style,
       overflow: TextOverflow.ellipsis,
       maxLines: widget.model.wordWrapEnabled ? null : 1,
+      textAlign: textAlign,
     );
   }
 
