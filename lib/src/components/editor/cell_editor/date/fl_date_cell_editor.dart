@@ -27,6 +27,8 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';
 import '../i_cell_editor.dart';
 import 'fl_date_editor_widget.dart';
+import 'fl_date_picker.dart';
+import 'fl_time_picker.dart';
 
 class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget, FlDateCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -185,29 +187,38 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
 
     return IUiService()
         .openDialog(
-            pBuilder: (_) => DatePickerDialog(
-                  initialDate: pInitialDate,
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime(2100),
-                ),
+            pBuilder: (context) {
+              return FlDatePickerDialog(
+                initialDate: pInitialDate,
+                firstDate: DateTime(1900),
+                lastDate: DateTime(2100),
+                showClear: columnDefinition?.nullable == true,
+              );
+            },
             pIsDismissible: true)
         .then((value) {
       if (value == null) {
         _value = originalValue;
         isOpen = false;
-        return null;
+      } else if (value == FlDatePickerDialog.NULL_DATE) {
+        isOpen = false;
+        onEndEditing(null);
       } else {
         _setDatePart(value);
 
         return IUiService()
             .openDialog(
-                pBuilder: (_) => TimePickerDialog(
+                pBuilder: (_) => FlTimePickerDialog(
                       initialTime: pInitialTime,
+                      showClear: !(columnDefinition?.nullable == false),
                     ),
                 pIsDismissible: true)
             .then((value) {
           if (value == null) {
             _value = originalValue;
+          } else if (value == FlTimePickerDialog.NULL_TIME) {
+            isOpen = false;
+            onEndEditing(null);
           } else {
             _setTimePart(value);
             onEndEditing(_value);
@@ -221,16 +232,21 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   Future<void> _openDateEditor(DateTime pInitialDate) {
     return IUiService()
         .openDialog(
-            pBuilder: (_) => DatePickerDialog(
+            pBuilder: (_) => FlDatePickerDialog(
                   initialDate: pInitialDate,
                   firstDate: DateTime(1900),
                   lastDate: DateTime(2100),
+                  showClear: !(columnDefinition?.nullable == false),
                 ),
             pIsDismissible: true)
         .then((value) {
       if (value != null) {
-        _setDatePart(value);
-        onEndEditing(_value);
+        if (value == FlDatePickerDialog.NULL_DATE) {
+          onEndEditing(null);
+        } else {
+          _setDatePart(value);
+          onEndEditing(_value);
+        }
       }
       isOpen = false;
     });
@@ -239,14 +255,19 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   Future<void> _openTimeEditor(TimeOfDay pInitialTime) {
     return IUiService()
         .openDialog(
-            pBuilder: (_) => TimePickerDialog(
+            pBuilder: (_) => FlTimePickerDialog(
                   initialTime: pInitialTime,
+                  showClear: !(columnDefinition?.nullable == false),
                 ),
             pIsDismissible: true)
         .then((value) {
       if (value != null) {
-        _setTimePart(value);
-        onEndEditing(_value);
+        if (value == FlTimePickerDialog.NULL_TIME) {
+          onEndEditing(null);
+        } else {
+          _setTimePart(value);
+          onEndEditing(_value);
+        }
       }
       isOpen = false;
     });
