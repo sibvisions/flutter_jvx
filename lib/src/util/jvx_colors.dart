@@ -19,9 +19,11 @@ import 'package:flutter/material.dart';
 abstract class JVxColors {
   static const Color LIGHTER_BLACK = Color(0xFF424242);
 
-  static const Color COMPONENT_BORDER = Color.fromARGB(255, 135, 135, 135);
+  static const Color TABLE_VERTICAL_DIVICER = Color(0xFFBDBDBD);
+  static const Color TABLE_FOCUS_REACT = Color(0xFF666666);
+  static const Color COMPONENT_BORDER = Color(0xFF999999);
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
-  static const Color COMPONENT_DISABLED_LIGHTER = Color.fromARGB(255, 230, 230, 230);
+  static const Color COMPONENT_DISABLED_LIGHTER = Color(0xFFE6E6E6);
 
   /// Use [lighten] or [darken] depending on the [brightness].
   static Color adjustByBrightness(Brightness brightness, Color color, [double amount = .1]) {
