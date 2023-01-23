@@ -91,7 +91,7 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
         cellDividerWidth: tableSize.columnDividerWidth,
         cellIndex: cellIndex,
         sortMode: sortDef?.mode,
-        sortIndex: sortDef != null ? sortDefinitions!.indexOf(sortDef) : -1,
+        sortIndex: sortDef != null && sortDefinitions!.length >= 2 ? sortDefinitions!.indexOf(sortDef) + 1 : null,
       );
     }).toList();
 

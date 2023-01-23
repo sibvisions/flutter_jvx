@@ -151,27 +151,33 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
 
     style = model.createTextStyle(pFontWeight: FontWeight.bold);
 
-    Text text = Text(
-      cellText,
-      style: style,
-      overflow: TextOverflow.ellipsis,
-      maxLines: model.wordWrapEnabled ? null : 1,
-    );
+    Text text =
+        Text(cellText, style: style, overflow: TextOverflow.ellipsis, maxLines: model.wordWrapEnabled ? null : 1);
+
     if (sortMode == null) {
       return text;
     }
 
+    MainAxisAlignment mainAxisAlignment;
+    if (columnDefinition.cellEditorHorizontalAlignment == HorizontalAlignment.RIGHT) {
+      mainAxisAlignment = MainAxisAlignment.end;
+    } else {
+      mainAxisAlignment = MainAxisAlignment.start;
+    }
+
     return Row(
+      mainAxisAlignment: mainAxisAlignment,
       children: [
         text,
         const SizedBox(
           width: 5,
         ),
-        Text(
-          sortIndex!.toString(),
-          style: style.copyWith(fontSize: 8),
-          maxLines: 1,
-        ),
+        if (sortIndex != null)
+          Text(
+            sortIndex!.toString(),
+            style: style.copyWith(fontSize: 8),
+            maxLines: 1,
+          ),
         FaIcon(
           sortMode == SortMode.ascending ? FontAwesomeIcons.sortUp : FontAwesomeIcons.sortDown,
           size: 16,
