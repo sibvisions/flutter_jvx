@@ -2206,18 +2206,30 @@ class _FlTimePickerDialogState extends State<FlTimePickerDialog> with Restoratio
             alignment: AlignmentDirectional.centerEnd,
             constraints: const BoxConstraints(minHeight: 52.0),
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: OverflowBar(
-              spacing: 8,
-              overflowAlignment: OverflowBarAlignment.end,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 if (widget.showClear)
-                  TextButton(
-                    onPressed: _handleClear,
-                    child: Text(FlutterUI.translate("CLEAR")),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: _handleClear,
+                        child: Text(
+                          FlutterUI.translate("No value"),
+                        ),
+                      ),
+                    ),
                   ),
+                const SizedBox(
+                  width: 8,
+                ),
                 TextButton(
                   onPressed: _handleCancel,
                   child: Text(widget.cancelText ?? localizations.cancelButtonLabel),
+                ),
+                const SizedBox(
+                  width: 8,
                 ),
                 TextButton(
                   onPressed: _handleOk,

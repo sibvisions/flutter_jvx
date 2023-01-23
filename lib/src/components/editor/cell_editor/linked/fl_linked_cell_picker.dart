@@ -110,27 +110,13 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     if (widget.editorColumnDefinition?.nullable == true) {
       listBottomButtons.add(
-        Flexible(
+        Expanded(
           child: Align(
             alignment: Alignment.centerLeft,
-            child: InkWell(
-              onTap: _onNoValue,
-              child: Builder(
-                builder: (context) => Text(
-                  style: TextStyle(
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(0, -2),
-                        color: DefaultTextStyle.of(context).style.color!,
-                      )
-                    ],
-                    color: Colors.transparent,
-                    decoration: TextDecoration.underline,
-                    decorationColor: DefaultTextStyle.of(context).style.color,
-                    decorationThickness: 1,
-                  ),
-                  FlutterUI.translate("No value"),
-                ),
+            child: TextButton(
+              onPressed: _onNoValue,
+              child: Text(
+                FlutterUI.translate("No value"),
               ),
             ),
           ),
@@ -139,19 +125,13 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
 
     listBottomButtons.add(
-      Flexible(
-        flex: 1,
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: ElevatedButton(
-            child: Text(
-              FlutterUI.translate("Cancel"),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
+      TextButton(
+        child: Text(
+          FlutterUI.translate("Cancel"),
         ),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
       ),
     );
 
