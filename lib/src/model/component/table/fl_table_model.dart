@@ -58,7 +58,7 @@ class FlTableModel extends FlComponentModel implements IDataModel {
   bool showSelection = true;
 
   /// the show focus rect flag.
-  bool showFocusRect = true;
+  bool showFocusRect = false;
 
   /// if the tables sorts on header tab
   bool sortOnHeaderEnabled = true;
