@@ -108,7 +108,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
     if (model.showVerticalLines && cellIndex != 0) {
       Border verticalBorder = Border(
           left: BorderSide(
-        color: JVxColors.COMPONENT_BORDER,
+        color: JVxColors.TABLE_VERTICAL_DIVICER,
         width: cellDividerWidth,
       ));
 

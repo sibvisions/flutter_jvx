@@ -150,7 +150,7 @@ class _FlTableCellState extends State<FlTableCell> {
     if (widget.model.showVerticalLines && widget.cellIndex != 0) {
       Border verticalBorder = Border(
           left: BorderSide(
-        color: JVxColors.COMPONENT_BORDER,
+        color: JVxColors.TABLE_VERTICAL_DIVICER,
         width: widget.cellDividerWidth,
       ));
 
@@ -164,10 +164,10 @@ class _FlTableCellState extends State<FlTableCell> {
     EdgeInsets paddings = widget.paddings;
     if (widget.model.showFocusRect && widget.isSelected) {
       border = Border.all(
-        color: JVxColors.COMPONENT_BORDER,
-        width: 2.0,
+        color: JVxColors.TABLE_FOCUS_REACT,
+        width: 1,
       );
-      paddings = paddings - const EdgeInsets.all(2);
+      paddings = paddings - const EdgeInsets.all(1);
     }
 
     return GestureDetector(
