@@ -22,7 +22,7 @@ class ImportHandler {
     throw UnsupportedError("Not supported on this platform.");
   }
 
-  static WebSocketChannel getWebSocketChannel(Uri uri, Map<String, dynamic> headers) {
+  static WebSocketChannel getWebSocketChannel(Uri uri, Map<String, dynamic>? headers) {
     throw UnsupportedError("Not supported on this platform.");
   }
 }

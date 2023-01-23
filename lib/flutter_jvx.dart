@@ -64,6 +64,7 @@ export 'src/model/response/dal_meta_data_response.dart';
 export 'src/service/api/i_api_service.dart';
 export 'src/service/api/impl/default/api_service.dart';
 export 'src/service/api/shared/i_repository.dart';
+export 'src/service/api/shared/repository/jvx_web_socket.dart';
 export 'src/service/command/i_command_service.dart';
 export 'src/service/command/impl/command_service.dart';
 export 'src/service/config/config_controller.dart';

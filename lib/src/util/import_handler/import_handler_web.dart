@@ -24,7 +24,7 @@ class ImportHandler {
     web_plugins.setUrlStrategy(const FixedHashUrlStrategy());
   }
 
-  static WebSocketChannel getWebSocketChannel(Uri uri, Map<String, dynamic> headers) =>
+  static WebSocketChannel getWebSocketChannel(Uri uri, Map<String, dynamic>? headers) =>
       HtmlWebSocketChannel.connect(uri);
 }
 
