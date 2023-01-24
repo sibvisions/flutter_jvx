@@ -1720,7 +1720,7 @@ class _HourMinuteTextFieldState extends State<_HourMinuteTextField> with Restora
           borderSide: BorderSide(color: colorScheme.error, width: 2.0),
         ),
         hintStyle: widget.style.copyWith(color: colorScheme.onSurface.withOpacity(0.36)),
-        // TODO(rami-a): Remove this logic once https://github.com/flutter/flutter/issues/54104 is fixed.
+        // (rami-a): Remove this logic once https://github.com/flutter/flutter/issues/54104 is fixed.
         errorStyle: const TextStyle(fontSize: 0.0, height: 0.0), // Prevent the error text from appearing.
       );
     }
@@ -1729,7 +1729,7 @@ class _HourMinuteTextFieldState extends State<_HourMinuteTextField> with Restora
     // Otherwise, remove the hint text when focused because the centered cursor
     // appears odd above the hint text.
     //
-    // TODO(rami-a): Once https://github.com/flutter/flutter/issues/67571 is
+    // (rami-a): Once https://github.com/flutter/flutter/issues/67571 is
     // resolved, remove the window check for semantics being enabled on web.
     final String? hintText =
         MediaQuery.of(context).accessibleNavigation || WidgetsBinding.instance.window.semanticsEnabled
