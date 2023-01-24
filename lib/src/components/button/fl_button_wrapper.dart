@@ -57,6 +57,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void initState() {
     super.initState();
 
+    layoutData.isFixedSize = model.isSlideStyle;
+
     if (model.columnName.isNotEmpty && model.dataProvider.isNotEmpty) {
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -71,13 +73,15 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   @override
   Widget build(BuildContext context) {
-    final FlButtonWidget buttonWidget = FlButtonWidget(
-      onFocusGained: focus,
-      onFocusLost: unfocus,
-      model: model,
-      focusNode: buttonFocusNode,
-      onPress: sendButtonPressed,
-    );
+    Widget buttonWidget;
+
+    if (model.isSlideStyle) {
+      buttonWidget = GestureDetector(
+        child: FlSlideButtonWidget(
+          model: model,
+          focusNode: buttonFocusNode,
+          onFocusGained: focus,
+          onFocusLost: unfocus,
           onSlide: (controller) async {
             controller.loading();
             await sendButtonPressed()
