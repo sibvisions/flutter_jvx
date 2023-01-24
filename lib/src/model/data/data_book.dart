@@ -108,7 +108,9 @@ class DataBook {
       selectedColumn = pFetchResponse.selectedColumn;
     }
     recordFormats = pFetchResponse.recordFormats;
-    updateSortDefinitions(pFetchResponse.sortDefinitions);
+    if (pFetchResponse.json.containsKey(ApiObjectProperty.sortDefinition)) {
+      updateSortDefinitions(pFetchResponse.sortDefinitions);
+    }
 
     // Save records
     for (int i = 0; i < pFetchResponse.records.length; i++) {
@@ -126,7 +128,10 @@ class DataBook {
 
   /// Saves all data from a [DalDataProviderChangedResponse]
   bool saveFromChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
-    bool changed = updateSortDefinitions(pChangedResponse.sortDefinitions);
+    bool changed = false;
+    if (pChangedResponse.json.containsKey(ApiObjectProperty.sortDefinition)) {
+      changed = updateSortDefinitions(pChangedResponse.sortDefinitions);
+    }
 
     if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
       changed = true;
