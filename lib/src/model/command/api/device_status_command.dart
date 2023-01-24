@@ -14,9 +14,9 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'session_command.dart';
 
-class DeviceStatusCommand extends ApiCommand {
+class DeviceStatusCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

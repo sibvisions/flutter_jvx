@@ -14,9 +14,9 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'session_command.dart';
 
-class AliveCommand extends ApiCommand {
+class AliveCommand extends SessionCommand {
   bool? retryRequest;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

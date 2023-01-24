@@ -15,10 +15,10 @@
  */
 
 import '../../request/api_insert_record_request.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
 /// Sends [ApiInsertRecordRequest]
-class InsertRecordCommand extends ApiCommand {
+class InsertRecordCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

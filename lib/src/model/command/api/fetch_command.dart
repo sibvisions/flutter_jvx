@@ -14,9 +14,9 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'session_command.dart';
 
-class FetchCommand extends ApiCommand {
+class FetchCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

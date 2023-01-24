@@ -14,9 +14,9 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'session_command.dart';
 
-class CloseFrameCommand extends ApiCommand {
+class CloseFrameCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

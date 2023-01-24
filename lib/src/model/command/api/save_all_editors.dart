@@ -16,9 +16,9 @@
 
 import '../base_command.dart';
 import '../ui/function_command.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
-class SaveAllEditorsCommand extends ApiCommand {
+class SaveAllEditorsCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

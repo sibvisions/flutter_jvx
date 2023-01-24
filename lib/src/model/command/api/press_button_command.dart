@@ -14,12 +14,12 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'session_command.dart';
 
 ///
 /// Issue this command to signify an action has been done.
 ///
-class PressButtonCommand extends ApiCommand {
+class PressButtonCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

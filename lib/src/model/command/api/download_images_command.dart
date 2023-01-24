@@ -14,9 +14,9 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'session_command.dart';
 
-class DownloadImagesCommand extends ApiCommand {
+class DownloadImagesCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

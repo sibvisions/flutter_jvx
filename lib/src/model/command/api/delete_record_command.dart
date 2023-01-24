@@ -16,10 +16,10 @@
 
 import '../../data/filter_condition.dart';
 import '../../request/filter.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
 /// This is the jvx command to delete a record.
-class DeleteRecordCommand extends ApiCommand {
+class DeleteRecordCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -15,10 +15,10 @@
  */
 
 import '../../../service/ui/i_ui_service.dart';
-import 'api_command.dart';
 import 'open_screen_command.dart';
+import 'session_command.dart';
 
-class ReloadMenuCommand extends ApiCommand {
+class ReloadMenuCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

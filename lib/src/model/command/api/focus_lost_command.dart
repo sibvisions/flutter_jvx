@@ -14,10 +14,9 @@
  * the License.
  */
 
-import '../../../../flutter_jvx.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
-class FocusLostCommand extends ApiCommand {
+class FocusLostCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

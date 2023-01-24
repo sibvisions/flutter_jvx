@@ -16,10 +16,10 @@
 
 import '../../data/sort_definition.dart';
 import '../../request/api_set_values_request.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
 /// Command to set off remote request [ApiSetValuesRequest]
-class SortCommand extends ApiCommand {
+class SortCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

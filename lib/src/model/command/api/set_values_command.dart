@@ -17,10 +17,10 @@
 import '../../data/filter_condition.dart';
 import '../../request/api_set_values_request.dart';
 import '../../request/filter.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
 /// Command to set off remote request [ApiSetValuesRequest]
-class SetValuesCommand extends ApiCommand {
+class SetValuesCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

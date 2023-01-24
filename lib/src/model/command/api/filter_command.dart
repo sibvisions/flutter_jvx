@@ -16,9 +16,9 @@
 
 import '../../data/filter_condition.dart';
 import '../../request/filter.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
-class FilterCommand extends ApiCommand {
+class FilterCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

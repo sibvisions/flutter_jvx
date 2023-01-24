@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'session_command.dart';
 
 /// All available login request modes
 enum LoginMode {
@@ -43,7 +43,7 @@ enum LoginMode {
   MFURL,
 }
 
-class LoginCommand extends ApiCommand {
+class LoginCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

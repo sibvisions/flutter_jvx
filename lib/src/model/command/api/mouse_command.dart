@@ -15,9 +15,9 @@
  */
 
 import '../../request/api_mouse_request.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
-abstract class MouseCommand extends ApiCommand {
+abstract class MouseCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

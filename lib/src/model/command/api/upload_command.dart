@@ -16,9 +16,9 @@
 
 import 'package:cross_file/cross_file.dart';
 
-import 'api_command.dart';
+import 'session_command.dart';
 
-class UploadCommand extends ApiCommand {
+class UploadCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

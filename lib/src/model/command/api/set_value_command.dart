@@ -15,10 +15,10 @@
  */
 
 import '../../request/api_set_value_request.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
 /// Command to set off remote request [ApiSetValueRequest] from components
-class SetValueCommand extends ApiCommand {
+class SetValueCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

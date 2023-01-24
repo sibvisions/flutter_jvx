@@ -14,10 +14,10 @@
  * the License.
  */
 
-import 'api_command.dart';
+import 'session_command.dart';
 
 /// Command to Change the password of the current user
-class ChangePasswordCommand extends ApiCommand {
+class ChangePasswordCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

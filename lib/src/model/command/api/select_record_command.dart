@@ -15,9 +15,9 @@
  */
 
 import '../../request/filter.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
-class SelectRecordCommand extends ApiCommand {
+class SelectRecordCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

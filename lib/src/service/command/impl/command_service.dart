@@ -24,6 +24,7 @@ import '../../../exceptions/session_expired_exception.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/api/device_status_command.dart';
+import '../../../model/command/api/session_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
 import '../../../model/command/data/data_command.dart';
@@ -37,6 +38,7 @@ import '../../../model/command/ui/ui_command.dart';
 import '../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
+import '../../config/config_controller.dart';
 import '../../ui/i_ui_service.dart';
 import '../i_command_service.dart';
 import '../shared/i_command_processor.dart';
@@ -113,9 +115,15 @@ class CommandService implements ICommandService {
   }
 
   Future<void> _sendCommand(BaseCommand pCommand) async {
-    progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
-
     try {
+      progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
+
+      // Discard SessionCommands which are sent from an older session (e.g. dispose sends an command).
+      if (pCommand is SessionCommand && pCommand.clientId != ConfigController().clientId.value) {
+        FlutterUI.logCommand.d("${pCommand.runtimeType} uses old/invalid Client ID, discarding.");
+        return;
+      }
+
       FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
       await processCommand(pCommand);
       await pCommand.onFinish?.call();

@@ -15,9 +15,9 @@
  */
 
 import '../../../flutter_ui.dart';
-import 'api_command.dart';
+import 'session_command.dart';
 
-class LogoutCommand extends ApiCommand {
+class LogoutCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

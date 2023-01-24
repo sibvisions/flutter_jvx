@@ -14,23 +14,17 @@
  * the License.
  */
 
-import 'session_command.dart';
+import '../../../service/config/config_controller.dart';
+import 'api_command.dart';
 
-class RollbackCommand extends SessionCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/// BaseType of any api command that needs a valid session
+abstract class SessionCommand extends ApiCommand {
+  final String? clientId;
 
-  RollbackCommand({
+  SessionCommand({
     required super.reason,
-  });
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  String toString() {
-    return "RollbackCommand{${super.toString()}}";
-  }
+    super.beforeProcessing,
+    super.afterProcessing,
+    super.showLoading,
+  }) : clientId = ConfigController().clientId.value;
 }
