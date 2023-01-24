@@ -17,12 +17,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
-import '../mask/debug_detector.dart';
 import '../mask/menu/menu.dart';
 import '../model/api_interaction.dart';
 import '../model/command/base_command.dart';
 import '../model/menu/menu_model.dart';
 import '../model/request/api_request.dart';
+import '../util/debug/debug_detector.dart';
 import 'custom_screen.dart';
 
 abstract class AppManager {
