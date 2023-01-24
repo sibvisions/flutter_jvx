@@ -70,7 +70,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
         flex: 1,
         child: Align(
           alignment: Alignment.centerLeft,
-          child: ElevatedButton(
+          child: TextButton(
             child: Text(
               FlutterUI.translate("Cancel"),
             ),
@@ -87,7 +87,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
         flex: 1,
         child: Align(
           alignment: Alignment.centerRight,
-          child: ElevatedButton(
+          child: TextButton(
             child: Text(
               FlutterUI.translate("OK"),
             ),
