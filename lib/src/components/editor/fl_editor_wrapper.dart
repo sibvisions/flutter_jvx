@@ -15,16 +15,19 @@
  */
 
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../flutter_ui.dart';
+import '../../mask/frame/frame.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
+import '../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -38,8 +41,10 @@ import 'cell_editor/date/fl_date_cell_editor.dart';
 import 'cell_editor/fl_choice_cell_editor.dart';
 import 'cell_editor/fl_dummy_cell_editor.dart';
 import 'cell_editor/fl_image_cell_editor.dart';
+import 'cell_editor/fl_text_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
 import 'cell_editor/linked/fl_linked_cell_editor.dart';
+import 'text_field/fl_text_field_widget.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layouting wrapper of various non layouting widgets.
@@ -149,6 +154,27 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
       if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
         newCalcSize = Size.square(width);
+      } else if (cellEditor is FlTextCellEditor &&
+          (cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_WRAPPEDMULTILINE ||
+              cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_MULTILINE)) {
+        FlTextFieldModel textModel = cellEditor.createWidgetModel() as FlTextFieldModel;
+
+        textModel.applyFromJson(model.json);
+
+        EdgeInsets paddings =
+            Frame.isWebFrame() ? FlTextFieldWidget.WEBFRAME_PADDING : FlTextFieldWidget.MOBILE_PADDING;
+
+        double height = pLayoutData.calculatedSize!.height;
+
+        if (textModel.rows > 1) {
+          height -= paddings.vertical;
+          height *= textModel.rows;
+          height += paddings.vertical;
+        }
+        newCalcSize = Size(
+          width,
+          max(height, pLayoutData.calculatedSize!.height),
+        );
       } else {
         newCalcSize = Size(
           width,
