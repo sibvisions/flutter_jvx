@@ -23,6 +23,7 @@ class TextEditor extends StatelessWidget {
 
   final String title;
   final String hintText;
+  final TextInputType? keyboardType;
 
   /// TextController for the editing field
   final TextEditingController controller;
@@ -37,6 +38,7 @@ class TextEditor extends StatelessWidget {
     super.key,
     required this.title,
     required this.hintText,
+    this.keyboardType,
     required this.controller,
     this.onConfirm,
   });
@@ -50,6 +52,7 @@ class TextEditor extends StatelessWidget {
     return TextField(
       autofocus: true,
       controller: controller,
+      keyboardType: keyboardType,
       onEditingComplete: onConfirm,
       decoration: InputDecoration(
         labelText: title,

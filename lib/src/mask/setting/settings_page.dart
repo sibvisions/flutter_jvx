@@ -320,6 +320,7 @@ class _SettingsPageState extends State<SettingsPage> {
             pEditorBuilder: (context, onConfirm) => TextEditor(
               title: urlTitle,
               hintText: "http://host:port/services/mobile",
+              keyboardType: TextInputType.url,
               controller: controller,
               onConfirm: onConfirm,
             ),
