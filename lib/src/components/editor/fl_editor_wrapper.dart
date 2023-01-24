@@ -182,7 +182,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         pDataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider,
-          from: -1,
           onSelectedRecord: setValue,
           onMetaData: receiveMetaData,
           dataColumns: [model.columnName],

@@ -148,7 +148,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
           subbedObj: this,
-          from: -1,
           dataProvider: model.dataProvider!,
           onSelectedRecord: receiveSignatureData,
           dataColumns: [model.columnName!],

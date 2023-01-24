@@ -36,11 +36,15 @@ import 'fl_linked_editor_widget.dart';
 class FlLinkedCellEditor
     extends ICellEditor<FlLinkedEditorModel, FlLinkedEditorWidget, FlLinkedCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const int PAGE_LOAD = 50;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   final HashMap<dynamic, dynamic> _valueMap = HashMap();
-
-  final int pageLoad = 50;
 
   int currentPage = 1;
 
@@ -218,12 +222,22 @@ class FlLinkedCellEditor
             subbedObj: this,
             dataProvider: model.linkReference.dataProvider,
             from: 0,
-            to: pageLoad * currentPage,
+            to: PAGE_LOAD * currentPage,
             onDataChunk: _setValueMap,
+            onReload: _onDataProviderReload,
           ),
         );
       }
     }
+  }
+
+  int _onDataProviderReload(int pSelectedRow) {
+    if (pSelectedRow >= 0) {
+      currentPage = ((pSelectedRow + 1) / PAGE_LOAD).ceil();
+    } else {
+      currentPage = 1;
+    }
+    return PAGE_LOAD * currentPage;
   }
 
   void _unsubscribe() {

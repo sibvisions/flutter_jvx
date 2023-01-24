@@ -265,7 +265,6 @@ class DataBook {
   void clearRecords() {
     records.clear();
     isAllFetched = false;
-    selectedRow = -1;
   }
 
   static Future<void> selectRecord({
@@ -363,6 +362,7 @@ class DataBook {
     void Function(DataChunk)? pOnDataChunk,
     void Function(DalMetaData)? pOnMetaData,
     void Function(DataRecord?)? pOnSelectedRecord,
+    int Function(int)? pOnReload,
   }) {
     IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -374,6 +374,7 @@ class DataBook {
       onDataChunk: pOnDataChunk,
       onMetaData: pOnMetaData,
       onSelectedRecord: pOnSelectedRecord,
+      onReload: pOnReload,
     ));
   }
 

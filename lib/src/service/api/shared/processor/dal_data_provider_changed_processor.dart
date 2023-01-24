@@ -27,28 +27,24 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
       IUiService().notifyMetaDataChange(pDataProvider: pResponse.dataProvider);
     }
 
-    if (IDataService().updateDataChangedResponse(pChangedResponse: pResponse)) {
-      IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
-    }
-
-    // TODO make this one function call
+    bool dataChanged = IDataService().updateDataChangedResponse(pChangedResponse: pResponse);
 
     // If -1 then delete all saved data and re-fetch
     if (pResponse.reload == -1) {
-      DeleteProviderDataCommand deleteProviderDataCommand = DeleteProviderDataCommand(
+      commands.add(DeleteProviderDataCommand(
         dataProvider: pResponse.dataProvider,
         reason: "Data provider changed response was reload -1",
         deleteAll: true,
-      );
-      commands.add(deleteProviderDataCommand);
+      ));
 
-      FetchCommand fetchCommand = FetchCommand(
+      IUiService().notifySubscriptionsOfReload(pDataprovider: pResponse.dataProvider);
+
+      commands.add(FetchCommand(
         reason: "Data provider changed response was reload -1",
         fromRow: 0,
         rowCount: IUiService().getSubscriptionRowcount(pDataProvider: pResponse.dataProvider),
         dataProvider: pResponse.dataProvider,
-      );
-      commands.add(fetchCommand);
+      ));
     } else if (pResponse.reload != null) {
       // If reload not -1/null re-fetch only given row
       FetchCommand fetchCommand = FetchCommand(
@@ -58,6 +54,8 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
         dataProvider: pResponse.dataProvider,
       );
       commands.add(fetchCommand);
+    } else if (dataChanged) {
+      IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
     }
 
     if (pResponse.deletedRow != null) {

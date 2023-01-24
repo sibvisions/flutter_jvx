@@ -63,6 +63,7 @@ class DataService implements IDataService {
     } else {
       if (pFetch.clear) {
         dataBook.clearRecords();
+        dataBook.selectedRow = -1;
       }
       dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
     }

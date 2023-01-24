@@ -24,6 +24,7 @@ import 'data_record.dart';
 typedef OnSelectedRecordCallback = void Function(DataRecord? dataRecord);
 typedef OnDataChunkCallback = void Function(DataChunk dataChunk);
 typedef OnMetaDataCallback = void Function(DalMetaData metaData);
+typedef OnReloadCallback = int Function(int selectedRow);
 
 /// Used for subscribing in [IUiService] to potentially receive data.
 class DataSubscription {
@@ -44,10 +45,10 @@ class DataSubscription {
   final OnSelectedRecordCallback? onSelectedRecord;
 
   /// Index from which data will be fetched, set to -1 to only receive the selected row
-  final int from;
+  int from;
 
   /// Index to which data will be fetched, if null - will return all data from provider, will fetch if necessary
-  final int? to;
+  int? to;
 
   /// Callback will only be called with [DataChunk] if from is not -1.
   final OnDataChunkCallback? onDataChunk;
@@ -55,8 +56,11 @@ class DataSubscription {
   /// Callback will be called with metaData of requested dataBook
   final OnMetaDataCallback? onMetaData;
 
+  /// Callback will be called when a reload happens. Return value is the new subscription count.
+  final OnReloadCallback? onReload;
+
   /// List of column names which should be fetched, return order will correspond to order of this list
-  final List<String>? dataColumns;
+  List<String>? dataColumns;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -69,6 +73,7 @@ class DataSubscription {
     this.onSelectedRecord,
     this.onDataChunk,
     this.onMetaData,
+    this.onReload,
     this.to,
     this.dataColumns,
   }) : id = getRandomString(15);

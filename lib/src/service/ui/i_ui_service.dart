@@ -148,6 +148,9 @@ abstract class IUiService {
   /// Register to receive a subscriptions of data from a specific dataProvider
   void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true});
 
+  /// Notifies all subscriptions of a reload.
+  void notifySubscriptionsOfReload({required String pDataprovider});
+
   /// Removes all active subscriptions
   void disposeSubscriptions({required Object pSubscriber});
 

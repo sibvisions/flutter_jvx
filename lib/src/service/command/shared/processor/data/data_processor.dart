@@ -138,6 +138,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       pTo: command.toIndex,
       pDeleteAll: command.deleteAll,
     );
+
     return [];
   }
 

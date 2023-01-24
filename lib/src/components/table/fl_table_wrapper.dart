@@ -262,6 +262,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           onSelectedRecord: _receiveSelectedRecord,
           onDataChunk: _receiveTableData,
           onMetaData: _receiveMetaData,
+          onReload: _onDataProviderReload,
           dataColumns: null,
         ),
       );
@@ -279,6 +280,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     currentState &= ~LOADED_META_DATA;
     currentState &= ~LOADED_DATA;
     currentState &= ~LOADED_SELECTED_RECORD;
+  }
+
+  int _onDataProviderReload(int pSelectedRow) {
+    if (pSelectedRow >= 0) {
+      pageCount = ((pSelectedRow + 1) / FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE).ceil();
+    } else {
+      pageCount = 1;
+    }
+
+    return FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount;
   }
 
   /// Loads data from the server.

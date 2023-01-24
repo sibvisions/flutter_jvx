@@ -59,7 +59,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         pDataSubscription: DataSubscription(
           subbedObj: this,
           dataProvider: model.dataProvider,
-          from: 0,
           dataColumns: [model.columnName],
           onSelectedRecord: setSelectedRecord,
         ),

@@ -71,8 +71,6 @@ class UiService implements IUiService {
   /// The currently focused object.
   String? focusedComponentId;
 
-  /// TODO: Holds previously calculated TableSizes
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -351,6 +349,15 @@ class UiService implements IUiService {
         sendCommand(getMetaDataCommand);
       }
     }
+  }
+
+  @override
+  void notifySubscriptionsOfReload({required String pDataprovider}) {
+    _dataSubscriptions.where((element) => element.dataProvider == pDataprovider).forEach((dataSubscription) {
+      if (dataSubscription.onReload != null && dataSubscription.onDataChunk != null && dataSubscription.from >= 0) {
+        dataSubscription.to = dataSubscription.onReload!.call(IDataService().getDataBook(pDataprovider)!.selectedRow);
+      }
+    });
   }
 
   @override
