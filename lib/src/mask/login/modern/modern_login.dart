@@ -36,12 +36,11 @@ import 'cards/lost_password_card.dart';
 import 'cards/manual_card.dart';
 import 'middle_clipper_with_double_curve.dart';
 
-// ignore: must_be_immutable
 class ModernLogin extends StatelessWidget implements Login {
   final LoginMode mode;
 
   // Parameter workaround
-  late bool showSettingsInCard;
+  final ValueNotifier<bool> showSettingsInCard = ValueNotifier(false);
 
   ModernLogin({
     super.key,
@@ -71,11 +70,11 @@ class ModernLogin extends StatelessWidget implements Login {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          showSettingsInCard = ManualCard.showSettingsInCard(constraints);
+          showSettingsInCard.value = ManualCard.showSettingsInCard(constraints);
           return Stack(
             children: [
               buildBackground(context, loginLogo, topColor, bottomColor, colorGradient),
-              if (mode == LoginMode.Manual && !showSettingsInCard)
+              if (mode == LoginMode.Manual && !showSettingsInCard.value)
                 Positioned(
                   right: 0,
                   bottom: 35,
@@ -235,7 +234,8 @@ class ModernLogin extends StatelessWidget implements Login {
         break;
       case LoginMode.Manual:
       default:
-        card = ManualCard(showSettings: showSettingsInCard);
+        // No need for ValueListenableBuilder, as this in the same LayoutBuilder
+        card = ManualCard(showSettings: showSettingsInCard.value);
         break;
     }
     return card;
