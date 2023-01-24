@@ -40,8 +40,6 @@ class FlTextAreaWrapper extends BaseCompWrapperWidget<FlTextAreaModel> {
 }
 
 class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
-  double? calculatedRowSize;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,8 +72,7 @@ class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
 
     if (model.rows > 1) {
       height -= paddings.vertical;
-      calculatedRowSize ??= height;
-      height = calculatedRowSize! * model.rows;
+      height *= model.rows;
       height += paddings.vertical;
     }
 
