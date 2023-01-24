@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
 import '../../../model/component/fl_component_model.dart';
-import '../../../model/component/panel/fl_group_panel_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../service/config/config_controller.dart';
 import '../../../service/storage/i_storage_service.dart';

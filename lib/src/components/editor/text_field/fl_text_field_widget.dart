@@ -23,7 +23,7 @@ import 'package:flutter/services.dart';
 import '../../../flutter_ui.dart';
 import '../../../mask/frame/frame.dart';
 import '../../../mask/state/app_style.dart';
-import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../util/jvx_colors.dart';

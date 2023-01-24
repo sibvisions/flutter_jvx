@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '../../mask/frame/frame.dart';
-import '../../model/component/label/fl_label_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../util/parse_util.dart';
 import '../base_wrapper/fl_stateless_widget.dart';

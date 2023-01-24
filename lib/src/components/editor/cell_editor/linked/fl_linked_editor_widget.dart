@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
-import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
+import '../../../../model/component/fl_component_model.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../text_field/fl_text_field_widget.dart';
 

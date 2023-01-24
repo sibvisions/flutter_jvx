@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
 class FlTableEditDialog extends StatefulWidget {

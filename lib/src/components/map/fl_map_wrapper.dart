@@ -22,7 +22,6 @@ import 'package:latlong2/latlong.dart';
 
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/component/map/fl_map_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../service/ui/i_ui_service.dart';

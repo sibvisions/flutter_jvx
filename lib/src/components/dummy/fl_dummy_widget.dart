@@ -19,7 +19,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../model/component/dummy/fl_dummy_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlDummyWidget extends FlStatelessWidget<FlDummyModel> {

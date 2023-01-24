@@ -16,7 +16,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../model/component/panel/fl_panel_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {

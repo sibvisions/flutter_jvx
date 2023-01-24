@@ -14,11 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/widgets.dart';
-
-import '../../layout/alignments.dart';
-import 'fl_button_model.dart';
-import 'fl_toggle_button_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 /// The model for [FlRadioButtonWidget]
 class FlRadioButtonModel extends FlToggleButtonModel {

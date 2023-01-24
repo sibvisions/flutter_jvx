@@ -18,7 +18,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../model/component/fl_component_model.dart';
-import '../../model/component/icon/fl_icon_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../util/image/image_loader.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';

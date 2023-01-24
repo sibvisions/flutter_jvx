@@ -17,7 +17,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../layout/split_layout.dart';
-import '../../../model/component/panel/fl_split_panel_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/layout_position.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../fl_panel_widget.dart';

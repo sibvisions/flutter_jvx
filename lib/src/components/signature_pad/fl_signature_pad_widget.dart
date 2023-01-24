@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
 import '../../flutter_ui.dart';
-import '../../model/component/custom/fl_custom_container_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../util/image/image_loader.dart';
 import '../base_wrapper/fl_stateless_widget.dart';

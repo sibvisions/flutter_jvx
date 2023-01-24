@@ -23,7 +23,6 @@ import '../../../../mask/frame/frame.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
-import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../../routing/locations/menu_location.dart';
 import '../../../../util/misc/jvx_notifier.dart';
 import '../../../api/shared/api_object_property.dart';

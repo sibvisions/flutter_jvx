@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:gauges/gauges.dart';
 
-import '../../model/component/gauge/fl_gauge_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 

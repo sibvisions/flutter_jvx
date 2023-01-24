@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../model/component/button/fl_radio_button_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../util/jvx_colors.dart';
 import '../fl_button_widget.dart';
 

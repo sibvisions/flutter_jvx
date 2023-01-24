@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../model/response/dal_fetch_response.dart';
 import '../base_wrapper/fl_stateful_widget.dart';

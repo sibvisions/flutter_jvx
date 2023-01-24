@@ -14,8 +14,8 @@
  * the License.
  */
 
-import '../../../model/component/dummy/fl_dummy_model.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../dummy/fl_dummy_widget.dart';
 import 'i_cell_editor.dart';
 

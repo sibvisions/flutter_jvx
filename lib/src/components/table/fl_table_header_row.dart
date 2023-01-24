@@ -18,6 +18,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/data/sort_definition.dart';
 import 'fl_table_header_cell.dart';
 

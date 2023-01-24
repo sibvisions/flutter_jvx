@@ -21,7 +21,6 @@ import 'package:flutter/widgets.dart';
 import '../../../layout/i_layout.dart';
 import '../../../layout/scroll_layout.dart';
 import '../../../model/component/fl_component_model.dart';
-import '../../../model/component/panel/fl_panel_model.dart';
 import '../../../service/config/config_controller.dart';
 import '../../../service/storage/i_storage_service.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';

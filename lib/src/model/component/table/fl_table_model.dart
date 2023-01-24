@@ -14,10 +14,7 @@
  * the License.
  */
 
-import '../../../service/api/shared/api_object_property.dart';
-import '../../../util/parse_util.dart';
-import '../fl_component_model.dart';
-import '../interface/i_data_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlTableModel extends FlComponentModel implements IDataModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

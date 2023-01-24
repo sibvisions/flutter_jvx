@@ -22,7 +22,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../model/component/table/fl_table_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';

@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../../../model/component/panel/fl_group_panel_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../service/config/config_controller.dart';

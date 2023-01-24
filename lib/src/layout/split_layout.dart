@@ -17,7 +17,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import '../model/component/panel/fl_split_panel_model.dart';
+import '../model/component/fl_component_model.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import '../util/i_clonable.dart';

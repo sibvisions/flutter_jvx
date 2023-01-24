@@ -30,7 +30,7 @@ import '../../model/command/api/navigation_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/command/storage/delete_screen_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
-import '../../model/component/panel/fl_panel_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';

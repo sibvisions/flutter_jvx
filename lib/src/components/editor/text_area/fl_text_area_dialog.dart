@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_ui.dart';
-import '../../../model/component/editor/text_area/fl_text_area_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import 'fl_text_area_widget.dart';
 
 class FlTextAreaDialog extends StatefulWidget {

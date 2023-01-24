@@ -19,6 +19,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/response/dal_fetch_response.dart';
 import 'fl_table_cell.dart';
 

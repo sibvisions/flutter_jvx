@@ -16,8 +16,8 @@
 
 import 'package:flutter/cupertino.dart';
 
-import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';

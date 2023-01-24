@@ -18,7 +18,6 @@ import 'dart:async';
 
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/component/panel/fl_panel_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../util/misc/jvx_notifier.dart';
 import '../api/shared/fl_component_classname.dart';

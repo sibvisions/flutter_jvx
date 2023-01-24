@@ -25,7 +25,6 @@ import 'package:signature/signature.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
-import '../../model/component/custom/fl_custom_container_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';

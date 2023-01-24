@@ -17,7 +17,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../model/component/editor/cell_editor/fl_image_cell_editor_model.dart';
-import '../../../model/component/icon/fl_icon_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../util/i_types.dart';

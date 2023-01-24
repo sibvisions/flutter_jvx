@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../mask/frame/frame.dart';
-import '../../../model/component/editor/text_area/fl_text_area_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
 import '../text_field/fl_text_field_wrapper.dart';

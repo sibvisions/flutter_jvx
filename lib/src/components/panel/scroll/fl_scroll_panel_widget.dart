@@ -17,7 +17,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../model/component/panel/fl_panel_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../fl_panel_widget.dart';
 
 class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {

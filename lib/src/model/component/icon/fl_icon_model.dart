@@ -14,10 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/widgets.dart';
-
-import '../../../service/api/shared/api_object_property.dart';
-import '../fl_component_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlIconModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

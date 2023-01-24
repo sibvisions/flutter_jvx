@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../fl_component_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlSeparatorModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

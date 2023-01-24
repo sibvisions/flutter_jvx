@@ -28,7 +28,7 @@ import '../model/command/api/open_screen_command.dart';
 import '../model/command/api/set_values_command.dart';
 import '../model/command/api/startup_command.dart';
 import '../model/command/ui/route_to_menu_command.dart';
-import '../model/component/panel/fl_panel_model.dart';
+import '../model/component/fl_component_model.dart';
 import '../model/data/data_book.dart';
 import '../model/request/filter.dart';
 import '../service/api/i_api_service.dart';

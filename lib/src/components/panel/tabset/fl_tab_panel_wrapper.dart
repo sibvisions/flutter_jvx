@@ -23,8 +23,6 @@ import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';
 import '../../../model/command/api/open_tab_command.dart';
 import '../../../model/component/fl_component_model.dart';
-import '../../../model/component/label/fl_label_model.dart';
-import '../../../model/component/panel/fl_tab_panel_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../service/storage/i_storage_service.dart';
 import '../../../service/ui/i_ui_service.dart';

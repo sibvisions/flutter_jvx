@@ -17,29 +17,6 @@
 import '../model/component/fl_component_model.dart';
 import '../service/api/shared/api_object_property.dart';
 import '../service/api/shared/fl_component_classname.dart';
-import 'component/button/fl_button_model.dart';
-import 'component/button/fl_popup_menu_button_model.dart';
-import 'component/button/fl_popup_menu_item_model.dart';
-import 'component/button/fl_popup_menu_model.dart';
-import 'component/button/fl_radio_button_model.dart';
-import 'component/button/fl_separator.dart';
-import 'component/button/fl_toggle_button_model.dart';
-import 'component/chart/fl_chart_model.dart';
-import 'component/check_box/fl_check_box_model.dart';
-import 'component/custom/fl_custom_container_model.dart';
-import 'component/dummy/fl_dummy_model.dart';
-import 'component/editor/fl_editor_model.dart';
-import 'component/editor/text_area/fl_text_area_model.dart';
-import 'component/editor/text_field/fl_text_field_model.dart';
-import 'component/gauge/fl_gauge_model.dart';
-import 'component/icon/fl_icon_model.dart';
-import 'component/label/fl_label_model.dart';
-import 'component/map/fl_map_model.dart';
-import 'component/panel/fl_group_panel_model.dart';
-import 'component/panel/fl_panel_model.dart';
-import 'component/panel/fl_split_panel_model.dart';
-import 'component/panel/fl_tab_panel_model.dart';
-import 'component/table/fl_table_model.dart';
 
 abstract class ModelFactory {
   static FlComponentModel buildModel(String className) {

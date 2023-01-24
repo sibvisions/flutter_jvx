@@ -19,7 +19,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../model/command/api/set_value_command.dart';
 import '../../../model/command/base_command.dart';
-import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../service/command/i_command_service.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../../../util/parse_util.dart';

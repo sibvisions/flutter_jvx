@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-import '../../model/component/icon/fl_icon_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';

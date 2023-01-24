@@ -21,7 +21,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
-import '../../../../model/component/editor/cell_editor/date/fl_date_editor_model.dart';
+import '../../../../model/component/fl_component_model.dart';
 import '../../../../service/config/config_controller.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';

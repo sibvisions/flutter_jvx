@@ -14,9 +14,7 @@
  * the License.
  */
 
-import '../../../components/panel/tabset/fl_tab_panel_wrapper.dart';
-import '../../../service/api/shared/api_object_property.dart';
-import 'fl_panel_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlTabPanelModel extends FlPanelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

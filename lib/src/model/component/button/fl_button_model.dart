@@ -14,19 +14,16 @@
  * the License.
  */
 
-import 'package:flutter/material.dart';
-
-import '../../../components/button/fl_button_widget.dart';
-import '../../../mask/frame/frame.dart';
-import '../../../service/api/shared/api_object_property.dart';
-import '../../../service/config/config_controller.dart';
-import '../../../util/parse_util.dart';
-import '../../layout/alignments.dart';
-import '../fl_component_model.dart';
-import '../label/fl_label_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 /// The model for [FlButtonWidget]
 class FlButtonModel extends FlComponentModel {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String SLIDE_STYLE = "f_slide";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +40,7 @@ class FlButtonModel extends FlComponentModel {
   /// The aria label.
   String ariaLabel = "";
 
-  /// If this is the default button to press. // TODO: talk about default button behaviour
+  /// If this is the default button to press.
   bool defaultButton = false;
 
   /// The image of the button.
@@ -70,18 +67,37 @@ class FlButtonModel extends FlComponentModel {
   /// Columnname for QR-Code buttons or telephone button
   String columnName = "";
 
+  /// If the button is a slider button
+  bool get isSlideStyle => styles.contains(SLIDE_STYLE);
+
+  @override
+  Size? get minimumSize {
+    if (_minimumSize != null) {
+      return _minimumSize;
+    }
+
+    if (isSlideStyle) {
+      double height = kMinInteractiveDimension;
+      if (Frame.isWebFrame()) {
+        height = 32;
+      }
+      return Size(130, height);
+    }
+
+    if (Frame.isWebFrame()) {
+      // 32 is the wanted height of our dense Textfields in the webframe
+      return const Size.square(32);
+    } else {
+      return const Size.square(kMinInteractiveDimension);
+    }
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes the [FlButtonModel]
   FlButtonModel() : super() {
-    if (Frame.isWebFrame()) {
-      // 32 is the wanted height of our dense Textfields in the webframe
-      minimumSize = const Size.square(32);
-    } else {
-      minimumSize = const Size.square(kMinInteractiveDimension);
-    }
     labelModel.verticalAlignment = VerticalAlignment.CENTER;
     labelModel.horizontalAlignment = HorizontalAlignment.RIGHT;
   }
@@ -186,10 +202,6 @@ class FlButtonModel extends FlComponentModel {
         pCurrent: paddings,
         pConversion: (value) => ParseUtil.parseMargins(value)! * ConfigController().getScaling());
 
-    // var jsonMargins = ParseUtil.parseMargins(pJson[ApiObjectProperty.margins]);
-    // if (jsonMargins != null) {
-    //   paddings = jsonMargins;
-    // }
     style = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.style,

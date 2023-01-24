@@ -19,7 +19,7 @@ import 'dart:math' as math;
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../model/component/table/fl_table_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../service/api/shared/fl_component_classname.dart';

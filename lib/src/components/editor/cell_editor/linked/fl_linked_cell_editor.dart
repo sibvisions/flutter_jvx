@@ -23,7 +23,7 @@ import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
-import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
+import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../../../../service/command/i_command_service.dart';

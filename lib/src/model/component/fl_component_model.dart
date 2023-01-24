@@ -14,13 +14,43 @@
  * the License.
  */
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../components/panel/tabset/fl_tab_panel_wrapper.dart';
+import '../../mask/frame/frame.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
 import '../response/dal_fetch_response.dart';
 import 'i_font_style.dart';
+import 'interface/i_data_model.dart';
+
+part 'button/fl_button_model.dart';
+part 'button/fl_popup_menu_button_model.dart';
+part 'button/fl_popup_menu_item_model.dart';
+part 'button/fl_popup_menu_model.dart';
+part 'button/fl_radio_button_model.dart';
+part 'button/fl_separator.dart';
+part 'button/fl_toggle_button_model.dart';
+part 'chart/fl_chart_model.dart';
+part 'check_box/fl_check_box_model.dart';
+part 'custom/fl_custom_container_model.dart';
+part 'dummy/fl_dummy_model.dart';
+part 'editor/cell_editor/date/fl_date_editor_model.dart';
+part 'editor/cell_editor/linked/fl_linked_editor_model.dart';
+part 'editor/fl_editor_model.dart';
+part 'editor/text_area/fl_text_area_model.dart';
+part 'editor/text_field/fl_text_field_model.dart';
+part 'gauge/fl_gauge_model.dart';
+part 'icon/fl_icon_model.dart';
+part 'label/fl_label_model.dart';
+part 'map/fl_map_model.dart';
+part 'panel/fl_group_panel_model.dart';
+part 'panel/fl_panel_model.dart';
+part 'panel/fl_split_panel_model.dart';
+part 'panel/fl_tab_panel_model.dart';
+part 'table/fl_table_model.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
@@ -71,7 +101,16 @@ abstract class FlComponentModel {
   Size? preferredSize;
 
   /// The minimum size of the component.
-  Size? minimumSize;
+  Size? _minimumSize;
+
+  /// The minimum size of the component.
+  // ignore: unnecessary_getters_setters
+  Size? get minimumSize => _minimumSize;
+
+  /// The minimum size of the component.
+  set minimumSize(Size? minimumSize) {
+    _minimumSize = minimumSize;
+  }
 
   /// The maximum size of the component.
   Size? maximumSize;

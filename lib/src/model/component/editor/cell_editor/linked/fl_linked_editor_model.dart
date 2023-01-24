@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../../text_field/fl_text_field_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlLinkedEditorModel extends FlTextFieldModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

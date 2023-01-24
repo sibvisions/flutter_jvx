@@ -18,8 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
-import '../../../model/component/editor/text_area/fl_text_area_model.dart';
-import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../util/parse_util.dart';
 import '../password_field/fl_password_field_widget.dart';
 import '../text_area/fl_text_area_widget.dart';

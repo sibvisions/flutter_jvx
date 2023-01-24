@@ -17,7 +17,7 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../model/component/button/fl_radio_button_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../fl_button_wrapper.dart';
 import 'fl_radio_button_widget.dart';
 

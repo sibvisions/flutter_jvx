@@ -17,7 +17,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../model/component/editor/cell_editor/fl_choice_cell_editor_model.dart';
-import '../../../model/component/icon/fl_icon_model.dart';
+import '../../../model/component/fl_component_model.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';

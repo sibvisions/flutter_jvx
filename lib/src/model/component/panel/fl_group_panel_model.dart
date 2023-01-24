@@ -14,11 +14,7 @@
  * the License.
  */
 
-import '../../../components/panel/group/fl_group_panel_wrapper.dart';
-import '../../../service/api/shared/api_object_property.dart';
-import '../../layout/alignments.dart';
-import '../label/fl_label_model.dart';
-import 'fl_panel_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

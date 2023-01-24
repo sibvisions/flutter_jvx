@@ -16,6 +16,7 @@
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -27,14 +28,16 @@ import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/command/ui/set_focus_command.dart';
-import '../../model/component/button/fl_button_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
+import '../../util/parse_util.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_button_widget.dart';
+import 'fl_slide_button_widget.dart';
 
 class FlButtonWrapper<T extends FlButtonModel> extends BaseCompWrapperWidget<T> {
   const FlButtonWrapper({super.key, required super.model});
@@ -75,6 +78,32 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       focusNode: buttonFocusNode,
       onPress: sendButtonPressed,
     );
+          onSlide: (controller) async {
+            controller.loading();
+            await sendButtonPressed()
+                .then((value) => controller.success())
+                .catchError((Object error, StackTrace stackTrace) {
+              controller.failure();
+              IUiService().handleAsyncError(error, stackTrace);
+            });
+          },
+          onPress: (controller) {
+            controller.reset();
+            setState(() {});
+          },
+        ),
+      );
+    } else {
+      buttonWidget = FlButtonWidget(
+        onFocusGained: focus,
+        onFocusLost: unfocus,
+        model: model,
+        focusNode: buttonFocusNode,
+        onPress: () {
+          sendButtonPressed().catchError(IUiService().handleAsyncError);
+        },
+      );
+    }
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
@@ -89,6 +118,24 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     super.dispose();
   }
 
+  @override
+  modelUpdated() {
+    layoutData.isFixedSize = model.isSlideStyle;
+    super.modelUpdated();
+  }
+
+  @override
+  Size calculateSize(BuildContext context) {
+    if (model.isSlideStyle) {
+      double textWidth = ParseUtil.getTextWidth(text: model.labelModel.text, style: model.labelModel.createTextStyle());
+      Size minimumSize = model.minimumSize!;
+
+      return Size(minimumSize.height + textWidth, minimumSize.height);
+    }
+
+    return super.calculateSize(context);
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,8 +146,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  void sendButtonPressed([String? overwrittenButtonPressId]) {
-    IUiService()
+  Future<void> sendButtonPressed([String? overwrittenButtonPressId]) {
+    return IUiService()
         .saveAllEditors(
       pId: model.id,
       pFunction: () => _createButtonCommands(overwrittenButtonPressId),
@@ -118,7 +165,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           callNumber();
         }
       }
-    }).catchError(IUiService().handleAsyncError);
+    });
   }
 
   Future<List<BaseCommand>> _createButtonCommands(String? pOverwrittenButtonPressId) async {

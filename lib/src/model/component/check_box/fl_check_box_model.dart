@@ -13,11 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
-import 'package:flutter/widgets.dart';
-
-import '../../layout/alignments.dart';
-import '../button/fl_radio_button_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 /// The model of a checkbox
 class FlCheckBoxModel extends FlRadioButtonModel {

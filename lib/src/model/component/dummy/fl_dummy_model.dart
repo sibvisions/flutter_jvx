@@ -14,8 +14,7 @@
  * the License.
  */
 
-import '../../../components/dummy/fl_dummy_widget.dart';
-import '../fl_component_model.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 /// The model for [FlDummyWidget]
 class FlDummyModel extends FlComponentModel {

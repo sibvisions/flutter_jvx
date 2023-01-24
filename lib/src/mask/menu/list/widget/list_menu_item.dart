@@ -17,7 +17,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../model/component/panel/fl_panel_model.dart';
+import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../service/storage/i_storage_service.dart';
 import '../../../../service/ui/i_ui_service.dart';

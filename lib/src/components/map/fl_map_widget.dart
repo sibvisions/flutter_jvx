@@ -17,7 +17,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 
-import '../../model/component/map/fl_map_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {

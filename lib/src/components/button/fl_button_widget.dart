@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../model/component/button/fl_button_model.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
