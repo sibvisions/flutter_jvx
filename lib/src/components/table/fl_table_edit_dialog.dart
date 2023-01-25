@@ -163,7 +163,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
               const SizedBox(height: 4),
               Align(
                 alignment: Alignment.centerRight,
-                child: ElevatedButton(
+                child: TextButton(
                   child: Text(
                     FlutterUI.translate("Ok"),
                   ),
