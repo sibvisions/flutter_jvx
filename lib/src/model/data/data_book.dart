@@ -459,6 +459,6 @@ class DalMetaData {
     if (pResponse.updateEnabled != null) {
       updateEnabled = pResponse.updateEnabled!;
     }
-    ParseUtil.applyJsonToJson(json, pResponse.json);
+    ParseUtil.applyJsonToJson(pResponse.json, json);
   }
 }
