@@ -45,13 +45,10 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  int? get minLines => null;
+  int? get minLines => model.rows;
 
   @override
   int? get maxLines => null;
-
-  @override
-  bool get isExpandend => true;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -63,6 +60,11 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
       onDoubleTap: model.isReadOnly ? null : _openDialogEditor,
       child: super.build(context),
     );
+  }
+
+  @override
+  Widget? createSuffixIcon() {
+    return super.createSuffixIcon();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
