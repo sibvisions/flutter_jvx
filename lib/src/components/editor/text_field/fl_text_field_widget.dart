@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -94,6 +92,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   bool get showSuffixIcon => true;
 
   bool get isMultiLine => keyboardType == TextInputType.multiline;
+
+  CrossAxisAlignment get iconCrossAxisAlignment => CrossAxisAlignment.center;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -193,27 +193,25 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
 
-    return Center(
-      child: InkWell(
-        canRequestFocus: false,
-        onTap: () {
-          if (!model.isReadOnly) {
-            textController.clear();
-            if (focusNode.hasFocus) {
-              valueChanged("");
-            } else {
-              endEditing("");
-            }
+    return InkWell(
+      canRequestFocus: false,
+      onTap: () {
+        if (!model.isReadOnly) {
+          textController.clear();
+          if (focusNode.hasFocus) {
+            valueChanged("");
+          } else {
+            endEditing("");
           }
-        },
-        child: SizedBox(
-          width: clickableClearArea,
-          height: clickableClearArea,
-          child: Icon(
-            Icons.clear,
-            size: iconSize,
-            color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
-          ),
+        }
+      },
+      child: SizedBox(
+        width: clickableClearArea,
+        height: clickableClearArea,
+        child: Icon(
+          Icons.clear,
+          size: iconSize,
+          color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
         ),
       ),
     );
@@ -239,43 +237,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     List<Widget> suffixIconItems = createSuffixIconItems();
 
-    if (suffixIconItems.length > 1) {
-      Widget lastWidget = suffixIconItems.removeLast();
-
-      suffixIconItems = suffixIconItems.map<Widget>(
-        (suffixItem) {
-          EdgeInsets padding = iconPadding;
-
-          if (suffixItem is GestureDetector || suffixItem is InkResponse) {
-            padding = padding.copyWith(right: max(padding.right - ((clickableClearArea - iconSize) / 2), 0.0));
-          }
-
-          return Padding(
-            padding: padding,
-            child: suffixItem,
-          );
-        },
-      ).toList();
-
-      suffixIconItems.add(lastWidget);
-    }
-
-    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center;
-    EdgeInsets padding = iconsPadding;
-    if (!inTable && keyboardType == TextInputType.multiline) {
-      padding = padding.copyWith(top: contentPadding.top);
-      crossAxisAlignment = CrossAxisAlignment.start;
-      if (suffixIconItems.isNotEmpty) {
-        Widget lastItem = suffixIconItems.last;
-
-        if (lastItem is GestureDetector || lastItem is InkResponse) {
-          padding = padding.copyWith(
-            right: max(padding.right - ((clickableClearArea - iconSize) / 2), 0.0),
-          );
-        }
-      }
-    }
-
     // All our suffix icons are centered which makes the textfield expanding.
     // If we have no icons, just insert a center and voilá, textfield is expanding without
     // setting "expanding" to true.
@@ -283,12 +244,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       suffixIconItems.add(const Center());
     }
 
-    return Container(
-      // Only on multiline editors.
-      height: isMultiLine ? double.infinity : null,
-      padding: padding,
+    return Padding(
+      padding: iconsPadding,
       child: Row(
-        crossAxisAlignment: crossAxisAlignment,
+        crossAxisAlignment: iconCrossAxisAlignment,
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: suffixIconItems,

@@ -42,10 +42,14 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
 
     oldSuffixItems.add(
       Center(
-        child: Icon(
-          FontAwesomeIcons.caretDown,
-          size: iconSize,
-          color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+        child: SizedBox(
+          width: clickableClearArea,
+          height: clickableClearArea,
+          child: Icon(
+            FontAwesomeIcons.caretDown,
+            size: iconSize,
+            color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+          ),
         ),
       ),
     );

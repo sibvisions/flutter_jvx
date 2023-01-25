@@ -42,10 +42,14 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
 
     oldSuffixItems.add(
       Center(
-        child: Icon(
-          FontAwesomeIcons.calendar,
-          size: iconSize,
-          color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+        child: SizedBox(
+          width: clickableClearArea,
+          height: clickableClearArea,
+          child: Icon(
+            FontAwesomeIcons.calendar,
+            size: iconSize,
+            color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+          ),
         ),
       ),
     );

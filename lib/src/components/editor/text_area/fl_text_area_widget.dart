@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 import '../../../flutter_ui.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../model/layout/alignments.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'fl_text_area_dialog.dart';
 
@@ -50,6 +51,16 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   @override
   int? get maxLines => null;
 
+  @override
+  CrossAxisAlignment get iconCrossAxisAlignment {
+    if (model.verticalAlignment == VerticalAlignment.TOP) {
+      return CrossAxisAlignment.start;
+    } else if (model.verticalAlignment == VerticalAlignment.BOTTOM) {
+      return CrossAxisAlignment.end;
+    }
+
+    return CrossAxisAlignment.center;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +75,15 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
 
   @override
   Widget? createSuffixIcon() {
-    return super.createSuffixIcon();
+    return Container(
+      height: double.infinity,
+
+      /// -4 => The editable text inside a textfield is somehow 8 pixels bigger.
+      padding: EdgeInsets.only(
+          top: contentPadding.top - 4 - ((clickableClearArea - iconSize) / 2),
+          bottom: contentPadding.bottom - 4 - ((clickableClearArea - iconSize) / 2)),
+      child: super.createSuffixIcon(),
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
