@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:convert';
-
 import '../../service/api/shared/api_object_property.dart';
 import 'session_request.dart';
 
@@ -46,6 +44,6 @@ class ApiCloseScreenRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.componentId: screenName,
-        if (parameter != null) ApiObjectProperty.parameter: jsonEncode(parameter),
+        if (parameter != null) ApiObjectProperty.parameter: parameter,
       };
 }

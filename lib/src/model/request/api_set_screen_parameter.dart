@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:convert';
-
 import '../../service/api/shared/api_object_property.dart';
 import 'session_request.dart';
 
@@ -47,6 +45,6 @@ class ApiSetScreenParameter extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.componentId: screenLongName,
-        ApiObjectProperty.parameter: parameter == null ? null : jsonEncode(parameter),
+        ApiObjectProperty.parameter: parameter,
       };
 }

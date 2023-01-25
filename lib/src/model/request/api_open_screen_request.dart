@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:convert';
-
 import '../../service/api/shared/api_object_property.dart';
 import 'session_request.dart';
 
@@ -57,6 +55,6 @@ class ApiOpenScreenRequest extends SessionRequest {
         ApiObjectProperty.componentId: screenLongName,
         ApiObjectProperty.className: screenClassName,
         ApiObjectProperty.manualClose: manualClose,
-        if (parameter != null) ApiObjectProperty.parameter: jsonEncode(parameter),
+        if (parameter != null) ApiObjectProperty.parameter: parameter,
       };
 }
