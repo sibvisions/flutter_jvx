@@ -28,6 +28,7 @@ class APIRoute {
   static const APIRoute POST_STARTUP = APIRoute(Method.POST, "api/v4/startup");
   static const APIRoute POST_LOGIN = APIRoute(Method.POST, "api/v2/login");
   static const APIRoute POST_OPEN_SCREEN = APIRoute(Method.POST, "api/v2/openScreen");
+  static const APIRoute POST_SET_SCREEN_PARAMETER = APIRoute(Method.POST, "api/setScreenParameter");
   static const APIRoute POST_DEVICE_STATUS = APIRoute(Method.POST, "api/deviceStatus");
   static const APIRoute POST_PRESS_BUTTON = APIRoute(Method.POST, "api/v2/pressButton");
   static const APIRoute POST_SET_VALUE = APIRoute(Method.POST, "api/comp/setValue");

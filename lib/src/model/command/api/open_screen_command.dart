@@ -27,6 +27,9 @@ class OpenScreenCommand extends SessionCommand {
   /// Class name of the screen
   final String? screenClassName;
 
+  /// Parameters to add to the request.
+  final Map<String, dynamic>? parameter;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,6 +37,7 @@ class OpenScreenCommand extends SessionCommand {
   OpenScreenCommand({
     this.screenLongName,
     this.screenClassName,
+    this.parameter,
     required super.reason,
   });
 
@@ -43,6 +47,6 @@ class OpenScreenCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "OpenScreenCommand{componentId: $screenLongName, ${super.toString()}}";
+    return "OpenScreenCommand{screenLongName: $screenLongName, ${super.toString()}}";
   }
 }

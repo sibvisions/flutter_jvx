@@ -14,38 +14,35 @@
  * the License.
  */
 
-import 'dart:convert';
+import 'session_command.dart';
 
-import '../../service/api/shared/api_object_property.dart';
-import 'session_request.dart';
-
-class ApiCloseScreenRequest extends SessionRequest {
+class SetScreenParameterCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of the screen to close
-  final String screenName;
+  /// Component id.
+  final String? screenLongName;
 
-  /// Parameter to pass to the screen
+  /// Parameters to add to the request.
   final Map<String, dynamic>? parameter;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiCloseScreenRequest({
-    required this.screenName,
+  SetScreenParameterCommand({
+    this.screenLongName,
     this.parameter,
+    required super.reason,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Interface implementation
+  // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Map<String, dynamic> toJson() => {
-        ...super.toJson(),
-        ApiObjectProperty.componentId: screenName,
-        ApiObjectProperty.parameter: jsonEncode(parameter),
-      };
+  String toString() {
+    return "SetScreenParameterCommand{screenLongName: $screenLongName, ${super.toString()}}";
+  }
 }

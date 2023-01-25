@@ -26,6 +26,7 @@ class CloseScreenCommandProcessor implements ICommandProcessor<CloseScreenComman
     return IApiService().sendRequest(
       ApiCloseScreenRequest(
         screenName: command.screenName,
+        parameter: command.parameter,
       ),
     );
   }

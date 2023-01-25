@@ -167,6 +167,7 @@ abstract class ApiObjectProperty {
   static const String langCode = "langCode";
   static const String languageResource = "languageResource";
   static const String editorColumnName = "editorColumnName";
+  static const String parameter = "parameter";
 
   // Response Properties
   static const String authenticated = "authenticated";

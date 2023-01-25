@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:convert';
+
 import '../../service/api/shared/api_object_property.dart';
 import 'session_request.dart';
 
@@ -32,6 +34,8 @@ class ApiOpenScreenRequest extends SessionRequest {
   /// If the screen should only be closed manually
   final bool manualClose;
 
+  /// Parameters to add to the request.
+  final Map<String, dynamic>? parameter;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +43,7 @@ class ApiOpenScreenRequest extends SessionRequest {
   ApiOpenScreenRequest({
     this.screenLongName,
     this.screenClassName,
+    this.parameter,
     required this.manualClose,
   });
 
@@ -51,6 +56,7 @@ class ApiOpenScreenRequest extends SessionRequest {
         ...super.toJson(),
         ApiObjectProperty.componentId: screenLongName,
         ApiObjectProperty.className: screenClassName,
-        ApiObjectProperty.manualClose: manualClose
+        ApiObjectProperty.manualClose: manualClose,
+        ApiObjectProperty.parameter: jsonEncode(parameter),
       };
 }
