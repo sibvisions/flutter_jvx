@@ -172,7 +172,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       right: 10,
       bottom: 10,
       child: FloatingActionButton(
-        heroTag: widget.model.id,
+        heroTag: null,
         onPressed: widget.floatingOnPress,
         child: FaIcon(
           FontAwesomeIcons.squarePlus,
