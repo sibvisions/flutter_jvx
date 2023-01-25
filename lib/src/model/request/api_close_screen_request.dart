@@ -46,6 +46,6 @@ class ApiCloseScreenRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.componentId: screenName,
-        ApiObjectProperty.parameter: jsonEncode(parameter),
+        if (parameter != null) ApiObjectProperty.parameter: jsonEncode(parameter),
       };
 }

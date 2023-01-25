@@ -96,7 +96,11 @@ abstract class OfflineUtil {
       );
 
       await ICommandService().sendCommand(
-        OpenScreenCommand(screenClassName: offlineWorkscreenClassName, reason: "We are back online"),
+        OpenScreenCommand(
+          screenClassName: offlineWorkscreenClassName,
+          reason: "We are back online",
+          parameter: {"mobile.onlineSync": true},
+        ),
       );
 
       bool successfulSync = true;

@@ -47,6 +47,6 @@ class ApiSetScreenParameter extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.componentId: screenLongName,
-        ApiObjectProperty.parameter: jsonEncode(parameter),
+        ApiObjectProperty.parameter: parameter == null ? null : jsonEncode(parameter),
       };
 }

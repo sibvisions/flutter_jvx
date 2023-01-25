@@ -57,6 +57,6 @@ class ApiOpenScreenRequest extends SessionRequest {
         ApiObjectProperty.componentId: screenLongName,
         ApiObjectProperty.className: screenClassName,
         ApiObjectProperty.manualClose: manualClose,
-        ApiObjectProperty.parameter: jsonEncode(parameter),
+        if (parameter != null) ApiObjectProperty.parameter: jsonEncode(parameter),
       };
 }
