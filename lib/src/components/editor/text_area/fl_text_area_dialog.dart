@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../flutter_ui.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -31,6 +32,10 @@ class FlTextAreaDialog extends StatefulWidget {
 
   final FlTextAreaModel model;
 
+  final bool isMandatory;
+
+  final List<TextInputFormatter>? inputFormatters;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +44,8 @@ class FlTextAreaDialog extends StatefulWidget {
     super.key,
     required this.model,
     required TextEditingValue value,
+    this.inputFormatters,
+    this.isMandatory = false,
   }) : textController = TextEditingController.fromValue(value);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,10 +117,13 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
                 model: widget.model,
                 textController: widget.textController,
                 focusNode: widget.focusNode,
+                inputFormatters: widget.inputFormatters,
+                isMandatory: widget.isMandatory,
                 valueChanged: (value) {
                   // Set state to update the textfield widget.
                   setState(() {});
                 },
+                canShowDialog: false,
                 endEditing: (value) {
                   Navigator.of(context).pop();
                 },
