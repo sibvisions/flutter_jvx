@@ -14,10 +14,6 @@
  * the License.
  */
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// VerticalAlignment
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 import 'package:flutter/widgets.dart';
 
 /// Possible Vertical Alignments (TOP=0, CENTER=1, BOTTOM=2, STRETCH=3)
@@ -52,10 +48,6 @@ extension VerticalAlignmentE on VerticalAlignment {
   }
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// HorizontalAlignment
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 /// Possible Horizontal Alignments (LEFT=0, CENTER=1, RIGHT=2, STRETCH=3)
 enum HorizontalAlignment { LEFT, CENTER, RIGHT, STRETCH }
 
@@ -88,10 +80,6 @@ extension HorizontalAlignmentE on HorizontalAlignment {
   }
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Orientation
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 /// Possible Orientation {HORIZONTAL=0, VERTICAL=1)
 enum AlignmentOrientation { HORIZONTAL, VERTICAL }
 
@@ -105,10 +93,6 @@ extension AlignmentOrientationE on HorizontalAlignment {
     return AlignmentOrientation.values[int.parse(pAlignment)];
   }
 }
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Flutter Alignment
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Two-dimensional array translating JVx alignment constants to Flutter alignment constants.
 /// The first index is the horizontal alignment, the second index is the vertical alignment.
