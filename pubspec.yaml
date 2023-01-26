@@ -6,7 +6,7 @@ issue_tracker: https://github.com/sibvisions/flutter_jvx/issues
 
 publish_to: 'none'
 
-version: 2.2.0
+version: 2.2.0+1
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
