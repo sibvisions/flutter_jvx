@@ -159,13 +159,13 @@ class FakeFile implements File {
   }
 
   @override
-  Future<int> length() {
-    throw UnimplementedError("Fake File");
+  Future<int> length() async {
+    return byteContent.lengthInBytes;
   }
 
   @override
   int lengthSync() {
-    throw UnimplementedError("Fake File");
+    return byteContent.lengthInBytes;
   }
 
   @override
