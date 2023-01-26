@@ -157,7 +157,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                 dialogLabel,
                 style: Theme.of(context).dialogTheme.titleTextStyle,
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               ...editorWidgets,
               const SizedBox(height: 4),
               Align(

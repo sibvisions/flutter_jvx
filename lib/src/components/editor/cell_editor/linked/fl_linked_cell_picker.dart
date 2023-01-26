@@ -190,7 +190,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                     )
                   : Container(),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Row(
               children: listBottomButtons,
             ),
