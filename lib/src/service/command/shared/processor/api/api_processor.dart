@@ -16,6 +16,7 @@
 
 import '../../../../../model/command/api/alive_command.dart';
 import '../../../../../model/command/api/api_command.dart';
+import '../../../../../model/command/api/cancel_login_command.dart';
 import '../../../../../model/command/api/change_password_command.dart';
 import '../../../../../model/command/api/changes_command.dart';
 import '../../../../../model/command/api/close_frame_command.dart';
@@ -55,6 +56,7 @@ import '../../../../../model/command/api/upload_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 import 'alive_command_processor.dart';
+import 'cancel_login_command_processor.dart';
 import 'change_password_command_processor.dart';
 import 'changes_command_processor.dart';
 import 'close_frame_command_processor.dart';
@@ -104,6 +106,9 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   /// Processes [LoginCommand]
   final ICommandProcessor _loginCommandProcessor = LoginCommandProcessor();
+
+  /// Processes [CancelLoginCommand]
+  final ICommandProcessor _cancelLoginCommandProcessor = CancelLoginCommandProcessor();
 
   /// Processes [OpenScreenCommand]
   final ICommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
@@ -191,6 +196,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   final ICommandProcessor _sortProcessor = SortCommandProcessor();
 
   final ICommandProcessor _setScreenParameterProcessor = SetScreenParameterCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -202,6 +208,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _startUpProcessorCommand.processCommand(command);
     } else if (command is LoginCommand) {
       return _loginCommandProcessor.processCommand(command);
+    } else if (command is CancelLoginCommand) {
+      return _cancelLoginCommandProcessor.processCommand(command);
     } else if (command is OpenScreenCommand) {
       return _openScreenCommandProcessor.processCommand(command);
     } else if (command is ReloadMenuCommand) {

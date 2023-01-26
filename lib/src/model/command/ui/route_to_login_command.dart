@@ -27,7 +27,7 @@ class RouteToLoginCommand extends UiCommand {
   final LoginMode? mode;
 
   /// Username and password
-  final Map<String, String?> loginData;
+  final Map<String, dynamic> loginData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

@@ -135,6 +135,7 @@ abstract class ApiObjectProperty {
   static const String message = "message";
   static const String createAuthKey = "createAuthKey";
   static const String loginMode = "mode";
+  static const String confirmationCode = "confirmationCode";
   static const String filterCondition = "filterCondition";
   static const String editorComponentId = "editorComponentId";
   static const String compareType = "compareType";
@@ -359,4 +360,10 @@ abstract class ApiObjectProperty {
   static const String mandatoryBackground = "mandatorybackground";
   static const String readOnlyBackground = "readonlybackground";
   static const String invalidEditorBackground = "invalideditorbackground";
+
+  static const String link = "link";
+  static const String target = "target";
+  static const String timeout = "timeout";
+  static const String timeoutReset = "timeoutReset";
+  static const String errorMessage = "errorMessage";
 }

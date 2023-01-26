@@ -33,6 +33,7 @@ import '../../../../model/api_interaction.dart';
 import '../../../../model/command/api/alive_command.dart';
 import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/request/api_alive_request.dart';
+import '../../../../model/request/api_cancel_login_request.dart';
 import '../../../../model/request/api_change_password_request.dart';
 import '../../../../model/request/api_changes_request.dart';
 import '../../../../model/request/api_close_frame_request.dart';
@@ -122,6 +123,7 @@ class OnlineApiRepository implements IRepository {
   static final Map<Type, APIRoute Function(ApiRequest pRequest)> uriMap = {
     ApiStartUpRequest: (_) => APIRoute.POST_STARTUP,
     ApiLoginRequest: (_) => APIRoute.POST_LOGIN,
+    ApiCancelLoginRequest: (_) => APIRoute.POST_CANCEL_LOGIN,
     ApiCloseTabRequest: (_) => APIRoute.POST_CLOSE_TAB,
     ApiDeviceStatusRequest: (_) => APIRoute.POST_DEVICE_STATUS,
     ApiOpenScreenRequest: (_) => APIRoute.POST_OPEN_SCREEN,

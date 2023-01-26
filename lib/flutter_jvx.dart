@@ -85,6 +85,7 @@ export 'src/util/font_awesome_util.dart';
 export 'src/util/i_clonable.dart';
 export 'src/util/image/image_loader.dart';
 export 'src/util/jvx_colors.dart';
+export 'src/util/jvx_webview.dart';
 export 'src/util/loading_handler/i_command_progress_handler.dart';
 export 'src/util/misc/debouncer.dart';
 export 'src/util/misc/multi_value_listenable_builder.dart';

@@ -27,16 +27,25 @@ class LoginViewResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final LoginMode? mode;
-
   final String? username;
+  final String? confirmationCode;
+  final Link? link;
+  final int? timeout;
+  final bool? timeoutReset;
+  final String? errorMessage;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   LoginViewResponse({
-    required this.mode,
-    required this.username,
+    this.mode,
+    this.username,
+    this.confirmationCode,
+    this.link,
+    this.timeout,
+    this.timeoutReset,
+    this.errorMessage,
     required super.name,
   });
 
@@ -44,5 +53,30 @@ class LoginViewResponse extends ApiResponse {
       : mode = LoginMode.values
             .firstWhereOrNull((e) => e.name.toLowerCase() == json[ApiObjectProperty.mode].toLowerCase()),
         username = json[ApiObjectProperty.username],
+        confirmationCode = json[ApiObjectProperty.confirmationCode],
+        link = json[ApiObjectProperty.link] == null ? null : Link.fromJson(json[ApiObjectProperty.link]),
+        timeout = json[ApiObjectProperty.timeout],
+        timeoutReset = json[ApiObjectProperty.timeoutReset],
+        errorMessage = json[ApiObjectProperty.errorMessage],
         super.fromJson();
+}
+
+class Link {
+  final String? url;
+  final String? target;
+  final int? width;
+  final int? height;
+
+  Link({
+    this.url,
+    this.target,
+    this.width,
+    this.height,
+  });
+
+  Link.fromJson(Map<String, dynamic> json)
+      : url = json[ApiObjectProperty.url],
+        target = json[ApiObjectProperty.target],
+        width = json[ApiObjectProperty.width],
+        height = json[ApiObjectProperty.height];
 }

@@ -28,15 +28,17 @@ class LoginCommandProcessor implements ICommandProcessor<LoginCommand> {
     String? clientId = ConfigController().clientId.value;
 
     if (clientId != null) {
-      await ConfigController().updateUsername(command.userName);
+      // Save values from last login attempt (used for user convenience and MFA login)
+      await ConfigController().updateUsername(command.username);
       await ConfigController().updatePassword(command.password);
 
       ApiLoginRequest loginRequest = ApiLoginRequest(
-        createAuthKey: command.createAuthKey,
         loginMode: command.loginMode,
-        newPassword: command.newPassword,
-        username: command.userName,
+        username: command.username,
         password: command.password,
+        newPassword: command.newPassword,
+        createAuthKey: command.createAuthKey,
+        confirmationCode: command.confirmationCode,
       );
       return IApiService().sendRequest(loginRequest);
     } else {

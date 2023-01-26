@@ -158,7 +158,7 @@ class UiService implements IUiService {
   }
 
   @override
-  void routeToLogin({LoginMode? mode, Map<String, String?>? pLoginProps}) {
+  void routeToLogin({LoginMode? mode, Map<String, dynamic>? pLoginProps}) {
     if (!checkFirstSplash()) return;
 
     FlutterUI.clearHistory();

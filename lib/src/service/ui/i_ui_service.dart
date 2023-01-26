@@ -99,7 +99,7 @@ abstract class IUiService {
   void routeToSettings({bool pReplaceRoute = false});
 
   /// Route to Login page
-  void routeToLogin({LoginMode? mode, Map<String, String?>? pLoginProps});
+  void routeToLogin({LoginMode? mode, Map<String, dynamic>? pLoginProps});
 
   /// Route to the provided full path, used for routing to offline screens
   void routeToCustom({required String pFullPath});

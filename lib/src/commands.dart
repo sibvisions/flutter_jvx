@@ -15,6 +15,7 @@
  */
 
 export 'model/command/api/api_command.dart';
+export 'model/command/api/cancel_login_command.dart';
 export 'model/command/api/change_password_command.dart';
 export 'model/command/api/close_frame_command.dart';
 export 'model/command/api/close_screen_command.dart';

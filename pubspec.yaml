@@ -106,6 +106,7 @@ dependencies:
   flutter_keyboard_visibility: ^5.4.0
   flutter_slidable: ^2.0.0
   action_slider: ^0.6.1
+  webview_flutter: ^4.0.2
 
 dependency_overrides:
   # https://github.com/dint-dev/universal_io/pull/37

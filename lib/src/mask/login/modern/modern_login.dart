@@ -34,6 +34,9 @@ import '../login.dart';
 import 'cards/change_password_card.dart';
 import 'cards/lost_password_card.dart';
 import 'cards/manual_card.dart';
+import 'cards/mfa_text_card.dart';
+import 'cards/mfa_url_card.dart';
+import 'cards/mfa_wait_card.dart';
 import 'middle_clipper_with_double_curve.dart';
 
 class ModernLogin extends StatelessWidget implements Login {
@@ -225,11 +228,37 @@ class ModernLogin extends StatelessWidget implements Login {
         break;
       case LoginMode.ChangePassword:
       case LoginMode.ChangeOneTimePassword:
-        Map<String, String?>? dataMap = context.currentBeamLocation.data as Map<String, String?>?;
+        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = ChangePasswordCard(
           useOTP: mode == LoginMode.ChangeOneTimePassword,
           username: dataMap?[ApiObjectProperty.username],
           password: dataMap?[ApiObjectProperty.password],
+        );
+        break;
+      case LoginMode.MFTextInput:
+        // Is repeatedly called (password is missing on repeated calls)
+        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
+        card = MFATextCard(
+          username: dataMap?[ApiObjectProperty.username],
+          password: dataMap?[ApiObjectProperty.password],
+        );
+        break;
+      case LoginMode.MFWait:
+        // Is repeatedly called
+        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
+        card = MFAWaitCard(
+          timeout: dataMap?[ApiObjectProperty.timeout],
+          timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
+          confirmationCode: dataMap?[ApiObjectProperty.confirmationCode],
+        );
+        break;
+      case LoginMode.MFURL:
+        // Is repeatedly called
+        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
+        card = MFAUrlCard(
+          timeout: dataMap?[ApiObjectProperty.timeout],
+          timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
+          link: dataMap?[ApiObjectProperty.link],
         );
         break;
       case LoginMode.Manual:

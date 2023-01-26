@@ -25,30 +25,34 @@ class ApiLoginRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// See [LoginMode] class
-  final LoginMode loginMode;
+  final LoginMode? loginMode;
 
   /// Username
-  final String username;
+  final String? username;
 
   /// Password
-  final String password;
+  final String? password;
 
   /// Either one-time-password or new password
   final String? newPassword;
 
   /// "Remember me"
-  final bool createAuthKey;
+  final bool? createAuthKey;
+
+  /// Confirmation Code
+  final String? confirmationCode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiLoginRequest({
-    this.loginMode = LoginMode.Manual,
-    required this.username,
-    required this.password,
-    this.createAuthKey = false,
+    this.loginMode,
+    this.username,
+    this.password,
     this.newPassword,
+    this.createAuthKey,
+    this.confirmationCode,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,12 +60,14 @@ class ApiLoginRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         ...super.toJson(),
-        ApiObjectProperty.password: password,
+        ApiObjectProperty.loginMode: loginMode?.name,
         ApiObjectProperty.username: username,
+        ApiObjectProperty.password: password,
         ApiObjectProperty.newPassword: newPassword,
         ApiObjectProperty.createAuthKey: createAuthKey,
-        ApiObjectProperty.loginMode: loginMode.name,
+        ApiObjectProperty.confirmationCode: confirmationCode,
       };
 }

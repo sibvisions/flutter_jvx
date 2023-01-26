@@ -17,9 +17,11 @@
 import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
+import '../../model/command/api/cancel_login_command.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/reset_password_command.dart';
 import '../../service/command/i_command_service.dart';
+import '../../service/config/config_controller.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
 import 'modern/modern_login.dart';
@@ -48,24 +50,63 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-  /// Sends a [LoginCommand]
+  /// Sends a normal [LoginCommand].
   ///
   /// Example error handling:
   /// ```dart
   /// .catchError(IUiService().handleAsyncError);
   /// ```
   static Future<void> doLogin({
+    LoginMode mode = LoginMode.Manual,
     required String username,
     required String password,
     bool createAuthKey = false,
   }) =>
       ICommandService().sendCommand(LoginCommand(
-        loginMode: LoginMode.Manual,
-        userName: username,
+        loginMode: mode,
+        username: username,
         password: password,
         createAuthKey: createAuthKey,
         reason: "LoginButton",
       ));
+
+  /// Sends a MFA [LoginCommand].
+  ///
+  /// In most cases only [confirmationCode] is required.
+  /// [username] and [password] are auto-filled by the values
+  /// from the last login attempt.
+  ///
+  /// Example error handling:
+  /// ```dart
+  /// .catchError(IUiService().handleAsyncError);
+  /// ```
+  static Future<void> doMFALogin({
+    LoginMode mode = LoginMode.MFTextInput,
+    String? username,
+    String? password,
+    String? confirmationCode,
+    bool createAuthKey = false,
+  }) =>
+      ICommandService().sendCommand(LoginCommand(
+        loginMode: mode,
+        username: username ?? ConfigController().username.value,
+        password: password ?? ConfigController().password.value,
+        confirmationCode: confirmationCode,
+        createAuthKey: createAuthKey,
+        reason: "LoginButton",
+      ));
+
+  /// Sends a [CancelLoginCommand]
+  ///
+  /// Example error handling:
+  /// ```dart
+  /// .catchError(IUiService().handleAsyncError);
+  /// ```
+  static Future<void> cancelLogin() {
+    return ICommandService().sendCommand(CancelLoginCommand(
+      reason: "User canceled login",
+    ));
+  }
 
   /// Sends a [ResetPasswordCommand]
   ///
@@ -92,7 +133,7 @@ class LoginPage extends StatelessWidget {
   }) =>
       ICommandService().sendCommand(LoginCommand(
         loginMode: LoginMode.ChangePassword,
-        userName: username,
+        username: username,
         password: password,
         newPassword: newPassword,
         reason: "Password Change",
@@ -108,7 +149,7 @@ class LoginPage extends StatelessWidget {
   }) =>
       ICommandService().sendCommand(LoginCommand(
         loginMode: LoginMode.ChangeOneTimePassword,
-        userName: username,
+        username: username,
         password: password,
         newPassword: newPassword,
         reason: "Password Reset",

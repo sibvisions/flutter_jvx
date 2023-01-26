@@ -49,19 +49,22 @@ class LoginCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// See [LoginMode] class
-  final LoginMode loginMode;
+  final LoginMode? loginMode;
 
   /// Username
-  final String userName;
+  final String? username;
 
   /// Password
-  final String password;
+  final String? password;
 
   /// Either one-time-password or new password
   final String? newPassword;
 
   /// "Remember me"
-  final bool createAuthKey;
+  final bool? createAuthKey;
+
+  /// Confirmation Code
+  final String? confirmationCode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -69,10 +72,11 @@ class LoginCommand extends SessionCommand {
 
   LoginCommand({
     required this.loginMode,
-    required this.userName,
-    required this.password,
-    this.createAuthKey = false,
+    this.username,
+    this.password,
     this.newPassword,
+    this.createAuthKey = false,
+    this.confirmationCode,
     required super.reason,
   });
 
@@ -82,6 +86,7 @@ class LoginCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "LoginCommand{userName: $userName, loginMode: $loginMode, createAuthKey: $createAuthKey, ${super.toString()}}";
+    return "LoginCommand{loginMode: $loginMode, username: $username, createAuthKey: $createAuthKey, "
+        "confirmationCode: $confirmationCode, ${super.toString()}}";
   }
 }

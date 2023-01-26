@@ -29,18 +29,25 @@ class LoginViewProcessor implements IResponseProcessor<LoginViewResponse> {
 
   @override
   List<BaseCommand> processResponse(LoginViewResponse pResponse, ApiRequest? pRequest) {
-    Map<String, String?> loginProps = {
+    Map<String, dynamic> loginProps = {
       ApiObjectProperty.username: pResponse.username,
+      ApiObjectProperty.confirmationCode: pResponse.confirmationCode,
+      ApiObjectProperty.link: pResponse.link,
+      ApiObjectProperty.timeout: pResponse.timeout,
+      ApiObjectProperty.timeoutReset: pResponse.timeoutReset,
+      ApiObjectProperty.errorMessage: pResponse.errorMessage,
     };
 
     if (pRequest is ApiLoginRequest) {
       loginProps[ApiObjectProperty.password] = pRequest.password;
     }
 
+    loginProps.removeWhere((key, value) => value == null);
+
     RouteToLoginCommand routeToLoginCommand = RouteToLoginCommand(
       mode: pResponse.mode,
-      reason: "Login as response",
       loginData: loginProps,
+      reason: "Login as response",
     );
 
     return [routeToLoginCommand];
