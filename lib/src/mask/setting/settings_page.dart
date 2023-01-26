@@ -550,8 +550,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _buildStatus(BuildContext context) {
-    String versionValue = (IUiService().metaData.value?.serverVersion ?? "Unknown");
-    if (IUiService().metaData.value?.serverVersion != FlutterUI.supportedServerVersion) {
+    String versionValue = (IUiService().applicationMetaData.value?.serverVersion ?? "Unknown");
+    if (IUiService().applicationMetaData.value?.serverVersion != FlutterUI.supportedServerVersion) {
       versionValue += " (${FlutterUI.translate("Supported")}: ${FlutterUI.supportedServerVersion})";
     }
 

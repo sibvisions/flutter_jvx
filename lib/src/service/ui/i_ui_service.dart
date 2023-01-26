@@ -142,9 +142,9 @@ abstract class IUiService {
   Future<void> updateClientId(String? pClientId);
 
   /// Returns the last known [ApplicationMetaDataResponse].
-  ValueNotifier<ApplicationMetaDataResponse?> get metaData;
+  ValueNotifier<ApplicationMetaDataResponse?> get applicationMetaData;
 
-  Future<void> updateMetaData(ApplicationMetaDataResponse? pMetaData);
+  Future<void> updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData);
 
   /// Retrieves the last known [ApplicationSettingsResponse].
   ValueNotifier<ApplicationSettingsResponse> get applicationSettings;

@@ -44,7 +44,7 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
     await ConfigController().updateApplicationLanguage(command.metaData.langCode);
     await ConfigController().updateApplicationTimeZone(command.metaData.timeZoneCode);
 
-    await IUiService().updateMetaData(command.metaData);
+    await IUiService().updateApplicationMetaData(command.metaData);
 
     Directory? languagesDir =
         ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");

@@ -62,7 +62,7 @@ class _ManualCardState extends State<ManualCard> {
   Widget build(BuildContext context) {
     String? loginTitle = AppStyle.of(context).applicationStyle['login.title'];
 
-    showRememberMe = (IUiService().metaData.value?.rememberMeEnabled ?? false) ||
+    showRememberMe = (IUiService().applicationMetaData.value?.rememberMeEnabled ?? false) ||
         (ConfigController().getAppConfig()?.uiConfig!.showRememberMe ?? false);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -147,7 +147,7 @@ class _ManualCardState extends State<ManualCard> {
           state: LoadingBar.maybeOf(context)?.show ?? false ? ButtonState.loading : progressButtonState,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        if (IUiService().metaData.value?.lostPasswordEnabled == true)
+        if (IUiService().applicationMetaData.value?.lostPasswordEnabled == true)
           Align(
             alignment: Alignment.center,
             child: TextButton(

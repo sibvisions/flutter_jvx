@@ -89,7 +89,7 @@ class UiService implements IUiService {
       ValueNotifier(ApplicationSettingsResponse.empty());
 
   /// JVx Application Metadata.
-  final ValueNotifier<ApplicationMetaDataResponse?> _metaData = ValueNotifier(null);
+  final ValueNotifier<ApplicationMetaDataResponse?> _applicationMetaData = ValueNotifier(null);
 
   final ValueNotifier<bool> _mobileOnly = ValueNotifier(false);
 
@@ -112,7 +112,7 @@ class UiService implements IUiService {
     _clientId.value = null;
     _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
     _applicationSettings.value = ApplicationSettingsResponse.empty();
-    _metaData.value = null;
+    _applicationMetaData.value = null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -313,11 +313,11 @@ class UiService implements IUiService {
   }
 
   @override
-  ValueNotifier<ApplicationMetaDataResponse?> get metaData => _metaData;
+  ValueNotifier<ApplicationMetaDataResponse?> get applicationMetaData => _applicationMetaData;
 
   @override
-  Future<void> updateMetaData(ApplicationMetaDataResponse? pMetaData) async {
-    _metaData.value = pMetaData;
+  Future<void> updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData) async {
+    _applicationMetaData.value = pApplicationMetaData;
   }
 
   @override
