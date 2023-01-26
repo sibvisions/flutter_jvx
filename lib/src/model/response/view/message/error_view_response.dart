@@ -53,7 +53,8 @@ class ErrorViewResponse extends MessageView {
       : componentId = json[ApiObjectProperty.componentId],
         silentAbort = json[ApiObjectProperty.silentAbort] ?? false,
         details = json[ApiObjectProperty.details],
-        exceptions = ServerException.fromJson(json[ApiObjectProperty.exceptions]),
+        exceptions =
+            (json[ApiObjectProperty.exceptions] as List<dynamic>?)?.map((e) => ServerException.fromJson(e)).toList(),
         super.fromJson() {
     FlutterUI.log.w(toString());
   }
@@ -76,13 +77,8 @@ class ServerException {
   ServerException.fromException(Exception error, [StackTrace? stackTrace])
       : this(error.toString(), stackTrace?.toString());
 
-  static List<ServerException> fromJson(List<dynamic>? json) {
-    return json
-            ?.map(
-                (element) => ServerException(element[ApiObjectProperty.message], element[ApiObjectProperty.exception]))
-            .toList(growable: false) ??
-        [];
-  }
+  ServerException.fromJson(Map<String, dynamic> json)
+      : this(json[ApiObjectProperty.message], json[ApiObjectProperty.exception]);
 
   @override
   String toString() {
