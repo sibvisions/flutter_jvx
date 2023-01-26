@@ -71,14 +71,11 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     );
 
     String dialogLabel;
-    if (widget.columnDefinitions.length == 1) {
-      dialogLabel = FlutterUI.translate("Edit");
-    } else {
-      dialogLabel = FlutterUI.translate("Edit row");
-    }
-
     List<Widget> editorWidgets = [];
+
     if (widget.columnDefinitions.length == 1) {
+      dialogLabel = widget.columnDefinitions.first.label;
+
       ICellEditor cellEditor = cellEditors[0];
       Widget editorWidget = cellEditor.createWidget(null);
 
@@ -92,6 +89,8 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       }
       editorWidgets.add(editorWidget);
     } else {
+      dialogLabel = FlutterUI.translate("Edit row");
+
       double labelColumnWidth = 0.0;
 
       for (int i = 0; i < widget.columnDefinitions.length; i++) {
