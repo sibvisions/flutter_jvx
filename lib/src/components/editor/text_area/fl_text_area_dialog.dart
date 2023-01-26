@@ -26,27 +26,24 @@ class FlTextAreaDialog extends StatefulWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  late final TextEditingController textController;
-
-  final FocusNode focusNode = FocusNode();
-
   final FlTextAreaModel model;
 
   final bool isMandatory;
 
   final List<TextInputFormatter>? inputFormatters;
 
+  final TextEditingValue value;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTextAreaDialog({
+  const FlTextAreaDialog({
     super.key,
     required this.model,
-    required TextEditingValue value,
+    required this.value,
     this.inputFormatters,
     this.isMandatory = false,
-  }) : textController = TextEditingController.fromValue(value);
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -58,14 +55,23 @@ class FlTextAreaDialog extends StatefulWidget {
 
 class FlTextAreaDialogState extends State<FlTextAreaDialog> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final TextEditingController textController = TextEditingController();
+
+  final FocusNode focusNode = FocusNode();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void initState() {
     super.initState();
+    textController.value = widget.value;
 
-    widget.focusNode.requestFocus();
+    focusNode.requestFocus();
   }
 
   @override
@@ -99,7 +105,7 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
               FlutterUI.translate("OK"),
             ),
             onPressed: () {
-              Navigator.of(context).pop(widget.textController.text);
+              Navigator.of(context).pop(textController.text);
             },
           ),
         ),
@@ -115,8 +121,8 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
             Expanded(
               child: FlTextAreaWidget(
                 model: widget.model,
-                textController: widget.textController,
-                focusNode: widget.focusNode,
+                textController: textController,
+                focusNode: focusNode,
                 inputFormatters: widget.inputFormatters,
                 isMandatory: widget.isMandatory,
                 valueChanged: (value) {
@@ -140,8 +146,8 @@ class FlTextAreaDialogState extends State<FlTextAreaDialog> {
 
   @override
   void dispose() {
-    widget.focusNode.dispose();
-    widget.textController.dispose();
+    focusNode.dispose();
+    textController.dispose();
     super.dispose();
   }
 }

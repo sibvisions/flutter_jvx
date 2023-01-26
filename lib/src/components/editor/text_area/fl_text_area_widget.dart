@@ -81,7 +81,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onDoubleTap: model.isReadOnly && canShowDialog ? null : _openDialogEditor,
+      onDoubleTap: !model.isReadOnly && canShowDialog ? _openDialogEditor : null,
       child: super.build(context),
     );
   }
