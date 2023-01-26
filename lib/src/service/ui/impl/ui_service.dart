@@ -49,6 +49,9 @@ class UiService implements IUiService {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Holds all custom screen modifications
+  AppManager? appManager;
+
   /// Unmodified menu model sent from server
   MenuModel? _originalMenuModel;
 
@@ -64,9 +67,6 @@ class UiService implements IUiService {
   /// Map of all active frames (dialogs) with their componentId
   final Map<String, MessageDialog> _activeFrames = {};
   final List<FrameDialog> _activeDialogs = [];
-
-  /// Holds all custom screen modifications
-  AppManager? appManager;
 
   /// The currently focused object.
   String? focusedComponentId;
