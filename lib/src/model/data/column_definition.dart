@@ -108,24 +108,24 @@ class ColumnDefinition {
   }
 
   /// Parse a json list of column definitions into a list of [ColumnDefinition] objects.
-  ColumnDefinition.fromJson(Map<String, dynamic> pJson)
-      : name = pJson[ApiObjectProperty.name] ?? "",
-        label = pJson[ApiObjectProperty.label] ?? "",
-        dataTypeIdentifier = pJson[ApiObjectProperty.dataTypeIdentifier] ?? 0,
-        width = pJson[ApiObjectProperty.width] != 0
-            ? (pJson[ApiObjectProperty.width] as int).toDouble() * ConfigController().getScaling()
+  ColumnDefinition.fromJson(Map<String, dynamic> json)
+      : name = json[ApiObjectProperty.name] ?? "",
+        label = json[ApiObjectProperty.label] ?? "",
+        dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? 0,
+        width = json[ApiObjectProperty.width] != 0
+            ? (json[ApiObjectProperty.width] as int).toDouble() * ConfigController().getScaling()
             : null,
-        readOnly = pJson[ApiObjectProperty.readOnly] ?? true,
-        nullable = pJson[ApiObjectProperty.nullable] ?? true,
-        resizable = pJson[ApiObjectProperty.resizable] ?? true,
-        sortable = pJson[ApiObjectProperty.sortable] ?? false,
-        movable = pJson[ApiObjectProperty.movable] ?? false,
-        length = pJson[ApiObjectProperty.length],
-        scale = pJson[ApiObjectProperty.scale],
-        precision = pJson[ApiObjectProperty.precision],
-        signed = pJson[ApiObjectProperty.signed],
-        autoTrim = pJson[ApiObjectProperty.autoTrim] ?? false,
-        iFractionalSecondsPrecision = pJson[ApiObjectProperty.fractionalSecondsPrecision] ?? 0,
-        cellEditorJson = pJson[ApiObjectProperty.cellEditor],
-        encoding = pJson[ApiObjectProperty.encoding] ?? "";
+        readOnly = json[ApiObjectProperty.readOnly] ?? true,
+        nullable = json[ApiObjectProperty.nullable] ?? true,
+        resizable = json[ApiObjectProperty.resizable] ?? true,
+        sortable = json[ApiObjectProperty.sortable] ?? false,
+        movable = json[ApiObjectProperty.movable] ?? false,
+        length = json[ApiObjectProperty.length],
+        scale = json[ApiObjectProperty.scale],
+        precision = json[ApiObjectProperty.precision],
+        signed = json[ApiObjectProperty.signed],
+        autoTrim = json[ApiObjectProperty.autoTrim] ?? false,
+        iFractionalSecondsPrecision = json[ApiObjectProperty.fractionalSecondsPrecision] ?? 0,
+        cellEditorJson = json[ApiObjectProperty.cellEditor],
+        encoding = json[ApiObjectProperty.encoding] ?? "";
 }

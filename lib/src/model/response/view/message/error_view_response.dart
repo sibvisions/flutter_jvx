@@ -76,8 +76,8 @@ class ServerException {
   ServerException.fromException(Exception error, [StackTrace? stackTrace])
       : this(error.toString(), stackTrace?.toString());
 
-  static List<ServerException> fromJson(List<dynamic>? pJson) {
-    return pJson
+  static List<ServerException> fromJson(List<dynamic>? json) {
+    return json
             ?.map(
                 (element) => ServerException(element[ApiObjectProperty.message], element[ApiObjectProperty.exception]))
             .toList(growable: false) ??

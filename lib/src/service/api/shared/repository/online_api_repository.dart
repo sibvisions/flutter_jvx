@@ -638,10 +638,10 @@ class OnlineApiRepository implements IRepository {
   }
 
   /// Parses the List of JSON responses in [ApiResponse]s
-  ApiInteraction _responseParser(List<dynamic> pJsonList, {required ApiRequest? request}) {
+  ApiInteraction _responseParser(List<dynamic> jsonList, {required ApiRequest? request}) {
     List<ApiResponse> returnList = [];
 
-    for (dynamic responseItem in pJsonList) {
+    for (dynamic responseItem in jsonList) {
       ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
 
       if (builder != null) {
