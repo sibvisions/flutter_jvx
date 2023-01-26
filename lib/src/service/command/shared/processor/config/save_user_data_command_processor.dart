@@ -28,6 +28,7 @@ class SaveUserDataCommandProcessor implements ICommandProcessor<SaveUserDataComm
       displayName: command.userData.displayName,
       eMail: command.userData.eMail,
       profileImage: command.userData.profileImage,
+      roles: command.userData.roles,
     );
     await ConfigController().updateUserInfo(
       pUserInfo: userInfo,

@@ -187,7 +187,7 @@ class ConfigService {
   /// Returns info about the current user.
   Future<UserInfo?> userInfo() async {
     String? jsonMap = await getString("userInfo");
-    return jsonMap != null ? UserInfo.fromJson(pJson: jsonDecode(jsonMap)) : null;
+    return jsonMap != null ? UserInfo.fromJson(jsonDecode(jsonMap)) : null;
   }
 
   /// Sets the current user info.

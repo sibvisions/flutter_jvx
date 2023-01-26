@@ -37,6 +37,9 @@ class UserInfo {
   /// Profile image
   final Uint8List? profileImage;
 
+  /// Roles of the user
+  final List<String> roles;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,13 +49,18 @@ class UserInfo {
     required this.displayName,
     required this.eMail,
     required String? profileImage,
-  }) : profileImage = _decode(profileImage);
+    required List<String>? roles,
+  })  : profileImage = _decode(profileImage),
+        roles = roles ?? const [];
 
-  UserInfo.fromJson({required Map<String, dynamic> pJson})
-      : userName = pJson[ApiObjectProperty.userName],
-        displayName = pJson[ApiObjectProperty.displayName],
-        eMail = pJson[ApiObjectProperty.eMail],
-        profileImage = _decode(pJson[ApiObjectProperty.profileImage]);
+  UserInfo.fromJson(Map<String, dynamic> json)
+      : this(
+          userName: json[ApiObjectProperty.userName],
+          displayName: json[ApiObjectProperty.displayName],
+          eMail: json[ApiObjectProperty.eMail],
+          profileImage: json[ApiObjectProperty.profileImage],
+          roles: json[ApiObjectProperty.roles]?.cast<String>(),
+        );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods

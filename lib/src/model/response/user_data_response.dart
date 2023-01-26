@@ -35,6 +35,9 @@ class UserDataResponse extends ApiResponse {
   /// Profile image of the user
   final String? profileImage;
 
+  /// Roles of the user
+  final List<String>? roles;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,8 +45,9 @@ class UserDataResponse extends ApiResponse {
   UserDataResponse({
     required this.displayName,
     required this.userName,
-    required this.eMail,
-    required this.profileImage,
+    this.eMail,
+    this.profileImage,
+    this.roles,
     required super.name,
   });
 
@@ -52,5 +56,6 @@ class UserDataResponse extends ApiResponse {
         displayName = json[ApiObjectProperty.displayName],
         eMail = json[ApiObjectProperty.eMail],
         profileImage = json[ApiObjectProperty.profileImage],
+        roles = json[ApiObjectProperty.roles]?.cast<String>(),
         super.fromJson();
 }

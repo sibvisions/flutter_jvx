@@ -189,6 +189,7 @@ abstract class ApiObjectProperty {
   static const String eMail = "email";
   static const String mode = "mode";
   static const String profileImage = "profileImage";
+  static const String roles = "roles";
   static const String layoutMode = "layoutMode";
   static const String info = "info";
   static const String changedColumns = "changedColumns";
