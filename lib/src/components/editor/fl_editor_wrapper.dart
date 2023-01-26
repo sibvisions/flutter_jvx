@@ -38,8 +38,10 @@ import 'cell_editor/date/fl_date_cell_editor.dart';
 import 'cell_editor/fl_choice_cell_editor.dart';
 import 'cell_editor/fl_dummy_cell_editor.dart';
 import 'cell_editor/fl_image_cell_editor.dart';
+import 'cell_editor/fl_text_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
 import 'cell_editor/linked/fl_linked_cell_editor.dart';
+import 'text_area/fl_text_area_widget.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layouting wrapper of various non layouting widgets.
@@ -149,6 +151,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
       if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
         newCalcSize = Size.square(width);
+      } else if (cellEditor is FlTextCellEditor &&
+          (cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_WRAPPEDMULTILINE ||
+              cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_MULTILINE)) {
+        FlTextFieldModel textModel = cellEditor.createWidgetModel() as FlTextFieldModel;
+
+        textModel.applyFromJson(model.json);
+
+        newCalcSize = Size(
+          width,
+          FlTextAreaWidget.calculateTextAreaHight(pLayoutData.calculatedSize!, textModel.rows).height,
+        );
       } else {
         newCalcSize = Size(
           width,

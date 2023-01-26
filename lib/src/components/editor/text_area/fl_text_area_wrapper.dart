@@ -59,4 +59,11 @@ class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
 
     return getPositioned(child: textAreaWidget);
   }
+
+  @override
+  Size calculateSize(BuildContext context) {
+    Size size = super.calculateSize(context);
+
+    return Size(size.width, FlTextAreaWidget.calculateTextAreaHight(size, model.rows).height);
+  }
 }
