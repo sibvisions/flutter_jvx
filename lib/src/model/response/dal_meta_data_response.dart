@@ -53,15 +53,13 @@ class DalMetaDataResponse extends ApiResponse {
 
   DalMetaDataResponse.fromJson(super.json)
       : dataProvider = json[ApiObjectProperty.dataProvider],
-        super.fromJson() {
-    columnViewTable = json[ApiObjectProperty.columnViewTable].cast<String>();
-    columns = (json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList();
-    readOnly = json[ApiObjectProperty.readOnly];
-    deleteEnabled = json[ApiObjectProperty.deleteEnabled];
-    updateEnabled = json[ApiObjectProperty.updateEnabled];
-    insertEnabled = json[ApiObjectProperty.insertEnabled];
-    if (json.containsKey(json[ApiObjectProperty.primaryKeyColumns])) {
-      primaryKeyColumns = List<String>.from(json[ApiObjectProperty.primaryKeyColumns]);
-    }
-  }
+        columnViewTable = json[ApiObjectProperty.columnViewTable]?.cast<String>(),
+        columns =
+            (json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList(),
+        readOnly = json[ApiObjectProperty.readOnly],
+        deleteEnabled = json[ApiObjectProperty.deleteEnabled],
+        updateEnabled = json[ApiObjectProperty.updateEnabled],
+        insertEnabled = json[ApiObjectProperty.insertEnabled],
+        primaryKeyColumns = json[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
+        super.fromJson();
 }

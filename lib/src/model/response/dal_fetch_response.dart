@@ -59,6 +59,7 @@ class DalFetchResponse extends ApiResponse {
 
   /// The sort definitions
   final List<SortDefinition>? sortDefinitions;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,26 +102,17 @@ class DalFetchResponse extends ApiResponse {
 
 class RecordFormat {
   final List<CellFormat?> _formats = [];
-
   final List<List<int>> _recordFormatIndexes = [];
 
   RecordFormat.fromJson(Map<String, dynamic> json) {
-    dynamic formatJson = json[ApiObjectProperty.format];
-
-    if (formatJson != null) {
-      for (String? formatString in List<String?>.from(formatJson)) {
-        _formats.add(CellFormat.fromString(formatString));
-      }
+    List<String>? formatJson = json[ApiObjectProperty.format]?.cast<String?>();
+    for (String? formatString in formatJson ?? []) {
+      _formats.add(CellFormat.fromString(formatString));
     }
 
     dynamic recordsJson = json[ApiObjectProperty.records];
-    if (recordsJson != null) {
-      for (List<dynamic> recordIndexesDynamic in recordsJson) {
-        List<int> recordIndexesInt = recordIndexesDynamic.map<int>((e) {
-          return e;
-        }).toList();
-        _recordFormatIndexes.add(recordIndexesInt);
-      }
+    for (List<dynamic> recordIndexesDynamic in recordsJson ?? []) {
+      _recordFormatIndexes.add(recordIndexesDynamic.map<int>((e) => e).toList());
     }
   }
 

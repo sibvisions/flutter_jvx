@@ -78,9 +78,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
             (json[ApiObjectProperty.changedColumns] as List<dynamic>?)?.map((e) => ChangedColumn.fromJson(e)).toList(),
         selectedRow = json[ApiObjectProperty.selectedRow],
         deletedRow = json[ApiObjectProperty.deletedRow],
-        changedColumnNames = json[ApiObjectProperty.changedColumnNames] != null
-            ? List<String>.from(json[ApiObjectProperty.changedColumnNames])
-            : null,
+        changedColumnNames = json[ApiObjectProperty.changedColumnNames]?.cast<String>(),
         changedValues = json[ApiObjectProperty.changedValues],
         deleteEnabled = json[ApiObjectProperty.deleteEnabled],
         insertEnabled = json[ApiObjectProperty.insertEnabled],
