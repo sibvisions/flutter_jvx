@@ -351,9 +351,7 @@ class DataBook {
 
   static Future<T> _handleCommandFuture<T>(Future<T> future, bool asyncErrorHandling) {
     if (asyncErrorHandling) {
-      return future.catchError((error, stackTrace) {
-        IUiService().handleAsyncError(error, stackTrace);
-      });
+      return future.catchError((error, stackTrace) => IUiService().handleAsyncError(error, stackTrace));
     }
     return future;
   }

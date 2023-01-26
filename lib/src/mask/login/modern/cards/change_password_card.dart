@@ -77,7 +77,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                 hintStyle: const TextStyle(fontWeight: FontWeight.bold),
               ),
           textTheme: Theme.of(context).textTheme.copyWith(
-                subtitle1: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.bold),
+                titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
         ),
         child: DefaultTextStyle.merge(

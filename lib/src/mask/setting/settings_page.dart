@@ -143,7 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Material(
             color: Theme.of(context).colorScheme.brightness == Brightness.light
                 ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).bottomAppBarColor,
+                : Theme.of(context).colorScheme.surface,
             child: SafeArea(
               child: SizedBox(
                 height: bottomBarHeight,

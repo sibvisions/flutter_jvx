@@ -65,7 +65,7 @@ class DebugOverlay extends StatelessWidget {
                 ),
               ),
               DefaultTextStyle(
-                style: Theme.of(context).textTheme.headline6!,
+                style: Theme.of(context).textTheme.titleLarge!,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: debugEntries.length > 1 ? 600 : 300),
                   child: content,

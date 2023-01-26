@@ -132,7 +132,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     }
     ThemeData themeData = Theme.of(context);
 
-    fillColor ??= themeData.inputDecorationTheme.fillColor ?? themeData.backgroundColor;
+    fillColor ??= themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.background;
 
     focusNode.canRequestFocus = model.isFocusable;
 

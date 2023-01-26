@@ -95,7 +95,7 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
         // Idk why, but tileColor doesn't seem to do the trick, when scrolling.
         color: ListTileTheme.of(context).tileColor != null
             ? JVxColors.lighten(ListTileTheme.of(context).tileColor!)
-            : Theme.of(context).bottomAppBarColor,
+            : Theme.of(context).colorScheme.surface,
         child: child,
       );
     });

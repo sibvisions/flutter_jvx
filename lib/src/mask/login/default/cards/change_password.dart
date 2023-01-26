@@ -56,7 +56,7 @@ class ChangePassword extends StatelessWidget {
         if (!asDialog)
           Text(
             FlutterUI.translate("Change password"),
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
         if (!asDialog) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),

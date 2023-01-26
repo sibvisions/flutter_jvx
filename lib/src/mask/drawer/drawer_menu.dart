@@ -162,7 +162,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 aspectRatio: 1.0,
                 child: CircleAvatar(
                   radius: 100,
-                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).colorScheme.background,
                   backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
                   child: profileImage == null
                       ? FaIcon(
@@ -185,7 +185,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       valueListenable: IUiService().getMenuNotifier(),
       builder: (context, _, child) {
         return ColoredBox(
-          color: Theme.of(context).backgroundColor,
+          color: Theme.of(context).colorScheme.background,
           child: ListTileTheme.merge(
             iconColor: Theme.of(context).colorScheme.primary,
             style: ListTileStyle.drawer,

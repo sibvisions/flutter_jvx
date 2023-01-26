@@ -49,11 +49,6 @@ class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperSt
   FlCustomWrapperState() : super();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);

@@ -70,7 +70,7 @@ class _ManualCardState extends State<ManualCard> {
       children: [
         Text(
           loginTitle ?? ConfigController().appName.value!.toUpperCase(),
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),

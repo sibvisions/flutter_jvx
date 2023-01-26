@@ -143,24 +143,19 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
       selectedTileColor: tileColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
       horizontalTitleGap: 0,
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          bottomAppBarColor: tileColor,
-        ),
-        child: IconTheme.merge(
-          data: const IconThemeData(size: 16),
-          child: DividerTheme(
-            data: DividerTheme.of(context).copyWith(
-              color: tileColor,
-            ),
-            child: Material(
-              color: tileColor,
-              child: AnimatedSize(
-                curve: Curves.easeInOut,
-                alignment: Alignment.centerLeft,
-                duration: const Duration(milliseconds: 120),
-                child: menu,
-              ),
+      child: IconTheme.merge(
+        data: const IconThemeData(size: 16),
+        child: DividerTheme(
+          data: DividerTheme.of(context).copyWith(
+            color: tileColor,
+          ),
+          child: Material(
+            color: tileColor,
+            child: AnimatedSize(
+              curve: Curves.easeInOut,
+              alignment: Alignment.centerLeft,
+              duration: const Duration(milliseconds: 120),
+              child: menu,
             ),
           ),
         ),

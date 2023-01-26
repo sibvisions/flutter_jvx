@@ -264,8 +264,8 @@ class _FlDatePickerDialogState extends State<FlDatePickerDialog> with Restoratio
     final Color onPrimarySurface =
         colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface;
     final TextStyle? dateStyle = orientation == Orientation.landscape
-        ? textTheme.headline5?.copyWith(color: onPrimarySurface)
-        : textTheme.headline4?.copyWith(color: onPrimarySurface);
+        ? textTheme.headlineSmall?.copyWith(color: onPrimarySurface)
+        : textTheme.headlineMedium?.copyWith(color: onPrimarySurface);
 
     final Widget actions = Container(
       alignment: AlignmentDirectional.centerEnd,
@@ -560,7 +560,7 @@ class _DatePickerHeader extends StatelessWidget {
     final Color primarySurfaceColor = isDark ? colorScheme.surface : colorScheme.primary;
     final Color onPrimarySurfaceColor = isDark ? colorScheme.onSurface : colorScheme.onPrimary;
 
-    final TextStyle? helpStyle = textTheme.overline?.copyWith(
+    final TextStyle? helpStyle = textTheme.labelSmall?.copyWith(
       color: onPrimarySurfaceColor,
     );
 

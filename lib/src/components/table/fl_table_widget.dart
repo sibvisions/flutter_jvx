@@ -153,7 +153,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       decoration: BoxDecoration(
         borderRadius: borderRadius,
         border: Border.all(width: widget.tableSize.borderWidth, color: Theme.of(context).primaryColor),
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
       ),
       child: ClipRRect(
         // The clip rect is there to stop the rendering of the children.

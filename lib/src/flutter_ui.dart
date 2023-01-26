@@ -370,12 +370,12 @@ PageStorageBucket pageStorageBucket = PageStorageBucket();
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   AppLifecycleState? lastState;
 
-  ThemeData themeData = ThemeData(
-    backgroundColor: Colors.grey.shade50,
+  ThemeData themeData = ThemeData().copyWith(
+    colorScheme: ColorScheme.light(background: Colors.grey.shade50),
   );
+
   ThemeData darkThemeData = ThemeData(
-    brightness: Brightness.dark,
-    backgroundColor: Colors.grey.shade50,
+    colorScheme: ColorScheme.dark(background: Colors.grey.shade50),
   );
 
   final ThemeData splashTheme = ThemeData();
@@ -643,7 +643,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     var themeData = ThemeData.from(colorScheme: colorScheme);
 
-    if (themeData.textTheme.bodyText1?.color?.computeLuminance() == 0.0) {
+    if (themeData.textTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
       themeData = themeData.copyWith(
         textTheme: themeData.textTheme.apply(
           bodyColor: JVxColors.LIGHTER_BLACK,
@@ -652,7 +652,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       );
     }
 
-    if (themeData.primaryTextTheme.bodyText1?.color?.computeLuminance() == 0.0) {
+    if (themeData.primaryTextTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
       themeData = themeData.copyWith(
         primaryTextTheme: themeData.primaryTextTheme.apply(
           bodyColor: JVxColors.LIGHTER_BLACK,
@@ -678,8 +678,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
 
     themeData = themeData.copyWith(
-      // Override for dark mode
-      toggleableActiveColor: themeData.colorScheme.primary,
       listTileTheme: themeData.listTileTheme.copyWith(
         // TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
         textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,

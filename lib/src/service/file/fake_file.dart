@@ -108,12 +108,12 @@ class FakeFile implements File {
   }
 
   @override
-  Future<File> create({bool recursive = false}) async {
+  Future<File> create({bool recursive = false, bool exclusive = false}) async {
     throw UnimplementedError("Fake File");
   }
 
   @override
-  void createSync({bool recursive = false}) {
+  void createSync({bool recursive = false, bool exclusive = false}) {
     throw UnimplementedError("Fake File");
   }
 

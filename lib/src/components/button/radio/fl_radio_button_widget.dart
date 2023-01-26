@@ -83,7 +83,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
     return ButtonStyle(
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
       backgroundColor: MaterialStateProperty.all(model.background ?? Colors.transparent),
-      foregroundColor: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText1?.color),
+      foregroundColor: MaterialStateProperty.all(Theme.of(context).textTheme.bodyLarge?.color),
       padding: MaterialStateProperty.all(model.paddings),
       splashFactory: splashFactory,
       overlayColor: MaterialStateProperty.all(Colors.transparent),

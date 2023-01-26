@@ -230,7 +230,7 @@ class WebFrameState extends FrameState {
           padding: const EdgeInsets.only(right: spacing),
           child: Builder(
             builder: (context) => CircleAvatar(
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).colorScheme.background,
               backgroundImage: profileImage != null ? MemoryImage(profileImage) : null,
               child: profileImage == null
                   ? FaIcon(
