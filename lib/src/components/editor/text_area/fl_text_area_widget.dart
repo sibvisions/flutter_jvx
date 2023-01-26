@@ -35,7 +35,6 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     required super.focusNode,
     required super.textController,
     super.inputFormatters,
-    super.inTable,
     super.isMandatory,
   }) : super(
           keyboardType: TextInputType.multiline,
@@ -61,6 +60,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
 
     return CrossAxisAlignment.center;
   }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -53,8 +52,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   final FocusNode focusNode;
 
   final TextEditingController textController;
-
-  final bool inTable;
 
   final bool isMandatory;
 
@@ -108,7 +105,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     required this.textController,
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
-    this.inTable = false,
     this.isMandatory = false,
     this.inputDecoration = const InputDecoration(),
     this.hideClearIcon = false,
@@ -136,21 +132,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     focusNode.canRequestFocus = model.isFocusable;
 
-    EdgeInsets? paddings;
-
-    if (inTable && kIsWeb) {
-      paddings = const EdgeInsets.only(top: 8);
-    } else if (!inTable) {
-      paddings = contentPadding;
-    }
-
-    bool isFilled = !inTable;
     return TextField(
       controller: textController,
       decoration: inputDecoration.copyWith(
         enabled: model.isEnabled,
         hintText: model.placeholder,
-        contentPadding: paddings,
+        contentPadding: contentPadding,
         border: createBorder(FlTextBorderType.border),
         errorBorder: createBorder(FlTextBorderType.errorBorder),
         enabledBorder: createBorder(FlTextBorderType.enabledBorder),
@@ -161,11 +148,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 24),
         suffix: createSuffix(),
         fillColor: fillColor,
-        filled: isFilled,
-        isDense: !inTable && Frame.isWebFrame(),
+        filled: true,
+        isDense: Frame.isWebFrame(),
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
-      textAlignVertical: inTable ? TextAlignVertical.center : VerticalAlignmentE.toTextAlign(model.verticalAlignment),
+      textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
       readOnly: model.isReadOnly,
       style: model.createTextStyle(),
       onChanged: valueChanged,
@@ -260,10 +247,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   InputBorder? createBorder(FlTextBorderType pBorderType) {
-    if (inTable) {
-      return InputBorder.none;
-    }
-
     switch (pBorderType) {
       case FlTextBorderType.border:
       case FlTextBorderType.errorBorder:

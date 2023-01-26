@@ -126,7 +126,6 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
-          inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
         );
@@ -137,7 +136,6 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
-          inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
         );
@@ -149,7 +147,6 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
           endEditing: onEndEditing,
           focusNode: focusNode,
           textController: textController,
-          inTable: isInTable,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
         );
@@ -189,10 +186,6 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
 
   @override
   double getContentPadding(Map<String, dynamic>? pJson) {
-    if (!isInTable) {
-      return createWidget(pJson).extraWidthPaddings();
-    }
-
     return 0.0;
   }
 
