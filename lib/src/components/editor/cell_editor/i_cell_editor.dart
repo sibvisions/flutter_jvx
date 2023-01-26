@@ -211,12 +211,11 @@ abstract class ICellEditor<
   }
 
   void applyEditorJson(FlComponentModel pModel, Map<String, dynamic>? pJson) {
-    if (pJson != null) {
-      pModel.applyFromJson(pJson);
-      pModel.applyCellEditorOverrides(pJson);
-      if (cellFormat != null) {
-        pModel.applyCellFormat(cellFormat!);
-      }
+    pModel.applyFromJson(pJson ?? {});
+    pModel.applyFromJson(cellEditorJson);
+    pModel.applyCellEditorOverrides(pJson ?? {});
+    if (cellFormat != null) {
+      pModel.applyCellFormat(cellFormat!);
     }
   }
 }
