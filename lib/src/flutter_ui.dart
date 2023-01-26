@@ -796,3 +796,5 @@ class MyHttpOverrides extends HttpOverrides {
     return client;
   }
 }
+
+T? cast<T>(x) => x is T ? x : null;

@@ -19,9 +19,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
+import '../../model/command/api/login_command.dart';
+import '../../routing/locations/login_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/config/config_controller.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../progress/progress_dialog_widget.dart';
 import 'debug_overlay.dart';
 
@@ -173,6 +176,23 @@ class JVxDebug extends StatelessWidget {
               child: const Text("Test"),
             ),
           ),
+          StatefulBuilder(builder: (context, setState) {
+            return DropdownButton<LoginMode>(
+              hint: const Text("Route to Login"),
+              value: cast<LoginLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.modeNotifier.value,
+              items: LoginMode.values
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e.name),
+                      ))
+                  .toList(),
+              onChanged: (LoginMode? value) {
+                IUiService().routeToLogin(mode: value!);
+                setState(() {});
+              },
+              isExpanded: true,
+            );
+          }),
         ],
       ),
     );
