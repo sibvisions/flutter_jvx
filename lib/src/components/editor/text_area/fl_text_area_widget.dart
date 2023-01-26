@@ -24,6 +24,12 @@ import 'fl_text_area_dialog.dart';
 
 class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final bool canShowDialog;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -36,6 +42,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     required super.textController,
     super.inputFormatters,
     super.isMandatory,
+    this.canShowDialog = true,
   }) : super(
           keyboardType: TextInputType.multiline,
         );
@@ -68,7 +75,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onDoubleTap: model.isReadOnly ? null : _openDialogEditor,
+      onDoubleTap: model.isReadOnly && canShowDialog ? null : _openDialogEditor,
       child: super.build(context),
     );
   }
@@ -96,8 +103,10 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
       context: FlutterUI.getCurrentContext()!,
       builder: (context) {
         return FlTextAreaDialog(
-          value: textController.value,
           model: model,
+          value: textController.value,
+          inputFormatters: inputFormatters,
+          isMandatory: isMandatory,
         );
       },
     ).then((value) {
