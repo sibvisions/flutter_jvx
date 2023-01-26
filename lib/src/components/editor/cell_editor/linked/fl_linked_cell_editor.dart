@@ -133,7 +133,6 @@ class FlLinkedCellEditor
       valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
-      inTable: isInTable,
       hideClearIcon: !allowedTableEdit && isInTable,
     );
   }

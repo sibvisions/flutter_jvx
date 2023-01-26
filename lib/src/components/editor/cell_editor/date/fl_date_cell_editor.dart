@@ -125,7 +125,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
       focusNode: focusNode,
       endEditing: onEndEditing,
       valueChanged: onValueChange,
-      inTable: isInTable,
       hideClearIcon: allowedTableEdit && isInTable,
     );
   }

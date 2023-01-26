@@ -29,7 +29,6 @@ class FlPasswordWidget extends FlTextFieldWidget {
     required super.focusNode,
     required super.textController,
     super.inputFormatters,
-    super.inTable,
     super.isMandatory,
   });
 
