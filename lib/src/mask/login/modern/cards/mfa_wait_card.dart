@@ -17,8 +17,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_ui.dart';
-import '../../../../service/ui/i_ui_service.dart';
-import '../../login_page.dart';
 import 'mfa_card.dart';
 
 class MFAWaitCard extends StatefulWidget {
@@ -120,11 +118,5 @@ class _MFAWaitCardState extends State<MFAWaitCard> with SingleTickerProviderStat
         ],
       ),
     );
-  }
-
-  void _onCancelPressed() {
-    LoginPage.cancelLogin().catchError((error, stackTrace) {
-      return IUiService().handleAsyncError(error, stackTrace);
-    });
   }
 }
