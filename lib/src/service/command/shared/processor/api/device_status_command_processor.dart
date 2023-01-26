@@ -19,6 +19,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_device_status_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../config/config_controller.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 /// Calls [IApiService] deviceStatus and [ConfigController] for current clientId
@@ -33,7 +34,7 @@ class DeviceStatusCommandProcessor implements ICommandProcessor<DeviceStatusComm
   @override
   Future<List<BaseCommand>> processCommand(DeviceStatusCommand command) async {
     if ((lastSentWidth != command.screenWidth || lastSentHeight != command.screenHeight) &&
-        ConfigController().clientId.value != null &&
+        IUiService().clientId.value != null &&
         !ConfigController().offline.value) {
       lastSentWidth = command.screenWidth;
       lastSentHeight = command.screenHeight;

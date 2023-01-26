@@ -33,6 +33,9 @@ import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_group_model.dart';
 import '../../../model/menu/menu_model.dart';
+import '../../../model/response/application_meta_data_response.dart';
+import '../../../model/response/application_settings_response.dart';
+import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
@@ -71,6 +74,27 @@ class UiService implements IUiService {
   /// The currently focused object.
   String? focusedComponentId;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Runtime related fields (e.g. responses from the server)
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Current clientId (sessionId).
+  final ValueNotifier<String?> _clientId = ValueNotifier(null);
+
+  /// The last layoutMode from the server.
+  final ValueNotifier<LayoutMode> _layoutMode = ValueNotifier(kIsWeb ? LayoutMode.Full : LayoutMode.Mini);
+
+  /// JVx Application Settings.
+  final ValueNotifier<ApplicationSettingsResponse> _applicationSettings =
+      ValueNotifier(ApplicationSettingsResponse.empty());
+
+  /// JVx Application Metadata.
+  final ValueNotifier<ApplicationMetaDataResponse?> _metaData = ValueNotifier(null);
+
+  final ValueNotifier<bool> _mobileOnly = ValueNotifier(false);
+
+  final ValueNotifier<bool> _webOnly = ValueNotifier(false);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,6 +108,11 @@ class UiService implements IUiService {
     _dataSubscriptions.clear();
     _activeFrames.clear();
     _activeDialogs.clear();
+
+    _clientId.value = null;
+    _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
+    _applicationSettings.value = ApplicationSettingsResponse.empty();
+    _metaData.value = null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -273,6 +302,54 @@ class UiService implements IUiService {
     appManager?.modifyMenuModel(menuModel);
 
     return menuModel;
+  }
+
+  @override
+  ValueNotifier<String?> get clientId => _clientId;
+
+  @override
+  Future<void> updateClientId(String? pClientId) async {
+    _clientId.value = pClientId;
+  }
+
+  @override
+  ValueNotifier<ApplicationMetaDataResponse?> get metaData => _metaData;
+
+  @override
+  Future<void> updateMetaData(ApplicationMetaDataResponse? pMetaData) async {
+    _metaData.value = pMetaData;
+  }
+
+  @override
+  ValueNotifier<ApplicationSettingsResponse> get applicationSettings => _applicationSettings;
+
+  @override
+  Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) async {
+    _applicationSettings.value = pApplicationSettings;
+  }
+
+  @override
+  ValueNotifier<LayoutMode> get layoutMode => _layoutMode;
+
+  @override
+  Future<void> updateLayoutMode(LayoutMode pLayoutMode) async {
+    _layoutMode.value = pLayoutMode;
+  }
+
+  @override
+  ValueNotifier<bool> get mobileOnly => _mobileOnly;
+
+  @override
+  Future<void> updateMobileOnly(bool pMobileOnly) async {
+    _mobileOnly.value = pMobileOnly;
+  }
+
+  @override
+  ValueNotifier<bool> get webOnly => _webOnly;
+
+  @override
+  Future<void> updateWebOnly(bool pWebOnly) async {
+    _webOnly.value = pWebOnly;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -215,8 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SizedBox.shrink(
           child: Center(
             child: Text(
-              FlutterUI.translate(
-                  ConfigController().clientId.value != null ? (_changesPending() ? "Save" : "OK") : "Open"),
+              FlutterUI.translate(IUiService().clientId.value != null ? (_changesPending() ? "Save" : "OK") : "Open"),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -551,8 +550,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _buildStatus(BuildContext context) {
-    String versionValue = (ConfigController().metaData.value?.serverVersion ?? "Unknown");
-    if (ConfigController().metaData.value?.serverVersion != FlutterUI.supportedServerVersion) {
+    String versionValue = (IUiService().metaData.value?.serverVersion ?? "Unknown");
+    if (IUiService().metaData.value?.serverVersion != FlutterUI.supportedServerVersion) {
       versionValue += " (${FlutterUI.translate("Supported")}: ${FlutterUI.supportedServerVersion})";
     }
 
@@ -647,7 +646,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _saveClicked() async {
     if ((appName?.isNotEmpty ?? false) && (baseUrl?.isNotEmpty ?? false)) {
       try {
-        if (!context.canBeamBack || ConfigController().clientId.value == null || _changesPending()) {
+        if (!context.canBeamBack || IUiService().clientId.value == null || _changesPending()) {
           await ConfigController().updateAppName(appName);
           await ConfigController().updateBaseUrl(baseUrl);
           await ConfigController().updateUserLanguage(language);

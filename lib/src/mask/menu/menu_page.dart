@@ -73,8 +73,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
-      forceWeb: ConfigController().webOnly.value,
-      forceMobile: ConfigController().mobileOnly.value,
+      forceWeb: IUiService().webOnly.value,
+      forceMobile: IUiService().mobileOnly.value,
       builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
         valueListenable: IUiService().getMenuNotifier(),
         builder: (context, _, child) => ValueListenableBuilder<FlComponentModel?>(

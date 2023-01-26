@@ -341,7 +341,7 @@ class OnlineApiRepository implements IRepository {
   }
 
   Uri? _getWebSocketUri() {
-    if (ConfigController().clientId.value == null) {
+    if (IUiService().clientId.value == null) {
       FlutterUI.logAPI.i("WebSocket URI: ClientID is missing");
       return null;
     }
@@ -356,7 +356,7 @@ class OnlineApiRepository implements IRepository {
       scheme: location.scheme == "https" ? "wss" : "ws",
       path: "${location.path.substring(0, end)}/pushlistener",
       queryParameters: {
-        "clientId": ConfigController().clientId.value!,
+        "clientId": IUiService().clientId.value!,
         // `reconnect` forces the server to respond to invalid session with close instead of an error.
         "reconnect": true.toString(),
       },
@@ -405,8 +405,8 @@ class OnlineApiRepository implements IRepository {
 
     try {
       if (pRequest is SessionRequest) {
-        if (ConfigController().clientId.value?.isNotEmpty == true) {
-          pRequest.clientId = ConfigController().clientId.value!;
+        if (IUiService().clientId.value?.isNotEmpty == true) {
+          pRequest.clientId = IUiService().clientId.value!;
         } else {
           throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
         }

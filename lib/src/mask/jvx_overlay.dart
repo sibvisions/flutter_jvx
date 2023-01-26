@@ -116,7 +116,7 @@ class JVxOverlayState extends State<JVxOverlay> {
     super.initState();
 
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
-      if (ConfigController().clientId.value != null && !ConfigController().offline.value) {
+      if (IUiService().clientId.value != null && !ConfigController().offline.value) {
         ICommandService().sendCommand(DeviceStatusCommand(
           screenWidth: size.width,
           screenHeight: size.height,
@@ -140,7 +140,7 @@ class JVxOverlayState extends State<JVxOverlay> {
       },
       child: AppStyle(
         applicationStyle: ConfigController().applicationStyle.value,
-        applicationSettings: ConfigController().applicationSettings.value,
+        applicationSettings: IUiService().applicationSettings.value,
         child: FutureBuilder(
           future: _loadingDelayFuture,
           builder: (context, snapshot) {

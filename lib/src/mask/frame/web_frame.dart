@@ -59,14 +59,14 @@ class WebFrameState extends FrameState {
   @override
   void initState() {
     super.initState();
-    showWebMenu = ConfigController().layoutMode.value != LayoutMode.Mini;
-    lastMode = ConfigController().layoutMode.value;
-    ConfigController().layoutMode.addListener(updatedLayoutMode);
+    showWebMenu = IUiService().layoutMode.value != LayoutMode.Mini;
+    lastMode = IUiService().layoutMode.value;
+    IUiService().layoutMode.addListener(updatedLayoutMode);
   }
 
   @override
   void dispose() {
-    ConfigController().layoutMode.removeListener(updatedLayoutMode);
+    IUiService().layoutMode.removeListener(updatedLayoutMode);
     super.dispose();
   }
 
@@ -75,7 +75,7 @@ class WebFrameState extends FrameState {
   /// * Close menu when changing to [LayoutMode.Mini]
   /// * Reopen menu when changing from [LayoutMode.Mini]
   void updatedLayoutMode() {
-    var newMode = ConfigController().layoutMode.value;
+    var newMode = IUiService().layoutMode.value;
     if (lastMode != newMode) {
       if (newMode == LayoutMode.Mini && showWebMenu) {
         showWebMenu = false;
@@ -265,7 +265,7 @@ class WebFrameState extends FrameState {
   @override
   Widget wrapBody(Widget body) {
     return LoadingBar.wrapLoadingBar(ValueListenableBuilder<LayoutMode>(
-      valueListenable: ConfigController().layoutMode,
+      valueListenable: IUiService().layoutMode,
       builder: (context, value, child) {
         bool showMenu = InheritedWebFrame.of(context).showMenu;
         return Stack(

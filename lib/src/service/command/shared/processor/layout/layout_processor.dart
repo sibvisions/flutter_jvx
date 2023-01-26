@@ -19,8 +19,8 @@ import '../../../../../model/command/layout/layout_mode_command.dart';
 import '../../../../../model/command/layout/preferred_size_command.dart';
 import '../../../../../model/command/layout/register_parent_command.dart';
 import '../../../../../model/response/device_status_response.dart';
-import '../../../../config/config_controller.dart';
 import '../../../../layout/i_layout_service.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class LayoutProcessor implements ICommandProcessor {
@@ -31,7 +31,7 @@ class LayoutProcessor implements ICommandProcessor {
     } else if (command is RegisterParentCommand) {
       return ILayoutService().reportLayout(pLayoutData: command.layoutData);
     } else if (command is LayoutModeCommand) {
-      await ConfigController().updateLayoutMode(command.layoutMode ?? LayoutMode.Small);
+      await IUiService().updateLayoutMode(command.layoutMode ?? LayoutMode.Small);
     }
 
     return [];

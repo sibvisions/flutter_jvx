@@ -31,7 +31,6 @@ import '../../model/command/base_command.dart';
 import '../../model/command/storage/delete_screen_command.dart';
 import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../service/config/config_controller.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -117,8 +116,8 @@ class WorkScreenState extends State<WorkScreen> {
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
-      forceWeb: ConfigController().webOnly.value,
-      forceMobile: ConfigController().mobileOnly.value,
+      forceWeb: IUiService().webOnly.value,
+      forceMobile: IUiService().mobileOnly.value,
       builder: (context, isOffline) {
         // Replace the model if a new one is found.
         // If there is no model, then just use the old one.

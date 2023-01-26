@@ -23,7 +23,6 @@ import '../../model/command/api/login_command.dart';
 import '../../routing/locations/login_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
-import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../progress/progress_dialog_widget.dart';
 import 'debug_overlay.dart';
@@ -67,7 +66,7 @@ class JVxDebug extends StatelessWidget {
             trailing: OutlinedButton(
               onPressed: () {
                 // Random invalid client id
-                ConfigController().updateClientId("2b63e617-d407-4b40-81b1-ef034233e26a");
+                IUiService().updateClientId("2b63e617-d407-4b40-81b1-ef034233e26a");
               },
               child: const Text("Invalidate"),
             ),

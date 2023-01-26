@@ -16,7 +16,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,9 +28,6 @@ import '../../mask/state/app_style.dart';
 import '../../model/config/translation/translation.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/request/api_startup_request.dart';
-import '../../model/response/application_meta_data_response.dart';
-import '../../model/response/application_settings_response.dart';
-import '../../model/response/device_status_response.dart';
 import '../../model/response/download_images_response.dart';
 import '../../model/response/download_style_response.dart';
 import '../file/file_manager.dart';
@@ -93,23 +89,6 @@ class ConfigController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Non-persistent fields (fields that don't use a backend service)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Current clientId (sessionId).
-  final ValueNotifier<String?> _clientId = ValueNotifier(null);
-
-  /// The last layoutMode from the server.
-  final ValueNotifier<LayoutMode> _layoutMode = ValueNotifier(kIsWeb ? LayoutMode.Full : LayoutMode.Mini);
-
-  /// JVx Application Settings.
-  final ValueNotifier<ApplicationSettingsResponse> _applicationSettings =
-      ValueNotifier(ApplicationSettingsResponse.empty());
-
-  /// JVx Application Metadata.
-  final ValueNotifier<ApplicationMetaDataResponse?> _metaData = ValueNotifier(null);
-
-  final ValueNotifier<bool> _mobileOnly = ValueNotifier(false);
-
-  final ValueNotifier<bool> _webOnly = ValueNotifier(false);
 
   /// Current translation, base translation + overlaid language.
   Translation _translation = Translation.empty();
@@ -231,67 +210,6 @@ class ConfigController {
   /// * [password]
   AppConfig? getAppConfig() {
     return _appConfig;
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Non-persisting methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Returns the current clientId.
-  ///
-  /// `null` if none is present.
-  ValueNotifier<String?> get clientId => _clientId;
-
-  Future<void> updateClientId(String? pClientId) async {
-    _clientId.value = pClientId;
-  }
-
-  /// Returns the last known [ApplicationMetaDataResponse].
-  ValueNotifier<ApplicationMetaDataResponse?> get metaData => _metaData;
-
-  Future<void> updateMetaData(ApplicationMetaDataResponse? pMetaData) async {
-    _metaData.value = pMetaData;
-  }
-
-  /// Retrieves the last known [ApplicationSettingsResponse].
-  ValueNotifier<ApplicationSettingsResponse> get applicationSettings => _applicationSettings;
-
-  /// Sets the [ApplicationSettingsResponse].
-  Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) async {
-    _applicationSettings.value = pApplicationSettings;
-  }
-
-  /// Returns the app's layout mode.
-  ///
-  /// See also:
-  /// * [DeviceStatusResponse].
-  ValueNotifier<LayoutMode> get layoutMode => _layoutMode;
-
-  /// Sets the layout mode.
-  Future<void> updateLayoutMode(LayoutMode pLayoutMode) async {
-    _layoutMode.value = pLayoutMode;
-  }
-
-  /// Returns if mobile-only mode is currently forced.
-  ///
-  /// See also:
-  /// * [Frame.wrapWithFrame]
-  ValueNotifier<bool> get mobileOnly => _mobileOnly;
-
-  /// Sets the mobile-only mode.
-  Future<void> updateMobileOnly(bool pMobileOnly) async {
-    _mobileOnly.value = pMobileOnly;
-  }
-
-  /// Returns if web-only mode is currently forced.
-  ///
-  /// See also:
-  /// * [Frame.wrapWithFrame]
-  ValueNotifier<bool> get webOnly => _webOnly;
-
-  /// Sets the web-only mode.
-  Future<void> updateWebOnly(bool pWebOnly) async {
-    _webOnly.value = pWebOnly;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

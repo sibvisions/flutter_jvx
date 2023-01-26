@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/device_status_response.dart';
-import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/parse_util.dart';
 import '../../util/search_mixin.dart';
@@ -76,7 +75,7 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
       widthFactor: animationController.value,
       child: RepaintBoundary(
         child: ValueListenableBuilder<LayoutMode>(
-          valueListenable: ConfigController().layoutMode,
+          valueListenable: IUiService().layoutMode,
           builder: (context, layoutMode, child) {
             return ValueListenableBuilder<MenuModel>(
               valueListenable: IUiService().getMenuNotifier(),

@@ -56,7 +56,7 @@ class _ManualCardState extends State<ManualCard> {
     super.initState();
     usernameController = TextEditingController(text: ConfigController().username.value);
 
-    showRememberMe = (ConfigController().metaData.value?.rememberMeEnabled ?? false) ||
+    showRememberMe = (IUiService().metaData.value?.rememberMeEnabled ?? false) ||
         (ConfigController().getAppConfig()?.uiConfig!.showRememberMe ?? false);
     rememberMeChecked = ConfigController().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
   }
@@ -245,7 +245,7 @@ class _ManualCardState extends State<ManualCard> {
                         ],
                       ),
                     ),
-                    if (ConfigController().metaData.value?.lostPasswordEnabled == true)
+                    if (IUiService().metaData.value?.lostPasswordEnabled == true)
                       TextButton(
                         style: TextButton.styleFrom(
                           shape: RoundedRectangleBorder(

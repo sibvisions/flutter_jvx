@@ -55,9 +55,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       screenHeight: ConfigController().getPhoneSize()?.height.toInt(),
       screenWidth: ConfigController().getPhoneSize()?.width.toInt(),
       readAheadLimit: 100,
-      deviceMode: (kIsWeb && !ConfigController().mobileOnly.value) || ConfigController().webOnly.value
-          ? "mobileDesktop"
-          : "mobile",
+      deviceMode: (kIsWeb && !IUiService().mobileOnly.value) || IUiService().webOnly.value ? "mobileDesktop" : "mobile",
       username: command.username,
       password: command.password,
       langCode: ConfigController().userLanguage.value ?? ConfigController().getPlatformLocale(),

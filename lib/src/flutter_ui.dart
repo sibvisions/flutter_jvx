@@ -333,11 +333,11 @@ class FlutterUI extends StatefulWidget {
     }
     String? mobileOnly = Uri.base.queryParameters['mobileOnly'];
     if (mobileOnly != null) {
-      await configController.updateMobileOnly(mobileOnly == "true");
+      await uiService.updateMobileOnly(mobileOnly == "true");
     }
     String? webOnly = Uri.base.queryParameters['webOnly'];
     if (webOnly != null) {
-      await configController.updateWebOnly(webOnly == "true");
+      await uiService.updateWebOnly(webOnly == "true");
     }
 
     packageInfo = await PackageInfo.fromPlatform();
@@ -413,11 +413,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     // Update style to reflect web colors for theme
     // Don't forget to remove them in [dispose]!
     // ignore: invalid_use_of_protected_member
-    assert(!ConfigController().layoutMode.hasListeners);
-    ConfigController().layoutMode.addListener(changedTheme);
+    assert(!IUiService().layoutMode.hasListeners);
+    IUiService().layoutMode.addListener(changedTheme);
     ConfigController().themePreference.addListener(changedTheme);
     ConfigController().applicationStyle.addListener(changedTheme);
-    ConfigController().applicationSettings.addListener(refresh);
+    IUiService().applicationSettings.addListener(refresh);
 
     // Init
     restart();
@@ -568,7 +568,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (lastState != null) {
       if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
         // App was resumed from a paused state (Permission overlay is not paused)
-        if (ConfigController().clientId.value != null && !ConfigController().offline.value) {
+        if (IUiService().clientId.value != null && !ConfigController().offline.value) {
           ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"));
         }
       }
@@ -585,10 +585,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
-    ConfigController().layoutMode.removeListener(changedTheme);
+    IUiService().layoutMode.removeListener(changedTheme);
     ConfigController().themePreference.removeListener(changedTheme);
     ConfigController().applicationStyle.removeListener(changedTheme);
-    ConfigController().applicationSettings.removeListener(refresh);
+    IUiService().applicationSettings.removeListener(refresh);
 
     super.dispose();
   }

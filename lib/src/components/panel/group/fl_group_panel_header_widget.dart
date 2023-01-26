@@ -20,7 +20,7 @@ import 'package:flutter/scheduler.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/device_status_response.dart';
-import '../../../service/config/config_controller.dart';
+import '../../../service/ui/i_ui_service.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../label/fl_label_widget.dart';
 
@@ -62,7 +62,7 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
     }
 
     return ValueListenableBuilder(
-      valueListenable: ConfigController().layoutMode,
+      valueListenable: IUiService().layoutMode,
       builder: (context, value, child) {
         if (value == LayoutMode.Mini && model.horizontalAlignment == HorizontalAlignment.STRETCH) {
           return labelWidget;

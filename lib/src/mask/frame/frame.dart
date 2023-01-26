@@ -137,7 +137,7 @@ abstract class Frame extends StatefulWidget {
 
   /// Whether the currently used frame is [WebFrame].
   static bool isWebFrame() {
-    return (!ConfigController().mobileOnly.value && kIsWeb) || ConfigController().webOnly.value || kIsWeb;
+    return (!IUiService().mobileOnly.value && kIsWeb) || IUiService().webOnly.value || kIsWeb;
   }
 }
 

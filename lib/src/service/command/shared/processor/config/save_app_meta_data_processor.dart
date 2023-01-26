@@ -29,6 +29,7 @@ import '../../../../api/i_api_service.dart';
 import '../../../../api/shared/repository/online_api_repository.dart';
 import '../../../../config/config_controller.dart';
 import '../../../../file/file_manager.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDataCommand> {
@@ -37,13 +38,13 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
-    await ConfigController().updateClientId(command.metaData.clientId);
+    await IUiService().updateClientId(command.metaData.clientId);
     await ConfigController().updateVersion(version);
 
     await ConfigController().updateApplicationLanguage(command.metaData.langCode);
     await ConfigController().updateApplicationTimeZone(command.metaData.timeZoneCode);
 
-    await ConfigController().updateMetaData(command.metaData);
+    await IUiService().updateMetaData(command.metaData);
 
     Directory? languagesDir =
         ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");

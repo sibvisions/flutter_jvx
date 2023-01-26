@@ -34,6 +34,9 @@ import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/menu/menu_model.dart';
+import '../../model/response/application_meta_data_response.dart';
+import '../../model/response/application_settings_response.dart';
+import '../../model/response/device_status_response.dart';
 import '../command/i_command_service.dart';
 import '../service.dart';
 
@@ -130,6 +133,51 @@ abstract class IUiService {
 
   /// Set menu model to be used when opening the menu
   void setMenuModel(MenuModel? pMenuModel);
+
+  /// Returns the current clientId.
+  ///
+  /// `null` if none is present.
+  ValueNotifier<String?> get clientId;
+
+  Future<void> updateClientId(String? pClientId);
+
+  /// Returns the last known [ApplicationMetaDataResponse].
+  ValueNotifier<ApplicationMetaDataResponse?> get metaData;
+
+  Future<void> updateMetaData(ApplicationMetaDataResponse? pMetaData);
+
+  /// Retrieves the last known [ApplicationSettingsResponse].
+  ValueNotifier<ApplicationSettingsResponse> get applicationSettings;
+
+  /// Sets the [ApplicationSettingsResponse].
+  Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings);
+
+  /// Returns the app's layout mode.
+  ///
+  /// See also:
+  /// * [DeviceStatusResponse].
+  ValueNotifier<LayoutMode> get layoutMode;
+
+  /// Sets the layout mode.
+  Future<void> updateLayoutMode(LayoutMode pLayoutMode);
+
+  /// Returns if mobile-only mode is currently forced.
+  ///
+  /// See also:
+  /// * [Frame.wrapWithFrame]
+  ValueNotifier<bool> get mobileOnly;
+
+  /// Sets the mobile-only mode.
+  Future<void> updateMobileOnly(bool pMobileOnly);
+
+  /// Returns if web-only mode is currently forced.
+  ///
+  /// See also:
+  /// * [Frame.wrapWithFrame]
+  ValueNotifier<bool> get webOnly;
+
+  /// Sets the web-only mode.
+  Future<void> updateWebOnly(bool pWebOnly);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // LayoutData management

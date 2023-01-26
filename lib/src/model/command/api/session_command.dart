@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../../../service/config/config_controller.dart';
+import '../../../service/ui/i_ui_service.dart';
 import 'api_command.dart';
 
 /// BaseType of any api command that needs a valid session
@@ -26,5 +26,5 @@ abstract class SessionCommand extends ApiCommand {
     super.beforeProcessing,
     super.afterProcessing,
     super.showLoading,
-  }) : clientId = ConfigController().clientId.value;
+  }) : clientId = IUiService().clientId.value;
 }
