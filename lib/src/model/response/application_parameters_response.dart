@@ -27,6 +27,12 @@ class ApplicationParametersResponse extends ApiResponse {
   /// Which screen to open, is a screen name
   final String? openScreen;
 
+  /// Menu Bar title
+  final String? applicationTitleName;
+
+  /// Tab title
+  final String? applicationTitleWeb;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,5 +40,7 @@ class ApplicationParametersResponse extends ApiResponse {
   ApplicationParametersResponse.fromJson(super.json)
       : authenticated = json[ApiObjectProperty.authenticated],
         openScreen = json[ApiObjectProperty.openScreen],
+        applicationTitleName = json[ApiObjectProperty.applicationTitleName],
+        applicationTitleWeb = json[ApiObjectProperty.applicationTitleWeb],
         super.fromJson();
 }

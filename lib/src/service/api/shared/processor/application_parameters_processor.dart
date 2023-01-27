@@ -17,14 +17,13 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/application_parameters_response.dart';
+import '../../../ui/i_ui_service.dart';
 import '../i_response_processor.dart';
 
 class ApplicationParametersProcessor implements IResponseProcessor<ApplicationParametersResponse> {
   @override
   List<BaseCommand> processResponse(ApplicationParametersResponse pResponse, ApiRequest? pRequest) {
-    List<BaseCommand> commands = [];
-    // TODO use application parameters
-
-    return commands;
+    IUiService().updateApplicationParameters(pResponse);
+    return [];
   }
 }

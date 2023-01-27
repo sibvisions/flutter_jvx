@@ -35,6 +35,7 @@ import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/application_meta_data_response.dart';
+import '../../model/response/application_parameters_response.dart';
 import '../../model/response/application_settings_response.dart';
 import '../../model/response/device_status_response.dart';
 import '../command/i_command_service.dart';
@@ -151,6 +152,12 @@ abstract class IUiService {
 
   /// Sets the [ApplicationSettingsResponse].
   Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings);
+
+  /// Retrieves the last known [ApplicationParametersResponse].
+  ValueNotifier<ApplicationParametersResponse?> get applicationParameters;
+
+  /// Sets the [ApplicationParametersResponse].
+  Future<void> updateApplicationParameters(ApplicationParametersResponse pApplicationParameters);
 
   /// Returns the app's layout mode.
   ///

@@ -34,6 +34,7 @@ import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_group_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../model/response/application_meta_data_response.dart';
+import '../../../model/response/application_parameters_response.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/login_location.dart';
@@ -87,6 +88,9 @@ class UiService implements IUiService {
   /// JVx Application Settings.
   final ValueNotifier<ApplicationSettingsResponse> _applicationSettings =
       ValueNotifier(ApplicationSettingsResponse.empty());
+
+  /// JVx Application Parameters.
+  final ValueNotifier<ApplicationParametersResponse?> _applicationParameters = ValueNotifier(null);
 
   /// JVx Application Metadata.
   final ValueNotifier<ApplicationMetaDataResponse?> _applicationMetaData = ValueNotifier(null);
@@ -326,6 +330,14 @@ class UiService implements IUiService {
   @override
   Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) async {
     _applicationSettings.value = pApplicationSettings;
+  }
+
+  @override
+  ValueNotifier<ApplicationParametersResponse?> get applicationParameters => _applicationParameters;
+
+  @override
+  Future<void> updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) async {
+    _applicationParameters.value = pApplicationParameters;
   }
 
   @override

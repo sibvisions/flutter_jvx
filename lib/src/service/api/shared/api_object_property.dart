@@ -173,6 +173,8 @@ abstract class ApiObjectProperty {
   // Response Properties
   static const String authenticated = "authenticated";
   static const String openScreen = "openScreen";
+  static const String applicationTitleName = "Application_title_name";
+  static const String applicationTitleWeb = "Application_title_web";
   static const String group = "group";
   static const String image = "image";
   static const String entries = "entries";
