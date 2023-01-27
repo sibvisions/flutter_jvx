@@ -28,6 +28,7 @@ import '../../model/command/api/login_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/config/application_parameters.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -153,10 +154,10 @@ abstract class IUiService {
   /// Sets the [ApplicationSettingsResponse].
   void updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings);
 
-  /// Retrieves the last known [ApplicationParametersResponse].
-  ValueNotifier<ApplicationParametersResponse?> get applicationParameters;
+  /// Retrieves the last known [ApplicationParameters].
+  ValueNotifier<ApplicationParameters?> get applicationParameters;
 
-  /// Sets the [ApplicationParametersResponse].
+  /// Sets the [ApplicationParameters].
   void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters);
 
   /// Returns the app's layout mode.

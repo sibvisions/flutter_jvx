@@ -26,6 +26,7 @@ import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../model/config/application_parameters.dart';
 import '../../../model/data/data_book.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
@@ -90,7 +91,7 @@ class UiService implements IUiService {
       ValueNotifier(ApplicationSettingsResponse.empty());
 
   /// JVx Application Parameters.
-  final ValueNotifier<ApplicationParametersResponse?> _applicationParameters = ValueNotifier(null);
+  final ValueNotifier<ApplicationParameters?> _applicationParameters = ValueNotifier(null);
 
   /// JVx Application Metadata.
   final ValueNotifier<ApplicationMetaDataResponse?> _applicationMetaData = ValueNotifier(null);
@@ -336,11 +337,12 @@ class UiService implements IUiService {
   }
 
   @override
-  ValueNotifier<ApplicationParametersResponse?> get applicationParameters => _applicationParameters;
+  ValueNotifier<ApplicationParameters?> get applicationParameters => _applicationParameters;
 
   @override
   void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) {
-    _applicationParameters.value = pApplicationParameters;
+    _applicationParameters.value =
+        const ApplicationParameters.empty().merge(_applicationParameters.value).mergeResponse(pApplicationParameters);
   }
 
   @override

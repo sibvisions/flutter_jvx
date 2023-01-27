@@ -39,6 +39,7 @@ import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/command/api/login_command.dart';
 import 'model/command/api/startup_command.dart';
+import 'model/config/application_parameters.dart';
 import 'model/request/api_startup_request.dart';
 import 'routing/locations/login_location.dart';
 import 'routing/locations/menu_location.dart';
@@ -389,6 +390,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     routerDelegate = BeamerDelegate(
       initialPath: "/login",
+      setBrowserTabTitle: false,
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
           LoginLocation(),
@@ -446,56 +448,67 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       "en",
     }.whereNotNull().map((e) => Locale(e)).toList();
 
-    return MaterialApp.router(
-      themeMode: ConfigController().themePreference.value,
-      theme: themeData,
-      darkTheme: darkThemeData,
-      locale: Locale(ConfigController().getLanguage()),
-      supportedLocales: supportedLocales,
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      routeInformationParser: BeamerParser(),
-      routerDelegate: routerDelegate,
-      backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
-      title: widget.appConfig?.title ?? FlutterUI.packageInfo.appName,
-      builder: (context, child) {
-        Widget futureBuilder = FutureBuilder(
-          future: startupFuture,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.none ||
-                snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-              FlutterUI.initiated = true;
-              return JVxOverlay(child: child);
-            }
-
-            return _buildSplash(
-              startupFuture!,
-              childrenBuilder: (snapshot) => [
-                if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                  _getStartupErrorDialog(context, snapshot),
-              ],
-            );
-          },
+    return ValueListenableBuilder<ApplicationParameters?>(
+      valueListenable: IUiService().applicationParameters,
+      builder: (context, value, _) {
+        String title =
+            (kIsWeb ? value?.applicationTitleWeb : null) ?? widget.appConfig?.title ?? FlutterUI.packageInfo.appName;
+        return MaterialApp.router(
+          themeMode: ConfigController().themePreference.value,
+          theme: themeData,
+          darkTheme: darkThemeData,
+          locale: Locale(ConfigController().getLanguage()),
+          supportedLocales: supportedLocales,
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
+          routeInformationParser: BeamerParser(),
+          routerDelegate: routerDelegate,
+          backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
+          title: title,
+          builder: _routeBuilder(),
         );
-
-        if (kDebugMode) {
-          futureBuilder = DebugDetector(
-            callback: () {
-              widget.appManager?.onDebugTrigger();
-              if (widget.enableDebugOverlay) {
-                HapticFeedback.vibrate();
-                showDialog(
-                  context: FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext()!,
-                  builder: (context) => const DebugOverlay(useDialog: true),
-                );
-              }
-            },
-            child: futureBuilder,
-          );
-        }
-
-        return futureBuilder;
       },
     );
+  }
+
+  TransitionBuilder _routeBuilder() {
+    return (context, child) {
+      Widget futureBuilder = FutureBuilder(
+        future: startupFuture,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.none ||
+              snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+            FlutterUI.initiated = true;
+            return JVxOverlay(child: child);
+          }
+
+          return _buildSplash(
+            startupFuture!,
+            childrenBuilder: (snapshot) => [
+              if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                _getStartupErrorDialog(context, snapshot),
+            ],
+          );
+        },
+      );
+
+      if (kDebugMode) {
+        futureBuilder = DebugDetector(
+          callback: () {
+            widget.appManager?.onDebugTrigger();
+            if (widget.enableDebugOverlay) {
+              HapticFeedback.vibrate();
+              showDialog(
+                context: FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext()!,
+                builder: (context) => const DebugOverlay(useDialog: true),
+              );
+            }
+          },
+          child: futureBuilder,
+        );
+      }
+
+      return futureBuilder;
+    };
   }
 
   /// Builds a Navigator with a custom theme to push dialogs in the splash.
