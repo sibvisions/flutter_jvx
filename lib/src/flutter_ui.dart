@@ -333,11 +333,11 @@ class FlutterUI extends StatefulWidget {
     }
     String? mobileOnly = Uri.base.queryParameters['mobileOnly'];
     if (mobileOnly != null) {
-      await uiService.updateMobileOnly(mobileOnly == "true");
+      uiService.updateMobileOnly(mobileOnly == "true");
     }
     String? webOnly = Uri.base.queryParameters['webOnly'];
     if (webOnly != null) {
-      await uiService.updateWebOnly(webOnly == "true");
+      uiService.updateWebOnly(webOnly == "true");
     }
 
     packageInfo = await PackageInfo.fromPlatform();

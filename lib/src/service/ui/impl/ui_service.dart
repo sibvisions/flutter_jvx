@@ -312,7 +312,7 @@ class UiService implements IUiService {
   ValueNotifier<String?> get clientId => _clientId;
 
   @override
-  Future<void> updateClientId(String? pClientId) async {
+  void updateClientId(String? pClientId) {
     _clientId.value = pClientId;
   }
 
@@ -320,7 +320,7 @@ class UiService implements IUiService {
   ValueNotifier<ApplicationMetaDataResponse?> get applicationMetaData => _applicationMetaData;
 
   @override
-  Future<void> updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData) async {
+  void updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData) {
     _applicationMetaData.value = pApplicationMetaData;
   }
 
@@ -328,7 +328,7 @@ class UiService implements IUiService {
   ValueNotifier<ApplicationSettingsResponse> get applicationSettings => _applicationSettings;
 
   @override
-  Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) async {
+  void updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings) {
     _applicationSettings.value = pApplicationSettings;
   }
 
@@ -336,7 +336,7 @@ class UiService implements IUiService {
   ValueNotifier<ApplicationParametersResponse?> get applicationParameters => _applicationParameters;
 
   @override
-  Future<void> updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) async {
+  void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) {
     _applicationParameters.value = pApplicationParameters;
   }
 
@@ -344,7 +344,7 @@ class UiService implements IUiService {
   ValueNotifier<LayoutMode> get layoutMode => _layoutMode;
 
   @override
-  Future<void> updateLayoutMode(LayoutMode pLayoutMode) async {
+  void updateLayoutMode(LayoutMode pLayoutMode) {
     _layoutMode.value = pLayoutMode;
   }
 
@@ -352,7 +352,7 @@ class UiService implements IUiService {
   ValueNotifier<bool> get mobileOnly => _mobileOnly;
 
   @override
-  Future<void> updateMobileOnly(bool pMobileOnly) async {
+  void updateMobileOnly(bool pMobileOnly) {
     _mobileOnly.value = pMobileOnly;
   }
 
@@ -360,7 +360,7 @@ class UiService implements IUiService {
   ValueNotifier<bool> get webOnly => _webOnly;
 
   @override
-  Future<void> updateWebOnly(bool pWebOnly) async {
+  void updateWebOnly(bool pWebOnly) {
     _webOnly.value = pWebOnly;
   }
 

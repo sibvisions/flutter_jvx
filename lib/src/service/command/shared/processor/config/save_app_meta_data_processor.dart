@@ -38,13 +38,13 @@ class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDa
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
-    await IUiService().updateClientId(command.metaData.clientId);
+    IUiService().updateClientId(command.metaData.clientId);
     await ConfigController().updateVersion(version);
 
     await ConfigController().updateApplicationLanguage(command.metaData.langCode);
     await ConfigController().updateApplicationTimeZone(command.metaData.timeZoneCode);
 
-    await IUiService().updateApplicationMetaData(command.metaData);
+    IUiService().updateApplicationMetaData(command.metaData);
 
     Directory? languagesDir =
         ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");

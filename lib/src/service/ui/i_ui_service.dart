@@ -140,24 +140,24 @@ abstract class IUiService {
   /// `null` if none is present.
   ValueNotifier<String?> get clientId;
 
-  Future<void> updateClientId(String? pClientId);
+  void updateClientId(String? pClientId);
 
   /// Returns the last known [ApplicationMetaDataResponse].
   ValueNotifier<ApplicationMetaDataResponse?> get applicationMetaData;
 
-  Future<void> updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData);
+  void updateApplicationMetaData(ApplicationMetaDataResponse? pApplicationMetaData);
 
   /// Retrieves the last known [ApplicationSettingsResponse].
   ValueNotifier<ApplicationSettingsResponse> get applicationSettings;
 
   /// Sets the [ApplicationSettingsResponse].
-  Future<void> updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings);
+  void updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings);
 
   /// Retrieves the last known [ApplicationParametersResponse].
   ValueNotifier<ApplicationParametersResponse?> get applicationParameters;
 
   /// Sets the [ApplicationParametersResponse].
-  Future<void> updateApplicationParameters(ApplicationParametersResponse pApplicationParameters);
+  void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters);
 
   /// Returns the app's layout mode.
   ///
@@ -166,7 +166,7 @@ abstract class IUiService {
   ValueNotifier<LayoutMode> get layoutMode;
 
   /// Sets the layout mode.
-  Future<void> updateLayoutMode(LayoutMode pLayoutMode);
+  void updateLayoutMode(LayoutMode pLayoutMode);
 
   /// Returns if mobile-only mode is currently forced.
   ///
@@ -175,7 +175,7 @@ abstract class IUiService {
   ValueNotifier<bool> get mobileOnly;
 
   /// Sets the mobile-only mode.
-  Future<void> updateMobileOnly(bool pMobileOnly);
+  void updateMobileOnly(bool pMobileOnly);
 
   /// Returns if web-only mode is currently forced.
   ///
@@ -184,7 +184,7 @@ abstract class IUiService {
   ValueNotifier<bool> get webOnly;
 
   /// Sets the web-only mode.
-  Future<void> updateWebOnly(bool pWebOnly);
+  void updateWebOnly(bool pWebOnly);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // LayoutData management

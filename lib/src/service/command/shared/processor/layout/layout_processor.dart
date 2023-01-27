@@ -31,7 +31,7 @@ class LayoutProcessor implements ICommandProcessor {
     } else if (command is RegisterParentCommand) {
       return ILayoutService().reportLayout(pLayoutData: command.layoutData);
     } else if (command is LayoutModeCommand) {
-      await IUiService().updateLayoutMode(command.layoutMode ?? LayoutMode.Small);
+      IUiService().updateLayoutMode(command.layoutMode ?? LayoutMode.Small);
     }
 
     return [];
