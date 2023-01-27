@@ -63,7 +63,7 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
 
       if (!widgetModel.isReadOnly) {
         if (!focusNode.hasFocus) {
-          onEndEditing(numberFormatter.numberFormatter.parse(textController.text));
+          onEndEditing(textController.text);
         }
       }
 
@@ -105,14 +105,11 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
     return FlTextFieldWidget(
       model: widgetModel,
       valueChanged: onValueChange,
-      // (value) => onValueChange(numberFormatter.convertToNumber(value)),
       endEditing: onEndEditing,
-      // (value) => onEndEditing(numberFormatter.convertToNumber(value)),
       focusNode: focusNode,
       textController: textController,
       inputFormatters: [numberFormatter],
       keyboardType: numberFormatter.getKeyboardType(),
-      // inTable: isInTable,
       isMandatory: columnDefinition?.nullable == false,
     );
   }
@@ -147,10 +144,6 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
 
   @override
   double getContentPadding(Map<String, dynamic>? pJson) {
-    if (!isInTable) {
-      return createWidget(pJson).extraWidthPaddings();
-    }
-
     return 0.0;
   }
 
