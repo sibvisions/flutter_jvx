@@ -64,7 +64,7 @@ class NumericTextFormatter extends TextInputFormatter {
         return numberFormatter.format(value);
       } else if (value is String) {
         try {
-          num numValue = numberFormatter.parse(value);
+          num numValue = double.tryParse(value) ?? numberFormatter.parse(value);
           return numberFormatter.format(numValue);
         } catch (_) {}
 
@@ -82,7 +82,7 @@ class NumericTextFormatter extends TextInputFormatter {
       if (pValue.endsWith(numberFormatter.symbols.DECIMAL_SEP)) {
         pValue += "0";
       }
-      number = numberFormatter.parse("0$pValue");
+      number = double.tryParse("0$pValue") ?? numberFormatter.parse("0$pValue");
     }
     return number;
   }
