@@ -285,7 +285,9 @@ class WorkScreenState extends State<WorkScreen> {
 
     isForced = pForced;
 
-    if (!(await Navigator.of(context).maybePop())) {
+    NavigatorState navigator = Navigator.of(context);
+    if (!(await navigator.maybePop())) {
+      if (!mounted) return;
       context.beamBack();
     }
   }
