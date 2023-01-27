@@ -103,7 +103,7 @@ import '../../../../model/response/view/message/message_view.dart';
 import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
 import '../../../command/i_command_service.dart';
-import '../../../command/shared/processor/config/save_app_meta_data_processor.dart';
+import '../../../command/shared/processor/config/save_application_meta_data_command_processor.dart';
 import '../../../config/config_controller.dart';
 import '../../../ui/i_ui_service.dart';
 import '../api_object_property.dart';
@@ -231,7 +231,7 @@ class OnlineApiRepository implements IRepository {
   /// only started in the first response handling after the startup.
   ///
   /// See also:
-  /// * [SaveAppMetaDataCommandProcessor]
+  /// * [SaveApplicationMetaDataCommandProcessor]
   @override
   Future<void> start() async {
     if (isStopped()) {

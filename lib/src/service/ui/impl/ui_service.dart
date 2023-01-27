@@ -106,18 +106,20 @@ class UiService implements IUiService {
   UiService.create();
 
   @override
-  void clear() {
+  void clear(bool pFullClear) {
     _menuNotifier.value = const MenuModel();
     _componentSubscriptions.clear();
     _dataSubscriptions.clear();
     _activeFrames.clear();
     _activeDialogs.clear();
 
-    _clientId.value = null;
-    _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
-    _applicationSettings.value = ApplicationSettingsResponse.empty();
-    _applicationParameters.value = null;
-    _applicationMetaData.value = null;
+    if (pFullClear) {
+      _clientId.value = null;
+      _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
+      _applicationSettings.value = ApplicationSettingsResponse.empty();
+      _applicationParameters.value = null;
+      _applicationMetaData.value = null;
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

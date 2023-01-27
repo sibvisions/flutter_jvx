@@ -16,16 +16,20 @@
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/config_command.dart';
-import '../../../../../model/command/config/save_app_meta_data_command.dart';
 import '../../../../../model/command/config/save_application_images_command.dart';
+import '../../../../../model/command/config/save_application_meta_data_command.dart';
+import '../../../../../model/command/config/save_application_parameters_command.dart';
+import '../../../../../model/command/config/save_application_settings_command.dart';
 import '../../../../../model/command/config/save_application_style_command.dart';
 import '../../../../../model/command/config/save_application_translation_command.dart';
 import '../../../../../model/command/config/save_auth_key_command.dart';
 import '../../../../../model/command/config/save_download_command.dart';
 import '../../../../../model/command/config/save_user_data_command.dart';
 import '../../i_command_processor.dart';
-import 'save_app_meta_data_processor.dart';
 import 'save_application_images_command_processor.dart';
+import 'save_application_meta_data_command_processor.dart';
+import 'save_application_parameters_command_processor.dart';
+import 'save_application_settings_command_processor.dart';
 import 'save_application_translation_command_processor.dart';
 import 'save_applicaton_style_command_processor.dart';
 import 'save_auth_key_command_processor.dart';
@@ -36,7 +40,14 @@ import 'save_user_data_command_processor.dart';
 /// Processes [ConfigCommand], delegates them to their respective [ICommandProcessor]
 ///
 class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
-  final SaveAppMetaDataCommandProcessor _saveAppMetaDataProcessor = SaveAppMetaDataCommandProcessor();
+  final SaveApplicationMetaDataCommandProcessor _saveApplicationMetaDataProcessor =
+      SaveApplicationMetaDataCommandProcessor();
+
+  final SaveApplicationParametersCommandProcessor _saveApplicationParametersProcessor =
+      SaveApplicationParametersCommandProcessor();
+
+  final SaveApplicationSettingsCommandProcessor _saveApplicationSettingsProcessor =
+      SaveApplicationSettingsCommandProcessor();
 
   final SaveUserDataCommandProcessor _saveUserDataCommandProcessor = SaveUserDataCommandProcessor();
 
@@ -54,8 +65,12 @@ class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
 
   @override
   Future<List<BaseCommand>> processCommand(ConfigCommand command) async {
-    if (command is SaveAppMetaDataCommand) {
-      return _saveAppMetaDataProcessor.processCommand(command);
+    if (command is SaveApplicationMetaDataCommand) {
+      return _saveApplicationMetaDataProcessor.processCommand(command);
+    } else if (command is SaveApplicationParametersCommand) {
+      return _saveApplicationParametersProcessor.processCommand(command);
+    } else if (command is SaveApplicationSettingsCommand) {
+      return _saveApplicationSettingsProcessor.processCommand(command);
     } else if (command is SaveUserDataCommand) {
       return _saveUserDataCommandProcessor.processCommand(command);
     } else if (command is SaveAuthKeyCommand) {

@@ -14,23 +14,23 @@
  * the License.
  */
 
-import '../../response/application_meta_data_response.dart';
+import '../../response/application_settings_response.dart';
 import 'config_command.dart';
 
-class SaveAppMetaDataCommand extends ConfigCommand {
+class SaveApplicationSettingsCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// AppMetaData response from server
-  final ApplicationMetaDataResponse metaData;
+  /// ApplicationSettings from server
+  final ApplicationSettingsResponse settings;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveAppMetaDataCommand({
-    required this.metaData,
+  SaveApplicationSettingsCommand({
+    required this.settings,
     required super.reason,
   });
 
@@ -40,6 +40,6 @@ class SaveAppMetaDataCommand extends ConfigCommand {
 
   @override
   String toString() {
-    return "SaveAppMetaDataCommand{metaData: $metaData, ${super.toString()}}";
+    return "SaveApplicationParameterCommand{settings: $settings, ${super.toString()}}";
   }
 }

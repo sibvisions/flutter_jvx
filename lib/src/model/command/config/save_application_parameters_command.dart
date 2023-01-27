@@ -14,33 +14,32 @@
  * the License.
  */
 
-import '../../service/api/shared/api_object_property.dart';
-import 'api_response.dart';
+import '../../response/application_parameters_response.dart';
+import 'config_command.dart';
 
-class ApplicationParametersResponse extends ApiResponse {
+class SaveApplicationParametersCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Menu Bar title
-  final String? applicationTitleName;
-
-  /// Tab title
-  final String? applicationTitleWeb;
-
-  final String? authenticated;
-
-  /// Which screen to open, is a screen name
-  final String? openScreen;
+  /// ApplicationParameters from server
+  final ApplicationParametersResponse parameters;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApplicationParametersResponse.fromJson(super.json)
-      : applicationTitleName = json[ApiObjectProperty.applicationTitleName],
-        applicationTitleWeb = json[ApiObjectProperty.applicationTitleWeb],
-        authenticated = json[ApiObjectProperty.authenticated],
-        openScreen = json[ApiObjectProperty.openScreen],
-        super.fromJson();
+  SaveApplicationParametersCommand({
+    required this.parameters,
+    required super.reason,
+  });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "SaveApplicationParametersCommand{parameters: $parameters, ${super.toString()}}";
+  }
 }

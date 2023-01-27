@@ -14,33 +14,32 @@
  * the License.
  */
 
-import '../../service/api/shared/api_object_property.dart';
-import 'api_response.dart';
+import '../../response/application_meta_data_response.dart';
+import 'config_command.dart';
 
-class ApplicationParametersResponse extends ApiResponse {
+class SaveApplicationMetaDataCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Menu Bar title
-  final String? applicationTitleName;
-
-  /// Tab title
-  final String? applicationTitleWeb;
-
-  final String? authenticated;
-
-  /// Which screen to open, is a screen name
-  final String? openScreen;
+  /// AppMetaData response from server
+  final ApplicationMetaDataResponse metaData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApplicationParametersResponse.fromJson(super.json)
-      : applicationTitleName = json[ApiObjectProperty.applicationTitleName],
-        applicationTitleWeb = json[ApiObjectProperty.applicationTitleWeb],
-        authenticated = json[ApiObjectProperty.authenticated],
-        openScreen = json[ApiObjectProperty.openScreen],
-        super.fromJson();
+  SaveApplicationMetaDataCommand({
+    required this.metaData,
+    required super.reason,
+  });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "SaveApplicationMetaDataCommand{metaData: $metaData, ${super.toString()}}";
+  }
 }

@@ -15,15 +15,19 @@
  */
 
 import '../../../../model/command/base_command.dart';
+import '../../../../model/command/config/save_application_parameters_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/application_parameters_response.dart';
-import '../../../ui/i_ui_service.dart';
 import '../i_response_processor.dart';
 
 class ApplicationParametersProcessor implements IResponseProcessor<ApplicationParametersResponse> {
   @override
   List<BaseCommand> processResponse(ApplicationParametersResponse pResponse, ApiRequest? pRequest) {
-    IUiService().updateApplicationParameters(pResponse);
-    return [];
+    return [
+      SaveApplicationParametersCommand(
+        parameters: pResponse,
+        reason: "Parameters received from server",
+      ),
+    ];
   }
 }

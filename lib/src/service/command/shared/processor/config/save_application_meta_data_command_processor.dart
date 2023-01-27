@@ -24,7 +24,7 @@ import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/config/save_app_meta_data_command.dart';
+import '../../../../../model/command/config/save_application_meta_data_command.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../api/shared/repository/online_api_repository.dart';
 import '../../../../config/config_controller.dart';
@@ -32,9 +32,9 @@ import '../../../../file/file_manager.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class SaveAppMetaDataCommandProcessor implements ICommandProcessor<SaveAppMetaDataCommand> {
+class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveApplicationMetaDataCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveAppMetaDataCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveApplicationMetaDataCommand command) async {
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
