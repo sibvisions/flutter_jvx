@@ -25,7 +25,7 @@ import '../../config/app_config.dart';
 import '../../flutter_ui.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/state/app_style.dart';
-import '../../model/config/translation/translation.dart';
+import '../../model/config/translation/translation_util.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/request/api_startup_request.dart';
 import '../../model/response/download_images_response.dart';
@@ -91,7 +91,7 @@ class ConfigController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Current translation, base translation + overlaid language.
-  Translation _translation = Translation.empty();
+  TranslationUtil _translation = TranslationUtil.empty();
 
   String? _platformTimeZone;
 
@@ -164,15 +164,9 @@ class ConfigController {
   // Helper-methods for non-persistent fields
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Translates [pText] using the current language as defined by [getLanguage].
-  ///
-  /// Returns the original value if not translation was found.
+  /// Translates [pText] using [TranslationUtil] in the current language as defined by [getLanguage].
   String translateText(String pText) {
-    String? translatedText = _translation.translations[pText];
-    if (translatedText == null) {
-      return pText;
-    }
-    return translatedText;
+    return _translation.translateText(pText);
   }
 
   /// Returns the current in use [SharedPreferences] instance.
@@ -345,14 +339,15 @@ class ConfigController {
   Future<void> updateUserLanguage(String? pLanguage) async {
     await _configService.updateUserLanguage(pLanguage);
     _userLanguage.value = pLanguage;
-
     loadLanguages();
   }
 
   /// Initializes the current language defined by [getLanguage].
   void loadLanguages() {
     if (_fileManager.isSatisfied()) {
-      _loadLanguage(getLanguage());
+      final String pLanguage = getLanguage();
+      _loadTranslations(pLanguage);
+      _callbacks['language']?.forEach((element) => element.call(pLanguage));
     }
   }
 
@@ -525,8 +520,8 @@ class ConfigController {
     _callbacks[type]?.clear();
   }
 
-  void _loadLanguage(String pLanguage) {
-    Translation langTrans = Translation.empty();
+  void _loadTranslations(String pLanguage) {
+    TranslationUtil langTrans = TranslationUtil.empty();
 
     // Load the default translation.
     File? defaultTransFile = _fileManager.getFileSync(pPath: "${IFileManager.LANGUAGES_PATH}/translation.json");
@@ -542,7 +537,5 @@ class ConfigController {
     }
 
     _translation = langTrans;
-
-    _callbacks['language']?.forEach((element) => element.call(pLanguage));
   }
 }
