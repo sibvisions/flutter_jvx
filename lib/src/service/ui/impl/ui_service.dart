@@ -116,6 +116,7 @@ class UiService implements IUiService {
     _clientId.value = null;
     _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
     _applicationSettings.value = ApplicationSettingsResponse.empty();
+    _applicationParameters.value = null;
     _applicationMetaData.value = null;
   }
 
