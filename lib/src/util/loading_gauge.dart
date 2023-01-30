@@ -74,11 +74,16 @@ class _LoadingGaugeState extends State<LoadingGauge> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    double? timeLeft = timeout != null && controller.lastElapsedDuration != null
-        ? ((timeout! - controller.lastElapsedDuration!.inMilliseconds) / 1000)
+    Duration? timeLeft = timeout != null && controller.lastElapsedDuration != null
+        ? Duration(milliseconds: timeout! - controller.lastElapsedDuration!.inMilliseconds)
         : null;
-    String? timer = timeLeft?.toStringAsFixed(0);
-    if (timer != null) timer += "s";
+    String? timer;
+    if (timeLeft != null) {
+      timer = timeLeft.inSeconds.remainder(60).toString().padLeft(2, "0");
+      if (timeLeft.inMinutes > 0) {
+        timer = "${timeLeft.inMinutes}:$timer";
+      }
+    }
 
     return ConstrainedBox(
       constraints: const BoxConstraints(minWidth: 120, minHeight: 120),
