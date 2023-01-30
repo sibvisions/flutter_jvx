@@ -14,7 +14,9 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/api/cancel_login_command.dart';
@@ -22,6 +24,7 @@ import '../../model/command/api/login_command.dart';
 import '../../model/command/api/reset_password_command.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/config/config_controller.dart';
+import '../../util/jvx_webview.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
 import 'modern/modern_login.dart';
@@ -95,6 +98,44 @@ class LoginPage extends StatelessWidget {
         createAuthKey: createAuthKey,
         reason: "LoginButton",
       ));
+
+  /// Sends a MFA [LoginCommand].
+  ///
+  /// In most cases only [confirmationCode] is required.
+  /// [username] and [password] are auto-filled by the values
+  /// from the last login attempt.
+  ///
+  /// Example error handling:
+  /// ```dart
+  /// .catchError(IUiService().handleAsyncError);
+  /// ```
+  static void openMFAURL(
+    BuildContext context, {
+    required String url,
+  }) {
+    Uri uri = Uri.parse(url);
+    if (kIsWeb) {
+      launchUrl(
+        uri,
+        webOnlyWindowName: FlutterUI.translate("Verification"),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text(FlutterUI.translate("Verification")),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 0,
+          ),
+          body: JVxWebView(
+            initialUrl: uri,
+          ),
+        ),
+        barrierDismissible: false,
+      );
+    }
+  }
 
   /// Sends a [CancelLoginCommand]
   ///
