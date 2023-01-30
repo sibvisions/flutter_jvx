@@ -34,9 +34,9 @@ import '../login.dart';
 import 'cards/change_password_card.dart';
 import 'cards/lost_password_card.dart';
 import 'cards/manual_card.dart';
-import 'cards/mfa_text_card.dart';
-import 'cards/mfa_url_card.dart';
-import 'cards/mfa_wait_card.dart';
+import 'cards/mfa/mfa_text_card.dart';
+import 'cards/mfa/mfa_url_card.dart';
+import 'cards/mfa/mfa_wait_card.dart';
 import 'middle_clipper_with_double_curve.dart';
 
 class ModernLogin extends StatelessWidget implements Login {

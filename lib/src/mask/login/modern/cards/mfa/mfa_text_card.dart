@@ -17,13 +17,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../flutter_ui.dart';
-import '../../../../service/ui/i_ui_service.dart';
-import '../../../../util/jvx_colors.dart';
-import '../../../../util/progress/progress_button.dart';
-import '../../../state/loading_bar.dart';
-import '../../login_page.dart';
-import 'mfa_card.dart';
+import '../../../../../flutter_ui.dart';
+import '../../../../../service/ui/i_ui_service.dart';
+import '../../../../../util/jvx_colors.dart';
+import '../../../../../util/progress/progress_button.dart';
+import '../../../../state/loading_bar.dart';
+import '../../../login_page.dart';
+import '../mfa_card.dart';
 
 class MFATextCard extends StatefulWidget {
   final String? username;

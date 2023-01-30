@@ -18,11 +18,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../flutter_ui.dart';
-import '../../../../model/response/login_view_response.dart';
-import '../../../../util/jvx_webview.dart';
-import '../../../../util/loading_gauge.dart';
-import 'mfa_card.dart';
+import '../../../../../flutter_ui.dart';
+import '../../../../../model/response/login_view_response.dart';
+import '../../../../../util/jvx_webview.dart';
+import '../../../../../util/loading_gauge.dart';
+import '../mfa_card.dart';
 
 class MFAUrlCard extends StatefulWidget {
   final int? timeout;
