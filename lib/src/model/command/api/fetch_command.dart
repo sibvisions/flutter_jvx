@@ -39,7 +39,7 @@ class FetchCommand extends SessionCommand {
     required this.fromRow,
     required this.rowCount,
     required this.dataProvider,
-    this.includeMetaData = true,
+    this.includeMetaData = false,
     this.columnNames,
     required super.reason,
   });

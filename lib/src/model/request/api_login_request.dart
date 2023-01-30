@@ -60,14 +60,13 @@ class ApiLoginRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.loginMode: loginMode?.name,
-        ApiObjectProperty.username: username,
-        ApiObjectProperty.password: password,
-        ApiObjectProperty.newPassword: newPassword,
-        ApiObjectProperty.createAuthKey: createAuthKey,
-        ApiObjectProperty.confirmationCode: confirmationCode,
+        if (loginMode != null) ApiObjectProperty.loginMode: loginMode?.name,
+        if (username != null) ApiObjectProperty.username: username,
+        if (password != null) ApiObjectProperty.password: password,
+        if (newPassword != null) ApiObjectProperty.newPassword: newPassword,
+        if (createAuthKey != null) ApiObjectProperty.createAuthKey: createAuthKey,
+        if (confirmationCode != null) ApiObjectProperty.confirmationCode: confirmationCode,
       };
 }

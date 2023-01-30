@@ -69,8 +69,8 @@ class ApiSetValuesRequest extends SessionRequest {
         ApiObjectProperty.componentId: componentId,
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.values: values,
-        ApiObjectProperty.filter: filter?.toJson(),
-        ApiObjectProperty.filterCondition: filterCondition?.toJson(),
+        if (filter != null) ApiObjectProperty.filter: filter?.toJson(),
+        if (filterCondition != null) ApiObjectProperty.filterCondition: filterCondition?.toJson(),
         if (editorColumnName != null) ApiObjectProperty.editorColumnName: editorColumnName,
       };
 }

@@ -51,6 +51,6 @@ class ApiDownloadImagesRequest extends DownloadRequest {
         ApiObjectProperty.name: name,
         ApiObjectProperty.libraryImages: libraryImages,
         ApiObjectProperty.applicationImages: applicationImages,
-        ApiObjectProperty.contentMode: contentMode
+        if (contentMode != null) ApiObjectProperty.contentMode: contentMode
       };
 }

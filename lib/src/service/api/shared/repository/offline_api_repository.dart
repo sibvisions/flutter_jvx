@@ -330,6 +330,7 @@ class OfflineApiRepository implements IRepository {
           fromRow: 0,
           rowCount: maxFetch,
           dataProvider: pDataProvider,
+          includeMetaData: true,
         ),
       );
     }

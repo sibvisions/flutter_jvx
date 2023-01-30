@@ -52,8 +52,8 @@ class ApiOpenScreenRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.componentId: screenLongName,
-        ApiObjectProperty.className: screenClassName,
+        if (screenLongName != null) ApiObjectProperty.componentId: screenLongName,
+        if (screenClassName != null) ApiObjectProperty.className: screenClassName,
         ApiObjectProperty.manualClose: manualClose,
         if (parameter != null) ApiObjectProperty.parameter: parameter,
       };

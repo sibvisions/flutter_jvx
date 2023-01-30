@@ -56,9 +56,9 @@ class ApiDeleteRecordRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
-        ApiObjectProperty.filter: filter?.toJson(),
-        ApiObjectProperty.filterCondition: filterCondition?.toJson(),
-        ApiObjectProperty.selectedRow: selectedRow,
+        if (filter != null) ApiObjectProperty.filter: filter?.toJson(),
+        if (filterCondition != null) ApiObjectProperty.filterCondition: filterCondition?.toJson(),
+        if (selectedRow != null) ApiObjectProperty.selectedRow: selectedRow,
         ApiObjectProperty.fetch: fetch,
       };
 }

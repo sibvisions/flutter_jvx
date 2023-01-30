@@ -24,7 +24,7 @@ class ApiFetchRequest extends SessionRequest {
 
   final List<String>? columnNames;
 
-  final bool? includeMetaData;
+  final bool includeMetaData;
 
   final int fromRow;
 
@@ -40,7 +40,7 @@ class ApiFetchRequest extends SessionRequest {
     required this.fromRow,
     required this.rowCount,
     required this.dataProvider,
-    this.includeMetaData,
+    required this.includeMetaData,
     this.columnNames,
   });
 

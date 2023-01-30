@@ -92,6 +92,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
           fromRow: 0,
           rowCount: IUiService().getSubscriptionRowcount(pDataProvider: command.dataProvider),
           reason: "Fetch for ${command.runtimeType}",
+          includeMetaData: true,
         )
       ];
     }
@@ -172,6 +173,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
           fromRow: 0,
           rowCount: IUiService().getSubscriptionRowcount(pDataProvider: pCommand.dataProvider),
           reason: "Fetch for ${pCommand.runtimeType}",
+          includeMetaData: true,
         )
       ];
     }
@@ -199,6 +201,8 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     );
 
     if (needFetch) {
+      bool includeMetaData = IDataService().getDataBook(command.dataProvider) == null;
+
       return [
         FetchCommand(
           fromRow: command.from,
@@ -207,6 +211,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
               : IUiService().getSubscriptionRowcount(pDataProvider: command.dataProvider),
           dataProvider: command.dataProvider,
           reason: "Fetch for ${command.runtimeType}",
+          includeMetaData: includeMetaData,
         )
       ];
     }

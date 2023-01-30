@@ -43,6 +43,6 @@ class ApiDalSaveRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
-        ApiObjectProperty.onlySelected: onlySelected,
+        if (onlySelected != null) ApiObjectProperty.onlySelected: onlySelected,
       };
 }

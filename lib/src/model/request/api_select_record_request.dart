@@ -61,7 +61,7 @@ class ApiSelectRecordRequest extends SessionRequest {
         ApiObjectProperty.rowNumber: selectedRow,
         ApiObjectProperty.fetch: fetch,
         ApiObjectProperty.reload: reload,
-        ApiObjectProperty.filter: filter?.toJson(),
+        if (filter != null) ApiObjectProperty.filter: filter?.toJson(),
         if (selectedColumn != null) ApiObjectProperty.selectedColumn: selectedColumn,
       };
 }

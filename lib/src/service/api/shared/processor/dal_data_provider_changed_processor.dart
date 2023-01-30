@@ -39,12 +39,15 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
 
       IUiService().notifySubscriptionsOfReload(pDataprovider: pResponse.dataProvider);
 
-      commands.add(FetchCommand(
-        reason: "Data provider changed response was reload -1",
-        fromRow: 0,
-        rowCount: IUiService().getSubscriptionRowcount(pDataProvider: pResponse.dataProvider),
-        dataProvider: pResponse.dataProvider,
-      ));
+      commands.add(
+        FetchCommand(
+          reason: "Data provider changed response was reload -1",
+          fromRow: 0,
+          rowCount: IUiService().getSubscriptionRowcount(pDataProvider: pResponse.dataProvider),
+          dataProvider: pResponse.dataProvider,
+          includeMetaData: true,
+        ),
+      );
     } else if (pResponse.reload != null) {
       // If reload not -1/null re-fetch only given row
       FetchCommand fetchCommand = FetchCommand(

@@ -59,9 +59,9 @@ abstract class ApiMouseRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.componentId: componentName,
-        ...(button != null ? {ApiObjectProperty.button: button} : {}),
-        ...(x != null ? {ApiObjectProperty.x: x} : {}),
-        ...(y != null ? {ApiObjectProperty.y: y} : {}),
-        ...(clickCount != null ? {ApiObjectProperty.clickCount: clickCount} : {}),
+        if (button != null) ApiObjectProperty.button: button,
+        if (x != null) ApiObjectProperty.x: x,
+        if (y != null) ApiObjectProperty.y: y,
+        if (clickCount != null) ApiObjectProperty.clickCount: clickCount,
       };
 }
