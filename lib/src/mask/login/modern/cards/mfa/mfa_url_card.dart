@@ -67,8 +67,11 @@ class _MFAUrlCardState extends State<MFAUrlCard> {
               const Text("URL:"),
               TextButton(
                 style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
                 onPressed: link?.url != null
                     ? () {
