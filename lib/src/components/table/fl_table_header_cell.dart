@@ -173,16 +173,16 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
         const SizedBox(
           width: 5,
         ),
+        FaIcon(
+          sortMode == SortMode.ascending ? FontAwesomeIcons.sortUp : FontAwesomeIcons.sortDown,
+          size: 16,
+        ),
         if (sortIndex != null)
           Text(
             sortIndex!.toString(),
             style: style.copyWith(fontSize: 8),
             maxLines: 1,
           ),
-        FaIcon(
-          sortMode == SortMode.ascending ? FontAwesomeIcons.sortUp : FontAwesomeIcons.sortDown,
-          size: 16,
-        )
       ],
     );
   }
