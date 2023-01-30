@@ -114,7 +114,9 @@ abstract class ICellEditor<
 
   String formatValue(dynamic pValue);
 
-  double getContentPadding(Map<String, dynamic>? pJson);
+  double getContentPadding(Map<String, dynamic>? pJson) {
+    return 0.0;
+  }
 
   double? getEditorWidth(Map<String, dynamic>? pJson);
 

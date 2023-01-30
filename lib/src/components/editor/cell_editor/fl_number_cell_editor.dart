@@ -143,11 +143,6 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson) {
-    return 0.0;
-  }
-
-  @override
   double getEditorWidth(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
