@@ -72,7 +72,9 @@ class ApiService implements IApiService {
 
   @override
   FutureOr<void> clear(bool pFullClear) async {
-    await repository?.stop();
-    return repository?.start();
+    if (pFullClear) {
+      await repository?.stop();
+      await repository?.start();
+    }
   }
 }
