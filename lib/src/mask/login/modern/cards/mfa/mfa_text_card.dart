@@ -57,7 +57,8 @@ class _MFATextCardState extends State<MFATextCard> {
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: TextField(
                 controller: codeController,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _onLoginPressed(),
                 keyboardType: TextInputType.visiblePassword,
                 onTap: resetButton,
                 onChanged: (_) => resetButton(),
