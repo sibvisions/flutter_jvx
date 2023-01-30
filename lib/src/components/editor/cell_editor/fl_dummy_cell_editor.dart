@@ -58,11 +58,6 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson) {
-    return 0.0;
-  }
-
-  @override
   double? getEditorWidth(Map<String, dynamic>? pJson) {
     return null;
   }

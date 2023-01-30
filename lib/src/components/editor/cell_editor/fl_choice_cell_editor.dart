@@ -123,11 +123,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  double getContentPadding(Map<String, dynamic>? pJson) {
-    return 0.0;
-  }
-
-  @override
   double? getEditorWidth(Map<String, dynamic>? pJson) {
     return model.imageSize;
   }

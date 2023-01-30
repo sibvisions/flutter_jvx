@@ -40,13 +40,13 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
     bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
 
     oldSuffixItems.add(
-      Center(
-        child: SizedBox(
-          width: clickableClearArea,
-          height: clickableClearArea,
+      SizedBox(
+        width: FlTextFieldWidget.iconAreaSize,
+        height: FlTextFieldWidget.iconAreaSize,
+        child: Center(
           child: Icon(
             FontAwesomeIcons.caretDown,
-            size: iconSize,
+            size: FlTextFieldWidget.iconSize,
             color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
           ),
         ),
