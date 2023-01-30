@@ -78,6 +78,9 @@ class _MFAWaitCardState extends State<MFAWaitCard> with SingleTickerProviderStat
     double? timeLeft = controller.lastElapsedDuration != null
         ? ((timeout - controller.lastElapsedDuration!.inMilliseconds) / 1000)
         : null;
+    String? timer = timeLeft?.toStringAsFixed(0);
+    if (timer != null) timer += "s";
+
     return MFACard(
       child: Column(
         children: [
@@ -98,7 +101,7 @@ class _MFAWaitCardState extends State<MFAWaitCard> with SingleTickerProviderStat
                       ),
                     ),
                     Text(
-                      "${timeLeft?.toStringAsFixed(0) ?? "-"}s",
+                      timer ?? "-",
                       style: const TextStyle(fontSize: 24),
                     ),
                   ],
