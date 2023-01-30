@@ -40,6 +40,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// How much space an icon should take up in the text field.
+  static const double iconAreaSize = 24;
+
+  /// How much space the icon is itself
+  static const double iconSize = 16;
+
   static const EdgeInsets MOBILE_PADDING = EdgeInsets.fromLTRB(10, 15, 10, 15);
 
   static const EdgeInsets WEBFRAME_PADDING = EdgeInsets.fromLTRB(10, 12, 10, 12);
@@ -66,13 +72,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  double get clickableClearArea => 24;
-
-  double get iconSize => 16;
-
   EdgeInsets get contentPadding => Frame.isWebFrame() ? WEBFRAME_PADDING : MOBILE_PADDING;
-
-  EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
 
   EdgeInsets get iconsPadding => const EdgeInsets.only(left: 5, right: 10);
 
@@ -193,12 +193,14 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         }
       },
       child: SizedBox(
-        width: clickableClearArea,
-        height: clickableClearArea,
-        child: Icon(
-          Icons.clear,
-          size: iconSize,
-          color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+        width: iconAreaSize,
+        height: iconAreaSize,
+        child: Center(
+          child: Icon(
+            Icons.clear,
+            size: iconSize,
+            color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
+          ),
         ),
       ),
     );
@@ -231,8 +233,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       suffixIconItems.add(const Center());
     }
 
-    return Padding(
-      padding: iconsPadding,
+    /// -4 => The editable text inside a textfield is somehow 8 pixels bigger.
+    return Container(
+      height: double.infinity,
+      padding: iconsPadding.copyWith(
+          top: contentPadding.top - 4 - ((iconAreaSize - iconSize) / 2),
+          bottom: contentPadding.bottom - 4 - ((iconAreaSize - iconSize) / 2)),
       child: Row(
         crossAxisAlignment: iconCrossAxisAlignment,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -274,8 +280,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   double extraWidthPaddings() {
     int iconAmount = createSuffixIconItems(true).length;
 
-    double width = (iconSize * iconAmount) + (clickableClearArea - iconSize);
-    width += (iconPadding.horizontal) * iconAmount;
+    double width = (iconAreaSize * iconAmount);
     width += iconsPadding.horizontal;
     width += contentPadding.horizontal;
 

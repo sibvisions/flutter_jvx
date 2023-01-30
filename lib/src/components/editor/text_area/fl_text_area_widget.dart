@@ -86,19 +86,6 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     );
   }
 
-  @override
-  Widget? createSuffixIcon() {
-    return Container(
-      height: double.infinity,
-
-      /// -4 => The editable text inside a textfield is somehow 8 pixels bigger.
-      padding: EdgeInsets.only(
-          top: contentPadding.top - 4 - ((clickableClearArea - iconSize) / 2),
-          bottom: contentPadding.bottom - 4 - ((clickableClearArea - iconSize) / 2)),
-      child: super.createSuffixIcon(),
-    );
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
