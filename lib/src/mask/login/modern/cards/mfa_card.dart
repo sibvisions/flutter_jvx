@@ -44,12 +44,12 @@ class MFACard extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(
           inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-            hintStyle: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+                labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                hintStyle: const TextStyle(fontWeight: FontWeight.bold),
+              ),
           textTheme: Theme.of(context).textTheme.copyWith(
-            titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-          ),
+                titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
           canvasColor: JVxColors.darken(Theme.of(context).canvasColor, 0.05),
         ),
         child: DefaultTextStyle.merge(
@@ -69,8 +69,8 @@ class MFACard extends StatelessWidget {
                           Text(
                             FlutterUI.translate("Verification"),
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),

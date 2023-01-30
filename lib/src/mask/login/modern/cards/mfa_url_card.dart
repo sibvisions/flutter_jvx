@@ -21,6 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/response/login_view_response.dart';
 import '../../../../util/jvx_webview.dart';
+import '../../../../util/loading_gauge.dart';
 import 'mfa_card.dart';
 
 class MFAUrlCard extends StatefulWidget {
@@ -39,59 +40,25 @@ class MFAUrlCard extends StatefulWidget {
   State<MFAUrlCard> createState() => _MFAUrlCardState();
 }
 
-class _MFAUrlCardState extends State<MFAUrlCard> with SingleTickerProviderStateMixin {
-  static const double strokeWidth = 20.0;
-
-  late AnimationController controller;
-  int? timeout;
+class _MFAUrlCardState extends State<MFAUrlCard> {
   Link? link;
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
-      vsync: this,
-    )..addListener(() => setState(() {}));
-
-    if (widget.timeout != null) {
-      timeout = widget.timeout;
-      controller.duration = Duration(milliseconds: widget.timeout!);
-      controller.forward();
-    }
     link = widget.link;
   }
 
   @override
   void didUpdateWidget(covariant MFAUrlCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.timeout != null) {
-      timeout = widget.timeout;
-      controller.duration = Duration(milliseconds: widget.timeout!);
-      if (controller.status != AnimationStatus.forward) {
-        controller.forward();
-      }
-    }
-    if (widget.timeoutReset ?? false) {
-      controller.reset();
-      controller.forward();
-    }
     if (widget.link != null) {
       link = widget.link!;
     }
   }
 
   @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    double? timeLeft = timeout != null && controller.lastElapsedDuration != null
-        ? ((timeout! - controller.lastElapsedDuration!.inMilliseconds) / 1000)
-        : null;
-
     return MFACard(
       child: Column(
         children: [
@@ -142,28 +109,9 @@ class _MFAUrlCardState extends State<MFAUrlCard> with SingleTickerProviderStateM
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              ConstrainedBox(
-                constraints: BoxConstraints.tight(const Size.square(120)),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned(
-                      left: strokeWidth / 2,
-                      right: strokeWidth / 2,
-                      top: strokeWidth / 2,
-                      bottom: strokeWidth / 2,
-                      child: CircularProgressIndicator(
-                        value: 1.0 - controller.value,
-                        backgroundColor: Colors.grey,
-                        strokeWidth: strokeWidth,
-                      ),
-                    ),
-                    Text(
-                      "${timeLeft?.toStringAsFixed(0) ?? "-"}s",
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                  ],
-                ),
+              LoadingGauge(
+                timeout: widget.timeout,
+                timeoutReset: widget.timeoutReset,
               ),
             ],
           ),
