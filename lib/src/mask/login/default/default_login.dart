@@ -32,6 +32,9 @@ import 'cards/change_one_time_password_card.dart';
 import 'cards/change_password.dart';
 import 'cards/lost_password_card.dart';
 import 'cards/manual_card.dart';
+import 'cards/mfa/mfa_text_card.dart';
+import 'cards/mfa/mfa_url_card.dart';
+import 'cards/mfa/mfa_wait_card.dart';
 
 class DefaultLogin extends StatelessWidget implements Login {
   final LoginMode mode;
@@ -159,7 +162,7 @@ class DefaultLogin extends StatelessWidget implements Login {
         card = LostPasswordCard();
         break;
       case LoginMode.ChangePassword:
-        Map<String, String?>? dataMap = context.currentBeamLocation.data as Map<String, String?>?;
+        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = ChangePassword(
           username: dataMap?[ApiObjectProperty.username],
           password: dataMap?[ApiObjectProperty.password],
@@ -167,6 +170,32 @@ class DefaultLogin extends StatelessWidget implements Login {
         break;
       case LoginMode.ChangeOneTimePassword:
         card = ChangeOneTimePasswordCard();
+        break;
+      case LoginMode.MFTextInput:
+        // Is repeatedly called (password is missing on repeated calls)
+        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
+        card = MFATextCard(
+          username: dataMap?[ApiObjectProperty.username],
+          password: dataMap?[ApiObjectProperty.password],
+        );
+        break;
+      case LoginMode.MFWait:
+        // Is repeatedly called
+        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
+        card = MFAWaitCard(
+          timeout: dataMap?[ApiObjectProperty.timeout],
+          timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
+          confirmationCode: dataMap?[ApiObjectProperty.confirmationCode],
+        );
+        break;
+      case LoginMode.MFURL:
+        // Is repeatedly called
+        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
+        card = MFAUrlCard(
+          timeout: dataMap?[ApiObjectProperty.timeout],
+          timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
+          link: dataMap?[ApiObjectProperty.link],
+        );
         break;
       case LoginMode.Manual:
       default:
