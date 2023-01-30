@@ -40,31 +40,40 @@ class MFAUrlCard extends StatefulWidget {
 }
 
 class _MFAUrlCardState extends State<MFAUrlCard> with SingleTickerProviderStateMixin {
+  static const double strokeWidth = 20.0;
+
   late AnimationController controller;
-  late int timeout;
-  late Link link;
+  int? timeout;
+  Link? link;
 
   @override
   void initState() {
     super.initState();
-    timeout = widget.timeout!;
-    link = widget.link!;
     controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: timeout),
     )..addListener(() => setState(() {}));
-    controller.forward();
+
+    if (widget.timeout != null) {
+      timeout = widget.timeout;
+      controller.duration = Duration(milliseconds: widget.timeout!);
+      controller.forward();
+    }
+    link = widget.link;
   }
 
   @override
   void didUpdateWidget(covariant MFAUrlCard oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.timeout != null) {
+      timeout = widget.timeout;
+      controller.duration = Duration(milliseconds: widget.timeout!);
+      if (controller.status != AnimationStatus.forward) {
+        controller.forward();
+      }
+    }
     if (widget.timeoutReset ?? false) {
       controller.reset();
       controller.forward();
-    }
-    if (widget.timeout != null) {
-      controller.duration = Duration(milliseconds: widget.timeout!);
     }
     if (widget.link != null) {
       link = widget.link!;
@@ -79,70 +88,74 @@ class _MFAUrlCardState extends State<MFAUrlCard> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    double? timeLeft = controller.lastElapsedDuration != null
-        ? ((timeout - controller.lastElapsedDuration!.inMilliseconds) / 1000)
+    double? timeLeft = timeout != null && controller.lastElapsedDuration != null
+        ? ((timeout! - controller.lastElapsedDuration!.inMilliseconds) / 1000)
         : null;
+
     return MFACard(
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              children: [
-                const Text("URL:"),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  onPressed: () {
-                    Uri uri = Uri.parse(link.url!);
-                    if (kIsWeb) {
-                      launchUrl(
-                        uri,
-                        webOnlyWindowName: FlutterUI.translate("Verification"),
-                      );
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => Scaffold(
-                          appBar: AppBar(
-                            title: Text(FlutterUI.translate("Verification")),
-                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                            elevation: 0,
-                          ),
-                          body: JVxWebView(
-                            initialUrl: uri,
-                          ),
-                        ),
-                        barrierDismissible: false,
-                      );
-                    }
-                  },
-                  child: Text(
-                    link.url ?? "-",
-                    style: const TextStyle(fontSize: 18),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+          Column(
+            children: [
+              const Text("URL:"),
+              TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-              ],
-            ),
+                onPressed: link?.url != null
+                    ? () {
+                        Uri uri = Uri.parse(link!.url!);
+                        if (kIsWeb) {
+                          launchUrl(
+                            uri,
+                            webOnlyWindowName: FlutterUI.translate("Verification"),
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => Scaffold(
+                              appBar: AppBar(
+                                title: Text(FlutterUI.translate("Verification")),
+                                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                                elevation: 0,
+                              ),
+                              body: JVxWebView(
+                                initialUrl: uri,
+                              ),
+                            ),
+                            barrierDismissible: false,
+                          );
+                        }
+                      }
+                    : null,
+                child: Text(
+                  link?.url ?? "-",
+                  style: const TextStyle(fontSize: 18),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Stack(
+          const SizedBox(height: 20.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ConstrainedBox(
+                constraints: BoxConstraints.tight(const Size.square(120)),
+                child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    ConstrainedBox(
-                      constraints: BoxConstraints.tight(const Size.square(100)),
+                    Positioned(
+                      left: strokeWidth / 2,
+                      right: strokeWidth / 2,
+                      top: strokeWidth / 2,
+                      bottom: strokeWidth / 2,
                       child: CircularProgressIndicator(
                         value: 1.0 - controller.value,
                         backgroundColor: Colors.grey,
-                        strokeWidth: 20.0,
+                        strokeWidth: strokeWidth,
                       ),
                     ),
                     Text(
@@ -151,8 +164,8 @@ class _MFAUrlCardState extends State<MFAUrlCard> with SingleTickerProviderStateM
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

@@ -22,10 +22,14 @@ import '../../../../util/jvx_colors.dart';
 import '../../login_page.dart';
 
 class MFACard extends StatelessWidget {
+  final String subTitle;
+  final VoidCallback? onCancel;
   final Widget child;
 
   const MFACard({
     super.key,
+    this.subTitle = "Waiting for verification.",
+    this.onCancel,
     required this.child,
   });
 
@@ -40,12 +44,12 @@ class MFACard extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(
           inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-                labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                hintStyle: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            hintStyle: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           textTheme: Theme.of(context).textTheme.copyWith(
-                titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
+            titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
           canvasColor: JVxColors.darken(Theme.of(context).canvasColor, 0.05),
         ),
         child: DefaultTextStyle.merge(
@@ -65,27 +69,30 @@ class MFACard extends StatelessWidget {
                           Text(
                             FlutterUI.translate("Verification"),
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 4.0, bottom: 10),
+                      padding: const EdgeInsets.only(top: 4.0),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(FlutterUI.translate("Waiting for verification.")),
+                        child: Text(FlutterUI.translate(subTitle)),
                       ),
                     ),
-                    child,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 8.0),
+                      child: child,
+                    ),
                     TextButton(
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: () => _onCancelPressed(),
+                      onPressed: onCancel ?? _onCancelPressed,
                       child: Text(FlutterUI.translate("Cancel")),
                     ),
                   ],
