@@ -226,19 +226,19 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     List<Widget> suffixIconItems = createSuffixIconItems();
 
-    // All our suffix icons are centered which makes the textfield expanding.
-    // If we have no icons, just insert a center and voilá, textfield is expanding without
+    // Just insert a center and voilá, textfield is expanding without
     // setting "expanding" to true.
-    if (suffixIconItems.isEmpty) {
-      suffixIconItems.add(const Center());
-    }
+    suffixIconItems.add(const Center());
 
     /// -4 => The editable text inside a textfield is somehow 8 pixels bigger.
+    double paddingAdjustment = 0;
+    if (Frame.isWebFrame()) {
+      paddingAdjustment = -4 - ((iconAreaSize - iconSize) / 2);
+    }
+
     return Container(
-      height: double.infinity,
       padding: iconsPadding.copyWith(
-          top: contentPadding.top - 4 - ((iconAreaSize - iconSize) / 2),
-          bottom: contentPadding.bottom - 4 - ((iconAreaSize - iconSize) / 2)),
+          top: contentPadding.top + paddingAdjustment, bottom: contentPadding.bottom + paddingAdjustment),
       child: Row(
         crossAxisAlignment: iconCrossAxisAlignment,
         mainAxisAlignment: MainAxisAlignment.end,
