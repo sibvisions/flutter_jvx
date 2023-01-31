@@ -411,8 +411,11 @@ class OnlineApiRepository implements IRepository {
       }
 
       /// HttpException can also be an invalid argument, check before retrying.
-      bool shouldRetry(Exception error) =>
-          (error is HttpException && error.message == "Connection closed before full header was received");
+      ///
+      /// Currently known http exceptions:
+      /// * HttpException: Connection closed before full header was received, uri = <uri>
+      /// * HttpException: Connection closed while receiving data, uri = <uri>
+      bool shouldRetry(Exception error) => (error is HttpException && error.message.contains("Connection closed"));
 
       HttpClientResponse response;
       try {
