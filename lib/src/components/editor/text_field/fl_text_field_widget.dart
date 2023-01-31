@@ -257,22 +257,24 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       case FlTextBorderType.border:
       case FlTextBorderType.errorBorder:
       case FlTextBorderType.enabledBorder:
-        return const OutlineInputBorder(
+        return OutlineInputBorder(
           borderSide: BorderSide(
-            color: JVxColors.COMPONENT_BORDER,
+            color: model.isBorderVisible ? JVxColors.COMPONENT_BORDER : Colors.transparent,
+          ),
+        );
+
+      case FlTextBorderType.disabledBorder:
+        return OutlineInputBorder(
+          borderSide: BorderSide(
+            width: 1.5,
+            color: model.isBorderVisible ? JVxColors.COMPONENT_DISABLED : Colors.transparent,
           ),
         );
       case FlTextBorderType.focusedBorder:
-        return null;
-      case FlTextBorderType.disabledBorder:
-        return const OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 1.5,
-            color: JVxColors.COMPONENT_DISABLED,
-          ),
-        );
       case FlTextBorderType.focusedErrorBorder:
-        return null;
+        return model.isBorderVisible
+            ? null
+            : const OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent));
     }
   }
 
