@@ -94,7 +94,12 @@ class CommandService implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  FutureOr<void> clear(bool pFullClear) {}
+  FutureOr<void> clear(bool pFullClear) async {
+    if (pFullClear) {
+      // drain queue up to this point
+      await _apiCommandsQueue.add(() => Future.value(null));
+    }
+  }
 
   @override
   Future<void> sendCommand(BaseCommand pCommand) {
