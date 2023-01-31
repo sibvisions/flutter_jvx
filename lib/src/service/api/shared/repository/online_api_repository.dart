@@ -242,7 +242,7 @@ class OnlineApiRepository implements IRepository {
     // Cancel reconnects
     _cancelHTTPReconnect();
     await stopWebSocket();
-    hideStatus();
+    hideStatus(instant: true);
 
     _everConnected = false;
     _connected = false;
@@ -380,10 +380,15 @@ class OnlineApiRepository implements IRepository {
     }
   }
 
-  void hideStatus() {
+  void hideStatus({bool instant = false}) {
     BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
     if (effectiveContext != null) {
-      ScaffoldMessenger.maybeOf(effectiveContext)?.hideCurrentSnackBar();
+      var messengerState = ScaffoldMessenger.maybeOf(effectiveContext);
+      if (instant) {
+        messengerState?.removeCurrentSnackBar();
+      } else {
+        messengerState?.hideCurrentSnackBar();
+      }
     }
   }
 
