@@ -16,10 +16,9 @@
 
 part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
-class FlEditorModel extends FlComponentModel implements IDataModel {
+class FlEditorModel extends FlComponentModel {
   bool changedCellEditor = false;
 
-  @override
   String dataProvider = "";
 
   String columnName = "";

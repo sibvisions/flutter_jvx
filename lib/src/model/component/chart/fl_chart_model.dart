@@ -16,7 +16,7 @@
 
 part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
-class FlChartModel extends FlComponentModel implements IDataModel {
+class FlChartModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +28,6 @@ class FlChartModel extends FlComponentModel implements IDataModel {
   String xColumnLabel = "";
   String title = "";
 
-  @override
   String dataProvider = "";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
