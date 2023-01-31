@@ -410,12 +410,16 @@ class OnlineApiRepository implements IRepository {
         }
       }
 
+      /// HttpException can also be an invalid argument, check before retrying.
+      bool shouldRetry(Exception error) =>
+          (error is HttpException && error.message == "Connection closed before full header was received");
+
       HttpClientResponse response;
       try {
         if (retryRequest ?? true) {
           response = await retry(
             () => _sendRequest(pRequest),
-            retryIf: (e) => e is SocketException,
+            retryIf: (e) => e is SocketException || shouldRetry(e),
             retryIfResult: (response) => response.statusCode == 503,
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
             onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
