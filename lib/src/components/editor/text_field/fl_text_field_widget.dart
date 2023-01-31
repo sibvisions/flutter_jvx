@@ -230,7 +230,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     // setting "expanding" to true.
     suffixIconItems.add(const Center());
 
-    /// -4 => The editable text inside a textfield is somehow 8 pixels bigger.
+    /// -4 => The editable text inside a textfield is 8 pixels bigger if using dense.
     double paddingAdjustment = 0;
     if (Frame.isWebFrame()) {
       paddingAdjustment = -4 - ((iconAreaSize - iconSize) / 2);
