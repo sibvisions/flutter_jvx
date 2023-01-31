@@ -58,7 +58,7 @@ class LayoutService implements ILayoutService {
   LayoutService.create();
 
   @override
-  void clear() {
+  FutureOr<void> clear(bool pFullClear) {
     _isValid = true;
     _currentlyLayouting.clear();
     _layoutDataSet.clear();

@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
@@ -49,7 +50,7 @@ class DataService implements IDataService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void clear() {
+  FutureOr<void> clear(bool pFullClear) {
     clearDataBooks();
   }
 

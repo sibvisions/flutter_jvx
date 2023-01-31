@@ -94,6 +94,9 @@ class CommandService implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  FutureOr<void> clear(bool pFullClear) {}
+
+  @override
   Future<void> sendCommand(BaseCommand pCommand) {
     // Only queue api commands
     if (pCommand is ApiCommand) {

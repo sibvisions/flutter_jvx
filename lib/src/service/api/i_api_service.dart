@@ -33,6 +33,9 @@ abstract class IApiService {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Basically resets the service
+  FutureOr<void> clear(bool pFullClear);
+
   /// Any API Request will be sent to an [IRepository] to execute the request
   /// after which it will be processed to [BaseCommand]s in an [IController]
   Future<List<BaseCommand>> sendRequest(ApiRequest request, [bool? retryRequest]);
@@ -42,7 +45,4 @@ abstract class IApiService {
   void setRepository(IRepository pRepository);
 
   void setController(IController pController);
-
-  /// Basically resets the service
-  FutureOr<void> clear(bool pFullClear);
 }

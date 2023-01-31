@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import '../../model/command/base_command.dart';
 import '../service.dart';
 
@@ -30,6 +32,9 @@ abstract class ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Basically resets the service
+  FutureOr<void> clear(bool pFullClear);
 
   /// Process the incoming [BaseCommand].
   Future<void> sendCommand(BaseCommand command);

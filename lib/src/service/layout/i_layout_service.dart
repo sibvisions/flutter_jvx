@@ -34,7 +34,7 @@ abstract class ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  FutureOr<void> clear();
+  FutureOr<void> clear(bool pFullClear);
 
   /// Registers a parent for receiving child constraint changes.
   ///

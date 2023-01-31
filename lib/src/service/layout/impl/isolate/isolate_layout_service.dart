@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -64,8 +65,8 @@ class IsolateLayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void clear() {
-    _sendMessage(ClearMessage());
+  FutureOr<void> clear(bool pFullClear) {
+    _sendMessage(ClearMessage(pFullClear));
   }
 
   @override
