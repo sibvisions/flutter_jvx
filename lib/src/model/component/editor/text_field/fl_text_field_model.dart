@@ -79,7 +79,7 @@ class FlTextFieldModel extends FlLabelModel {
 
     isBorderVisible = getPropertyValue(
       pJson: pJson,
-      pKey: ApiObjectProperty.border,
+      pKey: ApiObjectProperty.borderVisible,
       pDefault: defaultModel.isBorderVisible,
       pCurrent: isBorderVisible,
     );

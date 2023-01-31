@@ -359,4 +359,6 @@ abstract class ApiObjectProperty {
   static const String mandatoryBackground = "mandatorybackground";
   static const String readOnlyBackground = "readonlybackground";
   static const String invalidEditorBackground = "invalideditorbackground";
+
+  static const String borderVisible = "borderVisible";
 }
