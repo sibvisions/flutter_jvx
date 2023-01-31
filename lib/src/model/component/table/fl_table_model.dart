@@ -16,7 +16,7 @@
 
 part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
-class FlTableModel extends FlComponentModel implements IDataModel {
+class FlTableModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,7 +29,6 @@ class FlTableModel extends FlComponentModel implements IDataModel {
 
   Map<String, dynamic> json = {};
 
-  @override
   String dataProvider = "";
 
   List<String> columnNames = [];

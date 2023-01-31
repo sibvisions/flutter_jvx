@@ -24,7 +24,6 @@ import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
 import '../response/dal_fetch_response.dart';
 import 'i_font_style.dart';
-import 'interface/i_data_model.dart';
 
 part 'button/fl_button_model.dart';
 part 'button/fl_popup_menu_button_model.dart';

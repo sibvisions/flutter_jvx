@@ -16,12 +16,12 @@
 
 part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
-class FlGaugeModel extends FlComponentModel implements IDataModel {
+class FlGaugeModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   String title = "";
-  @override
+
   String dataProvider = "";
   double maxValue = 1;
   double minValue = 0;
