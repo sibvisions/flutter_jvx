@@ -232,6 +232,9 @@ class FlutterUI extends StatefulWidget {
   ///
   /// When [pFullClear] is `true`, then a full app restart/change happened.
   /// If `false`, just a logout.
+  ///
+  /// This can not be called with [pFullClear] = `true` from within a command processing
+  /// as the command service then awaits its queue and would therefore end up in a deadlock.
   static FutureOr<void> clearServices(bool pFullClear) async {
     await ICommandService().clear(pFullClear);
     await ILayoutService().clear(pFullClear);
@@ -744,6 +747,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       IUiService().routeToMenu(pReplaceRoute: true);
       return;
     }
+
+    await FlutterUI.clearServices(true);
 
     // Send startup to server
     await ICommandService().sendCommand(StartupCommand(
