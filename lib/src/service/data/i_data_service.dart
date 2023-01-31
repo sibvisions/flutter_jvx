@@ -39,7 +39,7 @@ abstract class IDataService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  FutureOr<void> clear();
+  FutureOr<void> clear(bool pFullClear);
 
   /// Establishes the meta data of the given dataBook
   Future<bool> updateMetaData({required DalMetaDataResponse pChangedResponse});

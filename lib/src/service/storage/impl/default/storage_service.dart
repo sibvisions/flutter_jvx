@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
@@ -45,6 +46,7 @@ class StorageService implements IStorageService {
   late final JVxNotifier<FlComponentModel?> _desktopNotifier = JVxNotifier(
     () => _componentMap.values.firstWhereOrNull((element) => element.className == FlContainerClassname.DESKTOP_PANEL),
   );
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +54,7 @@ class StorageService implements IStorageService {
   StorageService.create();
 
   @override
-  void clear(bool pFullClear) {
+  FutureOr<void> clear(bool pFullClear) {
     // The desktoppanel is kept after logging out so we have to exlude it from cleaning.
 
     List<FlComponentModel> desktopComponentList = pFullClear

@@ -233,9 +233,10 @@ class FlutterUI extends StatefulWidget {
   /// When [pFullClear] is `true`, then a full app restart/change happened.
   /// If `false`, just a logout.
   static FutureOr<void> clearServices(bool pFullClear) async {
-    await ILayoutService().clear();
+    await ICommandService().clear(pFullClear);
+    await ILayoutService().clear(pFullClear);
     await IStorageService().clear(pFullClear);
-    await IDataService().clear();
+    await IDataService().clear(pFullClear);
     await IUiService().clear(pFullClear);
     await IApiService().clear(pFullClear);
   }
