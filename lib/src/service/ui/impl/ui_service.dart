@@ -78,7 +78,7 @@ class UiService implements IUiService {
   UiService.create();
 
   @override
-  void clear() {
+  void clear(bool pFullClear) {
     _menuNotifier.value = const MenuModel();
     _componentSubscriptions.clear();
     _dataSubscriptions.clear();
