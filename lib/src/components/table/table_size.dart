@@ -107,7 +107,7 @@ class TableSize {
   }
 
   Size get calculatedSize {
-    return Size(calculatedColumnWidths.values.sum, tableHeaderHeight + (rowHeight * 10));
+    return Size(calculatedColumnWidths.values.sum + (borderWidth * 2), tableHeaderHeight + (rowHeight * 10));
   }
 
   Size get size {
@@ -135,11 +135,6 @@ class TableSize {
     for (int i = 0; i < pTableModel.columnNames.length; i++) {
       String columnName = pTableModel.columnNames[i];
       String columnLabel = pTableModel.columnLabels[i];
-
-      if (pDataChunk.columnDefinitions.firstWhereOrNull((element) => element.name == columnName) == null) {
-        // Dont calculate this table column
-        continue;
-      }
 
       double calculatedHeaderWidth = _calculateTableTextWidth(
         textStyle.copyWith(fontWeight: FontWeight.bold),
