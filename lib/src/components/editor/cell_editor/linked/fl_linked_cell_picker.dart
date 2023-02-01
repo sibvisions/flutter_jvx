@@ -150,7 +150,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
               FlutterUI.translate("Select value"),
               style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             FlTextFieldWidget(
               key: widget.key,
               model: searchFieldModel,
