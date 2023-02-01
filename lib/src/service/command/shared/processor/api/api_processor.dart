@@ -43,6 +43,7 @@ import '../../../../../model/command/api/press_button_command.dart';
 import '../../../../../model/command/api/reload_command.dart';
 import '../../../../../model/command/api/reload_menu_command.dart';
 import '../../../../../model/command/api/reset_password_command.dart';
+import '../../../../../model/command/api/restore_data_command.dart';
 import '../../../../../model/command/api/rollback_command.dart';
 import '../../../../../model/command/api/save_all_editors.dart';
 import '../../../../../model/command/api/save_command.dart';
@@ -83,6 +84,7 @@ import 'press_button_command_processor.dart';
 import 'reload_command_processor.dart';
 import 'reload_menu_command_processor.dart';
 import 'reset_password_command_processor.dart';
+import 'restore_data_processor.dart';
 import 'rollback_command_processor.dart';
 import 'save_all_editors_command_processor.dart';
 import 'save_command_processor.dart';
@@ -197,6 +199,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _setScreenParameterProcessor = SetScreenParameterCommandProcessor();
 
+  final ICommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -280,6 +284,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _sortProcessor.processCommand(command);
     } else if (command is SetScreenParameterCommand) {
       return _setScreenParameterProcessor.processCommand(command);
+    } else if (command is RestoreDataCommand) {
+      return _restoreDataProcessor.processCommand(command);
     }
 
     return [];
