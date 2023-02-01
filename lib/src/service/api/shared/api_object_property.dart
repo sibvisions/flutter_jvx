@@ -107,6 +107,9 @@ abstract class ApiObjectProperty {
   static const String clickCount = "clickCount";
   static const String x = "x";
   static const String y = "y";
+  static const String borderVisible = "borderVisible";
+  static const String detectEndNode = "detectEndNode";
+  static const String masterReference = "masterReference";
 
   // Can occur in both request & response
   static const String clientId = "clientId";
@@ -329,6 +332,7 @@ abstract class ApiObjectProperty {
   static const String fractionalSecondsPrecision = "fractionalSecondsPrecision";
 
   static const String dataBook = "dataBook";
+  static const String dataBooks = "dataBooks";
   static const String columnLabels = "columnLabels";
   static const String autoResize = "autoResize";
   static const String showFocusRect = "showFocusRect";
@@ -369,6 +373,4 @@ abstract class ApiObjectProperty {
   static const String timeout = "timeout";
   static const String timeoutReset = "timeoutReset";
   static const String errorMessage = "errorMessage";
-
-  static const String borderVisible = "borderVisible";
 }
