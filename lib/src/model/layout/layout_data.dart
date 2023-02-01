@@ -72,7 +72,10 @@ class LayoutData implements ICloneable {
   /// The last calculated size of the component.
   Size? lastCalculatedSize;
 
-  /// Fixed sized component.
+  /// If a component is fixed size it will not change its size
+  /// when its parent changes its size. e.g. A label might want more height,
+  /// if it is constrained in width. A table (which is fixed size) will not want more height if it is
+  /// constrained in width.
   bool isFixedSize;
 
   /// The insets of the component.
