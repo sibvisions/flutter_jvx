@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/command/api/restore_data_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
@@ -160,16 +161,31 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
               const SizedBox(height: 8),
               ...editorWidgets,
               const SizedBox(height: 4),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  child: Text(
-                    FlutterUI.translate("Ok"),
+              Row(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: _handleCancel,
+                        child: Text(
+                          FlutterUI.translate("Cancel"),
+                        ),
+                      ),
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  TextButton(
+                    child: Text(
+                      FlutterUI.translate("Ok"),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -187,17 +203,6 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     super.dispose();
   }
 
-  // void onCellEditorEndEditing(String pColumn, dynamic pValue) {
-  //   // Linked cell editors sometimes return a map of values, already mapped to their corresponding columns.
-  //   if (pValue is Map) {
-  //     pValue.forEach((key, value) {
-  //       widget.values[key] = value;
-  //     });
-  //   } else {
-  //     widget.values[pColumn] = pValue;
-  //   }
-  // }
-
   void receiveNewValues() {
     Map<String, dynamic>? newValues = widget.newValueNotifier.value;
 
@@ -211,5 +216,13 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         }
       }
     });
+  }
+
+  void _handleCancel() {
+    IUiService().sendCommand(RestoreDataCommand(
+      dataProvider: widget.model.dataProvider,
+      reason: "Pressed cancel in table edit dialog",
+    ));
+    Navigator.of(context).pop();
   }
 }
