@@ -376,11 +376,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   AppLifecycleState? lastState;
 
   ThemeData themeData = ThemeData().copyWith(
-    colorScheme: ColorScheme.light(background: Colors.grey.shade50),
+    colorScheme: ThemeData().colorScheme.copyWith(
+          background: Colors.grey.shade50,
+        ),
   );
 
-  ThemeData darkThemeData = ThemeData(
-    colorScheme: ColorScheme.dark(background: Colors.grey.shade50),
+  ThemeData darkThemeData = ThemeData.dark().copyWith(
+    colorScheme: ThemeData.dark().colorScheme.copyWith(
+          background: Colors.grey.shade50,
+        ),
   );
 
   final ThemeData splashTheme = ThemeData();
