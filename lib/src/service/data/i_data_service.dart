@@ -51,7 +51,7 @@ abstract class IDataService {
   bool updateMetaDataChangedRepsonse({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Updates dataBook with fetched data,
-  Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch});
+  Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch, String? pageKey});
 
   /// Updates parts of dataBook with changed data.
   bool updateDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse});
@@ -70,6 +70,7 @@ abstract class IDataService {
     required String pDataProvider,
     int? pTo,
     List<String>? pColumnNames,
+    String? pPageKey,
   });
 
   /// Returns the full [DalMetaDataResponse] for this dataProvider

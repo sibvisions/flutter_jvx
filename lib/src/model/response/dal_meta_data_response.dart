@@ -16,12 +16,16 @@
 
 import '../../service/api/shared/api_object_property.dart';
 import '../data/column_definition.dart';
+import '../data/data_book.dart';
 import 'api_response.dart';
 
 class DalMetaDataResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The reference of this response
+  MasterReference? masterReference;
 
   /// All column definitions in this dataBook
   List<ColumnDefinition>? columns;
@@ -61,5 +65,8 @@ class DalMetaDataResponse extends ApiResponse {
         updateEnabled = json[ApiObjectProperty.updateEnabled],
         insertEnabled = json[ApiObjectProperty.insertEnabled],
         primaryKeyColumns = json[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
+        masterReference = json[ApiObjectProperty.masterReference] != null
+            ? MasterReference.fromJson(json[ApiObjectProperty.masterReference])
+            : null,
         super.fromJson();
 }

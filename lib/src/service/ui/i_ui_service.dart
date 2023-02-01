@@ -232,6 +232,7 @@ abstract class IUiService {
   /// data may have changed.
   void notifyDataChange({
     required String pDataProvider,
+    String? pageKey,
   });
 
   /// Notify all components belonging to [pDataProvider] that their underlying
@@ -241,24 +242,32 @@ abstract class IUiService {
   });
 
   /// Calls the callback of all subscribed [DataSubscription]s which are subscribed to [pDataProvider]
-  void setSelectedData({
+  void sendSubsSelectedData({
     required String pSubId,
     required String pDataProvider,
     required DataRecord? pDataRow,
   });
 
   /// Calls the callback of all subscribed [DataSubscription]s
-  void setChunkData({
+  void sendSubsDataChunk({
     required String pSubId,
     required String pDataProvider,
     required DataChunk pDataChunk,
   });
 
   /// Directly sets the metadata.
-  void setMetaData({
+  void sendSubsMetaData({
     required String pSubId,
     required String pDataProvider,
     required DalMetaData pMetaData,
+  });
+
+  /// Calls the callback of all subscribed [DataSubscription]s
+  void sendSubsPageChunk({
+    required String pSubId,
+    required String pDataProvider,
+    required DataChunk pDataChunk,
+    required String pPageKey,
   });
 
   /// Returns the highes row which any component is subscribed to on this dataprovider

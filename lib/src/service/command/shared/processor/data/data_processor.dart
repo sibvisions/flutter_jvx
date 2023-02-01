@@ -22,6 +22,7 @@ import '../../../../../model/command/data/delete_provider_data_command.dart';
 import '../../../../../model/command/data/delete_row_command.dart';
 import '../../../../../model/command/data/get_data_chunk_command.dart';
 import '../../../../../model/command/data/get_meta_data_command.dart';
+import '../../../../../model/command/data/get_page_chunk_command.dart';
 import '../../../../../model/command/data/get_selected_data_command.dart';
 import '../../../../../model/command/data/save_fetch_data_command.dart';
 import '../../../../../model/command/data/save_meta_data_command.dart';
@@ -45,6 +46,8 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       return _getSelectedData(command);
     } else if (command is GetDataChunkCommand) {
       return _getDataChunk(command);
+    } else if (command is GetPageChunkCommand) {
+      return _getPageChunk(command);
     } else if (command is DeleteProviderDataCommand) {
       return _deleteDataProviderData(command);
     } else if (command is ChangeSelectedRowCommand) {
@@ -99,7 +102,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
 
     DalMetaData metaData = IDataService().getMetaData(pDataProvider: command.dataProvider);
 
-    IUiService().setMetaData(
+    IUiService().sendSubsMetaData(
       pSubId: command.subId,
       pDataProvider: command.dataProvider,
       pMetaData: metaData,
@@ -154,10 +157,11 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand pCommand) async {
-    await IDataService().updateData(pFetch: pCommand.response);
+    await IDataService().updateData(pFetch: pCommand.response, pageKey: pCommand.pageKey);
 
     IUiService().notifyDataChange(
       pDataProvider: pCommand.response.dataProvider,
+      pageKey: pCommand.pageKey,
     );
 
     return [];
@@ -184,7 +188,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       pDataProvider: pCommand.dataProvider,
     );
 
-    IUiService().setSelectedData(
+    IUiService().sendSubsSelectedData(
       pSubId: pCommand.subId,
       pDataProvider: pCommand.dataProvider,
       pDataRow: record,
@@ -223,10 +227,27 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       pDataProvider: command.dataProvider,
     );
 
-    IUiService().setChunkData(
+    IUiService().sendSubsDataChunk(
       pDataChunk: dataChunk,
       pDataProvider: command.dataProvider,
       pSubId: command.subId,
+    );
+    return [];
+  }
+
+  Future<List<BaseCommand>> _getPageChunk(GetPageChunkCommand command) async {
+    DataChunk dataChunk = await IDataService().getDataChunk(
+      pFrom: command.from,
+      pTo: command.to,
+      pDataProvider: command.dataProvider,
+      pPageKey: command.pageKey,
+    );
+
+    IUiService().sendSubsPageChunk(
+      pDataChunk: dataChunk,
+      pDataProvider: command.dataProvider,
+      pSubId: command.subId,
+      pPageKey: command.pageKey,
     );
     return [];
   }

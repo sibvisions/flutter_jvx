@@ -32,6 +32,9 @@ class ApiFetchRequest extends SessionRequest {
 
   final String dataProvider;
 
+  /// The page key if we fetch a specific page.
+  final String? pageKey;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,6 +45,7 @@ class ApiFetchRequest extends SessionRequest {
     required this.dataProvider,
     required this.includeMetaData,
     this.columnNames,
+    this.pageKey,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

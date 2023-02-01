@@ -34,6 +34,7 @@ abstract class FlComponentClassname {
   static const String CHART = "Chart";
   static const String GAUGE = "Gauge";
   static const String EDITOR = "Editor";
+  static const String TREE = "Tree";
 }
 
 abstract class FlContainerClassname {

@@ -31,6 +31,9 @@ class FetchCommand extends SessionCommand {
 
   final String dataProvider;
 
+  /// The page key if we fetch a specific page.
+  final String? pageKey;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,6 +44,7 @@ class FetchCommand extends SessionCommand {
     required this.dataProvider,
     this.includeMetaData = false,
     this.columnNames,
+    this.pageKey,
     required super.reason,
   });
 

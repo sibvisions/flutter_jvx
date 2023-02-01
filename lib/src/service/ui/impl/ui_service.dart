@@ -22,6 +22,7 @@ import '../../../model/command/api/save_all_editors.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
+import '../../../model/command/data/get_page_chunk_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
@@ -506,24 +507,40 @@ class UiService implements IUiService {
   @override
   void notifyDataChange({
     required String pDataProvider,
+    String? pageKey,
   }) {
     _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
       // Check if selected data changed
-      sendCommand(GetSelectedDataCommand(
-        subId: sub.id,
-        reason: "Notify data was called with pFrom -1",
-        dataProvider: sub.dataProvider,
-        columnNames: sub.dataColumns,
-      ));
-      if (sub.from != -1) {
-        sendCommand(GetDataChunkCommand(
-          reason: "Notify data was called",
-          dataProvider: pDataProvider,
-          from: sub.from,
-          to: sub.to,
-          subId: sub.id,
-          dataColumns: sub.dataColumns,
-        ));
+      if (pageKey != null) {
+        if (sub.onPage != null) {
+          sendCommand(GetPageChunkCommand(
+            reason: "Notify data was called",
+            dataProvider: pDataProvider,
+            from: sub.from,
+            to: sub.to,
+            subId: sub.id,
+            pageKey: pageKey,
+          ));
+        }
+      } else {
+        if (sub.onSelectedRecord != null) {
+          sendCommand(GetSelectedDataCommand(
+            subId: sub.id,
+            reason: "Notify data was called with pFrom -1",
+            dataProvider: sub.dataProvider,
+            columnNames: sub.dataColumns,
+          ));
+        }
+        if (sub.from != -1 && sub.onDataChunk != null) {
+          sendCommand(GetDataChunkCommand(
+            reason: "Notify data was called",
+            dataProvider: pDataProvider,
+            from: sub.from,
+            to: sub.to,
+            subId: sub.id,
+            dataColumns: sub.dataColumns,
+          ));
+        }
       }
     });
   }
@@ -543,7 +560,7 @@ class UiService implements IUiService {
   }
 
   @override
-  void setSelectedData({
+  void sendSubsSelectedData({
     required String pSubId,
     required String pDataProvider,
     required DataRecord? pDataRow,
@@ -554,7 +571,7 @@ class UiService implements IUiService {
   }
 
   @override
-  void setChunkData({
+  void sendSubsDataChunk({
     required String pSubId,
     required DataChunk pDataChunk,
     required String pDataProvider,
@@ -563,15 +580,27 @@ class UiService implements IUiService {
         _dataSubscriptions.where((element) => element.dataProvider == pDataProvider && element.id == pSubId).toList();
 
     subs.forEach((element) {
-      var a = element.onDataChunk;
-      if (a != null) {
-        a(pDataChunk);
-      }
+      element.onDataChunk?.call(pDataChunk);
     });
   }
 
   @override
-  void setMetaData({
+  void sendSubsPageChunk({
+    required String pSubId,
+    required String pDataProvider,
+    required DataChunk pDataChunk,
+    required String pPageKey,
+  }) {
+    List<DataSubscription> subs =
+        _dataSubscriptions.where((element) => element.dataProvider == pDataProvider && element.id == pSubId).toList();
+
+    subs.forEach((element) {
+      element.onPage?.call(pPageKey, pDataChunk);
+    });
+  }
+
+  @override
+  void sendSubsMetaData({
     required String pSubId,
     required String pDataProvider,
     required DalMetaData pMetaData,

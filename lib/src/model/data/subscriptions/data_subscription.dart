@@ -25,6 +25,7 @@ typedef OnSelectedRecordCallback = void Function(DataRecord? dataRecord);
 typedef OnDataChunkCallback = void Function(DataChunk dataChunk);
 typedef OnMetaDataCallback = void Function(DalMetaData metaData);
 typedef OnReloadCallback = int Function(int selectedRow);
+typedef OnPageCallback = void Function(String pageKey, DataChunk dataChunk);
 
 /// Used for subscribing in [IUiService] to potentially receive data.
 class DataSubscription {
@@ -59,6 +60,9 @@ class DataSubscription {
   /// Callback will be called when a reload happens. Return value is the new subscription count.
   final OnReloadCallback? onReload;
 
+  /// Callback will be called when a page is fetched.
+  final OnPageCallback? onPage;
+
   /// List of column names which should be fetched, return order will correspond to order of this list
   List<String>? dataColumns;
 
@@ -74,6 +78,7 @@ class DataSubscription {
     this.onDataChunk,
     this.onMetaData,
     this.onReload,
+    this.onPage,
     this.to,
     this.dataColumns,
   }) : id = getRandomString(15);

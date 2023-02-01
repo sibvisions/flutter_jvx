@@ -21,8 +21,12 @@ class SaveFetchDataCommand extends DataCommand {
   /// Server response
   final DalFetchResponse response;
 
+  /// The page key if we fetched a specific page.
+  final String? pageKey;
+
   SaveFetchDataCommand({
     required this.response,
+    this.pageKey,
     required super.reason,
   });
 

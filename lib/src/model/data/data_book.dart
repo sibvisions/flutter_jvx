@@ -48,6 +48,9 @@ class DataBook {
   /// Link to source of the data,
   String dataProvider;
 
+  /// All fetched records of this databook with specific page names.
+  HashMap<String, HashMap<int, List<dynamic>>> pageRecords;
+
   /// All fetched records of this dataBook
   HashMap<int, List<dynamic>> records;
 
@@ -80,12 +83,15 @@ class DataBook {
     required this.isAllFetched,
     required this.selectedRow,
     this.recordFormats,
-  }) : metaData = DalMetaData(dataProvider);
+    HashMap<String, HashMap<int, List<dynamic>>>? pageRecords,
+  })  : metaData = DalMetaData(dataProvider),
+        pageRecords = pageRecords ?? HashMap();
 
   /// Creates a [DataBook] with only default values
   DataBook.empty()
       : dataProvider = "",
         records = HashMap(),
+        pageRecords = HashMap(),
         selectedRow = -1,
         isAllFetched = false,
         metaData = DalMetaData("");
@@ -100,28 +106,38 @@ class DataBook {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Saves all data from a fetchRequest
-  void saveFromFetchRequest({required DalFetchResponse pFetchResponse}) {
+  void saveFromFetchRequest({required DalFetchResponse pFetchResponse, String? pageKey}) {
     dataProvider = pFetchResponse.dataProvider;
-    isAllFetched = pFetchResponse.isAllFetched;
-    selectedRow = pFetchResponse.selectedRow;
-    if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
-      selectedColumn = pFetchResponse.selectedColumn;
-    }
-    recordFormats = pFetchResponse.recordFormats;
-    if (pFetchResponse.json.containsKey(ApiObjectProperty.sortDefinition)) {
+    if (pageKey == null) {
+      isAllFetched = pFetchResponse.isAllFetched;
+      selectedRow = pFetchResponse.selectedRow;
+      if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
+        selectedColumn = pFetchResponse.selectedColumn;
+      }
+      recordFormats = pFetchResponse.recordFormats;
       updateSortDefinitions(pFetchResponse.sortDefinitions);
+    }
+
+    HashMap<int, List> dataMap;
+    if (pageKey != null) {
+      if (!pageRecords.containsKey(pageKey)) {
+        pageRecords[pageKey] = HashMap();
+      }
+      dataMap = pageRecords[pageKey]!;
+    } else {
+      dataMap = records;
     }
 
     // Save records
     for (int i = 0; i < pFetchResponse.records.length; i++) {
-      records[i + pFetchResponse.from] = pFetchResponse.records[i];
+      dataMap[i + pFetchResponse.from] = pFetchResponse.records[i];
     }
 
     // Remove values with higher index if all records are fetched (clean old data)
     if (isAllFetched) {
-      records.removeWhere((key, value) => key > pFetchResponse.to);
+      dataMap.removeWhere((key, value) => key > pFetchResponse.to);
       if (pFetchResponse.records.isEmpty) {
-        records.remove(0);
+        dataMap.remove(0);
       }
     }
   }
@@ -241,12 +257,14 @@ class DataBook {
   }
 
   /// Will return all available data from the column in the provided range
-  List<dynamic> getDataFromColumn({required String pColumnName, required int pFrom, required int pTo}) {
+  List<dynamic> getDataFromColumn({required String pColumnName, required int pFrom, int? pTo, String? pPageKey}) {
     List<dynamic> data = [];
     int indexOfColumn = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
+    HashMap<int, List<dynamic>> dataMap = pPageKey != null ? (pageRecords[pPageKey] ?? HashMap()) : records;
+    pTo = max(pTo ?? 0, dataMap.length);
     for (int i = pFrom; i < pTo; i++) {
-      var a = records[i];
+      var a = dataMap[i];
       if (a != null) {
         data.add(a[indexOfColumn]);
       }
@@ -268,6 +286,7 @@ class DataBook {
 
   /// Deletes all current records
   void clearRecords() {
+    pageRecords.clear();
     records.clear();
     isAllFetched = false;
   }
@@ -398,6 +417,9 @@ class DalMetaData {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The master reference of this databook.
+  MasterReference? masterReference;
+
   /// All column definitions in this dataBook
   List<ColumnDefinition> columnDefinitions = [];
 
@@ -439,6 +461,9 @@ class DalMetaData {
     if (pResponse.columnViewTable != null) {
       columnViewTable = pResponse.columnViewTable!;
     }
+    if (pResponse.masterReference != null) {
+      masterReference = pResponse.masterReference!;
+    }
     if (pResponse.columns != null) {
       columnDefinitions = pResponse.columns!;
     }
@@ -458,5 +483,24 @@ class DalMetaData {
       updateEnabled = pResponse.updateEnabled!;
     }
     ParseUtil.applyJsonToJson(pResponse.json, json);
+  }
+}
+
+class MasterReference {
+  List<String> columnNames;
+  List<String> referencedColumnNames;
+  String referencedDataBook;
+
+  MasterReference.fromJson(Map<String, dynamic> json)
+      : columnNames = json['columnNames'].cast<String>(),
+        referencedColumnNames = json['referencedColumnNames'].cast<String>(),
+        referencedDataBook = json['referencedDataBook'];
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['columnNames'] = columnNames;
+    data['referencedColumnNames'] = referencedColumnNames;
+    data['referencedDataBook'] = referencedDataBook;
+    return data;
   }
 }

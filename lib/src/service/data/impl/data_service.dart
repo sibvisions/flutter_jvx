@@ -55,18 +55,18 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch}) async {
+  Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch, String? pageKey}) async {
     DataBook? dataBook = dataBooks[pFetch.dataProvider];
     if (dataBook == null) {
       dataBook = DataBook.empty();
-      dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
+      dataBook.saveFromFetchRequest(pFetchResponse: pFetch, pageKey: pageKey);
       dataBooks[pFetch.dataProvider] = dataBook;
     } else {
       if (pFetch.clear) {
         dataBook.clearRecords();
         dataBook.selectedRow = -1;
       }
-      dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
+      dataBook.saveFromFetchRequest(pFetchResponse: pFetch, pageKey: pageKey);
     }
 
     return [];
@@ -196,9 +196,10 @@ class DataService implements IDataService {
     required String pDataProvider,
     int? pTo,
     List<String>? pColumnNames,
+    String? pPageKey,
   }) async {
     // Get data from all requested columns
-    List<List<dynamic>> columnData = [];
+    List<List<dynamic>> columnsData = [];
     List<ColumnDefinition> columnDefinitions = [];
 
     DataBook dataBook = dataBooks[pDataProvider]!;
@@ -211,38 +212,37 @@ class DataService implements IDataService {
     if (pColumnNames != null) {
       for (String columnName in pColumnNames) {
         columnDefinitions.add(dataBook.metaData.columnDefinitions.firstWhere((element) => element.name == columnName));
-        columnData.add(dataBook.getDataFromColumn(
+        columnsData.add(dataBook.getDataFromColumn(
           pColumnName: columnName,
           pFrom: pFrom,
           pTo: pTo,
+          pPageKey: pPageKey,
         ));
       }
     } else {
       columnDefinitions.addAll(dataBook.metaData.columnDefinitions);
 
       for (ColumnDefinition colDef in columnDefinitions) {
-        columnData.add(dataBook.getDataFromColumn(
+        columnsData.add(dataBook.getDataFromColumn(
           pColumnName: colDef.name,
           pFrom: pFrom,
           pTo: pTo,
+          pPageKey: pPageKey,
         ));
       }
     }
 
     // Check if requested range of fetch is too long
-    int fetchLength = pTo - pFrom;
-    if (columnData[0].length < fetchLength) {
-      fetchLength = columnData[0].length;
-    }
+    int rowCount = columnsData.firstOrNull?.length ?? 0;
 
     // Build rows out of column data
     HashMap<int, List<dynamic>> data = HashMap();
-    for (int i = 0; i < fetchLength; i++) {
+    for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
       List<dynamic> row = [];
-      for (List d in columnData) {
-        row.add(d[i]);
+      for (List column in columnsData) {
+        row.add(column[rowIndex]);
       }
-      data[i + pFrom] = row;
+      data[rowIndex + pFrom] = row;
     }
 
     return DataChunk(
