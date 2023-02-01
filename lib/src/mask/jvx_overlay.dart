@@ -96,7 +96,7 @@ class JVxOverlayState extends State<JVxOverlay> {
       loading = true;
 
       if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {});
+        SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
         return;
       }
 
