@@ -108,9 +108,7 @@ class DataBook {
       selectedColumn = pFetchResponse.selectedColumn;
     }
     recordFormats = pFetchResponse.recordFormats;
-    if (pFetchResponse.json.containsKey(ApiObjectProperty.sortDefinition)) {
-      updateSortDefinitions(pFetchResponse.sortDefinitions);
-    }
+    updateSortDefinitions(pFetchResponse.sortDefinitions);
 
     // Save records
     for (int i = 0; i < pFetchResponse.records.length; i++) {
