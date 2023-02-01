@@ -63,9 +63,6 @@ class DataBook {
   /// Contains record formats
   Map<String, RecordFormat>? recordFormats;
 
-  /// The sort definitions of this databook.
-  List<SortDefinition>? sortDefinitions;
-
   /// The selected column
   String? selectedColumn;
 
@@ -170,13 +167,13 @@ class DataBook {
 
   /// Sets the sort definition and returns if anything changed
   bool updateSortDefinitions(List<SortDefinition>? pSortDefinitions) {
-    if (sortDefinitions == null || pSortDefinitions == null) {
-      bool areDifferent = sortDefinitions != pSortDefinitions;
-      sortDefinitions = pSortDefinitions;
+    if (metaData.sortDefinitions == null || pSortDefinitions == null) {
+      bool areDifferent = metaData.sortDefinitions != pSortDefinitions;
+      metaData.sortDefinitions = pSortDefinitions;
       return areDifferent;
     }
 
-    bool changeDetected = sortDefinitions!.length != pSortDefinitions.length;
+    bool changeDetected = metaData.sortDefinitions!.length != pSortDefinitions.length;
 
     if (!changeDetected) {
       for (SortDefinition sortDefinition in pSortDefinitions) {
@@ -185,13 +182,13 @@ class DataBook {
         }
 
         var oldSortDefinition =
-            sortDefinitions!.firstWhereOrNull((element) => element.columnName == sortDefinition.columnName);
+            metaData.sortDefinitions!.firstWhereOrNull((element) => element.columnName == sortDefinition.columnName);
 
         changeDetected = oldSortDefinition == null || oldSortDefinition.mode != sortDefinition.mode;
       }
     }
 
-    sortDefinitions = pSortDefinitions;
+    metaData.sortDefinitions = pSortDefinitions;
     return changeDetected;
   }
 
@@ -421,6 +418,9 @@ class DalMetaData {
 
   /// The primary key columns of the dataBook
   List<String> primaryKeyColumns = [];
+
+  /// The sort definitions of this databook.
+  List<SortDefinition>? sortDefinitions;
 
   /// Combined json of this metaData
   Map<String, dynamic> json = {};
