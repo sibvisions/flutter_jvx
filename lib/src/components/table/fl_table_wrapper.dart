@@ -86,7 +86,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   String? selectedColumn;
 
   /// The meta data of the table.
-  DalMetaData? metaData;
+  DalMetaData metaData = DalMetaData("");
 
   /// The data of the table.
   DataChunk dataChunk =
@@ -108,13 +108,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
 
   /// If deletion of a row is allowed.
-  bool get _isDeleteEnabled => (metaData?.deleteEnabled ?? true) && !(metaData?.readOnly ?? false);
+  bool get _isDeleteEnabled => (metaData.deleteEnabled) && !(metaData.readOnly);
 
   /// If inserting a row is allowed.
-  bool get _isInsertEnabled => (metaData?.insertEnabled ?? true) && !(metaData?.readOnly ?? false);
+  bool get _isInsertEnabled => (metaData.insertEnabled) && !(metaData.readOnly);
 
   /// If update a row is allowed.
-  bool get _isUpdateAllowed => (metaData?.updateEnabled ?? true) && !(metaData?.readOnly ?? false);
+  bool get _isUpdateAllowed => (metaData.updateEnabled) && !(metaData.readOnly);
 
   /// The value notifier for a potential editing dialog.
   ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
@@ -138,7 +138,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     layoutData.isFixedSize = true;
 
-    tableSize = TableSize.direct(tableModel: model, dataChunk: dataChunk);
+    tableSize = TableSize();
 
     tableHorizontalController = linkedScrollGroup.addAndGet();
     headerHorizontalController = linkedScrollGroup.addAndGet();
@@ -159,6 +159,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       tableHorizontalController: tableHorizontalController,
       model: model,
       chunkData: dataChunk,
+      metaData: metaData,
       tableSize: tableSize,
       selectedRowIndex: selectedRow,
       selectedColumn: selectedColumn,
@@ -233,6 +234,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Recalculates the size of the table.
   void _recalculateTableSize([bool pSetState = false]) {
     tableSize.calculateTableSize(
+      pMetaData: metaData,
       pTableModel: model,
       pDataChunk: dataChunk,
       pAvailableWidth: layoutData.layoutPosition?.width,
@@ -301,12 +303,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     bool hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
         oldColumns.any((element) => (!newColumns.contains(element)));
 
-    List<String> oldSorts = pDataChunk.sortDefinitions?.map((e) => e.columnName).toList() ?? [];
-    List<String> newSorts = dataChunk.sortDefinitions?.map((e) => e.columnName).toList() ?? [];
-
-    hasToCalc |= oldSorts.any((element) => (!newSorts.contains(element))) ||
-        newSorts.any((element) => (!oldSorts.contains(element)));
-
     if (pDataChunk.update) {
       for (int index in pDataChunk.data.keys) {
         dataChunk.data[index] = pDataChunk.data[index]!;
@@ -361,7 +357,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     currentState |= LOADED_META_DATA;
 
     List<ColumnDefinition> newColumns = pMetaData.columnDefinitions;
-    List<ColumnDefinition> oldColumns = metaData?.columnDefinitions ?? [];
+    List<ColumnDefinition> oldColumns = metaData.columnDefinitions;
 
     bool hasToCalc = newColumns.any((newColumn) => (!oldColumns.any((oldColumn) => newColumn.name == oldColumn.name)));
     hasToCalc |= oldColumns.any((oldColumn) => (!newColumns.any((newColumn) => newColumn.name == oldColumn.name)));
@@ -372,6 +368,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
         return oldColumn.width != newColumn.width;
       });
+    }
+
+    if (!hasToCalc) {
+      List<String> oldSorts = pMetaData.sortDefinitions?.map((e) => e.columnName).toList() ?? [];
+      List<String> newSorts = metaData.sortDefinitions?.map((e) => e.columnName).toList() ?? [];
+
+      hasToCalc |= oldSorts.any((element) => (!newSorts.contains(element))) ||
+          newSorts.any((element) => (!oldSorts.contains(element)));
     }
 
     metaData = pMetaData;
@@ -393,7 +397,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pColumnName,
       pAfterSelect: () async {
         if (_isUpdateAllowed && model.editable) {
-          int colIndex = metaData?.columnDefinitions.indexWhere((element) => element.name == pColumnName) ?? -1;
+          int colIndex = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
           if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
             if (pValue is HashMap<String, dynamic>) {
@@ -660,9 +664,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Creates an identifying filter for this row.
   Filter? _createFilter({required int pRowIndex}) {
     int rowIndex = pRowIndex;
-    if (metaData == null) {
-      return null;
-    }
 
     List<String> listColumnNames = [];
     List<dynamic> listValues = [];
@@ -682,10 +683,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       ); 
     */
 
-    if (metaData!.primaryKeyColumns.isNotEmpty) {
-      listColumnNames.addAll(metaData!.primaryKeyColumns);
+    if (metaData.primaryKeyColumns.isNotEmpty) {
+      listColumnNames.addAll(metaData.primaryKeyColumns);
     } else {
-      listColumnNames.addAll(metaData!.columnDefinitions.map((e) => e.name));
+      listColumnNames.addAll(metaData.columnDefinitions.map((e) => e.name));
     }
 
     for (String column in listColumnNames) {
@@ -762,16 +763,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     SortDefinition? currentSortDefinition =
-        dataChunk.sortDefinitions?.firstWhereOrNull((sortDef) => sortDef.columnName == pColumnName);
+        metaData.sortDefinitions?.firstWhereOrNull((sortDef) => sortDef.columnName == pColumnName);
     bool exists = currentSortDefinition != null;
 
     currentSortDefinition?.mode = currentSortDefinition.nextMode;
     currentSortDefinition ??= SortDefinition(columnName: pColumnName);
 
     List<SortDefinition> sortDefs;
-    if (pAdditive && dataChunk.sortDefinitions != null) {
+    if (pAdditive && metaData.sortDefinitions != null) {
       sortDefs = [
-        ...dataChunk.sortDefinitions!,
+        ...metaData.sortDefinitions ?? {},
         if (!exists) currentSortDefinition,
       ];
     } else {

@@ -19,11 +19,9 @@ import 'dart:math' as math;
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
-import '../../model/data/subscriptions/data_chunk.dart';
 import '../../service/api/shared/fl_component_classname.dart';
-import '../../util/parse_util.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
 enum _RedistributionPriority { first, second, third }
@@ -101,9 +99,11 @@ class TableSize {
     this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0, top: 4.0, bottom: 4.0),
     required FlTableModel tableModel,
     required DataChunk dataChunk,
+    required DalMetaData metaData,
     double? availableWidth,
   }) {
-    calculateTableSize(pTableModel: tableModel, pAvailableWidth: availableWidth, pDataChunk: dataChunk);
+    calculateTableSize(
+        pTableModel: tableModel, pMetaData: metaData, pAvailableWidth: availableWidth, pDataChunk: dataChunk);
   }
 
   Size get calculatedSize {
@@ -121,6 +121,7 @@ class TableSize {
   calculateTableSize({
     required FlTableModel pTableModel,
     required DataChunk pDataChunk,
+    required DalMetaData pMetaData,
     int pRowsToCalculate = 10,
     double? pAvailableWidth,
   }) {
@@ -141,7 +142,7 @@ class TableSize {
         "$columnLabel *", // Column headers get a * if they are mandatory
       );
 
-      if (pDataChunk.sortDefinitions?.firstWhereOrNull((element) => element.columnName == columnName)?.mode != null) {
+      if (pMetaData.sortDefinitions?.firstWhereOrNull((element) => element.columnName == columnName)?.mode != null) {
         calculatedHeaderWidth += 21;
       }
 

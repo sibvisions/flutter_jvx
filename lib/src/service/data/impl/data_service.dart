@@ -252,7 +252,6 @@ class DataService implements IDataService {
       from: pFrom,
       to: pTo,
       recordFormats: dataBook.recordFormats,
-      sortDefinitions: dataBook.sortDefinitions,
     );
   }
 

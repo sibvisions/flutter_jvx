@@ -22,14 +22,13 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/data/subscriptions/data_chunk.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_header_row.dart';
 import 'fl_table_row.dart';
-import 'table_size.dart';
 
 typedef TableLongPressCallback = void Function(
     int rowIndex, String column, ICellEditor cellEditor, LongPressStartDetails details);
@@ -96,6 +95,8 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// Which slide actions are to be allowed to the row.
   final Set<TableRowSlideAction>? slideActions;
 
+  /// The meta data of the table.
+  final DalMetaData? metaData;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,6 +106,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     required super.model,
     required this.chunkData,
     required this.tableSize,
+    required this.metaData,
     this.tableHorizontalController,
     this.headerHorizontalController,
     this.selectedRowIndex = -1,
@@ -304,7 +306,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       onDoubleTap: widget.onDoubleTap,
       tableSize: widget.tableSize,
       onLongPress: widget.onLongPress,
-      sortDefinitions: widget.chunkData.sortDefinitions,
+      sortDefinitions: widget.metaData?.sortDefinitions,
     );
   }
 

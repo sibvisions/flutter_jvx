@@ -166,10 +166,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: _chunkData != null
+              child: _chunkData != null && _metaData != null
                   ? LayoutBuilder(
                       builder: ((context, constraints) {
                         TableSize tableSize = TableSize.direct(
+                          metaData: _metaData!,
                           tableModel: tableModel,
                           dataChunk: _chunkData!,
                           availableWidth: constraints.maxWidth,
@@ -179,6 +180,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                         tableModel.editable = false;
 
                         return FlTableWidget(
+                          metaData: _metaData,
                           chunkData: _chunkData!,
                           onEndScroll: _increasePageLoad,
                           model: tableModel,
