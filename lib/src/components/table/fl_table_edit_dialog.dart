@@ -90,7 +90,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       }
       editorWidgets.add(editorWidget);
     } else {
-      dialogLabel = FlutterUI.translate("Edit row");
+      dialogLabel = FlutterUI.translate("Edit record");
 
       double labelColumnWidth = 0.0;
 
@@ -158,7 +158,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                 dialogLabel,
                 style: Theme.of(context).dialogTheme.titleTextStyle,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               ...editorWidgets,
               const SizedBox(height: 4),
               Row(
