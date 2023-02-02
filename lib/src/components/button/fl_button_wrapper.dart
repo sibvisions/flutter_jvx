@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:action_slider/action_slider.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   FocusNode buttonFocusNode = FocusNode();
 
+  ActionSliderController actionSliderController = ActionSliderController();
+
   @override
   void initState() {
     super.initState();
@@ -76,26 +79,21 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     Widget buttonWidget;
 
     if (model.isSlideStyle) {
-      buttonWidget = GestureDetector(
-        child: FlSlideButtonWidget(
-          model: model,
-          focusNode: buttonFocusNode,
-          onFocusGained: focus,
-          onFocusLost: unfocus,
-          onSlide: (controller) async {
-            controller.loading();
-            await sendButtonPressed()
-                .then((value) => controller.success())
-                .catchError((Object error, StackTrace stackTrace) {
-              controller.failure();
-              IUiService().handleAsyncError(error, stackTrace);
-            });
-          },
-          onPress: (controller) {
-            controller.reset();
-            setState(() {});
-          },
-        ),
+      buttonWidget = FlSlideButtonWidget(
+        model: model,
+        controller: actionSliderController,
+        focusNode: buttonFocusNode,
+        onFocusGained: focus,
+        onFocusLost: unfocus,
+        onSlide: (controller) async {
+          controller.loading();
+          await sendButtonPressed()
+              .then((value) => controller.success())
+              .catchError((Object error, StackTrace stackTrace) {
+            controller.failure();
+            IUiService().handleAsyncError(error, stackTrace);
+          });
+        },
       );
     } else {
       buttonWidget = FlButtonWidget(
@@ -119,6 +117,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   @override
   void dispose() {
     buttonFocusNode.dispose();
+    actionSliderController.dispose();
     super.dispose();
   }
 

@@ -52,6 +52,9 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
   /// The focus node of the button.
   final FocusNode focusNode;
 
+  /// The controller of the button.
+  final ActionSliderController controller;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +80,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
     super.key,
     required super.model,
     required this.focusNode,
+    required this.controller,
     this.onSlide,
     this.onPress,
     this.onFocusGained,
@@ -99,15 +103,19 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
           maxWidth: max(minimumSize.width, constraints.maxWidth),
           minHeight: minimumSize.height,
           maxHeight: max(minimumSize.height, constraints.maxHeight),
-          child: ActionSlider.standard(
-            action: onSlide,
-            onTap: onPress,
-            width: max(minimumSize.width, constraints.maxWidth),
-            height: max(minimumSize.height, constraints.maxHeight),
-            backgroundColor: model.background,
-            icon: image,
-            rolling: true,
-            child: createTextWidget(),
+          child: GestureDetector(
+            onDoubleTap: () => controller.reset(),
+            child: ActionSlider.standard(
+              controller: controller,
+              action: onSlide,
+              onTap: onPress,
+              width: max(minimumSize.width, constraints.maxWidth),
+              height: max(minimumSize.height, constraints.maxHeight),
+              backgroundColor: model.background,
+              icon: image,
+              rolling: true,
+              child: createTextWidget(),
+            ),
           ),
         );
       },
