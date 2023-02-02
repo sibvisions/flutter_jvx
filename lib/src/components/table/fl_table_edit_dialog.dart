@@ -158,7 +158,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
               style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
             const SizedBox(height: 12),
-            Expanded(
+            Flexible(
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
