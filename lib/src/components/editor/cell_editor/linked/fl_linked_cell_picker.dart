@@ -343,12 +343,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   }
 
   void _onTextFieldValueChanged() {
-    List<String> columnOrder = _columnNamesToSubscribe();
-
     List<String> filterColumns = [];
 
     if (model.linkReference.columnNames.isEmpty) {
-      filterColumns.add(columnOrder.firstWhere(((element) => element == model.linkReference.referencedColumnNames[0])));
+      filterColumns.add(model.linkReference.referencedColumnNames[0]);
     } else {
       for (int i = 0; i < model.linkReference.columnNames.length; i++) {
         String referencedColumnName = model.linkReference.referencedColumnNames[i];
@@ -415,20 +413,5 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     } else {
       return model.linkReference.referencedColumnNames;
     }
-  }
-
-  List<String> _columnNamesToSubscribe() {
-    Set<String> columnNames = <String>{};
-
-    if (model.columnView != null) {
-      columnNames.addAll(model.columnView!.columnNames);
-    }
-
-    if (model.displayReferencedColumnName != null) {
-      columnNames.add(model.displayReferencedColumnName!);
-    }
-
-    columnNames.addAll(model.linkReference.referencedColumnNames);
-    return columnNames.toList();
   }
 }
