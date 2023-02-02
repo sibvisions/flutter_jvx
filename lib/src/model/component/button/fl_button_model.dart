@@ -72,10 +72,11 @@ class FlButtonModel extends FlComponentModel {
   String columnName = "";
 
   /// If the button is a slider button
-  bool get isSlideStyle => styles.contains(SLIDE_STYLE);
+  bool get isSlideStyle =>
+      styles.contains(SLIDE_STYLE) || styles.contains(SLIDE_RESETABLE_STYLE) || styles.contains(SLIDE_AUTO_RESET_STYLE);
 
   /// If the button is a slider button
-  bool get isSliderResetable => styles.contains(SLIDE_RESETABLE_STYLE);
+  bool get isSliderResetable => styles.contains(SLIDE_RESETABLE_STYLE) || styles.contains(SLIDE_AUTO_RESET_STYLE);
 
   /// If the button is a slider button
   bool get isSliderAutoResetting => styles.contains(SLIDE_AUTO_RESET_STYLE);
