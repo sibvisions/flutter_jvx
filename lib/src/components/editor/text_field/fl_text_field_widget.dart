@@ -46,7 +46,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   /// How much space the icon is itself
   static const double iconSize = 16;
 
-  static const EdgeInsets MOBILE_PADDING = EdgeInsets.fromLTRB(10, 15, 10, 15);
+  static const EdgeInsets MOBILE_PADDING = EdgeInsets.fromLTRB(10, 12, 10, 12);
 
   static const EdgeInsets WEBFRAME_PADDING = EdgeInsets.fromLTRB(10, 12, 10, 12);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
