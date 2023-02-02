@@ -98,11 +98,12 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
           minWidth: minimumSize.width,
           maxWidth: max(minimumSize.width, constraints.maxWidth),
           minHeight: minimumSize.height,
-          maxHeight: max(minimumSize.height, constraints.maxWidth),
+          maxHeight: max(minimumSize.height, constraints.maxHeight),
           child: ActionSlider.standard(
             action: onSlide,
             onTap: onPress,
-            
+            width: max(minimumSize.width, constraints.maxWidth),
+            height: max(minimumSize.height, constraints.maxHeight),
             backgroundColor: model.background,
             icon: image,
             rolling: true,
