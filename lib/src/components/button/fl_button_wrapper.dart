@@ -86,10 +86,19 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         controller: actionSliderController,
         onSlide: (controller) {
           controller.loading();
-          sendButtonPressed().then((value) => controller.success()).catchError((Object error, StackTrace stackTrace) {
-            controller.failure();
-            IUiService().handleAsyncError(error, stackTrace);
-          });
+          sendButtonPressed()
+              .then((value) => controller.success())
+              .catchError((Object error, StackTrace stackTrace) {
+                controller.failure();
+                IUiService().handleAsyncError(error, stackTrace);
+              })
+              .whenComplete(() => Future.delayed(const Duration(milliseconds: 1500)))
+              .whenComplete(() {
+                if (controller.value == SliderMode.failure ||
+                    (model.isSliderResetable && model.isSliderAutoResetting)) {
+                  controller.reset();
+                }
+              });
         },
       );
     } else {
