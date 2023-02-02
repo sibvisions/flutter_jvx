@@ -94,7 +94,7 @@ class ApplicationSettingsResponse extends ApiResponse {
 }
 
 class ApplicationColors {
-  static const String DARK_PREFIX = "dark_";
+  static const String DARK_STRING = "dark";
 
   /// Map with typeName and color as string
   /// e.g. mandatoryBackground, readOnlyBackground, invalidEditorBackground, alternateBackground, ...
@@ -136,7 +136,7 @@ class ApplicationColors {
 
   static Color? _handleJsonColor(Map<String, dynamic> pJson, String pPropertyName, bool pIsDark) {
     String propertyName = pPropertyName;
-    String darkPropertyName = DARK_PREFIX + propertyName;
+    String darkPropertyName = "${propertyName}_$DARK_STRING";
 
     if (pIsDark) {
       if (pJson.keys.contains(darkPropertyName)) {
