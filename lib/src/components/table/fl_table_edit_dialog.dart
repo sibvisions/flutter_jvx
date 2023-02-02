@@ -150,45 +150,50 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         clipBehavior: Clip.hardEdge,
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
         decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                dialogLabel,
-                style: Theme.of(context).dialogTheme.titleTextStyle,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              dialogLabel,
+              style: Theme.of(context).dialogTheme.titleTextStyle,
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: editorWidgets,
+                ),
               ),
-              const SizedBox(height: 12),
-              ...editorWidgets,
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(
-                        onPressed: _handleCancel,
-                        child: Text(
-                          FlutterUI.translate("Cancel"),
-                        ),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      onPressed: _handleCancel,
+                      child: Text(
+                        FlutterUI.translate("Cancel"),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 8,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                TextButton(
+                  child: Text(
+                    FlutterUI.translate("Ok"),
                   ),
-                  TextButton(
-                    child: Text(
-                      FlutterUI.translate("Ok"),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
