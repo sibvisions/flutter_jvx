@@ -51,7 +51,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       if (kIsWeb) {
         padding = const EdgeInsets.fromLTRB(0, 15, 0, 15);
       } else {
-        padding = const EdgeInsets.fromLTRB(0, 14, 0, 14);
+        padding = const EdgeInsets.fromLTRB(0, 13, 0, 13);
       }
     }
 
