@@ -415,7 +415,7 @@ class DalMetaData {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The master reference of this databook.
-  MasterReference? masterReference;
+  ReferenceDefinition? masterReference;
 
   /// All column definitions in this dataBook
   List<ColumnDefinition> columnDefinitions = [];
@@ -486,12 +486,12 @@ class DalMetaData {
   }
 }
 
-class MasterReference {
+class ReferenceDefinition {
   List<String> columnNames;
   List<String> referencedColumnNames;
   String referencedDataBook;
 
-  MasterReference.fromJson(Map<String, dynamic> json)
+  ReferenceDefinition.fromJson(Map<String, dynamic> json)
       : columnNames = json['columnNames'].cast<String>(),
         referencedColumnNames = json['referencedColumnNames'].cast<String>(),
         referencedDataBook = json['referencedDataBook'];
