@@ -34,23 +34,11 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
   /// The function to call when the button slides.
   final Function(ActionSliderController)? onSlide;
 
-  /// The function to call when the button is pressed.
-  final Function(ActionSliderController)? onPress;
-
-  /// The function if the button gained focus.
-  final VoidCallback? onFocusGained;
-
-  /// The function if the button lost focus.
-  final VoidCallback? onFocusLost;
-
   /// The function if the mouse was pressed down.
   final Function(DragDownDetails)? onPressDown;
 
   /// The function if the mouse click is released.
   final Function(DragEndDetails)? onPressUp;
-
-  /// The focus node of the button.
-  final FocusNode focusNode;
 
   /// The controller of the button.
   final ActionSliderController controller;
@@ -79,12 +67,8 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
   const FlSlideButtonWidget({
     super.key,
     required super.model,
-    required this.focusNode,
     required this.controller,
     this.onSlide,
-    this.onPress,
-    this.onFocusGained,
-    this.onFocusLost,
     this.onPressDown,
     this.onPressUp,
   });
@@ -103,18 +87,20 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
           maxWidth: max(minimumSize.width, constraints.maxWidth),
           minHeight: minimumSize.height,
           maxHeight: max(minimumSize.height, constraints.maxHeight),
-          child: GestureDetector(
-            onDoubleTap: () => controller.reset(),
-            child: ActionSlider.standard(
-              controller: controller,
-              action: onSlide,
-              onTap: onPress,
-              width: max(minimumSize.width, constraints.maxWidth),
-              height: max(minimumSize.height, constraints.maxHeight),
-              backgroundColor: model.background,
-              icon: image,
-              rolling: true,
-              child: createTextWidget(),
+          child: AbsorbPointer(
+            absorbing: !model.isEnabled,
+            child: GestureDetector(
+              onDoubleTap: () => controller.reset(),
+              child: ActionSlider.standard(
+                controller: controller,
+                action: onSlide,
+                width: max(minimumSize.width, constraints.maxWidth),
+                height: max(minimumSize.height, constraints.maxHeight),
+                backgroundColor: model.background,
+                icon: image,
+                rolling: true,
+                child: createTextWidget(),
+              ),
             ),
           ),
         );
