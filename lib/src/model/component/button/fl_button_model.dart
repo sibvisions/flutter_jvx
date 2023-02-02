@@ -24,6 +24,10 @@ class FlButtonModel extends FlComponentModel {
 
   static const String SLIDE_STYLE = "f_slide";
 
+  static const String SLIDE_RESETABLE_STYLE = "f_slide_reset";
+
+  static const String SLIDE_AUTO_RESET_STYLE = "f_slide_auto_reset";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,6 +73,12 @@ class FlButtonModel extends FlComponentModel {
 
   /// If the button is a slider button
   bool get isSlideStyle => styles.contains(SLIDE_STYLE);
+
+  /// If the button is a slider button
+  bool get isSliderResetable => styles.contains(SLIDE_RESETABLE_STYLE);
+
+  /// If the button is a slider button
+  bool get isSliderAutoResetting => styles.contains(SLIDE_AUTO_RESET_STYLE);
 
   @override
   Size? get minimumSize {

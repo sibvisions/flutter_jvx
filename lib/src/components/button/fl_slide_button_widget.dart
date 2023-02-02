@@ -90,7 +90,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
           child: AbsorbPointer(
             absorbing: !model.isEnabled,
             child: GestureDetector(
-              onDoubleTap: () => controller.reset(),
+              onDoubleTap: model.isSliderResetable ? _handleDoubleTap : null,
               child: ActionSlider.standard(
                 controller: controller,
                 action: onSlide,
@@ -127,5 +127,13 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
       model.labelModel,
       pTextStyle: textStyle,
     );
+  }
+
+  void _handleDoubleTap() {
+    if (controller.value == SliderMode.loading || controller.value == SliderMode.standard) {
+      return;
+    }
+
+    controller.reset();
   }
 }
