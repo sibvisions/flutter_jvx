@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:action_slider/action_slider.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
@@ -82,14 +84,9 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       buttonWidget = FlSlideButtonWidget(
         model: model,
         controller: actionSliderController,
-        focusNode: buttonFocusNode,
-        onFocusGained: focus,
-        onFocusLost: unfocus,
-        onSlide: (controller) async {
+        onSlide: (controller) {
           controller.loading();
-          await sendButtonPressed()
-              .then((value) => controller.success())
-              .catchError((Object error, StackTrace stackTrace) {
+          sendButtonPressed().then((value) => controller.success()).catchError((Object error, StackTrace stackTrace) {
             controller.failure();
             IUiService().handleAsyncError(error, stackTrace);
           });
