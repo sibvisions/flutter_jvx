@@ -98,6 +98,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
                 height: max(minimumSize.height, constraints.maxHeight),
                 backgroundColor: model.background,
                 icon: image,
+                toggleColor: model.foreground,
                 rolling: true,
                 child: createTextWidget(),
               ),
