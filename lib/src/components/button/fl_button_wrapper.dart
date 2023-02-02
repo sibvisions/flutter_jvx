@@ -130,6 +130,13 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   @override
   modelUpdated() {
     layoutData.isFixedSize = model.isSlideStyle;
+
+    if (model.isSlideStyle && model.lastChangedProperties.contains(ApiObjectProperty.style)) {
+      if (actionSliderController.value == SliderMode.success || actionSliderController.value == SliderMode.failure) {
+        actionSliderController.reset();
+      }
+    }
+
     super.modelUpdated();
   }
 
