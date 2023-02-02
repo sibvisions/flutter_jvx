@@ -31,9 +31,9 @@ class BadClientProcessor implements IResponseProcessor<BadClientResponse> {
     FlutterUI.log.e(pResponse.info);
     return [
       OpenServerErrorDialogCommand(
-        reason: "Server sent bad client in response",
-        title: FlutterUI.translate("Invalid Server Version"),
-        message: FlutterUI.translate("Server/Client Version mismatch. An Update is required!"),
+        reason: "Server is too old",
+        title: FlutterUI.translate("Invalid Server version"),
+        message: FlutterUI.translate("This Client requires a newer Server. An update is required!"),
         userError: true,
       )
     ];
