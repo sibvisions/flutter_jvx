@@ -25,6 +25,8 @@ class FlEditorModel extends FlComponentModel {
 
   Map<String, dynamic> json = {};
 
+  bool savingImmediate = false;
+
   // ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
 
   FlEditorModel();
@@ -50,6 +52,13 @@ class FlEditorModel extends FlComponentModel {
       pKey: ApiObjectProperty.dataRow,
       pDefault: defaultModel.dataProvider,
       pCurrent: dataProvider,
+    );
+
+    savingImmediate = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.savingImmediate,
+      pDefault: defaultModel.savingImmediate,
+      pCurrent: savingImmediate,
     );
 
     changedCellEditor = pJson.keys.contains(ApiObjectProperty.cellEditor);

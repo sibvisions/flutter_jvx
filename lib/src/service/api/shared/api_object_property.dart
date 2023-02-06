@@ -250,6 +250,7 @@ abstract class ApiObjectProperty {
   static const String from = "from";
   static const String columnNames = "columnNames";
   static const String columnName = "columnName";
+  static const String savingImmediate = "savingImmediate";
   static const String dataRow = "dataRow";
   static const String isAllFetched = "isAllFetched";
   static const String selectedRow = "selectedRow";
