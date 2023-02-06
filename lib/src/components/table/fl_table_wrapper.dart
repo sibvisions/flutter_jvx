@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
@@ -422,7 +423,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   Future<void> _refresh() {
     return IUiService().sendCommand(
       FetchCommand(
-        fromRow: -1,
+        fromRow: 0,
         rowCount: IUiService().getSubscriptionRowcount(pDataProvider: model.dataProvider),
         dataProvider: model.dataProvider,
         reason: "Table refreshed",
@@ -549,7 +550,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
               } else if (val == TableContextMenuItem.OFFLINE) {
                 _debugGoOffline();
               } else if (val == TableContextMenuItem.FETCH) {
-                _debugFetch();
+                unawaited(_refresh());
               } else if (val == TableContextMenuItem.SORT) {
                 BaseCommand? command = _createSortColumnCommand(pColumnName);
                 if (command != null) {
@@ -729,15 +730,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workscreenName = state.pathParameters['workScreenName']!;
     OfflineUtil.initOffline(workscreenName);
-  }
-
-  void _debugFetch() {
-    IUiService().sendCommand(FetchCommand(
-      dataProvider: model.dataProvider,
-      fromRow: 0,
-      rowCount: -1,
-      reason: "debug fetch",
-    ));
   }
 
   /// Creates a delete command for this row.
