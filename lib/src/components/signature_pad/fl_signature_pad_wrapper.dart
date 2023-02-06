@@ -14,12 +14,12 @@
  * the License.
  */
 
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:signature/signature.dart';
 
 import '../../flutter_ui.dart';
@@ -49,6 +49,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  bool showControls = true;
   DataRecord? _dataRecord;
   late final SignatureController signatureController;
   LongPressDownDetails? details;
@@ -64,6 +65,14 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     super.initState();
     signatureController = SignatureController();
 
+    signatureController.onDrawStart = () async {
+      showControls = false;
+      // setState(() { });
+    };
+    signatureController.onDrawEnd = () async {
+      showControls = true;
+      // setState(() { });
+    };
     layoutData.isFixedSize = true;
 
     subscribe();
@@ -76,10 +85,10 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       controller: signatureController,
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
-      showImage: _dataRecord?.values.isNotEmpty == true && _dataRecord?.values[0] != null,
+      showControls: showControls,
       dataRecord: _dataRecord,
-      onLongPress: showContextMenu,
-      onLongPressDown: (details) => this.details = details,
+      onClear: _handleClear,
+      onDone: _handleDone,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -106,9 +115,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     if (model.dataProvider != null && model.columnName != null) {
       Uint8List? pngBytes = await signatureController.toPngBytes();
 
-      List<dynamic> values = [];
-      values.add(pngBytes);
-
       FlutterUI.logUI.i("Sending Signature");
 
       return [
@@ -117,7 +123,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
             dataProvider: model.dataProvider!,
             editorColumnName: model.columnName,
             columnNames: [model.columnName!],
-            values: values,
+            values: pngBytes != null ? [base64Encode(pngBytes)] : [null],
             reason: "Drawing has ended on ${model.id}")
       ];
     }
@@ -143,6 +149,12 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     return List.empty();
   }
 
+  @override
+  void dispose() {
+    signatureController.dispose();
+    super.dispose();
+  }
+
   void subscribe() {
     if (model.dataProvider != null && model.columnName != null) {
       IUiService().registerDataSubscription(
@@ -165,58 +177,25 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     setState(() {});
   }
 
-  showContextMenu() {
-    if (details == null) {
-      return;
-    }
-
-    List<PopupMenuEntry<SignatureContextMenuCommand>> popupMenuEntries =
-        <PopupMenuEntry<SignatureContextMenuCommand>>[];
-
-    if (_dataRecord?.values[0] == null) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squarePlus, "Done", SignatureContextMenuCommand.DONE));
-    }
-    popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.squareMinus, "Clear", SignatureContextMenuCommand.CLEAR));
-
-    showMenu(
-            position: RelativeRect.fromRect(
-                details!.globalPosition & const Size(40, 40), Offset.zero & MediaQuery.of(context).size),
-            context: context,
-            items: popupMenuEntries)
-        .then((val) {
-      if (val != null) {
-        IUiService()
-            .saveAllEditors(
-                pId: model.id,
-                pFunction: () async {
-                  if (val == SignatureContextMenuCommand.DONE) {
-                    return await sendSignature();
-                  } else if (val == SignatureContextMenuCommand.CLEAR) {
-                    return await deleteSignature();
-                  }
-                  return [];
-                },
-                pReason: "Signature pad closed.")
-            .catchError(IUiService().handleAsyncError);
-      }
-    });
+  void _handleClear() {
+    IUiService()
+        .saveAllEditors(
+            pId: model.id,
+            pFunction: () async {
+              return await deleteSignature();
+            },
+            pReason: "Signature pad closed.")
+        .catchError(IUiService().handleAsyncError);
   }
 
-  PopupMenuItem<SignatureContextMenuCommand> _getContextMenuItem(
-      IconData icon, String text, SignatureContextMenuCommand value) {
-    return PopupMenuItem<SignatureContextMenuCommand>(
-      enabled: true,
-      value: value,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          FaIcon(
-            icon,
-            color: Colors.grey[600],
-          ),
-          Padding(padding: const EdgeInsets.only(left: 5), child: Text(text)),
-        ],
-      ),
-    );
+  void _handleDone() {
+    IUiService()
+        .saveAllEditors(
+            pId: model.id,
+            pFunction: () async {
+              return await sendSignature();
+            },
+            pReason: "Signature pad closed.")
+        .catchError(IUiService().handleAsyncError);
   }
 }

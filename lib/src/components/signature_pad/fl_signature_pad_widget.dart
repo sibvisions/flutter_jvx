@@ -16,7 +16,6 @@
 
 import 'dart:typed_data';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 
@@ -24,6 +23,7 @@ import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../util/image/image_loader.dart';
+import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
@@ -34,67 +34,96 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
   final SignatureController controller;
   final double? width;
   final double? height;
-  final bool showImage;
   final DataRecord? dataRecord;
-  final VoidCallback? onLongPress;
-  final Function(LongPressDownDetails?)? onLongPressDown;
+  final VoidCallback? onClear;
+  final VoidCallback? onDone;
+  final bool showControls;
 
   const FlSignaturePadWidget({
     super.key,
     required super.model,
     required this.controller,
-    required this.width,
-    required this.height,
-    required this.showImage,
+    required this.showControls,
+    this.width,
+    this.height,
     this.dataRecord,
-    this.onLongPress,
-    this.onLongPressDown,
+    this.onClear,
+    this.onDone,
   });
 
   @override
   Widget build(BuildContext context) {
-    Widget? image;
-    if (showImage) {
-      dynamic imageValue = dataRecord?.values[0];
+    Widget? contentWidget;
 
-      if (imageValue != null) {
-        try {
-          if (imageValue is String && imageValue.startsWith("[")) {
-            List<String> listOfSnippets = imageValue.substring(1, imageValue.length - 1).split(",");
-
-            imageValue = Uint8List.fromList(listOfSnippets.map((e) => int.parse(e)).toList());
-          }
-
-          if (imageValue is Uint8List) {
-            image = Image.memory(imageValue, fit: BoxFit.scaleDown);
-          }
-        } catch (error, stacktrace) {
-          FlutterUI.logUI.e("Failed to show image", error, stacktrace);
+    if (dataRecord != null && dataRecord?.values[0] != null) {
+      var imageValue = dataRecord?.values[0];
+      try {
+        if (imageValue is String) {
+          contentWidget = ImageLoader.loadImage(
+            imageValue,
+            imageProvider: ImageLoader.getImageProvider(imageValue, pImageInBase64: true),
+            pFit: BoxFit.scaleDown,
+          );
+        } else if (imageValue is Uint8List) {
+          contentWidget = Image.memory(imageValue, fit: BoxFit.scaleDown);
         }
+      } catch (error, stacktrace) {
+        FlutterUI.logUI.e("Failed to show image", error, stacktrace);
       }
-      image ??= ImageLoader.DEFAULT_IMAGE;
     }
 
-    return GestureDetector(
-      onLongPress: () => onLongPress?.call(),
-      onLongPressDown: (details) => onLongPressDown?.call(details),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.onPrimary),
-          borderRadius: BorderRadius.circular(5),
-          color: model.background ?? Colors.white.withOpacity(0.7),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(3.0),
-          child: image ??
-              Signature(
-                key: UniqueKey(),
-                // TODO Remove after initState fix for width and height
-                width: width,
-                height: height,
-                controller: controller,
-                backgroundColor: Colors.transparent,
+    contentWidget ??= Signature(
+      width: width,
+      height: height,
+      controller: controller,
+      backgroundColor: Colors.transparent,
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: JVxColors.COMPONENT_BORDER),
+        borderRadius: BorderRadius.circular(5),
+        color: model.background ?? Colors.white.withOpacity(0.7),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(3.0),
+        child: Stack(
+          children: [
+            Positioned.fill(child: contentWidget),
+            if (showControls && (onClear != null || onDone != null))
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (onClear != null)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: onClear,
+                        ),
+                      ),
+                    if ((onClear != null) && (onDone != null && contentWidget is Signature)) const SizedBox(width: 5),
+                    if (onDone != null && contentWidget is Signature)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.check),
+                          onPressed: onDone,
+                        ),
+                      ),
+                  ],
+                ),
               ),
+          ],
         ),
       ),
     );
