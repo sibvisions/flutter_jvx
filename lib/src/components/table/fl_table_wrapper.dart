@@ -573,19 +573,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Selects the record.
   void _selectRecord(int pRowIndex, String? pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
-    Filter? filter = _createFilter(pRowIndex: pRowIndex);
-
-    if (filter == null) {
-      FlutterUI.logUI.w("Filter of table(${model.id}) null");
-      return;
-    }
-
     IUiService()
         .saveAllEditors(
           pReason: "Select row in table",
           pId: model.id,
           pFunction: () async {
             List<BaseCommand> commands = [];
+
+            Filter? filter = _createFilter(pRowIndex: pRowIndex);
+
+            if (filter == null) {
+              FlutterUI.logUI.w("Filter of table(${model.id}) null");
+              return commands;
+            }
 
             commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
 
@@ -647,7 +647,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Gets the value of a specified column
   dynamic _getValue({required String pColumnName, int? pRowIndex}) {
     int rowIndex = pRowIndex ?? selectedRow;
-    if (rowIndex == -1) {
+    if (rowIndex == -1 || rowIndex >= dataChunk.data.length) {
       return;
     }
 
