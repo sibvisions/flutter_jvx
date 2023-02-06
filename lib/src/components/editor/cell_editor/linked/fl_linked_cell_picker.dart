@@ -75,6 +75,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   String? lastChangedFilter;
   DataChunk? _chunkData;
   DalMetaData? _metaData;
+  bool _currentlyFiltering = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -262,9 +263,15 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   }
 
   void _onRowTapped(int pIndex, String pColumnName, ICellEditor pCellEditor) {
-    List<dynamic> data = _chunkData!.data[pIndex]!;
+    if (_currentlyFiltering) {
+      return;
+    }
 
     selectRecord(pIndex).then((_) {
+      List<dynamic>? data = _chunkData!.data[pIndex];
+      if (data == null) {
+        return;
+      }
       if (model.linkReference.columnNames.isEmpty) {
         Navigator.of(context).pop(data[_chunkData!.columnDefinitions
             .indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0])]);
@@ -327,6 +334,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   void _startTimerValueChanged(String value) {
     lastChangedFilter = value;
+    _currentlyFiltering = true;
 
     // Null the filter if the filter is empty.
     if (lastChangedFilter != null && lastChangedFilter!.isEmpty) {
@@ -336,10 +344,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     if (filterTimer != null) {
       filterTimer!.cancel();
     }
-
     filterTimer = Timer(const Duration(milliseconds: 300), _onTextFieldValueChanged);
-
-    setState(() {});
   }
 
   void _onTextFieldValueChanged() {
@@ -369,10 +374,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       ),
     )
         .then(
-      (value) {
-        if (!focusNode.hasPrimaryFocus) {
-          focusNode.requestFocus();
-        }
+      (_) {
+        _currentlyFiltering = false;
       },
     ).catchError(IUiService().handleAsyncError);
   }
