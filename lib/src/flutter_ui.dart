@@ -81,7 +81,7 @@ class FlutterUI extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Determines the supported server version which will be sent in the [ApiStartUpRequest]
-  static const String supportedServerVersion = "2.2.0";
+  static const String supportedServerVersion = "2.3.0";
 
   /// Loads assets with packages prefix
   static bool package = true;
@@ -375,11 +375,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   AppLifecycleState? lastState;
 
   ThemeData themeData = ThemeData(
-    backgroundColor: Colors.grey.shade50,
+    colorScheme: ColorScheme(background: Colors.grey.shade50),
   );
   ThemeData darkThemeData = ThemeData(
     brightness: Brightness.dark,
-    backgroundColor: Colors.grey.shade50,
+    colorScheme: ColorScheme(background: Colors.grey.shade50),
   );
 
   final ThemeData splashTheme = ThemeData();
@@ -647,7 +647,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     var themeData = ThemeData.from(colorScheme: colorScheme);
 
-    if (themeData.textTheme.bodyText1?.color?.computeLuminance() == 0.0) {
+    if (themeData.textTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
       themeData = themeData.copyWith(
         textTheme: themeData.textTheme.apply(
           bodyColor: JVxColors.LIGHTER_BLACK,
@@ -656,7 +656,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       );
     }
 
-    if (themeData.primaryTextTheme.bodyText1?.color?.computeLuminance() == 0.0) {
+    if (themeData.primaryTextTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
       themeData = themeData.copyWith(
         primaryTextTheme: themeData.primaryTextTheme.apply(
           bodyColor: JVxColors.LIGHTER_BLACK,
@@ -683,13 +683,54 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     themeData = themeData.copyWith(
       // Override for dark mode
-      toggleableActiveColor: themeData.colorScheme.primary,
       listTileTheme: themeData.listTileTheme.copyWith(
         // TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
         textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         // textColor: themeData.colorScheme.onBackground,
         // iconColor: themeData.colorScheme.onBackground,
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return themeData.colorScheme.primary;
+          }
+          return null;
+        }),
+        trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return themeData.colorScheme.primary;
+          }
+          return null;
+        }),
+      ),
+      radioTheme: RadioThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return themeData.colorScheme.primary;
+          }
+          return null;
+        }),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return themeData.colorScheme.primary;
+          }
+          return null;
+        }),
       ),
     );
     return themeData;
