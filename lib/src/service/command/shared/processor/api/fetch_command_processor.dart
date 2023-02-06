@@ -18,11 +18,16 @@ import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_fetch_request.dart';
 import '../../../../api/i_api_service.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
   @override
   Future<List<BaseCommand>> processCommand(FetchCommand command) {
+    if (command.reload) {
+      IUiService().notifySubscriptionsOfReload(pDataprovider: command.dataProvider);
+    }
+
     return IApiService().sendRequest(
       ApiFetchRequest(
         dataProvider: command.dataProvider,
@@ -31,6 +36,7 @@ class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
         columnNames: command.columnNames,
         includeMetaData: command.includeMetaData,
         pageKey: command.pageKey,
+        reload: command.reload,
       ),
     );
   }

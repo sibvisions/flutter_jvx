@@ -424,6 +424,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return IUiService().sendCommand(
       FetchCommand(
         fromRow: 0,
+        reload: true,
         rowCount: IUiService().getSubscriptionRowcount(pDataProvider: model.dataProvider),
         dataProvider: model.dataProvider,
         reason: "Table refreshed",

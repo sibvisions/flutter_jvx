@@ -34,6 +34,9 @@ class FetchCommand extends SessionCommand {
   /// The page key if we fetch a specific page.
   final String? pageKey;
 
+  /// If `true`, the data provider will be reloaded server side.
+  bool reload;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,6 +48,7 @@ class FetchCommand extends SessionCommand {
     this.includeMetaData = false,
     this.columnNames,
     this.pageKey,
+    this.reload = false,
     required super.reason,
   });
 
@@ -54,6 +58,6 @@ class FetchCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "FetchCommand{columnNames: $columnNames, includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, ${super.toString()}}";
+    return "FetchCommand{columnNames: $columnNames, includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, reload:$reload ${super.toString()}}";
   }
 }
