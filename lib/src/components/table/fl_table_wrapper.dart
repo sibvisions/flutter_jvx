@@ -17,7 +17,6 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -507,11 +506,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
     }
 
-    if (kDebugMode) {
-      popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.powerOff, "Offline", TableContextMenuItem.OFFLINE));
-      popupMenuEntries
-          .add(_createContextMenuItem(FontAwesomeIcons.circleArrowLeft, "Fetch", TableContextMenuItem.FETCH));
-    }
+    // if (kDebugMode) {
+    //   popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.powerOff, "Offline", TableContextMenuItem.OFFLINE));
+    //   popupMenuEntries
+    //       .add(_createContextMenuItem(FontAwesomeIcons.circleArrowLeft, "Fetch", TableContextMenuItem.FETCH));
+    // }
 
     showMenu(
       position: RelativeRect.fromRect(
