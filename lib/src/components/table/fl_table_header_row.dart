@@ -72,7 +72,7 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
   @override
   Widget build(BuildContext context) {
     List<ColumnDefinition> columnsToShow =
-        tableSize.columnWidths.keys.map((e) => columnDefinitions.firstWhere((element) => element.name == e)).toList();
+        columnDefinitions.where((element) => tableSize.columnWidths.containsKey(element.name)).toList();
 
     int cellIndex = -1;
     List<Widget> rowWidgets = columnsToShow.map((columnDefinition) {
