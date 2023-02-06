@@ -32,6 +32,12 @@ class ApiFetchRequest extends SessionRequest {
 
   final String dataProvider;
 
+  /// The page key if we fetch a specific page.
+  final String? pageKey;
+
+  /// If `true`, the data provider will be reloaded server side.
+  bool reload;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,6 +48,7 @@ class ApiFetchRequest extends SessionRequest {
     required this.dataProvider,
     this.includeMetaData,
     this.columnNames,
+    this.pageKey,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,5 +63,6 @@ class ApiFetchRequest extends SessionRequest {
         ApiObjectProperty.fromRow: fromRow,
         ApiObjectProperty.rowCount: rowCount,
         ApiObjectProperty.dataProvider: dataProvider,
+        ApiObjectProperty.reload: reload,
       };
 }
