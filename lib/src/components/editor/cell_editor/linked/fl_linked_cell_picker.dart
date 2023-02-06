@@ -158,7 +158,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
               textController: _controller,
               keyboardType: TextInputType.text,
               valueChanged: _startTimerValueChanged,
-              endEditing: (_) {},
+              endEditing: _startTimerValueChanged,
               focusNode: focusNode,
               inputDecoration: InputDecoration(
                 labelText: FlutterUI.translate("Search"),
@@ -345,6 +345,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       filterTimer!.cancel();
     }
     filterTimer = Timer(const Duration(milliseconds: 300), _onTextFieldValueChanged);
+
+    // Textfield wont update immediately, so we need to force it to update.
+    setState(() {});
   }
 
   void _onTextFieldValueChanged() {
