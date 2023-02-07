@@ -15,7 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../flutter_ui.dart';
 import '../../util/image/image_loader.dart';
@@ -49,20 +49,20 @@ class Splash extends StatelessWidget {
     return splashBuilder?.call(context, snapshot) ??
         JVxSplash(
           snapshot: snapshot,
-          logo: Image(
-            image: Svg(
-              ImageLoader.getAssetPath(
-                FlutterUI.package,
-                "assets/images/J.svg",
-              ),
-              size: const Size(138, 145),
+          logo: SvgPicture.asset(
+            ImageLoader.getAssetPath(
+              FlutterUI.package,
+              "assets/images/J.svg",
             ),
+            width: 138,
+            height: 145,
           ),
-          background: Svg(
+          background: SvgPicture.asset(
             ImageLoader.getAssetPath(
               FlutterUI.package,
               "assets/images/JVx_Bg.svg",
             ),
+            fit: BoxFit.fill,
           ),
           branding: Image.asset(
             ImageLoader.getAssetPath(
