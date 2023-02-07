@@ -48,6 +48,7 @@ class FetchCommand extends SessionCommand {
     this.includeMetaData = true,
     this.columnNames,
     this.pageKey,
+    this.reload = false,
     required super.reason,
   });
 
