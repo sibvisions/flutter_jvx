@@ -16,8 +16,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'setting_item.dart';
-
 class SettingGroup extends StatelessWidget {
   const SettingGroup({
     super.key,
@@ -29,7 +27,7 @@ class SettingGroup extends StatelessWidget {
   final Widget groupHeader;
 
   /// All items of this settings group
-  final List<SettingItem> items;
+  final List<Widget> items;
 
   @override
   Widget build(BuildContext context) {

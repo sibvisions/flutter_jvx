@@ -316,8 +316,8 @@ class OnlineApiRepository implements IRepository {
     }
   }
 
-  bool isWebSocketAvailable() {
-    return jvxWebSocket?.available.value ?? false;
+  JVxWebSocket? getWebSocket() {
+    return jvxWebSocket;
   }
 
   Future<void> startWebSocket() async {

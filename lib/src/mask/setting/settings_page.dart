@@ -561,17 +561,20 @@ class _SettingsPageState extends State<SettingsPage> {
       value: versionValue,
     );
 
-    var repository = IApiService().getRepository();
-    bool? webSocketAvailable;
-    if (repository is OnlineApiRepository) {
-      webSocketAvailable = repository.isWebSocketAvailable();
+    OnlineApiRepository? repository;
+    if (IApiService().getRepository() is OnlineApiRepository) {
+      repository = IApiService().getRepository() as OnlineApiRepository;
     }
 
-    SettingItem webSocketStatus = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.circleNodes),
-      title: FlutterUI.translate("Web Socket"),
-      value: FlutterUI.translate(
-          webSocketAvailable != null ? (webSocketAvailable ? "Available" : "Not available") : "Unknown"),
+    Widget webSocketStatus = AnimatedBuilder(
+      animation: Listenable.merge([
+        repository?.getWebSocket()?.available,
+        repository?.getWebSocket()?.connected,
+      ]),
+      builder: (context, child) => _buildWebSocketStatus(
+        repository?.getWebSocket()?.available.value,
+        repository?.getWebSocket()?.connected.value,
+      ),
     );
 
     return SettingGroup(
@@ -589,6 +592,24 @@ class _SettingsPageState extends State<SettingsPage> {
         serverVersion,
         webSocketStatus,
       ],
+    );
+  }
+
+  SettingItem<String> _buildWebSocketStatus(bool? available, bool? connected) {
+    String text = FlutterUI.translate(available != null ? (available ? "Available" : "Not available") : "Unknown");
+    if (connected != null) {
+      text += " (${FlutterUI.translate(connected ? "Connected" : "Not connected")})";
+    }
+    return SettingItem(
+      frontIcon: const FaIcon(FontAwesomeIcons.circleNodes),
+      title: FlutterUI.translate("Web Socket"),
+      value: text,
+      onPressed: !(connected ?? false) && IApiService().getRepository() is OnlineApiRepository
+          ? (context, value) async {
+              await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
+              setState(() {});
+            }
+          : null,
     );
   }
 
