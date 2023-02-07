@@ -122,6 +122,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The currently opened editing dialog
   Future? currentEditDialog;
 
+  /// The last sort definition.
+  List<SortDefinition>? lastSortDefinitions;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -356,29 +359,26 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _receiveMetaData(DalMetaData pMetaData) {
     currentState |= LOADED_META_DATA;
 
-    List<ColumnDefinition> newColumns = pMetaData.columnDefinitions;
-    List<ColumnDefinition> oldColumns = metaData.columnDefinitions;
-
-    bool hasToCalc = newColumns.any((newColumn) => (!oldColumns.any((oldColumn) => newColumn.name == oldColumn.name)));
-    hasToCalc |= oldColumns.any((oldColumn) => (!newColumns.any((newColumn) => newColumn.name == oldColumn.name)));
-
-    if (!hasToCalc) {
-      hasToCalc = newColumns.any((newColumn) {
-        ColumnDefinition oldColumn = oldColumns.firstWhere((oldColumn) => oldColumn.name == newColumn.name);
-
-        return oldColumn.width != newColumn.width;
-      });
-    }
-
-    if (!hasToCalc) {
-      List<String> oldSorts = pMetaData.sortDefinitions?.map((e) => e.columnName).toList() ?? [];
-      List<String> newSorts = metaData.sortDefinitions?.map((e) => e.columnName).toList() ?? [];
-
-      hasToCalc |= oldSorts.any((element) => (!newSorts.contains(element))) ||
-          newSorts.any((element) => (!oldSorts.contains(element)));
-    }
-
     metaData = pMetaData;
+
+    bool hasToCalc = metaData.changedProperties.contains(ApiObjectProperty.columns);
+
+    if (!hasToCalc && (metaData.sortDefinitions != null || lastSortDefinitions != null)) {
+      hasToCalc = metaData.sortDefinitions?.length != lastSortDefinitions?.length;
+
+      if (!hasToCalc) {
+        hasToCalc = metaData.sortDefinitions?.any((newSort) => !lastSortDefinitions!.any((oldSort) {
+                  return oldSort.columnName == newSort.columnName && oldSort.mode == newSort.mode;
+                })) ??
+            false;
+        hasToCalc |= lastSortDefinitions?.any((oldSort) => !metaData.sortDefinitions!.any((newSort) {
+                  return oldSort.columnName == newSort.columnName && oldSort.mode == newSort.mode;
+                })) ??
+            false;
+      }
+    }
+
+    lastSortDefinitions = metaData.sortDefinitions;
 
     if (hasToCalc) {
       _recalculateTableSize(true);

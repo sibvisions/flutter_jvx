@@ -425,6 +425,9 @@ class DalMetaData {
   /// Combined json of this metaData
   Map<String, dynamic> json = {};
 
+  /// The last changed properties
+  List<String> changedProperties = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -436,6 +439,7 @@ class DalMetaData {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void applyMetaDataResponse(DalMetaDataResponse pResponse) {
+    changedProperties = pResponse.json.keys.toList();
     if (pResponse.columnViewTable != null) {
       columnViewTable = pResponse.columnViewTable!;
     }
