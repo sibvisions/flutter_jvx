@@ -62,7 +62,8 @@ dependencies:
       url: https://github.com/sibvisions/fix_file_saver.git
 
   # SVG Support
-  flutter_svg: ^2.0.0+1
+  flutter_svg: ^1.1.4
+  flutter_svg_provider: ^1.0.3
   # Icons
   font_awesome_flutter: ^10.2.1
   # Managing different persistent classes

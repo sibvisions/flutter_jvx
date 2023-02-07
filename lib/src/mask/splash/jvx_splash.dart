@@ -25,9 +25,9 @@ import '../../service/ui/i_ui_service.dart';
 
 class JVxSplash extends StatefulWidget {
   final bool showAppName;
-  final Widget? logo;
-  final Widget? branding;
-  final Widget background;
+  final Image? logo;
+  final Image? branding;
+  final ImageProvider background;
   final AsyncSnapshot? snapshot;
   final bool centerBranding;
 
@@ -69,7 +69,14 @@ class _JVxSplashState extends State<JVxSplash> {
     return Scaffold(
       body: Stack(
         children: [
-          widget.background,
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: widget.background,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
           Column(
             // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
