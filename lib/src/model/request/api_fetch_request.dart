@@ -49,6 +49,7 @@ class ApiFetchRequest extends SessionRequest {
     this.includeMetaData,
     this.columnNames,
     this.pageKey,
+    this.reload = false,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
