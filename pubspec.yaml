@@ -57,7 +57,9 @@ dependencies:
   cross_file: ^0.3.3+2
   image_picker: ^0.8.6
   file_picker: ^5.0.1
-  file_saver: ^0.1.1
+  file_saver:
+    git:
+      url: https://github.com/sibvisions/fix_file_saver.git
 
   # SVG Support
   flutter_svg: ^2.0.0+1
@@ -68,7 +70,9 @@ dependencies:
   # QR Scanner
   mobile_scanner: ^2.0.0
   # Signature Pad
-  signature: ^5.2.1
+  signature:
+    git:
+      url: https://github.com/sibvisions/fix_signature.git
   # Saving files on system
   path: ^1.8.1
   path_provider: ^2.0.11
@@ -111,8 +115,8 @@ dependency_overrides:
   # https://github.com/dint-dev/universal_io/pull/37
   universal_io:
     git:
-      url: https://github.com/dint-dev/universal_io.git
-      ref: c4ce2ab
+      url: https://github.com/sibvisions/fix_universal_io.git
+
 
 dev_dependencies:
   flutter_lints: ^2.0.1

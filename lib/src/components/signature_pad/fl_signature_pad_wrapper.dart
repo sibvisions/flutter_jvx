@@ -67,11 +67,11 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
     signatureController.onDrawStart = () async {
       showControls = false;
-      // setState(() { });
+      setState(() {});
     };
     signatureController.onDrawEnd = () async {
       showControls = true;
-      // setState(() { });
+      setState(() {});
     };
     layoutData.isFixedSize = true;
 
