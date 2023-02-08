@@ -50,6 +50,7 @@ part 'panel/fl_panel_model.dart';
 part 'panel/fl_split_panel_model.dart';
 part 'panel/fl_tab_panel_model.dart';
 part 'table/fl_table_model.dart';
+part 'tree/fl_tree_model.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
@@ -100,7 +101,16 @@ abstract class FlComponentModel {
 
   // Size Data
   /// The preferred size of the component as sent by the server.
-  Size? preferredSize;
+  Size? _preferredSize;
+
+  /// The preferred size of the component as sent by the server.
+  // ignore: unnecessary_getters_setters
+  Size? get preferredSize => _preferredSize;
+
+  /// The preferred size of the component as sent by the server.
+  set preferredSize(Size? value) {
+    _preferredSize = value;
+  }
 
   /// The minimum size of the component.
   Size? _minimumSize;

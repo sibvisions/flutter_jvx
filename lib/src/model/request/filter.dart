@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 
 import '../../service/api/shared/api_object_property.dart';
@@ -68,4 +70,8 @@ class Filter {
             compareType: CompareType.EQUALS,
           ))
       .toList();
+
+  String toPageKey() {
+    return jsonEncode(asMap());
+  }
 }

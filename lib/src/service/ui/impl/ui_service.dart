@@ -465,9 +465,9 @@ class UiService implements IUiService {
     _dataSubscriptions.add(pDataSubscription);
 
     if (pShouldFetch) {
-      bool needFetch = IDataService().getDataBook(pDataSubscription.dataProvider) == null;
+      DataBook? databook = IDataService().getDataBook(pDataSubscription.dataProvider);
 
-      if (needFetch) {
+      if (databook == null) {
         sendCommand(FetchCommand(
           dataProvider: pDataSubscription.dataProvider,
           fromRow: pDataSubscription.from,
@@ -510,6 +510,20 @@ class UiService implements IUiService {
           subId: pDataSubscription.id,
         );
         sendCommand(getMetaDataCommand);
+      }
+
+      if (pDataSubscription.onReload != null) {
+        databook.pageRecords.keys.forEach((pageKey) {
+          GetPageChunkCommand getDataChunkCommand = GetPageChunkCommand(
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            from: pDataSubscription.from,
+            to: pDataSubscription.to,
+            subId: pDataSubscription.id,
+            pageKey: pageKey,
+          );
+          sendCommand(getDataChunkCommand);
+        });
       }
     }
   }

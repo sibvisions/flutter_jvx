@@ -42,6 +42,7 @@ import 'panel/split/fl_split_panel_wrapper.dart';
 import 'panel/tabset/fl_tab_panel_wrapper.dart';
 import 'signature_pad/fl_signature_pad_wrapper.dart';
 import 'table/fl_table_wrapper.dart';
+import 'tree/fl_tree_wrapper.dart';
 
 abstract class ComponentsFactory {
   static Widget buildWidget(FlComponentModel model) {
@@ -99,6 +100,8 @@ abstract class ComponentsFactory {
         return FlChartWrapper(model: model as FlChartModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.GAUGE:
         return FlGaugeWrapper(model: model as FlGaugeModel, key: GlobalObjectKey(model.id));
+      case FlComponentClassname.TREE:
+        return FlTreeWrapper(model: model as FlTreeModel, key: GlobalObjectKey(model.id));
 
       // Cell editors:
       case FlComponentClassname.EDITOR:

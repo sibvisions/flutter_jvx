@@ -89,8 +89,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   DalMetaData metaData = DalMetaData("");
 
   /// The data of the table.
-  DataChunk dataChunk =
-      DataChunk(data: HashMap(), isAllFetched: false, columnDefinitions: [], from: 0, to: 0, update: false);
+  DataChunk dataChunk = DataChunk(data: HashMap(), isAllFetched: false, columnDefinitions: [], from: 0, to: 0);
 
   /// The sizes of the table.
   late TableSize tableSize;
@@ -306,13 +305,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     bool hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
         oldColumns.any((element) => (!newColumns.contains(element)));
 
-    if (pDataChunk.update) {
-      for (int index in pDataChunk.data.keys) {
-        dataChunk.data[index] = pDataChunk.data[index]!;
-      }
-    } else {
-      dataChunk = pDataChunk;
-    }
+    dataChunk = pDataChunk;
 
     if (selectedRow >= 0 && selectedRow < dataChunk.data.length) {
       Map<String, dynamic> valueMap = {};

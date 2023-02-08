@@ -15,6 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
+import 'filter.dart';
 import 'session_request.dart';
 
 class ApiFetchRequest extends SessionRequest {
@@ -38,6 +39,8 @@ class ApiFetchRequest extends SessionRequest {
   /// If `true`, the data provider will be reloaded server side.
   bool reload;
 
+  final Filter? filter;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,6 +52,7 @@ class ApiFetchRequest extends SessionRequest {
     required this.includeMetaData,
     this.columnNames,
     this.pageKey,
+    this.filter,
     this.reload = false,
   });
 
@@ -65,5 +69,6 @@ class ApiFetchRequest extends SessionRequest {
         ApiObjectProperty.rowCount: rowCount,
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.reload: reload,
+        ApiObjectProperty.filter: filter?.toJson(),
       };
 }

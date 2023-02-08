@@ -41,9 +41,6 @@ class DataChunk {
   /// index to which data has been fetched
   final int to;
 
-  /// True if this chunk is only an update on already fetched data
-  bool update;
-
   /// Contains record formats
   Map<String, RecordFormat>? recordFormats;
 
@@ -58,7 +55,6 @@ class DataChunk {
     required this.from,
     required this.to,
     this.recordFormats,
-    this.update = false,
   });
 
   int getColumnIndex(String columnName) {

@@ -417,6 +417,12 @@ class DalMetaData {
   /// The master reference of this databook.
   ReferenceDefinition? masterReference;
 
+  /// The master reference of this databook.
+  ReferenceDefinition? detailReference;
+
+  /// The master reference of this databook.
+  ReferenceDefinition? rootReference;
+
   /// All column definitions in this dataBook
   List<ColumnDefinition> columnDefinitions = [];
 
@@ -468,6 +474,12 @@ class DalMetaData {
     if (pResponse.masterReference != null) {
       masterReference = pResponse.masterReference!;
     }
+    if (pResponse.detailReference != null) {
+      detailReference = pResponse.detailReference!;
+    }
+    if (pResponse.rootReference != null) {
+      rootReference = pResponse.rootReference!;
+    }
     if (pResponse.columns != null) {
       columnDefinitions = pResponse.columns!;
     }
@@ -487,6 +499,12 @@ class DalMetaData {
       updateEnabled = pResponse.updateEnabled!;
     }
     ParseUtil.applyJsonToJson(pResponse.json, json);
+  }
+
+  /// Returns true if the given databook is self-joined (references itself in masterReference) false if it isn't
+  /// @returns true if the given databook is self-joined false if it isn't
+  bool isSelfJoined() {
+    return masterReference != null && masterReference!.referencedDataBook == dataProvider;
   }
 }
 

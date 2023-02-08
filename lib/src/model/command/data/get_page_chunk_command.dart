@@ -37,9 +37,6 @@ class GetPageChunkCommand extends DataCommand {
   /// To which index data is being requested
   final int? to;
 
-  /// True if the the data should only overwrite old existing data
-  final bool isUpdate;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,7 +46,6 @@ class GetPageChunkCommand extends DataCommand {
     required this.dataProvider,
     required this.from,
     required this.subId,
-    this.isUpdate = false,
     this.to,
     required super.reason,
   });
@@ -60,6 +56,6 @@ class GetPageChunkCommand extends DataCommand {
 
   @override
   String toString() {
-    return "GetPageChunkCommand{subId: $subId, dataProvider: $dataProvider, from: $from, to: $to, isUpdate: $isUpdate, ${super.toString()}}";
+    return "GetPageChunkCommand{subId: $subId, dataProvider: $dataProvider, from: $from, to: $to, ${super.toString()}}";
   }
 }

@@ -229,13 +229,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _receiveData(DataChunk pChunkData) {
-    if (pChunkData.update && _chunkData != null) {
-      for (int index in pChunkData.data.keys) {
-        _chunkData!.data[index] = pChunkData.data[index]!;
-      }
-    } else {
-      _chunkData = pChunkData;
-    }
+    _chunkData = pChunkData;
 
     tableModel.columnNames.clear();
     tableModel.columnLabels.clear();

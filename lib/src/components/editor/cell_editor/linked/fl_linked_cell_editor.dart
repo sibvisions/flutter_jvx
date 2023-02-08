@@ -189,7 +189,7 @@ class FlLinkedCellEditor
   }
 
   void _setValueMap(DataChunk pChunkData) {
-    if (!lastCallbackIntentional && !pChunkData.update) {
+    if (!lastCallbackIntentional) {
       _valueMap.clear();
     }
 

@@ -129,13 +129,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   }
 
   void receivePolygonData(DataChunk pChunkData) {
-    if (pChunkData.update && _chunkData != null) {
-      for (int index in pChunkData.data.keys) {
-        _chunkData!.data[index] = pChunkData.data[index]!;
-      }
-    } else {
-      _chunkData = pChunkData;
-    }
+    _chunkData = pChunkData;
 
     polygons.clear();
 
@@ -169,13 +163,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   }
 
   void receiveMarkerData(DataChunk pChunkData) {
-    if (pChunkData.update && _chunkData != null) {
-      for (int index in pChunkData.data.keys) {
-        _chunkData!.data[index] = pChunkData.data[index]!;
-      }
-    } else {
-      _chunkData = pChunkData;
-    }
+    _chunkData = pChunkData;
 
     markers.clear();
 

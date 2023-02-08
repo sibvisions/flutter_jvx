@@ -27,6 +27,12 @@ class DalMetaDataResponse extends ApiResponse {
   /// The reference of this response
   ReferenceDefinition? masterReference;
 
+  /// The master reference of this databook.
+  ReferenceDefinition? detailReference;
+
+  /// The master reference of this databook.
+  ReferenceDefinition? rootReference;
+
   /// All column definitions in this dataBook
   List<ColumnDefinition>? columns;
 
@@ -67,6 +73,12 @@ class DalMetaDataResponse extends ApiResponse {
         primaryKeyColumns = json[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
         masterReference = json[ApiObjectProperty.masterReference] != null
             ? ReferenceDefinition.fromJson(json[ApiObjectProperty.masterReference])
+            : null,
+        detailReference = json[ApiObjectProperty.detailReference] != null
+            ? ReferenceDefinition.fromJson(json[ApiObjectProperty.detailReference])
+            : null,
+        rootReference = json[ApiObjectProperty.rootReference] != null
+            ? ReferenceDefinition.fromJson(json[ApiObjectProperty.rootReference])
             : null,
         super.fromJson();
 }

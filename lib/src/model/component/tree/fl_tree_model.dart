@@ -14,54 +14,52 @@
  * the License.
  */
 
-import '../../request/filter.dart';
-import 'session_command.dart';
+part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
-class FetchCommand extends SessionCommand {
+class FlTreeModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final List<String>? columnNames;
+  List<String> dataProviders = [];
 
-  final bool includeMetaData;
+  bool detectEndNode = false;
 
-  final int fromRow;
-
-  final int rowCount;
-
-  final String dataProvider;
-
-  /// The page key if we fetch a specific page.
-  final String? pageKey;
-
-  /// If `true`, the data provider will be reloaded server side.
-  bool reload;
-
-  final Filter? filter;
+  @override
+  Size? get preferredSize {
+    return _preferredSize ?? const Size(250, 300);
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FetchCommand({
-    required this.fromRow,
-    required this.rowCount,
-    required this.dataProvider,
-    this.includeMetaData = false,
-    this.columnNames,
-    this.filter,
-    this.pageKey,
-    this.reload = false,
-    required super.reason,
-  });
+  FlTreeModel() : super();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "FetchCommand{columnNames: $columnNames, includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, reload:$reload ${super.toString()}}";
+  FlTreeModel get defaultModel => FlTreeModel();
+
+  @override
+  void applyFromJson(Map<String, dynamic> pJson) {
+    super.applyFromJson(pJson);
+
+    dataProviders = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.dataBooks,
+      pDefault: defaultModel.dataProviders,
+      pCurrent: dataProviders,
+      pConversion: (value) => List<String>.from(value),
+    );
+
+    detectEndNode = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.detectEndNode,
+      pDefault: defaultModel.detectEndNode,
+      pCurrent: detectEndNode,
+    );
   }
 }

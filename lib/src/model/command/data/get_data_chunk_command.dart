@@ -37,9 +37,6 @@ class GetDataChunkCommand extends DataCommand {
   /// To which index data is being requested
   final int? to;
 
-  /// True if the the data should only overwrite old existing data
-  final bool isUpdate;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +45,6 @@ class GetDataChunkCommand extends DataCommand {
     required this.dataProvider,
     required this.from,
     required this.subId,
-    this.isUpdate = false,
     this.to,
     this.dataColumns,
     required super.reason,
@@ -60,6 +56,6 @@ class GetDataChunkCommand extends DataCommand {
 
   @override
   String toString() {
-    return "GetDataChunkCommand{subId: $subId, dataProvider: $dataProvider, dataColumns: $dataColumns, from: $from, to: $to, isUpdate: $isUpdate, ${super.toString()}}";
+    return "GetDataChunkCommand{subId: $subId, dataProvider: $dataProvider, dataColumns: $dataColumns, from: $from, to: $to,${super.toString()}}";
   }
 }

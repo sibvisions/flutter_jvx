@@ -110,6 +110,8 @@ abstract class ApiObjectProperty {
   static const String borderVisible = "borderVisible";
   static const String detectEndNode = "detectEndNode";
   static const String masterReference = "masterReference";
+  static const String detailReference = "detailReference";
+  static const String rootReference = "rootReference";
 
   // Can occur in both request & response
   static const String clientId = "clientId";

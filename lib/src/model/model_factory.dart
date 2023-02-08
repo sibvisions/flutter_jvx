@@ -72,6 +72,8 @@ abstract class ModelFactory {
         return FlChartModel();
       case FlComponentClassname.GAUGE:
         return FlGaugeModel();
+      case FlComponentClassname.TREE:
+        return FlTreeModel();
 
       // Cell editors:
       case FlComponentClassname.EDITOR:
