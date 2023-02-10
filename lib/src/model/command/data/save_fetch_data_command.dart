@@ -15,18 +15,18 @@
  */
 
 import '../../response/dal_fetch_response.dart';
+import '../api/fetch_command.dart';
 import 'data_command.dart';
 
 class SaveFetchDataCommand extends DataCommand {
   /// Server response
   final DalFetchResponse response;
 
-  /// The page key if we fetched a specific page.
-  final String? pageKey;
+  final FetchCommand? fetchCommand;
 
   SaveFetchDataCommand({
     required this.response,
-    this.pageKey,
+    this.fetchCommand,
     required super.reason,
   });
 

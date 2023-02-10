@@ -157,12 +157,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand pCommand) async {
-    await IDataService().updateData(pFetch: pCommand.response, pageKey: pCommand.pageKey);
-
-    IUiService().notifyDataChange(
-      pDataProvider: pCommand.response.dataProvider,
-      pageKey: pCommand.pageKey,
-    );
+    await IDataService().updateData(pCommand: pCommand);
 
     return [];
   }

@@ -600,11 +600,12 @@ class UiService implements IUiService {
   @override
   void notifyDataChange({
     required String pDataProvider,
-    String? pageKey,
+    bool pUpdatedRecords = true,
+    String? pUpdatedPage,
   }) {
     _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
       // Check if selected data changed
-      if (pageKey != null) {
+      if (pUpdatedPage != null) {
         if (sub.onPage != null) {
           sendCommand(GetPageChunkCommand(
             reason: "Notify data was called",
@@ -612,10 +613,11 @@ class UiService implements IUiService {
             from: sub.from,
             to: sub.to,
             subId: sub.id,
-            pageKey: pageKey,
+            pageKey: pUpdatedPage,
           ));
         }
-      } else {
+      }
+      if (pUpdatedRecords) {
         if (sub.onSelectedRecord != null) {
           sendCommand(GetSelectedDataCommand(
             subId: sub.id,

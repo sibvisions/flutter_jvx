@@ -21,12 +21,12 @@ import 'package:collection/collection.dart';
 
 import '../../../flutter_ui.dart';
 import '../../../model/command/base_command.dart';
+import '../../../model/command/data/save_fetch_data_command.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/response/dal_data_provider_changed_response.dart';
-import '../../../model/response/dal_fetch_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../i_data_service.dart';
 
@@ -55,19 +55,16 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch, String? pageKey}) async {
-    DataBook? dataBook = dataBooks[pFetch.dataProvider];
-    if (dataBook == null) {
-      dataBook = DataBook.empty();
-      dataBook.saveFromFetchRequest(pFetchResponse: pFetch, pageKey: pageKey);
-      dataBooks[pFetch.dataProvider] = dataBook;
-    } else {
-      if (pFetch.clear) {
-        dataBook.clearRecords();
-        dataBook.selectedRow = -1;
-      }
-      dataBook.saveFromFetchRequest(pFetchResponse: pFetch, pageKey: pageKey);
+  Future<List<BaseCommand>> updateData({required SaveFetchDataCommand pCommand}) async {
+    DataBook? dataBook = dataBooks[pCommand.response.dataProvider] ?? DataBook.empty();
+    dataBooks[pCommand.response.dataProvider] = dataBook;
+
+    if (pCommand.response.clear) {
+      dataBook.clearRecords();
+      dataBook.selectedRow = -1;
     }
+
+    dataBook.saveFromFetch(pCommand: pCommand);
 
     return [];
   }

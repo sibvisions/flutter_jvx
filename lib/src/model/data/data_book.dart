@@ -15,6 +15,7 @@
  */
 
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -28,6 +29,7 @@ import '../command/api/filter_command.dart';
 import '../command/api/insert_record_command.dart';
 import '../command/api/select_record_command.dart';
 import '../command/api/set_values_command.dart';
+import '../command/data/save_fetch_data_command.dart';
 import '../request/filter.dart';
 import '../response/dal_data_provider_changed_response.dart';
 import '../response/dal_fetch_response.dart';
@@ -69,6 +71,9 @@ class DataBook {
   /// The selected column
   String? selectedColumn;
 
+  /// The selected root reference
+  String? rootKey;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,9 +108,10 @@ class DataBook {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Saves all data from a fetchRequest
-  void saveFromFetchRequest({required DalFetchResponse pFetchResponse, String? pageKey}) {
+  void saveFromFetch({required SaveFetchDataCommand pCommand}) {
+    var pFetchResponse = pCommand.response;
     dataProvider = pFetchResponse.dataProvider;
-    if (pageKey == null) {
+    if (pCommand.fetchCommand?.filter == null || pCommand.fetchCommand!.filter!.isEmpty) {
       isAllFetched = pFetchResponse.isAllFetched;
       selectedRow = pFetchResponse.selectedRow;
       if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
@@ -116,13 +122,33 @@ class DataBook {
     }
 
     HashMap<int, List> dataMap;
-    if (pageKey != null) {
+    String? pageKey;
+    if (metaData.masterReference == null) {
+      dataMap = records;
+    } else {
+      if (pFetchResponse.masterRow!.isEmpty) {
+        pageKey = "noMasterRow";
+      } else {
+        Map<String, dynamic> pageKeyMap = HashMap();
+        for (int i = 0; i < metaData.masterReference!.referencedColumnNames.length; i++) {
+          pageKeyMap[metaData.masterReference!.referencedColumnNames[i]] = pFetchResponse.masterRow![i];
+        }
+        pageKey = jsonEncode(pageKeyMap);
+      }
+
       if (!pageRecords.containsKey(pageKey)) {
         pageRecords[pageKey] = HashMap();
       }
-      dataMap = pageRecords[pageKey]!;
-    } else {
-      dataMap = records;
+
+      if (pCommand.fetchCommand?.filter != null) {
+        dataMap = pageRecords[pageKey]!;
+      } else {
+        dataMap = records = pageRecords[pageKey]!;
+      }
+    }
+
+    if (pCommand.fetchCommand?.setRootKey == true) {
+      rootKey = pageKey;
     }
 
     // Save records
@@ -137,6 +163,12 @@ class DataBook {
         dataMap.remove(0);
       }
     }
+
+    IUiService().notifyDataChange(
+      pDataProvider: dataProvider,
+      pUpdatedRecords: dataMap == records,
+      pUpdatedPage: pageKey,
+    );
   }
 
   /// Saves all data from a [DalDataProviderChangedResponse]
@@ -417,10 +449,10 @@ class DalMetaData {
   /// The master reference of this databook.
   ReferenceDefinition? masterReference;
 
-  /// The master reference of this databook.
+  /// The detail reference of this databook.
   ReferenceDefinition? detailReference;
 
-  /// The master reference of this databook.
+  /// The root reference of this databook.
   ReferenceDefinition? rootReference;
 
   /// All column definitions in this dataBook
@@ -501,8 +533,7 @@ class DalMetaData {
     ParseUtil.applyJsonToJson(pResponse.json, json);
   }
 
-  /// Returns true if the given databook is self-joined (references itself in masterReference) false if it isn't
-  /// @returns true if the given databook is self-joined false if it isn't
+  /// Returns true if the given databook is self-joined (references itself in masterReference), false if it isn't
   bool isSelfJoined() {
     return masterReference != null && masterReference!.referencedDataBook == dataProvider;
   }

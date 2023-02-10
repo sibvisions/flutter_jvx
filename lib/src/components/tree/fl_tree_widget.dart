@@ -21,8 +21,6 @@ import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
-  final VoidCallback? onPress;
-
   final TreeViewController controller;
 
   final Function(String, bool)? onExpansionChanged;
@@ -38,7 +36,6 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
     this.onNodeTap,
     this.onNodeDoubleTap,
     this.onExpansionChanged,
-    this.onPress,
   });
 
   @override

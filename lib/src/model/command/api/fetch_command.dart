@@ -32,13 +32,12 @@ class FetchCommand extends SessionCommand {
 
   final String dataProvider;
 
-  /// The page key if we fetch a specific page.
-  final String? pageKey;
-
   /// If `true`, the data provider will be reloaded server side.
   bool reload;
 
   final Filter? filter;
+
+  final bool setRootKey;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -51,7 +50,7 @@ class FetchCommand extends SessionCommand {
     this.includeMetaData = false,
     this.columnNames,
     this.filter,
-    this.pageKey,
+    this.setRootKey = false,
     this.reload = false,
     required super.reason,
   });

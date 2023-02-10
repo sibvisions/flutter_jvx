@@ -26,7 +26,10 @@ class DalFetchProcessor extends IResponseProcessor<DalFetchResponse> {
   @override
   List<BaseCommand> processResponse(DalFetchResponse pResponse, ApiRequest? pRequest) {
     SaveFetchDataCommand saveFetchDataCommand = SaveFetchDataCommand(
-        response: pResponse, reason: "Server sent FetchData", pageKey: cast<ApiFetchRequest>(pRequest)?.pageKey);
+      response: pResponse,
+      reason: "Server sent FetchData",
+      fetchCommand: cast<ApiFetchRequest>(pRequest)?.command,
+    );
 
     return [saveFetchDataCommand];
   }

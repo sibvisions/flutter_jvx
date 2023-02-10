@@ -18,11 +18,11 @@ import 'dart:async';
 import 'dart:collection';
 
 import '../../model/command/base_command.dart';
+import '../../model/command/data/save_fetch_data_command.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/response/dal_data_provider_changed_response.dart';
-import '../../model/response/dal_fetch_response.dart';
 import '../../model/response/dal_meta_data_response.dart';
 import '../service.dart';
 
@@ -51,7 +51,7 @@ abstract class IDataService {
   bool updateMetaDataChangedRepsonse({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Updates dataBook with fetched data,
-  Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch, String? pageKey});
+  Future<List<BaseCommand>> updateData({required SaveFetchDataCommand pCommand});
 
   /// Updates parts of dataBook with changed data.
   bool updateDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse});

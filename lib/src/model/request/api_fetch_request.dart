@@ -15,6 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
+import '../command/api/fetch_command.dart';
 import 'filter.dart';
 import 'session_request.dart';
 
@@ -33,13 +34,12 @@ class ApiFetchRequest extends SessionRequest {
 
   final String dataProvider;
 
-  /// The page key if we fetch a specific page.
-  final String? pageKey;
-
   /// If `true`, the data provider will be reloaded server side.
   bool reload;
 
   final Filter? filter;
+
+  final FetchCommand? command;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -51,9 +51,9 @@ class ApiFetchRequest extends SessionRequest {
     required this.dataProvider,
     required this.includeMetaData,
     this.columnNames,
-    this.pageKey,
     this.filter,
     this.reload = false,
+    this.command,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

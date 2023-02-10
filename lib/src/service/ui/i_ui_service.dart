@@ -240,7 +240,8 @@ abstract class IUiService {
   /// data may have changed.
   void notifyDataChange({
     required String pDataProvider,
-    String? pageKey,
+    bool pUpdatedRecords = true,
+    String? pUpdatedPage,
   });
 
   /// Notify all components belonging to [pDataProvider] that their underlying

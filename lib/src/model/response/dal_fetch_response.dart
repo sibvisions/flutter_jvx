@@ -60,6 +60,7 @@ class DalFetchResponse extends ApiResponse {
   /// The sort definitions
   final List<SortDefinition>? sortDefinitions;
 
+  final List<dynamic>? masterRow;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,6 +74,7 @@ class DalFetchResponse extends ApiResponse {
     required this.columnNames,
     required this.to,
     required this.records,
+    this.masterRow,
     this.clear = false,
     this.recordFormats,
     this.sortDefinitions,
@@ -83,6 +85,7 @@ class DalFetchResponse extends ApiResponse {
   /// Parses a json into an [DalFetchResponse] Object
   DalFetchResponse.fromJson(super.json)
       : records = json[ApiObjectProperty.records].cast<List<dynamic>>(),
+        masterRow = cast<List<dynamic>>(json[ApiObjectProperty.masterRow]),
         to = json[ApiObjectProperty.to],
         from = json[ApiObjectProperty.from],
         columnNames = json[ApiObjectProperty.columnNames].cast<String>(),

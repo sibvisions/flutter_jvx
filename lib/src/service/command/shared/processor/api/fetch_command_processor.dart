@@ -35,8 +35,9 @@ class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
         rowCount: command.rowCount,
         columnNames: command.columnNames,
         includeMetaData: command.includeMetaData,
-        pageKey: command.pageKey,
+        filter: command.filter,
         reload: command.reload,
+        command: command,
       ),
     );
   }
