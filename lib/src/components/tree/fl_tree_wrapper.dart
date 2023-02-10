@@ -100,11 +100,11 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   /// Returns the dataprovider of the tree level.
   /// If the dataprovider is self-joined, the dataprovider is returned.
   /// Otherwise an empty string is returned.
-  String? databookAtLevel(int pLevel) {
+  String? dataProviderAtTreeDepth(int pLevel) {
     if (pLevel < model.dataProviders.length) {
       return model.dataProviders[pLevel];
     } else {
-      return metaDatas[model.dataProviders.last]?.isSelfJoined() == true ? model.dataProviders[pLevel - 1] : null;
+      return metaDatas[model.dataProviders.last]?.isSelfJoined() == true ? model.dataProviders.last : null;
     }
   }
 
@@ -188,7 +188,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       FetchCommand(
         fromRow: 0,
         rowCount: -1,
-        dataProvider: databookAtLevel(0)!,
+        dataProvider: dataProviderAtTreeDepth(0)!,
         filter: Filter(columnNames: [], values: []),
         reason: "Fetch base databook",
         setRootKey: true,
@@ -213,7 +213,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       if (node.children.isEmpty) {
         _fetchNodeChildren(node);
       } else {
-        for (Node<NodeData> child in cast<List<Node<NodeData>>>(node.children) ?? []) {
+        for (Node<NodeData> child in List<Node<NodeData>>.from(node.children)) {
           if (child.children.isEmpty && child.isParent) {
             _fetchNodeChildren(child);
           }
@@ -223,9 +223,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   void _fetchNodeChildren(Node<NodeData> node) {
-    String dataProvider = databookAtLevel(node.data!.treePath.length - 1)!;
+    String dataProvider = dataProviderAtTreeDepth(node.data!.treePath.length - 1)!;
     DalMetaData metaData = metaDatas[dataProvider]!;
-    String childDataProvider = databookAtLevel(node.data!.treePath.length)!;
+    String childDataProvider = dataProviderAtTreeDepth(node.data!.treePath.length)!;
     DalMetaData childMetaData = metaDatas[childDataProvider]!;
 
     List<dynamic> dataRow = data[dataProvider]![node.data!.pageKey]!.data[node.data!.rowIndex]!;
@@ -244,13 +244,15 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   _onDataChunk(DataChunk dataChunk) {
-    if (IDataService().getDataBook(databookAtLevel(0)!)!.rootKey == null) {
-      _onPage(databookAtLevel(0)!, null, dataChunk);
+    if (IDataService().getDataBook(dataProviderAtTreeDepth(0)!)!.rootKey == null) {
+      _onPage(dataProviderAtTreeDepth(0)!, null, dataChunk);
     }
   }
 
   void _addPage(String pDataProvider, String? pPageKey, DataChunk pPageChunk) {
-    bool baseNodeData = IDataService().getDataBook(databookAtLevel(0)!)!.rootKey == pPageKey;
+    String baseDataProvider = dataProviderAtTreeDepth(0)!;
+    bool baseNodeData =
+        baseDataProvider == pDataProvider && IDataService().getDataBook(baseDataProvider)!.rootKey == pPageKey;
 
     Node<NodeData>? parentNode;
 
@@ -278,9 +280,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     pPageChunk.data.forEach((rowIndex, dataRow) {
       Filter rowFilter = _createPrimaryKeysFilter(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions);
 
-      bool isPotentialParent = baseNodeData && databookAtLevel(1) != null;
+      bool isPotentialParent = baseNodeData && dataProviderAtTreeDepth(1) != null;
       // parent node data length is the index of our databook, add 1 to get the level of our children
-      isPotentialParent |= parentNode != null && databookAtLevel(parentNode.data!.treePath.length + 1) != null;
+      isPotentialParent |= parentNode != null && dataProviderAtTreeDepth(parentNode.data!.treePath.length + 1) != null;
       newNodes.add(
         Node<NodeData>(
           key: "${pDataProvider}_${rowFilter.toPageKey()}",
@@ -291,7 +293,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       );
       if (model.detectEndNode && isPotentialParent && (parentNode == null || parentNode.expanded)) {
         DalMetaData metaData = metaDatas[pDataProvider]!;
-        String childDataProvider = databookAtLevel(newNodes.last.data!.treePath.length)!;
+        String childDataProvider = dataProviderAtTreeDepth(newNodes.last.data!.treePath.length)!;
         DalMetaData childMetaData = metaDatas[childDataProvider]!;
 
         Filter childFilter = _createChildFilter(childMetaData, metaData, dataRow, pPageChunk.columnDefinitions);
@@ -344,13 +346,16 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   Filter _createChildFilter(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow,
       List<ColumnDefinition> pColumnDefinitions) {
     bool isFirstSelfJoined = pChildMetaData.isSelfJoined() && pChildMetaData == pParentMetaData;
-    ReferenceDefinition referenceDefinition =
-        isFirstSelfJoined ? pChildMetaData.rootReference! : pChildMetaData.masterReference!;
+    ReferenceDefinition? referenceDefinition;
+    if (isFirstSelfJoined) {
+      referenceDefinition = pChildMetaData.rootReference;
+    }
+    referenceDefinition ??= pChildMetaData.masterReference;
 
     return Filter(
       columnNames: pParentMetaData.primaryKeyColumns
           .map((primaryKey) =>
-              referenceDefinition.columnNames[referenceDefinition.referencedColumnNames.indexOf(primaryKey)])
+              referenceDefinition!.columnNames[referenceDefinition.referencedColumnNames.indexOf(primaryKey)])
           .toList(),
       values: pParentMetaData.primaryKeyColumns
           .map((columnName) => pParentRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
