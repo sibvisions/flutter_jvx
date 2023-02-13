@@ -157,7 +157,7 @@ class CommandService implements ICommandService {
 
   Future<void> processCommand(BaseCommand pCommand) async {
     if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
-      FlutterUI.logCommand.i("Processing ${pCommand.runtimeType}");
+      FlutterUI.logCommand.i("Processing ${pCommand.runtimeType} (${pCommand.reason})");
     }
     await pCommand.beforeProcessing?.call();
 
