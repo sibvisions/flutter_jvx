@@ -70,9 +70,7 @@ dependencies:
   # QR Scanner
   mobile_scanner: ^2.0.0
   # Signature Pad
-  signature:
-    git:
-      url: https://github.com/sibvisions/fix_signature.git
+  signature: ^5.3.2
   # Saving files on system
   path: ^1.8.1
   path_provider: ^2.0.11
