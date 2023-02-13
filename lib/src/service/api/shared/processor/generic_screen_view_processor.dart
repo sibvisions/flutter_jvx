@@ -14,9 +14,13 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
+
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route_to_work_command.dart';
+import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
 import '../../../config/config_controller.dart';
@@ -35,25 +39,38 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
   List<BaseCommand> processResponse(GenericScreenViewResponse pResponse, ApiRequest? pRequest) {
     List<BaseCommand> commands = [];
 
+    FlPanelModel? panel;
     // Handle New & Changed Components
     // Get new full components
-    SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand.fromJson(
-      components: pResponse.changedComponents!,
-      screenName: pResponse.screenName,
-      originRequest: pRequest,
-      reason: "Api received screen.generic response",
-    );
-    commands.add(saveComponentsCommand);
+    if (pResponse.changedComponents != null) {
+      SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand.fromJson(
+        components: pResponse.changedComponents!,
+        screenName: pResponse.screenName,
+        originRequest: pRequest,
+        reason: "Api received screen.generic response",
+      );
+      commands.add(saveComponentsCommand);
+
+      panel = saveComponentsCommand.componentsToSave
+          ?.whereType<FlPanelModel>()
+          .firstWhereOrNull((element) => element.name == pResponse.screenName);
+    }
 
     // Handle Screen Opening
     // if update == false => new screen that should be routed to
     if (!pResponse.update && !ConfigController().offline.value) {
-      RouteToWorkCommand workCommand = RouteToWorkCommand(
-        screenName: pResponse.screenName,
-        reason: "Server sent screen.generic response with update = 'false'",
-      );
-      commands.add(workCommand);
+      if (panel?.screenNavigationName != null) {
+        RouteToWorkCommand workCommand = RouteToWorkCommand(
+          screenName: panel!.screenNavigationName!,
+          reason: "Server sent screen.generic response with update = 'false'",
+        );
+        commands.add(workCommand);
+      } else {
+        FlutterUI.logUI.w("Server sent screen.generic response with update = 'false' "
+            "but no panel with a matching screen name");
+      }
     }
+
     return commands;
   }
 }

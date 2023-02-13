@@ -23,6 +23,7 @@ import '../model/command/base_command.dart';
 import '../model/menu/menu_model.dart';
 import '../model/request/api_request.dart';
 import '../util/debug/debug_detector.dart';
+import 'custom_menu_item.dart';
 import 'custom_screen.dart';
 
 abstract class AppManager {
@@ -30,8 +31,15 @@ abstract class AppManager {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// List of all registered customs screens
-  List<CustomScreen> customScreens = [];
+  /// List of all registered customs screens.
+  final List<CustomScreen> customScreens = [];
+
+  /// The menu item, which is the way to access the registered screens.
+  ///
+  /// If there is no menu item for a custom screen, we will either:
+  /// * Use the original menu item (if this screen replaces an existing screen).
+  /// * Create a menu item on best-effort basis using properties of the screen.
+  final Map<String, CustomMenuItem> customMenuItems = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -43,9 +51,28 @@ abstract class AppManager {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Register a screen
-  void registerScreen(CustomScreen pCustomScreen) {
-    customScreens.add(pCustomScreen);
+  /// Registers a custom screen which either replaces an existing screen or adds a new one.
+  ///
+  /// Although it is recommended to provide your own menu item via [menuItem],
+  /// especially when creating a new screen or replacing a screen in offline mode.
+  /// there are ways to evade a missing menu item:
+  /// * In case of a replacing screen and the screen is only shown online,
+  /// the menu item provided by the original screen is being used.
+  /// * Otherwise, a menu item is constructed using values from [customScreen].
+  ///
+  /// A [menuItem] is required when registering an offline-only screen ([CustomScreen.offline]).
+  void registerScreen(
+    CustomScreen customScreen, {
+    CustomMenuItem? menuItem,
+  }) {
+    assert(
+      !customScreen.showOffline || customScreen.showOnline || menuItem != null,
+      "Custom offline screens require a menu entry.",
+    );
+    if (menuItem != null) {
+      customMenuItems[customScreen.key] = menuItem;
+    }
+    customScreens.add(customScreen);
   }
 
   /// Gets called on menu mode selection. Default implementation returns original [pCurrentMode]

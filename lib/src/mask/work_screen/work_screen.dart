@@ -14,32 +14,19 @@
  * the License.
  */
 
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../components/components_factory.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
-import '../../custom/custom_screen.dart';
-import '../../flutter_ui.dart';
-import '../../model/command/api/close_screen_command.dart';
-import '../../model/command/api/navigation_command.dart';
-import '../../model/command/base_command.dart';
-import '../../model/command/storage/delete_screen_command.dart';
-import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../service/layout/i_layout_service.dart';
-import '../../service/storage/i_storage_service.dart';
-import '../../service/ui/i_ui_service.dart';
-import '../../util/image/image_loader.dart';
+import '../../model/component/model_subscription.dart';
+import '../../model/menu/menu_item_model.dart';
 import '../../util/offline_util.dart';
-import '../../util/parse_util.dart';
 import '../frame/frame.dart';
-import '../state/app_style.dart';
-import '../state/loading_bar.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for
@@ -81,7 +68,9 @@ class WorkScreenState extends State<WorkScreen> {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
   FlPanelModel? model;
-  late String screenLongName;
+
+  /// Title displayed on the top
+  String screenTitle = "Loading...";
 
   /// Navigating booleans.
   bool isNavigating = false;
@@ -89,16 +78,61 @@ class WorkScreenState extends State<WorkScreen> {
 
   bool sentScreen = false;
 
+  MenuItemModel? item;
+  Future<void>? future;
+
+  CustomScreen? customScreen;
+
+  String get screenLongName => item?.screenLongName ?? widget.screenName;
+
   @override
   void initState() {
     super.initState();
-
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
+
+    item = IUiService().getMenuItem(widget.screenName);
+    if (item != null) {
+      String className = IStorageService().convertLongScreenToClassName(item!.screenLongName);
+
+      model = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
+      customScreen = IUiService().getCustomScreen(item!.screenLongName);
+
+      // Listen to new models with the same class names (needed for work screen reload, model id changes)
+      IUiService().registerModelSubscription(ModelSubscription(
+        subbedObj: this,
+        check: (model) => model is FlPanelModel && model.screenClassName == className,
+        onNewModel: (model) {
+          if (model.id != this.model?.id) {
+            this.model = model as FlPanelModel?;
+            FlutterUI.logUI.d("Received new model for className: $className");
+            rebuild();
+          }
+        },
+      ));
+
+      _initScreen();
+    }
+  }
+
+  void _initScreen() {
+    future = () async {
+      // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
+      if (model == null &&
+          (customScreen == null || (customScreen!.sendOpenScreenRequests && !ConfigController().offline.value))) {
+        await ICommandService()
+            .sendCommand(OpenScreenCommand(
+              screenLongName: item!.screenLongName,
+              reason: "Screen was opened",
+            ))
+            .catchError(FlutterUI.createErrorHandler("Open screen failed"));
+      }
+    }();
   }
 
   @override
   void dispose() {
     subject.close();
+    IUiService().disposeSubscriptions(pSubscriber: this);
     super.dispose();
   }
 
@@ -119,194 +153,93 @@ class WorkScreenState extends State<WorkScreen> {
       forceWeb: IUiService().webOnly.value,
       forceMobile: IUiService().mobileOnly.value,
       builder: (context, isOffline) {
-        // Replace the model if a new one is found.
-        // If there is no model, then just use the old one.
-        // Happens when you close a screen but Flutter rebuilds it.
-        FlPanelModel? newModel =
-            IStorageService().getComponentByName(pComponentName: widget.screenName) as FlPanelModel?;
-        model = newModel ?? model;
-
-        // Header
-        PreferredSizeWidget? header;
-        // Footer
-        Widget? footer;
-        // Title displayed on the top
-        String screenTitle = "No Title";
-        // Screen Widget
-        Widget? screen;
-
-        bool isCustomScreen = false;
-
-        if (model != null) {
-          screen = ComponentsFactory.buildWidget(model!);
-          screenTitle = model!.screenTitle!;
-        }
-
-        screenLongName = model?.screenLongName ?? widget.screenName;
-
-        // Custom Config for this screen
-        CustomScreen? customScreen = IUiService().getCustomScreen(pScreenLongName: screenLongName);
-
-        if (customScreen != null) {
-          header = customScreen.headerBuilder?.call(context);
-          footer = customScreen.footerBuilder?.call(context);
-
-          Widget? replaceScreen = customScreen.screenBuilder?.call(context, screen);
-          if (replaceScreen != null) {
-            isCustomScreen = true;
-            screen = replaceScreen;
-          }
-
-          String? customTitle = customScreen.screenTitle;
-          if (customTitle != null) {
-            screenTitle = customTitle;
-          } else if (customScreen.menuItemModel != null) {
-            screenTitle = customScreen.menuItemModel!.label;
-          }
-        }
-
-        if (screen == null) {
-          FlutterUI.logUI.wtf("Model not found for work screen: $screenLongName");
-          screen = Container();
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            IUiService().sendCommand(OpenErrorDialogCommand(
-              message: FlutterUI.translate("Failed to load screen, please try again."),
-              reason: "Workscreen Model missing",
-            ));
-            IUiService().routeToMenu(pReplaceRoute: true);
-          });
-        }
-
-        List<Widget> actions = [];
-
-        Widget body = FocusTraversalGroup(
-          child: SafeArea(
-            child: Column(
-              children: [
-                if (isOffline) OfflineUtil.getOfflineBar(context),
-                Expanded(
-                  child: _getScreen(
-                    context,
-                    header,
-                    screen,
-                    footer,
-                    isCustomScreen,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-
-        FrameState? frame = Frame.maybeOf(context);
-        if (frame != null) {
-          actions.addAll(frame.getActions());
-        }
-
         return WillPopScope(
-          onWillPop: () async {
-            if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
-              return false;
-            }
+          onWillPop: () => _onWillPop(context),
+          child: FutureBuilder(
+            future: future,
+            builder: (context, snapshot) {
+              FrameState? frame = Frame.maybeOf(context);
+              List<Widget>? actions = frame?.getActions();
 
-            isNavigating = true;
+              if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
+                Widget body = _buildBody(context, isOffline);
+                return Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  appBar: frame?.getAppBar(
+                    leading: _buildLeading(),
+                    title: Text(screenTitle),
+                    actions: actions,
+                  ),
+                  drawerEnableOpenDragGesture: false,
+                  endDrawerEnableOpenDragGesture: false,
+                  drawer: frame?.getDrawer(context),
+                  endDrawer: frame?.getEndDrawer(context),
+                  body: frame?.wrapBody(body) ?? body,
+                );
+              } else {
+                Widget body;
+                if (snapshot.connectionState == ConnectionState.none) {
+                  // Invalid screen name
+                  body = Center(
+                    child: Text(
+                      FlutterUI.translate("Screen not found."),
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  body = Center(
+                    child: Text(
+                      FlutterUI.translate("Error occurred while opening the screen."),
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  );
+                } else {
+                  body = const Center(
+                    child: SizedBox.square(
+                      dimension: 150,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
 
-            await IUiService()
-                .saveAllEditors(pReason: "Closing Screen", pFunction: _willPopScope)
-                .catchError(IUiService().handleAsyncError)
-                .whenComplete(() {
-              isForced = false;
-              isNavigating = false;
-            });
-
-            return IUiService().usesNativeRouting(pScreenLongName: screenLongName);
-          },
-          child: Builder(builder: (context) {
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: frame?.getAppBar(
-                leading: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: () {
-                    _back();
-                  },
-                  onDoubleTap: () {
-                    _back(true);
-                  },
-                  child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
-                ),
-                title: Text(screenTitle),
-                actions: actions,
-              ),
-              drawerEnableOpenDragGesture: false,
-              endDrawerEnableOpenDragGesture: false,
-              drawer: frame?.getDrawer(context),
-              endDrawer: frame?.getEndDrawer(context),
-              body: frame?.wrapBody(body) ?? body,
-            );
-          }),
+                // Skeleton scaffold shown while loading.
+                return Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  appBar: frame?.getAppBar(
+                    leading: _buildLeading(),
+                    title: Text(customScreen?.screenTitle ?? item?.label ?? FlutterUI.translate(screenTitle)),
+                    actions: actions,
+                  ),
+                  drawerEnableOpenDragGesture: false,
+                  endDrawerEnableOpenDragGesture: false,
+                  drawer: frame?.getDrawer(context),
+                  endDrawer: frame?.getEndDrawer(context),
+                  body: frame?.wrapBody(body) ?? body,
+                );
+              }
+            },
+          ),
         );
       },
     );
   }
 
-  Future<List<BaseCommand>> _willPopScope() async {
-    List<BaseCommand> commands = [];
-    if (!IUiService().usesNativeRouting(pScreenLongName: screenLongName)) {
-      if (isForced) {
-        commands.addAll(
-          [
-            CloseScreenCommand(
-              reason: "Work screen back",
-              screenName: widget.screenName,
-            ),
-            DeleteScreenCommand(
-              reason: "Work screen back",
-              screenName: widget.screenName,
-            )
-          ],
-        );
-      } else {
-        commands.add(
-          NavigationCommand(
-            reason: "Back button pressed",
-            openScreen: widget.screenName,
-          ),
-        );
-      }
-    }
-    return commands;
+  InkWell _buildLeading() {
+    return InkWell(
+      customBorder: const CircleBorder(),
+      onTap: () {
+        _onBack();
+      },
+      onDoubleTap: () {
+        _onBack(true);
+      },
+      child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
+    );
   }
 
-  Future<void> _back([bool pForced = false]) async {
-    if (isNavigating) {
-      return;
-    }
-
-    isForced = pForced;
-
-    NavigatorState navigator = Navigator.of(context);
-    if (!(await navigator.maybePop())) {
-      if (!mounted) return;
-      context.beamBack();
-    }
-  }
-
-  _setScreenSize(Size size) {
-    ILayoutService()
-        .setScreenSize(
-          pScreenComponentId: model!.id,
-          pSize: size,
-        )
-        .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
-  }
-
-  Widget _getScreen(
+  Widget _wrapJVxScreen(
     BuildContext context,
-    PreferredSizeWidget? header,
-    Widget screen,
-    Widget? footer,
-    bool isCustomScreen,
+    WrappedScreen wrappedScreen,
   ) {
     var appStyle = AppStyle.of(context).applicationStyle;
     Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
@@ -315,8 +248,8 @@ class WorkScreenState extends State<WorkScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       // If true, rebuilds and therefore can activate scrolling or not.
-      appBar: header,
-      bottomNavigationBar: footer,
+      appBar: wrappedScreen.header,
+      bottomNavigationBar: wrappedScreen.footer,
       backgroundColor: Colors.transparent,
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) => LayoutBuilder(
@@ -338,8 +271,8 @@ class WorkScreenState extends State<WorkScreen> {
               screenHeight -= viewPadding.bottom;
             }
 
-            Widget screenWidget = screen;
-            if (!isCustomScreen && screenWidget is FlPanelWrapper) {
+            Widget screenWidget = wrappedScreen.screen!;
+            if (!wrappedScreen.customScreen && screenWidget is FlPanelWrapper) {
               Size size = Size(constraints.maxWidth, screenHeight);
               if (!sentScreen) {
                 _setScreenSize(size);
@@ -376,4 +309,178 @@ class WorkScreenState extends State<WorkScreen> {
       ),
     );
   }
+
+  Widget _buildBody(BuildContext context, bool isOffline) {
+    WrappedScreen? builtScreen;
+
+    // Replace the model if a new one is found.
+    // If there is no model, then just use the old one.
+    // Happens when you close a screen but Flutter rebuilds it.
+    FlPanelModel? newModel = item != null
+        ? IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName) //
+        : null;
+    model = newModel ?? model;
+
+    if (model != null) {
+      builtScreen = _buildScreen();
+    }
+
+    // Custom config for this screen
+    CustomScreen? customScreen = IUiService().getCustomScreen(item!.screenLongName);
+    if (customScreen != null) {
+      builtScreen = _buildCustomScreen(context, customScreen, builtScreen);
+    }
+
+    // Update screenTitle
+    screenTitle = builtScreen?.screenTitle ?? "No title";
+
+    if (builtScreen?.screen == null) {
+      FlutterUI.logUI.wtf("Model/Custom screen not found for work screen: $screenLongName");
+      return Center(
+        child: Text(
+          FlutterUI.translate("Failed to load screen, please try again."),
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      );
+    }
+
+    return FocusTraversalGroup(
+      child: SafeArea(
+        child: Column(
+          children: [
+            if (isOffline) OfflineUtil.getOfflineBar(context),
+            Expanded(
+              child: _wrapJVxScreen(
+                context,
+                builtScreen!,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  WrappedScreen? _buildScreen() {
+    return WrappedScreen(
+      screen: ComponentsFactory.buildWidget(model!),
+      screenTitle: model!.screenTitle!,
+    );
+  }
+
+  WrappedScreen _buildCustomScreen(
+    BuildContext context,
+    CustomScreen customScreen,
+    WrappedScreen? screen,
+  ) {
+    Widget? replaceScreen = customScreen.screenBuilder?.call(context, screen?.screen);
+
+    return WrappedScreen(
+      header: customScreen.headerBuilder?.call(context),
+      footer: customScreen.footerBuilder?.call(context),
+      screen: replaceScreen ?? screen?.screen,
+      screenTitle: customScreen.screenTitle ?? screen?.screenTitle ?? "Custom Screen",
+      customScreen: replaceScreen != null,
+    );
+  }
+
+  /// Is being called by Back button in [AppBar].
+  Future<void> _onBack([bool pForced = false]) async {
+    if (isNavigating) {
+      return;
+    }
+
+    isForced = pForced;
+
+    NavigatorState navigator = Navigator.of(context);
+    if (!(await navigator.maybePop())) {
+      if (!mounted) return;
+      context.beamBack();
+    }
+  }
+
+  /// Is being called by [WillPopScope].
+  Future<bool> _onWillPop(BuildContext context) async {
+    if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
+      return false;
+    }
+
+    isNavigating = true;
+
+    // We have no working screen, allow back.
+    if (item?.screenLongName == null || (model == null && customScreen == null)) {
+      return true;
+    }
+
+    await IUiService()
+        .saveAllEditors(pReason: "Closing Screen", pFunction: _closeScreen)
+        .catchError(IUiService().handleAsyncError)
+        .whenComplete(() {
+      isForced = false;
+      isNavigating = false;
+    });
+
+    return IUiService().usesNativeRouting(item!.navigationName);
+  }
+
+  Future<List<BaseCommand>> _closeScreen() async {
+    List<BaseCommand> commands = [];
+    if (!IUiService().usesNativeRouting(item!.navigationName)) {
+      if (isForced) {
+        commands.addAll(
+          [
+            CloseScreenCommand(
+              reason: "Work screen back",
+              screenName: widget.screenName,
+            ),
+            DeleteScreenCommand(
+              reason: "Work screen back",
+              screenName: widget.screenName,
+            )
+          ],
+        );
+      } else {
+        commands.add(
+          NavigationCommand(
+            reason: "Back button pressed",
+            openScreen: model!.name,
+          ),
+        );
+      }
+    }
+    return commands;
+  }
+
+  void _setScreenSize(Size size) {
+    ILayoutService()
+        .setScreenSize(
+          pScreenComponentId: model!.id,
+          pSize: size,
+        )
+        .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
+  }
+}
+
+class WrappedScreen {
+  /// Title displayed on the top
+  final String screenTitle;
+
+  /// Header
+  final PreferredSizeWidget? header;
+
+  /// Footer
+  final Widget? footer;
+
+  /// Screen Widget
+  final Widget? screen;
+
+  final bool customScreen;
+
+  const WrappedScreen({
+    required this.screenTitle,
+    this.header,
+    this.footer,
+    this.screen,
+    this.customScreen = false,
+  });
 }

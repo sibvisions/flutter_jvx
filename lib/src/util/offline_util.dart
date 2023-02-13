@@ -27,6 +27,7 @@ import '../model/command/api/insert_record_command.dart';
 import '../model/command/api/open_screen_command.dart';
 import '../model/command/api/set_values_command.dart';
 import '../model/command/api/startup_command.dart';
+import '../model/command/storage/delete_screen_command.dart';
 import '../model/command/ui/route_to_menu_command.dart';
 import '../model/component/fl_component_model.dart';
 import '../model/data/data_book.dart';
@@ -193,9 +194,10 @@ abstract class OfflineUtil {
 
         FlPanelModel? workscreenModel =
             IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkscreenClassName)!;
-        await ICommandService().sendCommand(
+        await ICommandService().sendCommands([
           CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
-        );
+          DeleteScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
+        ]);
 
         await ICommandService().sendCommand(
           StartupCommand(
@@ -430,7 +432,7 @@ abstract class OfflineUtil {
     FlutterUI.logAPI.i("Finished fetching data");
   }
 
-  static initOffline(String pWorkscreen) async {
+  static initOffline(String pScreenName) async {
     var dialogKey = GlobalKey<ProgressDialogState>();
     OnlineApiRepository? onlineApiRepository = IApiService().getRepository() as OnlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
@@ -452,7 +454,7 @@ abstract class OfflineUtil {
         },
       ));
 
-      var activeDataProviders = getActiveDataProviders(pWorkscreen);
+      Set<String> activeDataProviders = getActiveDataProviders(pScreenName);
       await fetchDataProvider(
         activeDataProviders,
         progressUpdate: (value, max) {
@@ -487,12 +489,19 @@ abstract class OfflineUtil {
         ));
       });
 
-      // Clear databooks for offline usage
+      var panelModel = IStorageService().getComponentByName(pComponentName: pScreenName) as FlPanelModel;
+
+      // Close and delete screen
+      await ICommandService().sendCommands([
+        CloseScreenCommand(screenName: panelModel.name, reason: "We have fetched"),
+        DeleteScreenCommand(screenName: panelModel.name, reason: "We have fetched"),
+      ]);
+
+      // Clear databooks forfc offline usage
       IDataService().clearDataBooks();
       await offlineApiRepository.initDataBooks();
 
       IApiService().setRepository(offlineApiRepository);
-      var panelModel = IStorageService().getComponentByName(pComponentName: pWorkscreen) as FlPanelModel;
       await ConfigController().updateOfflineScreen(panelModel.screenClassName!);
       await onlineApiRepository.stop();
       // Clear menu

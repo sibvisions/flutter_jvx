@@ -57,8 +57,8 @@ class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateCompon
     // Update Components in UI after all are marked as dirty
     await Future.wait(futureList).then((value) {
       IUiService().notifyChangedComponents(updatedModels: command.changedComponents);
-
       IUiService().notifyAffectedComponents(affectedIds: command.affectedComponents);
+      IUiService().notifyModels();
 
       if (command.screenName == FlContainerClassname.DESKTOP_PANEL) {
         IStorageService().getDesktopPanelNotifier().notify();

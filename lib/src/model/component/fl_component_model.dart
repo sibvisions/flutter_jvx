@@ -62,6 +62,9 @@ abstract class FlComponentModel {
   String id = "";
 
   /// The unique component name.
+  ///
+  /// Example in case of a screen [FlPanelModel]:
+  /// "Sec-BL"
   String name = "";
 
   /// The classname of the component.
@@ -150,9 +153,6 @@ abstract class FlComponentModel {
 
   /// Class Name Reference
   String? classNameEventSourceRef;
-
-  /// Screen long name
-  String? screenLongName;
 
   /// Styles
   Set<String> styles = {};

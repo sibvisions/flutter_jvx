@@ -26,6 +26,7 @@ import '../../components/components_factory.dart';
 import '../../custom/app_manager.dart';
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/layout/i_layout_service.dart';
@@ -44,7 +45,7 @@ import 'menu.dart';
 /// Each menu item does get this callback
 typedef ButtonCallback = void Function(
   BuildContext context, {
-  required String pScreenLongName,
+  required MenuItemModel item,
 });
 
 /// Menu Page

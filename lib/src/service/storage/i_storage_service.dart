@@ -84,12 +84,19 @@ abstract class IStorageService {
   /// Returns component model with matching name
   FlComponentModel? getComponentByName({required String pComponentName});
 
-  /// Returns panel model with matching screenClassName
+  /// Returns panel model with matching [FlPanelModel.screenClassName].
   FlPanelModel? getComponentByScreenClassName({required String pScreenClassName});
+
+  /// Returns panel model with matching [FlPanelModel.screenNavigationName].
+  FlPanelModel? getComponentByNavigationName(String pNavigationName);
 
   /// Returns component model with name matching [FlContainerClassname.DESKTOP_PANEL].
   JVxNotifier<FlComponentModel?> getDesktopPanelNotifier();
 
   /// Returns if the component model is currently shown in the ui
   bool isVisibleInUI(String pComponentId);
+
+  String convertLongScreenToClassName(String screenLongName);
+
+  List<FlComponentModel> getComponentModels();
 }

@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
+
 import 'menu_group_model.dart';
 import 'menu_item_model.dart';
 
@@ -32,7 +34,7 @@ class MenuModel {
   MenuItemModel? getMenuItemByClassName(String pClassName) {
     return menuGroups
         .expand((element) => element.items)
-        .firstWhere((element) => element.screenLongName.contains(pClassName));
+        .firstWhereOrNull((element) => element.screenLongName.contains(pClassName));
   }
 
   /// Makes a deep copy of this object but keeps shallow copies of child objects

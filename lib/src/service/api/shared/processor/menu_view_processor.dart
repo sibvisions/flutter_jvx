@@ -63,7 +63,10 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     List<MenuGroupModel> groups = [];
     for (MenuEntryResponse entry in menu.responseMenuItems) {
       if (!groups.any((element) => element.name == entry.group)) {
-        groups.add(MenuGroupModel(name: entry.group, items: []));
+        groups.add(MenuGroupModel(
+          name: entry.group,
+          items: [],
+        ));
       }
     }
     return groups;
@@ -74,10 +77,12 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     for (MenuEntryResponse responseMenuEntry in entries) {
       if (responseMenuEntry.group == groupName) {
         MenuItemModel menuItem = MenuItemModel(
-            screenLongName: responseMenuEntry.componentId,
-            label: responseMenuEntry.text,
-            alternativeLabel: responseMenuEntry.quickBarText ?? responseMenuEntry.sideBarText,
-            image: responseMenuEntry.image);
+          screenLongName: responseMenuEntry.componentId,
+          navigationName: responseMenuEntry.navigationName,
+          label: responseMenuEntry.text,
+          alternativeLabel: responseMenuEntry.quickBarText ?? responseMenuEntry.sideBarText,
+          image: responseMenuEntry.image,
+        );
         menuItems.add(menuItem);
       }
     }

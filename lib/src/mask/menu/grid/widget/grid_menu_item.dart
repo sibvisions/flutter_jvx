@@ -49,7 +49,7 @@ class GridMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onClick(context, pScreenLongName: menuItemModel.screenLongName),
+      onTap: () => onClick(context, item: menuItemModel),
       child: Ink(
         color: Theme.of(context)
             .primaryColor

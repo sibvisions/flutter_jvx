@@ -91,7 +91,7 @@ class OfflineApiRepository implements IRepository {
     offlineDatabase!.createTables(dalMetaData);
 
     FlutterUI.logAPI.d(
-        "Sum of all dataBook entries: ${dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element)}");
+        "Sum of all dataBook entries: ${dataBooks.isNotEmpty ? dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element) : 0}");
 
     await offlineDatabase!.db.transaction((txn) async {
       var batch = txn.batch();

@@ -355,9 +355,17 @@ class StorageService implements IStorageService {
 
   @override
   FlPanelModel? getComponentByScreenClassName({required String pScreenClassName}) {
+    String className = convertLongScreenToClassName(pScreenClassName);
     return _componentMap.values
         .whereType<FlPanelModel>()
-        .firstWhereOrNull((element) => element.screenClassName == pScreenClassName);
+        .firstWhereOrNull((element) => element.screenClassName == className);
+  }
+
+  @override
+  FlPanelModel? getComponentByNavigationName(String pNavigationName) {
+    return _componentMap.values
+        .whereType<FlPanelModel>()
+        .firstWhereOrNull((element) => element.screenNavigationName == pNavigationName);
   }
 
   @override
@@ -419,5 +427,15 @@ class StorageService implements IStorageService {
       children.remove(pChild.id);
       _childrenTree[pChild.parent!] = children;
     }
+  }
+
+  @override
+  String convertLongScreenToClassName(String screenLongName) {
+    return screenLongName.split(":")[0];
+  }
+
+  @override
+  List<FlComponentModel> getComponentModels() {
+    return List.from(_componentMap.values);
   }
 }

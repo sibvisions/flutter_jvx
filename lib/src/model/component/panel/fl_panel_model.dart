@@ -29,9 +29,21 @@ class FlPanelModel extends FlComponentModel {
   String? layoutData;
 
   /// The screen title.
+  ///
+  /// Example:
+  /// "Second"
   String? screenTitle;
 
+  /// The screen navigation name.
+  ///
+  /// Example:
+  /// "Second"
+  String? screenNavigationName;
+
   /// The screen class name.
+  ///
+  /// Example:
+  /// "com.sibvisions.apps.mobile.demo.screens.features.SecondWorkScreen"
   String? screenClassName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +83,13 @@ class FlPanelModel extends FlComponentModel {
       pKey: ApiObjectProperty.screenTitle,
       pDefault: defaultModel.screenTitle,
       pCurrent: screenTitle,
+    );
+
+    screenNavigationName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.screenNavigationName,
+      pDefault: defaultModel.screenNavigationName,
+      pCurrent: screenNavigationName,
     );
 
     screenClassName = getPropertyValue(

@@ -28,12 +28,14 @@ import '../../model/command/api/login_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/component/model_subscription.dart';
 import '../../model/config/application_parameters.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
+import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/application_meta_data_response.dart';
 import '../../model/response/application_parameters_response.dart';
@@ -74,6 +76,8 @@ abstract class IUiService {
       return message;
     }
   }
+
+  MenuItemModel? getMenuItem(String pScreenName);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Communication with other services
@@ -201,6 +205,8 @@ abstract class IUiService {
   /// Register as an active component, callback will be called when model
   void registerAsLiveComponent({required ComponentSubscription pComponentSubscription});
 
+  void registerModelSubscription(ModelSubscription pModelSubscription);
+
   /// Register to receive a subscriptions of data from a specific dataProvider
   void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true});
 
@@ -227,6 +233,8 @@ abstract class IUiService {
   /// Notify changed live components that their model has changed, will give
   /// them their new model.
   void notifyChangedComponents({required List<String> updatedModels});
+
+  void notifyModels();
 
   /// Notify all components belonging to [pDataProvider] that their underlying
   /// data may have changed.
@@ -278,10 +286,10 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// If this screen beams or sends an open workscreen command first.
-  bool usesNativeRouting({required String pScreenLongName});
+  bool usesNativeRouting(String pScreenLongName);
 
   /// Gets replace-type screen by screenName
-  CustomScreen? getCustomScreen({required String pScreenLongName});
+  CustomScreen? getCustomScreen(String key);
 
   /// Gets a custom component with given name (ignores screen)
   CustomComponent? getCustomComponent({required String pComponentName});
@@ -319,5 +327,8 @@ abstract class IUiService {
 
   void removeFocus([String? pComponentId]);
 
+  /// Returns the current work screen name from the route url.
+  ///
+  /// This is usually the same as in [MenuItemModel.label].
   String? getCurrentWorkscreenName();
 }

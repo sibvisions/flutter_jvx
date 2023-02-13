@@ -16,6 +16,8 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
@@ -28,17 +30,25 @@ import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class DeleteScreenCommandProcessor implements ICommandProcessor<DeleteScreenCommand> {
+  /// Removes every trace of this screen.
+  ///
+  /// If we are in the web ([kIsWeb]), we don't try to manipulate the history, as it makes no sense
+  /// without also manipulating browser history (which is not possible).
   @override
   Future<List<BaseCommand>> processCommand(DeleteScreenCommand command) async {
-    if (command.beamBack && IUiService().getCurrentWorkscreenName() == command.screenName) {
-      FlutterUI.getBeamerDelegate().beamBack();
-    } else {
-      FlutterUI.getBeamerDelegate().beamingHistory.whereType<WorkScreenLocation>().forEach((workscreenLocation) {
-        workscreenLocation.history
-            .removeWhere((element) => element.routeInformation.location?.endsWith(command.screenName) == true);
-      });
-    }
     FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: command.screenName);
+
+    if (screenModel is FlPanelModel) {
+      if (command.beamBack && IUiService().getCurrentWorkscreenName() == screenModel.screenNavigationName) {
+        FlutterUI.getBeamerDelegate().beamBack();
+      } else if (!kIsWeb) {
+        FlutterUI.getBeamerDelegate().beamingHistory.whereType<WorkScreenLocation>().forEach((workscreenLocation) {
+          workscreenLocation.history.removeWhere(
+              (element) => element.routeInformation.location?.endsWith(screenModel.screenNavigationName!) ?? false);
+        });
+      }
+    }
+
     IStorageService().deleteScreen(screenName: command.screenName);
     if (screenModel != null) {
       await ILayoutService().deleteScreen(pComponentId: screenModel.id);

@@ -14,61 +14,136 @@
  * the License.
  */
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
-import 'custom_component.dart';
-import 'custom_menu_item.dart';
+import '../../flutter_jvx.dart';
+import '../model/request/api_open_screen_request.dart';
+import '../model/response/menu_view_response.dart';
 
-/// Super class for Custom screens
+/// Builder function for custom header.
+typedef HeaderBuilder = PreferredSizeWidget Function(BuildContext buildContext);
+
+/// Builder function which receives a context and the original screen, returns the custom screen.
+typedef ScreenBuilder = Widget Function(BuildContext buildContext, Widget? originalScreen);
+
+/// Builder function for custom footer.
+typedef FooterBuilder = Widget Function(BuildContext buildContext);
+
+/// A component that allows to implement custom screens.
+///
+/// This screens are able to either replace existing JVx screens
+/// (while in online and/or offline mode, see [showOnline] and [showOffline])
+/// or adding new ones.
+///
+/// See also:
+/// * [AppManager.registerScreen]
 class CustomScreen {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the screen to open
-  final String screenLongName;
+  /// Unique ID used to identify and possibly replace a screen.
+  ///
+  /// To replace a screen, use the fully qualified screen name as key.
+  ///
+  /// Possible values:
+  /// * [MenuEntryResponse.componentId]
+  /// * [MenuEntryResponse.navigationName]
+  final String key;
 
-  /// Title displayed on the top of the screen
+  /// Title displayed in the [AppBar] when this screen is active.
   final String? screenTitle;
 
-  /// Builder function for custom header
-  final PreferredSizeWidget Function(BuildContext buildContext)? headerBuilder;
+  /// Used to conveniently provide a custom header for this screen.
+  final HeaderBuilder? headerBuilder;
 
-  /// Builder function which receives a context and the original screen, returns the custom screen
-  final Widget Function(BuildContext buildContext, Widget? originalScreen)? screenBuilder;
+  /// Used to wrap or replace the original screen (if applicable).
+  final ScreenBuilder? screenBuilder;
 
-  /// Builder function for custom footer
-  final Widget Function(BuildContext buildContext)? footerBuilder;
+  /// Used to conveniently provide a custom footer for this screen.
+  final FooterBuilder? footerBuilder;
 
-  /// The menu item to access this screen, if this is left null, will use the
-  final CustomMenuItem? menuItemModel;
-
-  /// List with components that should be replaced in this screen
+  /// Custom components that will replace original components in this screen.
   final List<CustomComponent> replaceComponents;
 
-  /// True if this screen is shown in online mode
+  /// Whether this screen is shown in online mode.
   final bool showOnline;
 
-  /// True if this screen is shown in offline mode
+  /// Whether this screen is shown in offline mode.
   final bool showOffline;
 
-  /// If the custom screen sends open screen requests if it has replaced an online screen.
+  /// Whether this screen should send open screen requests when it has replaced an online screen.
   final bool sendOpenScreenRequests;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Creates a custom screen.
+  ///
+  /// {@template screen.key_notice}
+  /// If this screen aims to replace another screen
+  /// (by using an existing screen identifier as [key]),
+  /// it first tries to use the navigation name from the original screen.
+  /// Otherwise [key] is used as the navigation name.
+  /// {@endtemplate}
   const CustomScreen({
-    required this.screenLongName,
-    this.showOnline = true,
-    this.showOffline = false,
+    required this.key,
+    required this.screenTitle,
     this.screenBuilder,
     this.headerBuilder,
     this.footerBuilder,
-    this.menuItemModel,
+    this.replaceComponents = const [],
+    this.showOnline = true,
+    this.showOffline = true,
+    this.sendOpenScreenRequests = false,
+  });
+
+  /// Creates an online-only custom screen.
+  ///
+  /// This screen will not show up in the offline menu and can send
+  /// an [ApiOpenScreenRequest] (controlled by [sendOpenScreenRequests]).
+  ///
+  /// {@macro screen.key_notice}
+  const CustomScreen.online({
+    required this.key,
     this.screenTitle,
+    this.screenBuilder,
+    this.headerBuilder,
+    this.footerBuilder,
     this.replaceComponents = const [],
     this.sendOpenScreenRequests = true,
-  });
+  })  : showOnline = true,
+        showOffline = false;
+
+  /// Creates an offline-only custom screen.
+  ///
+  /// This screen will not show up in the online menu and will never send an [ApiOpenScreenRequest].
+  ///
+  /// {@macro screen.key_notice}
+  const CustomScreen.offline({
+    required this.key,
+    required this.screenTitle,
+    this.screenBuilder,
+    this.headerBuilder,
+    this.footerBuilder,
+    this.replaceComponents = const [],
+  })  : showOnline = false,
+        showOffline = true,
+        sendOpenScreenRequests = false;
+
+  /// Returns a beautified version of the key.
+  get keyNavigationName {
+    String navigationName = IStorageService().convertLongScreenToClassName(key);
+
+    int end = navigationName.lastIndexOf(".");
+    if (end >= 0) {
+      navigationName = navigationName.substring(end + 1);
+    }
+    if (navigationName.endsWith("WorkScreen")) {
+      navigationName = navigationName.substring(0, navigationName.length - 10);
+    }
+
+    return navigationName;
+  }
 }

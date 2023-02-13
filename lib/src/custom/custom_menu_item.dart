@@ -15,11 +15,12 @@
  */
 
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../model/menu/menu_item_model.dart';
+import 'custom_screen.dart';
 
-/// Custom menu item
-class CustomMenuItem extends MenuItemModel {
+/// Custom menu item, used for [CustomScreen].
+class CustomMenuItem {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,21 +28,26 @@ class CustomMenuItem extends MenuItemModel {
   /// Group name under which this item should appear
   final String group;
 
-  /// Font Awesome Icon to be used when creating a custom menu item
-  final IconData? faIcon;
+  /// Label text of the menu item.
+  final String label;
+
+  /// Alternative label text.
+  final String? alternativeLabel;
 
   /// Icon to be used when creating a custom menu item
-  final Widget Function()? iconBuilder;
+  final WidgetBuilder? imageBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   CustomMenuItem({
-    required super.screenLongName,
     required this.group,
-    required super.label,
-    this.faIcon,
-    this.iconBuilder,
-  });
+    required this.label,
+    this.alternativeLabel,
+
+    /// Font Awesome Icon to be used when creating a custom menu item
+    IconData? faIcon,
+    WidgetBuilder? imageBuilder,
+  }) : imageBuilder = (imageBuilder ?? (faIcon != null ? (_) => FaIcon(faIcon) : null));
 }

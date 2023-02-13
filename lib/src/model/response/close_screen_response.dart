@@ -22,7 +22,10 @@ class CloseScreenResponse extends ApiResponse {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of Screen to close
+  /// Name of screen to close.
+  ///
+  /// Example:
+  /// "Sec-BL"
   final String screenName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

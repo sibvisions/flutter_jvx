@@ -19,16 +19,11 @@ import 'package:flutter/widgets.dart';
 
 import '../../flutter_ui.dart';
 import '../../mask/work_screen/work_screen.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import 'menu_location.dart';
 
 class WorkScreenLocation extends BeamLocation<BeamState> {
-  GlobalKey<WorkScreenState> key = GlobalKey();
-
-  String? lastWorkscreen;
-  String? lastId;
+  static const workScreenNameKey = "workScreenName";
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
@@ -38,26 +33,15 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
       context.beamingHistory.insert(0, MenuLocation());
     }
 
-    final String workScreenName = state.pathParameters['workScreenName']!;
-    FlPanelModel? model = IStorageService().getComponentByName(pComponentName: workScreenName) as FlPanelModel?;
-
-    if (workScreenName != lastWorkscreen) {
-      key = GlobalKey();
-    } else if (model?.id != lastId) {
-      key.currentState?.rebuild();
-    }
+    final String workScreenName = state.pathParameters[workScreenNameKey] ?? "";
 
     IUiService().getAppManager()?.onScreenPage();
 
-    lastWorkscreen = workScreenName;
-    lastId = model?.id;
-
     return [
       BeamPage(
-        title: model?.screenTitle ?? FlutterUI.translate("Workscreen"),
+        title: FlutterUI.translate("Workscreen"),
         key: ValueKey(workScreenName),
         child: WorkScreen(
-          key: key,
           screenName: workScreenName,
         ),
       )
@@ -67,6 +51,6 @@ class WorkScreenLocation extends BeamLocation<BeamState> {
   @override
   List<Pattern> get pathPatterns => [
         '/workScreen',
-        '/workScreen/:workScreenName',
+        '/workScreen/:$workScreenNameKey',
       ];
 }

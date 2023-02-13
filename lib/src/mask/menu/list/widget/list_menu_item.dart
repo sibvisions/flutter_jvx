@@ -17,10 +17,8 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
-import '../../../../service/storage/i_storage_service.dart';
-import '../../../../service/ui/i_ui_service.dart';
+import '../../../../routing/locations/work_screen_location.dart';
 import '../../menu_page.dart';
 
 class ListMenuItem extends StatelessWidget {
@@ -60,32 +58,14 @@ class ListMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool selected = false;
-
-    String key = "workScreenName";
-    var pathSegments = (context.currentBeamLocation.state as BeamState).pathParameters;
-    if (pathSegments.containsKey(key)) {
-      String screenName = pathSegments[key]!;
-
-      FlPanelModel? flPanelModel = (IStorageService().getComponentByName(pComponentName: screenName) as FlPanelModel?);
-      if (flPanelModel == null) {
-        if (IUiService().getAppManager() != null) {
-          selected = IUiService()
-              .getAppManager()!
-              .customScreens
-              .any((customScreen) => customScreen.screenLongName == menuItemModel.screenLongName);
-        }
-      } else {
-        selected = menuItemModel.screenLongName.contains(flPanelModel.screenClassName!);
-      }
-    }
+    bool selected = _isSelected(context);
 
     var leading = MenuItemModel.getImage(
       context,
       pMenuItemModel: menuItemModel,
     );
 
-    onTap() => onClick(context, pScreenLongName: menuItemModel.screenLongName);
+    onTap() => onClick(context, item: menuItemModel);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -117,5 +97,16 @@ class ListMenuItem extends StatelessWidget {
         );
       },
     );
+  }
+
+  bool _isSelected(BuildContext context) {
+    bool? selected;
+    var pathSegments = (context.currentBeamLocation.state as BeamState).pathParameters;
+    if (pathSegments.containsKey(WorkScreenLocation.workScreenNameKey)) {
+      String navigationName = pathSegments[WorkScreenLocation.workScreenNameKey]!;
+      selected ??= menuItemModel.navigationName == navigationName;
+    }
+
+    return selected ?? false;
   }
 }

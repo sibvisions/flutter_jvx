@@ -205,6 +205,17 @@ class FlutterUI extends StatefulWidget {
     return ConfigController().translateText(pText ?? "");
   }
 
+  /// Creates an future error handler which prints the error + stackTrace
+  /// to [FlutterUI.log] and throws the error.
+  ///
+  /// Intended do be use in [Future.catchError].
+  static Function(Object error, StackTrace stackTrace) createErrorHandler(String pMessage) {
+    return (error, stackTrace) {
+      FlutterUI.log.e(pMessage, error, stackTrace);
+      throw error;
+    };
+  }
+
   static BeamerDelegate getBeamerDelegate() {
     return routerDelegate;
   }
@@ -443,7 +454,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         appName: appName,
         username: username,
         password: password,
-      ).catchError(createErrorHandler("Failed to send startup"));
+      ).catchError(FlutterUI.createErrorHandler("Failed to send startup"));
     });
   }
 
@@ -712,13 +723,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   void refresh() {
     setState(() {});
-  }
-
-  Function(Object error, StackTrace stackTrace) createErrorHandler(String pMessage) {
-    return (error, stackTrace) {
-      FlutterUI.log.e(pMessage, error, stackTrace);
-      throw error;
-    };
   }
 
   Future<void> initStartup({

@@ -6,6 +6,7 @@ import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
@@ -27,6 +28,7 @@ import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../model/component/model_subscription.dart';
 import '../../../model/config/application_parameters.dart';
 import '../../../model/data/data_book.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
@@ -34,6 +36,7 @@ import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_group_model.dart';
+import '../../../model/menu/menu_item_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../model/response/application_meta_data_response.dart';
 import '../../../model/response/application_parameters_response.dart';
@@ -66,6 +69,9 @@ class UiService implements IUiService {
 
   /// All component subscriptions
   final List<ComponentSubscription> _componentSubscriptions = [];
+
+  /// All model subscriptions
+  final List<ModelSubscription> _modelSubscriptions = [];
 
   /// All data subscriptions
   final List<DataSubscription> _dataSubscriptions = [];
@@ -111,6 +117,7 @@ class UiService implements IUiService {
   FutureOr<void> clear(bool pFullClear) {
     _menuNotifier.value = const MenuModel();
     _componentSubscriptions.clear();
+    _modelSubscriptions.clear();
     _dataSubscriptions.clear();
     _activeFrames.clear();
     _activeDialogs.clear();
@@ -122,6 +129,14 @@ class UiService implements IUiService {
       _applicationParameters.value = null;
       _applicationMetaData.value = null;
     }
+  }
+
+  @override
+  MenuItemModel? getMenuItem(String pScreenName) {
+    return getMenuModel()
+        .menuGroups
+        .expand((group) => group.items)
+        .firstWhereOrNull((item) => item.matchesScreenName(pScreenName));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,8 +175,7 @@ class UiService implements IUiService {
   /// then ignore route request while in settings (and later also while in work screen)
   static bool checkFirstSplash() {
     if (FlutterUI.getCurrentContext() == null && !FlutterUI.initiated) {
-      // TODO fix workScreen web reload (e.g. send OpenScreenCommand); Potential Idea -> FS#3063
-      if (kIsWeb && (Uri.base.fragment == "/settings" /*|| Uri.base.fragment.startsWith("/workScreen")*/)) {
+      if (kIsWeb && (Uri.base.fragment == "/settings" || Uri.base.fragment.startsWith("/workScreen"))) {
         return false;
       }
     }
@@ -185,13 +199,15 @@ class UiService implements IUiService {
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     if (!checkFirstSplash()) return;
 
-    FlutterUI.logUI.i("Routing to workscreen: $pScreenName");
+    MenuItemModel? menuItemModel = getMenuItem(pScreenName);
+    String resolvedScreenName = menuItemModel?.navigationName ?? pScreenName;
+    FlutterUI.logUI.i("Routing to workscreen: $pScreenName, resolved name: $resolvedScreenName");
 
     var lastLocation = FlutterUI.getBeamerDelegate().currentBeamLocation;
     if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
-      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/workScreen/$pScreenName");
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/workScreen/$resolvedScreenName");
     } else {
-      FlutterUI.getBeamerDelegate().beamToNamed("/workScreen/$pScreenName");
+      FlutterUI.getBeamerDelegate().beamToNamed("/workScreen/$resolvedScreenName");
     }
   }
 
@@ -269,6 +285,11 @@ class UiService implements IUiService {
 
   /// Modifies the original menu model to include custom screens and replace screens.
   ///
+  /// [CustomMenuItem]'s are included by either:
+  /// * Using the one provided by [AppManager.customMenuItems].
+  /// * Using the one from the original replaced screen (only works if there is one).
+  /// * And lastly creates one on a best-effort strategy (It is recommended to provide one).
+  ///
   /// We have to deliver it "fresh" because of the offline state change, possible solution, connect with offlineNotifier
   /// ```dart
   /// ConfigController().getOfflineNotifier().addListener(() {
@@ -278,30 +299,70 @@ class UiService implements IUiService {
   MenuModel _updateMenuModel(MenuModel? pMenuModel) {
     List<MenuGroupModel> menuGroupModels = [...?pMenuModel?.copy().menuGroups];
 
-    // Add all custom menuItems
     if (appManager != null) {
-      appManager!.customScreens.where((customScreen) => customScreen.menuItemModel != null).forEach((customScreen) {
-        CustomMenuItem customMenuItem = customScreen.menuItemModel!;
+      appManager!.customScreens.forEach((customScreen) {
+        CustomMenuItem? customMenuItem = appManager!.customMenuItems[customScreen.key];
 
-        // Remove menu items that open the same screen
-        menuGroupModels.forEach((menuGroup) =>
-            menuGroup.items.removeWhere((menuItem) => menuItem.screenLongName == customMenuItem.screenLongName));
+        // Check for screen replacing by retrieving every menu item who open the same screen.
+        Iterable<Iterable<MenuItemModel>> it = menuGroupModels.map((e) => e.items).map((menuItems) => menuItems
+            .where((menuItem) => [menuItem.screenLongName, menuItem.navigationName].contains(customScreen.key)));
+        // This is usually just one item.
+        List<MenuItemModel> items = it.isNotEmpty ? it.reduce((value, element) => [...value, ...element]).toList() : [];
 
+        if (items.isNotEmpty) {
+          // We have an menu item that we can replace.
+          // if (customMenuItem == null) {
+          //   customMenuItem ??= CustomMenuItem(
+          //     group: items.firstOrNull?.name ?? "Custom",
+          //     label: customScreen.screenTitle ?? "Custom Screen",
+          //     faIcon: FontAwesomeIcons.notdef,
+          //   );
+          // }
+        } else {
+          // We have no menu item, use the one provided or create one on best-effort basis.
+          customMenuItem ??= CustomMenuItem(
+            group: menuGroupModels.firstOrNull?.name ?? "Custom",
+            label: customScreen.screenTitle ?? "Custom Screen",
+            faIcon: FontAwesomeIcons.notdef,
+          );
+        }
+
+        // Whether we should show the item in the current setting.
         if ((customScreen.showOnline && !ConfigController().offline.value) ||
             (customScreen.showOffline && ConfigController().offline.value)) {
-          // Check if group already exists
-          MenuGroupModel? menuGroupModel =
-              menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem.group);
-          if (menuGroupModel != null) {
-            menuGroupModel.items.add(customMenuItem);
-          } else {
-            // Make new group if it didn't exist
-            MenuGroupModel newGroup = MenuGroupModel(
-              name: customMenuItem.group,
-              items: [customMenuItem],
+          // At this point we either have a custom menu item or an original one.
+          MenuItemModel? originalItem = items.firstOrNull;
+
+          MenuItemModel overrideMenuItem = MenuItemModel(
+            screenLongName: originalItem?.screenLongName ?? customScreen.key,
+            navigationName: originalItem?.navigationName ?? customScreen.keyNavigationName,
+            label: customMenuItem?.label ?? originalItem!.label,
+            alternativeLabel: customMenuItem?.alternativeLabel ?? originalItem?.alternativeLabel,
+            imageBuilder: customMenuItem?.imageBuilder,
+            // Only override image if there is no image builder.
+            image: customMenuItem?.imageBuilder == null ? originalItem?.image : null,
+          );
+
+          // Check if group already exists.
+          MenuGroupModel? menuGroupModel = customMenuItem?.group != null
+              // Custom group doesn't have to exist
+              ? menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem!.group)
+              : menuGroupModels.firstWhere((element) => items.any((item) => item == originalItem));
+
+          if (menuGroupModel == null) {
+            // Make new group if it didn't exist.
+            menuGroupModel = MenuGroupModel(
+              name: customMenuItem!.group,
+              items: [],
             );
-            menuGroupModels.add(newGroup);
+            menuGroupModels.add(menuGroupModel);
           }
+          menuGroupModel.items.add(overrideMenuItem);
+        }
+
+        if (customMenuItem != null) {
+          // Finally remove menu items that we replaced.
+          menuGroupModels.forEach((menuGroup) => menuGroup.items.removeWhere((menuItem) => items.contains(menuItem)));
         }
       });
     }
@@ -393,6 +454,11 @@ class UiService implements IUiService {
   }
 
   @override
+  void registerModelSubscription(ModelSubscription pModelSubscription) {
+    _modelSubscriptions.add(pModelSubscription);
+  }
+
+  @override
   void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true}) {
     _dataSubscriptions.removeWhere((element) => element.same(pDataSubscription));
     _dataSubscriptions.add(pDataSubscription);
@@ -460,6 +526,7 @@ class UiService implements IUiService {
   void disposeSubscriptions({required Object pSubscriber}) {
     _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
     _componentSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
+    _modelSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
   }
 
   @override
@@ -501,6 +568,17 @@ class UiService implements IUiService {
           .forEach((element) {
         element.modelCallback?.call();
       });
+    }
+  }
+
+  @override
+  void notifyModels() {
+    List<FlComponentModel> models = IStorageService().getComponentModels();
+    for (var sub in _modelSubscriptions) {
+      var model = models.firstWhereOrNull((model) => sub.check.call(model));
+      if (model != null && sub.check.call(model)) {
+        sub.onNewModel.call(model);
+      }
     }
   }
 
@@ -629,8 +707,8 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  CustomScreen? getCustomScreen({required String pScreenLongName}) {
-    return appManager?.customScreens.firstWhereOrNull((customScreen) => customScreen.screenLongName == pScreenLongName);
+  CustomScreen? getCustomScreen(String key) {
+    return appManager?.customScreens.firstWhereOrNull((customScreen) => customScreen.key == key);
   }
 
   @override
@@ -650,15 +728,15 @@ class UiService implements IUiService {
   }
 
   @override
-  bool usesNativeRouting({required String pScreenLongName}) {
-    CustomScreen? customScreen = getCustomScreen(pScreenLongName: pScreenLongName);
+  bool usesNativeRouting(String pScreenLongName) {
+    CustomScreen? customScreen = getCustomScreen(pScreenLongName);
 
     if (customScreen == null) {
       // Full VisionX-Screen => Send
       return false;
     }
 
-    if (_hasReplaced(pScreenLongName: pScreenLongName)) {
+    if (_hasReplaced(pScreenLongName)) {
       if (ConfigController().offline.value) {
         // Offline + Replace => Beam
         return true;
@@ -672,10 +750,8 @@ class UiService implements IUiService {
     }
   }
 
-  bool _hasReplaced({required String pScreenLongName}) {
-    return getMenuModel()
-        .menuGroups
-        .any((element) => element.items.any((element) => element.screenLongName == pScreenLongName));
+  bool _hasReplaced(String pScreenLongName) {
+    return _originalMenuModel?.containsScreen(pScreenLongName) ?? false;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

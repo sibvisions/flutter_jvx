@@ -22,7 +22,10 @@ class GenericScreenViewResponse extends ApiResponse {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of the screen
+  /// Name of the screen.
+  ///
+  /// Example:
+  /// "Sec-BL"
   final String screenName;
 
   /// List of all changed and new components

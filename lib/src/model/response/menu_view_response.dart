@@ -15,6 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
+import '../request/api_open_screen_request.dart';
 import 'api_response.dart';
 
 class MenuViewResponse extends ApiResponse {
@@ -45,13 +46,25 @@ class MenuEntryResponse {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The group this menu entry belongs to
+  /// The group this menu entry belongs to.
   final String group;
 
-  /// Component id of the attached screen (will be sent in openScreenRequest when pressed)
+  /// Component ID of the attached screen (will be sent in [ApiOpenScreenRequest] when pressed).
+  ///
+  /// Example:
+  /// "com.sibvisions.apps.mobile.demo.screens.features.SecondWorkScreen:L1_MI_DOOPENWORKSCREEN_COM-SIB-APP-MOB-DEM-SCR-FEA-SECWORSCR"
   final String componentId;
 
-  /// Text to be displayed in the menu entry
+  /// Name used for routing (shown in the url).
+  ///
+  /// Example:
+  /// "Second"
+  final String navigationName;
+
+  /// Text to be displayed in the menu entry.
+  ///
+  /// Example:
+  /// "Second"
   final String text;
 
   /// Alternative Text to be displayed in the menu entry
@@ -69,6 +82,7 @@ class MenuEntryResponse {
 
   MenuEntryResponse({
     required this.componentId,
+    required this.navigationName,
     required this.text,
     this.sideBarText,
     this.quickBarText,
@@ -78,6 +92,7 @@ class MenuEntryResponse {
 
   MenuEntryResponse.fromJson(Map<String, dynamic> json)
       : componentId = json[ApiObjectProperty.componentId],
+        navigationName = json[ApiObjectProperty.navigationName],
         text = json[ApiObjectProperty.text],
         sideBarText = json[ApiObjectProperty.sideBarText],
         quickBarText = json[ApiObjectProperty.quickBarText],

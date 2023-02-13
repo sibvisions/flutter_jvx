@@ -200,6 +200,7 @@ abstract class ApiObjectProperty {
   static const String changedColumns = "changedColumns";
   static const String treePath = "treePath";
   static const String selectedColumn = "selectedColumn";
+  static const String navigationName = "navigationName";
 
   // ApplicationSettings
   static const String save = "save";

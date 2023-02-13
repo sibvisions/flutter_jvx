@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../model/command/api/open_screen_command.dart';
+import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/ui/i_ui_service.dart';
 import 'grid/grid_menu.dart';
@@ -86,15 +86,15 @@ abstract class Menu extends StatelessWidget {
     }
   }
 
-  static void menuItemPressed(BuildContext context, {required String pScreenLongName}) {
+  static void menuItemPressed(BuildContext context, {required MenuItemModel item}) {
     // Always close drawer even on route (e.g. previewer blocks routing)
     Scaffold.maybeOf(context)?.closeEndDrawer();
 
     // Offline screens no not require the server to know that they are open
-    if (IUiService().usesNativeRouting(pScreenLongName: pScreenLongName)) {
-      IUiService().routeToCustom(pFullPath: "/workScreen/$pScreenLongName");
+    if (IUiService().usesNativeRouting(item.screenLongName)) {
+      IUiService().routeToCustom(pFullPath: "/workScreen/${item.navigationName}");
     } else {
-      IUiService().sendCommand(OpenScreenCommand(screenLongName: pScreenLongName, reason: "Menu Item was pressed"));
+      IUiService().routeToWorkScreen(pScreenName: item.navigationName);
     }
   }
 }

@@ -17,7 +17,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../custom/custom_menu_item.dart';
 import '../../util/font_awesome_util.dart';
 
 class MenuItemModel {
@@ -25,16 +24,27 @@ class MenuItemModel {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the screen to open
+  /// Component ID of the screen to open.
+  ///
+  /// Screen long name
+  ///
+  /// Example:
+  /// "com.sibvisions.apps.mobile.demo.screens.features.SecondWorkScreen:L1_MI_DOOPENWORKSCREEN_COM-SIB-APP-MOB-DEM-SCR-FEA-SECWORSCR"
   final String screenLongName;
 
-  /// Icon of the menu item
+  /// Navigation name of the screen.
+  final String navigationName;
+
+  /// Icon of the menu item.
   final String? image;
 
-  /// Label text of the menu item
+  /// Image builder of the menu item.
+  final WidgetBuilder? imageBuilder;
+
+  /// Label text of the menu item.
   final String label;
 
-  /// Alternative label text
+  /// Alternative label text.
   final String? alternativeLabel;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,10 +53,21 @@ class MenuItemModel {
 
   const MenuItemModel({
     required this.screenLongName,
+    required this.navigationName,
     required this.label,
     this.alternativeLabel,
     this.image,
+    this.imageBuilder,
   });
+
+  bool matchesScreenName(String screenName) {
+    return [
+          label,
+          alternativeLabel,
+          navigationName,
+        ].contains(screenName) ||
+        (screenName.isNotEmpty && screenLongName == (screenName));
+  }
 
   static Widget getImage(
     BuildContext context, {
@@ -67,14 +88,8 @@ class MenuItemModel {
     }
 
     // Custom menu item
-    if (pMenuItemModel is CustomMenuItem) {
-      if (pMenuItemModel.faIcon != null) {
-        icon = FaIcon(
-          pMenuItemModel.faIcon,
-        );
-      } else if (pMenuItemModel.iconBuilder != null) {
-        return pMenuItemModel.iconBuilder!.call();
-      }
+    if (pMenuItemModel.imageBuilder != null) {
+      icon = pMenuItemModel.imageBuilder!.call(context);
     }
 
     return Builder(
