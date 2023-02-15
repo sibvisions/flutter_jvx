@@ -68,30 +68,31 @@ class SettingItem<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: ListTile(
-        enabled: enabled ?? true,
-        leading: frontIcon != null
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  frontIcon!,
-                ],
-              )
-            : null,
-        trailing: endIcon,
-        title: Text(title),
-        subtitle: valueNotifier != null
-            ? ValueListenableBuilder<T>(
-                valueListenable: valueNotifier!,
-                builder: (context, value, child) {
-                  return createSubtitle(context, value)!;
-                },
-              )
-            : createSubtitle(context, value as T),
-        onTap: () => onPressed?.call(context, (value ?? valueNotifier?.value) as T),
-      ),
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 21, vertical: 5),
+      enabled: enabled ?? true,
+      leading: frontIcon != null
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [frontIcon!],
+            )
+          : null,
+      trailing: endIcon != null
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [endIcon!],
+            )
+          : null,
+      title: Text(title),
+      subtitle: valueNotifier != null
+          ? ValueListenableBuilder<T>(
+              valueListenable: valueNotifier!,
+              builder: (context, value, child) {
+                return createSubtitle(context, value)!;
+              },
+            )
+          : createSubtitle(context, value as T),
+      onTap: () => onPressed?.call(context, (value ?? valueNotifier?.value) as T),
     );
   }
 

@@ -308,50 +308,51 @@ class _SettingsPageState extends State<SettingsPage> {
 
     String urlTitle = FlutterUI.translate("URL");
     SettingItem baseUrlSetting = SettingItem(
-        frontIcon: FaIcon(FontAwesomeIcons.globe, color: Theme.of(context).colorScheme.primary),
-        endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
-        value: baseUrl ?? "",
-        title: urlTitle,
-        enabled: !ConfigController().offline.value,
-        onPressed: (context, value) {
-          TextEditingController controller = TextEditingController(text: value);
+      frontIcon: FaIcon(FontAwesomeIcons.globe, color: Theme.of(context).colorScheme.primary),
+      endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
+      value: baseUrl ?? "",
+      title: urlTitle,
+      enabled: !ConfigController().offline.value,
+      onPressed: (context, value) {
+        TextEditingController controller = TextEditingController(text: value);
 
-          _showEditor(
-            context,
-            pEditorBuilder: (context, onConfirm) => TextEditor(
-              title: urlTitle,
-              hintText: "http://host:port/services/mobile",
-              keyboardType: TextInputType.url,
-              controller: controller,
-              onConfirm: onConfirm,
-            ),
+        _showEditor(
+          context,
+          pEditorBuilder: (context, onConfirm) => TextEditor(
+            title: urlTitle,
+            hintText: "http://host:port/services/mobile",
+            keyboardType: TextInputType.url,
             controller: controller,
-            pTitleIcon: const FaIcon(FontAwesomeIcons.globe),
-            pTitleText: urlTitle,
-          ).then((value) async {
-            if (value == true) {
-              try {
-                // Validate format
-                var uri = Uri.parse(controller.text.trim());
-                if (!uri.path.endsWith(urlSuffix) && !uri.path.endsWith("$urlSuffix/")) {
-                  String appendingSuffix = urlSuffix;
-                  if (uri.pathSegments.last.isEmpty) {
-                    appendingSuffix = appendingSuffix.substring(1);
-                  }
-                  uri = uri.replace(path: uri.path + appendingSuffix);
+            onConfirm: onConfirm,
+          ),
+          controller: controller,
+          pTitleIcon: const FaIcon(FontAwesomeIcons.globe),
+          pTitleText: urlTitle,
+        ).then((value) async {
+          if (value == true) {
+            try {
+              // Validate format
+              var uri = Uri.parse(controller.text.trim());
+              if (!uri.path.endsWith(urlSuffix) && !uri.path.endsWith("$urlSuffix/")) {
+                String appendingSuffix = urlSuffix;
+                if (uri.pathSegments.last.isEmpty) {
+                  appendingSuffix = appendingSuffix.substring(1);
                 }
-                baseUrl = uri.toString();
-                setState(() {});
-              } catch (e) {
-                await IUiService().sendCommand(OpenErrorDialogCommand(
-                  error: e.toString(),
-                  message: FlutterUI.translate("URL is invalid"),
-                  reason: "parseURl failed",
-                ));
+                uri = uri.replace(path: uri.path + appendingSuffix);
               }
+              baseUrl = uri.toString();
+              setState(() {});
+            } catch (e) {
+              await IUiService().sendCommand(OpenErrorDialogCommand(
+                error: e.toString(),
+                message: FlutterUI.translate("URL is invalid"),
+                reason: "parseURl failed",
+              ));
             }
-          });
+          }
         });
+      },
+    );
 
     var supportedLanguages = ConfigController().supportedLanguages.value.toList();
     supportedLanguages.insertAll(0, [
