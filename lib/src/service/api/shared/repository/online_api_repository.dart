@@ -431,7 +431,7 @@ class OnlineApiRepository implements IRepository {
         if (retryRequest ?? true) {
           response = await retry(
             () => _sendRequest(pRequest),
-            retryIf: (e) => e is SocketException || shouldRetry(e),
+            retryIf: (e) => shouldRetry(e),
             retryIfResult: (response) => response.statusCode == 503,
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
             onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
