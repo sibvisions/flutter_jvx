@@ -31,7 +31,7 @@ class DebugDetector extends StatefulWidget {
     required this.child,
     required this.callback,
     this.delay = kLongPressTimeout,
-    this.acceptSlopTolerance,
+    this.acceptSlopTolerance = kTouchSlop,
     this.pointers = 2,
   });
 
