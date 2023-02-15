@@ -420,12 +420,12 @@ class WorkScreenState extends State<WorkScreen> {
       isNavigating = false;
     });
 
-    return IUiService().usesNativeRouting(item!.navigationName);
+    return IUiService().usesNativeRouting(item!.screenLongName);
   }
 
   Future<List<BaseCommand>> _closeScreen() async {
     List<BaseCommand> commands = [];
-    if (!IUiService().usesNativeRouting(item!.navigationName)) {
+    if (!IUiService().usesNativeRouting(item!.screenLongName)) {
       if (isForced) {
         commands.addAll(
           [
