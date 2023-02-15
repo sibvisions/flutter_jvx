@@ -173,9 +173,10 @@ class UiService implements IUiService {
 
   /// If we are currently in splash and never had a context before (initiated = false),
   /// then ignore route request while in settings (and later also while in work screen)
-  static bool checkFirstSplash() {
+  static bool checkFirstSplash([bool includeWorkScreens = true]) {
     if (FlutterUI.getCurrentContext() == null && !FlutterUI.initiated) {
-      if (kIsWeb && (Uri.base.fragment == "/settings" || Uri.base.fragment.startsWith("/workScreen"))) {
+      if (kIsWeb &&
+          (Uri.base.fragment == "/settings" || (includeWorkScreens && Uri.base.fragment.startsWith("/workScreen")))) {
         return false;
       }
     }
@@ -213,7 +214,7 @@ class UiService implements IUiService {
 
   @override
   void routeToLogin({LoginMode? mode, Map<String, dynamic>? pLoginProps}) {
-    if (!checkFirstSplash()) return;
+    if (!checkFirstSplash(false)) return;
 
     FlutterUI.clearHistory();
 
