@@ -16,17 +16,13 @@
 
 import 'package:flutter/material.dart';
 
-import 'jvx_debug.dart';
-
 class DebugOverlay extends StatelessWidget {
   final List<Widget> debugEntries;
   final bool useDialog;
 
   const DebugOverlay({
     super.key,
-    this.debugEntries = const [
-      JVxDebug(),
-    ],
+    this.debugEntries = const [],
     this.useDialog = true,
   });
 

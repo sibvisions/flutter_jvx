@@ -68,6 +68,7 @@ import 'service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
 import 'util/debug/debug_detector.dart';
 import 'util/debug/debug_overlay.dart';
+import 'util/debug/jvx_debug.dart';
 import 'util/extensions/jvx_logger_extensions.dart';
 import 'util/extensions/list_extensions.dart';
 import 'util/import_handler/import_handler.dart';
@@ -151,6 +152,7 @@ class FlutterUI extends StatefulWidget {
   final Widget Function(BuildContext context, LoginMode mode)? loginBuilder;
 
   final bool enableDebugOverlay;
+  final List<Widget> debugOverlayEntries;
 
   static late PackageInfo packageInfo;
 
@@ -164,6 +166,7 @@ class FlutterUI extends StatefulWidget {
     this.splashBuilder,
     this.loginBuilder,
     this.enableDebugOverlay = false,
+    this.debugOverlayEntries = const [],
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -518,7 +521,13 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
               HapticFeedback.vibrate();
               showDialog(
                 context: FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext()!,
-                builder: (context) => const DebugOverlay(useDialog: true),
+                builder: (context) => DebugOverlay(
+                  useDialog: true,
+                  debugEntries: [
+                    const JVxDebug(),
+                    ...widget.debugOverlayEntries,
+                  ],
+                ),
               );
             }
           },
