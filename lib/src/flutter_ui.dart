@@ -797,6 +797,13 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ),
           actions: [
             TextButton(
+              onPressed: () => restart(),
+              child: Text(
+                FlutterUI.translate("Retry"),
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            ),
+            TextButton(
               onPressed: () {
                 IUiService().routeToSettings(pReplaceRoute: true);
                 setState(() {
