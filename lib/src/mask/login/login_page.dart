@@ -125,7 +125,7 @@ class LoginPage extends StatelessWidget {
         builder: (context) => Scaffold(
           appBar: AppBar(
             title: Text(FlutterUI.translate("Verification")),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
             elevation: 0,
           ),
           body: JVxWebView(

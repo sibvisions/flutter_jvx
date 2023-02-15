@@ -58,7 +58,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       child: Drawer(
         backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Theme.of(context).colorScheme.primary
-            : JVxColors.darken(Theme.of(context).cardColor, 0.05),
+            : JVxColors.darken(Theme.of(context).colorScheme.surface, 0.05),
         child: SafeArea(
           top: false,
           left: false,

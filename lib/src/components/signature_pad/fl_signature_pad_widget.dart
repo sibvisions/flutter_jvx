@@ -100,7 +100,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
                     if (onClear != null)
                       Container(
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withOpacity(0.5),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: IconButton(
@@ -112,7 +112,7 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
                     if (onDone != null && contentWidget is Signature)
                       Container(
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withOpacity(0.5),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: IconButton(

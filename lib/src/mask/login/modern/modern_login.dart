@@ -89,7 +89,7 @@ class ModernLogin extends StatelessWidget implements Login {
                           bottomLeft: Radius.circular(20),
                         ),
                       ),
-                      backgroundColor: Theme.of(context).cardColor.withOpacity(0.9),
+                      backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.9),
                       padding: kIsWeb ? const EdgeInsets.all(16.0) : const EdgeInsets.all(10.0),
                     ),
                     onPressed: () => IUiService().routeToSettings(),
@@ -197,7 +197,7 @@ class ModernLogin extends StatelessWidget implements Login {
                   color: bottomColor ??
                       JVxColors.adjustByBrightness(
                         Theme.of(context).brightness,
-                        Theme.of(context).scaffoldBackgroundColor,
+                        Theme.of(context).colorScheme.background,
                         0.05,
                       ),
                   gradient: colorGradient && bottomColor != null

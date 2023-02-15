@@ -42,7 +42,7 @@ class DebugOverlay extends StatelessWidget {
     if (useDialog) {
       body = Dialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 24.0),
-        backgroundColor: Theme.of(context).dialogBackgroundColor.withOpacity(0.9),
+        backgroundColor: Theme.of(context).colorScheme.background.withOpacity(0.9),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),

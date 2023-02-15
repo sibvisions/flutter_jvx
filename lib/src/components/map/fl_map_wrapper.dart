@@ -223,7 +223,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
       img = FaIcon(
         FontAwesomeIcons.locationPin,
         size: 64,
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).colorScheme.primary,
       );
     }
     return (Marker(

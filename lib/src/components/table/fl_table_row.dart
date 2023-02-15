@@ -166,7 +166,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         child: Container(
           height: tableSize.rowHeight,
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(opacity),
+            color: Theme.of(context).colorScheme.primary.withOpacity(opacity),
           ),
           child: Row(
             children: rowWidgets,

@@ -154,7 +154,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        border: Border.all(width: widget.tableSize.borderWidth, color: Theme.of(context).primaryColor),
+        border: Border.all(width: widget.tableSize.borderWidth, color: Theme.of(context).colorScheme.primary),
         color: Theme.of(context).colorScheme.background,
       ),
       child: ClipRRect(

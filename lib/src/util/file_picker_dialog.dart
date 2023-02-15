@@ -74,7 +74,7 @@ abstract class FilePickerDialog {
                         children: [
                           FaIcon(
                             FontAwesomeIcons.camera,
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                           const SizedBox(width: 15),
                           Text(
@@ -94,7 +94,7 @@ abstract class FilePickerDialog {
                         children: [
                           FaIcon(
                             FontAwesomeIcons.images,
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                           const SizedBox(width: 15),
                           Text(
@@ -112,7 +112,7 @@ abstract class FilePickerDialog {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          FaIcon(FontAwesomeIcons.folderOpen, color: Theme.of(context).primaryColor),
+                          FaIcon(FontAwesomeIcons.folderOpen, color: Theme.of(context).colorScheme.primary),
                           const SizedBox(width: 15),
                           Text(
                             FlutterUI.translate("Filesystem"),

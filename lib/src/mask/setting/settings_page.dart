@@ -164,7 +164,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               opacity: 0.8,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  color: Theme.of(context).colorScheme.background,
                                   shape: BoxShape.circle,
                                 ),
                               ),

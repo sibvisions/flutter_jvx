@@ -141,7 +141,7 @@ class _FlTableCellState extends State<FlTableCell> {
     if (widget.model.showHorizontalLines) {
       border = Border(
         bottom: BorderSide(
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).colorScheme.primary,
           width: 0.3,
         ),
       );
