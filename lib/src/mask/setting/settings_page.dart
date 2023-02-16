@@ -611,7 +611,9 @@ class _SettingsPageState extends State<SettingsPage> {
       value: text,
       onPressed: !(connected ?? false) && IApiService().getRepository() is OnlineApiRepository
           ? (context, value) async {
-              await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
+              await (IApiService().getRepository() as OnlineApiRepository?)
+                  ?.startWebSocket()
+                  .catchError((e, stack) => FlutterUI.logAPI.w("Manual WebSocket connection failed", e, stack));
               setState(() {});
             }
           : null,
