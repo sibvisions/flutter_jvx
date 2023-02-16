@@ -49,6 +49,8 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
     }
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
+      baseUrl: ConfigController().baseUrl.value!,
+      requestUri: kIsWeb ? Uri.base.toString() : null,
       appMode: "full",
       applicationName: ConfigController().appName.value!,
       authKey: ConfigController().authKey.value,

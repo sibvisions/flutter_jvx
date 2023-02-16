@@ -15,6 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
+import '../../service/config/config_controller.dart';
 import 'api_request.dart';
 
 /// Request to initialize the app to the remote server
@@ -22,6 +23,12 @@ class ApiStartUpRequest extends ApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The saved base url [ConfigController.baseUrl].
+  final String baseUrl;
+
+  /// The uri entered in the browser.
+  final String? requestUri;
 
   /// Name of the JVx application
   final String applicationName;
@@ -88,6 +95,8 @@ class ApiStartUpRequest extends ApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiStartUpRequest({
+    required this.baseUrl,
+    this.requestUri,
     required this.appMode,
     required this.deviceMode,
     required this.applicationName,
@@ -116,6 +125,8 @@ class ApiStartUpRequest extends ApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
+        ApiObjectProperty.baseUrl: baseUrl,
+        if (requestUri != null) ApiObjectProperty.requestUri: requestUri,
         ApiObjectProperty.appMode: appMode,
         ApiObjectProperty.deviceMode: deviceMode,
         ApiObjectProperty.applicationName: applicationName,

@@ -345,6 +345,8 @@ abstract class ApiObjectProperty {
   static const String wordWrapEnabled = "wordWrapEnabled";
 
   // Startup request
+  static const String baseUrl = "baseUrl";
+  static const String requestUri = "requestUri";
   static const String readAheadLimit = "readAheadLimit";
   static const String deviceId = "deviceId";
   static const String technology = "technology";
