@@ -109,13 +109,6 @@ dependencies:
   action_slider: ^0.6.1
   webview_flutter: ^4.0.2
 
-dependency_overrides:
-  # https://github.com/dint-dev/universal_io/pull/37
-  universal_io:
-    git:
-      url: https://github.com/sibvisions/fix_universal_io.git
-
-
 dev_dependencies:
   flutter_lints: ^2.0.1
 

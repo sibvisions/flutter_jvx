@@ -71,6 +71,7 @@ import 'util/debug/debug_overlay.dart';
 import 'util/debug/jvx_debug.dart';
 import 'util/extensions/jvx_logger_extensions.dart';
 import 'util/extensions/list_extensions.dart';
+import 'util/http_overrides.dart';
 import 'util/import_handler/import_handler.dart';
 import 'util/jvx_colors.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
@@ -365,7 +366,9 @@ class FlutterUI extends StatefulWidget {
 
     tz.initializeTimeZones();
 
-    HttpOverrides.global = MyHttpOverrides();
+    if (!kIsWeb) {
+      HttpOverrides.global = JVxHttpOverrides();
+    }
 
     IUiService().setAppManager(pAppToRun.appManager);
 
@@ -819,22 +822,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         ),
       ],
     );
-  }
-}
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    var client = super.createHttpClient(context);
-    // Global connectionTimeout, also used by (IO-)WebSocket
-    if (ConfigController().getAppConfig()?.requestTimeout != null) {
-      client.connectionTimeout = Duration(seconds: ConfigController().getAppConfig()!.requestTimeout!);
-    }
-    if (!kIsWeb) {
-      // TODO find way to not do this
-      client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
-    }
-    return client;
   }
 }
 
