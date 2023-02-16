@@ -196,6 +196,9 @@ class OnlineApiRepository implements IRepository {
   bool _everConnected = false;
   bool _connected = false;
 
+  static const Duration statusDelay = Duration(seconds: 2);
+  Timer? _statusTimer;
+
   /// Header fields, used for sessionId
   final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
 
@@ -267,10 +270,17 @@ class OnlineApiRepository implements IRepository {
 
     if (_connected && !connected) {
       // Only show on first reconnect attempt
-      showStatus("Server Connection lost, retrying...", true);
+      _statusTimer = Timer(statusDelay, () {
+        showStatus("Server Connection lost, retrying...", true);
+      });
       _reconnectHTTP();
     } else if (!_connected && connected && _everConnected) {
-      showStatus("Server Connection restored");
+      // If last timer is still running, cancel it and don't show new message.
+      if (_statusTimer?.isActive ?? false) {
+        _statusTimer?.cancel();
+      } else {
+        showStatus("Server Connection restored");
+      }
     } else if (_connected != connected) {
       hideStatus();
     }
@@ -370,13 +380,14 @@ class OnlineApiRepository implements IRepository {
       // If we would want it in the splash too.
       BuildContext? effectiveContext = FlutterUI.getCurrentContext(); //?? FlutterUI.getSplashContext();
       if (effectiveContext != null) {
-        ScaffoldMessenger.maybeOf(effectiveContext)?.hideCurrentSnackBar();
-        ScaffoldMessenger.maybeOf(effectiveContext)?.showSnackBar(SnackBar(
+        var messenger = ScaffoldMessenger.maybeOf(effectiveContext);
+        var theme = Theme.of(effectiveContext);
+
+        messenger?.hideCurrentSnackBar();
+        messenger?.showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           content: Text(FlutterUI.translate(message)),
-          backgroundColor: (Theme.of(effectiveContext).snackBarTheme.backgroundColor ??
-                  Theme.of(effectiveContext).colorScheme.onSurface)
-              .withOpacity(0.7),
+          backgroundColor: (theme.snackBarTheme.backgroundColor ?? theme.colorScheme.onSurface).withOpacity(0.7),
           // There is no infinite.
           duration: showIndefinitely ? const Duration(days: 365) : const Duration(seconds: 2),
         ));
@@ -385,6 +396,7 @@ class OnlineApiRepository implements IRepository {
   }
 
   void hideStatus({bool instant = false}) {
+    _statusTimer?.cancel();
     BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
     if (effectiveContext != null) {
       var messengerState = ScaffoldMessenger.maybeOf(effectiveContext);
