@@ -38,7 +38,49 @@ abstract class JVxColors {
   /// See also:
   /// * [applyJVxColorScheme]
   /// * [applyJVxTheme]
-  static ThemeData createTheme(MaterialColor materialColor, Brightness selectedBrightness) {
+  static ThemeData createTheme(
+    Color seedColor,
+    Brightness selectedBrightness, {
+    bool useFixedPrimary = false,
+  }) {
+    ColorScheme colorScheme;
+    if (useFixedPrimary) {
+      bool isSeedLight = ThemeData.estimateBrightnessForColor(seedColor) == Brightness.light;
+
+      colorScheme = ColorScheme.fromSeed(
+        seedColor: seedColor,
+        primary: selectedBrightness == Brightness.light ? seedColor : null,
+        onPrimary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        secondary: selectedBrightness == Brightness.light
+            ? JVxColors.darken(seedColor, 0.1)
+            : JVxColors.lighten(seedColor, 0.1),
+        onSecondary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        onTertiary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        brightness: selectedBrightness,
+        background: selectedBrightness == Brightness.light ? Colors.grey.shade50 : Colors.grey.shade900,
+      );
+    } else {
+      colorScheme = ColorScheme.fromSeed(
+        seedColor: seedColor,
+        brightness: selectedBrightness,
+        background: selectedBrightness == Brightness.light ? Colors.grey.shade50 : Colors.grey.shade900,
+      );
+    }
+
+    colorScheme = applyJVxColorScheme(colorScheme);
+
+    var themeData = ThemeData.from(colorScheme: colorScheme);
+    themeData = applyJVxTheme(themeData);
+
+    return themeData;
+  }
+
+  /// Creates a JVx-conform legacy theme.
+  ///
+  /// See also:
+  /// * [applyJVxColorScheme]
+  /// * [applyJVxTheme]
+  static ThemeData createLegacyTheme(MaterialColor materialColor, Brightness selectedBrightness) {
     ColorScheme colorScheme = ColorScheme.fromSwatch(
       primarySwatch: materialColor,
       brightness: selectedBrightness,

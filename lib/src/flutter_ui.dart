@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart' hide LogEvent;
-import 'package:material_color_generator/material_color_generator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -739,10 +738,16 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     styleColor ??= ParseUtil.parseHexColor(styleMap?['theme.color']);
 
     if (styleColor != null) {
-      MaterialColor materialColor = generateMaterialColor(color: styleColor);
+      // styleColor = const Color(0xFF00FFBB);
 
-      themeData = JVxColors.createTheme(materialColor, Brightness.light);
-      darkThemeData = JVxColors.createTheme(materialColor, Brightness.dark);
+      themeData = JVxColors.createTheme(styleColor, Brightness.light, useFixedPrimary: true);
+      darkThemeData = JVxColors.createTheme(styleColor, Brightness.dark, useFixedPrimary: true);
+      // themeData = JVxColors.createTheme(styleColor, Brightness.light);
+      // darkThemeData = JVxColors.createTheme(styleColor, Brightness.dark);
+
+      // MaterialColor materialColor = generateMaterialColor(color: styleColor);
+      // themeData = JVxColors.createLegacyTheme(materialColor, Brightness.light);
+      // darkThemeData = JVxColors.createLegacyTheme(materialColor, Brightness.dark);
     } else {
       themeData = JVxColors.createTheme(Colors.blue, Brightness.light);
       darkThemeData = JVxColors.createTheme(Colors.blue, Brightness.dark);
