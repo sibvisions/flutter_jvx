@@ -152,7 +152,6 @@ class JVxWebSocket {
         // As there is no cancel of a currently connecting websocket (yet),
         // this is only triggered when the connection websocket fails to initially connect.
         FlutterUI.logAPI.w("${_logPrefix}Connection to WebSocket#${webSocket.hashCode} failed", error);
-        _connectedState.value = false;
 
         _handleError(error);
       },
@@ -191,6 +190,9 @@ class JVxWebSocket {
   }
 
   void _handleError(error) {
+    _connectedState.value = false;
+    onConnectedChange?.call(false);
+
     if (error is WebSocketChannelException &&
         error.inner is WebSocketChannelException &&
         (error.inner as WebSocketChannelException).inner is WebSocketException) {
