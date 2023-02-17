@@ -27,6 +27,7 @@ class AppConfig {
   final String? title;
   final Uri? privacyPolicy;
   final int? requestTimeout;
+  final int? aliveInterval;
   final bool? autoRestartOnSessionExpired;
 
   final UiConfig? uiConfig;
@@ -44,6 +45,7 @@ class AppConfig {
     this.title,
     this.privacyPolicy,
     this.requestTimeout,
+    this.aliveInterval,
     this.autoRestartOnSessionExpired,
     this.uiConfig,
     this.serverConfig,
@@ -56,6 +58,7 @@ class AppConfig {
       : this(
           title: "JVx Mobile",
           requestTimeout: 10,
+          aliveInterval: 30,
           autoRestartOnSessionExpired: true,
           uiConfig: const UiConfig.empty(),
           serverConfig: const ServerConfig.empty(),
@@ -68,6 +71,7 @@ class AppConfig {
           title: json['title'],
           privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
           requestTimeout: json['requestTimeout'],
+          aliveInterval: json['aliveInterval'],
           autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
           serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json['serverConfig']) : null,
@@ -83,6 +87,7 @@ class AppConfig {
       title: other.title ?? title,
       privacyPolicy: other.privacyPolicy ?? privacyPolicy,
       requestTimeout: other.requestTimeout ?? requestTimeout,
+      aliveInterval: other.aliveInterval ?? aliveInterval,
       autoRestartOnSessionExpired: other.autoRestartOnSessionExpired ?? autoRestartOnSessionExpired,
       uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
       serverConfig: serverConfig?.merge(other.serverConfig) ?? other.serverConfig,

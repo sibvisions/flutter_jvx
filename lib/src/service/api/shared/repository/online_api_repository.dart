@@ -217,6 +217,8 @@ class OnlineApiRepository implements IRepository {
   /// Http client for outgoing connection
   HttpClient? client;
 
+  Timer? _aliveTimer;
+
   int _lastDelay = 0;
   Timer? _reconnectTimer;
 
@@ -256,6 +258,9 @@ class OnlineApiRepository implements IRepository {
 
     client?.close();
     client = null;
+
+    // Depends on client field.
+    resetAliveInterval();
   }
 
   @override
@@ -298,6 +303,9 @@ class OnlineApiRepository implements IRepository {
     }
 
     _connected = connected;
+
+    // Has to happen after field update, depends on field.
+    resetAliveInterval();
   }
 
   void _reconnectHTTP() {
@@ -324,6 +332,44 @@ class OnlineApiRepository implements IRepository {
       _reconnectTimer = null;
       FlutterUI.logAPI.i("Canceled HTTP reconnect");
     }
+  }
+
+  /// Resets the alive timer and restarts if the requirements are fulfilled.
+  ///
+  /// Requirement:
+  /// * HttpClient works ([client] != `null`).
+  /// * Connection works ([connected] == `true`).
+  /// * Session is valid ([IUiService.clientId] != `null`).
+  /// * App is in foreground ([AppLifecycleState] == [AppLifecycleState.resumed]).
+  ///
+  /// This method is called during the following changes:
+  /// * Connection State
+  /// * [AppLifecycleState]
+  /// * When repository stops
+  void resetAliveInterval() {
+    _aliveTimer?.cancel();
+
+    // Repository stopped.
+    if (client == null) return;
+    // No connection.
+    if (!connected) return;
+    // No session.
+    if (IUiService().clientId.value == null) return;
+    // Not in foreground.
+    if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) return;
+
+    var aliveInterval = Duration(seconds: ConfigController().getAppConfig()!.aliveInterval!);
+    if (aliveInterval == Duration.zero) return;
+
+    _aliveTimer = Timer(aliveInterval, () async {
+      // No activity happened during interval.
+      try {
+        await ICommandService().sendCommand(AliveCommand(reason: "Inactivity check", retryRequest: false));
+        // The CommandService already resets the connected state and therefore this timer.
+      } on IOException catch (e, stack) {
+        FlutterUI.logAPI.w("Inactivity Alive Request failed", e, stack);
+      }
+    });
   }
 
   JVxWebSocket? getWebSocket() {
