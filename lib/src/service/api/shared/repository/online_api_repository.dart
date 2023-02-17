@@ -351,6 +351,7 @@ class OnlineApiRepository implements IRepository {
   /// * When repository stops
   void resetAliveInterval() {
     _aliveTimer?.cancel();
+    FlutterUI.logAPI.d("Alive Interval reset");
 
     // Repository stopped.
     if (client == null) return;
@@ -373,6 +374,7 @@ class OnlineApiRepository implements IRepository {
         FlutterUI.logAPI.w("Inactivity Alive Request failed", e, stack);
       }
     });
+    FlutterUI.logAPI.d("Alive Interval started");
   }
 
   JVxWebSocket? getWebSocket() {
