@@ -28,6 +28,7 @@ class AppConfig {
   final Uri? privacyPolicy;
   final int? requestTimeout;
   final int? aliveInterval;
+  final int? wsPingInterval;
   final bool? autoRestartOnSessionExpired;
 
   final UiConfig? uiConfig;
@@ -46,6 +47,7 @@ class AppConfig {
     this.privacyPolicy,
     this.requestTimeout,
     this.aliveInterval,
+    this.wsPingInterval,
     this.autoRestartOnSessionExpired,
     this.uiConfig,
     this.serverConfig,
@@ -59,6 +61,7 @@ class AppConfig {
           title: "JVx Mobile",
           requestTimeout: 10,
           aliveInterval: 30,
+          wsPingInterval: 10,
           autoRestartOnSessionExpired: true,
           uiConfig: const UiConfig.empty(),
           serverConfig: const ServerConfig.empty(),
@@ -72,6 +75,7 @@ class AppConfig {
           privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
           requestTimeout: json['requestTimeout'],
           aliveInterval: json['aliveInterval'],
+          wsPingInterval: json['wsPingInterval'],
           autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
           serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json['serverConfig']) : null,
@@ -88,6 +92,7 @@ class AppConfig {
       privacyPolicy: other.privacyPolicy ?? privacyPolicy,
       requestTimeout: other.requestTimeout ?? requestTimeout,
       aliveInterval: other.aliveInterval ?? aliveInterval,
+      wsPingInterval: other.wsPingInterval ?? wsPingInterval,
       autoRestartOnSessionExpired: other.autoRestartOnSessionExpired ?? autoRestartOnSessionExpired,
       uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
       serverConfig: serverConfig?.merge(other.serverConfig) ?? other.serverConfig,

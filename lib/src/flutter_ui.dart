@@ -613,6 +613,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (repository is OnlineApiRepository) {
       // Stop and reset alive timer.
       repository.resetAliveInterval();
+      repository.jvxWebSocket?.resetPingInterval();
     }
 
     if (lastState != null) {

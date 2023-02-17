@@ -392,6 +392,7 @@ class OnlineApiRepository implements IRepository {
         }
       },
       onConnectedChange: (connected) => setConnected(connected),
+      pingInterval: Duration(seconds: ConfigController().getAppConfig()!.wsPingInterval!),
     ))
         .startWebSocket();
   }

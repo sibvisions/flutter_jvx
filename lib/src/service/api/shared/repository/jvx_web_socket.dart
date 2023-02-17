@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:universal_io/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -9,18 +10,29 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../util/external/retry.dart';
 import '../../../../util/import_handler/import_handler.dart';
+import '../../../ui/i_ui_service.dart';
 
 /// Uses [WebSocketChannel] to create a web socket for sending and receiving.
 ///
 /// Supports reconnects.
 class JVxWebSocket {
+  Duration? _pingInterval;
+
+  Duration? get pingInterval => _pingInterval;
+
+  set pingInterval(Duration? interval) {
+    _pingInterval = interval;
+    resetPingInterval();
+  }
+
   JVxWebSocket({
     required this.uriSupplier,
     required this.onData,
     this.title,
     this.headersSupplier,
     this.onConnectedChange,
-  });
+    Duration? pingInterval,
+  }) : _pingInterval = pingInterval;
 
   /// Name of this WebSocket handler instance (used for logging).
   final String? title;
@@ -64,6 +76,7 @@ class JVxWebSocket {
   /// Controls if we should try to reconnect after the socket closes.
   bool _manualClose = false;
 
+  Timer? _pingTimer;
   Timer? _reconnectTimer;
 
   String get _logPrefix => "${title ?? "JVxWebSocket"}#$hashCode: ";
@@ -131,6 +144,8 @@ class JVxWebSocket {
       }
 
       onConnectedChange?.call(true);
+
+      resetPingInterval();
     });
 
     _webSocket = webSocket;
@@ -142,6 +157,10 @@ class JVxWebSocket {
         if (data.isNotEmpty) {
           try {
             FlutterUI.logAPI.d("${_logPrefix}Received data via WebSocket#${webSocket.hashCode}: $data");
+            if (data == "OK") {
+              FlutterUI.logAPI.d("${_logPrefix}Received pong (OK)");
+              resetPingInterval();
+            }
             onData.call(data);
           } catch (e, stack) {
             FlutterUI.logAPI.e("${_logPrefix}Error handling websocket message:", e, stack);
@@ -163,6 +182,7 @@ class JVxWebSocket {
         );
 
         _connectedState.value = false;
+        resetPingInterval();
         _retryDelay = 2;
 
         if (webSocket.closeCode != status.policyViolation) {
@@ -192,6 +212,7 @@ class JVxWebSocket {
   void _handleError(error) {
     _connectedState.value = false;
     onConnectedChange?.call(false);
+    resetPingInterval();
 
     if (error is WebSocketChannelException &&
         error.inner is WebSocketChannelException &&
@@ -202,6 +223,58 @@ class JVxWebSocket {
     } else {
       reconnectWebSocket();
     }
+  }
+
+  /// Resets the ping timer and restarts if the requirements are fulfilled.
+  ///
+  /// A ping message is sent every [pingInterval], starting at the first
+  /// [pingInterval] after a new value has been assigned or a pong message has
+  /// been received. If a ping message is not answered by a pong message from the
+  /// peer, the `WebSocket` is assumed disconnected and the connection is closed
+  /// with a [WebSocketStatus.goingAway] close code. When a ping signal is sent,
+  /// the pong message must be received within [pingInterval].
+  ///
+  /// Requirement:
+  /// * HttpClient works ([client] != `null`).
+  /// * Connection works ([connected] == `true`).
+  /// * Session is valid ([IUiService.clientId] != `null`).
+  /// * App is in foreground ([AppLifecycleState] == [AppLifecycleState.resumed]).
+  ///
+  /// This method is called during the following changes:
+  /// * Connection State
+  /// * [AppLifecycleState]
+  /// * When web socket stops
+  void resetPingInterval() {
+    _pingTimer?.cancel();
+    FlutterUI.logAPI.d("${_logPrefix}Ping Interval reset");
+
+    if (pingInterval == null || pingInterval == Duration.zero) return;
+    // No connection.
+    if (!_connectedState.value) return;
+    // Not in foreground.
+    if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) return;
+
+    _pingTimer = Timer(pingInterval!, () async {
+      // No connection.
+      if (!_connectedState.value) return;
+
+      try {
+        _webSocket!.sink.add("PING");
+        FlutterUI.logAPI.d("${_logPrefix}Ping sent");
+
+        if (pingInterval == null || pingInterval == Duration.zero) return;
+        _pingTimer = Timer(pingInterval!, () {
+          FlutterUI.logAPI.w("${_logPrefix}No pong received in ${pingInterval!.inSeconds}s.");
+          // No pong received.
+          _closeWebSocket(WebSocketStatus.goingAway);
+          onConnectedChange?.call(false);
+          reconnectWebSocket();
+        });
+      } on IOException catch (e, stack) {
+        FlutterUI.logAPI.w("${_logPrefix}Ping failed", e, stack);
+      }
+    });
+    FlutterUI.logAPI.d("${_logPrefix}Ping Interval started");
   }
 
   void reconnectWebSocket() {
@@ -219,25 +292,27 @@ class JVxWebSocket {
     });
   }
 
-  Future<void> _closeWebSocket() async {
+  Future<void> _closeWebSocket([int? closeCode]) async {
     // Only needed for `onError`
-    if (_webSocket != null && _connectedState.value) {
+    if (_webSocket != null && _connectedState.value && closeCode == null) {
       _manualClose = true;
     }
 
     // Workaround for never finishing future in some cases
     // https://github.com/dart-lang/web_socket_channel/issues/231
     try {
-      await _webSocket?.sink.close(WebSocketStatus.normalClosure, "Client stopped").timeout(const Duration(seconds: 2));
+      await _webSocket?.sink
+          .close(closeCode ?? WebSocketStatus.normalClosure, "Client stopped")
+          .timeout(const Duration(seconds: 2));
       if (_webSocket != null) {
         FlutterUI.logAPI.i("${_logPrefix}Connection to WebSocket successfully closed");
       }
-      _webSocket = null;
     } on TimeoutException catch (_) {
       // FlutterUI.logAPI.w("${_logPrefix}Closing WebSocket timed out, continuing", e, stack);
     } finally {
       _connectedState.value = false;
     }
+    _webSocket = null;
 
     // Cancel subscription to ignore possible future events from already disposed web sockets.
     // This is important as we currently can't close web sockets reliably, therefore
@@ -246,5 +321,8 @@ class JVxWebSocket {
     try {
       await _subscription?.cancel();
     } catch (_) {}
+    _subscription = null;
+
+    resetPingInterval();
   }
 }
