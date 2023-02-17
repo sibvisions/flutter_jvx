@@ -95,7 +95,7 @@ class JVxWebSocket {
     _webSocket?.sink.add(data);
   }
 
-  Future<void> _openWebSocket() async {
+  Future<void> _openWebSocket({int retryAttempts = 3}) async {
     await _closeWebSocket();
 
     Uri? uri = uriSupplier.call();
@@ -104,16 +104,11 @@ class JVxWebSocket {
       return;
     }
 
-    try {
-      await retry(
-        maxAttempts: 3,
-        onRetry: (e) => FlutterUI.logAPI.w("${_logPrefix}Retrying initial WebSocket connection", e),
-        () => _connect(uri),
-      );
-    } catch (e) {
-      FlutterUI.logAPI.e("${_logPrefix}Connection to WebSocket could not be established!", e);
-      rethrow;
-    }
+    await retry(
+      maxAttempts: retryAttempts,
+      onRetry: (e) => FlutterUI.logAPI.w("${_logPrefix}Retrying initial WebSocket connection", e),
+      () => _connect(uri),
+    );
   }
 
   Future<void> _connect(Uri uri) async {
@@ -157,19 +152,9 @@ class JVxWebSocket {
         // As there is no cancel of a currently connecting websocket (yet),
         // this is only triggered when the connection websocket fails to initially connect.
         FlutterUI.logAPI.w("${_logPrefix}Connection to WebSocket#${webSocket.hashCode} failed", error);
-
         _connectedState.value = false;
 
-        if (error is WebSocketChannelException &&
-            error.inner is WebSocketChannelException &&
-            (error.inner as WebSocketChannelException).inner is WebSocketException) {
-          // Server probably doesn't support web sockets.
-          _availability.value = false;
-          FlutterUI.logAPI
-              .i("${_logPrefix}Connection to WebSocket#${webSocket.hashCode} was determined as unavailable");
-        } else {
-          _reconnectWebSocket();
-        }
+        _handleError(error);
       },
       onDone: () {
         FlutterUI.logAPI.w(
@@ -196,7 +181,7 @@ class JVxWebSocket {
         // Don't retry if we closed the socket (indicated either trough manualClose or status.normalClosure)
         if (!_manualClose &&
             ![status.normalClosure, status.goingAway, status.policyViolation].contains(webSocket.closeCode)) {
-          _reconnectWebSocket();
+          reconnectWebSocket();
         }
 
         _manualClose = false;
@@ -205,16 +190,29 @@ class JVxWebSocket {
     );
   }
 
-  void _reconnectWebSocket() {
+  void _handleError(error) {
+    if (error is WebSocketChannelException &&
+        error.inner is WebSocketChannelException &&
+        (error.inner as WebSocketChannelException).inner is WebSocketException) {
+      // Server probably doesn't support web sockets.
+      _availability.value = false;
+      FlutterUI.logAPI.i("${_logPrefix}Connection to WebSocket#${_webSocket.hashCode} was determined as unavailable");
+    } else {
+      reconnectWebSocket();
+    }
+  }
+
+  void reconnectWebSocket() {
     _retryDelay = min(_retryDelay << 1, 60);
     FlutterUI.logAPI.i("${_logPrefix}Retrying WebSocket connection in $_retryDelay seconds...");
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(Duration(seconds: _retryDelay), () async {
       try {
         FlutterUI.logAPI.i("${_logPrefix}Retrying WebSocket connection");
-        await _openWebSocket();
+        await _openWebSocket(retryAttempts: 0);
       } catch (e, stack) {
         FlutterUI.logAPI.w("${_logPrefix}WebSocket Retry failed", e, stack);
+        _handleError(e);
       }
     });
   }
