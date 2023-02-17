@@ -60,23 +60,25 @@ class EditorDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: _createTitle(context),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: editorBuilder.call(context, () => Navigator.pop(context, true)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: _closeButtons(context),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: _createTitle(context),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: editorBuilder.call(context, () => Navigator.pop(context, true)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: _closeButtons(context),
+              ),
+            ],
+          ),
         ));
   }
 
