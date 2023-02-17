@@ -103,17 +103,17 @@ class EditorDialog extends StatelessWidget {
   /// Returns the title Widget of the editor
   /// containing the [titleIcon] and [titleText]
   Widget _createTitle(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
       children: [
         if (titleIcon != null) titleIcon!,
-        const Padding(padding: EdgeInsets.all(15)),
-        Text(
-          titleText,
-          style: const TextStyle(
-            fontSize: 20,
+        Center(
+          child: Text(
+            titleText,
+            style: const TextStyle(
+              fontSize: 20,
+            ),
           ),
-        )
+        ),
       ],
     );
   }
