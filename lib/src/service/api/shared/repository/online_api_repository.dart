@@ -305,7 +305,9 @@ class OnlineApiRepository implements IRepository {
     _connected = connected;
 
     // Has to happen after field update, depends on field.
-    resetAliveInterval();
+    if (_connected != connected) {
+      resetAliveInterval();
+    }
   }
 
   void _reconnectHTTP() {
@@ -345,6 +347,7 @@ class OnlineApiRepository implements IRepository {
   /// This method is called during the following changes:
   /// * Connection State
   /// * [AppLifecycleState]
+  /// * When HTTP request happens
   /// * When repository stops
   void resetAliveInterval() {
     _aliveTimer?.cancel();
@@ -503,6 +506,9 @@ class OnlineApiRepository implements IRepository {
       } catch (_) {
         setConnected(false);
         rethrow;
+      } finally {
+        // Has to happen after connected field update, depends on field.
+        resetAliveInterval();
       }
 
       if (response.statusCode >= 400 && response.statusCode <= 599) {
