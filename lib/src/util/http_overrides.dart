@@ -26,7 +26,7 @@ class JVxHttpOverrides extends HttpOverrides {
     var client = super.createHttpClient(context);
     // Global connectionTimeout, also used by (IO-)WebSocket
     if (ConfigController().getAppConfig()?.requestTimeout != null) {
-      client.connectionTimeout = Duration(seconds: ConfigController().getAppConfig()!.requestTimeout!);
+      client.connectionTimeout = ConfigController().getAppConfig()!.requestTimeout!;
     }
     if (!kIsWeb) {
       // TODO find way to not do this

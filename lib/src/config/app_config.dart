@@ -26,9 +26,9 @@ class AppConfig {
 
   final String? title;
   final Uri? privacyPolicy;
-  final int? requestTimeout;
-  final int? aliveInterval;
-  final int? wsPingInterval;
+  final Duration? requestTimeout;
+  final Duration? aliveInterval;
+  final Duration? wsPingInterval;
   final bool? autoRestartOnSessionExpired;
 
   final UiConfig? uiConfig;
@@ -59,9 +59,9 @@ class AppConfig {
   const AppConfig.empty()
       : this(
           title: "JVx Mobile",
-          requestTimeout: 10,
-          aliveInterval: 30,
-          wsPingInterval: 10,
+          requestTimeout: const Duration(seconds: 10),
+          aliveInterval: const Duration(seconds: 30),
+          wsPingInterval: const Duration(seconds: 10),
           autoRestartOnSessionExpired: true,
           uiConfig: const UiConfig.empty(),
           serverConfig: const ServerConfig.empty(),
@@ -73,9 +73,9 @@ class AppConfig {
       : this(
           title: json['title'],
           privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
-          requestTimeout: json['requestTimeout'],
-          aliveInterval: json['aliveInterval'],
-          wsPingInterval: json['wsPingInterval'],
+          requestTimeout: json['requestTimeout'] != null ? Duration(milliseconds: json['requestTimeout']) : null,
+          aliveInterval: json['aliveInterval'] != null ? Duration(milliseconds: json['aliveInterval']) : null,
+          wsPingInterval: json['wsPingInterval'] != null ? Duration(milliseconds: json['wsPingInterval']) : null,
           autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
           serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json['serverConfig']) : null,

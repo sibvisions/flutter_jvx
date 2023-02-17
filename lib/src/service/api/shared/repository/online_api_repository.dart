@@ -362,7 +362,7 @@ class OnlineApiRepository implements IRepository {
     // Not in foreground.
     if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) return;
 
-    var aliveInterval = Duration(seconds: ConfigController().getAppConfig()!.aliveInterval!);
+    var aliveInterval = ConfigController().getAppConfig()!.aliveInterval!;
     if (aliveInterval == Duration.zero) return;
 
     _aliveTimer = Timer(aliveInterval, () async {
@@ -394,7 +394,7 @@ class OnlineApiRepository implements IRepository {
         }
       },
       onConnectedChange: (connected) => setConnected(connected),
-      pingInterval: Duration(seconds: ConfigController().getAppConfig()!.wsPingInterval!),
+      pingInterval: ConfigController().getAppConfig()!.wsPingInterval!,
     ))
         .startWebSocket();
   }
@@ -500,7 +500,7 @@ class OnlineApiRepository implements IRepository {
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
             onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
             maxAttempts: 3,
-            maxDelay: Duration(seconds: ConfigController().getAppConfig()!.requestTimeout!),
+            maxDelay: ConfigController().getAppConfig()!.requestTimeout!,
           );
         } else {
           response = await _sendRequest(pRequest);
