@@ -67,6 +67,7 @@ import '../../../../model/request/api_restore_data_request.dart';
 import '../../../../model/request/api_rollback_request.dart';
 import '../../../../model/request/api_save_request.dart';
 import '../../../../model/request/api_select_record_request.dart';
+import '../../../../model/request/api_select_tree_request.dart';
 import '../../../../model/request/api_set_screen_parameter.dart';
 import '../../../../model/request/api_set_value_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
@@ -141,6 +142,7 @@ class OnlineApiRepository implements IRepository {
     ApiFetchRequest: (_) => APIRoute.POST_FETCH,
     ApiLogoutRequest: (_) => APIRoute.POST_LOGOUT,
     ApiFilterRequest: (_) => APIRoute.POST_FILTER,
+    ApiSelectTreeRequest: (_) => APIRoute.POST_SELECT_TREE,
     ApiInsertRecordRequest: (_) => APIRoute.POST_INSERT_RECORD,
     ApiSelectRecordRequest: (_) => APIRoute.POST_SELECT_RECORD,
     ApiCloseScreenRequest: (_) => APIRoute.POST_CLOSE_SCREEN,

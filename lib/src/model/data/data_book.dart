@@ -74,6 +74,9 @@ class DataBook {
   /// The selected root reference
   String? rootKey;
 
+  /// The tree path
+  List<int>? treePath;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -188,6 +191,12 @@ class DataBook {
       selectedRow = pChangedResponse.selectedRow!;
     }
 
+    if (pChangedResponse.json.containsKey(ApiObjectProperty.treePath) && pChangedResponse.treePath != null) {
+      changed = true;
+      selectedRow = pChangedResponse.treePath!.last;
+      treePath = pChangedResponse.treePath;
+    }
+
     if (pChangedResponse.changedColumnNames == null ||
         pChangedResponse.changedValues == null ||
         pChangedResponse.selectedRow == null) {
@@ -282,6 +291,7 @@ class DataBook {
       index: pRecordIndex,
       values: selectedRecord,
       selectedColumn: selectedColumn,
+      treePath: treePath,
     );
   }
 

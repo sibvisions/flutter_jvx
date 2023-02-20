@@ -14,46 +14,37 @@
  * the License.
  */
 
-import '../column_definition.dart';
-import '../data_book.dart';
+import '../../request/filter.dart';
+import 'session_command.dart';
 
-class DataRecord {
+class SelectTreeCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Index of this row in the dataProvider
-  final int index;
+  final String componentName;
 
-  /// The name of the selected column
-  final String? selectedColumn;
+  final List<String> dataProviders;
 
-  /// Column info
-  final List<ColumnDefinition> columnDefinitions;
-
-  /// Values of this row, order corresponds to order of [columnDefinitions]
-  final List<dynamic> values;
-
-  /// Path to this row in the tree
-  final List<int>? treePath;
+  final List<Filter> filters;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataRecord({
-    required this.columnDefinitions,
-    required this.index,
-    required this.values,
-    this.selectedColumn,
-    this.treePath,
+  SelectTreeCommand({
+    required this.componentName,
+    required this.dataProviders,
+    required this.filters,
+    required super.reason,
   });
 
-  int getColumnIndex(String columnName) {
-    return DataBook.getColumnIndex(columnDefinitions, columnName);
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dynamic getValue(String columnName) {
-    return values[getColumnIndex(columnName)];
+  @override
+  String toString() {
+    return "SelectTreeCommand{componentName: $componentName, dataProviders: $dataProviders, filters: $filters, ${super.toString()}}";
   }
 }

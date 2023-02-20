@@ -329,13 +329,6 @@ class DataService implements IDataService {
   }
 
   @override
-  int getSelectedRow(String pDataProvider) {
-    DataBook? dataBook = dataBooks[pDataProvider];
-
-    return dataBook?.selectedRow ?? -1;
-  }
-
-  @override
   Future<bool> deleteRow({
     required String pDataProvider,
     required int pDeletedRow,

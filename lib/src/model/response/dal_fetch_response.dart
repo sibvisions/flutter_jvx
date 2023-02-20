@@ -61,6 +61,7 @@ class DalFetchResponse extends ApiResponse {
   final List<SortDefinition>? sortDefinitions;
 
   final List<dynamic>? masterRow;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

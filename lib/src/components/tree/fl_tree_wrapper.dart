@@ -21,8 +21,18 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../model/command/api/fetch_command.dart';
+import '../../model/command/api/select_tree_command.dart';
+import '../../model/command/data/get_meta_data_command.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/data/column_definition.dart';
+import '../../model/data/data_book.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/data/subscriptions/data_record.dart';
+import '../../model/data/subscriptions/data_subscription.dart';
+import '../../model/request/filter.dart';
+import '../../service/data/i_data_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_tree_widget.dart';
@@ -167,6 +177,8 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   _onSelectedRecord(String dataProvider, DataRecord? record) {
     log('onSelectedRecord: $dataProvider');
     if (record != null) {
+      print(record.treePath);
+      print(record.index);
       selectedRecords[dataProvider] = record;
     } else {
       selectedRecords.remove(dataProvider);
@@ -203,7 +215,35 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   _handleNodeTap(String pNodeKey) {
-    log('tap: $pNodeKey');
+    List<String> dataProviders = [];
+    List<Filter> filters = [];
+
+    Node<NodeData>? node = controller.getNode(pNodeKey);
+    while (node != null) {
+      dataProviders.insert(0, node.data!.dataProvider);
+      filters.insert(0, node.data!.rowFilter);
+
+      var parentNode = controller.getParent(node.key) as Node<NodeData>;
+      if (node != parentNode) {
+        node = parentNode;
+      } else {
+        node = null;
+      }
+    }
+
+    while (dataProviders.length < model.dataProviders.length) {
+      dataProviders.add(dataProviderAtTreeDepth(dataProviders.length - 1)!);
+      filters.add(Filter(columnNames: [], values: []));
+    }
+
+    IUiService().sendCommand(
+      SelectTreeCommand(
+        componentName: model.name,
+        dataProviders: dataProviders,
+        filters: filters,
+        reason: "Select tree",
+      ),
+    );
   }
 
   _handleExpansionChanged(String pNodeKey, bool pExpanded) {
@@ -286,7 +326,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       newNodes.add(
         Node<NodeData>(
           key: "${pDataProvider}_${rowFilter.toPageKey()}",
-          data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex),
+          data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider),
           parent: isPotentialParent,
           label: _createLabel(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions),
         ),
@@ -368,6 +408,8 @@ class NodeData {
   final String? pageKey;
   final List<int> treePath;
   final int rowIndex;
+  final Filter rowFilter;
+  final String dataProvider;
 
-  NodeData(this.pageKey, this.treePath, this.rowIndex);
+  NodeData(this.pageKey, this.treePath, this.rowIndex, this.rowFilter, this.dataProvider);
 }

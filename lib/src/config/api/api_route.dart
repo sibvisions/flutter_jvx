@@ -62,6 +62,7 @@ class APIRoute {
   static const APIRoute POST_ROLLBACK = APIRoute(Method.POST, "api/rollback");
   static const APIRoute POST_SORT = APIRoute(Method.POST, "api/dal/sort");
   static const APIRoute POST_RESTORE_DATA = APIRoute(Method.POST, "api/dal/restore");
+  static const APIRoute POST_SELECT_TREE = APIRoute(Method.POST, "api/dal/selectRecordTree");
 
   final String route;
   final Method method;

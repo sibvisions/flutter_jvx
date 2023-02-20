@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../flutter_ui.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../data/sort_definition.dart';
 import 'api_response.dart';
@@ -84,7 +85,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
         insertEnabled = json[ApiObjectProperty.insertEnabled],
         readOnly = json[ApiObjectProperty.readOnly],
         updateEnabled = json[ApiObjectProperty.updateEnabled],
-        treePath = json[ApiObjectProperty.treePath],
+        treePath = cast<List<int>?>(json[ApiObjectProperty.treePath]),
         selectedColumn = json[ApiObjectProperty.selectedColumn],
         sortDefinitions =
             (json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList(),

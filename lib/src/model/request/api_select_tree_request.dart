@@ -14,46 +14,40 @@
  * the License.
  */
 
-import '../column_definition.dart';
-import '../data_book.dart';
+import '../../service/api/shared/api_object_property.dart';
+import 'filter.dart';
+import 'session_request.dart';
 
-class DataRecord {
+class ApiSelectTreeRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Index of this row in the dataProvider
-  final int index;
+  final String componentName;
 
-  /// The name of the selected column
-  final String? selectedColumn;
+  final List<String> dataProviders;
 
-  /// Column info
-  final List<ColumnDefinition> columnDefinitions;
-
-  /// Values of this row, order corresponds to order of [columnDefinitions]
-  final List<dynamic> values;
-
-  /// Path to this row in the tree
-  final List<int>? treePath;
+  final List<Filter> filters;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataRecord({
-    required this.columnDefinitions,
-    required this.index,
-    required this.values,
-    this.selectedColumn,
-    this.treePath,
+  ApiSelectTreeRequest({
+    required this.componentName,
+    required this.dataProviders,
+    required this.filters,
   });
 
-  int getColumnIndex(String columnName) {
-    return DataBook.getColumnIndex(columnDefinitions, columnName);
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dynamic getValue(String columnName) {
-    return values[getColumnIndex(columnName)];
-  }
+  @override
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        ApiObjectProperty.componentId: componentName,
+        ApiObjectProperty.dataProvider: dataProviders,
+        ApiObjectProperty.filter: filters.map((e) => e.toJson()).toList(),
+      };
 }

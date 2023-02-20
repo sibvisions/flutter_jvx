@@ -48,6 +48,7 @@ import '../../../../../model/command/api/rollback_command.dart';
 import '../../../../../model/command/api/save_all_editors.dart';
 import '../../../../../model/command/api/save_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
+import '../../../../../model/command/api/select_tree_command.dart';
 import '../../../../../model/command/api/set_screen_parameter_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
@@ -89,6 +90,7 @@ import 'rollback_command_processor.dart';
 import 'save_all_editors_command_processor.dart';
 import 'save_command_processor.dart';
 import 'select_record_command_processor.dart';
+import 'select_tree_command_processor.dart';
 import 'set_screen_parameter_command_processor.dart';
 import 'set_value_command_processor.dart';
 import 'set_values_command_processor.dart';
@@ -201,6 +203,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
 
+  final ICommandProcessor _selectTreeCommand = SelectTreeCommandProcessor();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -286,6 +289,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _setScreenParameterProcessor.processCommand(command);
     } else if (command is RestoreDataCommand) {
       return _restoreDataProcessor.processCommand(command);
+    } else if (command is SelectTreeCommand) {
+      return _selectTreeCommand.processCommand(command);
     }
 
     return [];
