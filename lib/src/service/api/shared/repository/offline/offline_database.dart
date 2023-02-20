@@ -93,7 +93,7 @@ class OfflineDatabase {
     db = await openDatabase(
       // Set the path to the database.
       join(await getDatabasesPath(), "jvx_offline_data.sqlite"),
-      onUpgrade: (db, oldVersion, newVersion) => _initStructTables(db),
+      onUpgrade: (db, oldVersion, newVersion) => _createStructTables(db),
       // Set the version. This executes the onCreate/onUpgrade function and provides a
       // path to perform database upgrades and downgrades.
       // TODO check version (sync with app_version?)
@@ -101,25 +101,8 @@ class OfflineDatabase {
     );
   }
 
-  /// Creates offline tables for offline data.
-  createTables(List<DalMetaData> dalMetaData, {bool onlyIfNotExists = false}) {
-    return Future.wait([
-      _createStructTables(ConfigController().appName.value!, dalMetaData),
-      ...dalMetaData.map((table) async {
-        if (onlyIfNotExists && (await tableExists(table.dataProvider))) {
-          return Future.value(null);
-        }
-
-        String createTableSQL = _createTable(table);
-        FlutterUI.logAPI.d("Create Table SQL:\n$createTableSQL");
-        // Run the CREATE TABLE statement on the database.
-        return db.execute(createTableSQL);
-      })
-    ]);
-  }
-
-  /// Creates metadata tables.
-  _initStructTables(Database db) async {
+  /// Creates metadata tables, [OFFLINE_APPS_TABLE] and [OFFLINE_METADATA_TABLE].
+  Future<void> _createStructTables(Database db) async {
     String createAppsTableSQL = """
 CREATE TABLE IF NOT EXISTS $OFFLINE_APPS_TABLE (
    ID INTEGER PRIMARY KEY,
@@ -139,34 +122,94 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     await db.execute(createMetaDataTablesSQL);
   }
 
+  /// Returns the `APP_ID` from [OFFLINE_APPS_TABLE].
+  Future<int?> _queryAppId(String appName, {Transaction? txn}) async {
+    return (txn ?? db).query(
+      OFFLINE_APPS_TABLE,
+      where: "APP LIKE ?",
+      whereArgs: [appName],
+      columns: ["ID"],
+    ).then((value) => value.firstOrNull?["ID"] as int?);
+  }
+
+  /// Creates offline tables for offline data.
+  Future<void> createTables(
+    String appName,
+    List<DalMetaData> dalMetaData,
+  ) {
+    return db.transaction((txn) async {
+      Batch batch = txn.batch();
+
+      int appId = await txn.insert(OFFLINE_APPS_TABLE, {"APP": appName});
+      await _fillStructTables(appId, dalMetaData, batch: batch);
+      dalMetaData.forEach((table) => _createDataTable(table, batch: batch));
+
+      await batch.commit(noResult: true);
+    });
+  }
+
   /// Creates metadata entries for offline tables.
-  Future<dynamic> _createStructTables(String appName, List<DalMetaData> dalMetaData) async {
-    var appId = await db.insert(OFFLINE_APPS_TABLE, {"APP": appName});
-
-    return Future.wait(dalMetaData.map((metaData) => db.insert(OFFLINE_METADATA_TABLE, {
-          "APP_ID": appId,
-          "DATA_PROVIDER": metaData.dataProvider,
-          "TABLE_NAME": formatOfflineTableName(metaData.dataProvider),
-          "META_DATA": jsonEncode(metaData.json),
-        })));
+  Future<void> _fillStructTables(
+    int appId,
+    List<DalMetaData> dalMetaData, {
+    required Batch batch,
+  }) async {
+    dalMetaData.forEach((metaData) => batch.insert(
+          OFFLINE_METADATA_TABLE,
+          {
+            "APP_ID": appId,
+            "DATA_PROVIDER": metaData.dataProvider,
+            "TABLE_NAME": formatOfflineTableName(metaData.dataProvider),
+            "META_DATA": jsonEncode(metaData.json),
+          },
+        ));
   }
 
-  /// Drops all [DalMetaDataResponse.dataProvider] tables and removes all metadata entries from the current app (as from: [ConfigController.appName]).
-  Future<dynamic> dropTables(List<DalMetaData> dalMetaData) {
-    return Future.wait([
-      ...dalMetaData.map((table) => dropTable(table.dataProvider)),
-      _dropStructTables(ConfigController().appName.value!),
-    ]);
+  void _createDataTable(DalMetaData table, {required Batch batch}) {
+    String createTableSQL = _buildCreateTableSQL(table);
+    FlutterUI.logAPI.d("Create Table SQL:\n$createTableSQL");
+    // Run the CREATE TABLE statement on the database.
+    batch.execute(createTableSQL);
   }
 
-  /// Removes all metadata entries of this [appName] from [OFFLINE_APPS_TABLE].
-  Future<int> _dropStructTables(String appName) {
-    return db.delete(OFFLINE_APPS_TABLE, where: "APP LIKE ?", whereArgs: [appName]);
+  /// Drops all [DalMetaDataResponse.dataProvider] tables and removes all metadata entries from the current app.
+  Future<dynamic> dropTables(String appName) {
+    return db.transaction((txn) async {
+      Batch batch = txn.batch();
+
+      int? appId = await _queryAppId(appName, txn: txn);
+      List<Map<String, Object?>> rows = await txn.query(
+        OFFLINE_METADATA_TABLE,
+        columns: ['TABLE_NAME'],
+        where: "APP_ID = ?",
+        whereArgs: [appId],
+      );
+
+      _dropDataTables(rows, batch: batch);
+      _clearStructTables(appId, batch: batch);
+
+      await batch.commit(noResult: true);
+    });
+  }
+
+  /// Drops all data tables of this [appName].
+  void _dropDataTables(List<Map<String, Object?>> rows, {required Batch batch}) {
+    for (Map<String, Object?> row in rows) {
+      batch.execute('DROP TABLE IF EXISTS "${row["TABLE_NAME"]}";');
+    }
+  }
+
+  /// Removes all metadata entries of this [appName] from [OFFLINE_METADATA_TABLE] and [OFFLINE_APPS_TABLE].
+  void _clearStructTables(int? appId, {required Batch batch}) {
+    if (appId != null) {
+      batch.delete(OFFLINE_METADATA_TABLE, where: "APP_ID = ?", whereArgs: [appId]);
+      batch.delete(OFFLINE_APPS_TABLE, where: "ID = ?", whereArgs: [appId]);
+    }
   }
 
   /// Retrieves all saved [DalMetaDataResponse]s from [OFFLINE_APPS_TABLE].
-  Future<List<DalMetaData>> getMetaData({String? pDataProvider}) {
-    List<String> whereArgs = [ConfigController().appName.value!];
+  Future<List<DalMetaData>> getMetaData(String appName, {String? pDataProvider, Transaction? txn}) {
+    List<String> whereArgs = [appName];
     if (pDataProvider != null) {
       whereArgs.add(pDataProvider);
     }
@@ -204,14 +247,14 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return COLUMN_PREFIX + columnName;
   }
 
-  /// Creates an offline table on the basis of [pTable].
-  String _createTable(DalMetaData pTable) {
+  /// Builds a SQL command to create an offline table on the basis of [pTable].
+  String _buildCreateTableSQL(DalMetaData pTable) {
     var sql = StringBuffer('CREATE TABLE "${formatOfflineTableName(pTable.dataProvider)}" (');
 
     for (var column in pTable.columnDefinitions) {
-      sql.write(_createColumn(column.name, column));
+      sql.write(_buildCreateColumnSQL(column.name, column));
       // Offline/Old columns are always nullable.
-      sql.write(_createColumn(formatOfflineColumnName(column.name), column, nullable: true));
+      sql.write(_buildCreateColumnSQL(formatOfflineColumnName(column.name), column, nullable: true));
     }
     sql.write('"$STATE_COLUMN" TEXT\n');
 
@@ -219,10 +262,10 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return sql.toString();
   }
 
-  /// Creates a column on the basis of [pColumn].
+  /// Builds a SQL command to create a column on the basis of [pColumn].
   ///
   /// [nullable] is currently ignored, therefore every column is nullable, could be completely dropped in a future release.
-  String _createColumn(String pColumnName, ColumnDefinition pColumn, {bool? nullable}) {
+  String _buildCreateColumnSQL(String pColumnName, ColumnDefinition pColumn, {bool? nullable}) {
     var columnDef = StringBuffer('"$pColumnName" ');
     columnDef.write(Types.convertToSQLite(pColumn.dataTypeIdentifier, scale: pColumn.scale));
 

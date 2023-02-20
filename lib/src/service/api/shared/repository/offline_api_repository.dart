@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:sqflite/sqflite.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../flutter_ui.dart';
@@ -32,6 +33,7 @@ import '../../../../model/request/filter.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../util/parse_util.dart';
+import '../../../config/config_controller.dart';
 import '../../../data/i_data_service.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
@@ -52,13 +54,13 @@ class OfflineApiRepository implements IRepository {
     if (isStopped()) {
       offlineDatabase = await OfflineDatabase.open();
 
-      // Init all databooks because there is no OpenScreenCommand offline
+      // Init all current databooks because there is no OpenScreenCommand offline
       await initDataBooks();
     }
   }
 
   Future<void> initDataBooks() async {
-    List<DalMetaData> metaData = await offlineDatabase!.getMetaData();
+    List<DalMetaData> metaData = await offlineDatabase!.getMetaData(ConfigController().appName.value!);
     await Future.wait(metaData.map((element) => IDataService().setMetaData(pMetaData: element)));
   }
 
@@ -87,14 +89,14 @@ class OfflineApiRepository implements IRepository {
   ) async {
     var dalMetaData = dataBooks.map((e) => e.metaData).toList(growable: false);
     // Drop old data + possible old scheme
-    await offlineDatabase!.dropTables(dalMetaData);
-    offlineDatabase!.createTables(dalMetaData);
+    await offlineDatabase!.dropTables(ConfigController().appName.value!);
+    await offlineDatabase!.createTables(ConfigController().appName.value!, dalMetaData);
 
     FlutterUI.logAPI.d(
         "Sum of all dataBook entries: ${dataBooks.isNotEmpty ? dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element) : 0}");
 
     await offlineDatabase!.db.transaction((txn) async {
-      var batch = txn.batch();
+      Batch batch = txn.batch();
       for (var dataBook in dataBooks) {
         progressUpdate?.call(dataBooks.indexOf(dataBook) + 1, dataBooks.length);
 
@@ -122,7 +124,7 @@ class OfflineApiRepository implements IRepository {
 
   /// Deletes all currently used dataBooks
   Future<void> deleteDatabase() {
-    return offlineDatabase!.getMetaData().then((value) => offlineDatabase!.dropTables(value));
+    return offlineDatabase!.dropTables(ConfigController().appName.value!);
   }
 
   Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {

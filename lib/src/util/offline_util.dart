@@ -481,13 +481,16 @@ abstract class OfflineUtil {
           .values
           .where((element) => activeDataProviders.contains(element.dataProvider))
           .toList(growable: false);
-      await offlineApiRepository.initDatabase(dataBooks, (value, max, {progress}) {
-        dialogKey.currentState?.update(
-            config: Config(
-          message: "${FlutterUI.translate("Processing data")} ($value / $max)",
-          progress: progress ?? 0,
-        ));
-      });
+      await offlineApiRepository.initDatabase(
+        dataBooks,
+        (value, max, {progress}) {
+          dialogKey.currentState?.update(
+              config: Config(
+            message: "${FlutterUI.translate("Processing data")} ($value / $max)",
+            progress: progress ?? 0,
+          ));
+        },
+      );
 
       var panelModel = IStorageService().getComponentByName(pComponentName: pScreenName) as FlPanelModel;
 
@@ -497,7 +500,7 @@ abstract class OfflineUtil {
         DeleteScreenCommand(screenName: panelModel.name, reason: "We have fetched"),
       ]);
 
-      // Clear databooks forfc offline usage
+      // Clear databooks for offline usage
       IDataService().clearDataBooks();
       await offlineApiRepository.initDataBooks();
 
