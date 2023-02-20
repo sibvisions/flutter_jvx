@@ -195,6 +195,8 @@ class WorkScreenState extends State<WorkScreen> {
                     ),
                   );
                 } else {
+                  const Duration animationDuration = Duration(milliseconds: 750 + 550);
+                  const Duration animationDurationTwo = Duration(milliseconds: 450 + 550);
                   body = Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -203,11 +205,15 @@ class WorkScreenState extends State<WorkScreen> {
                         CardLoading(
                           height: 25,
                           width: 100,
+                          animationDuration: animationDuration,
+                          animationDurationTwo: animationDurationTwo,
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           margin: EdgeInsets.only(bottom: 10),
                         ),
                         CardLoading(
                           height: 50,
+                          animationDuration: animationDuration,
+                          animationDurationTwo: animationDurationTwo,
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           margin: EdgeInsets.only(bottom: 10),
                         ),
@@ -216,6 +222,8 @@ class WorkScreenState extends State<WorkScreen> {
                           child: CardLoading(
                             height: 50,
                             width: 120,
+                            animationDuration: animationDuration,
+                            animationDurationTwo: animationDurationTwo,
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             margin: EdgeInsets.only(bottom: 10),
                           ),
@@ -226,12 +234,16 @@ class WorkScreenState extends State<WorkScreen> {
                         CardLoading(
                           height: 25,
                           width: 100,
+                          animationDuration: animationDuration,
+                          animationDurationTwo: animationDurationTwo,
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           margin: EdgeInsets.only(bottom: 10),
                         ),
                         Expanded(
                           child: CardLoading(
                             height: double.infinity,
+                            animationDuration: animationDuration,
+                            animationDurationTwo: animationDurationTwo,
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                           ),
                         ),
