@@ -359,6 +359,8 @@ class OnlineApiRepository implements IRepository {
     if (!connected) return;
     // No session.
     if (IUiService().clientId.value == null) return;
+    // Are we offline?
+    if (ConfigController().offline.value) return;
     // Not in foreground.
     if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) return;
 

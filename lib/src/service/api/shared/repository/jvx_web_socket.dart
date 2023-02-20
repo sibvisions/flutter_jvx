@@ -10,6 +10,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../util/external/retry.dart';
 import '../../../../util/import_handler/import_handler.dart';
+import '../../../config/config_controller.dart';
 import '../../../ui/i_ui_service.dart';
 
 /// Uses [WebSocketChannel] to create a web socket for sending and receiving.
@@ -251,6 +252,8 @@ class JVxWebSocket {
     if (pingInterval == null || pingInterval == Duration.zero || pingInterval!.isNegative) return;
     // No connection.
     if (!_connectedState.value) return;
+    // Are we offline?
+    if (ConfigController().offline.value) return;
     // Not in foreground.
     if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) return;
 
