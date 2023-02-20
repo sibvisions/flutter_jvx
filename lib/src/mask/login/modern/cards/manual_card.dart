@@ -111,6 +111,7 @@ class _ManualCardState extends State<ManualCard> {
                               ),
                               onPressed: () => IUiService().routeToSettings(),
                               icon: const FaIcon(FontAwesomeIcons.gear),
+                              tooltip: FlutterUI.translate("Settings"),
                             ),
                         ],
                       ),
