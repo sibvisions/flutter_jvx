@@ -363,7 +363,7 @@ class OnlineApiRepository implements IRepository {
     if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) return;
 
     var aliveInterval = ConfigController().getAppConfig()!.aliveInterval!;
-    if (aliveInterval == Duration.zero) return;
+    if (aliveInterval == Duration.zero || aliveInterval.isNegative) return;
 
     _aliveTimer = Timer(aliveInterval, () async {
       // No activity happened during interval.
