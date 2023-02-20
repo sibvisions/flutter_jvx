@@ -82,7 +82,7 @@ class OfflineApiRepository implements IRepository {
   @override
   Map<String, String> getHeaders() => {};
 
-  /// Init database with currently available dataBooks
+  /// Init database with currently available dataBooks.
   Future<void> initDatabase(
     List<DataBook> dataBooks,
     void Function(int value, int max, {int? progress})? progressUpdate,

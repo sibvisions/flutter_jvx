@@ -133,6 +133,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Creates offline tables for offline data.
+  ///
+  /// Uses a [Transaction] and [Batch] to efficiently execute and gracefully fail in case of an error.
   Future<void> createTables(
     String appName,
     List<DalMetaData> dalMetaData,
@@ -173,6 +175,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Drops all [DalMetaDataResponse.dataProvider] tables and removes all metadata entries from the current app.
+  ///
+  /// Uses a [Transaction] and [Batch] to efficiently execute and gracefully fail in case of an error.
   Future<dynamic> dropTables(String appName) {
     return db.transaction((txn) async {
       Batch batch = txn.batch();
