@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -194,10 +195,47 @@ class WorkScreenState extends State<WorkScreen> {
                     ),
                   );
                 } else {
-                  body = const Center(
-                    child: SizedBox.square(
-                      dimension: 150,
-                      child: CircularProgressIndicator(),
+                  body = Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        CardLoading(
+                          height: 25,
+                          width: 100,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          margin: EdgeInsets.only(bottom: 10),
+                        ),
+                        CardLoading(
+                          height: 50,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          margin: EdgeInsets.only(bottom: 10),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: CardLoading(
+                            height: 50,
+                            width: 120,
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            margin: EdgeInsets.only(bottom: 10),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        CardLoading(
+                          height: 25,
+                          width: 100,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          margin: EdgeInsets.only(bottom: 10),
+                        ),
+                        Expanded(
+                          child: CardLoading(
+                            height: double.infinity,
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }
