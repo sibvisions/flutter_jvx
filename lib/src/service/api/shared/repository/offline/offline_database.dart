@@ -294,16 +294,30 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Whether a table named [pTableName] exists.
-  Future<bool> tableExists(String pTableName) {
+  ///
+  /// The table name is escaped using [formatOfflineTableName].
+  Future<bool> tableExists(String pTableName, {Transaction? txn}) {
+    return _tableExists(formatOfflineTableName(pTableName), txn: txn);
+  }
+
+  /// Whether a table named [tableName] exists.
+  Future<bool> _tableExists(String tableName, {Transaction? txn}) {
     String sql = 'SELECT COUNT(*) AS COUNT FROM sqlite_master WHERE TYPE = \'table\' AND NAME = ?;';
-    return db.rawQuery(sql, [formatOfflineTableName(pTableName)])
+    return db.rawQuery(sql, [tableName])
         // Check if returned count in select is 1
         .then((results) => results[0]['COUNT'] as int > 0);
   }
 
   /// Drops a table named [pTableName], if it exists.
-  Future<void> dropTable(String pTableName) {
-    return db.execute('DROP TABLE IF EXISTS "${formatOfflineTableName(pTableName)}";');
+  ///
+  /// The table name is escaped using [formatOfflineTableName].
+  Future<void> dropTable(String pTableName, {Transaction? txn}) {
+    return _dropTable(formatOfflineTableName(pTableName), txn: txn);
+  }
+
+  /// Drops a table named [tableName], if it exists.
+  Future<void> _dropTable(String tableName, {Transaction? txn}) {
+    return (txn ?? db).execute('DROP TABLE IF EXISTS "$tableName";');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -313,9 +327,9 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// Retrieves all rows from this [pDataProvider] where the [STATE_COLUMN] is not null.
   ///
   /// Returns an empty map if the table doesn't exist.
-  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) async {
-    if (await tableExists(pDataProvider)) {
-      return db
+  Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider, {Transaction? txn}) async {
+    if (await tableExists(pDataProvider, txn: txn)) {
+      return (txn ?? db)
           .query(formatOfflineTableName(pDataProvider), where: '"$STATE_COLUMN" IS NOT NULL')
           .then((value) => groupBy(value, (p0) => p0[STATE_COLUMN] as String));
     } else {
@@ -328,7 +342,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// * If [pResetRows] is empty, returns `0` and does nothing.
   /// * If row in [pResetRows] contains no columns, it is skipped.
   /// * Otherwise the columns in [pResetRows] are used to create a where clause.
-  Future<int> resetStates(String pDataProvider, List<Map<String, Object?>> pResetRows) {
+  Future<int> resetStates(String pDataProvider, List<Map<String, Object?>> pResetRows, {Transaction? txn}) {
     if (pResetRows.isEmpty) {
       return Future.value(0);
     }
@@ -351,7 +365,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       }
     }
 
-    return db.update(
+    return (txn ?? db).update(
       formatOfflineTableName(pDataProvider),
       {'"$STATE_COLUMN"': null},
       where: where,
@@ -360,20 +374,20 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Checks if at least one valid row (not marked as deleted) exists in [pTableName], optionally with [pFilter] applied.
-  Future<bool> rowExists({required String pTableName, Map<String, dynamic>? pFilter}) {
+  Future<bool> rowExists({required String pTableName, Map<String, dynamic>? pFilter, Transaction? txn}) {
     String sql = 'SELECT COUNT(*) AS COUNT FROM "${formatOfflineTableName(pTableName)}"';
     if (pFilter != null) {
       sql += " WHERE${pFilter.keys.map((key) => '"$key" = ?').join(" AND ")}";
       sql += ' AND "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
     }
 
-    return db.rawQuery(sql, [...?pFilter?.values]).then((results) => results[0]['COUNT'] as int > 0);
+    return (txn ?? db).rawQuery(sql, [...?pFilter?.values]).then((results) => results[0]['COUNT'] as int > 0);
   }
 
   /// Executes a SQL SELECT COUNT query for [pTableName] and returns the number of valid rows found, optionally with [pFilters] applied.
-  Future<int> getCount({required String pTableName, List<FilterCondition>? pFilters}) {
+  Future<int> getCount({required String pTableName, List<FilterCondition>? pFilters, Transaction? txn}) {
     var where = _getWhere(pFilters);
-    return db
+    return (txn ?? db)
         .query(formatOfflineTableName(pTableName),
             columns: ["COUNT(*) AS COUNT"], where: where?[0], whereArgs: where?[1])
         .then((results) => results[0]['COUNT'] as int);
@@ -389,9 +403,10 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     String? pOrderBy,
     int? pLimit,
     int? pOffset,
+    Transaction? txn,
   }) {
     var where = _getWhere(pFilters);
-    return db.query(
+    return (txn ?? db).query(
       formatOfflineTableName(pTableName),
       columns: pColumns,
       where: where?[0],
@@ -626,7 +641,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Executes a List of sql statements in a batch operation (single atomic operation).
-  batch({required List<String> pSqlStatements}) {
+  Future<List<Object?>> batch({required List<String> pSqlStatements}) {
     return db.transaction((txn) {
       var batch = txn.batch();
       pSqlStatements.forEach((sql) {
