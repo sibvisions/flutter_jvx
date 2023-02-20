@@ -248,7 +248,7 @@ class JVxWebSocket {
     _pingTimer?.cancel();
     FlutterUI.logAPI.d("${_logPrefix}Ping Interval reset");
 
-    if (pingInterval == null || pingInterval == Duration.zero) return;
+    if (pingInterval == null || pingInterval == Duration.zero || pingInterval!.isNegative) return;
     // No connection.
     if (!_connectedState.value) return;
     // Not in foreground.
