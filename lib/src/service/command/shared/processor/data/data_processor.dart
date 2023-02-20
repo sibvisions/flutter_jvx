@@ -92,8 +92,8 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       return [
         FetchCommand(
           dataProvider: command.dataProvider,
-          fromRow: 0,
-          rowCount: IUiService().getSubscriptionRowcount(pDataProvider: command.dataProvider),
+          fromRow: -1,
+          rowCount: 0,
           reason: "Fetch for ${command.runtimeType}",
           includeMetaData: true,
         )
@@ -210,9 +210,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       return [
         FetchCommand(
           fromRow: command.from,
-          rowCount: command.to != null
-              ? command.to! - command.from
-              : IUiService().getSubscriptionRowcount(pDataProvider: command.dataProvider),
+          rowCount: command.to != null ? command.to! - command.from : -1,
           dataProvider: command.dataProvider,
           reason: "Fetch for ${command.runtimeType}",
           includeMetaData: includeMetaData,
