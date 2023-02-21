@@ -55,10 +55,10 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
         child: TreeView(
           controller: controller,
           onNodeTap: onNodeTap,
-          onNodeDoubleTap: onNodeDoubleTap,
+          //onNodeDoubleTap: onNodeDoubleTap,
           onExpansionChanged: onExpansionChanged,
           allowParentSelect: true,
-          supportParentDoubleTap: true,
+          //supportParentDoubleTap: true,
         ),
       ),
     );

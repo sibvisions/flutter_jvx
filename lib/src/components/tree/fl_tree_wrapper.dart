@@ -183,7 +183,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       selectedRecords.remove(dataProvider);
     }
 
-    _updateSelection();
+    // _updateSelection();
   }
 
   bool _hasAllMetaData() {
@@ -355,9 +355,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       Node? oldNode = controller.getNode(newNode.key);
       if (oldNode != null) {
         newNode = newNode.copyWith(children: oldNode.children, expanded: oldNode.expanded);
-        if (!oldNode.parent) {
-          newNode = newNode.copyWith(parent: false);
-        }
+        // if (!oldNode.parent) {
+        //   newNode = newNode.copyWith(parent: false);
+        // }
       }
     }
 
@@ -473,7 +473,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       Node<NodeData> child = iter.current;
       if (listEquals(child.data!.treePath, pTreePath)) {
         return child;
-      } else if (child.isParent) {
+      } else if (child.isParent &&
+          child.data!.treePath.length < pTreePath.length &&
+          listEquals(child.data!.treePath, pTreePath.sublist(0, child.data!.treePath.length))) {
         return getNodeFromTreePath(pTreePath, child);
       }
     }
