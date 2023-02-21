@@ -394,7 +394,7 @@ class StorageService implements IStorageService {
     if (components.last.className == FlContainerClassname.DESKTOP_PANEL) {
       return Frame.isWebFrame() && FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == MenuLocation;
     } else {
-      return components.last.name == IUiService().getCurrentWorkscreenName();
+      return (components.last as FlPanelModel).screenNavigationName == IUiService().getCurrentWorkscreenName();
     }
   }
 
