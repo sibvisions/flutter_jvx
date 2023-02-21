@@ -27,7 +27,7 @@ class ApiSelectTreeRequest extends SessionRequest {
 
   final List<String> dataProviders;
 
-  final List<Filter> filters;
+  final List<Filter?> filters;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -48,6 +48,6 @@ class ApiSelectTreeRequest extends SessionRequest {
         ...super.toJson(),
         ApiObjectProperty.componentId: componentName,
         ApiObjectProperty.dataProvider: dataProviders,
-        ApiObjectProperty.filter: filters.map((e) => e.toJson()).toList(),
+        ApiObjectProperty.filter: filters.map((e) => e?.toJson()).toList(),
       };
 }

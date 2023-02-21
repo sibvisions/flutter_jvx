@@ -17,6 +17,7 @@
 import 'dart:collection';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
@@ -177,12 +178,12 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   _onSelectedRecord(String dataProvider, DataRecord? record) {
     log('onSelectedRecord: $dataProvider');
     if (record != null) {
-      print(record.treePath);
-      print(record.index);
       selectedRecords[dataProvider] = record;
     } else {
       selectedRecords.remove(dataProvider);
     }
+
+    _updateSelection();
   }
 
   bool _hasAllMetaData() {
@@ -216,7 +217,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
   _handleNodeTap(String pNodeKey) {
     List<String> dataProviders = [];
-    List<Filter> filters = [];
+    List<Filter?> filters = [];
 
     Node<NodeData>? node = controller.getNode(pNodeKey);
     while (node != null) {
@@ -232,8 +233,8 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     }
 
     while (dataProviders.length < model.dataProviders.length) {
-      dataProviders.add(dataProviderAtTreeDepth(dataProviders.length - 1)!);
-      filters.add(Filter(columnNames: [], values: []));
+      dataProviders.add(dataProviderAtTreeDepth(dataProviders.length)!);
+      filters.add(null);
     }
 
     IUiService().sendCommand(
@@ -354,6 +355,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       Node? oldNode = controller.getNode(newNode.key);
       if (oldNode != null) {
         newNode = newNode.copyWith(children: oldNode.children, expanded: oldNode.expanded);
+        if (!oldNode.parent) {
+          newNode = newNode.copyWith(parent: false);
+        }
       }
     }
 
@@ -378,9 +382,21 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   String _createLabel(DalMetaData pMetaData, List<dynamic> pDataRow, List<ColumnDefinition> pColumnDefinitions) {
-    return pMetaData.columnViewTable.isNotEmpty
-        ? pDataRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == pMetaData.columnViewTable[0])].toString()
-        : "No column view";
+    if (pMetaData.columnViewTree.isNotEmpty) {
+      String label = "";
+      for (String column in pMetaData.columnViewTree) {
+        if (label.isNotEmpty) {
+          label += " ";
+        }
+        label += "${pDataRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == column)]}";
+      }
+      return label;
+    } else if (pMetaData.columnViewTable.isNotEmpty) {
+      return pDataRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == pMetaData.columnViewTable[0])]
+          .toString();
+    } else {
+      return "No column view";
+    }
   }
 
   Filter _createChildFilter(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow,
@@ -401,6 +417,67 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
           .map((columnName) => pParentRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
           .toList(),
     );
+  }
+
+  void _updateSelection() {
+    // Checks which data providers have selected rows.
+    // Then checks which of these data providers has the highest tree depth.
+    // The one with the highes tree depth is the one that is used to determine the selection.
+
+    List<String> selectedDataProviders = selectedRecords.entries
+        .where((entry) => entry.value.index >= 0 || entry.value.treePath?.isNotEmpty == true)
+        .map((entry) => entry.key)
+        .toList();
+
+    if (selectedDataProviders.isEmpty) {
+      controller = controller.copyWith(selectedKey: "");
+    } else {
+      selectedDataProviders.sort((a, b) => model.dataProviders.indexOf(a).compareTo(model.dataProviders.indexOf(b)));
+
+      List<int> selectedTreePath = [];
+      for (int i = 0; i < selectedDataProviders.length; i++) {
+        String dataProvider = selectedDataProviders[i];
+        String? metaDataIndexDataProvider = dataProviderAtTreeDepth(i);
+
+        if (dataProvider == metaDataIndexDataProvider) {
+          DataRecord dataRecord = selectedRecords[dataProvider]!;
+          if (dataRecord.treePath?.isNotEmpty == true) {
+            selectedTreePath.addAll(dataRecord.treePath!);
+          } else if (dataRecord.index >= 0) {
+            selectedTreePath.add(dataRecord.index);
+          } else {
+            break;
+          }
+        } else {
+          break;
+        }
+      }
+
+      if (selectedTreePath.isEmpty) {
+        controller = controller.copyWith(selectedKey: "");
+      } else {
+        Node? selectedNode = getNodeFromTreePath(selectedTreePath);
+        if (selectedNode != null) {
+          controller = controller.copyWith(selectedKey: selectedNode.key);
+        } else {
+          controller = controller.copyWith(selectedKey: "");
+        }
+      }
+    }
+    setState(() {});
+  }
+
+  Node? getNodeFromTreePath(List<int> pTreePath, [Node? parentNode]) {
+    Iterator iter = (parentNode?.children ?? controller.children).iterator;
+    while (iter.moveNext()) {
+      Node<NodeData> child = iter.current;
+      if (listEquals(child.data!.treePath, pTreePath)) {
+        return child;
+      } else if (child.isParent) {
+        return getNodeFromTreePath(pTreePath, child);
+      }
+    }
+    return null;
   }
 }
 

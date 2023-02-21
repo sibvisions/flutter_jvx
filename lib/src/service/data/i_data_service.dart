@@ -56,6 +56,9 @@ abstract class IDataService {
   /// Updates parts of dataBook with changed data.
   bool updateDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse});
 
+  /// Updates parts of dataBook with new selection data.
+  bool updateSelectionChangedResponse({required DalDataProviderChangedResponse pChangedResponse});
+
   /// Returns column data of the selected row of the dataProvider
   Future<DataRecord?> getSelectedRowData({
     required List<String>? pColumnNames,
@@ -97,9 +100,6 @@ abstract class IDataService {
     required int pNewSelectedRow,
     String? pNewSelectedColumn,
   });
-
-  /// Returns the index of the selected row.
-  int getSelectedRow(String pDataProvider);
 
   /// Returns true when row selection was successful (dataProvider and dataRow exist)
   Future<bool> deleteRow({

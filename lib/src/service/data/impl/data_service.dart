@@ -28,6 +28,7 @@ import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
+import '../../api/shared/api_object_property.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
@@ -77,6 +78,34 @@ class DataService implements IDataService {
     }
 
     return dataBook.saveFromChangedResponse(pChangedResponse: pChangedResponse);
+  }
+
+  @override
+  bool updateSelectionChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
+    DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
+    if (dataBook == null) {
+      return false;
+    }
+
+    bool changed = false;
+
+    if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
+      changed = true;
+      dataBook.selectedColumn = pChangedResponse.selectedColumn;
+    }
+
+    if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedRow) && pChangedResponse.selectedRow != null) {
+      changed = true;
+      dataBook.selectedRow = pChangedResponse.selectedRow!;
+    }
+
+    if (pChangedResponse.json.containsKey(ApiObjectProperty.treePath) && pChangedResponse.treePath != null) {
+      changed = true;
+      dataBook.selectedRow = pChangedResponse.treePath!.last;
+      dataBook.treePath = pChangedResponse.treePath;
+    }
+
+    return changed;
   }
 
   @override

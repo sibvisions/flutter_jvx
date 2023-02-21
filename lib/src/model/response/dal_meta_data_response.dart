@@ -39,6 +39,9 @@ class DalMetaDataResponse extends ApiResponse {
   /// All visible columns of this this dataBook if shown in a table
   List<String>? columnViewTable;
 
+  /// All visible columns of this this dataBook if shown in a tree
+  List<String>? columnViewTree = [];
+
   /// The path to the dataBook
   String dataProvider;
 
@@ -64,6 +67,7 @@ class DalMetaDataResponse extends ApiResponse {
   DalMetaDataResponse.fromJson(super.json)
       : dataProvider = json[ApiObjectProperty.dataProvider],
         columnViewTable = json[ApiObjectProperty.columnViewTable]?.cast<String>(),
+        columnViewTree = json[ApiObjectProperty.columnViewTree]?.cast<String>(),
         columns =
             (json[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList(),
         readOnly = json[ApiObjectProperty.readOnly],

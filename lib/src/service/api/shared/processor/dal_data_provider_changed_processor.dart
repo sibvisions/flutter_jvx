@@ -28,6 +28,7 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
     }
 
     bool dataChanged = IDataService().updateDataChangedResponse(pChangedResponse: pResponse);
+    bool selectionChanged = IDataService().updateSelectionChangedResponse(pChangedResponse: pResponse);
 
     // If -1 then delete all saved data and re-fetch
     if (pResponse.reload == -1) {
@@ -59,6 +60,8 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
       commands.add(fetchCommand);
     } else if (dataChanged) {
       IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
+    } else if (selectionChanged) {
+      IUiService().notifySelectionChange(pDataProvider: pResponse.dataProvider);
     }
 
     if (pResponse.deletedRow != null) {

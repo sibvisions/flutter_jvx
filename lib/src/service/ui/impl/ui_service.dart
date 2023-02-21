@@ -641,6 +641,22 @@ class UiService implements IUiService {
   }
 
   @override
+  void notifySelectionChange({
+    required String pDataProvider,
+  }) {
+    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
+      if (sub.onSelectedRecord != null) {
+        sendCommand(GetSelectedDataCommand(
+          subId: sub.id,
+          reason: "Notify data was called with pFrom -1",
+          dataProvider: sub.dataProvider,
+          columnNames: sub.dataColumns,
+        ));
+      }
+    });
+  }
+
+  @override
   void notifyMetaDataChange({
     required String pDataProvider,
   }) {

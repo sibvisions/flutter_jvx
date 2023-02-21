@@ -26,7 +26,7 @@ class SelectTreeCommand extends SessionCommand {
 
   final List<String> dataProviders;
 
-  final List<Filter> filters;
+  final List<Filter?> filters;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

@@ -381,4 +381,6 @@ abstract class ApiObjectProperty {
   static const String errorMessage = "errorMessage";
 
   static const String masterRow = "masterRow";
+
+  static const String columnViewTree = "columnViewTree";
 }

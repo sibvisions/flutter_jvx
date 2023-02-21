@@ -245,6 +245,12 @@ abstract class IUiService {
   });
 
   /// Notify all components belonging to [pDataProvider] that their underlying
+  /// data selection may have changed.
+  void notifySelectionChange({
+    required String pDataProvider,
+  });
+
+  /// Notify all components belonging to [pDataProvider] that their underlying
   /// meta data may have changed.
   void notifyMetaDataChange({
     required String pDataProvider,

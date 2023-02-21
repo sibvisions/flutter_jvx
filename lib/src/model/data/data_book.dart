@@ -181,22 +181,6 @@ class DataBook {
       changed = updateSortDefinitions(pChangedResponse.sortDefinitions);
     }
 
-    if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
-      changed = true;
-      selectedColumn = pChangedResponse.selectedColumn;
-    }
-
-    if (pChangedResponse.json.containsKey(ApiObjectProperty.selectedRow) && pChangedResponse.selectedRow != null) {
-      changed = true;
-      selectedRow = pChangedResponse.selectedRow!;
-    }
-
-    if (pChangedResponse.json.containsKey(ApiObjectProperty.treePath) && pChangedResponse.treePath != null) {
-      changed = true;
-      selectedRow = pChangedResponse.treePath!.last;
-      treePath = pChangedResponse.treePath;
-    }
-
     if (pChangedResponse.changedColumnNames == null ||
         pChangedResponse.changedValues == null ||
         pChangedResponse.selectedRow == null) {
@@ -474,6 +458,9 @@ class DalMetaData {
   /// All visible columns of this this dataBook if shown in a table
   List<String> columnViewTable = [];
 
+  /// All visible columns of this this dataBook if shown in a tree
+  List<String> columnViewTree = [];
+
   /// If the databook is readonly.
   bool readOnly = false;
 
@@ -512,6 +499,9 @@ class DalMetaData {
     changedProperties = pResponse.json.keys.toList();
     if (pResponse.columnViewTable != null) {
       columnViewTable = pResponse.columnViewTable!;
+    }
+    if (pResponse.columnViewTree != null) {
+      columnViewTree = pResponse.columnViewTree!;
     }
     if (pResponse.masterReference != null) {
       masterReference = pResponse.masterReference!;
