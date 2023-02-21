@@ -355,9 +355,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       Node? oldNode = controller.getNode(newNode.key);
       if (oldNode != null) {
         newNode = newNode.copyWith(children: oldNode.children, expanded: oldNode.expanded);
-        // if (!oldNode.parent) {
-        //   newNode = newNode.copyWith(parent: false);
-        // }
+        if (!oldNode.parent) {
+          newNode = newNode.copyWith(parent: false);
+        }
       }
     }
 
