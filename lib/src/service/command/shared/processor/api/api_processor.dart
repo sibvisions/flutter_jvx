@@ -29,6 +29,7 @@ import '../../../../../model/command/api/device_status_command.dart';
 import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/download_style_command.dart';
 import '../../../../../model/command/api/download_translation_command.dart';
+import '../../../../../model/command/api/exit_command.dart';
 import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/api/filter_command.dart';
 import '../../../../../model/command/api/focus_gained_command.dart';
@@ -72,6 +73,7 @@ import 'device_status_command_processor.dart';
 import 'download_images_command_processor.dart';
 import 'download_style_command_processor.dart';
 import 'download_translation_command_processor.dart';
+import 'exit_command_processor.dart';
 import 'fetch_command_processor.dart';
 import 'filter_command_processor.dart';
 import 'focus_gained_command_processor.dart';
@@ -195,6 +197,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _aliveProcessor = AliveCommandProcessor();
 
+  final ICommandProcessor _exitProcessor = ExitCommandProcessor();
+
   final ICommandProcessor _saveProcessor = SaveCommandProcessor();
 
   final ICommandProcessor _reloadProcessor = ReloadCommandProcessor();
@@ -281,6 +285,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _focusLostProcessor.processCommand(command);
     } else if (command is AliveCommand) {
       return _aliveProcessor.processCommand(command);
+    } else if (command is ExitCommand) {
+      return _exitProcessor.processCommand(command);
     } else if (command is SaveCommand) {
       return _saveProcessor.processCommand(command);
     } else if (command is ReloadCommand) {
