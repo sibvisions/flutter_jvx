@@ -183,7 +183,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       selectedRecords.remove(dataProvider);
     }
 
-    // _updateSelection();
+    _updateSelection();
   }
 
   bool _hasAllMetaData() {
