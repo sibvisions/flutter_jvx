@@ -187,6 +187,7 @@ abstract class ApiObjectProperty {
   static const String update = "update";
   static const String home = "home";
   static const String columnViewTable = "columnView_table_";
+  static const String columnViewTree = "columnView_tree_";
   static const String columns = "columns";
   static const String version = "version";
   static const String lostPasswordEnabled = "lostPasswordEnabled";
@@ -381,6 +382,4 @@ abstract class ApiObjectProperty {
   static const String errorMessage = "errorMessage";
 
   static const String masterRow = "masterRow";
-
-  static const String columnViewTree = "columnViewTree";
 }
