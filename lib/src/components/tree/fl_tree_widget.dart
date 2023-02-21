@@ -29,6 +29,8 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
 
   final Function(String)? onNodeDoubleTap;
 
+  final Future<void> Function()? onRefresh;
+
   const FlTreeWidget({
     super.key,
     required super.model,
@@ -36,11 +38,31 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
     this.onNodeTap,
     this.onNodeDoubleTap,
     this.onExpansionChanged,
+    this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
     BorderRadius borderRadius = BorderRadius.circular(5.0);
+
+    Widget treeWidget = TreeView(
+      theme: TreeViewTheme(
+        colorScheme: Theme.of(context).colorScheme,
+      ),
+      controller: controller,
+      onNodeTap: onNodeTap,
+      //onNodeDoubleTap: onNodeDoubleTap,
+      onExpansionChanged: onExpansionChanged,
+      allowParentSelect: true,
+      //supportParentDoubleTap: true,
+    );
+
+    if (onRefresh != null) {
+      treeWidget = RefreshIndicator(
+        onRefresh: onRefresh!,
+        child: treeWidget,
+      );
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -52,14 +74,7 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
         // The clip rect is there to stop the rendering of the children.
         // Otherwise the children would clip the border of the parent container.
         borderRadius: borderRadius,
-        child: TreeView(
-          controller: controller,
-          onNodeTap: onNodeTap,
-          //onNodeDoubleTap: onNodeDoubleTap,
-          onExpansionChanged: onExpansionChanged,
-          allowParentSelect: true,
-          //supportParentDoubleTap: true,
-        ),
+        child: treeWidget,
       ),
     );
   }

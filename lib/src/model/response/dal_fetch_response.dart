@@ -62,6 +62,9 @@ class DalFetchResponse extends ApiResponse {
 
   final List<dynamic>? masterRow;
 
+  /// The tree path
+  final List<int>? treePath;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,6 +83,7 @@ class DalFetchResponse extends ApiResponse {
     this.recordFormats,
     this.sortDefinitions,
     this.selectedColumn,
+    this.treePath,
     required super.name,
   });
 
@@ -101,6 +105,7 @@ class DalFetchResponse extends ApiResponse {
             : null,
         sortDefinitions =
             (json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList(),
+        treePath = json[ApiObjectProperty.treePath]?.cast<int>(),
         super.fromJson();
 }
 

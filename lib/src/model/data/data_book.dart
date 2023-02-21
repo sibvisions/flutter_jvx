@@ -120,6 +120,7 @@ class DataBook {
       if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
         selectedColumn = pFetchResponse.selectedColumn;
       }
+      treePath = pFetchResponse.treePath;
       recordFormats = pFetchResponse.recordFormats;
       updateSortDefinitions(pFetchResponse.sortDefinitions);
     }

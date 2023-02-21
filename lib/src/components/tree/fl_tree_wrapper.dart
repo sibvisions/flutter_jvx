@@ -85,6 +85,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     final FlTreeWidget widget = FlTreeWidget(
       model: model,
       controller: controller,
+      onRefresh: _refresh,
       onExpansionChanged: _handleExpansionChanged,
       onNodeTap: _handleNodeTap,
       onNodeDoubleTap: _handleNodeDoubleTap,
@@ -183,7 +184,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       selectedRecords.remove(dataProvider);
     }
 
-    _updateSelection();
+    if (initialized && _hasAllMetaData()) {
+      _updateSelection();
+    }
   }
 
   bool _hasAllMetaData() {
@@ -249,6 +252,8 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
   _handleExpansionChanged(String pNodeKey, bool pExpanded) {
     Node<NodeData> node = controller.getNode(pNodeKey)!;
+    node = node.copyWith(expanded: pExpanded);
+    controller = controller.withUpdateNode(node.key, node);
 
     if (pExpanded) {
       if (node.children.isEmpty) {
@@ -261,6 +266,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         }
       }
     }
+    setState(() {});
   }
 
   void _fetchNodeChildren(Node<NodeData> node) {
@@ -320,19 +326,32 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     List<Node<NodeData>> newNodes = [];
     pPageChunk.data.forEach((rowIndex, dataRow) {
       Filter rowFilter = _createPrimaryKeysFilter(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions);
+      String nodeKey = "${pDataProvider}_${rowFilter.toPageKey()}";
 
       bool isPotentialParent = baseNodeData && dataProviderAtTreeDepth(1) != null;
       // parent node data length is the index of our databook, add 1 to get the level of our children
       isPotentialParent |= parentNode != null && dataProviderAtTreeDepth(parentNode.data!.treePath.length + 1) != null;
-      newNodes.add(
-        Node<NodeData>(
-          key: "${pDataProvider}_${rowFilter.toPageKey()}",
-          data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider),
-          parent: isPotentialParent,
-          label: _createLabel(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions),
-        ),
+
+      Node<NodeData> newNode = Node<NodeData>(
+        key: nodeKey,
+        data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider),
+        parent: isPotentialParent,
+        label: _createLabel(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions),
       );
-      if (model.detectEndNode && isPotentialParent && (parentNode == null || parentNode.expanded)) {
+      Node? oldNode = controller.getNode(nodeKey);
+      if (oldNode != null) {
+        newNode = newNode.copyWith(children: oldNode.children, expanded: oldNode.expanded);
+        if (!oldNode.parent) {
+          isPotentialParent = false;
+          newNode = newNode.copyWith(parent: false);
+        }
+      }
+
+      newNodes.add(newNode);
+      if (model.detectEndNode &&
+          isPotentialParent &&
+          newNode.children.isEmpty &&
+          (parentNode == null || parentNode.expanded)) {
         DalMetaData metaData = metaDatas[pDataProvider]!;
         String childDataProvider = dataProviderAtTreeDepth(newNodes.last.data!.treePath.length)!;
         DalMetaData childMetaData = metaDatas[childDataProvider]!;
@@ -351,16 +370,6 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       }
     });
 
-    for (Node newNode in newNodes) {
-      Node? oldNode = controller.getNode(newNode.key);
-      if (oldNode != null) {
-        newNode = newNode.copyWith(children: oldNode.children, expanded: oldNode.expanded);
-        if (!oldNode.parent) {
-          newNode = newNode.copyWith(parent: false);
-        }
-      }
-    }
-
     if (baseNodeData) {
       controller = controller.copyWith(children: newNodes);
     } else {
@@ -368,7 +377,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       controller = controller.withUpdateNode(parentNode.key, parentNode);
     }
 
-    setState(() {});
+    _updateSelection();
   }
 
   Filter _createPrimaryKeysFilter(
@@ -424,46 +433,34 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     // Then checks which of these data providers has the highest tree depth.
     // The one with the highes tree depth is the one that is used to determine the selection.
 
-    List<String> selectedDataProviders = selectedRecords.entries
-        .where((entry) => entry.value.index >= 0 || entry.value.treePath?.isNotEmpty == true)
-        .map((entry) => entry.key)
-        .toList();
+    List<int> selectedTreePath = [];
 
-    if (selectedDataProviders.isEmpty) {
-      controller = controller.copyWith(selectedKey: "");
-    } else {
-      selectedDataProviders.sort((a, b) => model.dataProviders.indexOf(a).compareTo(model.dataProviders.indexOf(b)));
-
-      List<int> selectedTreePath = [];
-      for (int i = 0; i < selectedDataProviders.length; i++) {
-        String dataProvider = selectedDataProviders[i];
-        String? metaDataIndexDataProvider = dataProviderAtTreeDepth(i);
-
-        if (dataProvider == metaDataIndexDataProvider) {
-          DataRecord dataRecord = selectedRecords[dataProvider]!;
-          if (dataRecord.treePath?.isNotEmpty == true) {
-            selectedTreePath.addAll(dataRecord.treePath!);
-          } else if (dataRecord.index >= 0) {
-            selectedTreePath.add(dataRecord.index);
-          } else {
-            break;
-          }
-        } else {
-          break;
+    for (String dataProvider in model.dataProviders) {
+      DataRecord? dataRecord = selectedRecords[dataProvider];
+      if (dataRecord != null && (dataRecord.treePath?.isNotEmpty == true || dataRecord.index >= 0)) {
+        if (dataRecord.treePath?.isNotEmpty == true) {
+          selectedTreePath.addAll(dataRecord.treePath!);
         }
-      }
-
-      if (selectedTreePath.isEmpty) {
-        controller = controller.copyWith(selectedKey: "");
+        if (dataRecord.index >= 0) {
+          selectedTreePath.add(dataRecord.index);
+        }
       } else {
-        Node? selectedNode = getNodeFromTreePath(selectedTreePath);
-        if (selectedNode != null) {
-          controller = controller.copyWith(selectedKey: selectedNode.key);
-        } else {
-          controller = controller.copyWith(selectedKey: "");
-        }
+        break;
       }
     }
+
+    if (selectedTreePath.isEmpty) {
+      controller = controller.copyWith(selectedKey: "");
+    } else {
+      log(selectedTreePath.toString());
+      Node? selectedNode = getNodeFromTreePath(selectedTreePath);
+      if (selectedNode != null) {
+        controller = controller.copyWith(selectedKey: selectedNode.key);
+      } else {
+        controller = controller.copyWith(selectedKey: "");
+      }
+    }
+
     setState(() {});
   }
 
@@ -480,6 +477,16 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       }
     }
     return null;
+  }
+
+  Future<void> _refresh() async {
+    if (initialized && _hasAllMetaData()) {
+      controller = TreeViewController(children: <Node<List<NodeData>>>[]);
+      data = HashMap<String, HashMap<String?, DataChunk>>();
+      selectedRecords = HashMap<String, DataRecord>();
+      initialized = false;
+      _initTree();
+    }
   }
 }
 
