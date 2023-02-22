@@ -32,6 +32,9 @@ class LayoutData implements ICloneable {
   /// The id of the component.
   final String id;
 
+  /// The name of the component.
+  final String name;
+
   /// State of layout
   LayoutState layoutState = LayoutState.VALID;
 
@@ -103,6 +106,7 @@ class LayoutData implements ICloneable {
   /// Initializes a [LayoutData].
   LayoutData(
       {required this.id,
+      required this.name,
       required this.widthConstrains,
       required this.heightConstrains,
       this.parentId,
@@ -124,6 +128,7 @@ class LayoutData implements ICloneable {
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
       : id = pLayoutData.id,
+        name = pLayoutData.name,
         parentId = pLayoutData.parentId,
         layout = pLayoutData.layout?.clone(),
         children = List.from(pLayoutData.children),

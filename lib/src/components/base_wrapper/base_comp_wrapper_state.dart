@@ -76,6 +76,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(
       id: model.id,
+      name: model.name,
       parentId: model.parent,
       constraints: model.constraints,
       preferredSize: model.preferredSize,
