@@ -56,6 +56,13 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       cellEditor.setValue(widget.values[colDef.name]);
       cellEditors.add(cellEditor);
     });
+
+    for (ICellEditor cellEditor in cellEditors) {
+      if (cellEditor is IFocusableCellEditor) {
+        cellEditor.focus();
+        break;
+      }
+    }
   }
 
   @override
