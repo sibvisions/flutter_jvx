@@ -112,6 +112,8 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     List<ColumnDefinition> columnsToShow =
         columnDefinitions.where((element) => tableSize.columnWidths.containsKey(element.name)).toList();
 
+    columnsToShow.sort((a, b) => model.columnNames.indexOf(a.name).compareTo(model.columnNames.indexOf(b.name)));
+
     int cellIndex = -1;
 
     double rowWidth = 0.0;
