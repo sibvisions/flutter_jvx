@@ -145,7 +145,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         disabledBorder: createBorder(FlTextBorderType.disabledBorder),
         focusedErrorBorder: createBorder(FlTextBorderType.focusedBorder),
         suffixIcon: createSuffixIcon(),
-        suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 24),
+        suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 0),
         suffix: createSuffix(),
         fillColor: fillColor,
         filled: true,
@@ -226,19 +226,26 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     List<Widget> suffixIconItems = createSuffixIconItems();
 
-    // Just insert a center and voilá, textfield is expanding without
-    // setting "expanding" to true.
-    suffixIconItems.add(const Center());
-
     /// -4 => The editable text inside a textfield is 8 pixels bigger if using dense.
     double paddingAdjustment = 0;
     if (Frame.isWebFrame()) {
       paddingAdjustment = -4 - ((iconAreaSize - iconSize) / 2);
     }
 
+    EdgeInsets? containerPadding;
+    if (suffixIconItems.isNotEmpty) {
+      containerPadding = iconsPadding.copyWith(
+        top: contentPadding.top + paddingAdjustment,
+        bottom: contentPadding.bottom + paddingAdjustment,
+      );
+    }
+
+    // Just insert a center and voilá, textfield is expanding without
+    // setting "expanding" to true.
+    suffixIconItems.add(const Center());
+
     return Container(
-      padding: iconsPadding.copyWith(
-          top: contentPadding.top + paddingAdjustment, bottom: contentPadding.bottom + paddingAdjustment),
+      padding: containerPadding,
       child: Row(
         crossAxisAlignment: iconCrossAxisAlignment,
         mainAxisAlignment: MainAxisAlignment.end,
