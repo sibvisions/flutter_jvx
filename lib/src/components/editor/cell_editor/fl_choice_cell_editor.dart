@@ -47,7 +47,6 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.onFocusChanged,
     super.isInTable,
     this.recalculateSizeCallback,
   }) : super(

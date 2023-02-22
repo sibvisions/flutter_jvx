@@ -25,7 +25,7 @@ import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, ICellEditorModel, String> {
+class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFieldWidget, ICellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,8 +48,6 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
 
   final TextEditingController textController = TextEditingController();
 
-  final FocusNode focusNode = FocusNode();
-
   FlTextFieldModel? lastWidgetModel;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,29 +59,11 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.onFocusChanged,
+    super.onFocusChanged,
     super.isInTable,
   }) : super(
           model: ICellEditorModel(),
-        ) {
-    focusNode.addListener(() {
-      if (lastWidgetModel == null) {
-        return;
-      }
-
-      var widgetModel = lastWidgetModel!;
-
-      if (!widgetModel.isReadOnly) {
-        if (!focusNode.hasFocus) {
-          onEndEditing(textController.text);
-        }
-      }
-
-      if (widgetModel.isFocusable) {
-        onFocusChanged(focusNode.hasFocus);
-      }
-    });
-  }
+        );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -170,8 +150,8 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
 
   @override
   void dispose() {
-    focusNode.dispose();
     textController.dispose();
+    super.dispose();
   }
 
   @override
@@ -191,5 +171,28 @@ class FlTextCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, 
     applyEditorJson(widgetModel, pJson);
 
     return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
+  }
+
+  @override
+  bool firesFocusCallback() {
+    if (lastWidgetModel == null) {
+      return false;
+    }
+
+    return lastWidgetModel!.isFocusable;
+  }
+
+  @override
+  void focusChanged(bool pHasFocus) {
+    if (lastWidgetModel == null) {
+      return;
+    }
+    var widgetModel = lastWidgetModel!;
+
+    if (!widgetModel.isReadOnly) {
+      if (!focusNode.hasFocus) {
+        onEndEditing(textController.text);
+      }
+    }
   }
 }

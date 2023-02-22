@@ -30,7 +30,8 @@ import 'fl_date_editor_widget.dart';
 import 'fl_date_picker.dart';
 import 'fl_time_picker.dart';
 
-class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget, FlDateCellEditorModel, dynamic> {
+class FlDateCellEditor
+    extends IFocusableCellEditor<FlDateEditorModel, FlDateEditorWidget, FlDateCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,8 +40,6 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   TextEditingController textController = TextEditingController();
 
   bool isOpen = false;
-
-  FocusNode focusNode = FocusNode(skipTraversal: true);
 
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
@@ -66,24 +65,13 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.onFocusChanged,
+    super.onFocusChanged,
     super.isInTable,
     this.recalculateSizeCallback,
   }) : super(
           model: FlDateCellEditorModel(),
         ) {
-    focusNode.addListener(
-      () {
-        if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
-          if (!lastWidgetModel!.isFocusable) {
-            focusNode.unfocus();
-          } else if (lastWidgetModel!.isEditable && lastWidgetModel!.isEnabled) {
-            openDatePicker();
-            focusNode.unfocus();
-          }
-        }
-      },
-    );
+    focusNode.skipTraversal = true;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,6 +131,23 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
     return _value;
   }
 
+  @override
+  bool firesFocusCallback() {
+    return false;
+  }
+
+  @override
+  void focusChanged(bool pHasFocus) {
+    if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
+      if (!lastWidgetModel!.isFocusable) {
+        focusNode.unfocus();
+      } else if (lastWidgetModel!.isEditable && lastWidgetModel!.isEnabled) {
+        openDatePicker();
+        focusNode.unfocus();
+      }
+    }
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -156,9 +161,11 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
   }
 
   Future<void>? openDatePicker() {
-    if (!isOpen) {
-      onFocusChanged(true);
+    if (!isOpen && (model.isDateEditor || model.isTimeEditor)) {
       isOpen = true;
+      if (lastWidgetModel != null && lastWidgetModel!.isFocusable) {
+        onFocusChanged?.call(true);
+      }
 
       DateTime initialDate;
       TimeOfDay initialTime;
@@ -170,13 +177,15 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         initialTime = TimeOfDay.now();
       }
 
+      Future<void> result;
       if (model.isDateEditor && model.isTimeEditor) {
-        return _openDateAndTimeEditors(initialDate, initialTime);
+        result = _openDateAndTimeEditors(initialDate, initialTime);
       } else if (model.isDateEditor) {
-        return _openDateEditor(initialDate);
-      } else if (model.isTimeEditor) {
-        return _openTimeEditor(initialTime);
+        result = _openDateEditor(initialDate);
+      } else {
+        result = _openTimeEditor(initialTime);
       }
+      return result;
     }
     return null;
   }
@@ -198,9 +207,7 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
         .then((value) {
       if (value == null) {
         _value = originalValue;
-        isOpen = false;
       } else if (value == FlDatePickerDialog.NULL_DATE) {
-        isOpen = false;
         onEndEditing(null);
       } else {
         _setDatePart(value);
@@ -216,15 +223,16 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
           if (value == null) {
             _value = originalValue;
           } else if (value == FlTimePickerDialog.NULL_TIME) {
-            isOpen = false;
             onEndEditing(null);
           } else {
             _setTimePart(value);
             onEndEditing(_value);
           }
-          isOpen = false;
         });
       }
+    }).whenComplete(() {
+      isOpen = false;
+      // The "onEndEditing" of the FlEditorWrapper handles the focus for the linked cell picker and date cell editor.
     });
   }
 
@@ -247,7 +255,9 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
           onEndEditing(_value);
         }
       }
+    }).whenComplete(() {
       isOpen = false;
+      // The "onEndEditing" of the FlEditorWrapper handles the focus for the linked cell picker and date cell editor.
     });
   }
 
@@ -268,7 +278,9 @@ class FlDateCellEditor extends ICellEditor<FlDateEditorModel, FlDateEditorWidget
           onEndEditing(_value);
         }
       }
+    }).whenComplete(() {
       isOpen = false;
+      // The "onEndEditing" of the FlEditorWrapper handles the focus for the linked cell picker and date cell editor.
     });
   }
 

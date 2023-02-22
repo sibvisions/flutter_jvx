@@ -57,8 +57,6 @@ abstract class ICellEditor<
 
   Function(ReturnValueType?) onEndEditing;
 
-  Function(bool) onFocusChanged;
-
   ColumnDefinition? columnDefinition;
 
   /// If the cell editor can be inside a table.
@@ -84,7 +82,6 @@ abstract class ICellEditor<
     required this.cellEditorJson,
     required this.onValueChange,
     required this.onEndEditing,
-    required this.onFocusChanged,
     this.isInTable = false,
     this.name,
     this.columnDefinition,
@@ -171,7 +168,6 @@ abstract class ICellEditor<
           cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
-          onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           recalculateSizeCallback: pRecalculateSizeCallback,
         );
@@ -181,7 +177,6 @@ abstract class ICellEditor<
           cellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
-          onFocusChanged: onFocusChanged,
           isInTable: isInTable,
           recalculateSizeCallback: pRecalculateSizeCallback,
         );
@@ -219,5 +214,98 @@ abstract class ICellEditor<
     if (cellFormat != null) {
       pModel.applyCellFormat(cellFormat!);
     }
+  }
+}
+
+/// A cell editor that can be focused.
+abstract class IFocusableCellEditor<
+    WidgetModelType extends FlComponentModel,
+    WidgetType extends FlStatelessWidget<WidgetModelType>,
+    CellEditorModelType extends ICellEditorModel,
+    ReturnValueType> extends ICellEditor<WidgetModelType, WidgetType, CellEditorModelType, ReturnValueType> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // The focus node of this cell editor.
+  FocusNode focusNode = FocusNode();
+
+  // The callback function that is called when the focus of this cell editor changes.
+  Function(bool)? onFocusChanged;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  IFocusableCellEditor({
+    required super.model,
+    required super.cellEditorJson,
+    required super.onValueChange,
+    required super.onEndEditing,
+    super.isInTable = false,
+    super.name,
+    super.columnDefinition,
+    this.onFocusChanged,
+  }) {
+    focusNode.addListener(() {
+      focusChanged(focusNode.hasFocus);
+
+      if (onFocusChanged != null && firesFocusCallback()) {
+        onFocusChanged!(focusNode.hasFocus);
+      }
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Returns true if the focus changed event can be fired.
+  bool firesFocusCallback();
+
+  // Is called when the focus changes.
+  void focusChanged(bool pHasFocus);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  dispose() {
+    focusNode.dispose();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Focuses this cell editor.
+  void focus() {
+    focusNode.requestFocus();
+  }
+
+  // Unfocuses this cell editor.
+  void unfocus() {
+    focusNode.unfocus();
+  }
+
+  // Sets the focus node of this cell editor.
+  void setFocusNode(FocusNode pFocusNode) {
+    focusNode.dispose();
+    focusNode = pFocusNode;
+  }
+
+  // Returns the focus node of this cell editor.
+  FocusNode getFocusNode() {
+    return focusNode;
+  }
+
+  // Adds a listener to the focus node of this cell editor.
+  void addFocusNodeListener(Function() listener) {
+    focusNode.addListener(listener);
+  }
+
+  // Removes a listener from the focus node of this cell editor.
+  void removeFocusNodeListener(Function() listener) {
+    focusNode.removeListener(listener);
   }
 }

@@ -22,14 +22,14 @@ import '../../../service/api/shared/api_object_property.dart';
 import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget, FlCheckBoxCellEditorModel, dynamic> {
+class FlCheckBoxCellEditor
+    extends IFocusableCellEditor<FlCheckBoxModel, FlCheckBoxWidget, FlCheckBoxCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FocusNode buttonFocusNode = FocusNode();
-
-  FocusNode focusNode = FocusNode();
+  // The focus node of the button which is unused.
+  final FocusNode _buttonFocusNode = FocusNode();
 
   /// The value of the check box.
   dynamic _value;
@@ -47,23 +47,11 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.onFocusChanged,
+    super.onFocusChanged,
     super.isInTable,
   }) : super(
           model: FlCheckBoxCellEditorModel(),
-        ) {
-    focusNode.addListener(() {
-      if (lastWidgetModel == null) {
-        return;
-      }
-
-      var widgetModel = lastWidgetModel!;
-
-      if (widgetModel.isFocusable) {
-        onFocusChanged(focusNode.hasFocus);
-      }
-    });
-  }
+        );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -89,7 +77,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
 
     return FlCheckBoxWidget(
       radioFocusNode: focusNode,
-      focusNode: buttonFocusNode,
+      focusNode: _buttonFocusNode,
       model: widgetModel,
       onPress: isEditable ? _onPress : null,
       inTable: isInTable,
@@ -113,8 +101,8 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
 
   @override
   void dispose() {
-    buttonFocusNode.dispose();
-    focusNode.dispose();
+    _buttonFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -125,6 +113,20 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxModel, FlCheckBoxWidget
   @override
   double? getEditorWidth(Map<String, dynamic>? pJson) {
     return null;
+  }
+
+  @override
+  bool firesFocusCallback() {
+    if (lastWidgetModel == null) {
+      return false;
+    }
+
+    return lastWidgetModel!.isFocusable;
+  }
+
+  @override
+  void focusChanged(bool pHasFocus) {
+    // Nothing to do here.
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

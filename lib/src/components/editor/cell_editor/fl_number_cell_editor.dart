@@ -27,7 +27,8 @@ import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget, FlNumberCellEditorModel, dynamic> {
+class FlNumberCellEditor
+    extends IFocusableCellEditor<FlTextFieldModel, FlTextFieldWidget, FlNumberCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,8 +36,6 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
   late NumericTextFormatter numberFormatter;
 
   final TextEditingController textController = TextEditingController();
-
-  final FocusNode focusNode = FocusNode();
 
   FlTextFieldModel? lastWidgetModel;
 
@@ -49,29 +48,11 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.onFocusChanged,
+    super.onFocusChanged,
     super.isInTable,
   }) : super(
           model: FlNumberCellEditorModel(),
         ) {
-    focusNode.addListener(() {
-      if (lastWidgetModel == null) {
-        return;
-      }
-
-      var widgetModel = lastWidgetModel!;
-
-      if (!widgetModel.isReadOnly) {
-        if (!focusNode.hasFocus) {
-          onEndEditing(textController.text);
-        }
-      }
-
-      if (widgetModel.isFocusable) {
-        onFocusChanged(focusNode.hasFocus);
-      }
-    });
-
     _recreateNumericFormatter();
   }
 
@@ -116,8 +97,8 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
 
   @override
   void dispose() {
-    focusNode.dispose();
     textController.dispose();
+    super.dispose();
   }
 
   @override
@@ -170,5 +151,28 @@ class FlNumberCellEditor extends ICellEditor<FlTextFieldModel, FlTextFieldWidget
       signed: columnDefinition?.signed,
       locale: model.locale ?? ConfigController().getLanguage(),
     );
+  }
+
+  @override
+  bool firesFocusCallback() {
+    if (lastWidgetModel == null) {
+      return false;
+    }
+
+    return lastWidgetModel!.isFocusable;
+  }
+
+  @override
+  void focusChanged(bool pHasFocus) {
+    if (lastWidgetModel == null) {
+      return;
+    }
+    var widgetModel = lastWidgetModel!;
+
+    if (!widgetModel.isReadOnly) {
+      if (!focusNode.hasFocus) {
+        onEndEditing(textController.text);
+      }
+    }
   }
 }

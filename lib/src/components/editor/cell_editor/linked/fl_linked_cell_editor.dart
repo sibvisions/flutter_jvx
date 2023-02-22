@@ -34,7 +34,7 @@ import 'fl_linked_cell_picker.dart';
 import 'fl_linked_editor_widget.dart';
 
 class FlLinkedCellEditor
-    extends ICellEditor<FlLinkedEditorModel, FlLinkedEditorWidget, FlLinkedCellEditorModel, dynamic> {
+    extends IFocusableCellEditor<FlLinkedEditorModel, FlLinkedEditorWidget, FlLinkedCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,8 +55,6 @@ class FlLinkedCellEditor
   dynamic _value;
 
   TextEditingController textController = TextEditingController();
-
-  FocusNode focusNode = FocusNode(skipTraversal: true);
 
   CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
@@ -86,25 +84,14 @@ class FlLinkedCellEditor
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
-    required super.onFocusChanged,
+    super.onFocusChanged,
     super.isInTable,
     this.recalculateSizeCallback,
   }) : super(
           model: FlLinkedCellEditorModel(),
         ) {
-    focusNode.addListener(
-      () {
-        if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
-          if (!lastWidgetModel!.isFocusable) {
-            focusNode.unfocus();
-          } else if (lastWidgetModel!.isEditable && lastWidgetModel!.isEnabled) {
-            openLinkedCellPicker();
+    focusNode.skipTraversal = true;
 
-            focusNode.unfocus();
-          }
-        }
-      },
-    );
     _subscribe();
   }
 
@@ -137,9 +124,72 @@ class FlLinkedCellEditor
     );
   }
 
+  @override
+  createWidgetModel() => FlLinkedEditorModel();
+
+  @override
+  void dispose() {
+    _unsubscribe();
+    textController.dispose();
+    super.dispose();
+  }
+
+  @override
+  dynamic getValue() {
+    return _value;
+  }
+
+  @override
+  String formatValue(dynamic pValue) {
+    return pValue?.toString() ?? "";
+  }
+
+  @override
+  double getContentPadding(Map<String, dynamic>? pJson) {
+    return createWidget(pJson).extraWidthPaddings();
+  }
+
+  @override
+  double getEditorWidth(Map<String, dynamic>? pJson) {
+    FlLinkedEditorModel widgetModel = createWidgetModel();
+
+    applyEditorJson(widgetModel, pJson);
+
+    double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
+
+    if (isInTable) {
+      return colWidth * widgetModel.columns / 2;
+    }
+    return colWidth * widgetModel.columns;
+  }
+
+  @override
+  bool firesFocusCallback() {
+    return false;
+  }
+
+  @override
+  void focusChanged(bool pHasFocus) {
+    if (focusNode.hasPrimaryFocus && lastWidgetModel != null) {
+      if (!lastWidgetModel!.isFocusable) {
+        focusNode.unfocus();
+      } else if (lastWidgetModel!.isEditable && lastWidgetModel!.isEnabled) {
+        openLinkedCellPicker();
+
+        focusNode.unfocus();
+      }
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   Future<void>? openLinkedCellPicker() {
     if (!isOpen) {
-      onFocusChanged(true);
+      if (lastWidgetModel != null && lastWidgetModel!.isFocusable) {
+        onFocusChanged?.call(true);
+      }
       isOpen = true;
 
       return ICommandService()
@@ -157,7 +207,6 @@ class FlLinkedCellEditor
                 ),
             pIsDismissible: true);
       }).then((value) {
-        isOpen = false;
         if (value != null) {
           if (value == FlLinkedCellPicker.NULL_OBJECT) {
             receiveNull(null);
@@ -166,26 +215,13 @@ class FlLinkedCellEditor
           }
         }
       }).catchError((error, stacktrace) {
-        isOpen = false;
         IUiService().handleAsyncError(error, stacktrace);
+      }).whenComplete(() {
+        isOpen = false;
+        // The "onEndEditing" of the FlEditorWrapper handles the focus for the linked cell picker and date cell editor.
       });
     }
     return null;
-  }
-
-  @override
-  createWidgetModel() => FlLinkedEditorModel();
-
-  @override
-  void dispose() {
-    _unsubscribe();
-    focusNode.dispose();
-    textController.dispose();
-  }
-
-  @override
-  dynamic getValue() {
-    return _value;
   }
 
   void _setValueMap(DataChunk pChunkData) {
@@ -301,29 +337,5 @@ class FlLinkedCellEditor
         onEndEditing(dataMap);
       }
     }).catchError(IUiService().handleAsyncError);
-  }
-
-  @override
-  String formatValue(dynamic pValue) {
-    return pValue?.toString() ?? "";
-  }
-
-  @override
-  double getContentPadding(Map<String, dynamic>? pJson) {
-    return createWidget(pJson).extraWidthPaddings();
-  }
-
-  @override
-  double getEditorWidth(Map<String, dynamic>? pJson) {
-    FlLinkedEditorModel widgetModel = createWidgetModel();
-
-    applyEditorJson(widgetModel, pJson);
-
-    double colWidth = ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle());
-
-    if (isInTable) {
-      return colWidth * widgetModel.columns / 2;
-    }
-    return colWidth * widgetModel.columns;
   }
 }
