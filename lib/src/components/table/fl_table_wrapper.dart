@@ -344,6 +344,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       if (oldRecordIndex != selectedRow) {
         _closeDialog();
       }
+      if (selectedRow >= (pageCount * FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE)) {
+        pageCount = ((selectedRow + 1) / FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE).ceil();
+        _subscribe();
+      }
       setState(() {});
     }
   }
