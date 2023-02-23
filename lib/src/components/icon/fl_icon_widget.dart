@@ -118,6 +118,10 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   }
 
   Widget? getImage(ImageProvider? imageProvider) {
+    if (model.image.isEmpty) {
+      return null;
+    }
+
     return ImageLoader.loadImage(
       model.image,
       imageProvider: imageProvider,
