@@ -511,23 +511,25 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     //       .add(_createContextMenuItem(FontAwesomeIcons.circleArrowLeft, "Fetch", TableContextMenuItem.FETCH));
     // }
 
-    showMenu(
-      position: RelativeRect.fromRect(
-        pPressDetails.globalPosition & const Size(40, 40),
-        Offset.zero & MediaQuery.of(context).size,
-      ),
-      context: context,
-      items: popupMenuEntries,
-    ).then((val) {
-      if (val != null) {
-        _menuItemPressed(
-          val,
-          pRowIndex,
-          pColumnName,
-          pCellEditor,
-        );
-      }
-    });
+    if (popupMenuEntries.isNotEmpty) {
+      showMenu(
+        position: RelativeRect.fromRect(
+          pPressDetails.globalPosition & const Size(40, 40),
+          Offset.zero & MediaQuery.of(context).size,
+        ),
+        context: context,
+        items: popupMenuEntries,
+      ).then((val) {
+        if (val != null) {
+          _menuItemPressed(
+            val,
+            pRowIndex,
+            pColumnName,
+            pCellEditor,
+          );
+        }
+      });
+    }
   }
 
   void _menuItemPressed(TableContextMenuItem val, int pRowIndex, String pColumnName, ICellEditor pCellEditor) {

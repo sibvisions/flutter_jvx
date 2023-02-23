@@ -230,6 +230,7 @@ class DialogsWidgetState extends State<DialogsWidget> {
                   dismissible: e.dismissible,
                   color: Colors.black54,
                   onDismiss: () {
+                    e.onClose();
                     IUiService().closeFrameDialog(e);
                     setState(() {});
                   },

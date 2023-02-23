@@ -56,15 +56,6 @@ class ServerErrorDialog extends FrameDialog {
     );
   }
 
-  @override
-  void onClose() {
-    if (command.componentId != null) {
-      IUiService().sendCommand(
-        CloseFrameCommand(frameName: command.componentId!, reason: "Server Error Dialog was dismissed"),
-      );
-    }
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +68,7 @@ class ServerErrorDialog extends FrameDialog {
       actions.add(
         TextButton(
           onPressed: () {
+            onClose();
             IUiService().closeFrameDialog(this);
             IUiService().routeToSettings(pReplaceRoute: true);
           },
@@ -92,6 +84,7 @@ class ServerErrorDialog extends FrameDialog {
       actions.add(
         TextButton(
           onPressed: () {
+            onClose();
             IUiService().closeFrameDialog(this);
           },
           child: Text(
@@ -103,5 +96,13 @@ class ServerErrorDialog extends FrameDialog {
     }
 
     return actions;
+  }
+
+  void onClose() {
+    if (command.componentId != null) {
+      IUiService().sendCommand(
+        CloseFrameCommand(frameName: command.componentId!, reason: "Server Error Dialog was dismissed"),
+      );
+    }
   }
 }

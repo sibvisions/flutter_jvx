@@ -79,7 +79,9 @@ class ErrorDialog extends FrameDialog {
     if (retry) {
       actions.add(
         TextButton(
-          onPressed: () => IUiService().closeFrameDialog(this),
+          onPressed: () {
+            IUiService().closeFrameDialog(this);
+          },
           child: Text(
             FlutterUI.translate("Retry"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -106,7 +108,9 @@ class ErrorDialog extends FrameDialog {
     if (dismissible) {
       actions.add(
         TextButton(
-          onPressed: () => IUiService().closeFrameDialog(this),
+          onPressed: () {
+            IUiService().closeFrameDialog(this);
+          },
           child: Text(
             FlutterUI.translate("Ok"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
