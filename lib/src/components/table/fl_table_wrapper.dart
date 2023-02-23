@@ -752,6 +752,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (!model.sortOnHeaderEnabled) {
       return null;
     }
+    ColumnDefinition? coldef = metaData.columnDefinitions.firstWhereOrNull((element) => pColumnName == element.name);
+
+    if (coldef == null || !coldef.sortable) {
+      return null;
+    }
 
     SortDefinition? currentSortDefinition =
         metaData.sortDefinitions?.firstWhereOrNull((sortDef) => sortDef.columnName == pColumnName);
