@@ -62,7 +62,9 @@ class TranslationUtil {
 
     Map<String, String> mapped = {};
     for (var a in translations) {
-      mapped[a['text']] = a['translation'];
+      if (a['text'] != null) {
+        mapped[a['text']] = a['translation'] ?? "";
+      }
     }
     return mapped;
   }
