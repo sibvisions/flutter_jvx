@@ -114,7 +114,7 @@ class RecordFormat {
   final List<List<int>> _recordFormatIndexes = [];
 
   RecordFormat.fromJson(Map<String, dynamic> json) {
-    List<String>? formatJson = json[ApiObjectProperty.format]?.cast<String?>();
+    List<String>? formatJson = cast<List<String>?>(json[ApiObjectProperty.format]);
     for (String? formatString in formatJson ?? []) {
       _formats.add(CellFormat.fromString(formatString));
     }

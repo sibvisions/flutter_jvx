@@ -21,6 +21,7 @@ import '../../../../../service/config/config_controller.dart';
 import '../cell_editor_model.dart';
 import 'column_view.dart';
 import 'link_reference.dart';
+import 'search_column_mapping.dart';
 
 class FlLinkedCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,7 +38,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
 
   String? displayConcatMask;
 
-  String? searchColumnMapping;
+  ColumnMap? searchColumnMapping;
 
   bool searchTextAnywhere = true;
 
@@ -105,6 +106,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
       pJson: pJson,
       pKey: ApiObjectProperty.searchColumnMapping,
       pDefault: defaultModel.searchColumnMapping,
+      pConversion: (value) => ColumnMap.fromJson(value),
       pCurrent: searchColumnMapping,
     );
 
