@@ -131,17 +131,24 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
       paddings = EdgeInsets.only(top: groupHeaderHeight / 2);
     }
 
-    double elevation = 3;
-    if (model.hideBorder) {
-      elevation = 0;
+    List<BoxShadow> shadows = [];
+    if (!model.hideBorder) {
+      shadows = [
+        const BoxShadow(offset: Offset(0.0, 3.0), blurRadius: 3.0, spreadRadius: -1.0, color: Color(0x33000000)),
+        const BoxShadow(offset: Offset(0.0, 3.0), blurRadius: 4.0, spreadRadius: 1.0, color: Color(0x24000000)),
+        const BoxShadow(offset: Offset(0.0, 1.0), blurRadius: 8.0, spreadRadius: 1.0, color: Color(0x1F000000)),
+      ];
     }
 
     return getPositioned(
       child: Padding(
         padding: paddings,
-        child: Material(
-          borderRadius: BorderRadius.circular(3.0),
-          elevation: elevation,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Theme.of(context).canvasColor,
+            borderRadius: BorderRadius.circular(3.0),
+            boxShadow: shadows,
+          ),
           child: Column(
             verticalDirection: verticalDirection,
             children: [
