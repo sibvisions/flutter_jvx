@@ -151,8 +151,6 @@ class WorkScreenState extends State<WorkScreen> {
   @override
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
-      forceWeb: IUiService().webOnly.value,
-      forceMobile: IUiService().mobileOnly.value,
       builder: (context, isOffline) {
         return WillPopScope(
           onWillPop: () => _onWillPop(context),

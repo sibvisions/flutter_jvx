@@ -102,32 +102,14 @@ abstract class Frame extends StatefulWidget {
 
   static Widget wrapWithFrame({
     Key? key,
-    required bool forceMobile,
-    required bool forceWeb,
     required FrameBuilder builder,
   }) {
     return ValueListenableBuilder<bool>(
       valueListenable: ConfigController().offline,
       builder: (context, isOffline, child) {
-        if (forceMobile) {
-          return Frame.getFrame(
-            key: key,
-            false,
-            builder: builder,
-            isOffline: isOffline,
-          );
-        }
-        if (forceWeb) {
-          return Frame.getFrame(
-            key: key,
-            true,
-            builder: builder,
-            isOffline: isOffline,
-          );
-        }
         return Frame.getFrame(
           key: key,
-          kIsWeb,
+          Frame.isWebFrame(),
           builder: builder,
           isOffline: isOffline,
         );
@@ -137,7 +119,10 @@ abstract class Frame extends StatefulWidget {
 
   /// Whether the currently used frame is [WebFrame].
   static bool isWebFrame() {
-    return (!IUiService().mobileOnly.value && kIsWeb) || IUiService().webOnly.value || kIsWeb;
+    if (IUiService().mobileOnly.value) {
+      return false;
+    }
+    return IUiService().webOnly.value || kIsWeb;
   }
 }
 
