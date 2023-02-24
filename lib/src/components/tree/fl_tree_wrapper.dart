@@ -297,18 +297,39 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   void _addPage(String pDataProvider, String? pPageKey, DataChunk pPageChunk) {
     // Check if this data that is coming in is the first level of the tree.
     String baseDataProvider = dataProviderAtTreeDepth(0)!;
-    bool baseNodeData =
+    bool isLevelZeroData =
         baseDataProvider == pDataProvider && IDataService().getDataBook(baseDataProvider)!.rootKey == pPageKey;
 
     // Get all the nodes that are receiving this page.
-    List<String> parentNodes = nodesReceivingPage[pDataProvider]?[pPageKey] ?? [];
+    List<Node<NodeData>> parentNodes =
+        nodesReceivingPage[pDataProvider]?[pPageKey]?.map((e) => controller.getNode<NodeData>(e)!).toList() ?? [];
 
-    if (!baseNodeData && parentNodes.isEmpty) {
+    if (!isLevelZeroData && parentNodes.isEmpty) {
       // This page is not for us, so we can ignore it.
       return;
     }
 
-    int treeDepth = baseNodeData ? 0 : controller.getNode(parentNodes.first)!.data!.treePath.length;
+    int treeDepth = isLevelZeroData ? 0 : parentNodes.first.data!.treePath.length;
+    String? childDataBook = dataProviderAtTreeDepth(treeDepth + 1);
+
+    if (childDataBook != null) {
+      List<Node<NodeData>> childrenToUnsub = [];
+      if (parentNodes.isNotEmpty) {
+        // Remove all children nodes of these parent from receiving the child pages they haven been added to.
+        for (Node<NodeData> parentNode in parentNodes) {
+          for (Node child in parentNode.children) {
+            childrenToUnsub.add(child as Node<NodeData>);
+          }
+        }
+      } else {
+        for (Node child in controller.children) {
+          childrenToUnsub.add(child as Node<NodeData>);
+        }
+      }
+      for (Node<NodeData> child in childrenToUnsub) {
+        nodesReceivingPage[childDataBook]?[child.data!.subPageKey]?.remove(child.key);
+      }
+    }
 
     // All nodes that were build for each parent node.
     HashMap<String?, List<Node<NodeData>>> newNodesPerParent = HashMap();
@@ -320,7 +341,6 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       Filter rowFilter = _createPrimaryKeysFilter(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions);
 
       // If there is another databook that is a child of this one, then we need to create a potential parent node.
-      bool isPotentialParent = dataProviderAtTreeDepth(treeDepth + 1) != null;
 
       String nodeLabel = _createLabel(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions);
 
@@ -328,16 +348,16 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
       // Loop through every parent but at least do it once, as we could have no parents and are base nodes.
       do {
-        Node<NodeData>? parentNode = baseNodeData ? null : controller.getNode(parentNodes[parentIndex]);
+        Node<NodeData>? parentNode = isLevelZeroData ? null : parentNodes[parentIndex];
 
         // Create the node key.
         List<int> treePath = [...parentNode?.data!.treePath ?? [], rowIndex];
         String nodeKey = treePath.toString();
 
-        if (isPotentialParent) {
-          String childDataBook = dataProviderAtTreeDepth(treeDepth + 1)!;
+        String? childPageKey;
+        if (childDataBook != null) {
           DalMetaData childMetaData = metaDatas[childDataBook]!;
-          String childPageKey = _createChildPageKey(childMetaData, metaDatas[pDataProvider]!, dataRow);
+          childPageKey = _createChildPageKey(childMetaData, metaDatas[pDataProvider]!, dataRow);
 
           // Add this node to the list of the page they are receiving.
           nodesReceivingPage
@@ -346,8 +366,11 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
               .add(nodeKey);
         }
 
-        Node? oldNode =
-            parentNode?.children.firstWhereOrNull((element) => (element as Node<NodeData>).data!.rowIndex == rowIndex);
+        bool isPotentialParent = childDataBook != null;
+
+        List<Node> oldNodes = isLevelZeroData ? controller.children : parentNode?.children ?? [];
+        Node? oldNode = oldNodes.firstWhereOrNull(
+            (element) => (element as Node<NodeData>).data!.rowFilter.toPageKey() == rowFilter.toPageKey());
         if (oldNode != null && !oldNode.parent) {
           isPotentialParent = false;
         }
@@ -356,7 +379,8 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
           key: nodeKey,
           children: oldNode?.children ?? [],
           expanded: oldNode?.expanded ?? false,
-          data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider),
+          data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider,
+              childPageKey),
           parent: isPotentialParent,
           label: nodeLabel,
         );
@@ -368,7 +392,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         if (model.detectEndNode &&
             newNode.children.isEmpty &&
             isPotentialParent &&
-            (baseNodeData || (parentNode?.expanded == true))) {
+            (isLevelZeroData || (parentNode?.expanded == true))) {
           // Create the filter for the child nodes.
           String childDataBook = dataProviderAtTreeDepth(treeDepth + 1)!;
           DalMetaData childMetaData = metaDatas[childDataBook]!;
@@ -389,13 +413,11 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       } while (parentIndex < parentNodes.length);
     });
 
-    if (baseNodeData) {
+    if (isLevelZeroData) {
       controller = controller.copyWith(children: newNodesPerParent.values.first);
     } else {
-      for (String parentKey in parentNodes) {
-        Node<NodeData> parentNode = controller.getNode(parentKey)!;
-
-        List<Node<NodeData>> children = newNodesPerParent[parentKey] ?? [];
+      for (Node<NodeData> parentNode in parentNodes) {
+        List<Node<NodeData>> children = newNodesPerParent[parentNode.key] ?? [];
         // Add the new nodes to the parent node.
         parentNode = parentNode.copyWith(
           children: children,
@@ -522,13 +544,23 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 }
 
 class NodeData {
+  // The page key in which this node has been added with.
   final String? pageKey;
+
+  // The tree path of the node.
   final List<int> treePath;
+
+  // The row index of the corresponding data row in the data page it is in.
   final int rowIndex;
 
   // The primary key filter of the corresponding data row. Used to select the node in the request.
   final Filter rowFilter;
+
+  // The data provider of the corresponding data row.
   final String dataProvider;
 
-  NodeData(this.pageKey, this.treePath, this.rowIndex, this.rowFilter, this.dataProvider);
+  // The page key from which i get my children.
+  final String? subPageKey;
+
+  NodeData(this.pageKey, this.treePath, this.rowIndex, this.rowFilter, this.dataProvider, this.subPageKey);
 }
