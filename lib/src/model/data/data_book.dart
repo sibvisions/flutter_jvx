@@ -15,7 +15,6 @@
  */
 
 import 'dart:collection';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -133,11 +132,12 @@ class DataBook {
       if (pFetchResponse.masterRow!.isEmpty) {
         pageKey = "noMasterRow";
       } else {
-        Map<String, dynamic> pageKeyMap = HashMap();
-        for (int i = 0; i < metaData.masterReference!.referencedColumnNames.length; i++) {
-          pageKeyMap[metaData.masterReference!.referencedColumnNames[i]] = pFetchResponse.masterRow![i];
-        }
-        pageKey = jsonEncode(pageKeyMap);
+        pageKey = Filter(
+          columnNames: metaData.masterReference!.referencedColumnNames,
+          values: metaData.masterReference!.referencedColumnNames
+              .mapIndexed((index, referencedColumn) => pFetchResponse.masterRow![index])
+              .toList(),
+        ).toPageKey();
       }
 
       if (!pageRecords.containsKey(pageKey)) {

@@ -17,6 +17,7 @@
 import 'dart:collection';
 import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
@@ -61,8 +62,12 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   /// The controller for the tree view.
   TreeViewController controller = TreeViewController(children: <Node<List<NodeData>>>[]);
 
-  /// The data pages of the databooks.
+  /// The data pages of the databooks. First key is the dataprovider, second key is the page.
   HashMap<String, HashMap<String?, DataChunk>> data = HashMap<String, HashMap<String?, DataChunk>>();
+
+  /// First key is the dataprovider, second key is the page. The value is a list of nodes which are receiving the page.
+  HashMap<String, HashMap<String?, List<String>>> nodesReceivingPage =
+      HashMap<String, HashMap<String?, List<String>>>();
 
   /// The meta datas.
   HashMap<String, DalMetaData> metaDatas = HashMap<String, DalMetaData>();
@@ -136,7 +141,6 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         onPage: (pageKey, dataChunk) => _onPage(dataProvider, pageKey, dataChunk),
         onMetaData: (metaData) => _onMetaData(dataProvider, metaData),
         onSelectedRecord: (record) => _onSelectedRecord(dataProvider, record),
-        onReload: first ? _onReload() : null,
       );
       first = false;
 
@@ -154,12 +158,6 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     if (!initialized && _hasAllMetaData()) {
       _initTree();
     }
-  }
-
-  _onReload() {
-    // if (initialized) {
-    //   _initTree();
-    // }
   }
 
   void _onPage(String pDataProvider, String? pPageKey, DataChunk pPageChunk) {
@@ -260,7 +258,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         _fetchNodeChildren(node);
       } else {
         for (Node<NodeData> child in List<Node<NodeData>>.from(node.children)) {
-          if (child.children.isEmpty && child.isParent) {
+          if (child.children.isEmpty && child.parent) {
             _fetchNodeChildren(child);
           }
         }
@@ -277,7 +275,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
     List<dynamic> dataRow = data[dataProvider]![node.data!.pageKey]!.data[node.data!.rowIndex]!;
 
-    Filter childFilter = _createChildFilter(childMetaData, metaData, dataRow, metaData.columnDefinitions);
+    Filter childFilter = _createChildFilter(childMetaData, metaData, dataRow);
 
     IUiService().sendCommand(
       FetchCommand(
@@ -297,84 +295,116 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   void _addPage(String pDataProvider, String? pPageKey, DataChunk pPageChunk) {
+    // Check if this data that is coming in is the first level of the tree.
     String baseDataProvider = dataProviderAtTreeDepth(0)!;
     bool baseNodeData =
         baseDataProvider == pDataProvider && IDataService().getDataBook(baseDataProvider)!.rootKey == pPageKey;
 
-    Node<NodeData>? parentNode;
+    // Get all the nodes that are receiving this page.
+    List<String> parentNodes = nodesReceivingPage[pDataProvider]?[pPageKey] ?? [];
 
-    if (!baseNodeData) {
-      DalMetaData metaData = metaDatas[pDataProvider]!;
-      // First, add the root reference data provider to the page key and try to find the parent.
-      // If the parent is not found, remove the root reference data provider from the page key and try again, but this time
-      // with the master reference data provider.
-      String parentNodeKey;
-      if (metaData.rootReference != null) {
-        parentNodeKey = "${metaData.rootReference!.referencedDataBook}_${pPageKey!}";
-        parentNode = controller.getNode(parentNodeKey);
-      }
-      if (parentNode == null && metaData.masterReference != null) {
-        parentNodeKey = "${metaData.masterReference!.referencedDataBook}_${pPageKey!}";
-        parentNode = controller.getNode(parentNodeKey);
-      }
-    }
-
-    if (!baseNodeData && parentNode == null) {
+    if (!baseNodeData && parentNodes.isEmpty) {
+      // This page is not for us, so we can ignore it.
       return;
     }
 
-    List<Node<NodeData>> newNodes = [];
+    int treeDepth = baseNodeData ? 0 : controller.getNode(parentNodes.first)!.data!.treePath.length;
+
+    // All nodes that were build for each parent node.
+    HashMap<String?, List<Node<NodeData>>> newNodesPerParent = HashMap();
+
     pPageChunk.data.forEach((rowIndex, dataRow) {
+      // Filter to identify this row in the child nodes of our parent nodes.
+      // The tree path is no indication as just the sorting could be switched between fetches. Need to use the
+      // primary keys!
       Filter rowFilter = _createPrimaryKeysFilter(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions);
-      String nodeKey = "${pDataProvider}_${rowFilter.toPageKey()}";
 
-      bool isPotentialParent = baseNodeData && dataProviderAtTreeDepth(1) != null;
-      // parent node data length is the index of our databook, add 1 to get the level of our children
-      isPotentialParent |= parentNode != null && dataProviderAtTreeDepth(parentNode.data!.treePath.length + 1) != null;
+      // If there is another databook that is a child of this one, then we need to create a potential parent node.
+      bool isPotentialParent = dataProviderAtTreeDepth(treeDepth + 1) != null;
 
-      Node<NodeData> newNode = Node<NodeData>(
-        key: nodeKey,
-        data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider),
-        parent: isPotentialParent,
-        label: _createLabel(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions),
-      );
-      Node? oldNode = controller.getNode(nodeKey);
-      if (oldNode != null) {
-        newNode = newNode.copyWith(children: oldNode.children, expanded: oldNode.expanded);
-        if (!oldNode.parent) {
-          isPotentialParent = false;
-          newNode = newNode.copyWith(parent: false);
+      String nodeLabel = _createLabel(metaDatas[pDataProvider]!, dataRow, pPageChunk.columnDefinitions);
+
+      int parentIndex = 0;
+
+      // Loop through every parent but at least do it once, as we could have no parents and are base nodes.
+      do {
+        Node<NodeData>? parentNode = baseNodeData ? null : controller.getNode(parentNodes[parentIndex]);
+
+        // Create the node key.
+        List<int> treePath = [...parentNode?.data!.treePath ?? [], rowIndex];
+        String nodeKey = treePath.toString();
+
+        if (isPotentialParent) {
+          String childDataBook = dataProviderAtTreeDepth(treeDepth + 1)!;
+          DalMetaData childMetaData = metaDatas[childDataBook]!;
+          String childPageKey = _createChildPageKey(childMetaData, metaDatas[pDataProvider]!, dataRow);
+
+          // Add this node to the list of the page they are receiving.
+          nodesReceivingPage
+              .putIfAbsent(childDataBook, () => HashMap())
+              .putIfAbsent(childPageKey, () => [])
+              .add(nodeKey);
         }
-      }
 
-      newNodes.add(newNode);
-      if (model.detectEndNode &&
-          isPotentialParent &&
-          newNode.children.isEmpty &&
-          (parentNode == null || parentNode.expanded)) {
-        DalMetaData metaData = metaDatas[pDataProvider]!;
-        String childDataProvider = dataProviderAtTreeDepth(newNodes.last.data!.treePath.length)!;
-        DalMetaData childMetaData = metaDatas[childDataProvider]!;
+        Node? oldNode =
+            parentNode?.children.firstWhereOrNull((element) => (element as Node<NodeData>).data!.rowIndex == rowIndex);
+        if (oldNode != null && !oldNode.parent) {
+          isPotentialParent = false;
+        }
 
-        Filter childFilter = _createChildFilter(childMetaData, metaData, dataRow, pPageChunk.columnDefinitions);
-
-        IUiService().sendCommand(
-          FetchCommand(
-            fromRow: 0,
-            rowCount: -1,
-            dataProvider: childDataProvider,
-            reason: "detecting first level end nodes",
-            filter: childFilter,
-          ),
+        Node<NodeData> newNode = Node<NodeData>(
+          key: nodeKey,
+          children: oldNode?.children ?? [],
+          expanded: oldNode?.expanded ?? false,
+          data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider),
+          parent: isPotentialParent,
+          label: nodeLabel,
         );
-      }
+
+        // Add the node to the list of new nodes for this parent.
+        newNodesPerParent.putIfAbsent(parentNode?.key, () => []).add(newNode);
+
+        // Fetch potential children for this node.
+        if (model.detectEndNode &&
+            newNode.children.isEmpty &&
+            isPotentialParent &&
+            (baseNodeData || (parentNode?.expanded == true))) {
+          // Create the filter for the child nodes.
+          String childDataBook = dataProviderAtTreeDepth(treeDepth + 1)!;
+          DalMetaData childMetaData = metaDatas[childDataBook]!;
+          Filter childFilter = _createChildFilter(childMetaData, metaDatas[pDataProvider]!, dataRow);
+
+          IUiService().sendCommand(
+            FetchCommand(
+              fromRow: 0,
+              rowCount: -1,
+              dataProvider: dataProviderAtTreeDepth(treeDepth + 1)!,
+              reason: "detecting first level end nodes",
+              filter: childFilter,
+            ),
+          );
+        }
+
+        parentIndex++;
+      } while (parentIndex < parentNodes.length);
     });
 
     if (baseNodeData) {
-      controller = controller.copyWith(children: newNodes);
+      controller = controller.copyWith(children: newNodesPerParent.values.first);
     } else {
-      parentNode = parentNode!.copyWith(children: newNodes, parent: newNodes.isNotEmpty);
-      controller = controller.withUpdateNode(parentNode.key, parentNode);
+      for (String parentKey in parentNodes) {
+        Node<NodeData> parentNode = controller.getNode(parentKey)!;
+
+        List<Node<NodeData>> children = newNodesPerParent[parentKey] ?? [];
+        // Add the new nodes to the parent node.
+        parentNode = parentNode.copyWith(
+          children: children,
+          parent: children.isNotEmpty,
+        );
+
+        // Update the parent node (and all its parents
+        controller = controller.withUpdateNode(parentNode.key, parentNode);
+      }
     }
 
     _updateSelection();
@@ -408,24 +438,24 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     }
   }
 
-  Filter _createChildFilter(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow,
-      List<ColumnDefinition> pColumnDefinitions) {
-    bool isFirstSelfJoined = pChildMetaData.isSelfJoined() && pChildMetaData == pParentMetaData;
-    ReferenceDefinition? referenceDefinition;
-    if (isFirstSelfJoined) {
-      referenceDefinition = pChildMetaData.rootReference;
-    }
-    referenceDefinition ??= pChildMetaData.masterReference;
-
+  Filter _createChildFilter(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow) {
     return Filter(
-      columnNames: pParentMetaData.primaryKeyColumns
-          .map((primaryKey) =>
-              referenceDefinition!.columnNames[referenceDefinition.referencedColumnNames.indexOf(primaryKey)])
-          .toList(),
-      values: pParentMetaData.primaryKeyColumns
-          .map((columnName) => pParentRow[pColumnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
+      columnNames: pChildMetaData.masterReference!.columnNames,
+      values: pChildMetaData.masterReference!.referencedColumnNames
+          .map((referencedColumn) =>
+              pParentRow[pParentMetaData.columnDefinitions.indexWhere((coldef) => coldef.name == referencedColumn)])
           .toList(),
     );
+  }
+
+  String _createChildPageKey(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow) {
+    return Filter(
+      columnNames: pChildMetaData.masterReference!.referencedColumnNames,
+      values: pChildMetaData.masterReference!.referencedColumnNames
+          .map((referencedColumn) =>
+              pParentRow[pParentMetaData.columnDefinitions.indexWhere((coldef) => coldef.name == referencedColumn)])
+          .toList(),
+    ).toPageKey();
   }
 
   void _updateSelection() {
@@ -482,8 +512,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   Future<void> _refresh() async {
     if (initialized && _hasAllMetaData()) {
       controller = TreeViewController(children: <Node<List<NodeData>>>[]);
-      data = HashMap<String, HashMap<String?, DataChunk>>();
-      selectedRecords = HashMap<String, DataRecord>();
+      data.clear();
+      selectedRecords.clear();
+      nodesReceivingPage.clear();
       initialized = false;
       _initTree();
     }
@@ -494,6 +525,8 @@ class NodeData {
   final String? pageKey;
   final List<int> treePath;
   final int rowIndex;
+
+  // The primary key filter of the corresponding data row. Used to select the node in the request.
   final Filter rowFilter;
   final String dataProvider;
 
