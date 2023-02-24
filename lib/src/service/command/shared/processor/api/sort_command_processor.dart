@@ -27,6 +27,7 @@ class SortCommandProcessor implements ICommandProcessor<SortCommand> {
       ApiSortRequest(
         dataProvider: command.dataProvider,
         sortDefinitions: command.sortDefinitions,
+        columnName: command.columnName,
       ),
     );
   }

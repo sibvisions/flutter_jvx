@@ -30,6 +30,9 @@ class SortCommand extends SessionCommand {
   /// List of columns to sort
   final List<SortDefinition> sortDefinitions;
 
+  /// The column which got sorted
+  final String columnName;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,6 +40,7 @@ class SortCommand extends SessionCommand {
   SortCommand({
     required this.dataProvider,
     required this.sortDefinitions,
+    required this.columnName,
     required super.reason,
   });
 
@@ -46,6 +50,6 @@ class SortCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SortCommand{dataProvider: $dataProvider, sortDefinitions: $sortDefinitions, ${super.toString()}}";
+    return "SortCommand{dataProvider: $dataProvider, sortDefinitions: $sortDefinitions, columnName: $columnName, ${super.toString()}}";
   }
 }

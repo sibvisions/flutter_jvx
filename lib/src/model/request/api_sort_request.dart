@@ -28,6 +28,9 @@ class ApiSortRequest extends SessionRequest {
   /// List of columns to sort
   final List<SortDefinition> sortDefinitions;
 
+  /// The column which got sorted
+  final String columnName;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,6 +38,7 @@ class ApiSortRequest extends SessionRequest {
   ApiSortRequest({
     required this.dataProvider,
     required this.sortDefinitions,
+    required this.columnName,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,5 +50,6 @@ class ApiSortRequest extends SessionRequest {
         ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
         ApiObjectProperty.sortDefinition: sortDefinitions,
+        ApiObjectProperty.columnName: columnName,
       };
 }
