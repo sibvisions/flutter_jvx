@@ -16,6 +16,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -213,7 +214,7 @@ class ConfigController {
   /// Retrieves the current [ThemeMode] preference.
   ///
   /// Returns [ThemeMode.system] if none is configured.
-  ValueNotifier<ThemeMode> get themePreference => _themePreference;
+  ValueListenable<ThemeMode> get themePreference => _themePreference;
 
   /// Sets the current [ThemeMode] preference.
   ///
@@ -226,7 +227,7 @@ class ConfigController {
   /// Retrieves the configured max. picture resolution.
   ///
   /// This is being used to limit the resolution of pictures taken via the in-app camera.
-  ValueNotifier<int?> get pictureResolution => _pictureResolution;
+  ValueListenable<int?> get pictureResolution => _pictureResolution;
 
   /// Sets the max. picture resolution.
   Future<void> updatePictureResolution(int pictureResolution) async {
@@ -235,7 +236,7 @@ class ConfigController {
   }
 
   /// Returns the name of the current app.
-  ValueNotifier<String?> get appName => _appName;
+  ValueListenable<String?> get appName => _appName;
 
   /// Sets the name of the current app.
   Future<void> updateAppName(String? pAppName) async {
@@ -250,7 +251,7 @@ class ConfigController {
   /// This is either:
   /// * The user entered base url.
   /// * The [ServerConfig.baseUrl] from the configured [AppConfig].
-  ValueNotifier<String?> get baseUrl => _baseUrl;
+  ValueListenable<String?> get baseUrl => _baseUrl;
 
   /// Sets the base url.
   ///
@@ -261,7 +262,7 @@ class ConfigController {
   }
 
   /// Retrieves the last saved username or the configured one from [ServerConfig.username].
-  ValueNotifier<String?> get username => _username;
+  ValueListenable<String?> get username => _username;
 
   /// Sets the saved username.
   ///
@@ -272,7 +273,7 @@ class ConfigController {
   }
 
   /// Retrieves the last saved password or the configured one from [ServerConfig.password].
-  ValueNotifier<String?> get password => _password;
+  ValueListenable<String?> get password => _password;
 
   /// Sets the saved password.
   ///
@@ -283,7 +284,7 @@ class ConfigController {
   }
 
   /// Retrieves the last saved authKey, which will be used on [ApiStartUpRequest].
-  ValueNotifier<String?> get authKey => _authKey;
+  ValueListenable<String?> get authKey => _authKey;
 
   /// Sets the authKey.
   Future<void> updateAuthKey(String? pAuthKey) async {
@@ -292,7 +293,7 @@ class ConfigController {
   }
 
   /// Retrieves version of the current app.
-  ValueNotifier<String?> get version => _version;
+  ValueListenable<String?> get version => _version;
 
   /// Sets the version of the current app.
   Future<void> updateVersion(String? pVersion) async {
@@ -301,7 +302,7 @@ class ConfigController {
   }
 
   /// Returns info about the current user.
-  ValueNotifier<UserInfo?> get userInfo => _userInfo;
+  ValueListenable<UserInfo?> get userInfo => _userInfo;
 
   /// Sets the current user info.
   Future<void> updateUserInfo({UserInfo? pUserInfo, Map<String, dynamic>? pJson}) async {
@@ -322,7 +323,7 @@ class ConfigController {
   /// Returns the application language code returned by the server.
   ///
   /// Returns `null` before initial startup.
-  ValueNotifier<String?> get applicationLanguage => _applicationLanguage;
+  ValueListenable<String?> get applicationLanguage => _applicationLanguage;
 
   /// Sets the application language code returned by the server.
   Future<void> updateApplicationLanguage(String? pLanguage) async {
@@ -333,7 +334,7 @@ class ConfigController {
   /// Returns the user defined language code.
   ///
   /// To get the really used language, use [getLanguage].
-  ValueNotifier<String?> get userLanguage => _userLanguage;
+  ValueListenable<String?> get userLanguage => _userLanguage;
 
   /// Set the user defined language code.
   Future<void> updateUserLanguage(String? pLanguage) async {
@@ -352,7 +353,7 @@ class ConfigController {
   }
 
   /// Returns all currently supported languages by this application.
-  ValueNotifier<Set<String>> get supportedLanguages => _supportedLanguages;
+  ValueListenable<Set<String>> get supportedLanguages => _supportedLanguages;
 
   /// Refreshes the supported languages by checking the local translation folder.
   ///
@@ -384,7 +385,7 @@ class ConfigController {
   }
 
   /// Returns the application timezone returned by the server.
-  ValueNotifier<String?> get applicationTimeZone => _applicationTimeZone;
+  ValueListenable<String?> get applicationTimeZone => _applicationTimeZone;
 
   /// Set the application defined timezone.
   Future<void> updateApplicationTimeZone(String? timeZoneCode) async {
@@ -399,7 +400,7 @@ class ConfigController {
   /// See also:
   /// * [AppStyle]
   /// * [updateApplicationStyle]
-  ValueNotifier<Map<String, String>> get applicationStyle => _applicationStyle;
+  ValueListenable<Map<String, String>> get applicationStyle => _applicationStyle;
 
   /// Sets the app style.
   ///
@@ -425,7 +426,7 @@ class ConfigController {
   }
 
   /// Returns if the app is currently in offline mode.
-  ValueNotifier<bool> get offline => _offline;
+  ValueListenable<bool> get offline => _offline;
 
   /// Sets the offline mode.
   Future<void> updateOffline(bool pOffline) async {
@@ -437,7 +438,7 @@ class ConfigController {
   ///
   /// Is only available while being offline ([offline]).
   /// Normally this is the same as the last open screen when going offline.
-  ValueNotifier<String?> get offlineScreen => _offlineScreen;
+  ValueListenable<String?> get offlineScreen => _offlineScreen;
 
   /// Sets the screen to which the offline data has to be synced back.
   Future<void> updateOfflineScreen(String pWorkscreen) async {
