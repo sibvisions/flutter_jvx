@@ -133,8 +133,8 @@ class DataBook {
         pageKey = "noMasterRow";
       } else {
         pageKey = Filter(
-          columnNames: metaData.masterReference!.referencedColumnNames,
-          values: metaData.masterReference!.referencedColumnNames
+          columnNames: metaData.masterReference!.columnNames,
+          values: metaData.masterReference!.columnNames
               .mapIndexed((index, referencedColumn) => pFetchResponse.masterRow![index])
               .toList(),
         ).toPageKey();

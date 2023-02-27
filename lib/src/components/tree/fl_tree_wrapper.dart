@@ -352,15 +352,15 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         List<int> treePath = [...parentNode?.data!.treePath ?? [], rowIndex];
         String nodeKey = treePath.toString();
 
-        String? childPageKey;
+        Filter? childFilter;
         if (childDataBook != null) {
           DalMetaData childMetaData = metaDatas[childDataBook]!;
-          childPageKey = _createChildPageKey(childMetaData, metaDatas[pDataProvider]!, dataRow);
+          childFilter = _createChildFilter(childMetaData, metaDatas[pDataProvider]!, dataRow);
 
           // Add this node to the list of the page they are receiving.
           nodesReceivingPage
               .putIfAbsent(childDataBook, () => HashMap())
-              .putIfAbsent(childPageKey, () => [])
+              .putIfAbsent(childFilter.toPageKey(), () => [])
               .add(nodeKey);
         }
 
@@ -378,7 +378,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
           children: oldNode?.children ?? [],
           expanded: oldNode?.expanded ?? false,
           data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider,
-              childPageKey),
+              childFilter?.toPageKey()),
           parent: isPotentialParent,
           label: nodeLabel,
         );
@@ -392,15 +392,12 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
             isPotentialParent &&
             (isLevelZeroData || (parentNode?.expanded == true))) {
           // Create the filter for the child nodes.
-          String childDataBook = dataProviderAtTreeDepth(treeDepth + 1)!;
-          DalMetaData childMetaData = metaDatas[childDataBook]!;
-          Filter childFilter = _createChildFilter(childMetaData, metaDatas[pDataProvider]!, dataRow);
 
           IUiService().sendCommand(
             FetchCommand(
               fromRow: 0,
               rowCount: -1,
-              dataProvider: dataProviderAtTreeDepth(treeDepth + 1)!,
+              dataProvider: childDataBook!,
               reason: "detecting first level end nodes",
               filter: childFilter,
             ),
@@ -460,32 +457,32 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
   Filter _createChildFilter(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow) {
     ReferenceDefinition? reference = pChildMetaData.masterReference;
-    // if (pChildMetaData.isSelfJoined() && pParentMetaData.dataProvider != pChildMetaData.dataProvider) {
-    //   reference = pChildMetaData.rootReference ?? reference;
-    // }
+    if (pChildMetaData.isSelfJoined() && pParentMetaData.dataProvider != pChildMetaData.dataProvider) {
+      reference = pChildMetaData.rootReference ?? reference;
+    }
 
     return Filter(
-      columnNames: reference!.columnNames,
-      values: reference.referencedColumnNames
-          .map((referencedColumn) =>
-              pParentRow[pParentMetaData.columnDefinitions.indexWhere((coldef) => coldef.name == referencedColumn)])
-          .toList(),
+      columnNames: pChildMetaData.masterReference!.columnNames,
+      values: pChildMetaData.masterReference!.columnNames.map((referencedColumn) {
+        // Is there a reference to the parent table?
+        if (!reference!.columnNames.contains(referencedColumn)) {
+          return null;
+        }
+
+        // Get the name of the column in the parent table.
+        String parentColumn = reference.referencedColumnNames[reference.columnNames.indexOf(referencedColumn)];
+
+        // Get the index of the column in the parent table.
+        int parentColumnIndex = pParentMetaData.columnDefinitions.indexWhere((colDef) => colDef.name == parentColumn);
+
+        // Get the value of the column in the parent table.
+        if (parentColumnIndex >= 0 && parentColumnIndex < pParentRow.length) {
+          return pParentRow[parentColumnIndex];
+        } else {
+          return null;
+        }
+      }).toList(),
     );
-  }
-
-  String _createChildPageKey(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow) {
-    ReferenceDefinition? reference = pChildMetaData.masterReference;
-    // if (pChildMetaData.isSelfJoined() && pParentMetaData.dataProvider != pChildMetaData.dataProvider) {
-    //   reference = pChildMetaData.rootReference ?? reference;
-    // }
-
-    return Filter(
-      columnNames: reference!.referencedColumnNames,
-      values: reference.referencedColumnNames
-          .map((referencedColumn) =>
-              pParentRow[pParentMetaData.columnDefinitions.indexWhere((coldef) => coldef.name == referencedColumn)])
-          .toList(),
-    ).toPageKey();
   }
 
   void _updateSelection() {
