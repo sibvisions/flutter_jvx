@@ -463,14 +463,14 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
     return Filter(
       columnNames: pChildMetaData.masterReference!.columnNames,
-      values: pChildMetaData.masterReference!.columnNames.map((referencedColumn) {
+      values: pChildMetaData.masterReference!.columnNames.map((column) {
         // Is there a reference to the parent table?
-        if (!reference!.columnNames.contains(referencedColumn)) {
+        if (!reference!.columnNames.contains(column)) {
           return null;
         }
 
         // Get the name of the column in the parent table.
-        String parentColumn = reference.referencedColumnNames[reference.columnNames.indexOf(referencedColumn)];
+        String parentColumn = reference.referencedColumnNames[reference.columnNames.indexOf(column)];
 
         // Get the index of the column in the parent table.
         int parentColumnIndex = pParentMetaData.columnDefinitions.indexWhere((colDef) => colDef.name == parentColumn);
