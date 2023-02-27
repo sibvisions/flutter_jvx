@@ -15,7 +15,6 @@
  */
 
 import 'dart:collection';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -161,8 +160,6 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   void _onPage(String pDataProvider, String? pPageKey, DataChunk pPageChunk) {
-    log('onPage: $pDataProvider, $pPageKey');
-
     if (data[pDataProvider] == null) {
       data[pDataProvider] = HashMap<String?, DataChunk>();
     }
@@ -175,7 +172,6 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   _onSelectedRecord(String dataProvider, DataRecord? record) {
-    log('onSelectedRecord: $dataProvider');
     if (record != null) {
       selectedRecords[dataProvider] = record;
     } else {
@@ -213,7 +209,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   _handleNodeDoubleTap(String pNodeKey) {
-    log('double tap: $pNodeKey');
+    // Do nothing
   }
 
   _handleNodeTap(String pNodeKey) {
@@ -301,8 +297,10 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         baseDataProvider == pDataProvider && IDataService().getDataBook(baseDataProvider)!.rootKey == pPageKey;
 
     // Get all the nodes that are receiving this page.
-    List<Node<NodeData>> parentNodes =
-        nodesReceivingPage[pDataProvider]?[pPageKey]?.map((e) => controller.getNode<NodeData>(e)!).toList() ?? [];
+    List<Node<NodeData>> parentNodes = nodesReceivingPage[pDataProvider]?[pPageKey]
+            ?.map((nodeKey) => controller.getNode<NodeData>(nodeKey)!)
+            .toList() ??
+        [];
 
     if (!isLevelZeroData && parentNodes.isEmpty) {
       // This page is not for us, so we can ignore it.
@@ -461,9 +459,14 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   Filter _createChildFilter(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow) {
+    ReferenceDefinition? reference = pChildMetaData.masterReference;
+    // if (pChildMetaData.isSelfJoined() && pParentMetaData.dataProvider != pChildMetaData.dataProvider) {
+    //   reference = pChildMetaData.rootReference ?? reference;
+    // }
+
     return Filter(
-      columnNames: pChildMetaData.masterReference!.columnNames,
-      values: pChildMetaData.masterReference!.referencedColumnNames
+      columnNames: reference!.columnNames,
+      values: reference.referencedColumnNames
           .map((referencedColumn) =>
               pParentRow[pParentMetaData.columnDefinitions.indexWhere((coldef) => coldef.name == referencedColumn)])
           .toList(),
@@ -471,9 +474,14 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   String _createChildPageKey(DalMetaData pChildMetaData, DalMetaData pParentMetaData, List<dynamic> pParentRow) {
+    ReferenceDefinition? reference = pChildMetaData.masterReference;
+    // if (pChildMetaData.isSelfJoined() && pParentMetaData.dataProvider != pChildMetaData.dataProvider) {
+    //   reference = pChildMetaData.rootReference ?? reference;
+    // }
+
     return Filter(
-      columnNames: pChildMetaData.masterReference!.referencedColumnNames,
-      values: pChildMetaData.masterReference!.referencedColumnNames
+      columnNames: reference!.referencedColumnNames,
+      values: reference.referencedColumnNames
           .map((referencedColumn) =>
               pParentRow[pParentMetaData.columnDefinitions.indexWhere((coldef) => coldef.name == referencedColumn)])
           .toList(),
@@ -504,7 +512,6 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     if (selectedTreePath.isEmpty) {
       controller = controller.copyWith(selectedKey: "");
     } else {
-      log(selectedTreePath.toString());
       Node? selectedNode = getNodeFromTreePath(selectedTreePath);
       if (selectedNode != null) {
         controller = controller.copyWith(selectedKey: selectedNode.key);
