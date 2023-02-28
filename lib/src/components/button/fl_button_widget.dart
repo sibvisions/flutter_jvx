@@ -97,6 +97,16 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
     focusNode.canRequestFocus = isButtonFocusable;
 
+    if (model.isTextButton) {
+      return TextButton(
+        focusNode: focusNode,
+        onFocusChange: _onFocusChange,
+        onPressed: pressEvent,
+        style: createButtonStyle(context),
+        child: createDirectButtonChild(context),
+      );
+    }
+
     return ElevatedButton(
       focusNode: focusNode,
       onFocusChange: _onFocusChange,
@@ -198,7 +208,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     }
 
     bool hasElevation = model.borderPainted && !model.borderOnMouseEntered && model.isEnabled;
-    hasElevation == hasElevation && backgroundColor != Colors.transparent;
+    hasElevation &= backgroundColor != Colors.transparent;
+    hasElevation &= !model.isTextButton;
 
     return ButtonStyle(
       elevation: MaterialStateProperty.all(hasElevation ? 2 : 0),
