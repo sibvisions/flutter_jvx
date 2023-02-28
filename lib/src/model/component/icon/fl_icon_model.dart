@@ -31,15 +31,24 @@ class FlIconModel extends FlComponentModel {
   /// This is used to calculate the size of the image in the layout.
   Size originalSize = const Size(16, 16);
 
+  @override
+  Size? get minimumSize {
+    if (_minimumSize != null) {
+      return _minimumSize;
+    }
+
+    if (image.isNotEmpty) {
+      return const Size.square(16);
+    }
+    return null;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes the [FlButtonModel]
-  FlIconModel() : super() {
-    minimumSize = const Size(16, 16);
-  }
-
+  FlIconModel();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

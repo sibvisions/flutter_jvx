@@ -65,14 +65,16 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
 
   @override
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
+    Size calcSize = model.image.isNotEmpty ? model.originalSize : Size.zero;
+
     LayoutData layoutData = pLayoutData.clone();
-    layoutData.calculatedSize = model.originalSize;
+    layoutData.calculatedSize = calcSize;
 
     layoutData.widthConstrains.forEach((key, value) {
-      layoutData.widthConstrains[key] = model.originalSize.height;
+      layoutData.widthConstrains[key] = calcSize.height;
     });
     layoutData.heightConstrains.forEach((key, value) {
-      layoutData.heightConstrains[key] = model.originalSize.width;
+      layoutData.heightConstrains[key] = calcSize.width;
     });
 
     super.sendCalcSize(pLayoutData: layoutData, pReason: pReason);

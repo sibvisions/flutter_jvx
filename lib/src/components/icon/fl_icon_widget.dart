@@ -60,10 +60,10 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     if (onPress != null || directImage != null) {
       return GestureDetector(
         onTap: model.isEnabled ? onPress : null,
-        // child: DecoratedBox(
-        //   decoration: BoxDecoration(color: model.background),
-        child: child,
-        // ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(color: model.background),
+          child: child,
+        ),
       );
     } else {
       return GestureDetector(
@@ -85,7 +85,10 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
                   },
                 )
             : null,
-        child: child,
+        child: DecoratedBox(
+          decoration: BoxDecoration(color: model.background),
+          child: child,
+        ),
       );
     }
   }
