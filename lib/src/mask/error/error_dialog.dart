@@ -21,7 +21,7 @@ import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
 
 /// This is a standard template for an error message.
-class ErrorDialog extends FrameDialog {
+class ErrorDialog extends JVxDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +80,7 @@ class ErrorDialog extends FrameDialog {
       actions.add(
         TextButton(
           onPressed: () {
-            IUiService().closeFrameDialog(this);
+            IUiService().closeJVxDialog(this);
           },
           child: Text(
             FlutterUI.translate("Retry"),
@@ -94,7 +94,7 @@ class ErrorDialog extends FrameDialog {
       actions.add(
         TextButton(
           onPressed: () {
-            IUiService().closeFrameDialog(this);
+            IUiService().closeJVxDialog(this);
             IUiService().routeToSettings(pReplaceRoute: true);
           },
           child: Text(
@@ -109,7 +109,7 @@ class ErrorDialog extends FrameDialog {
       actions.add(
         TextButton(
           onPressed: () {
-            IUiService().closeFrameDialog(this);
+            IUiService().closeJVxDialog(this);
           },
           child: Text(
             FlutterUI.translate("Ok"),

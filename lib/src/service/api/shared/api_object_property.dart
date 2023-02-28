@@ -59,6 +59,9 @@ abstract class ApiObjectProperty {
   static const String screenNavigationName = "screen_navigationName_";
   static const String screenModal = "screen_modal_";
   static const String screenClassName = "screen_className_";
+  static const String contentTitle = "content_title_";
+  static const String contentModal = "content_modal_";
+  static const String contentClassName = "content_className_";
 
   // Common Properties -- these may be used by many different Components
   static const String text = "text";
@@ -277,6 +280,7 @@ abstract class ApiObjectProperty {
   static const String clear = "clear";
   static const String recordFormat = "recordFormat";
   static const String format = "format";
+  static const String masterRow = "masterRow";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";
@@ -380,6 +384,4 @@ abstract class ApiObjectProperty {
   static const String timeout = "timeout";
   static const String timeoutReset = "timeoutReset";
   static const String errorMessage = "errorMessage";
-
-  static const String masterRow = "masterRow";
 }

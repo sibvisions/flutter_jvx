@@ -35,7 +35,7 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
         goToSettings = false;
       }
 
-      IUiService().showFrameDialog(
+      IUiService().showJVxDialog(
         ErrorDialog(
           title: command.title,
           message: command.message,

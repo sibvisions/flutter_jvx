@@ -40,4 +40,6 @@ abstract class ApiResponseNames {
   static const String download = "download";
   static const String downloadResponse = "downloadResponse";
   static const String badClient = "badClient";
+  static const String content = "content";
+  static const String closeContent = "closeContent";
 }

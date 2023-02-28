@@ -110,6 +110,7 @@ dependencies:
   webview_flutter: ^4.0.2
   card_loading: ^0.3.0
   flutter_treeview: ^1.0.7+1
+  modal_bottom_sheet: ^3.0.0-pre
 
 dev_dependencies:
   flutter_lints: ^2.0.1

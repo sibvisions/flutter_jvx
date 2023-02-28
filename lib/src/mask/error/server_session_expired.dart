@@ -21,7 +21,7 @@ import '../../model/command/ui/view/message/open_session_expired_dialog_command.
 import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
 
-class ServerSessionExpired extends FrameDialog {
+class ServerSessionExpired extends JVxDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +65,7 @@ class ServerSessionExpired extends FrameDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _restartApp() {
-    IUiService().closeFrameDialog(this);
+    IUiService().closeJVxDialog(this);
     FlutterUI.of(FlutterUI.getCurrentContext()!).restart();
   }
 }

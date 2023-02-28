@@ -46,6 +46,15 @@ class FlPanelModel extends FlComponentModel {
   /// "com.sibvisions.apps.mobile.demo.screens.features.SecondWorkScreen"
   String? screenClassName;
 
+  /// The content title.
+  String? contentTitle;
+
+  /// If the content is modal -> Currently has no effect. Every content is modal.
+  bool contentModal = true;
+
+  /// The content class name.
+  String? contentClassName;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,6 +106,27 @@ class FlPanelModel extends FlComponentModel {
       pKey: ApiObjectProperty.screenClassName,
       pDefault: defaultModel.screenClassName,
       pCurrent: screenClassName,
+    );
+
+    contentTitle = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.contentTitle,
+      pDefault: defaultModel.contentTitle,
+      pCurrent: contentTitle,
+    );
+
+    contentModal = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.contentModal,
+      pDefault: defaultModel.contentModal,
+      pCurrent: contentModal,
+    );
+
+    contentClassName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.contentClassName,
+      pDefault: defaultModel.contentClassName,
+      pCurrent: contentClassName,
     );
   }
 }

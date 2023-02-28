@@ -23,7 +23,7 @@ import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
 
 /// This is a standard template for a server side error message.
-class ServerErrorDialog extends FrameDialog {
+class ServerErrorDialog extends JVxDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +69,7 @@ class ServerErrorDialog extends FrameDialog {
         TextButton(
           onPressed: () {
             onClose();
-            IUiService().closeFrameDialog(this);
+            IUiService().closeJVxDialog(this);
             IUiService().routeToSettings(pReplaceRoute: true);
           },
           child: Text(
@@ -85,7 +85,7 @@ class ServerErrorDialog extends FrameDialog {
         TextButton(
           onPressed: () {
             onClose();
-            IUiService().closeFrameDialog(this);
+            IUiService().closeJVxDialog(this);
           },
           child: Text(
             FlutterUI.translate("Ok"),
@@ -98,6 +98,7 @@ class ServerErrorDialog extends FrameDialog {
     return actions;
   }
 
+  @override
   void onClose() {
     if (command.componentId != null) {
       IUiService().sendCommand(

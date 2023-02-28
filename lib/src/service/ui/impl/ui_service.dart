@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' hide log;
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
@@ -15,8 +16,11 @@ import '../../../custom/custom_screen.dart';
 import '../../../exceptions/error_view_exception.dart';
 import '../../../flutter_ui.dart';
 import '../../../mask/error/message_dialog.dart';
+import '../../../mask/frame/frame.dart';
 import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
+import '../../../mask/work_screen/content.dart';
+import '../../../model/command/api/close_content_command.dart';
 import '../../../model/command/api/fetch_command.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../model/command/api/save_all_editors.dart';
@@ -49,6 +53,7 @@ import '../../../util/extensions/string_extensions.dart';
 import '../../command/i_command_service.dart';
 import '../../config/config_controller.dart';
 import '../../data/i_data_service.dart';
+import '../../layout/i_layout_service.dart';
 import '../../storage/i_storage_service.dart';
 import '../i_ui_service.dart';
 
@@ -78,7 +83,10 @@ class UiService implements IUiService {
 
   /// Map of all active frames (dialogs) with their componentId
   final Map<String, MessageDialog> _activeFrames = {};
-  final List<FrameDialog> _activeDialogs = [];
+  final List<JVxDialog> _activeDialogs = [];
+
+  /// Map of all active content widgets with their name
+  final List<String> _activeContents = [];
 
   /// The currently focused object.
   String? focusedComponentId;
@@ -792,50 +800,30 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Map<String, MessageDialog> getFrames() {
-    return _activeFrames;
-  }
-
-  @override
-  void showFrame({
-    required String componentId,
-    required MessageDialog pDialog,
-  }) {
-    _activeFrames[componentId] = pDialog;
-    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshFrames();
-  }
-
-  @override
-  void closeFrame({required String componentId}) {
-    _activeFrames.remove(componentId);
-    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshFrames();
-  }
-
-  @override
-  void closeFrames() {
-    _activeFrames.clear();
-    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshFrames();
-  }
-
-  @override
-  List<FrameDialog> getFrameDialogs() {
+  List<JVxDialog> getJVxDialogs() {
     return _activeDialogs;
   }
 
   @override
-  void showFrameDialog(FrameDialog pDialog) {
+  void showJVxDialog(JVxDialog pDialog) {
     _activeDialogs.add(pDialog);
     JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
   @override
-  void closeFrameDialog(FrameDialog pDialog) {
+  void closeJVxDialog(JVxDialog pDialog) {
     _activeDialogs.remove(pDialog);
     JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
 
   @override
-  void closeFrameDialogs() {
+  void closeMessageDialog({required String componentId}) {
+    _activeDialogs.removeWhere((element) => element is MessageDialog && element.command.componentId == componentId);
+    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
+  }
+
+  @override
+  void closeJVxDialogs() {
     _activeDialogs.clear();
     JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
   }
@@ -884,5 +872,94 @@ class UiService implements IUiService {
       return null;
     }
     return (FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState).pathParameters['workScreenName'];
+  }
+
+  @override
+  bool isContentVisible(String pContentName) {
+    return _activeContents.contains(pContentName) &&
+        FlutterUI.of(FlutterUI.getCurrentContext()!)
+                .routeObserver
+                .knownRoutes
+                .firstWhereOrNull((element) => element.settings.name == "content_$pContentName") !=
+            null;
+  }
+
+  @override
+  void openContent(String pContentName) {
+    if (_activeContents.contains(pContentName)) {
+      return;
+    }
+
+    FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
+    if (panelModel == null || panelModel is! FlPanelModel) {
+      FlutterUI.logUI.e("Tried to open a content which is not panel!", StackTrace.current);
+      return;
+    }
+
+    _activeContents.add(pContentName);
+    if (Frame.isWebFrame()) {
+      showDialog(
+        context: FlutterUI.getCurrentContext()!,
+        builder: (context) => ContentDialog(
+          name: pContentName,
+        ),
+        routeSettings: RouteSettings(
+          name: "content_$pContentName",
+        ),
+      );
+    } else {
+      unawaited(
+        showBarModalBottomSheet(
+          context: FlutterUI.getCurrentContext()!,
+          builder: (context) => Content(
+            name: pContentName,
+          ),
+          expand: true,
+          settings: RouteSettings(
+            name: "content_$pContentName",
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<void> closeContent(String pContentName, [bool pSendClose = true]) async {
+    if (!_activeContents.contains(pContentName)) {
+      return;
+    }
+
+    FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
+    if (panelModel == null || panelModel is! FlPanelModel) {
+      FlutterUI.logUI.e("Tried to close a content which is not panel!", StackTrace.current);
+      return;
+    }
+
+    _activeContents.remove(pContentName);
+    // if (Frame.isWebFrame()) {
+    //   _activeDialogs.removeWhere(
+    //     (element) => element is ContentDialog && element.name == pContentName,
+    //   );
+    //   JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
+    // } else {
+    Route? route = FlutterUI.of(FlutterUI.getCurrentContext()!)
+        .routeObserver
+        .knownRoutes
+        .firstWhereOrNull((element) => element.settings.name == "content_$pContentName");
+
+    if (route != null) {
+      if (route.isCurrent) {
+        Navigator.pop(FlutterUI.getCurrentContext()!);
+      } else {
+        Navigator.of(FlutterUI.getCurrentContext()!).removeRoute(route);
+      }
+    }
+    // }
+
+    if (pSendClose) {
+      unawaited(IUiService().sendCommand(CloseContentCommand(componentName: pContentName, reason: "I got closed")));
+    }
+    IStorageService().deleteScreen(screenName: pContentName);
+    await ILayoutService().deleteScreen(pComponentId: panelModel.id);
   }
 }

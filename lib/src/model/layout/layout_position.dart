@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'package:flutter/widgets.dart';
+
 import '../../util/i_clonable.dart';
 
 /// The [LayoutPosition] are the constraints actually getting applied to a component.
@@ -80,5 +82,13 @@ class LayoutPosition implements ICloneable {
   @override
   String toString() {
     return "$top, $left | $width, $height | $isComponentSize";
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Size toSize() {
+    return Size(width, height);
   }
 }

@@ -1,5 +1,5 @@
 /* 
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2023 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,17 +14,19 @@
  * the License.
  */
 
-import 'dart:async';
-
+import '../../../../../model/command/api/close_content_command.dart';
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/ui/delete_frame_command.dart';
-import '../../../../ui/i_ui_service.dart';
+import '../../../../../model/request/api_close_content_request.dart';
+import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class DeleteFrameCommandProcessor implements ICommandProcessor<DeleteFrameCommand> {
+class CloseContentCommandProcessor implements ICommandProcessor<CloseContentCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(DeleteFrameCommand command) async {
-    IUiService().closeMessageDialog(componentId: command.componentId);
-    return [];
+  Future<List<BaseCommand>> processCommand(CloseContentCommand command) async {
+    return IApiService().sendRequest(
+      ApiCloseContentRequest(
+        componentName: command.componentName,
+      ),
+    );
   }
 }

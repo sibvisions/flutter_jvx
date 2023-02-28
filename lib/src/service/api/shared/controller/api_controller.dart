@@ -27,8 +27,10 @@ import '../processor/application_parameters_processor.dart';
 import '../processor/application_settings_processor.dart';
 import '../processor/authentication_data_processor.dart';
 import '../processor/bad_client_processor.dart';
+import '../processor/close_content_processor.dart';
 import '../processor/close_frame_processor.dart';
 import '../processor/close_screen_processor.dart';
+import '../processor/content_processor.dart';
 import '../processor/dal_data_provider_changed_processor.dart';
 import '../processor/dal_fetch_processor.dart';
 import '../processor/dal_meta_data_processor.dart';
@@ -78,6 +80,8 @@ class ApiController implements IController {
   final IResponseProcessor _downloadActionProcessor = DownloadActionProcessor();
   final IResponseProcessor _downloadProcessor = DownloadProcessor();
   final IResponseProcessor _badClientProcessor = BadClientProcessor();
+  final IResponseProcessor _contentProcessor = ContentProcessor();
+  final IResponseProcessor _closeContentProcessor = CloseContentProcessor();
 
   /// Maps response names to their processor
   late final HashMap<String, IResponseProcessor> responseToProcessorMap;
@@ -113,6 +117,8 @@ class ApiController implements IController {
       ApiResponseNames.download: _downloadActionProcessor,
       ApiResponseNames.downloadResponse: _downloadProcessor,
       ApiResponseNames.badClient: _badClientProcessor,
+      ApiResponseNames.content: _contentProcessor,
+      ApiResponseNames.closeContent: _closeContentProcessor,
     });
   }
 

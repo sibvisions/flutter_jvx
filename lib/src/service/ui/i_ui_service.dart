@@ -22,7 +22,6 @@ import 'package:universal_io/io.dart';
 import '../../custom/app_manager.dart';
 import '../../custom/custom_component.dart';
 import '../../custom/custom_screen.dart';
-import '../../mask/error/message_dialog.dart';
 import '../../mask/frame_dialog.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/base_command.dart';
@@ -305,24 +304,15 @@ abstract class IUiService {
   // Unsorted method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Map<String, MessageDialog> getFrames();
+  void closeMessageDialog({required String componentId});
 
-  void showFrame({
-    required String componentId,
-    required MessageDialog pDialog,
-  });
+  List<JVxDialog> getJVxDialogs();
 
-  void closeFrame({required String componentId});
+  void showJVxDialog(JVxDialog pDialog);
 
-  void closeFrames();
+  void closeJVxDialog(JVxDialog pDialog);
 
-  List<FrameDialog> getFrameDialogs();
-
-  void showFrameDialog(FrameDialog pDialog);
-
-  void closeFrameDialog(FrameDialog pDialog);
-
-  void closeFrameDialogs();
+  void closeJVxDialogs();
 
   Future<void> saveAllEditors({String? pId, required String pReason, Future<List<BaseCommand>> Function()? pFunction});
 
@@ -338,4 +328,10 @@ abstract class IUiService {
   ///
   /// This is usually the same as in [MenuItemModel.label].
   String? getCurrentWorkscreenName();
+
+  void openContent(String name);
+
+  void closeContent(String name, [bool pSendClose = true]);
+
+  bool isContentVisible(String pContentName);
 }

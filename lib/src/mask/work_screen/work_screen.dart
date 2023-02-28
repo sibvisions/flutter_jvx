@@ -144,8 +144,7 @@ class WorkScreenState extends State<WorkScreen> {
   }
 
   void rebuild() {
-    IUiService().closeFrames();
-    IUiService().closeFrameDialogs();
+    IUiService().closeJVxDialogs();
 
     Navigator.of(FlutterUI.getCurrentContext()!).popUntil((route) => route.isFirst);
 

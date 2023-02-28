@@ -15,12 +15,8 @@
  */
 
 import '../../../service/api/shared/api_object_property.dart';
-import '../../../service/api/shared/fl_component_classname.dart';
 import '../../component/fl_component_model.dart';
 import '../../model_factory.dart';
-import '../../request/api_request.dart';
-import '../../response/api_response.dart';
-import '../../response/application_settings_response.dart';
 import 'storage_command.dart';
 
 class SaveComponentsCommand extends StorageCommand {
@@ -34,6 +30,15 @@ class SaveComponentsCommand extends StorageCommand {
   /// List of maps representing the changes done to a component.
   final List<dynamic>? updatedComponent;
 
+  /// If it is the desktop panel.
+  bool isDesktopPanel = false;
+
+  /// Whether or not it only updates content or openes it as new content.
+  bool isContent = false;
+
+  /// If this save is an update. If not, will route to the workscreen or open a new content.
+  bool isUpdate = false;
+
   /// Id of Screen to Update
   String screenName;
 
@@ -41,20 +46,15 @@ class SaveComponentsCommand extends StorageCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveComponentsCommand.fromJson({
+  SaveComponentsCommand({
     required List<dynamic>? components,
     this.screenName = "",
+    this.isDesktopPanel = false,
+    this.isContent = false,
+    required this.isUpdate,
     required super.reason,
-    ApiRequest? originRequest,
-    ApiResponse? originResponse,
   })  : componentsToSave = ModelFactory.retrieveNewComponents(components),
-        updatedComponent = ModelFactory.retrieveChangedComponents(components) {
-    if (componentsToSave != null || updatedComponent != null) {
-      if (originResponse is ApplicationSettingsResponse) {
-        screenName = FlContainerClassname.DESKTOP_PANEL;
-      }
-    }
-  }
+        updatedComponent = ModelFactory.retrieveChangedComponents(components);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

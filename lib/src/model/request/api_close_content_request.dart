@@ -1,5 +1,5 @@
 /* 
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2023 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,36 +14,24 @@
  * the License.
  */
 
-import 'ui_command.dart';
+import '../../service/api/shared/api_object_property.dart';
+import 'session_request.dart';
 
-/// Command to update components.
-class UpdateComponentsCommand extends UiCommand {
+/// Request to notify the server which content was closed.
+class ApiCloseContentRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The screenname that caused this update.
-  final bool notifyDesktopPanel;
-
-  /// List of components whose model changed
-  final List<String> changedComponents;
-
-  /// List of components to delete
-  final Set<String> deletedComponents;
-
-  /// The affected component models.
-  final Set<String> affectedComponents;
+  /// Component name
+  final String componentName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  UpdateComponentsCommand({
-    this.affectedComponents = const {},
-    this.changedComponents = const [],
-    this.deletedComponents = const {},
-    this.notifyDesktopPanel = false,
-    required super.reason,
+  ApiCloseContentRequest({
+    required this.componentName,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,7 +39,8 @@ class UpdateComponentsCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "UpdateComponentsCommand{changedComponents: $changedComponents, deletedComponents: $deletedComponents, affectedComponents: $affectedComponents, ${super.toString()}}";
-  }
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        ApiObjectProperty.componentId: componentName,
+      };
 }

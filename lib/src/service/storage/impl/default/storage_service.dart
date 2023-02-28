@@ -47,6 +47,12 @@ class StorageService implements IStorageService {
     () => _componentMap.values.firstWhereOrNull((element) => element.className == FlContainerClassname.DESKTOP_PANEL),
   );
 
+  /// The value notifier triggers rebuilds of the menu.
+  late final JVxNotifier<FlComponentModel?> _contentPanel = JVxNotifier(
+    () => _componentMap.values
+        .firstWhereOrNull((element) => element.classNameEventSourceRef == FlContainerClassname.DIALOG),
+  );
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,7 +65,7 @@ class StorageService implements IStorageService {
 
     List<FlComponentModel> desktopComponentList = pFullClear
         ? [] // Don't keep desktop panel on full clear.
-        : _getAllComponentsBelowByWhere(
+        : getAllComponentsBelowByWhere(
             pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
             pIncludeItself: true,
             pIgnoreVisibility: true,
@@ -80,6 +86,8 @@ class StorageService implements IStorageService {
   List<BaseCommand> saveComponents(
     List<dynamic>? componentsToUpdate,
     List<FlComponentModel>? newComponents,
+    bool isDesktopPanel,
+    bool isContent,
     String screenName,
   ) {
     if ((componentsToUpdate == null || componentsToUpdate.isEmpty) &&
@@ -94,7 +102,11 @@ class StorageService implements IStorageService {
 
     Set<FlComponentModel> destroyedOrRemovedModels = {};
 
-    List<FlComponentModel> oldScreenComps = _getAllComponentsBelowScreen(screenName);
+    List<FlComponentModel> oldScreenComps;
+
+    oldScreenComps = _getComponents(isDesktopPanel, isContent, screenName);
+
+    if (isContent && newComponents?.isNotEmpty == true) {}
 
     // Handle new Components
     if (newComponents != null) {
@@ -153,7 +165,7 @@ class StorageService implements IStorageService {
       }
     }
 
-    List<FlComponentModel> currentScreenComps = _getAllComponentsBelowScreen(screenName);
+    List<FlComponentModel> currentScreenComps = _getComponents(isDesktopPanel, isContent, screenName);
 
     List<FlComponentModel> newUiComponents = [];
     List<String> changedUiComponents = [];
@@ -211,7 +223,7 @@ class StorageService implements IStorageService {
       affectedComponents: affectedUiComponents,
       changedComponents: changedUiComponents,
       deletedComponents: deletedUiComponents,
-      screenName: screenName,
+      notifyDesktopPanel: isDesktopPanel,
       reason: "Server Changed Components",
     );
 
@@ -227,9 +239,6 @@ class StorageService implements IStorageService {
     var list = _componentMap.values.where((componentModel) => componentModel.name == screenName).toList();
 
     for (var screenModel in list) {
-      _componentMap.remove(screenModel.id);
-      _childrenTree.remove(screenModel.id);
-
       List<FlComponentModel> models = getAllComponentsBelow(
         pParentModel: screenModel,
         pIgnoreVisibility: true,
@@ -239,6 +248,8 @@ class StorageService implements IStorageService {
         _componentMap.remove(element.id);
         _childrenTree.remove(element.id);
       });
+      _componentMap.remove(screenModel.id);
+      _childrenTree.remove(screenModel.id);
     }
 
     FlutterUI.logUI.d("Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
@@ -289,7 +300,7 @@ class StorageService implements IStorageService {
     bool pRecursively = true,
     bool pIncludeItself = false,
   }) {
-    return _getAllComponentsBelowByWhere(
+    return getAllComponentsBelowByWhere(
       pWhere: (element) => element.name == name,
       pIgnoreVisibility: pIgnoreVisibility,
       pIncludeRemoved: pIncludeRemoved,
@@ -306,7 +317,7 @@ class StorageService implements IStorageService {
     bool pRecursively = true,
     bool pIncludeItself = false,
   }) {
-    return _getAllComponentsBelowByWhere(
+    return getAllComponentsBelowByWhere(
       pWhere: (element) => element.id == pParentId,
       pIgnoreVisibility: pIgnoreVisibility,
       pIncludeRemoved: pIncludeRemoved,
@@ -315,7 +326,7 @@ class StorageService implements IStorageService {
     );
   }
 
-  List<FlComponentModel> _getAllComponentsBelowByWhere({
+  List<FlComponentModel> getAllComponentsBelowByWhere({
     required bool Function(FlComponentModel) pWhere,
     bool pIgnoreVisibility = false,
     bool pIncludeRemoved = false,
@@ -374,6 +385,11 @@ class StorageService implements IStorageService {
   }
 
   @override
+  JVxNotifier<FlComponentModel?> getContentPanelNotifier() {
+    return _contentPanel;
+  }
+
+  @override
   bool isVisibleInUI(String pComponentId) {
     FlComponentModel? compModel = _componentMap[pComponentId];
 
@@ -393,6 +409,8 @@ class StorageService implements IStorageService {
 
     if (components.last.className == FlContainerClassname.DESKTOP_PANEL) {
       return Frame.isWebFrame() && FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == MenuLocation;
+    } else if (components.last.classNameEventSourceRef == FlContainerClassname.DIALOG) {
+      return IUiService().isContentVisible(components.last.name);
     } else {
       return (components.last as FlPanelModel).screenNavigationName == IUiService().getCurrentWorkscreenName();
     }
@@ -401,17 +419,6 @@ class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  List<FlComponentModel> _getAllComponentsBelowScreen(String screenName) {
-    if (screenName == FlContainerClassname.DESKTOP_PANEL) {
-      return _getAllComponentsBelowByWhere(
-        pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
-        pIncludeItself: true,
-      );
-    } else {
-      return getAllComponentsBelowByName(name: screenName, pIncludeItself: true);
-    }
-  }
 
   _addAsChild(FlComponentModel pChild) {
     if (pChild.parent != null && pChild.parent!.isNotEmpty) {
@@ -437,5 +444,24 @@ class StorageService implements IStorageService {
   @override
   List<FlComponentModel> getComponentModels() {
     return List.from(_componentMap.values);
+  }
+
+  List<FlComponentModel> _getComponents(bool isDesktopPanel, bool isContent, String screenName) {
+    if (isDesktopPanel) {
+      return getAllComponentsBelowByWhere(
+        pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,
+        pIncludeItself: true,
+      );
+    } else if (isContent) {
+      return getAllComponentsBelowByWhere(
+        pWhere: (element) => element.classNameEventSourceRef == FlContainerClassname.DIALOG,
+        pIncludeItself: true,
+      );
+    } else {
+      return getAllComponentsBelowByName(
+        name: screenName,
+        pIncludeItself: true,
+      );
+    }
   }
 }

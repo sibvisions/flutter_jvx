@@ -23,9 +23,10 @@ import '../../model/command/api/press_button_command.dart';
 import '../../model/command/ui/view/message/open_message_dialog_command.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/parse_util.dart';
+import '../frame_dialog.dart';
 
 /// This is a standard template for a server side message.
-class MessageDialog extends StatelessWidget {
+class MessageDialog extends JVxDialog {
   /// the type for ok, cancel buttons.
   static const int MESSAGE_BUTTON_OK_CANCEL = 4;
 

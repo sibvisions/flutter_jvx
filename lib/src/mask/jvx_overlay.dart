@@ -66,19 +66,14 @@ class JVxOverlayState extends State<JVxOverlay> {
   /// Report device status to server
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
-  GlobalKey<FramesWidgetState> framesKey = GlobalKey();
   GlobalKey<DialogsWidgetState> dialogsKey = GlobalKey();
 
   bool loading = false;
   Future? _loadingDelayFuture;
   bool forceDisableBarrier = false;
 
-  void refreshFrames() {
-    framesKey.currentState?.setState(() {});
-  }
-
   void refreshDialogs() {
-    dialogsKey.currentState?.setState(() {});
+    setState(() {});
   }
 
   /// Overrides the modal barrier while [loading] is true.
@@ -149,7 +144,6 @@ class JVxOverlayState extends State<JVxOverlay> {
               child: Stack(
                 children: [
                   if (widget.child != null) widget.child!,
-                  FramesWidget(key: framesKey),
                   DialogsWidget(key: dialogsKey),
                   if (loading && !forceDisableBarrier)
                     const ModalBarrier(
@@ -162,46 +156,6 @@ class JVxOverlayState extends State<JVxOverlay> {
         ),
       ),
     );
-  }
-}
-
-class FramesWidget extends StatefulWidget {
-  const FramesWidget({super.key});
-
-  @override
-  State<FramesWidget> createState() => FramesWidgetState();
-}
-
-class FramesWidgetState extends State<FramesWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Stack(children: _getFrames());
-  }
-
-  List<Widget> _getFrames() {
-    return IUiService()
-        .getFrames()
-        .values
-        .map(
-          (e) => Stack(
-            children: [
-              Opacity(
-                opacity: 0.7,
-                child: ModalBarrier(
-                  dismissible: e.command.closable,
-                  color: Colors.black54,
-                  onDismiss: () {
-                    e.close();
-                    IUiService().closeFrame(componentId: e.command.componentId);
-                    setState(() {});
-                  },
-                ),
-              ),
-              e,
-            ],
-          ),
-        )
-        .toList();
   }
 }
 
@@ -220,7 +174,7 @@ class DialogsWidgetState extends State<DialogsWidget> {
 
   List<Widget> _getDialogs() {
     return IUiService()
-        .getFrameDialogs()
+        .getJVxDialogs()
         .map(
           (e) => Stack(
             children: [
@@ -231,7 +185,7 @@ class DialogsWidgetState extends State<DialogsWidget> {
                   color: Colors.black54,
                   onDismiss: () {
                     e.onClose();
-                    IUiService().closeFrameDialog(e);
+                    IUiService().closeJVxDialog(e);
                     setState(() {});
                   },
                 ),

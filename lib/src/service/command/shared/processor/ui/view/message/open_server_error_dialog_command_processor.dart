@@ -40,10 +40,10 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
       // Check if there isn't already another dialog with the same id
       if (command.componentId == null ||
           IUiService()
-              .getFrameDialogs()
+              .getJVxDialogs()
               .whereType<ServerErrorDialog>()
               .none((dialog) => dialog.command.componentId == command.componentId)) {
-        IUiService().showFrameDialog(
+        IUiService().showJVxDialog(
           ServerErrorDialog(
             command: command,
             goToSettings: goToSettings,

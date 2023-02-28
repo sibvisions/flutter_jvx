@@ -44,6 +44,8 @@ abstract class IStorageService {
   List<BaseCommand> saveComponents(
     List<dynamic>? componentsToUpdate,
     List<FlComponentModel>? newComponents,
+    bool isDesktopPanel,
+    bool isContent,
     String screenName,
   );
 
@@ -85,6 +87,7 @@ abstract class IStorageService {
   FlComponentModel? getComponentByName({required String pComponentName});
 
   /// Returns panel model with matching [FlPanelModel.screenClassName].
+  /// As a long name contains the class name, it is also possible to use it.
   FlPanelModel? getComponentByScreenClassName({required String pScreenClassName});
 
   /// Returns panel model with matching [FlPanelModel.screenNavigationName].
@@ -92,6 +95,9 @@ abstract class IStorageService {
 
   /// Returns component model with name matching [FlContainerClassname.DESKTOP_PANEL].
   JVxNotifier<FlComponentModel?> getDesktopPanelNotifier();
+
+  /// Returns component model with name matching [FlContainerClassname.DIALOG].
+  JVxNotifier<FlComponentModel?> getContentPanelNotifier();
 
   /// Returns if the component model is currently shown in the ui
   bool isVisibleInUI(String pComponentId);

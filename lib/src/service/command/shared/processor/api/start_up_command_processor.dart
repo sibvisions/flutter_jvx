@@ -44,8 +44,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
 
     // Close frames on (re-)start
     if (FlutterUI.getCurrentContext() != null) {
-      IUiService().closeFrames();
-      IUiService().closeFrameDialogs();
+      IUiService().closeJVxDialogs();
     }
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(

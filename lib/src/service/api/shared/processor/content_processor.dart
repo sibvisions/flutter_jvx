@@ -1,5 +1,5 @@
 /* 
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2023 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,27 +16,23 @@
 
 import 'package:collection/collection.dart';
 
-import '../../../../flutter_ui.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
-import '../../../../model/command/ui/route_to_work_command.dart';
+import '../../../../model/command/ui/function_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/request/api_request.dart';
-import '../../../../model/response/generic_screen_view_response.dart';
-import '../../../config/config_controller.dart';
+import '../../../../model/response/content_response.dart';
+import '../../../ui/i_ui_service.dart';
+import '../fl_component_classname.dart';
 import '../i_response_processor.dart';
 
-/// Processes [GenericScreenViewResponse], will separate (and parse) new and changed components, can also open screens
-/// based on the 'update' property of the request.
-///
-/// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenViewResponse> {
+class ContentProcessor implements IResponseProcessor<ContentResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(GenericScreenViewResponse pResponse, ApiRequest? pRequest) {
+  List<BaseCommand> processResponse(ContentResponse pResponse, ApiRequest? pRequest) {
     List<BaseCommand> commands = [];
 
     FlPanelModel? panel;
@@ -45,30 +41,30 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
     if (pResponse.changedComponents != null) {
       SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
         components: pResponse.changedComponents!,
-        screenName: pResponse.screenName,
+        isContent: true,
         isUpdate: pResponse.update,
-        reason: "Api received screen.generic response",
+        reason: "Api received content response",
       );
       commands.add(saveComponentsCommand);
 
       panel = saveComponentsCommand.componentsToSave
           ?.whereType<FlPanelModel>()
-          .firstWhereOrNull((element) => element.name == pResponse.screenName);
+          .firstWhereOrNull((element) => element.classNameEventSourceRef == FlContainerClassname.DIALOG);
     }
 
     // Handle Screen Opening
     // if update == false => new screen that should be routed to
-    if (!pResponse.update && !ConfigController().offline.value) {
-      if (panel?.screenNavigationName != null) {
-        RouteToWorkCommand workCommand = RouteToWorkCommand(
-          screenName: panel!.screenNavigationName!,
-          reason: "Server sent screen.generic response with update = 'false'",
-        );
-        commands.add(workCommand);
-      } else {
-        FlutterUI.logUI.w("Server sent screen.generic response with update = 'false' "
-            "but no panel with a matching screen name");
-      }
+    if (!pResponse.update && panel != null) {
+      commands.add(
+        FunctionCommand(
+          reason: "Server sent content response with update = 'false'",
+          function: () async {
+            IUiService().openContent(panel!.name);
+
+            return [];
+          },
+        ),
+      );
     }
 
     return commands;

@@ -25,7 +25,7 @@ enum Method {
 }
 
 class APIRoute {
-  static const APIRoute POST_STARTUP = APIRoute(Method.POST, "api/v4/startup");
+  static const APIRoute POST_STARTUP = APIRoute(Method.POST, "api/v5/startup");
   static const APIRoute POST_LOGIN = APIRoute(Method.POST, "api/v2/login");
   static const APIRoute POST_CANCEL_LOGIN = APIRoute(Method.POST, "api/cancelLogin");
   static const APIRoute POST_OPEN_SCREEN = APIRoute(Method.POST, "api/v2/openScreen");
@@ -63,6 +63,7 @@ class APIRoute {
   static const APIRoute POST_SORT = APIRoute(Method.POST, "api/dal/sort");
   static const APIRoute POST_RESTORE_DATA = APIRoute(Method.POST, "api/dal/restore");
   static const APIRoute POST_SELECT_TREE = APIRoute(Method.POST, "api/dal/selectRecordTree");
+  static const APIRoute POST_CLOSE_CONTENT = APIRoute(Method.POST, "api/closeContent");
 
   final String route;
   final Method method;

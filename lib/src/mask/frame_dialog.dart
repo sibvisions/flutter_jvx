@@ -16,10 +16,12 @@
 
 import 'package:flutter/widgets.dart';
 
-abstract class FrameDialog extends StatelessWidget {
+abstract class JVxDialog extends StatelessWidget {
   final bool dismissible;
 
-  const FrameDialog({super.key, this.dismissible = false});
+  final bool isModal;
+
+  const JVxDialog({super.key, this.dismissible = false, this.isModal = true});
 
   void onClose() {}
 }

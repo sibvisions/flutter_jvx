@@ -30,11 +30,11 @@ class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSett
         settings: pResponse,
         reason: "Settings received from server",
       ),
-      SaveComponentsCommand.fromJson(
+      SaveComponentsCommand(
         components: pResponse.components,
+        isDesktopPanel: true,
+        isUpdate: true,
         reason: "${ApiResponseNames.applicationSettings} was sent",
-        originRequest: pRequest,
-        originResponse: pResponse,
       ),
     ];
   }

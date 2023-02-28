@@ -36,6 +36,7 @@ import '../../../../model/request/api_alive_request.dart';
 import '../../../../model/request/api_cancel_login_request.dart';
 import '../../../../model/request/api_change_password_request.dart';
 import '../../../../model/request/api_changes_request.dart';
+import '../../../../model/request/api_close_content_request.dart';
 import '../../../../model/request/api_close_frame_request.dart';
 import '../../../../model/request/api_close_screen_request.dart';
 import '../../../../model/request/api_close_tab_request.dart';
@@ -82,8 +83,10 @@ import '../../../../model/response/application_parameters_response.dart';
 import '../../../../model/response/application_settings_response.dart';
 import '../../../../model/response/authentication_data_response.dart';
 import '../../../../model/response/bad_client_response.dart';
+import '../../../../model/response/close_content_response.dart';
 import '../../../../model/response/close_frame_response.dart';
 import '../../../../model/response/close_screen_response.dart';
+import '../../../../model/response/content_response.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../../model/response/dal_meta_data_response.dart';
@@ -164,6 +167,7 @@ class OnlineApiRepository implements IRepository {
     ApiReloadRequest: (_) => APIRoute.POST_RELOAD,
     ApiRollbackRequest: (_) => APIRoute.POST_ROLLBACK,
     ApiSortRequest: (_) => APIRoute.POST_SORT,
+    ApiCloseContentRequest: (_) => APIRoute.POST_CLOSE_CONTENT,
   };
 
   static const Map<String, ResponseFactory> maps = {
@@ -188,6 +192,8 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.upload: UploadActionResponse.fromJson,
     ApiResponseNames.download: DownloadActionResponse.fromJson,
     ApiResponseNames.badClient: BadClientResponse.fromJson,
+    ApiResponseNames.content: ContentResponse.fromJson,
+    ApiResponseNames.closeContent: CloseContentResponse.fromJson,
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

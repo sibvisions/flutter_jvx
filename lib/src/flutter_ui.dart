@@ -390,6 +390,8 @@ GlobalKey<NavigatorState>? splashNavigatorKey;
 PageStorageBucket pageStorageBucket = PageStorageBucket();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
+  final RoutesObserver routeObserver = RoutesObserver();
+
   AppLifecycleState? lastState;
 
   ThemeData themeData = ThemeData().copyWith(
@@ -416,6 +418,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     routerDelegate = BeamerDelegate(
       initialPath: "/login",
       setBrowserTabTitle: false,
+      navigatorObservers: [routeObserver],
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
           LoginLocation(),
@@ -833,3 +836,30 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 }
 
 T? cast<T>(x) => x is T ? x : null;
+
+class RoutesObserver extends NavigatorObserver {
+  final List<Route> knownRoutes = [];
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    knownRoutes.remove(oldRoute);
+    if (newRoute != null) {
+      knownRoutes.add(newRoute);
+    }
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    knownRoutes.remove(route);
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    knownRoutes.remove(route);
+  }
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    knownRoutes.add(route);
+  }
+}
