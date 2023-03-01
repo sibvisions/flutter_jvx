@@ -16,11 +16,14 @@
 
 import 'dart:io';
 
+import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DeviceInfo {
+  static const _androidIdPlugin = AndroidId();
+
   String? appVersion;
   String? technology;
   String? osName;
@@ -59,6 +62,7 @@ class DeviceInfo {
           osVersion: androidInfo.version.sdkInt.toString(),
           deviceType: androidInfo.manufacturer,
           deviceTypeModel: androidInfo.model,
+          deviceId: await _androidIdPlugin.getId(),
         );
       } else if (Platform.isIOS) {
         var iosInfo = await DeviceInfoPlugin().iosInfo;
