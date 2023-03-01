@@ -22,6 +22,7 @@ import 'package:wakelock/wakelock.dart';
 import '../flutter_ui.dart';
 import '../model/command/api/close_screen_command.dart';
 import '../model/command/api/delete_record_command.dart';
+import '../model/command/api/exit_command.dart';
 import '../model/command/api/fetch_command.dart';
 import '../model/command/api/insert_record_command.dart';
 import '../model/command/api/open_screen_command.dart';
@@ -498,6 +499,7 @@ abstract class OfflineUtil {
       await ICommandService().sendCommands([
         CloseScreenCommand(screenName: panelModel.name, reason: "We have fetched"),
         DeleteScreenCommand(screenName: panelModel.name, reason: "We have fetched"),
+        ExitCommand(reason: "Going offline"),
       ]);
 
       // Clear databooks for offline usage
