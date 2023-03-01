@@ -16,7 +16,6 @@
 
 import 'dart:async';
 import 'dart:collection';
-import 'dart:developer';
 import 'dart:ui';
 
 import '../../../flutter_ui.dart';
@@ -62,11 +61,8 @@ class LayoutService implements ILayoutService {
     FlutterUI.logUI.d("${pLayoutData.id} REPORT: [${pLayoutData.id}]${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;
 
-    log("Report layout: ${pLayoutData.id}");
-
     // Set object with new data, if component isn't a child its treated as the top most panel
     if (!pLayoutData.isChild) {
-      log("Is parent: ${pLayoutData.id}");
       applyScreenSize(pLayoutData);
     }
     _layoutDataSet[pLayoutData.id] = pLayoutData;
@@ -105,7 +101,6 @@ class LayoutService implements ILayoutService {
   @override
   Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) async {
     screenSizes[pScreenComponentId] = pSize;
-    log("Set screen size: $pScreenComponentId, $pSize");
 
     LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
     if (existingLayout != null && existingLayout.layoutPosition?.toSize() != pSize) {

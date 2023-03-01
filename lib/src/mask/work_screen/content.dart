@@ -21,7 +21,6 @@ import 'package:rxdart/rxdart.dart';
 import '../../../flutter_jvx.dart';
 import '../../components/components_factory.dart';
 import '../../model/component/fl_component_model.dart';
-import '../frame_dialog.dart';
 import 'work_screen.dart';
 
 /// Screen used to show workScreens either custom or from the server,
@@ -29,19 +28,21 @@ import 'work_screen.dart';
 /// custom header/footer
 class Content extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String ROUTE_SETTINGS_PREFIX = "content_";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of the content to show.
-  final String name;
-
-  /// If this content is in a dialog.
-  final bool isDialog;
+  /// Model of the content to show.
+  final FlPanelModel model;
 
   const Content({
     super.key,
-    required this.name,
-    this.isDialog = false,
+    required this.model,
   });
 
   @override
@@ -52,23 +53,18 @@ class ContentState extends State<Content> {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
-  late FlPanelModel model;
-
   bool sentSize = false;
 
   @override
   void initState() {
     super.initState();
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
-
-    model = IStorageService().getComponentByName(pComponentName: widget.name) as FlPanelModel;
   }
 
   @override
   void dispose() {
     subject.close();
-    IUiService().disposeSubscriptions(pSubscriber: this);
-    IUiService().closeContent(model.name);
+    IUiService().closeContent(widget.model.name);
     super.dispose();
   }
 
@@ -78,7 +74,7 @@ class ContentState extends State<Content> {
     Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
     String? backgroundImageString = appStyle['desktop.icon'];
 
-    Widget content = KeyboardVisibilityBuilder(
+    return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisible) => LayoutBuilder(
         builder: (context, constraints) {
           final viewInsets = EdgeInsets.fromWindowPadding(
@@ -98,7 +94,7 @@ class ContentState extends State<Content> {
             screenHeight -= viewPadding.bottom;
           }
 
-          Widget screenWidget = ComponentsFactory.buildWidget(model);
+          Widget screenWidget = ComponentsFactory.buildWidget(widget.model);
 
           Size size = Size(constraints.maxWidth, screenHeight);
           if (!sentSize) {
@@ -125,50 +121,39 @@ class ContentState extends State<Content> {
         },
       ),
     );
-
-    if (widget.isDialog) {
-      return content;
-    }
-
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(model.contentTitle ?? model.name),
-      ),
-      body: content,
-    );
   }
 
   void _setScreenSize(Size size) {
     ILayoutService()
         .setScreenSize(
-          pScreenComponentId: model.id,
+          pScreenComponentId: widget.model.id,
           pSize: size,
         )
         .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
   }
 }
 
-class ContentDialog extends JVxDialog {
+class ContentDialog extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of the content to show.
-  final String name;
+  /// Model of the content to show.
+  final FlPanelModel model;
 
-  final PageStorageBucket bucket = PageStorageBucket();
+  final bool dismissible;
+
+  final bool isModal;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ContentDialog({
+  const ContentDialog({
     super.key,
-    required this.name,
-    super.dismissible = true,
-    super.isModal = true,
+    required this.model,
+    this.dismissible = true,
+    this.isModal = true,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,13 +162,21 @@ class ContentDialog extends JVxDialog {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = PageStorage(
-      bucket: bucket,
-      child: Dialog(
-        child: Content(
-          name: name,
-          isDialog: true,
-        ),
+    Widget child = Dialog(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          AppBar(
+            centerTitle: true,
+            title: Text(model.contentTitle ?? model.name),
+            automaticallyImplyLeading: false,
+          ),
+          Expanded(
+            child: Content(
+              model: model,
+            ),
+          ),
+        ],
       ),
     );
 
@@ -199,12 +192,59 @@ class ContentDialog extends JVxDialog {
             dismissible: dismissible,
             color: Colors.black54,
             onDismiss: () {
-              IUiService().closeContent(name);
+              IUiService().closeContent(model.name);
             },
           ),
         ),
         child,
       ],
+    );
+  }
+}
+
+class ContentBottomSheet extends StatelessWidget {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Model of the content to show.
+  final FlPanelModel model;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  const ContentBottomSheet({
+    super.key,
+    required this.model,
+  });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(model.contentTitle ?? model.name),
+        automaticallyImplyLeading: false,
+      ),
+      body: SafeArea(
+        top: false,
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification notification) {
+            // This is a hack to prevent the bottom sheet from scrolling
+            // when the content is scrollable.
+            return true;
+          },
+          child: Content(
+            model: model,
+          ),
+        ),
+      ),
     );
   }
 }

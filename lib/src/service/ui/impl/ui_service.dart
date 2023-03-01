@@ -887,10 +887,8 @@ class UiService implements IUiService {
   @override
   bool isContentVisible(String pContentName) {
     return _activeContents.contains(pContentName) &&
-        FlutterUI.of(FlutterUI.getCurrentContext()!)
-                .routeObserver
-                .knownRoutes
-                .firstWhereOrNull((element) => element.settings.name == "content_$pContentName") !=
+        FlutterUI.of(FlutterUI.getCurrentContext()!).routeObserver.knownRoutes.firstWhereOrNull(
+                (element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName)) !=
             null;
   }
 
@@ -906,29 +904,29 @@ class UiService implements IUiService {
       return;
     }
 
+    RouteSettings routeSettings = RouteSettings(
+      name: Content.ROUTE_SETTINGS_PREFIX + pContentName,
+    );
+
     _activeContents.add(pContentName);
     if (Frame.isWebFrame()) {
       showDialog(
         context: FlutterUI.getCurrentContext()!,
         builder: (context) => ContentDialog(
-          name: pContentName,
+          model: panelModel,
         ),
-        routeSettings: RouteSettings(
-          name: "content_$pContentName",
-        ),
+        routeSettings: routeSettings,
       );
     } else {
-      unawaited(
-        showBarModalBottomSheet(
-          context: FlutterUI.getCurrentContext()!,
-          builder: (context) => Content(
-            name: pContentName,
-          ),
-          expand: true,
-          settings: RouteSettings(
-            name: "content_$pContentName",
-          ),
+      showBarModalBottomSheet(
+        context: FlutterUI.getCurrentContext()!,
+        builder: (context) => ContentBottomSheet(
+          model: panelModel,
         ),
+        enableDrag: true,
+        expand: true,
+        bounce: false,
+        settings: routeSettings,
       );
     }
   }
@@ -946,16 +944,11 @@ class UiService implements IUiService {
     }
 
     _activeContents.remove(pContentName);
-    // if (Frame.isWebFrame()) {
-    //   _activeDialogs.removeWhere(
-    //     (element) => element is ContentDialog && element.name == pContentName,
-    //   );
-    //   JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
-    // } else {
-    Route? route = FlutterUI.of(FlutterUI.getCurrentContext()!)
-        .routeObserver
+
+    Route? route = FlutterUI.maybeOf(FlutterUI.getCurrentContext()!)
+        ?.routeObserver
         .knownRoutes
-        .firstWhereOrNull((element) => element.settings.name == "content_$pContentName");
+        .firstWhereOrNull((element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName));
 
     if (route != null) {
       if (route.isCurrent) {
@@ -964,7 +957,6 @@ class UiService implements IUiService {
         Navigator.of(FlutterUI.getCurrentContext()!).removeRoute(route);
       }
     }
-    // }
 
     if (pSendClose) {
       unawaited(IUiService().sendCommand(CloseContentCommand(componentName: pContentName, reason: "I got closed")));
