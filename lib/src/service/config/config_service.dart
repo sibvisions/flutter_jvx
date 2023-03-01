@@ -116,7 +116,7 @@ class ConfigService {
         if (config.isDefault ?? false) {
           await updateDefaultApp(config.appName!);
         } else {
-          if (await defaultApp() == appName) {
+          if (await defaultApp() == config.appName) {
             await updateDefaultApp(null);
           }
         }
