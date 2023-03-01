@@ -32,6 +32,8 @@ import '../../../../flutter_ui.dart';
 import '../../../../model/api_interaction.dart';
 import '../../../../model/command/api/alive_command.dart';
 import '../../../../model/command/api/changes_command.dart';
+import '../../../../model/command/api/open_screen_command.dart';
+import '../../../../model/command/api/reload_menu_command.dart';
 import '../../../../model/request/api_alive_request.dart';
 import '../../../../model/request/api_cancel_login_request.dart';
 import '../../../../model/request/api_change_password_request.dart';
@@ -112,6 +114,7 @@ import '../../../../util/parse_util.dart';
 import '../../../command/i_command_service.dart';
 import '../../../command/shared/processor/config/save_application_meta_data_command_processor.dart';
 import '../../../config/config_controller.dart';
+import '../../../storage/i_storage_service.dart';
 import '../../../ui/i_ui_service.dart';
 import '../api_object_property.dart';
 import '../api_response_names.dart';
@@ -402,6 +405,56 @@ class OnlineApiRepository implements IRepository {
         "Cookie": getCookies().map((e) => "${e.name}=${e.value}").join(";"),
       },
       onData: (data) {
+        if (data is Uint8List) {
+          try {
+            var jsonData = jsonDecode(String.fromCharCodes(data));
+
+            String? command = jsonData["command"];
+            String? className = jsonData["arguments"]?["className"];
+
+            if (command == "dyn:relaunch") {
+              FlutterUI.of(FlutterUI.getCurrentContext()!).startApp();
+            } else if (command == "dyn:reloadCss") {
+              // not relevant for mobile
+            } else if (command == "dyn:previewScreen" && className != null) {
+              String? screenLongName = IUiService().getMenuModel().getMenuItemByClassName(className)?.screenLongName;
+              if (screenLongName != null) {
+                IUiService().sendCommand(
+                  OpenScreenCommand(
+                    screenClassName: className,
+                    reason: "Open screen because server sent dyn:previewScreen",
+                  ),
+                );
+              } else {
+                IUiService().sendCommand(
+                  ReloadMenuCommand(
+                    screenClassName: className,
+                    reason: "Reload menu because server sent dyn:previewScreen and screen was unknown",
+                  ),
+                );
+              }
+            } else if (command == "api/menu") {
+              IUiService().sendCommand(
+                ReloadMenuCommand(
+                  reason: "Reload menu because server sent api/menu",
+                ),
+              );
+            } else if (command == "api/reopenScreen" && className != null) {
+              if (IStorageService().getComponentByScreenClassName(pScreenClassName: className) != null) {}
+              {
+                IUiService().sendCommand(
+                  OpenScreenCommand(
+                    screenClassName: className,
+                    reason: "Reload/Reopen screen because server sent api/reopenScreen",
+                  ),
+                );
+              }
+            }
+          } on FormatException {
+            // Not a valid json -> ignore and continue
+          }
+        }
+
         if (data == "api/changes") {
           ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
         }

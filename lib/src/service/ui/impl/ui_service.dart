@@ -82,7 +82,6 @@ class UiService implements IUiService {
   final List<DataSubscription> _dataSubscriptions = [];
 
   /// Map of all active frames (dialogs) with their componentId
-  final Map<String, MessageDialog> _activeFrames = {};
   final List<JVxDialog> _activeDialogs = [];
 
   /// Map of all active content widgets with their name
@@ -127,7 +126,6 @@ class UiService implements IUiService {
     _componentSubscriptions.clear();
     _modelSubscriptions.clear();
     _dataSubscriptions.clear();
-    _activeFrames.clear();
     _activeDialogs.clear();
 
     if (pFullClear) {
