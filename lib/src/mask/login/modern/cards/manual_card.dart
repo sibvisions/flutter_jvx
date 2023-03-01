@@ -23,6 +23,7 @@ import '../../../../service/config/config_controller.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/progress/progress_button.dart';
+import '../../../apps/app_overview_page.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
 
@@ -63,6 +64,8 @@ class _ManualCardState extends State<ManualCard> {
 
   @override
   Widget build(BuildContext context) {
+    bool replaceSettingsWithApps = AppOverviewPage.showAppsButton();
+
     return Card(
       color: Theme.of(context).colorScheme.surface.withOpacity(0.9),
       elevation: 10,
@@ -109,9 +112,11 @@ class _ManualCardState extends State<ManualCard> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
-                              onPressed: () => IUiService().routeToSettings(),
-                              icon: const FaIcon(FontAwesomeIcons.gear),
-                              tooltip: FlutterUI.translate("Settings"),
+                              onPressed: () => replaceSettingsWithApps
+                                  ? IUiService().routeToAppOverview()
+                                  : IUiService().routeToSettings(),
+                              icon: FaIcon(replaceSettingsWithApps ? FontAwesomeIcons.rotate : FontAwesomeIcons.gear),
+                              tooltip: FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
                             ),
                         ],
                       ),

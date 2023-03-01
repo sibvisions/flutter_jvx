@@ -23,6 +23,8 @@ import 'file_manager_mobile.dart';
 import 'file_manager_web.dart';
 
 /// File manager used to manage all file interaction (different implementations for web and mobile)
+///
+/// "independent" means this method does not prefix the path with an app name and version.
 abstract class IFileManager {
   static const String IMAGES_PATH = "images";
   static const String LANGUAGES_PATH = "languages";
@@ -41,32 +43,34 @@ abstract class IFileManager {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns "appName/appVersion" with platform-aware separators.
+  String getAppSpecificPath(String path, {String? appName, String? version});
+
   /// Check if a file/directory with the given path exists
-  Future<bool> doesFileExist({required String pPath});
+  Future<bool> doesFileExist(String pPath);
 
   /// Get File from provided path, returns null if file was not found
-  Future<File?> getFile({required String pPath});
-
-  /// Get a file that does not depend an app version or app name
-  Future<File?> getIndependentFile({required String pPath});
+  Future<File?> getFile(String pPath);
 
   /// Get File from provided path, returns null if file was not found
-  File? getFileSync({required String pPath});
-
-  /// Get a file that does not depend an app version or app name
-  File? getIndependentFileSync({required String pPath});
+  File? getFileSync(String pPath);
 
   /// Delete file/directory with provided path
-  void deleteFile({required String pPath});
+  void deleteFile(String pPath);
 
   /// Save File in provided path
-  Future<File> saveFile({required List<int> pContent, required String pPath});
-
-  /// Save a file that does not depend on a version or appName
-  Future<File> saveIndependentFile({required List<int> pContent, required String pPath});
+  Future<File> saveFile(String pPath, {required List<int> pContent});
 
   /// Returns directory, will always return null if in web
-  Directory? getDirectory({required String pPath});
+  Directory? getDirectory(String pPath);
+
+  /// Deletes a independent directory.
+  Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false});
+
+  /// Removes all previous app versions.
+  ///
+  /// More specific, removes all [appName] app directories with another version than [currentVersion].
+  Future<void> removePreviousAppVersions(String appName, String currentVersion);
 
   /// Returns directory, will always return null if in web
   List<File> getTranslationFiles();

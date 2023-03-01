@@ -72,6 +72,7 @@ class MobileFrameState extends FrameState {
         onSettingsPressed: () => widget.openSettings(context),
         onChangePasswordPressed: widget.changePassword,
         onLogoutPressed: widget.logout,
+        onAppChange: widget.changeApp,
       ),
     );
   }

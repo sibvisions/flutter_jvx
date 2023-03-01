@@ -31,7 +31,7 @@ class FakeFile implements File {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FakeFile({required String pPath}) : _path = pPath;
+  FakeFile(String pPath) : _path = pPath;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -123,7 +123,9 @@ class FakeFile implements File {
   }
 
   @override
-  void deleteSync({bool recursive = false}) {}
+  void deleteSync({bool recursive = false}) {
+    throw UnimplementedError("Fake File");
+  }
 
   @override
   Future<bool> exists() {

@@ -26,8 +26,9 @@ import '../../i_command_processor.dart';
 class LogoutCommandProcessor implements ICommandProcessor<LogoutCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LogoutCommand command) async {
-    if (await ConfigController().getFileManager().doesFileExist(pPath: "auth.txt")) {
-      ConfigController().getFileManager().deleteFile(pPath: "/auth.txt");
+    String authPath = ConfigController().getFileManager().getAppSpecificPath("auth.txt");
+    if (await ConfigController().getFileManager().doesFileExist(authPath)) {
+      ConfigController().getFileManager().deleteFile(authPath);
     }
 
     await ConfigController().updateUserInfo(pUserInfo: null, pJson: null);

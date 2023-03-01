@@ -25,6 +25,132 @@ abstract class JVxColors {
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
   static const Color COMPONENT_DISABLED_LIGHTER = Color(0xFFE6E6E6);
 
+  /// Specifically requested color mix.
+  static Color dividerColor(ThemeData theme) {
+    return lighten(theme.colorScheme.onPrimary, 0.2);
+  }
+
+  /// Creates a JVx-conform theme.
+  ///
+  /// See also:
+  /// * [applyJVxColorScheme]
+  /// * [applyJVxTheme]
+  static ThemeData createTheme(MaterialColor materialColor, Brightness selectedBrightness) {
+    ColorScheme colorScheme = ColorScheme.fromSwatch(
+      primarySwatch: materialColor,
+      brightness: selectedBrightness,
+    );
+
+    colorScheme = applyJVxColorScheme(colorScheme);
+
+    // ColorScheme.fromSwatch related fix:
+    // Override tealAccent
+    colorScheme = colorScheme.copyWith(
+      secondary: colorScheme.primary,
+      onSecondary: colorScheme.onPrimary,
+      secondaryContainer: colorScheme.primaryContainer,
+      onSecondaryContainer: colorScheme.onPrimaryContainer,
+      tertiary: colorScheme.primary,
+      onTertiary: colorScheme.onPrimary,
+      tertiaryContainer: colorScheme.primaryContainer,
+      onTertiaryContainer: colorScheme.onPrimaryContainer,
+    );
+
+    var themeData = ThemeData.from(colorScheme: colorScheme);
+    themeData = applyJVxTheme(themeData);
+
+    // More ColorScheme.fromSwatch related fixes
+    bool isBackgroundLight = ThemeData.estimateBrightnessForColor(colorScheme.background) == Brightness.light;
+    themeData = themeData.copyWith(
+      listTileTheme: themeData.listTileTheme.copyWith(
+        // TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
+        textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        // textColor: themeData.colorScheme.onBackground,
+        // iconColor: themeData.colorScheme.onBackground,
+      ),
+    );
+    return themeData;
+  }
+
+  /// Applies JVx specific color requirements to the [colorScheme].
+  ///
+  /// Basically this overrides every "known" theme color that is black with our [JVxColors.LIGHTER_BLACK].
+  ///
+  /// See also:
+  /// * [applyJVxTheme]
+  static ColorScheme applyJVxColorScheme(ColorScheme colorScheme) {
+    bool isDark(Color color) {
+      return ThemeData.estimateBrightnessForColor(color) == Brightness.dark;
+    }
+
+    if (!isDark(colorScheme.background)) {
+      colorScheme = colorScheme.copyWith(background: Colors.grey.shade50);
+    }
+    if (isDark(colorScheme.onPrimary)) {
+      colorScheme = colorScheme.copyWith(onPrimary: JVxColors.LIGHTER_BLACK);
+    }
+    if (isDark(colorScheme.onPrimaryContainer)) {
+      colorScheme = colorScheme.copyWith(onPrimaryContainer: JVxColors.LIGHTER_BLACK);
+    }
+    if (isDark(colorScheme.onBackground)) {
+      colorScheme = colorScheme.copyWith(onBackground: JVxColors.LIGHTER_BLACK);
+    }
+    if (isDark(colorScheme.onSurface)) {
+      colorScheme = colorScheme.copyWith(onSurface: JVxColors.LIGHTER_BLACK);
+    }
+
+    return colorScheme;
+  }
+
+  /// Applies JVx specific color requirements to the [themeData].
+  ///
+  /// Same as [applyJVxColorScheme] but for [ThemeData].
+  static ThemeData applyJVxTheme(ThemeData themeData) {
+    if (ThemeData.estimateBrightnessForColor(themeData.canvasColor) == Brightness.dark) {
+      themeData = themeData.copyWith(
+        canvasColor: JVxColors.LIGHTER_BLACK,
+      );
+    }
+    if (ThemeData.estimateBrightnessForColor(themeData.cardColor) == Brightness.dark) {
+      themeData = themeData.copyWith(
+        cardColor: JVxColors.LIGHTER_BLACK,
+      );
+    }
+    if (themeData.textTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
+      themeData = themeData.copyWith(
+        textTheme: themeData.textTheme.apply(
+          bodyColor: JVxColors.LIGHTER_BLACK,
+          displayColor: JVxColors.LIGHTER_BLACK,
+        ),
+      );
+    }
+    if (themeData.primaryTextTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
+      themeData = themeData.copyWith(
+        primaryTextTheme: themeData.primaryTextTheme.apply(
+          bodyColor: JVxColors.LIGHTER_BLACK,
+          displayColor: JVxColors.LIGHTER_BLACK,
+        ),
+      );
+    }
+    if (themeData.iconTheme.color?.computeLuminance() == 0.0) {
+      themeData = themeData.copyWith(
+        iconTheme: themeData.iconTheme.copyWith(
+          color: JVxColors.LIGHTER_BLACK,
+        ),
+      );
+    }
+    if (themeData.primaryIconTheme.color?.computeLuminance() == 0.0) {
+      themeData = themeData.copyWith(
+        iconTheme: themeData.primaryIconTheme.copyWith(
+          color: JVxColors.LIGHTER_BLACK,
+        ),
+      );
+    }
+
+    return themeData;
+  }
+
   /// Use [lighten] or [darken] depending on the [brightness].
   static Color adjustByBrightness(Brightness brightness, Color color, [double amount = .1]) {
     assert(amount >= 0 && amount <= 1);

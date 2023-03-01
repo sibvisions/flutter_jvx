@@ -17,6 +17,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+import '../../flutter_ui.dart';
 import '../config/config_controller.dart';
 import 'fake_file.dart';
 import 'file_manager.dart';
@@ -35,57 +36,63 @@ class FileManagerWeb extends IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void deleteFile({required String pPath}) {
-    _files.removeWhere((key, value) => key == pPath);
+  String getAppSpecificPath(String path, {String? appName, String? version}) {
+    String? effectiveAppName = appName ?? ConfigController().appName.value;
+    String? effectiveVersion = version ?? ConfigController().version.value;
+    if (effectiveAppName == null || effectiveVersion == null) {
+      throw Exception("App Version/Name was not set while trying to build app specific path");
+    }
+    return "/$effectiveAppName/$effectiveVersion${_preparePath(path)}";
   }
 
   @override
-  Future<bool> doesFileExist({required String pPath}) {
-    bool doesExist = _files.containsKey(_getSavePath(pPath: pPath));
+  void deleteFile(String pPath) {
+    _files.removeWhere((key, value) => key == _preparePath(pPath));
+  }
+
+  @override
+  Future<bool> doesFileExist(String pPath) {
+    bool doesExist = _files.containsKey(_preparePath(pPath));
     return Future.value(doesExist);
   }
 
   @override
-  Future<File?> getFile({required String pPath}) {
-    File? file = _files[_getSavePath(pPath: pPath)];
+  Future<File?> getFile(String pPath) {
+    File? file = _files[_preparePath(pPath)];
     return Future.value(file);
   }
 
   @override
-  Future<File> saveFile({required List<int> pContent, required String pPath}) {
-    File file = FakeFile(pPath: _getSavePath(pPath: pPath));
-    file.writeAsBytes(pContent);
-    _files[_getSavePath(pPath: pPath)] = file;
-    return Future.value(file);
-  }
-
-  @override
-  File? getFileSync({required String pPath}) {
-    var a = _files[_getSavePath(pPath: pPath)];
-    return a;
-  }
-
-  @override
-  Future<File?> getIndependentFile({required String pPath}) {
-    return Future.value(_files[_preparePath(pPath: pPath)]);
-  }
-
-  @override
-  File? getIndependentFileSync({required String pPath}) {
-    return _files[_preparePath(pPath: pPath)];
-  }
-
-  @override
-  Future<File> saveIndependentFile({required List<int> pContent, required String pPath}) {
-    File file = FakeFile(pPath: _preparePath(pPath: pPath));
+  Future<File> saveFile(String pPath, {required List<int> pContent}) {
+    File file = FakeFile(_preparePath(pPath));
     file.writeAsBytes(pContent);
     _files[file.path] = file;
     return Future.value(file);
   }
 
   @override
-  Directory? getDirectory({required String pPath}) {
+  File? getFileSync(String pPath) {
+    return _files[_preparePath(pPath)];
+  }
+
+  @override
+  Directory? getDirectory(String pPath) {
     return null;
+  }
+
+  @override
+  Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false}) async {
+    String path = _preparePath(pPath.join("/"));
+    FlutterUI.log.d("Before delete ${_files.length}");
+    _files.removeWhere((key, value) => key.startsWith(path));
+    FlutterUI.log.d("After delete ${_files.length}");
+  }
+
+  /// Ignores the version as this will only be used before the app is downloaded
+  /// and there is no persistence besides this in the web.
+  @override
+  Future<void> removePreviousAppVersions(String appName, String currentVersion) {
+    return deleteIndependentDirectory([appName]);
   }
 
   @override
@@ -105,23 +112,15 @@ class FileManagerWeb extends IFileManager {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Checks of version & name are set will return "/appName/appVersion"
-  String _getSavePath({required String pPath}) {
-    String? appName = ConfigController().appName.value;
-    String? version = ConfigController().version.value;
-    if (appName == null || version == null) {
-      throw Exception("App Version/Name was not set while trying to save/read files!");
+  /// Prepares the path to be uniform (always have a leading "/").
+  ///
+  /// Examples:
+  /// * "example.txt" -> "/example.txt"
+  /// * "/example.txt" -> "/example.txt"
+  String _preparePath(String path) {
+    if (!path.startsWith("/")) {
+      path = "/$path";
     }
-    return "/$appName/_$version${_preparePath(pPath: pPath)}";
-  }
-
-  /// Will prepare the path to be uniform (always have a leading "/")
-  /// "example.txt" -> "/example.txt"
-  /// "/example.txt" -> "/example.txt"
-  String _preparePath({required String pPath}) {
-    if (!pPath.startsWith("/")) {
-      pPath = "/$pPath";
-    }
-    return pPath;
+    return path;
   }
 }

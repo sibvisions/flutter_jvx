@@ -248,6 +248,16 @@ class UiService implements IUiService {
   }
 
   @override
+  Future<void> routeToAppOverview() async {
+    if (!checkFirstSplash(false)) return;
+
+    FlutterUI.clearHistory();
+    FlutterUI.getBeamerDelegate().beamToReplacementNamed("/apps");
+
+    await FlutterUI.of(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext()!).stopApp();
+  }
+
+  @override
   AppManager? getAppManager() {
     return appManager;
   }

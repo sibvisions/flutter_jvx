@@ -66,6 +66,6 @@ class ServerSessionExpired extends JVxDialog {
 
   void _restartApp() {
     IUiService().closeJVxDialog(this);
-    FlutterUI.of(FlutterUI.getCurrentContext()!).restart();
+    FlutterUI.of(FlutterUI.getCurrentContext()!).startApp();
   }
 }

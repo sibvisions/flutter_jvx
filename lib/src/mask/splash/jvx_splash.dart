@@ -102,8 +102,9 @@ class _JVxSplashState extends State<JVxSplash> {
                   child: StreamBuilder<double>(
                       stream: stream,
                       builder: (context, snapshot) {
+                        var value = (snapshot.data ?? 0);
                         return LiquidLinearProgressIndicator(
-                          value: (snapshot.data ?? 0) / 100,
+                          value: value / 100,
                           valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
                           backgroundColor: Colors.white,
                           borderRadius: 15.0,
@@ -113,7 +114,9 @@ class _JVxSplashState extends State<JVxSplash> {
                           center: Text(
                             "Starting...",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: value > 60
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.onSurface,
                               fontSize: 9.0,
                             ),
                           ),

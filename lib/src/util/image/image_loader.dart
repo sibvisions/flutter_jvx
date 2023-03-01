@@ -46,7 +46,7 @@ abstract class ImageLoader {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static ImageLoadingBuilder _createImageLoadingBuilder() {
+  static ImageLoadingBuilder createImageLoadingBuilder() {
     return (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
       if (loadingProgress == null) return child;
       return Center(
@@ -59,7 +59,7 @@ abstract class ImageLoader {
     };
   }
 
-  static ImageErrorWidgetBuilder _createImageErrorBuilder(ImageProvider provider) {
+  static ImageErrorWidgetBuilder createImageErrorBuilder(ImageProvider provider) {
     return (BuildContext context, Object error, StackTrace? stackTrace) {
       FlutterUI.logUI.e("Failed to load image $provider", error, stackTrace);
       return ImageLoader.DEFAULT_IMAGE;
@@ -103,8 +103,8 @@ abstract class ImageLoader {
 
         return Image(
           image: imageProvider,
-          loadingBuilder: _createImageLoadingBuilder(),
-          errorBuilder: _createImageErrorBuilder(imageProvider),
+          loadingBuilder: createImageLoadingBuilder(),
+          errorBuilder: createImageErrorBuilder(imageProvider),
           width: size?.width,
           height: size?.height,
           color: pWantedColor,
@@ -130,6 +130,8 @@ abstract class ImageLoader {
   /// Creates either a MemoryImage, a FileImage or a NetworkImage
   static ImageProvider? getImageProvider(
     String? pImageString, {
+    String? appName,
+    Uri? baseUrl,
     Function(Size, bool)? pImageStreamListener,
     bool pImageInBase64 = false,
   }) {
@@ -138,44 +140,68 @@ abstract class ImageLoader {
     }
 
     IFileManager fileManager = ConfigController().getFileManager();
+    String effectiveAppName = appName ?? ConfigController().appName.value!;
     ImageProvider imageProvider;
+
+    Uri? parsedURI;
+    try {
+      parsedURI = Uri.parse(pImageString);
+    } catch (_) {}
 
     if (pImageInBase64) {
       imageProvider = MemoryImage(base64Decode(pImageString));
     } else {
-      // Cut away optional size
-      int commaIndex = pImageString.indexOf(",");
-      if (commaIndex >= 0) {
-        pImageString = pImageString.substring(0, commaIndex);
-      }
-
-      if (pImageString.startsWith("/")) {
-        pImageString = pImageString.substring(1);
-      }
-
-      File? file = fileManager.getFileSync(pPath: "${IFileManager.IMAGES_PATH}/$pImageString");
-
-      if (file != null) {
-        imageProvider = FileImage(file);
-      } else {
-        String appName = ConfigController().appName.value!;
-        String baseUrl = ConfigController().baseUrl.value!;
-
-        Map<String, String> headers = {};
-        var repository = IApiService().getRepository();
-        if (repository is OnlineApiRepository) {
-          headers.addAll(repository.getHeaders());
-          if (repository.getCookies().isNotEmpty) {
-            headers[HttpHeaders.cookieHeader] = repository.getCookies().map((e) => "${e.name}=${e.value}").join("; ");
-          }
+      if (parsedURI == null || !parsedURI.scheme.contains("http")) {
+        // Cut away optional size
+        int commaIndex = pImageString.indexOf(",");
+        if (commaIndex >= 0) {
+          pImageString = pImageString.substring(0, commaIndex);
         }
 
-        imageProvider = NetworkImage("$baseUrl/resource/$appName/$pImageString", headers: headers);
-      }
+        if (pImageString.startsWith("/")) {
+          pImageString = pImageString.substring(1);
+        }
 
-      _addImageListener(imageProvider, pImageStreamListener);
+        File? file;
+
+        String? effectiveVersion = ConfigController().getAppVersion(effectiveAppName);
+
+        if (effectiveVersion != null) {
+          String path = fileManager.getAppSpecificPath(
+            "${IFileManager.IMAGES_PATH}/$pImageString",
+            appName: effectiveAppName,
+            version: effectiveVersion,
+          );
+          file = fileManager.getFileSync(path);
+        }
+
+        if (file != null) {
+          imageProvider = FileImage(file);
+        } else {
+          Uri effectiveBaseUrl = baseUrl ?? ConfigController().baseUrl.value!;
+          imageProvider =
+              NetworkImage("$effectiveBaseUrl/resource/$effectiveAppName/$pImageString", headers: _getHeaders());
+        }
+      } else {
+        imageProvider = NetworkImage(pImageString, headers: _getHeaders());
+      }
     }
+
+    _addImageListener(imageProvider, pImageStreamListener);
+
     return imageProvider;
+  }
+
+  static Map<String, String> _getHeaders() {
+    Map<String, String> headers = {};
+    var repository = IApiService().getRepository();
+    if (repository is OnlineApiRepository) {
+      headers.addAll(repository.getHeaders());
+      if (repository.getCookies().isNotEmpty) {
+        headers[HttpHeaders.cookieHeader] = repository.getCookies().map((e) => "${e.name}=${e.value}").join("; ");
+      }
+    }
+    return headers;
   }
 
   static void _addImageListener(ImageProvider imageProvider, Function(Size, bool)? imageStreamListener) {

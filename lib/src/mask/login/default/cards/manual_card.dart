@@ -69,7 +69,7 @@ class _ManualCardState extends State<ManualCard> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          loginTitle ?? ConfigController().appName.value!.toUpperCase(),
+          loginTitle ?? ConfigController().appName.value?.toUpperCase() ?? "",
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),

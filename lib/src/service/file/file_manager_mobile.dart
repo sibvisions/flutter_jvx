@@ -49,14 +49,24 @@ class FileManagerMobile extends IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<bool> doesFileExist({required String pPath}) async {
+  String getAppSpecificPath(String path, {String? appName, String? version}) {
+    String? effectiveAppName = appName ?? ConfigController().appName.value;
+    String? effectiveVersion = version ?? ConfigController().version.value;
+    if (effectiveAppName == null || effectiveVersion == null) {
+      throw Exception("App Version/Name was not set while trying to build app specific path");
+    }
+    return join(effectiveAppName, effectiveVersion, _preparePath(path));
+  }
+
+  @override
+  Future<bool> doesFileExist(String pPath) async {
     bool exists = false;
 
-    exists = await Directory(_getSavePath(pPath: pPath)).exists();
+    exists = await Directory(_getSavePath(pPath)).exists();
 
     if (exists) return exists;
 
-    exists = await File(_getSavePath(pPath: pPath)).exists();
+    exists = await File(_getSavePath(pPath)).exists();
 
     if (exists) return exists;
 
@@ -64,8 +74,8 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  Future<File?> getFile({required String pPath}) async {
-    File file = File(_getSavePath(pPath: pPath));
+  Future<File?> getFile(String pPath) async {
+    File file = File(_getSavePath(pPath));
     bool doesExist = await file.exists();
 
     if (doesExist) {
@@ -75,43 +85,21 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  void deleteFile({required String pPath}) {
-    File file = File(_getSavePath(pPath: pPath));
+  void deleteFile(String pPath) {
+    File file = File(_getSavePath(pPath));
     file.delete();
   }
 
   @override
-  Future<File> saveFile({required List<int> pContent, required String pPath}) async {
-    File file = File(_getSavePath(pPath: pPath));
+  Future<File> saveFile(String pPath, {required List<int> pContent}) async {
+    File file = File(_getSavePath(pPath));
     File created = await file.create(recursive: true);
     return created.writeAsBytes(pContent);
   }
 
   @override
-  File? getFileSync({required String pPath}) {
-    File file = File(_getSavePath(pPath: pPath));
-    bool doesExist = file.existsSync();
-
-    if (doesExist) {
-      return file;
-    }
-    return null;
-  }
-
-  @override
-  Future<File?> getIndependentFile({required String pPath}) async {
-    File file = File(join(directory.path, _fixPath(pPath)));
-
-    if (await file.exists()) {
-      return file;
-    }
-    return null;
-  }
-
-  @override
-  File? getIndependentFileSync({required String pPath}) {
-    File file = File(join(directory.path, _fixPath(pPath)));
-
+  File? getFileSync(String pPath) {
+    File file = File(_getSavePath(pPath));
     if (file.existsSync()) {
       return file;
     }
@@ -119,22 +107,39 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  Future<File> saveIndependentFile({required List<int> pContent, required String pPath}) async {
-    File file = File(join(directory.path, _fixPath(pPath)));
-    File created = await file.create(recursive: true);
-    return created.writeAsBytes(pContent);
+  Directory? getDirectory(String pPath) {
+    return Directory(_getSavePath(pPath));
   }
 
   @override
-  Directory? getDirectory({required String pPath}) {
-    return Directory(_getSavePath(pPath: pPath));
+  Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false}) {
+    var dir = Directory(joinAll([directory.path, ...pPath]));
+    if (dir.existsSync()) {
+      return dir.delete(recursive: recursive);
+    } else {
+      return Future.value();
+    }
+  }
+
+  @override
+  Future<void> removePreviousAppVersions(String appName, String currentVersion) async {
+    Directory appDirectory = Directory(join(directory.path, appName));
+    if (appDirectory.existsSync()) {
+      await for (var entity in appDirectory.list()) {
+        if (basename(entity.path) != currentVersion) {
+          await entity.delete(recursive: true);
+        }
+      }
+    } else {
+      return Future.value();
+    }
   }
 
   @override
   List<File> getTranslationFiles() {
     List<File> listFiles = [];
 
-    Directory dir = Directory(_getSavePath(pPath: "${IFileManager.LANGUAGES_PATH}/"));
+    Directory dir = Directory(_getSavePath("${IFileManager.LANGUAGES_PATH}/"));
 
     if (dir.existsSync()) {
       listFiles.addAll(dir.listSync().whereType<File>().toList());
@@ -147,23 +152,19 @@ class FileManagerMobile extends IFileManager {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Checks of version & name are set will return "directory/appName/appVersion"
-  String _getSavePath({required String pPath}) {
-    String? appName = ConfigController().appName.value;
-    String? version = ConfigController().version.value;
-    if (appName == null || version == null) {
-      throw Exception("App Version/Name was not set while trying to save/read files!");
-    }
-    return join(directory.path, appName, version, _fixPath(pPath));
+  String _getSavePath(String path) {
+    return join(directory.path, _preparePath(path));
   }
 
-  /// Removes leading slashes
-  /// "example.txt" -> "example.txt"
-  /// "/example.txt" -> "example.txt"
-  String _fixPath(String pPath) {
-    while (pPath.startsWith("/")) {
-      pPath = pPath.substring(1);
+  /// Removes leading slashes.
+  ///
+  /// Examples:
+  /// * "example.txt" -> "example.txt"
+  /// * "/example.txt" -> "example.txt"
+  String _preparePath(String path) {
+    while (path.startsWith("/")) {
+      path = path.substring(1);
     }
-    return pPath;
+    return path;
   }
 }

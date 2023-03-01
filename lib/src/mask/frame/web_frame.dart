@@ -29,6 +29,7 @@ import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/parse_util.dart';
+import '../apps/app_overview_page.dart';
 import '../drawer/web_menu.dart';
 import '../setting/settings_page.dart';
 import '../state/app_style.dart';
@@ -224,6 +225,19 @@ class WebFrameState extends FrameState {
                 color: iconColor,
               ),
               onPressed: () => widget.logout(),
+            ),
+          ),
+        if (appStyle.applicationSettings.userSettingsVisible && AppOverviewPage.showAppsButton())
+          Padding(
+            padding: const EdgeInsets.only(right: spacing),
+            child: Builder(
+              builder: (context) => IconButton(
+                icon: FaIcon(
+                  FontAwesomeIcons.rotate,
+                  color: iconColor,
+                ),
+                onPressed: () => widget.changeApp(),
+              ),
             ),
           ),
         Padding(

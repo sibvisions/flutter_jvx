@@ -39,7 +39,8 @@ class SaveApplicationImagesCommandProcessor implements ICommandProcessor<SaveApp
         name.replaceFirst("/", "");
       }
 
-      await fileManager.saveFile(pContent: content, pPath: "${IFileManager.IMAGES_PATH}/$name");
+      String path = ConfigController().getFileManager().getAppSpecificPath("${IFileManager.IMAGES_PATH}/$name");
+      await fileManager.saveFile(path, pContent: content);
     }
 
     ConfigController().imagesChanged();

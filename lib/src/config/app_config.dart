@@ -31,8 +31,35 @@ class AppConfig {
   final Duration? wsPingInterval;
   final bool? autoRestartOnSessionExpired;
 
+  /// Whether the app overview should be shown when there is a single app which is not marked as default.
+  final bool? showAppOverviewWithoutDefault;
+
+  /// {@template app.locked}
+  /// Whether the apps in the app overview can be modified.
+  ///
+  /// This controls:
+  /// * Add App
+  /// * Edit App
+  /// * Remove App
+  /// {@endtemplate}
+  ///
+  /// This applies to all configs.
+  final bool? configsLocked;
+
+  /// {@template app.hidden}
+  /// Whether app details such as [ServerConfig.appName] or
+  /// [ServerConfig.baseUrl] can be seen by the user.
+  ///
+  /// This controls:
+  /// * App Details in settings
+  /// * Edit App View
+  /// {@endtemplate}
+  ///
+  /// This applies to all configs.
+  final bool? configsHidden;
+
   final UiConfig? uiConfig;
-  final ServerConfig? serverConfig;
+  final List<ServerConfig>? serverConfigs;
   final VersionConfig? versionConfig;
   final OfflineConfig? offlineConfig;
 
@@ -49,8 +76,11 @@ class AppConfig {
     this.aliveInterval,
     this.wsPingInterval,
     this.autoRestartOnSessionExpired,
+    this.showAppOverviewWithoutDefault,
+    this.configsLocked,
+    this.configsHidden,
     this.uiConfig,
-    this.serverConfig,
+    this.serverConfigs,
     this.versionConfig,
     this.offlineConfig,
     this.startupParameters,
@@ -63,8 +93,11 @@ class AppConfig {
           aliveInterval: const Duration(seconds: 30),
           wsPingInterval: const Duration(seconds: 10),
           autoRestartOnSessionExpired: true,
+          showAppOverviewWithoutDefault: false,
+          configsLocked: false,
+          configsHidden: false,
           uiConfig: const UiConfig.empty(),
-          serverConfig: const ServerConfig.empty(),
+          serverConfigs: const [],
           versionConfig: const VersionConfig.empty(),
           offlineConfig: const OfflineConfig.empty(),
         );
@@ -77,8 +110,11 @@ class AppConfig {
           aliveInterval: json['aliveInterval'] != null ? Duration(milliseconds: json['aliveInterval']) : null,
           wsPingInterval: json['wsPingInterval'] != null ? Duration(milliseconds: json['wsPingInterval']) : null,
           autoRestartOnSessionExpired: json['autoRestartOnSessionExpired'],
+          showAppOverviewWithoutDefault: json['showAppOverviewWithoutDefault'],
+          configsLocked: json['configsLocked'],
+          configsHidden: json['configsHidden'],
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
-          serverConfig: json['serverConfig'] != null ? ServerConfig.fromJson(json['serverConfig']) : null,
+          serverConfigs: (json['serverConfigs'] as List<dynamic>?)?.map((e) => ServerConfig.fromJson(e)).toList(),
           versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json['versionConfig']) : null,
           offlineConfig: json['offlineConfig'] != null ? OfflineConfig.fromJson(json['offlineConfig']) : null,
           startupParameters: json['startupParameters'],
@@ -94,8 +130,11 @@ class AppConfig {
       aliveInterval: other.aliveInterval ?? aliveInterval,
       wsPingInterval: other.wsPingInterval ?? wsPingInterval,
       autoRestartOnSessionExpired: other.autoRestartOnSessionExpired ?? autoRestartOnSessionExpired,
+      showAppOverviewWithoutDefault: other.showAppOverviewWithoutDefault ?? showAppOverviewWithoutDefault,
+      configsLocked: other.configsLocked ?? configsLocked,
+      configsHidden: other.configsHidden ?? configsHidden,
       uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
-      serverConfig: serverConfig?.merge(other.serverConfig) ?? other.serverConfig,
+      serverConfigs: other.serverConfigs ?? serverConfigs,
       versionConfig: versionConfig?.merge(other.versionConfig) ?? other.versionConfig,
       offlineConfig: offlineConfig?.merge(other.offlineConfig) ?? other.offlineConfig,
       startupParameters: (startupParameters ?? {})..addAll(other.startupParameters ?? {}),

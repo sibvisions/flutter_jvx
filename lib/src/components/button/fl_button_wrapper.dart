@@ -210,14 +210,14 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     );
   }
 
-  void sendQrCodeResult(Barcode pBarcode, MobileScannerArguments? pArguments) {
+  void sendQrCodeResult(List<Barcode> pBarcode) {
     IUiService().sendCommand(
       SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataProvider,
         editorColumnName: model.columnName,
         columnNames: [model.columnName],
-        values: [pBarcode.rawValue],
+        values: [pBarcode.first.rawValue],
         reason: "Qr code was scanned",
       ),
     );

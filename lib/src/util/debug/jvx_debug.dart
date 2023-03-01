@@ -43,7 +43,7 @@ class JVxDebug extends StatelessWidget {
             ),
             trailing: OutlinedButton(
               onPressed: () =>
-                  FlutterUI.maybeOf(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext())?.restart(),
+                  FlutterUI.maybeOf(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext())?.startApp(),
               child: const Text("Restart"),
             ),
           ),

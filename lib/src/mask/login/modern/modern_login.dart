@@ -29,6 +29,7 @@ import '../../../service/ui/i_ui_service.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
 import '../../../util/parse_util.dart';
+import '../../apps/app_overview_page.dart';
 import '../../state/app_style.dart';
 import '../login.dart';
 import 'cards/change_password_card.dart';
@@ -70,6 +71,8 @@ class ModernLogin extends StatelessWidget implements Login {
       bottomColor = tempTop;
     }
 
+    bool replaceSettingsWithApps = AppOverviewPage.showAppsButton();
+
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -92,10 +95,11 @@ class ModernLogin extends StatelessWidget implements Login {
                       backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.9),
                       padding: kIsWeb ? const EdgeInsets.all(16.0) : const EdgeInsets.all(10.0),
                     ),
-                    onPressed: () => IUiService().routeToSettings(),
-                    icon: const FaIcon(FontAwesomeIcons.gear),
+                    onPressed: () =>
+                        replaceSettingsWithApps ? IUiService().routeToAppOverview() : IUiService().routeToSettings(),
+                    icon: FaIcon(replaceSettingsWithApps ? FontAwesomeIcons.rotate : FontAwesomeIcons.gear),
                     label: Text(
-                      FlutterUI.translate("Settings"),
+                      FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -118,7 +122,7 @@ class ModernLogin extends StatelessWidget implements Login {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 28.0),
                               child: Text(
-                                loginTitle ?? ConfigController().appName.value!.toUpperCase(),
+                                loginTitle ?? ConfigController().appName.value?.toUpperCase() ?? "",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,

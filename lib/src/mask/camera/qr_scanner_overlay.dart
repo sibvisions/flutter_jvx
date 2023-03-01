@@ -14,23 +14,30 @@
  * the License.
  */
 
+import 'dart:async';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../flutter_ui.dart';
 
-/// Definition of the callback for the QR-scanner
-typedef QRCallback = void Function(Barcode barcode, MobileScannerArguments? arguments);
+/// Definition of the callback for the QR-scanner.
+///
+/// In case of [allowMultiScan], this can returns multiple barcodes.
+typedef QRCallback = FutureOr<void> Function(List<Barcode> barcode);
 
-/// Displays the QR-Scanner with additional a control bar on top
+/// Displays the QR-Scanner with additional a control bar on top.
 class QRScannerOverlay extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// This callback will be called with the barcode data
+  /// This callback will be called with the barcode data.
   final QRCallback callback;
+  final bool allowMultiScan;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -39,6 +46,7 @@ class QRScannerOverlay extends StatefulWidget {
   const QRScannerOverlay({
     super.key,
     required this.callback,
+    this.allowMultiScan = false,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,14 +57,16 @@ class QRScannerOverlay extends StatefulWidget {
   State<QRScannerOverlay> createState() => _QRScannerOverlayState();
 }
 
-/// State is needed for disposing the controller
+/// State is needed for disposing the controller.
 class _QRScannerOverlayState extends State<QRScannerOverlay> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Controller for the camera
+  /// Controller for the camera.
   MobileScannerController controller = MobileScannerController();
+  bool multiScanEnabled = false;
+  final List<Barcode> scannedBarcodes = [];
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -69,7 +79,13 @@ class _QRScannerOverlayState extends State<QRScannerOverlay> {
         leading: Navigator.canPop(context)
             ? IconButton(
                 icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () async {
+                  var result = widget.callback(scannedBarcodes);
+                  if (result is Future) await result;
+                  if (mounted) {
+                    Navigator.pop(context);
+                  }
+                },
               )
             : null,
         title: Text(FlutterUI.translate("QR Scanner")),
@@ -87,9 +103,24 @@ class _QRScannerOverlayState extends State<QRScannerOverlay> {
                   }
                 }),
           ),
+          if (widget.allowMultiScan)
+            PopupMenuButton(
+              onSelected: (value) => setState(() => multiScanEnabled = !multiScanEnabled),
+              itemBuilder: (context) {
+                return [
+                  CheckedPopupMenuItem(
+                    checked: multiScanEnabled,
+                    value: 0,
+                    padding: EdgeInsets.zero,
+                    child: Text(FlutterUI.translate("Multi Scan")),
+                  ),
+                ];
+              },
+            )
         ],
       ),
       body: MobileScanner(
+        allowDuplicates: multiScanEnabled,
         controller: controller,
         onDetect: _onDetect,
       ),
@@ -106,8 +137,19 @@ class _QRScannerOverlayState extends State<QRScannerOverlay> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  _onDetect(Barcode barcode, MobileScannerArguments? mobileScannerArguments) {
-    Navigator.of(context).pop();
-    widget.callback(barcode, mobileScannerArguments);
+  _onDetect(Barcode barcode, MobileScannerArguments? mobileScannerArguments) async {
+    if (multiScanEnabled) {
+      if (scannedBarcodes.none((e) => e.rawValue == barcode.rawValue)) {
+        unawaited(HapticFeedback.vibrate());
+        scannedBarcodes.add(barcode);
+      }
+    } else {
+      unawaited(HapticFeedback.vibrate());
+      var result = widget.callback([barcode]);
+      if (result is Future) await result;
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    }
   }
 }

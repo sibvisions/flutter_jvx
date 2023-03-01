@@ -38,6 +38,8 @@ class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveA
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
+    await FlutterUI.removePreviousAppVersions(ConfigController().appName.value!, version);
+
     IUiService().updateClientId(command.metaData.clientId);
     await ConfigController().updateVersion(version);
 
@@ -46,9 +48,10 @@ class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveA
 
     IUiService().updateApplicationMetaData(command.metaData);
 
-    Directory? languagesDir =
-        ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.LANGUAGES_PATH}/");
-    Directory? imagesDir = ConfigController().getFileManager().getDirectory(pPath: "${IFileManager.IMAGES_PATH}/");
+    String languagesPath = ConfigController().getFileManager().getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/");
+    String imagesPath = ConfigController().getFileManager().getAppSpecificPath("${IFileManager.IMAGES_PATH}/");
+    Directory? languagesDir = ConfigController().getFileManager().getDirectory(languagesPath);
+    Directory? imagesDir = ConfigController().getFileManager().getDirectory(imagesPath);
 
     // Start WebSocket
     unawaited((IApiService().getRepository() as OnlineApiRepository?)

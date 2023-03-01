@@ -25,17 +25,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/api/startup_command.dart';
-import '../../model/command/ui/open_error_dialog_command.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
-import '../camera/qr_parser.dart';
-import '../camera/qr_scanner_overlay.dart';
+import '../../util/jvx_colors.dart';
 import '../state/loading_bar.dart';
-import 'widgets/editor/editor_dialog.dart';
-import 'widgets/editor/text_editor.dart';
 import 'widgets/setting_group.dart';
 import 'widgets/setting_item.dart';
 
@@ -49,7 +45,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   static const double endIconSize = 20;
-  static const String urlSuffix = "/services/mobile";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -60,15 +55,10 @@ class _SettingsPageState extends State<SettingsPage> {
   /// App version notifier
   late ValueNotifier<String> appVersionNotifier;
 
-  /// Username of a scanned QR-Code
-  String? username;
-
-  /// Password of a scanned QR-Code
-  String? password;
-
-  String? appName;
-  String? baseUrl;
+  late final String? appName;
+  late final Uri? baseUrl;
   String? language;
+  late bool singleAppMode;
 
   static const double bottomBarHeight = 55;
 
@@ -93,6 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
     appName = ConfigController().appName.value;
     baseUrl = ConfigController().baseUrl.value;
     language = ConfigController().userLanguage.value;
+    singleAppMode = ConfigController().singleAppMode.value;
   }
 
   @override
@@ -101,10 +92,11 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Column(
         children: [
           _buildApplicationInfo(),
-          IconTheme.merge(
-            data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-            child: Builder(builder: (context) => _buildApplicationSettings(context)),
-          ),
+          if (appName != null)
+            IconTheme.merge(
+              data: IconThemeData(color: Theme.of(context).colorScheme.primary),
+              child: Builder(builder: (context) => _buildApplicationSettings(context)),
+            ),
           IconTheme.merge(
             data: IconThemeData(color: Theme.of(context).colorScheme.primary),
             child: Builder(builder: (context) => _buildDeviceSettings(context)),
@@ -153,32 +145,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(child: _createCancelButton(context)),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints.tightFor(width: bottomBarHeight - 2),
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            top: -(bottomBarHeight / 10),
-                            bottom: -(bottomBarHeight / 10),
-                            child: Opacity(
-                              opacity: 0.8,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.background,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 7.0),
-                              child: SizedBox(child: _createFAB(context)),
-                            ),
-                          ),
-                        ],
+                    if (context.canBeamBack && _changesPending())
+                      VerticalDivider(
+                        color: JVxColors.dividerColor(Theme.of(context)),
+                        width: 1,
                       ),
-                    ),
+                    if (!context.canBeamBack || !_changesPending()) const SizedBox(width: 16.0),
                     Expanded(child: _createSaveButton(context)),
                   ],
                 ),
@@ -217,27 +189,13 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SizedBox.shrink(
           child: Center(
             child: Text(
-              FlutterUI.translate(IUiService().clientId.value != null ? (_changesPending() ? "Save" : "OK") : "Open"),
+              FlutterUI.translate(_changesPending() ? "Save" : "OK"),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
       ),
     );
-  }
-
-  Widget? _createFAB(BuildContext context) {
-    return !ConfigController().offline.value
-        ? FloatingActionButton(
-            elevation: 0.0,
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            onPressed: _openQRScanner,
-            child: FaIcon(
-              FontAwesomeIcons.qrcode,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-          )
-        : null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -275,84 +233,29 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildApplicationSettings(BuildContext context) {
-    String appNameTitle = FlutterUI.translate("App Name");
+    SettingItem? appNameSetting;
+    bool hideAppDetails =
+        !ConfigController().getAppConfig()!.configsHidden! && !(ConfigController().hidden.value ?? false);
 
-    SettingItem appNameSetting = SettingItem(
-      frontIcon: FaIcon(FontAwesomeIcons.cubes, color: Theme.of(context).colorScheme.primary),
-      endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
-      value: appName ?? "",
-      title: appNameTitle,
-      enabled: !ConfigController().offline.value,
-      onPressed: (context, value) {
-        TextEditingController controller = TextEditingController(text: value);
-
-        _showEditor(
-          context,
-          pEditorBuilder: (context, onConfirm) => TextEditor(
-            title: appNameTitle,
-            hintText: FlutterUI.translate("Enter new App Name"),
-            controller: controller,
-            onConfirm: onConfirm,
-          ),
-          controller: controller,
-          pTitleIcon: const FaIcon(FontAwesomeIcons.cubes),
-          pTitleText: appNameTitle,
-        ).then((value) {
-          if (value == true) {
-            appName = controller.text.trim();
-            setState(() {});
-          }
-        });
-      },
-    );
+    if (hideAppDetails) {
+      appNameSetting = SettingItem(
+        enabled: false,
+        frontIcon: const FaIcon(FontAwesomeIcons.cubes),
+        value: appName ?? "",
+        title: FlutterUI.translate("App Name"),
+      );
+    }
 
     String urlTitle = FlutterUI.translate("URL");
-    SettingItem baseUrlSetting = SettingItem(
-      frontIcon: FaIcon(FontAwesomeIcons.globe, color: Theme.of(context).colorScheme.primary),
-      endIcon: const FaIcon(FontAwesomeIcons.keyboard, size: endIconSize, color: Colors.grey),
-      value: baseUrl ?? "",
-      title: urlTitle,
-      enabled: !ConfigController().offline.value,
-      onPressed: (context, value) {
-        TextEditingController controller = TextEditingController(text: value);
-
-        _showEditor(
-          context,
-          pEditorBuilder: (context, onConfirm) => TextEditor(
-            title: urlTitle,
-            hintText: "http://host:port/services/mobile",
-            keyboardType: TextInputType.url,
-            controller: controller,
-            onConfirm: onConfirm,
-          ),
-          controller: controller,
-          pTitleIcon: const FaIcon(FontAwesomeIcons.globe),
-          pTitleText: urlTitle,
-        ).then((value) async {
-          if (value == true) {
-            try {
-              // Validate format
-              var uri = Uri.parse(controller.text.trim());
-              if (!uri.path.endsWith(urlSuffix) && !uri.path.endsWith("$urlSuffix/")) {
-                String appendingSuffix = urlSuffix;
-                if (uri.pathSegments.last.isEmpty) {
-                  appendingSuffix = appendingSuffix.substring(1);
-                }
-                uri = uri.replace(path: uri.path + appendingSuffix);
-              }
-              baseUrl = uri.toString();
-              setState(() {});
-            } catch (e) {
-              await IUiService().sendCommand(OpenErrorDialogCommand(
-                error: e.toString(),
-                message: FlutterUI.translate("URL is invalid"),
-                reason: "parseURl failed",
-              ));
-            }
-          }
-        });
-      },
-    );
+    SettingItem? baseUrlSetting;
+    if (hideAppDetails) {
+      baseUrlSetting = SettingItem(
+        enabled: false,
+        frontIcon: const FaIcon(FontAwesomeIcons.globe),
+        value: baseUrl?.toString() ?? "",
+        title: urlTitle,
+      );
+    }
 
     var supportedLanguages = ConfigController().supportedLanguages.value.toList();
     supportedLanguages.insertAll(0, [
@@ -382,18 +285,35 @@ class _SettingsPageState extends State<SettingsPage> {
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterUI.translate("Application"),
+          ConfigController().title.value ?? FlutterUI.translate("Application"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      items: [appNameSetting, baseUrlSetting, languageSetting],
+      items: [
+        if (appNameSetting != null) appNameSetting,
+        if (baseUrlSetting != null) baseUrlSetting,
+        languageSetting,
+      ],
     );
   }
 
   _buildDeviceSettings(BuildContext context) {
+    Widget singleAppSetting = SwitchListTile(
+      contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
+      secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),
+      title: Text(FlutterUI.translate("Single App Mode")),
+      value: singleAppMode,
+      onChanged: (value) {
+        ConfigController().updateSingleAppMode(value);
+        setState(() {
+          singleAppMode = value;
+        });
+      },
+    );
+
     final Map<ThemeMode, String> themeMapping = {
       ThemeMode.system: FlutterUI.translate("System"),
       ThemeMode.light: FlutterUI.translate("Light"),
@@ -447,7 +367,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      items: [themeSetting, pictureSetting],
+      items: [singleAppSetting, themeSetting, pictureSetting],
     );
   }
 
@@ -620,95 +540,29 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Future<bool?> _showEditor<bool>(
-    BuildContext context, {
-    required String pTitleText,
-    required FaIcon pTitleIcon,
-    required EditorBuilder pEditorBuilder,
-    required TextEditingController controller,
-  }) {
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) => EditorDialog(
-        titleText: pTitleText,
-        titleIcon: pTitleIcon,
-        editorBuilder: pEditorBuilder,
-        controller: controller,
-      ),
-      barrierDismissible: false,
-    );
-  }
-
-  /// Opens the QR-Scanner and parses the scanned code
-  void _openQRScanner() {
-    IUiService().openDialog(
-      pBuilder: (_) => QRScannerOverlay(callback: (barcode, _) async {
-        FlutterUI.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
-        try {
-          QRAppCode code = QRParser.parseCode(barcode.rawValue!);
-          appName = code.appName;
-          baseUrl = code.url;
-
-          // set username & password for later
-          username = code.username;
-          password = code.password;
-
-          setState(() {});
-        } on FormatException catch (e) {
-          FlutterUI.logUI.w("Error parsing QR Code", e);
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(FlutterUI.translate(e.message)),
-          ));
-        }
-      }),
-    );
-  }
-
   bool _changesPending() {
-    return appName != ConfigController().appName.value ||
-        baseUrl != ConfigController().baseUrl.value ||
-        language != ConfigController().userLanguage.value;
+    return language != ConfigController().userLanguage.value;
   }
 
   /// Will send a [StartupCommand] with current values
   Future<void> _saveClicked() async {
-    if ((appName?.isNotEmpty ?? false) && (baseUrl?.isNotEmpty ?? false)) {
-      try {
-        if (!context.canBeamBack || IUiService().clientId.value == null || _changesPending()) {
-          await ConfigController().updateAppName(appName);
-          await ConfigController().updateBaseUrl(baseUrl);
-          await ConfigController().updateUserLanguage(language);
-
-          FlutterUI.of(FlutterUI.getCurrentContext()!).restart(
-            username: username,
-            password: password,
-          );
-        } else {
-          context.beamBack();
+    try {
+      BeamerDelegate beamer = Beamer.of(context);
+      if (_changesPending()) {
+        await ConfigController().updateUserLanguage(language);
+        if (IUiService().clientId.value != null) {
+          FlutterUI.of(FlutterUI.getCurrentContext()!).startApp();
+          return;
         }
-      } catch (e, stackTrace) {
-        IUiService().handleAsyncError(e, stackTrace);
-      } finally {
-        username = null;
-        password = null;
       }
-    } else {
-      await IUiService().openDialog(
-        pBuilder: (_) => AlertDialog(
-          title: Text(FlutterUI.translate("Missing required fields")),
-          content: Text(FlutterUI.translate("You have to provide an app name and a base url to open an app.")),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                FlutterUI.translate("Ok"),
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-        pIsDismissible: true,
-      );
+
+      if (beamer.canBeamBack) {
+        beamer.beamBack();
+      } else {
+        await IUiService().routeToAppOverview();
+      }
+    } catch (e, stackTrace) {
+      IUiService().handleAsyncError(e, stackTrace);
     }
   }
 }

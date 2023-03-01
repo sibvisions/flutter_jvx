@@ -5,16 +5,21 @@
   "aliveInterval": 30000,
   "wsPingInterval": 10000,
   "autoRestartOnSessionExpired": true,
+  "configsLocked": false,
+  "configsHidden": false,
   "uiConfig": {
     "showRememberMe": true,
     "rememberMeChecked": true
   },
-  "serverConfig": {
-    "baseUrl": "http://localhost:8888/JVx.mobile/services/mobile",
-    "appName": "demo",
-    "username": "features",
-    "password": "features"
-  },
+  "serverConfigs": [
+    {
+      "baseUrl": "http://localhost:8888/JVx.mobile/services/mobile",
+      "appName": "demo",
+      "username": "features",
+      "password": "features",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Jvx_2020.png"
+    }
+  ],
   "versionConfig": {
     "commit": "<undefined>",
     "buildDate": 0,

@@ -112,6 +112,8 @@ abstract class IUiService {
   /// Route to the provided full path, used for routing to offline screens
   void routeToCustom({required String pFullPath});
 
+  Future<void> routeToAppOverview();
+
   /// Gets the current custom manager
   AppManager? getAppManager();
 

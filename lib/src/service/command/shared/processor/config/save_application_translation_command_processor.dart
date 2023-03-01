@@ -29,8 +29,8 @@ class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<Sa
     List<Future> saveFutures = [];
 
     for (ArchiveFile translation in command.translations) {
-      saveFutures.add(fileManager.saveFile(
-          pContent: translation.content, pPath: "${IFileManager.LANGUAGES_PATH}/${translation.name}"));
+      String path = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/${translation.name}");
+      saveFutures.add(fileManager.saveFile(path, pContent: translation.content));
     }
 
     // Wait till all files are saved

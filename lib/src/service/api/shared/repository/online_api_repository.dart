@@ -46,6 +46,7 @@ import '../../../../model/request/api_download_images_request.dart';
 import '../../../../model/request/api_download_request.dart';
 import '../../../../model/request/api_download_style_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
+import '../../../../model/request/api_exit_request.dart';
 import '../../../../model/request/api_fetch_request.dart';
 import '../../../../model/request/api_filter_request.dart';
 import '../../../../model/request/api_focus_gained_request.dart';
@@ -107,6 +108,7 @@ import '../../../../model/response/view/message/message_dialog_response.dart';
 import '../../../../model/response/view/message/message_view.dart';
 import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
+import '../../../../util/parse_util.dart';
 import '../../../command/i_command_service.dart';
 import '../../../command/shared/processor/config/save_application_meta_data_command_processor.dart';
 import '../../../config/config_controller.dart';
@@ -163,6 +165,7 @@ class OnlineApiRepository implements IRepository {
     ApiFocusGainedRequest: (_) => APIRoute.POST_FOCUS_GAINED,
     ApiFocusLostRequest: (_) => APIRoute.POST_FOCUS_LOST,
     ApiAliveRequest: (_) => APIRoute.POST_ALIVE,
+    ApiExitRequest: (_) => APIRoute.POST_EXIT,
     ApiSaveRequest: (_) => APIRoute.POST_SAVE,
     ApiReloadRequest: (_) => APIRoute.POST_RELOAD,
     ApiRollbackRequest: (_) => APIRoute.POST_ROLLBACK,
@@ -420,10 +423,9 @@ class OnlineApiRepository implements IRepository {
       return null;
     }
 
-    Uri location = Uri.parse(ConfigController().baseUrl.value!);
+    Uri location = ConfigController().baseUrl.value!;
 
-    const String subPath = "/services/mobile";
-    int? end = location.path.lastIndexOf(subPath);
+    int? end = location.path.lastIndexOf(ParseUtil.urlSuffix);
     if (end == -1) end = null;
 
     return location.replace(

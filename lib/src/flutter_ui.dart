@@ -37,10 +37,12 @@ import 'exceptions/error_view_exception.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
+import 'model/command/api/exit_command.dart';
 import 'model/command/api/login_command.dart';
 import 'model/command/api/startup_command.dart';
 import 'model/config/application_parameters.dart';
 import 'model/request/api_startup_request.dart';
+import 'routing/locations/app_location.dart';
 import 'routing/locations/login_location.dart';
 import 'routing/locations/menu_location.dart';
 import 'routing/locations/settings_location.dart';
@@ -149,6 +151,9 @@ class FlutterUI extends StatefulWidget {
   /// Builder function for custom splash widget
   final SplashBuilder? splashBuilder;
 
+  /// Builder function for custom background.
+  final WidgetBuilder? backgroundBuilder;
+
   /// Builder function for custom login widget
   final Widget Function(BuildContext context, LoginMode mode)? loginBuilder;
 
@@ -165,6 +170,7 @@ class FlutterUI extends StatefulWidget {
     this.appConfig,
     this.appManager,
     this.splashBuilder,
+    this.backgroundBuilder,
     this.loginBuilder,
     this.enableDebugOverlay = false,
     this.debugOverlayEntries = const [],
@@ -290,15 +296,6 @@ class FlutterUI extends StatefulWidget {
     AppConfig appConfig =
         const AppConfig.empty().merge(pAppToRun.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
 
-    if (appConfig.serverConfig!.baseUrl != null) {
-      var baseUri = Uri.parse(appConfig.serverConfig!.baseUrl!);
-      // If no https on a remote host, you have to use localhost because of secure cookies
-      if (kIsWeb && kDebugMode && baseUri.host != "localhost" && !baseUri.isScheme("https")) {
-        appConfig = appConfig
-            .merge(AppConfig(serverConfig: ServerConfig(baseUrl: baseUri.replace(host: "localhost").toString())));
-      }
-    }
-
     await configController.loadConfig(appConfig, devConfig != null);
     services.registerSingleton(configController);
 
@@ -336,7 +333,11 @@ class FlutterUI extends StatefulWidget {
     if (configController.appName.value != null) {
       String? baseUrl = Uri.base.queryParameters['baseUrl'];
       if (baseUrl != null) {
-        await configController.updateBaseUrl(baseUrl);
+        try {
+          await configController.updateBaseUrl(Uri.parse(baseUrl));
+        } on FormatException catch (e, stack) {
+          FlutterUI.log.w("Failed to parse baseUrl parameter", e, stack);
+        }
       }
       String? username = Uri.base.queryParameters['username'];
       if (username != null) {
@@ -381,6 +382,45 @@ class FlutterUI extends StatefulWidget {
 
     runApp(pAppToRun);
   }
+
+  static Future<List<ServerConfig>> getApps() async {
+    return (await Future.wait(
+      ConfigController().getAppNames().map((e) async => await ConfigController().getApp(e)).toList(),
+    ))
+        .sortedBy<String>((app) => (app.title ?? app.appName ?? "").toLowerCase());
+  }
+
+  /// Adds/Updates this config.
+  ///
+  /// In case of renaming an existing config, provide an [oldAppName].
+  static Future<void> updateApp(ServerConfig config, {String? oldAppName}) async {
+    await ConfigController().updateApp(config, oldAppName: oldAppName);
+  }
+
+  static Future<void> removeApp(String appName) async {
+    await ConfigController().removeApp(appName);
+    await ConfigController().getFileManager().deleteIndependentDirectory([appName], recursive: true).catchError(
+        (e, stack) => FlutterUI.log.w('Failed to delete "$appName" app directory', e, stack));
+  }
+
+  static Future<void> removeAllApps() async {
+    await Future.forEach<String>(
+      ConfigController()
+          .getAppNames()
+          .where((element) => !(ConfigController().getPredefinedApp(element)?.locked ?? false)),
+      (e) => FlutterUI.removeApp(e),
+    );
+  }
+
+  /// Tries to clear as much leftover app data from previous versions as possible.
+  ///
+  /// [SharedPreferences] are deliberately left behind as these are not versioned.
+  static Future<void> removePreviousAppVersions(String appName, String currentVersion) async {
+    await ConfigController()
+        .getFileManager()
+        .removePreviousAppVersions(appName, currentVersion)
+        .catchError((e, stack) => FlutterUI.log.e('Failed to delete old app directories from "$appName"', e, stack));
+  }
 }
 
 late BeamerDelegate routerDelegate;
@@ -394,19 +434,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   AppLifecycleState? lastState;
 
-  ThemeData themeData = ThemeData().copyWith(
-    colorScheme: ThemeData().colorScheme.copyWith(
-          background: Colors.grey.shade50,
-        ),
-  );
+  late ThemeData themeData;
+  late ThemeData darkThemeData;
 
-  ThemeData darkThemeData = ThemeData.dark().copyWith(
-    colorScheme: ThemeData.dark().colorScheme.copyWith(
-          background: Colors.grey.shade50,
-        ),
-  );
+  final ThemeData splashTheme = JVxColors.applyJVxTheme(ThemeData(
+    colorScheme: JVxColors.applyJVxColorScheme(ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+    )),
+  ));
 
-  final ThemeData splashTheme = ThemeData();
   late final StreamSubscription<ConnectivityResult> subscription;
 
   Future<void>? startupFuture;
@@ -416,11 +452,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     super.initState();
 
     routerDelegate = BeamerDelegate(
-      initialPath: "/login",
+      initialPath: "/apps",
       setBrowserTabTitle: false,
       navigatorObservers: [routeObserver],
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
+          AppLocation(),
           LoginLocation(),
           MenuLocation(),
           SettingsLocation(),
@@ -449,22 +486,94 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     ConfigController().applicationStyle.addListener(changedTheme);
     IUiService().applicationSettings.addListener(refresh);
 
+    // Init default themes (if applicable)
+    changedTheme();
+
     // Init
-    restart();
+    FlutterUI.getApps().then((configs) {
+      bool showAppOverviewWithoutDefault = ConfigController().getAppConfig()!.showAppOverviewWithoutDefault!;
+      ServerConfig? config = configs.firstWhereOrNull((e) => e.isDefault ?? false);
+      if (config == null && !showAppOverviewWithoutDefault) {
+        config = configs.firstOrNull;
+      }
+      if (config?.isStartable ?? false) {
+        startApp(app: config);
+      }
+    });
   }
 
-  void restart({
-    String? appName,
-    String? username,
-    String? password,
-  }) {
+  void startApp({ServerConfig? app}) {
     setState(() {
-      startupFuture = initStartup(
-        appName: appName,
-        username: username,
-        password: password,
-      ).catchError(FlutterUI.createErrorHandler("Failed to send startup"));
+      startupFuture = _startApp(app: app).catchError(FlutterUI.createErrorHandler("Failed to send startup"));
     });
+  }
+
+  Future<void> _startApp({ServerConfig? app}) async {
+    await stopApp(false);
+
+    if (app?.appName != null) {
+      await ConfigController().updateAppName(app!.appName!);
+    }
+
+    changedTheme();
+
+    if (ConfigController().getFileManager().isSatisfied()) {
+      // Only try to load if FileManager is available
+      ConfigController().reloadSupportedLanguages();
+      ConfigController().loadLanguages();
+    }
+
+    if (!(app?.isStartable ?? true) ||
+        ConfigController().appName.value == null ||
+        ConfigController().baseUrl.value == null) {
+      await IUiService().routeToAppOverview();
+      return;
+    }
+
+    await ConfigController().updateLastApp(ConfigController().appName.value);
+
+    if (ConfigController().offline.value) {
+      IUiService().routeToMenu(pReplaceRoute: true);
+      return;
+    }
+
+    ServerConfig? defaultConfig;
+    if (app?.appName != null) {
+      defaultConfig =
+          ConfigController().getAppConfig()!.serverConfigs?.firstWhereOrNull((e) => e.appName == app!.appName);
+    }
+
+    // Send startup to server
+    await ICommandService().sendCommand(StartupCommand(
+      reason: "InitApp",
+      appName: app?.appName,
+      username: app?.username ?? defaultConfig?.username,
+      password: app?.password ?? defaultConfig?.password,
+    ));
+  }
+
+  /// Stops the currently running app.
+  Future<void> stopApp([bool resetAppName = true]) async {
+    setState(() => startupFuture = null);
+
+    if (!ConfigController().offline.value && IUiService().clientId.value != null) {
+      unawaited(ICommandService()
+          .sendCommand(ExitCommand(reason: "App has been stopped"))
+          .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
+    }
+
+    // (Re-)start repository
+    if (IApiService().getRepository() is OnlineApiRepository) {
+      if (IApiService().getRepository()?.isStopped() == false) {
+        await IApiService().getRepository()?.stop();
+      }
+    }
+    await IApiService().getRepository()?.start();
+    await FlutterUI.clearServices(true);
+
+    if (resetAppName) {
+      await ConfigController().updateAppName(null);
+    }
   }
 
   @override
@@ -656,137 +765,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (styleColor != null) {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);
 
-      themeData = _createTheme(materialColor, Brightness.light);
-      darkThemeData = _createTheme(materialColor, Brightness.dark);
+      themeData = JVxColors.createTheme(materialColor, Brightness.light);
+      darkThemeData = JVxColors.createTheme(materialColor, Brightness.dark);
+    } else {
+      themeData = JVxColors.createTheme(Colors.blue, Brightness.light);
+      darkThemeData = JVxColors.createTheme(Colors.blue, Brightness.dark);
     }
     setState(() {});
-  }
-
-  ThemeData _createTheme(MaterialColor materialColor, Brightness selectedBrightness) {
-    ColorScheme colorScheme = ColorScheme.fromSwatch(
-      primarySwatch: materialColor,
-      brightness: selectedBrightness,
-    );
-
-    bool isBackgroundLight = ThemeData.estimateBrightnessForColor(colorScheme.background) == Brightness.light;
-
-    if (isBackgroundLight) {
-      colorScheme = colorScheme.copyWith(background: Colors.grey.shade50);
-    }
-    if (colorScheme.onPrimary.computeLuminance() == 0.0) {
-      colorScheme = colorScheme.copyWith(onPrimary: JVxColors.LIGHTER_BLACK);
-    }
-    if (colorScheme.onBackground.computeLuminance() == 0.0) {
-      colorScheme = colorScheme.copyWith(onBackground: JVxColors.LIGHTER_BLACK);
-    }
-    if (colorScheme.onSurface.computeLuminance() == 0.0) {
-      colorScheme = colorScheme.copyWith(onSurface: JVxColors.LIGHTER_BLACK);
-    }
-
-    // Override tealAccent
-    colorScheme = colorScheme.copyWith(
-      secondary: colorScheme.primary,
-      onSecondary: colorScheme.onPrimary,
-      secondaryContainer: colorScheme.primaryContainer,
-      onSecondaryContainer: colorScheme.onPrimaryContainer,
-      tertiary: colorScheme.primary,
-      onTertiary: colorScheme.onPrimary,
-      tertiaryContainer: colorScheme.primaryContainer,
-      onTertiaryContainer: colorScheme.onPrimaryContainer,
-    );
-
-    var themeData = ThemeData.from(colorScheme: colorScheme);
-
-    if (themeData.textTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
-      themeData = themeData.copyWith(
-        textTheme: themeData.textTheme.apply(
-          bodyColor: JVxColors.LIGHTER_BLACK,
-          displayColor: JVxColors.LIGHTER_BLACK,
-        ),
-      );
-    }
-
-    if (themeData.primaryTextTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
-      themeData = themeData.copyWith(
-        primaryTextTheme: themeData.primaryTextTheme.apply(
-          bodyColor: JVxColors.LIGHTER_BLACK,
-          displayColor: JVxColors.LIGHTER_BLACK,
-        ),
-      );
-    }
-
-    if (themeData.iconTheme.color?.computeLuminance() == 0.0) {
-      themeData = themeData.copyWith(
-        iconTheme: themeData.iconTheme.copyWith(
-          color: JVxColors.LIGHTER_BLACK,
-        ),
-      );
-    }
-
-    if (themeData.primaryIconTheme.color?.computeLuminance() == 0.0) {
-      themeData = themeData.copyWith(
-        iconTheme: themeData.primaryIconTheme.copyWith(
-          color: JVxColors.LIGHTER_BLACK,
-        ),
-      );
-    }
-
-    themeData = themeData.copyWith(
-      listTileTheme: themeData.listTileTheme.copyWith(
-        // TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
-        textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        // textColor: themeData.colorScheme.onBackground,
-        // iconColor: themeData.colorScheme.onBackground,
-      ),
-    );
-    return themeData;
   }
 
   void refresh() {
     setState(() {});
-  }
-
-  Future<void> initStartup({
-    String? appName,
-    String? username,
-    String? password,
-  }) async {
-    changedTheme();
-
-    if (ConfigController().getFileManager().isSatisfied()) {
-      // Only try to load if FileManager is available
-      ConfigController().reloadSupportedLanguages();
-      ConfigController().loadLanguages();
-    }
-
-    // (Re-)start repository
-    if (IApiService().getRepository() is OnlineApiRepository) {
-      if (IApiService().getRepository()?.isStopped() == false) {
-        await IApiService().getRepository()?.stop();
-      }
-    }
-    await IApiService().getRepository()?.start();
-
-    if (ConfigController().appName.value == null || ConfigController().baseUrl.value == null) {
-      IUiService().routeToSettings(pReplaceRoute: true);
-      return;
-    }
-
-    if (ConfigController().offline.value) {
-      IUiService().routeToMenu(pReplaceRoute: true);
-      return;
-    }
-
-    await FlutterUI.clearServices(true);
-
-    // Send startup to server
-    await ICommandService().sendCommand(StartupCommand(
-      reason: "InitApp",
-      appName: appName,
-      username: username ?? ConfigController().getAppConfig()!.serverConfig!.username,
-      password: password ?? ConfigController().getAppConfig()!.serverConfig!.password,
-    ));
   }
 
   Widget _getStartupErrorDialog(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -810,22 +799,22 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ),
           actions: [
             TextButton(
-              onPressed: () => restart(),
+              onPressed: () => startApp(),
               child: Text(
                 FlutterUI.translate("Retry"),
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             TextButton(
               onPressed: () {
-                IUiService().routeToSettings(pReplaceRoute: true);
+                IUiService().routeToAppOverview();
                 setState(() {
                   startupFuture = null;
                 });
               },
               child: Text(
-                FlutterUI.translate("Go to Settings"),
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                FlutterUI.translate("Return to Apps"),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
           ],

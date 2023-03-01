@@ -22,10 +22,23 @@ import '../model/response/application_settings_response.dart';
 import '../service/api/shared/api_object_property.dart';
 
 abstract class ParseUtil {
+  static const String urlSuffix = "/services/mobile";
+
   static T? castOrNull<T>(dynamic x) => x is T ? x : null;
 
   static bool isHTML(String? text) {
     return text != null && text.length >= 6 && text.substring(0, 6).toLowerCase().startsWith("<html>");
+  }
+
+  static Uri appendJVxUrlSuffix(Uri uri) {
+    if (!uri.path.endsWith(urlSuffix) && !uri.path.endsWith("$urlSuffix/")) {
+      String appendingSuffix = urlSuffix;
+      if (uri.path.endsWith("/")) {
+        appendingSuffix = appendingSuffix.substring(1);
+      }
+      uri = uri.replace(path: uri.path + appendingSuffix);
+    }
+    return uri;
   }
 
   /// Will return the boolean, parse a string (true if string == "true", false if string == "false")

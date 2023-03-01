@@ -22,6 +22,7 @@ import '../../model/menu/menu_model.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/jvx_colors.dart';
+import '../apps/app_overview_page.dart';
 import '../menu/list/list_menu.dart';
 import '../menu/menu.dart';
 import '../state/app_style.dart';
@@ -30,12 +31,14 @@ class DrawerMenu extends StatefulWidget {
   final void Function() onSettingsPressed;
   final void Function() onChangePasswordPressed;
   final void Function() onLogoutPressed;
+  final void Function() onAppChange;
 
   const DrawerMenu({
     super.key,
     required this.onSettingsPressed,
     required this.onChangePasswordPressed,
     required this.onLogoutPressed,
+    required this.onAppChange,
   });
 
   @override
@@ -74,7 +77,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   if (!isNormalSize)
                     SizedBox(
                       height: 55,
-                      child: Row(children: _buildDrawerFooter(context, isOffline, isNormalSize)),
+                      child: Row(
+                        children: _buildDrawerFooter(context, isOffline, isNormalSize),
+                      ),
                     ),
                 ],
               );
@@ -95,7 +100,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       headerItems = [
         _buildHeaderText(
           flex: 5,
-          text: AppStyle.of(context).applicationStyle['login.title'] ?? ConfigController().appName.value!,
+          text: AppStyle.of(context).applicationStyle['login.title'] ?? ConfigController().appName.value ?? "",
           context: context,
           fontWeight: FontWeight.bold,
         ),
@@ -231,25 +236,82 @@ class _DrawerMenuState extends State<DrawerMenu> {
           isNormalSize: isNormalSize,
         ),
         _buildFooterDivider(context),
-        _buildFooterEntry(
-          context: context,
-          text: FlutterUI.translate("Logout"),
-          leadingIcon: FontAwesomeIcons.rightFromBracket,
-          onTap: widget.onLogoutPressed,
-          isNormalSize: isNormalSize,
-        ),
-        _buildFooterDivider(context),
       ]);
+      if (isNormalSize) {
+        List<Widget> children;
+        if (AppOverviewPage.showAppsButton()) {
+          children = [
+            Expanded(
+              flex: 10,
+              child: _buildLogoutEntry(context, isNormalSize),
+            ),
+            _buildFooterVerticalDivider(context),
+            Expanded(flex: 7, child: _buildAppsEntry(context, isNormalSize)),
+          ];
+        } else {
+          children = [_buildLogoutEntry(context, isNormalSize)];
+        }
+
+        footerEntries.addAll([
+          SizedBox(
+            height: 55,
+            child: Row(
+              children: children,
+            ),
+          ),
+        ]);
+      } else {
+        List<Widget> children;
+        if (AppOverviewPage.showAppsButton()) {
+          children = [
+            _buildAppsEntry(context, isNormalSize),
+            _buildFooterDivider(context),
+            _buildLogoutEntry(context, isNormalSize),
+          ];
+        } else {
+          children = [_buildLogoutEntry(context, isNormalSize)];
+        }
+
+        footerEntries.addAll(children);
+      }
+      footerEntries.add(_buildFooterDivider(context));
     }
 
     return footerEntries;
   }
 
-  Divider _buildFooterDivider(BuildContext context) {
+  Widget _buildAppsEntry(BuildContext context, bool isNormalSize) {
+    return _buildFooterEntry(
+      context: context,
+      text: FlutterUI.translate("Apps"),
+      leadingIcon: FontAwesomeIcons.rotate,
+      onTap: widget.onAppChange,
+      isNormalSize: isNormalSize,
+    );
+  }
+
+  Widget _buildLogoutEntry(BuildContext context, bool isNormalSize) {
+    return _buildFooterEntry(
+      context: context,
+      text: FlutterUI.translate("Logout"),
+      leadingIcon: FontAwesomeIcons.rightFromBracket,
+      onTap: widget.onLogoutPressed,
+      isNormalSize: isNormalSize,
+    );
+  }
+
+  Widget _buildFooterDivider(BuildContext context) {
     return Divider(
       // Specifically requested color mix
-      color: JVxColors.lighten(Theme.of(context).colorScheme.onPrimary, 0.4),
+      color: JVxColors.dividerColor(Theme.of(context)),
       height: 1,
+    );
+  }
+
+  Widget _buildFooterVerticalDivider(BuildContext context) {
+    return VerticalDivider(
+      color: JVxColors.dividerColor(Theme.of(context)),
+      width: 1,
     );
   }
 
