@@ -23,6 +23,7 @@ import '../../../../service/config/config_controller.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/progress/progress_button.dart';
+import '../../../apps/app_overview_page.dart';
 import '../../../state/app_style.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
@@ -168,11 +169,12 @@ class _ManualCardState extends State<ManualCard> {
   }
 
   Widget _createBottomRow() {
+    bool replaceSettingsWithApps = AppOverviewPage.showAppsButton();
     Widget textButton = TextButton.icon(
-      onPressed: () => IUiService().routeToSettings(),
-      icon: const FaIcon(FontAwesomeIcons.gear),
+      onPressed: () => replaceSettingsWithApps ? IUiService().routeToAppOverview() : IUiService().routeToSettings(),
+      icon: FaIcon(replaceSettingsWithApps ? FontAwesomeIcons.rotate : FontAwesomeIcons.gear),
       label: Text(
-        FlutterUI.translate("Settings"),
+        FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
         overflow: TextOverflow.ellipsis,
       ),
     );
