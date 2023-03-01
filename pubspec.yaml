@@ -90,8 +90,6 @@ dependencies:
   flutter_map: ^3.0.0
   latlong2: ^0.8.1
   scrollable_positioned_list: ^0.3.1
-  syncfusion_flutter_charts: ^20.1.55
-  syncfusion_flutter_gauges: ^20.1.55
   url_launcher: ^6.1.5
   linked_scroll_controller: ^0.2.0
   liquid_progress_indicator: ^0.4.0
