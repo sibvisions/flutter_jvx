@@ -5,6 +5,7 @@
   "aliveInterval": 30000,
   "wsPingInterval": 10000,
   "autoRestartOnSessionExpired": true,
+  "showAppOverviewWithoutDefault": false,
   "configsLocked": false,
   "configsHidden": false,
   "uiConfig": {

@@ -58,6 +58,7 @@ class ConfigService {
   Future<ServerConfig> getApp(String appName) async {
     String prefix = appName;
     String? baseUrl = _sharedPrefs.getString("$prefix.baseUrl");
+    String? defaultAppName = await defaultApp();
     return ServerConfig(
       appName: appName,
       baseUrl: baseUrl != null ? Uri.parse(baseUrl) : null,
@@ -65,7 +66,7 @@ class ConfigService {
       password: _sharedPrefs.getString("$prefix.password"),
       title: _sharedPrefs.getString("$prefix.title"),
       icon: _sharedPrefs.getString("$prefix.icon"),
-      isDefault: appName == await defaultApp(),
+      isDefault: defaultAppName == null ? null : appName == defaultAppName,
     );
   }
 
@@ -115,11 +116,8 @@ class ConfigService {
         if (config.isDefault ?? false) {
           await updateDefaultApp(config.appName!);
         } else {
-          String? currentDefault = await defaultApp();
-          if (currentDefault == config.appName) {
-            if (config.isDefault != null || removeNullFields) {
-              await updateDefaultApp(null);
-            }
+          if (await defaultApp() == appName) {
+            await updateDefaultApp(null);
           }
         }
       }
@@ -170,7 +168,11 @@ class ConfigService {
   Future<void> removeApp(String appName) {
     return Future.wait(
       _sharedPrefs.getKeys().where((e) => e.startsWith("$appName.")).map((e) => _sharedPrefs.remove(e)).toList(),
-    );
+    ).then((_) async {
+      if (await defaultApp() == appName) {
+        await updateDefaultApp(null);
+      }
+    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
