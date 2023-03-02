@@ -54,7 +54,7 @@ class ConfigController {
   /// Map of all active callbacks.
   final Map<String, List<Function>> _callbacks = {};
 
-  final Map<String, dynamic> _startupParameters = {};
+  final Map<String, dynamic> _customStartUpProperties = {};
 
   AppConfig? _appConfig;
 
@@ -621,16 +621,16 @@ class ConfigController {
   ///
   /// See also:
   /// * [ApiStartUpRequest]
-  Map<String, dynamic> getStartupParameters() {
-    return _startupParameters;
+  Map<String, dynamic> getCustomStartUpProperties() {
+    return _customStartUpProperties;
   }
 
   /// Set a custom startup parameter.
   ///
   /// See also:
-  /// * [getStartupParameters]
-  Future<void> updateStartupParameter({required String pKey, required dynamic pValue}) async {
-    _startupParameters[pKey] = pValue;
+  /// * [getCustomStartUpProperties]
+  void updateCustomStartUpProperties(String pKey, dynamic pValue) {
+    _customStartUpProperties[pKey] = pValue;
   }
 
   /// Register a callback that will be called when the current language changes.

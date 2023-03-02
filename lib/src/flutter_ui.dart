@@ -296,6 +296,10 @@ class FlutterUI extends StatefulWidget {
     AppConfig appConfig =
         const AppConfig.empty().merge(pAppToRun.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
 
+    // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
+    Map<String, String> queryParameters = {...Uri.base.queryParameters};
+    appConfig = appConfig.merge(_extractURIConfigParameters(queryParameters));
+
     await configController.loadConfig(appConfig, devConfig != null);
     services.registerSingleton(configController);
 
@@ -325,41 +329,8 @@ class FlutterUI extends StatefulWidget {
     apiService.setController(ApiController());
     services.registerSingleton(apiService);
 
-    // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
-    String? appName = Uri.base.queryParameters['appName'];
-    if (appName != null) {
-      await configController.updateAppName(appName);
-    }
-    if (configController.appName.value != null) {
-      String? baseUrl = Uri.base.queryParameters['baseUrl'];
-      if (baseUrl != null) {
-        try {
-          await configController.updateBaseUrl(Uri.parse(baseUrl));
-        } on FormatException catch (e, stack) {
-          FlutterUI.log.w("Failed to parse baseUrl parameter", e, stack);
-        }
-      }
-      String? username = Uri.base.queryParameters['username'];
-      if (username != null) {
-        await configController.updateUsername(username);
-      }
-      String? password = Uri.base.queryParameters['password'];
-      if (password != null) {
-        await configController.updatePassword(password);
-      }
-      String? language = Uri.base.queryParameters['language'];
-      if (language != null) {
-        await configController.updateUserLanguage(language == ConfigController().getPlatformLocale() ? null : language);
-      }
-    }
-    String? mobileOnly = Uri.base.queryParameters['mobileOnly'];
-    if (mobileOnly != null) {
-      uiService.updateMobileOnly(mobileOnly == "true");
-    }
-    String? webOnly = Uri.base.queryParameters['webOnly'];
-    if (webOnly != null) {
-      uiService.updateWebOnly(webOnly == "true");
-    }
+    await _extractURIParameters(queryParameters);
+    queryParameters.forEach((key, value) => ConfigController().updateCustomStartUpProperties(key, value));
 
     packageInfo = await PackageInfo.fromPlatform();
 
@@ -381,6 +352,68 @@ class FlutterUI extends StatefulWidget {
     IApiService().setRepository(repository);
 
     runApp(pAppToRun);
+  }
+
+  static AppConfig? _extractURIConfigParameters(Map<String, String> queryParameters) {
+    Duration? tryParseDuration(String? parameter) {
+      if (parameter != null) {
+        int? parsedParameter = int.tryParse(parameter);
+        if (parsedParameter != null) {
+          return Duration(milliseconds: parsedParameter);
+        }
+      }
+      return null;
+    }
+
+    return AppConfig(
+      requestTimeout: tryParseDuration(queryParameters.remove("requestTimeout")),
+      aliveInterval: tryParseDuration(queryParameters.remove("aliveInterval")),
+      wsPingInterval: tryParseDuration(queryParameters.remove("wsPingInterval")),
+    );
+  }
+
+  static Future<void> _extractURIParameters(Map<String, String> queryParameters) async {
+    String? appName = queryParameters.remove("appName");
+    if (appName != null) {
+      await ConfigController().updateAppName(appName);
+    }
+    if (ConfigController().appName.value != null) {
+      String? baseUrl = queryParameters.remove("baseUrl");
+      if (baseUrl != null) {
+        try {
+          var baseUri = Uri.parse(baseUrl);
+          await ConfigController().updateBaseUrl(baseUri);
+        } on FormatException catch (e, stack) {
+          FlutterUI.log.w("Failed to parse baseUrl parameter", e, stack);
+        }
+      }
+      String? username = queryParameters.remove("username") ?? queryParameters.remove("userName");
+      if (username != null) {
+        await ConfigController().updateUsername(username);
+      }
+      String? password = queryParameters.remove("password");
+      if (password != null) {
+        await ConfigController().updatePassword(password);
+      }
+      String? language = queryParameters.remove("language");
+      if (language != null) {
+        await ConfigController().updateUserLanguage(
+          language == ConfigController().getPlatformLocale() ? null : language,
+        );
+      }
+      String? timeZone = queryParameters.remove("timeZone");
+      if (timeZone != null) {
+        await ConfigController().updateApplicationTimeZone(timeZone);
+      }
+    }
+    String? mobileOnly = queryParameters.remove("mobileOnly");
+    if (mobileOnly != null) {
+      IUiService().updateMobileOnly(mobileOnly == "true");
+    }
+    String? webOnly = queryParameters.remove("webOnly");
+    if (webOnly != null) {
+      IUiService().updateWebOnly(webOnly == "true");
+    }
   }
 
   static Future<List<ServerConfig>> getApps() async {

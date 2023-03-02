@@ -63,7 +63,7 @@ class AppConfig {
   final VersionConfig? versionConfig;
   final OfflineConfig? offlineConfig;
 
-  final Map<String, dynamic>? startupParameters;
+  final Map<String, dynamic>? applicationParameters;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -83,7 +83,7 @@ class AppConfig {
     this.serverConfigs,
     this.versionConfig,
     this.offlineConfig,
-    this.startupParameters,
+    this.applicationParameters,
   });
 
   const AppConfig.empty()
@@ -117,7 +117,7 @@ class AppConfig {
           serverConfigs: (json['serverConfigs'] as List<dynamic>?)?.map((e) => ServerConfig.fromJson(e)).toList(),
           versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json['versionConfig']) : null,
           offlineConfig: json['offlineConfig'] != null ? OfflineConfig.fromJson(json['offlineConfig']) : null,
-          startupParameters: json['startupParameters'],
+          applicationParameters: json['applicationParameters'],
         );
 
   AppConfig merge(AppConfig? other) {
@@ -137,7 +137,7 @@ class AppConfig {
       serverConfigs: other.serverConfigs ?? serverConfigs,
       versionConfig: versionConfig?.merge(other.versionConfig) ?? other.versionConfig,
       offlineConfig: offlineConfig?.merge(other.offlineConfig) ?? other.offlineConfig,
-      startupParameters: (startupParameters ?? {})..addAll(other.startupParameters ?? {}),
+      applicationParameters: (applicationParameters ?? {})..addAll(other.applicationParameters ?? {}),
     );
   }
 }

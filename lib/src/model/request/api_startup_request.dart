@@ -87,8 +87,8 @@ class ApiStartUpRequest extends ApiRequest {
   /// The supported server version.
   final String? serverVersion;
 
-  /// Custom startup parameters
-  final Map<String, dynamic>? startUpParameters;
+  /// Custom startup properties.
+  final Map<String, dynamic>? customStartUpProperties;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -107,7 +107,7 @@ class ApiStartUpRequest extends ApiRequest {
     this.username,
     this.password,
     this.authKey,
-    this.startUpParameters,
+    this.customStartUpProperties,
     this.readAheadLimit,
     this.deviceId,
     this.technology,
@@ -146,6 +146,6 @@ class ApiStartUpRequest extends ApiRequest {
         if (deviceType != null) ApiObjectProperty.deviceType: deviceType,
         if (deviceTypeModel != null) ApiObjectProperty.deviceTypeModel: deviceTypeModel,
         if (serverVersion != null) ApiObjectProperty.serverVersion: serverVersion,
-        ...?startUpParameters
+        ...?customStartUpProperties?.map((key, value) => MapEntry("custom_$key", value)),
       };
 }
