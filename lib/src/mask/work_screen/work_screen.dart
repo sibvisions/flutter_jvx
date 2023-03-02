@@ -483,11 +483,11 @@ class WorkScreenState extends State<WorkScreen> {
           [
             CloseScreenCommand(
               reason: "Work screen back",
-              screenName: widget.screenName,
+              screenName: model!.name,
             ),
             DeleteScreenCommand(
               reason: "Work screen back",
-              screenName: widget.screenName,
+              screenName: model!.name,
             )
           ],
         );
