@@ -24,8 +24,6 @@ import '../service/api/shared/api_object_property.dart';
 abstract class ParseUtil {
   static const String urlSuffix = "/services/mobile";
 
-  static T? castOrNull<T>(dynamic x) => x is T ? x : null;
-
   static bool isHTML(String? text) {
     return text != null && text.length >= 6 && text.substring(0, 6).toLowerCase().startsWith("<html>");
   }

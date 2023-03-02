@@ -32,7 +32,6 @@ import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/filter.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
-import '../../../../util/parse_util.dart';
 import '../../../config/config_controller.dart';
 import '../../../data/i_data_service.dart';
 import '../i_repository.dart';
@@ -318,8 +317,8 @@ class OfflineApiRepository implements IRepository {
   List<FilterCondition> _getLastFilter(String dataProvider) {
     return [
       ...?_getFilter(
-        ParseUtil.castOrNull(_databookLastFilter[dataProvider]),
-        ParseUtil.castOrNull(_databookLastFilter[dataProvider]),
+        cast(_databookLastFilter[dataProvider]),
+        cast(_databookLastFilter[dataProvider]),
       )
     ];
   }
