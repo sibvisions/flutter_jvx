@@ -83,18 +83,20 @@ class _SingleAppViewState extends State<SingleAppView> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: imageProvider != null ? MainAxisAlignment.start : MainAxisAlignment.center,
               children: [
-                if (imageProvider != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Center(
-                      child: SizedBox(
-                        height: 150,
-                        child: AppImage(
-                          image: imageProvider,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Center(
+                    child: SizedBox(
+                      height: 150,
+                      child: AppImage(
+                        name: appNameController.text,
+                        image: AppOverviewPage.getAppIcon(
+                          appNameController.text != widget.config?.appName ? null : widget.config,
                         ),
                       ),
                     ),
                   ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: Material(
@@ -108,7 +110,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                         onChanged: (_) => setState(() {}),
                         decoration: InputDecoration(
                           icon: const FaIcon(FontAwesomeIcons.cubes),
-                          labelText: "${FlutterUI.translate("App Name")}*",
+                          labelText: FlutterUI.translate("App Name"),
                           border: InputBorder.none,
                           suffixIcon: appNameController.text.isNotEmpty
                               ? ExcludeFocus(
@@ -138,7 +140,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                         onSubmitted: (value) => _start(),
                         decoration: InputDecoration(
                           icon: const FaIcon(FontAwesomeIcons.globe),
-                          labelText: "${FlutterUI.translate("URL")}*",
+                          labelText: FlutterUI.translate("URL"),
                           border: InputBorder.none,
                           hintText: "http://host:port/services/mobile",
                           suffixIcon: baseUrlController.text.isNotEmpty
@@ -155,7 +157,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  padding: const EdgeInsets.only(top: 20.0),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: ConstrainedBox(
@@ -164,7 +166,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                         type: MaterialType.button,
                         elevation: 6.0,
                         borderRadius: BorderRadius.circular(borderRadius),
-                        color: Theme.of(context).colorScheme.primaryContainer,
+                        color: Theme.of(context).colorScheme.primary,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(borderRadius),
                           onTap: () => _start(),
@@ -175,19 +177,19 @@ class _SingleAppViewState extends State<SingleAppView> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  FlutterUI.translate("Open"),
+                                  FlutterUI.translate("Start"),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                    color: Theme.of(context).colorScheme.onPrimary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const Spacer(),
                                 FaIcon(
-                                  FontAwesomeIcons.arrowRight,
+                                  FontAwesomeIcons.play,
                                   size: 32,
-                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ],
                             ),

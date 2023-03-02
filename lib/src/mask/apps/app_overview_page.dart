@@ -41,7 +41,7 @@ class AppOverviewPage extends StatefulWidget {
   static ImageProvider? getAppIcon(ServerConfig? config) {
     if (config == null) return null;
     String? styleIcon = ConfigController().getAppStyle(config.appName)?["icon"];
-    return (config.icon != null || styleIcon != null
+    return ((config.icon != null && config.appName != null && config.baseUrl != null) || styleIcon != null
         ? ImageLoader.getImageProvider(
             styleIcon ?? config.icon!,
             appName: config.appName,
@@ -198,7 +198,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          FlutterUI.translate(singleApp ? "APP" : "APPS"),
+                                          FlutterUI.translate(singleApp ? "Application" : "Applications"),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 32,
