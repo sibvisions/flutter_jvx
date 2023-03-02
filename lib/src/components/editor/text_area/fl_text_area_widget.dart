@@ -122,9 +122,6 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
 
     EdgeInsets paddings = FlTextFieldWidget.TEXT_FIELD_PADDING(pModel.createTextStyle());
 
-    /// -4 => The editable text inside a textfield is somehow 8 pixels bigger.
-    paddings -= const EdgeInsets.fromLTRB(0, 4, 0, 4);
-
     if (pModel.rows > 1) {
       height -= paddings.vertical;
       height *= pModel.rows;
