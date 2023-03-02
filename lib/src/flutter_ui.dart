@@ -480,6 +480,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   Future<void>? startupFuture;
 
+  /// The last password that the user entered, used for offline switch.
+  String? lastPassword;
+
   @override
   void initState() {
     super.initState();
@@ -570,18 +573,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       return;
     }
 
-    ServerConfig? defaultConfig;
-    if (app?.appName != null) {
-      defaultConfig =
-          ConfigController().getAppConfig()!.serverConfigs?.firstWhereOrNull((e) => e.appName == app!.appName);
-    }
+    ServerConfig? predefinedConfig = ConfigController().getPredefinedApp(ConfigController().appName.value);
 
     // Send startup to server
     await ICommandService().sendCommand(StartupCommand(
       reason: "InitApp",
       appName: app?.appName,
-      username: app?.username ?? defaultConfig?.username,
-      password: app?.password ?? defaultConfig?.password,
+      username: app?.username ?? predefinedConfig?.username,
+      password: app?.password ?? predefinedConfig?.password,
     ));
   }
 

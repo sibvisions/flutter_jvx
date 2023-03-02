@@ -23,7 +23,6 @@ import '../../model/command/api/cancel_login_command.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/reset_password_command.dart';
 import '../../service/command/i_command_service.dart';
-import '../../service/config/config_controller.dart';
 import '../../util/jvx_webview.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
@@ -92,8 +91,7 @@ class LoginPage extends StatelessWidget {
   }) =>
       ICommandService().sendCommand(LoginCommand(
         loginMode: mode,
-        username: username ?? ConfigController().username.value,
-        password: password ?? ConfigController().password.value,
+        username: username,
         confirmationCode: confirmationCode,
         createAuthKey: createAuthKey,
         reason: "LoginButton",

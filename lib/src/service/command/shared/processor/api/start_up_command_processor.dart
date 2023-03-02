@@ -33,12 +33,6 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
     if (command.appName != null) {
       await ConfigController().updateAppName(command.appName!);
     }
-    if (command.username != null) {
-      await ConfigController().updateUsername(command.username!);
-    }
-    if (command.password != null) {
-      await ConfigController().updatePassword(command.password!);
-    }
 
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
 
@@ -57,8 +51,8 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       screenWidth: ConfigController().getPhoneSize()?.width.toInt(),
       readAheadLimit: 100,
       deviceMode: (kIsWeb && !IUiService().mobileOnly.value) || IUiService().webOnly.value ? "mobileDesktop" : "mobile",
-      username: command.username,
-      password: command.password,
+      username: command.username ?? ConfigController().username.value,
+      password: command.password ?? ConfigController().password.value,
       langCode: ConfigController().userLanguage.value ?? ConfigController().getPlatformLocale(),
       timeZoneCode: ConfigController().getPlatformTimeZone()!,
       technology: deviceInfo.technology,

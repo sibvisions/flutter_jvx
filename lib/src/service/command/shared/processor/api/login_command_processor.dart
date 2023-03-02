@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/login_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
@@ -30,8 +31,12 @@ class LoginCommandProcessor implements ICommandProcessor<LoginCommand> {
 
     if (clientId != null) {
       // Save values from last login attempt (used for user convenience and MFA login)
-      await ConfigController().updateUsername(command.username);
-      await ConfigController().updatePassword(command.password);
+      if (command.username?.isNotEmpty ?? false) {
+        await ConfigController().updateUsername(command.username);
+      }
+      if (command.loginMode == LoginMode.Manual) {
+        FlutterUI.of(FlutterUI.getCurrentContext()!).lastPassword = command.password;
+      }
 
       ApiLoginRequest loginRequest = ApiLoginRequest(
         loginMode: command.loginMode,

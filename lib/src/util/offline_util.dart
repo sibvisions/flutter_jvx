@@ -191,6 +191,7 @@ abstract class OfflineUtil {
         IDataService().clearDataBooks();
 
         await ConfigController().updateOffline(false);
+        await ConfigController().updatePassword(null);
         await offlineApiRepository.stop();
 
         FlPanelModel? workscreenModel =
@@ -441,6 +442,8 @@ abstract class OfflineUtil {
       await Wakelock.enable();
       // Set already here to receive errors from api responses
       await ConfigController().updateOffline(true);
+      // Save password for re-sync
+      await ConfigController().updatePassword(FlutterUI.of(FlutterUI.getCurrentContext()!).lastPassword);
 
       unawaited(IUiService().openDialog(
         pIsDismissible: false,
