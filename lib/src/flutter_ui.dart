@@ -78,6 +78,7 @@ import 'util/import_handler/import_handler.dart';
 import 'util/jvx_colors.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
+import 'util/route_observer.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterUI extends StatefulWidget {
@@ -857,30 +858,3 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 }
 
 T? cast<T>(x) => x is T ? x : null;
-
-class RoutesObserver extends NavigatorObserver {
-  final List<Route> knownRoutes = [];
-
-  @override
-  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    knownRoutes.remove(oldRoute);
-    if (newRoute != null) {
-      knownRoutes.add(newRoute);
-    }
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    knownRoutes.remove(route);
-  }
-
-  @override
-  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    knownRoutes.remove(route);
-  }
-
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    knownRoutes.add(route);
-  }
-}
