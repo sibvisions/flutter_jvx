@@ -50,6 +50,7 @@ import '../../../routing/locations/login_location.dart';
 import '../../../routing/locations/settings_location.dart';
 import '../../../routing/locations/work_screen_location.dart';
 import '../../../util/extensions/string_extensions.dart';
+import '../../../util/jvx_colors.dart';
 import '../../command/i_command_service.dart';
 import '../../config/config_controller.dart';
 import '../../data/i_data_service.dart';
@@ -920,6 +921,16 @@ class UiService implements IUiService {
         context: FlutterUI.getCurrentContext()!,
         builder: (context) => ContentBottomSheet(
           model: panelModel,
+        ),
+        barrierColor: JVxColors.LIGHTER_BLACK.withOpacity(0.75),
+        topControl: Container(
+          height: 30,
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            height: 6,
+            width: 40,
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6)),
+          ),
         ),
         enableDrag: true,
         expand: true,
