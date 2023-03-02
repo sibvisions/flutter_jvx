@@ -307,6 +307,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         image: AppOverviewPage.getAppIcon(app),
                         isDefault: app.isDefault ?? false,
                         locked: isLocked || (app.locked ?? false),
+                        predefined: ConfigController().getPredefinedApp(app.appName) != null,
                         onTap: app.isStartable ? () => FlutterUI.of(context).startApp(app: app) : null,
                         onLongPress:
                             !isHidden && !(app.hidden ?? false) ? () => _openAppEditor(context, editConfig: app) : null,

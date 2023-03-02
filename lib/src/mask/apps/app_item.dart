@@ -28,6 +28,7 @@ class AppItem extends StatelessWidget {
     this.image,
     this.icon,
     this.isDefault = false,
+    this.predefined = false,
     this.locked = false,
   });
 
@@ -37,6 +38,7 @@ class AppItem extends StatelessWidget {
   final ImageProvider? image;
   final IconData? icon;
   final bool isDefault;
+  final bool predefined;
   final bool locked;
 
   @override
@@ -115,6 +117,16 @@ class AppItem extends StatelessWidget {
                 ),
               ),
             ),
+            if (predefined)
+              Positioned(
+                top: 10,
+                left: 10,
+                child: Icon(
+                  Icons.inventory_2,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
             if (locked)
               Positioned(
                 top: 10,
@@ -122,7 +134,7 @@ class AppItem extends StatelessWidget {
                 child: Icon(
                   Icons.lock,
                   size: 18,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             if (isDefault)

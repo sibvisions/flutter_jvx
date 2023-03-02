@@ -218,12 +218,21 @@ class _AppEditDialogState extends State<AppEditDialog> {
                     child: Tooltip(
                       message: FlutterUI.translate(
                           "This app is provided by your current installation and cannot be removed."),
-                      child: Badge(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        largeSize: 24.0,
-                        label: Text(FlutterUI.translate("Provided")),
-                        textColor: Theme.of(context).colorScheme.onPrimary,
+                      child: Chip(
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                        side: BorderSide.none,
+                        visualDensity: VisualDensity.compact,
+                        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 12),
+                        labelPadding: const EdgeInsets.only(left: 4.0),
                         backgroundColor: Theme.of(context).colorScheme.primary,
+                        avatar: Icon(
+                          Icons.inventory_2,
+                          size: 16,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        label: Text(
+                          FlutterUI.translate("Provided"),
+                        ),
                       ),
                     ),
                   ),
