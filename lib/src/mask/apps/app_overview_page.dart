@@ -169,6 +169,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
           builder: (context) {
             return Scaffold(
               body: Stack(
+                fit: StackFit.expand,
                 children: [
                   if (backgroundBuilder != null) backgroundBuilder!.call(context),
                   if (backgroundBuilder == null)
@@ -188,7 +189,6 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
                           child: Stack(
-                            fit: StackFit.expand,
                             children: [
                               Positioned.fill(
                                 child: Column(
