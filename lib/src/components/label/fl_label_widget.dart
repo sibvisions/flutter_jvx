@@ -14,15 +14,14 @@
  * the License.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import '../../mask/frame/frame.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
 import '../../util/parse_util.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
+import '../editor/text_field/fl_text_field_widget.dart';
 
 class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   final VoidCallback? onPress;
@@ -43,17 +42,8 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       child = getTooltipWidget(child);
     }
 
-    EdgeInsets? padding;
-
-    if (Frame.isWebFrame()) {
-      padding = const EdgeInsets.fromLTRB(0, 7, 0, 7);
-    } else {
-      if (kIsWeb) {
-        padding = const EdgeInsets.fromLTRB(0, 15, 0, 15);
-      } else {
-        padding = const EdgeInsets.fromLTRB(0, 13, 0, 13);
-      }
-    }
+    EdgeInsets padding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle());
+    padding -= EdgeInsets.fromLTRB(padding.left, 1, padding.right, 1);
 
     return GestureDetector(
       onTap: onPress,

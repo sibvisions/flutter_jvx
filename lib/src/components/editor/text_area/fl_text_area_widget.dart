@@ -19,7 +19,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../flutter_ui.dart';
-import '../../../mask/frame/frame.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../text_field/fl_text_field_widget.dart';
@@ -118,17 +117,17 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     });
   }
 
-  static Size calculateTextAreaHight(Size pCalculatedSize, int pRows) {
+  static Size calculateTextAreaHight(Size pCalculatedSize, FlTextAreaModel pModel) {
     double height = pCalculatedSize.height;
 
-    EdgeInsets paddings = Frame.isWebFrame() ? FlTextFieldWidget.WEBFRAME_PADDING : FlTextFieldWidget.MOBILE_PADDING;
+    EdgeInsets paddings = FlTextFieldWidget.TEXT_FIELD_PADDING(pModel.createTextStyle());
 
     /// -4 => The editable text inside a textfield is somehow 8 pixels bigger.
     paddings -= const EdgeInsets.fromLTRB(0, 4, 0, 4);
 
-    if (pRows > 1) {
+    if (pModel.rows > 1) {
       height -= paddings.vertical;
-      height *= pRows;
+      height *= pModel.rows;
       height += paddings.vertical;
     }
 

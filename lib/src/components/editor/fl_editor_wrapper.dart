@@ -154,13 +154,13 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       } else if (cellEditor is FlTextCellEditor &&
           (cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_WRAPPEDMULTILINE ||
               cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_MULTILINE)) {
-        FlTextFieldModel textModel = cellEditor.createWidgetModel() as FlTextFieldModel;
+        FlTextAreaModel textModel = cellEditor.createWidgetModel() as FlTextAreaModel;
 
         textModel.applyFromJson(model.json);
 
         newCalcSize = Size(
           width,
-          FlTextAreaWidget.calculateTextAreaHight(pLayoutData.calculatedSize!, textModel.rows).height,
+          FlTextAreaWidget.calculateTextAreaHight(pLayoutData.calculatedSize!, textModel).height,
         );
       } else {
         newCalcSize = Size(

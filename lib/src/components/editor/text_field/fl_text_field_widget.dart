@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -24,6 +25,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../util/jvx_colors.dart';
+import '../../../util/parse_util.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
 
 enum FlTextBorderType {
@@ -40,15 +42,29 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  // The height of a mobile text field.
+  static const double MOBILE_HEIGHT = kMinInteractiveDimension;
+
+  // The height of a web frame text field.
+  static const double WEBFRAME_HEIGHT = 32;
+
+  // The height of a text field.
+  // ignore: non_constant_identifier_names
+  static double get TEXT_FIELD_HEIGHT => Frame.isWebFrame() ? WEBFRAME_HEIGHT : MOBILE_HEIGHT;
+
+  // ignore: non_constant_identifier_names
+  static EdgeInsets TEXT_FIELD_PADDING(TextStyle pStyle) {
+    double verticalPadding = (TEXT_FIELD_HEIGHT - ParseUtil.getTextHeight(text: "a", style: pStyle)) / 2;
+
+    return EdgeInsets.fromLTRB(10, verticalPadding, 10, verticalPadding);
+  }
+
   /// How much space an icon should take up in the text field.
   static const double iconAreaSize = 24;
 
   /// How much space the icon is itself
   static const double iconSize = 16;
 
-  static const EdgeInsets MOBILE_PADDING = EdgeInsets.fromLTRB(10, 12, 10, 12);
-
-  static const EdgeInsets WEBFRAME_PADDING = EdgeInsets.fromLTRB(10, 12, 10, 12);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,7 +88,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  EdgeInsets get contentPadding => Frame.isWebFrame() ? WEBFRAME_PADDING : MOBILE_PADDING;
+  EdgeInsets get contentPadding => TEXT_FIELD_PADDING(model.createTextStyle());
 
   EdgeInsets get iconsPadding => const EdgeInsets.only(left: 5, right: 10);
 
@@ -137,7 +153,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       decoration: inputDecoration.copyWith(
         enabled: model.isEnabled,
         hintText: model.placeholder,
-        contentPadding: contentPadding,
+        contentPadding: kIsWeb ? contentPadding + const EdgeInsets.only(top: 4, bottom: 4) : contentPadding,
         border: createBorder(FlTextBorderType.border),
         errorBorder: createBorder(FlTextBorderType.errorBorder),
         enabledBorder: createBorder(FlTextBorderType.enabledBorder),
@@ -149,7 +165,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         suffix: createSuffix(),
         fillColor: fillColor,
         filled: true,
-        isDense: Frame.isWebFrame(),
+        isDense: true,
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
       textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
@@ -226,11 +242,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     List<Widget> suffixIconItems = createSuffixIconItems();
 
-    /// -4 => The editable text inside a textfield is 8 pixels bigger if using dense.
-    double paddingAdjustment = 0;
-    if (Frame.isWebFrame()) {
-      paddingAdjustment = -4 - ((iconAreaSize - iconSize) / 2);
-    }
+    double paddingAdjustment = -((iconAreaSize - iconSize) / 2);
 
     EdgeInsets? containerPadding;
     if (suffixIconItems.isNotEmpty) {

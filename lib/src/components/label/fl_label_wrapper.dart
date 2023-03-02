@@ -49,8 +49,6 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
     if (ParseUtil.isHTML(model.text)) {
       return const Size(400, 100);
     }
-    double minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(double.infinity).ceilToDouble();
-    double minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
-    return Size(minWidth, minHeight);
+    return super.calculateSize(context);
   }
 }
