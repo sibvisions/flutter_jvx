@@ -420,7 +420,7 @@ class FlutterUI extends StatefulWidget {
     return (await Future.wait(
       ConfigController().getAppNames().map((e) async => await ConfigController().getApp(e)).toList(),
     ))
-        .sortedBy<String>((app) => (app.title ?? app.appName ?? "").toLowerCase());
+        .sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase());
   }
 
   /// Adds/Updates this config.

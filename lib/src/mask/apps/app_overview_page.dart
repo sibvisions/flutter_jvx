@@ -303,7 +303,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                       var app = apps![index];
                       return AppItem(
                         key: ObjectKey(app),
-                        app: app.title ?? app.appName!,
+                        appTitle: app.effectiveTitle!,
                         image: AppOverviewPage.getAppIcon(app),
                         isDefault: app.isDefault ?? false,
                         locked: isLocked || (app.locked ?? false),
@@ -313,7 +313,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                       );
                     } else if (showAddOnFront) {
                       return AppItem(
-                        app: "Add",
+                        appTitle: "Add",
                         icon: Icons.add,
                         onTap: isLocked ? null : () => _showAddApp(context),
                       );

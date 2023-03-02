@@ -93,6 +93,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                         child: SizedBox(
                           height: 100,
                           child: AppImage(
+                            name: widget.config?.effectiveTitle,
                             image: AppOverviewPage.getAppIcon(widget.config),
                           ),
                         ),

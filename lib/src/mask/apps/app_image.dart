@@ -14,8 +14,8 @@
  * the License.
  */
 
+import 'package:avatars/avatars.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
@@ -25,11 +25,13 @@ import '../../util/jvx_colors.dart';
 class AppImage extends StatelessWidget {
   const AppImage({
     super.key,
+    this.name,
     this.image,
     this.icon,
     this.fit = BoxFit.scaleDown,
   });
 
+  final String? name;
   final ImageProvider<Object>? image;
   final IconData? icon;
   final BoxFit fit;
@@ -61,13 +63,8 @@ class AppImage extends StatelessWidget {
               ),
             ),
           if (image == null && icon == null)
-            SvgPicture.asset(
-              ImageLoader.getAssetPath(
-                FlutterUI.package,
-                "assets/images/VisionX_X.svg",
-              ),
-              fit: fit,
-              height: 80,
+            Avatar(
+              name: name,
             ),
         ],
       ),

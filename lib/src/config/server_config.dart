@@ -85,6 +85,8 @@ class ServerConfig {
   /// Whether this config contains enough information to send a [ApiStartUpRequest].
   bool get isStartable => (appName?.isNotEmpty ?? false) && baseUrl != null;
 
+  String? get effectiveTitle => title ?? appName;
+
   /// Returns a new [ServerConfig] which contains the merged fields of [this] and [other].
   ServerConfig merge(ServerConfig? other) {
     if (other == null) return this;

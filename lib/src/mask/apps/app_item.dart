@@ -22,7 +22,7 @@ import 'app_image.dart';
 class AppItem extends StatelessWidget {
   const AppItem({
     super.key,
-    required this.app,
+    required this.appTitle,
     this.onTap,
     this.onLongPress,
     this.image,
@@ -31,7 +31,7 @@ class AppItem extends StatelessWidget {
     this.locked = false,
   });
 
-  final String app;
+  final String appTitle;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final ImageProvider? image;
@@ -66,6 +66,7 @@ class AppItem extends StatelessWidget {
                     padding: const EdgeInsets.all(16.0),
                     child: Center(
                       child: AppImage(
+                        name: appTitle,
                         image: image,
                         icon: icon,
                       ),
@@ -85,7 +86,7 @@ class AppItem extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
                         child: Text(
-                          app,
+                          appTitle,
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
