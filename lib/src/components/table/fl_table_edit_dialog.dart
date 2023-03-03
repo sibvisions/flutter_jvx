@@ -7,18 +7,33 @@ import '../../model/command/api/restore_data_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 
+/// A dialog that allows editing columns in a table.
 class FlTableEditDialog extends StatefulWidget {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The index of the row to edit.
   final int rowIndex;
 
+  /// If the row got updated while the dialog was open, this will be called.
   final ValueNotifier<Map<String, dynamic>?> newValueNotifier;
 
+  /// The column definitions of the columns to edit.
   final List<ColumnDefinition> columnDefinitions;
 
+  /// The values of the row to edit.
   final Map<String, dynamic> values;
 
+  /// Called when the user is done editing a cell. Will only happen if more than one cell is edited.
   final TableValueChangedCallback onEndEditing;
 
+  /// The model of the table.
   final FlTableModel model;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const FlTableEditDialog({
     super.key,
@@ -30,12 +45,35 @@ class FlTableEditDialog extends StatefulWidget {
     required this.model,
   });
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   State<FlTableEditDialog> createState() => _FlTableEditDialogState();
 }
 
 class _FlTableEditDialogState extends State<FlTableEditDialog> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The cell editors of the columns to edit.
   List<ICellEditor> cellEditors = [];
+
+  /// If the table edits a singular column, the dialog will switch to local editing, without immediatly sending the value to the server.
+  /// Moreover the cancel button will only cancel the local changes, instead of resetting the whole row.
+  bool get isSingleColumnEdit => widget.columnDefinitions.length == 1;
+
+  /// The local value if the dialog only edits one column.
+  dynamic localValue;
+
+  /// If the dialog was dismissed by either button.
+  bool dismissedByButton = false;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void initState() {
@@ -48,8 +86,15 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         pName: widget.model.name,
         pCellEditorJson: colDef.cellEditorJson,
         columnDefinition: colDef,
-        onChange: (_) {},
-        onEndEditing: (value) => widget.onEndEditing(value, widget.rowIndex, colDef.name),
+        onChange: (value) {
+          localValue = value;
+        },
+        onEndEditing: (value) {
+          localValue = value;
+          if (!isSingleColumnEdit) {
+            widget.onEndEditing(value, widget.rowIndex, colDef.name);
+          }
+        },
         onFocusChanged: (_) {},
         isInTable: false,
       );
@@ -81,7 +126,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     String dialogLabel;
     List<Widget> editorWidgets = [];
 
-    if (widget.columnDefinitions.length == 1) {
+    if (isSingleColumnEdit) {
       dialogLabel = widget.columnDefinitions.first.label;
 
       ICellEditor cellEditor = cellEditors[0];
@@ -191,12 +236,10 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                   width: 8,
                 ),
                 TextButton(
+                  onPressed: _handleOk,
                   child: Text(
                     FlutterUI.translate("Ok"),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
                 ),
               ],
             ),
@@ -208,12 +251,19 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
   @override
   void dispose() {
+    if (!dismissedByButton) {
+      _handleCancel(true);
+    }
     widget.newValueNotifier.removeListener(receiveNewValues);
     cellEditors.forEach((element) {
       element.dispose();
     });
     super.dispose();
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void receiveNewValues() {
     Map<String, dynamic>? newValues = widget.newValueNotifier.value;
@@ -230,11 +280,25 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     });
   }
 
-  void _handleCancel() {
-    IUiService().sendCommand(RestoreDataCommand(
-      dataProvider: widget.model.dataProvider,
-      reason: "Pressed cancel in table edit dialog",
-    ));
+  void _handleOk() {
+    dismissedByButton = true;
+    if (isSingleColumnEdit) {
+      widget.onEndEditing(localValue, widget.rowIndex, widget.columnDefinitions.first.name);
+    }
+
     Navigator.of(context).pop();
+  }
+
+  void _handleCancel([bool fromDispose = false]) {
+    dismissedByButton = true;
+    if (!isSingleColumnEdit) {
+      IUiService().sendCommand(RestoreDataCommand(
+        dataProvider: widget.model.dataProvider,
+        reason: "Pressed cancel in table edit dialog",
+      ));
+    }
+    if (!fromDispose) {
+      Navigator.of(context).pop();
+    }
   }
 }
