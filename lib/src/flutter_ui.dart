@@ -579,7 +579,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     // Send startup to server
     await ICommandService().sendCommand(StartupCommand(
       reason: "InitApp",
-      appName: app?.appName,
       username: app?.username ?? predefinedConfig?.username,
       password: app?.password ?? predefinedConfig?.password,
     ));

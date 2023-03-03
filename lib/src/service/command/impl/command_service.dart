@@ -24,6 +24,7 @@ import '../../../exceptions/session_expired_exception.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/api/device_status_command.dart';
+import '../../../model/command/api/exit_command.dart';
 import '../../../model/command/api/session_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
@@ -181,10 +182,19 @@ class CommandService implements ICommandService {
         return;
       }
     } on SessionExpiredException catch (e) {
+      // Don't process ExitCommands
+      if (pCommand is ExitCommand) {
+        return;
+      }
       FlutterUI.logCommand.w("Server sent HTTP ${e.statusCode}, session seems to be expired.");
       commands.add(OpenSessionExpiredDialogCommand(
         reason: "Server sent HTTP ${e.statusCode}",
       ));
+    }
+
+    // Don't process ExitCommands
+    if (pCommand is ExitCommand) {
+      return;
     }
 
     FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");

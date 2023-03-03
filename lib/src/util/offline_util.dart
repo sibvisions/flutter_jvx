@@ -67,7 +67,6 @@ abstract class OfflineUtil {
     try {
       await Wakelock.enable();
       String offlineWorkscreenClassName = ConfigController().offlineScreen.value!;
-      String offlineAppName = ConfigController().appName.value!;
       String offlineUsername = ConfigController().username.value!;
       String offlinePassword = ConfigController().password.value!;
 
@@ -91,7 +90,6 @@ abstract class OfflineUtil {
       await ICommandService().sendCommand(
         StartupCommand(
           reason: "Going online",
-          appName: offlineAppName,
           username: offlineUsername,
           password: offlinePassword,
         ),
@@ -204,7 +202,6 @@ abstract class OfflineUtil {
         await ICommandService().sendCommand(
           StartupCommand(
             reason: "Going online",
-            appName: offlineAppName,
             username: offlineUsername,
             password: offlinePassword,
           ),

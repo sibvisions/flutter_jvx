@@ -30,10 +30,6 @@ import '../../i_command_processor.dart';
 class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
-    if (command.appName != null) {
-      await ConfigController().updateAppName(command.appName!);
-    }
-
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
 
     // Close frames on (re-)start

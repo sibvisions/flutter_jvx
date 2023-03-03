@@ -23,9 +23,6 @@ class StartupCommand extends ApiCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The app name
-  final String? appName;
-
   /// The username
   final String? username;
 
@@ -37,7 +34,6 @@ class StartupCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   StartupCommand({
-    this.appName,
     this.username,
     this.password,
     super.showLoading,
@@ -62,6 +58,6 @@ class StartupCommand extends ApiCommand {
 
   @override
   String toString() {
-    return "StartupCommand{appName: $appName, username: $username, ${super.toString()}}";
+    return "StartupCommand{username: $username, ${super.toString()}}";
   }
 }
