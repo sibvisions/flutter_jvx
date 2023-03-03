@@ -88,10 +88,12 @@ class _SingleAppViewState extends State<SingleAppView> {
                   child: Center(
                     child: SizedBox(
                       height: 150,
-                      child: AppImage(
-                        name: appNameController.text,
-                        image: AppOverviewPage.getAppIcon(
-                          appNameController.text != widget.config?.appName ? null : widget.config,
+                      child: Center(
+                        child: AppImage(
+                          name: appNameController.text,
+                          image: AppOverviewPage.getAppIcon(
+                            appNameController.text != widget.config?.appName ? null : widget.config,
+                          ),
                         ),
                       ),
                     ),
@@ -110,7 +112,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                         onChanged: (_) => setState(() {}),
                         decoration: InputDecoration(
                           icon: const FaIcon(FontAwesomeIcons.cubes),
-                          labelText: FlutterUI.translate("App Name"),
+                          labelText: FlutterUI.translate("Name"),
                           border: InputBorder.none,
                           suffixIcon: appNameController.text.isNotEmpty
                               ? ExcludeFocus(
@@ -176,16 +178,20 @@ class _SingleAppViewState extends State<SingleAppView> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  FlutterUI.translate("Start"),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 4.0),
+                                    child: Text(
+                                      FlutterUI.translate("Start"),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onPrimary,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                const Spacer(),
                                 FaIcon(
                                   FontAwesomeIcons.play,
                                   size: 32,

@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../flutter_ui.dart';
 import 'app_image.dart';
 
 class AppItem extends StatelessWidget {
@@ -52,111 +53,117 @@ class AppItem extends StatelessWidget {
               backgroundBlendMode: BlendMode.darken,
             )
           : null,
-      child: Material(
-        type: MaterialType.card,
-        borderRadius: BorderRadius.circular(borderRadius),
-        elevation: 5,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Material(
+            clipBehavior: Clip.hardEdge,
+            type: MaterialType.card,
+            borderRadius: BorderRadius.circular(borderRadius),
+            elevation: 5,
+            child: Stack(
               children: [
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Center(
-                      child: AppImage(
-                        name: appTitle,
-                        image: image,
-                        icon: icon,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Material(
-                    color:
-                        Theme.of(context).brightness == Brightness.light ? Colors.grey.shade200 : Colors.grey.shade700,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(borderRadius),
-                      bottomRight: Radius.circular(borderRadius),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(
-                          appTitle,
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            height: 1.2,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(
+                          child: AppImage(
+                            name: appTitle,
+                            image: image,
+                            icon: icon,
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 2,
+                      child: Material(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.grey.shade200
+                            : Colors.grey.shade700,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(borderRadius),
+                          bottomRight: Radius.circular(borderRadius),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              appTitle,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                height: 1.2,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Positioned.fill(
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  // NoSplash.splashFactory doesn't work
-                  highlightColor: onTap != null ? null : Colors.transparent,
-                  splashColor: onTap != null ? null : Colors.transparent,
-                  onTap: onTap,
-                  onLongPress: onLongPress,
-                ),
-              ),
-            ),
-            if (predefined)
-              Positioned(
-                top: 10,
-                left: 10,
-                child: Icon(
-                  Icons.inventory_2,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            if (locked)
-              Positioned(
-                top: 10,
-                left: 10,
-                child: Icon(
-                  Icons.lock,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            if (isDefault)
-              Positioned(
-                top: -9,
-                right: -9,
-                child: Material(
-                  color: Theme.of(context).colorScheme.primary,
-                  elevation: 2,
-                  borderRadius: BorderRadius.circular(32),
-                  child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: FaIcon(
-                      FontAwesomeIcons.check,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      size: 18,
+                Positioned.fill(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(borderRadius),
+                      // NoSplash.splashFactory doesn't work
+                      highlightColor: onTap != null ? null : Colors.transparent,
+                      splashColor: onTap != null ? null : Colors.transparent,
+                      onTap: onTap,
+                      onLongPress: onLongPress,
                     ),
                   ),
                 ),
+                if (locked)
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: Icon(
+                      Icons.lock,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                if (predefined)
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Banner(
+                      message: FlutterUI.translate("Provided"),
+                      location: BannerLocation.topEnd,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (isDefault)
+            Positioned(
+              top: -9,
+              right: -9,
+              child: Material(
+                color: Theme.of(context).colorScheme.primary,
+                elevation: 2,
+                borderRadius: BorderRadius.circular(32),
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: FaIcon(
+                    FontAwesomeIcons.check,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    size: 18,
+                  ),
+                ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }

@@ -15,6 +15,7 @@
  */
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -34,6 +35,8 @@ import 'single_app_view.dart';
 
 class AppOverviewPage extends StatefulWidget {
   const AppOverviewPage({super.key});
+
+  static const IconData appsIcon = Icons.window;
 
   static bool showAppsButton() =>
       !ConfigController().getAppConfig()!.configsLocked! || ConfigController().getAppNames().length > 1;
@@ -164,6 +167,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         )),
       )),
       child: Navigator(
+        key: kDebugMode ? GlobalKey() : null,
         onGenerateRoute: (settings) => MaterialPageRoute(
           settings: settings,
           builder: (context) {
@@ -360,48 +364,55 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                 icon: const FaIcon(FontAwesomeIcons.gear),
                 tooltip: FlutterUI.translate("Settings"),
               )
-            : PopupMenuButton(
-                onSelected: (selection) {
-                  switch (selection) {
-                    case 0:
-                      _showAddApp(context);
-                      break;
-                    case 1:
-                      _showClearDialog(context);
-                      break;
-                    case 2:
-                      IUiService().routeToSettings();
-                      break;
-                  }
-                },
-                itemBuilder: (context) => [
-                  if (!isLocked)
-                    PopupMenuItem(
-                      value: 0,
-                      child: ListTile(
-                        leading: const Icon(Icons.add),
-                        title: Text(FlutterUI.translate("Add App")),
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                    ),
-                  if (!isLocked && (apps?.where((element) => !(element.locked ?? false)).isNotEmpty ?? true))
-                    PopupMenuItem(
-                      value: 1,
-                      child: ListTile(
-                        leading: const Icon(Icons.delete),
-                        title: Text(FlutterUI.translate("Clear Apps")),
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                    ),
-                  PopupMenuItem(
-                    value: 2,
-                    child: ListTile(
-                      leading: const FaIcon(FontAwesomeIcons.gear),
-                      title: Text(FlutterUI.translate("Settings")),
-                      contentPadding: EdgeInsets.zero,
-                    ),
+            : ListTileTheme.merge(
+                iconColor: Theme.of(context).colorScheme.primary,
+                child: PopupMenuButton(
+                  icon: FaIcon(
+                    FontAwesomeIcons.ellipsisVertical,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                ],
+                  onSelected: (selection) {
+                    switch (selection) {
+                      case 0:
+                        _showAddApp(context);
+                        break;
+                      case 1:
+                        _showClearDialog(context);
+                        break;
+                      case 2:
+                        IUiService().routeToSettings();
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    if (!isLocked)
+                      PopupMenuItem(
+                        value: 0,
+                        child: ListTile(
+                          leading: const Icon(Icons.add),
+                          title: Text(FlutterUI.translate("Add App")),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    if (!isLocked && (apps?.where((element) => !(element.locked ?? false)).isNotEmpty ?? true))
+                      PopupMenuItem(
+                        value: 1,
+                        child: ListTile(
+                          leading: const Icon(Icons.delete),
+                          title: Text(FlutterUI.translate("Clear Apps")),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    PopupMenuItem(
+                      value: 2,
+                      child: ListTile(
+                        leading: const FaIcon(FontAwesomeIcons.gear),
+                        title: Text(FlutterUI.translate("Settings")),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ],
+                ),
               ),
       ),
     );

@@ -48,6 +48,8 @@ class AppEditDialog extends StatefulWidget {
 }
 
 class _AppEditDialogState extends State<AppEditDialog> {
+  static Color disabledColor = Colors.grey.shade200;
+
   late final TextEditingController titleController;
   late final TextEditingController appNameController;
   late final TextEditingController baseUrlController;
@@ -65,10 +67,11 @@ class _AppEditDialogState extends State<AppEditDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      clipBehavior: Clip.hardEdge,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      contentPadding: const EdgeInsets.all(16),
+      contentPadding: EdgeInsets.zero,
       content: Theme(
         data: Theme.of(context).copyWith(
           inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
@@ -81,166 +84,168 @@ class _AppEditDialogState extends State<AppEditDialog> {
         ),
         child: DefaultTextStyle.merge(
           style: const TextStyle(fontWeight: FontWeight.bold),
-          child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints.tightFor(width: double.maxFinite),
+            child: LayoutBuilder(builder: (context, constraints) {
+              bool appNameEnabled = !widget.locked && widget.config == null;
+              return SingleChildScrollView(
+                child: Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 14.0),
-                      child: Center(
-                        child: SizedBox(
-                          height: 100,
-                          child: AppImage(
-                            name: widget.config?.effectiveTitle,
-                            image: AppOverviewPage.getAppIcon(widget.config),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: _buildDefaultSwitch(
-                        context,
-                        defaultChecked,
-                        onTap: !widget.locked ? () => setState(() => defaultChecked = !defaultChecked) : null,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Material(
-                        type: MaterialType.card,
-                        color: !widget.locked && widget.config == null ? null : Colors.grey.shade400,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: TextField(
-                            enabled: !widget.locked && widget.config == null,
-                            controller: appNameController,
-                            textInputAction: TextInputAction.next,
-                            onChanged: (_) => setState(() {}),
-                            decoration: InputDecoration(
-                              icon: const FaIcon(FontAwesomeIcons.cubes),
-                              labelText: "${FlutterUI.translate("App Name")}*",
-                              border: InputBorder.none,
-                              suffixIcon: !widget.locked && widget.config == null && appNameController.text.isNotEmpty
-                                  ? ExcludeFocus(
-                                      child: IconButton(
-                                        icon: const Icon(Icons.clear),
-                                        onPressed: () => setState(() => appNameController.clear()),
-                                      ),
-                                    )
-                                  : null,
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          if (constraints.maxHeight > 450)
+                            Center(
+                              child: SizedBox(
+                                height: 100,
+                                child: AppImage(
+                                  name: widget.config?.effectiveTitle,
+                                  image: AppOverviewPage.getAppIcon(widget.config),
+                                ),
+                              ),
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: _buildDefaultSwitch(
+                              context,
+                              defaultChecked,
+                              onTap: !widget.locked ? () => setState(() => defaultChecked = !defaultChecked) : null,
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Material(
-                        type: MaterialType.card,
-                        color: !widget.locked ? null : Colors.grey.shade400,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: TextField(
-                            enabled: !widget.locked,
-                            controller: titleController,
-                            textInputAction: TextInputAction.next,
-                            onChanged: (_) => setState(() {}),
-                            decoration: InputDecoration(
-                              icon: const Icon(Icons.title),
-                              labelText: FlutterUI.translate("Title"),
-                              border: InputBorder.none,
-                              suffixIcon: !widget.locked && titleController.text.isNotEmpty
-                                  ? ExcludeFocus(
-                                      child: IconButton(
-                                        icon: const Icon(Icons.clear),
-                                        onPressed: () => setState(() => titleController.clear()),
-                                      ),
-                                    )
-                                  : null,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Material(
+                              type: MaterialType.card,
+                              color: appNameEnabled ? null : disabledColor,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: TextField(
+                                  enabled: appNameEnabled,
+                                  controller: appNameController,
+                                  textInputAction: TextInputAction.next,
+                                  onChanged: (_) => setState(() {}),
+                                  decoration: InputDecoration(
+                                    icon: FaIcon(
+                                      FontAwesomeIcons.cubes,
+                                      color: appNameEnabled ? null : Theme.of(context).disabledColor,
+                                    ),
+                                    labelText: "${FlutterUI.translate("App Name")}*",
+                                    border: InputBorder.none,
+                                    suffixIcon: appNameEnabled && appNameController.text.isNotEmpty
+                                        ? ExcludeFocus(
+                                            child: IconButton(
+                                              icon: const Icon(Icons.clear),
+                                              onPressed: () => setState(() => appNameController.clear()),
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Material(
-                        type: MaterialType.card,
-                        color: !widget.locked ? null : Colors.grey.shade400,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: TextField(
-                            enabled: !widget.locked,
-                            controller: baseUrlController,
-                            keyboardType: TextInputType.url,
-                            textInputAction: TextInputAction.done,
-                            onChanged: (_) => setState(() {}),
-                            onSubmitted: (value) => _onSubmit(),
-                            decoration: InputDecoration(
-                              icon: const FaIcon(FontAwesomeIcons.globe),
-                              labelText: "${FlutterUI.translate("URL")}*",
-                              border: InputBorder.none,
-                              hintText: "http://host:port/services/mobile",
-                              suffixIcon: !widget.locked && baseUrlController.text.isNotEmpty
-                                  ? ExcludeFocus(
-                                      child: IconButton(
-                                        icon: const Icon(Icons.clear),
-                                        onPressed: () => setState(() => baseUrlController.clear()),
-                                      ),
-                                    )
-                                  : null,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Material(
+                              type: MaterialType.card,
+                              color: !widget.locked ? null : disabledColor,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: TextField(
+                                  enabled: !widget.locked,
+                                  controller: titleController,
+                                  textInputAction: TextInputAction.next,
+                                  onChanged: (_) => setState(() {}),
+                                  decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.title,
+                                      color: !widget.locked ? null : Theme.of(context).disabledColor,
+                                    ),
+                                    labelText: FlutterUI.translate("Title"),
+                                    border: InputBorder.none,
+                                    suffixIcon: !widget.locked && titleController.text.isNotEmpty
+                                        ? ExcludeFocus(
+                                            child: IconButton(
+                                              icon: const Icon(Icons.clear),
+                                              onPressed: () => setState(() => titleController.clear()),
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Material(
+                              type: MaterialType.card,
+                              color: !widget.locked ? null : disabledColor,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: TextField(
+                                  enabled: !widget.locked,
+                                  controller: baseUrlController,
+                                  keyboardType: TextInputType.url,
+                                  textInputAction: TextInputAction.done,
+                                  onChanged: (_) => setState(() {}),
+                                  onSubmitted: (value) => _onSubmit(),
+                                  decoration: InputDecoration(
+                                    icon: FaIcon(
+                                      FontAwesomeIcons.globe,
+                                      color: !widget.locked ? null : Theme.of(context).disabledColor,
+                                    ),
+                                    labelText: "${FlutterUI.translate("URL")}*",
+                                    border: InputBorder.none,
+                                    hintText: "http://host:port/services/mobile",
+                                    suffixIcon: !widget.locked && baseUrlController.text.isNotEmpty
+                                        ? ExcludeFocus(
+                                            child: IconButton(
+                                              icon: const Icon(Icons.clear),
+                                              onPressed: () => setState(() => baseUrlController.clear()),
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    if (widget.locked)
+                      Positioned(
+                        top: 16,
+                        left: 16,
+                        child: Icon(
+                          Icons.lock,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    if (widget.predefined)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Banner(
+                          message: FlutterUI.translate("Provided"),
+                          location: BannerLocation.topEnd,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
                   ],
                 ),
-                if (widget.locked)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    child: Icon(
-                      Icons.lock,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                if (widget.predefined)
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Tooltip(
-                      message: FlutterUI.translate(
-                          "This app is provided by your current installation and cannot be removed."),
-                      child: Chip(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-                        side: BorderSide.none,
-                        visualDensity: VisualDensity.compact,
-                        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 12),
-                        labelPadding: const EdgeInsets.only(left: 4.0),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        avatar: Icon(
-                          Icons.inventory_2,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        label: Text(
-                          FlutterUI.translate("Provided"),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+              );
+            }),
           ),
         ),
       ),
+      actionsPadding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
       actionsAlignment: !widget.locked ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
       actions: !widget.locked
           ? [
@@ -276,10 +281,12 @@ class _AppEditDialogState extends State<AppEditDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              FlutterUI.translate("Start by default"),
+              FlutterUI.translate("Autostart"),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             Switch(
+              inactiveThumbColor: onTap != null ? Theme.of(context).colorScheme.primary : null,
+              inactiveTrackColor: onTap != null ? Theme.of(context).colorScheme.surface : null,
               value: value,
               onChanged: onTap != null ? (bool? value) => onTap.call() : null,
             ),
@@ -298,13 +305,13 @@ class _AppEditDialogState extends State<AppEditDialog> {
         var uri = Uri.parse(baseUrlController.text.trim());
         uri = ParseUtil.appendJVxUrlSuffix(uri);
 
-        var newConfig = (widget.config ?? const ServerConfig.empty()).merge(
-          ServerConfig(
-            title: ParseUtil.ensureNullOnEmpty(titleController.text),
-            appName: ParseUtil.ensureNullOnEmpty(appNameController.text),
-            baseUrl: uri,
-            isDefault: defaultChecked,
-          ),
+        var newConfig = ServerConfig(
+          appName: ParseUtil.ensureNullOnEmpty(appNameController.text),
+          title: ParseUtil.ensureNullOnEmpty(titleController.text),
+          baseUrl: uri,
+          username: widget.config?.username,
+          password: widget.config?.password,
+          isDefault: defaultChecked,
         );
 
         widget.onSubmit.call(newConfig);

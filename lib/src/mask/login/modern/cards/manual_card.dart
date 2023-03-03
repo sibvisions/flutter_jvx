@@ -115,7 +115,9 @@ class _ManualCardState extends State<ManualCard> {
                               onPressed: () => replaceSettingsWithApps
                                   ? IUiService().routeToAppOverview()
                                   : IUiService().routeToSettings(),
-                              icon: FaIcon(replaceSettingsWithApps ? FontAwesomeIcons.rotate : FontAwesomeIcons.gear),
+                              icon: replaceSettingsWithApps
+                                  ? const Icon(AppOverviewPage.appsIcon)
+                                  : const FaIcon(FontAwesomeIcons.gear),
                               tooltip: FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
                             ),
                         ],

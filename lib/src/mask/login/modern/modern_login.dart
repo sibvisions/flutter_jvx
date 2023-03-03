@@ -97,7 +97,9 @@ class ModernLogin extends StatelessWidget implements Login {
                     ),
                     onPressed: () =>
                         replaceSettingsWithApps ? IUiService().routeToAppOverview() : IUiService().routeToSettings(),
-                    icon: FaIcon(replaceSettingsWithApps ? FontAwesomeIcons.rotate : FontAwesomeIcons.gear),
+                    icon: replaceSettingsWithApps
+                        ? const Icon(AppOverviewPage.appsIcon)
+                        : const FaIcon(FontAwesomeIcons.gear),
                     label: Text(
                       FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
                       overflow: TextOverflow.ellipsis,

@@ -232,8 +232,8 @@ class WebFrameState extends FrameState {
             padding: const EdgeInsets.only(right: spacing),
             child: Builder(
               builder: (context) => IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.rotate,
+                icon: Icon(
+                  AppOverviewPage.appsIcon,
                   color: iconColor,
                 ),
                 onPressed: () => widget.changeApp(),

@@ -284,7 +284,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return _buildFooterEntry(
       context: context,
       text: FlutterUI.translate("Apps"),
-      leadingIcon: FontAwesomeIcons.rotate,
+      leadingIcon: AppOverviewPage.appsIcon,
       onTap: widget.onAppChange,
       isNormalSize: isNormalSize,
     );
