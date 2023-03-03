@@ -56,11 +56,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   static EdgeInsets TEXT_FIELD_PADDING(TextStyle pStyle) {
     double verticalPadding = (TEXT_FIELD_HEIGHT - ParseUtil.getTextHeight(text: "a", style: pStyle)) / 2;
 
-    return EdgeInsets.fromLTRB(10, verticalPadding, 10, verticalPadding);
+    return EdgeInsets.fromLTRB(10, verticalPadding, 0, verticalPadding);
   }
 
   /// How much space an icon should take up in the text field.
-  static const double iconAreaSize = 24;
+  static const double iconAreaSize = 26;
 
   /// How much space the icon is itself
   static const double iconSize = 16;
@@ -90,7 +90,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   EdgeInsets get contentPadding => TEXT_FIELD_PADDING(model.createTextStyle());
 
-  EdgeInsets get iconsPadding => const EdgeInsets.only(left: 5, right: 10);
+  EdgeInsets get iconsPadding {
+    EdgeInsets cPadding = contentPadding;
+
+    return EdgeInsets.fromLTRB(5, cPadding.top, 5, cPadding.bottom);
+  }
 
   int? get minLines => null;
 
@@ -108,6 +112,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   CrossAxisAlignment get iconCrossAxisAlignment => CrossAxisAlignment.center;
 
+  // The whitespace every icon has around it
+  double get iconInnatePadding => ((iconAreaSize - iconSize) / 2);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -242,22 +248,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     List<Widget> suffixIconItems = createSuffixIconItems();
 
-    double paddingAdjustment = -((iconAreaSize - iconSize) / 2);
-
-    EdgeInsets? containerPadding;
-    if (suffixIconItems.isNotEmpty) {
-      containerPadding = iconsPadding.copyWith(
-        top: contentPadding.top + paddingAdjustment,
-        bottom: contentPadding.bottom + paddingAdjustment,
-      );
-    }
-
     // Just insert a center and voilá, textfield is expanding without
     // setting "expanding" to true.
     suffixIconItems.add(const Center());
 
     return Container(
-      padding: containerPadding,
+      padding: iconsPadding,
       child: Row(
         crossAxisAlignment: iconCrossAxisAlignment,
         mainAxisAlignment: MainAxisAlignment.end,
