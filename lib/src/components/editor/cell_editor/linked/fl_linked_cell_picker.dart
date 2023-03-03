@@ -360,21 +360,19 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       }
     }
 
-    ICommandService()
+    IUiService()
         .sendCommand(
-      FilterCommand(
-        editorId: widget.name,
-        value: lastChangedFilter,
-        columnNames: filterColumns,
-        dataProvider: widget.model.linkReference.dataProvider,
-        reason: "Filtered the linked cell picker",
-      ),
-    )
+          FilterCommand(
+            editorId: widget.name,
+            value: lastChangedFilter,
+            columnNames: filterColumns,
+            dataProvider: widget.model.linkReference.dataProvider,
+            reason: "Filtered the linked cell picker",
+          ),
+        )
         .then(
-      (_) {
-        _currentlyFiltering = false;
-      },
-    ).catchError(IUiService().handleAsyncError);
+          (_) => _currentlyFiltering = false,
+        );
   }
 
   void _increasePageLoad() {

@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
@@ -79,6 +80,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   dynamic _currentValue;
 
   FlEditorWrapperState() : super();
+
+  /// The onChangeTimer that is used to send the value to the server if saving [savingImmediate] is true.
+  Timer? onChangeTimer;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -210,17 +214,40 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
   void onChange(dynamic pValue) {
+    if (model.savingImmediate) {
+      onChangeTimer?.cancel();
+      onChangeTimer = Timer(const Duration(milliseconds: 300), () => _onValueChanged(pValue));
+
+      // Textfield wont update immediately, so we need to force it to update.
+      setState(() {});
+    }
+  }
+
+  void _onValueChanged(dynamic pValue) {
+    IUiService()
+        .saveAllEditors(
+          pId: model.id,
+          pFunction: () async {
+            return [_sendValueToServer(pValue)];
+          },
+          pReason: "Value of ${model.id} set to $pValue",
+        )
+        .catchError(IUiService().handleAsyncError);
+
     setState(() {});
   }
 
   void setValue(DataRecord? pDataRecord) {
+    var oldValue = _currentValue;
     if (pDataRecord != null) {
       _currentValue = pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)];
     } else {
       _currentValue = null;
     }
-    cellEditor.setValue(_currentValue);
-    setState(() {});
+    if (oldValue != _currentValue) {
+      cellEditor.setValue(_currentValue);
+      setState(() {});
+    }
   }
 
   void receiveMetaData(DalMetaData pMetaData) {
@@ -232,6 +259,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state of the widget and sends a set value command.
   void onEndEditing(dynamic pValue) {
+    onChangeTimer?.cancel();
     if (_isSameValue(pValue) || !model.isEnabled) {
       cellEditor.setValue(_currentValue);
       setState(() {});
@@ -247,36 +275,16 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
             var oldFocus = IUiService().getFocus();
             commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
 
-            if (pValue is HashMap<String, dynamic>) {
-              FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
-              commands.add(
-                SetValuesCommand(
-                  componentId: model.id,
-                  editorColumnName: model.columnName,
-                  dataProvider: model.dataProvider,
-                  columnNames: pValue.keys.toList(),
-                  values: pValue.values.toList(),
-                  reason: "Value of ${model.id} set to $pValue",
-                ),
-              );
-            } else {
-              FlutterUI.logUI.d("Value of ${model.id} set to $pValue");
-              commands.add(
-                SetValuesCommand(
-                  componentId: model.id,
-                  dataProvider: model.dataProvider,
-                  editorColumnName: model.columnName,
-                  columnNames: [model.columnName],
-                  values: [pValue],
-                  reason: "Value of ${model.id} set to $pValue",
-                ),
-              );
-            }
+            commands.add(_sendValueToServer(pValue));
 
             if (cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) {
               SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus");
             }
-            commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Value edit Focus"));
+            if (oldFocus != null) {
+              commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Value edit Focus"));
+            } else {
+              commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus"));
+            }
             return commands;
           },
           pReason: "Value of ${model.id} set to $pValue",
@@ -284,6 +292,30 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         .catchError(IUiService().handleAsyncError);
 
     setState(() {});
+  }
+
+  SetValuesCommand _sendValueToServer(pValue) {
+    if (pValue is HashMap<String, dynamic>) {
+      FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
+      return SetValuesCommand(
+        componentId: model.id,
+        editorColumnName: model.columnName,
+        dataProvider: model.dataProvider,
+        columnNames: pValue.keys.toList(),
+        values: pValue.values.toList(),
+        reason: "Value of ${model.id} set to $pValue",
+      );
+    } else {
+      FlutterUI.logUI.d("Value of ${model.id} set to $pValue");
+      return SetValuesCommand(
+        componentId: model.id,
+        dataProvider: model.dataProvider,
+        editorColumnName: model.columnName,
+        columnNames: [model.columnName],
+        values: [pValue],
+        reason: "Value of ${model.id} set to $pValue",
+      );
+    }
   }
 
   void recalculateSize([bool pRecalulcate = true]) {

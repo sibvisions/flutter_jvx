@@ -78,11 +78,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
         pValue = pValue.toString();
       }
 
-      textController.value = textController.value.copyWith(
-        text: pValue,
-        selection: TextSelection.collapsed(offset: pValue.characters.length),
-        composing: null,
-      );
+      textController.value =
+          TextEditingValue(text: pValue, selection: TextSelection.collapsed(offset: pValue.runes.length));
     }
   }
 
