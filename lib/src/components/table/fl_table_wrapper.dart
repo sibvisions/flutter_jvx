@@ -124,6 +124,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The last sort definition.
   List<SortDefinition>? lastSortDefinitions;
 
+  /// The size has to be calculated on the next data receiving
+  bool _calcOnDataReceived = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -218,6 +221,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (model.lastChangedProperties.contains(ApiObjectProperty.columnNames) ||
         model.lastChangedProperties.contains(ApiObjectProperty.columnLabels) ||
         model.lastChangedProperties.contains(ApiObjectProperty.autoResize)) {
+      _calcOnDataReceived = true;
       _recalculateTableSize(true);
     } else {
       setState(() {});
@@ -317,8 +321,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       dialogValueNotifier.value = valueMap;
     }
 
-    if (hasToCalc) {
+    if (hasToCalc || _calcOnDataReceived) {
       _closeDialog();
+      _calcOnDataReceived = false;
       _recalculateTableSize(true);
     } else {
       setState(() {});
@@ -378,6 +383,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     lastSortDefinitions = metaData.sortDefinitions;
 
     if (hasToCalc) {
+      _calcOnDataReceived = true;
       _recalculateTableSize(true);
     } else {
       setState(() {});
