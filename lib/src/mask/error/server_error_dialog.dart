@@ -70,10 +70,10 @@ class ServerErrorDialog extends JVxDialog {
           onPressed: () {
             onClose();
             IUiService().closeJVxDialog(this);
-            IUiService().routeToSettings(pReplaceRoute: true);
+            IUiService().routeToAppOverview();
           },
           child: Text(
-            FlutterUI.translate("Go to Settings"),
+            FlutterUI.translate("Go to Apps"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
