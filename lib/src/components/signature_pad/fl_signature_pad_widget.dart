@@ -78,9 +78,6 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
 
   @override
   Widget build(BuildContext context) {
-    widget.model.saveLock = true;
-    widget.model.editLock = true;
-
     Widget? contentWidget;
 
     if (widget.dataRecord != null && widget.dataRecord?.values[0] != null) {
