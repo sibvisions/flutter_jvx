@@ -823,9 +823,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ),
         ),
         AlertDialog(
-          title: Text(errorView?.errorCommand.title?.isNotEmpty ?? false
-              ? errorView!.errorCommand.title!
-              : FlutterUI.translate("Error")),
+          title: Text(
+            errorView?.errorCommand.title?.isNotEmpty ?? false
+                ? errorView!.errorCommand.title!
+                : FlutterUI.translate("Error"),
+          ),
           content: Text(
             errorView?.errorCommand.message ?? FlutterUI.translate(IUiService.getErrorMessage(snapshot.error!)),
           ),

@@ -582,7 +582,11 @@ class OnlineApiRepository implements IRepository {
       if (response.statusCode >= 400 && response.statusCode <= 599) {
         var body = await _decodeBody(response);
         FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
-        if (response.statusCode == 404) {
+        if (response.statusCode == 400) {
+          APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
+          String routeString = route!.route.replaceAll("api", "");
+          throw InvalidServerResponseException("Server doesn't support '$routeString'", response.statusCode);
+        } else if (response.statusCode == 404) {
           throw InvalidServerResponseException("Application not found (404)", response.statusCode);
         } else if (response.statusCode == 410) {
           throw SessionExpiredException(response.statusCode);
