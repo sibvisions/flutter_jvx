@@ -302,12 +302,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Loads data from the server.
   void _receiveTableData(DataChunk pDataChunk) {
+    bool hasToCalc = (currentState & LOADED_DATA) != LOADED_DATA;
     currentState |= LOADED_DATA;
 
-    List<String> newColumns = pDataChunk.columnDefinitions.map((e) => e.name).toList();
-    List<String> oldColumns = dataChunk.columnDefinitions.map((e) => e.name).toList();
-    bool hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
-        oldColumns.any((element) => (!newColumns.contains(element)));
+    if (!hasToCalc) {
+      List<String> newColumns = pDataChunk.columnDefinitions.map((e) => e.name).toList();
+      List<String> oldColumns = dataChunk.columnDefinitions.map((e) => e.name).toList();
+      hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
+          oldColumns.any((element) => (!newColumns.contains(element)));
+    }
 
     dataChunk = pDataChunk;
 
@@ -359,11 +362,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Receives the meta data of the table.
   void _receiveMetaData(DalMetaData pMetaData) {
+    bool hasToCalc = (currentState & LOADED_META_DATA) != LOADED_META_DATA;
     currentState |= LOADED_META_DATA;
 
     metaData = pMetaData;
 
-    bool hasToCalc = metaData.changedProperties.contains(ApiObjectProperty.columns);
+    hasToCalc = metaData.changedProperties.contains(ApiObjectProperty.columns);
 
     if (!hasToCalc && (metaData.sortDefinitions != null || lastSortDefinitions != null)) {
       hasToCalc = metaData.sortDefinitions?.length != lastSortDefinitions?.length;
