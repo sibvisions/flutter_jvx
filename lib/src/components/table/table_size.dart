@@ -79,9 +79,9 @@ class TableSize {
     this.maxColumnWidth = 300,
     this.tableHeaderHeight = 50,
     this.rowHeight = 50,
-    this.checkCellWidth = 50.0,
-    this.imageCellWidth = 50.0,
-    this.choiceCellWidth = 50.0,
+    this.checkCellWidth = 55.0,
+    this.imageCellWidth = 55.0,
+    this.choiceCellWidth = 55.0,
     this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0, top: 4.0, bottom: 4.0),
   });
 
@@ -93,9 +93,9 @@ class TableSize {
     this.maxColumnWidth = 300,
     this.tableHeaderHeight = 50,
     this.rowHeight = 50,
-    this.checkCellWidth = 50.0,
-    this.imageCellWidth = 50.0,
-    this.choiceCellWidth = 50.0,
+    this.checkCellWidth = 55.0,
+    this.imageCellWidth = 55.0,
+    this.choiceCellWidth = 55.0,
     this.cellPaddings = const EdgeInsets.only(left: 4.0, right: 4.0, top: 4.0, bottom: 4.0),
     required FlTableModel tableModel,
     required DataChunk dataChunk,
@@ -148,7 +148,7 @@ class TableSize {
 
       calculatedColumnWidths[columnName] = _adjustValue(minColumnWidth, calculatedHeaderWidth);
 
-      int calculateUntilRowIndex = math.min(
+      int calculateUntilRow = math.min(
         pDataChunk.data.length,
         pRowsToCalculate,
       );
@@ -165,10 +165,24 @@ class TableSize {
       // If there is no column definition found for this column, cant calculate the width.
       if (columnDefinition != null) {
         if (columnDefinition.width != null) {
-          calculatedColumnWidths[columnName] = columnDefinition.width! * 2.0;
+          if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHECK_BOX_CELL_EDITOR &&
+              columnDefinition.width! <= checkCellWidth) {
+            calculatedColumnWidths[columnName] = checkCellWidth;
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHOICE_CELL_EDITOR &&
+              columnDefinition.width! <= choiceCellWidth) {
+            calculatedColumnWidths[columnName] = choiceCellWidth;
+          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER &&
+              columnDefinition.width! <= imageCellWidth) {
+            calculatedColumnWidths[columnName] = imageCellWidth;
+          } else {
+            calculatedColumnWidths[columnName] = columnDefinition.width! * ConfigController().getScaling();
+          }
         } else {
           // Get all rows before [calculateUntilRowIndex]
-          Iterable<List<dynamic>> dataRows = pDataChunk.data.values.take(calculateUntilRowIndex);
+          List<dynamic> dataRows = [];
+          for (int i = 0; i < calculateUntilRow; i++) {
+            dataRows.add(pDataChunk.data[i]);
+          }
 
           // Isolate the column from the rows.
           List<dynamic> dataColumn = dataRows.map<dynamic>((e) => e[colIndex!]).toList();
