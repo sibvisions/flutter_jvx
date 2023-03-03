@@ -87,7 +87,7 @@ class FlutterUI extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Determines the supported server version which will be sent in the [ApiStartUpRequest]
-  static const String supportedServerVersion = "2.4.0";
+  static const String supportedServerVersion = "3.0.0";
 
   /// Loads assets with packages prefix
   static bool package = true;
