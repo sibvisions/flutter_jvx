@@ -24,9 +24,9 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
+import '../base_wrapper/fl_stateful_widget.dart';
 
-class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
+class FlSignaturePadWidget extends FlStatefulWidget<FlCustomContainerModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,13 +37,11 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
   final DataRecord? dataRecord;
   final VoidCallback? onClear;
   final VoidCallback? onDone;
-  final bool showControls;
 
   const FlSignaturePadWidget({
     super.key,
     required super.model,
     required this.controller,
-    required this.showControls,
     this.width,
     this.height,
     this.dataRecord,
@@ -52,11 +50,41 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
   });
 
   @override
+  State<FlSignaturePadWidget> createState() => _FlSignaturePadWidgetState();
+}
+
+class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  bool currentlyDrawing = false;
+
+  bool _editEnabled = false;
+
+  bool get isEditingPossible => _editEnabled || !widget.model.editLock;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  initState() {
+    super.initState();
+
+    widget.controller.onDrawStart = drawStart;
+    widget.controller.onDrawEnd = drawEnd;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    widget.model.saveLock = true;
+    widget.model.editLock = true;
+
     Widget? contentWidget;
 
-    if (dataRecord != null && dataRecord?.values[0] != null) {
-      var imageValue = dataRecord?.values[0];
+    if (widget.dataRecord != null && widget.dataRecord?.values[0] != null) {
+      var imageValue = widget.dataRecord?.values[0];
       try {
         if (imageValue is String) {
           contentWidget = ImageLoader.loadImage(
@@ -73,51 +101,96 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
     }
 
     contentWidget ??= Signature(
-      width: width,
-      height: height,
-      controller: controller,
+      width: widget.width,
+      height: widget.height,
+      controller: widget.controller,
       backgroundColor: Colors.transparent,
     );
+
+    bool locked = widget.model.saveLock && contentWidget is! Signature;
 
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: JVxColors.COMPONENT_BORDER),
         borderRadius: BorderRadius.circular(5),
-        color: model.background ?? Colors.white.withOpacity(0.7),
+        color: widget.model.background ?? Colors.white.withOpacity(0.7),
       ),
       child: Padding(
         padding: const EdgeInsets.all(3.0),
         child: Stack(
           children: [
-            Positioned.fill(child: contentWidget),
-            if (showControls && (onClear != null || onDone != null))
+            Positioned.fill(
+              child: IgnorePointer(
+                ignoring: widget.model.editLock && !_editEnabled,
+                child: contentWidget,
+              ),
+            ),
+            if (widget.model.saveLock && !currentlyDrawing)
+              Positioned(
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Icon(
+                      locked ? Icons.lock : Icons.lock_open,
+                    ),
+                  ),
+                ),
+              ),
+            if (!currentlyDrawing && !locked)
               Positioned(
                 right: 0,
                 bottom: 0,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (onClear != null)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: onClear,
+                    if (widget.onClear != null && isEditingPossible)
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: IconButton(
+                            padding: const EdgeInsets.all(8.0),
+                            icon: const Icon(Icons.clear),
+                            onPressed: widget.onClear,
+                          ),
                         ),
                       ),
-                    if ((onClear != null) && (onDone != null && contentWidget is Signature)) const SizedBox(width: 5),
-                    if (onDone != null && contentWidget is Signature)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(15),
+                    if (widget.onDone != null && contentWidget is Signature && isEditingPossible)
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: IconButton(
+                            padding: const EdgeInsets.all(8.0),
+                            icon: const Icon(Icons.check),
+                            onPressed: _onDone,
+                          ),
                         ),
-                        child: IconButton(
-                          icon: const Icon(Icons.check),
-                          onPressed: onDone,
+                      ),
+                    if (widget.model.editLock && (!_editEnabled || contentWidget is! Signature))
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: IconButton(
+                            padding: const EdgeInsets.all(8.0),
+                            icon: _editEnabled ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
+                            onPressed: editSwitch,
+                          ),
                         ),
                       ),
                   ],
@@ -127,6 +200,31 @@ class FlSignaturePadWidget extends FlStatelessWidget<FlCustomContainerModel> {
         ),
       ),
     );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void _onDone() {
+    widget.onDone?.call();
+    _editEnabled = false;
+  }
+
+  void editSwitch() {
+    _editEnabled = !_editEnabled;
+
+    setState(() {});
+  }
+
+  void drawStart() {
+    currentlyDrawing = true;
+    setState(() {});
+  }
+
+  void drawEnd() {
+    currentlyDrawing = false;
+    setState(() {});
   }
 }
 

@@ -49,9 +49,8 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  bool showControls = true;
   DataRecord? _dataRecord;
-  late final SignatureController signatureController;
+  final SignatureController signatureController = SignatureController();
   LongPressDownDetails? details;
 
   _FlSignaturePadWrapperState() : super();
@@ -63,16 +62,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   @override
   void initState() {
     super.initState();
-    signatureController = SignatureController();
 
-    signatureController.onDrawStart = () async {
-      showControls = false;
-      setState(() {});
-    };
-    signatureController.onDrawEnd = () async {
-      showControls = true;
-      setState(() {});
-    };
     layoutData.isFixedSize = true;
 
     subscribe();
@@ -85,7 +75,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       controller: signatureController,
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
-      showControls: showControls,
       dataRecord: _dataRecord,
       onClear: _handleClear,
       onDone: _handleDone,

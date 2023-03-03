@@ -115,6 +115,8 @@ abstract class ApiObjectProperty {
   static const String masterReference = "masterReference";
   static const String detailReference = "detailReference";
   static const String rootReference = "rootReference";
+  static const String saveLock = "saveLock";
+  static const String editLock = "editLock";
 
   // Can occur in both request & response
   static const String clientId = "clientId";

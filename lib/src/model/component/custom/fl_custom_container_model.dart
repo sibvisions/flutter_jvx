@@ -22,7 +22,12 @@ class FlCustomContainerModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   String? dataProvider;
+
   String? columnName;
+
+  bool saveLock = false;
+
+  bool editLock = true;
 
   Map<String, dynamic> properties = {};
 
@@ -57,6 +62,18 @@ class FlCustomContainerModel extends FlComponentModel {
       pKey: ApiObjectProperty.columnName,
       pDefault: defaultModel.columnName,
       pCurrent: columnName,
+    );
+    saveLock = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.saveLock,
+      pDefault: defaultModel.saveLock,
+      pCurrent: saveLock,
+    );
+    editLock = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.editLock,
+      pDefault: defaultModel.editLock,
+      pCurrent: editLock,
     );
   }
 }
