@@ -26,6 +26,7 @@ import 'package:universal_io/io.dart' as universal_io;
 import '../../config/app_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
+import '../../mask/apps/app_overview_page.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/state/app_style.dart';
 import '../../model/config/translation/translation_util.dart';
@@ -80,7 +81,7 @@ class ConfigController {
 
   late ValueNotifier<bool?> _locked;
 
-  late ValueNotifier<bool?> _hidden;
+  late ValueNotifier<bool?> _parametersHidden;
 
   late ValueNotifier<String?> _version;
 
@@ -154,14 +155,24 @@ class ConfigController {
         _appConfig?.serverConfigs!.firstOrNull;
 
     _appName = ValueNotifier(await _configService.appName() ?? defaultConfig?.appName);
+
+    ServerConfig? predefinedApp = getPredefinedApp(_appName.value);
+    bool isPredefined = predefinedApp != null;
+    bool useUserSettings = AppOverviewPage.useUserSettings(
+      _appConfig!.serverConfigsParametersHidden! || _appConfig!.serverConfigsLocked!,
+      isPredefined,
+      predefinedApp,
+    );
+
     String? baseUrl = await _configService.baseUrl();
-    _baseUrl = ValueNotifier(baseUrl != null ? Uri.parse(baseUrl) : getPredefinedApp(_appName.value)?.baseUrl);
-    _username = ValueNotifier(await _configService.username() ?? getPredefinedApp(_appName.value)?.username);
-    _password = ValueNotifier(await _configService.password() ?? getPredefinedApp(_appName.value)?.password);
-    _title = ValueNotifier(await _configService.title() ?? getPredefinedApp(_appName.value)?.title);
-    _icon = ValueNotifier(await _configService.icon() ?? getPredefinedApp(_appName.value)?.icon);
-    _locked = ValueNotifier(getPredefinedApp(_appName.value)?.locked);
-    _hidden = ValueNotifier(getPredefinedApp(_appName.value)?.hidden);
+    _baseUrl = ValueNotifier(
+        (useUserSettings ? (baseUrl != null ? Uri.parse(baseUrl) : null) : null) ?? predefinedApp?.baseUrl);
+    _username = ValueNotifier(await _configService.username() ?? predefinedApp?.username);
+    _password = ValueNotifier(await _configService.password() ?? predefinedApp?.password);
+    _title = ValueNotifier((useUserSettings ? await _configService.title() : null) ?? predefinedApp?.title);
+    _icon = ValueNotifier(await _configService.icon() ?? predefinedApp?.icon);
+    _locked = ValueNotifier(predefinedApp?.locked);
+    _parametersHidden = ValueNotifier(predefinedApp?.parametersHidden);
     _version = ValueNotifier(await _configService.version());
     _authKey = ValueNotifier(await _configService.authKey());
     _userInfo = ValueNotifier(await _configService.userInfo());
@@ -182,14 +193,22 @@ class ConfigController {
 
   Future<void> _updateAppSpecificValues() async {
     final String? appName = _appName.value;
+    ServerConfig? predefinedApp = getPredefinedApp(appName);
+    bool isPredefined = predefinedApp != null;
+    bool useUserSettings = AppOverviewPage.useUserSettings(
+      _appConfig!.serverConfigsParametersHidden! || _appConfig!.serverConfigsLocked!,
+      isPredefined,
+      predefinedApp,
+    );
+
     String? baseUrl = await _configService.baseUrl();
-    _baseUrl.value = baseUrl != null ? Uri.parse(baseUrl) : getPredefinedApp(appName)?.baseUrl;
-    _username.value = await _configService.username() ?? getPredefinedApp(appName)?.username;
-    _password.value = await _configService.password() ?? getPredefinedApp(appName)?.password;
-    _title.value = await _configService.title() ?? getPredefinedApp(appName)?.title;
-    _icon.value = await _configService.icon() ?? getPredefinedApp(appName)?.icon;
-    _locked.value = getPredefinedApp(appName)?.locked;
-    _hidden.value = getPredefinedApp(appName)?.hidden;
+    _baseUrl.value = (useUserSettings ? (baseUrl != null ? Uri.parse(baseUrl) : null) : null) ?? predefinedApp?.baseUrl;
+    _username.value = await _configService.username() ?? predefinedApp?.username;
+    _password.value = await _configService.password() ?? predefinedApp?.password;
+    _title.value = (useUserSettings ? await _configService.title() : null) ?? predefinedApp?.title;
+    _icon.value = await _configService.icon() ?? predefinedApp?.icon;
+    _locked.value = predefinedApp?.locked;
+    _parametersHidden.value = predefinedApp?.parametersHidden;
     _version.value = await _configService.version();
     _authKey.value = await _configService.authKey();
     _userInfo.value = await _configService.userInfo();
@@ -450,7 +469,7 @@ class ConfigController {
   ValueListenable<bool?> get locked => _locked;
 
   /// Whether this app config is hidden.
-  ValueListenable<bool?> get hidden => _hidden;
+  ValueListenable<bool?> get parametersHidden => _parametersHidden;
 
   /// Retrieves the last saved authKey, which will be used on [ApiStartUpRequest].
   ValueListenable<String?> get authKey => _authKey;

@@ -6,9 +6,10 @@
   "wsPingInterval": 10000,
   "autoRestartOnSessionExpired": true,
   "showAppOverviewWithoutDefault": false,
-  "customAppsAllowed": false,
-  "serverConfigsLocked": true,
-  "serverConfigsParametersHidden": true,
+  "customAppsAllowed": true,
+  "forceSingleAppMode": false,
+  "serverConfigsLocked": false,
+  "serverConfigsParametersHidden": false,
   "uiConfig": {
     "showRememberMe": true,
     "rememberMeChecked": true
@@ -20,8 +21,8 @@
       "username": "features",
       "password": "features",
       "icon": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Jvx_2020.png",
-      "parametersHidden" : false,
-      "locked": false
+      "locked": false,
+      "parametersHidden": false
     }
   ],
   "versionConfig": {

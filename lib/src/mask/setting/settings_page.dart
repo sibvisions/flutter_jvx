@@ -231,10 +231,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildGeneralSettings(BuildContext context) {
     SettingItem? appNameSetting;
-    bool hideAppDetails =
-        !ConfigController().getAppConfig()!.configsHidden! && !(ConfigController().hidden.value ?? false);
+    bool isPredefined = ConfigController().getPredefinedApp(appName) != null;
+    bool hideAppDetails = isPredefined &&
+        (ConfigController().getAppConfig()!.serverConfigsParametersHidden! ||
+            (ConfigController().parametersHidden.value ?? false));
 
-    if (hideAppDetails) {
+    if (!hideAppDetails) {
       appNameSetting = SettingItem(
         enabled: false,
         frontIcon: const FaIcon(FontAwesomeIcons.cubes),
@@ -245,7 +247,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     String urlTitle = FlutterUI.translate("URL");
     SettingItem? baseUrlSetting;
-    if (hideAppDetails) {
+    if (!hideAppDetails) {
       baseUrlSetting = SettingItem(
         enabled: false,
         frontIcon: const FaIcon(FontAwesomeIcons.globe),
@@ -315,18 +317,22 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _buildApplicationSettings(BuildContext context) {
-    Widget singleAppSetting = SwitchListTile(
-      contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
-      secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),
-      title: Text(FlutterUI.translate("Manage single application")),
-      value: singleAppMode,
-      onChanged: (value) {
-        ConfigController().updateSingleAppMode(value);
-        setState(() {
-          singleAppMode = value;
-        });
-      },
-    );
+    Widget? singleAppSetting;
+    if (ConfigController().getAppConfig()!.customAppsAllowed! &&
+        !ConfigController().getAppConfig()!.forceSingleAppMode!) {
+      singleAppSetting = SwitchListTile(
+        contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
+        secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),
+        title: Text(FlutterUI.translate("Manage single application")),
+        value: singleAppMode,
+        onChanged: (value) {
+          ConfigController().updateSingleAppMode(value);
+          setState(() {
+            singleAppMode = value;
+          });
+        },
+      );
+    }
 
     final Map<ThemeMode, String> themeMapping = {
       ThemeMode.system: FlutterUI.translate("System"),
@@ -365,7 +371,10 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      items: [singleAppSetting, themeSetting],
+      items: [
+        if (singleAppSetting != null) singleAppSetting,
+        themeSetting,
+      ],
     );
   }
 

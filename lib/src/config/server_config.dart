@@ -49,8 +49,8 @@ class ServerConfig {
   /// {@macro app.locked}
   final bool? locked;
 
-  /// {@macro app.hidden}
-  final bool? hidden;
+  /// {@macro app.parametersHidden}
+  final bool? parametersHidden;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -65,7 +65,7 @@ class ServerConfig {
     this.icon,
     this.isDefault,
     this.locked,
-    this.hidden,
+    this.parametersHidden,
   });
 
   const ServerConfig.empty() : this();
@@ -80,7 +80,7 @@ class ServerConfig {
           icon: ParseUtil.ensureNullOnEmpty(json['icon']),
           isDefault: json['default'],
           locked: json['locked'],
-          hidden: json['hidden'],
+          parametersHidden: json['parametersHidden'],
         );
 
   /// Whether this config contains enough information to send a [ApiStartUpRequest].
@@ -101,7 +101,7 @@ class ServerConfig {
       icon: other.icon ?? icon,
       isDefault: other.isDefault ?? isDefault,
       locked: other.locked ?? locked,
-      hidden: other.hidden ?? hidden,
+      parametersHidden: other.parametersHidden ?? parametersHidden,
     );
   }
 
@@ -119,7 +119,7 @@ class ServerConfig {
       icon: other.icon != icon ? icon : null,
       isDefault: (other.isDefault ?? false) != (isDefault ?? false) ? isDefault : null,
       locked: (other.locked ?? false) != (locked ?? false) ? locked : null,
-      hidden: (other.hidden ?? false) != (hidden ?? false) ? hidden : null,
+      parametersHidden: (other.parametersHidden ?? false) != (parametersHidden ?? false) ? parametersHidden : null,
     );
   }
 
@@ -132,7 +132,7 @@ class ServerConfig {
         'icon': icon,
         'default': isDefault,
         'locked': locked,
-        'hidden': hidden,
+        'parametersHidden': parametersHidden,
       };
 
   @override
@@ -148,7 +148,7 @@ class ServerConfig {
           icon == other.icon &&
           isDefault == other.isDefault &&
           locked == other.locked &&
-          hidden == other.hidden;
+          parametersHidden == other.parametersHidden;
 
   @override
   int get hashCode =>
@@ -160,5 +160,5 @@ class ServerConfig {
       icon.hashCode ^
       isDefault.hashCode ^
       locked.hashCode ^
-      hidden.hashCode;
+      parametersHidden.hashCode;
 }

@@ -24,6 +24,7 @@ class AppItem extends StatelessWidget {
   const AppItem({
     super.key,
     required this.appTitle,
+    this.enabled = true,
     this.onTap,
     this.onLongPress,
     this.image,
@@ -34,6 +35,7 @@ class AppItem extends StatelessWidget {
   });
 
   final String appTitle;
+  final bool enabled;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final ImageProvider? image;
@@ -42,11 +44,13 @@ class AppItem extends StatelessWidget {
   final bool predefined;
   final bool locked;
 
+  bool get isEnabled => onTap != null && enabled;
+
   @override
   Widget build(BuildContext context) {
     const double borderRadius = 20;
     return Container(
-      foregroundDecoration: onTap == null
+      foregroundDecoration: !isEnabled
           ? const BoxDecoration(
               color: Colors.grey,
               borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
@@ -115,8 +119,8 @@ class AppItem extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(borderRadius),
                       // NoSplash.splashFactory doesn't work
-                      highlightColor: onTap != null ? null : Colors.transparent,
-                      splashColor: onTap != null ? null : Colors.transparent,
+                      highlightColor: isEnabled ? null : Colors.transparent,
+                      splashColor: isEnabled ? null : Colors.transparent,
                       onTap: onTap,
                       onLongPress: onLongPress,
                     ),
