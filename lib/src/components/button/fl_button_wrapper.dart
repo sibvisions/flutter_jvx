@@ -110,7 +110,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         model: model,
         focusNode: buttonFocusNode,
         onPress: () {
-          sendButtonPressed().catchError(IUiService().handleAsyncError);
+          sendButtonPressed();
         },
       );
     }
@@ -183,7 +183,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           callNumber();
         }
       }
-    });
+    }).catchError(IUiService().handleAsyncError);
   }
 
   Future<List<BaseCommand>> _createButtonCommands(String? pOverwrittenButtonPressId) async {

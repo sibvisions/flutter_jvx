@@ -109,6 +109,6 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
 
   @override
   Function()? getOnPressed(BuildContext context) {
-    return model.isEnabled && model.isFocusable ? () {} : null;
+    return model.isEnabled && model.isFocusable ? FlButtonWidget.EMPTY_CALLBACK : null;
   }
 }

@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
@@ -32,6 +33,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   static const String OFFLINE_BUTTON = "OfflineButton";
   static const String QR_SCANNER_BUTTON = "QRScannerButton";
   static const String CALL_BUTTON = "CallButton";
+
+  // ignore: non_constant_identifier_names
+  static VoidCallback EMPTY_CALLBACK = () {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -94,6 +98,22 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   @override
   Widget build(BuildContext context) {
     Function()? pressEvent = getOnPressed(context);
+    if (pressEvent != null && pressEvent != EMPTY_CALLBACK) {
+      pressEvent = () {
+        if (model.isHapticLight) {
+          HapticFeedback.lightImpact();
+        } else if (model.isHapticMedium) {
+          HapticFeedback.mediumImpact();
+        } else if (model.isHapticHeavy) {
+          HapticFeedback.heavyImpact();
+        } else if (model.isHapticClick) {
+          HapticFeedback.selectionClick();
+        } else if (model.isHaptic) {
+          HapticFeedback.vibrate();
+        }
+        getOnPressed(context)!.call();
+      };
+    }
 
     focusNode.canRequestFocus = isButtonFocusable;
 

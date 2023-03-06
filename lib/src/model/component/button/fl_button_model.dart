@@ -30,6 +30,12 @@ class FlButtonModel extends FlComponentModel {
 
   static const String SLIDE_AUTO_RESET_STYLE = "f_slide_auto_reset";
 
+  static const String HAPTIC_LIGHT = "f_haptic_light";
+  static const String HAPTIC_MEDIUM = "f_haptic_medium";
+  static const String HAPTIC_HEAVY = "f_haptic_heavy";
+  static const String HAPTIC_CLICK = "f_haptic_click";
+  static const String HAPTIC = "f_haptic";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,6 +91,21 @@ class FlButtonModel extends FlComponentModel {
 
   /// If the button is a text button
   bool get isTextButton => styles.contains(TEXT_STYLE);
+
+  /// Whether the button invokes [HapticFeedback.lightImpact] on press.
+  bool get isHapticLight => styles.contains(HAPTIC_LIGHT);
+
+  /// Whether the button invokes [HapticFeedback.mediumImpact] on press.
+  bool get isHapticMedium => styles.contains(HAPTIC_MEDIUM);
+
+  /// Whether the button invokes [HapticFeedback.heavyImpact] on press.
+  bool get isHapticHeavy => styles.contains(HAPTIC_HEAVY);
+
+  /// Whether the button invokes [HapticFeedback.selectionClick] on press.
+  bool get isHapticClick => styles.contains(HAPTIC_CLICK);
+
+  /// Whether the button invokes [HapticFeedback.vibrate] on press.
+  bool get isHaptic => styles.contains(HAPTIC);
 
   @override
   Size? get minimumSize {
