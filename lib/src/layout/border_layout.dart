@@ -107,11 +107,11 @@ class BorderLayout implements ILayout, ICloneable {
     _positions.clear();
     this.pParent = pParent;
 
-    _childNorth = pChildren.firstWhereOrNull((element) => NORTH == element.constraints?.toUpperCase());
-    _childSouth = pChildren.firstWhereOrNull((element) => SOUTH == element.constraints?.toUpperCase());
-    _childEast = pChildren.firstWhereOrNull((element) => EAST == element.constraints?.toUpperCase());
-    _childWest = pChildren.firstWhereOrNull((element) => WEST == element.constraints?.toUpperCase());
-    _childCenter = pChildren.firstWhereOrNull((element) => CENTER == element.constraints?.toUpperCase());
+    _childNorth = pChildren.lastWhereOrNull((element) => NORTH == element.constraints?.toUpperCase());
+    _childSouth = pChildren.lastWhereOrNull((element) => SOUTH == element.constraints?.toUpperCase());
+    _childEast = pChildren.lastWhereOrNull((element) => EAST == element.constraints?.toUpperCase());
+    _childWest = pChildren.lastWhereOrNull((element) => WEST == element.constraints?.toUpperCase());
+    _childCenter = pChildren.lastWhereOrNull((element) => CENTER == element.constraints?.toUpperCase());
 
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
