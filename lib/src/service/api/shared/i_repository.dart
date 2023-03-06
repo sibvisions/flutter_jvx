@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/widgets.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../model/api_interaction.dart';
@@ -22,6 +23,16 @@ import '../../../model/request/api_request.dart';
 /// The interface declaring all possible requests to the mobile server.
 abstract class IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Whether or not the user has explicitely cancelled the [ServerSessionExpired] dialog.
+  ///
+  /// Normally requests throw an error if they need a client id. When a user cancels the [ServerSessionExpired] dialog,
+  /// we no longer have a client id but must support him still clicking stuff.
+  final ValueNotifier<bool> cancelledSessionExpired = ValueNotifier(false);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -29,7 +40,10 @@ abstract class IRepository {
   Future<void> start();
 
   /// Stops the repository
-  Future<void> stop();
+  @mustCallSuper
+  Future<void> stop() async {
+    cancelledSessionExpired.value = false;
+  }
 
   /// Returns if the repository has already been closed with [stop]
   bool isStopped();

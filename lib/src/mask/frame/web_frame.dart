@@ -25,6 +25,7 @@ import '../../model/command/api/rollback_command.dart';
 import '../../model/command/api/save_command.dart';
 import '../../model/response/device_status_response.dart';
 import '../../routing/locations/work_screen_location.dart';
+import '../../service/api/i_api_service.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -216,17 +217,26 @@ class WebFrameState extends FrameState {
               onPressed: () => widget.changePassword(),
             ),
           ),
-        if (appStyle.applicationSettings.logoutVisible)
-          Padding(
-            padding: const EdgeInsets.only(right: spacing),
-            child: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.rightFromBracket,
-                color: iconColor,
-              ),
-              onPressed: () => widget.logout(),
-            ),
-          ),
+        // if (appStyle.applicationSettings.logoutVisible)
+
+        ValueListenableBuilder<bool>(
+          valueListenable: IApiService().getRepository().cancelledSessionExpired,
+          builder: (context, value, _) {
+            if (value || appStyle.applicationSettings.logoutVisible) {
+              return Padding(
+                padding: const EdgeInsets.only(right: spacing),
+                child: IconButton(
+                  icon: FaIcon(
+                    value ? FontAwesomeIcons.arrowsRotate : FontAwesomeIcons.rightFromBracket,
+                    color: iconColor,
+                  ),
+                  onPressed: () => widget.logoutOrRestart(),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
         if (appStyle.applicationSettings.userSettingsVisible && AppOverviewPage.showAppsButton())
           Padding(
             padding: const EdgeInsets.only(right: spacing),

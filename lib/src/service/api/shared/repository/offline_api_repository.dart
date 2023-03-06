@@ -37,7 +37,7 @@ import '../../../data/i_data_service.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
 
-class OfflineApiRepository implements IRepository {
+class OfflineApiRepository extends IRepository {
   OfflineDatabase? offlineDatabase;
 
   /// Every databook saves the maximum fetch registered, that way unspezified fetch responses don't

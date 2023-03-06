@@ -71,7 +71,7 @@ class MobileFrameState extends FrameState {
       builder: (context) => DrawerMenu(
         onSettingsPressed: () => widget.openSettings(context),
         onChangePasswordPressed: widget.changePassword,
-        onLogoutPressed: widget.logout,
+        onLogoutPressed: widget.logoutOrRestart,
         onAppChange: widget.changeApp,
       ),
     );

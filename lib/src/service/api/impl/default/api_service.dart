@@ -31,7 +31,7 @@ class ApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Executes remote requests
-  IRepository? repository;
+  IRepository repository;
 
   /// Processes responses into commands
   IController? controller;
@@ -42,7 +42,7 @@ class ApiService implements IApiService {
 
   /// Initializes a Instance where [repository] and [controller] are null
   /// and need to be set before any request can be sent.
-  ApiService.create();
+  ApiService.create(this.repository);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -52,11 +52,11 @@ class ApiService implements IApiService {
   Future<List<BaseCommand>> sendRequest(ApiRequest request, [bool? retryRequest]) {
     if (repository == null) throw Exception("Repository not initialized");
     if (controller == null) throw Exception("Controller not initialized");
-    return repository!.sendRequest(request, retryRequest).then((value) => controller!.processResponse(value));
+    return repository.sendRequest(request, retryRequest).then((value) => controller!.processResponse(value));
   }
 
   @override
-  IRepository? getRepository() {
+  IRepository getRepository() {
     return repository;
   }
 
@@ -73,8 +73,8 @@ class ApiService implements IApiService {
   @override
   FutureOr<void> clear(bool pFullClear) async {
     if (pFullClear) {
-      await repository?.stop();
-      await repository?.start();
+      await repository.stop();
+      await repository.start();
     }
   }
 }

@@ -40,7 +40,7 @@ abstract class IApiService {
   /// after which it will be processed to [BaseCommand]s in an [IController]
   Future<List<BaseCommand>> sendRequest(ApiRequest request, [bool? retryRequest]);
 
-  IRepository? getRepository();
+  IRepository getRepository();
 
   void setRepository(IRepository pRepository);
 

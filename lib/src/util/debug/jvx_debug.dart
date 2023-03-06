@@ -82,10 +82,10 @@ class JVxDebug extends StatelessWidget {
                 onPressed: (index) async {
                   switch (index) {
                     case 0:
-                      await IApiService().getRepository()?.start();
+                      await IApiService().getRepository().start();
                       break;
                     case 1:
-                      await IApiService().getRepository()?.stop();
+                      await IApiService().getRepository().stop();
                       break;
                   }
                 },

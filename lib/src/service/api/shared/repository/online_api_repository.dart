@@ -29,7 +29,6 @@ import '../../../../config/api/api_route.dart';
 import '../../../../exceptions/invalid_server_response_exception.dart';
 import '../../../../exceptions/session_expired_exception.dart';
 import '../../../../flutter_ui.dart';
-import '../../../../mask/error/server_session_expired.dart';
 import '../../../../model/api_interaction.dart';
 import '../../../../model/command/api/alive_command.dart';
 import '../../../../model/command/api/changes_command.dart';
@@ -125,7 +124,7 @@ import 'jvx_web_socket.dart';
 typedef ResponseFactory = ApiResponse Function(Map<String, dynamic> json);
 
 /// Handles all possible requests to the mobile server.
-class OnlineApiRepository implements IRepository {
+class OnlineApiRepository extends IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -211,12 +210,6 @@ class OnlineApiRepository implements IRepository {
   bool _everConnected = false;
   bool _connected = false;
 
-  /// Whether or not the user has explicitely cancelled the [ServerSessionExpired] dialog.
-  ///
-  /// Normally requests throw an error if they need a client id. When a user cancels the [ServerSessionExpired] dialog,
-  /// we no longer have a client id but must support him still clicking stuff.
-  bool cancelledSessionExpired = false;
-
   static const Duration statusDelay = Duration(seconds: 2);
   Timer? _statusTimer;
 
@@ -269,6 +262,8 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<void> stop() async {
+    await super.stop();
+
     // Cancel reconnects
     _cancelHTTPReconnect();
     await stopWebSocket();
@@ -276,7 +271,6 @@ class OnlineApiRepository implements IRepository {
 
     _everConnected = false;
     _connected = false;
-    cancelledSessionExpired = false;
 
     client?.close();
     client = null;
@@ -552,7 +546,7 @@ class OnlineApiRepository implements IRepository {
         if (IUiService().clientId.value?.isNotEmpty == true) {
           pRequest.clientId = IUiService().clientId.value!;
         } else {
-          if (cancelledSessionExpired) {
+          if (cancelledSessionExpired.value) {
             return ApiInteraction(responses: [], request: pRequest);
           }
           throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");

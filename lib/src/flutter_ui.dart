@@ -325,13 +325,14 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
-    // API
-    IApiService apiService = ApiService.create();
-    apiService.setController(ApiController());
-    services.registerSingleton(apiService);
-
     await _extractURIParameters(queryParameters);
     queryParameters.forEach((key, value) => ConfigController().updateCustomStartUpProperties(key, value));
+
+    // API
+    var repository = configController.offline.value ? OfflineApiRepository() : OnlineApiRepository();
+    IApiService apiService = ApiService.create(repository);
+    apiService.setController(ApiController());
+    services.registerSingleton(apiService);
 
     packageInfo = await PackageInfo.fromPlatform();
 
@@ -344,13 +345,6 @@ class FlutterUI extends StatefulWidget {
     }
 
     IUiService().setAppManager(pAppToRun.appManager);
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // API init
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var repository = configController.offline.value ? OfflineApiRepository() : OnlineApiRepository();
-    IApiService().setRepository(repository);
 
     runApp(pAppToRun);
   }
@@ -598,11 +592,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     // (Re-)start repository
     if (IApiService().getRepository() is OnlineApiRepository) {
-      if (IApiService().getRepository()?.isStopped() == false) {
-        await IApiService().getRepository()?.stop();
+      if (IApiService().getRepository().isStopped() == false) {
+        await IApiService().getRepository().stop();
       }
     }
-    await IApiService().getRepository()?.start();
+    await IApiService().getRepository().start();
     await FlutterUI.clearServices(true);
 
     if (resetAppName) {
@@ -778,7 +772,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    IApiService().getRepository()?.stop();
+    IApiService().getRepository().stop();
     subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
 

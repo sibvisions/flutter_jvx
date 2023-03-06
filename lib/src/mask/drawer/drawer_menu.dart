@@ -19,6 +19,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
+import '../../service/api/i_api_service.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/jvx_colors.dart';
@@ -291,10 +292,21 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }
 
   Widget _buildLogoutEntry(BuildContext context, bool isNormalSize) {
+    String text;
+    IconData icon;
+
+    if (IApiService().getRepository().cancelledSessionExpired.value) {
+      text = "Restart";
+      icon = FontAwesomeIcons.arrowsRotate;
+    } else {
+      text = "Logout";
+      icon = FontAwesomeIcons.rightFromBracket;
+    }
+
     return _buildFooterEntry(
       context: context,
-      text: FlutterUI.translate("Logout"),
-      leadingIcon: FontAwesomeIcons.rightFromBracket,
+      text: FlutterUI.translate(text),
+      leadingIcon: icon,
       onTap: widget.onLogoutPressed,
       isNormalSize: isNormalSize,
     );
