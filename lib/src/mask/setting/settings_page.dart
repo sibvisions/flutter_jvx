@@ -473,9 +473,14 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   _buildStatus(BuildContext context) {
-    String versionValue = (IUiService().applicationMetaData.value?.serverVersion ?? "Unknown");
-    if (IUiService().applicationMetaData.value?.serverVersion != FlutterUI.supportedServerVersion) {
-      versionValue += " (${FlutterUI.translate("Supported")}: ${FlutterUI.supportedServerVersion})";
+    String versionValue;
+    if (appName != null) {
+      versionValue = (IUiService().applicationMetaData.value?.serverVersion ?? "Unknown");
+      if (IUiService().applicationMetaData.value?.serverVersion != FlutterUI.supportedServerVersion) {
+        versionValue += " (${FlutterUI.translate("Supported")}: ${FlutterUI.supportedServerVersion})";
+      }
+    } else {
+      versionValue = "${FlutterUI.translate("Supported")}: ${FlutterUI.supportedServerVersion}";
     }
 
     SettingItem serverVersion = SettingItem(
@@ -484,21 +489,23 @@ class _SettingsPageState extends State<SettingsPage> {
       value: versionValue,
     );
 
-    OnlineApiRepository? repository;
-    if (IApiService().getRepository() is OnlineApiRepository) {
-      repository = IApiService().getRepository() as OnlineApiRepository;
-    }
+    AnimatedBuilder buildWebSocketStatus() {
+      OnlineApiRepository? repository;
+      if (IApiService().getRepository() is OnlineApiRepository) {
+        repository = IApiService().getRepository() as OnlineApiRepository;
+      }
 
-    Widget webSocketStatus = AnimatedBuilder(
-      animation: Listenable.merge([
-        repository?.getWebSocket()?.available,
-        repository?.getWebSocket()?.connected,
-      ]),
-      builder: (context, child) => _buildWebSocketStatus(
-        repository?.getWebSocket()?.available.value,
-        repository?.getWebSocket()?.connected.value,
-      ),
-    );
+      return AnimatedBuilder(
+        animation: Listenable.merge([
+          repository?.getWebSocket()?.available,
+          repository?.getWebSocket()?.connected,
+        ]),
+        builder: (context, child) => _buildWebSocketStatus(
+          repository?.getWebSocket()?.available.value,
+          repository?.getWebSocket()?.connected.value,
+        ),
+      );
+    }
 
     return SettingGroup(
       groupHeader: Padding(
@@ -513,7 +520,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       items: [
         serverVersion,
-        webSocketStatus,
+        if (appName != null) buildWebSocketStatus(),
       ],
     );
   }
