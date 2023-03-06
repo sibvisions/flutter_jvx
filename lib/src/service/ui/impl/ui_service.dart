@@ -14,6 +14,7 @@ import '../../../custom/custom_component.dart';
 import '../../../custom/custom_menu_item.dart';
 import '../../../custom/custom_screen.dart';
 import '../../../exceptions/error_view_exception.dart';
+import '../../../exceptions/session_expired_exception.dart';
 import '../../../flutter_ui.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame/frame.dart';
@@ -159,7 +160,7 @@ class UiService implements IUiService {
   handleAsyncError(Object error, StackTrace stackTrace) {
     FlutterUI.logUI.e("Error while sending async command", error, stackTrace);
 
-    if (error is! ErrorViewException) {
+    if (error is! ErrorViewException && error is! SessionExpiredException) {
       bool isTimeout = error is TimeoutException || error is SocketException;
       ICommandService().sendCommand(OpenErrorDialogCommand(
         message: FlutterUI.translate(IUiService.getErrorMessage(error)),

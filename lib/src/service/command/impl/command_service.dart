@@ -245,6 +245,12 @@ class CommandService implements ICommandService {
     if (errorCommand != null) {
       throw ErrorViewException(errorCommand);
     }
+
+    var sessionExpiredCommand = nonRouteCommands
+        .firstWhereOrNull((element) => element is OpenSessionExpiredDialogCommand) as OpenSessionExpiredDialogCommand?;
+    if (sessionExpiredCommand != null) {
+      throw SessionExpiredException();
+    }
   }
 
   void modifyCommands(List<BaseCommand> commands, BaseCommand originalCommand) {

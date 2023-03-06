@@ -15,9 +15,9 @@
  */
 
 class SessionExpiredException implements Exception {
-  final int statusCode;
+  final int? statusCode;
 
-  SessionExpiredException(this.statusCode);
+  SessionExpiredException([this.statusCode]);
 
   @override
   String toString() {
