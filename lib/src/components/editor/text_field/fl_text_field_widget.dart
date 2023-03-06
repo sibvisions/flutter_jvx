@@ -93,7 +93,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   EdgeInsets get iconsPadding {
     EdgeInsets cPadding = contentPadding;
 
-    return EdgeInsets.fromLTRB(5, cPadding.top, 5, cPadding.bottom);
+    return EdgeInsets.fromLTRB(5, cPadding.top - iconInnatePadding, 5, cPadding.bottom - iconInnatePadding);
   }
 
   int? get minLines => null;
@@ -159,7 +159,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       decoration: inputDecoration.copyWith(
         enabled: model.isEnabled,
         hintText: model.placeholder,
-        contentPadding: kIsWeb ? contentPadding + const EdgeInsets.only(top: 4, bottom: 4) : contentPadding,
+        contentPadding: !kIsWeb ? contentPadding : contentPadding + const EdgeInsets.only(top: 4, bottom: 4),
         border: createBorder(FlTextBorderType.border),
         errorBorder: createBorder(FlTextBorderType.errorBorder),
         enabledBorder: createBorder(FlTextBorderType.enabledBorder),
