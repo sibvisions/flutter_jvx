@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,7 +56,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   // ignore: non_constant_identifier_names
   static EdgeInsets TEXT_FIELD_PADDING(TextStyle pStyle) {
-    double verticalPadding = (TEXT_FIELD_HEIGHT - ParseUtil.getTextHeight(text: "a", style: pStyle)) / 2;
+    double verticalPadding = max(0, (TEXT_FIELD_HEIGHT - ParseUtil.getTextHeight(text: "a", style: pStyle)) / 2);
 
     return EdgeInsets.fromLTRB(10, verticalPadding, 0, verticalPadding);
   }
