@@ -354,7 +354,7 @@ class OnlineApiRepository extends IRepository {
 
   /// Resets the alive timer and restarts if the requirements are fulfilled.
   ///
-  /// Requirement:
+  /// Requirements:
   /// * HttpClient works ([client] != `null`).
   /// * Connection works ([connected] == `true`).
   /// * Session is valid ([IUiService.clientId] != `null`).

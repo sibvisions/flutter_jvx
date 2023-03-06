@@ -235,8 +235,7 @@ class JVxWebSocket {
   /// with a [WebSocketStatus.goingAway] close code. When a ping signal is sent,
   /// the pong message must be received within [pingInterval].
   ///
-  /// Requirement:
-  /// * HttpClient works ([client] != `null`).
+  /// Requirements:
   /// * Connection works ([connected] == `true`).
   /// * Session is valid ([IUiService.clientId] != `null`).
   /// * App is in foreground ([AppLifecycleState] == [AppLifecycleState.resumed]).

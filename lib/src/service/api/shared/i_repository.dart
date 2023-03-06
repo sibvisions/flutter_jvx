@@ -17,6 +17,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:universal_io/io.dart';
 
+import '../../../mask/error/server_session_expired.dart';
 import '../../../model/api_interaction.dart';
 import '../../../model/request/api_request.dart';
 
@@ -26,7 +27,7 @@ abstract class IRepository {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Whether or not the user has explicitely cancelled the [ServerSessionExpired] dialog.
+  /// Whether or not the user has explicitly cancelled the [ServerSessionExpired] dialog.
   ///
   /// Normally requests throw an error if they need a client id. When a user cancels the [ServerSessionExpired] dialog,
   /// we no longer have a client id but must support him still clicking stuff.

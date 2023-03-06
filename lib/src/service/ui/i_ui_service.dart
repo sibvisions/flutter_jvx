@@ -22,6 +22,7 @@ import 'package:universal_io/io.dart';
 import '../../custom/app_manager.dart';
 import '../../custom/custom_component.dart';
 import '../../custom/custom_screen.dart';
+import '../../mask/frame/frame.dart';
 import '../../mask/frame_dialog.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/base_command.dart';
