@@ -50,7 +50,14 @@ class ServerSessionExpired extends JVxDialog {
           Text(command.message?.isNotEmpty == true ? command.message! : FlutterUI.translate("Session has expired")),
       actions: [
         TextButton(
-          onPressed: () => _restartApp(),
+          onPressed: _close,
+          child: Text(
+            FlutterUI.translate("Cancel"),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+        ),
+        TextButton(
+          onPressed: _restartApp,
           child: Text(
             FlutterUI.translate("Restart App"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -64,8 +71,12 @@ class ServerSessionExpired extends JVxDialog {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _restartApp() {
+  void _close() {
     IUiService().closeJVxDialog(this);
+  }
+
+  void _restartApp() {
+    _close();
     FlutterUI.of(FlutterUI.getCurrentContext()!).startApp();
   }
 }
