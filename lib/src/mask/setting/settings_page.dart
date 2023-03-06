@@ -95,11 +95,11 @@ class _SettingsPageState extends State<SettingsPage> {
           if (appName != null)
             IconTheme.merge(
               data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-              child: Builder(builder: (context) => _buildApplicationSettings(context)),
+              child: Builder(builder: (context) => _buildGeneralSettings(context)),
             ),
           IconTheme.merge(
             data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-            child: Builder(builder: (context) => _buildDeviceSettings(context)),
+            child: Builder(builder: (context) => _buildApplicationSettings(context)),
           ),
           _buildVersionInfo(),
           IconTheme.merge(
@@ -229,7 +229,7 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Widget _buildApplicationSettings(BuildContext context) {
+  Widget _buildGeneralSettings(BuildContext context) {
     SettingItem? appNameSetting;
     bool hideAppDetails =
         !ConfigController().getAppConfig()!.configsHidden! && !(ConfigController().hidden.value ?? false);
@@ -278,11 +278,27 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
+    var resolution = ConfigController().pictureResolution.value ?? resolutions[0];
+    SettingItem pictureSetting = _buildPickerItem<int>(
+      frontIcon: FontAwesomeIcons.image,
+      title: "Picture Size",
+      value: resolution,
+      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterUI.translate("$value px")),
+      onPressed: (context, value) {
+        var items = resolutions.map((e) => "$e px").toList();
+        _openDropdown(context, items, "$value px", onValue: (selectedResolution) async {
+          resolution = int.parse(selectedResolution.split(" ")[0]);
+          await ConfigController().updatePictureResolution(resolution);
+          setState(() {});
+        });
+      },
+    );
+
     return SettingGroup(
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          ConfigController().title.value ?? FlutterUI.translate("Application"),
+          FlutterUI.translate("General"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -293,11 +309,12 @@ class _SettingsPageState extends State<SettingsPage> {
         if (appNameSetting != null) appNameSetting,
         if (baseUrlSetting != null) baseUrlSetting,
         languageSetting,
+        pictureSetting,
       ],
     );
   }
 
-  _buildDeviceSettings(BuildContext context) {
+  _buildApplicationSettings(BuildContext context) {
     Widget singleAppSetting = SwitchListTile(
       contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
       secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),
@@ -337,34 +354,18 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
-    var resolution = ConfigController().pictureResolution.value ?? resolutions[0];
-    SettingItem pictureSetting = _buildPickerItem<int>(
-      frontIcon: FontAwesomeIcons.image,
-      title: "Picture Size",
-      value: resolution,
-      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterUI.translate("$value px")),
-      onPressed: (context, value) {
-        var items = resolutions.map((e) => "$e px").toList();
-        _openDropdown(context, items, "$value px", onValue: (selectedResolution) async {
-          resolution = int.parse(selectedResolution.split(" ")[0]);
-          await ConfigController().updatePictureResolution(resolution);
-          setState(() {});
-        });
-      },
-    );
-
     return SettingGroup(
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterUI.translate("Device"),
+          FlutterUI.translate("Application"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      items: [singleAppSetting, themeSetting, pictureSetting],
+      items: [singleAppSetting, themeSetting],
     );
   }
 
