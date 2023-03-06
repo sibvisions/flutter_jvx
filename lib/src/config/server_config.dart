@@ -16,6 +16,7 @@
 
 import '../mask/apps/app_overview_page.dart';
 import '../model/request/api_startup_request.dart';
+import '../service/config/config_controller.dart';
 import '../util/parse_util.dart';
 
 class ServerConfig {
@@ -85,7 +86,7 @@ class ServerConfig {
   /// Whether this config contains enough information to send a [ApiStartUpRequest].
   bool get isStartable => (appName?.isNotEmpty ?? false) && baseUrl != null;
 
-  String? get effectiveTitle => title ?? appName;
+  String? get effectiveTitle => title ?? ConfigController().getAppStyle(appName)?["login.title"] ?? appName;
 
   /// Returns a new [ServerConfig] which contains the merged fields of [this] and [other].
   ServerConfig merge(ServerConfig? other) {
