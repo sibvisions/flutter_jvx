@@ -582,7 +582,7 @@ class OnlineApiRepository implements IRepository {
       if (response.statusCode >= 400 && response.statusCode <= 599) {
         var body = await _decodeBody(response);
         FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
-        if (pRequest is ApiStartUpRequest) {
+        if (response.statusCode == 400 && pRequest is ApiStartUpRequest) {
           APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
           String routeString = route!.route.replaceAll("api", "");
           throw InvalidServerResponseException("Server doesn't support '$routeString'.", response.statusCode);
