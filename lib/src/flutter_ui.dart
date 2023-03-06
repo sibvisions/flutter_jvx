@@ -535,6 +535,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       }
       if (defaultConfig?.isStartable ?? false) {
         startApp(app: defaultConfig);
+      } else {
+        IUiService().routeToAppOverview();
       }
     });
   }
