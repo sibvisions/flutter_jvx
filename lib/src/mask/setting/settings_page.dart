@@ -144,13 +144,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Expanded(child: _createCancelButton(context)),
+                    if (context.canBeamBack && _changesPending()) Expanded(child: _createCancelButton(context)),
                     if (context.canBeamBack && _changesPending())
                       VerticalDivider(
                         color: JVxColors.dividerColor(Theme.of(context)),
                         width: 1,
                       ),
-                    if (!context.canBeamBack || !_changesPending()) const SizedBox(width: 16.0),
                     Expanded(child: _createSaveButton(context)),
                   ],
                 ),
@@ -165,19 +164,17 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _createCancelButton(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
-      child: context.canBeamBack && _changesPending()
-          ? InkWell(
-              onTap: context.beamBack,
-              child: SizedBox.shrink(
-                child: Center(
-                  child: Text(
-                    FlutterUI.translate("Cancel"),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            )
-          : const SizedBox.shrink(),
+      child: InkWell(
+        onTap: context.beamBack,
+        child: SizedBox.shrink(
+          child: Center(
+            child: Text(
+              FlutterUI.translate("Cancel"),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
