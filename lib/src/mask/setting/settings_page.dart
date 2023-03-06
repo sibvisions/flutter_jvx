@@ -489,7 +489,7 @@ class _SettingsPageState extends State<SettingsPage> {
       value: versionValue,
     );
 
-    AnimatedBuilder buildWebSocketStatus() {
+    Widget buildWebSocketStatus() {
       OnlineApiRepository? repository;
       if (IApiService().getRepository() is OnlineApiRepository) {
         repository = IApiService().getRepository() as OnlineApiRepository;
@@ -501,7 +501,6 @@ class _SettingsPageState extends State<SettingsPage> {
           repository?.getWebSocket()?.connected,
         ]),
         builder: (context, child) => _buildWebSocketStatus(
-          repository?.getWebSocket()?.available.value,
           repository?.getWebSocket()?.connected.value,
         ),
       );
@@ -525,11 +524,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  SettingItem<String> _buildWebSocketStatus(bool? available, bool? connected) {
-    String text = FlutterUI.translate(available != null ? (available ? "Available" : "Not available") : "Unknown");
-    if (connected != null) {
-      text += " (${FlutterUI.translate(connected ? "Connected" : "Not connected")})";
-    }
+  SettingItem<String> _buildWebSocketStatus(bool? connected) {
+    String text = FlutterUI.translate(connected != null ? (connected ? "Available" : "Not available") : "Unknown");
     return SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.circleNodes),
       title: FlutterUI.translate("Web Socket"),
