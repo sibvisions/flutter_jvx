@@ -304,7 +304,7 @@ class _SettingsPageState extends State<SettingsPage> {
     Widget singleAppSetting = SwitchListTile(
       contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
       secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),
-      title: Text(FlutterUI.translate("Single App Mode")),
+      title: Text(FlutterUI.translate("Manage single application")),
       value: singleAppMode,
       onChanged: (value) {
         ConfigController().updateSingleAppMode(value);
