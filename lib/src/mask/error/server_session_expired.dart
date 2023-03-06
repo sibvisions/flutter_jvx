@@ -18,6 +18,8 @@ import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
+import '../../service/api/i_api_service.dart';
+import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
 
@@ -72,11 +74,14 @@ class ServerSessionExpired extends JVxDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _close() {
+    if (IApiService().getRepository() is OnlineApiRepository) {
+      (IApiService().getRepository()! as OnlineApiRepository).cancelledSessionExpired = true;
+    }
     IUiService().closeJVxDialog(this);
   }
 
   void _restartApp() {
-    _close();
+    IUiService().closeJVxDialog(this);
     FlutterUI.of(FlutterUI.getCurrentContext()!).startApp();
   }
 }
