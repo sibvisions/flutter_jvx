@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
@@ -184,6 +185,9 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
 
     LoginPage.doResetPassword(
       identifier: identifierController.text,
-    ).catchError(IUiService().handleAsyncError);
+    ).catchError((error, stackTrace) {
+      HapticFeedback.heavyImpact();
+      return IUiService().handleAsyncError(error, stackTrace);
+    });
   }
 }

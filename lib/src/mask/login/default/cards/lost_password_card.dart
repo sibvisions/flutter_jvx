@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
@@ -87,6 +88,9 @@ class LostPasswordCard extends StatelessWidget {
 
     LoginPage.doResetPassword(
       identifier: identifierController.text,
-    ).catchError(IUiService().handleAsyncError);
+    ).catchError((error, stackTrace) {
+      HapticFeedback.heavyImpact();
+      return IUiService().handleAsyncError(error, stackTrace);
+    });
   }
 }

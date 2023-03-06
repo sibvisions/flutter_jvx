@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../flutter_ui.dart';
@@ -141,6 +142,7 @@ class _MFATextCardState extends State<MFATextCard> {
       username: widget.username,
       confirmationCode: codeController.text,
     ).catchError((error, stackTrace) {
+      HapticFeedback.heavyImpact();
       setState(() => progressButtonState = ButtonState.fail);
       return IUiService().handleAsyncError(error, stackTrace);
     });

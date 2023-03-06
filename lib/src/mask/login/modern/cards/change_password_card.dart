@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
@@ -323,20 +324,26 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (newPasswordController.text == confirmPasswordController.text) {
+      Future<void> loginFuture;
       if (widget.useOTP) {
-        LoginPage.doChangePasswordOTP(
+        loginFuture = LoginPage.doChangePasswordOTP(
           username: usernameController.text,
           password: oneTimePasswordController.text,
           newPassword: newPasswordController.text,
-        ).catchError(IUiService().handleAsyncError);
+        );
       } else {
-        LoginPage.doChangePassword(
+        loginFuture = LoginPage.doChangePassword(
           username: usernameController.text,
           password: passwordController.text,
           newPassword: newPasswordController.text,
-        ).catchError(IUiService().handleAsyncError);
+        );
       }
+      loginFuture.catchError((error, stackTrace) {
+        HapticFeedback.heavyImpact();
+        return IUiService().handleAsyncError(error, stackTrace);
+      });
     } else {
+      HapticFeedback.heavyImpact();
       IUiService().openDialog(
         pIsDismissible: true,
         pBuilder: (context) => AlertDialog(

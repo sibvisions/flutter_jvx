@@ -101,6 +101,6 @@ class MFACard extends StatelessWidget {
   }
 
   void _onCancelPressed() {
-    LoginPage.cancelLogin().catchError((error, stackTrace) => IUiService().handleAsyncError(error, stackTrace));
+    LoginPage.cancelLogin().catchError(IUiService().handleAsyncError);
   }
 }

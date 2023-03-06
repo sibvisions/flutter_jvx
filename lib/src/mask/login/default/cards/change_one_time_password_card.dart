@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
@@ -134,6 +135,9 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
       username: userNameController.text,
       password: oneTimeController.text,
       newPassword: newPasswordController.text,
-    ).catchError(IUiService().handleAsyncError);
+    ).catchError((error, stackTrace) {
+      HapticFeedback.heavyImpact();
+      return IUiService().handleAsyncError(error, stackTrace);
+    });
   }
 }

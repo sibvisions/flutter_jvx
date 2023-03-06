@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../../flutter_ui.dart';
 import '../../../../../service/ui/i_ui_service.dart';
@@ -99,6 +100,7 @@ class _MFATextCardState extends State<MFATextCard> {
       username: widget.username,
       confirmationCode: codeController.text,
     ).catchError((error, stackTrace) {
+      HapticFeedback.heavyImpact();
       return IUiService().handleAsyncError(error, stackTrace);
     });
   }

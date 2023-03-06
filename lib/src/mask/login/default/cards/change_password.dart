@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/change_password_command.dart';
@@ -187,7 +188,10 @@ class ChangePassword extends StatelessWidget {
               reason: "Change Password Request",
             ))
             .then((value) => Navigator.of(FlutterUI.getCurrentContext()!).pop())
-            .catchError(IUiService().handleAsyncError);
+            .catchError((error, stackTrace) {
+          HapticFeedback.heavyImpact();
+          return IUiService().handleAsyncError(error, stackTrace);
+        });
       }
     } else {
       IUiService().openDialog(pBuilder: (context) => passwordError(context), pIsDismissible: true);
