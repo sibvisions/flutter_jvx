@@ -65,7 +65,7 @@ class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveA
       ConfigController().reloadSupportedLanguages();
       ConfigController().loadLanguages();
     }
-    if (kDebugMode || !(imagesDir?.existsSync() ?? false)) {
+    if (!kIsWeb && (kDebugMode || !(imagesDir?.existsSync() ?? false))) {
       commands.add(DownloadImagesCommand(reason: "Resources should be downloaded"));
     }
     commands.add(DownloadStyleCommand(reason: "Styles should be downloaded"));
