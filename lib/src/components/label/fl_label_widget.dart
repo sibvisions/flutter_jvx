@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -42,8 +44,8 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       child = getTooltipWidget(child);
     }
 
-    EdgeInsets padding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle());
-    padding -= EdgeInsets.fromLTRB(padding.left, 1, padding.right, 1);
+    EdgeInsets textPadding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle());
+    EdgeInsets padding = EdgeInsets.fromLTRB(0, max(0, textPadding.top - 1), 0, max(0, textPadding.bottom - 1));
 
     return GestureDetector(
       onTap: onPress,
