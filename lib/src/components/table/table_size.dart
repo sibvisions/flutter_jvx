@@ -219,7 +219,7 @@ class TableSize {
       List<String> columnsToRedistribute =
           _getColumnsToRedistribute(columnWidths.keys.toList(), pDataChunk) ?? columnWidths.keys.toList();
       _redistributeRemainingWidth(columnsToRedistribute, remainingWidth);
-    } else if (pTableModel.autoResize && remainingWidth < 0.0) {
+    } else if ((pTableModel.autoResize || remainingWidth >= -10.0) && remainingWidth < 0.0) {
       int i = 0;
       bool useMinWidth = true;
       while (remainingWidth < 0.0 && i < 30) {
