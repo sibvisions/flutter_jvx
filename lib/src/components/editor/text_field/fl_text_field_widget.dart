@@ -156,8 +156,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     focusNode.canRequestFocus = model.isFocusable;
 
-    model.placeholder = "placeholder";
-
     return TextField(
       controller: textController,
       decoration: inputDecoration.copyWith(
