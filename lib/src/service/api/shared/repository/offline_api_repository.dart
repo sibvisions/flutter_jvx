@@ -65,6 +65,7 @@ class OfflineApiRepository extends IRepository {
 
   @override
   Future<void> stop() async {
+    await super.stop();
     if (!isStopped()) {
       await offlineDatabase!.close();
     }
