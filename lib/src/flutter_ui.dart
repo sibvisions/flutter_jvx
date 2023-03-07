@@ -461,6 +461,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   final RoutesObserver routeObserver = RoutesObserver();
 
   AppLifecycleState? lastState;
+  bool startedManually = false;
 
   late ThemeData themeData;
   late ThemeData darkThemeData;
@@ -528,21 +529,24 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         defaultConfig = configs.firstOrNull;
       }
       if (defaultConfig?.isStartable ?? false) {
-        startApp(app: defaultConfig);
+        startApp(app: defaultConfig, autostart: true);
       } else {
         IUiService().routeToAppOverview();
       }
     });
   }
 
-  void startApp({ServerConfig? app}) {
+  void startApp({ServerConfig? app, bool autostart = false}) {
     setState(() {
-      startupFuture = _startApp(app: app).catchError(FlutterUI.createErrorHandler("Failed to send startup"));
+      startupFuture =
+          _startApp(app: app, autostart: autostart).catchError(FlutterUI.createErrorHandler("Failed to send startup"));
     });
   }
 
-  Future<void> _startApp({ServerConfig? app}) async {
+  Future<void> _startApp({ServerConfig? app, bool autostart = false}) async {
     await stopApp(false);
+
+    startedManually = !autostart;
 
     if (app?.appName != null) {
       await ConfigController().updateAppName(app!.appName!);
@@ -646,11 +650,26 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             return JVxOverlay(child: child);
           }
 
+          retrySplash() => startApp();
+          splashReturnToApps() {
+            IUiService().routeToAppOverview();
+            setState(() {
+              startupFuture = null;
+            });
+          }
+
           return _buildSplash(
             startupFuture!,
+            retry: retrySplash,
+            returnToApps: splashReturnToApps,
             childrenBuilder: (snapshot) => [
               if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                _getStartupErrorDialog(context, snapshot),
+                _getStartupErrorDialog(
+                  context,
+                  snapshot,
+                  retry: retrySplash,
+                  returnToApps: splashReturnToApps,
+                ),
             ],
           );
         },
@@ -689,7 +708,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   ///
   /// [AsyncSnapshot] from the parent [FutureBuilder] can't be used, because [Navigator.onGenerateRoute]
   /// is only called once-ish, therefore we have to trigger the update from inside.
-  Widget _buildSplash(Future future, {List<Widget> Function(AsyncSnapshot snapshot)? childrenBuilder}) {
+  Widget _buildSplash(
+    Future future, {
+    List<Widget> Function(AsyncSnapshot snapshot)? childrenBuilder,
+    required VoidCallback? retry,
+    required VoidCallback? returnToApps,
+  }) {
     return Theme(
       data: splashTheme,
       child: Navigator(
@@ -704,6 +728,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                 Splash(
                   splashBuilder: widget.splashBuilder,
                   snapshot: snapshot,
+                  returnToApps: returnToApps,
                 ),
                 ...?childrenBuilder?.call(snapshot),
               ],
@@ -806,7 +831,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     setState(() {});
   }
 
-  Widget _getStartupErrorDialog(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+  static Widget _getStartupErrorDialog(
+    BuildContext context,
+    AsyncSnapshot<dynamic> snapshot, {
+    required VoidCallback? retry,
+    required VoidCallback? returnToApps,
+  }) {
     ErrorViewException? errorView = snapshot.error is ErrorViewException ? snapshot.error as ErrorViewException : null;
 
     return Stack(
@@ -829,19 +859,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ),
           actions: [
             TextButton(
-              onPressed: () => startApp(),
+              onPressed: retry,
               child: Text(
                 FlutterUI.translate("Retry"),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             TextButton(
-              onPressed: () {
-                IUiService().routeToAppOverview();
-                setState(() {
-                  startupFuture = null;
-                });
-              },
+              onPressed: returnToApps,
               child: Text(
                 FlutterUI.translate("Return to Apps"),
                 style: const TextStyle(fontWeight: FontWeight.bold),

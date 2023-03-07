@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -26,13 +28,14 @@ typedef SplashBuilder = Widget Function(
   AsyncSnapshot? snapshot,
 );
 
-class Splash extends StatelessWidget {
+class Splash extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final SplashBuilder? splashBuilder;
   final AsyncSnapshot? snapshot;
+  final VoidCallback? returnToApps;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -42,13 +45,44 @@ class Splash extends StatelessWidget {
     super.key,
     this.splashBuilder,
     this.snapshot,
+    required this.returnToApps,
   });
 
   @override
+  State<Splash> createState() => _SplashState();
+}
+
+class _SplashState extends State<Splash> {
+  late final RootBackButtonDispatcher backButtonDispatcher;
+
+  @override
+  void initState() {
+    super.initState();
+    backButtonDispatcher = RootBackButtonDispatcher();
+    backButtonDispatcher.addCallback(_onBackPress);
+  }
+
+  /// Returns true if this callback will handle the request;
+  /// otherwise, returns false.
+  Future<bool> _onBackPress() async {
+    if ([null, ConnectionState.none, ConnectionState.done].contains(widget.snapshot?.connectionState)) {
+      widget.returnToApps?.call();
+    }
+    // We always handle it.
+    return true;
+  }
+
+  @override
+  void dispose() {
+    backButtonDispatcher.removeCallback(_onBackPress);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return splashBuilder?.call(context, snapshot) ??
+    return widget.splashBuilder?.call(context, widget.snapshot) ??
         JVxSplash(
-          snapshot: snapshot,
+          snapshot: widget.snapshot,
           logo: SvgPicture.asset(
             ImageLoader.getAssetPath(
               FlutterUI.package,
