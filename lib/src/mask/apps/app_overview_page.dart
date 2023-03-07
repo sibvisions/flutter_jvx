@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../config/application_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../service/config/config_controller.dart';

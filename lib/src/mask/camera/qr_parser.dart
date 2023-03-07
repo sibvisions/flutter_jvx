@@ -16,38 +16,14 @@
 
 import 'dart:convert';
 
-import '../../config/legacy_server_config.dart';
+import '../../config/application_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
-import '../../util/parse_util.dart';
 
 class QRParser {
-  static bool _isLegacy(String raw) {
-    try {
-      Map<String, dynamic> json = jsonDecode(raw);
-      if (!json.containsKey(ApplicationConfig.APPS)) {
-        return true;
-      }
-    } on FormatException {
-      return true;
-    }
-    return false;
-  }
-
-  /// Parses the given [raw] qr code using [parseLatest] and [parseLegacy].
-  static ApplicationConfig parse(String raw) {
-    if (_isLegacy(raw)) {
-      FlutterUI.log.d("Parsing legacy qr code");
-      return parseLegacy(raw);
-    } else {
-      FlutterUI.log.d("Parsing qr code");
-      return parseLatest(raw);
-    }
-  }
-
-  /// Parses the latest qr code format.
+  /// Parses the given qr code.
   ///
-  /// Supported format:
+  /// Default format:
   /// ```json
   /// {
   ///   "APPNAME": "demo",
@@ -59,14 +35,8 @@ class QRParser {
   ///   "DEFAULT": true
   /// }
   /// ```
-  static ApplicationConfig parseLatest(String raw) {
-    Map<String, dynamic> json = jsonDecode(raw);
-    return ApplicationConfig.fromJson(json);
-  }
-
-  /// Parsed a legacy qr code.
   ///
-  /// The following legacy formats are supported:
+  /// Supports the following legacy formats:
   /// * JSON
   /// * Custom "JSON" (=)
   /// ```
@@ -84,96 +54,37 @@ class QRParser {
   /// USER: features
   /// PWD: features
   /// ```
-  static ApplicationConfig parseLegacy(String rawQRCode) {
-    const Map<String, String> dictionary = {
-      "Application": LegacyServerConfig.APPNAME,
-      "Applikation": LegacyServerConfig.APPNAME,
-      "APPNAME": LegacyServerConfig.APPNAME,
-      "URL": LegacyServerConfig.URL,
-      "USER": LegacyServerConfig.USER,
-      "PWD": LegacyServerConfig.PASSWORD,
-    };
-
+  static ApplicationConfig parse(String raw) {
     Map<String, dynamic> parsedConfig = {};
     // If QR-Code is a json it can be easily parsed, otherwise string is split by newLines.
     try {
-      parsedConfig = jsonDecode(rawQRCode);
+      parsedConfig = jsonDecode(raw);
     } on FormatException {
       FlutterUI.logUI.d("Failed to parse valid json from qr code, falling back to line format.");
 
       LineSplitter ls = const LineSplitter();
-      List<String> properties = ls.convert(rawQRCode);
+      List<String> properties = ls.convert(raw);
 
       for (String prop in properties) {
         List<String> splitProp = prop.split(RegExp(r"(: )|(=)"));
-        String? propertyName = dictionary[splitProp[0]];
-        if (propertyName != null && splitProp.length >= 2) {
-          String propertyValue = splitProp[1];
-          parsedConfig[propertyName] = propertyValue;
+        if (splitProp.length >= 2) {
+          parsedConfig[splitProp[0]] = splitProp[1];
         }
       }
     }
 
     if (parsedConfig.isNotEmpty) {
-      return ApplicationConfig(apps: [
-        LegacyServerConfig.fromJson(parsedConfig).asServerConfig(),
-      ]);
+      List<ServerConfig> collectedApps = [];
+      ServerConfig rootConfig = ApplicationConfig.parseApp(parsedConfig);
+      if (rootConfig.isStartable) {
+        collectedApps.add(rootConfig);
+      }
+      if (parsedConfig.containsKey(ApplicationConfig.APPS)) {
+        List<dynamic> apps = parsedConfig[ApplicationConfig.APPS];
+        collectedApps.addAll(apps.map((e) => ApplicationConfig.parseApp(e)).where((element) => element.isStartable));
+      }
+      return ApplicationConfig(apps: collectedApps);
     }
     throw const FormatException("Invalid QR Code");
   }
-}
-
-class ApplicationConfig {
-  static const String APPS = "APPS";
-
-  static const String APP_NAME = "APPNAME";
-  static const String URL = "URL";
-  static const String USER = "USER";
-  static const String PASSWORD = "PWD";
-  static const String TITLE = "TITLE";
-  static const String ICON = "ICON";
-  static const String IS_DEFAULT = "DEFAULT";
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  final List<ServerConfig>? apps;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  const ApplicationConfig({
-    this.apps,
-  });
-
-  const ApplicationConfig.empty() : this();
-
-  ApplicationConfig.fromJson(Map<String, dynamic> json)
-      : this(
-          apps: (json[APPS] as List<dynamic>?)?.map((e) {
-            return ServerConfig(
-              appName: ParseUtil.ensureNullOnEmpty(e[APP_NAME]),
-              baseUrl: e[URL] != null ? Uri.parse(e[URL]) : null,
-              username: ParseUtil.ensureNullOnEmpty(e[USER]),
-              password: ParseUtil.ensureNullOnEmpty(e[PASSWORD]),
-              title: ParseUtil.ensureNullOnEmpty(e[TITLE]),
-              icon: ParseUtil.ensureNullOnEmpty(e[ICON]),
-              isDefault: e[IS_DEFAULT],
-            );
-          }).toList(),
-        );
-
-  ApplicationConfig merge(ApplicationConfig? other) {
-    if (other == null) return this;
-
-    return ApplicationConfig(
-      apps: other.apps ?? apps,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        'apps': apps?.map((e) => e.toJson()).toList(),
-      };
 }
