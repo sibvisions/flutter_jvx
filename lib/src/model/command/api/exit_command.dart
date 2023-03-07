@@ -23,7 +23,7 @@ class ExitCommand extends SessionCommand {
 
   ExitCommand({
     required super.reason,
-  });
+  }) : super(showLoading: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
