@@ -754,7 +754,9 @@ class FormLayout extends ILayout {
 
       FormLayoutAnchor? relatedAnchor = anchor.relatedAnchor;
       if (anchor.relatedAnchor != null) {
-        anchor.used = anchor.used || relatedAnchor!.used;
+        if (!anchor.used && relatedAnchor!.used && !relatedAnchor.name.contains("m")) {
+          anchor.used = true;
+        }
 
         if (relatedAnchor!.autoSize &&
             !anchor.autoSize &&
