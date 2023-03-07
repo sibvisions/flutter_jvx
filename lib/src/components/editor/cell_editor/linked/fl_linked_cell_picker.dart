@@ -257,7 +257,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   }
 
   void _onRowTapped(int pIndex, String pColumnName, ICellEditor pCellEditor) {
-    if (_currentlyFiltering) {
+    if (_currentlyFiltering || pIndex < 0) {
       return;
     }
 
