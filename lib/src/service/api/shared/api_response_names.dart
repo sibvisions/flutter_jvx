@@ -42,4 +42,5 @@ abstract class ApiResponseNames {
   static const String badClient = "badClient";
   static const String content = "content";
   static const String closeContent = "closeContent";
+  static const String showDocument = "showDocument";
 }

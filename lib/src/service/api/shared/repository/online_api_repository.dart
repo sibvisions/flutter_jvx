@@ -103,6 +103,7 @@ import '../../../../model/response/generic_screen_view_response.dart';
 import '../../../../model/response/language_response.dart';
 import '../../../../model/response/login_view_response.dart';
 import '../../../../model/response/menu_view_response.dart';
+import '../../../../model/response/show_document_response.dart';
 import '../../../../model/response/upload_action_response.dart';
 import '../../../../model/response/user_data_response.dart';
 import '../../../../model/response/view/message/error_view_response.dart';
@@ -200,6 +201,7 @@ class OnlineApiRepository extends IRepository {
     ApiResponseNames.badClient: BadClientResponse.fromJson,
     ApiResponseNames.content: ContentResponse.fromJson,
     ApiResponseNames.closeContent: CloseContentResponse.fromJson,
+    ApiResponseNames.showDocument: ShowDocumentResponse.fromJson,
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

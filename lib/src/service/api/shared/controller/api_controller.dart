@@ -47,6 +47,7 @@ import '../processor/login_view_processor.dart';
 import '../processor/menu_view_processor.dart';
 import '../processor/message_dialog_processor.dart';
 import '../processor/session_expired_processor.dart';
+import '../processor/show_document_processor.dart';
 import '../processor/upload_action_processor.dart';
 import '../processor/user_data_processor.dart';
 
@@ -82,6 +83,7 @@ class ApiController implements IController {
   final IResponseProcessor _badClientProcessor = BadClientProcessor();
   final IResponseProcessor _contentProcessor = ContentProcessor();
   final IResponseProcessor _closeContentProcessor = CloseContentProcessor();
+  final IResponseProcessor _showDocumentProcessor = ShowDocumentProcessor();
 
   /// Maps response names to their processor
   late final HashMap<String, IResponseProcessor> responseToProcessorMap;
@@ -119,6 +121,7 @@ class ApiController implements IController {
       ApiResponseNames.badClient: _badClientProcessor,
       ApiResponseNames.content: _contentProcessor,
       ApiResponseNames.closeContent: _closeContentProcessor,
+      ApiResponseNames.showDocument: _showDocumentProcessor,
     });
   }
 
