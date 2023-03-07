@@ -30,8 +30,6 @@ import '../model/layout/gaps.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import '../model/layout/margins.dart';
-import '../util/layout/fl_calculate_anchors_util.dart';
-import '../util/layout/fl_calculate_dependent_util.dart';
 import 'i_layout.dart';
 
 class FormLayout extends ILayout {
@@ -174,33 +172,28 @@ class FormLayout extends ILayout {
       required FormLayoutUsedBorder pUsedBorder,
       required FormLayoutSize pPreferredMinimumSize,
       required Gaps pGaps}) {
-    FLCalculateAnchorsUtil.clearAutoSize(pAnchors: pAnchors);
+    // Clears the auto size
+    clearAutoSize(pAnchors: pAnchors);
 
-    /*
-    FormLayout Änderungen von Martin bzgl Gaps der Anchor.
+    // Part of clearing the auto size -> Visible component anchors are used.
     pComponentConstraints.forEach((key, value) {
       value.topAnchor.used = true;
       value.leftAnchor.used = true;
       value.bottomAnchor.used = true;
       value.rightAnchor.used = true;
-    }); 
-    */
+    });
 
-    // Init autoSize Anchor position
-    FLCalculateAnchorsUtil.initAnchors(pAnchors);
+    // Init autoSize
+    initAutoSize(pAnchors);
 
     // Init autoSize Anchors
     for (var component in pComponentData) {
       FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
-      FLCalculateAnchorsUtil.initAutoSizeRelative(
-          pStartAnchor: constraint.leftAnchor, pEndAnchor: constraint.rightAnchor, pAnchors: pAnchors);
-      FLCalculateAnchorsUtil.initAutoSizeRelative(
-          pStartAnchor: constraint.rightAnchor, pEndAnchor: constraint.leftAnchor, pAnchors: pAnchors);
-      FLCalculateAnchorsUtil.initAutoSizeRelative(
-          pStartAnchor: constraint.topAnchor, pEndAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
-      FLCalculateAnchorsUtil.initAutoSizeRelative(
-          pStartAnchor: constraint.bottomAnchor, pEndAnchor: constraint.topAnchor, pAnchors: pAnchors);
+      initAutoSizeRelative(pStartAnchor: constraint.leftAnchor, pEndAnchor: constraint.rightAnchor, pAnchors: pAnchors);
+      initAutoSizeRelative(pStartAnchor: constraint.rightAnchor, pEndAnchor: constraint.leftAnchor, pAnchors: pAnchors);
+      initAutoSizeRelative(pStartAnchor: constraint.topAnchor, pEndAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
+      initAutoSizeRelative(pStartAnchor: constraint.bottomAnchor, pEndAnchor: constraint.topAnchor, pAnchors: pAnchors);
     }
 
     // AutoSize calculations
@@ -208,13 +201,13 @@ class FormLayout extends ILayout {
       for (var component in pComponentData) {
         FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
         Size preferredSize = component.bestSize;
-        FLCalculateAnchorsUtil.calculateAutoSize(
+        calculateAutoSize(
             pLeftTopAnchor: constraint.topAnchor,
             pRightBottomAnchor: constraint.bottomAnchor,
             pPreferredSize: preferredSize.height,
             pAutoSizeCount: autoSizeCount,
             pAnchors: pAnchors);
-        FLCalculateAnchorsUtil.calculateAutoSize(
+        calculateAutoSize(
             pLeftTopAnchor: constraint.leftAnchor,
             pRightBottomAnchor: constraint.rightAnchor,
             pPreferredSize: preferredSize.width,
@@ -227,22 +220,22 @@ class FormLayout extends ILayout {
         FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
         double count;
-        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
+        count = finishAutoSizeCalculation(
             leftTopAnchor: constraint.leftAnchor, rightBottomAnchor: constraint.rightAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
         }
-        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
+        count = finishAutoSizeCalculation(
             leftTopAnchor: constraint.rightAnchor, rightBottomAnchor: constraint.leftAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
         }
-        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
+        count = finishAutoSizeCalculation(
             leftTopAnchor: constraint.topAnchor, rightBottomAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
         }
-        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
+        count = finishAutoSizeCalculation(
             leftTopAnchor: constraint.bottomAnchor, rightBottomAnchor: constraint.topAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
@@ -499,11 +492,11 @@ class FormLayout extends ILayout {
     for (var component in pComponentData) {
       FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
       Size preferredComponentSize = component.bestSize;
-      FLCalculateDependentUtil.calculateRelativeAnchor(
+      calculateRelativeAnchor(
           leftTopAnchor: constraints.leftAnchor,
           rightBottomAnchor: constraints.rightAnchor,
           preferredSize: preferredComponentSize.width);
-      FLCalculateDependentUtil.calculateRelativeAnchor(
+      calculateRelativeAnchor(
           leftTopAnchor: constraints.topAnchor,
           rightBottomAnchor: constraints.bottomAnchor,
           preferredSize: preferredComponentSize.height);
@@ -613,5 +606,163 @@ class FormLayout extends ILayout {
       }
     }
     return componentConstraints;
+  }
+
+  /// Calculates the preferred size of relative anchors.
+  void calculateRelativeAnchor(
+      {required FormLayoutAnchor leftTopAnchor,
+      required FormLayoutAnchor rightBottomAnchor,
+      required double preferredSize}) {
+    if (leftTopAnchor.relative) {
+      FormLayoutAnchor? rightBottom = rightBottomAnchor.getRelativeAnchor();
+      if (rightBottom != leftTopAnchor) {
+        double pref = rightBottom.getAbsolutePosition() - rightBottomAnchor.getAbsolutePosition() + preferredSize;
+        double size = 0;
+        if (rightBottom.relatedAnchor != null && leftTopAnchor.relatedAnchor != null) {
+          size = rightBottom.relatedAnchor!.getAbsolutePosition() - leftTopAnchor.relatedAnchor!.getAbsolutePosition();
+        }
+        double pos = pref - size;
+
+        if (pos < 0) {
+          pos /= 2;
+        } else {
+          pos -= pos / 2;
+        }
+
+        if (rightBottom.firstCalculation || pos > rightBottom.position) {
+          rightBottom.firstCalculation = false;
+          rightBottom.position = pos;
+        }
+        pos = pref - size - pos;
+        if (leftTopAnchor.firstCalculation || pos > leftTopAnchor.position) {
+          leftTopAnchor.firstCalculation = false;
+          leftTopAnchor.position = -pos;
+        }
+      }
+    }
+  }
+
+  /// Gets all non-calculated auto size anchors between start and end anchor
+  List<FormLayoutAnchor> getAutoSizeAnchorsBetween(
+      {required FormLayoutAnchor pStartAnchor,
+      required FormLayoutAnchor pEndAnchor,
+      required HashMap<String, FormLayoutAnchor> pAnchors}) {
+    List<FormLayoutAnchor> autoSizeAnchors = [];
+    FormLayoutAnchor? startAnchor = pStartAnchor;
+    while (startAnchor != null && startAnchor != pEndAnchor) {
+      if (startAnchor.autoSize && !startAnchor.autoSizeCalculated) {
+        autoSizeAnchors.add(startAnchor);
+      }
+      startAnchor = startAnchor.relatedAnchor;
+    }
+
+    // If the anchors are not dependent on each other return an empty array!
+    if (startAnchor == null) {
+      return [];
+    }
+    return autoSizeAnchors;
+  }
+
+  /// Init component auto size position of anchor.
+  void initAutoSizeRelative(
+      {required FormLayoutAnchor pStartAnchor,
+      required FormLayoutAnchor pEndAnchor,
+      required HashMap<String, FormLayoutAnchor> pAnchors}) {
+    List<FormLayoutAnchor> autoSizeAnchors =
+        getAutoSizeAnchorsBetween(pStartAnchor: pStartAnchor, pEndAnchor: pEndAnchor, pAnchors: pAnchors);
+    for (FormLayoutAnchor anchor in autoSizeAnchors) {
+      anchor.relative = false;
+    }
+  }
+
+  /// Calculates the preferred size of component auto size anchors.
+  void calculateAutoSize(
+      {required FormLayoutAnchor pLeftTopAnchor,
+      required FormLayoutAnchor pRightBottomAnchor,
+      required double pPreferredSize,
+      required double pAutoSizeCount,
+      required HashMap<String, FormLayoutAnchor> pAnchors}) {
+    List<FormLayoutAnchor> autoSizeAnchors =
+        getAutoSizeAnchorsBetween(pStartAnchor: pLeftTopAnchor, pEndAnchor: pRightBottomAnchor, pAnchors: pAnchors);
+
+    if (autoSizeAnchors.length == pAutoSizeCount) {
+      double fixedSize = pRightBottomAnchor.getAbsolutePosition() - pLeftTopAnchor.getAbsolutePosition();
+      for (FormLayoutAnchor anchor in autoSizeAnchors) {
+        fixedSize += anchor.position;
+      }
+      double diffSize = (pPreferredSize - fixedSize + pAutoSizeCount - 1) / pAutoSizeCount;
+      for (FormLayoutAnchor anchor in autoSizeAnchors) {
+        if (diffSize > -anchor.position) {
+          anchor.position = -diffSize;
+        }
+        anchor.firstCalculation = false;
+      }
+    }
+
+    autoSizeAnchors =
+        getAutoSizeAnchorsBetween(pStartAnchor: pRightBottomAnchor, pEndAnchor: pLeftTopAnchor, pAnchors: pAnchors);
+    if (autoSizeAnchors.length == pAutoSizeCount) {
+      double fixedSize = pRightBottomAnchor.getAbsolutePosition() - pLeftTopAnchor.getAbsolutePosition();
+      for (FormLayoutAnchor anchor in autoSizeAnchors) {
+        fixedSize -= anchor.position;
+      }
+      double diffSize = (pPreferredSize - fixedSize + pAutoSizeCount - 1) / pAutoSizeCount;
+      for (FormLayoutAnchor anchor in autoSizeAnchors) {
+        if (diffSize > anchor.position) {
+          anchor.position = diffSize;
+        }
+        anchor.firstCalculation = false;
+      }
+    }
+  }
+
+  /// Marks all touched AutoSize anchors as calculated
+  double finishAutoSizeCalculation(
+      {required FormLayoutAnchor leftTopAnchor,
+      required FormLayoutAnchor rightBottomAnchor,
+      required HashMap<String, FormLayoutAnchor> pAnchors}) {
+    List<FormLayoutAnchor> autoSizeAnchors =
+        getAutoSizeAnchorsBetween(pStartAnchor: leftTopAnchor, pEndAnchor: rightBottomAnchor, pAnchors: pAnchors);
+    double counter = 0;
+    for (FormLayoutAnchor anchor in autoSizeAnchors) {
+      if (!anchor.firstCalculation) {
+        anchor.autoSizeCalculated = true;
+        counter++;
+      }
+    }
+    return autoSizeAnchors.length - counter;
+  }
+
+  /// Clears auto size position of anchors
+  void clearAutoSize({required HashMap<String, FormLayoutAnchor> pAnchors}) {
+    pAnchors.forEach((anchorName, anchor) {
+      anchor.relative = anchor.autoSize;
+      anchor.autoSizeCalculated = false;
+      anchor.firstCalculation = true;
+      anchor.used = false;
+
+      if (anchor.autoSize) {
+        anchor.position = 0;
+      }
+    });
+  }
+
+  void initAutoSize(HashMap<String, FormLayoutAnchor> pAnchors) {
+    // Init autoSize Anchor position
+    pAnchors.forEach((anchorName, anchor) {
+      // Check if two autoSize anchors are side by side
+
+      FormLayoutAnchor? relatedAnchor = anchor.relatedAnchor;
+      if (anchor.relatedAnchor != null) {
+        anchor.used = anchor.used || relatedAnchor!.used;
+
+        if (relatedAnchor!.autoSize &&
+            !anchor.autoSize &&
+            relatedAnchor.relatedAnchor != null &&
+            !relatedAnchor.relatedAnchor!.autoSize) {
+          relatedAnchor.position = relatedAnchor.used ? -relatedAnchor.relatedAnchor!.position : -anchor.position;
+        }
+      }
+    });
   }
 }

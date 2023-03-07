@@ -51,11 +51,8 @@ class FormLayoutAnchor {
   /// The position of this anchor.
   double position;
 
-  /*
-  FormLayout Änderungen von Martin bzgl Gaps der Anchor.
   /// True, if the anchor is used by a visible component.
   bool used = false;
-  */
 
   FormLayoutAnchor(
       {required this.name,
