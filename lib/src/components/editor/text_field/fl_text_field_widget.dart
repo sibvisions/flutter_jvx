@@ -156,11 +156,18 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     focusNode.canRequestFocus = model.isFocusable;
 
+    model.placeholder = "placeholder";
+
     return TextField(
       controller: textController,
       decoration: inputDecoration.copyWith(
         enabled: model.isEnabled,
-        hintText: model.placeholder,
+        hintText: model.isBorderVisible ? null : model.placeholder,
+        labelText: model.isBorderVisible ? model.placeholder : null,
+        labelStyle:
+            model.createTextStyle(pForeground: JVxColors.COMPONENT_DISABLED_LIGHTER, pFontWeight: FontWeight.w500),
+        hintStyle:
+            model.createTextStyle(pForeground: JVxColors.COMPONENT_DISABLED_LIGHTER, pFontWeight: FontWeight.w500),
         contentPadding: !kIsWeb ? contentPadding : contentPadding + const EdgeInsets.only(top: 4, bottom: 4),
         border: createBorder(FlTextBorderType.border),
         errorBorder: createBorder(FlTextBorderType.errorBorder),
