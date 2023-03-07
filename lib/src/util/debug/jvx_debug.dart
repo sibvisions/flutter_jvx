@@ -145,6 +145,35 @@ class JVxDebug extends StatelessWidget {
           ),
           ListTile(
             title: Text(
+              "Web Socket",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: OutlinedButton(
+              onPressed: () async {
+                cast<OnlineApiRepository>(IApiService().getRepository())?.jvxWebSocket?.reconnectWebSocket();
+              },
+              child: const Text("Reconnect"),
+            ),
+          ),
+          StatefulBuilder(builder: (context, setState) {
+            return DropdownButton<LoginMode>(
+              hint: const Text("Route to Login"),
+              value: cast<LoginLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.modeNotifier.value,
+              items: LoginMode.values
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e.name),
+                      ))
+                  .toList(),
+              onChanged: (LoginMode? value) {
+                IUiService().routeToLogin(mode: value!);
+                setState(() {});
+              },
+              isExpanded: true,
+            );
+          }),
+          ListTile(
+            title: Text(
               "Progress Dialog",
               style: Theme.of(context).textTheme.titleMedium,
             ),
@@ -175,23 +204,6 @@ class JVxDebug extends StatelessWidget {
               child: const Text("Test"),
             ),
           ),
-          StatefulBuilder(builder: (context, setState) {
-            return DropdownButton<LoginMode>(
-              hint: const Text("Route to Login"),
-              value: cast<LoginLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.modeNotifier.value,
-              items: LoginMode.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.name),
-                      ))
-                  .toList(),
-              onChanged: (LoginMode? value) {
-                IUiService().routeToLogin(mode: value!);
-                setState(() {});
-              },
-              isExpanded: true,
-            );
-          }),
         ],
       ),
     );
