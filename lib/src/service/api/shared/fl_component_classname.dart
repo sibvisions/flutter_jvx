@@ -47,6 +47,7 @@ abstract class FlContainerClassname {
   static const String TOOLBAR_PANEL = "ToolBarPanel";
   static const String CUSTOM_CONTAINER = "CustomContainer";
   static const String DIALOG = "Dialog";
+  static const String CONTENT = "Content";
 }
 
 abstract class FlCellEditorClassname {
