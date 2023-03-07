@@ -26,7 +26,7 @@ class AliveCommand extends SessionCommand {
   AliveCommand({
     this.retryRequest,
     required super.reason,
-  });
+  }) : super(showLoading: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
