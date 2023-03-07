@@ -238,6 +238,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                           FlutterUI.translate(
                                               AppOverviewPage.isSingleAppMode ? "Application" : "Applications"),
                                           style: const TextStyle(
+                                            color: JVxColors.LIGHTER_BLACK,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 32,
                                           ),

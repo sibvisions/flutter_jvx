@@ -48,7 +48,7 @@ class AppEditDialog extends StatefulWidget {
 }
 
 class _AppEditDialogState extends State<AppEditDialog> {
-  static Color disabledColor = Colors.grey.shade200;
+  static Color disabledLightColor = Colors.grey.shade200;
 
   late final TextEditingController titleController;
   late final TextEditingController appNameController;
@@ -66,6 +66,8 @@ class _AppEditDialogState extends State<AppEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData parentTheme = Theme.of(context);
+
     return AlertDialog(
       clipBehavior: Clip.hardEdge,
       shape: RoundedRectangleBorder(
@@ -73,14 +75,14 @@ class _AppEditDialogState extends State<AppEditDialog> {
       ),
       contentPadding: EdgeInsets.zero,
       content: Theme(
-        data: Theme.of(context).copyWith(
-          inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-                labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                hintStyle: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-          textTheme: Theme.of(context).textTheme.copyWith(
-                titleMedium: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
+        data: parentTheme.copyWith(
+          inputDecorationTheme: parentTheme.inputDecorationTheme.copyWith(
+            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            hintStyle: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          textTheme: parentTheme.textTheme.copyWith(
+            titleMedium: parentTheme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
         ),
         child: DefaultTextStyle.merge(
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -88,6 +90,8 @@ class _AppEditDialogState extends State<AppEditDialog> {
             constraints: const BoxConstraints.tightFor(width: double.maxFinite),
             child: LayoutBuilder(builder: (context, constraints) {
               bool appNameEnabled = !widget.locked && widget.config == null;
+              var isThemeLight = parentTheme.brightness == Brightness.light;
+
               return SingleChildScrollView(
                 child: Stack(
                   children: [
@@ -118,7 +122,9 @@ class _AppEditDialogState extends State<AppEditDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Material(
                               type: MaterialType.card,
-                              color: appNameEnabled ? null : disabledColor,
+                              color: appNameEnabled
+                                  ? null
+                                  : (isThemeLight ? disabledLightColor : parentTheme.disabledColor),
                               borderRadius: BorderRadius.circular(20),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -130,7 +136,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                   decoration: InputDecoration(
                                     icon: FaIcon(
                                       FontAwesomeIcons.cubes,
-                                      color: appNameEnabled ? null : Theme.of(context).disabledColor,
+                                      color: appNameEnabled ? null : parentTheme.disabledColor,
                                     ),
                                     labelText: "${FlutterUI.translate("App Name")}*",
                                     border: InputBorder.none,
@@ -151,7 +157,11 @@ class _AppEditDialogState extends State<AppEditDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Material(
                               type: MaterialType.card,
-                              color: !widget.locked ? null : disabledColor,
+                              color: !widget.locked
+                                  ? null
+                                  : isThemeLight
+                                      ? disabledLightColor
+                                      : parentTheme.disabledColor,
                               borderRadius: BorderRadius.circular(20),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -163,7 +173,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                   decoration: InputDecoration(
                                     icon: Icon(
                                       Icons.title,
-                                      color: !widget.locked ? null : Theme.of(context).disabledColor,
+                                      color: !widget.locked ? null : parentTheme.disabledColor,
                                     ),
                                     labelText: FlutterUI.translate("Title"),
                                     border: InputBorder.none,
@@ -184,7 +194,11 @@ class _AppEditDialogState extends State<AppEditDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Material(
                               type: MaterialType.card,
-                              color: !widget.locked ? null : disabledColor,
+                              color: !widget.locked
+                                  ? null
+                                  : isThemeLight
+                                      ? disabledLightColor
+                                      : parentTheme.disabledColor,
                               borderRadius: BorderRadius.circular(20),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -198,7 +212,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                   decoration: InputDecoration(
                                     icon: FaIcon(
                                       FontAwesomeIcons.globe,
-                                      color: !widget.locked ? null : Theme.of(context).disabledColor,
+                                      color: !widget.locked ? null : parentTheme.disabledColor,
                                     ),
                                     labelText: "${FlutterUI.translate("URL")}*",
                                     border: InputBorder.none,
@@ -225,7 +239,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                         left: 16,
                         child: Icon(
                           Icons.lock,
-                          color: Theme.of(context).colorScheme.error,
+                          color: parentTheme.colorScheme.error,
                         ),
                       ),
                     if (widget.predefined)
@@ -235,7 +249,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                         child: Banner(
                           message: FlutterUI.translate("Provided"),
                           location: BannerLocation.topEnd,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: parentTheme.colorScheme.primary,
                         ),
                       ),
                   ],
