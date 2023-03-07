@@ -219,8 +219,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       onChangeTimer = Timer(const Duration(milliseconds: 300), () => _onValueChanged(pValue));
 
       // Textfield wont update immediately, so we need to force it to update.
-      setState(() {});
     }
+    setState(() {});
   }
 
   void _onValueChanged(dynamic pValue) {

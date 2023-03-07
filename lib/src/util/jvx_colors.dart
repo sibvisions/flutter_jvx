@@ -24,6 +24,7 @@ abstract class JVxColors {
   static const Color COMPONENT_BORDER = Color(0xFF999999);
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
   static const Color COMPONENT_DISABLED_LIGHTER = Color(0xFFE6E6E6);
+  static const Color TEXT_HINT_LABEL_COLOR = Color(0xFF999999);
 
   /// Specifically requested color mix.
   static Color dividerColor(ThemeData theme) {
