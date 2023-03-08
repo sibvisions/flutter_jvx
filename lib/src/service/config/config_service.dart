@@ -172,6 +172,9 @@ class ConfigService {
       if (await defaultApp() == appName) {
         await updateDefaultApp(null);
       }
+      if (await lastApp() == appName) {
+        await updateLastApp(null);
+      }
     });
   }
 
