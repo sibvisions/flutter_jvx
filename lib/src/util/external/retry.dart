@@ -91,7 +91,7 @@ class RetryOptions {
   final double randomizationFactor;
 
   /// Maximum delay between retries, defaults to 30 seconds.
-  final Duration maxDelay;
+  final Duration? maxDelay;
 
   /// Maximum number of attempts before giving up, defaults to 8.
   final int maxAttempts;
@@ -126,7 +126,7 @@ class RetryOptions {
     final rf = (randomizationFactor * (_rand.nextDouble() * 2 - 1) + 1);
     final exp = math.min(attempt, 31); // prevent overflows.
     final delay = (delayFactor * math.pow(2.0, exp) * rf);
-    return delay < maxDelay ? delay : maxDelay;
+    return maxDelay != null ? (delay < maxDelay! ? delay : maxDelay!) : delay;
   }
 
   /// Call [fn] retrying so long as [retryIf] return `true` for the exception
@@ -203,7 +203,7 @@ Future<T> retry<T>(
   Future<T> Function() fn, {
   Duration delayFactor = const Duration(milliseconds: 200),
   double randomizationFactor = 0.25,
-  Duration maxDelay = const Duration(seconds: 30),
+  Duration? maxDelay = const Duration(seconds: 30),
   int maxAttempts = 8,
   FutureOr<bool> Function(Exception)? retryIf,
   FutureOr<void> Function(Exception)? onRetry,

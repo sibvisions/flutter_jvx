@@ -565,6 +565,7 @@ class OnlineApiRepository extends IRepository {
       HttpClientResponse response;
       try {
         if (retryRequest ?? true) {
+          Duration timeout = ConfigController().getAppConfig()!.requestTimeout!;
           response = await retry(
             () => _sendRequest(pRequest),
             retryIf: (e) => shouldRetry(e),
@@ -572,7 +573,7 @@ class OnlineApiRepository extends IRepository {
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
             onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
             maxAttempts: 3,
-            maxDelay: ConfigController().getAppConfig()!.requestTimeout!,
+            maxDelay: timeout == Duration.zero || timeout.isNegative ? null : timeout,
           );
         } else {
           response = await _sendRequest(pRequest);
