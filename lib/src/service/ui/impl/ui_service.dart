@@ -49,6 +49,7 @@ import '../../../model/response/application_meta_data_response.dart';
 import '../../../model/response/application_parameters_response.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
+import '../../../model/response/menu_view_response.dart';
 import '../../../routing/locations/main_location.dart';
 import '../../../util/jvx_colors.dart';
 import '../../apps/i_app_service.dart';
@@ -68,6 +69,20 @@ class UiService implements IUiService {
 
   /// Holds all custom screen modifications
   AppManager? appManager;
+
+  /// Contains mapped screen names that we received during open-screen responses.
+  ///
+  /// Maps [FlPanelModel.screenClassName] to [FlPanelModel.name],
+  /// which in turn allows us to map them partially with
+  /// [MenuItemModel.screenLongName] or [MenuEntryResponse.componentId] (using `split(';')`).
+  ///
+  /// See also:
+  /// * [ApiObjectProperty.name] (usually short name "Sec-BL")
+  /// * [ApiObjectProperty.componentId] (long name (class name including extra identifier) in MenuEntry
+  /// or short name in case of Open- or CloseScreen)
+  /// * [ApiObjectProperty.screenClassName] (usually long/class name)
+  // TODO RouteTable?
+  final Map<String, String> _knownScreens = {};
 
   /// Unmodified menu model sent from server
   MenuModel? _originalMenuModel;
@@ -147,7 +162,24 @@ class UiService implements IUiService {
       _applicationParameters.value = ApplicationParameters();
       _applicationMetaData.value = null;
       _designMode.value = false;
+      _knownScreens.clear();
     }
+  }
+
+  @override
+  String? addScreenName({required String pLongScreenName, required String pShortScreenName}) {
+    return _knownScreens[pLongScreenName] = pShortScreenName;
+  }
+
+  @override
+  void removeScreenName(String pScreenName) {
+    _knownScreens.removeWhere((key, value) => key == pScreenName || value == pScreenName);
+  }
+
+  @override
+  MapEntry<String, String>? getScreenNameMapping(String pScreenName) {
+    return _knownScreens.entries
+        .firstWhereOrNull((element) => element.key == pScreenName || element.value == pScreenName);
   }
 
   @override

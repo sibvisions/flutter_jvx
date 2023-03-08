@@ -24,6 +24,7 @@ import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
 import '../../../config/i_config_service.dart';
+import '../../../ui/i_ui_service.dart';
 import '../i_response_processor.dart';
 
 /// Processes [GenericScreenViewResponse], will separate (and parse) new and changed components, can also open screens
@@ -54,6 +55,11 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
       panel = saveComponentsCommand.newComponents
           ?.whereType<FlPanelModel>()
           .firstWhereOrNull((element) => element.name == pResponse.screenName);
+    }
+
+    if (panel?.screenClassName != null) {
+      // Add mapping for CloseScreen
+      IUiService().addScreenName(pLongScreenName: panel!.screenClassName!, pShortScreenName: pResponse.screenName);
     }
 
     // Handle Screen Opening

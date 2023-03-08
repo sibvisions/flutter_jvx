@@ -67,6 +67,8 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
     }
     IDataService().clearData(command.screenName);
 
+    IUiService().removeScreenName(command.screenName);
+
     return [];
   }
 }
