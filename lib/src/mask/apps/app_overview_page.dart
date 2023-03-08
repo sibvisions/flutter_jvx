@@ -226,6 +226,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
                           child: Stack(
+                            fit: StackFit.expand,
                             children: [
                               Positioned.fill(
                                 child: Column(
