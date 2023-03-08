@@ -127,6 +127,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The size has to be calculated on the next data receiving
   bool _calcOnDataReceived = false;
 
+  /// If the selection has to be cancelled.
+  bool cancelSelect = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -291,6 +294,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   int _onDataProviderReload(int pSelectedRow) {
+    cancelSelect = true;
     if (pSelectedRow >= 0) {
       pageCount = ((pSelectedRow + 1) / FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE).ceil();
     } else {
@@ -584,6 +588,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Selects the record.
   void _selectRecord(int pRowIndex, String? pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
+    cancelSelect = false;
     IUiService()
         .saveAllEditors(
           pReason: "Select row in table",
@@ -591,13 +596,21 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           pFunction: () async {
             List<BaseCommand> commands = [];
 
-            Filter? filter = _createFilter(pRowIndex: pRowIndex);
+            if (cancelSelect) {
+              FlutterUI.logUI.i("Select canceled, server sent reload");
+              return commands;
+            }
 
+            if (pRowIndex >= dataChunk.data.length) {
+              FlutterUI.logUI.i("Row index out of range: $pRowIndex");
+              return commands;
+            }
+
+            Filter? filter = _createFilter(pRowIndex: pRowIndex);
             if (filter == null) {
               FlutterUI.logUI.w("Filter of table(${model.id}) null");
               return commands;
             }
-
             commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
 
             commands.add(
