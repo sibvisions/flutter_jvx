@@ -67,7 +67,7 @@ class ErrorViewResponse extends MessageView {
 
 class ServerException {
   /// Error message
-  final String message;
+  final String? message;
 
   /// Error stacktrace
   final String? exception;
