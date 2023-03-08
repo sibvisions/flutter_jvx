@@ -14,7 +14,8 @@
  * the License.
  */
 
-import 'dart:math';
+import 'dart:developer' as dev;
+import 'dart:math' hide log;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -44,16 +45,21 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // The height of a mobile text field.
+  /// The height of a mobile text field.
   static const double MOBILE_HEIGHT = kMinInteractiveDimension;
 
-  // The height of a web frame text field.
+  /// The height of a web frame text field.
   static const double WEBFRAME_HEIGHT = 32;
 
-  // The height of a text field.
+  /// The height of a text field.
   // ignore: non_constant_identifier_names
   static double get TEXT_FIELD_HEIGHT => Frame.isWebFrame() ? WEBFRAME_HEIGHT : MOBILE_HEIGHT;
 
+  /// The height of a text.
+  // ignore: non_constant_identifier_names
+  static double TEXT_HEIGHT(TextStyle pStyle) => ParseUtil.getTextHeight(text: "a", style: pStyle);
+
+  /// The padding of a text field.
   // ignore: non_constant_identifier_names
   static EdgeInsets TEXT_FIELD_PADDING(TextStyle pStyle) {
     double verticalPadding = max(0, (TEXT_FIELD_HEIGHT - ParseUtil.getTextHeight(text: "a", style: pStyle)) / 2);
@@ -115,7 +121,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   CrossAxisAlignment get iconCrossAxisAlignment => CrossAxisAlignment.center;
 
   // The whitespace every icon has around it
-  double get iconInnatePadding => ((iconAreaSize - iconSize) / 2);
+  double get iconInnatePadding => ((iconAreaSize - TEXT_HEIGHT(model.createTextStyle())) / 2);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,6 +161,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     fillColor ??= themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.background;
 
     focusNode.canRequestFocus = model.isFocusable;
+
+    dev.log("");
 
     return TextField(
       controller: textController,
