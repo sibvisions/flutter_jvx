@@ -200,13 +200,13 @@ class _SettingsPageState extends State<SettingsPage> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _buildApplicationInfo() {
-    if (ConfigController().getAppConfig()?.privacyPolicy != null) {
+    if (ConfigController().privacyPolicy.value != null) {
       SettingItem privacyPolicy = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.link),
         endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
         title: FlutterUI.translate("Privacy Policy"),
         onPressed: (context, value) => launchUrl(
-          ConfigController().getAppConfig()!.privacyPolicy!,
+          ConfigController().privacyPolicy.value!,
           mode: LaunchMode.externalApplication,
         ),
       );

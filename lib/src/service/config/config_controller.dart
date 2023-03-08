@@ -67,6 +67,8 @@ class ConfigController {
 
   late ValueNotifier<String?> _lastApp;
 
+  late ValueNotifier<Uri?> _privacyPolicy;
+
   late ValueNotifier<String?> _appName;
 
   late ValueNotifier<Uri?> _baseUrl;
@@ -150,6 +152,9 @@ class ConfigController {
     _singleAppMode = ValueNotifier(await _configService.singleAppMode());
     _defaultApp = ValueNotifier(await _configService.defaultApp());
     _lastApp = ValueNotifier(await _configService.lastApp());
+    var privacyPolicy = await _configService.privacyPolicy();
+    _privacyPolicy =
+        ValueNotifier((privacyPolicy != null ? Uri.parse(privacyPolicy) : null) ?? _appConfig?.privacyPolicy);
 
     ServerConfig? defaultConfig = _appConfig?.serverConfigs!.firstWhereOrNull((e) => e.appName == _defaultApp.value) ??
         _appConfig?.serverConfigs!.firstOrNull;
@@ -386,6 +391,16 @@ class ConfigController {
   Future<void> updateLastApp(String? appName) async {
     await _configService.updateLastApp(appName);
     _lastApp.value = appName;
+  }
+
+  /// Returns the configured privacy policy.
+  ValueListenable<Uri?> get privacyPolicy => _privacyPolicy;
+
+  /// Sets the privacy policy.
+  Future<void> updatePrivacyPolicy(Uri? policy) async {
+    Uri? fallback = getAppConfig()?.privacyPolicy;
+    await _configService.updatePrivacyPolicy(policy == fallback ? null : policy?.toString());
+    _privacyPolicy.value = policy ?? fallback;
   }
 
   /// Returns the name of the current app.

@@ -19,6 +19,7 @@ import 'server_config.dart';
 
 class ApplicationConfig {
   static const String APPS = "APPS";
+  static const String POLICY = "POLICY";
 
   static const String APP_NAME = "APPNAME";
   static const String URL = "URL";
@@ -39,6 +40,7 @@ class ApplicationConfig {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  final Uri? policy;
   final List<ServerConfig>? apps;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +48,7 @@ class ApplicationConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const ApplicationConfig({
+    this.policy,
     this.apps,
   });
 
@@ -53,6 +56,7 @@ class ApplicationConfig {
 
   ApplicationConfig.fromJson(Map<String, dynamic> json)
       : this(
+          policy: json[POLICY] != null ? Uri.parse(json[POLICY]) : null,
           apps: (json[APPS] as List<dynamic>?)?.map((e) => parseApp(e)).toList(),
         );
 
@@ -72,11 +76,13 @@ class ApplicationConfig {
     if (other == null) return this;
 
     return ApplicationConfig(
+      policy: other.policy ?? policy,
       apps: other.apps ?? apps,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'apps': apps?.map((e) => e.toJson()).toList(),
+        POLICY: policy,
+        APPS: apps?.map((e) => e.toJson()).toList(),
       };
 }

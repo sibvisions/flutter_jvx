@@ -247,6 +247,17 @@ class ConfigService {
     return _sharedPrefs.setString("lastApp", appName);
   }
 
+  /// Retrieves the last opened app.
+  Future<String?> privacyPolicy() async {
+    return _sharedPrefs.getString("privacyPolicy");
+  }
+
+  /// Sets the last opened app.
+  Future<void> updatePrivacyPolicy(String? policy) {
+    if (policy == null) return _sharedPrefs.remove("privacyPolicy");
+    return _sharedPrefs.setString("privacyPolicy", policy);
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Preferences that are saved under the app key
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

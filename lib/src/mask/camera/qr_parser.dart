@@ -83,7 +83,12 @@ class QRParser {
         List<dynamic> apps = parsedConfig[ApplicationConfig.APPS];
         collectedApps.addAll(apps.map((e) => ApplicationConfig.parseApp(e)).where((element) => element.isStartable));
       }
-      return ApplicationConfig(apps: collectedApps);
+      String? privacyPolicy = parsedConfig[ApplicationConfig.POLICY];
+
+      return ApplicationConfig(
+        policy: privacyPolicy != null ? Uri.parse(privacyPolicy) : null,
+        apps: collectedApps,
+      );
     }
     throw const FormatException("Invalid QR Code");
   }

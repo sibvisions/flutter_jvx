@@ -438,6 +438,7 @@ class FlutterUI extends StatefulWidget {
           .where((element) => !(ConfigController().getPredefinedApp(element)?.locked ?? false)),
       (e) => FlutterUI.removeApp(e),
     );
+    await ConfigController().updatePrivacyPolicy(null);
   }
 
   /// Tries to clear as much leftover app data from previous versions as possible.

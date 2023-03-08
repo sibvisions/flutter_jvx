@@ -495,6 +495,10 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
           }
         }
 
+        if (config.policy != null) {
+          await ConfigController().updatePrivacyPolicy(config.policy);
+        }
+
         if (skippedLockedApp) {
           scaffoldMessenger.showSnackBar(SnackBar(
             content: Text(FlutterUI.translate("QR Code contained an already existing app.")),
