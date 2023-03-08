@@ -50,15 +50,28 @@ class JVxFont {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  JVxFont({this.fontName = "Default", this.fontSize = 14, this.isBold = false, this.isItalic = false});
+  JVxFont({String? fontName, int? fontSize, bool? isBold, bool? isItalic}) {
+    if (fontName != null && fontName.isNotEmpty) this.fontName = fontName;
+    if (fontSize != null) this.fontSize = fontSize;
+    if (isBold != null) this.isBold = isBold;
+    if (isItalic != null) this.isItalic = isItalic;
+  }
 
-  JVxFont.fromString(String pFontString) {
+  JVxFont.fromString(String? pFontString) {
+    if (pFontString == null || pFontString.isEmpty) return;
+
     var fontValuesList = pFontString.split(",");
-    if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
-      fontName = fontValuesList[0];
-      fontSize = int.parse(fontValuesList[2]);
-      isBold = (int.parse(fontValuesList[1]) & JVxFont.TEXT_BOLD) == JVxFont.TEXT_BOLD;
-      isItalic = (int.parse(fontValuesList[1]) & JVxFont.TEXT_ITALIC) == JVxFont.TEXT_ITALIC;
+    if (fontValuesList.length == 3) {
+      if (fontValuesList[0].isNotEmpty) {
+        fontName = fontValuesList[0];
+      }
+      if (fontValuesList[2].isNotEmpty && int.tryParse(fontValuesList[2]) != null) {
+        fontSize = int.parse(fontValuesList[1]);
+      }
+      if (fontValuesList[1].isNotEmpty && int.tryParse(fontValuesList[1]) != null) {
+        isBold = int.parse(fontValuesList[1]) & TEXT_BOLD == TEXT_BOLD;
+        isItalic = int.parse(fontValuesList[1]) & TEXT_ITALIC == TEXT_ITALIC;
+      }
     }
   }
 }

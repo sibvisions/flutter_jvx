@@ -104,9 +104,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       screenSize.height / 16,
     );
 
-    FlTextFieldModel searchFieldModel = FlTextFieldModel();
-    searchFieldModel.fontSize = 14;
-
     List<Widget> listBottomButtons = [];
 
     if (widget.editorColumnDefinition?.nullable == true) {
@@ -154,7 +151,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
             const SizedBox(height: 12),
             FlTextFieldWidget(
               key: widget.key,
-              model: searchFieldModel,
+              model: FlTextFieldModel(),
               textController: _controller,
               keyboardType: TextInputType.text,
               valueChanged: _startTimerValueChanged,

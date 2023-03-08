@@ -372,11 +372,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     FlLabelModel labelModel = FlLabelModel()
       ..text = text
-      ..fontName = childModel.fontName
-      ..fontSize = childModel.fontSize
+      ..font = childModel.font
       ..foreground = childModel.foreground
-      ..isBold = childModel.isBold
-      ..isItalic = childModel.isItalic
       ..verticalAlignment = VerticalAlignment.CENTER
       ..isEnabled = enabled;
 

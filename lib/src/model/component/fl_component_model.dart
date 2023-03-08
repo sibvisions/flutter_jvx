@@ -144,16 +144,7 @@ abstract class FlComponentModel {
   HorizontalAlignment horizontalAlignment = HorizontalAlignment.CENTER;
 
   /// The font of the component.
-  String fontName = "Default";
-
-  /// The size of the component.
-  int fontSize = 14;
-
-  /// If the component is bold;
-  bool isBold = false;
-
-  /// If the component is italic.
-  bool isItalic = false;
+  JVxFont font = JVxFont();
 
   /// The tooltip text of the component.
   String? toolTipText;
@@ -374,7 +365,13 @@ abstract class FlComponentModel {
       pCurrent: eventFocusLost,
     );
 
-    _parseFont(pJson, defaultModel);
+    font = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.font,
+      pDefault: defaultModel.font,
+      pConversion: (value) => JVxFont.fromString(cast<String?>(value)),
+      pCurrent: font,
+    );
   }
 
   /// If this component is used in a cell editor, some values are overriden.
@@ -406,10 +403,10 @@ abstract class FlComponentModel {
       {Color? pForeground, double? pFontSize, FontStyle? pFontStyle, FontWeight? pFontWeight, String? pFontFamily}) {
     return TextStyle(
       color: pForeground ?? (isEnabled ? foreground : JVxColors.toggleColor(JVxColors.COMPONENT_DISABLED)),
-      fontSize: pFontSize ?? fontSize.toDouble(),
-      fontStyle: pFontStyle ?? (isItalic ? FontStyle.italic : FontStyle.normal),
-      fontWeight: pFontWeight ?? (isBold ? FontWeight.bold : FontWeight.normal),
-      fontFamily: pFontFamily ?? fontName,
+      fontSize: pFontSize ?? font.fontSize.toDouble(),
+      fontStyle: pFontStyle ?? (font.isItalic ? FontStyle.italic : FontStyle.normal),
+      fontWeight: pFontWeight ?? (font.isBold ? FontWeight.bold : FontWeight.normal),
+      fontFamily: pFontFamily ?? font.fontName,
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -432,24 +429,6 @@ abstract class FlComponentModel {
     );
   }
 
-  void _parseFont(Map<String, dynamic> pJson, FlComponentModel pDefaultModel) {
-    if (pJson.containsKey(ApiObjectProperty.font)) {
-      String? value = pJson[ApiObjectProperty.font];
-      if (value != null) {
-        JVxFont font = JVxFont.fromString(value);
-        fontName = font.fontName;
-        fontSize = font.fontSize;
-        isBold = font.isBold;
-        isItalic = font.isItalic;
-      } else {
-        fontName = pDefaultModel.fontName;
-        fontSize = pDefaultModel.fontSize;
-        isBold = pDefaultModel.isBold;
-        isItalic = pDefaultModel.isItalic;
-      }
-    }
-  }
-
   Set<String> _parseStyle(dynamic pStyle) {
     String sStyle = (pStyle as String);
 
@@ -470,9 +449,6 @@ abstract class FlComponentModel {
   void applyCellFormat(CellFormat cellFormat) {
     background = cellFormat.background ?? background;
     foreground = cellFormat.foreground ?? foreground;
-    isBold = cellFormat.font?.isBold ?? isBold;
-    isItalic = cellFormat.font?.isItalic ?? isItalic;
-    fontName = cellFormat.font?.fontName ?? fontName;
-    fontSize = cellFormat.font?.fontSize ?? fontSize;
+    font = cellFormat.font ?? font;
   }
 }

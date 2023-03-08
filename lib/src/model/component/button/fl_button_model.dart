@@ -156,27 +156,9 @@ class FlButtonModel extends FlComponentModel {
   }
 
   @override
-  set fontName(String pFontName) {
-    super.fontName = pFontName;
-    labelModel.fontName = pFontName;
-  }
-
-  @override
-  set fontSize(int pFontSize) {
-    super.fontSize = pFontSize;
-    labelModel.fontSize = pFontSize;
-  }
-
-  @override
-  set isBold(bool pIsBold) {
-    super.isBold = pIsBold;
-    labelModel.isBold = pIsBold;
-  }
-
-  @override
-  set isItalic(bool pIsItalic) {
-    super.isItalic = pIsItalic;
-    labelModel.isItalic = pIsItalic;
+  set font(JVxFont pFont) {
+    super.font = pFont;
+    labelModel.font = pFont;
   }
 
   @override
