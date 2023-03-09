@@ -16,7 +16,7 @@
 
 import 'dart:convert';
 
-import '../../config/application_config.dart';
+import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 
@@ -54,7 +54,7 @@ class QRParser {
   /// USER: features
   /// PWD: features
   /// ```
-  static ApplicationConfig parse(String raw) {
+  static QRConfig parse(String raw) {
     Map<String, dynamic> parsedConfig = {};
     // If QR-Code is a json it can be easily parsed, otherwise string is split by newLines.
     try {
@@ -75,17 +75,17 @@ class QRParser {
 
     if (parsedConfig.isNotEmpty) {
       List<ServerConfig> collectedApps = [];
-      ServerConfig rootConfig = ApplicationConfig.parseApp(parsedConfig);
+      ServerConfig rootConfig = QRConfig.parseApp(parsedConfig);
       if (rootConfig.isStartable) {
         collectedApps.add(rootConfig);
       }
-      if (parsedConfig.containsKey(ApplicationConfig.APPS)) {
-        List<dynamic> apps = parsedConfig[ApplicationConfig.APPS];
-        collectedApps.addAll(apps.map((e) => ApplicationConfig.parseApp(e)).where((element) => element.isStartable));
+      if (parsedConfig.containsKey(QRConfig.APPS)) {
+        List<dynamic> apps = parsedConfig[QRConfig.APPS];
+        collectedApps.addAll(apps.map((e) => QRConfig.parseApp(e)).where((element) => element.isStartable));
       }
-      String? privacyPolicy = parsedConfig[ApplicationConfig.POLICY];
+      String? privacyPolicy = parsedConfig[QRConfig.POLICY];
 
-      return ApplicationConfig(
+      return QRConfig(
         policy: privacyPolicy != null ? Uri.parse(privacyPolicy) : null,
         apps: collectedApps,
       );

@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../config/application_config.dart';
+import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../service/config/config_controller.dart';
@@ -58,7 +58,7 @@ class AppOverviewPage extends StatefulWidget {
 
   static Future<void> openQRScanner(
     BuildContext context, {
-    required Future<void> Function(ApplicationConfig config) callback,
+    required Future<void> Function(QRConfig config) callback,
     bool allowMultiScan = false,
   }) {
     return IUiService().openDialog(
@@ -69,7 +69,7 @@ class AppOverviewPage extends StatefulWidget {
           for (var barcode in barcodes) {
             FlutterUI.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
             try {
-              final ApplicationConfig config = QRParser.parse(barcode.rawValue!);
+              final QRConfig config = QRParser.parse(barcode.rawValue!);
               await callback.call(config);
             } catch (e, stack) {
               FlutterUI.logUI.w("Error parsing QR Code", e, stack);

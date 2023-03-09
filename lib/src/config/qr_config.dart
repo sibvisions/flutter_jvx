@@ -17,7 +17,7 @@
 import '../util/parse_util.dart';
 import 'server_config.dart';
 
-class ApplicationConfig {
+class QRConfig {
   static const String APPS = "APPS";
   static const String POLICY = "POLICY";
 
@@ -47,14 +47,14 @@ class ApplicationConfig {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const ApplicationConfig({
+  const QRConfig({
     this.policy,
     this.apps,
   });
 
-  const ApplicationConfig.empty() : this();
+  const QRConfig.empty() : this();
 
-  ApplicationConfig.fromJson(Map<String, dynamic> json)
+  QRConfig.fromJson(Map<String, dynamic> json)
       : this(
           policy: json[POLICY] != null ? Uri.parse(json[POLICY]) : null,
           apps: (json[APPS] as List<dynamic>?)?.map((e) => parseApp(e)).toList(),
@@ -72,10 +72,10 @@ class ApplicationConfig {
     );
   }
 
-  ApplicationConfig merge(ApplicationConfig? other) {
+  QRConfig merge(QRConfig? other) {
     if (other == null) return this;
 
-    return ApplicationConfig(
+    return QRConfig(
       policy: other.policy ?? policy,
       apps: other.apps ?? apps,
     );
