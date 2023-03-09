@@ -523,11 +523,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     changedTheme();
 
     // Init
-    FlutterUI.getApps().then((configs) {
-      bool showAppOverviewWithoutDefault = ConfigController().getAppConfig()!.showAppOverviewWithoutDefault!;
-      ServerConfig? defaultConfig = configs.firstWhereOrNull((e) => e.isDefault ?? false);
-      if (defaultConfig == null && configs.length == 1 && !showAppOverviewWithoutDefault) {
-        defaultConfig = configs.firstOrNull;
+    FlutterUI.getApps().then((serverConfigs) {
+      AppConfig appConfig = ConfigController().getAppConfig()!;
+      bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
+      ServerConfig? defaultConfig = serverConfigs.firstWhereOrNull((e) {
+        return (e.isDefault ?? false) &&
+            (appConfig.customAppsAllowed ?? false || ConfigController().getPredefinedApp(e.appName!) != null);
+      });
+      if (defaultConfig == null && serverConfigs.length == 1 && !showAppOverviewWithoutDefault) {
+        defaultConfig = serverConfigs.firstOrNull;
       }
       if (defaultConfig?.isStartable ?? false) {
         startApp(app: defaultConfig, autostart: true);

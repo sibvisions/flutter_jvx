@@ -139,14 +139,6 @@ class ConfigController {
   Future<void> loadConfig(AppConfig pAppConfig, [bool devConfig = false]) async {
     _appConfig = pAppConfig;
 
-    // DevConfig resets persistent fields to enable config-fallback logic.
-    if (devConfig && _appConfig?.serverConfigs != null) {
-      await Future.forEach<ServerConfig>(
-        _appConfig!.serverConfigs!.where((e) => e.appName != null),
-        (e) => removeApp(e.appName!),
-      );
-    }
-
     _themePreference = ValueNotifier(await _configService.themePreference());
     _pictureResolution = ValueNotifier(await _configService.pictureResolution());
     _singleAppMode = ValueNotifier(await _configService.singleAppMode());
@@ -155,6 +147,20 @@ class ConfigController {
     var privacyPolicy = await _configService.privacyPolicy();
     _privacyPolicy =
         ValueNotifier((privacyPolicy != null ? Uri.parse(privacyPolicy) : null) ?? _appConfig?.privacyPolicy);
+
+    // DevConfig resets persistent fields to enable config-fallback logic.
+    if (devConfig && _appConfig?.serverConfigs != null) {
+      await Future.forEach<ServerConfig>(
+        _appConfig!.serverConfigs!.where((e) => e.appName != null),
+        (e) async {
+          if (e.isDefault ?? false) {
+            await updateDefaultApp(null);
+          }
+
+          return removeApp(e.appName!);
+        },
+      );
+    }
 
     ServerConfig? defaultConfig = _appConfig?.serverConfigs!.firstWhereOrNull((e) => e.appName == _defaultApp.value) ??
         _appConfig?.serverConfigs!.firstOrNull;
