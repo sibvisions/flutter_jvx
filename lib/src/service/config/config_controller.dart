@@ -152,13 +152,11 @@ class ConfigController {
     if (devConfig && _appConfig?.serverConfigs != null) {
       await Future.forEach<ServerConfig>(
         _appConfig!.serverConfigs!.where((e) => e.appName != null),
-        (e) async {
-          if (e.isDefault ?? false) {
-            await updateDefaultApp(null);
-          }
-
-          return removeApp(e.appName!);
-        },
+        (e) => removeApp(e.appName!),
+      );
+      // If there is a dev config, only a app set in the dev config is allowed to be the default
+      await updateDefaultApp(
+        _appConfig!.serverConfigs!.firstWhereOrNull((element) => element.isDefault ?? false)?.appName!,
       );
     }
 
