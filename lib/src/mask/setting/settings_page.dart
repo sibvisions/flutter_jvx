@@ -121,7 +121,7 @@ class _SettingsPageState extends State<SettingsPage> {
         appBar: AppBar(
           leading: context.canBeamBack
               ? IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.lessThan),
+                  icon: const FaIcon(FontAwesomeIcons.angleLeft),
                   onPressed: context.beamBack,
                 )
               : null,

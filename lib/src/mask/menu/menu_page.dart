@@ -178,7 +178,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                       : (FlutterUI.of(context).startedManually
                           ? IconButton(
                               splashRadius: kToolbarHeight / 2,
-                              icon: const FaIcon(FontAwesomeIcons.lessThan),
+                              icon: const FaIcon(FontAwesomeIcons.angleLeft),
                               onPressed: () => IUiService().routeToAppOverview(),
                             )
                           : null),
