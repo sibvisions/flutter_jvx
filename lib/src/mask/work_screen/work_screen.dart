@@ -285,7 +285,7 @@ class WorkScreenState extends State<WorkScreen> {
       onDoubleTap: () {
         _onBack(true);
       },
-      child: const Center(child: FaIcon(FontAwesomeIcons.arrowLeft)),
+      child: const Center(child: FaIcon(FontAwesomeIcons.angleLeft)),
     );
   }
 

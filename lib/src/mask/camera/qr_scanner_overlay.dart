@@ -78,7 +78,7 @@ class _QRScannerOverlayState extends State<QRScannerOverlay> {
       appBar: AppBar(
         leading: Navigator.canPop(context)
             ? IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeft),
+                icon: const FaIcon(FontAwesomeIcons.lessThan),
                 onPressed: () async {
                   var result = widget.callback(scannedBarcodes);
                   if (result is Future) await result;
