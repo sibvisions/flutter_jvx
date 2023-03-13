@@ -59,6 +59,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.columnName,
+    required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
   }) : super(

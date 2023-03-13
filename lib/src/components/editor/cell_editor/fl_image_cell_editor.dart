@@ -36,7 +36,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   ImageProvider? imageProvider;
 
   /// The image loading callback to the editor.
-  CellEditorRecalculateSizeCallback? recalculateSizeCallback;
+  RecalculateCallback? recalculateSizeCallback;
 
   /// The size of the image.
   Size imageSize = const Size(16, 16);
@@ -56,6 +56,8 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.columnName,
+    required super.dataProvider,
     this.recalculateSizeCallback,
     super.isInTable,
   }) : super(model: FlImageCellEditorModel()) {

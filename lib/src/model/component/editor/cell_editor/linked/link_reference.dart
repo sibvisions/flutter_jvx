@@ -17,10 +17,14 @@
 import '../../../../../service/api/shared/api_object_property.dart';
 
 class LinkReference {
+  /// The column names of the current data book.
   List<String> columnNames = <String>[];
+
+  /// The column names of the referenced data book.
   List<String> referencedColumnNames = <String>[];
-  late String referencedDataBook;
-  late String dataProvider;
+
+  /// The name of the referenced data book.
+  late String referencedDataprovider;
 
   LinkReference();
 
@@ -35,20 +39,13 @@ class LinkReference {
     }
     var jsonReferencedDataBook = json[ApiObjectProperty.referencedDataBook];
     if (jsonReferencedDataBook != null) {
-      referencedDataBook = jsonReferencedDataBook;
-    }
-    var jsonDataProvider = json[ApiObjectProperty.dataProvider];
-    if (jsonDataProvider != null) {
-      dataProvider = jsonDataProvider;
-    } else {
-      dataProvider = referencedDataBook;
+      referencedDataprovider = jsonReferencedDataBook;
     }
   }
 
   Map<String, dynamic> toJson() => {
         "columnNames": columnNames,
         "referencedColumnNames": referencedColumnNames,
-        "referencedDataBook": referencedDataBook,
-        "dataProvider": dataProvider
+        "referencedDataBook": referencedDataprovider,
       };
 }

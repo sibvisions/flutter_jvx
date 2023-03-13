@@ -27,6 +27,7 @@ import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../../../../service/command/i_command_service.dart';
+import '../../../../service/data/i_data_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';
 import '../i_cell_editor.dart';
@@ -56,7 +57,7 @@ class FlLinkedCellEditor
 
   TextEditingController textController = TextEditingController();
 
-  CellEditorRecalculateSizeCallback? recalculateSizeCallback;
+  RecalculateCallback? recalculateSizeCallback;
 
   bool isOpen = false;
 
@@ -84,6 +85,8 @@ class FlLinkedCellEditor
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.columnName,
+    required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
     this.recalculateSizeCallback,
@@ -196,7 +199,7 @@ class FlLinkedCellEditor
           .sendCommand(FilterCommand(
               editorId: name!,
               value: "",
-              dataProvider: model.linkReference.dataProvider,
+              dataProvider: model.linkReference.referencedDataprovider,
               reason: "Opened the linked cell picker"))
           .then((value) {
         return IUiService().openDialog(
@@ -255,7 +258,7 @@ class FlLinkedCellEditor
         IUiService().registerDataSubscription(
           pDataSubscription: DataSubscription(
             subbedObj: this,
-            dataProvider: model.linkReference.dataProvider,
+            dataProvider: model.linkReference.referencedDataprovider,
             from: 0,
             to: PAGE_LOAD * currentPage,
             onDataChunk: _setValueMap,
@@ -276,7 +279,7 @@ class FlLinkedCellEditor
   }
 
   void _unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.referencedDataBook);
+    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.referencedDataprovider);
   }
 
   void _increaseValueMap() {
@@ -301,6 +304,7 @@ class FlLinkedCellEditor
         if (showValue is! String) {
           showValue = showValue.toString();
         }
+
         textController.value = textController.value.copyWith(
           text: showValue,
           selection: TextSelection.collapsed(offset: showValue.characters.length),
@@ -316,7 +320,7 @@ class FlLinkedCellEditor
     return ICommandService()
         .sendCommand(
       SelectRecordCommand(
-        dataProvider: model.linkReference.dataProvider,
+        dataProvider: model.linkReference.referencedDataprovider,
         selectedRecord: -1,
         reason: "Tapped",
         filter: null,

@@ -33,7 +33,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   int currentIndex = 0;
 
   /// The image loading callback to the editor.
-  CellEditorRecalculateSizeCallback? recalculateSizeCallback;
+  RecalculateCallback? recalculateSizeCallback;
 
   @override
   bool get allowedInTable => model.directCellEditor;
@@ -47,6 +47,8 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.columnName,
+    required super.dataProvider,
     super.isInTable,
     this.recalculateSizeCallback,
   }) : super(

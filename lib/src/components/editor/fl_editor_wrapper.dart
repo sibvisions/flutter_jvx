@@ -318,8 +318,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
   }
 
-  void recalculateSize([bool pRecalulcate = true]) {
-    if (pRecalulcate) {
+  void recalculateSize([bool pRecalculcate = true]) {
+    if (pRecalculcate) {
       sentCalcSize = false;
     }
 
@@ -334,10 +334,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     cellEditor = ICellEditor.getCellEditor(
       pName: model.name,
       pCellEditorJson: jsonCellEditor,
+      columnName: model.columnName,
+      dataProvider: model.dataProvider,
       onChange: onChange,
       onEndEditing: onEndEditing,
       onFocusChanged: _onFocusChange,
-      pRecalculateSizeCallback: recalculateSize,
+      pRecalculateCallback: recalculateSize,
       isInTable: false,
     );
 

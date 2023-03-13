@@ -41,7 +41,7 @@ class FlDateCellEditor
 
   bool isOpen = false;
 
-  CellEditorRecalculateSizeCallback? recalculateSizeCallback;
+  RecalculateCallback? recalculateSizeCallback;
 
   FlDateEditorModel? lastWidgetModel;
 
@@ -65,6 +65,8 @@ class FlDateCellEditor
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.columnName,
+    required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
     this.recalculateSizeCallback,

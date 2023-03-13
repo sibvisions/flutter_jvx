@@ -896,6 +896,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             onChange: (_) {},
             onEndEditing: (value) => onEndEditing(value, rowIndex, colDef.name),
             onFocusChanged: (_) {},
+            columnName: colDef.name,
+            dataProvider: model.dataProvider,
             isInTable: true);
 
         if (cellEditor is FlDateCellEditor) {

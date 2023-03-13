@@ -32,7 +32,7 @@ import 'fl_number_cell_editor.dart';
 import 'fl_text_cell_editor.dart';
 import 'linked/fl_linked_cell_editor.dart';
 
-typedef CellEditorRecalculateSizeCallback = Function([bool pRecalculate]);
+typedef RecalculateCallback = Function([bool pRecalculate]);
 
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.
 abstract class ICellEditor<
@@ -73,6 +73,10 @@ abstract class ICellEditor<
 
   /// The cellformat of this cellEditor
   CellFormat? cellFormat;
+
+  String columnName;
+
+  String dataProvider;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,6 +86,8 @@ abstract class ICellEditor<
     required this.cellEditorJson,
     required this.onValueChange,
     required this.onEndEditing,
+    required this.dataProvider,
+    required this.columnName,
     this.isInTable = false,
     this.name,
     this.columnDefinition,
@@ -130,7 +136,9 @@ abstract class ICellEditor<
     required Function(dynamic) onEndEditing,
     required Function(bool) onFocusChanged,
     required bool isInTable,
-    CellEditorRecalculateSizeCallback? pRecalculateSizeCallback,
+    RecalculateCallback? pRecalculateCallback,
+    required String dataProvider,
+    required String columnName,
   }) {
     String? cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
 
@@ -143,6 +151,8 @@ abstract class ICellEditor<
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
+          columnName: columnName,
+          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(
@@ -152,6 +162,8 @@ abstract class ICellEditor<
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
+          columnName: columnName,
+          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         return FlNumberCellEditor(
@@ -161,6 +173,8 @@ abstract class ICellEditor<
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
+          columnName: columnName,
+          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
@@ -169,7 +183,9 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           isInTable: isInTable,
-          recalculateSizeCallback: pRecalculateSizeCallback,
+          recalculateSizeCallback: pRecalculateCallback,
+          columnName: columnName,
+          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         return FlChoiceCellEditor(
@@ -178,7 +194,9 @@ abstract class ICellEditor<
           onValueChange: onChange,
           onEndEditing: onEndEditing,
           isInTable: isInTable,
-          recalculateSizeCallback: pRecalculateSizeCallback,
+          recalculateSizeCallback: pRecalculateCallback,
+          columnName: columnName,
+          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         return FlDateCellEditor(
@@ -188,7 +206,9 @@ abstract class ICellEditor<
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
-          recalculateSizeCallback: pRecalculateSizeCallback,
+          recalculateSizeCallback: pRecalculateCallback,
+          columnName: columnName,
+          dataProvider: dataProvider,
         );
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
@@ -199,7 +219,9 @@ abstract class ICellEditor<
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
-          recalculateSizeCallback: pRecalculateSizeCallback,
+          recalculateSizeCallback: pRecalculateCallback,
+          columnName: columnName,
+          dataProvider: dataProvider,
         );
 
       default:
@@ -241,6 +263,8 @@ abstract class IFocusableCellEditor<
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.columnName,
+    required super.dataProvider,
     super.isInTable = false,
     super.name,
     super.columnDefinition,

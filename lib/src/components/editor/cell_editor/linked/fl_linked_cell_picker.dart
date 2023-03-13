@@ -210,7 +210,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       FilterCommand(
         editorId: widget.name,
         value: "",
-        dataProvider: widget.model.linkReference.dataProvider,
+        dataProvider: widget.model.linkReference.referencedDataprovider,
         reason: "Closed the linked cell picker",
       ),
     );
@@ -305,7 +305,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     return ICommandService().sendCommand(
       SelectRecordCommand(
-        dataProvider: model.linkReference.dataProvider,
+        dataProvider: model.linkReference.referencedDataprovider,
         selectedRecord: pRowIndex,
         reason: "Tapped",
         filter: filter,
@@ -363,7 +363,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
             editorId: widget.name,
             value: lastChangedFilter,
             columnNames: filterColumns,
-            dataProvider: widget.model.linkReference.dataProvider,
+            dataProvider: widget.model.linkReference.referencedDataprovider,
             reason: "Filtered the linked cell picker",
           ),
         )
@@ -381,7 +381,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     IUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
-        dataProvider: model.linkReference.dataProvider,
+        dataProvider: model.linkReference.referencedDataprovider,
         onDataChunk: _receiveData,
         onMetaData: _receiveMetaData,
         onReload: _onDataProviderReload,

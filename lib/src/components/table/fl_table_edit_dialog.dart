@@ -84,6 +84,8 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     widget.columnDefinitions.forEach((colDef) {
       var cellEditor = ICellEditor.getCellEditor(
         pName: widget.model.name,
+        columnName: colDef.name,
+        dataProvider: widget.model.dataProvider,
         pCellEditorJson: colDef.cellEditorJson,
         columnDefinition: colDef,
         onChange: (value) {

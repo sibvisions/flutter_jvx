@@ -47,6 +47,8 @@ class FlCheckBoxCellEditor
     required super.cellEditorJson,
     required super.onValueChange,
     required super.onEndEditing,
+    required super.columnName,
+    required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
   }) : super(

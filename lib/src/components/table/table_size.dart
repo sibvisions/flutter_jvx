@@ -195,9 +195,8 @@ class TableSize {
           } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER) {
             calculatedWidth = imageCellWidth;
           } else {
-            ICellEditor cellEditor = _createCellEditor(columnDefinition.cellEditorJson);
-
-            calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle);
+            calculatedWidth =
+                _calculateDataWidth(dataColumn, _createCellEditor(columnDefinition.cellEditorJson), textStyle);
           }
           calculatedColumnWidths[columnName] = _adjustValue(calculatedColumnWidths[columnName]!, calculatedWidth);
         }
@@ -331,6 +330,8 @@ class TableSize {
     return ICellEditor.getCellEditor(
       pName: "",
       pCellEditorJson: pJson,
+      columnName: "",
+      dataProvider: "",
       onChange: _doNothing,
       onEndEditing: _doNothing,
       onFocusChanged: _doNothing,

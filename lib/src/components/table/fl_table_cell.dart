@@ -219,6 +219,8 @@ class _FlTableCellState extends State<FlTableCell> {
     cellEditor = ICellEditor.getCellEditor(
       pName: widget.model.name,
       columnDefinition: widget.columnDefinition,
+      columnName: widget.columnDefinition.name,
+      dataProvider: widget.model.dataProvider,
       pCellEditorJson: widget.columnDefinition.cellEditorJson,
       onChange: widget.model.isEnabled && widget.model.editable
           ? (value) => widget.onValueChanged?.call(value, widget.rowIndex, widget.columnDefinition.name)
