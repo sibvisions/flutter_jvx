@@ -70,9 +70,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   /// As to send it last.
   FocusNode? currentObjectFocused;
 
-  /// The old cell editor which might have to be disposed of.
-  ICellEditor? oldCellEditor;
-
   /// The currently used cell editor.
   ICellEditor cellEditor = FlDummyCellEditor();
 
@@ -111,8 +108,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
       recreateCellEditor();
 
-      logCellEditor("RECEIVE_NEW_MODEL");
-
       model.applyComponentInformation(cellEditor.createWidgetModel());
     }
 
@@ -125,18 +120,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       postFrameCallback(context);
     });
 
-    logCellEditor("BUILD");
-
     return getPositioned(child: cellEditor.createWidget(model.json));
-  }
-
-  @override
-  void postFrameCallback(BuildContext context) {
-    super.postFrameCallback(context);
-
-    // Dispose of the old one after the build to clean up memory.
-    oldCellEditor?.dispose();
-    oldCellEditor = null;
   }
 
   @override
@@ -328,7 +312,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Recreates the cell editor.
   void recreateCellEditor([bool pSubscribe = true]) {
-    oldCellEditor = cellEditor;
+    cellEditor.dispose();
 
     var jsonCellEditor = Map<String, dynamic>.from(model.json[ApiObjectProperty.cellEditor]);
     cellEditor = ICellEditor.getCellEditor(
@@ -346,15 +330,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     if (pSubscribe) {
       subscribe();
     }
-  }
-
-  /// Logs the cell editor for debug purposes.
-  void logCellEditor(String pPhase) {
-    FlutterUI.logUI.d("""
------ $pPhase -----
-Old cell editor hashcode: ${oldCellEditor?.hashCode}
-New cell editor hashcode: ${cellEditor.hashCode}
------ $pPhase -----""", null, StackTrace.current);
   }
 
   @override
