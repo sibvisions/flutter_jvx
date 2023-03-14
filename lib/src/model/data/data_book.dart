@@ -15,12 +15,15 @@
  */
 
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
 
+import '../../components/editor/cell_editor/linked/fl_linked_cell_editor.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
+import '../../service/data/i_data_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/parse_util.dart';
 import '../command/api/delete_record_command.dart';
@@ -29,6 +32,9 @@ import '../command/api/insert_record_command.dart';
 import '../command/api/select_record_command.dart';
 import '../command/api/set_values_command.dart';
 import '../command/data/save_fetch_data_command.dart';
+import '../component/editor/cell_editor/cell_editor_model.dart';
+import '../component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
+import '../component/editor/cell_editor/linked/link_reference.dart';
 import '../request/filter.dart';
 import '../response/dal_data_provider_changed_response.dart';
 import '../response/dal_fetch_response.dart';
@@ -76,6 +82,9 @@ class DataBook {
   /// The tree path
   List<int>? treePath;
 
+  /// Referenced linked cellEditors
+  List<ReferencedCellEditor> referencedCellEditors = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,6 +122,7 @@ class DataBook {
   void saveFromFetch({required SaveFetchDataCommand pCommand}) {
     var pFetchResponse = pCommand.response;
     dataProvider = pFetchResponse.dataProvider;
+
     if (pCommand.fetchCommand?.filter == null || pCommand.fetchCommand!.filter!.isEmpty) {
       isAllFetched = pFetchResponse.isAllFetched;
       selectedRow = pFetchResponse.selectedRow;
@@ -122,6 +132,9 @@ class DataBook {
       treePath = pFetchResponse.treePath;
       recordFormats = pFetchResponse.recordFormats;
       updateSortDefinitions(pFetchResponse.sortDefinitions);
+
+      referencedCellEditors
+          .forEach((column) => buildDataToDisplayMap(column, pFetchResponse.records, pFetchResponse.columnNames));
     }
 
     HashMap<int, List> dataMap;
@@ -170,7 +183,7 @@ class DataBook {
 
     IUiService().notifyDataChange(
       pDataProvider: dataProvider,
-      pUpdatedRecords: dataMap == records,
+      pUpdatedCurrentPage: dataMap == records,
       pUpdatedPage: pageKey,
     );
   }
@@ -279,6 +292,49 @@ class DataBook {
       treePath: treePath,
     );
   }
+
+  dynamic getLinkedDisplayValue(FlLinkedCellEditor pCellEditor, int pRowIndex, dynamic pValue) async {
+    // FlLinkedCellEditorModel model = pCellEditor.model;
+
+    // await Future.delayed(const Duration(seconds: 3));
+
+    // if ((model.displayReferencedColumnName?.isEmpty ?? true) && (model.displayConcatMask?.isEmpty ?? true)) {
+    //   return pValue;
+    // }
+
+    // String referencedDataprovider = model.linkReference.referencedDataprovider;
+
+    // /// Referenced Databook, Concat Mask Key, Column, Value, Concat Mask Value
+    // if (pCellEditor.model.displayConcatMask != null && pCellEditor.model.displayConcatMask!.isNotEmpty) {
+    //   String cellEditorColumn = pCellEditor.columnName;
+
+    //   LinkReference linkReference = pCellEditor.model.linkReference;
+    //   String concatMaskKey = _buildConcatKey(linkReference, pCellEditor.model.displayConcatMask!);
+
+    //   /// Get the list, create it if it doesn't exist
+    // } else {}
+  }
+
+  // String _buildConcatKey(LinkReference pReference, String pConcatMask) {
+  //   String concatMask = pConcatMask;
+
+  //   if (pConcatMask.contains("*")) {
+  //     if (pConcatMask.allMatches("*").length > pReference.referencedColumnNames.length) {
+  //       throw Exception("Concat mask contains more stars than referenced columns");
+  //     }
+
+  //     int i = 0;
+  //     while (concatMask.contains("*")) {
+  //       /// Replaces all stars with the referenced columns in the order they come in the link reference
+  //       concatMask = concatMask.replaceFirst("*", pReference.referencedColumnNames[i]);
+  //       i++;
+  //     }
+  //   } else {
+  //     concatMask = pReference.referencedColumnNames.join(concatMask);
+  //   }
+
+  //   return concatMask;
+  // }
 
   /// Will return all available data from the column in the provided range
   List<dynamic> getDataFromColumn({required String pColumnName, required int pFrom, int? pTo, String? pPageKey}) {
@@ -434,6 +490,72 @@ class DataBook {
   static int getColumnIndex(List<ColumnDefinition> columnDefinitions, String columnName) {
     return columnDefinitions.indexWhere((colDef) => colDef.name == columnName);
   }
+
+  buildDataToDisplayMap(
+      ReferencedCellEditor referencedCellEditor, List<List<dynamic>> records, List<String> recordColumns) {
+    if (referencedCellEditor.cellEditorModel is! FlLinkedCellEditorModel) {
+      return;
+    }
+
+    FlLinkedCellEditorModel cellEditorModel = referencedCellEditor.cellEditorModel as FlLinkedCellEditorModel;
+    LinkReference linkReference = cellEditorModel.linkReference;
+    print("buildDataToDisplayMap linkReference: ${linkReference.hashCode}");
+    Map<String, String> dataToDisplayMap = linkReference.dataToDisplay;
+
+    records.forEach((dataRow) {
+      if (linkReference.columnNames.isEmpty) {
+        linkReference.columnNames.add(referencedCellEditor.columnName);
+      }
+      var colToRefColIndex =
+          linkReference.columnNames.indexWhere((colName) => colName == referencedCellEditor.columnName);
+
+      // It says referenced column name but it is a column in this data book, not the other.
+      String valueColumnName = linkReference.referencedColumnNames[colToRefColIndex];
+
+      var refColIndex = recordColumns.indexOf(valueColumnName);
+      var refColValue = dataRow[refColIndex];
+      Map<String, dynamic> valueKeyMap = {valueColumnName: refColValue};
+      var valueKey = jsonEncode(valueKeyMap);
+
+      String displayString = "";
+
+      if (cellEditorModel.displayConcatMask?.isNotEmpty == true) {
+        List<String> columnViewNames = cellEditorModel.columnView?.columnNames ?? metaData.columnViewTable;
+
+        if (cellEditorModel.displayConcatMask!.contains("*")) {
+          int i = 0;
+
+          displayString = cellEditorModel.displayConcatMask!;
+          while (displayString.contains("*")) {
+            String columnName = columnViewNames[i];
+            int valueIndex = recordColumns.indexOf(columnName);
+
+            dynamic value = valueIndex >= 0 ? dataRow[valueIndex] : "";
+
+            displayString = displayString.replaceFirst('*', value.toString());
+            i++;
+          }
+        } else {
+          List<String> values = [];
+          columnViewNames.forEach((columnName) {
+            int valueIndex = recordColumns.indexOf(columnName);
+
+            values.add(valueIndex >= 0 ? dataRow[valueIndex] : "");
+          });
+          displayString = values.join(cellEditorModel.displayConcatMask!);
+        }
+      } else if (cellEditorModel.displayReferencedColumnName?.isNotEmpty == true) {
+        displayString = dataRow[recordColumns.indexOf(cellEditorModel.displayReferencedColumnName!)].toString();
+      }
+
+      dataToDisplayMap[valueKey] = displayString;
+    });
+
+    print("dataToDisplayMap: ${referencedCellEditor.dataProvider}");
+    print("dataToDisplayMap: $dataToDisplayMap");
+
+    IUiService().notifyDataToDisplayMapChanged(pDataProvider: referencedCellEditor.dataProvider);
+  }
 }
 
 class DalMetaData {
@@ -515,6 +637,7 @@ class DalMetaData {
     }
     if (pResponse.columns != null) {
       columnDefinitions = pResponse.columns!;
+      columnDefinitions.forEach((colDef) => IDataService().createReferencedCellEditors(colDef, dataProvider));
     }
     if (pResponse.primaryKeyColumns != null) {
       primaryKeyColumns = pResponse.primaryKeyColumns!;
@@ -557,4 +680,12 @@ class ReferenceDefinition {
     data['referencedDataBook'] = referencedDataBook;
     return data;
   }
+}
+
+class ReferencedCellEditor {
+  ICellEditorModel cellEditorModel;
+  String columnName;
+  String dataProvider;
+
+  ReferencedCellEditor(this.cellEditorModel, this.columnName, this.dataProvider);
 }

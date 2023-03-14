@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
+
 import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/change_selected_row_command.dart';
@@ -63,7 +65,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
 
   Future<List<BaseCommand>> _deleteRow(DeleteRowCommand command) async {
     // set selected row of databook
-    bool success = await IDataService().deleteRow(
+    bool success = IDataService().deleteRow(
       pDataProvider: command.dataProvider,
       pDeletedRow: command.deletedRow,
       pNewSelectedRow: command.newSelectedRow,
@@ -136,7 +138,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _deleteDataProviderData(DeleteProviderDataCommand command) async {
-    await IDataService().deleteDataFromDataBook(
+    IDataService().deleteDataFromDataBook(
       pDataProvider: command.dataProvider,
       pFrom: command.fromIndex,
       pTo: command.toIndex,
@@ -147,7 +149,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveMetaData(SaveMetaDataCommand pCommand) async {
-    await IDataService().updateMetaData(pChangedResponse: pCommand.response);
+    IDataService().updateMetaData(pChangedResponse: pCommand.response);
 
     IUiService().notifyMetaDataChange(
       pDataProvider: pCommand.response.dataProvider,
@@ -157,7 +159,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _saveFetchData(SaveFetchDataCommand pCommand) async {
-    await IDataService().updateData(pCommand: pCommand);
+    IDataService().updateData(pCommand: pCommand);
 
     return [];
   }
@@ -178,7 +180,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     }
 
     // Get Data record - is null if databook has no selected row
-    DataRecord? record = await IDataService().getSelectedRowData(
+    DataRecord? record = IDataService().getSelectedRowData(
       pColumnNames: pCommand.columnNames,
       pDataProvider: pCommand.dataProvider,
     );
@@ -193,7 +195,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _getDataChunk(GetDataChunkCommand command) async {
-    bool needFetch = await IDataService().checkIfFetchPossible(
+    bool needFetch = IDataService().databookNeedsFetch(
       pFrom: command.from,
       pTo: command.to,
       pDataProvider: command.dataProvider,
@@ -202,10 +204,13 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     if (needFetch) {
       bool includeMetaData = IDataService().getDataBook(command.dataProvider) == null;
 
+      DataBook? dataBook = IDataService().getDataBook(command.dataProvider);
+      int fromRow = dataBook?.records.keys.maxOrNull ?? command.from;
+
       return [
         FetchCommand(
-          fromRow: command.from,
-          rowCount: command.to != null ? command.to! - command.from : -1,
+          fromRow: fromRow,
+          rowCount: command.to != null ? command.to! - fromRow : -1,
           dataProvider: command.dataProvider,
           reason: "Fetch for ${command.runtimeType}",
           includeMetaData: includeMetaData,
@@ -213,7 +218,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       ];
     }
 
-    DataChunk dataChunk = await IDataService().getDataChunk(
+    DataChunk dataChunk = IDataService().getDataChunk(
       pColumnNames: command.dataColumns,
       pFrom: command.from,
       pTo: command.to,
@@ -229,7 +234,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   }
 
   Future<List<BaseCommand>> _getPageChunk(GetPageChunkCommand command) async {
-    DataChunk dataChunk = await IDataService().getDataChunk(
+    DataChunk dataChunk = IDataService().getDataChunk(
       pFrom: command.from,
       pTo: command.to,
       pDataProvider: command.dataProvider,

@@ -257,8 +257,8 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       _handleCancel(true);
     }
     widget.newValueNotifier.removeListener(receiveNewValues);
-    cellEditors.forEach((element) {
-      element.dispose();
+    cellEditors.forEach((cellEditor) {
+      cellEditor.dispose();
     });
     super.dispose();
   }

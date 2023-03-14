@@ -26,6 +26,7 @@ typedef OnDataChunkCallback = void Function(DataChunk dataChunk);
 typedef OnMetaDataCallback = void Function(DalMetaData metaData);
 typedef OnReloadCallback = int Function(int selectedRow);
 typedef OnPageCallback = void Function(String pageKey, DataChunk dataChunk);
+typedef OnDataToDisplayMapChanged = void Function();
 
 /// Used for subscribing in [IUiService] to potentially receive data.
 class DataSubscription {
@@ -57,6 +58,9 @@ class DataSubscription {
   /// Callback will be called with metaData of requested dataBook
   final OnMetaDataCallback? onMetaData;
 
+  /// Callback will be called when dataToDisplayMap changes
+  final OnDataToDisplayMapChanged? onDataToDisplayMapChanged;
+
   /// Callback will be called when a reload happens. Return value is the new subscription count.
   final OnReloadCallback? onReload;
 
@@ -77,6 +81,7 @@ class DataSubscription {
     this.onSelectedRecord,
     this.onDataChunk,
     this.onMetaData,
+    this.onDataToDisplayMapChanged,
     this.onReload,
     this.onPage,
     this.to,

@@ -195,8 +195,11 @@ class TableSize {
           } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER) {
             calculatedWidth = imageCellWidth;
           } else {
-            calculatedWidth =
-                _calculateDataWidth(dataColumn, _createCellEditor(columnDefinition.cellEditorJson), textStyle);
+            ICellEditor cellEditor = _createCellEditor(columnDefinition, pMetaData);
+
+            calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle);
+
+            cellEditor.dispose();
           }
           calculatedColumnWidths[columnName] = _adjustValue(calculatedColumnWidths[columnName]!, calculatedWidth);
         }
@@ -240,21 +243,21 @@ class TableSize {
 
   double _calculateDataWidth(
     List<dynamic> dataColumn,
-    ICellEditor pCellEditor,
+    ICellEditor cellEditor,
     TextStyle pTextStyle,
   ) {
     double columnWidth = 0.0;
 
     Iterable<dynamic> valuesToCheck = dataColumn.whereNotNull();
     for (dynamic value in valuesToCheck) {
-      String formattedText = pCellEditor.formatValue(value);
+      String formattedText = cellEditor.formatValue(value);
 
       double rowWidth = _calculateTableTextWidth(pTextStyle, formattedText);
 
       columnWidth = _adjustValue(columnWidth, rowWidth);
     }
 
-    columnWidth = _adjustValue(columnWidth, columnWidth + pCellEditor.getContentPadding(null));
+    columnWidth = _adjustValue(columnWidth, columnWidth + cellEditor.getContentPadding(null));
 
     return columnWidth;
   }
@@ -326,12 +329,12 @@ class TableSize {
 
   static void _doNothing(dynamic ignore) {}
 
-  ICellEditor _createCellEditor(Map<String, dynamic> pJson) {
+  ICellEditor _createCellEditor(ColumnDefinition colDef, DalMetaData metaData) {
     return ICellEditor.getCellEditor(
       pName: "",
-      pCellEditorJson: pJson,
-      columnName: "",
-      dataProvider: "",
+      pCellEditorJson: colDef.cellEditorJson,
+      columnName: colDef.name,
+      dataProvider: metaData.dataProvider,
       onChange: _doNothing,
       onEndEditing: _doNothing,
       onFocusChanged: _doNothing,

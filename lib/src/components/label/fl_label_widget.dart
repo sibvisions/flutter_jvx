@@ -47,6 +47,10 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     EdgeInsets textPadding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle());
     EdgeInsets padding = EdgeInsets.fromLTRB(0, max(0, textPadding.top - 1), 0, max(0, textPadding.bottom - 1));
 
+    // if (model.styles.contains("f_no_bottom_padding")) {
+    //   padding = padding.copyWith(bottom: 0);
+    // }
+
     return GestureDetector(
       onTap: onPress,
       child: Container(

@@ -14,11 +14,11 @@
  * the License.
  */
 
-import 'dart:async';
 import 'dart:collection';
 
 import '../../model/command/base_command.dart';
 import '../../model/command/data/save_fetch_data_command.dart';
+import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -39,19 +39,19 @@ abstract class IDataService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  FutureOr<void> clear(bool pFullClear);
+  void clear(bool pFullClear);
 
   /// Establishes the meta data of the given dataBook
-  Future<bool> updateMetaData({required DalMetaDataResponse pChangedResponse});
+  bool updateMetaData({required DalMetaDataResponse pChangedResponse});
 
   /// Establishes the meta data of the given dataBook
-  Future<bool> setMetaData({required DalMetaData pMetaData});
+  bool setMetaData({required DalMetaData pMetaData});
 
   /// Updates parts of the meta data of a given dataBook
   bool updateMetaDataChangedRepsonse({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Updates dataBook with fetched data,
-  Future<List<BaseCommand>> updateData({required SaveFetchDataCommand pCommand});
+  List<BaseCommand> updateData({required SaveFetchDataCommand pCommand});
 
   /// Updates parts of dataBook with changed data.
   bool updateDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse});
@@ -60,7 +60,7 @@ abstract class IDataService {
   bool updateSelectionChangedResponse({required DalDataProviderChangedResponse pChangedResponse});
 
   /// Returns column data of the selected row of the dataProvider
-  Future<DataRecord?> getSelectedRowData({
+  DataRecord? getSelectedRowData({
     required List<String>? pColumnNames,
     required String pDataProvider,
   });
@@ -68,7 +68,7 @@ abstract class IDataService {
   /// Returns [DataChunk],
   /// if [pColumnNames] is null will return all columns
   /// if [pTo] is null will return all rows
-  Future<DataChunk> getDataChunk({
+  DataChunk getDataChunk({
     required int pFrom,
     required String pDataProvider,
     int? pTo,
@@ -80,14 +80,14 @@ abstract class IDataService {
   DalMetaData getMetaData({required String pDataProvider});
 
   /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
-  Future<bool> checkIfFetchPossible({
+  bool databookNeedsFetch({
     required String pDataProvider,
     required int pFrom,
     int? pTo,
   });
 
   /// Returns true when deletion was successful
-  Future<bool> deleteDataFromDataBook({
+  bool deleteDataFromDataBook({
     required String pDataProvider,
     required int? pFrom,
     required int? pTo,
@@ -102,7 +102,7 @@ abstract class IDataService {
   });
 
   /// Returns true when row selection was successful (dataProvider and dataRow exist)
-  Future<bool> deleteRow({
+  bool deleteRow({
     required String pDataProvider,
     required int pDeletedRow,
     required int pNewSelectedRow,
@@ -119,4 +119,11 @@ abstract class IDataService {
 
   /// Gets a databook
   DataBook? getDataBook(String pDataProvider);
+
+  /// Adds a LinkedCellEditor as referenced celleditors to it's referencedDatabook
+  void createReferencedCellEditors(ColumnDefinition column, String dataProvider);
+
+  void setDatabookFetching(String pDataProvider, int pTo);
+
+  void removeDatabookFetching(String pDataProvider, int pTo);
 }

@@ -17,6 +17,10 @@
 import '../../../../../service/api/shared/api_object_property.dart';
 
 class LinkReference {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// The column names of the current data book.
   List<String> columnNames = <String>[];
 
@@ -26,6 +30,12 @@ class LinkReference {
   /// The name of the referenced data book.
   late String referencedDataprovider;
 
+  // The map to convert specific strings to other strings for linked cell editors.
+  Map<String, String> dataToDisplay = {};
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   LinkReference();
 
   LinkReference.fromJson(Map<String, dynamic> json) {

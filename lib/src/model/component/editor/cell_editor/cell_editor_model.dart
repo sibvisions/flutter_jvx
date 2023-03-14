@@ -15,8 +15,15 @@
  */
 
 import '../../../../service/api/shared/api_object_property.dart';
+import '../../../../service/api/shared/fl_component_classname.dart';
 import '../../../../util/parse_util.dart';
 import '../../../layout/alignments.dart';
+import 'date/fl_date_cell_editor_model.dart';
+import 'fl_check_box_cell_editor_model.dart';
+import 'fl_choice_cell_editor_model.dart';
+import 'fl_image_cell_editor_model.dart';
+import 'fl_number_cell_editor_model.dart';
+import 'linked/fl_linked_cell_editor_model.dart';
 
 class ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,6 +70,39 @@ class ICellEditorModel {
 
   /// Initializes a [ICellEditorModel] with default values
   ICellEditorModel();
+
+  factory ICellEditorModel.fromJson(Map<String, dynamic>? pJson) {
+    if (pJson == null) return ICellEditorModel();
+
+    ICellEditorModel? model;
+    switch (pJson[ApiObjectProperty.className]) {
+      case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
+        model = FlCheckBoxCellEditorModel();
+        break;
+      case FlCellEditorClassname.NUMBER_CELL_EDITOR:
+        model = FlNumberCellEditorModel();
+        break;
+      case FlCellEditorClassname.IMAGE_VIEWER:
+        model = FlImageCellEditorModel();
+        break;
+      case FlCellEditorClassname.CHOICE_CELL_EDITOR:
+        model = FlChoiceCellEditorModel();
+        break;
+      case FlCellEditorClassname.DATE_CELL_EDITOR:
+        model = FlDateCellEditorModel();
+        break;
+      case FlCellEditorClassname.LINKED_CELL_EDITOR:
+        model = FlLinkedCellEditorModel();
+        break;
+
+      case FlCellEditorClassname.TEXT_CELL_EDITOR:
+      default:
+        model = ICellEditorModel();
+    }
+
+    model.applyFromJson(pJson);
+    return model;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions

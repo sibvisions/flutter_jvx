@@ -17,6 +17,7 @@
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/config/config_controller.dart';
 import '../../util/parse_util.dart';
+import '../component/editor/cell_editor/cell_editor_model.dart';
 import '../layout/alignments.dart';
 import '../response/dal_meta_data_response.dart';
 
@@ -64,6 +65,9 @@ class ColumnDefinition {
 
   /// The cell editor json of this column.
   Map<String, dynamic> cellEditorJson;
+
+  /// The cell editor of this column.
+  ICellEditorModel cellEditorModel;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Datatype specific information
@@ -127,5 +131,6 @@ class ColumnDefinition {
         autoTrim = json[ApiObjectProperty.autoTrim] ?? false,
         iFractionalSecondsPrecision = json[ApiObjectProperty.fractionalSecondsPrecision] ?? 0,
         cellEditorJson = json[ApiObjectProperty.cellEditor],
+        cellEditorModel = ICellEditorModel.fromJson(json[ApiObjectProperty.cellEditor]),
         encoding = json[ApiObjectProperty.encoding] ?? "";
 }

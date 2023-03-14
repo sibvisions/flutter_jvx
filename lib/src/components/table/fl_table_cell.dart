@@ -121,9 +121,14 @@ class _FlTableCellState extends State<FlTableCell> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Widget build(BuildContext context) {
-    _rebuildCellEditor();
+  initState() {
+    super.initState();
 
+    _rebuildCellEditor();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     Widget? cellChild;
 
     if (widget.cellFormat?.imageString.isNotEmpty == true) {
@@ -229,6 +234,7 @@ class _FlTableCellState extends State<FlTableCell> {
           ? (value) => widget.onEndEditing?.call(value, widget.rowIndex, widget.columnDefinition.name)
           : _doNothing,
       onFocusChanged: (_) {},
+      pRecalculateCallback: ([pRecalculate = false]) => setState(() {}),
       isInTable: true,
     );
 

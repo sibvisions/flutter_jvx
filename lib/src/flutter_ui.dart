@@ -261,7 +261,7 @@ class FlutterUI extends StatefulWidget {
     await ICommandService().clear(pFullClear);
     await ILayoutService().clear(pFullClear);
     await IStorageService().clear(pFullClear);
-    await IDataService().clear(pFullClear);
+    IDataService().clear(pFullClear);
     await IUiService().clear(pFullClear);
     await IApiService().clear(pFullClear);
   }

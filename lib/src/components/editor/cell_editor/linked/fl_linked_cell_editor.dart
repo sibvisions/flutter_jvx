@@ -15,43 +15,24 @@
  */
 
 import 'dart:collection';
+import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../model/command/api/filter_command.dart';
-import '../../../../model/command/api/select_record_command.dart';
+import '../../../../../flutter_jvx.dart';
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
+import '../../../../model/component/editor/cell_editor/linked/link_reference.dart';
 import '../../../../model/component/fl_component_model.dart';
-import '../../../../model/data/subscriptions/data_chunk.dart';
-import '../../../../model/data/subscriptions/data_subscription.dart';
-import '../../../../service/command/i_command_service.dart';
-import '../../../../service/data/i_data_service.dart';
-import '../../../../service/ui/i_ui_service.dart';
-import '../../../../util/parse_util.dart';
 import '../i_cell_editor.dart';
-import 'fl_linked_cell_picker.dart';
-import 'fl_linked_editor_widget.dart';
 
 class FlLinkedCellEditor
     extends IFocusableCellEditor<FlLinkedEditorModel, FlLinkedEditorWidget, FlLinkedCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static const int PAGE_LOAD = 50;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  final HashMap<dynamic, dynamic> _valueMap = HashMap();
-
-  int currentPage = 1;
-
-  bool lastCallbackIntentional = true;
-
-  bool isAllFetched = false;
 
   dynamic _value;
 
@@ -132,7 +113,7 @@ class FlLinkedCellEditor
 
   @override
   void dispose() {
-    _unsubscribe();
+    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: dataProvider);
     textController.dispose();
     super.dispose();
   }
@@ -144,7 +125,25 @@ class FlLinkedCellEditor
 
   @override
   String formatValue(dynamic pValue) {
-    return pValue?.toString() ?? "";
+    dynamic showValue = pValue;
+
+    if (model.displayConcatMask != null || model.displayReferencedColumnName != null) {
+      LinkReference linkReference = correctLinkReference;
+      int colIndex = linkReference.columnNames.indexOf(columnName);
+
+      if (colIndex == -1) {
+        colIndex = 0;
+      }
+
+      String valueColumnName = linkReference.referencedColumnNames[colIndex];
+
+      Map<String, dynamic> valueKeyMap = {valueColumnName: pValue};
+      var valueKey = jsonEncode(valueKeyMap);
+
+      showValue = linkReference.dataToDisplay[valueKey] ?? showValue;
+    }
+
+    return showValue?.toString() ?? "";
   }
 
   @override
@@ -227,79 +226,40 @@ class FlLinkedCellEditor
     return null;
   }
 
-  void _setValueMap(DataChunk pChunkData) {
-    if (!lastCallbackIntentional) {
-      _valueMap.clear();
-    }
-
-    isAllFetched = pChunkData.isAllFetched;
-
-    int indexOfKeyColumn = pChunkData.columnDefinitions
-        .indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0]);
-    int indexOfValueColumn =
-        pChunkData.columnDefinitions.indexWhere((element) => element.name == model.displayReferencedColumnName);
-
-    for (List<dynamic> dataRow in pChunkData.data.values) {
-      dynamic key = dataRow[indexOfKeyColumn];
-      dynamic value = dataRow[indexOfValueColumn];
-
-      _valueMap[key] = value;
-    }
-
-    lastCallbackIntentional = false;
-
-    _setValueIntoController();
-  }
-
   void _subscribe() {
-    if (model.displayReferencedColumnName != null) {
-      lastCallbackIntentional = true;
-      if (!isAllFetched) {
-        IUiService().registerDataSubscription(
-          pDataSubscription: DataSubscription(
-            subbedObj: this,
+    if ((model.displayReferencedColumnName != null || model.displayConcatMask != null) && dataProvider.isNotEmpty) {
+      IUiService().registerDataSubscription(
+        pDataSubscription: DataSubscription(
+          subbedObj: this,
+          dataProvider: dataProvider,
+          from: 0,
+          to: -1,
+          onDataToDisplayMapChanged: _onDataToDisplayMapChanged,
+        ),
+      );
+
+      if (IDataService()
+          .databookNeedsFetch(pDataProvider: model.linkReference.referencedDataprovider, pFrom: 0, pTo: -1)) {
+        IUiService().sendCommand(
+          FetchCommand(
+            fromRow: 0,
+            rowCount: -1,
             dataProvider: model.linkReference.referencedDataprovider,
-            from: 0,
-            to: PAGE_LOAD * currentPage,
-            onDataChunk: _setValueMap,
-            onReload: _onDataProviderReload,
+            reason: "Linked cell editor fetches referenced dataprovider",
           ),
         );
       }
     }
   }
 
-  int _onDataProviderReload(int pSelectedRow) {
-    if (pSelectedRow >= 0) {
-      currentPage = ((pSelectedRow + 1) / PAGE_LOAD).ceil();
-    } else {
-      currentPage = 1;
-    }
-    return PAGE_LOAD * currentPage;
-  }
-
-  void _unsubscribe() {
-    IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.referencedDataprovider);
-  }
-
-  void _increaseValueMap() {
-    currentPage++;
-    _subscribe();
-  }
-
-  void _setValueIntoController() {
+  void _setValueIntoController([bool recalculateSize = false]) {
     if (_value == null) {
       textController.clear();
     } else {
-      dynamic showValue = _value;
-
-      if (model.displayReferencedColumnName != null) {
-        showValue = _valueMap[showValue];
-      }
+      dynamic showValue = formatValue(_value);
 
       if (showValue == null) {
         textController.clear();
-        _increaseValueMap();
       } else {
         if (showValue is! String) {
           showValue = showValue.toString();
@@ -313,7 +273,7 @@ class FlLinkedCellEditor
       }
     }
 
-    recalculateSizeCallback?.call(false);
+    recalculateSizeCallback?.call(recalculateSize);
   }
 
   dynamic receiveNull(dynamic pValue) {
@@ -341,5 +301,21 @@ class FlLinkedCellEditor
         onEndEditing(dataMap);
       }
     }).catchError(IUiService().handleAsyncError);
+  }
+
+  void _onDataToDisplayMapChanged() {
+    _setValueIntoController(true);
+  }
+
+  LinkReference get correctLinkReference {
+    ColumnDefinition? colDef = IDataService()
+        .getDataBook(dataProvider)
+        ?.metaData
+        .columnDefinitions
+        .firstWhereOrNull((element) => element.name == columnName);
+
+    return (colDef?.cellEditorModel is FlLinkedCellEditorModel)
+        ? (colDef!.cellEditorModel as FlLinkedCellEditorModel).linkReference
+        : model.linkReference;
   }
 }

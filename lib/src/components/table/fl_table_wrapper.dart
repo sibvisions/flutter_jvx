@@ -274,6 +274,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           onDataChunk: _receiveTableData,
           onMetaData: _receiveMetaData,
           onReload: _onDataProviderReload,
+          onDataToDisplayMapChanged: _onDataToDisplayMapChanged,
           dataColumns: null,
         ),
       );
@@ -396,6 +397,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     } else {
       setState(() {});
     }
+  }
+
+  void _onDataToDisplayMapChanged() {
+    _recalculateTableSize(true);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

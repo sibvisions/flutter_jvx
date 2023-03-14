@@ -210,7 +210,7 @@ abstract class IUiService {
   void registerModelSubscription(ModelSubscription pModelSubscription);
 
   /// Register to receive a subscriptions of data from a specific dataProvider
-  void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true});
+  void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatlyRetrieveData = true});
 
   /// Notifies all subscriptions of a reload.
   void notifySubscriptionsOfReload({required String pDataprovider});
@@ -242,7 +242,7 @@ abstract class IUiService {
   /// data may have changed.
   void notifyDataChange({
     required String pDataProvider,
-    bool pUpdatedRecords = true,
+    bool pUpdatedCurrentPage = true,
     String? pUpdatedPage,
   });
 
@@ -337,4 +337,6 @@ abstract class IUiService {
   void closeContent(String name, [bool pSendClose = true]);
 
   bool isContentVisible(String pContentName);
+
+  void notifyDataToDisplayMapChanged({required String pDataProvider});
 }

@@ -478,13 +478,12 @@ class UiService implements IUiService {
   }
 
   @override
-  void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true}) {
+  void registerDataSubscription({required DataSubscription pDataSubscription, bool pImmediatlyRetrieveData = true}) {
     _dataSubscriptions.removeWhere((element) => element.same(pDataSubscription));
     _dataSubscriptions.add(pDataSubscription);
 
-    if (pShouldFetch) {
+    if (pImmediatlyRetrieveData) {
       DataBook? databook = IDataService().getDataBook(pDataSubscription.dataProvider);
-
       if (databook == null) {
         sendCommand(FetchCommand(
           dataProvider: pDataSubscription.dataProvider,
@@ -497,6 +496,20 @@ class UiService implements IUiService {
           includeMetaData: true,
         ));
         return;
+      } else if (pDataSubscription.from != -1 &&
+          IDataService().databookNeedsFetch(
+            pFrom: pDataSubscription.from,
+            pTo: pDataSubscription.to,
+            pDataProvider: pDataSubscription.dataProvider,
+          )) {
+        int fromRow = databook.records.keys.maxOrNull ?? pDataSubscription.from;
+
+        sendCommand(FetchCommand(
+          fromRow: fromRow,
+          rowCount: pDataSubscription.to != null ? pDataSubscription.to! - fromRow : -1,
+          dataProvider: pDataSubscription.dataProvider,
+          reason: "Fetch for ${pDataSubscription.runtimeType}",
+        ));
       }
 
       if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
@@ -548,7 +561,7 @@ class UiService implements IUiService {
 
   @override
   void notifySubscriptionsOfReload({required String pDataprovider}) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataprovider).forEach((dataSubscription) {
+    _dataSubscriptions.where((element) => element.dataProvider == pDataprovider).toList().forEach((dataSubscription) {
       if (dataSubscription.onReload != null && dataSubscription.onDataChunk != null && dataSubscription.from >= 0) {
         dataSubscription.to = dataSubscription.onReload!.call(IDataService().getDataBook(pDataprovider)!.selectedRow);
       }
@@ -618,10 +631,10 @@ class UiService implements IUiService {
   @override
   void notifyDataChange({
     required String pDataProvider,
-    bool pUpdatedRecords = true,
+    bool pUpdatedCurrentPage = true,
     String? pUpdatedPage,
   }) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
+    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
       // Check if selected data changed
       if (pUpdatedPage != null) {
         if (sub.onPage != null) {
@@ -635,7 +648,7 @@ class UiService implements IUiService {
           ));
         }
       }
-      if (pUpdatedRecords) {
+      if (pUpdatedCurrentPage) {
         if (sub.onSelectedRecord != null) {
           sendCommand(GetSelectedDataCommand(
             subId: sub.id,
@@ -659,10 +672,21 @@ class UiService implements IUiService {
   }
 
   @override
+  void notifyDataToDisplayMapChanged({required String pDataProvider}) {
+    _dataSubscriptions
+        .where((sub) => sub.dataProvider == pDataProvider && sub.onDataToDisplayMapChanged != null)
+        .toList()
+        .forEach((sub) {
+      print("Notify data to display map changed ${sub.id}");
+      sub.onDataToDisplayMapChanged?.call();
+    });
+  }
+
+  @override
   void notifySelectionChange({
     required String pDataProvider,
   }) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
+    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
       if (sub.onSelectedRecord != null) {
         sendCommand(GetSelectedDataCommand(
           subId: sub.id,
@@ -678,7 +702,7 @@ class UiService implements IUiService {
   void notifyMetaDataChange({
     required String pDataProvider,
   }) {
-    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
+    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
       // Check if selected data changed
       sendCommand(GetMetaDataCommand(
         subId: sub.id,
@@ -696,6 +720,7 @@ class UiService implements IUiService {
   }) {
     _dataSubscriptions
         .where((element) => element.dataProvider == pDataProvider && element.id == pSubId)
+        .toList()
         .forEach((element) => element.onSelectedRecord?.call(pDataRow));
   }
 
@@ -736,6 +761,7 @@ class UiService implements IUiService {
   }) {
     _dataSubscriptions
         .where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null)
+        .toList()
         .forEach((element) {
       element.onMetaData!(pMetaData);
     });
@@ -745,7 +771,7 @@ class UiService implements IUiService {
   int getSubscriptionRowcount({required String pDataProvider}) {
     int rowCount = 0;
 
-    var subscriptions = _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider);
+    var subscriptions = _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider).toList();
     for (DataSubscription subscription in subscriptions) {
       rowCount = max(rowCount, subscription.to ?? 0);
     }

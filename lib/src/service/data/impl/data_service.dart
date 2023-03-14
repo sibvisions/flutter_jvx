@@ -22,6 +22,8 @@ import 'package:collection/collection.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/save_fetch_data_command.dart';
+import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
+import '../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
@@ -29,6 +31,7 @@ import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../api/shared/api_object_property.dart';
+import '../../api/shared/fl_component_classname.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
@@ -38,6 +41,9 @@ class DataService implements IDataService {
 
   /// Map of all DataBooks with dataProvider as key
   HashMap<String, DataBook> dataBooks = HashMap();
+
+  /// Map of all currently fetching databooks with dataProvider as key and value is the row to fetch to.
+  HashMap<String, int> fetchingDataBooks = HashMap();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization",
@@ -56,7 +62,7 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<List<BaseCommand>> updateData({required SaveFetchDataCommand pCommand}) async {
+  List<BaseCommand> updateData({required SaveFetchDataCommand pCommand}) {
     DataBook? dataBook = dataBooks[pCommand.response.dataProvider] ?? DataBook.empty();
     dataBooks[pCommand.response.dataProvider] = dataBook;
 
@@ -109,7 +115,7 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<bool> updateMetaData({required DalMetaDataResponse pChangedResponse}) async {
+  bool updateMetaData({required DalMetaDataResponse pChangedResponse}) {
     DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
 
     if (dataBook == null) {
@@ -128,7 +134,7 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<bool> setMetaData({required DalMetaData pMetaData}) async {
+  bool setMetaData({required DalMetaData pMetaData}) {
     DataBook? dataBook = dataBooks[pMetaData.dataProvider];
 
     if (dataBook == null) {
@@ -140,6 +146,11 @@ class DataService implements IDataService {
       );
       dataBooks[dataBook.dataProvider] = dataBook;
     }
+
+    dataBook.metaData = pMetaData;
+
+    pMetaData.columnDefinitions
+        .forEach((colDef) => IDataService().createReferencedCellEditors(colDef, pMetaData.dataProvider));
 
     return true;
   }
@@ -195,6 +206,8 @@ class DataService implements IDataService {
           }
           if (changedColumn.cellEditorJson != null) {
             foundColumn.cellEditorJson = changedColumn.cellEditorJson!;
+            foundColumn.cellEditorModel = ICellEditorModel.fromJson(foundColumn.cellEditorJson);
+            IDataService().createReferencedCellEditors(foundColumn, pChangedResponse.dataProvider);
             anyChanges = true;
           }
         }
@@ -205,10 +218,10 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<DataRecord?> getSelectedRowData({
+  DataRecord? getSelectedRowData({
     required List<String>? pColumnNames,
     required String pDataProvider,
-  }) async {
+  }) {
     DataBook dataBook = dataBooks[pDataProvider]!;
 
     DataRecord? selectedRowColumnData = dataBook.getSelectedRecord(pDataColumnNames: pColumnNames);
@@ -217,13 +230,13 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<DataChunk> getDataChunk({
+  DataChunk getDataChunk({
     required int pFrom,
     required String pDataProvider,
     int? pTo,
     List<String>? pColumnNames,
     String? pPageKey,
-  }) async {
+  }) {
     // Get data from all requested columns
     List<List<dynamic>> columnsData = [];
     List<ColumnDefinition> columnDefinitions = [];
@@ -288,11 +301,11 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<bool> checkIfFetchPossible({
+  bool databookNeedsFetch({
     required int pFrom,
     required String pDataProvider,
     int? pTo,
-  }) async {
+  }) {
     if (!dataBooks.containsKey(pDataProvider)) {
       return true;
     }
@@ -303,15 +316,15 @@ class DataService implements IDataService {
     // If not all data is fetched and pTo is null (all possible data is being requested), more should be fetched
     if (dataBook.isAllFetched) {
       return false;
-    } else if (pTo == null) {
-      return true;
+    } else if ((pTo == null || pTo == -1)) {
+      return fetchingDataBooks[pDataProvider] != -1;
     }
 
     // Check all indexes if they are present.
     for (int i = pFrom; i < pTo; i++) {
       var record = dataBook.records[i];
       if (record == null) {
-        return true;
+        return fetchingDataBooks[pDataProvider] == null || pTo > (fetchingDataBooks[pDataProvider]!);
       }
     }
 
@@ -320,12 +333,12 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<bool> deleteDataFromDataBook({
+  bool deleteDataFromDataBook({
     required String pDataProvider,
     required int? pFrom,
     required int? pTo,
     required bool? pDeleteAll,
-  }) async {
+  }) {
     // Get data book and return false if it does not exist
     DataBook? dataBook = dataBooks[pDataProvider];
     if (dataBook == null) {
@@ -358,11 +371,11 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<bool> deleteRow({
+  bool deleteRow({
     required String pDataProvider,
     required int pDeletedRow,
     required int pNewSelectedRow,
-  }) async {
+  }) {
     // get databook, if null return false
     DataBook? dataBook = dataBooks[pDataProvider];
     if (dataBook == null || dataBook.records.length <= pDeletedRow) {
@@ -401,5 +414,40 @@ class DataService implements IDataService {
   @override
   DataBook? getDataBook(String pDataProvider) {
     return dataBooks[pDataProvider];
+  }
+
+  @override
+  void createReferencedCellEditors(ColumnDefinition column, String dataProvider) {
+    if (column.cellEditorModel.className == FlCellEditorClassname.LINKED_CELL_EDITOR) {
+      var linkReference = (column.cellEditorModel as FlLinkedCellEditorModel).linkReference;
+
+      print("Creating referenced cell editor for column: ${column.name} + ${linkReference.hashCode}");
+      DataBook referencedDataBook = dataBooks[linkReference.referencedDataprovider] ??= DataBook.empty();
+
+      ReferencedCellEditor referencedCellEditor =
+          ReferencedCellEditor(column.cellEditorModel, column.name, dataProvider);
+
+      referencedDataBook.referencedCellEditors.removeWhere((element) => element.columnName == column.name);
+      referencedDataBook.referencedCellEditors.add(referencedCellEditor);
+
+      if (linkReference.columnNames.isEmpty && linkReference.referencedColumnNames.isNotEmpty) {
+        linkReference.columnNames.add(column.name);
+      }
+
+      referencedDataBook.buildDataToDisplayMap(referencedCellEditor, referencedDataBook.records.values.toList(),
+          referencedDataBook.metaData.columnDefinitions.map((e) => e.name).toList());
+    }
+  }
+
+  @override
+  void setDatabookFetching(String pDataProvider, int pTo) {
+    fetchingDataBooks[pDataProvider] = pTo;
+  }
+
+  @override
+  void removeDatabookFetching(String pDataProvider, int pTo) {
+    if (fetchingDataBooks[pDataProvider] == pTo) {
+      fetchingDataBooks.remove(pDataProvider);
+    }
   }
 }

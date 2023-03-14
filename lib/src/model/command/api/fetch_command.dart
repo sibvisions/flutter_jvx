@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../../request/filter.dart';
+import '../../../../flutter_jvx.dart';
 import 'session_command.dart';
 
 class FetchCommand extends SessionCommand {
@@ -53,7 +53,12 @@ class FetchCommand extends SessionCommand {
     this.setRootKey = false,
     this.reload = false,
     required super.reason,
-  });
+  }) {
+    IDataService().setDatabookFetching(dataProvider, fromRow + rowCount);
+    afterProcessing = () {
+      IDataService().removeDatabookFetching(dataProvider, fromRow + rowCount);
+    };
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

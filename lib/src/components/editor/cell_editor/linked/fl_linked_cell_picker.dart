@@ -35,9 +35,9 @@ import '../../../table/fl_table_widget.dart';
 import '../../../table/table_size.dart';
 import '../../text_field/fl_text_field_widget.dart';
 import '../i_cell_editor.dart';
-import 'fl_linked_cell_editor.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
+  static const PAGE_LOAD = 50;
   static const Object NULL_OBJECT = Object();
 
   final String name;
@@ -386,18 +386,18 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         onMetaData: _receiveMetaData,
         onReload: _onDataProviderReload,
         from: 0,
-        to: FlLinkedCellEditor.PAGE_LOAD * scrollingPage,
+        to: FlLinkedCellPicker.PAGE_LOAD * scrollingPage,
       ),
     );
   }
 
   int _onDataProviderReload(int pSelectedRow) {
     if (pSelectedRow >= 0) {
-      scrollingPage = ((pSelectedRow + 1) / FlLinkedCellEditor.PAGE_LOAD).ceil();
+      scrollingPage = ((pSelectedRow + 1) / FlLinkedCellPicker.PAGE_LOAD).ceil();
     } else {
       scrollingPage = 1;
     }
-    return FlLinkedCellEditor.PAGE_LOAD * scrollingPage;
+    return FlLinkedCellPicker.PAGE_LOAD * scrollingPage;
   }
 
   List<String> _columnNamesToShow() {
