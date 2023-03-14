@@ -14,7 +14,8 @@
  * the License.
  */
 
-import '../../../../flutter_jvx.dart';
+import '../../../service/data/i_data_service.dart';
+import '../../request/filter.dart';
 import 'session_command.dart';
 
 class FetchCommand extends SessionCommand {

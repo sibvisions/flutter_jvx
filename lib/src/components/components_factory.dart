@@ -16,7 +16,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_jvx.dart';
+import '../custom/custom_component.dart';
 import '../model/component/fl_component_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'button/fl_button_wrapper.dart';

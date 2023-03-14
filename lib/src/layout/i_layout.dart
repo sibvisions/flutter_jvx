@@ -14,8 +14,8 @@
  * the License.
  */
 
-import '../../flutter_jvx.dart';
 import '../model/layout/layout_data.dart';
+import '../util/i_clonable.dart';
 import 'border_layout.dart';
 import 'flow_layout.dart';
 import 'form_layout.dart';

@@ -14,20 +14,36 @@
  * the License.
  */
 
+import 'package:beamer/beamer.dart';
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../flutter_jvx.dart';
 import '../../components/components_factory.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
+import '../../custom/custom_screen.dart';
+import '../../flutter_ui.dart';
+import '../../model/command/api/close_screen_command.dart';
+import '../../model/command/api/navigation_command.dart';
+import '../../model/command/api/open_screen_command.dart';
+import '../../model/command/base_command.dart';
+import '../../model/command/storage/delete_screen_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/model_subscription.dart';
 import '../../model/menu/menu_item_model.dart';
+import '../../service/command/i_command_service.dart';
+import '../../service/config/config_controller.dart';
+import '../../service/layout/i_layout_service.dart';
+import '../../service/storage/i_storage_service.dart';
+import '../../service/ui/i_ui_service.dart';
+import '../../util/image/image_loader.dart';
 import '../../util/offline_util.dart';
+import '../../util/parse_util.dart';
 import '../frame/frame.dart';
+import '../state/app_style.dart';
+import '../state/loading_bar.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for

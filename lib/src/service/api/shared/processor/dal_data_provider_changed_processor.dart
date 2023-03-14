@@ -14,8 +14,14 @@
  * the License.
  */
 
-import '../../../../../flutter_jvx.dart';
+import '../../../../model/command/api/fetch_command.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/data/delete_provider_data_command.dart';
+import '../../../../model/command/data/delete_row_command.dart';
+import '../../../../model/request/api_request.dart';
 import '../../../../model/response/dal_data_provider_changed_response.dart';
+import '../../../data/i_data_service.dart';
+import '../../../ui/i_ui_service.dart';
 import '../i_response_processor.dart';
 
 class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProviderChangedResponse> {
