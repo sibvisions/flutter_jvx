@@ -677,7 +677,6 @@ class UiService implements IUiService {
         .where((sub) => sub.dataProvider == pDataProvider && sub.onDataToDisplayMapChanged != null)
         .toList()
         .forEach((sub) {
-      print("Notify data to display map changed ${sub.id}");
       sub.onDataToDisplayMapChanged?.call();
     });
   }
