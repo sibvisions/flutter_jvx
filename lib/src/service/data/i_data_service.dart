@@ -18,7 +18,7 @@ import 'dart:collection';
 
 import '../../model/command/base_command.dart';
 import '../../model/command/data/save_fetch_data_command.dart';
-import '../../model/data/column_definition.dart';
+import '../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -120,8 +120,16 @@ abstract class IDataService {
   /// Gets a databook
   DataBook? getDataBook(String pDataProvider);
 
-  /// Adds a LinkedCellEditor as referenced celleditors to it's referencedDatabook
-  void createReferencedCellEditors(ColumnDefinition column, String dataProvider);
+  /// Adds a LinkedCellEditor as referenced celleditors to it's referencedDatabook and
+  /// also builds the datamap for the linkreference.
+  ///
+  /// LinkedCellEditors sometimes have concat masks or a display reference. This means that the
+  /// value it has should be represented by a different value or just more values concatenated.
+  ///
+  /// Not every LinkedCellEditor should do this, which is why it is done in the referenced databook centrally.
+  ///
+  ReferencedCellEditor createReferencedCellEditors(
+      FlLinkedCellEditorModel cellEditorModel, String dataProvider, String columnName);
 
   void setDatabookFetching(String pDataProvider, int pTo);
 

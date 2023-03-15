@@ -31,7 +31,6 @@ import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../api/shared/api_object_property.dart';
-import '../../api/shared/fl_component_classname.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
@@ -149,8 +148,12 @@ class DataService implements IDataService {
 
     dataBook.metaData = pMetaData;
 
-    pMetaData.columnDefinitions
-        .forEach((colDef) => IDataService().createReferencedCellEditors(colDef, pMetaData.dataProvider));
+    pMetaData.columnDefinitions.forEach((colDef) {
+      if (colDef.cellEditorModel is FlLinkedCellEditorModel) {
+        IDataService().createReferencedCellEditors(
+            colDef.cellEditorModel as FlLinkedCellEditorModel, pMetaData.dataProvider, colDef.name);
+      }
+    });
 
     return true;
   }
@@ -205,9 +208,15 @@ class DataService implements IDataService {
             anyChanges = true;
           }
           if (changedColumn.cellEditorJson != null) {
+            metaData.createdReferencedCellEditors
+                .firstWhereOrNull((element) => element.columnName == foundColumn.name)
+                ?.dispose();
             foundColumn.cellEditorJson = changedColumn.cellEditorJson!;
             foundColumn.cellEditorModel = ICellEditorModel.fromJson(foundColumn.cellEditorJson);
-            IDataService().createReferencedCellEditors(foundColumn, pChangedResponse.dataProvider);
+            if (foundColumn.cellEditorModel is FlLinkedCellEditorModel) {
+              createReferencedCellEditors(foundColumn.cellEditorModel as FlLinkedCellEditorModel,
+                  pChangedResponse.dataProvider, foundColumn.name);
+            }
             anyChanges = true;
           }
         }
@@ -417,26 +426,24 @@ class DataService implements IDataService {
   }
 
   @override
-  void createReferencedCellEditors(ColumnDefinition column, String dataProvider) {
-    if (column.cellEditorModel.className == FlCellEditorClassname.LINKED_CELL_EDITOR) {
-      var linkReference = (column.cellEditorModel as FlLinkedCellEditorModel).linkReference;
+  ReferencedCellEditor createReferencedCellEditors(
+      FlLinkedCellEditorModel cellEditorModel, String dataProvider, String columnName) {
+    var linkReference = cellEditorModel.linkReference;
 
-      print("Creating referenced cell editor for column: ${column.name} + ${linkReference.hashCode}");
-      DataBook referencedDataBook = dataBooks[linkReference.referencedDataprovider] ??= DataBook.empty();
+    DataBook referencedDataBook = dataBooks[linkReference.referencedDataprovider] ??= DataBook.empty();
 
-      ReferencedCellEditor referencedCellEditor =
-          ReferencedCellEditor(column.cellEditorModel, column.name, dataProvider);
+    ReferencedCellEditor referencedCellEditor = ReferencedCellEditor(cellEditorModel, columnName, dataProvider);
 
-      referencedDataBook.referencedCellEditors.removeWhere((element) => element.columnName == column.name);
-      referencedDataBook.referencedCellEditors.add(referencedCellEditor);
+    referencedDataBook.referencedCellEditors.add(referencedCellEditor);
 
-      if (linkReference.columnNames.isEmpty && linkReference.referencedColumnNames.isNotEmpty) {
-        linkReference.columnNames.add(column.name);
-      }
-
-      referencedDataBook.buildDataToDisplayMap(referencedCellEditor, referencedDataBook.records.values.toList(),
-          referencedDataBook.metaData.columnDefinitions.map((e) => e.name).toList());
+    if (linkReference.columnNames.isEmpty && linkReference.referencedColumnNames.isNotEmpty) {
+      linkReference.columnNames.add(columnName);
     }
+
+    referencedDataBook.buildDataToDisplayMap(referencedCellEditor, referencedDataBook.records.values.toList(),
+        referencedDataBook.metaData.columnDefinitions.map((e) => e.name).toList());
+
+    return referencedCellEditor;
   }
 
   @override

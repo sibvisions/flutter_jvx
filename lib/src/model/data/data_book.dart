@@ -499,7 +499,6 @@ class DataBook {
 
     FlLinkedCellEditorModel cellEditorModel = referencedCellEditor.cellEditorModel as FlLinkedCellEditorModel;
     LinkReference linkReference = cellEditorModel.linkReference;
-    print("buildDataToDisplayMap linkReference: ${linkReference.hashCode}");
     Map<String, String> dataToDisplayMap = linkReference.dataToDisplay;
 
     records.forEach((dataRow) {
@@ -514,7 +513,7 @@ class DataBook {
 
       var refColIndex = recordColumns.indexOf(valueColumnName);
       var refColValue = dataRow[refColIndex];
-      Map<String, dynamic> valueKeyMap = {valueColumnName: refColValue};
+      Map<String, dynamic> valueKeyMap = {valueColumnName: refColValue.toString()};
       var valueKey = jsonEncode(valueKeyMap);
 
       String displayString = "";
@@ -550,9 +549,6 @@ class DataBook {
 
       dataToDisplayMap[valueKey] = displayString;
     });
-
-    print("dataToDisplayMap: ${referencedCellEditor.dataProvider}");
-    print("dataToDisplayMap: $dataToDisplayMap");
 
     IUiService().notifyDataToDisplayMapChanged(pDataProvider: referencedCellEditor.dataProvider);
   }
@@ -608,6 +604,9 @@ class DalMetaData {
   /// The last changed properties
   List<String> changedProperties = [];
 
+  /// The list of all created referenced cell editors.
+  List<ReferencedCellEditor> createdReferencedCellEditors = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -637,7 +636,13 @@ class DalMetaData {
     }
     if (pResponse.columns != null) {
       columnDefinitions = pResponse.columns!;
-      columnDefinitions.forEach((colDef) => IDataService().createReferencedCellEditors(colDef, dataProvider));
+      createdReferencedCellEditors.forEach((element) => element.dispose());
+      columnDefinitions.forEach((colDef) {
+        if (colDef.cellEditorModel is FlLinkedCellEditorModel) {
+          createdReferencedCellEditors.add(IDataService().createReferencedCellEditors(
+              colDef.cellEditorModel as FlLinkedCellEditorModel, dataProvider, colDef.name));
+        }
+      });
     }
     if (pResponse.primaryKeyColumns != null) {
       primaryKeyColumns = pResponse.primaryKeyColumns!;
@@ -688,4 +693,11 @@ class ReferencedCellEditor {
   String dataProvider;
 
   ReferencedCellEditor(this.cellEditorModel, this.columnName, this.dataProvider);
+
+  void dispose() {
+    DataBook? databook = IDataService().getDataBook(dataProvider);
+    if (databook != null) {
+      databook.referencedCellEditors.remove(this);
+    }
+  }
 }

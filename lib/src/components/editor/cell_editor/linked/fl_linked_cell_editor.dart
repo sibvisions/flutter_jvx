@@ -29,6 +29,7 @@ import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_edi
 import '../../../../model/component/editor/cell_editor/linked/link_reference.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/data/column_definition.dart';
+import '../../../../model/data/data_book.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../../../../service/command/i_command_service.dart';
 import '../../../../service/data/i_data_service.dart';
@@ -53,6 +54,8 @@ class FlLinkedCellEditor
   bool isOpen = false;
 
   FlLinkedEditorModel? lastWidgetModel;
+
+  ReferencedCellEditor? referencedCellEditor;
 
   @override
   bool get allowedInTable => false;
@@ -124,6 +127,7 @@ class FlLinkedCellEditor
   @override
   void dispose() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: dataProvider);
+    referencedCellEditor?.dispose();
     textController.dispose();
     super.dispose();
   }
@@ -147,7 +151,7 @@ class FlLinkedCellEditor
 
       String valueColumnName = linkReference.referencedColumnNames[colIndex];
 
-      Map<String, dynamic> valueKeyMap = {valueColumnName: pValue};
+      Map<String, dynamic> valueKeyMap = {valueColumnName: showValue.toString()};
       var valueKey = jsonEncode(valueKeyMap);
 
       showValue = linkReference.dataToDisplay[valueKey] ?? showValue;
@@ -247,6 +251,12 @@ class FlLinkedCellEditor
           onDataToDisplayMapChanged: _onDataToDisplayMapChanged,
         ),
       );
+
+      // Checks if the column of the metadata has a link reference
+      // If not, then we have to create the referenced cell editor ourselves
+      if (model.linkReference == correctLinkReference) {
+        referencedCellEditor = IDataService().createReferencedCellEditors(model, dataProvider, columnName);
+      }
 
       if (IDataService()
           .databookNeedsFetch(pDataProvider: model.linkReference.referencedDataprovider, pFrom: 0, pTo: -1)) {
