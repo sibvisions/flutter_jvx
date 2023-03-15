@@ -950,15 +950,19 @@ class UiService implements IUiService {
         ),
         barrierColor: JVxColors.LIGHTER_BLACK.withOpacity(0.75),
         topControl: Container(
-          height: 30,
+          height: 20,
           alignment: Alignment.bottomCenter,
           child: Container(
             height: 6,
             width: 40,
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6)),
+            decoration: BoxDecoration(color: Colors.white.withOpacity(0.5), borderRadius: BorderRadius.circular(6)),
           ),
         ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: const RoundedRectangleBorder(
+          side: BorderSide.none,
+          borderRadius: BorderRadius.only(topLeft: kDefaultBarTopRadius, topRight: kDefaultBarTopRadius),
+        ),
         enableDrag: true,
         expand: true,
         bounce: false,
