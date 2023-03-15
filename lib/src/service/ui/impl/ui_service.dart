@@ -958,6 +958,7 @@ class UiService implements IUiService {
             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6)),
           ),
         ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         enableDrag: true,
         expand: true,
         bounce: false,
