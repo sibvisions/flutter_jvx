@@ -19,6 +19,18 @@ part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 /// The model for [FlLabelWidget]
 class FlLabelModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const String NO_BOTTOM_PADDING_STYLE = "f_padding_bottom_0";
+
+  static const String HALF_BOTTOM_PADDING_STYLE = "f_padding_bottom_2";
+
+  static const String NO_TOP_PADDING_STYLE = "f_padding_top_0";
+
+  static const String HALF_TOP_PADDING_STYLE = "f_padding_top_2";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -47,9 +47,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     EdgeInsets textPadding = FlTextFieldWidget.TEXT_FIELD_PADDING(model.createTextStyle());
     EdgeInsets padding = EdgeInsets.fromLTRB(0, max(0, textPadding.top - 1), 0, max(0, textPadding.bottom - 1));
 
-    // if (model.styles.contains("f_no_bottom_padding")) {
-    //   padding = padding.copyWith(bottom: 0);
-    // }
+    padding = adjustPaddingWithStyles(padding);
 
     return GestureDetector(
       onTap: onPress,
@@ -90,5 +88,23 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
     }
 
     return textWidget;
+  }
+
+  EdgeInsets adjustPaddingWithStyles(EdgeInsets pPadding) {
+    EdgeInsets padding = pPadding;
+
+    if (model.styles.contains(FlLabelModel.NO_BOTTOM_PADDING_STYLE)) {
+      padding = padding.copyWith(bottom: 0);
+    } else if (model.styles.contains(FlLabelModel.HALF_TOP_PADDING_STYLE)) {
+      padding = padding.copyWith(bottom: padding.bottom / 2);
+    }
+
+    if (model.styles.contains(FlLabelModel.NO_TOP_PADDING_STYLE)) {
+      padding = padding.copyWith(top: 0);
+    } else if (model.styles.contains(FlLabelModel.HALF_TOP_PADDING_STYLE)) {
+      padding = padding.copyWith(top: padding.top / 2);
+    }
+
+    return padding;
   }
 }
