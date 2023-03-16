@@ -66,7 +66,7 @@ class JVxFont {
         fontName = fontValuesList[0];
       }
       if (fontValuesList[2].isNotEmpty && int.tryParse(fontValuesList[2]) != null) {
-        fontSize = int.parse(fontValuesList[1]);
+        fontSize = int.parse(fontValuesList[2]);
       }
       if (fontValuesList[1].isNotEmpty && int.tryParse(fontValuesList[1]) != null) {
         isBold = int.parse(fontValuesList[1]) & TEXT_BOLD == TEXT_BOLD;
