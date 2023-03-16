@@ -55,11 +55,10 @@ class MobileFrameState extends FrameState {
     List<Widget>? actions,
   }) {
     return AppBar(
-      leadingWidth: 40,
       leading: leading,
       title: title,
       centerTitle: false,
-      titleSpacing: titleSpacing ?? 5,
+      titleSpacing: titleSpacing ?? 0,
       actions: actions,
       backgroundColor: backgroundColor,
       elevation: 0,

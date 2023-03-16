@@ -304,8 +304,7 @@ class WorkScreenState extends State<WorkScreen> {
       },
       child: const Padding(
         padding: EdgeInsets.all(8.0),
-        child: Align(
-          alignment: Alignment.centerRight,
+        child: Center(
           child: FaIcon(
             FontAwesomeIcons.angleLeft,
           ),
