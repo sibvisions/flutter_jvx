@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'dart:developer' as dev;
 import 'dart:math' hide log;
 
 import 'package:flutter/foundation.dart';
@@ -161,8 +160,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     fillColor ??= themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.background;
 
     focusNode.canRequestFocus = model.isFocusable;
-
-    dev.log("");
 
     return TextField(
       controller: textController,
