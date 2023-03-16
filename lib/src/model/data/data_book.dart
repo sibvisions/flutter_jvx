@@ -607,6 +607,8 @@ class DalMetaData {
   /// The list of all created referenced cell editors.
   List<ReferencedCellEditor> createdReferencedCellEditors = [];
 
+  /// If the row 0 is an additional row (Not deletable)
+  bool additionalRowVisible = false;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -658,6 +660,9 @@ class DalMetaData {
     }
     if (pResponse.updateEnabled != null) {
       updateEnabled = pResponse.updateEnabled!;
+    }
+    if (pResponse.additionalRowVisible != null) {
+      additionalRowVisible = pResponse.additionalRowVisible!;
     }
     ParseUtil.applyJsonToJson(pResponse.json, json);
   }

@@ -241,7 +241,7 @@ abstract class ApiObjectProperty {
   static const String dataTypeIdentifier = "dataTypeIdentifier";
   static const String width = "width";
   static const String height = "height";
-  static const String readOnly = "readonly";
+  static const String readOnly = "readOnly";
   static const String nullable = "nullable";
   static const String resizable = "resizable";
   static const String closable = "closable";
@@ -275,6 +275,7 @@ abstract class ApiObjectProperty {
   static const String deleteEnabled = "deleteEnabled";
   static const String updateEnabled = "updateEnabled";
   static const String insertEnabled = "insertEnabled";
+  static const String additionalRowVisible = "additionalRowVisible";
   static const String filter = "filter";
   static const String fetch = "fetch";
   static const String onlySelected = "onlySelected";

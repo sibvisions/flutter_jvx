@@ -120,11 +120,13 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
     }
 
     return GestureDetector(
-      onLongPressStart: onLongPress != null
+      onLongPressStart: onLongPress != null && model.isEnabled
           ? (details) => onLongPress!(rowIndex, columnDefinition.name, dummyCellEditor, details)
           : null,
-      onTap: onTap != null ? () => onTap!(rowIndex, columnDefinition.name, dummyCellEditor) : null,
-      onDoubleTap: onDoubleTap != null ? () => onDoubleTap!(rowIndex, columnDefinition.name, dummyCellEditor) : null,
+      onTap: onTap != null && model.isEnabled ? () => onTap!(rowIndex, columnDefinition.name, dummyCellEditor) : null,
+      onDoubleTap: onDoubleTap != null && model.isEnabled
+          ? () => onDoubleTap!(rowIndex, columnDefinition.name, dummyCellEditor)
+          : null,
       child: Container(
         decoration: BoxDecoration(
           border: border,

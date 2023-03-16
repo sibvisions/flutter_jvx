@@ -36,7 +36,7 @@ class FlTableModel extends FlComponentModel {
   List<String> columnLabels = [];
 
   /// If the table should reduce every column to fit into the available space
-  bool autoResize = false;
+  bool autoResize = true;
 
   /// If the table as a whole should be editable.
   bool editable = true;
@@ -64,6 +64,9 @@ class FlTableModel extends FlComponentModel {
 
   /// Word wrap
   bool wordWrapEnabled = false;
+
+  /// If the table allowes deletions.
+  bool deleteEnabled = true;
 
   /// If the table hides the floating insert button.
   bool get showFloatButton => !styles.contains(NO_FLOATING_BUTTON_STYLE);
@@ -168,6 +171,13 @@ class FlTableModel extends FlComponentModel {
       pKey: ApiObjectProperty.wordWrapEnabled,
       pDefault: defaultModel.wordWrapEnabled,
       pCurrent: wordWrapEnabled,
+    );
+
+    deleteEnabled = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.deleteEnabled,
+      pDefault: defaultModel.deleteEnabled,
+      pCurrent: deleteEnabled,
     );
   }
 }

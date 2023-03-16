@@ -20,6 +20,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -38,7 +39,6 @@ import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_edit_dialog.dart';
-import 'fl_table_row.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
@@ -107,13 +107,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
 
   /// If deletion of a row is allowed.
-  bool get _isDeleteEnabled => (metaData.deleteEnabled) && !(metaData.readOnly);
+  bool get _metaDataDeleteEnabled => (metaData.deleteEnabled) && !(metaData.readOnly);
 
   /// If inserting a row is allowed.
-  bool get _isInsertEnabled => (metaData.insertEnabled) && !(metaData.readOnly);
+  bool get _metaDataInsertEnabled => (metaData.insertEnabled) && !(metaData.readOnly);
 
   /// If update a row is allowed.
-  bool get _isUpdateAllowed => (metaData.updateEnabled) && !(metaData.readOnly);
+  bool get _metaDataUpdateAllowed => (metaData.updateEnabled) && !(metaData.readOnly);
 
   /// The value notifier for a potential editing dialog.
   ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
@@ -178,12 +178,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onLongPress: _onLongPress,
       onTap: _onCellTap,
       onDoubleTap: _onCellDoubleTap,
-      onSlideAction: _onSlideAction,
-      slideActions: _slideActions(),
-      showFloatingButton: _isInsertEnabled &&
+      slideActionFactory: createSlideActions,
+      showFloatingButton: _metaDataInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
           ((layoutData.layoutPosition?.width ?? 0.0) >= 100) &&
-          model.showFloatButton,
+          model.showFloatButton &&
+          model.isEnabled,
       floatingOnPress: _insertRecord,
     );
 
@@ -412,7 +412,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pRow,
       pColumnName,
       pAfterSelect: () async {
-        if (_isUpdateAllowed && model.editable) {
+        if (_metaDataUpdateAllowed && model.editable) {
           int colIndex = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
           if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
@@ -463,8 +463,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       _selectRecord(pRowIndex, pColumnName, pAfterSelect: () async {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (!pCellEditor.allowedInTable &&
-              _isUpdateAllowed &&
-              model.editable &&
+              isRowEditable(pRowIndex) &&
               pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
             _showDialog(
               rowIndex: pRowIndex,
@@ -487,8 +486,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       _selectRecord(pRowIndex, pColumnName, pAfterSelect: () async {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (!pCellEditor.allowedInTable &&
-              _isUpdateAllowed &&
-              model.editable &&
+              isRowEditable(pRowIndex) &&
               pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
             _showDialog(
               rowIndex: pRowIndex,
@@ -507,12 +505,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, LongPressStartDetails pPressDetails) {
     List<PopupMenuEntry<TableContextMenuItem>> popupMenuEntries = <PopupMenuEntry<TableContextMenuItem>>[];
 
-    if (_isInsertEnabled) {
+    if (_metaDataInsertEnabled) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squarePlus, "New", TableContextMenuItem.INSERT));
     }
 
-    int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
-    if (_isDeleteEnabled && indexToDelete >= 0) {
+    if (isRowDeleteable(pRowIndex)) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squareMinus, "Delete", TableContextMenuItem.DELETE));
     }
 
@@ -520,7 +517,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", TableContextMenuItem.SORT));
     }
 
-    if (pRowIndex >= 0 && _isUpdateAllowed) {
+    if (isRowEditable(pRowIndex)) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
     }
 
@@ -839,7 +836,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       null,
       pAfterSelect: () async {
         if (IStorageService().isVisibleInUI(model.id)) {
-          if (_isUpdateAllowed && model.editable) {
+          if (_metaDataUpdateAllowed && model.editable) {
             _showDialog(
               rowIndex: pRowIndex,
               columnDefinitions: columnsToShow,
@@ -854,30 +851,41 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     );
   }
 
-  void _onSlideAction(int pRowIndex, TableRowSlideAction pAction) {
-    if (pAction == TableRowSlideAction.DELETE) {
-      BaseCommand? deleteCommand = _createDeleteCommand(pRowIndex);
-      if (deleteCommand != null) {
-        IUiService().sendCommand(deleteCommand);
-      }
-    } else if (pAction == TableRowSlideAction.EDIT) {
-      _editRow(pRowIndex);
+  List<SlidableAction> createSlideActions(int pRowIndex) {
+    List<SlidableAction> slideActions = [];
+
+    if (isRowEditable(pRowIndex)) {
+      slideActions.add(
+        SlidableAction(
+          onPressed: (context) {
+            _editRow(pRowIndex);
+          },
+          autoClose: true,
+          backgroundColor: Colors.green,
+          label: FlutterUI.translate("Edit"),
+          icon: FontAwesomeIcons.penToSquare,
+        ),
+      );
     }
-  }
 
-  Set<TableRowSlideAction> _slideActions() {
-    Set<TableRowSlideAction> actionSet = {};
-
-    if (model.editable && model.isEnabled) {
-      if (_isUpdateAllowed) {
-        actionSet.add(TableRowSlideAction.EDIT);
-      }
-
-      if (_isDeleteEnabled) {
-        actionSet.add(TableRowSlideAction.DELETE);
-      }
+    if (isRowDeleteable(pRowIndex)) {
+      slideActions.add(
+        SlidableAction(
+          onPressed: (context) {
+            BaseCommand? deleteCommand = _createDeleteCommand(pRowIndex);
+            if (deleteCommand != null) {
+              IUiService().sendCommand(deleteCommand);
+            }
+          },
+          autoClose: true,
+          backgroundColor: Colors.red,
+          label: FlutterUI.translate("Delete"),
+          icon: FontAwesomeIcons.trash,
+        ),
+      );
     }
-    return actionSet;
+
+    return slideActions;
   }
 
   void _showDialog({
@@ -935,6 +943,27 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       currentEditDialog = null;
       Navigator.pop(context);
     }
+  }
+
+  bool isDataRow(int pRowIndex) {
+    return pRowIndex >= 0 && pRowIndex < dataChunk.data.length;
+  }
+
+  bool isRowDeleteable(int pRowIndex) {
+    return model.isEnabled &&
+        isDataRow(pRowIndex) &&
+        model.deleteEnabled &&
+        (_metaDataDeleteEnabled || pRowIndex != selectedRow) &&
+        (!metaData.additionalRowVisible || pRowIndex != 0) &&
+        !metaData.readOnly;
+  }
+
+  bool isRowEditable(int pRowIndex) {
+    return model.isEnabled &&
+        model.editable &&
+        isDataRow(pRowIndex) &&
+        (_metaDataUpdateAllowed || pRowIndex != selectedRow) &&
+        !metaData.readOnly;
   }
 }
 

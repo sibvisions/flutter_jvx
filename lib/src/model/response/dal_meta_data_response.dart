@@ -60,6 +60,9 @@ class DalMetaDataResponse extends ApiResponse {
   /// The primary key columns of the dataBook
   List<String>? primaryKeyColumns;
 
+  /// If the row 0 is an additional row (Not deletable)
+  bool? additionalRowVisible;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,5 +87,6 @@ class DalMetaDataResponse extends ApiResponse {
         rootReference = json[ApiObjectProperty.rootReference] != null
             ? ReferenceDefinition.fromJson(json[ApiObjectProperty.rootReference])
             : null,
+        additionalRowVisible = json[ApiObjectProperty.additionalRowVisible],
         super.fromJson();
 }

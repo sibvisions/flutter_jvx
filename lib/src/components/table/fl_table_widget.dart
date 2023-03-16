@@ -36,7 +36,7 @@ typedef TableLongPressCallback = void Function(
     int rowIndex, String column, ICellEditor cellEditor, LongPressStartDetails details);
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
-typedef TableSlideActionCallback = void Function(int rowIndex, TableRowSlideAction action);
+typedef TableSlideActionFactory = List<SlidableAction> Function(int pRowIndex);
 
 class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// The scroll controller of the table.
@@ -71,9 +71,6 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// Gets called when the list should refresh
   final Future<void> Function()? onRefresh;
 
-  /// Gets called when a row should have all [TableRowSlideAction], only if the row not already scrollable.
-  final TableSlideActionCallback? onSlideAction;
-
   // Fields
 
   /// Contains all relevant table size information.
@@ -95,7 +92,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   final VoidCallback? floatingOnPress;
 
   /// Which slide actions are to be allowed to the row.
-  final Set<TableRowSlideAction>? slideActions;
+  final TableSlideActionFactory? slideActionFactory;
 
   /// The meta data of the table.
   final DalMetaData? metaData;
@@ -118,8 +115,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.onLongPress,
     this.onEndScroll,
     this.onRefresh,
-    this.onSlideAction,
-    this.slideActions,
+    this.slideActionFactory,
     this.itemScrollController,
     this.onEndEditing,
     this.onValueChanged,
@@ -196,7 +192,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
 
     Widget table = createTableList(canScrollHorizontally, maxWidth);
 
-    if (widget.onRefresh != null) {
+    if (widget.onRefresh != null && widget.model.isEnabled) {
       table = RefreshIndicator(
         onRefresh: widget.onRefresh!,
         child: table,
@@ -288,8 +284,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       onLongPress: widget.onLongPress,
       onTap: widget.onTap,
       onDoubleTap: widget.onDoubleTap,
-      onSlideAction: !canScrollHorizontally ? widget.onSlideAction : null,
-      slideActions: widget.slideActions,
+      slideActionFactory: !canScrollHorizontally ? widget.slideActionFactory : null,
       tableSize: widget.tableSize,
       values: widget.chunkData.data[index]!,
       recordFormats: widget.chunkData.recordFormats?[widget.model.name],

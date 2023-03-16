@@ -16,10 +16,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../components.dart';
-import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/response/dal_fetch_response.dart';
@@ -54,9 +52,6 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
 
-  /// Gets called when the row should have all [TableRowSlideAction].
-  final TableSlideActionCallback? onSlideAction;
-
   // Fields
 
   /// The colum definitions to build.
@@ -81,7 +76,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   final RecordFormat? recordFormats;
 
   /// Which slide actions are to be allowed to the row.
-  final Set<TableRowSlideAction>? slideActions;
+  final TableSlideActionFactory? slideActionFactory;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -94,8 +89,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
-    this.onSlideAction,
-    this.slideActions,
+    this.slideActionFactory,
     required this.columnDefinitions,
     required this.tableSize,
     required this.values,
@@ -148,8 +142,10 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
       opacity = 0.25;
     }
 
+    List<Widget> slideActions = slideActionFactory?.call(index) ?? [];
+
     double singleActionExtent = SLIDEABLE_WIDTH / rowWidth;
-    double slideableExtentRatio = singleActionExtent * (slideActions?.length ?? 0.0);
+    double slideableExtentRatio = singleActionExtent * slideActions.length;
     slideableExtentRatio = slideableExtentRatio.clamp(0.25, 0.9);
     return Theme(
       data: Theme.of(context).copyWith(
@@ -160,12 +156,12 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
       child: Slidable(
         closeOnScroll: true,
         direction: Axis.horizontal,
-        enabled: onSlideAction != null && slideActions?.isNotEmpty == true && model.editable && model.isEnabled,
-        groupTag: onSlideAction,
+        enabled: slideActionFactory != null && slideActions.isNotEmpty == true && model.isEnabled,
+        groupTag: slideActionFactory,
         endActionPane: ActionPane(
           extentRatio: slideableExtentRatio,
           motion: const ScrollMotion(),
-          children: slideActions?.map((e) => buildAction(e)).toList() ?? [],
+          children: slideActions,
         ),
         child: Container(
           height: tableSize.rowHeight,
@@ -179,31 +175,4 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
       ),
     );
   }
-
-  SlidableAction buildAction(TableRowSlideAction pAction) {
-    switch (pAction) {
-      case TableRowSlideAction.DELETE:
-        return SlidableAction(
-          onPressed: (context) {
-            onSlideAction?.call(index, TableRowSlideAction.DELETE);
-          },
-          autoClose: true,
-          backgroundColor: Colors.red,
-          label: FlutterUI.translate("Delete"),
-          icon: FontAwesomeIcons.trash,
-        );
-      case TableRowSlideAction.EDIT:
-        return SlidableAction(
-          onPressed: (context) {
-            onSlideAction?.call(index, TableRowSlideAction.EDIT);
-          },
-          autoClose: true,
-          backgroundColor: Colors.green,
-          label: FlutterUI.translate("Edit"),
-          icon: FontAwesomeIcons.penToSquare,
-        );
-    }
-  }
 }
-
-enum TableRowSlideAction { DELETE, EDIT }
