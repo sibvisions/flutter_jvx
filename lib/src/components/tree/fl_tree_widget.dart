@@ -47,7 +47,9 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
 
     Widget treeWidget = TreeView(
       theme: TreeViewTheme(
-        colorScheme: Theme.of(context).colorScheme,
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Theme.of(context).colorScheme.primary.withOpacity(0.25),
+            ),
       ),
       controller: controller,
       onNodeTap: onNodeTap,
