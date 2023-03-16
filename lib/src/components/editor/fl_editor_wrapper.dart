@@ -223,7 +223,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void setValue(DataRecord? pDataRecord) {
     var oldValue = _currentValue;
-    if (pDataRecord != null) {
+    if (pDataRecord != null && pDataRecord.values.isNotEmpty && pDataRecord.columnDefinitions.isNotEmpty) {
       _currentValue = pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)];
     } else {
       _currentValue = null;
