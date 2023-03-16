@@ -19,6 +19,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
+import '../../service/config/config_controller.dart';
 import '../../util/parse_util.dart';
 import 'app_image.dart';
 import 'app_overview_page.dart';
@@ -105,7 +106,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                               child: SizedBox(
                                 height: 100,
                                 child: AppImage(
-                                  name: widget.config?.effectiveTitle,
+                                  name: effectiveEditIconName,
                                   image: AppOverviewPage.getAppIcon(widget.config),
                                 ),
                               ),
@@ -335,6 +336,16 @@ class _AppEditDialogState extends State<AppEditDialog> {
       }
     } else {
       await AppOverviewPage.showRequiredFieldsDialog(context);
+    }
+  }
+
+  String get effectiveEditIconName {
+    if (titleController.text.isNotEmpty) {
+      return titleController.text;
+    } else {
+      return widget.config?.title ??
+          ConfigController().getAppStyle(appNameController.text)?["login.title"] ??
+          appNameController.text;
     }
   }
 }
