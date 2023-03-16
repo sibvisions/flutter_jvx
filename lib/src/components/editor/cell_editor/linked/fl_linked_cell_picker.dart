@@ -228,6 +228,14 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   void _receiveData(DataChunk pChunkData) {
     _chunkData = pChunkData;
 
+    _createTableColumnView();
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _createTableColumnView() {
     tableModel.columnNames.clear();
     tableModel.columnLabels.clear();
     for (ColumnDefinition colDef
@@ -235,14 +243,12 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       tableModel.columnNames.add(colDef.name);
       tableModel.columnLabels.add(colDef.label);
     }
-
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   void _receiveMetaData(DalMetaData pMetaData) {
     _metaData = pMetaData;
+
+    _createTableColumnView();
 
     if (mounted) {
       setState(() {});
@@ -405,6 +411,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       return [model.displayReferencedColumnName!];
     } else if ((model.columnView?.columnCount ?? 0) >= 1) {
       return model.columnView!.columnNames;
+    } else if (_metaData?.columnViewTable.isNotEmpty == true) {
+      return _metaData!.columnViewTable;
     } else {
       return model.linkReference.referencedColumnNames;
     }
