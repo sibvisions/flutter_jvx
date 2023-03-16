@@ -119,8 +119,11 @@ class _SettingsPageState extends State<SettingsPage> {
       onWillPop: () async => !loading,
       child: Scaffold(
         appBar: AppBar(
+          leadingWidth: 40,
+          titleSpacing: 5,
           leading: context.canBeamBack
               ? IconButton(
+                  alignment: Alignment.centerRight,
                   icon: const FaIcon(FontAwesomeIcons.angleLeft),
                   onPressed: context.beamBack,
                 )

@@ -294,6 +294,7 @@ class WorkScreenState extends State<WorkScreen> {
 
   InkWell _buildLeading() {
     return InkWell(
+      splashFactory: NoSplash.splashFactory,
       customBorder: const CircleBorder(),
       onTap: () {
         _onBack();
@@ -301,7 +302,15 @@ class WorkScreenState extends State<WorkScreen> {
       onDoubleTap: () {
         _onBack(true);
       },
-      child: const Center(child: FaIcon(FontAwesomeIcons.angleLeft)),
+      child: const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: FaIcon(
+            FontAwesomeIcons.angleLeft,
+          ),
+        ),
+      ),
     );
   }
 

@@ -177,6 +177,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                           icon: const FaIcon(FontAwesomeIcons.circleXmark))
                       : (FlutterUI.of(context).startedManually
                           ? IconButton(
+                              alignment: Alignment.centerRight,
                               splashRadius: kToolbarHeight / 2,
                               icon: const FaIcon(FontAwesomeIcons.angleLeft),
                               onPressed: () => IUiService().routeToAppOverview(),
