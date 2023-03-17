@@ -59,7 +59,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// If data book has insert enabled
   final bool? insertEnabled;
 
-  /// The tree path, TODO implement treePath
+  /// The tree path
   final List<int>? treePath;
 
   /// The selected column

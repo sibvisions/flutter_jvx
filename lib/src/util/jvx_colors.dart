@@ -64,7 +64,6 @@ abstract class JVxColors {
     bool isBackgroundLight = ThemeData.estimateBrightnessForColor(colorScheme.background) == Brightness.light;
     themeData = themeData.copyWith(
       listTileTheme: themeData.listTileTheme.copyWith(
-        // TODO Remove workaround after https://github.com/flutter/flutter/issues/112811
         textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         // textColor: themeData.colorScheme.onBackground,

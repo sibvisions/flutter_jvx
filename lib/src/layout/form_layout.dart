@@ -94,7 +94,6 @@ class FormLayout extends ILayout {
     // Component constraints
 
     HashMap<String, FormLayoutConstraints> componentConstraints;
-    // TODO: Stop layout from using new and old data at the same time, Maybe introduce a data date, to check if
     // The layout call started before or after a specific set of data has been changed.
     try {
       componentConstraints = _getComponentConstraints(pChildren, anchors);
