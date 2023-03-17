@@ -32,6 +32,7 @@ class AppItem extends StatelessWidget {
     this.isDefault = false,
     this.predefined = false,
     this.locked = false,
+    this.hidden = false,
   });
 
   final String appTitle;
@@ -43,6 +44,7 @@ class AppItem extends StatelessWidget {
   final bool isDefault;
   final bool predefined;
   final bool locked;
+  final bool hidden;
 
   bool get isEnabled => onTap != null && enabled;
 
@@ -126,12 +128,12 @@ class AppItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (locked)
+                if (locked || hidden)
                   Positioned(
                     top: 10,
                     left: 10,
                     child: Icon(
-                      Icons.lock,
+                      hidden ? Icons.visibility_off : Icons.lock,
                       size: 18,
                       color: Theme.of(context).colorScheme.error,
                     ),

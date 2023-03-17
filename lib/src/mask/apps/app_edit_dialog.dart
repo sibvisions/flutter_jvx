@@ -16,10 +16,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../service/config/config_controller.dart';
+import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import 'app_image.dart';
 import 'app_overview_page.dart';
@@ -90,18 +93,18 @@ class _AppEditDialogState extends State<AppEditDialog> {
           child: ConstrainedBox(
             constraints: const BoxConstraints.tightFor(width: double.maxFinite),
             child: LayoutBuilder(builder: (context, constraints) {
-              bool appNameEnabled = !widget.locked && widget.config == null;
               var isThemeLight = parentTheme.brightness == Brightness.light;
+              bool showAppAvatar = constraints.maxHeight >= 450;
 
               return SingleChildScrollView(
                 child: Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.fromLTRB(16, showAppAvatar ? 16 : 30, 16, 16),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          if (constraints.maxHeight > 450)
+                          if (showAppAvatar)
                             Center(
                               child: SizedBox(
                                 height: 100,
@@ -123,25 +126,28 @@ class _AppEditDialogState extends State<AppEditDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Material(
                               type: MaterialType.card,
-                              color: appNameEnabled
+                              color: appNameEditable
                                   ? null
                                   : (isThemeLight ? disabledLightColor : parentTheme.disabledColor),
                               borderRadius: BorderRadius.circular(20),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: TextField(
-                                  enabled: appNameEnabled,
+                                  autofocus: true,
+                                  readOnly: !appNameEditable,
                                   controller: appNameController,
                                   textInputAction: TextInputAction.next,
                                   onChanged: (_) => setState(() {}),
                                   decoration: InputDecoration(
+                                    errorText:
+                                        appAlreadyExists ? FlutterUI.translate("This appname already exists!") : null,
                                     icon: FaIcon(
                                       FontAwesomeIcons.cubes,
-                                      color: appNameEnabled ? null : parentTheme.disabledColor,
+                                      color: appNameEditable ? null : parentTheme.disabledColor,
                                     ),
                                     labelText: "${FlutterUI.translate("App Name")}*",
                                     border: InputBorder.none,
-                                    suffixIcon: appNameEnabled && appNameController.text.isNotEmpty
+                                    suffixIcon: appNameEditable && appNameController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
                                               icon: const Icon(Icons.clear),
@@ -236,13 +242,60 @@ class _AppEditDialogState extends State<AppEditDialog> {
                     ),
                     if (widget.locked)
                       Positioned(
-                        top: 16,
-                        left: 16,
-                        child: Icon(
-                          Icons.lock,
-                          color: parentTheme.colorScheme.error,
+                        top: 0,
+                        left: 20,
+                        child: Container(
+                          width: 60,
+                          height: 40,
+                          alignment: Alignment.centerRight,
+                          decoration: BoxDecoration(
+                            color: parentTheme.canvasColor,
+                            borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(10),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Icon(
+                              Icons.lock,
+                              size: 24,
+                              color: parentTheme.colorScheme.error,
+                            ),
+                          ),
                         ),
                       ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: Material(
+                        elevation: 1,
+                        clipBehavior: Clip.hardEdge,
+                        color: parentTheme.canvasColor,
+                        borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(10),
+                        ),
+                        child: Tooltip(
+                          message: qrCodeError,
+                          triggerMode: qrCodeError.isNotEmpty ? TooltipTriggerMode.tap : TooltipTriggerMode.longPress,
+                          child: InkWell(
+                            onTap: qrCodeError.isEmpty ? _showQrCodeDialog : null,
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Icon(
+                                  Icons.qr_code,
+                                  size: 24,
+                                  color: qrCodeError.isEmpty ? null : JVxColors.COMPONENT_DISABLED,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     if (widget.predefined)
                       Positioned(
                         top: 0,
@@ -260,7 +313,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
           ),
         ),
       ),
-      actionsPadding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+      actionsPadding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
       actionsAlignment: !widget.locked ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
       actions: !widget.locked
           ? [
@@ -274,7 +327,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                 child: Text(FlutterUI.translate("Cancel")),
               ),
               TextButton(
-                onPressed: _onSubmit,
+                onPressed: appAlreadyExists ? null : _onSubmit,
                 child: Text(FlutterUI.translate("OK")),
               ),
             ]
@@ -339,6 +392,13 @@ class _AppEditDialogState extends State<AppEditDialog> {
     }
   }
 
+  bool get appNameEditable => widget.config == null;
+
+  bool get appAlreadyExists =>
+      appNameEditable &&
+      appNameController.text.isNotEmpty &&
+      ConfigController().getAppNames().contains(appNameController.text);
+
   String get effectiveEditIconName {
     if (titleController.text.isNotEmpty) {
       return titleController.text;
@@ -347,5 +407,60 @@ class _AppEditDialogState extends State<AppEditDialog> {
           ConfigController().getAppStyle(appNameController.text)?["login.title"] ??
           appNameController.text;
     }
+  }
+
+  String get qrCodeError {
+    String appName = appNameController.text;
+    String baseUrl = baseUrlController.text;
+    // if (isNew) {
+    //   return FlutterUI.translate("You need to save the app first");
+    // } else
+    if (appName.isEmpty) {
+      return FlutterUI.translate("You need to enter an app name");
+    } else if (baseUrl.isEmpty) {
+      return FlutterUI.translate("You need to enter a base URL");
+    }
+
+    return "";
+  }
+
+  void _showQrCodeDialog() {
+    String appName = appNameController.text;
+    String title = titleController.text;
+    String baseUrl = baseUrlController.text;
+    String? icon = widget.config?.icon;
+    var uri = Uri.parse(baseUrl);
+    uri = ParseUtil.appendJVxUrlSuffix(uri);
+
+    showDialog(
+      context: context,
+      useSafeArea: true,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(16),
+          alignment: Alignment.center,
+          child: ConstrainedBox(
+            constraints: BoxConstraints.loose(const Size.square(300)),
+            child: QrImage(
+              data: QRConfig.generateQrCode(
+                ServerConfig(
+                  appName: appName,
+                  title: title,
+                  baseUrl: uri,
+                  username: widget.config?.username,
+                  password: widget.config?.password,
+                  isDefault: defaultChecked,
+                  icon: icon,
+                ),
+              ),
+              gapless: false,
+              backgroundColor: Theme.of(context).canvasColor,
+              version: QrVersions.auto,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

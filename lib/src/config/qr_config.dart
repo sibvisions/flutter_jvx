@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:convert';
+
 import '../util/parse_util.dart';
 import 'server_config.dart';
 
@@ -70,6 +72,16 @@ class QRConfig {
       icon: ParseUtil.ensureNullOnEmpty(json[ICON]),
       isDefault: json[IS_DEFAULT],
     );
+  }
+
+  static String generateQrCode(ServerConfig serverConfig) {
+    return jsonEncode({
+      APP_NAME: serverConfig.appName,
+      URL: serverConfig.baseUrl?.toString(),
+      if (serverConfig.title != null) TITLE: serverConfig.title,
+      if (serverConfig.icon != null) ICON: serverConfig.icon,
+      if (serverConfig.isDefault != null) IS_DEFAULT: serverConfig.isDefault,
+    });
   }
 
   QRConfig merge(QRConfig? other) {

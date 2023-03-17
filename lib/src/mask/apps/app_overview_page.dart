@@ -349,6 +349,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         image: AppOverviewPage.getAppIcon(app),
                         isDefault: app.isDefault ?? false,
                         locked: AppOverviewPage.isAppLocked(isPredefined, app),
+                        hidden: AppOverviewPage.isAppHidden(isPredefined, app),
                         predefined: isPredefined,
                         onTap: app.isStartable
                             ? () {
