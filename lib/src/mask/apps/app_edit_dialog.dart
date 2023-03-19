@@ -140,12 +140,12 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                   onChanged: (_) => setState(() {}),
                                   decoration: InputDecoration(
                                     errorText:
-                                        appAlreadyExists ? FlutterUI.translate("This appname already exists!") : null,
+                                        appAlreadyExists ? FlutterUI.translate("The app name already exists!") : null,
                                     icon: FaIcon(
                                       FontAwesomeIcons.cubes,
                                       color: appNameEditable ? null : parentTheme.disabledColor,
                                     ),
-                                    labelText: "${FlutterUI.translate("App Name")}*",
+                                    labelText: "${FlutterUI.translate("App name")} *",
                                     border: InputBorder.none,
                                     suffixIcon: appNameEditable && appNameController.text.isNotEmpty
                                         ? ExcludeFocus(
@@ -221,7 +221,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                       FontAwesomeIcons.globe,
                                       color: !widget.locked ? null : parentTheme.disabledColor,
                                     ),
-                                    labelText: "${FlutterUI.translate("URL")}*",
+                                    labelText: "${FlutterUI.translate("URL")} *",
                                     border: InputBorder.none,
                                     hintText: "http://host:port/services/mobile",
                                     suffixIcon: !widget.locked && baseUrlController.text.isNotEmpty
@@ -418,7 +418,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
     if (appName.isEmpty) {
       return FlutterUI.translate("You need to enter an app name");
     } else if (baseUrl.isEmpty) {
-      return FlutterUI.translate("You need to enter a base URL");
+      return FlutterUI.translate("You need to enter an URL");
     }
 
     return "";

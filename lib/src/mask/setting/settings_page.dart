@@ -242,7 +242,7 @@ class _SettingsPageState extends State<SettingsPage> {
         enabled: false,
         frontIcon: const FaIcon(FontAwesomeIcons.cubes),
         value: appName ?? "",
-        title: FlutterUI.translate("App Name"),
+        title: FlutterUI.translate("App name"),
       );
     }
 

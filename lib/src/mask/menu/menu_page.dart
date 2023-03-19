@@ -264,11 +264,11 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   children: [
                     TextButton(
                       style: TextButton.styleFrom(foregroundColor: Colors.red),
-                      child: Text(FlutterUI.translate("Discard Changes")),
+                      child: Text(FlutterUI.translate("Discard changes")),
                       onPressed: () async {
                         SyncDialogResult? result = await IUiService().openDialog(
                           pBuilder: (subContext) => AlertDialog(
-                            title: Text(FlutterUI.translate("Discard Offline Changes")),
+                            title: Text(FlutterUI.translate("Discard offline changes")),
                             content: Text(FlutterUI.translate(
                                 "Are you sure you want to discard all the changes you made in offline mode?")),
                             actions: [

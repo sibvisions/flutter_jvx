@@ -112,7 +112,7 @@ class AppOverviewPage extends StatefulWidget {
       context: context,
       pBuilder: (context) => AlertDialog(
         title: Text(FlutterUI.translate("Missing required fields")),
-        content: Text(FlutterUI.translate("You have to provide an app name and a base url to add an app.")),
+        content: Text(FlutterUI.translate("You have to provide an app name and URL to add an app.")),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -447,7 +447,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         value: 0,
                         child: ListTile(
                           leading: const Icon(Icons.add),
-                          title: Text(FlutterUI.translate("Add App")),
+                          title: Text(FlutterUI.translate("Add app")),
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
@@ -456,7 +456,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         value: 1,
                         child: ListTile(
                           leading: const Icon(Icons.delete),
-                          title: Text(FlutterUI.translate("Clear Apps")),
+                          title: Text(FlutterUI.translate("Remove apps")),
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
@@ -545,7 +545,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         context: context,
         pBuilder: (context) => AlertDialog(
           title: Text(FlutterUI.translate("Duplicated app name")),
-          content: Text(FlutterUI.translate("You cannot use the same app name as an already existing app.")),
+          content: Text(FlutterUI.translate("You cannot use an app name that is already used.")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -567,7 +567,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         return AlertDialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
           title: Text(
-            FlutterUI.translate("Add App"),
+            FlutterUI.translate("Add app"),
             textAlign: TextAlign.center,
           ),
           // contentPadding: const EdgeInsets.all(16.0),
@@ -622,7 +622,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       builder: (context) {
         return AlertDialog(
           title: Text(FlutterUI.translate("Remove all apps")),
-          content: Text(FlutterUI.translate("Are you sure you want to remove all saved apps?")),
+          content: Text(FlutterUI.translate("Are you sure you want to remove all apps?")),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -649,7 +649,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       builder: (context) {
         return AlertDialog(
           title: Text(FlutterUI.translate("Start not allowed")),
-          content: Text(FlutterUI.translate("Your current application is configured to not allow custom apps.")),
+          content: Text(FlutterUI.translate("Your current application was configured without support for custom apps.")),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
