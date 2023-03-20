@@ -18,6 +18,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/component/fl_component_model.dart';
+import '../../../util/jvx_colors.dart';
 import '../fl_panel_widget.dart';
 
 class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
@@ -46,13 +47,13 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
 
   @override
   Widget build(BuildContext context) {
+    Widget panelWidget;
     if (isScrollable) {
       Widget child = Stack(
         children: [
           IgnorePointer(
             ignoring: true,
-            child: Container(
-              color: model.background,
+            child: SizedBox(
               width: (width),
               height: (height),
             ),
@@ -62,7 +63,7 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
       );
 
       if (kIsWeb) {
-        return Scrollbar(
+        panelWidget = Scrollbar(
           thumbVisibility: true,
           controller: horizontalScrollController,
           child: Scrollbar(
@@ -83,15 +84,27 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
           ),
         );
       } else {
-        return InteractiveViewer(
+        panelWidget = InteractiveViewer(
           constrained: false,
           child: child,
         );
       }
     } else {
-      return Stack(
+      panelWidget = Stack(
         children: children,
       );
     }
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: model.hasStandardBorder
+            ? Border.all(
+                color: JVxColors.COMPONENT_DISABLED_LIGHTER,
+              )
+            : null,
+        color: model.background,
+      ),
+      child: panelWidget,
+    );
   }
 }

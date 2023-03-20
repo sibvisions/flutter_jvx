@@ -17,6 +17,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../model/component/fl_component_model.dart';
+import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
@@ -33,7 +34,14 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
     return Stack(
       children: [
         Container(
-          color: model.background,
+          decoration: BoxDecoration(
+            border: model.hasStandardBorder
+                ? Border.all(
+                    color: JVxColors.COMPONENT_DISABLED_LIGHTER,
+                  )
+                : null,
+            color: model.background,
+          ),
         ),
         ...children
       ],

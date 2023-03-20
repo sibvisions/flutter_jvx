@@ -19,6 +19,13 @@ part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 /// The model for [FlPanelWidget]
 class FlPanelModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// If a panel should have a default 1px border with [JVxColors.COMPONENT_DISABLED_LIGHTER] color.
+  static const String STANDARD_BORDER_STYLE = "f_standard_border";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -129,4 +136,10 @@ class FlPanelModel extends FlComponentModel {
       pCurrent: contentClassName,
     );
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  bool get hasStandardBorder => styles.contains(STANDARD_BORDER_STYLE);
 }
