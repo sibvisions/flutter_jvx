@@ -151,16 +151,12 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
             const SizedBox(height: 12),
             FlTextFieldWidget(
               key: widget.key,
-              model: FlTextFieldModel(),
+              model: FlTextFieldModel()..placeholder = FlutterUI.translate("Search"),
               textController: _controller,
               keyboardType: TextInputType.text,
               valueChanged: _startTimerValueChanged,
               endEditing: _startTimerValueChanged,
               focusNode: focusNode,
-              inputDecoration: InputDecoration(
-                labelText: FlutterUI.translate("Search"),
-                labelStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
-              ),
             ),
             const SizedBox(height: 8),
             Expanded(
