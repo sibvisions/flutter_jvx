@@ -130,12 +130,16 @@ class AppItem extends StatelessWidget {
                 ),
                 if (locked || hidden)
                   Positioned(
-                    top: 10,
-                    left: 10,
-                    child: Icon(
-                      hidden ? Icons.visibility_off : Icons.lock,
-                      size: 18,
-                      color: Theme.of(context).colorScheme.error,
+                    top: 4,
+                    left: 4,
+                    child: CircleAvatar(
+                      backgroundColor: Theme.of(context).cardColor.withOpacity(0.75),
+                      radius: 12,
+                      child: Icon(
+                        hidden ? Icons.visibility_off : Icons.lock,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
                   ),
                 if (predefined)
