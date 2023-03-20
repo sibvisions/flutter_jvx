@@ -37,7 +37,7 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
           decoration: BoxDecoration(
             border: model.hasStandardBorder
                 ? Border.all(
-                    color: JVxColors.COMPONENT_DISABLED_LIGHTER,
+                    color: JVxColors.STANDARD_BORDER,
                   )
                 : null,
             color: model.background,
