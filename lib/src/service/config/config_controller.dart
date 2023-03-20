@@ -152,7 +152,7 @@ class ConfigController {
     if (devConfig && _appConfig?.serverConfigs != null) {
       await Future.forEach<ServerConfig>(
         _appConfig!.serverConfigs!.where((e) => e.appName != null),
-        (e) => removeApp(e.appName!),
+        (e) => removeApp(e.appName!, forced: true),
       );
       // If there is a dev config, only a app set in the dev config is allowed to be the default
       await updateDefaultApp(
@@ -335,9 +335,12 @@ class ConfigController {
   }
 
   /// Removes all preferences of this app.
-  Future<void> removeApp(String appName) async {
+  Future<void> removeApp(String appName, {bool forced = false}) async {
     ServerConfig? localConfig = getPredefinedApp(appName);
-    assert(!(localConfig?.locked ?? false));
+    assert(() {
+      if (forced) return true;
+      return !(localConfig?.locked ?? false);
+    }());
 
     return _configService.removeApp(appName);
   }
