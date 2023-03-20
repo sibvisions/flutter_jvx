@@ -14,7 +14,9 @@
  * the License.
  */
 
+import '../model/component/fl_component_model.dart';
 import '../model/layout/layout_data.dart';
+import '../service/config/config_controller.dart';
 import '../util/i_clonable.dart';
 import 'border_layout.dart';
 import 'flow_layout.dart';
@@ -42,19 +44,21 @@ abstract class ILayout implements ICloneable {
   /// Current implementations are:
   ///
   /// [BorderLayout] , [FormLayout], [FlowLayout], [GridLayout]
-  static ILayout? getLayout(String? pLayout, String? pLayoutData, double pScaling) {
-    if (pLayout != null) {
-      final list = pLayout.split(",");
+  static ILayout? getLayout(FlPanelModel pModel) {
+    if (pModel.layout != null) {
+      final list = pModel.layout!.split(",");
+
+      double scaling = pModel.scalingDisabled ? 1 : ConfigController().getScaling();
 
       switch (list.first) {
         case "BorderLayout":
-          return BorderLayout(layoutString: pLayout, scaling: pScaling);
+          return BorderLayout(layoutString: pModel.layout!, scaling: scaling);
         case "FormLayout":
-          return FormLayout(layoutData: pLayoutData!, layoutString: pLayout, scaling: pScaling);
+          return FormLayout(layoutData: pModel.layoutData!, layoutString: pModel.layout!, scaling: scaling);
         case "GridLayout":
-          return GridLayout(layoutString: pLayout, scaling: pScaling);
+          return GridLayout(layoutString: pModel.layout!, scaling: scaling);
         case "FlowLayout":
-          return FlowLayout(layoutString: pLayout, scaling: pScaling);
+          return FlowLayout(layoutString: pModel.layout!, scaling: scaling);
         case "SplitLayout":
           return SplitLayout();
         default:

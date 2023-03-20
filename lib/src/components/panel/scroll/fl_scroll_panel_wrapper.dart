@@ -21,7 +21,6 @@ import 'package:flutter/widgets.dart';
 import '../../../layout/i_layout.dart';
 import '../../../layout/scroll_layout.dart';
 import '../../../model/component/fl_component_model.dart';
-import '../../../service/config/config_controller.dart';
 import '../../../service/storage/i_storage_service.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
@@ -45,7 +44,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   void initState() {
     super.initState();
 
-    ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData, ConfigController().getScaling())!;
+    ILayout originalLayout = ILayout.getLayout(model)!;
     layoutData.layout = ScrollLayout(originalLayout);
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
@@ -56,7 +55,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
   @override
   modelUpdated() {
-    ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData, ConfigController().getScaling())!;
+    ILayout originalLayout = ILayout.getLayout(model)!;
     layoutData.layout = ScrollLayout(originalLayout);
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();

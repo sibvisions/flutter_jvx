@@ -60,6 +60,13 @@ part 'tree/fl_tree_model.dart';
 /// The base component model.
 abstract class FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// If the component has disabled the mobile scaling
+  static const String NO_SCALING_STYLE = "f_no_scaling";
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -442,13 +449,13 @@ abstract class FlComponentModel {
 
   /// Parses a [Size] object from a string, will only parse correctly if provided string was formatted :
   /// "x,y" - e.g. "200,400" -> Size(200,400), if provided String was null, returned size will also be null
-  static Size _parseSize(dynamic pSize) {
+  Size _parseSize(dynamic pSize) {
     List<String> split = pSize.split(",");
 
     double width = double.parse(split[0]);
     double height = double.parse(split[1]);
 
-    return Size(width, height) * ConfigController().getScaling();
+    return Size(width, height) * (scalingDisabled ? 1 : ConfigController().getScaling());
   }
 
   void applyCellFormat(CellFormat cellFormat) {
@@ -456,4 +463,6 @@ abstract class FlComponentModel {
     foreground = cellFormat.foreground ?? foreground;
     font = cellFormat.font ?? font;
   }
+
+  bool get scalingDisabled => styles.contains(NO_SCALING_STYLE);
 }
