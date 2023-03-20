@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 
 import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
@@ -432,6 +433,10 @@ class _AppEditDialogState extends State<AppEditDialog> {
     var uri = Uri.parse(baseUrl);
     uri = ParseUtil.appendJVxUrlSuffix(uri);
 
+    try {
+      ScreenBrightness().setScreenBrightness(1.0);
+    } catch (_) {}
+
     showDialog(
       context: context,
       useSafeArea: true,
@@ -461,6 +466,10 @@ class _AppEditDialogState extends State<AppEditDialog> {
           ),
         );
       },
-    );
+    ).whenComplete(() {
+      try {
+        ScreenBrightness().resetScreenBrightness();
+      } catch (_) {}
+    });
   }
 }
