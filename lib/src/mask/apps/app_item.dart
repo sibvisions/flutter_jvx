@@ -75,7 +75,7 @@ class AppItem extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(24.0),
                         child: Center(
                           child: AppImage(
                             name: appTitle,
@@ -130,8 +130,8 @@ class AppItem extends StatelessWidget {
                 ),
                 if (locked || hidden)
                   Positioned(
-                    top: 10,
-                    left: 10,
+                    top: 6,
+                    left: 6,
                     child: Icon(
                       hidden ? Icons.visibility_off : Icons.lock,
                       size: 18,
