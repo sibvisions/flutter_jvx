@@ -22,6 +22,8 @@ class FlButtonModel extends FlComponentModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static const String NO_MIN_SIZE = "f_no_min_size";
+
   static const String SLIDE_STYLE = "f_slide";
 
   static const String TEXT_STYLE = "f_text";
@@ -107,6 +109,9 @@ class FlButtonModel extends FlComponentModel {
   /// Whether the button invokes [HapticFeedback.vibrate] on press.
   bool get isHaptic => styles.contains(HAPTIC);
 
+  /// If the button has no flutter default minimum size.
+  bool get isNoMinSize => styles.contains(NO_MIN_SIZE);
+
   @override
   Size? get minimumSize {
     if (_minimumSize != null) {
@@ -119,6 +124,10 @@ class FlButtonModel extends FlComponentModel {
         height = 32;
       }
       return Size(130, height);
+    }
+
+    if (isNoMinSize) {
+      return null;
     }
 
     if (Frame.isWebFrame()) {
