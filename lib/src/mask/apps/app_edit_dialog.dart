@@ -455,7 +455,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                 ),
               ),
               gapless: false,
-              backgroundColor: Theme.of(context).canvasColor,
+              backgroundColor: Colors.white,
               version: QrVersions.auto,
             ),
           ),
