@@ -88,27 +88,14 @@ class FlowLayout extends ILayout {
     /** Sorts the Childcomponent based on indexOf property */
     pChildren.sort((a, b) => a.indexOf! - b.indexOf!);
 
-    double dimWidth = 0;
-    double dimHeight = 0;
-
-    Size calculatedSize = calcSize(pParent, pChildren);
-    pParent.calculatedSize = calculatedSize;
-
-    if (pParent.hasPosition) {
-      if (pParent.layoutPosition!.isComponentSize) {
-        dimWidth = pParent.layoutPosition!.width;
-        dimHeight = pParent.layoutPosition!.height;
-      } else {
-        dimWidth = max(calculatedSize.width, pParent.layoutPosition!.width);
-        dimHeight = max(calculatedSize.height, pParent.layoutPosition!.height);
-      }
-    } else {
-      dimWidth = calculatedSize.width;
-      dimHeight = calculatedSize.height;
-    }
+    double dimWidth = pParent.layoutPosition?.width ?? 0;
+    double dimHeight = pParent.layoutPosition?.height ?? 0;
 
     dimWidth -= pParent.insets.left + pParent.insets.right + margins.marginLeft + margins.marginRight;
     dimHeight -= pParent.insets.top + pParent.insets.bottom + margins.marginTop + margins.marginBottom;
+
+    dimHeight = max(0, dimHeight);
+    dimWidth = max(0, dimWidth);
 
     Size dimSize = Size(dimWidth, dimHeight);
 
@@ -160,66 +147,66 @@ class FlowLayout extends ILayout {
     bool bFirst = true;
 
     for (LayoutData child in pChildren) {
-      if (child.needsRelayout) {
-        Size size = child.bestSize;
+      Size size = child.bestSize;
 
-        if (isRowOrientationHorizontal) {
-          if (!bFirst && autoWrap && dimSize.width > 0 && x + size.width > dimSize.width) {
-            x = 0;
-            y += (flowLayoutInfo.gridHeight + gaps.verticalGap) * fH / fPH;
-          } else if (bFirst) {
-            bFirst = false;
-          }
-
-          if (VerticalAlignment.values[innerAlignment] == VerticalAlignment.STRETCH) {
-            child.layoutPosition = LayoutPosition(
-                left: iLeft + x * fW / fPW,
-                top: iTop + y,
-                width: size.width * fW / fPW,
-                height: flowLayoutInfo.gridHeight * fH / fPH,
-                isComponentSize: true);
-          } else {
-            child.layoutPosition = LayoutPosition(
-                left: iLeft + x * fW / fPW,
-                top: iTop +
-                    y +
-                    ((flowLayoutInfo.gridHeight - size.height) * _getAlignmentFactor(innerAlignment)) * fH / fPH,
-                width: size.width * fW / fPW,
-                height: size.height * fH / fPH,
-                isComponentSize: true);
-          }
-
-          x += size.width + gaps.horizontalGap;
-        } else {
-          if (!bFirst && autoWrap && dimSize.height > 0 && y + size.height > dimSize.height) {
-            y = 0;
-            x += (flowLayoutInfo.gridWidth + gaps.horizontalGap) * fW / fPW;
-          } else if (bFirst) {
-            bFirst = false;
-          }
-
-          if (HorizontalAlignment.values[innerAlignment] == HorizontalAlignment.STRETCH) {
-            child.layoutPosition = LayoutPosition(
-                left: iLeft + x,
-                top: iTop + y * fH / fPH,
-                width: flowLayoutInfo.gridWidth * fW / fPW,
-                height: size.height * fH / fPH,
-                isComponentSize: true);
-          } else {
-            child.layoutPosition = LayoutPosition(
-                left: iLeft +
-                    x +
-                    ((flowLayoutInfo.gridWidth - size.width) * _getAlignmentFactor(innerAlignment)) * fW / fPW,
-                top: iTop + y * fH / fPH,
-                width: size.width * fW / fPW,
-                height: size.height * fH / fPH,
-                isComponentSize: true);
-          }
-
-          y += size.height + gaps.verticalGap;
+      if (isRowOrientationHorizontal) {
+        if (!bFirst && autoWrap && dimSize.width > 0 && x + size.width > dimSize.width) {
+          x = 0;
+          y += (flowLayoutInfo.gridHeight + gaps.verticalGap) * fH / fPH;
+        } else if (bFirst) {
+          bFirst = false;
         }
+
+        if (VerticalAlignment.values[innerAlignment] == VerticalAlignment.STRETCH) {
+          child.layoutPosition = LayoutPosition(
+              left: iLeft + x * fW / fPW,
+              top: iTop + y,
+              width: size.width * fW / fPW,
+              height: flowLayoutInfo.gridHeight * fH / fPH,
+              isComponentSize: true);
+        } else {
+          child.layoutPosition = LayoutPosition(
+              left: iLeft + x * fW / fPW,
+              top: iTop +
+                  y +
+                  ((flowLayoutInfo.gridHeight - size.height) * _getAlignmentFactor(innerAlignment)) * fH / fPH,
+              width: size.width * fW / fPW,
+              height: size.height * fH / fPH,
+              isComponentSize: true);
+        }
+
+        x += size.width + gaps.horizontalGap;
+      } else {
+        if (!bFirst && autoWrap && dimSize.height > 0 && y + size.height > dimSize.height) {
+          y = 0;
+          x += (flowLayoutInfo.gridWidth + gaps.horizontalGap) * fW / fPW;
+        } else if (bFirst) {
+          bFirst = false;
+        }
+
+        if (HorizontalAlignment.values[innerAlignment] == HorizontalAlignment.STRETCH) {
+          child.layoutPosition = LayoutPosition(
+              left: iLeft + x,
+              top: iTop + y * fH / fPH,
+              width: flowLayoutInfo.gridWidth * fW / fPW,
+              height: size.height * fH / fPH,
+              isComponentSize: true);
+        } else {
+          child.layoutPosition = LayoutPosition(
+              left: iLeft +
+                  x +
+                  ((flowLayoutInfo.gridWidth - size.width) * _getAlignmentFactor(innerAlignment)) * fW / fPW,
+              top: iTop + y * fH / fPH,
+              width: size.width * fW / fPW,
+              height: size.height * fH / fPH,
+              isComponentSize: true);
+        }
+
+        y += size.height + gaps.verticalGap;
       }
     }
+
+    pParent.calculatedSize = prefSize;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -264,45 +251,43 @@ class FlowLayout extends ILayout {
     bool bFirst = true;
 
     for (LayoutData component in pChildren) {
-      if (component.needsRelayout) {
-        Size prefSize = component.bestSize;
-        if (isRowOrientationHorizontal) {
-          /** If this isn't the first component add the gap between components*/
-          if (!bFirst) {
-            calcWidth += gaps.horizontalGap;
-          }
-          calcWidth += prefSize.width;
-          /** Check for the tallest component in row orientation */
-          height = max(height, prefSize.height);
-
-          /** If autowrapping is true and the width of the row is greater than the width of the layout, add a new row */
-          if (!bFirst && autoWrap && pContainerSize.width > 0 && calcWidth > pContainerSize.width) {
-            calcWidth = prefSize.width;
-            anzRows++;
-          } else if (bFirst) {
-            bFirst = false;
-          }
-          /** Check if the current row is wider than the current width of the FlowLayout */
-          width = max(width, calcWidth);
-        } else {
-          /** If this isn't the first component add the gap between components*/
-          if (!bFirst) {
-            calcHeight += gaps.verticalGap;
-          }
-          calcHeight += prefSize.height;
-          /** Check for the widest component in row orientation */
-          width = max(width, prefSize.width);
-
-          /** If autowrapping is true and the height of the column is greater than the height of the layout, add a new column */
-          if (!bFirst && autoWrap && pContainerSize.height > 0 && calcHeight > pContainerSize.height) {
-            calcHeight = prefSize.height;
-            anzCols++;
-          } else if (bFirst) {
-            bFirst = false;
-          }
-          /** Check if the current column is taller than the current height of the FlowLayout */
-          height = max(height, calcHeight);
+      Size prefSize = component.bestSize;
+      if (isRowOrientationHorizontal) {
+        /** If this isn't the first component add the gap between components*/
+        if (!bFirst) {
+          calcWidth += gaps.horizontalGap;
         }
+        calcWidth += prefSize.width;
+        /** Check for the tallest component in row orientation */
+        height = max(height, prefSize.height);
+
+        /** If autowrapping is true and the width of the row is greater than the width of the layout, add a new row */
+        if (!bFirst && autoWrap && pContainerSize.width > 0 && calcWidth > pContainerSize.width) {
+          calcWidth = prefSize.width;
+          anzRows++;
+        } else if (bFirst) {
+          bFirst = false;
+        }
+        /** Check if the current row is wider than the current width of the FlowLayout */
+        width = max(width, calcWidth);
+      } else {
+        /** If this isn't the first component add the gap between components*/
+        if (!bFirst) {
+          calcHeight += gaps.verticalGap;
+        }
+        calcHeight += prefSize.height;
+        /** Check for the widest component in row orientation */
+        width = max(width, prefSize.width);
+
+        /** If autowrapping is true and the height of the column is greater than the height of the layout, add a new column */
+        if (!bFirst && autoWrap && pContainerSize.height > 0 && calcHeight > pContainerSize.height) {
+          calcHeight = prefSize.height;
+          anzCols++;
+        } else if (bFirst) {
+          bFirst = false;
+        }
+        /** Check if the current column is taller than the current height of the FlowLayout */
+        height = max(height, calcHeight);
       }
     }
 

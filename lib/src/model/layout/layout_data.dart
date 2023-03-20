@@ -87,9 +87,6 @@ class LayoutData implements ICloneable {
   /// The actual position of the component inside their parent.
   LayoutPosition? layoutPosition;
 
-  /// "True" if this component should be visible, true by default.
-  bool needsRelayout;
-
   /// The index of the component in relation to its siblings in a flow layout.
   int? indexOf;
 
@@ -119,7 +116,6 @@ class LayoutData implements ICloneable {
       this.layoutPosition,
       Size? calculatedSize,
       this.lastCalculatedSize,
-      this.needsRelayout = false,
       this.indexOf,
       this.layout,
       this.isFixedSize = false})
@@ -141,7 +137,6 @@ class LayoutData implements ICloneable {
         insets = pLayoutData.insets != EdgeInsets.zero ? pLayoutData.insets.copyWith() : EdgeInsets.zero,
         layoutState = pLayoutData.layoutState,
         layoutPosition = pLayoutData.layoutPosition?.clone(),
-        needsRelayout = pLayoutData.needsRelayout,
         indexOf = pLayoutData.indexOf,
         heightConstrains = Map.from(pLayoutData.heightConstrains),
         widthConstrains = Map.from(pLayoutData.widthConstrains),
@@ -192,7 +187,6 @@ class LayoutData implements ICloneable {
     insets = pLayoutData.insets != EdgeInsets.zero ? pLayoutData.insets.copyWith() : EdgeInsets.zero;
     layoutState = pLayoutData.layoutState;
     layoutPosition = pLayoutData.layoutPosition?.clone();
-    needsRelayout = pLayoutData.needsRelayout;
     indexOf = pLayoutData.indexOf;
     heightConstrains = Map.from(pLayoutData.heightConstrains);
     widthConstrains = Map.from(pLayoutData.widthConstrains);

@@ -82,7 +82,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       preferredSize: model.preferredSize,
       minSize: model.minimumSize,
       maxSize: model.maximumSize,
-      needsRelayout: model.isVisible,
       indexOf: model.indexOf,
       heightConstrains: {},
       widthConstrains: {},
@@ -164,7 +163,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData.minSize = model.minimumSize;
       layoutData.maxSize = model.maximumSize;
       layoutData.parentId = model.parent;
-      layoutData.needsRelayout = model.isVisible;
       layoutData.indexOf = model.indexOf;
       layoutData.lastCalculatedSize = layoutData.calculatedSize;
       layoutData.widthConstrains = {};
