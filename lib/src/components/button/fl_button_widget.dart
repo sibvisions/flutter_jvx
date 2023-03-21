@@ -143,8 +143,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   /// Returns the icon and/or the text of the button.
   Widget? createButtonChild(BuildContext context) {
     if (model.labelModel.text.isNotEmpty && image != null) {
-      if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
-          model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
+      if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER && model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           textBaseline: TextBaseline.alphabetic,
@@ -205,6 +204,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       textStyle = textStyle.copyWith(color: JVxColors.COMPONENT_DISABLED);
     } else if (model.labelModel.foreground == null && model.style == "hyperlink") {
       textStyle = textStyle.copyWith(color: Colors.blue);
+    } else if (!model.borderPainted || model.borderOnMouseEntered) {
+      textStyle = textStyle.copyWith(color: JVxColors.LIGHTER_BLACK);
     }
 
     return FlLabelWidget.getTextWidget(
@@ -236,7 +237,11 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       backgroundColor: backgroundColor != null ? MaterialStateProperty.all(backgroundColor) : null,
       padding: MaterialStateProperty.all(model.paddings),
       splashFactory: !model.borderPainted ? NoSplash.splashFactory : null,
-      overlayColor: !model.borderPainted ? MaterialStateProperty.all(Colors.transparent) : null,
+      overlayColor: !model.borderPainted
+          ? MaterialStateProperty.all(Colors.transparent)
+          : model.borderOnMouseEntered
+              ? MaterialStateProperty.all(JVxColors.COMPONENT_DISABLED_LIGHTER)
+              : null,
     );
   }
 
