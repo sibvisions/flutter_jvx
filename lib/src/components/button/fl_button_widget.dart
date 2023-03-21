@@ -205,7 +205,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     } else if (model.labelModel.foreground == null && model.style == "hyperlink") {
       textStyle = textStyle.copyWith(color: Colors.blue);
     } else if (!model.borderPainted || model.borderOnMouseEntered) {
-      textStyle = textStyle.copyWith(color: JVxColors.LIGHTER_BLACK);
+      textStyle = textStyle.copyWith(color: JVxColors.LIGHTER_BLACK); 
     }
 
     return FlLabelWidget.getTextWidget(
