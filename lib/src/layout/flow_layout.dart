@@ -102,8 +102,13 @@ class FlowLayout extends ILayout {
     final _FlowGrid flowLayoutInfo = _calculateGrid(dimSize, pChildren);
 
     Size prefSize = Size(
-        (flowLayoutInfo.gridWidth * flowLayoutInfo.columns + gaps.horizontalGap * (flowLayoutInfo.columns - 1)),
-        (flowLayoutInfo.gridHeight * flowLayoutInfo.rows + gaps.verticalGap * (flowLayoutInfo.rows - 1)));
+        (flowLayoutInfo.gridWidth * flowLayoutInfo.columns +
+            gaps.horizontalGap * (flowLayoutInfo.columns - 1) +
+            margins.marginLeft +
+            margins.marginRight),
+        (flowLayoutInfo.gridHeight * flowLayoutInfo.rows + gaps.verticalGap * (flowLayoutInfo.rows - 1)) +
+            margins.marginTop +
+            margins.marginBottom);
 
     double iLeft;
     double iWidth;
