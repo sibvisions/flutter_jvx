@@ -95,16 +95,31 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
       );
     }
 
-    return DecoratedBox(
+    panelWidget = DecoratedBox(
       decoration: BoxDecoration(
-        border: model.hasStandardBorder
-            ? Border.all(
-                color: JVxColors.STANDARD_BORDER,
-              )
-            : null,
         color: model.background,
       ),
       child: panelWidget,
+    );
+
+    if (!model.hasStandardBorder) {
+      return panelWidget;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: JVxColors.STANDARD_BORDER,
+        ),
+      ),
+      child: ClipRRect(
+        clipBehavior: Clip.antiAlias,
+        // The clip rect is there to stop the rendering of the children.
+        // Otherwise the children would clip the border of the parent container.
+        borderRadius: BorderRadius.circular(4),
+        child: panelWidget,
+      ),
     );
   }
 }

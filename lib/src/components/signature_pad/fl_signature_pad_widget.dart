@@ -109,7 +109,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: JVxColors.COMPONENT_BORDER),
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(4),
         color: widget.model.background ?? Colors.white.withOpacity(0.7),
       ),
       child: Padding(

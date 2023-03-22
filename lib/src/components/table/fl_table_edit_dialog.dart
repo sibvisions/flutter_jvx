@@ -206,12 +206,12 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     return Dialog(
       insetPadding: paddingInsets,
       elevation: 10.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 500),
         clipBehavior: Clip.hardEdge,
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

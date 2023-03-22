@@ -31,20 +31,33 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            border: model.hasStandardBorder
-                ? Border.all(
-                    color: JVxColors.STANDARD_BORDER,
-                  )
-                : null,
-            color: model.background,
-          ),
+    Widget panelWidget = DecoratedBox(
+      decoration: BoxDecoration(
+        color: model.background,
+      ),
+      child: Stack(
+        children: [...children],
+      ),
+    );
+
+    if (!model.hasStandardBorder) {
+      return panelWidget;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: JVxColors.STANDARD_BORDER,
         ),
-        ...children
-      ],
+      ),
+      child: ClipRRect(
+        clipBehavior: Clip.antiAlias,
+        // The clip rect is there to stop the rendering of the children.
+        // Otherwise the children would clip the border of the parent container.
+        borderRadius: BorderRadius.circular(4),
+        child: panelWidget,
+      ),
     );
   }
 }

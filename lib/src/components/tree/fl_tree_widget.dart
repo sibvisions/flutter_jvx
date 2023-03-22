@@ -43,7 +43,7 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    BorderRadius borderRadius = BorderRadius.circular(5.0);
+    BorderRadius borderRadius = BorderRadius.circular(4.0);
 
     Widget treeWidget = TreeView(
       theme: TreeViewTheme(

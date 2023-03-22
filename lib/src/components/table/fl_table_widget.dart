@@ -141,7 +141,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    BorderRadius borderRadius = BorderRadius.circular(5.0);
+    BorderRadius borderRadius = BorderRadius.circular(4.0);
 
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
