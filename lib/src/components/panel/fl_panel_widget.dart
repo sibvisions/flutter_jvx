@@ -19,6 +19,7 @@ import 'package:flutter/widgets.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
+import '../editor/text_field/fl_text_field_widget.dart';
 
 class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
   const FlPanelWidget({
@@ -31,9 +32,15 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
+    Color? background = model.background;
+
+    if (model.hasDefaultEditorBackground) {
+      background ??= FlTextFieldWidget.defaultBackground(context);
+    }
+
     Widget panelWidget = DecoratedBox(
       decoration: BoxDecoration(
-        color: model.background,
+        color: background,
       ),
       child: Stack(
         children: [...children],

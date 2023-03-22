@@ -155,9 +155,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         fillColor = applicationSettings.darkColors?.mandatoryBackground;
       }
     }
-    ThemeData themeData = Theme.of(context);
-
-    fillColor ??= themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.background;
+    fillColor ??= defaultBackground(context);
 
     focusNode.canRequestFocus = model.isFocusable;
 
@@ -207,6 +205,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The default background color of a text field.
+  static Color? defaultBackground(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    return themeData.inputDecorationTheme.fillColor ?? themeData.colorScheme.background;
+  }
 
   /// Creates the clear icon at the end of a textfield.
   Widget? createClearIcon([bool pForce = false]) {

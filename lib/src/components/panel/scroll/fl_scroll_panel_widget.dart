@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 
 import '../../../model/component/fl_component_model.dart';
 import '../../../util/jvx_colors.dart';
+import '../../editor/text_field/fl_text_field_widget.dart';
 import '../fl_panel_widget.dart';
 
 class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
@@ -95,9 +96,15 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
       );
     }
 
+    Color? background = model.background;
+
+    if (model.hasDefaultEditorBackground) {
+      background ??= FlTextFieldWidget.defaultBackground(context);
+    }
+
     panelWidget = DecoratedBox(
       decoration: BoxDecoration(
-        color: model.background,
+        color: background,
       ),
       child: panelWidget,
     );
