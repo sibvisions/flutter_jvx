@@ -41,6 +41,7 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
 
     Widget labelWidget = FlLabelWidget.getTextWidget(
       model,
+      pTextStyle: model.createTextStyle(pForeground: model.foreground ?? Theme.of(context).colorScheme.onPrimary),
       pSelectable: true,
     );
 
@@ -52,7 +53,6 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
     } else {
       labelWidget = Material(
         color: model.background ?? Theme.of(context).colorScheme.primary,
-        textStyle: model.createTextStyle(),
         elevation: 2.0,
         borderRadius: BorderRadius.circular(8),
         child: Padding(
