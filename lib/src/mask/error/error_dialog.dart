@@ -98,7 +98,7 @@ class ErrorDialog extends JVxDialog {
             IUiService().routeToAppOverview();
           },
           child: Text(
-            FlutterUI.translate("Go to Apps"),
+            FlutterUI.translate("Edit Apps"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

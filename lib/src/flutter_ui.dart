@@ -873,7 +873,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             TextButton(
               onPressed: returnToApps,
               child: Text(
-                FlutterUI.translate("Return to Apps"),
+                FlutterUI.translate("Edit Apps"),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
