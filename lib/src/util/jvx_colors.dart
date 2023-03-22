@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 abstract class JVxColors {
   static const Color LIGHTER_BLACK = Color(0xFF424242);
+  static const Color DARKER_WHITE = Color(0xFFFAFAFA);
 
   static const Color TABLE_VERTICAL_DIVICER = Color(0xFFBDBDBD);
   static const Color TABLE_FOCUS_REACT = Color(0xFF666666);
@@ -86,7 +87,7 @@ abstract class JVxColors {
     }
 
     if (!isDark(colorScheme.background)) {
-      colorScheme = colorScheme.copyWith(background: Colors.grey.shade50);
+      colorScheme = colorScheme.copyWith(background: JVxColors.DARKER_WHITE);
     }
     if (isDark(colorScheme.onPrimary)) {
       colorScheme = colorScheme.copyWith(onPrimary: JVxColors.LIGHTER_BLACK);
