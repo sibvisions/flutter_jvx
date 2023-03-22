@@ -295,7 +295,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       case FlTextBorderType.disabledBorder:
         return OutlineInputBorder(
           borderSide: BorderSide(
-            width: 1.5,
             color: model.isBorderVisible ? JVxColors.COMPONENT_DISABLED : Colors.transparent,
           ),
         );
