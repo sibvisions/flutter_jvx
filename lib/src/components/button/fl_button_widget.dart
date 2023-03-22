@@ -205,7 +205,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
     if (!model.isEnabled) {
       textStyle = textStyle.copyWith(color: JVxColors.COMPONENT_DISABLED);
-    } else if (model.labelModel.foreground == null && model.style == "hyperlink") {
+    } else if (model.labelModel.foreground == null && model.isHyperLink) {
       textStyle = textStyle.copyWith(color: Colors.blue);
     } else if (!model.borderPainted || model.borderOnMouseEntered) {
       textStyle = textStyle.copyWith(color: JVxColors.LIGHTER_BLACK);
@@ -225,7 +225,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       backgroundColor = Colors.transparent;
     } else if (!model.isEnabled) {
       backgroundColor = JVxColors.COMPONENT_DISABLED_LIGHTER;
-    } else if (model.style == "hyperlink") {
+    } else if (model.isHyperLink) {
       backgroundColor = Colors.transparent;
     } else {
       backgroundColor = model.background;

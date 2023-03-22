@@ -72,9 +72,6 @@ class FlButtonModel extends FlComponentModel {
   /// The paddings between the button and its children.
   EdgeInsets paddings = const EdgeInsets.fromLTRB(10, 10, 10, 10);
 
-  /// The style of the Button.
-  String style = "";
-
   /// Dataprovider for QR-Code buttons or telephone button
   String dataProvider = "";
 
@@ -110,7 +107,10 @@ class FlButtonModel extends FlComponentModel {
   bool get isHaptic => styles.contains(HAPTIC);
 
   /// If the button has no flutter default minimum size.
-  bool get isNoMinSize => styles.contains(NO_MIN_SIZE);
+  bool get hasNoMinSize => styles.contains(NO_MIN_SIZE);
+
+  /// If the button is a hyperlink button
+  bool get isHyperLink => styles.contains("hyperlink");
 
   @override
   Size? get minimumSize {
@@ -126,7 +126,7 @@ class FlButtonModel extends FlComponentModel {
       return Size(130, height);
     }
 
-    if (isNoMinSize) {
+    if (hasNoMinSize) {
       return null;
     }
 
@@ -176,6 +176,8 @@ class FlButtonModel extends FlComponentModel {
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
+
+    print("$id $name ${styles.join(",")} $minimumSize $hasNoMinSize");
 
     borderOnMouseEntered = getPropertyValue(
       pJson: pJson,
@@ -229,13 +231,6 @@ class FlButtonModel extends FlComponentModel {
         pDefault: defaultModel.paddings,
         pCurrent: paddings,
         pConversion: (value) => ParseUtil.parseMargins(value)! * ConfigController().getScaling());
-
-    style = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.style,
-      pDefault: defaultModel.style,
-      pCurrent: style,
-    );
 
     dataProvider = getPropertyValue(
       pJson: pJson,

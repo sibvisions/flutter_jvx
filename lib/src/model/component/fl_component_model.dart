@@ -286,15 +286,15 @@ abstract class FlComponentModel {
     preferredSize = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.preferredSize,
-      pDefault: defaultModel.preferredSize,
-      pCurrent: preferredSize,
+      pDefault: defaultModel._preferredSize,
+      pCurrent: _preferredSize,
       pConversion: _parseSize,
     );
     minimumSize = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.minimumSize,
-      pDefault: defaultModel.minimumSize,
-      pCurrent: minimumSize,
+      pDefault: defaultModel._minimumSize,
+      pCurrent: _minimumSize,
       pConversion: _parseSize,
     );
     maximumSize = getPropertyValue(

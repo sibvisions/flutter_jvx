@@ -119,7 +119,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
 
     if (!model.isEnabled) {
       textStyle = textStyle.copyWith(color: JVxColors.darken(JVxColors.COMPONENT_DISABLED));
-    } else if (model.labelModel.foreground == null && model.style == "hyperlink") {
+    } else if (model.labelModel.foreground == null && model.isHyperLink) {
       textStyle = textStyle.copyWith(color: Colors.blue);
     }
 
