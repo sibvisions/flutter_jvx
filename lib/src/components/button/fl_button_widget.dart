@@ -67,7 +67,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     if (model.image != null) {
       return ImageLoader.loadImage(
         model.image!,
-        pWantedColor: (!model.borderPainted || model.borderOnMouseEntered) ? JVxColors.LIGHTER_BLACK : model.createTextStyle().color,
+        pWantedColor: (!model.borderPainted || model.borderOnMouseEntered)
+            ? JVxColors.LIGHTER_BLACK
+            : model.createTextStyle().color,
       );
     }
     return null;
@@ -143,7 +145,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   /// Returns the icon and/or the text of the button.
   Widget? createButtonChild(BuildContext context) {
     if (model.labelModel.text.isNotEmpty && image != null) {
-      if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER && model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
+      if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
+          model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           textBaseline: TextBaseline.alphabetic,
