@@ -214,8 +214,10 @@ class DataService implements IDataService {
             foundColumn.cellEditorJson = changedColumn.cellEditorJson!;
             foundColumn.cellEditorModel = ICellEditorModel.fromJson(foundColumn.cellEditorJson);
             if (foundColumn.cellEditorModel is FlLinkedCellEditorModel) {
-              createReferencedCellEditors(foundColumn.cellEditorModel as FlLinkedCellEditorModel,
-                  pChangedResponse.dataProvider, foundColumn.name);
+              metaData.createdReferencedCellEditors.add(createReferencedCellEditors(
+                  foundColumn.cellEditorModel as FlLinkedCellEditorModel,
+                  pChangedResponse.dataProvider,
+                  foundColumn.name));
             }
             anyChanges = true;
           }
