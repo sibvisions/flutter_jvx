@@ -400,6 +400,7 @@ class FlutterUI extends StatefulWidget {
       if (timeZone != null) {
         await ConfigController().updateApplicationTimeZone(timeZone);
       }
+      await ConfigController().updateDefaultApp(appName);
     }
     String? mobileOnly = queryParameters.remove("mobileOnly");
     if (mobileOnly != null) {
