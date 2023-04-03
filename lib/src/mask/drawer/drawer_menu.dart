@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -77,7 +78,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   if (isNormalSize) ..._buildDrawerFooter(context, isOffline, isNormalSize),
                   if (!isNormalSize)
                     SizedBox(
-                      height: 55,
+                      height: 56,
                       child: Row(
                         children: _buildDrawerFooter(context, isOffline, isNormalSize),
                       ),
@@ -255,7 +256,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
         footerEntries.addAll([
           SizedBox(
-            height: 55,
+            height: kIsWeb ? 48 : 56,
             child: Row(
               children: children,
             ),
