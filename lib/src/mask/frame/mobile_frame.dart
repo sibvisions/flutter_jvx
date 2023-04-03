@@ -58,7 +58,7 @@ class MobileFrameState extends FrameState {
       leading: leading,
       title: title,
       centerTitle: false,
-      titleSpacing: titleSpacing ?? 0,
+      titleSpacing: titleSpacing,
       actions: actions,
       backgroundColor: backgroundColor,
       elevation: 0,

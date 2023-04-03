@@ -186,6 +186,7 @@ class WorkScreenState extends State<WorkScreen> {
                   resizeToAvoidBottomInset: false,
                   appBar: frame?.getAppBar(
                     leading: _buildLeading(),
+                    titleSpacing: 0,
                     title: Text(screenTitle),
                     actions: actions,
                   ),
@@ -275,6 +276,7 @@ class WorkScreenState extends State<WorkScreen> {
                   resizeToAvoidBottomInset: false,
                   appBar: frame?.getAppBar(
                     leading: _buildLeading(),
+                    titleSpacing: 0,
                     title: Text(customScreen?.screenTitle ?? item?.label ?? FlutterUI.translate(screenTitle)),
                     actions: actions,
                   ),

@@ -120,7 +120,7 @@ class WebFrameState extends FrameState {
     bool inWorkscreen = FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == WorkScreenLocation;
 
     return AppBar(
-      titleSpacing: titleSpacing ?? 0,
+      titleSpacing: titleSpacing,
       leading: Builder(
         builder: (context) => IconButton(
           icon: FaIcon(
