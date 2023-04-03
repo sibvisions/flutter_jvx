@@ -250,7 +250,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
             Expanded(flex: 7, child: _buildAppsEntry(context, isNormalSize)),
           ];
         } else {
-          children = [_buildLogoutEntry(context, isNormalSize)];
+          children = [Expanded(child: _buildLogoutEntry(context, isNormalSize))];
         }
 
         footerEntries.addAll([
