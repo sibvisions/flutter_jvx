@@ -91,7 +91,7 @@ class ListMenuGroup extends StatelessWidget {
           delegate: GridMenuHeader(
             headerText: FlutterUI.translate(menuGroupModel.name),
             headerColor: headerColor,
-            height: 48,
+            height: (ListTileTheme.of(context).dense ?? false) ? 40 : 48,
             textStyle: textStyle,
           ),
         ),

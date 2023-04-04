@@ -68,15 +68,13 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
       if (constraints.maxWidth <= 50) {
         child = Divider(
           color: headerColor ?? ListTileTheme.of(context).iconColor,
-          height: 48,
+          height: constraints.maxHeight,
           indent: 15,
           endIndent: 15,
           thickness: 5,
         );
       } else {
         child = ListTile(
-          // Triggers https://github.com/flutter/flutter/issues/78748
-          // dense: true,
           contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
           textColor: headerColor,
           title: Text(
@@ -92,6 +90,9 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
       }
 
       return Container(
+        // It seems that Sliver provides minHeight=0 as constraints but complains if height < maxHeight, so we force it here.
+        // https://github.com/flutter/flutter/issues/78748
+        height: constraints.maxHeight,
         // Idk why, but tileColor doesn't seem to do the trick, when scrolling.
         color: ListTileTheme.of(context).tileColor != null
             ? JVxColors.lighten(ListTileTheme.of(context).tileColor!)
