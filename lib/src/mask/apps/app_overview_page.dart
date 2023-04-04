@@ -42,7 +42,7 @@ class AppOverviewPage extends StatefulWidget {
   static bool showAppsButton() =>
       ConfigController().getAppConfig()!.customAppsAllowed! ||
       !ConfigController().getAppConfig()!.serverConfigsLocked! ||
-      ConfigController().getAppNames().length > 1;
+      (ConfigController().getAppNames().length > 1 && !isSingleAppMode);
 
   static ImageProvider? getAppIcon(ServerConfig? config) {
     if (config == null) return null;
