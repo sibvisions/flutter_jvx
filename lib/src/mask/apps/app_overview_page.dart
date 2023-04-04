@@ -312,7 +312,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
               config.merge(const ServerConfig(isDefault: true)),
             );
             if (success && mounted && config.isStartable) {
-              FlutterUI.of(this.context).startApp(app: config);
+              FlutterUI.of(this.context).startApp(app: config, autostart: false);
             }
           },
         );
@@ -354,7 +354,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         onTap: app.isStartable
                             ? () {
                                 if (isPredefined || AppOverviewPage.customAppsAllowed) {
-                                  FlutterUI.of(context).startApp(app: app);
+                                  FlutterUI.of(context).startApp(app: app, autostart: false);
                                 } else {
                                   _showForbiddenAppStart(context);
                                 }

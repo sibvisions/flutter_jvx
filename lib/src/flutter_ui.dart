@@ -542,17 +542,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     });
   }
 
-  void startApp({ServerConfig? app, bool autostart = false}) {
+  void startApp({ServerConfig? app, bool? autostart}) {
     setState(() {
       startupFuture =
           _startApp(app: app, autostart: autostart).catchError(FlutterUI.createErrorHandler("Failed to send startup"));
     });
   }
 
-  Future<void> _startApp({ServerConfig? app, bool autostart = false}) async {
+  Future<void> _startApp({ServerConfig? app, bool? autostart}) async {
     await stopApp(false);
 
-    startedManually = !autostart;
+    startedManually = !(autostart ?? !startedManually);
 
     if (app?.appName != null) {
       await ConfigController().updateAppName(app!.appName!);
