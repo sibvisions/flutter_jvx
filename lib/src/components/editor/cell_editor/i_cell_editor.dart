@@ -77,6 +77,7 @@ abstract class ICellEditor<
   String columnName;
 
   String dataProvider;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -254,6 +255,7 @@ abstract class IFocusableCellEditor<
 
   // The callback function that is called when the focus of this cell editor changes.
   Function(bool)? onFocusChanged;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

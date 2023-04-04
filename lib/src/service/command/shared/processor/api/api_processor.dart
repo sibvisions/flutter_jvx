@@ -212,6 +212,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   final ICommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
 
   final ICommandProcessor _selectTreeCommand = SelectTreeCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

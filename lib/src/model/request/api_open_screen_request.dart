@@ -34,6 +34,7 @@ class ApiOpenScreenRequest extends SessionRequest {
 
   /// Parameters to add to the request.
   final Map<String, dynamic>? parameter;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

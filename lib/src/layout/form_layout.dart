@@ -66,6 +66,7 @@ class FormLayout extends ILayout {
 
   /// The modifier with which to scale the layout.
   final double scaling;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

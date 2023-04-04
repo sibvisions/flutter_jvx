@@ -27,6 +27,7 @@ class ApiCloseScreenRequest extends SessionRequest {
 
   /// Parameter to pass to the screen
   final Map<String, dynamic>? parameter;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

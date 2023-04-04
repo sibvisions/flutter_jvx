@@ -60,6 +60,7 @@ class SplitLayout implements ILayout, ICloneable {
   Size secondComponentSize = Size.zero;
 
   bool calculateLikeScroll;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

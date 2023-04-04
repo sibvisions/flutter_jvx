@@ -66,6 +66,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   List<BaseCompWrapperWidget> tabContentList = [];
 
   _FlTabPanelWrapperState() : super();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -70,6 +70,7 @@ class FlTableModel extends FlComponentModel {
 
   /// If the table hides the floating insert button.
   bool get showFloatButton => !styles.contains(NO_FLOATING_BUTTON_STYLE);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

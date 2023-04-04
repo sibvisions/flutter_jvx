@@ -38,6 +38,7 @@ class FlCheckBoxCellEditor
 
   @override
   bool get allowedInTable => model.directCellEditor;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

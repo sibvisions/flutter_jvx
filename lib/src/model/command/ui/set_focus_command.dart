@@ -27,6 +27,7 @@ class SetFocusCommand extends UiCommand {
 
   /// Whether to focus or unfocus
   bool focus;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

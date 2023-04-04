@@ -96,6 +96,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
 
   /// The meta data of the table.
   final DalMetaData? metaData;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

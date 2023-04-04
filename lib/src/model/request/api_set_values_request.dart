@@ -44,6 +44,7 @@ class ApiSetValuesRequest extends SessionRequest {
 
   /// The column the server has to check against if it is readOnly
   final String? editorColumnName;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

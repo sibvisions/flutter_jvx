@@ -24,6 +24,7 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   static const String SWITCH_STYLE = "f_switch";
 
   static const String CHECKBOX_STYLE = "f_checkbox";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -56,6 +56,7 @@ class FlDateCellEditor
 
   @override
   IconData? get tableEditIcon => FontAwesomeIcons.calendar;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

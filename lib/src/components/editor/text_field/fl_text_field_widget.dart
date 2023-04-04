@@ -121,6 +121,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   // The whitespace every icon has around it
   double get iconInnatePadding => ((iconAreaSize - TEXT_HEIGHT(model.createTextStyle())) / 2);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

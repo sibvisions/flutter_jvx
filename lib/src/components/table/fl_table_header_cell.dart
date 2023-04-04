@@ -74,6 +74,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
 
   /// The index of the sort.
   final int? sortIndex;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

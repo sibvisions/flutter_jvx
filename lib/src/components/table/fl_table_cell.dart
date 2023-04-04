@@ -83,6 +83,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
 
   /// If this column is selected.
   final bool isSelected;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

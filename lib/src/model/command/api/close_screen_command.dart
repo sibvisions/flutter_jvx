@@ -24,6 +24,7 @@ class CloseScreenCommand extends SessionCommand {
   final String screenName;
 
   final Map<String, dynamic>? parameter;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

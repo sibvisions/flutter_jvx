@@ -36,6 +36,7 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   bool get isFlatStyle => styles.contains(FLAT_STYLE);
 
   bool get hideBorder => styles.contains(NO_BORDER_STYLE);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

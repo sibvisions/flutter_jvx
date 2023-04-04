@@ -609,6 +609,7 @@ class DalMetaData {
 
   /// If the row 0 is an additional row (Not deletable)
   bool additionalRowVisible = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

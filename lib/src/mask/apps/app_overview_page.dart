@@ -649,7 +649,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       builder: (context) {
         return AlertDialog(
           title: Text(FlutterUI.translate("Start not allowed")),
-          content: Text(FlutterUI.translate("Your current application was configured without support for custom apps.")),
+          content:
+              Text(FlutterUI.translate("Your current application was configured without support for custom apps.")),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

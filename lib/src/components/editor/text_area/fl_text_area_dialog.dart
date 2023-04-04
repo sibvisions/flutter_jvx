@@ -33,6 +33,7 @@ class FlTextAreaDialog extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
 
   final TextEditingValue value;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

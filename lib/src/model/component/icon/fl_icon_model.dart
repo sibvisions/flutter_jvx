@@ -49,6 +49,7 @@ class FlIconModel extends FlComponentModel {
 
   /// Initializes the [FlButtonModel]
   FlIconModel();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

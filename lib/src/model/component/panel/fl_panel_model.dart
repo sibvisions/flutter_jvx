@@ -27,6 +27,7 @@ class FlPanelModel extends FlComponentModel {
 
   /// If a panel should the same background color as the default editor background color.
   static const String DEFAULT_EDITOR_BACKGROUND_STYLE = "f_default_editorbackground";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

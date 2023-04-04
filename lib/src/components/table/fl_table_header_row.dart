@@ -52,6 +52,7 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
 
   /// The sort definitions
   final List<SortDefinition>? sortDefinitions;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
