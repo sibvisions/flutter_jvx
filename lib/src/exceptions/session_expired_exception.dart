@@ -21,6 +21,6 @@ class SessionExpiredException implements Exception {
 
   @override
   String toString() {
-    return "SessionExpiredException: $statusCode";
+    return "SessionExpiredException${statusCode != null ? ": $statusCode" : ""}";
   }
 }

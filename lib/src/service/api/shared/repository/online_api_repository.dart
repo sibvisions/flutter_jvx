@@ -341,8 +341,10 @@ class OnlineApiRepository extends IRepository {
         // The CommandService already resets the connected state and the timer.
         FlutterUI.logAPI.i("Alive Request succeeded");
       } on IOException catch (e, stack) {
-        FlutterUI.logAPI.w("Alive Request failed", e, stack);
+        FlutterUI.logAPI.w("Alive Request failed, retry", e, stack);
         _reconnectHTTP();
+      } catch (e, stack) {
+        FlutterUI.logAPI.w("Alive Request failed", e, stack);
       }
     });
   }
@@ -393,7 +395,7 @@ class OnlineApiRepository extends IRepository {
       try {
         await ICommandService().sendCommand(AliveCommand(reason: "Inactivity check", retryRequest: false));
         // The CommandService already resets the connected state and therefore this timer.
-      } on IOException catch (e, stack) {
+      } catch (e, stack) {
         FlutterUI.logAPI.w("Inactivity Alive Request failed", e, stack);
       }
     });
