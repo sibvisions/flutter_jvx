@@ -325,7 +325,7 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
-    await _extractURIParameters(queryParameters);
+    FlutterUIState.urlConfig = await _extractURIParameters(queryParameters);
     queryParameters.forEach((key, value) => ConfigController().updateCustomStartUpProperties(key, value));
 
     // API
@@ -367,40 +367,45 @@ class FlutterUI extends StatefulWidget {
     );
   }
 
-  static Future<void> _extractURIParameters(Map<String, String> queryParameters) async {
+  static Future<ServerConfig?> _extractURIParameters(Map<String, String> queryParameters) async {
+    ServerConfig? urlConfig;
+
     String? appName = queryParameters.remove("appName");
     if (appName != null) {
       await ConfigController().updateAppName(appName);
-    }
-    if (ConfigController().appName.value != null) {
+
       String? baseUrl = queryParameters.remove("baseUrl");
+      Uri? baseUri;
       if (baseUrl != null) {
         try {
-          var baseUri = Uri.parse(baseUrl);
-          await ConfigController().updateBaseUrl(baseUri);
+          baseUri = Uri.parse(baseUrl);
         } on FormatException catch (e, stack) {
           FlutterUI.log.w("Failed to parse baseUrl parameter", e, stack);
         }
       }
       String? username = queryParameters.remove("username") ?? queryParameters.remove("userName");
-      if (username != null) {
-        await ConfigController().updateUsername(username);
-      }
       String? password = queryParameters.remove("password");
-      if (password != null) {
-        await ConfigController().updatePassword(password);
+
+      urlConfig = ServerConfig(
+        appName: appName,
+        baseUrl: baseUri,
+        username: username,
+        password: password,
+        isDefault: true,
+      );
+
+      if (ConfigController().appName.value != null) {
+        String? language = queryParameters.remove("language");
+        if (language != null) {
+          await ConfigController().updateUserLanguage(
+            language == ConfigController().getPlatformLocale() ? null : language,
+          );
+        }
+        String? timeZone = queryParameters.remove("timeZone");
+        if (timeZone != null) {
+          await ConfigController().updateApplicationTimeZone(timeZone);
+        }
       }
-      String? language = queryParameters.remove("language");
-      if (language != null) {
-        await ConfigController().updateUserLanguage(
-          language == ConfigController().getPlatformLocale() ? null : language,
-        );
-      }
-      String? timeZone = queryParameters.remove("timeZone");
-      if (timeZone != null) {
-        await ConfigController().updateApplicationTimeZone(timeZone);
-      }
-      await ConfigController().updateDefaultApp(appName);
     }
     String? mobileOnly = queryParameters.remove("mobileOnly");
     if (mobileOnly != null) {
@@ -410,6 +415,8 @@ class FlutterUI extends StatefulWidget {
     if (webOnly != null) {
       IUiService().updateWebOnly(webOnly == "true");
     }
+
+    return urlConfig;
   }
 
   static Future<List<ServerConfig>> getApps() async {
@@ -460,6 +467,8 @@ GlobalKey<NavigatorState>? splashNavigatorKey;
 PageStorageBucket pageStorageBucket = PageStorageBucket();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
+  static ServerConfig? urlConfig;
+
   final RoutesObserver routeObserver = RoutesObserver();
 
   AppLifecycleState? lastState;
@@ -524,22 +533,26 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     changedTheme();
 
     // Init
-    FlutterUI.getApps().then((serverConfigs) {
-      AppConfig appConfig = ConfigController().getAppConfig()!;
-      bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
-      ServerConfig? defaultConfig = serverConfigs.firstWhereOrNull((e) {
-        return (e.isDefault ?? false) &&
-            ((appConfig.customAppsAllowed ?? false) || ConfigController().getPredefinedApp(e.appName!) != null);
+    if (urlConfig != null) {
+      startApp(app: urlConfig, autostart: true);
+    } else {
+      FlutterUI.getApps().then((serverConfigs) {
+        AppConfig appConfig = ConfigController().getAppConfig()!;
+        bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
+        ServerConfig? defaultConfig = serverConfigs.firstWhereOrNull((e) {
+          return (e.isDefault ?? false) &&
+              ((appConfig.customAppsAllowed ?? false) || ConfigController().getPredefinedApp(e.appName!) != null);
+        });
+        if (defaultConfig == null && serverConfigs.length == 1 && !showAppOverviewWithoutDefault) {
+          defaultConfig = serverConfigs.firstOrNull;
+        }
+        if (defaultConfig?.isStartable ?? false) {
+          startApp(app: defaultConfig, autostart: true);
+        } else {
+          IUiService().routeToAppOverview();
+        }
       });
-      if (defaultConfig == null && serverConfigs.length == 1 && !showAppOverviewWithoutDefault) {
-        defaultConfig = serverConfigs.firstOrNull;
-      }
-      if (defaultConfig?.isStartable ?? false) {
-        startApp(app: defaultConfig, autostart: true);
-      } else {
-        IUiService().routeToAppOverview();
-      }
-    });
+    }
   }
 
   void startApp({ServerConfig? app, bool? autostart}) {
@@ -555,7 +568,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     startedManually = !(autostart ?? !startedManually);
 
     if (app?.appName != null) {
-      await ConfigController().updateAppName(app!.appName!);
+      await ConfigController().updateApp(app!);
+      await ConfigController().updateAppName(app.appName!);
     }
 
     changedTheme();
@@ -566,9 +580,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       ConfigController().loadLanguages();
     }
 
-    if (!(app?.isStartable ?? true) ||
-        ConfigController().appName.value == null ||
-        ConfigController().baseUrl.value == null) {
+    if (!(app?.isStartable ?? true) &&
+        (ConfigController().appName.value == null || ConfigController().baseUrl.value == null)) {
       await IUiService().routeToAppOverview();
       return;
     }
