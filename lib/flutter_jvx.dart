@@ -18,6 +18,7 @@
 library flutter_jvx;
 
 export 'package:beamer/beamer.dart';
+export 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 export 'package:latlong2/latlong.dart';
 
 export 'src/commands.dart';
@@ -79,7 +80,7 @@ export 'src/service/ui/i_ui_service.dart';
 export 'src/service/ui/impl/ui_service.dart';
 // Util
 export 'src/util/config_util.dart';
-export 'src/util/debug/debug_overlay.dart';
+export 'src/util/debug/jvx_debug.dart';
 export 'src/util/extensions/list_extensions.dart';
 export 'src/util/extensions/string_extensions.dart';
 export 'src/util/font_awesome_util.dart';

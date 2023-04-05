@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
 import '../mask/menu/menu.dart';
@@ -22,7 +21,6 @@ import '../model/api_interaction.dart';
 import '../model/command/base_command.dart';
 import '../model/menu/menu_model.dart';
 import '../model/request/api_request.dart';
-import '../util/debug/debug_detector.dart';
 import 'custom_menu_item.dart';
 import 'custom_screen.dart';
 
@@ -119,7 +117,4 @@ abstract class AppManager {
 
 // /// Is called if a login is successfully completed.
 // void onLoginSuccess() {}
-
-  /// Called when [DebugDetector] gets triggered (Only used when [kDebugMode] is active).
-  void onDebugTrigger() {}
 }

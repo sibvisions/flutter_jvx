@@ -21,9 +21,9 @@ import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:logger/logger.dart';
+import 'package:logger/logger.dart' hide LogEvent;
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,8 +68,6 @@ import 'service/storage/impl/default/storage_service.dart';
 import 'service/ui/i_ui_service.dart';
 import 'service/ui/impl/ui_service.dart';
 import 'util/config_util.dart';
-import 'util/debug/debug_detector.dart';
-import 'util/debug/debug_overlay.dart';
 import 'util/debug/jvx_debug.dart';
 import 'util/extensions/jvx_logger_extensions.dart';
 import 'util/extensions/list_extensions.dart';
@@ -94,6 +92,12 @@ class FlutterUI extends StatefulWidget {
 
   /// Have we ever had a context?
   static bool initiated = false;
+
+  /// Log Collector
+  static final LogBucket logBucket = LogBucket();
+
+  /// Request Collector
+  static final HttpBucket httpBucket = HttpBucket();
 
   /// General logger
   static final Logger log = Logger(
@@ -158,7 +162,6 @@ class FlutterUI extends StatefulWidget {
   /// Builder function for custom login widget
   final Widget Function(BuildContext context, LoginMode mode)? loginBuilder;
 
-  final bool enableDebugOverlay;
   final List<Widget> debugOverlayEntries;
 
   static late PackageInfo packageInfo;
@@ -173,7 +176,6 @@ class FlutterUI extends StatefulWidget {
     this.splashBuilder,
     this.backgroundBuilder,
     this.loginBuilder,
-    this.enableDebugOverlay = false,
     this.debugOverlayEntries = const [],
   });
 
@@ -272,6 +274,16 @@ class FlutterUI extends StatefulWidget {
 
   static start([FlutterUI pAppToRun = const FlutterUI()]) async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    Logger.addOutputListener((event) {
+      logBucket.add(LogEvent(
+        level: LogLevel.values.firstWhere((element) => element.name == event.origin.level.name),
+        message: event.origin.message,
+        error: event.origin.error,
+        stackTrace: event.origin.stackTrace,
+        time: event.origin.time,
+      ));
+    });
 
     BrowserHttpClientException.verbose = !kReleaseMode;
 
@@ -694,29 +706,16 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         },
       );
 
-      if (kDebugMode) {
-        futureBuilder = DebugDetector(
-          callback: () {
-            widget.appManager?.onDebugTrigger();
-            if (widget.enableDebugOverlay) {
-              HapticFeedback.vibrate();
-              showDialog(
-                context: FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext()!,
-                builder: (context) => DebugOverlay(
-                  useDialog: true,
-                  debugEntries: [
-                    const JVxDebug(),
-                    ...widget.debugOverlayEntries,
-                  ],
-                ),
-              );
-            }
-          },
-          child: futureBuilder,
-        );
-      }
-
-      return futureBuilder;
+      return DebugOverlay(
+        opacity: 0.95,
+        logBucket: FlutterUI.logBucket,
+        httpBucket: FlutterUI.httpBucket,
+        debugEntries: [
+          const JVxDebug(),
+          ...widget.debugOverlayEntries,
+        ],
+        child: futureBuilder,
+      );
     };
   }
 

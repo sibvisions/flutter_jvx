@@ -85,6 +85,8 @@ dependencies:
   # Used for offline mode
   sqflite: ^2.0.3
   wakelock: ^0.6.2
+  # Used for debugging
+  flutter_debug_overlay: ^0.1.0
 
   # Custom Dependencies
   flutter_map: ^3.0.0

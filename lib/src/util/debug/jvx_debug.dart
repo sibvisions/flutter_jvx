@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/api/login_command.dart';
@@ -25,7 +26,6 @@ import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../progress/progress_dialog_widget.dart';
-import 'debug_overlay.dart';
 
 class JVxDebug extends StatelessWidget {
   const JVxDebug({super.key});

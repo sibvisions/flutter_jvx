@@ -22,6 +22,7 @@ import 'package:collection/collection.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
@@ -207,6 +208,8 @@ class OnlineApiRepository extends IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static final HttpClientLogAdapter httpLogAdapter = HttpClientLogAdapter(FlutterUI.httpBucket);
 
   // Whether we ever had a connection
   bool _everConnected = false;
@@ -562,22 +565,28 @@ class OnlineApiRepository extends IRepository {
       /// * HttpException: Connection closed while receiving data, uri = <uri>
       bool shouldRetry(Exception error) => (error is HttpException && error.message.contains("Connection closed"));
 
+      HttpClientRequest clientRequest;
       HttpClientResponse response;
+
       try {
+        Map<String, dynamic> sentRequest;
         if (retryRequest ?? true) {
           Duration timeout = ConfigController().getAppConfig()!.requestTimeout!;
-          response = await retry(
+          sentRequest = await retry(
             () => _sendRequest(pRequest),
             retryIf: (e) => shouldRetry(e),
-            retryIfResult: (response) => response.statusCode == 503,
+            retryIfResult: (response) => response["response"].statusCode == 503,
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
             onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
             maxAttempts: 3,
             maxDelay: timeout == Duration.zero || timeout.isNegative ? null : timeout,
           );
         } else {
-          response = await _sendRequest(pRequest);
+          sentRequest = await _sendRequest(pRequest);
         }
+        clientRequest = sentRequest["request"];
+        response = sentRequest["response"];
+
         setConnected(true);
       } catch (_) {
         setConnected(false);
@@ -587,8 +596,17 @@ class OnlineApiRepository extends IRepository {
         resetAliveInterval();
       }
 
+      void logResponse(HttpClientRequest request, HttpClientResponse response, Object? body) {
+        final Map<String, List<String>> logHeaders = {};
+        response.headers.forEach((name, values) {
+          logHeaders[name] = values;
+        });
+        httpLogAdapter.onResponse(request, response, body);
+      }
+
       if (response.statusCode >= 400 && response.statusCode <= 599) {
         var body = await _decodeBody(response);
+        logResponse(clientRequest, response, body);
         FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
         if (response.statusCode == 400 && pRequest is ApiStartUpRequest) {
           APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
@@ -607,18 +625,20 @@ class OnlineApiRepository extends IRepository {
 
       // Download Request needs different handling
       if (pRequest is DownloadRequest) {
-        var parsedDownloadObject = _handleDownload(
-            pBody: Uint8List.fromList(await response.expand((element) => element).toList()), pRequest: pRequest);
+        var body = Uint8List.fromList(await response.expand((element) => element).toList());
+        logResponse(clientRequest, response, body);
+        var parsedDownloadObject = _handleDownload(pBody: body, pRequest: pRequest);
         return parsedDownloadObject;
       }
 
       String responseBody = await _decodeBody(response);
+      logResponse(clientRequest, response, responseBody);
 
       if (IUiService().getAppManager() != null) {
         var overrideResponse = await IUiService().getAppManager()?.handleResponse(
               pRequest,
               responseBody,
-              () => _sendRequest(pRequest),
+              () async => (await _sendRequest(pRequest))["response"],
             );
         if (overrideResponse != null) {
           response = overrideResponse;
@@ -665,62 +685,90 @@ class OnlineApiRepository extends IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Send post request to remote server, applies timeout.
-  Future<HttpClientResponse> _sendRequest(ApiRequest pRequest) async {
-    APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
+  ///
+  /// Returns:
+  /// ```json
+  /// {
+  ///   "response": HttpClientResponse,
+  ///   "request": HttpClientRequest
+  /// }
+  /// ```
+  Future<Map<String, dynamic>> _sendRequest(ApiRequest pRequest) async {
+    HttpClientRequest? request;
+    try {
+      APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
 
-    if (route == null) {
-      throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
-    }
-
-    Uri uri = Uri.parse("${ConfigController().baseUrl.value!}/${route.route}");
-    HttpClientRequest request = await createRequest(uri, route.method);
-
-    if (kIsWeb) {
-      if (request is BrowserHttpClientRequest) {
-        // Handles cookies in browser
-        request.browserCredentialsMode = true;
+      if (route == null) {
+        throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
       }
-    } else {
-      _cookies.forEach((value) => request.cookies.add(value));
-    }
 
-    IUiService().getAppManager()?.modifyCookies(request.cookies);
+      Uri uri = Uri.parse("${ConfigController().baseUrl.value!}/${route.route}");
+      request = await createRequest(uri, route.method);
 
-    _headers.forEach((key, value) => request.headers.set(key, value));
-    IUiService().getAppManager()?.modifyHeaders(request.headers);
+      if (kIsWeb) {
+        if (request is BrowserHttpClientRequest) {
+          // Handles cookies in browser
+          request.browserCredentialsMode = true;
+        }
+      } else {
+        _cookies.forEach((value) => request!.cookies.add(value));
+      }
 
-    if (pRequest is ApiUploadRequest) {
-      request.headers.contentType = ContentType(
-        "multipart",
-        "form-data",
-        charset: "utf-8",
-        parameters: {"boundary": boundary},
-      );
-      var content = _addContent(
-        {
+      IUiService().getAppManager()?.modifyCookies(request.cookies);
+
+      _headers.forEach((key, value) => request!.headers.set(key, value));
+      IUiService().getAppManager()?.modifyHeaders(request.headers);
+
+      if (pRequest is ApiUploadRequest) {
+        request.headers.contentType = ContentType(
+          "multipart",
+          "form-data",
+          charset: "utf-8",
+          parameters: {"boundary": boundary},
+        );
+        var content = _addContent(
+          {
+            "clientId": pRequest.clientId,
+            "fileId": pRequest.fileId,
+          },
+          {"data": pRequest.file},
+          boundary,
+        );
+        // await request.addStream(content);
+        // Workaround https://github.com/dint-dev/universal_io/issues/35
+        await for (List<int> c in content) {
+          request.add(c);
+        }
+        httpLogAdapter.onRequest(request, {
           "clientId": pRequest.clientId,
           "fileId": pRequest.fileId,
-        },
-        {"data": pRequest.file},
-        boundary,
-      );
-      // await request.addStream(content);
-      // Workaround https://github.com/dint-dev/universal_io/issues/35
-      await for (List<int> c in content) {
-        request.add(c);
+          "data": pRequest.file,
+        });
+      } else if (route.method != Method.GET) {
+        request.headers.contentType = ContentType("application", "json", charset: "utf-8");
+        request.write(jsonEncode(pRequest));
+        httpLogAdapter.onRequest(
+          request,
+          jsonEncode(pRequest),
+        );
       }
-    } else if (route.method != Method.GET) {
-      request.headers.contentType = ContentType("application", "json", charset: "utf-8");
-      request.write(jsonEncode(pRequest));
-    }
 
-    HttpClientResponse res = await request.close();
+      HttpClientResponse response = await request.close();
 
-    if (!kIsWeb) {
-      // Extract the session-id cookie to be sent in future
-      _cookies.addAll(res.cookies);
+      if (!kIsWeb) {
+        // Extract the session-id cookie to be sent in future
+        _cookies.addAll(response.cookies);
+      }
+      return {
+        "response": response,
+        "request": request,
+      };
+    } catch (e, stack) {
+      if (request != null) {
+        httpLogAdapter.onError(request, e, stack);
+      }
+      rethrow;
     }
-    return res;
   }
 
   Future<HttpClientRequest> createRequest(Uri pUri, Method method) {

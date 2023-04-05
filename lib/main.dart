@@ -14,9 +14,13 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
+
 import 'src/flutter_ui.dart';
 
 void main() async {
   FlutterUI.package = false;
-  await FlutterUI.start(const FlutterUI(enableDebugOverlay: true));
+  DebugOverlay.enabled = kDebugMode;
+  await FlutterUI.start(const FlutterUI());
 }
