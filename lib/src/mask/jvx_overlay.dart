@@ -68,37 +68,41 @@ class JVxOverlay extends StatefulWidget {
 }
 
 class JVxOverlayState extends State<JVxOverlay> {
-  /// Report device status to server
-  final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
-
   final GlobalKey<StatusBannerState> _statusBannerKey = GlobalKey();
-  GlobalKey<DialogsWidgetState> dialogsKey = GlobalKey();
+  final GlobalKey<DialogsWidgetState> _dialogsKey = GlobalKey();
 
-  bool loading = false;
+  /// Report device status to server
+  final BehaviorSubject<Size> _subject = BehaviorSubject();
+
+  bool _loading = false;
   Future? _loadingDelayFuture;
-  bool forceDisableBarrier = false;
+  bool _forceDisableBarrier = false;
 
   bool? _connected;
   Timer? _connectedTimer;
   String? _connectedMessage;
 
   void refreshDialogs() {
-    setState(() {});
+    _dialogsKey.currentState?.setState(() {});
   }
+
+  bool get forceDisableBarrier => _forceDisableBarrier;
 
   /// Overrides the modal barrier while [loading] is true.
   ///
   /// Do not forget to re-enable it with [overrideModalBarrier(false)]!
   void overrideModalBarrier(bool forceDisableBarrier) {
     setState(() {
-      this.forceDisableBarrier = forceDisableBarrier;
+      _forceDisableBarrier = forceDisableBarrier;
     });
   }
 
+  bool get loading => _loading;
+
   void showLoading(Duration delay) {
-    if (!loading) {
+    if (!_loading) {
       _loadingDelayFuture = Future.delayed(delay);
-      loading = true;
+      _loading = true;
 
       if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
         SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
@@ -110,8 +114,8 @@ class JVxOverlayState extends State<JVxOverlay> {
   }
 
   void hideLoading() {
-    if (loading) {
-      loading = false;
+    if (_loading) {
+      _loading = false;
       setState(() {});
     }
   }
@@ -165,7 +169,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   void initState() {
     super.initState();
 
-    subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
+    _subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
       if (IUiService().clientId.value != null && !ConfigController().offline.value) {
         ICommandService().sendCommand(DeviceStatusCommand(
           screenWidth: size.width,
@@ -178,7 +182,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    subject.add(MediaQuery.of(context).size);
+    _subject.add(MediaQuery.of(context).size);
 
     return GestureDetector(
       onTap: () {
@@ -195,11 +199,11 @@ class JVxOverlayState extends State<JVxOverlay> {
           future: _loadingDelayFuture,
           builder: (context, snapshot) {
             return LoadingBar(
-              show: loading && snapshot.connectionState == ConnectionState.done,
+              show: _loading && snapshot.connectionState == ConnectionState.done,
               child: Stack(
                 children: [
                   if (widget.child != null) widget.child!,
-                  DialogsWidget(key: dialogsKey),
+                  DialogsWidget(key: _dialogsKey),
                   if (_connectedMessage != null)
                     StatusBanner(
                       key: _statusBannerKey,
@@ -219,7 +223,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                           : null,
                       child: Text(FlutterUI.translate(_connectedMessage)),
                     ),
-                  if (loading && !forceDisableBarrier)
+                  if (_loading && !_forceDisableBarrier)
                     const ModalBarrier(
                       dismissible: false,
                     ),
