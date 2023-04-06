@@ -20,11 +20,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 
 import '../../flutter_ui.dart';
+import '../../mask/jvx_overlay.dart';
 import '../../model/command/api/login_command.dart';
 import '../../routing/locations/login_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../misc/status_banner.dart';
 import '../progress/progress_dialog_widget.dart';
 
 class JVxDebug extends StatelessWidget {
@@ -174,6 +176,59 @@ class JVxDebug extends StatelessWidget {
           }),
           ListTile(
             title: Text(
+              "Connection Banner",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 44),
+              child: ToggleButtons(
+                onPressed: (index) async {
+                  switch (index) {
+                    case 0:
+                      JVxOverlay.maybeOf(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext())
+                          ?.setConnectionState(true);
+                      break;
+                    case 1:
+                      JVxOverlay.maybeOf(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext())
+                          ?.setConnectionState(false);
+                      break;
+                  }
+                },
+                isSelected: const [
+                  false,
+                  false,
+                ],
+                borderRadius: BorderRadius.circular(20),
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text("On"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text("Off"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class UIDebug extends StatelessWidget {
+  const UIDebug({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DebugEntry(
+      title: const Text("UI"),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(
               "Progress Dialog",
               style: Theme.of(context).textTheme.titleMedium,
             ),
@@ -202,6 +257,59 @@ class JVxDebug extends StatelessWidget {
                 }
               },
               child: const Text("Test"),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Banner",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 44),
+              child: ToggleButtons(
+                onPressed: (index) async {
+                  late StatusBannerLocation location;
+                  late String message;
+                  switch (index) {
+                    case 0:
+                      location = StatusBannerLocation.top;
+                      message = "Top Banner";
+                      break;
+                    case 1:
+                      location = StatusBannerLocation.bottom;
+                      message = "Bottom Banner";
+                      break;
+                  }
+
+                  OverlayEntry? entry;
+                  entry = OverlayEntry(
+                    builder: (context) {
+                      return StatusBanner(
+                        translationCurve: Curves.fastOutSlowIn,
+                        location: location,
+                        onClose: () => entry?.remove(),
+                        child: Text(FlutterUI.translate(message)),
+                      );
+                    },
+                  );
+                  Overlay.of(context).insert(entry);
+                },
+                isSelected: const [
+                  false,
+                  false,
+                ],
+                borderRadius: BorderRadius.circular(20),
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text("Top"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text("Bottom"),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

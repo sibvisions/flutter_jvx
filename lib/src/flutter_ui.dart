@@ -713,6 +713,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         debugEntries: [
           const JVxDebug(),
           ...widget.debugOverlayEntries,
+          const UIDebug(),
         ],
         child: futureBuilder,
       );

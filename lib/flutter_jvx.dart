@@ -91,6 +91,7 @@ export 'src/util/jvx_webview.dart';
 export 'src/util/loading_handler/i_command_progress_handler.dart';
 export 'src/util/misc/debouncer.dart';
 export 'src/util/misc/multi_value_listenable_builder.dart';
+export 'src/util/misc/status_banner.dart';
 export 'src/util/parse_util.dart';
 export 'src/util/progress/progress_button.dart';
 export 'src/util/progress/progress_dialog_widget.dart';

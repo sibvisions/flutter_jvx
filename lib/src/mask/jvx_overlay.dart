@@ -14,15 +14,20 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../flutter_ui.dart';
+import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
 import '../model/command/ui/set_focus_command.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/config_controller.dart';
 import '../service/ui/i_ui_service.dart';
+import '../util/misc/status_banner.dart';
 import 'state/app_style.dart';
 import 'state/loading_bar.dart';
 
@@ -66,11 +71,16 @@ class JVxOverlayState extends State<JVxOverlay> {
   /// Report device status to server
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
+  final GlobalKey<StatusBannerState> _statusBannerKey = GlobalKey();
   GlobalKey<DialogsWidgetState> dialogsKey = GlobalKey();
 
   bool loading = false;
   Future? _loadingDelayFuture;
   bool forceDisableBarrier = false;
+
+  bool? _connected;
+  Timer? _connectedTimer;
+  String? _connectedMessage;
 
   void refreshDialogs() {
     setState(() {});
@@ -104,6 +114,51 @@ class JVxOverlayState extends State<JVxOverlay> {
       loading = false;
       setState(() {});
     }
+  }
+
+  void setConnectionState(bool connected) {
+    if (_connected == connected) return;
+
+    _connected = connected;
+    if (_connected!) {
+      setState(() {
+        _connectedMessage = "Server Connection restored";
+      });
+      _connectedTimer?.cancel();
+      _connectedTimer = Timer(
+        const Duration(seconds: 2),
+        () {
+          if (!mounted) return;
+          _hideStatusBanner();
+        },
+      );
+    } else if (!_connected!) {
+      _connectedTimer?.cancel();
+      setState(() {
+        _connectedMessage = "Server Connection lost, retrying...";
+      });
+    } else {
+      _connectedTimer?.cancel();
+      _hideStatusBanner();
+    }
+  }
+
+  void resetConnectionState({bool instant = false}) {
+    _connectedTimer?.cancel();
+    _connected = null;
+    if (instant) {
+      _removeStatusBanner();
+    } else {
+      _hideStatusBanner();
+    }
+  }
+
+  void _hideStatusBanner() {
+    _statusBannerKey.currentState?.close();
+  }
+
+  void _removeStatusBanner() {
+    setState(() => _connectedMessage = null);
   }
 
   @override
@@ -145,6 +200,25 @@ class JVxOverlayState extends State<JVxOverlay> {
                 children: [
                   if (widget.child != null) widget.child!,
                   DialogsWidget(key: dialogsKey),
+                  if (_connectedMessage != null)
+                    StatusBanner(
+                      key: _statusBannerKey,
+                      backgroundColor: _connected == true ? const Color(0xFF1A964A) : null,
+                      color: _connected == true
+                          ? (Theme.of(context).colorScheme.brightness == Brightness.light
+                              ? const Color(0xFF141414)
+                              : Colors.white)
+                          : null,
+                      onClose: () => _removeStatusBanner(),
+                      onTap: _connected == false
+                          ? () {
+                              ICommandService()
+                                  .sendCommand(AliveCommand(reason: "User requested retry", retryRequest: false))
+                                  .catchError((_) {});
+                            }
+                          : null,
+                      child: Text(FlutterUI.translate(_connectedMessage)),
+                    ),
                   if (loading && !forceDisableBarrier)
                     const ModalBarrier(
                       dismissible: false,

@@ -30,6 +30,7 @@ import '../../../../config/api/api_route.dart';
 import '../../../../exceptions/invalid_server_response_exception.dart';
 import '../../../../exceptions/session_expired_exception.dart';
 import '../../../../flutter_ui.dart';
+import '../../../../mask/jvx_overlay.dart';
 import '../../../../model/api_interaction.dart';
 import '../../../../model/command/api/alive_command.dart';
 import '../../../../model/command/api/changes_command.dart';
@@ -272,7 +273,7 @@ class OnlineApiRepository extends IRepository {
     // Cancel reconnects
     _cancelHTTPReconnect();
     await stopWebSocket();
-    hideStatus(instant: true);
+    resetConnectedStatus(instant: true);
 
     _everConnected = false;
     _connected = false;
@@ -297,7 +298,7 @@ class OnlineApiRepository extends IRepository {
     if (_connected && !connected) {
       // Only show on first reconnect attempt
       _statusTimer = Timer(statusDelay, () {
-        showStatus("Server Connection lost, retrying...", true);
+        setConnectedStatus(false);
       });
       _reconnectHTTP();
     } else if (!_connected && connected && _everConnected) {
@@ -305,10 +306,10 @@ class OnlineApiRepository extends IRepository {
       if (_statusTimer?.isActive ?? false) {
         _statusTimer?.cancel();
       } else {
-        showStatus("Server Connection restored");
+        setConnectedStatus(true);
       }
     } else if (_connected != connected) {
-      hideStatus();
+      resetConnectedStatus();
     }
 
     if (connected) {
@@ -501,36 +502,20 @@ class OnlineApiRepository extends IRepository {
     );
   }
 
-  void showStatus(String message, [bool showIndefinitely = false]) {
+  void setConnectedStatus(bool connected) {
     if (!ConfigController().offline.value) {
-      // If we would want it in the splash too.
-      BuildContext? effectiveContext = FlutterUI.getCurrentContext(); //?? FlutterUI.getSplashContext();
+      BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
       if (effectiveContext != null) {
-        var messenger = ScaffoldMessenger.maybeOf(effectiveContext);
-        var theme = Theme.of(effectiveContext);
-
-        messenger?.hideCurrentSnackBar();
-        messenger?.showSnackBar(SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text(FlutterUI.translate(message)),
-          backgroundColor: (theme.snackBarTheme.backgroundColor ?? theme.colorScheme.onSurface).withOpacity(0.7),
-          // There is no infinite.
-          duration: showIndefinitely ? const Duration(days: 365) : const Duration(seconds: 2),
-        ));
+        JVxOverlay.maybeOf(effectiveContext)?.setConnectionState(connected);
       }
     }
   }
 
-  void hideStatus({bool instant = false}) {
+  void resetConnectedStatus({bool instant = false}) {
     _statusTimer?.cancel();
     BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
     if (effectiveContext != null) {
-      var messengerState = ScaffoldMessenger.maybeOf(effectiveContext);
-      if (instant) {
-        messengerState?.removeCurrentSnackBar();
-      } else {
-        messengerState?.hideCurrentSnackBar();
-      }
+      JVxOverlay.maybeOf(effectiveContext)?.resetConnectionState(instant: instant);
     }
   }
 
