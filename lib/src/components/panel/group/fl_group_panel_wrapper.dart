@@ -60,7 +60,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   void initState() {
     super.initState();
 
-    _createGroupLayout();
+    _createLayout();
     layoutAfterBuild = true;
 
     buildChildren(pSetStateOnChange: false);
@@ -68,7 +68,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   @override
   modelUpdated() {
-    _createGroupLayout();
+    _createLayout();
     super.modelUpdated();
 
     layoutAfterBuild = true;
@@ -179,7 +179,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     );
   }
 
-  void _createGroupLayout() {
+  void _createLayout() {
     ILayout originalLayout = ILayout.getLayout(model)!;
     layoutData.layout = GroupLayout(
       originalLayout: originalLayout,
