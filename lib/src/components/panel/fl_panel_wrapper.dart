@@ -42,19 +42,25 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   void initState() {
     super.initState();
 
-    layoutData.layout = ILayout.getLayout(model);
-    layoutData.children =
-        IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+    createLayout();
 
     buildChildren(pSetStateOnChange: false);
     registerParent();
   }
 
-  @override
-  modelUpdated() {
+  void createLayout() {
     layoutData.layout = ILayout.getLayout(model);
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
+
+    if (model.hasStandardBorder) {
+      layoutData.insets = const EdgeInsets.all(1);
+    }
+  }
+
+  @override
+  modelUpdated() {
+    createLayout();
 
     super.modelUpdated();
 
