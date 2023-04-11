@@ -31,7 +31,7 @@ import 'i_layout.dart';
 /// North, East, West, South and Center.
 /// North and South are above/underneath West, Center and East
 /// East and West are left/right of center.
-class BorderLayout implements ILayout, ICloneable {
+class BorderLayout extends ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

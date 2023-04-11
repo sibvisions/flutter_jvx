@@ -20,7 +20,7 @@ import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import 'i_layout.dart';
 
-class ScrollLayout implements ILayout {
+class ScrollLayout extends ILayout {
   ILayout originalLayout;
 
   ScrollLayout(this.originalLayout);

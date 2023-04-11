@@ -20,7 +20,7 @@ import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import 'i_layout.dart';
 
-class TabLayout implements ILayout {
+class TabLayout extends ILayout {
   // int selectedIndex;
 
   double tabHeaderHeight;
