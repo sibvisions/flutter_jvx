@@ -144,10 +144,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   @override
   Size calculateSize(BuildContext context) {
-    if (model.name == "Pro-RD_B_DOREMOVETAG_NASS") {
-      print("test");
-    }
-
     if (model.isSlideStyle) {
       double textWidth = ParseUtil.getTextWidth(text: model.labelModel.text, style: model.labelModel.createTextStyle());
       Size minimumSize = model.minimumSize!;

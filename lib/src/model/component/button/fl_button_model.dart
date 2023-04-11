@@ -177,8 +177,6 @@ class FlButtonModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    print("$id $name ${styles.join(",")} $minimumSize $hasNoMinSize");
-
     borderOnMouseEntered = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.borderOnMouseEntered,
