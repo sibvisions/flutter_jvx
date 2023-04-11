@@ -16,7 +16,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
@@ -121,7 +120,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   }
 
   Widget _buildModern(BuildContext context) {
-    double groupHeaderHeight = (layoutData.layout as GroupLayout).groupHeaderHeight;
+    double groupHeaderHeight = layoutData.insets.top;
 
     EdgeInsets paddings;
     if (model.verticalAlignment == VerticalAlignment.BOTTOM) {
@@ -180,11 +179,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   }
 
   void _createLayout() {
-    ILayout originalLayout = ILayout.getLayout(model)!;
-    layoutData.layout = GroupLayout(
-      originalLayout: originalLayout,
-      groupHeaderHeight: 0.0,
-    );
+    layoutData.layout = ILayout.getLayout(model);
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
   }
@@ -195,14 +190,11 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
       return;
     }
 
-    GroupLayout layout = (layoutData.layout as GroupLayout);
+    // This is the context of the header, not of this panel!
+    double groupHeaderHeight = calculateSize(context).height;
 
-    Size calculatedSize = calculateSize(context);
-
-    double groupHeaderHeight = calculatedSize.height;
-
-    if (groupHeaderHeight != layout.groupHeaderHeight) {
-      layout.groupHeaderHeight = groupHeaderHeight;
+    if (groupHeaderHeight != layoutData.insets.top) {
+      layoutData.insets = EdgeInsets.only(top: groupHeaderHeight);
       layoutAfterBuild = true;
     }
 
@@ -222,7 +214,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   double get heightOfGroupPanel {
     if (layoutData.hasPosition) {
-      return layoutData.layoutPosition!.height - (layoutData.layout as GroupLayout).groupHeaderHeight;
+      return layoutData.layoutPosition!.height - layoutData.insets.vertical;
     }
 
     return 0.0;
