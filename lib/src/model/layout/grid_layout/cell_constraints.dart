@@ -14,7 +14,7 @@
  * the License.
  */
 
-import '../margins.dart';
+import 'package:flutter/material.dart';
 
 /// Constraints of a cell in a gridLayout
 class CellConstraint {
@@ -35,7 +35,7 @@ class CellConstraint {
   int gridHeight;
 
   /// The margins of the component
-  Margins margins;
+  EdgeInsets margins;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

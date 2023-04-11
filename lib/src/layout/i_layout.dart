@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'package:flutter/material.dart';
+
 import '../model/component/fl_component_model.dart';
 import '../model/layout/layout_data.dart';
 import '../service/config/config_controller.dart';
@@ -29,6 +31,13 @@ import 'split_layout.dart';
 /// Defines the base construct of a [ILayout].
 /// It is generally advised to use this class as an interface and not as a superclass.
 abstract class ILayout implements ICloneable {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Margins of the Layout
+  EdgeInsets margins = EdgeInsets.zero;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,5 +76,15 @@ abstract class ILayout implements ICloneable {
     }
 
     return null;
+  }
+
+  /// Creates an EdgeInset from the margins.
+  static EdgeInsets marginsFromList({required List<String> marginList, required double scaling}) {
+    return EdgeInsets.fromLTRB(
+      double.parse(marginList[1]) * scaling,
+      double.parse(marginList[0]) * scaling,
+      double.parse(marginList[3]) * scaling,
+      double.parse(marginList[2]) * scaling,
+    );
   }
 }

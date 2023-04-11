@@ -15,7 +15,6 @@
  */
 
 import 'dart:collection';
-import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 
@@ -24,7 +23,6 @@ import '../model/layout/grid_layout/cell_constraints.dart';
 import '../model/layout/grid_layout/grid_size.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
-import '../model/layout/margins.dart';
 import 'i_layout.dart';
 
 class GridLayout extends ILayout {
@@ -38,9 +36,6 @@ class GridLayout extends ILayout {
   /// The modifier with which to scale the layout.
   final double scaling;
 
-  /// Margins of the Grid Layout
-  late final Margins margins;
-
   /// Gaps between grid cells
   late final Gaps gaps;
 
@@ -50,7 +45,7 @@ class GridLayout extends ILayout {
   GridLayout({required this.layoutString, required this.scaling}) {
     List<String> splitLayout = layoutString.split(",");
 
-    margins = Margins.fromList(marginList: splitLayout.sublist(1, 5), scaling: scaling);
+    margins = ILayout.marginsFromList(marginList: splitLayout.sublist(1, 5), scaling: scaling);
     gaps = Gaps.createFromList(gapsList: splitLayout.sublist(5, 7), scaling: scaling);
     gridSize = GridSize.fromList(list: splitLayout.sublist(7, 9));
   }
@@ -73,7 +68,7 @@ class GridLayout extends ILayout {
       // Generate constraints
       List<String> splitConstraint = data.constraints!.split(RegExp("[;,]"));
       CellConstraint componentConstraint = CellConstraint(
-          margins: Margins.fromList(marginList: splitConstraint.sublist(4), scaling: scaling),
+          margins: ILayout.marginsFromList(marginList: splitConstraint.sublist(4), scaling: scaling),
           gridHeight: (int.parse(splitConstraint[3]) * scaling).ceil(),
           gridWidth: (int.parse(splitConstraint[2]) * scaling).ceil(),
           gridY: (int.parse(splitConstraint[1]) * scaling).ceil(),
@@ -96,25 +91,19 @@ class GridLayout extends ILayout {
     }
 
     double calcWidth = widest * gridSize.columns +
-        (gridSize.columns - 1) * gaps.verticalGap +
-        pParent.insets.left +
-        pParent.insets.right +
-        margins.marginLeft +
-        margins.marginRight;
-    double calcHeight = tallest * gridSize.rows +
-        (gridSize.rows - 1) * gaps.horizontalGap +
-        pParent.insets.top +
-        pParent.insets.bottom +
-        margins.marginTop +
-        margins.marginBottom;
+        (gridSize.columns - 1) * gaps.horizontalGap +
+        pParent.insets.horizontal +
+        margins.horizontal;
+    double calcHeight =
+        tallest * gridSize.rows + (gridSize.rows - 1) * gaps.verticalGap + pParent.insets.vertical + margins.horizontal;
 
     Size preferredSize = Size(calcWidth, calcHeight);
 
     double fieldWidth = pParent.layoutPosition?.width ?? calcWidth;
     double fieldHeight = pParent.layoutPosition?.height ?? calcHeight;
 
-    fieldWidth -= pParent.insets.left + pParent.insets.right + margins.marginLeft + margins.marginRight;
-    fieldHeight -= pParent.insets.top + pParent.insets.bottom + margins.marginTop + margins.marginBottom;
+    fieldWidth -= pParent.insets.horizontal + margins.horizontal;
+    fieldHeight -= pParent.insets.vertical + margins.vertical;
     Size fieldSize = Size(fieldWidth / gridSize.columns, fieldHeight / gridSize.rows);
 
     for (LayoutData data in pChildren) {
@@ -133,8 +122,8 @@ class GridLayout extends ILayout {
       data.layoutPosition = LayoutPosition(
           width: calculatedWidth,
           height: calculatedHeight,
-          top: calculatedTop + (pParent.insets.top + margins.marginTop),
-          left: calculatedLeft + (pParent.insets.left + margins.marginLeft),
+          top: calculatedTop + margins.top,
+          left: calculatedLeft + margins.left,
           isComponentSize: true);
     }
     pParent.calculatedSize = preferredSize;

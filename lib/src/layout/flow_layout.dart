@@ -21,7 +21,6 @@ import '../model/layout/alignments.dart';
 import '../model/layout/gaps.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
-import '../model/layout/margins.dart';
 import '../util/parse_util.dart';
 import 'i_layout.dart';
 
@@ -35,9 +34,6 @@ class FlowLayout extends ILayout {
 
   /// The split layout string.
   final List<String> splitLayoutString;
-
-  /// Margins of the layout
-  late final Margins margins;
 
   /// Gaps between the components
   late final Gaps gaps;
@@ -64,7 +60,7 @@ class FlowLayout extends ILayout {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlowLayout({required this.layoutString, required this.scaling}) : splitLayoutString = layoutString.split(",") {
-    margins = Margins.fromList(marginList: splitLayoutString.sublist(1, 5), scaling: scaling);
+    margins = ILayout.marginsFromList(marginList: splitLayoutString.sublist(1, 5), scaling: scaling);
     gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7), scaling: scaling);
     isRowOrientationHorizontal =
         AlignmentOrientationE.fromString(splitLayoutString[7]) == AlignmentOrientation.HORIZONTAL;
@@ -91,8 +87,8 @@ class FlowLayout extends ILayout {
     double dimWidth = pParent.layoutPosition?.width ?? 0;
     double dimHeight = pParent.layoutPosition?.height ?? 0;
 
-    dimWidth -= (pParent.insets.left + pParent.insets.right + margins.marginLeft + margins.marginRight);
-    dimHeight -= (pParent.insets.top + pParent.insets.bottom + margins.marginTop + margins.marginBottom);
+    dimWidth -= (pParent.insets.horizontal + margins.horizontal);
+    dimHeight -= (pParent.insets.vertical + margins.vertical);
 
     dimHeight = max(0, dimHeight);
     dimWidth = max(0, dimWidth);
@@ -109,12 +105,10 @@ class FlowLayout extends ILayout {
     double iWidth;
 
     if (outerHa == HorizontalAlignment.STRETCH) {
-      iLeft = pParent.insets.left + margins.marginLeft;
+      iLeft = margins.left;
       iWidth = dimSize.width;
     } else {
-      iLeft = ((dimSize.width - prefSize.width) * _getAlignmentFactor(outerHa.index)) +
-          margins.marginLeft +
-          pParent.insets.left;
+      iLeft = ((dimSize.width - prefSize.width) * _getAlignmentFactor(outerHa.index)) + margins.left;
       iWidth = prefSize.width;
     }
 
@@ -122,12 +116,10 @@ class FlowLayout extends ILayout {
     double iHeight;
 
     if (outerVa == VerticalAlignment.STRETCH) {
-      iTop = pParent.insets.top + margins.marginTop;
+      iTop = margins.top;
       iHeight = dimSize.height;
     } else {
-      iTop = ((dimSize.height - prefSize.height) * _getAlignmentFactor(outerVa.index)) +
-          margins.marginTop +
-          pParent.insets.top;
+      iTop = ((dimSize.height - prefSize.height) * _getAlignmentFactor(outerVa.index)) + margins.top;
       iHeight = prefSize.height;
     }
 
@@ -206,8 +198,11 @@ class FlowLayout extends ILayout {
       }
     }
 
-    pParent.calculatedSize =
-        (prefSize + Offset(margins.marginLeft + margins.marginRight, margins.marginTop + margins.marginBottom));
+    pParent.calculatedSize = prefSize +
+        Offset(
+          margins.horizontal + pParent.insets.horizontal,
+          margins.vertical + pParent.insets.vertical,
+        );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -293,27 +288,6 @@ class FlowLayout extends ILayout {
     }
 
     return _FlowGrid(columns: anzCols, rows: anzRows, gridWidth: width, gridHeight: height);
-  }
-
-  Size calcSize(LayoutData pParent, List<LayoutData> pChildren) {
-    double maxHeight = isRowOrientationHorizontal ? 0 : ((pChildren.length - 1) * gaps.verticalGap).toDouble();
-    double maxWidth = isRowOrientationHorizontal ? ((pChildren.length - 1) * gaps.horizontalGap).toDouble() : 0;
-
-    for (LayoutData child in pChildren) {
-      if (isRowOrientationHorizontal) {
-        if (child.bestSize.height > maxHeight) {
-          maxHeight = child.bestSize.height;
-        }
-        maxWidth += child.bestSize.width;
-      } else {
-        if (child.bestSize.width > maxWidth) {
-          maxWidth = child.bestSize.width;
-        }
-        maxHeight += child.bestSize.height;
-      }
-    }
-    return Size(maxWidth + pParent.insets.left + pParent.insets.right + margins.marginLeft + margins.marginRight,
-        maxHeight + pParent.insets.top + pParent.insets.bottom + margins.marginTop + margins.marginBottom);
   }
 } // FlowLayout
 
