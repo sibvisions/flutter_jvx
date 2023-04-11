@@ -38,6 +38,8 @@ class AppImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double avatarRadius = 50;
+
     return IconTheme.merge(
       // Darken color to not get overwritten by a grey ColorFilter/foregroundDecoration.
       data: IconThemeData(color: JVxColors.darken(Colors.grey)),
@@ -62,10 +64,21 @@ class AppImage extends StatelessWidget {
                 size: 40,
               ),
             ),
-          if (image == null && icon == null)
+          if (image == null && icon == null && (name?.isNotEmpty ?? false))
             Avatar(
-              name: (name?.isNotEmpty ?? false) ? name : null,
+              shape: AvatarShape.circle(avatarRadius),
+              name: name,
               loader: const SizedBox(),
+            ),
+          if (image == null && icon == null && (name?.isEmpty ?? true))
+            // Fallback
+            Container(
+              height: avatarRadius * 2,
+              width: avatarRadius * 2,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(50)),
+                color: Theme.of(context).colorScheme.background,
+              ),
             ),
         ],
       ),
