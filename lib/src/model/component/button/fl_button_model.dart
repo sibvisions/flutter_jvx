@@ -86,7 +86,7 @@ class FlButtonModel extends FlComponentModel {
   }
 
   /// The paddings between the button and its children.
-  set paddings(EdgeInsets value) {
+  set paddings(EdgeInsets? value) {
     _paddings = value;
   }
 
