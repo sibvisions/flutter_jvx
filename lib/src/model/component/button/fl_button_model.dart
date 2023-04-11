@@ -70,7 +70,25 @@ class FlButtonModel extends FlComponentModel {
   String? mouseOverImage;
 
   /// The paddings between the button and its children.
-  EdgeInsets paddings = const EdgeInsets.fromLTRB(10, 10, 10, 10);
+  EdgeInsets? _paddings;
+
+  /// The paddings between the button and its children.
+  EdgeInsets get paddings {
+    if (_paddings != null) {
+      return _paddings!;
+    }
+
+    if (hasNoMinSize) {
+      return EdgeInsets.zero;
+    } else {
+      return const EdgeInsets.fromLTRB(10, 10, 10, 10);
+    }
+  }
+
+  /// The paddings between the button and its children.
+  set paddings(EdgeInsets value) {
+    _paddings = value;
+  }
 
   /// Dataprovider for QR-Code buttons or telephone button
   String dataProvider = "";
@@ -226,8 +244,8 @@ class FlButtonModel extends FlComponentModel {
     paddings = getPropertyValue(
         pJson: pJson,
         pKey: ApiObjectProperty.margins,
-        pDefault: defaultModel.paddings,
-        pCurrent: paddings,
+        pDefault: defaultModel._paddings,
+        pCurrent: _paddings,
         pConversion: (value) => ParseUtil.parseMargins(value)! * ConfigController().getScaling());
 
     dataProvider = getPropertyValue(
