@@ -91,8 +91,8 @@ class FlowLayout extends ILayout {
     double dimWidth = pParent.layoutPosition?.width ?? 0;
     double dimHeight = pParent.layoutPosition?.height ?? 0;
 
-    dimWidth -= pParent.insets.left + pParent.insets.right + margins.marginLeft + margins.marginRight;
-    dimHeight -= pParent.insets.top + pParent.insets.bottom + margins.marginTop + margins.marginBottom;
+    dimWidth -= (pParent.insets.left + pParent.insets.right + margins.marginLeft + margins.marginRight);
+    dimHeight -= (pParent.insets.top + pParent.insets.bottom + margins.marginTop + margins.marginBottom);
 
     dimHeight = max(0, dimHeight);
     dimWidth = max(0, dimWidth);
@@ -102,22 +102,17 @@ class FlowLayout extends ILayout {
     final _FlowGrid flowLayoutInfo = _calculateGrid(dimSize, pChildren);
 
     Size prefSize = Size(
-        (flowLayoutInfo.gridWidth * flowLayoutInfo.columns +
-            gaps.horizontalGap * (flowLayoutInfo.columns - 1) +
-            margins.marginLeft +
-            margins.marginRight),
-        (flowLayoutInfo.gridHeight * flowLayoutInfo.rows + gaps.verticalGap * (flowLayoutInfo.rows - 1)) +
-            margins.marginTop +
-            margins.marginBottom);
+        (flowLayoutInfo.gridWidth * flowLayoutInfo.columns + gaps.horizontalGap * (flowLayoutInfo.columns - 1)),
+        (flowLayoutInfo.gridHeight * flowLayoutInfo.rows + gaps.verticalGap * (flowLayoutInfo.rows - 1)));
 
     double iLeft;
     double iWidth;
 
     if (outerHa == HorizontalAlignment.STRETCH) {
-      iLeft = margins.marginLeft;
+      iLeft = pParent.insets.left + margins.marginLeft;
       iWidth = dimSize.width;
     } else {
-      iLeft = (dimSize.width - prefSize.width) * _getAlignmentFactor(outerHa.index) +
+      iLeft = ((dimSize.width - prefSize.width) * _getAlignmentFactor(outerHa.index)) +
           margins.marginLeft +
           pParent.insets.left;
       iWidth = prefSize.width;
@@ -127,10 +122,10 @@ class FlowLayout extends ILayout {
     double iHeight;
 
     if (outerVa == VerticalAlignment.STRETCH) {
-      iTop = margins.marginTop;
+      iTop = pParent.insets.top + margins.marginTop;
       iHeight = dimSize.height;
     } else {
-      iTop = (dimSize.height - prefSize.height) * _getAlignmentFactor(outerVa.index) +
+      iTop = ((dimSize.height - prefSize.height) * _getAlignmentFactor(outerVa.index)) +
           margins.marginTop +
           pParent.insets.top;
       iHeight = prefSize.height;
@@ -211,7 +206,8 @@ class FlowLayout extends ILayout {
       }
     }
 
-    pParent.calculatedSize = prefSize;
+    pParent.calculatedSize =
+        (prefSize + Offset(margins.marginLeft + margins.marginRight, margins.marginTop + margins.marginBottom));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
