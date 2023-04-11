@@ -64,7 +64,7 @@ class AppImage extends StatelessWidget {
             ),
           if (image == null && icon == null)
             Avatar(
-              name: name,
+              name: (name?.isNotEmpty ?? false) ? name : null,
               loader: const SizedBox(),
             ),
         ],
