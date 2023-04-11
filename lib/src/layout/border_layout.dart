@@ -23,7 +23,6 @@ import 'package:flutter/widgets.dart';
 import '../model/layout/gaps.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
-import '../model/layout/margins.dart';
 import '../util/i_clonable.dart';
 import 'i_layout.dart';
 
@@ -60,9 +59,6 @@ class BorderLayout extends ILayout implements ICloneable {
 
   /// The original layout string.
   final String layoutString;
-
-  /// Margins of the BorderLayout
-  late final Margins margins;
 
   /// Gaps between the components
   late final Gaps gaps;
@@ -118,25 +114,24 @@ class BorderLayout extends ILayout implements ICloneable {
 
     pParent.calculatedSize = preferredSize;
 
-    double x = pParent.insets.left + margins.marginLeft;
-    double y = pParent.insets.top + margins.marginTop;
-    double width = preferredSize.width - x - pParent.insets.right + margins.marginRight;
-    double height = preferredSize.height - y - pParent.insets.bottom + margins.marginBottom;
+    double x = margins.left;
+    double y = margins.top;
+    double width = preferredSize.width;
+    double height = preferredSize.height;
 
     // If parent has forced this into a size, cant exceed these values.
     if (pParent.hasPosition) {
       if (pParent.layoutPosition!.isComponentSize) {
-        width = pParent.layoutPosition!.width - x - pParent.insets.right - margins.marginRight;
-        height = pParent.layoutPosition!.height - y - pParent.insets.bottom - margins.marginBottom;
+        width = pParent.layoutPosition!.width;
+        height = pParent.layoutPosition!.height;
       } else {
-        width =
-            max(pParent.layoutPosition!.width, preferredSize.width) - x - pParent.insets.right - margins.marginRight;
-        height = max(pParent.layoutPosition!.height, preferredSize.height) -
-            y -
-            pParent.insets.bottom -
-            margins.marginBottom;
+        width = max(pParent.layoutPosition!.width, preferredSize.width);
+        height = max(pParent.layoutPosition!.height, preferredSize.height);
       }
     }
+
+    width = width - x - margins.right - pParent.insets.horizontal;
+    height = height - y - margins.bottom - pParent.insets.vertical;
 
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
@@ -212,7 +207,7 @@ class BorderLayout extends ILayout implements ICloneable {
   void _updateValuesFromString(String layout) {
     List<String> parameter = layout.split(",");
 
-    margins = Margins.fromList(marginList: parameter.sublist(1, 5), scaling: scaling);
+    margins = ILayout.marginsFromList(marginList: parameter.sublist(1, 5), scaling: scaling);
     gaps = Gaps.createFromList(gapsList: parameter.sublist(5, 7), scaling: scaling);
   }
 
@@ -266,7 +261,10 @@ class BorderLayout extends ILayout implements ICloneable {
         width = maxWidth;
       }
 
-      return Size(width + margins.marginLeft + margins.marginRight, height + margins.marginTop + margins.marginBottom);
+      return Size(
+        width + margins.horizontal + pParent.insets.horizontal,
+        height + margins.vertical + pParent.insets.vertical,
+      );
     }
   }
 }

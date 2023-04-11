@@ -29,7 +29,6 @@ import '../model/layout/form_layout/form_layout_used_border.dart';
 import '../model/layout/gaps.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
-import '../model/layout/margins.dart';
 import 'i_layout.dart';
 
 class FormLayout extends ILayout {
@@ -45,9 +44,6 @@ class FormLayout extends ILayout {
 
   /// The original layout data string
   final String layoutData;
-
-  /// Margins
-  late final Margins margins;
 
   /// Gaps
   late final Gaps gaps;
@@ -73,7 +69,7 @@ class FormLayout extends ILayout {
 
   FormLayout({required this.layoutData, required this.layoutString, required this.scaling})
       : splitLayoutString = layoutString.split(",") {
-    margins = Margins.fromList(marginList: splitLayoutString.sublist(1, 5), scaling: scaling);
+    margins = ILayout.marginsFromList(marginList: splitLayoutString.sublist(1, 5), scaling: scaling);
     gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7), scaling: scaling);
     alignment = splitLayoutString.sublist(7, 9);
     anchors = _getAnchors(layoutData);
@@ -127,7 +123,6 @@ class FormLayout extends ILayout {
       pHorizontalAlignment: horizontalAlignment,
       pVerticalAlignment: verticalAlignment,
       pUsedBorder: usedBorder,
-      pMargins: margins,
       pComponentData: pChildren,
       pComponentConstraints: componentConstraints,
       pGivenSize: calcSize,
@@ -137,7 +132,6 @@ class FormLayout extends ILayout {
     return _buildComponents(
         pAnchors: anchors,
         pComponentConstraints: componentConstraints,
-        pMargins: margins,
         id: pParent.id,
         pChildrenData: pChildren,
         pParent: pParent,
@@ -387,7 +381,6 @@ class FormLayout extends ILayout {
       required HorizontalAlignment pHorizontalAlignment,
       required VerticalAlignment pVerticalAlignment,
       required FormLayoutUsedBorder pUsedBorder,
-      required Margins pMargins,
       required List<LayoutData> pComponentData,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
       Size? pGivenSize,
@@ -484,10 +477,10 @@ class FormLayout extends ILayout {
       }
     }
 
-    lba.position -= pMargins.marginLeft;
-    rba.position -= pMargins.marginLeft;
-    tba.position -= pMargins.marginTop;
-    bba.position -= pMargins.marginTop;
+    lba.position -= margins.left;
+    rba.position -= margins.left;
+    tba.position -= margins.top;
+    bba.position -= margins.top;
 
     for (var component in pComponentData) {
       FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
@@ -506,7 +499,6 @@ class FormLayout extends ILayout {
   void _buildComponents(
       {required HashMap<String, FormLayoutAnchor> pAnchors,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
-      required Margins pMargins,
       required String id,
       required List<LayoutData> pChildrenData,
       required LayoutData pParent,
@@ -537,12 +529,12 @@ class FormLayout extends ILayout {
     pComponentConstraints.forEach((componentId, constraint) {
       double left = constraint.leftAnchor.getAbsolutePosition() -
           marginConstraints.leftAnchor.getAbsolutePosition() +
-          pMargins.marginLeft +
+          margins.left +
           additionalLeft;
 
       double top = constraint.topAnchor.getAbsolutePosition() -
           marginConstraints.topAnchor.getAbsolutePosition() +
-          pMargins.marginTop +
+          margins.top +
           additionalTop;
 
       double width = constraint.rightAnchor.getAbsolutePosition() - constraint.leftAnchor.getAbsolutePosition();
