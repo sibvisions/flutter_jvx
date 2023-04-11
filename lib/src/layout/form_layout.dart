@@ -114,9 +114,6 @@ class FormLayout extends ILayout {
         pPreferredMinimumSize: formLayoutSize,
         pGaps: gaps);
 
-    // Size set by Parent
-    Size calcSize = _getSize(pParent, formLayoutSize);
-
     _calculateTargetDependentAnchors(
       pMinPrefSize: formLayoutSize,
       pAnchors: anchors,
@@ -125,7 +122,7 @@ class FormLayout extends ILayout {
       pUsedBorder: usedBorder,
       pComponentData: pChildren,
       pComponentConstraints: componentConstraints,
-      pGivenSize: calcSize,
+      pGivenSize: _getSize(pParent, formLayoutSize),
       pParent: pParent,
     );
 
@@ -155,6 +152,9 @@ class FormLayout extends ILayout {
         dimHeight = max(dimHeight, pParent.layoutPosition!.height);
       }
     }
+
+    dimWidth -= pParent.insets.horizontal;
+    dimHeight -= pParent.insets.vertical;
 
     return Size(dimWidth, dimHeight);
   }
@@ -548,7 +548,7 @@ class FormLayout extends ILayout {
 
     Size preferred = Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
 
-    pParent.calculatedSize = preferred;
+    pParent.calculatedSize = preferred + Offset(pParent.insets.horizontal, pParent.insets.vertical);
   }
 
   /// Parses all anchors from layoutData and establishes relatedAnchors
