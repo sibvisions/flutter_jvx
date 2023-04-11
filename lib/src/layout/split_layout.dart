@@ -23,7 +23,7 @@ import '../model/layout/layout_position.dart';
 import '../util/i_clonable.dart';
 import 'i_layout.dart';
 
-class SplitLayout implements ILayout, ICloneable {
+class SplitLayout extends ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

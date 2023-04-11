@@ -20,7 +20,7 @@ import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import 'i_layout.dart';
 
-class GroupLayout implements ILayout {
+class GroupLayout extends ILayout {
   double groupHeaderHeight;
 
   ILayout originalLayout;
