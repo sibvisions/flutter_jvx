@@ -196,7 +196,6 @@ abstract class ImageLoader {
     Map<String, String> headers = {};
     var repository = IApiService().getRepository();
     if (repository is OnlineApiRepository) {
-      headers.addAll(repository.getHeaders());
       if (repository.getCookies().isNotEmpty) {
         headers[HttpHeaders.cookieHeader] = repository.getCookies().map((e) => "${e.name}=${e.value}").join("; ");
       }
