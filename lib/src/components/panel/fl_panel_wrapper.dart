@@ -53,9 +53,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
 
-    if (model.hasStandardBorder) {
-      layoutData.insets = const EdgeInsets.all(1);
-    }
+    layoutData.insets = EdgeInsets.all(model.hasStandardBorder ? 1 : 0);
   }
 
   @override
