@@ -22,7 +22,7 @@ class FlButtonModel extends FlComponentModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static const String NO_MIN_SIZE = "f_no_min_size";
+  static const String SMALL_STYLE = "f_small";
 
   static const String SLIDE_STYLE = "f_slide";
 
@@ -78,10 +78,10 @@ class FlButtonModel extends FlComponentModel {
       return _paddings!;
     }
 
-    if (hasNoMinSize) {
+    if (isSmallStyle) {
       return EdgeInsets.zero;
     } else {
-      return const EdgeInsets.fromLTRB(10, 10, 10, 10);
+      return const EdgeInsets.all(10);
     }
   }
 
@@ -124,8 +124,8 @@ class FlButtonModel extends FlComponentModel {
   /// Whether the button invokes [HapticFeedback.vibrate] on press.
   bool get isHaptic => styles.contains(HAPTIC);
 
-  /// If the button has no flutter default minimum size.
-  bool get hasNoMinSize => styles.contains(NO_MIN_SIZE);
+  /// If the button has no default paddings and is small.
+  bool get isSmallStyle => styles.contains(SMALL_STYLE);
 
   /// If the button is a hyperlink button
   bool get isHyperLink => styles.contains("hyperlink");
@@ -144,16 +144,7 @@ class FlButtonModel extends FlComponentModel {
       return Size(130, height);
     }
 
-    if (hasNoMinSize) {
-      return null;
-    }
-
-    if (Frame.isWebFrame()) {
-      // 32 is the wanted height of our dense Textfields in the webframe
-      return const Size.square(32);
-    } else {
-      return const Size.square(kMinInteractiveDimension);
-    }
+    return Size.square(FlTextFieldWidget.TEXT_FIELD_HEIGHT);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

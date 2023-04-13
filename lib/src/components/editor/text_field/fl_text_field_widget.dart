@@ -84,9 +84,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   final bool isMandatory;
 
-  /// Additional input decorations not handled by the model.
-  final InputDecoration inputDecoration;
-
   final List<TextInputFormatter>? inputFormatters;
 
   final bool hideClearIcon;
@@ -95,7 +92,15 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  EdgeInsets get contentPadding => TEXT_FIELD_PADDING(model.createTextStyle());
+  EdgeInsets get contentPadding {
+    EdgeInsets padding = TEXT_FIELD_PADDING(model.createTextStyle());
+
+    if (kIsWeb) {
+      padding = padding + const EdgeInsets.only(top: 4, bottom: 4);
+    }
+
+    return padding;
+  }
 
   EdgeInsets get iconsPadding {
     EdgeInsets cPadding = contentPadding;
@@ -136,7 +141,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
     this.isMandatory = false,
-    this.inputDecoration = const InputDecoration(),
     this.hideClearIcon = false,
   });
 
@@ -162,7 +166,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     return TextField(
       controller: textController,
-      decoration: inputDecoration.copyWith(
+      decoration: InputDecoration(
         enabled: model.isEnabled,
         hintText: model.isBorderVisible ? null : model.placeholder,
         labelText: model.isBorderVisible ? model.placeholder : null,
@@ -172,7 +176,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         hintStyle: model.createTextStyle(
           pForeground: textController.text.isEmpty ? JVxColors.TEXT_HINT_LABEL_COLOR : null,
         ),
-        contentPadding: !kIsWeb ? contentPadding : contentPadding + const EdgeInsets.only(top: 4, bottom: 4),
+        contentPadding: contentPadding,
         border: createBorder(FlTextBorderType.border),
         errorBorder: createBorder(FlTextBorderType.errorBorder),
         enabledBorder: createBorder(FlTextBorderType.enabledBorder),
