@@ -1,5 +1,5 @@
-/* 
- * Copyright 2022 SIB Visions GmbH
+/*
+ * Copyright 2022-2023 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,8 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../flutter_ui.dart';
-import '../service/config/config_controller.dart';
+import '../../flutter_ui.dart';
+import '../../service/config/config_controller.dart';
 
 enum UploadType {
   FILE_SYSTEM,

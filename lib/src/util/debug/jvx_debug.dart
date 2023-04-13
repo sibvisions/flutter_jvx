@@ -26,8 +26,8 @@ import '../../routing/locations/login_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/ui/i_ui_service.dart';
-import '../misc/status_banner.dart';
-import '../progress/progress_dialog_widget.dart';
+import '../widgets/progress/progress_dialog_widget.dart';
+import '../widgets/status_banner.dart';
 
 class JVxDebug extends StatelessWidget {
   const JVxDebug({super.key});

@@ -24,7 +24,7 @@ import '../../../../service/apps/app_service.dart';
 import '../../../../service/config/config_controller.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
-import '../../../../util/progress/progress_button.dart';
+import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../apps/app_overview_page.dart';
 import '../../../state/app_style.dart';
 import '../../../state/loading_bar.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../flutter_ui.dart';
+import '../../flutter_ui.dart';
 
 class JVxWebView extends StatefulWidget {
   final Uri initialUrl;

@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../model/response/login_view_response.dart';
-import '../../../../../util/loading_gauge.dart';
+import '../../../../../util/widgets/loading_gauge.dart';
 import '../../../login_page.dart';
 import '../mfa_card.dart';
 

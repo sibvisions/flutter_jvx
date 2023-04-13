@@ -27,7 +27,7 @@ import '../model/command/ui/set_focus_command.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/config_controller.dart';
 import '../service/ui/i_ui_service.dart';
-import '../util/misc/status_banner.dart';
+import '../util/widgets/status_banner.dart';
 import 'state/app_style.dart';
 import 'state/loading_bar.dart';
 

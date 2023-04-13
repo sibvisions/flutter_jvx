@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../flutter_ui.dart';
-import '../../../../../util/loading_gauge.dart';
+import '../../../../../util/widgets/loading_gauge.dart';
 import '../mfa_card.dart';
 
 class MFAWaitCard extends StatefulWidget {

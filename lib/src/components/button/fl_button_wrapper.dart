@@ -26,7 +26,6 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../mask/camera/qr_scanner_overlay.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
@@ -39,6 +38,7 @@ import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
+import '../../util/widgets/jvx_qr_scanner.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_button_widget.dart';
@@ -206,7 +206,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void openQrCodeScanner() {
     IUiService().openDialog(
-      pBuilder: (_) => QRScannerOverlay(callback: sendQrCodeResult),
+      pBuilder: (_) => JVxQRScanner(callback: sendQrCodeResult),
     );
   }
 

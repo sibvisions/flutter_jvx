@@ -42,7 +42,7 @@ import '../service/config/config_controller.dart';
 import '../service/data/i_data_service.dart';
 import '../service/storage/i_storage_service.dart';
 import '../service/ui/i_ui_service.dart';
-import 'progress/progress_dialog_widget.dart';
+import 'widgets/progress/progress_dialog_widget.dart';
 
 abstract class OfflineUtil {
   static Widget getOfflineBar(BuildContext context, {bool useElevation = false}) {

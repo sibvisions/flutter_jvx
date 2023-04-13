@@ -1,5 +1,5 @@
-/* 
- * Copyright 2022 SIB Visions GmbH
+/*
+ * Copyright 2022-2023 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,8 +29,8 @@ import '../../flutter_ui.dart';
 /// In case of [allowMultiScan], this can returns multiple barcodes.
 typedef QRCallback = FutureOr<void> Function(List<Barcode> barcode);
 
-/// Displays the QR-Scanner with additional a control bar on top.
-class QRScannerOverlay extends StatefulWidget {
+/// Displays a QR-Scanner with additional a control bar on top.
+class JVxQRScanner extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +43,7 @@ class QRScannerOverlay extends StatefulWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const QRScannerOverlay({
+  const JVxQRScanner({
     super.key,
     required this.callback,
     this.allowMultiScan = false,
@@ -54,11 +54,11 @@ class QRScannerOverlay extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  State<QRScannerOverlay> createState() => _QRScannerOverlayState();
+  State<JVxQRScanner> createState() => _JVxQRScannerState();
 }
 
 /// State is needed for disposing the controller.
-class _QRScannerOverlayState extends State<QRScannerOverlay> {
+class _JVxQRScannerState extends State<JVxQRScanner> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -22,7 +22,7 @@ import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
-import '../../../../util/progress/progress_button.dart';
+import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
 

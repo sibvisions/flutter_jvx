@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
-import '../../flutter_ui.dart';
+import '../../../flutter_ui.dart';
 
 class ProgressDialogWidget extends StatefulWidget {
   final Config config;
