@@ -67,8 +67,8 @@ abstract class OfflineUtil {
     try {
       await Wakelock.enable();
       String offlineWorkscreenClassName = ConfigController().offlineScreen.value!;
-      String offlineUsername = ConfigController().username.value!;
-      String offlinePassword = ConfigController().password.value!;
+      String? offlineUsername = ConfigController().username.value;
+      String? offlinePassword = ConfigController().password.value;
 
       var futureDialog = IUiService().openDialog(
         pIsDismissible: false,
