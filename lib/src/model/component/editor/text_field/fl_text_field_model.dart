@@ -22,7 +22,7 @@ class FlTextFieldModel extends FlLabelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The placeholder text inside the textfield if it is empty.
-  String placeholder = "";
+  String? placeholder;
 
   // The count of rows of text shown.
   int rows = 1;

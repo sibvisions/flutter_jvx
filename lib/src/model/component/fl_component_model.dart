@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../components/panel/tabset/fl_tab_panel_wrapper.dart';
 import '../../flutter_ui.dart';
 import '../../mask/frame/frame.dart';

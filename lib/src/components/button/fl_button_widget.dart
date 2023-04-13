@@ -236,6 +236,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     hasElevation &= !model.isTextButton;
 
     return ButtonStyle(
+      minimumSize: MaterialStateProperty.all(Size.zero),
       elevation: MaterialStateProperty.all(hasElevation ? 2 : 0),
       backgroundColor: backgroundColor != null ? MaterialStateProperty.all(backgroundColor) : null,
       padding: MaterialStateProperty.all(model.paddings),
