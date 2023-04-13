@@ -37,9 +37,7 @@ import 'exceptions/error_view_exception.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
-import 'model/command/api/exit_command.dart';
 import 'model/command/api/login_command.dart';
-import 'model/command/api/startup_command.dart';
 import 'model/config/application_parameters.dart';
 import 'model/request/api_startup_request.dart';
 import 'routing/locations/app_location.dart';
@@ -52,6 +50,8 @@ import 'service/api/impl/default/api_service.dart';
 import 'service/api/shared/controller/api_controller.dart';
 import 'service/api/shared/repository/offline_api_repository.dart';
 import 'service/api/shared/repository/online_api_repository.dart';
+import 'service/apps/app.dart';
+import 'service/apps/app_service.dart';
 import 'service/command/i_command_service.dart';
 import 'service/command/impl/command_service.dart';
 import 'service/config/config_controller.dart';
@@ -291,11 +291,16 @@ class FlutterUI extends StatefulWidget {
     // Service init
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    // Apps
+    AppService appService = AppService.create();
+    services.registerSingleton(appService);
+
     // Config
     ConfigController configController = ConfigController.create(
       configService: ConfigService.create(sharedPrefs: await SharedPreferences.getInstance()),
       fileManager: await IFileManager.getFileManager(),
     );
+    services.registerSingleton(configController);
 
     // Load config files
     AppConfig? devConfig;
@@ -314,7 +319,7 @@ class FlutterUI extends StatefulWidget {
     appConfig = appConfig.merge(_extractURIConfigParameters(queryParameters));
 
     await configController.loadConfig(appConfig, devConfig != null);
-    services.registerSingleton(configController);
+    await AppService().removeObsoletePredefinedApps();
 
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService.create() : await IsolateLayoutService.create();
@@ -379,26 +384,22 @@ class FlutterUI extends StatefulWidget {
     );
   }
 
-  static Future<ServerConfig?> _extractURIParameters(Map<String, String> queryParameters) async {
-    ServerConfig? urlConfig;
+  static Future<App?> _extractURIParameters(Map<String, String> queryParameters) async {
+    App? urlApp;
 
     String? appName = queryParameters.remove("appName");
-    if (appName != null) {
-      await ConfigController().updateAppName(appName);
-
-      String? baseUrl = queryParameters.remove("baseUrl");
+    String? baseUrl = queryParameters.remove("baseUrl");
+    if (appName != null && baseUrl != null) {
       Uri? baseUri;
-      if (baseUrl != null) {
-        try {
-          baseUri = Uri.parse(baseUrl);
-        } on FormatException catch (e, stack) {
-          FlutterUI.log.w("Failed to parse baseUrl parameter", e, stack);
-        }
+      try {
+        baseUri = Uri.parse(baseUrl);
+      } on FormatException catch (e, stack) {
+        FlutterUI.log.w("Failed to parse baseUrl url parameter", e, stack);
       }
       String? username = queryParameters.remove("username") ?? queryParameters.remove("userName");
       String? password = queryParameters.remove("password");
 
-      urlConfig = ServerConfig(
+      ServerConfig? urlConfig = ServerConfig(
         appName: appName,
         baseUrl: baseUri,
         username: username,
@@ -406,16 +407,21 @@ class FlutterUI extends StatefulWidget {
         isDefault: true,
       );
 
-      if (ConfigController().appName.value != null) {
-        String? language = queryParameters.remove("language");
-        if (language != null) {
-          await ConfigController().updateUserLanguage(
-            language == ConfigController().getPlatformLocale() ? null : language,
-          );
-        }
-        String? timeZone = queryParameters.remove("timeZone");
-        if (timeZone != null) {
-          await ConfigController().updateApplicationTimeZone(timeZone);
+      if (urlConfig.isValid) {
+        urlApp = await App.createAppFromConfig(urlConfig);
+
+        await ConfigController().updateCurrentApp(urlApp.id);
+        if (ConfigController().currentApp.value != null) {
+          String? language = queryParameters.remove("language");
+          if (language != null) {
+            await ConfigController().updateUserLanguage(
+              language == ConfigController().getPlatformLocale() ? null : language,
+            );
+          }
+          String? timeZone = queryParameters.remove("timeZone");
+          if (timeZone != null) {
+            await ConfigController().updateApplicationTimeZone(timeZone);
+          }
         }
       }
     }
@@ -428,47 +434,7 @@ class FlutterUI extends StatefulWidget {
       IUiService().updateWebOnly(webOnly == "true");
     }
 
-    return urlConfig;
-  }
-
-  static Future<List<ServerConfig>> getApps() async {
-    return (await Future.wait(
-      ConfigController().getAppNames().map((e) async => await ConfigController().getApp(e)).toList(),
-    ))
-        .sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase());
-  }
-
-  /// Adds/Updates this config.
-  ///
-  /// In case of renaming an existing config, provide an [oldAppName].
-  static Future<void> updateApp(ServerConfig config, {String? oldAppName}) async {
-    await ConfigController().updateApp(config, oldAppName: oldAppName);
-  }
-
-  static Future<void> removeApp(String appName) async {
-    await ConfigController().removeApp(appName);
-    await ConfigController().getFileManager().deleteIndependentDirectory([appName], recursive: true).catchError(
-        (e, stack) => FlutterUI.log.w('Failed to delete "$appName" app directory', e, stack));
-  }
-
-  static Future<void> removeAllApps() async {
-    await Future.forEach<String>(
-      ConfigController()
-          .getAppNames()
-          .where((element) => !(ConfigController().getPredefinedApp(element)?.locked ?? false)),
-      (e) => FlutterUI.removeApp(e),
-    );
-    await ConfigController().updatePrivacyPolicy(null);
-  }
-
-  /// Tries to clear as much leftover app data from previous versions as possible.
-  ///
-  /// [SharedPreferences] are deliberately left behind as these are not versioned.
-  static Future<void> removePreviousAppVersions(String appName, String currentVersion) async {
-    await ConfigController()
-        .getFileManager()
-        .removePreviousAppVersions(appName, currentVersion)
-        .catchError((e, stack) => FlutterUI.log.e('Failed to delete old app directories from "$appName"', e, stack));
+    return urlApp;
   }
 }
 
@@ -479,12 +445,11 @@ GlobalKey<NavigatorState>? splashNavigatorKey;
 PageStorageBucket pageStorageBucket = PageStorageBucket();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
-  static ServerConfig? urlConfig;
+  static App? urlConfig;
 
   final RoutesObserver routeObserver = RoutesObserver();
 
   AppLifecycleState? lastState;
-  bool startedManually = false;
 
   late ThemeData themeData;
   late ThemeData darkThemeData;
@@ -546,97 +511,35 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     // Init
     if (urlConfig != null) {
-      startApp(app: urlConfig, autostart: true);
+      startApp(appId: urlConfig!.id, autostart: true);
     } else {
-      FlutterUI.getApps().then((serverConfigs) {
-        AppConfig appConfig = ConfigController().getAppConfig()!;
-        bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
-        ServerConfig? defaultConfig = serverConfigs.firstWhereOrNull((e) {
-          return (e.isDefault ?? false) &&
-              ((appConfig.customAppsAllowed ?? false) || ConfigController().getPredefinedApp(e.appName!) != null);
-        });
-        if (defaultConfig == null && serverConfigs.length == 1 && !showAppOverviewWithoutDefault) {
-          defaultConfig = serverConfigs.firstOrNull;
-        }
-        if (defaultConfig?.isStartable ?? false) {
-          startApp(app: defaultConfig, autostart: true);
-        } else {
-          IUiService().routeToAppOverview();
-        }
+      List<App> apps = App.getAppsByIDs(AppService().getAppIds());
+      AppConfig appConfig = ConfigController().getAppConfig()!;
+      bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
+      App? defaultApp = apps.firstWhereOrNull((e) {
+        return e.isDefault && ((appConfig.customAppsAllowed ?? false) || e.predefined);
       });
+      if (defaultApp == null && apps.length == 1 && !showAppOverviewWithoutDefault) {
+        defaultApp = apps.firstOrNull;
+      }
+      if (defaultApp?.isStartable ?? false) {
+        startApp(appId: defaultApp!.id, autostart: true);
+      }
     }
   }
 
-  void startApp({ServerConfig? app, bool? autostart}) {
+  void startApp({String? appId, bool? autostart}) {
     setState(() {
-      startupFuture =
-          _startApp(app: app, autostart: autostart).catchError(FlutterUI.createErrorHandler("Failed to send startup"));
+      startupFuture = AppService()
+          .startApp(appId: appId, autostart: autostart)
+          .then((value) => changedTheme())
+          .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
     });
   }
 
-  Future<void> _startApp({ServerConfig? app, bool? autostart}) async {
-    await stopApp(false);
-
-    startedManually = !(autostart ?? !startedManually);
-
-    if (app?.appName != null) {
-      await ConfigController().updateApp(app!);
-      await ConfigController().updateAppName(app.appName!);
-    }
-
-    changedTheme();
-
-    if (ConfigController().getFileManager().isSatisfied()) {
-      // Only try to load if FileManager is available
-      ConfigController().reloadSupportedLanguages();
-      ConfigController().loadLanguages();
-    }
-
-    if (!(app?.isStartable ?? true) &&
-        (ConfigController().appName.value == null || ConfigController().baseUrl.value == null)) {
-      await IUiService().routeToAppOverview();
-      return;
-    }
-
-    await ConfigController().updateLastApp(ConfigController().appName.value);
-
-    if (ConfigController().offline.value) {
-      IUiService().routeToMenu(pReplaceRoute: true);
-      return;
-    }
-
-    ServerConfig? predefinedConfig = ConfigController().getPredefinedApp(ConfigController().appName.value);
-
-    // Send startup to server
-    await ICommandService().sendCommand(StartupCommand(
-      reason: "InitApp",
-      username: app?.username ?? predefinedConfig?.username,
-      password: app?.password ?? predefinedConfig?.password,
-    ));
-  }
-
-  /// Stops the currently running app.
   Future<void> stopApp([bool resetAppName = true]) async {
     setState(() => startupFuture = null);
-
-    if (!ConfigController().offline.value && IUiService().clientId.value != null) {
-      unawaited(ICommandService()
-          .sendCommand(ExitCommand(reason: "App has been stopped"))
-          .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
-    }
-
-    // (Re-)start repository
-    if (IApiService().getRepository() is OnlineApiRepository) {
-      if (IApiService().getRepository().isStopped() == false) {
-        await IApiService().getRepository().stop();
-      }
-    }
-    await IApiService().getRepository().start();
-    await FlutterUI.clearServices(true);
-
-    if (resetAppName) {
-      await ConfigController().updateAppName(null);
-    }
+    await AppService().stopApp(resetAppName);
   }
 
   @override
@@ -831,10 +734,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   void changedTheme() {
-    Map<String, String> styleMap = ConfigController().applicationStyle.value;
+    Map<String, String>? styleMap = ConfigController().applicationStyle.value;
 
-    Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap['web.topmenu.color']) : null;
-    styleColor ??= ParseUtil.parseHexColor(styleMap['theme.color']);
+    Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap?['web.topmenu.color']) : null;
+    styleColor ??= ParseUtil.parseHexColor(styleMap?['theme.color']);
 
     if (styleColor != null) {
       MaterialColor materialColor = generateMaterialColor(color: styleColor);

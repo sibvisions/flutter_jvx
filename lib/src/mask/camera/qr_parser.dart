@@ -75,18 +75,18 @@ class QRParser {
 
     if (parsedConfig.isNotEmpty) {
       List<ServerConfig> collectedApps = [];
-      ServerConfig rootConfig = QRConfig.parseApp(parsedConfig);
-      if (rootConfig.isStartable) {
+      ServerConfig rootConfig = ServerConfig.fromQR(parsedConfig);
+      if (rootConfig.isValid) {
         collectedApps.add(rootConfig);
       }
       if (parsedConfig.containsKey(QRConfig.APPS)) {
         List<dynamic> apps = parsedConfig[QRConfig.APPS];
-        collectedApps.addAll(apps.map((e) => QRConfig.parseApp(e)).where((element) => element.isStartable));
+        collectedApps.addAll(apps.map((e) => ServerConfig.fromQR(e)).where((element) => element.isValid));
       }
       String? privacyPolicy = parsedConfig[QRConfig.POLICY];
 
       return QRConfig(
-        policy: privacyPolicy != null ? Uri.parse(privacyPolicy) : null,
+        policy: privacyPolicy != null ? Uri.parse(privacyPolicy.trim()) : null,
         apps: collectedApps,
       );
     }

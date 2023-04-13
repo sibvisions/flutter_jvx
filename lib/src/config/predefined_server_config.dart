@@ -16,13 +16,13 @@
 
 import '../mask/apps/app_overview_page.dart';
 import '../util/parse_util.dart';
-import 'qr_config.dart';
+import 'app_config.dart';
 
-/// This is a config for a JVx app, that can be either provided
-/// via the [QRConfig] or the browser URL.
+/// This is a config for a JVx app, that is provided
+/// via the [AppConfig.serverConfigs].
 ///
 /// Used to show apps in [AppOverviewPage].
-class ServerConfig {
+class PredefinedServerConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,11 +48,17 @@ class ServerConfig {
   /// {@macro app.default}
   final bool? isDefault;
 
+  /// {@macro app.locked}
+  final bool? locked;
+
+  /// {@macro app.parametersHidden}
+  final bool? parametersHidden;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const ServerConfig({
+  const PredefinedServerConfig({
     this.appName,
     this.baseUrl,
     this.username,
@@ -60,11 +66,13 @@ class ServerConfig {
     this.title,
     this.icon,
     this.isDefault,
+    this.locked,
+    this.parametersHidden,
   });
 
-  const ServerConfig.empty() : this();
+  const PredefinedServerConfig.empty() : this();
 
-  ServerConfig.fromJson(Map<String, dynamic> json)
+  PredefinedServerConfig.fromJson(Map<String, dynamic> json)
       : this(
           appName: ParseUtil.ensureNullOnEmpty(json['appName']),
           baseUrl: json['baseUrl'] != null ? Uri.parse(json['baseUrl']) : null,
@@ -73,28 +81,18 @@ class ServerConfig {
           title: ParseUtil.ensureNullOnEmpty(json['title']),
           icon: ParseUtil.ensureNullOnEmpty(json['icon']),
           isDefault: json['default'],
-        );
-
-  ServerConfig.fromQR(Map<String, dynamic> json)
-      : this(
-          appName: ParseUtil.ensureNullOnEmpty(
-              (json[QRConfig.APP_NAME] ?? json[QRConfig.APPLICATION] ?? json[QRConfig.APPLIKATION])?.trim()),
-          baseUrl: json[QRConfig.URL] != null ? Uri.parse(json[QRConfig.URL]?.trim()) : null,
-          username: ParseUtil.ensureNullOnEmpty(json[QRConfig.USER]?.trim()),
-          password: ParseUtil.ensureNullOnEmpty(json[QRConfig.PASSWORD]?.trim()),
-          title: ParseUtil.ensureNullOnEmpty(json[QRConfig.TITLE]?.trim()),
-          icon: ParseUtil.ensureNullOnEmpty(json[QRConfig.ICON]?.trim()),
-          isDefault: json[QRConfig.IS_DEFAULT],
+          locked: json['locked'],
+          parametersHidden: json['parametersHidden'],
         );
 
   /// Whether this config contains enough information to be valid.
   bool get isValid => (appName?.isNotEmpty ?? false) && baseUrl != null;
 
-  /// Returns a new [ServerConfig] which contains the merged fields of [this] and [other].
-  ServerConfig merge(ServerConfig? other) {
+  /// Returns a new [PredefinedServerConfig] which contains the merged fields of [this] and [other].
+  PredefinedServerConfig merge(PredefinedServerConfig? other) {
     if (other == null) return this;
 
-    return ServerConfig(
+    return PredefinedServerConfig(
       appName: other.appName ?? appName,
       baseUrl: other.baseUrl ?? baseUrl,
       username: other.username ?? username,
@@ -102,15 +100,17 @@ class ServerConfig {
       title: other.title ?? title,
       icon: other.icon ?? icon,
       isDefault: other.isDefault ?? isDefault,
+      locked: other.locked ?? locked,
+      parametersHidden: other.parametersHidden ?? parametersHidden,
     );
   }
 
-  /// Returns a new [ServerConfig] which only contains the differences between [this] and [other].
-  ServerConfig diff(ServerConfig? other) {
+  /// Returns a new [PredefinedServerConfig] which only contains the differences between [this] and [other].
+  PredefinedServerConfig diff(PredefinedServerConfig? other) {
     if (other == null) return this;
-    if (other == this) return const ServerConfig.empty();
+    if (other == this) return const PredefinedServerConfig.empty();
 
-    return ServerConfig(
+    return PredefinedServerConfig(
       appName: other.appName != appName ? appName : null,
       baseUrl: other.baseUrl != baseUrl ? baseUrl : null,
       username: other.username != username ? username : null,
@@ -118,6 +118,8 @@ class ServerConfig {
       title: other.title != title ? title : null,
       icon: other.icon != icon ? icon : null,
       isDefault: (other.isDefault ?? false) != (isDefault ?? false) ? isDefault : null,
+      locked: (other.locked ?? true) != (locked ?? true) ? locked : null,
+      parametersHidden: (other.parametersHidden ?? false) != (parametersHidden ?? false) ? parametersHidden : null,
     );
   }
 
@@ -129,20 +131,14 @@ class ServerConfig {
         'title': title,
         'icon': icon,
         'default': isDefault,
-      };
-
-  Map<String, dynamic> toQR() => {
-        QRConfig.APP_NAME: appName,
-        QRConfig.URL: baseUrl?.toString(),
-        if (title != null) QRConfig.TITLE: title,
-        if (icon != null) QRConfig.ICON: icon,
-        if (isDefault != null) QRConfig.IS_DEFAULT: isDefault,
+        'locked': locked,
+        'parametersHidden': parametersHidden,
       };
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ServerConfig &&
+      other is PredefinedServerConfig &&
           runtimeType == other.runtimeType &&
           appName == other.appName &&
           baseUrl == other.baseUrl &&
@@ -150,7 +146,9 @@ class ServerConfig {
           password == other.password &&
           title == other.title &&
           icon == other.icon &&
-          isDefault == other.isDefault;
+          isDefault == other.isDefault &&
+          locked == other.locked &&
+          parametersHidden == other.parametersHidden;
 
   @override
   int get hashCode =>
@@ -160,5 +158,7 @@ class ServerConfig {
       password.hashCode ^
       title.hashCode ^
       icon.hashCode ^
-      isDefault.hashCode;
+      isDefault.hashCode ^
+      locked.hashCode ^
+      parametersHidden.hashCode;
 }

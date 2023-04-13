@@ -126,7 +126,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
       child: Opacity(
-        opacity: double.parse(ConfigController().applicationStyle.value['opacity.controls'] ?? "1"),
+        opacity: double.parse(ConfigController().applicationStyle.value?['opacity.controls'] ?? "1"),
         child: child,
       ),
     );

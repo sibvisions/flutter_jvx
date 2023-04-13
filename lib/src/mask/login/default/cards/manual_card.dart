@@ -20,6 +20,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
+import '../../../../service/apps/app_service.dart';
 import '../../../../service/config/config_controller.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
@@ -62,7 +63,7 @@ class _ManualCardState extends State<ManualCard> {
 
   @override
   Widget build(BuildContext context) {
-    String? loginTitle = AppStyle.of(context).applicationStyle['login.title'];
+    String? loginTitle = AppStyle.of(context).applicationStyle?['login.title'];
 
     showRememberMe = (IUiService().applicationMetaData.value?.rememberMeEnabled ?? false) ||
         (ConfigController().getAppConfig()?.uiConfig!.showRememberMe ?? false);
@@ -170,7 +171,7 @@ class _ManualCardState extends State<ManualCard> {
   }
 
   Widget _createBottomRow() {
-    bool replaceSettingsWithApps = AppOverviewPage.showAppsButton();
+    bool replaceSettingsWithApps = AppService().showAppsButton();
     Widget textButton = TextButton.icon(
       onPressed: () => replaceSettingsWithApps ? IUiService().routeToAppOverview() : IUiService().routeToSettings(),
       icon: replaceSettingsWithApps ? const Icon(AppOverviewPage.appsIcon) : const FaIcon(FontAwesomeIcons.gear),

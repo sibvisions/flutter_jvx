@@ -24,6 +24,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../service/api/shared/api_object_property.dart';
+import '../../../service/apps/app_service.dart';
 import '../../../service/config/config_controller.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../../../util/image/image_loader.dart';
@@ -54,16 +55,16 @@ class ModernLogin extends StatelessWidget implements Login {
   @override
   Widget build(BuildContext context) {
     var appStyle = AppStyle.of(context).applicationStyle;
-    String? loginLogo = appStyle['login.logo'];
-    String? loginTitle = appStyle['login.title'];
+    String? loginLogo = appStyle?['login.logo'];
+    String? loginTitle = appStyle?['login.title'];
 
-    bool inverseColor = ParseUtil.parseBool(appStyle['login.inverseColor']) ?? false;
-    bool colorGradient = ParseUtil.parseBool(appStyle['login.colorGradient']) ?? true;
+    bool inverseColor = ParseUtil.parseBool(appStyle?['login.inverseColor']) ?? false;
+    bool colorGradient = ParseUtil.parseBool(appStyle?['login.colorGradient']) ?? true;
 
-    Color? topColor = ParseUtil.parseHexColor(appStyle['login.topColor']) ??
-        ParseUtil.parseHexColor(appStyle['login.background']) ??
+    Color? topColor = ParseUtil.parseHexColor(appStyle?['login.topColor']) ??
+        ParseUtil.parseHexColor(appStyle?['login.background']) ??
         Theme.of(context).colorScheme.primary;
-    Color? bottomColor = ParseUtil.parseHexColor(appStyle['login.bottomColor']);
+    Color? bottomColor = ParseUtil.parseHexColor(appStyle?['login.bottomColor']);
 
     if (inverseColor) {
       var tempTop = topColor;
@@ -71,7 +72,7 @@ class ModernLogin extends StatelessWidget implements Login {
       bottomColor = tempTop;
     }
 
-    bool replaceSettingsWithApps = AppOverviewPage.showAppsButton();
+    bool replaceSettingsWithApps = AppService().showAppsButton();
 
     return Scaffold(
       body: LayoutBuilder(

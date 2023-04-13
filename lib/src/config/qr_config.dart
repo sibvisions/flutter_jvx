@@ -16,7 +16,6 @@
 
 import 'dart:convert';
 
-import '../util/parse_util.dart';
 import 'server_config.dart';
 
 class QRConfig {
@@ -56,32 +55,14 @@ class QRConfig {
 
   const QRConfig.empty() : this();
 
-  QRConfig.fromJson(Map<String, dynamic> json)
+  QRConfig.fromQR(Map<String, dynamic> json)
       : this(
-          policy: json[POLICY] != null ? Uri.parse(json[POLICY]) : null,
-          apps: (json[APPS] as List<dynamic>?)?.map((e) => parseApp(e)).toList(),
+          policy: json[POLICY] != null ? Uri.parse(json[POLICY].trim()) : null,
+          apps: (json[APPS] as List<dynamic>?)?.map((e) => ServerConfig.fromQR(e)).where((e) => e.isValid).toList(),
         );
 
-  static ServerConfig parseApp(Map<String, dynamic> json) {
-    return ServerConfig(
-      appName: ParseUtil.ensureNullOnEmpty(json[APP_NAME] ?? json[APPLICATION] ?? json[APPLIKATION]),
-      baseUrl: json[URL] != null ? Uri.parse(json[URL]) : null,
-      username: ParseUtil.ensureNullOnEmpty(json[USER]),
-      password: ParseUtil.ensureNullOnEmpty(json[PASSWORD]),
-      title: ParseUtil.ensureNullOnEmpty(json[TITLE]),
-      icon: ParseUtil.ensureNullOnEmpty(json[ICON]),
-      isDefault: json[IS_DEFAULT],
-    );
-  }
-
   static String generateQrCode(ServerConfig serverConfig) {
-    return jsonEncode({
-      APP_NAME: serverConfig.appName,
-      URL: serverConfig.baseUrl?.toString(),
-      if (serverConfig.title != null) TITLE: serverConfig.title,
-      if (serverConfig.icon != null) ICON: serverConfig.icon,
-      if (serverConfig.isDefault != null) IS_DEFAULT: serverConfig.isDefault,
-    });
+    return jsonEncode(serverConfig.toQR());
   }
 
   QRConfig merge(QRConfig? other) {
@@ -93,7 +74,7 @@ class QRConfig {
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toQR() => {
         POLICY: policy,
         APPS: apps?.map((e) => e.toJson()).toList(),
       };

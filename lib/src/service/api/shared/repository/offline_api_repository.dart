@@ -59,7 +59,7 @@ class OfflineApiRepository extends IRepository {
   }
 
   Future<void> initDataBooks() async {
-    List<DalMetaData> metaData = await offlineDatabase!.getMetaData(ConfigController().appName.value!);
+    List<DalMetaData> metaData = await offlineDatabase!.getMetaData(ConfigController().currentApp.value!);
     metaData.map((element) => IDataService().setMetaData(pMetaData: element));
   }
 
@@ -89,8 +89,8 @@ class OfflineApiRepository extends IRepository {
   ) async {
     var dalMetaData = dataBooks.map((e) => e.metaData).toList(growable: false);
     // Drop old data + possible old scheme
-    await offlineDatabase!.dropTables(ConfigController().appName.value!);
-    await offlineDatabase!.createTables(ConfigController().appName.value!, dalMetaData);
+    await offlineDatabase!.dropTables(ConfigController().currentApp.value!);
+    await offlineDatabase!.createTables(ConfigController().currentApp.value!, dalMetaData);
 
     FlutterUI.logAPI.d(
         "Sum of all dataBook entries: ${dataBooks.isNotEmpty ? dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element) : 0}");
@@ -124,7 +124,7 @@ class OfflineApiRepository extends IRepository {
 
   /// Deletes all currently used dataBooks
   Future<void> deleteDatabase() {
-    return offlineDatabase!.dropTables(ConfigController().appName.value!);
+    return offlineDatabase!.dropTables(ConfigController().currentApp.value!);
   }
 
   Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {

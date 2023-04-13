@@ -74,8 +74,8 @@ class ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     var appStyle = AppStyle.of(context).applicationStyle;
-    Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
-    String? backgroundImageString = appStyle['desktop.icon'];
+    Color? backgroundColor = ParseUtil.parseHexColor(appStyle?['desktop.color']);
+    String? backgroundImageString = appStyle?['desktop.icon'];
 
     return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisible) => LayoutBuilder(

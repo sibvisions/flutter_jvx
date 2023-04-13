@@ -27,6 +27,7 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
+import '../../service/apps/app.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -232,10 +233,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildGeneralSettings(BuildContext context) {
     SettingItem? appNameSetting;
-    bool isPredefined = ConfigController().getPredefinedApp(appName) != null;
-    bool hideAppDetails = isPredefined &&
-        (ConfigController().getAppConfig()!.serverConfigsParametersHidden! ||
-            (ConfigController().parametersHidden.value ?? false));
+    App app = App.getApp(ConfigController().currentApp.value!)!;
+    bool hideAppDetails = app.parametersHidden;
 
     if (!hideAppDetails) {
       appNameSetting = SettingItem(

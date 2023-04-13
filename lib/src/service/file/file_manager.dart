@@ -36,7 +36,7 @@ abstract class IFileManager {
 
   /// Returns if all requirements are set to successfully access files
   bool isSatisfied() {
-    return ConfigController().appName.value != null && ConfigController().version.value != null;
+    return ConfigController().currentApp.value != null && ConfigController().version.value != null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,7 +44,7 @@ abstract class IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns "appName/appVersion" with platform-aware separators.
-  String getAppSpecificPath(String path, {String? appName, String? version});
+  String getAppSpecificPath(String path, {String? appId, String? version});
 
   /// Check if a file/directory with the given path exists
   Future<bool> doesFileExist(String pPath);
@@ -64,13 +64,16 @@ abstract class IFileManager {
   /// Returns directory, will always return null if in web
   Directory? getDirectory(String pPath);
 
+  /// Renames a independent directory.
+  Future<void> renameIndependentDirectory(List<String> pPath, String pNewName);
+
   /// Deletes a independent directory.
   Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false});
 
   /// Removes all previous app versions.
   ///
-  /// More specific, removes all [appName] app directories with another version than [currentVersion].
-  Future<void> removePreviousAppVersions(String appName, String currentVersion);
+  /// More specific, removes all [appId] app directories with another version than [currentVersion].
+  Future<void> removePreviousAppVersions(String appId, String currentVersion);
 
   /// Returns directory, will always return null if in web
   List<File> getTranslationFiles();

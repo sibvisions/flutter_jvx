@@ -20,7 +20,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../config/server_config.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/request/api_startup_request.dart';
 
@@ -42,140 +41,6 @@ class ConfigService {
   /// Returns the current in use [SharedPreferences] instance.
   SharedPreferences getSharedPreferences() {
     return _sharedPrefs;
-  }
-
-  Set<String> getAppNames() {
-    RegExp regExp = RegExp(r'(\w+)\.\w+');
-    return _sharedPrefs
-        .getKeys()
-        .map((element) => regExp.allMatches(element))
-        .where((e) => e.isNotEmpty)
-        .map((e) => e.first[1].toString())
-        .sorted((a, b) => b.compareTo(a))
-        .toSet();
-  }
-
-  Future<ServerConfig> getApp(String appName) async {
-    String prefix = appName;
-    String? baseUrl = _sharedPrefs.getString("$prefix.baseUrl");
-    String? defaultAppName = await defaultApp();
-    return ServerConfig(
-      appName: appName,
-      baseUrl: baseUrl != null ? Uri.parse(baseUrl) : null,
-      username: _sharedPrefs.getString("$prefix.username"),
-      password: _sharedPrefs.getString("$prefix.password"),
-      title: _sharedPrefs.getString("$prefix.title"),
-      icon: _sharedPrefs.getString("$prefix.icon"),
-      isDefault: defaultAppName == null ? null : appName == defaultAppName,
-    );
-  }
-
-  String? getAppVersion(String appName) {
-    return _sharedPrefs.getString("$appName.version");
-  }
-
-  Map<String, String>? getAppStyle(String appName) {
-    String? jsonMap = _sharedPrefs.getString("$appName.applicationStyle");
-    return (jsonMap != null ? Map<String, String>.from(jsonDecode(jsonMap)) : null) ?? {};
-  }
-
-  Future<void> updateApp(String? oldAppName, ServerConfig config, {bool removeNullFields = false}) async {
-    if (config.appName?.isNotEmpty ?? false) {
-      String prefix = config.appName!;
-
-      if (oldAppName != null) {
-        await renameApp(oldAppName, prefix);
-      }
-
-      if (config.baseUrl != null) {
-        await _sharedPrefs.setString("$prefix.baseUrl", config.baseUrl!.toString());
-      } else if (removeNullFields) {
-        await _sharedPrefs.remove("$prefix.baseUrl");
-      }
-      if (config.username != null) {
-        await _sharedPrefs.setString("$prefix.username", config.username!);
-      } else if (removeNullFields) {
-        await _sharedPrefs.remove("$prefix.username");
-      }
-      if (config.password != null) {
-        await _sharedPrefs.setString("$prefix.password", config.password!);
-      } else if (removeNullFields) {
-        await _sharedPrefs.remove("$prefix.password");
-      }
-      if (config.title != null) {
-        await _sharedPrefs.setString("$prefix.title", config.title!);
-      } else if (removeNullFields) {
-        await _sharedPrefs.remove("$prefix.title");
-      }
-      if (config.icon != null) {
-        await _sharedPrefs.setString("$prefix.icon", config.icon!);
-      } else if (removeNullFields) {
-        await _sharedPrefs.remove("$prefix.icon");
-      }
-      if (config.isDefault != null || removeNullFields) {
-        if (config.isDefault ?? false) {
-          await updateDefaultApp(config.appName!);
-        } else {
-          if (await defaultApp() == config.appName) {
-            await updateDefaultApp(null);
-          }
-        }
-      }
-    }
-  }
-
-  Future<void> renameApp(String oldAppName, String? newAppName) async {
-    if (newAppName?.isNotEmpty ?? false) {
-      String prefix = newAppName!;
-
-      await Future.wait(
-        _sharedPrefs.getKeys().where((e) => e.startsWith("$oldAppName.")).map((e) async {
-          var value = _sharedPrefs.get(e);
-          await _sharedPrefs.remove(e);
-          assert(value != null);
-
-          String subKey = e.substring(e.indexOf(".")); // e.g. ".baseUrl"
-          String newKey = prefix + subKey;
-
-          if (value is String) {
-            await _sharedPrefs.setString(newKey, value);
-          } else if (value is bool) {
-            await _sharedPrefs.setBool(newKey, value);
-          } else if (value is int) {
-            await _sharedPrefs.setInt(newKey, value);
-          } else if (value is double) {
-            await _sharedPrefs.setDouble(newKey, value);
-          } else if (value is List<String>) {
-            await _sharedPrefs.setStringList(newKey, value);
-          } else {
-            assert(false, "${value.runtimeType} is not supported by SharedPreferences");
-          }
-        }).toList(),
-      );
-
-      String? currentApp = await appName();
-      if (currentApp == oldAppName) {
-        await updateAppName(newAppName);
-      }
-
-      String? currentDefault = await defaultApp();
-      if (currentDefault == oldAppName) {
-        await updateDefaultApp(newAppName);
-      }
-    }
-  }
-
-  Future<void> removeApp(String appName) {
-    return Future.wait(
-      _sharedPrefs.getKeys().where((e) => e.startsWith("$appName.")).map((e) => _sharedPrefs.remove(e)).toList(),
-    ).then((_) async {
-      if (await defaultApp() == appName) {
-        await updateDefaultApp(null);
-      }
-      if (await lastApp() == appName) {
-        await updateLastApp(null);
-      }
-    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -234,9 +99,9 @@ class ConfigService {
   }
 
   /// Sets the default app.
-  Future<void> updateDefaultApp(String? appName) {
-    if (appName == null) return _sharedPrefs.remove("defaultApp");
-    return _sharedPrefs.setString("defaultApp", appName);
+  Future<void> updateDefaultApp(String? appId) {
+    if (appId == null) return _sharedPrefs.remove("defaultApp");
+    return _sharedPrefs.setString("defaultApp", appId);
   }
 
   /// Retrieves the last opened app.
@@ -245,9 +110,9 @@ class ConfigService {
   }
 
   /// Sets the last opened app.
-  Future<void> updateLastApp(String? appName) {
-    if (appName == null) return _sharedPrefs.remove("lastApp");
-    return _sharedPrefs.setString("lastApp", appName);
+  Future<void> updateLastApp(String? appId) {
+    if (appId == null) return _sharedPrefs.remove("lastApp");
+    return _sharedPrefs.setString("lastApp", appId);
   }
 
   /// Retrieves the last opened app.
@@ -267,33 +132,23 @@ class ConfigService {
 
   /// Retrieves a string value by it's key in connection to the current app name from [SharedPreferences].
   ///
-  /// The key is structured as follows:
-  /// ```dart
-  /// "$appName.$key"
-  /// ```
+  /// {@macro app.key}
   Future<String?> getString(String key) async {
-    String? prefix = await appName();
+    String? prefix = await currentApp();
     if (prefix != null) {
-      return getAppString(prefix, key);
+      return _sharedPrefs.getString("$prefix.$key");
     } else {
       return null;
     }
   }
 
-  String? getAppString(String appName, String key) {
-    return _sharedPrefs.getString("$appName.$key");
-  }
-
   /// Persists a string value by it's key in connection to the current app name in [SharedPreferences].
   ///
-  /// The key is structured as follows:
-  /// ```dart
-  /// "$appName.$key"
-  /// ```
+  /// {@macro app.key}
   ///
   /// `null` removes the value from the storage.
   Future<bool> setString(String key, String? value) async {
-    String? prefix = await appName();
+    String? prefix = await currentApp();
     assert(prefix != null && prefix.isNotEmpty);
 
     if (prefix != null) {
@@ -306,15 +161,56 @@ class ConfigService {
     return false;
   }
 
+  /// Retrieves a bool value by it's key in connection to the current app name from [SharedPreferences].
+  ///
+  /// {@macro app.key}
+  Future<bool?> getBool(String key) async {
+    String? prefix = await currentApp();
+    if (prefix != null) {
+      return _sharedPrefs.getBool("$prefix.$key");
+    } else {
+      return null;
+    }
+  }
+
+  /// Persists a bool value by it's key in connection to the current app name in [SharedPreferences].
+  ///
+  /// {@macro app.key}
+  ///
+  /// `null` removes the value from the storage.
+  Future<bool> setBool(String key, bool? value) async {
+    String? prefix = await currentApp();
+    assert(prefix != null && prefix.isNotEmpty);
+
+    if (prefix != null) {
+      if (value != null) {
+        return _sharedPrefs.setBool("$prefix.$key", value);
+      } else {
+        return _sharedPrefs.remove("$prefix.$key");
+      }
+    }
+    return false;
+  }
+
+  /// Returns the id of the current app.
+  Future<String?> currentApp() async {
+    return _sharedPrefs.getString("app");
+  }
+
+  /// Sets the id of the current app.
+  Future<void> updateCurrentApp(String? appId) {
+    if (appId == null) return _sharedPrefs.remove("app");
+    return _sharedPrefs.setString("app", appId);
+  }
+
   /// Returns the name of the current app.
   Future<String?> appName() async {
-    return _sharedPrefs.getString("appName");
+    return getString("name");
   }
 
   /// Sets the name of the current app.
   Future<void> updateAppName(String? pAppName) {
-    if (pAppName == null) return _sharedPrefs.remove("appName");
-    return _sharedPrefs.setString("appName", pAppName);
+    return setString("name", pAppName);
   }
 
   /// Returns the saved base url.
@@ -419,9 +315,9 @@ class ConfigService {
   }
 
   /// Returns the last saved app style.
-  Future<Map<String, String>> applicationStyle() async {
+  Future<Map<String, String>?> applicationStyle() async {
     String? jsonMap = await getString("applicationStyle");
-    return (jsonMap != null ? Map<String, String>.from(jsonDecode(jsonMap)) : null) ?? {};
+    return (jsonMap != null ? Map<String, String>.from(jsonDecode(jsonMap)) : null);
   }
 
   /// Sets the app style.
@@ -431,22 +327,12 @@ class ConfigService {
 
   /// Returns if the app is currently in offline mode.
   Future<bool> offline() async {
-    String? prefix = await appName();
-    if (prefix != null) {
-      return _sharedPrefs.getBool("$prefix.offline") ?? false;
-    } else {
-      return false;
-    }
+    return (await getBool("offline")) ?? false;
   }
 
   /// Sets the offline mode.
   Future<void> updateOffline(bool pOffline) async {
-    String? prefix = await appName();
-    assert(prefix != null);
-
-    if (prefix != null) {
-      await _sharedPrefs.setBool("$prefix.offline", pOffline);
-    }
+    await setBool("offline", pOffline);
   }
 
   Future<String?> offlineScreen() async {

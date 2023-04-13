@@ -320,8 +320,8 @@ class WorkScreenState extends State<WorkScreen> {
     WrappedScreen wrappedScreen,
   ) {
     var appStyle = AppStyle.of(context).applicationStyle;
-    Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
-    String? backgroundImageString = appStyle['desktop.icon'];
+    Color? backgroundColor = ParseUtil.parseHexColor(appStyle?['desktop.color']);
+    String? backgroundImageString = appStyle?['desktop.icon'];
 
     return Scaffold(
       resizeToAvoidBottomInset: true,

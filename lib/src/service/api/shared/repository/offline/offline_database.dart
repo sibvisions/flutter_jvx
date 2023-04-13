@@ -136,13 +136,13 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   ///
   /// Uses a [Transaction] and [Batch] to efficiently execute and gracefully fail in case of an error.
   Future<void> createTables(
-    String appName,
+    String appKey,
     List<DalMetaData> dalMetaData,
   ) {
     return db.transaction((txn) async {
       Batch batch = txn.batch();
 
-      int appId = await txn.insert(OFFLINE_APPS_TABLE, {"APP": appName});
+      int appId = await txn.insert(OFFLINE_APPS_TABLE, {"APP": appKey});
       await _fillStructTables(appId, dalMetaData, batch: batch);
       dalMetaData.forEach((table) => _createDataTable(table, batch: batch));
 
@@ -177,11 +177,11 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// Drops all [DalMetaDataResponse.dataProvider] tables and removes all metadata entries from the current app.
   ///
   /// Uses a [Transaction] and [Batch] to efficiently execute and gracefully fail in case of an error.
-  Future<dynamic> dropTables(String appName) {
+  Future<dynamic> dropTables(String appKey) {
     return db.transaction((txn) async {
       Batch batch = txn.batch();
 
-      int? appId = await _queryAppId(appName, txn: txn);
+      int? appId = await _queryAppId(appKey, txn: txn);
       List<Map<String, Object?>> rows = await txn.query(
         OFFLINE_METADATA_TABLE,
         columns: ['TABLE_NAME'],
@@ -196,14 +196,14 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     });
   }
 
-  /// Drops all data tables of this [appName].
+  /// Drops all data tables using [rows].
   void _dropDataTables(List<Map<String, Object?>> rows, {required Batch batch}) {
     for (Map<String, Object?> row in rows) {
       batch.execute('DROP TABLE IF EXISTS "${row["TABLE_NAME"]}";');
     }
   }
 
-  /// Removes all metadata entries of this [appName] from [OFFLINE_METADATA_TABLE] and [OFFLINE_APPS_TABLE].
+  /// Removes all metadata entries of this [appId] from [OFFLINE_METADATA_TABLE] and [OFFLINE_APPS_TABLE].
   void _clearStructTables(int? appId, {required Batch batch}) {
     if (appId != null) {
       batch.delete(OFFLINE_METADATA_TABLE, where: "APP_ID = ?", whereArgs: [appId]);
@@ -212,8 +212,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   }
 
   /// Retrieves all saved [DalMetaDataResponse]s from [OFFLINE_APPS_TABLE].
-  Future<List<DalMetaData>> getMetaData(String appName, {String? pDataProvider, Transaction? txn}) {
-    List<String> whereArgs = [appName];
+  Future<List<DalMetaData>> getMetaData(String appId, {String? pDataProvider, Transaction? txn}) {
+    List<String> whereArgs = [appId];
     if (pDataProvider != null) {
       whereArgs.add(pDataProvider);
     }

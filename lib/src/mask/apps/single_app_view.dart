@@ -19,13 +19,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
+import '../../service/apps/app.dart';
 import '../../util/parse_util.dart';
 import 'app_image.dart';
 import 'app_overview_page.dart';
 
 class SingleAppView extends StatefulWidget {
-  final ServerConfig? config;
-  final void Function(ServerConfig config) onStart;
+  final App? config;
+  final void Function(ServerConfig app) onStart;
 
   const SingleAppView({
     super.key,
@@ -42,10 +43,12 @@ class _SingleAppViewState extends State<SingleAppView> {
   late final TextEditingController baseUrlController;
   ImageProvider? imageProvider;
 
+  bool get appNameIsValid => App.isValidAppName(appNameController.text);
+
   @override
   void initState() {
     super.initState();
-    appNameController = TextEditingController(text: widget.config?.appName);
+    appNameController = TextEditingController(text: widget.config?.name);
     baseUrlController = TextEditingController(text: widget.config?.baseUrl?.toString());
     imageProvider = AppOverviewPage.getAppIcon(widget.config);
   }
@@ -54,7 +57,7 @@ class _SingleAppViewState extends State<SingleAppView> {
   void didUpdateWidget(covariant SingleAppView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.config != widget.config) {
-      if (widget.config?.appName != null) appNameController.text = widget.config!.appName!;
+      if (widget.config?.name != null) appNameController.text = widget.config!.name!;
       if (widget.config?.baseUrl != null) baseUrlController.text = widget.config!.baseUrl!.toString();
       imageProvider = AppOverviewPage.getAppIcon(widget.config);
     }
@@ -90,9 +93,9 @@ class _SingleAppViewState extends State<SingleAppView> {
                       height: 150,
                       child: Center(
                         child: AppImage(
-                          name: appNameController.text,
+                          name: appNameController.text.trim(),
                           image: AppOverviewPage.getAppIcon(
-                            appNameController.text != widget.config?.appName ? null : widget.config,
+                            appNameController.text.trim() != widget.config?.name ? null : widget.config,
                           ),
                         ),
                       ),
@@ -111,6 +114,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                         textInputAction: TextInputAction.next,
                         onChanged: (_) => setState(() {}),
                         decoration: InputDecoration(
+                          errorText: appNameIsValid ? null : FlutterUI.translate("The app name is invalid."),
                           icon: const FaIcon(FontAwesomeIcons.cubes),
                           labelText: FlutterUI.translate("Name"),
                           border: InputBorder.none,
@@ -139,7 +143,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                         keyboardType: TextInputType.url,
                         textInputAction: TextInputAction.done,
                         onChanged: (_) => setState(() {}),
-                        onSubmitted: (value) => _start(),
+                        onSubmitted: appNameIsValid ? (value) => _start() : null,
                         decoration: InputDecoration(
                           icon: const FaIcon(FontAwesomeIcons.globe),
                           labelText: FlutterUI.translate("URL"),
@@ -171,7 +175,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                         color: Theme.of(context).colorScheme.primary,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(borderRadius),
-                          onTap: () => _start(),
+                          onTap: appNameIsValid ? _start : null,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                             child: Row(
@@ -216,18 +220,17 @@ class _SingleAppViewState extends State<SingleAppView> {
   Future<void> _start() async {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    if (appNameController.text.isNotEmpty && baseUrlController.text.isNotEmpty) {
+    var appName = appNameController.text.trim();
+    var baseUrl = baseUrlController.text.trim();
+    if (appName.isNotEmpty && baseUrl.isNotEmpty) {
       try {
-        // Validate format
-        var uri = Uri.parse(baseUrlController.text.trim());
-
         var newConfig = ServerConfig(
-          appName: ParseUtil.ensureNullOnEmpty(appNameController.text),
-          baseUrl: ParseUtil.appendJVxUrlSuffix(uri),
+          appName: appName,
+          baseUrl: ParseUtil.appendJVxUrlSuffix(Uri.parse(baseUrl)),
         );
 
         widget.onStart.call(newConfig);
-      } catch (e, stack) {
+      } on FormatException catch (e, stack) {
         FlutterUI.log.i("User entered invalid URL", e, stack);
         await AppOverviewPage.showInvalidURLDialog(context, e);
       }

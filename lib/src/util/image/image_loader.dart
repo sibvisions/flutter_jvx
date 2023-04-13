@@ -24,6 +24,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../flutter_ui.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
+import '../../service/apps/app.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/file/file_manager.dart';
 import '../font_awesome_util.dart';
@@ -130,7 +131,7 @@ abstract class ImageLoader {
   /// Creates either a MemoryImage, a FileImage or a NetworkImage
   static ImageProvider? getImageProvider(
     String? pImageString, {
-    String? appName,
+    App? app,
     Uri? baseUrl,
     Function(Size, bool)? pImageStreamListener,
     bool pImageInBase64 = false,
@@ -140,7 +141,6 @@ abstract class ImageLoader {
     }
 
     IFileManager fileManager = ConfigController().getFileManager();
-    String effectiveAppName = appName ?? ConfigController().appName.value!;
     ImageProvider imageProvider;
 
     Uri? parsedURI;
@@ -164,12 +164,13 @@ abstract class ImageLoader {
 
         File? file;
 
-        String? effectiveVersion = ConfigController().getAppVersion(effectiveAppName);
+        String effectiveAppId = app?.id ?? ConfigController().currentApp.value!;
+        String? effectiveVersion = App.getApp(effectiveAppId)?.version;
 
         if (effectiveVersion != null) {
           String path = fileManager.getAppSpecificPath(
             "${IFileManager.IMAGES_PATH}/$pImageString",
-            appName: effectiveAppName,
+            appId: effectiveAppId,
             version: effectiveVersion,
           );
           file = fileManager.getFileSync(path);
@@ -179,6 +180,7 @@ abstract class ImageLoader {
           imageProvider = FileImage(file);
         } else {
           Uri effectiveBaseUrl = baseUrl ?? ConfigController().baseUrl.value!;
+          String effectiveAppName = app?.name ?? ConfigController().appName.value!;
           imageProvider =
               NetworkImage("$effectiveBaseUrl/resource/$effectiveAppName/$pImageString", headers: _getHeaders());
         }

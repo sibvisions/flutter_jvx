@@ -43,7 +43,7 @@ class LoginPage extends StatelessWidget {
     if (widget != null) return widget;
 
     var appStyle = AppStyle.of(context).applicationStyle;
-    String? loginLayout = appStyle['login.layout'];
+    String? loginLayout = appStyle?['login.layout'];
 
     if (loginLayout == "modern") {
       return ModernLogin(mode: loginMode);

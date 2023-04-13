@@ -17,7 +17,6 @@
 import 'dart:collection';
 import 'dart:io';
 
-import '../../flutter_ui.dart';
 import '../config/config_controller.dart';
 import 'fake_file.dart';
 import 'file_manager.dart';
@@ -36,13 +35,13 @@ class FileManagerWeb extends IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String getAppSpecificPath(String path, {String? appName, String? version}) {
-    String? effectiveAppName = appName ?? ConfigController().appName.value;
+  String getAppSpecificPath(String path, {String? appId, String? version}) {
+    String? effectiveAppId = appId ?? ConfigController().currentApp.value;
     String? effectiveVersion = version ?? ConfigController().version.value;
-    if (effectiveAppName == null || effectiveVersion == null) {
+    if (effectiveAppId == null || effectiveVersion == null) {
       throw Exception("App Version/Name was not set while trying to build app specific path");
     }
-    return "/$effectiveAppName/$effectiveVersion${_preparePath(path)}";
+    return "/$effectiveAppId/$effectiveVersion${_preparePath(path)}";
   }
 
   @override
@@ -81,18 +80,23 @@ class FileManagerWeb extends IFileManager {
   }
 
   @override
+  Future<void> renameIndependentDirectory(List<String> pPath, String pNewName) {
+    String path = _preparePath(pPath.join("/"));
+    _files.entries.where((element) => element.key.startsWith(path));
+    throw UnimplementedError();
+  }
+
+  @override
   Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false}) async {
     String path = _preparePath(pPath.join("/"));
-    FlutterUI.log.d("Before delete ${_files.length}");
     _files.removeWhere((key, value) => key.startsWith(path));
-    FlutterUI.log.d("After delete ${_files.length}");
   }
 
   /// Ignores the version as this will only be used before the app is downloaded
   /// and there is no persistence besides this in the web.
   @override
-  Future<void> removePreviousAppVersions(String appName, String currentVersion) {
-    return deleteIndependentDirectory([appName]);
+  Future<void> removePreviousAppVersions(String appId, String currentVersion) {
+    return deleteIndependentDirectory([appId]);
   }
 
   @override

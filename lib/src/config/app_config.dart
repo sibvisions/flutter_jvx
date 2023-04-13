@@ -14,8 +14,9 @@
  * the License.
  */
 
+import '../service/apps/app.dart';
 import 'offline_config.dart';
-import 'server_config.dart';
+import 'predefined_server_config.dart';
 import 'ui_config.dart';
 import 'version_config.dart';
 
@@ -34,25 +35,20 @@ class AppConfig {
   /// Whether the app overview should be shown when there is a single app which is not marked as default.
   final bool? showAppOverviewWithoutDefault;
 
-  /// {@template app.customAllowed}
   /// Whether custom apps are allowed.
   ///
   /// This affects:
   /// * Add App
   /// * Edit App
   /// * Single App mode
-  /// {@endtemplate}
   final bool? customAppsAllowed;
 
-  /// {@template app.forceSingle}
   /// Whether the single app mode is forced.
   ///
   /// This affects:
   /// * Single app mode
-  /// {@endtemplate}
   final bool? forceSingleAppMode;
 
-  /// {@template app.locked}
   /// Whether the predefined apps in the app overview are editable.
   ///
   /// Is implicitly overridden by parametersHidden.
@@ -60,23 +56,26 @@ class AppConfig {
   /// This affects:
   /// * Edit App
   /// * Reset App
-  /// {@endtemplate}
-  final bool? serverConfigsLocked;
+  ///
+  /// See also:
+  /// * [App.locked]
+  final bool? predefinedConfigsLocked;
 
-  /// {@template app.parametersHidden}
-  /// Whether the app details such as [ServerConfig.appName] or
-  /// [ServerConfig.baseUrl] can be seen by the user.
+  /// Whether the app parameters such as [App.name] or
+  /// [App.baseUrl] can be seen by the user.
   ///
   /// Sets locked implicitly to true.
   ///
   /// This affects:
   /// * Edit App Dialog
   /// * App Details in settings
-  /// {@endtemplate}
-  final bool? serverConfigsParametersHidden;
+  ///
+  /// See also:
+  /// * [App.parametersHidden]
+  final bool? predefinedConfigsParametersHidden;
 
   final UiConfig? uiConfig;
-  final List<ServerConfig>? serverConfigs;
+  final List<PredefinedServerConfig>? serverConfigs;
   final VersionConfig? versionConfig;
   final OfflineConfig? offlineConfig;
 
@@ -96,8 +95,8 @@ class AppConfig {
     this.showAppOverviewWithoutDefault,
     this.customAppsAllowed,
     this.forceSingleAppMode,
-    this.serverConfigsLocked,
-    this.serverConfigsParametersHidden,
+    this.predefinedConfigsLocked,
+    this.predefinedConfigsParametersHidden,
     this.uiConfig,
     this.serverConfigs,
     this.versionConfig,
@@ -115,8 +114,8 @@ class AppConfig {
           showAppOverviewWithoutDefault: false,
           customAppsAllowed: false,
           forceSingleAppMode: false,
-          serverConfigsLocked: true,
-          serverConfigsParametersHidden: true,
+          predefinedConfigsLocked: true,
+          predefinedConfigsParametersHidden: true,
           uiConfig: const UiConfig.empty(),
           serverConfigs: const [],
           versionConfig: const VersionConfig.empty(),
@@ -134,10 +133,11 @@ class AppConfig {
           showAppOverviewWithoutDefault: json['showAppOverviewWithoutDefault'],
           customAppsAllowed: json['customAppsAllowed'],
           forceSingleAppMode: json['forceSingleAppMode'],
-          serverConfigsLocked: json['serverConfigsLocked'],
-          serverConfigsParametersHidden: json['serverConfigsParametersHidden'],
+          predefinedConfigsLocked: json['serverConfigsLocked'],
+          predefinedConfigsParametersHidden: json['serverConfigsParametersHidden'],
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
-          serverConfigs: (json['serverConfigs'] as List<dynamic>?)?.map((e) => ServerConfig.fromJson(e)).toList(),
+          serverConfigs:
+              (json['serverConfigs'] as List<dynamic>?)?.map((e) => PredefinedServerConfig.fromJson(e)).toList(),
           versionConfig: json['versionConfig'] != null ? VersionConfig.fromJson(json['versionConfig']) : null,
           offlineConfig: json['offlineConfig'] != null ? OfflineConfig.fromJson(json['offlineConfig']) : null,
           applicationParameters: json['applicationParameters'],
@@ -156,8 +156,8 @@ class AppConfig {
       showAppOverviewWithoutDefault: other.showAppOverviewWithoutDefault ?? showAppOverviewWithoutDefault,
       customAppsAllowed: other.customAppsAllowed ?? customAppsAllowed,
       forceSingleAppMode: other.forceSingleAppMode ?? forceSingleAppMode,
-      serverConfigsLocked: other.serverConfigsLocked ?? serverConfigsLocked,
-      serverConfigsParametersHidden: other.serverConfigsParametersHidden ?? serverConfigsParametersHidden,
+      predefinedConfigsLocked: other.predefinedConfigsLocked ?? predefinedConfigsLocked,
+      predefinedConfigsParametersHidden: other.predefinedConfigsParametersHidden ?? predefinedConfigsParametersHidden,
       uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
       serverConfigs: other.serverConfigs ?? serverConfigs,
       versionConfig: versionConfig?.merge(other.versionConfig) ?? other.versionConfig,

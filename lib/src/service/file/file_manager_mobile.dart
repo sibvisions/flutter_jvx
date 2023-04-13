@@ -49,13 +49,13 @@ class FileManagerMobile extends IFileManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String getAppSpecificPath(String path, {String? appName, String? version}) {
-    String? effectiveAppName = appName ?? ConfigController().appName.value;
+  String getAppSpecificPath(String path, {String? appId, String? version}) {
+    String? effectiveAppId = appId ?? ConfigController().currentApp.value;
     String? effectiveVersion = version ?? ConfigController().version.value;
-    if (effectiveAppName == null || effectiveVersion == null) {
+    if (effectiveAppId == null || effectiveVersion == null) {
       throw Exception("App Version/Name was not set while trying to build app specific path");
     }
-    return join(effectiveAppName, effectiveVersion, _preparePath(path));
+    return join(effectiveAppId, effectiveVersion, _preparePath(path));
   }
 
   @override
@@ -112,6 +112,20 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
+  Future<void> renameIndependentDirectory(List<String> pPath, String pNewName) async {
+    var dir = Directory(joinAll([directory.path, ...pPath]));
+    if (dir.existsSync()) {
+      var newDir = Directory(join(directory.path, pNewName));
+      if (newDir.existsSync()) {
+        await newDir.delete(recursive: true);
+      }
+      await dir.rename(newDir.path);
+    } else {
+      return Future.value();
+    }
+  }
+
+  @override
   Future<void> deleteIndependentDirectory(List<String> pPath, {bool recursive = false}) {
     var dir = Directory(joinAll([directory.path, ...pPath]));
     if (dir.existsSync()) {
@@ -122,8 +136,8 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  Future<void> removePreviousAppVersions(String appName, String currentVersion) async {
-    Directory appDirectory = Directory(join(directory.path, appName));
+  Future<void> removePreviousAppVersions(String appId, String currentVersion) async {
+    Directory appDirectory = Directory(join(directory.path, appId));
     if (appDirectory.existsSync()) {
       await for (var entity in appDirectory.list()) {
         if (basename(entity.path) != currentVersion) {

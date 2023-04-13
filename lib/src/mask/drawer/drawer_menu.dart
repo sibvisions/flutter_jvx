@@ -21,6 +21,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/api/i_api_service.dart';
+import '../../service/apps/app_service.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/jvx_colors.dart';
@@ -59,7 +60,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     bool isNormalSize = MediaQuery.of(context).size.height > 650;
 
     return Opacity(
-      opacity: double.parse(AppStyle.of(context).applicationStyle['opacity.sidemenu'] ?? "1"),
+      opacity: double.parse(AppStyle.of(context).applicationStyle?['opacity.sidemenu'] ?? "1"),
       child: Drawer(
         backgroundColor: Theme.of(context).brightness == Brightness.light
             ? Theme.of(context).colorScheme.primary
@@ -102,7 +103,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       headerItems = [
         _buildHeaderText(
           flex: 5,
-          text: AppStyle.of(context).applicationStyle['login.title'] ?? ConfigController().appName.value ?? "",
+          text: AppStyle.of(context).applicationStyle?['login.title'] ?? ConfigController().appName.value ?? "",
           context: context,
           fontWeight: FontWeight.bold,
         ),
@@ -241,7 +242,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       ]);
       if (isNormalSize) {
         List<Widget> children;
-        if (AppOverviewPage.showAppsButton()) {
+        if (AppService().showAppsButton()) {
           children = [
             Expanded(
               flex: 10,
@@ -264,7 +265,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         ]);
       } else {
         List<Widget> children;
-        if (AppOverviewPage.showAppsButton()) {
+        if (AppService().showAppsButton()) {
           children = [
             _buildAppsEntry(context, isNormalSize),
             _buildFooterDivider(context),

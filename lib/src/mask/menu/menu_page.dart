@@ -28,6 +28,7 @@ import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
+import '../../service/apps/app_service.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
@@ -115,8 +116,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             }
 
             var appStyle = AppStyle.of(context).applicationStyle;
-            Color? backgroundColor = ParseUtil.parseHexColor(appStyle['desktop.color']);
-            String? backgroundImage = appStyle['desktop.icon'];
+            Color? backgroundColor = ParseUtil.parseHexColor(appStyle?['desktop.color']);
+            String? backgroundImage = appStyle?['desktop.icon'];
 
             FrameState? frameState = Frame.maybeOf(context);
             if (frameState != null) {
@@ -156,7 +157,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   isMenuSearchEnabled = false;
                   setState(() {});
                   return false;
-                } else if (FlutterUI.of(context).startedManually) {
+                } else if (AppService().startedManually) {
                   unawaited(IUiService().routeToAppOverview());
                   return false;
                 }
@@ -175,7 +176,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                             setState(() {});
                           },
                           icon: const FaIcon(FontAwesomeIcons.circleXmark))
-                      : (FlutterUI.of(context).startedManually
+                      : (AppService().startedManually
                           ? IconButton(
                               splashRadius: kToolbarHeight / 2,
                               icon: const FaIcon(FontAwesomeIcons.angleLeft),
@@ -185,7 +186,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   title: !isMenuSearchEnabled
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
-                  titleSpacing: isMenuSearchEnabled || FlutterUI.of(context).startedManually ? 0.0 : null,
+                  titleSpacing: isMenuSearchEnabled || AppService().startedManually ? 0.0 : null,
                   backgroundColor: isOffline ? Colors.grey.shade500 : null,
                   actions: actions,
                 ),
@@ -309,9 +310,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   Widget _getMenu(
     MenuModel menuModel, {
     Key? key,
-    required Map<String, String> appStyle,
+    required Map<String, String>? appStyle,
   }) {
-    MenuMode menuMode = ConfigUtil.getMenuMode(appStyle['menu.mode']);
+    MenuMode menuMode = ConfigUtil.getMenuMode(appStyle?['menu.mode']);
 
     // Overriding menu mode
     AppManager? customAppManager = IUiService().getAppManager();
@@ -319,9 +320,9 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
     if (menuMode == MenuMode.DRAWER) return const SizedBox();
 
-    bool? grouped = ParseUtil.parseBool(appStyle['menu.grouped']) ?? false;
-    bool? sticky = ParseUtil.parseBool(appStyle['menu.sticky']) ?? true;
-    bool? groupOnlyOnMultiple = ParseUtil.parseBool(appStyle['menu.group_only_on_multiple']) ?? false;
+    bool? grouped = ParseUtil.parseBool(appStyle?['menu.grouped']) ?? false;
+    bool? sticky = ParseUtil.parseBool(appStyle?['menu.sticky']) ?? true;
+    bool? groupOnlyOnMultiple = ParseUtil.parseBool(appStyle?['menu.group_only_on_multiple']) ?? false;
 
     return Menu.fromMode(
       key: key,

@@ -27,6 +27,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_meta_data_command.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../api/shared/repository/online_api_repository.dart';
+import '../../../../apps/app_service.dart';
 import '../../../../config/config_controller.dart';
 import '../../../../file/file_manager.dart';
 import '../../../../ui/i_ui_service.dart';
@@ -38,7 +39,7 @@ class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveA
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
-    await FlutterUI.removePreviousAppVersions(ConfigController().appName.value!, version);
+    await AppService().removePreviousAppVersions(ConfigController().currentApp.value!, version);
 
     IUiService().updateClientId(command.metaData.clientId);
     await ConfigController().updateVersion(version);

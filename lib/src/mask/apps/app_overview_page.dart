@@ -23,6 +23,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
+import '../../service/apps/app.dart';
+import '../../service/apps/app_service.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -39,19 +41,14 @@ class AppOverviewPage extends StatefulWidget {
 
   static const IconData appsIcon = Icons.window;
 
-  static bool showAppsButton() =>
-      ConfigController().getAppConfig()!.customAppsAllowed! ||
-      !ConfigController().getAppConfig()!.serverConfigsLocked! ||
-      (ConfigController().getAppNames().length > 1 && !isSingleAppMode);
-
-  static ImageProvider? getAppIcon(ServerConfig? config) {
-    if (config == null) return null;
-    String? styleIcon = ConfigController().getAppStyle(config.appName)?["icon"];
-    return ((config.icon != null && config.appName != null && config.baseUrl != null) || styleIcon != null
+  static ImageProvider? getAppIcon(App? app) {
+    if (app == null) return null;
+    String? styleIcon = app.applicationStyle?["icon"];
+    return ((app.icon != null && app.baseUrl != null) || styleIcon != null
         ? ImageLoader.getImageProvider(
-            styleIcon ?? config.icon!,
-            appName: config.appName,
-            baseUrl: config.baseUrl,
+            styleIcon ?? app.icon!,
+            app: app,
+            baseUrl: app.baseUrl,
           )
         : null);
   }
@@ -124,49 +121,16 @@ class AppOverviewPage extends StatefulWidget {
     );
   }
 
-  static bool get isSingleAppMode {
-    if (ConfigController().getAppConfig()!.forceSingleAppMode!) return true;
-    if (!ConfigController().getAppConfig()!.customAppsAllowed!) return false;
-    return ConfigController().singleAppMode.value;
-  }
-
-  static bool get customAppsAllowed => ConfigController().getAppConfig()!.customAppsAllowed!;
-
-  static bool get isPredefinedLocked => isPredefinedHidden || ConfigController().getAppConfig()!.serverConfigsLocked!;
-
-  static bool get isPredefinedHidden => ConfigController().getAppConfig()!.serverConfigsParametersHidden!;
-
-  static bool useUserSettings(bool isPredefinedLocked, bool isPredefined, ServerConfig? config) {
-    return !isPredefined ||
-        (isPredefined && !isPredefinedLocked && !(config?.locked ?? false) && !(config?.parametersHidden ?? false));
-  }
-
-  /// Returns if the app is locked.
-  ///
-  /// If it's a predefined app and this or all predefined apps are locked,
-  /// or if it isn't a predefined app and customs aren't allowed.
-  static bool isAppLocked(bool isPredefined, ServerConfig? config) {
-    return (isPredefined && (isPredefinedLocked || (config?.locked ?? false) || (config?.parametersHidden ?? false))) ||
-        (!isPredefined && !customAppsAllowed);
-  }
-
-  /// Returns if the app is hidden.
-  ///
-  /// If it's a predefined app and this or all predefined apps are hidden.
-  static bool isAppHidden(bool isPredefined, ServerConfig? config) {
-    return isPredefined && (isPredefinedHidden || (config?.parametersHidden ?? false));
-  }
-
   @override
   State<AppOverviewPage> createState() => _AppOverviewPageState();
 }
 
 class _AppOverviewPageState extends State<AppOverviewPage> {
   late final WidgetBuilder? backgroundBuilder;
-  List<ServerConfig>? apps;
+  List<App>? apps;
   Future<void>? future;
 
-  ServerConfig? currentConfig;
+  App? currentConfig;
 
   @override
   void initState() {
@@ -178,7 +142,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   void _refreshApps() {
     setState(() {
       future = () async {
-        var retrievedApps = await FlutterUI.getApps();
+        var retrievedApps = App.getAppsByIDs(AppService().getAppIds());
         apps = [...retrievedApps];
         currentConfig = _getCurrentEditableConfig();
       }()
@@ -186,8 +150,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     });
   }
 
-  bool get containsCustomApps =>
-      (apps?.where((element) => ConfigController().getPredefinedApp(element.appName) == null).isNotEmpty ?? false);
+  bool get containsCustomApps => (apps?.where((app) => !app.predefined).isNotEmpty ?? false);
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +200,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                         alignment: Alignment.centerLeft,
                                         child: Text(
                                           FlutterUI.translate(
-                                              AppOverviewPage.isSingleAppMode ? "Application" : "Applications"),
+                                              AppService().isSingleAppMode() ? "Application" : "Applications"),
                                           style: const TextStyle(
                                             color: JVxColors.LIGHTER_BLACK,
                                             fontWeight: FontWeight.bold,
@@ -264,7 +227,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                 right: 8.0,
                                 child: _buildMenuButton(
                                   context,
-                                  AppOverviewPage.isSingleAppMode || showAddOnFront,
+                                  AppService().isSingleAppMode() || showAddOnFront,
                                 ),
                               ),
                             ],
@@ -275,7 +238,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                   ),
                 ],
               ),
-              floatingActionButton: AppOverviewPage.isSingleAppMode
+              floatingActionButton: AppService().isSingleAppMode()
                   ? FloatingActionButton(
                       tooltip: FlutterUI.translate("Scan QR Code"),
                       onPressed: () => AppOverviewPage.openQRScanner(
@@ -283,7 +246,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         callback: (config) async {
                           var serverConfig = config.apps?.firstOrNull;
                           if (serverConfig != null) {
-                            setState(() => currentConfig = serverConfig);
+                            currentConfig = await App.createAppFromConfig(serverConfig);
+                            setState(() {});
                           }
                         },
                       ),
@@ -303,16 +267,16 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     if (snapshot.hasError) {
       child = const FaIcon(FontAwesomeIcons.circleExclamation);
     } else {
-      if (AppOverviewPage.isSingleAppMode) {
+      if (AppService().isSingleAppMode()) {
         child = SingleAppView(
           config: currentConfig,
           onStart: (config) async {
-            bool success = await _updateApp(
+            App? editedApp = await _updateApp(
               context,
               config.merge(const ServerConfig(isDefault: true)),
             );
-            if (success && mounted && config.isStartable) {
-              FlutterUI.of(this.context).startApp(app: config, autostart: false);
+            if (editedApp != null && mounted) {
+              FlutterUI.of(this.context).startApp(appId: editedApp.id, autostart: false);
             }
           },
         );
@@ -339,37 +303,29 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                   childCount: (apps?.length ?? 0) + (showAddOnFront ? 1 : 0),
                   (context, index) {
                     if (index < (apps?.length ?? 0)) {
-                      var app = apps![index];
-                      ServerConfig? predefinedApp = ConfigController().getPredefinedApp(app.appName);
-                      bool isPredefined = predefinedApp != null;
+                      App app = apps![index];
                       return AppItem(
                         key: ObjectKey(app),
-                        enabled: (isPredefined || AppOverviewPage.customAppsAllowed) && app.isStartable,
-                        appTitle: app.effectiveTitle!,
+                        enabled: (app.predefined || App.customAppsAllowed) && app.isStartable,
+                        appTitle: app.effectiveTitle ?? "-",
                         image: AppOverviewPage.getAppIcon(app),
-                        isDefault: app.isDefault ?? false,
-                        locked: AppOverviewPage.isAppLocked(isPredefined, app),
-                        hidden: AppOverviewPage.isAppHidden(isPredefined, app),
-                        predefined: isPredefined,
+                        isDefault: app.isDefault,
+                        locked: app.locked,
+                        hidden: app.parametersHidden,
+                        predefined: app.predefined,
                         onTap: app.isStartable
                             ? () {
-                                if (isPredefined || AppOverviewPage.customAppsAllowed) {
-                                  FlutterUI.of(context).startApp(app: app, autostart: false);
+                                if (app.predefined || App.customAppsAllowed) {
+                                  FlutterUI.of(context).startApp(appId: app.id, autostart: false);
                                 } else {
                                   _showForbiddenAppStart(context);
                                 }
                               }
                             : null,
-                        onLongPress: !AppOverviewPage.isAppHidden(isPredefined, app)
+                        onLongPress: !app.parametersHidden
                             ? () => _openAppEditor(
                                   context,
-                                  editConfig: AppOverviewPage.useUserSettings(
-                                    AppOverviewPage.isPredefinedLocked,
-                                    isPredefined,
-                                    app,
-                                  )
-                                      ? app
-                                      : predefinedApp,
+                                  editApp: app,
                                 )
                             : null,
                       );
@@ -377,7 +333,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                       return AppItem(
                         appTitle: "Add",
                         icon: Icons.add,
-                        onTap: AppOverviewPage.customAppsAllowed ? () => _showAddApp(context) : null,
+                        onTap: App.customAppsAllowed ? () => _showAddApp(context) : null,
                       );
                     }
                     return null;
@@ -393,10 +349,10 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   }
 
   /// Returns either the last started app or the default app if they are not locked or hidden.
-  ServerConfig? _getCurrentEditableConfig() {
-    String? appName = ConfigController().lastApp.value ?? ConfigController().defaultApp.value;
-    if (appName != null) {
-      var config = apps?.firstWhereOrNull((element) => element.appName == appName);
+  App? _getCurrentEditableConfig() {
+    String? appId = ConfigController().lastApp.value ?? ConfigController().defaultApp.value;
+    if (appId != null) {
+      var config = apps?.firstWhereOrNull((element) => element.id == appId);
       if (!(config?.locked ?? false) && !(config?.parametersHidden ?? false)) {
         return config;
       }
@@ -442,7 +398,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                     }
                   },
                   itemBuilder: (context) => [
-                    if (AppOverviewPage.customAppsAllowed)
+                    if (App.customAppsAllowed)
                       PopupMenuItem(
                         value: 0,
                         child: ListTile(
@@ -451,7 +407,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
-                    if (AppOverviewPage.customAppsAllowed || containsCustomApps)
+                    if (App.customAppsAllowed || containsCustomApps)
                       PopupMenuItem(
                         value: 1,
                         child: ListTile(
@@ -475,7 +431,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     );
   }
 
-  void _openQRScanner(BuildContext context) {
+  void _scanQR(BuildContext context) {
     AppOverviewPage.openQRScanner(
       context,
       allowMultiScan: true,
@@ -484,14 +440,15 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         bool skippedLockedApp = false;
 
         if (config.apps != null) {
-          for (var app in config.apps!) {
-            ServerConfig? localConfig = ConfigController().getPredefinedApp(app.appName);
-            if (!(localConfig?.locked ?? false)) {
-              await FlutterUI.removeApp(app.appName!);
-              await FlutterUI.updateApp(app);
+          for (var serverConfig in config.apps!) {
+            var app = App.getApp(App.computeIdFromConfig(serverConfig)!);
+            if (!(app?.locked ?? false)) {
+              apps?.remove(app);
+              await app?.delete();
+              app = await App.createAppFromConfig(serverConfig);
             } else {
               skippedLockedApp = true;
-              FlutterUI.log.d("Skipping locked app '${app.appName} from QR Code");
+              FlutterUI.log.d("Skipping locked app '${serverConfig.appName} from QR Code");
             }
           }
         }
@@ -510,42 +467,49 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     ).then((value) => _refreshApps());
   }
 
-  void _openAppEditor(BuildContext context, {ServerConfig? editConfig}) {
-    bool isPredefined = ConfigController().getPredefinedApp(editConfig?.appName) != null;
+  void _openAppEditor(BuildContext context, {App? editApp}) {
     IUiService().openDialog(
       context: context,
       pBuilder: (context) => AppEditDialog(
-          config: editConfig,
-          predefined: isPredefined,
-          locked: AppOverviewPage.isAppLocked(isPredefined, editConfig),
-          onSubmit: (app) => _updateApp(context, app),
+          config: editApp,
+          predefined: editApp?.predefined ?? false,
+          locked: editApp?.locked ?? false,
+          onSubmit: (config) => _updateApp(context, config, editApp: editApp),
           onCancel: () {
             Navigator.pop(context);
           },
           onDelete: () async {
             Navigator.pop(context);
-            await FlutterUI.removeApp(editConfig!.appName!);
+            apps?.remove(editApp);
+            await editApp!.delete();
             _refreshApps();
           }),
     );
   }
 
   /// Returns if the update was successful.
-  Future<bool> _updateApp(BuildContext context, ServerConfig app) async {
-    ServerConfig localConfig = await ConfigController().getApp(app.appName);
-    if (!(localConfig.locked ?? false)) {
+  Future<App?> _updateApp(BuildContext context, ServerConfig config, {App? editApp}) async {
+    App? app = editApp != null ? App.getApp(editApp.id) : null;
+    if (!(app?.locked ?? false)) {
+      app ??= App.createApp(name: config.appName!, baseUrl: config.baseUrl!);
+
+      // If this is not an predefined app and the key parameters changed, change id.
+      if (!app.predefined && (app.name != config.appName || app.baseUrl != config.baseUrl)) {
+        await app.updateId(App.computeId(config.appName, config.baseUrl.toString(), predefined: false)!);
+      }
+      await app.updateFromConfig(config);
+
       if (mounted) {
         Navigator.pop(context);
       }
-      await FlutterUI.updateApp(app);
       _refreshApps();
-      return true;
+      return app;
     } else if (mounted) {
       await IUiService().openDialog(
         context: context,
         pBuilder: (context) => AlertDialog(
-          title: Text(FlutterUI.translate("Duplicated app name")),
-          content: Text(FlutterUI.translate("You cannot use an app name that is already used.")),
+          title: Text(FlutterUI.translate("Duplicated app")),
+          content: Text(FlutterUI.translate("You cannot use the same app name and URL as an provided app.")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -556,7 +520,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         pIsDismissible: true,
       );
     }
-    return false;
+    return null;
   }
 
   Future<void> _showAddApp(BuildContext context) async {
@@ -607,7 +571,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     if (mounted && selection != null) {
       switch (selection) {
         case 1:
-          _openQRScanner(context);
+          _scanQR(context);
           break;
         case 2:
           _openAppEditor(context);
@@ -638,7 +602,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       },
     );
     if (shouldClear ?? false) {
-      await FlutterUI.removeAllApps();
+      await AppService().removeAllApps();
       _refreshApps();
     }
   }

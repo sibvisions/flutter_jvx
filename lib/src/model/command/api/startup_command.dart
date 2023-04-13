@@ -23,10 +23,14 @@ class StartupCommand extends ApiCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The username
+  /// The username for auto-login.
+  ///
+  /// This can be used to override the default values from the config.
   final String? username;
 
-  /// The password
+  /// The password for auto-login.
+  ///
+  /// This can be used to override the default values from the config.
   final String? password;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

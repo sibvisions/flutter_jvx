@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -22,19 +23,20 @@ import 'package:screen_brightness/screen_brightness.dart';
 import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/apps/app.dart';
+import '../../service/apps/app_service.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import 'app_image.dart';
 import 'app_overview_page.dart';
 
 class AppEditDialog extends StatefulWidget {
-  final ServerConfig? config;
+  final App? config;
   final bool predefined;
   final bool locked;
 
-  /// Gets called with either an updated config from the input or a newly generated one.
-  final void Function(ServerConfig app) onSubmit;
+  /// Is being called with either an updated version of the provided app or a newly generated config.
+  final void Function(ServerConfig config) onSubmit;
   final VoidCallback onCancel;
   final VoidCallback onDelete;
 
@@ -55,6 +57,7 @@ class AppEditDialog extends StatefulWidget {
 class _AppEditDialogState extends State<AppEditDialog> {
   static Color disabledLightColor = Colors.grey.shade200;
 
+  late final Set<String> appIds;
   late final TextEditingController titleController;
   late final TextEditingController appNameController;
   late final TextEditingController baseUrlController;
@@ -63,10 +66,24 @@ class _AppEditDialogState extends State<AppEditDialog> {
   @override
   void initState() {
     super.initState();
+    appIds = AppService().getAppIds();
     titleController = TextEditingController(text: widget.config?.title);
-    appNameController = TextEditingController(text: widget.config?.appName);
+    appNameController = TextEditingController(text: widget.config?.name);
     baseUrlController = TextEditingController(text: widget.config?.baseUrl?.toString());
     defaultChecked = widget.config?.isDefault ?? false;
+  }
+
+  bool get appNameIsValid => App.isValidAppName(appNameController.text);
+
+  bool get appAlreadyExists {
+    if (appNameController.text.isNotEmpty && baseUrlController.text.isNotEmpty) {
+      try {
+        var uri = _transformUri(baseUrlController.text);
+        String newId = App.computeId(appNameController.text, uri.toString(), predefined: false)!;
+        return (widget.config == null || widget.config?.id != newId) && appIds.contains(newId);
+      } on FormatException catch (_) {}
+    }
+    return false;
   }
 
   @override
@@ -127,7 +144,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
                             child: Material(
                               type: MaterialType.card,
-                              color: appNameEditable
+                              color: !widget.locked
                                   ? null
                                   : (isThemeLight ? disabledLightColor : parentTheme.disabledColor),
                               borderRadius: BorderRadius.circular(20),
@@ -135,20 +152,21 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: TextField(
                                   autofocus: true,
-                                  readOnly: !appNameEditable,
+                                  readOnly: widget.locked,
                                   controller: appNameController,
                                   textInputAction: TextInputAction.next,
                                   onChanged: (_) => setState(() {}),
                                   decoration: InputDecoration(
-                                    errorText:
-                                        appAlreadyExists ? FlutterUI.translate("The app name already exists!") : null,
+                                    errorText: !appAlreadyExists
+                                        ? (appNameIsValid ? null : FlutterUI.translate("The app name is invalid."))
+                                        : FlutterUI.translate("This app already exists."),
                                     icon: FaIcon(
                                       FontAwesomeIcons.cubes,
-                                      color: appNameEditable ? null : parentTheme.disabledColor,
+                                      color: !widget.locked ? null : parentTheme.disabledColor,
                                     ),
                                     labelText: "${FlutterUI.translate("App name")} *",
                                     border: InputBorder.none,
-                                    suffixIcon: appNameEditable && appNameController.text.isNotEmpty
+                                    suffixIcon: !widget.locked && appNameController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
                                               icon: const Icon(Icons.clear),
@@ -174,7 +192,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: TextField(
-                                  enabled: !widget.locked,
+                                  readOnly: widget.locked,
                                   controller: titleController,
                                   textInputAction: TextInputAction.next,
                                   onChanged: (_) => setState(() {}),
@@ -211,13 +229,15 @@ class _AppEditDialogState extends State<AppEditDialog> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: TextField(
-                                  enabled: !widget.locked,
+                                  readOnly: widget.locked,
                                   controller: baseUrlController,
                                   keyboardType: TextInputType.url,
                                   textInputAction: TextInputAction.done,
                                   onChanged: (_) => setState(() {}),
-                                  onSubmitted: (value) => _onSubmit(),
+                                  onSubmitted: appAlreadyExists || !appNameIsValid ? null : (value) => _onSubmit(),
                                   decoration: InputDecoration(
+                                    errorText:
+                                        !appAlreadyExists ? null : FlutterUI.translate("This app already exists."),
                                     icon: FaIcon(
                                       FontAwesomeIcons.globe,
                                       color: !widget.locked ? null : parentTheme.disabledColor,
@@ -276,10 +296,10 @@ class _AppEditDialogState extends State<AppEditDialog> {
                           bottomRight: Radius.circular(10),
                         ),
                         child: Tooltip(
-                          message: qrCodeError,
-                          triggerMode: qrCodeError.isNotEmpty ? TooltipTriggerMode.tap : TooltipTriggerMode.longPress,
+                          message: FlutterUI.translate(qrCodeError ?? ""),
+                          triggerMode: qrCodeError != null ? TooltipTriggerMode.tap : TooltipTriggerMode.longPress,
                           child: InkWell(
-                            onTap: qrCodeError.isEmpty ? _showQrCodeDialog : null,
+                            onTap: qrCodeError == null ? _showQrCodeDialog : null,
                             child: Container(
                               width: 40,
                               height: 40,
@@ -289,7 +309,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                 child: Icon(
                                   Icons.qr_code,
                                   size: 24,
-                                  color: qrCodeError.isEmpty ? null : JVxColors.COMPONENT_DISABLED,
+                                  color: qrCodeError == null ? null : JVxColors.COMPONENT_DISABLED,
                                 ),
                               ),
                             ),
@@ -328,7 +348,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                 child: Text(FlutterUI.translate("Cancel")),
               ),
               TextButton(
-                onPressed: appAlreadyExists ? null : _onSubmit,
+                onPressed: appAlreadyExists || !appNameIsValid ? null : _onSubmit,
                 child: Text(FlutterUI.translate("OK")),
               ),
             ]
@@ -365,26 +385,29 @@ class _AppEditDialogState extends State<AppEditDialog> {
     );
   }
 
+  Uri _transformUri(String url) {
+    return ParseUtil.appendJVxUrlSuffix(Uri.parse(url.trim()));
+  }
+
   Future<void> _onSubmit() async {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    if (appNameController.text.isNotEmpty && baseUrlController.text.isNotEmpty) {
+    var appName = appNameController.text.trim();
+    var baseUrl = baseUrlController.text.trim();
+    if (appName.isNotEmpty && baseUrl.isNotEmpty) {
       try {
-        // Validate format
-        var uri = Uri.parse(baseUrlController.text.trim());
-        uri = ParseUtil.appendJVxUrlSuffix(uri);
-
         var newConfig = ServerConfig(
-          appName: ParseUtil.ensureNullOnEmpty(appNameController.text),
-          title: ParseUtil.ensureNullOnEmpty(titleController.text),
-          baseUrl: uri,
+          appName: ParseUtil.ensureNullOnEmpty(appName),
+          title: ParseUtil.ensureNullOnEmpty(titleController.text.trim()),
+          baseUrl: _transformUri(baseUrl),
           username: widget.config?.username,
           password: widget.config?.password,
+          icon: widget.config?.icon,
           isDefault: defaultChecked,
         );
 
         widget.onSubmit.call(newConfig);
-      } catch (e, stack) {
+      } on FormatException catch (e, stack) {
         FlutterUI.log.i("User entered invalid URL", e, stack);
         await AppOverviewPage.showInvalidURLDialog(context, e);
       }
@@ -393,45 +416,32 @@ class _AppEditDialogState extends State<AppEditDialog> {
     }
   }
 
-  bool get appNameEditable => widget.config == null;
-
-  bool get appAlreadyExists =>
-      appNameEditable &&
-      appNameController.text.isNotEmpty &&
-      ConfigController().getAppNames().contains(appNameController.text);
-
   String get effectiveEditIconName {
-    if (titleController.text.isNotEmpty) {
-      return titleController.text;
+    if (titleController.text.trim().isNotEmpty) {
+      return titleController.text.trim();
     } else {
-      return widget.config?.title ??
-          ConfigController().getAppStyle(appNameController.text)?["login.title"] ??
-          appNameController.text;
+      return widget.config?.title ?? widget.config?.applicationStyle?["login.title"] ?? appNameController.text.trim();
     }
   }
 
-  String get qrCodeError {
-    String appName = appNameController.text;
-    String baseUrl = baseUrlController.text;
-    // if (isNew) {
-    //   return FlutterUI.translate("You need to save the app first");
-    // } else
+  String? get qrCodeError {
+    String appName = appNameController.text.trim();
+    String baseUrl = baseUrlController.text.trim();
     if (appName.isEmpty) {
-      return FlutterUI.translate("You need to enter an app name");
+      return "You need to enter an app name";
     } else if (baseUrl.isEmpty) {
-      return FlutterUI.translate("You need to enter an URL");
+      return "You need to enter an URL";
     }
 
-    return "";
+    return null;
   }
 
   void _showQrCodeDialog() {
-    String appName = appNameController.text;
-    String title = titleController.text;
-    String baseUrl = baseUrlController.text;
+    String appName = appNameController.text.trim();
+    String baseUrl = baseUrlController.text.trim();
+    String title = titleController.text.trim();
     String? icon = widget.config?.icon;
-    var uri = Uri.parse(baseUrl);
-    uri = ParseUtil.appendJVxUrlSuffix(uri);
+    Uri uri = _transformUri(baseUrl);
 
     try {
       ScreenBrightness().setScreenBrightness(1.0);
@@ -439,7 +449,6 @@ class _AppEditDialogState extends State<AppEditDialog> {
 
     showDialog(
       context: context,
-      useSafeArea: true,
       barrierDismissible: true,
       builder: (context) {
         return Dialog(
@@ -451,15 +460,15 @@ class _AppEditDialogState extends State<AppEditDialog> {
               data: QRConfig.generateQrCode(
                 ServerConfig(
                   appName: appName,
-                  title: title,
                   baseUrl: uri,
+                  title: ParseUtil.ensureNullOnEmpty(title),
                   username: widget.config?.username,
                   password: widget.config?.password,
-                  isDefault: defaultChecked,
                   icon: icon,
                 ),
               ),
-              gapless: false,
+              // gapless looks kinda cheesy in web
+              gapless: !kIsWeb,
               backgroundColor: Colors.white,
               version: QrVersions.auto,
             ),

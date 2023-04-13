@@ -219,7 +219,7 @@ class OnlineApiRepository extends IRepository {
   static const Duration statusDelay = Duration(seconds: 2);
   Timer? _statusTimer;
 
-  /// Header fields, used for sessionId
+  /// Fixed header fields
   final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
 
   /// Cookies used for sessionId

@@ -20,13 +20,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_io/io.dart' as universal_io;
 
 import '../../config/app_config.dart';
+import '../../config/predefined_server_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
-import '../../mask/apps/app_overview_page.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/state/app_style.dart';
 import '../../model/config/translation/translation_util.dart';
@@ -34,6 +33,8 @@ import '../../model/config/user/user_info.dart';
 import '../../model/request/api_startup_request.dart';
 import '../../model/response/download_images_response.dart';
 import '../../model/response/download_style_response.dart';
+import '../apps/app.dart';
+import '../apps/app_service.dart';
 import '../file/file_manager.dart';
 import '../service.dart';
 import 'config_service.dart';
@@ -69,6 +70,8 @@ class ConfigController {
 
   late ValueNotifier<Uri?> _privacyPolicy;
 
+  late ValueNotifier<String?> _appId;
+
   late ValueNotifier<String?> _appName;
 
   late ValueNotifier<Uri?> _baseUrl;
@@ -98,7 +101,7 @@ class ConfigController {
   late ValueNotifier<String?> _offlineScreen;
 
   /// Application style sent from server.
-  late ValueNotifier<Map<String, String>> _applicationStyle;
+  late ValueNotifier<Map<String, String>?> _applicationStyle;
 
   late ValueNotifier<String?> _userLanguage;
 
@@ -138,6 +141,7 @@ class ConfigController {
   /// which would prevent the default config to be used.
   Future<void> loadConfig(AppConfig pAppConfig, [bool devConfig = false]) async {
     _appConfig = pAppConfig;
+    await _migrateConfig();
 
     _themePreference = ValueNotifier(await _configService.themePreference());
     _pictureResolution = ValueNotifier(await _configService.pictureResolution());
@@ -148,68 +152,61 @@ class ConfigController {
     _privacyPolicy =
         ValueNotifier((privacyPolicy != null ? Uri.parse(privacyPolicy) : null) ?? _appConfig?.privacyPolicy);
 
-    // DevConfig resets persistent fields to enable config-fallback logic.
-    if (devConfig && _appConfig?.serverConfigs != null) {
-      await Future.forEach<ServerConfig>(
-        _appConfig!.serverConfigs!.where((e) => e.appName != null),
-        (e) => removeApp(e.appName!, forced: true),
-      );
-      // If there is a dev config, only a app set in the dev config is allowed to be the default
-      await updateDefaultApp(
-        _appConfig!.serverConfigs!.firstWhereOrNull((element) => element.isDefault ?? false)?.appName!,
-      );
+    if (_appConfig?.serverConfigs != null) {
+      // DevConfig resets persistent fields to enable config-fallback logic.
+      if (devConfig) {
+        // Remove every saved config from provided dev configs.
+        await Future.forEach<String>(
+          _appConfig!.serverConfigs!
+              .map((e) => App.computeId(e.appName, e.baseUrl.toString(), predefined: true))
+              .whereNotNull(),
+          (e) => App.getApp(e)?.delete(forced: true),
+        );
+        // If there is a dev config, only one app in the dev config is allowed to be the default and reset if there is none.
+        var predefinedDefault = _appConfig!.serverConfigs!.firstWhereOrNull((element) => element.isDefault ?? false);
+        await updateDefaultApp(
+          App.computeId(predefinedDefault?.appName, predefinedDefault?.baseUrl?.toString(), predefined: true),
+        );
+      } else {
+        if (_defaultApp.value == null) {
+          var predefinedDefault = _appConfig!.serverConfigs!.firstWhereOrNull((element) => element.isDefault ?? false);
+          await updateDefaultApp(
+            App.computeId(predefinedDefault?.appName, predefinedDefault?.baseUrl?.toString(), predefined: true),
+          );
+        }
+      }
     }
 
-    ServerConfig? defaultConfig = _appConfig?.serverConfigs!.firstWhereOrNull((e) => e.appName == _defaultApp.value) ??
-        _appConfig?.serverConfigs!.firstOrNull;
-
-    _appName = ValueNotifier(await _configService.appName() ?? defaultConfig?.appName);
-
-    ServerConfig? predefinedApp = getPredefinedApp(_appName.value);
-    bool isPredefined = predefinedApp != null;
-    bool useUserSettings = AppOverviewPage.useUserSettings(
-      _appConfig!.serverConfigsParametersHidden! || _appConfig!.serverConfigsLocked!,
-      isPredefined,
-      predefinedApp,
-    );
-
-    String? baseUrl = await _configService.baseUrl();
-    _baseUrl = ValueNotifier(
-        (useUserSettings ? (baseUrl != null ? Uri.parse(baseUrl) : null) : null) ?? predefinedApp?.baseUrl);
-    _username = ValueNotifier(await _configService.username() ?? predefinedApp?.username);
-    _password = ValueNotifier(await _configService.password() ?? predefinedApp?.password);
-    _title = ValueNotifier((useUserSettings ? await _configService.title() : null) ?? predefinedApp?.title);
-    _icon = ValueNotifier(await _configService.icon() ?? predefinedApp?.icon);
-    _locked = ValueNotifier(predefinedApp?.locked);
-    _parametersHidden = ValueNotifier(predefinedApp?.parametersHidden);
-    _version = ValueNotifier(await _configService.version());
-    _authKey = ValueNotifier(await _configService.authKey());
-    _userInfo = ValueNotifier(await _configService.userInfo());
-    _offline = ValueNotifier(await _configService.offline());
-    _offlineScreen = ValueNotifier(await _configService.offlineScreen());
-    _applicationStyle = ValueNotifier(await _configService.applicationStyle());
-    _userLanguage = ValueNotifier(await _configService.userLanguage());
-    _applicationTimeZone = ValueNotifier(await _configService.applicationTimeZone());
-
-    // Allow and trigger persisting in the config service.
-    if (_appName.value != null) {
-      await updateAppName(_appName.value!);
-    }
+    _appId = ValueNotifier(null);
+    _appName = ValueNotifier(null);
+    _baseUrl = ValueNotifier(null);
+    _username = ValueNotifier(null);
+    _password = ValueNotifier(null);
+    _title = ValueNotifier(null);
+    _icon = ValueNotifier(null);
+    _locked = ValueNotifier(null);
+    _parametersHidden = ValueNotifier(null);
+    _version = ValueNotifier(null);
+    _authKey = ValueNotifier(null);
+    _userInfo = ValueNotifier(null);
+    _offline = ValueNotifier(false);
+    _offlineScreen = ValueNotifier(null);
+    _applicationStyle = ValueNotifier(null);
+    _userLanguage = ValueNotifier(null);
+    _applicationTimeZone = ValueNotifier(null);
 
     // Update native timezone
     _platformTimeZone = await FlutterNativeTimezone.getLocalTimezone();
   }
 
   Future<void> _updateAppSpecificValues() async {
-    final String? appName = _appName.value;
-    ServerConfig? predefinedApp = getPredefinedApp(appName);
-    bool isPredefined = predefinedApp != null;
-    bool useUserSettings = AppOverviewPage.useUserSettings(
-      _appConfig!.serverConfigsParametersHidden! || _appConfig!.serverConfigsLocked!,
-      isPredefined,
-      predefinedApp,
-    );
+    final String? appId = _appId.value;
 
+    App? app = appId != null ? App.getApp(appId) : null;
+    bool useUserSettings = app?.usesUserParameter ?? true;
+    PredefinedServerConfig? predefinedApp = App.getPredefinedConfig(appId);
+
+    _appName.value = (useUserSettings ? await _configService.appName() : null) ?? predefinedApp?.appName;
     String? baseUrl = await _configService.baseUrl();
     _baseUrl.value = (useUserSettings ? (baseUrl != null ? Uri.parse(baseUrl) : null) : null) ?? predefinedApp?.baseUrl;
     _username.value = await _configService.username() ?? predefinedApp?.username;
@@ -228,6 +225,100 @@ class ConfigController {
     _applicationTimeZone.value = await _configService.applicationTimeZone();
   }
 
+  /// Migrates old config
+  Future<void> _migrateConfig() async {
+    // TODO remove in future versions
+    var sharedPrefs = getConfigService().getSharedPreferences();
+
+    var iterable = AppService()
+        .getStoredAppIds()
+        .where((id) => !id.startsWith(App.predefinedPrefix) && !sharedPrefs.containsKey("$id.name"));
+    for (var id in iterable) {
+      try {
+        if (sharedPrefs.containsKey("$id.baseUrl")) {
+          // Is valid app, migrate it.
+          FlutterUI.log.i("Migrating old app ($id)");
+          await sharedPrefs.setString("$id.name", id);
+          String newAppId = App.computeId(sharedPrefs.getString("$id.name"), sharedPrefs.getString("$id.baseUrl"),
+              predefined: false)!;
+
+          await Future.wait(
+            sharedPrefs.getKeys().where((e) => e.startsWith("$id.")).map((e) async {
+              var value = sharedPrefs.get(e);
+              await sharedPrefs.remove(e);
+              assert(value != null);
+
+              String subKey = e.substring(e.indexOf(".")); // e.g. ".baseUrl"
+              String newKey = newAppId + subKey;
+
+              if (value is String) {
+                await sharedPrefs.setString(newKey, value);
+              } else if (value is bool) {
+                await sharedPrefs.setBool(newKey, value);
+              } else if (value is int) {
+                await sharedPrefs.setInt(newKey, value);
+              } else if (value is double) {
+                await sharedPrefs.setDouble(newKey, value);
+              } else if (value is List<String>) {
+                await sharedPrefs.setStringList(newKey, value);
+              } else {
+                assert(false, "${value.runtimeType} is not supported by SharedPreferences");
+              }
+            }).toList(),
+          );
+
+          String? sCurrentApp = await getConfigService().currentApp();
+          if (sCurrentApp == id) {
+            await getConfigService().updateCurrentApp(newAppId);
+          }
+          String? sLastApp = await getConfigService().lastApp();
+          if (sLastApp == id) {
+            await getConfigService().updateLastApp(newAppId);
+          }
+          String? sDefaultApp = await getConfigService().defaultApp();
+          if (sDefaultApp == id) {
+            await getConfigService().updateDefaultApp(newAppId);
+          }
+
+          try {
+            await ConfigController().getFileManager().renameIndependentDirectory([id], newAppId);
+          } catch (e, stack) {
+            FlutterUI.log.w("Failed to migrate app directory ($id)", e, stack);
+          }
+        } else {
+          // Doesn't contain properties to start, delete it.
+          FlutterUI.log.i("Removing old app ($id)");
+          await Future.wait(
+            sharedPrefs.getKeys().where((e) => e.startsWith("$id.")).map((e) => sharedPrefs.remove(e)).toList(),
+          ).then((_) async {
+            String? sCurrentApp = await getConfigService().currentApp();
+            if (sCurrentApp == id) {
+              await getConfigService().updateCurrentApp(null);
+            }
+            String? sLastApp = await getConfigService().lastApp();
+            if (sLastApp == id) {
+              await getConfigService().updateLastApp(null);
+            }
+            String? sDefaultApp = await getConfigService().defaultApp();
+            if (sDefaultApp == id) {
+              await getConfigService().updateDefaultApp(null);
+            }
+
+            try {
+              await ConfigController().getFileManager().deleteIndependentDirectory([id], recursive: true);
+            } catch (e, stack) {
+              FlutterUI.log.w("Failed to delete old app directory ($id)", e, stack);
+            }
+          });
+        }
+      } catch (e, stack) {
+        FlutterUI.log.e("Failed to migrate app ($id)", e, stack);
+      }
+    }
+
+    await sharedPrefs.remove("appName");
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Helper-methods for non-persistent fields
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,9 +328,11 @@ class ConfigController {
     return _translation.translateText(pText);
   }
 
-  /// Returns the current in use [SharedPreferences] instance.
-  SharedPreferences getSharedPreferences() {
-    return _configService.getSharedPreferences();
+  /// Returns the currently in use [ConfigService] instance.
+  ///
+  /// It is recommended to use the provided methods instead of directly accessing the [ConfigService].
+  ConfigService getConfigService() {
+    return _configService;
   }
 
   /// Returns the current [IFileManager] in use.
@@ -272,77 +365,6 @@ class ConfigController {
   /// * [password]
   AppConfig? getAppConfig() {
     return _appConfig;
-  }
-
-  /// Returns a list of all known app names.
-  ///
-  /// Attention: This list doesn't provide any information about the validity
-  /// of these apps, they don't have to be "start-able" (meaning there is a base url).
-  Set<String> getAppNames() {
-    List<String>? externalConfigs =
-        _appConfig?.serverConfigs?.where((e) => e.appName != null).map((e) => e.appName!).toList();
-    return {
-      ..._configService.getAppNames(),
-      ...?externalConfigs,
-    };
-  }
-
-  /// Returns a [ServerConfig] populated on a best-effort-basis for the requested app.
-  ///
-  /// Could potentially be completely empty besides the provided [appName]!
-  /// Combines the configs from [getPredefinedApp] and [getStoredApp].
-  Future<ServerConfig> getApp(String? appName) async {
-    if (appName == null) return const ServerConfig.empty();
-    return const ServerConfig.empty().merge(getPredefinedApp(appName)).merge(await getStoredApp(appName));
-  }
-
-  String? getAppVersion(String? appName) {
-    if (appName == null) return null;
-    return _configService.getAppVersion(appName);
-  }
-
-  Map<String, String>? getAppStyle(String? appName) {
-    if (appName == null) return null;
-    return _configService.getAppStyle(appName);
-  }
-
-  Future<ServerConfig?> getStoredApp(String? appName) async => appName == null ? null : _configService.getApp(appName);
-
-  ServerConfig? getPredefinedApp(String? appName) =>
-      appName == null ? null : _appConfig?.serverConfigs!.firstWhereOrNull((e) => e.appName == appName);
-
-  /// Adds/Updates this config in the persistent storage.
-  ///
-  /// In case of renaming an existing app, provide an [oldAppName].
-  Future<void> updateApp(ServerConfig config, {String? oldAppName}) async {
-    if (config.appName?.isNotEmpty ?? false) {
-      ServerConfig? localConfig = getPredefinedApp(config.appName!);
-      assert(!(localConfig?.locked ?? false));
-
-      if (localConfig == config) {
-        return _configService.removeApp(config.appName!);
-      }
-
-      return _configService.updateApp(
-        oldAppName,
-        // AppName has to be provided nonetheless!
-        config.diff(localConfig).merge(ServerConfig(
-              appName: config.appName,
-            )),
-        removeNullFields: true,
-      );
-    }
-  }
-
-  /// Removes all preferences of this app.
-  Future<void> removeApp(String appName, {bool forced = false}) async {
-    ServerConfig? localConfig = getPredefinedApp(appName);
-    assert(() {
-      if (forced) return true;
-      return !(localConfig?.locked ?? false);
-    }());
-
-    return _configService.removeApp(appName);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -386,18 +408,18 @@ class ConfigController {
   ValueListenable<String?> get defaultApp => _defaultApp;
 
   /// Sets the default app.
-  Future<void> updateDefaultApp(String? appName) async {
-    await _configService.updateDefaultApp(appName);
-    _defaultApp.value = appName;
+  Future<void> updateDefaultApp(String? appId) async {
+    await _configService.updateDefaultApp(appId);
+    _defaultApp.value = appId;
   }
 
   /// Returns the last opened app.
   ValueListenable<String?> get lastApp => _lastApp;
 
   /// Sets the last opened app.
-  Future<void> updateLastApp(String? appName) async {
-    await _configService.updateLastApp(appName);
-    _lastApp.value = appName;
+  Future<void> updateLastApp(String? appId) async {
+    await _configService.updateLastApp(appId);
+    _lastApp.value = appId;
   }
 
   /// Returns the configured privacy policy.
@@ -410,15 +432,27 @@ class ConfigController {
     _privacyPolicy.value = policy ?? fallback;
   }
 
+  /// Returns the id of the current app.
+  ValueListenable<String?> get currentApp => _appId;
+
+  /// Sets the name of the current app.
+  Future<void> updateCurrentApp(String? appId) async {
+    // Only setting that also persists the default value, as this is used in the key for other settings.
+    await _configService.updateCurrentApp(appId);
+    _appId.value = appId;
+    await _updateAppSpecificValues();
+  }
+
   /// Returns the name of the current app.
   ValueListenable<String?> get appName => _appName;
 
   /// Sets the name of the current app.
-  Future<void> updateAppName(String? appName) async {
-    // Only setting that also persists the default value, as this is used in the key for other settings.
-    await _configService.updateAppName(appName);
-    _appName.value = appName;
-    await _updateAppSpecificValues();
+  Future<void> updateAppName(String? name) async {
+    String? fallback = App.getPredefinedConfig(_appId.value)?.appName;
+    await _configService.updateAppName(
+      name == fallback ? null : name?.toString(),
+    );
+    _appName.value = name ?? fallback;
   }
 
   /// Returns the saved base url.
@@ -432,7 +466,7 @@ class ConfigController {
   ///
   /// Overrides the base url from [AppConfig.serverConfigs].
   Future<void> updateBaseUrl(Uri? baseUrl) async {
-    Uri? fallback = getPredefinedApp(_appName.value)?.baseUrl;
+    Uri? fallback = App.getPredefinedConfig(_appId.value)?.baseUrl;
     await _configService.updateBaseUrl(
       baseUrl == fallback ? null : baseUrl?.toString(),
     );
@@ -446,7 +480,7 @@ class ConfigController {
   ///
   /// Overrides the username from [AppConfig.serverConfigs].
   Future<void> updateUsername(String? username) async {
-    String? fallback = getPredefinedApp(_appName.value)?.username;
+    String? fallback = App.getPredefinedConfig(_appId.value)?.username;
     await _configService.updateUsername(username == fallback ? null : username);
     _username.value = username ?? fallback;
   }
@@ -458,7 +492,7 @@ class ConfigController {
   ///
   /// Overrides the password from [AppConfig.serverConfigs].
   Future<void> updatePassword(String? password) async {
-    String? fallback = getPredefinedApp(_appName.value)?.password;
+    String? fallback = App.getPredefinedConfig(_appId.value)?.password;
     await _configService.updatePassword(password == fallback ? null : password);
     _password.value = password ?? fallback;
   }
@@ -470,7 +504,7 @@ class ConfigController {
   ///
   /// Overrides the title from [AppConfig.serverConfigs].
   Future<void> updateTitle(String? title) async {
-    String? fallback = getPredefinedApp(_appName.value)?.title;
+    String? fallback = App.getPredefinedConfig(_appId.value)?.title;
     await _configService.updateTitle(title == fallback ? null : title);
     _title.value = title ?? fallback;
   }
@@ -482,7 +516,7 @@ class ConfigController {
   ///
   /// Overrides the icon from [AppConfig.serverConfigs].
   Future<void> updateIcon(String? icon) async {
-    String? fallback = getPredefinedApp(_appName.value)?.icon;
+    String? fallback = App.getPredefinedConfig(_appId.value)?.icon;
     await _configService.updateIcon(icon == fallback ? null : icon);
     _icon.value = icon ?? fallback;
   }
@@ -610,7 +644,7 @@ class ConfigController {
   /// See also:
   /// * [AppStyle]
   /// * [updateApplicationStyle]
-  ValueListenable<Map<String, String>> get applicationStyle => _applicationStyle;
+  ValueListenable<Map<String, String>?> get applicationStyle => _applicationStyle;
 
   /// Sets the app style.
   ///
@@ -632,7 +666,7 @@ class ConfigController {
       return 1.0;
     }
 
-    return double.parse(_applicationStyle.value['options.mobilescaling'] ?? '2.0');
+    return double.parse(_applicationStyle.value?['options.mobilescaling'] ?? '2.0');
   }
 
   /// Returns if the app is currently in offline mode.
