@@ -59,6 +59,8 @@ class OfflineApiRepository extends IRepository {
   }
 
   Future<void> initDataBooks() async {
+    _checkStatus();
+
     List<DalMetaData> metaData = await offlineDatabase!.getMetaData(ConfigController().currentApp.value!);
     metaData.map((element) => IDataService().setMetaData(pMetaData: element));
   }
@@ -87,6 +89,8 @@ class OfflineApiRepository extends IRepository {
     List<DataBook> dataBooks,
     void Function(int value, int max, {int? progress})? progressUpdate,
   ) async {
+    _checkStatus();
+
     var dalMetaData = dataBooks.map((e) => e.metaData).toList(growable: false);
     // Drop old data + possible old scheme
     await offlineDatabase!.dropTables(ConfigController().currentApp.value!);
@@ -124,20 +128,23 @@ class OfflineApiRepository extends IRepository {
 
   /// Deletes all currently used dataBooks
   Future<void> deleteDatabase() {
+    _checkStatus();
     return offlineDatabase!.dropTables(ConfigController().currentApp.value!);
   }
 
   Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {
+    _checkStatus();
     return offlineDatabase!.getChangedRows(pDataProvider);
   }
 
   Future<int> resetStates(String pDataProvider, {required List<Map<String, Object?>> pResetRows}) {
+    _checkStatus();
     return offlineDatabase!.resetStates(pDataProvider, pResetRows);
   }
 
   @override
   Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
-    if (isStopped()) throw Exception("Repository not initialized");
+    _checkStatus();
 
     ApiResponse? response;
 
@@ -158,6 +165,10 @@ class OfflineApiRepository extends IRepository {
     }
 
     return ApiInteraction(responses: response != null ? [response] : [], request: pRequest);
+  }
+
+  void _checkStatus() {
+    if (isStopped()) throw Exception("Repository not initialized");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

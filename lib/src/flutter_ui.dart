@@ -48,7 +48,6 @@ import 'routing/locations/work_screen_location.dart';
 import 'service/api/i_api_service.dart';
 import 'service/api/impl/default/api_service.dart';
 import 'service/api/shared/controller/api_controller.dart';
-import 'service/api/shared/repository/offline_api_repository.dart';
 import 'service/api/shared/repository/online_api_repository.dart';
 import 'service/apps/app.dart';
 import 'service/apps/app_service.dart';
@@ -346,8 +345,7 @@ class FlutterUI extends StatefulWidget {
     queryParameters.forEach((key, value) => ConfigController().updateCustomStartUpProperties(key, value));
 
     // API
-    var repository = configController.offline.value ? OfflineApiRepository() : OnlineApiRepository();
-    IApiService apiService = ApiService.create(repository);
+    IApiService apiService = ApiService.create(OnlineApiRepository());
     apiService.setController(ApiController());
     services.registerSingleton(apiService);
 

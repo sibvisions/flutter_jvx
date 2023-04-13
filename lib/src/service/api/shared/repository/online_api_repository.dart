@@ -531,7 +531,7 @@ class OnlineApiRepository extends IRepository {
 
   @override
   Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
-    if (isStopped()) throw Exception("Repository not initialized");
+    _checkStatus();
 
     try {
       if (pRequest is SessionRequest) {
@@ -663,6 +663,10 @@ class OnlineApiRepository extends IRepository {
     }
   }
 
+  void _checkStatus() {
+    if (isStopped()) throw Exception("Repository not initialized");
+  }
+
   Future<String> _decodeBody(HttpClientResponse response) {
     return response.transform(utf8.decoder).join();
   }
@@ -690,7 +694,7 @@ class OnlineApiRepository extends IRepository {
       }
 
       Uri uri = Uri.parse("${ConfigController().baseUrl.value!}/${route.route}");
-      request = await createRequest(uri, route.method);
+      request = await _createRequest(uri, route.method);
 
       if (kIsWeb) {
         if (request is BrowserHttpClientRequest) {
@@ -758,7 +762,7 @@ class OnlineApiRepository extends IRepository {
     }
   }
 
-  Future<HttpClientRequest> createRequest(Uri pUri, Method method) {
+  Future<HttpClientRequest> _createRequest(Uri pUri, Method method) {
     switch (method) {
       case Method.GET:
         return client!.getUrl(pUri);

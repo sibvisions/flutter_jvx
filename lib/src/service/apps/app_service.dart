@@ -22,6 +22,7 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/exit_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../api/i_api_service.dart';
+import '../api/shared/repository/offline_api_repository.dart';
 import '../api/shared/repository/online_api_repository.dart';
 import '../command/i_command_service.dart';
 import '../config/config_controller.dart';
@@ -116,17 +117,23 @@ class AppService {
   }
 
   Future<void> startApp({String? appId, bool? autostart}) async {
-    await stopApp(false);
-
-    _startedManually = !(autostart ?? !_startedManually);
-
-    if (appId != null) {
-      await ConfigController().updateCurrentApp(appId);
-    } else if (ConfigController().currentApp.value == null) {
-      FlutterUI.log.d("Called 'startApp' without an appId or a currentApp");
+    if (appId == null && ConfigController().currentApp.value == null) {
+      FlutterUI.log.e("Called 'startApp' without an appId or a currentApp");
       await IUiService().routeToAppOverview();
       return;
     }
+
+    await stopApp(false);
+
+    if (appId != null) {
+      await ConfigController().updateCurrentApp(appId);
+    }
+    _startedManually = !(autostart ?? !_startedManually);
+
+    await IApiService().getRepository().stop();
+    var repository = ConfigController().offline.value ? OfflineApiRepository() : OnlineApiRepository();
+    await repository.start();
+    IApiService().setRepository(repository);
 
     await ConfigController().updateLastApp(ConfigController().currentApp.value);
 
@@ -155,17 +162,17 @@ class AppService {
           .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
     }
 
-    // (Re-)start repository
-    if (IApiService().getRepository() is OnlineApiRepository) {
-      if (IApiService().getRepository().isStopped() == false) {
-        await IApiService().getRepository().stop();
-      }
-    }
-    await IApiService().getRepository().start();
     await FlutterUI.clearServices(true);
-
     if (resetAppName) {
       await ConfigController().updateCurrentApp(null);
+    }
+
+    // Switch back to "default" repository.
+    if (IApiService().getRepository() is! OnlineApiRepository) {
+      await IApiService().getRepository().stop();
+      var repository = OnlineApiRepository();
+      await repository.start();
+      IApiService().setRepository(repository);
     }
   }
 }
