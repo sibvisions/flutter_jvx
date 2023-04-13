@@ -348,12 +348,12 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     return child;
   }
 
-  /// Returns either the last started app or the default app if they are not locked or hidden.
+  /// Returns either the last started app or the default app if they are not hidden.
   App? _getCurrentEditableConfig() {
     String? appId = ConfigController().lastApp.value ?? ConfigController().defaultApp.value;
     if (appId != null) {
       var config = apps?.firstWhereOrNull((element) => element.id == appId);
-      if (!(config?.locked ?? false) && !(config?.parametersHidden ?? false)) {
+      if (!(config?.parametersHidden ?? false)) {
         return config;
       }
     }
