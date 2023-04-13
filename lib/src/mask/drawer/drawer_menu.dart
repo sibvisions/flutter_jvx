@@ -227,7 +227,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
         isNormalSize: isNormalSize,
       ),
     ];
-
     if (!isOffline) {
       footerEntries.addAll([
         _buildFooterDivider(context),
@@ -238,24 +237,34 @@ class _DrawerMenuState extends State<DrawerMenu> {
           onTap: widget.onChangePasswordPressed,
           isNormalSize: isNormalSize,
         ),
-        _buildFooterDivider(context),
       ]);
-      if (isNormalSize) {
-        List<Widget> children;
-        if (AppService().showAppsButton()) {
-          children = [
-            Expanded(
-              flex: 10,
-              child: _buildLogoutEntry(context, isNormalSize),
-            ),
-            _buildFooterVerticalDivider(context),
-            Expanded(flex: 7, child: _buildAppsEntry(context, isNormalSize)),
-          ];
-        } else {
-          children = [Expanded(child: _buildLogoutEntry(context, isNormalSize))];
-        }
+    }
 
+    if (isNormalSize) {
+      final List<Widget> children = [];
+
+      if (!isOffline) {
+        children.addAll([
+          _buildFooterDivider(context),
+          Expanded(
+            flex: AppService().showAppsButton() ? 10 : 1,
+            child: _buildLogoutEntry(context, isNormalSize),
+          ),
+        ]);
+      }
+      if (AppService().showAppsButton()) {
+        children.addAll([
+          _buildFooterVerticalDivider(context),
+          Expanded(
+            flex: 7,
+            child: _buildAppsEntry(context, isNormalSize),
+          ),
+        ]);
+      }
+
+      if (children.isNotEmpty) {
         footerEntries.addAll([
+          _buildFooterDivider(context),
           SizedBox(
             height: kIsWeb ? 48 : 56,
             child: Row(
@@ -263,23 +272,15 @@ class _DrawerMenuState extends State<DrawerMenu> {
             ),
           ),
         ]);
-      } else {
-        List<Widget> children;
-        if (AppService().showAppsButton()) {
-          children = [
-            _buildAppsEntry(context, isNormalSize),
-            _buildFooterDivider(context),
-            _buildLogoutEntry(context, isNormalSize),
-          ];
-        } else {
-          children = [_buildLogoutEntry(context, isNormalSize)];
-        }
-
-        footerEntries.addAll(children);
       }
-      footerEntries.add(_buildFooterDivider(context));
+    } else {
+      footerEntries.addAll([
+        if (AppService().showAppsButton()) _buildAppsEntry(context, isNormalSize),
+        if (!isOffline) _buildLogoutEntry(context, isNormalSize),
+      ]);
     }
 
+    footerEntries.add(_buildFooterDivider(context));
     return footerEntries;
   }
 

@@ -143,15 +143,14 @@ class AppService {
       ConfigController().loadLanguages();
     }
 
-    if (ConfigController().offline.value) {
+    if (!ConfigController().offline.value) {
+      // Send startup to server
+      await ICommandService().sendCommand(StartupCommand(
+        reason: "InitApp",
+      ));
+    } else {
       IUiService().routeToMenu(pReplaceRoute: true);
-      return;
     }
-
-    // Send startup to server
-    await ICommandService().sendCommand(StartupCommand(
-      reason: "InitApp",
-    ));
   }
 
   /// Stops the currently running app.
