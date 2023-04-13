@@ -540,9 +540,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         AppConfig appConfig = ConfigController().getAppConfig()!;
         bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
         ServerConfig? defaultConfig = serverConfigs.firstWhereOrNull((e) {
-          return (e.isDefault ?? false) &&
-              ((appConfig.customAppsAllowed ?? false) || ConfigController().getPredefinedApp(e.appName!) != null);
-        });
+              return ConfigController().getSharedPreferences().getBool("${e.appName}.offline") ?? false;
+            }) ??
+            serverConfigs.firstWhereOrNull((e) {
+              return (e.isDefault ?? false) &&
+                  ((appConfig.customAppsAllowed ?? false) || ConfigController().getPredefinedApp(e.appName!) != null);
+            });
         if (defaultConfig == null && serverConfigs.length == 1 && !showAppOverviewWithoutDefault) {
           defaultConfig = serverConfigs.firstOrNull;
         }
@@ -563,6 +566,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   Future<void> _startApp({ServerConfig? app, bool? autostart}) async {
+    if (app != null && ConfigController().appName.value == null) {
+      await ConfigController().updateApp(app);
+      await ConfigController().updateAppName(app.appName!);
+    }
+
     await stopApp(false);
 
     startedManually = !(autostart ?? !startedManually);
@@ -605,7 +613,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   /// Stops the currently running app.
   Future<void> stopApp([bool resetAppName = true]) async {
-    setState(() => startupFuture = null);
+    if (resetAppName) {
+      setState(() => startupFuture = null);
+    }
 
     if (!ConfigController().offline.value && IUiService().clientId.value != null) {
       unawaited(ICommandService()

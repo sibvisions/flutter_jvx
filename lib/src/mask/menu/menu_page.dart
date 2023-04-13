@@ -156,7 +156,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   isMenuSearchEnabled = false;
                   setState(() {});
                   return false;
-                } else if (FlutterUI.of(context).startedManually) {
+                } else if (FlutterUI.of(context).startedManually && !ConfigController().offline.value) {
                   unawaited(IUiService().routeToAppOverview());
                   return false;
                 }
@@ -175,7 +175,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                             setState(() {});
                           },
                           icon: const FaIcon(FontAwesomeIcons.circleXmark))
-                      : (FlutterUI.of(context).startedManually
+                      : (FlutterUI.of(context).startedManually && !ConfigController().offline.value
                           ? IconButton(
                               splashRadius: kToolbarHeight / 2,
                               icon: const FaIcon(FontAwesomeIcons.angleLeft),
@@ -185,7 +185,10 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   title: !isMenuSearchEnabled
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
-                  titleSpacing: isMenuSearchEnabled || FlutterUI.of(context).startedManually ? 0.0 : null,
+                  titleSpacing: isMenuSearchEnabled ||
+                          (FlutterUI.of(context).startedManually && !ConfigController().offline.value)
+                      ? 0.0
+                      : null,
                   backgroundColor: isOffline ? Colors.grey.shade500 : null,
                   actions: actions,
                 ),
