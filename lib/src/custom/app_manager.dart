@@ -94,7 +94,7 @@ abstract class AppManager {
   /// Is called when a response is returned, use the [resendRequest] function to resend the original request.
   /// Useful for 2FA or retry.
   Future<HttpClientResponse?> handleResponse(
-          ApiRequest request, String responseBody, Future<HttpClientResponse> Function() resendRequest) =>
+          ApiRequest request, Stream<List<int>> responseStream, Future<HttpClientResponse> Function() resendRequest) =>
       Future.value(null);
 
   /// Is called if a new startup is initiated.

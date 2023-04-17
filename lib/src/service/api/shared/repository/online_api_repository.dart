@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter/foundation.dart';
@@ -582,6 +583,19 @@ class OnlineApiRepository extends IRepository {
         // Has to happen after connected field update, depends on field.
         resetAliveInterval();
       }
+      var responseStream = StreamSplitter(response);
+
+      if (IUiService().getAppManager() != null) {
+        var overrideResponse = await IUiService().getAppManager()?.handleResponse(
+              pRequest,
+              responseStream.split(),
+              () async => (await _sendRequest(pRequest))["response"],
+            );
+        if (overrideResponse != null) {
+          response = overrideResponse;
+          responseStream = StreamSplitter(response);
+        }
+      }
 
       void logResponse(HttpClientRequest request, HttpClientResponse response, Object? body) {
         final Map<String, List<String>> logHeaders = {};
@@ -592,7 +606,7 @@ class OnlineApiRepository extends IRepository {
       }
 
       if (response.statusCode >= 400 && response.statusCode <= 599) {
-        var body = await _decodeBody(response);
+        var body = await _decodeBody(responseStream.split());
         logResponse(clientRequest, response, body);
         FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
         if (response.statusCode == 400 && pRequest is ApiStartUpRequest) {
@@ -612,26 +626,14 @@ class OnlineApiRepository extends IRepository {
 
       // Download Request needs different handling
       if (pRequest is DownloadRequest) {
-        var body = Uint8List.fromList(await response.expand((element) => element).toList());
+        var body = Uint8List.fromList(await responseStream.split().expand((element) => element).toList());
         logResponse(clientRequest, response, body);
         var parsedDownloadObject = _handleDownload(pBody: body, pRequest: pRequest);
         return parsedDownloadObject;
       }
 
-      String responseBody = await _decodeBody(response);
+      String responseBody = await _decodeBody(responseStream.split());
       logResponse(clientRequest, response, responseBody);
-
-      if (IUiService().getAppManager() != null) {
-        var overrideResponse = await IUiService().getAppManager()?.handleResponse(
-              pRequest,
-              responseBody,
-              () async => (await _sendRequest(pRequest))["response"],
-            );
-        if (overrideResponse != null) {
-          response = overrideResponse;
-          responseBody = await _decodeBody(overrideResponse);
-        }
-      }
 
       List<dynamic> jsonResponse = [];
 
@@ -667,7 +669,7 @@ class OnlineApiRepository extends IRepository {
     if (isStopped()) throw Exception("Repository not initialized");
   }
 
-  Future<String> _decodeBody(HttpClientResponse response) {
+  Future<String> _decodeBody(Stream response) {
     return response.transform(utf8.decoder).join();
   }
 
