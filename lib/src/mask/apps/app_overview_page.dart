@@ -144,7 +144,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       future = () async {
         var retrievedApps = App.getAppsByIDs(AppService().getAppIds());
         apps = [...retrievedApps];
-        currentConfig = _getCurrentEditableConfig();
+        currentConfig = _getSingleConfig();
       }()
           .catchError(FlutterUI.createErrorHandler("Failed to init app list"));
     });
@@ -348,16 +348,18 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     return child;
   }
 
-  /// Returns either the last started app or the default app if they are not hidden.
-  App? _getCurrentEditableConfig() {
-    String? appId = ConfigController().lastApp.value ?? ConfigController().defaultApp.value;
-    if (appId != null) {
-      var config = apps?.firstWhereOrNull((element) => element.id == appId);
-      if (!(config?.parametersHidden ?? false)) {
-        return config;
-      }
+  /// Returns either the last started app, the default app or the first app that is not hidden.
+  App? _getSingleConfig() {
+    App? selectedApp;
+    Iterable<String?> appIds = [
+      ConfigController().lastApp.value,
+      ConfigController().defaultApp.value,
+    ].whereNotNull();
+    if (appIds.isNotEmpty) {
+      selectedApp = apps?.firstWhereOrNull((e) => appIds.contains(e.id) && !e.parametersHidden);
     }
-    return null;
+    selectedApp ??= apps?.firstWhereOrNull((e) => !e.parametersHidden);
+    return selectedApp;
   }
 
   Material _buildMenuButton(BuildContext context, bool showAddOnFront) {
