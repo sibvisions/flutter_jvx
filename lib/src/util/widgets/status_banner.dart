@@ -40,6 +40,7 @@ class StatusBanner extends StatefulWidget {
   final BorderRadius borderRadius;
   final double edgePadding;
   final EdgeInsetsGeometry contentPadding;
+  final bool dismissible;
   final double dismissThreshold;
   final Curve translationCurve;
   final Duration translationDuration;
@@ -57,6 +58,7 @@ class StatusBanner extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(10)),
     this.edgePadding = 10,
     this.contentPadding = const EdgeInsets.all(10),
+    this.dismissible = true,
     this.dismissThreshold = 0.7,
     this.translationCurve = Curves.fastOutSlowIn,
     this.translationDuration = const Duration(milliseconds: 250),
@@ -165,7 +167,7 @@ class StatusBannerState extends State<StatusBanner> with SingleTickerProviderSta
               onVerticalDragEnd: (details) {
                 // Allow the banner to animate smoothly from its current position without jumps.
                 _curve = _SuspendedCurve(_controller.value, curve: widget.translationCurve);
-                if (_controller.value < widget.dismissThreshold) {
+                if (widget.dismissible && _controller.value < widget.dismissThreshold) {
                   close();
                 } else {
                   if (_controller.status != AnimationStatus.reverse) {
@@ -177,6 +179,8 @@ class StatusBannerState extends State<StatusBanner> with SingleTickerProviderSta
                 }
               },
               onVerticalDragUpdate: (details) {
+                if (!widget.dismissible) return;
+
                 double adjustedDelta;
                 switch (widget.location) {
                   case StatusBannerLocation.top:
@@ -191,6 +195,7 @@ class StatusBannerState extends State<StatusBanner> with SingleTickerProviderSta
                 _controller.value = (_controller.value + (adjustedDelta / _childHeight)).clamp(0, 1);
               },
               onVerticalDragStart: (details) {
+                if (!widget.dismissible) return;
                 // Allow the banner to track the user's finger accurately.
                 _curve = Curves.linear;
               },
@@ -201,7 +206,7 @@ class StatusBannerState extends State<StatusBanner> with SingleTickerProviderSta
                   color: widget.backgroundColor ?? Theme.of(context).colorScheme.surface,
                   borderRadius: widget.borderRadius,
                   child: InkWell(
-                    onTap: widget.onTap ?? () => close(),
+                    onTap: widget.onTap ?? (widget.dismissible ? () => close() : null),
                     borderRadius: widget.borderRadius,
                     child: Padding(
                       padding: widget.contentPadding,

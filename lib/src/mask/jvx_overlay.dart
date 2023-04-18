@@ -221,6 +221,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                                   .catchError((_) {});
                             }
                           : null,
+                      dismissible: _connected != false,
                       child: Text(FlutterUI.translate(_connectedMessage)),
                     ),
                   if (_loading && !_forceDisableBarrier)
