@@ -230,86 +230,102 @@ class ConfigController {
     // TODO remove in future versions
     var sharedPrefs = getConfigService().getSharedPreferences();
 
-    var iterable = AppService()
-        .getStoredAppIds()
-        .where((id) => !id.startsWith(App.predefinedPrefix) && !sharedPrefs.containsKey("$id.name"));
+    Future<void> migrateApp(String id) async {
+      await sharedPrefs.setString("$id.name", id);
+      String newAppId =
+          App.computeId(sharedPrefs.getString("$id.name"), sharedPrefs.getString("$id.baseUrl"), predefined: false)!;
+
+      await Future.wait(
+        sharedPrefs.getKeys().where((e) => e.startsWith("$id.")).map((e) async {
+          var value = sharedPrefs.get(e);
+          await sharedPrefs.remove(e);
+          assert(value != null);
+
+          String subKey = e.substring(e.indexOf(".")); // e.g. ".baseUrl"
+          String newKey = newAppId + subKey;
+
+          if (value is String) {
+            await sharedPrefs.setString(newKey, value);
+          } else if (value is bool) {
+            await sharedPrefs.setBool(newKey, value);
+          } else if (value is int) {
+            await sharedPrefs.setInt(newKey, value);
+          } else if (value is double) {
+            await sharedPrefs.setDouble(newKey, value);
+          } else if (value is List<String>) {
+            await sharedPrefs.setStringList(newKey, value);
+          } else {
+            assert(false, "${value.runtimeType} is not supported by SharedPreferences");
+          }
+        }).toList(),
+      );
+
+      String? sCurrentApp = await getConfigService().currentApp();
+      if (sCurrentApp == id) {
+        await getConfigService().updateCurrentApp(newAppId);
+      }
+      String? sLastApp = await getConfigService().lastApp();
+      if (sLastApp == id) {
+        await getConfigService().updateLastApp(newAppId);
+      }
+      String? sDefaultApp = await getConfigService().defaultApp();
+      if (sDefaultApp == id) {
+        await getConfigService().updateDefaultApp(newAppId);
+      }
+
+      try {
+        await ConfigController().getFileManager().renameIndependentDirectory([id], newAppId);
+      } catch (e, stack) {
+        FlutterUI.log.w("Failed to migrate app directory ($id)", e, stack);
+      }
+    }
+
+    Future<void> removeApp(String id) async {
+      await Future.wait(
+        sharedPrefs.getKeys().where((e) => e.startsWith("$id.")).map((e) => sharedPrefs.remove(e)).toList(),
+      ).then((_) async {
+        String? sCurrentApp = await getConfigService().currentApp();
+        if (sCurrentApp == id) {
+          await getConfigService().updateCurrentApp(null);
+        }
+        String? sLastApp = await getConfigService().lastApp();
+        if (sLastApp == id) {
+          await getConfigService().updateLastApp(null);
+        }
+        String? sDefaultApp = await getConfigService().defaultApp();
+        if (sDefaultApp == id) {
+          await getConfigService().updateDefaultApp(null);
+        }
+
+        try {
+          await ConfigController().getFileManager().deleteIndependentDirectory([id], recursive: true);
+        } catch (e, stack) {
+          FlutterUI.log.w("Failed to delete old app directory ($id)", e, stack);
+        }
+      });
+    }
+
+    var iterable = AppService().getStoredAppIds().where((id) =>
+        !id.contains(App.idSplitSequence) &&
+        !id.startsWith(App.predefinedPrefix) &&
+        !sharedPrefs.containsKey("$id.name"));
     for (var id in iterable) {
       try {
-        if (sharedPrefs.containsKey("$id.baseUrl")) {
-          // Is valid app, migrate it.
-          FlutterUI.log.i("Migrating old app ($id)");
-          await sharedPrefs.setString("$id.name", id);
-          String newAppId = App.computeId(sharedPrefs.getString("$id.name"), sharedPrefs.getString("$id.baseUrl"),
-              predefined: false)!;
-
-          await Future.wait(
-            sharedPrefs.getKeys().where((e) => e.startsWith("$id.")).map((e) async {
-              var value = sharedPrefs.get(e);
-              await sharedPrefs.remove(e);
-              assert(value != null);
-
-              String subKey = e.substring(e.indexOf(".")); // e.g. ".baseUrl"
-              String newKey = newAppId + subKey;
-
-              if (value is String) {
-                await sharedPrefs.setString(newKey, value);
-              } else if (value is bool) {
-                await sharedPrefs.setBool(newKey, value);
-              } else if (value is int) {
-                await sharedPrefs.setInt(newKey, value);
-              } else if (value is double) {
-                await sharedPrefs.setDouble(newKey, value);
-              } else if (value is List<String>) {
-                await sharedPrefs.setStringList(newKey, value);
-              } else {
-                assert(false, "${value.runtimeType} is not supported by SharedPreferences");
-              }
-            }).toList(),
-          );
-
-          String? sCurrentApp = await getConfigService().currentApp();
-          if (sCurrentApp == id) {
-            await getConfigService().updateCurrentApp(newAppId);
-          }
-          String? sLastApp = await getConfigService().lastApp();
-          if (sLastApp == id) {
-            await getConfigService().updateLastApp(newAppId);
-          }
-          String? sDefaultApp = await getConfigService().defaultApp();
-          if (sDefaultApp == id) {
-            await getConfigService().updateDefaultApp(newAppId);
-          }
-
-          try {
-            await ConfigController().getFileManager().renameIndependentDirectory([id], newAppId);
-          } catch (e, stack) {
-            FlutterUI.log.w("Failed to migrate app directory ($id)", e, stack);
+        String? baseUrl = sharedPrefs.getString("$id.baseUrl");
+        if (baseUrl != null) {
+          if (!_appConfig!.serverConfigs!.any((e) => e.appName == id && e.baseUrl.toString() == baseUrl)) {
+            // Is valid and custom, migrate it.
+            FlutterUI.log.i("Migrating old app ($id)");
+            await migrateApp(id);
+          } else {
+            // Is equals to a predefined app, delete it.
+            FlutterUI.log.i("Removing old-predefined app ($id)");
+            await removeApp(id);
           }
         } else {
           // Doesn't contain properties to start, delete it.
           FlutterUI.log.i("Removing old app ($id)");
-          await Future.wait(
-            sharedPrefs.getKeys().where((e) => e.startsWith("$id.")).map((e) => sharedPrefs.remove(e)).toList(),
-          ).then((_) async {
-            String? sCurrentApp = await getConfigService().currentApp();
-            if (sCurrentApp == id) {
-              await getConfigService().updateCurrentApp(null);
-            }
-            String? sLastApp = await getConfigService().lastApp();
-            if (sLastApp == id) {
-              await getConfigService().updateLastApp(null);
-            }
-            String? sDefaultApp = await getConfigService().defaultApp();
-            if (sDefaultApp == id) {
-              await getConfigService().updateDefaultApp(null);
-            }
-
-            try {
-              await ConfigController().getFileManager().deleteIndependentDirectory([id], recursive: true);
-            } catch (e, stack) {
-              FlutterUI.log.w("Failed to delete old app directory ($id)", e, stack);
-            }
-          });
+          await removeApp(id);
         }
       } catch (e, stack) {
         FlutterUI.log.e("Failed to migrate app ($id)", e, stack);
