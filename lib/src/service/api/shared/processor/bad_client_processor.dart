@@ -28,12 +28,25 @@ class BadClientProcessor implements IResponseProcessor<BadClientResponse> {
 
   @override
   List<BaseCommand> processResponse(BadClientResponse pResponse, ApiRequest? pRequest) {
-    FlutterUI.log.e(pResponse.info);
+    String? info = pResponse.info;
+    FlutterUI.log.e("Server Version mismatch: $info");
+
+    String? parsedServerVersion;
+    if (info != null) {
+      try {
+        parsedServerVersion = info.substring(info.indexOf("!") + 1, info.lastIndexOf("]")).trim();
+      } catch (e, stack) {
+        FlutterUI.log.w("Failed to parse server version from badClient response", e, stack);
+      }
+    }
+
     return [
       OpenServerErrorDialogCommand(
-        reason: "Server is too old",
-        title: FlutterUI.translate("Invalid Server version"),
-        message: FlutterUI.translate("This Client requires a newer Server. An update is required!"),
+        reason: "Server version mismatch",
+        title: FlutterUI.translate("Server compatibility issue"),
+        message: "${FlutterUI.translate("This Client is not compatible with the server!")}"
+            "\n${FlutterUI.translate("Server")}: ${parsedServerVersion ?? FlutterUI.translate("Unknown")}"
+            "\n${FlutterUI.translate("Client")}: ${FlutterUI.supportedServerVersion}",
         userError: true,
       )
     ];
