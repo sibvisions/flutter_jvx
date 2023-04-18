@@ -47,7 +47,7 @@ dependencies:
   rxdart: ^0.27.5
   queue: ^3.1.0+2
   flutter_html: 3.0.0-alpha.5
-  async: ^2.11.0
+  async: ^2.10.0
 
   # IO handling
   universal_io: ^2.0.4
@@ -117,6 +117,8 @@ dependencies:
   screen_brightness: ^0.2.2
 
 dev_dependencies:
+  flutter_test:
+    sdk: flutter
   flutter_lints: ^2.0.1
 
 flutter:
