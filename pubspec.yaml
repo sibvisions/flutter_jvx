@@ -126,12 +126,6 @@ flutter:
     - assets/config/
     - assets/images/
 
-  # Workaround for offline font: https://github.com/flutter/flutter/issues/85793
-  fonts:
-    - family: Roboto
-      fonts:
-        - asset: google_fonts/Roboto/Roboto-Regular.ttf
-
 flutter_native_splash:
   # This package generates native code to customize Flutter's default white native splash screen
   # with background color and splash image.
