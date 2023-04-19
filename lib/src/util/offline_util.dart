@@ -64,6 +64,7 @@ abstract class OfflineUtil {
     var dialogKey = GlobalKey<ProgressDialogState>();
     OnlineApiRepository? onlineApiRepository;
     OfflineApiRepository? offlineApiRepository;
+    String failedStep = "Initializing";
     try {
       await Wakelock.enable();
       String offlineWorkscreenClassName = ConfigController().offlineScreen.value!;
@@ -87,6 +88,7 @@ abstract class OfflineUtil {
       await onlineApiRepository.start();
       IApiService().setRepository(onlineApiRepository);
 
+      failedStep = "Connecting to server";
       await ICommandService().sendCommand(
         StartupCommand(
           reason: "Going online",
@@ -95,6 +97,7 @@ abstract class OfflineUtil {
         ),
       );
 
+      failedStep = "Opening server screen";
       await ICommandService().sendCommand(
         OpenScreenCommand(
           screenClassName: offlineWorkscreenClassName,
@@ -110,6 +113,7 @@ abstract class OfflineUtil {
 
       var dataBooks = IDataService().getDataBooks();
       for (DataBook dataBook in dataBooks.values) {
+        failedStep = "Preparing sync for ${dataBook.dataProvider}";
         FlutterUI.logAPI.i("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
         List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
 
@@ -128,6 +132,7 @@ abstract class OfflineUtil {
           maxProgress: changedRowsPerDataBook,
         ));
 
+        failedStep = "Synchronizing ${dataBook.dataProvider}";
         successfulSync = await _handleInsertedRows(
               groupedRows[OfflineDatabase.ROW_STATE_INSERTED],
               dataBook,
@@ -153,6 +158,7 @@ abstract class OfflineUtil {
             successfulSync;
 
         FlutterUI.logAPI.i("Marking ${successfulSyncedPrimaryKeys.length} rows as synced");
+        failedStep = "Resetting states of ${dataBook.dataProvider}";
         await offlineApiRepository.resetStates(dataBook.dataProvider, pResetRows: successfulSyncedPrimaryKeys);
         successfulSyncedRows += successfulSyncedPrimaryKeys.length;
 
@@ -164,6 +170,8 @@ abstract class OfflineUtil {
 
       FlutterUI.logAPI.i("Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
 
+      failedStep =
+          "Finished sync ${successfulSync ? "successfully" : ""}: Synced $successfulSyncedRows rows, $failedRowCount rows failed";
       if (successfulSyncedRows > 0 || failedRowCount > 0) {
         dialogKey.currentState!.update(
             config: Config(
@@ -185,6 +193,7 @@ abstract class OfflineUtil {
       }
 
       if (successfulSync) {
+        failedStep = "Resetting offline state";
         await offlineApiRepository.deleteDatabase();
         IDataService().clearDataBooks();
 
@@ -192,6 +201,7 @@ abstract class OfflineUtil {
         await ConfigController().updatePassword(null);
         await offlineApiRepository.stop();
 
+        failedStep = "Closing sync connection to server";
         FlPanelModel? workscreenModel =
             IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkscreenClassName)!;
         await ICommandService().sendCommands([
@@ -199,6 +209,7 @@ abstract class OfflineUtil {
           DeleteScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
         ]);
 
+        failedStep = "Connecting to server for user interaction";
         await ICommandService().sendCommand(
           StartupCommand(
             reason: "Going online",
@@ -207,11 +218,12 @@ abstract class OfflineUtil {
           ),
         );
       } else {
+        failedStep = "Returning to offline state";
         await onlineApiRepository.stop();
         IApiService().setRepository(offlineApiRepository);
       }
-    } catch (e, stackTrace) {
-      FlutterUI.logAPI.e("Error while syncing offline data", e, stackTrace);
+    } catch (e, stack) {
+      FlutterUI.logAPI.e("Error while switching to online", e, stack);
 
       // Revert all changes in case we have an in-tact offline state
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
@@ -227,8 +239,9 @@ abstract class OfflineUtil {
         pIsDismissible: false,
         pBuilder: (context) => AlertDialog(
           title: Text(FlutterUI.translate("Offline Sync Error")),
-          content: Text(FlutterUI.translate("There was an error while trying to sync your data."
-              "\n${e.toString()}")),
+          content: Text(FlutterUI.translate("There was an error while trying to switch back online."
+              "\n\nFailed step: $failedStep."
+              "\nError: ${e.toString()}")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
