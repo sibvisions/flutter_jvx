@@ -209,7 +209,11 @@ class JVxOverlayState extends State<JVxOverlay> {
                   if (_connectedMessage != null)
                     StatusBanner(
                       key: _statusBannerKey,
-                      backgroundColor: _connected == true ? const Color(0xFF1A964A) : null,
+                      edgePadding: 8,
+                      useMaxWidth: true,
+                      backgroundColor: _connected == true
+                          ? const Color(0xFF1A964A)
+                          : Theme.of(context).snackBarTheme.backgroundColor,
                       color: _connected == true
                           ? (Theme.of(context).colorScheme.brightness == Brightness.light
                               ? const Color(0xFF141414)
@@ -224,7 +228,10 @@ class JVxOverlayState extends State<JVxOverlay> {
                             }
                           : null,
                       dismissible: _connected != false,
-                      child: Text(FlutterUI.translate(_connectedMessage)),
+                      child: Text(
+                        FlutterUI.translate(_connectedMessage),
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   if (_loading && !_forceDisableBarrier)
                     const ModalBarrier(

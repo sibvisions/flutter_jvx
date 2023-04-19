@@ -40,6 +40,7 @@ class StatusBanner extends StatefulWidget {
   final BorderRadius borderRadius;
   final double edgePadding;
   final EdgeInsetsGeometry contentPadding;
+  final bool useMaxWidth;
   final bool dismissible;
   final double dismissThreshold;
   final Curve translationCurve;
@@ -58,6 +59,7 @@ class StatusBanner extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(10)),
     this.edgePadding = 10,
     this.contentPadding = const EdgeInsets.all(10),
+    this.useMaxWidth = false,
     this.dismissible = true,
     this.dismissThreshold = 0.7,
     this.translationCurve = Curves.fastOutSlowIn,
@@ -144,9 +146,17 @@ class StatusBannerState extends State<StatusBanner> with SingleTickerProviderSta
   EdgeInsetsGeometry get _locationPadding {
     switch (widget.location) {
       case StatusBannerLocation.top:
-        return EdgeInsets.only(top: widget.edgePadding);
+        return EdgeInsets.only(
+          left: widget.edgePadding,
+          top: widget.edgePadding,
+          right: widget.edgePadding,
+        );
       case StatusBannerLocation.bottom:
-        return EdgeInsets.only(bottom: widget.edgePadding);
+        return EdgeInsets.only(
+          left: widget.edgePadding,
+          right: widget.edgePadding,
+          bottom: widget.edgePadding,
+        );
     }
   }
 
@@ -199,20 +209,24 @@ class StatusBannerState extends State<StatusBanner> with SingleTickerProviderSta
                 // Allow the banner to track the user's finger accurately.
                 _curve = Curves.linear;
               },
-              child: Opacity(
-                opacity: widget.opacity,
-                child: Material(
-                  elevation: widget.elevation,
-                  color: widget.backgroundColor ?? Theme.of(context).colorScheme.surface,
-                  borderRadius: widget.borderRadius,
-                  child: InkWell(
-                    onTap: widget.onTap ?? (widget.dismissible ? () => close() : null),
+              child: Container(
+                constraints: widget.useMaxWidth ? const BoxConstraints.tightFor(width: double.infinity) : null,
+                child: Opacity(
+                  opacity: widget.opacity,
+                  child: Material(
+                    elevation: widget.elevation,
+                    color: widget.backgroundColor ?? Theme.of(context).colorScheme.surface,
                     borderRadius: widget.borderRadius,
-                    child: Padding(
-                      padding: widget.contentPadding,
-                      child: DefaultTextStyle(
-                        style: TextStyle(color: widget.color ?? Theme.of(context).colorScheme.onSurface),
-                        child: widget.child,
+                    child: InkWell(
+                      onTap: widget.onTap ?? (widget.dismissible ? () => close() : null),
+                      borderRadius: widget.borderRadius,
+                      child: Padding(
+                        padding: widget.contentPadding,
+                        child: DefaultTextStyle(
+                          style: TextStyle(color: widget.color ?? Theme.of(context).colorScheme.onSurface),
+                          textAlign: TextAlign.center,
+                          child: widget.child,
+                        ),
                       ),
                     ),
                   ),
