@@ -756,8 +756,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   static Widget _getStartupErrorDialog(
     BuildContext context,
     AsyncSnapshot<dynamic> snapshot, {
-    required VoidCallback? retry,
-    required VoidCallback? returnToApps,
+    required VoidCallback retry,
+    required VoidCallback returnToApps,
   }) {
     ErrorViewException? errorView = snapshot.error is ErrorViewException ? snapshot.error as ErrorViewException : null;
 
@@ -779,21 +779,23 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           content: Text(
             errorView?.errorCommand.message ?? FlutterUI.translate(IUiService.getErrorMessage(snapshot.error!)),
           ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
-            TextButton(
-              onPressed: retry,
-              child: Text(
-                FlutterUI.translate("Retry"),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
             TextButton(
               onPressed: returnToApps,
               child: Text(
-                FlutterUI.translate("Edit Apps"),
+                FlutterUI.translate("Back"),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
+            if (!(errorView?.errorCommand.userError ?? false))
+              TextButton(
+                onPressed: retry,
+                child: Text(
+                  FlutterUI.translate("Retry"),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
           ],
         ),
       ],
