@@ -51,18 +51,18 @@ class AppItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double borderRadius = 20;
-    return Container(
-      foregroundDecoration: !isEnabled
-          ? const BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-              backgroundBlendMode: BlendMode.darken,
-            )
-          : null,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Material(
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          foregroundDecoration: !isEnabled
+              ? const BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+                  backgroundBlendMode: BlendMode.darken,
+                )
+              : null,
+          child: Material(
             clipBehavior: Clip.hardEdge,
             type: MaterialType.card,
             borderRadius: BorderRadius.circular(borderRadius),
@@ -155,26 +155,26 @@ class AppItem extends StatelessWidget {
               ],
             ),
           ),
-          if (isDefault)
-            Positioned(
-              top: -9,
-              right: -9,
-              child: Material(
-                color: Theme.of(context).colorScheme.primary,
-                elevation: 2,
-                borderRadius: BorderRadius.circular(32),
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: FaIcon(
-                    FontAwesomeIcons.check,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    size: 18,
-                  ),
+        ),
+        if (isDefault)
+          Positioned(
+            top: -9,
+            right: -9,
+            child: Material(
+              color: Theme.of(context).colorScheme.primary,
+              elevation: 2,
+              borderRadius: BorderRadius.circular(32),
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: FaIcon(
+                  FontAwesomeIcons.check,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  size: 18,
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
