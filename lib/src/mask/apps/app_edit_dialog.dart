@@ -79,7 +79,8 @@ class _AppEditDialogState extends State<AppEditDialog> {
     if (appNameController.text.isNotEmpty && baseUrlController.text.isNotEmpty) {
       try {
         var uri = _transformUri(baseUrlController.text);
-        String newId = App.computeId(appNameController.text, uri.toString(), predefined: false)!;
+        String newId =
+            App.computeId(appNameController.text, uri.toString(), predefined: widget.config?.predefined ?? false)!;
         return (widget.config == null || widget.config?.id != newId) && appIds.contains(newId);
       } on FormatException catch (_) {}
     }
