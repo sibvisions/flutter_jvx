@@ -264,7 +264,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TextButton(
-                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
                       child: Text(FlutterUI.translate("Discard changes")),
                       onPressed: () async {
                         SyncDialogResult? result = await IUiService().openDialog(
@@ -278,7 +278,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                                 child: Text(FlutterUI.translate("No")),
                               ),
                               TextButton(
-                                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
                                 onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.DISCARD_CHANGES),
                                 child: Text(FlutterUI.translate("Yes")),
                               ),

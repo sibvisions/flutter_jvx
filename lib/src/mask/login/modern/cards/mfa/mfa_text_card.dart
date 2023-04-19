@@ -106,8 +106,8 @@ class _MFATextCardState extends State<MFATextCard> {
                       ),
                     ),
                     ButtonState.fail: StateButton(
-                      color: Colors.red.shade600,
-                      textStyle: const TextStyle(color: Colors.white),
+                      color: Theme.of(context).colorScheme.error,
+                      textStyle: TextStyle(color: Theme.of(context).colorScheme.onError),
                       child: const IconedButton(
                         icon: Icon(Icons.cancel),
                       ),

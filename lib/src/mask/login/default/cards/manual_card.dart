@@ -138,8 +138,8 @@ class _ManualCardState extends State<ManualCard> {
               ),
             ),
             ButtonState.fail: StateButton(
-              color: Colors.red.shade600,
-              textStyle: const TextStyle(color: Colors.white),
+              color: Theme.of(context).colorScheme.error,
+              textStyle: TextStyle(color: Theme.of(context).colorScheme.onError),
               child: IconedButton(
                 text: FlutterUI.translate("Failed"),
                 icon: const Icon(Icons.cancel),
