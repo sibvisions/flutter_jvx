@@ -632,8 +632,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   Widget _buildSplash(
     Future future, {
     List<Widget> Function(AsyncSnapshot snapshot)? childrenBuilder,
-    required VoidCallback? retry,
-    required VoidCallback? returnToApps,
+    required VoidCallback retry,
+    required VoidCallback returnToApps,
   }) {
     return Theme(
       data: splashTheme,
