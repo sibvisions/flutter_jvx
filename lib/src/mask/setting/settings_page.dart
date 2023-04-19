@@ -28,6 +28,7 @@ import '../../model/command/api/startup_command.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/app.dart';
+import '../../service/apps/app_service.dart';
 import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -318,8 +319,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   _buildApplicationSettings(BuildContext context) {
     Widget? singleAppSetting;
-    if (ConfigController().getAppConfig()!.customAppsAllowed! &&
-        !ConfigController().getAppConfig()!.forceSingleAppMode!) {
+    if (AppService().showSingleAppModeSwitch()) {
       singleAppSetting = SwitchListTile(
         contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
         secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),

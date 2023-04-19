@@ -160,7 +160,7 @@ class ConfigController {
           _appConfig!.serverConfigs!
               .map((e) => App.computeId(e.appName, e.baseUrl.toString(), predefined: true))
               .whereNotNull(),
-          (e) => App.getApp(e)?.delete(forced: true),
+          (e) => App.getApp(e)?.delete(),
         );
         // If there is a dev config, only one app in the dev config is allowed to be the default and reset if there is none.
         var predefinedDefault = _appConfig!.serverConfigs!.firstWhereOrNull((element) => element.isDefault ?? false);

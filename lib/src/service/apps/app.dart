@@ -70,6 +70,8 @@ class App {
 
   static bool _isPredefined(String id) => id.startsWith(predefinedPrefix);
 
+  static bool get forceSingleAppMode => ConfigController().getAppConfig()!.forceSingleAppMode!;
+
   static bool get customAppsAllowed => ConfigController().getAppConfig()!.customAppsAllowed!;
 
   static bool get _isPredefinedLocked =>
@@ -275,7 +277,7 @@ class App {
               (getPredefinedConfig(_id) != null &&
                   ((getPredefinedConfig(_id)!.locked ?? true) ||
                       (getPredefinedConfig(_id)!.parametersHidden ?? false))))) ||
-      (!predefined && !customAppsAllowed);
+      (!predefined && !customAppsAllowed && !forceSingleAppMode);
 
   /// {@template app.parametersHidden}
   /// Whether the parameters such as [name] or
@@ -424,13 +426,8 @@ class App {
   /// In case this is a predefined app, removes every persisted data from the storage.
   ///
   /// If this was a custom app the object becomes unusable after this action and may be discarded.
-  Future<void> delete({bool forced = false}) {
+  Future<void> delete() {
     _checkId();
-
-    assert(() {
-      if (forced) return true;
-      return !locked;
-    }());
 
     String appId = _id!;
     if (!predefined) {

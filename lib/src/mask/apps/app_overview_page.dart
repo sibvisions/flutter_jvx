@@ -409,12 +409,12 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
-                    if (App.customAppsAllowed || containsCustomApps)
+                    if (apps?.isNotEmpty ?? false)
                       PopupMenuItem(
                         value: 1,
                         child: ListTile(
-                          leading: const Icon(Icons.delete),
-                          title: Text(FlutterUI.translate("Remove apps")),
+                          leading: Icon(containsCustomApps ? Icons.delete : Icons.history),
+                          title: Text(FlutterUI.translate("${containsCustomApps ? "Remove" : "Reset"} apps")),
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
@@ -438,32 +438,17 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       context,
       allowMultiScan: true,
       callback: (config) async {
-        var scaffoldMessenger = ScaffoldMessenger.of(context);
-        bool skippedLockedApp = false;
-
         if (config.apps != null) {
           for (var serverConfig in config.apps!) {
             var app = App.getApp(App.computeIdFromConfig(serverConfig)!);
-            if (!(app?.locked ?? false)) {
-              apps?.remove(app);
-              await app?.delete();
-              app = await App.createAppFromConfig(serverConfig);
-            } else {
-              skippedLockedApp = true;
-              FlutterUI.log.d("Skipping locked app '${serverConfig.appName} from QR Code");
-            }
+            apps?.remove(app);
+            await app?.delete();
+            app = await App.createAppFromConfig(serverConfig);
           }
         }
 
         if (config.policy != null) {
           await ConfigController().updatePrivacyPolicy(config.policy);
-        }
-
-        if (skippedLockedApp) {
-          scaffoldMessenger.showSnackBar(SnackBar(
-            content: Text(FlutterUI.translate("QR Code contained an already existing app.")),
-            behavior: SnackBarBehavior.floating,
-          ));
         }
       },
     ).then((value) => _refreshApps());
@@ -481,10 +466,14 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
             Navigator.pop(context);
           },
           onDelete: () async {
-            Navigator.pop(context);
-            apps?.remove(editApp);
-            await editApp!.delete();
-            _refreshApps();
+            bool? shouldDelete = await _showDeleteDialog(context, editApp?.predefined ?? false);
+            if (!mounted) return;
+            if (shouldDelete ?? false) {
+              Navigator.pop(context);
+              apps?.remove(editApp);
+              await editApp!.delete();
+              _refreshApps();
+            }
           }),
     );
   }
@@ -582,20 +571,44 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     }
   }
 
-  Future<void> _showClearDialog(BuildContext context) async {
-    bool? shouldClear = await showDialog(
+  Future<bool?> _showDeleteDialog(BuildContext context, bool predefined) {
+    return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(FlutterUI.translate("Remove all apps")),
-          content: Text(FlutterUI.translate("Are you sure you want to remove all apps?")),
+          title: Text(FlutterUI.translate("${predefined ? "Reset" : "Delete"} this app?")),
+          content: Text(FlutterUI.translate("Are you sure you want to ${predefined ? "reset" : "delete"} this app?")),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
               child: Text(FlutterUI.translate("No")),
             ),
             TextButton(
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(FlutterUI.translate("Yes")),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showClearDialog(BuildContext context) async {
+    bool? shouldClear = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(FlutterUI.translate("${containsCustomApps ? "Remove" : "Reset"} all apps")),
+          content: Text(
+              FlutterUI.translate("Are you sure you want to ${containsCustomApps ? "remove" : "reset"} all apps?")),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(FlutterUI.translate("No")),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
               onPressed: () => Navigator.pop(context, true),
               child: Text(FlutterUI.translate("Yes")),
             ),

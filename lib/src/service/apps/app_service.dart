@@ -76,6 +76,11 @@ class AppService {
         (AppService().getAppIds().length > 1 && !ConfigController().getAppConfig()!.forceSingleAppMode!);
   }
 
+  bool showSingleAppModeSwitch() {
+    return ConfigController().getAppConfig()!.customAppsAllowed! &&
+        !ConfigController().getAppConfig()!.forceSingleAppMode!;
+  }
+
   bool isSingleAppMode() {
     if (ConfigController().getAppConfig()!.forceSingleAppMode!) return true;
     if (!ConfigController().getAppConfig()!.customAppsAllowed!) return false;
@@ -84,7 +89,7 @@ class AppService {
 
   Future<void> removeAllApps() async {
     await Future.forEach<App>(
-      App.getAppsByIDs(getAppIds()).where((app) => !app.locked),
+      App.getAppsByIDs(getAppIds()),
       (e) => e.delete(),
     );
     await ConfigController().updatePrivacyPolicy(null);
@@ -111,7 +116,7 @@ class AppService {
           .where((app) => app.predefined && App.getPredefinedConfig(app.id) == null),
       (e) {
         FlutterUI.log.i("Removing data from an now obsolete predefined app: ${e.id}");
-        return e.delete(forced: true);
+        return e.delete();
       },
     );
   }

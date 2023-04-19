@@ -89,6 +89,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
   @override
   Widget build(BuildContext context) {
     ThemeData parentTheme = Theme.of(context);
+    final List<Widget> actions = _getActions();
 
     return AlertDialog(
       clipBehavior: Clip.hardEdge,
@@ -335,30 +336,39 @@ class _AppEditDialogState extends State<AppEditDialog> {
         ),
       ),
       actionsPadding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
-      actionsAlignment: !widget.locked ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
-      actions: !widget.locked
-          ? [
-              if (widget.config != null)
-                TextButton(
-                  onPressed: widget.onDelete,
-                  child: Text(FlutterUI.translate(widget.predefined ? "Reset" : "Delete")),
-                ),
-              TextButton(
-                onPressed: widget.onCancel,
-                child: Text(FlutterUI.translate("Cancel")),
-              ),
-              TextButton(
-                onPressed: appAlreadyExists || !appNameIsValid ? null : _onSubmit,
-                child: Text(FlutterUI.translate("OK")),
-              ),
-            ]
-          : [
-              TextButton(
-                onPressed: widget.onCancel,
-                child: Text(FlutterUI.translate("Close")),
-              ),
-            ],
+      actionsAlignment: actions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
+      actions: actions,
     );
+  }
+
+  List<Widget> _getActions() {
+    List<Widget> actions = [
+      if (widget.config != null)
+        TextButton(
+          onPressed: widget.onDelete,
+          style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+          child: Text(FlutterUI.translate(widget.predefined ? "Reset" : "Delete")),
+        ),
+    ];
+
+    if (!widget.locked) {
+      actions.addAll([
+        TextButton(
+          onPressed: widget.onCancel,
+          child: Text(FlutterUI.translate("Cancel")),
+        ),
+        TextButton(
+          onPressed: appAlreadyExists || !appNameIsValid ? null : _onSubmit,
+          child: Text(FlutterUI.translate("OK")),
+        ),
+      ]);
+    } else {
+      actions.add(TextButton(
+        onPressed: widget.onCancel,
+        child: Text(FlutterUI.translate("Close")),
+      ));
+    }
+    return actions;
   }
 
   Widget _buildDefaultSwitch(BuildContext context, bool value, {GestureTapCallback? onTap}) {

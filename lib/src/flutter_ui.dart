@@ -515,7 +515,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       AppConfig appConfig = ConfigController().getAppConfig()!;
       bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
       App? defaultApp = apps.firstWhereOrNull((e) {
-        return e.isDefault && ((appConfig.customAppsAllowed ?? false) || e.predefined);
+        return e.isDefault &&
+            (e.predefined || ((appConfig.customAppsAllowed ?? false) || (appConfig.forceSingleAppMode ?? false)));
       });
       if (defaultApp == null && apps.length == 1 && !showAppOverviewWithoutDefault) {
         defaultApp = apps.firstOrNull;
