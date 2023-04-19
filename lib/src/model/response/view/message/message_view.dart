@@ -23,7 +23,7 @@ class MessageView extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Title of the message
-  final String title;
+  final String? title;
 
   /// Message
   final String? message;
@@ -33,7 +33,7 @@ class MessageView extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   MessageView({
-    required this.title,
+    this.title,
     this.message,
     required super.name,
   });

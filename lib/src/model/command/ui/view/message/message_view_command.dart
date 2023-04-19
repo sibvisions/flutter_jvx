@@ -32,7 +32,7 @@ class MessageViewCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   MessageViewCommand({
-    required this.title,
+    this.title,
     this.message,
     required super.reason,
   });

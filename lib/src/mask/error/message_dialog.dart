@@ -65,7 +65,9 @@ class MessageDialog extends JVxDialog {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: command.title?.isNotEmpty == true ? Text(command.title!) : null,
-      content: ParseUtil.isHTML(command.message!) ? Html(data: command.message!) : Text(command.message!),
+      content: ParseUtil.isHTML(command.message)
+          ? Html(data: command.message!)
+          : (command.message != null ? Text(command.message!) : null),
       actions: [
         ..._getButtons(context, command.buttonType),
       ],

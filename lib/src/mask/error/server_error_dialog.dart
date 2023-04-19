@@ -51,7 +51,7 @@ class ServerErrorDialog extends JVxDialog {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text((command.title?.isNotEmpty ?? false) ? command.title! : FlutterUI.translate("Server Error")),
-      content: Text(command.message!),
+      content: command.message != null ? Text(command.message!) : null,
       actions: _getButtons(context),
     );
   }

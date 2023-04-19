@@ -30,7 +30,7 @@ class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
           componentId: pResponse.componentId,
           title: pResponse.title,
           message: pResponse.message,
-          userError: isUserError(pResponse.message!),
+          userError: isUserError(pResponse.message),
         )
       ];
     }
@@ -38,8 +38,8 @@ class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
   }
 
   /// Dirty error message check
-  isUserError(String message) {
-    if (message.toLowerCase().startsWith("invalid application:")) {
+  bool isUserError(String? message) {
+    if (message != null && message.toLowerCase().startsWith("invalid application:")) {
       return true;
     }
     return false;

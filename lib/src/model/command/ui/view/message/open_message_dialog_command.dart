@@ -54,7 +54,7 @@ class OpenMessageDialogCommand extends MessageViewCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenMessageDialogCommand({
-    required super.title,
+    super.title,
     super.message,
     required this.componentId,
     required this.closable,

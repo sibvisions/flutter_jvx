@@ -43,7 +43,7 @@ class ErrorViewResponse extends MessageView {
     this.componentId,
     this.silentAbort = false,
     this.details,
-    required super.title,
+    super.title,
     super.message,
     this.exceptions,
     required super.name,
