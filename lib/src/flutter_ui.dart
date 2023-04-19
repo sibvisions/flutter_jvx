@@ -738,16 +738,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     styleColor ??= ParseUtil.parseHexColor(styleMap?['theme.color']);
 
     if (styleColor != null) {
-      // styleColor = const Color(0xFF00FFBB);
-
       themeData = JVxColors.createTheme(styleColor, Brightness.light, useFixedPrimary: true);
       darkThemeData = JVxColors.createTheme(styleColor, Brightness.dark, useFixedPrimary: true);
-      // themeData = JVxColors.createTheme(styleColor, Brightness.light);
-      // darkThemeData = JVxColors.createTheme(styleColor, Brightness.dark);
-
-      // MaterialColor materialColor = generateMaterialColor(color: styleColor);
-      // themeData = JVxColors.createLegacyTheme(materialColor, Brightness.light);
-      // darkThemeData = JVxColors.createLegacyTheme(materialColor, Brightness.dark);
     } else {
       themeData = JVxColors.createTheme(Colors.blue, Brightness.light);
       darkThemeData = JVxColors.createTheme(Colors.blue, Brightness.dark);

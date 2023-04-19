@@ -75,48 +75,6 @@ abstract class JVxColors {
     return themeData;
   }
 
-  /// Creates a JVx-conform legacy theme.
-  ///
-  /// See also:
-  /// * [applyJVxColorScheme]
-  /// * [applyJVxTheme]
-  static ThemeData createLegacyTheme(MaterialColor materialColor, Brightness selectedBrightness) {
-    ColorScheme colorScheme = ColorScheme.fromSwatch(
-      primarySwatch: materialColor,
-      brightness: selectedBrightness,
-    );
-
-    colorScheme = applyJVxColorScheme(colorScheme);
-
-    // ColorScheme.fromSwatch related fix:
-    // Override tealAccent
-    colorScheme = colorScheme.copyWith(
-      secondary: colorScheme.primary,
-      onSecondary: colorScheme.onPrimary,
-      secondaryContainer: colorScheme.primaryContainer,
-      onSecondaryContainer: colorScheme.onPrimaryContainer,
-      tertiary: colorScheme.primary,
-      onTertiary: colorScheme.onPrimary,
-      tertiaryContainer: colorScheme.primaryContainer,
-      onTertiaryContainer: colorScheme.onPrimaryContainer,
-    );
-
-    var themeData = ThemeData.from(colorScheme: colorScheme);
-    themeData = applyJVxTheme(themeData);
-
-    // More ColorScheme.fromSwatch related fixes
-    bool isBackgroundLight = ThemeData.estimateBrightnessForColor(colorScheme.background) == Brightness.light;
-    themeData = themeData.copyWith(
-      listTileTheme: themeData.listTileTheme.copyWith(
-        textColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        iconColor: isBackgroundLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        // textColor: themeData.colorScheme.onBackground,
-        // iconColor: themeData.colorScheme.onBackground,
-      ),
-    );
-    return themeData;
-  }
-
   /// Applies JVx specific color requirements to the [colorScheme].
   ///
   /// Basically this overrides every "known" theme color that is black with our [JVxColors.LIGHTER_BLACK].
