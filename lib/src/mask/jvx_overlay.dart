@@ -171,11 +171,13 @@ class JVxOverlayState extends State<JVxOverlay> {
 
     _subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
       if (IUiService().clientId.value != null && !ConfigController().offline.value) {
-        ICommandService().sendCommand(DeviceStatusCommand(
-          screenWidth: size.width,
-          screenHeight: size.height,
-          reason: "Device Size changed",
-        ));
+        ICommandService()
+            .sendCommand(DeviceStatusCommand(
+              screenWidth: size.width,
+              screenHeight: size.height,
+              reason: "Device Size changed",
+            ))
+            .catchError((e, stack) => FlutterUI.logAPI.d("Failed to send device status", e, stack));
       }
     });
   }
