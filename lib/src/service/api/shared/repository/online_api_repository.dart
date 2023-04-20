@@ -505,7 +505,7 @@ class OnlineApiRepository extends IRepository {
 
   void setConnectedStatus(bool connected) {
     if (!ConfigController().offline.value) {
-      BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
+      BuildContext? effectiveContext = FlutterUI.getEffectiveContext();
       if (effectiveContext != null) {
         JVxOverlay.maybeOf(effectiveContext)?.setConnectionState(connected);
       }
@@ -514,7 +514,7 @@ class OnlineApiRepository extends IRepository {
 
   void resetConnectedStatus({bool instant = false}) {
     _statusTimer?.cancel();
-    BuildContext? effectiveContext = FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext();
+    BuildContext? effectiveContext = FlutterUI.getEffectiveContext();
     if (effectiveContext != null) {
       JVxOverlay.maybeOf(effectiveContext)?.resetConnectionState(instant: instant);
     }

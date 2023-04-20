@@ -231,6 +231,16 @@ class FlutterUI extends StatefulWidget {
     return routerDelegate;
   }
 
+  /// Returns either the beamer context or the splash context, this SHOULD never be null under normal circumstances.
+  ///
+  /// See also:
+  /// * [getCurrentContext]
+  /// * [getSplashContext]
+  static BuildContext? getEffectiveContext() {
+    return getCurrentContext() ?? getSplashContext();
+  }
+
+  /// Returns the current beamer context, if present.
   static BuildContext? getCurrentContext() {
     return routerDelegate.navigatorKey.currentContext;
   }

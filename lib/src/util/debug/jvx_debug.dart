@@ -44,8 +44,7 @@ class JVxDebug extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: OutlinedButton(
-              onPressed: () =>
-                  FlutterUI.maybeOf(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext())?.startApp(),
+              onPressed: () => FlutterUI.maybeOf(FlutterUI.getEffectiveContext())?.startApp(),
               child: const Text("Restart"),
             ),
           ),
@@ -55,8 +54,7 @@ class JVxDebug extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: OutlinedButton(
-              onPressed: () =>
-                  FlutterUI.maybeOf(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext())?.changedTheme(),
+              onPressed: () => FlutterUI.maybeOf(FlutterUI.getEffectiveContext())?.changedTheme(),
               child: const Text("Reload"),
             ),
           ),
@@ -185,12 +183,10 @@ class JVxDebug extends StatelessWidget {
                 onPressed: (index) async {
                   switch (index) {
                     case 0:
-                      JVxOverlay.maybeOf(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext())
-                          ?.setConnectionState(true);
+                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(true);
                       break;
                     case 1:
-                      JVxOverlay.maybeOf(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext())
-                          ?.setConnectionState(false);
+                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(false);
                       break;
                   }
                 },

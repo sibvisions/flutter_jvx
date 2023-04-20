@@ -254,7 +254,7 @@ class UiService implements IUiService {
     FlutterUI.clearHistory();
     FlutterUI.getBeamerDelegate().beamToReplacementNamed("/apps");
 
-    await FlutterUI.of(FlutterUI.getCurrentContext() ?? FlutterUI.getSplashContext()!).stopApp();
+    await FlutterUI.of(FlutterUI.getEffectiveContext()!).stopApp();
   }
 
   @override
