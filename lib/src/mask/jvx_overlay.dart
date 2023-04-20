@@ -73,6 +73,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   /// Report device status to server
   final BehaviorSubject<Size> _subject = BehaviorSubject();
+  late final StreamSubscription<Size> subscription;
 
   bool _loading = false;
   Future? _loadingDelayFuture;
@@ -171,7 +172,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   void initState() {
     super.initState();
 
-    _subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
+    subscription = _subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
       if (IUiService().clientId.value != null && !ConfigController().offline.value) {
         ICommandService()
             .sendCommand(DeviceStatusCommand(
@@ -246,6 +247,12 @@ class JVxOverlayState extends State<JVxOverlay> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 }
 
