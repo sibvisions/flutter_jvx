@@ -195,7 +195,7 @@ class LayoutData implements ICloneable {
 
   /// If this component is a parent.
   bool get isParent {
-    return children.isNotEmpty && layout != null;
+    return layout != null;
   }
 
   /// If this component is a child and therefore has a parent.
