@@ -75,6 +75,8 @@ class JVxOverlayState extends State<JVxOverlay> {
   final BehaviorSubject<Size> _subject = BehaviorSubject();
   late final StreamSubscription<Size> subscription;
 
+  late final RootBackButtonDispatcher backButtonDispatcher;
+
   bool _loading = false;
   Future? _loadingDelayFuture;
   bool _forceDisableBarrier = false;
@@ -168,9 +170,13 @@ class JVxOverlayState extends State<JVxOverlay> {
     setState(() => _connectedMessage = null);
   }
 
+  bool _isLocked() => (_connected == false || _loading) && !_forceDisableBarrier;
+
   @override
   void initState() {
     super.initState();
+    backButtonDispatcher = RootBackButtonDispatcher();
+    backButtonDispatcher.addCallback(_onBackPress);
 
     subscription = _subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
       if (IUiService().clientId.value != null && !ConfigController().offline.value) {
@@ -183,6 +189,16 @@ class JVxOverlayState extends State<JVxOverlay> {
             .catchError((e, stack) => FlutterUI.logAPI.d("Failed to send device status", e, stack));
       }
     });
+  }
+
+  /// Returns true if this callback will handle the request;
+  /// otherwise, returns false.
+  Future<bool> _onBackPress() async {
+    if (_isLocked()) {
+      // Block request.
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -209,7 +225,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                 children: [
                   if (widget.child != null) widget.child!,
                   DialogsWidget(key: _dialogsKey),
-                  if ((_connected == false || _loading) && !_forceDisableBarrier)
+                  if (_isLocked())
                     const ModalBarrier(
                       dismissible: false,
                     ),
@@ -252,6 +268,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   @override
   void dispose() {
     subscription.cancel();
+    backButtonDispatcher.removeCallback(_onBackPress);
     super.dispose();
   }
 }
