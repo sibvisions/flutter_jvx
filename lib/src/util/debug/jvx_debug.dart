@@ -174,7 +174,7 @@ class JVxDebug extends StatelessWidget {
           }),
           ListTile(
             title: Text(
-              "Connection Banner",
+              "Loading Bar",
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: ConstrainedBox(
@@ -183,10 +183,10 @@ class JVxDebug extends StatelessWidget {
                 onPressed: (index) async {
                   switch (index) {
                     case 0:
-                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(true);
+                      JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.showLoading(Duration.zero);
                       break;
                     case 1:
-                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(false);
+                      JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.hideLoading();
                       break;
                   }
                 },
@@ -203,6 +203,50 @@ class JVxDebug extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24),
                     child: Text("Off"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Connection Banner",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 44),
+              child: ToggleButtons(
+                onPressed: (index) async {
+                  switch (index) {
+                    case 0:
+                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(true);
+                      break;
+                    case 1:
+                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(false);
+                      break;
+                    case 2:
+                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.resetConnectionState();
+                      break;
+                  }
+                },
+                isSelected: const [
+                  false,
+                  false,
+                  false,
+                ],
+                borderRadius: BorderRadius.circular(20),
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18),
+                    child: Text("On"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18),
+                    child: Text("Off"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18),
+                    child: Text("Reset"),
                   ),
                 ],
               ),

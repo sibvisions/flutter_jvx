@@ -88,9 +88,9 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   bool get forceDisableBarrier => _forceDisableBarrier;
 
-  /// Overrides the modal barrier while [loading] is true.
+  /// Overrides the modal barrier.
   ///
-  /// Do not forget to re-enable it with [overrideModalBarrier(false)]!
+  /// Do not forget to re-enable it again!
   void overrideModalBarrier(bool forceDisableBarrier) {
     setState(() {
       _forceDisableBarrier = forceDisableBarrier;
@@ -208,6 +208,10 @@ class JVxOverlayState extends State<JVxOverlay> {
                 children: [
                   if (widget.child != null) widget.child!,
                   DialogsWidget(key: _dialogsKey),
+                  if ((_connected == false || _loading) && !_forceDisableBarrier)
+                    const ModalBarrier(
+                      dismissible: false,
+                    ),
                   if (_connectedMessage != null)
                     StatusBanner(
                       key: _statusBannerKey,
@@ -234,10 +238,6 @@ class JVxOverlayState extends State<JVxOverlay> {
                         FlutterUI.translate(_connectedMessage),
                         style: const TextStyle(fontSize: 16),
                       ),
-                    ),
-                  if (_loading && !_forceDisableBarrier)
-                    const ModalBarrier(
-                      dismissible: false,
                     ),
                 ],
               ),
