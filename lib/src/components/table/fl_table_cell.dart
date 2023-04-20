@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
@@ -197,7 +199,7 @@ class _FlTableCellState extends State<FlTableCell> {
           border: border,
           color: widget.cellFormat?.background,
         ),
-        width: widget.width,
+        width: max(widget.width, 0.0),
         alignment: FLUTTER_ALIGNMENT[widget.columnDefinition.cellEditorHorizontalAlignment.index]
             [VerticalAlignment.CENTER.index],
         padding: paddings,
