@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -132,7 +134,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
         decoration: BoxDecoration(
           border: border,
         ),
-        width: width,
+        width: max(width, 0.0),
         alignment: FLUTTER_ALIGNMENT[columnDefinition.cellEditorHorizontalAlignment.index]
             [VerticalAlignment.CENTER.index],
         padding: paddings,
