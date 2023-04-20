@@ -23,7 +23,7 @@ class DownloadImagesCommand extends SessionCommand {
 
   DownloadImagesCommand({
     required super.reason,
-  });
+  }) : super(showLoading: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

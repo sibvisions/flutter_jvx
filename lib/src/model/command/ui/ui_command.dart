@@ -21,6 +21,7 @@ import '../base_command.dart';
 abstract class UiCommand extends BaseCommand {
   UiCommand({
     required super.reason,
+    super.showLoading = false,
     super.beforeProcessing,
     super.afterProcessing,
   });

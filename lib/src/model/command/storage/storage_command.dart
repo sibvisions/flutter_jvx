@@ -20,8 +20,8 @@ import '../base_command.dart';
 abstract class StorageCommand extends BaseCommand {
   StorageCommand({
     required super.reason,
+    super.showLoading,
     super.beforeProcessing,
     super.afterProcessing,
-    super.showLoading,
   });
 }

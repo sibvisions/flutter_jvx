@@ -35,7 +35,7 @@ class DeviceStatusCommand extends SessionCommand {
     required this.screenWidth,
     required this.screenHeight,
     required super.reason,
-  });
+  }) : super(showLoading: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

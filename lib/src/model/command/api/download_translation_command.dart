@@ -23,7 +23,7 @@ class DownloadTranslationCommand extends SessionCommand {
 
   DownloadTranslationCommand({
     required super.reason,
-  });
+  }) : super(showLoading: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

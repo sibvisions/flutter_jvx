@@ -23,7 +23,7 @@ class DownloadStyleCommand extends SessionCommand {
 
   DownloadStyleCommand({
     required super.reason,
-  });
+  }) : super(showLoading: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

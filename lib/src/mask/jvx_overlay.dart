@@ -99,6 +99,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   bool get loading => _loading;
 
+  /// Shows the [LoadingBar] after a specified [delay], and continues to show it until [hideLoading] is called.
   void showLoading(Duration delay) {
     if (!_loading) {
       _loadingDelayFuture = Future.delayed(delay);
@@ -113,6 +114,7 @@ class JVxOverlayState extends State<JVxOverlay> {
     }
   }
 
+  /// Cancels or stops the [LoadingBar] triggered by [showLoading].
   void hideLoading() {
     if (_loading) {
       _loading = false;
