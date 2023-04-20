@@ -124,7 +124,7 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
         clipBehavior: Clip.antiAlias,
         // The clip rect is there to stop the rendering of the children.
         // Otherwise the children would clip the border of the parent container.
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(3),
         child: panelWidget,
       ),
     );
