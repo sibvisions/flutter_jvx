@@ -63,8 +63,8 @@ class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveA
     if (kDebugMode || !(languagesDir?.existsSync() ?? false)) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
     } else {
-      ConfigController().reloadSupportedLanguages();
-      ConfigController().loadLanguages();
+      await ConfigController().reloadSupportedLanguages();
+      await IUiService().i18n().setLanguage(ConfigController().getLanguage());
     }
     if (!kIsWeb && (kDebugMode || !(imagesDir?.existsSync() ?? false))) {
       commands.add(DownloadImagesCommand(reason: "Resources should be downloaded"));

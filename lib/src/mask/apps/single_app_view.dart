@@ -114,9 +114,9 @@ class _SingleAppViewState extends State<SingleAppView> {
                         textInputAction: TextInputAction.next,
                         onChanged: (_) => setState(() {}),
                         decoration: InputDecoration(
-                          errorText: appNameIsValid ? null : FlutterUI.translate("The app name is invalid."),
+                          errorText: appNameIsValid ? null : FlutterUI.translateLocal("The app name is invalid."),
                           icon: const FaIcon(FontAwesomeIcons.cubes),
-                          labelText: FlutterUI.translate("Name"),
+                          labelText: FlutterUI.translateLocal("Name"),
                           border: InputBorder.none,
                           suffixIcon: appNameController.text.isNotEmpty
                               ? ExcludeFocus(
@@ -146,7 +146,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                         onSubmitted: appNameIsValid ? (value) => _start() : null,
                         decoration: InputDecoration(
                           icon: const FaIcon(FontAwesomeIcons.globe),
-                          labelText: FlutterUI.translate("URL"),
+                          labelText: FlutterUI.translateLocal("URL"),
                           border: InputBorder.none,
                           hintText: "http://host:port/services/mobile",
                           suffixIcon: baseUrlController.text.isNotEmpty
@@ -186,7 +186,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(right: 4.0),
                                     child: Text(
-                                      FlutterUI.translate("Start"),
+                                      FlutterUI.translateLocal("Start"),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Theme.of(context).colorScheme.onPrimary,

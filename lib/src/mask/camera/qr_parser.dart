@@ -90,6 +90,6 @@ class QRParser {
         apps: collectedApps,
       );
     }
-    throw const FormatException("Invalid QR Code");
+    throw const FormatException("Empty QR Code");
   }
 }

@@ -20,6 +20,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_translation_command.dart';
 import '../../../../config/config_controller.dart';
 import '../../../../file/file_manager.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<SaveApplicationTranslationCommand> {
@@ -36,10 +37,9 @@ class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<Sa
     // Wait till all files are saved
     await Future.wait(saveFutures);
 
-    ConfigController().reloadSupportedLanguages();
-
-    // Trigger load language
-    ConfigController().loadLanguages();
+    await ConfigController().reloadSupportedLanguages();
+    // Trigger language load
+    await IUiService().i18n().setLanguage(ConfigController().getLanguage());
 
     return [];
   }

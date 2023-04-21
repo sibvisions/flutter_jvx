@@ -100,7 +100,7 @@ class FileManagerWeb extends IFileManager {
   }
 
   @override
-  List<File> getTranslationFiles() {
+  List<File> listTranslationFiles() {
     List<File> listFiles = [];
 
     _files.forEach((key, value) {

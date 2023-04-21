@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../apps/app_overview_page.dart';
 import '../frame_dialog.dart';
 
 /// This is a standard template for an error message.
@@ -92,13 +93,14 @@ class ErrorDialog extends JVxDialog {
 
     if (goToSettings) {
       actions.add(
-        TextButton(
+        TextButton.icon(
           onPressed: () {
             IUiService().closeJVxDialog(this);
             IUiService().routeToAppOverview();
           },
-          child: Text(
-            FlutterUI.translate("Edit Apps"),
+          icon: const Icon(AppOverviewPage.appsIcon),
+          label: Text(
+            FlutterUI.translate("Apps"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

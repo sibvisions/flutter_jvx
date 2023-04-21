@@ -145,8 +145,9 @@ class AppService {
 
     if (ConfigController().getFileManager().isSatisfied()) {
       // Only try to load if FileManager is available
-      ConfigController().reloadSupportedLanguages();
-      ConfigController().loadLanguages();
+      await ConfigController().reloadSupportedLanguages();
+      // Update language to application language, if applicable.
+      await IUiService().i18n().setLanguage(ConfigController().getLanguage());
     }
 
     if (!ConfigController().offline.value) {
@@ -173,6 +174,7 @@ class AppService {
 
     if (resetAppName) {
       await ConfigController().updateCurrentApp(null);
+      await IUiService().i18n().setLanguage(ConfigController().getLanguage());
     }
 
     // Switch back to "default" repository.

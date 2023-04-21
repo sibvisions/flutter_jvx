@@ -160,13 +160,13 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                   onChanged: (_) => setState(() {}),
                                   decoration: InputDecoration(
                                     errorText: !appAlreadyExists
-                                        ? (appNameIsValid ? null : FlutterUI.translate("The app name is invalid."))
-                                        : FlutterUI.translate("This app already exists."),
+                                        ? (appNameIsValid ? null : FlutterUI.translateLocal("The app name is invalid."))
+                                        : FlutterUI.translateLocal("This app already exists."),
                                     icon: FaIcon(
                                       FontAwesomeIcons.cubes,
                                       color: !widget.locked ? null : parentTheme.disabledColor,
                                     ),
-                                    labelText: "${FlutterUI.translate("App name")} *",
+                                    labelText: "${FlutterUI.translateLocal("App name")} *",
                                     border: InputBorder.none,
                                     suffixIcon: !widget.locked && appNameController.text.isNotEmpty
                                         ? ExcludeFocus(
@@ -203,7 +203,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                       Icons.title,
                                       color: !widget.locked ? null : parentTheme.disabledColor,
                                     ),
-                                    labelText: FlutterUI.translate("Title"),
+                                    labelText: FlutterUI.translateLocal("Title"),
                                     border: InputBorder.none,
                                     suffixIcon: !widget.locked && titleController.text.isNotEmpty
                                         ? ExcludeFocus(
@@ -239,12 +239,12 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                   onSubmitted: appAlreadyExists || !appNameIsValid ? null : (value) => _onSubmit(),
                                   decoration: InputDecoration(
                                     errorText:
-                                        !appAlreadyExists ? null : FlutterUI.translate("This app already exists."),
+                                        !appAlreadyExists ? null : FlutterUI.translateLocal("This app already exists."),
                                     icon: FaIcon(
                                       FontAwesomeIcons.globe,
                                       color: !widget.locked ? null : parentTheme.disabledColor,
                                     ),
-                                    labelText: "${FlutterUI.translate("URL")} *",
+                                    labelText: "${FlutterUI.translateLocal("URL")} *",
                                     border: InputBorder.none,
                                     hintText: "http://host:port/services/mobile",
                                     suffixIcon: !widget.locked && baseUrlController.text.isNotEmpty
@@ -298,7 +298,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                           bottomRight: Radius.circular(10),
                         ),
                         child: Tooltip(
-                          message: FlutterUI.translate(qrCodeError ?? ""),
+                          message: FlutterUI.translateLocal(qrCodeError ?? ""),
                           triggerMode: qrCodeError != null ? TooltipTriggerMode.tap : TooltipTriggerMode.longPress,
                           child: InkWell(
                             onTap: qrCodeError == null ? _showQrCodeDialog : null,
@@ -324,7 +324,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                         top: 0,
                         right: 0,
                         child: Banner(
-                          message: FlutterUI.translate("Provided"),
+                          message: FlutterUI.translateLocal("Provided"),
                           location: BannerLocation.topEnd,
                           color: parentTheme.colorScheme.primary,
                         ),
@@ -348,7 +348,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
         TextButton(
           onPressed: widget.onDelete,
           style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
-          child: Text(FlutterUI.translate(widget.predefined ? "Reset" : "Delete")),
+          child: Text(FlutterUI.translateLocal(widget.predefined ? "Reset" : "Delete")),
         ),
     ];
 
@@ -356,17 +356,17 @@ class _AppEditDialogState extends State<AppEditDialog> {
       actions.addAll([
         TextButton(
           onPressed: widget.onCancel,
-          child: Text(FlutterUI.translate("Cancel")),
+          child: Text(FlutterUI.translateLocal("Cancel")),
         ),
         TextButton(
           onPressed: appAlreadyExists || !appNameIsValid ? null : _onSubmit,
-          child: Text(FlutterUI.translate("OK")),
+          child: Text(FlutterUI.translateLocal("OK")),
         ),
       ]);
     } else {
       actions.add(TextButton(
         onPressed: widget.onCancel,
-        child: Text(FlutterUI.translate("Close")),
+        child: Text(FlutterUI.translateLocal("Close")),
       ));
     }
     return actions;
@@ -374,14 +374,14 @@ class _AppEditDialogState extends State<AppEditDialog> {
 
   Widget _buildDefaultSwitch(BuildContext context, bool value, {GestureTapCallback? onTap}) {
     return Tooltip(
-      message: FlutterUI.translate("Whether this app should be auto-started when starting the application"),
+      message: FlutterUI.translateLocal("Whether this app should be auto-started when starting the application."),
       child: Padding(
         padding: const EdgeInsets.only(left: 2.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              FlutterUI.translate("Autostart"),
+              FlutterUI.translateLocal("Auto start"),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             Switch(
@@ -439,9 +439,9 @@ class _AppEditDialogState extends State<AppEditDialog> {
     String appName = appNameController.text.trim();
     String baseUrl = baseUrlController.text.trim();
     if (appName.isEmpty) {
-      return "You need to enter an app name";
+      return "You need to enter an app name.";
     } else if (baseUrl.isEmpty) {
-      return "You need to enter an URL";
+      return "You need to enter an URL.";
     }
 
     return null;

@@ -150,7 +150,7 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  List<File> getTranslationFiles() {
+  List<File> listTranslationFiles() {
     List<File> listFiles = [];
 
     Directory dir = Directory(_getSavePath("${IFileManager.LANGUAGES_PATH}/"));

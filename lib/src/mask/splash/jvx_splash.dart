@@ -112,7 +112,7 @@ class _JVxSplashState extends State<JVxSplash> {
                           borderColor: Theme.of(context).colorScheme.primary,
                           direction: Axis.horizontal,
                           center: Text(
-                            "Starting...",
+                            FlutterUI.translateLocal("Starting..."),
                             style: TextStyle(
                               color: value > 60
                                   ? Theme.of(context).colorScheme.onPrimary

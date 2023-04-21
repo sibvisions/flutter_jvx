@@ -37,7 +37,7 @@ import '../state/loading_bar.dart';
 import 'widgets/setting_group.dart';
 import 'widgets/setting_item.dart';
 
-/// Displays all settings of the app
+/// Displays all settings of the app.
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
 
     // Load Version
-    appVersionNotifier = ValueNotifier("${FlutterUI.translate("Loading")}...");
+    appVersionNotifier = ValueNotifier(FlutterUI.translateLocal("Loading..."));
     PackageInfo.fromPlatform().then((packageInfo) {
       int? buildNumber = ConfigController().getAppConfig()?.versionConfig?.buildNumber;
       String effectiveBuildNumber =
@@ -128,7 +128,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onPressed: context.beamBack,
                 )
               : null,
-          title: Text(FlutterUI.translate("Settings")),
+          title: Text(FlutterUI.translateLocal("Settings")),
           elevation: 0,
         ),
         body: body,
@@ -172,7 +172,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SizedBox.shrink(
           child: Center(
             child: Text(
-              FlutterUI.translate("Cancel"),
+              FlutterUI.translateLocal("Cancel"),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -189,7 +189,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SizedBox.shrink(
           child: Center(
             child: Text(
-              FlutterUI.translate(_changesPending() ? "Save" : "OK"),
+              FlutterUI.translateLocal(_changesPending() ? "Save" : "OK"),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -207,7 +207,7 @@ class _SettingsPageState extends State<SettingsPage> {
       SettingItem privacyPolicy = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.link),
         endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
-        title: FlutterUI.translate("Privacy Policy"),
+        title: FlutterUI.translateLocal("Privacy Policy"),
         onPressed: (context, value) => launchUrl(
           ConfigController().privacyPolicy.value!,
           mode: LaunchMode.externalApplication,
@@ -218,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
         groupHeader: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            FlutterUI.translate("Info"),
+            FlutterUI.translateLocal("Information"),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -242,11 +242,11 @@ class _SettingsPageState extends State<SettingsPage> {
         enabled: false,
         frontIcon: const FaIcon(FontAwesomeIcons.cubes),
         value: appName ?? "",
-        title: FlutterUI.translate("App name"),
+        title: FlutterUI.translateLocal("App name"),
       );
     }
 
-    String urlTitle = FlutterUI.translate("URL");
+    String urlTitle = FlutterUI.translateLocal("URL");
     SettingItem? baseUrlSetting;
     if (!hideAppDetails) {
       baseUrlSetting = SettingItem(
@@ -259,7 +259,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     var supportedLanguages = ConfigController().supportedLanguages.value.toList();
     supportedLanguages.insertAll(0, [
-      "${FlutterUI.translate("System")} (${ConfigController().getPlatformLocale()})",
+      "${FlutterUI.translateLocal("System")} (${ConfigController().getPlatformLocale()})",
       "en",
     ]);
 
@@ -286,10 +286,11 @@ class _SettingsPageState extends State<SettingsPage> {
       frontIcon: FontAwesomeIcons.image,
       title: "Picture Size",
       value: resolution,
-      itemBuilder: <int>(BuildContext context, int value, Widget? widget) => Text(FlutterUI.translate("$value px")),
+      itemBuilder: <int>(BuildContext context, int value, Widget? widget) =>
+          Text("$value ${FlutterUI.translateLocal("px")}"),
       onPressed: (context, value) {
-        var items = resolutions.map((e) => "$e px").toList();
-        _openDropdown(context, items, "$value px", onValue: (selectedResolution) async {
+        var items = resolutions.map((e) => "$e ${FlutterUI.translateLocal("px")}").toList();
+        _openDropdown(context, items, "$e ${FlutterUI.translateLocal("px")}", onValue: (selectedResolution) async {
           resolution = int.parse(selectedResolution.split(" ")[0]);
           await ConfigController().updatePictureResolution(resolution);
           setState(() {});
@@ -301,7 +302,7 @@ class _SettingsPageState extends State<SettingsPage> {
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterUI.translate("General"),
+          FlutterUI.translateLocal("General"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -317,13 +318,13 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  _buildApplicationSettings(BuildContext context) {
+  Widget _buildApplicationSettings(BuildContext context) {
     Widget? singleAppSetting;
     if (AppService().showSingleAppModeSwitch()) {
       singleAppSetting = SwitchListTile(
         contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
         secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),
-        title: Text(FlutterUI.translate("Manage single application")),
+        title: Text(FlutterUI.translateLocal("Manage single application")),
         value: singleAppMode,
         onChanged: (value) {
           ConfigController().updateSingleAppMode(value);
@@ -335,9 +336,9 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     final Map<ThemeMode, String> themeMapping = {
-      ThemeMode.system: FlutterUI.translate("System"),
-      ThemeMode.light: FlutterUI.translate("Light"),
-      ThemeMode.dark: FlutterUI.translate("Dark"),
+      ThemeMode.system: FlutterUI.translateLocal("System"),
+      ThemeMode.light: FlutterUI.translateLocal("Light"),
+      ThemeMode.dark: FlutterUI.translateLocal("Dark"),
     };
 
     var theme = ConfigController().themePreference.value;
@@ -364,7 +365,7 @@ class _SettingsPageState extends State<SettingsPage> {
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterUI.translate("Application"),
+          FlutterUI.translateLocal("Application"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -388,7 +389,7 @@ class _SettingsPageState extends State<SettingsPage> {
       SettingItem<T>(
         frontIcon: FaIcon(frontIcon, color: Theme.of(context).colorScheme.primary),
         endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
-        title: FlutterUI.translate(title),
+        title: FlutterUI.translateLocal(title),
         value: value,
         itemBuilder: itemBuilder,
         onPressed: onPressed,
@@ -438,7 +439,7 @@ class _SettingsPageState extends State<SettingsPage> {
       frontIcon: const FaIcon(FontAwesomeIcons.github),
       endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
       valueNotifier: appVersionNotifier,
-      title: FlutterUI.translate("App Version"),
+      title: FlutterUI.translateLocal("App Version"),
       onPressed: (context, value) => showLicensePage(
         context: context,
         applicationIcon: Builder(builder: (context) {
@@ -457,20 +458,20 @@ class _SettingsPageState extends State<SettingsPage> {
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
       value: ConfigController().getAppConfig()?.versionConfig?.commit ?? "",
-      title: FlutterUI.translate("RCS"),
+      title: FlutterUI.translateLocal("RCS"),
     );
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
       value: ConfigController().getAppConfig()?.versionConfig?.buildDate ?? "",
-      title: FlutterUI.translate("Build date"),
+      title: FlutterUI.translateLocal("Build date"),
     );
 
     return SettingGroup(
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterUI.translate("Version Info"),
+          FlutterUI.translateLocal("Version Info"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -481,20 +482,20 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  _buildStatus(BuildContext context) {
+  Widget _buildStatus(BuildContext context) {
     String versionValue;
     if (appName != null) {
-      versionValue = (IUiService().applicationMetaData.value?.serverVersion ?? "Unknown");
+      versionValue = (IUiService().applicationMetaData.value?.serverVersion ?? FlutterUI.translateLocal("Unknown"));
       if (IUiService().applicationMetaData.value?.serverVersion != FlutterUI.supportedServerVersion) {
-        versionValue += " (${FlutterUI.translate("Supported")}: ${FlutterUI.supportedServerVersion})";
+        versionValue += " (${FlutterUI.translateLocal("Supported")}: ${FlutterUI.supportedServerVersion})";
       }
     } else {
-      versionValue = "${FlutterUI.translate("Supported")}: ${FlutterUI.supportedServerVersion}";
+      versionValue = "${FlutterUI.translateLocal("Supported")}: ${FlutterUI.supportedServerVersion}";
     }
 
     SettingItem serverVersion = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.server),
-      title: FlutterUI.translate("Server Version"),
+      title: FlutterUI.translateLocal("Server Version"),
       value: versionValue,
     );
 
@@ -519,7 +520,7 @@ class _SettingsPageState extends State<SettingsPage> {
       groupHeader: Padding(
         padding: const EdgeInsets.all(10),
         child: Text(
-          FlutterUI.translate("Status"),
+          FlutterUI.translateLocal("Status"),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -534,10 +535,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   SettingItem<String> _buildWebSocketStatus(bool? connected) {
-    String text = FlutterUI.translate(connected != null ? (connected ? "Available" : "Not available") : "Unknown");
+    String text = FlutterUI.translateLocal(connected != null ? (connected ? "Available" : "Not available") : "Unknown");
     return SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.circleNodes),
-      title: FlutterUI.translate("Web Socket"),
+      title: FlutterUI.translateLocal("Web Socket"),
       value: text,
       onPressed: !(connected ?? false) && IApiService().getRepository() is OnlineApiRepository
           ? (context, value) async {

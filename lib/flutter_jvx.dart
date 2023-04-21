@@ -50,6 +50,7 @@ export 'src/mask/state/app_style.dart';
 export 'src/mask/state/loading_bar.dart';
 // Model
 export 'src/model/command/base_command.dart';
+export 'src/model/config/translation/i18n.dart';
 // Data
 export 'src/model/data/column_definition.dart';
 export 'src/model/data/data_book.dart';
@@ -75,6 +76,7 @@ export 'src/service/config/config_controller.dart';
 export 'src/service/config/config_service.dart';
 export 'src/service/data/i_data_service.dart';
 export 'src/service/data/impl/data_service.dart';
+export 'src/service/file/file_manager.dart';
 export 'src/service/layout/i_layout_service.dart';
 export 'src/service/layout/impl/layout_service.dart';
 export 'src/service/storage/i_storage_service.dart';

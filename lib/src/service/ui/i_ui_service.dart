@@ -30,6 +30,7 @@ import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/model_subscription.dart';
 import '../../model/config/application_parameters.dart';
+import '../../model/config/translation/i18n.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
@@ -78,6 +79,8 @@ abstract class IUiService {
   }
 
   MenuItemModel? getMenuItem(String pScreenName);
+
+  I18n i18n();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Communication with other services

@@ -212,8 +212,23 @@ class FlutterUI extends StatefulWidget {
   }
 
   /// Translates any text through the translation files loaded by the application.
+  ///
+  /// See also:
+  /// * [TranslationUtil]
+  /// * [ConfigController.getLanguage]
   static String translate(String? pText) {
-    return ConfigController().translateText(pText ?? "");
+    if (pText == null) return "";
+    return IUiService().i18n().translate(pText);
+  }
+
+  /// Translates any text through the local-only translation files.
+  ///
+  /// See also:
+  /// * [TranslationUtil]
+  /// * [ConfigController.getLanguage]
+  static String translateLocal(String? pText) {
+    if (pText == null) return "";
+    return IUiService().i18n().translateLocal(pText);
   }
 
   /// Creates an future error handler which prints the error + stackTrace
@@ -368,6 +383,9 @@ class FlutterUI extends StatefulWidget {
       HttpOverrides.global = JVxHttpOverrides();
     }
 
+    // Init translation
+    await ConfigController().reloadSupportedLanguages();
+    await IUiService().i18n().setLanguage(ConfigController().getLanguage());
     IUiService().setAppManager(pAppToRun.appManager);
 
     runApp(pAppToRun);
@@ -499,8 +517,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     subscription = Connectivity().onConnectivityChanged.listen(didChangeConnectivity);
 
     // Register callbacks
-    ConfigController().disposeLanguageCallbacks();
-    ConfigController().registerLanguageCallback((pLanguage) => setState(() {}));
     ConfigController().disposeImagesCallbacks();
     ConfigController().registerImagesCallback(refresh);
 
@@ -512,6 +528,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     ConfigController().themePreference.addListener(changedTheme);
     ConfigController().applicationStyle.addListener(changedTheme);
     IUiService().applicationSettings.addListener(refresh);
+    IUiService().i18n().currentLanguage.addListener(refresh);
 
     // Init default themes (if applicable)
     changedTheme();
@@ -733,6 +750,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
+    IUiService().i18n().currentLanguage.removeListener(refresh);
     IUiService().layoutMode.removeListener(changedTheme);
     ConfigController().themePreference.removeListener(changedTheme);
     ConfigController().applicationStyle.removeListener(changedTheme);
@@ -782,17 +800,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           title: Text(
             errorView?.errorCommand.title?.isNotEmpty ?? false
                 ? errorView!.errorCommand.title!
-                : FlutterUI.translate("Error"),
+                : FlutterUI.translateLocal("Error"),
           ),
           content: Text(
-            errorView?.errorCommand.message ?? FlutterUI.translate(IUiService.getErrorMessage(snapshot.error!)),
+            errorView?.errorCommand.message ?? FlutterUI.translateLocal(IUiService.getErrorMessage(snapshot.error!)),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
             TextButton(
               onPressed: returnToApps,
               child: Text(
-                FlutterUI.translate("Back"),
+                FlutterUI.translateLocal("Back"),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -800,7 +818,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
               TextButton(
                 onPressed: retry,
                 child: Text(
-                  FlutterUI.translate("Retry"),
+                  FlutterUI.translateLocal("Retry"),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

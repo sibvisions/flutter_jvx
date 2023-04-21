@@ -20,6 +20,7 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../apps/app_overview_page.dart';
 import '../frame_dialog.dart';
 
 /// This is a standard template for a server side error message.
@@ -66,14 +67,15 @@ class ServerErrorDialog extends JVxDialog {
 
     if (goToSettings) {
       actions.add(
-        TextButton(
+        TextButton.icon(
           onPressed: () {
             onClose();
             IUiService().closeJVxDialog(this);
             IUiService().routeToAppOverview();
           },
-          child: Text(
-            FlutterUI.translate("Edit Apps"),
+          icon: const Icon(AppOverviewPage.appsIcon),
+          label: Text(
+            FlutterUI.translate("Apps"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

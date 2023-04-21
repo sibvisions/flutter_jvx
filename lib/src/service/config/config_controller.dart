@@ -28,7 +28,7 @@ import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/state/app_style.dart';
-import '../../model/config/translation/translation_util.dart';
+import '../../model/config/translation/i18n.dart';
 import '../../model/config/user/user_info.dart';
 import '../../model/request/api_startup_request.dart';
 import '../../model/response/download_images_response.dart';
@@ -37,13 +37,12 @@ import '../apps/app.dart';
 import '../apps/app_service.dart';
 import '../file/file_manager.dart';
 import '../service.dart';
+import '../ui/i_ui_service.dart';
 import 'config_service.dart';
 
 /// Allows to read user settings, update user settings, or listen
 /// to user settings changes.
 class ConfigController {
-  static final RegExp langRegex = RegExp("_(?<name>[a-z]+)");
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,9 +113,6 @@ class ConfigController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Non-persistent fields (fields that don't use a backend service)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Current translation, base translation + overlaid language.
-  TranslationUtil _translation = TranslationUtil.empty();
 
   String? _platformTimeZone;
 
@@ -340,11 +336,6 @@ class ConfigController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Helper-methods for non-persistent fields
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Translates [pText] using [TranslationUtil] in the current language as defined by [getLanguage].
-  String translateText(String pText) {
-    return _translation.translateText(pText);
-  }
 
   /// Returns the currently in use [ConfigService] instance.
   ///
@@ -591,7 +582,7 @@ class ConfigController {
   Future<void> updateApplicationLanguage(String? pLanguage) async {
     await _configService.updateApplicationLanguage(pLanguage);
     _applicationLanguage.value = pLanguage;
-    loadLanguages();
+    await IUiService().i18n().setLanguage(getLanguage());
   }
 
   /// Returns the user defined language code.
@@ -603,16 +594,7 @@ class ConfigController {
   Future<void> updateUserLanguage(String? pLanguage) async {
     await _configService.updateUserLanguage(pLanguage);
     _userLanguage.value = pLanguage;
-    loadLanguages();
-  }
-
-  /// Initializes the current language defined by [getLanguage].
-  void loadLanguages() {
-    if (_fileManager.isSatisfied()) {
-      final String pLanguage = getLanguage();
-      _loadTranslations(pLanguage);
-      _callbacks['language']?.forEach((element) => element.call(pLanguage));
-    }
+    await IUiService().i18n().setLanguage(getLanguage());
   }
 
   /// Returns all currently supported languages by this application.
@@ -622,14 +604,20 @@ class ConfigController {
   ///
   /// See also:
   /// * [supportedLanguages]
-  void reloadSupportedLanguages() {
+  Future<void> reloadSupportedLanguages() async {
     // Add supported languages by parsing all translation file names
     Set<String> supportedLanguage = {};
-    List<File> listFiles = _fileManager.getTranslationFiles();
 
-    for (File file in listFiles) {
-      String fileName = file.path.split("/").last;
-      RegExpMatch? match = langRegex.firstMatch(fileName);
+    Iterable<String> localTranslations = await I18n.listLocalTranslationFiles();
+    List<File> appTranslations = _fileManager.listTranslationFiles();
+
+    List<String> fileNames = [
+      ...localTranslations.map((e) => e.split("/").last),
+      ...appTranslations.map((e) => e.path.split("/").last),
+    ];
+
+    for (String fileName in fileNames) {
+      RegExpMatch? match = I18n.langRegex.firstMatch(fileName);
       if (match != null) {
         supportedLanguage.add(match.namedGroup("name")!);
       }
@@ -727,24 +715,6 @@ class ConfigController {
     _customStartUpProperties[pKey] = pValue;
   }
 
-  /// Register a callback that will be called when the current language changes.
-  ///
-  /// See also:
-  /// * [getLanguage]
-  void registerLanguageCallback(Function(String language) pCallback) {
-    _registerCallback("language", pCallback);
-  }
-
-  /// Dispose a language callback.
-  void disposeLanguageCallback(Function(String language) pCallback) {
-    _disposeCallback("language", pCallback);
-  }
-
-  /// Dispose all language callbacks.
-  void disposeLanguageCallbacks() {
-    _disposeCallbacks("language");
-  }
-
   /// Register a callback that will be called when the locally saved images change.
   ///
   /// See also:
@@ -782,27 +752,5 @@ class ConfigController {
 
   void _disposeCallbacks(String type) {
     _callbacks[type]?.clear();
-  }
-
-  void _loadTranslations(String pLanguage) {
-    TranslationUtil langTrans = TranslationUtil.empty();
-
-    // Load the default translation.
-    String defaultTransFilePath = _fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/translation.json");
-    File? defaultTransFile = _fileManager.getFileSync(defaultTransFilePath);
-    langTrans.merge(defaultTransFile);
-
-    if (pLanguage != "en") {
-      String transFilePath =
-          _fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/translation_$pLanguage.json");
-      File? transFile = _fileManager.getFileSync(transFilePath);
-      if (transFile == null) {
-        FlutterUI.logUI.v("Translation file for code $pLanguage could not be found");
-      } else {
-        langTrans.merge(transFile);
-      }
-    }
-
-    _translation = langTrans;
   }
 }

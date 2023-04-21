@@ -35,6 +35,7 @@ import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/model_subscription.dart';
 import '../../../model/config/application_parameters.dart';
+import '../../../model/config/translation/i18n.dart';
 import '../../../model/data/data_book.dart';
 import '../../../model/data/subscriptions/data_chunk.dart';
 import '../../../model/data/subscriptions/data_record.dart';
@@ -92,6 +93,9 @@ class UiService implements IUiService {
   /// The currently focused object.
   String? focusedComponentId;
 
+  /// Provides translations.
+  final I18n _i18n = I18n();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Runtime related fields (e.g. responses from the server)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,6 +150,9 @@ class UiService implements IUiService {
         .expand((group) => group.items)
         .firstWhereOrNull((item) => item.matchesScreenName(pScreenName));
   }
+
+  @override
+  I18n i18n() => _i18n;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Communication with other services

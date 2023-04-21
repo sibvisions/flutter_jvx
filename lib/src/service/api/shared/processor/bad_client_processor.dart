@@ -43,9 +43,9 @@ class BadClientProcessor implements IResponseProcessor<BadClientResponse> {
     return [
       OpenServerErrorDialogCommand(
         reason: "Server version mismatch",
-        title: FlutterUI.translate("Compatibility issue"),
-        message: "${FlutterUI.translate("The client and server version are incompatible.")}"
-            "\n\n${FlutterUI.translate("Client")}: ${FlutterUI.supportedServerVersion} <-> ${FlutterUI.translate("Server")}: ${parsedServerVersion ?? FlutterUI.translate("Unknown")}",
+        title: FlutterUI.translateLocal("Compatibility issue"),
+        message: "${FlutterUI.translateLocal("The client and server version are incompatible.")}"
+            "\n\n${FlutterUI.translateLocal("Client")}: ${FlutterUI.supportedServerVersion} <-> ${FlutterUI.translateLocal("Server")}: ${parsedServerVersion ?? FlutterUI.translateLocal("Unknown")}",
         userError: true,
       )
     ];

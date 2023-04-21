@@ -76,5 +76,5 @@ abstract class IFileManager {
   Future<void> removePreviousAppVersions(String appId, String currentVersion);
 
   /// Returns directory, will always return null if in web
-  List<File> getTranslationFiles();
+  List<File> listTranslationFiles();
 }

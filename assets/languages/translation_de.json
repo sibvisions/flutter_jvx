@@ -1,0 +1,338 @@
+[
+  {
+    "text": "OK",
+    "translation": "OK"
+  },
+  {
+    "text": "No",
+    "translation": "Nein"
+  },
+  {
+    "text": "Yes",
+    "translation": "Ja"
+  },
+  {
+    "text": "Cancel",
+    "translation": "Abbrechen"
+  },
+  {
+    "text": "Save",
+    "translation": "Speichern"
+  },
+  {
+    "text": "Close",
+    "translation": "Schließen"
+  },
+  {
+    "text": "Loading...",
+    "translation": "Laden..."
+  },
+  {
+    "text": "Starting...",
+    "translation": "Starte..."
+  },
+  {
+    "text": "Start",
+    "translation": "Start"
+  },
+  {
+    "text": "Information",
+    "translation": "Information"
+  },
+  {
+    "text": "System",
+    "translation": "System"
+  },
+  {
+    "text": "Light",
+    "translation": "Hell"
+  },
+  {
+    "text": "Dark",
+    "translation": "Dunkel"
+  },
+  {
+    "text": "Theme",
+    "translation": "Design"
+  },
+  {
+    "text": "px",
+    "translation": "px"
+  },
+  {
+    "text": "Compatibility issue",
+    "translation": "Kompatibilitätsproblem"
+  },
+  {
+    "text": "The client and server version are incompatible.",
+    "translation": "Die Client und Server Version sind inkompatibel."
+  },
+  {
+    "text": "Server Version",
+    "translation": "Server Version"
+  },
+  {
+    "text": "Status",
+    "translation": "Status"
+  },
+  {
+    "text": "Available",
+    "translation": "Verfügbar"
+  },
+  {
+    "text": "Not available",
+    "translation": "Nicht verfügbar"
+  },
+  {
+    "text": "Supported",
+    "translation": "Unterstützt"
+  },
+  {
+    "text": "Unknown",
+    "translation": "Nicht bekannt"
+  },
+  {
+    "text": "Name",
+    "translation": "Name"
+  },
+  {
+    "text": "Version Info",
+    "translation": "Versions Info"
+  },
+  {
+    "text": "Web Socket",
+    "translation": "Web Socket"
+  },
+  {
+    "text": "Privacy Policy",
+    "translation": "Datenschutzbestimmungen"
+  },
+  {
+    "text": "Picture Size",
+    "translation": "Bild Größe"
+  },
+  {
+    "text": "Build date",
+    "translation": "Build Datum"
+  },
+  {
+    "text": "Application Settings",
+    "translation": "Applikationseinstellungen"
+  },
+  {
+    "text": "Settings",
+    "translation": "Einstellungen"
+  },
+  {
+    "text": "App name",
+    "translation": "Applikationsname"
+  },
+  {
+    "text": "Title",
+    "translation": "Titel"
+  },
+  {
+    "text": "App Version",
+    "translation": "Applikationsversion"
+  },
+  {
+    "text": "Language",
+    "translation": "Sprache"
+  },
+  {
+    "text": "General",
+    "translation": "Allgemein"
+  },
+  {
+    "text": "Manage single application",
+    "translation": "Einzelne Applikation verwalten"
+  },
+  {
+    "text": "Apps",
+    "translation": "Apps"
+  },
+  {
+    "text": "Application",
+    "translation": "Applikation"
+  },
+  {
+    "text": "Applications",
+    "translation": "Applikationen"
+  },
+  {
+    "text": "Add app",
+    "translation": "Applikation hinzufügen"
+  },
+  {
+    "text": "Remove apps",
+    "translation": "Applikationen entfernen"
+  },
+  {
+    "text": "Reset apps",
+    "translation": "Applikationen zurücksetzen"
+  },
+  {
+    "text": "Provided",
+    "translation": "Vordefiniert"
+  },
+  {
+    "text": "Auto start",
+    "translation": "Autostart"
+  },
+  {
+    "text": "Whether this app should be auto-started when starting the application.",
+    "translation": "Ob diese Applikation beim Starten der App automatisch gestartet werden soll."
+  },
+  {
+    "text": "You need to enter an app name.",
+    "translation": "Sie müssen einen Applikationsnamen eingeben."
+  },
+  {
+    "text": "The app name is invalid.",
+    "translation": "Dieser App Name ist ungültig."
+  },
+  {
+    "text": "The app already exists.",
+    "translation": "Diese App existiert bereits."
+  },
+  {
+    "text": "You need to enter an URL.",
+    "translation": "Sie müssen eine URL eingeben."
+  },
+  {
+    "text": "Missing required fields",
+    "translation": "Pflichtfelder fehlen"
+  },
+  {
+    "text": "You have to provide an app name and an URL to add an app.",
+    "translation": "Sie müssen einen Namen und eine URL angeben, um eine Applikation hinzuzufügen."
+  },
+  {
+    "text": "Delete",
+    "translation": "Löschen"
+  },
+  {
+    "text": "Delete this app?",
+    "translation": "Diese Applikation löschen?"
+  },
+  {
+    "text": "Are you sure you want to delete this app?",
+    "translation": "Möchten Sie diese Applikation wirklich löschen?"
+  },
+  {
+    "text": "Reset",
+    "translation": "Zurücksetzen"
+  },
+  {
+    "text": "Reset this app?",
+    "translation": "Diese Applikation zurücksetzen?"
+  },
+  {
+    "text": "Are you sure you want to reset this app?",
+    "translation": "Möchten Sie diese Applikation wirklich zurücksetzen?"
+  },
+  {
+    "text": "Retry",
+    "translation": "Wiederholen"
+  },
+  {
+    "text": "Back",
+    "translation": "Zurück"
+  },
+  {
+    "text": "This app already exists.",
+    "translation": "Diese Applikation existiert bereits."
+  },
+  {
+    "text": "Invalid URL",
+    "translation": "Ungültige URL"
+  },
+  {
+    "text": "URL is invalid",
+    "translation": "URL ist ungültig"
+  },
+  {
+    "text": "QR Scanner",
+    "translation": "QR Scanner"
+  },
+  {
+    "text": "Multi Scan",
+    "translation": "Multi Scan"
+  },
+  {
+    "text": "QR Code",
+    "translation": "QR Code"
+  },
+  {
+    "text": "Invalid QR Code",
+    "translation": "Ungültiger QR Code"
+  },
+  {
+    "text": "Empty QR Code",
+    "translation": "QR Code ist leer"
+  },
+  {
+    "text": "Failed to parse QR Code",
+    "translation": "Fehler beim Analysieren des QR Codes"
+  },
+  {
+    "text": "Scan QR Code",
+    "translation": "QR Code scannen"
+  },
+  {
+    "text": "Manual",
+    "translation": "Manuell"
+  },
+  {
+    "text": "Remove all apps",
+    "translation": "Alle Applikationen entfernen"
+  },
+  {
+    "text": "Are you sure you want to remove all apps?",
+    "translation": "Möchten Sie wirklich alle Applikationen entfernen?"
+  },
+  {
+    "text": "Reset all apps",
+    "translation": "Alle Applikationen zurücksetzen"
+  },
+  {
+    "text": "Are you sure you want to reset all apps?",
+    "translation": "Möchten Sie wirklich alle Applikationen zurücksetzen?"
+  },
+  {
+    "text": "Start not allowed",
+    "translation": "Start nicht erlaubt"
+  },
+  {
+    "text": "Your current application is configured without support for custom apps.",
+    "translation": "Ihre aktuelle Applikation wurde ohne Unterstützung für benutzerdefinierte Applikationen konfiguriert."
+  },
+  {
+    "text": "Error",
+    "translation": "Fehler"
+  },
+  {
+    "text": "Server Error",
+    "translation": "Server Fehler"
+  },
+  {
+    "text": "Could not connect to remote server",
+    "translation": "Verbindung zum Server konnte nicht hergestellt werden"
+  },
+  {
+    "text": "Connection to remote server timed out",
+    "translation": "Zeitüberschreitung bei der Verbindung zum Server"
+  },
+  {
+    "text": "Server Connection lost, retrying...",
+    "translation": "Verbindung unterbrochen, erneuter Versuch..."
+  },
+  {
+    "text": "Server Connection restored",
+    "translation": "Verbindung wiederhergestellt"
+  },
+  {
+    "text": "RCS",
+    "translation": "RCS"
+  }
+]

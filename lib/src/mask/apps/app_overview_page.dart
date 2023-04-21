@@ -73,11 +73,11 @@ class AppOverviewPage extends StatefulWidget {
               if (barcodes.length == 1) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   behavior: SnackBarBehavior.floating,
-                  content: Text(FlutterUI.translate(
+                  content: Text(
                     e is FormatException
-                        ? "Invalid QR Code${e.message.isNotEmpty ? ": ${e.message}" : ""}"
-                        : "Failed to parse QR Code",
-                  )),
+                        ? "${FlutterUI.translateLocal("Invalid QR Code")}${e.message.isNotEmpty ? ": ${FlutterUI.translateLocal(e.message)}" : ""}"
+                        : FlutterUI.translateLocal("Failed to parse QR Code"),
+                  ),
                 ));
               }
             }
@@ -91,12 +91,12 @@ class AppOverviewPage extends StatefulWidget {
     return IUiService().openDialog(
       context: context,
       pBuilder: (context) => AlertDialog(
-        title: Text(FlutterUI.translate("Invalid URL")),
-        content: Text("${FlutterUI.translate("URL is invalid")}:\n${e.toString()}"),
+        title: Text(FlutterUI.translateLocal("Invalid URL")),
+        content: Text("${FlutterUI.translateLocal("URL is invalid")}:\n${e.toString()}"),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(FlutterUI.translate("OK")),
+            child: Text(FlutterUI.translateLocal("OK")),
           ),
         ],
       ),
@@ -108,12 +108,12 @@ class AppOverviewPage extends StatefulWidget {
     return IUiService().openDialog(
       context: context,
       pBuilder: (context) => AlertDialog(
-        title: Text(FlutterUI.translate("Missing required fields")),
-        content: Text(FlutterUI.translate("You have to provide an app name and URL to add an app.")),
+        title: Text(FlutterUI.translateLocal("Missing required fields")),
+        content: Text(FlutterUI.translateLocal("You have to provide an app name and URL to add an app.")),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(FlutterUI.translate("OK")),
+            child: Text(FlutterUI.translateLocal("OK")),
           ),
         ],
       ),
@@ -199,7 +199,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          FlutterUI.translate(
+                                          FlutterUI.translateLocal(
                                               AppService().isSingleAppMode() ? "Application" : "Applications"),
                                           style: const TextStyle(
                                             color: JVxColors.LIGHTER_BLACK,
@@ -240,7 +240,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
               ),
               floatingActionButton: AppService().isSingleAppMode()
                   ? FloatingActionButton(
-                      tooltip: FlutterUI.translate("Scan QR Code"),
+                      tooltip: FlutterUI.translateLocal("Scan QR Code"),
                       onPressed: () => AppOverviewPage.openQRScanner(
                         context,
                         callback: (config) async {
@@ -377,7 +377,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                 ),
                 onPressed: () => IUiService().routeToSettings(),
                 icon: const FaIcon(FontAwesomeIcons.gear),
-                tooltip: FlutterUI.translate("Settings"),
+                tooltip: FlutterUI.translateLocal("Settings"),
               )
             : ListTileTheme.merge(
                 iconColor: Theme.of(context).colorScheme.primary,
@@ -405,7 +405,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         value: 0,
                         child: ListTile(
                           leading: const Icon(Icons.add),
-                          title: Text(FlutterUI.translate("Add app")),
+                          title: Text(FlutterUI.translateLocal("Add app")),
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
@@ -414,7 +414,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         value: 1,
                         child: ListTile(
                           leading: Icon(containsCustomApps ? Icons.delete : Icons.history),
-                          title: Text(FlutterUI.translate("${containsCustomApps ? "Remove" : "Reset"} apps")),
+                          title: Text(FlutterUI.translateLocal("${containsCustomApps ? "Remove" : "Reset"} apps")),
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
@@ -422,7 +422,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                       value: 2,
                       child: ListTile(
                         leading: const FaIcon(FontAwesomeIcons.gear),
-                        title: Text(FlutterUI.translate("Settings")),
+                        title: Text(FlutterUI.translateLocal("Settings")),
                         contentPadding: EdgeInsets.zero,
                       ),
                     ),
@@ -481,37 +481,20 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   /// Returns if the update was successful.
   Future<App?> _updateApp(BuildContext context, ServerConfig config, {App? editApp}) async {
     App? app = editApp != null ? App.getApp(editApp.id) : null;
-    if (!(app?.locked ?? false)) {
-      app ??= App.createApp(name: config.appName!, baseUrl: config.baseUrl!);
+    assert(!(app?.locked ?? false), "Locked apps cannot be updated.");
+    app ??= App.createApp(name: config.appName!, baseUrl: config.baseUrl!);
 
-      // If this is not an predefined app and the key parameters changed, change id.
-      if (!app.predefined && (app.name != config.appName || app.baseUrl != config.baseUrl)) {
-        await app.updateId(App.computeId(config.appName, config.baseUrl.toString(), predefined: false)!);
-      }
-      await app.updateFromConfig(config);
-
-      if (mounted) {
-        Navigator.pop(context);
-      }
-      _refreshApps();
-      return app;
-    } else if (mounted) {
-      await IUiService().openDialog(
-        context: context,
-        pBuilder: (context) => AlertDialog(
-          title: Text(FlutterUI.translate("Duplicated app")),
-          content: Text(FlutterUI.translate("You cannot use the same app name and URL as an provided app.")),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(FlutterUI.translate("OK")),
-            ),
-          ],
-        ),
-        pIsDismissible: true,
-      );
+    // If this is not an predefined app and the key parameters changed, change id.
+    if (!app.predefined && (app.name != config.appName || app.baseUrl != config.baseUrl)) {
+      await app.updateId(App.computeId(config.appName, config.baseUrl.toString(), predefined: false)!);
     }
-    return null;
+    await app.updateFromConfig(config);
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+    _refreshApps();
+    return app;
   }
 
   Future<void> _showAddApp(BuildContext context) async {
@@ -522,7 +505,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         return AlertDialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
           title: Text(
-            FlutterUI.translate("Add app"),
+            FlutterUI.translateLocal("Add app"),
             textAlign: TextAlign.center,
           ),
           // contentPadding: const EdgeInsets.all(16.0),
@@ -536,7 +519,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints.tightFor(width: 150),
                     child: SelectItem(
-                      title: FlutterUI.translate("QR Code"),
+                      title: FlutterUI.translateLocal("QR Code"),
                       icon: FontAwesomeIcons.qrcode,
                       onTap: () => Navigator.pop(context, 1),
                     ),
@@ -546,7 +529,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints.tightFor(width: 150),
                     child: SelectItem(
-                      title: FlutterUI.translate("Manual"),
+                      title: FlutterUI.translateLocal("Manual"),
                       icon: FontAwesomeIcons.penToSquare,
                       onTap: () => Navigator.pop(context, 2),
                     ),
@@ -576,17 +559,18 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(FlutterUI.translate("${predefined ? "Reset" : "Delete"} this app?")),
-          content: Text(FlutterUI.translate("Are you sure you want to ${predefined ? "reset" : "delete"} this app?")),
+          title: Text(FlutterUI.translateLocal("${predefined ? "Reset" : "Delete"} this app?")),
+          content:
+              Text(FlutterUI.translateLocal("Are you sure you want to ${predefined ? "reset" : "delete"} this app?")),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text(FlutterUI.translate("No")),
+              child: Text(FlutterUI.translateLocal("No")),
             ),
             TextButton(
               style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
               onPressed: () => Navigator.pop(context, true),
-              child: Text(FlutterUI.translate("Yes")),
+              child: Text(FlutterUI.translateLocal("Yes")),
             ),
           ],
         );
@@ -599,18 +583,19 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(FlutterUI.translate("${containsCustomApps ? "Remove" : "Reset"} all apps")),
+          title: Text(FlutterUI.translateLocal("${containsCustomApps ? "Remove" : "Reset"} all apps")),
           content: Text(
-              FlutterUI.translate("Are you sure you want to ${containsCustomApps ? "remove" : "reset"} all apps?")),
+            FlutterUI.translateLocal("Are you sure you want to ${containsCustomApps ? "remove" : "reset"} all apps?"),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text(FlutterUI.translate("No")),
+              child: Text(FlutterUI.translateLocal("No")),
             ),
             TextButton(
               style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
               onPressed: () => Navigator.pop(context, true),
-              child: Text(FlutterUI.translate("Yes")),
+              child: Text(FlutterUI.translateLocal("Yes")),
             ),
           ],
         );
@@ -627,13 +612,13 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(FlutterUI.translate("Start not allowed")),
-          content:
-              Text(FlutterUI.translate("Your current application was configured without support for custom apps.")),
+          title: Text(FlutterUI.translateLocal("Start not allowed")),
+          content: Text(
+              FlutterUI.translateLocal("Your current application was configured without support for custom apps.")),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(FlutterUI.translate("OK")),
+              child: Text(FlutterUI.translateLocal("OK")),
             ),
           ],
         );
