@@ -304,6 +304,16 @@ class ConfigService {
     await setString("language", pLanguage);
   }
 
+  /// Returns the application language returned by the server.
+  Future<String?> applicationLanguage() {
+    return getString("applicationLanguage");
+  }
+
+  /// Set the application defined language.
+  Future<void> updateApplicationLanguage(String? pLanguage) async {
+    await setString("applicationLanguage", pLanguage);
+  }
+
   /// Returns the application timezone returned by the server.
   Future<String?> applicationTimeZone() {
     return getString("timeZoneCode");

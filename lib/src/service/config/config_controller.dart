@@ -105,6 +105,8 @@ class ConfigController {
 
   late ValueNotifier<String?> _userLanguage;
 
+  late ValueNotifier<String?> _applicationLanguage;
+
   late ValueNotifier<String?> _applicationTimeZone;
 
   late ValueNotifier<int?> _pictureResolution;
@@ -117,8 +119,6 @@ class ConfigController {
   TranslationUtil _translation = TranslationUtil.empty();
 
   String? _platformTimeZone;
-
-  final ValueNotifier<String?> _applicationLanguage = ValueNotifier(null);
 
   final ValueNotifier<Set<String>> _supportedLanguages = ValueNotifier({});
 
@@ -191,8 +191,9 @@ class ConfigController {
     _userInfo = ValueNotifier(null);
     _offline = ValueNotifier(false);
     _offlineScreen = ValueNotifier(null);
-    _applicationStyle = ValueNotifier(null);
     _userLanguage = ValueNotifier(null);
+    _applicationStyle = ValueNotifier(null);
+    _applicationLanguage = ValueNotifier(null);
     _applicationTimeZone = ValueNotifier(null);
 
     // Update native timezone
@@ -220,8 +221,9 @@ class ConfigController {
     _userInfo.value = await _configService.userInfo();
     _offline.value = await _configService.offline();
     _offlineScreen.value = await _configService.offlineScreen();
-    _applicationStyle.value = await _configService.applicationStyle();
     _userLanguage.value = await _configService.userLanguage();
+    _applicationStyle.value = await _configService.applicationStyle();
+    _applicationLanguage.value = await _configService.applicationLanguage();
     _applicationTimeZone.value = await _configService.applicationTimeZone();
   }
 
@@ -587,6 +589,7 @@ class ConfigController {
 
   /// Sets the application language code returned by the server.
   Future<void> updateApplicationLanguage(String? pLanguage) async {
+    await _configService.updateApplicationLanguage(pLanguage);
     _applicationLanguage.value = pLanguage;
     loadLanguages();
   }
