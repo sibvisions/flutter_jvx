@@ -1,5 +1,5 @@
 <!-- 
-Copyright 2022 SIB Visions GmbH
+Copyright 2009 SIB Visions GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this file except in compliance with the License. You may obtain a copy of
@@ -394,6 +394,7 @@ the License.
 
     <copy todir="${install}/weboffline">
       <fileset dir="${project.temp}/build/web">
+        <exclude name=".last_build_id" />
         <exclude name="canvaskit/**" />
       </fileset>
     </copy> 
