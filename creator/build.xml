@@ -1,5 +1,5 @@
 <!-- 
-Copyright 2009 SIB Visions GmbH
+Copyright 2022 SIB Visions GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this file except in compliance with the License. You may obtain a copy of
@@ -374,34 +374,65 @@ the License.
 
   </target>
 
-  <target name="build.weboffline" depends="prepare">
+  <target name="build.weboffline" depends="build.web">
 
-    <!-- if online web directory exists -->
+    <!--
+    No extra build, because we replace the canvaskit URL manually
+
+    if online web directory exists
     <delete dir="${project.temp}/build/web" failonerror="false" />
 
     <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
       <arg value="build" />
       <arg value="web" />
-      <arg value="--dart-define=FLUTTER_WEB_CANVASKIT_URL=/canvaskit/" />
-      <arg value="--release" />
+      <arg value="- -dart-define=FLUTTER_WEB_CANVASKIT_URL=canvaskit/" />
+      <arg value="- -release" />
     </exec>
+    -->
+
+    <delete dir="${install}/weboffline" failonerror="false" />
 
     <copy todir="${install}/weboffline">
       <fileset dir="${project.temp}/build/web">
-        <exclude name=".last_build_id" />
+        <exclude name="canvaskit/**" />
       </fileset>
     </copy> 
 
-    <!-- replace script -->
+    <!-- canvaskit -->
+
+    <!-- search URL in script -->
+    <loadfile srcfile="${install}/weboffline/main.dart.js" property="dartJs" />
+    <propertyregex property="canvaskit.url" input="${dartJs}" regexp="&quot;(http[s]?\:\/\/unpkg\.com\/canvaskit\-wasm\@.*\/bin\/)&quot;" select="\1" casesensitive="false" />
+
+    <mkdir dir="${install}/weboffline/canvaskit" />
+
+    <!-- download -->
+    <get src="${canvaskit.url}canvaskit.js" dest="${install}/weboffline/canvaskit/canvaskit.js" usetimestamp="true"/>
+    <get src="${canvaskit.url}canvaskit.wasm" dest="${install}/weboffline/canvaskit/canvaskit.wasm" usetimestamp="true"/>
+
+    <!-- replace URL -->
+    <replaceregexp>
+      <fileset dir="${install}/weboffline/">
+        <include name="main.dart.js" />
+      </fileset>
+      <regexp pattern="${canvaskit.url}"/>
+      <substitution expression="canvaskit/"/>
+    </replaceregexp>
+
+    <!-- jsQR -->
+
+    <!-- search URL in script -->
     <loadfile srcfile="${install}/weboffline/index.html" property="indexHtml" />
-    <propertyregex property="dist.url" input="${indexHtml}" regexp="&lt;script src\=&quot;(http[s]?s\:(.*))&quot;" select="\1" casesensitive="false" />
+    <propertyregex property="dist.url" input="${indexHtml}" regexp="&lt;script src\=&quot;(http[s]?\:(.*))&quot;" select="\1" casesensitive="false" />
 
     <basename property="dist.name" file="${dist.url}" />
 
     <mkdir dir="${install}/weboffline/dist" />
 
+    <!-- download -->
     <get src="${dist.url}" dest="${install}/weboffline/dist/${dist.name}" usetimestamp="true"/>
 
+    <!-- replace URL -->
     <replaceregexp>
       <fileset dir="${install}/weboffline/">
         <include name="index.html" />
