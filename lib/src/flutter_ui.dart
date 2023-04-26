@@ -97,7 +97,7 @@ class FlutterUI extends StatefulWidget {
 
   /// General logger
   static final Logger log = Logger(
-    level: kDebugMode ? Level.debug : Level.info,
+    level: kDebugMode ? Level.debug : Level.warning,
     filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "GENERAL",
@@ -109,7 +109,7 @@ class FlutterUI extends StatefulWidget {
 
   /// API logger
   static final Logger logAPI = Logger(
-    level: Level.info,
+    level: kDebugMode ? Level.debug : Level.warning,
     filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "API",
@@ -121,7 +121,7 @@ class FlutterUI extends StatefulWidget {
 
   /// Command logger
   static final Logger logCommand = Logger(
-    level: Level.info,
+    level: kDebugMode ? Level.debug : Level.warning,
     filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "COMMAND",
@@ -133,7 +133,7 @@ class FlutterUI extends StatefulWidget {
 
   /// UI logger
   static final Logger logUI = Logger(
-    level: Level.warning,
+    level: kDebugMode ? Level.debug : Level.warning,
     filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "UI",
