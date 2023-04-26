@@ -374,21 +374,56 @@ the License.
 
   </target>
 
-  <target name="build.weboffline" depends="build.web">
+  <!-- automatic build: use included canvaskit -->
+  <target name="build.weboffline" depends="prepare">
 
-    <!--
-    No extra build, because we replace the canvaskit URL manually
-
-    if online web directory exists
+    <!-- if online web directory exists -->
     <delete dir="${project.temp}/build/web" failonerror="false" />
 
     <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
       <arg value="build" />
       <arg value="web" />
-      <arg value="- -dart-define=FLUTTER_WEB_CANVASKIT_URL=canvaskit/" />
-      <arg value="- -release" />
+      <arg value="--dart-define=FLUTTER_WEB_CANVASKIT_URL=canvaskit/" />
+      <arg value="--release" />
     </exec>
-    -->
+
+    <delete dir="${install}/weboffline" failonerror="false" />
+
+    <copy todir="${install}/weboffline">
+      <fileset dir="${project.temp}/build/web">
+        <exclude name=".last_build_id" />
+        <exclude name="canvaskit/profiling/**" />
+      </fileset>
+    </copy> 
+
+    <!-- jsQR -->
+
+    <!-- search URL in script -->
+    <loadfile srcfile="${install}/weboffline/index.html" property="indexHtml" />
+    <propertyregex property="dist.url" input="${indexHtml}" regexp="&lt;script src\=&quot;(http[s]?\:(.*))&quot;" select="\1" casesensitive="false" />
+
+    <basename property="dist.name" file="${dist.url}" />
+
+    <mkdir dir="${install}/weboffline/dist" />
+
+    <!-- download -->
+    <get src="${dist.url}" dest="${install}/weboffline/dist/${dist.name}" usetimestamp="true"/>
+
+    <!-- replace URL -->
+    <replaceregexp>
+      <fileset dir="${install}/weboffline/">
+        <include name="index.html" />
+      </fileset>
+      <regexp pattern="${dist.url}"/>
+      <substitution expression="dist/${dist.name}"/>
+    </replaceregexp>
+
+    <zip basedir="${install}/weboffline" destfile="${install}/weboffline.zip" />
+
+  </target>
+
+  <!-- manual build: copy web build and download required libraries -->
+  <target name="build.weboffline-copy" depends="build.web">
 
     <delete dir="${install}/weboffline" failonerror="false" />
 
