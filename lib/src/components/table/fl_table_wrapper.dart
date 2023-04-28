@@ -262,6 +262,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Recalculates the size of the table.
   void _recalculateTableSize([bool pSetState = false]) {
+    Size oldSize = tableSize.calculatedSize;
     tableSize.calculateTableSize(
       pMetaData: metaData,
       pTableModel: model,
@@ -272,6 +273,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     currentState |= CALCULATION_COMPLETE;
 
     if (pSetState) {
+      sentCalcSize = sentCalcSize && (oldSize == tableSize.calculatedSize);
       setState(() {});
     }
   }
