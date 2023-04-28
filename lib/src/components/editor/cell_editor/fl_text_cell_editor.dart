@@ -39,8 +39,11 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   /// Content type for using a multi line line editor.
   static const String TEXT_PLAIN_WRAPPEDMULTILINE = "text/plain;wrappedmultiline";
 
-  /// Content type for using a multi line line editor.
+  /// Content type for using a single line password editor.
   static const String TEXT_PLAIN_PASSWORD = "text/plain;password";
+
+  /// Content type for using a multi line html editor.
+  static const String TEXT_HTML = "text/html";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -99,6 +102,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
+      case (TEXT_HTML):
         return FlTextAreaWidget(
           model: widgetModel as FlTextAreaModel,
           valueChanged: onValueChange,
@@ -135,6 +139,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   @override
   createWidgetModel() {
     switch (model.contentType) {
+      case (TEXT_HTML):
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
         return FlTextAreaModel();
