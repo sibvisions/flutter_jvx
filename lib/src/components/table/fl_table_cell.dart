@@ -19,6 +19,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
+import '../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/layout/alignments.dart';
@@ -184,6 +185,9 @@ class _FlTableCellState extends State<FlTableCell> {
       paddings = paddings - const EdgeInsets.all(1);
     }
 
+    bool canBeDoubleTapped =
+        cellEditor.allowedInTable && cellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK;
+
     return GestureDetector(
       onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
           ? (details) => widget.onLongPress!(widget.rowIndex, widget.columnDefinition.name, cellEditor, details)
@@ -191,7 +195,7 @@ class _FlTableCellState extends State<FlTableCell> {
       onTap: widget.onTap != null && widget.model.isEnabled
           ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
           : null,
-      onDoubleTap: widget.onDoubleTap != null && widget.model.isEnabled
+      onDoubleTap: widget.onDoubleTap != null && widget.model.isEnabled && canBeDoubleTapped
           ? () => widget.onDoubleTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
           : null,
       child: Container(
