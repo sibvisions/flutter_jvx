@@ -97,9 +97,12 @@ class FlutterUI extends StatefulWidget {
   /// Request Collector
   static final HttpBucket httpBucket = HttpBucket();
 
+  /// The log level in the debug mode.
+  static const Level debugLogLevel = Level.info;
+
   /// General logger
   static final Logger log = Logger(
-    level: kDebugMode ? Level.debug : Level.warning,
+    level: kDebugMode ? debugLogLevel : Level.warning,
     filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "GENERAL",
@@ -111,7 +114,7 @@ class FlutterUI extends StatefulWidget {
 
   /// API logger
   static final Logger logAPI = Logger(
-    level: kDebugMode ? Level.debug : Level.warning,
+    level: kDebugMode ? debugLogLevel : Level.warning,
     filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "API",
@@ -123,7 +126,7 @@ class FlutterUI extends StatefulWidget {
 
   /// Command logger
   static final Logger logCommand = Logger(
-    level: kDebugMode ? Level.debug : Level.warning,
+    level: kDebugMode ? debugLogLevel : Level.warning,
     filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "COMMAND",
@@ -135,7 +138,7 @@ class FlutterUI extends StatefulWidget {
 
   /// UI logger
   static final Logger logUI = Logger(
-    level: kDebugMode ? Level.debug : Level.warning,
+    level: kDebugMode ? debugLogLevel : Level.warning,
     filter: JVxFilter(),
     printer: JVxPrettyPrinter(
       prefix: "UI",
