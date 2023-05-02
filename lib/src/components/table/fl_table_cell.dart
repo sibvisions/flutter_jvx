@@ -185,8 +185,7 @@ class _FlTableCellState extends State<FlTableCell> {
       paddings = paddings - const EdgeInsets.all(1);
     }
 
-    bool canBeDoubleTapped =
-        cellEditor.allowedInTable && cellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK;
+    bool canBeDoubleTapped = cellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK;
 
     return GestureDetector(
       onLongPressStart: widget.onLongPress != null && widget.model.isEnabled
