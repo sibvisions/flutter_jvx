@@ -52,6 +52,7 @@ import '../../../../model/request/api_download_request.dart';
 import '../../../../model/request/api_download_style_request.dart';
 import '../../../../model/request/api_download_translation_request.dart';
 import '../../../../model/request/api_exit_request.dart';
+import '../../../../model/request/api_feedback_request.dart';
 import '../../../../model/request/api_fetch_request.dart';
 import '../../../../model/request/api_filter_request.dart';
 import '../../../../model/request/api_focus_gained_request.dart';
@@ -173,6 +174,7 @@ class OnlineApiRepository extends IRepository {
     ApiFocusLostRequest: (_) => APIRoute.POST_FOCUS_LOST,
     ApiAliveRequest: (_) => APIRoute.POST_ALIVE,
     ApiExitRequest: (_) => APIRoute.POST_EXIT,
+    ApiFeedbackRequest: (_) => APIRoute.POST_FEEDBACK,
     ApiSaveRequest: (_) => APIRoute.POST_SAVE,
     ApiReloadRequest: (_) => APIRoute.POST_RELOAD,
     ApiRollbackRequest: (_) => APIRoute.POST_ROLLBACK,

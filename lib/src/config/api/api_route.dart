@@ -65,6 +65,7 @@ class APIRoute {
   static const APIRoute POST_SELECT_TREE = APIRoute(Method.POST, "api/dal/selectRecordTree");
   static const APIRoute POST_CLOSE_CONTENT = APIRoute(Method.POST, "api/closeContent");
   static const APIRoute POST_EXIT = APIRoute(Method.POST, "api/exit");
+  static const APIRoute POST_FEEDBACK = APIRoute(Method.POST, "api/feedback");
 
   final String route;
   final Method method;

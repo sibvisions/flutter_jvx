@@ -27,6 +27,7 @@ export 'model/command/api/download_images_command.dart';
 export 'model/command/api/download_style_command.dart';
 export 'model/command/api/download_translation_command.dart';
 export 'model/command/api/exit_command.dart';
+export 'model/command/api/feedback_command.dart';
 export 'model/command/api/fetch_command.dart';
 export 'model/command/api/filter_command.dart';
 export 'model/command/api/insert_record_command.dart';

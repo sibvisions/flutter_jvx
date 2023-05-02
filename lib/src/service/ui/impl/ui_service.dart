@@ -22,6 +22,7 @@ import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
 import '../../../mask/work_screen/content.dart';
 import '../../../model/command/api/close_content_command.dart';
+import '../../../model/command/api/feedback_command.dart';
 import '../../../model/command/api/fetch_command.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../model/command/api/save_all_editors.dart';
@@ -165,16 +166,31 @@ class UiService implements IUiService {
 
   @override
   handleAsyncError(Object error, StackTrace stackTrace) {
-    FlutterUI.logUI.e("Error while sending async command", error, stackTrace);
+    FlutterUI.logUI.e("Error while handling async", error, stackTrace);
 
     if (error is! ErrorViewException && error is! SessionExpiredException) {
       bool isTimeout = error is TimeoutException || error is SocketException;
-      ICommandService().sendCommand(OpenErrorDialogCommand(
-        message: FlutterUI.translate(IUiService.getErrorMessage(error)),
-        error: error,
-        canBeFixedInSettings: isTimeout,
-        reason: "Command error in ui service",
-      ));
+      ICommandService()
+          .sendCommand(OpenErrorDialogCommand(
+            message: FlutterUI.translate(IUiService.getErrorMessage(error)),
+            error: error,
+            canBeFixedInSettings: isTimeout,
+            reason: "UIService async error",
+          ))
+          .catchError((e, stack) => FlutterUI.logUI.e("Another error while handling async error", e, stack));
+
+      // If there is a current session and a "probably" working connection, report to the server.
+      if (!isTimeout && IUiService().clientId.value != null) {
+        ICommandService()
+            .sendCommand(FeedbackCommand(
+              properties: {
+                "message": IUiService.getErrorMessage(error),
+                "error": error,
+              },
+              reason: "UIService async error",
+            ))
+            .catchError((e, stack) => FlutterUI.logUI.e("Failed to send feedback to server", e, stack));
+      }
     }
 
     return null;
