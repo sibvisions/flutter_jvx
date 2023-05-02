@@ -48,7 +48,7 @@ class JVxOverlay extends StatefulWidget {
     }
     throw FlutterError.fromParts([
       ErrorSummary(
-        "FlutterUI.of() called with a context that does not contain a FlutterUI.",
+        "JVxOverlay.of() called with a context that does not contain a JVxOverlay.",
       ),
       context.describeElement("The context used was"),
     ]);

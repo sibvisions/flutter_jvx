@@ -47,7 +47,7 @@ abstract class Frame extends StatefulWidget {
     }
     throw FlutterError.fromParts([
       ErrorSummary(
-        "FlutterUI.of() called with a context that does not contain a FlutterUI.",
+        "Frame.of() called with a context that does not contain a Frame.",
       ),
       context.describeElement("The context used was"),
     ]);
