@@ -576,8 +576,10 @@ class OnlineApiRepository extends IRepository {
         response = sentRequest["response"];
 
         setConnected(true);
-      } catch (_) {
-        setConnected(false);
+      } catch (e) {
+        if (e is IOException || e is TimeoutException) {
+          setConnected(false);
+        }
         rethrow;
       } finally {
         // Has to happen after connected field update, depends on field.
