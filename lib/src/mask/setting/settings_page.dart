@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:beamer/beamer.dart';
@@ -562,7 +563,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (_changesPending()) {
         await ConfigController().updateUserLanguage(language);
         if (IUiService().clientId.value != null) {
-          FlutterUI.of(FlutterUI.getCurrentContext()!).startApp();
+          unawaited(FlutterUI.of(FlutterUI.getCurrentContext()!).startApp());
           return;
         }
       }

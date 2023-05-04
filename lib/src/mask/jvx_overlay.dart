@@ -28,6 +28,7 @@ import '../service/command/i_command_service.dart';
 import '../service/config/config_controller.dart';
 import '../service/ui/i_ui_service.dart';
 import '../util/widgets/status_banner.dart';
+import 'apps/app_overview_page.dart';
 import 'state/app_style.dart';
 import 'state/loading_bar.dart';
 
@@ -170,7 +171,17 @@ class JVxOverlayState extends State<JVxOverlay> {
     setState(() => _connectedMessage = null);
   }
 
-  bool _isLocked() => (_connected == false || _loading) && !_forceDisableBarrier;
+  bool get _isLocked => _loading && !_forceDisableBarrier;
+
+  bool get _showConnectedBarrier => !loading && _connected == false && !_forceDisableBarrier;
+
+  bool get _showExit => _showConnectedBarrier && _connectedMessage != null;
+
+  FutureOr<void> clear(bool pFullClear) {
+    _forceDisableBarrier = false;
+    _loading = false;
+    resetConnectionState(instant: true);
+  }
 
   @override
   void initState() {
@@ -194,7 +205,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   /// Returns true if this callback will handle the request;
   /// otherwise, returns false.
   Future<bool> _onBackPress() async {
-    if (_isLocked()) {
+    if ((_isLocked || _showConnectedBarrier) && !_showExit) {
       // Block request.
       return true;
     }
@@ -225,9 +236,69 @@ class JVxOverlayState extends State<JVxOverlay> {
                 children: [
                   if (widget.child != null) widget.child!,
                   DialogsWidget(key: _dialogsKey),
-                  if (_isLocked())
+                  if (_isLocked)
                     const ModalBarrier(
                       dismissible: false,
+                    ),
+                  if (_showConnectedBarrier)
+                    const ModalBarrier(
+                      dismissible: false,
+                      color: Colors.black26,
+                    ),
+                  if (_showExit)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 25,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 130),
+                          child: Opacity(
+                            opacity: 0.9,
+                            child: Material(
+                              type: MaterialType.button,
+                              elevation: 20.0,
+                              borderRadius: BorderRadius.circular(16),
+                              color: Theme.of(context).colorScheme.surface,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(16),
+                                onTap: () async {
+                                  await IUiService().routeToAppOverview();
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 4.0),
+                                        child: Icon(
+                                          AppOverviewPage.appsIcon,
+                                          size: 24,
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          FlutterUI.translate("Exit App"),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.onSurface,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   if (_connectedMessage != null)
                     StatusBanner(

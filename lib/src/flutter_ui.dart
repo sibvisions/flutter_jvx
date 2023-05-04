@@ -19,6 +19,7 @@ import 'dart:async';
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
@@ -286,11 +287,11 @@ class FlutterUI extends StatefulWidget {
   /// This can not be called with [pFullClear] = `true` from within a command processing
   /// as the command service then awaits its queue and would therefore end up in a deadlock.
   static FutureOr<void> clearServices(bool pFullClear) async {
-    await ICommandService().clear(pFullClear);
     await ILayoutService().clear(pFullClear);
     await IStorageService().clear(pFullClear);
     await IDataService().clear(pFullClear);
     await IUiService().clear(pFullClear);
+    await ICommandService().clear(pFullClear);
     await IApiService().clear(pFullClear);
   }
 
@@ -491,6 +492,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   late final StreamSubscription<ConnectivityResult> subscription;
 
   Future<void>? startupFuture;
+  Future<void>? exitFuture;
 
   /// The last password that the user entered, used for offline switch.
   String? lastPassword;
@@ -556,18 +558,25 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     }
   }
 
-  void startApp({String? appId, bool? autostart}) {
+  Future<void> startApp({String? appId, bool? autostart}) {
     setState(() {
+      exitFuture = null;
       startupFuture = AppService()
           .startApp(appId: appId, autostart: autostart)
           .then((value) => changedTheme())
           .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
     });
+    return startupFuture!;
   }
 
-  Future<void> stopApp([bool resetAppName = true]) async {
-    setState(() => startupFuture = null);
-    await AppService().stopApp(resetAppName);
+  Future<void> stopApp([bool resetAppName = true]) {
+    setState(() {
+      startupFuture = null;
+      exitFuture = AppService()
+          .stopApp(resetAppName)
+          .catchError(FlutterUI.createErrorHandler("There was an error while exiting the app"));
+    });
+    return exitFuture!;
   }
 
   @override
@@ -605,36 +614,44 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     return (context, child) {
       Widget futureBuilder = FutureBuilder(
         future: startupFuture,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.none ||
-              snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+        builder: (context, startupSnapshot) => FutureBuilder(
+          future: exitFuture,
+          builder: (context, exitSnapshot) {
+            if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
+                (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
+              retrySplash() => startApp();
+              splashReturnToApps() {
+                IUiService().routeToAppOverview();
+                setState(() {
+                  startupFuture = null;
+                });
+              }
+
+              return _buildSplash(
+                startupFuture!,
+                retry: retrySplash,
+                returnToApps: splashReturnToApps,
+                childrenBuilder: (snapshot) => [
+                  if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                    _getStartupErrorDialog(
+                      context,
+                      snapshot,
+                      retry: retrySplash,
+                      returnToApps: splashReturnToApps,
+                    ),
+                ],
+              );
+            }
             FlutterUI.initiated = true;
+
+            if (startupSnapshot.connectionState == ConnectionState.none &&
+                ![ConnectionState.none, ConnectionState.done].contains(exitSnapshot.connectionState)) {
+              return _buildExitSplash(JVxOverlay(child: child), snapshot: exitSnapshot);
+            }
+
             return JVxOverlay(child: child);
-          }
-
-          retrySplash() => startApp();
-          splashReturnToApps() {
-            IUiService().routeToAppOverview();
-            setState(() {
-              startupFuture = null;
-            });
-          }
-
-          return _buildSplash(
-            startupFuture!,
-            retry: retrySplash,
-            returnToApps: splashReturnToApps,
-            childrenBuilder: (snapshot) => [
-              if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                _getStartupErrorDialog(
-                  context,
-                  snapshot,
-                  retry: retrySplash,
-                  returnToApps: splashReturnToApps,
-                ),
-            ],
-          );
-        },
+          },
+        ),
       );
 
       return DebugOverlay(
@@ -678,7 +695,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                 Splash(
                   splashBuilder: widget.splashBuilder,
                   snapshot: snapshot,
-                  returnToApps: returnToApps,
+                  onReturn: returnToApps,
                 ),
                 ...?childrenBuilder?.call(snapshot),
               ],
@@ -686,6 +703,56 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ),
         ),
       ),
+    );
+  }
+
+  /// Builds a widget to show when exiting an app.
+  Widget _buildExitSplash(
+    Widget child, {
+    AsyncSnapshot? snapshot,
+  }) {
+    return Splash(
+      splashBuilder: (context, snapshot) {
+        return Stack(
+          children: [
+            child,
+            Theme(
+              data: splashTheme,
+              child: FutureBuilder(
+                  future: Future.delayed(const Duration(milliseconds: 250)),
+                  builder: (context, snapshot) {
+                    return Stack(
+                      children: [
+                        ModalBarrier(
+                          dismissible: false,
+                          color: snapshot.connectionState == ConnectionState.done ? Colors.black54 : null,
+                        ),
+                        if (snapshot.connectionState == ConnectionState.done)
+                          Center(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const CupertinoActivityIndicator(color: Colors.white, radius: 18),
+                                  const SizedBox(height: 15),
+                                  Text(
+                                    FlutterUI.translateLocal("Exiting..."),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  }),
+            ),
+          ],
+        );
+      },
+      snapshot: snapshot,
     );
   }
 

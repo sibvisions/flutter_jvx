@@ -35,7 +35,7 @@ class Splash extends StatefulWidget {
 
   final SplashBuilder? splashBuilder;
   final AsyncSnapshot? snapshot;
-  final VoidCallback? returnToApps;
+  final VoidCallback? onReturn;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -45,7 +45,7 @@ class Splash extends StatefulWidget {
     super.key,
     this.splashBuilder,
     this.snapshot,
-    required this.returnToApps,
+    this.onReturn,
   });
 
   @override
@@ -66,7 +66,7 @@ class _SplashState extends State<Splash> {
   /// otherwise, returns false.
   Future<bool> _onBackPress() async {
     if ([null, ConnectionState.none, ConnectionState.done].contains(widget.snapshot?.connectionState)) {
-      widget.returnToApps?.call();
+      widget.onReturn?.call();
     }
     // We always handle it.
     return true;

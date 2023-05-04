@@ -128,7 +128,9 @@ class UiService implements IUiService {
   UiService.create();
 
   @override
-  FutureOr<void> clear(bool pFullClear) {
+  FutureOr<void> clear(bool pFullClear) async {
+    await JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.clear(pFullClear);
+
     _menuNotifier.value = const MenuModel();
     _componentSubscriptions.clear();
     _modelSubscriptions.clear();
@@ -274,10 +276,12 @@ class UiService implements IUiService {
   Future<void> routeToAppOverview() async {
     if (!checkFirstSplash(false)) return;
 
+    var stopApp = FlutterUI.of(FlutterUI.getEffectiveContext()!).stopApp();
+
     FlutterUI.clearHistory();
     FlutterUI.getBeamerDelegate().beamToReplacementNamed("/apps");
 
-    await FlutterUI.of(FlutterUI.getEffectiveContext()!).stopApp();
+    await stopApp;
   }
 
   @override

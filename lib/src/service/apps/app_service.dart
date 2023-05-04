@@ -19,7 +19,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 
 import '../../flutter_ui.dart';
-import '../../mask/jvx_overlay.dart';
 import '../../model/command/api/exit_command.dart';
 import '../../model/command/api/startup_command.dart';
 import '../api/i_api_service.dart';
@@ -169,8 +168,6 @@ class AppService {
     }
 
     await FlutterUI.clearServices(true);
-    JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.hideLoading();
-    JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.resetConnectionState(instant: true);
 
     if (resetAppName) {
       await ConfigController().updateCurrentApp(null);

@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -276,7 +278,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
               config.merge(const ServerConfig(isDefault: true)),
             );
             if (editedApp != null && mounted) {
-              FlutterUI.of(this.context).startApp(appId: editedApp.id, autostart: false);
+              unawaited(FlutterUI.of(this.context).startApp(appId: editedApp.id, autostart: false));
             }
           },
         );
