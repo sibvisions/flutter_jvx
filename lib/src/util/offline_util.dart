@@ -97,7 +97,7 @@ abstract class OfflineUtil {
         ),
       );
 
-      failedStep = "Opening server screen";
+      failedStep = "Preparing synchronization";
       await ICommandService().sendCommand(
         OpenScreenCommand(
           screenClassName: offlineWorkscreenClassName,
@@ -113,7 +113,7 @@ abstract class OfflineUtil {
 
       var dataBooks = IDataService().getDataBooks();
       for (DataBook dataBook in dataBooks.values) {
-        failedStep = "Preparing sync for ${dataBook.dataProvider}";
+        failedStep = "${FlutterUI.translate("Preparing")} ${dataBook.dataProvider}";
         FlutterUI.logAPI.i("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
         List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
 
@@ -127,12 +127,12 @@ abstract class OfflineUtil {
 
         dialogKey.currentState?.update(
             config: Config(
-          message: "${FlutterUI.translate("Syncing data")} ($dataBookCounter / ${dataBooks.length})",
+          message: "${FlutterUI.translate("Synchronizing data")} ($dataBookCounter / ${dataBooks.length})",
           progress: successfulSyncedPrimaryKeys.length,
           maxProgress: changedRowsPerDataBook,
         ));
 
-        failedStep = "Synchronizing ${dataBook.dataProvider}";
+        failedStep = "${FlutterUI.translate("Synchronizing")} ${dataBook.dataProvider}";
         successfulSync = await _handleInsertedRows(
               groupedRows[OfflineDatabase.ROW_STATE_INSERTED],
               dataBook,
@@ -158,25 +158,24 @@ abstract class OfflineUtil {
             successfulSync;
 
         FlutterUI.logAPI.i("Marking ${successfulSyncedPrimaryKeys.length} rows as synced");
-        failedStep = "Resetting states of ${dataBook.dataProvider}";
+        failedStep = "${FlutterUI.translate("Resetting")} ${dataBook.dataProvider}";
         await offlineApiRepository.resetStates(dataBook.dataProvider, pResetRows: successfulSyncedPrimaryKeys);
         successfulSyncedRows += successfulSyncedPrimaryKeys.length;
 
         dataBookCounter++;
       }
-
-      String syncResult = successfulSync ? "successful" : "failed";
       int failedRowCount = changedRowsSum - successfulSyncedRows;
 
-      FlutterUI.logAPI.i("Sync $syncResult: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
+      FlutterUI.logAPI.i(
+          "Sync ${successfulSync ? "successful" : "failed"}: Synced $successfulSyncedRows rows, $failedRowCount rows failed");
 
       failedStep =
-          "Finished sync ${successfulSync ? "successfully" : ""}: Synced $successfulSyncedRows rows, $failedRowCount rows failed";
+          "${FlutterUI.translate(successfulSync ? "Success" : "Failure")} - ${FlutterUI.translate("Synced")} $successfulSyncedRows/$failedRowCount";
       if (successfulSyncedRows > 0 || failedRowCount > 0) {
         dialogKey.currentState!.update(
             config: Config(
           message:
-              "Successfully synced $successfulSyncedRows rows${failedRowCount > 0 ? ".\n$failedRowCount rows failed to sync" : ""}",
+              "${FlutterUI.translate("Successfully synced")} $successfulSyncedRows ${FlutterUI.translate("rows")}${failedRowCount > 0 ? ".\n$failedRowCount ${FlutterUI.translate("rows failed to sync")}." : ""}",
           progress: 100,
           maxProgress: 100,
           contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
@@ -239,9 +238,11 @@ abstract class OfflineUtil {
         pIsDismissible: false,
         pBuilder: (context) => AlertDialog(
           title: Text(FlutterUI.translate("Offline Sync Error")),
-          content: Text(FlutterUI.translate("There was an error while trying to switch back online."
-              "\n\nFailed step: $failedStep."
-              "\nError: ${e.toString()}")),
+          content: Text(
+              "${FlutterUI.translate("There was a problem while switching from offline to online mode. Data remains untouched."
+                  "\nPlease check your connection and try again!")}"
+              "\n\n${FlutterUI.translate("Failed step")}: ${FlutterUI.translate(failedStep)}."
+              "\n${FlutterUI.translate("Error")}: ${e.toString()}"),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -543,8 +544,8 @@ abstract class OfflineUtil {
         pIsDismissible: false,
         pBuilder: (context) => AlertDialog(
           title: Text(FlutterUI.translate("Offline Init Error")),
-          content: Text(FlutterUI.translate("There was an error while trying to download data."
-              "\n${e.toString()}")),
+          content:
+              Text("${FlutterUI.translate("There was a problem while trying to download data.")}\n${e.toString()}"),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
