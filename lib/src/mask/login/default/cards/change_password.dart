@@ -138,7 +138,7 @@ class ChangePassword extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(FlutterUI.translate("Ok")),
+          child: Text(FlutterUI.translate("OK")),
         ),
       ],
     );

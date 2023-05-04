@@ -90,7 +90,7 @@ class ServerErrorDialog extends JVxDialog {
             IUiService().closeJVxDialog(this);
           },
           child: Text(
-            FlutterUI.translate("Ok"),
+            FlutterUI.translate("OK"),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

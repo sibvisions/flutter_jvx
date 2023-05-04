@@ -263,7 +263,7 @@ class _ManualCardState extends State<ManualCard> {
                           ),
                         ),
                         onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
-                        child: Text("${FlutterUI.translate("Reset password")}?"),
+                        child: Text(FlutterUI.translate("Reset password?")),
                       ),
                   ],
                 ),

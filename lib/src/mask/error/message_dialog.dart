@@ -117,7 +117,7 @@ class MessageDialog extends JVxDialog {
         buttonList.add(
           TextButton(
             onPressed: () => _pressButton(context, command.okComponentId!),
-            child: Text(command.okText ?? FlutterUI.translate("Ok")),
+            child: Text(command.okText ?? FlutterUI.translate("OK")),
           ),
         );
         break;

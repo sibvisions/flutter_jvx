@@ -16,6 +16,7 @@
 
 import 'package:collection/collection.dart';
 
+import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/change_selected_row_command.dart';
@@ -79,7 +80,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     } else {
       return [
         OpenErrorDialogCommand(
-          message: "Deleting row failed",
+          message: FlutterUI.translate("Deleting row failed"),
           reason: "Could not delete the row locally",
         )
       ];
@@ -129,7 +130,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     } else {
       return [
         OpenErrorDialogCommand(
-          message: "Setting new selected row failed",
+          message: FlutterUI.translate("Setting new selected row failed"),
           reason: "Setting new selected row failed",
         )
       ];

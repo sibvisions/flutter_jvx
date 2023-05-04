@@ -156,7 +156,7 @@ class _ManualCardState extends State<ManualCard> {
             child: TextButton(
               onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
               child: Text(
-                "${FlutterUI.translate("Reset password")}?",
+                FlutterUI.translate("Reset password?"),
                 overflow: TextOverflow.ellipsis,
               ),
             ),

@@ -248,7 +248,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                 TextButton(
                   onPressed: _handleOk,
                   child: Text(
-                    FlutterUI.translate("Ok"),
+                    FlutterUI.translate("OK"),
                   ),
                 ),
               ],

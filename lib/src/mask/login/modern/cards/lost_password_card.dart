@@ -98,7 +98,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                             onChanged: (_) => resetButton(),
                             decoration: InputDecoration(
                               icon: const FaIcon(FontAwesomeIcons.envelope),
-                              labelText: "${FlutterUI.translate("E-Mail")}/${FlutterUI.translate("Username")}",
+                              labelText: "${FlutterUI.translate("E-mail")}/${FlutterUI.translate("Username")}",
                               border: InputBorder.none,
                             ),
                           ),

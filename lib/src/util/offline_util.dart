@@ -182,7 +182,7 @@ abstract class OfflineUtil {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogKey.currentContext!).pop(),
-              child: Text(FlutterUI.translate("Ok")),
+              child: Text(FlutterUI.translate("OK")),
             ),
           ],
         ));
@@ -246,7 +246,7 @@ abstract class OfflineUtil {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(FlutterUI.translate("Ok")),
+              child: Text(FlutterUI.translate("OK")),
             ),
           ],
         ),
@@ -549,7 +549,7 @@ abstract class OfflineUtil {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(FlutterUI.translate("Ok")),
+              child: Text(FlutterUI.translate("OK")),
             ),
           ],
         ),
