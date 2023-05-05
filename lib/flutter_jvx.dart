@@ -94,6 +94,7 @@ export 'src/util/image/image_loader.dart';
 export 'src/util/jvx_colors.dart';
 export 'src/util/loading_handler/i_command_progress_handler.dart';
 export 'src/util/misc/debouncer.dart';
+export 'src/util/misc/dialog_result.dart';
 export 'src/util/parse_util.dart';
 export 'src/util/search_mixin.dart';
 export 'src/util/widgets/jvx_qr_scanner.dart';

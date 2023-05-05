@@ -34,6 +34,7 @@ import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/config_util.dart';
+import '../../util/misc/dialog_result.dart';
 import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
 import '../../util/search_mixin.dart';
@@ -101,11 +102,15 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   onPressed: () {
                     showSyncDialog().then(
                       (value) async {
-                        if (value == SyncDialogResult.DISCARD_CHANGES) {
-                          await OfflineUtil.discardChanges(context);
-                          OfflineUtil.initOnline();
-                        } else if (value == SyncDialogResult.YES) {
-                          OfflineUtil.initOnline();
+                        switch (value) {
+                          case DialogResult.YES:
+                            unawaited(OfflineUtil.initOnline());
+                            break;
+                          case DialogResult.DISCARD_CHANGES:
+                            await OfflineUtil.discardChanges(context);
+                            unawaited(OfflineUtil.initOnline());
+                            break;
+                          default:
                         }
                       },
                     );
@@ -245,7 +250,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     );
   }
 
-  Future<SyncDialogResult?> showSyncDialog() {
+  Future<DialogResult?> showSyncDialog() {
     return IUiService().openDialog(
       pBuilder: (context) => AlertDialog(
         title: Text(
@@ -268,19 +273,19 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                       style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
                       child: Text(FlutterUI.translate("Discard changes")),
                       onPressed: () async {
-                        SyncDialogResult? result = await IUiService().openDialog(
+                        DialogResult? result = await IUiService().openDialog(
                           pBuilder: (subContext) => AlertDialog(
                             title: Text(FlutterUI.translate("Discard offline changes")),
                             content: Text(FlutterUI.translate(
                                 "Are you sure you want to discard all the changes you made in offline mode?")),
                             actions: [
                               TextButton(
-                                onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.NO),
+                                onPressed: () => Navigator.of(subContext).pop(DialogResult.NO),
                                 child: Text(FlutterUI.translate("No")),
                               ),
                               TextButton(
                                 style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
-                                onPressed: () => Navigator.of(subContext).pop(SyncDialogResult.DISCARD_CHANGES),
+                                onPressed: () => Navigator.of(subContext).pop(DialogResult.DISCARD_CHANGES),
                                 child: Text(FlutterUI.translate("Yes")),
                               ),
                             ],
@@ -295,11 +300,11 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
               ),
               TextButton(
                 child: Text(FlutterUI.translate("No")),
-                onPressed: () => Navigator.of(context).pop(SyncDialogResult.NO),
+                onPressed: () => Navigator.of(context).pop(DialogResult.NO),
               ),
               TextButton(
                 child: Text(FlutterUI.translate("Yes")),
-                onPressed: () => Navigator.of(context).pop(SyncDialogResult.YES),
+                onPressed: () => Navigator.of(context).pop(DialogResult.YES),
               ),
             ],
           ),
@@ -392,10 +397,4 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
       ),
     );
   }
-}
-
-enum SyncDialogResult {
-  YES,
-  NO,
-  DISCARD_CHANGES,
 }
