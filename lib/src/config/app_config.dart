@@ -15,6 +15,7 @@
  */
 
 import '../service/apps/app.dart';
+import 'log/log_config.dart';
 import 'offline_config.dart';
 import 'predefined_server_config.dart';
 import 'ui_config.dart';
@@ -74,6 +75,7 @@ class AppConfig {
   /// * [App.parametersHidden]
   final bool? predefinedConfigsParametersHidden;
 
+  final LogConfig? logConfig;
   final UiConfig? uiConfig;
   final List<PredefinedServerConfig>? serverConfigs;
   final VersionConfig? versionConfig;
@@ -97,6 +99,7 @@ class AppConfig {
     this.forceSingleAppMode,
     this.predefinedConfigsLocked,
     this.predefinedConfigsParametersHidden,
+    this.logConfig,
     this.uiConfig,
     this.serverConfigs,
     this.versionConfig,
@@ -116,6 +119,7 @@ class AppConfig {
           forceSingleAppMode: false,
           predefinedConfigsLocked: true,
           predefinedConfigsParametersHidden: true,
+          logConfig: const LogConfig.empty(),
           uiConfig: const UiConfig.empty(),
           serverConfigs: const [],
           versionConfig: const VersionConfig.empty(),
@@ -135,6 +139,7 @@ class AppConfig {
           forceSingleAppMode: json['forceSingleAppMode'],
           predefinedConfigsLocked: json['serverConfigsLocked'],
           predefinedConfigsParametersHidden: json['serverConfigsParametersHidden'],
+          logConfig: json['logConfig'] != null ? LogConfig.fromJson(json['logConfig']) : null,
           uiConfig: json['uiConfig'] != null ? UiConfig.fromJson(json['uiConfig']) : null,
           serverConfigs:
               (json['serverConfigs'] as List<dynamic>?)?.map((e) => PredefinedServerConfig.fromJson(e)).toList(),
@@ -158,6 +163,7 @@ class AppConfig {
       forceSingleAppMode: other.forceSingleAppMode ?? forceSingleAppMode,
       predefinedConfigsLocked: other.predefinedConfigsLocked ?? predefinedConfigsLocked,
       predefinedConfigsParametersHidden: other.predefinedConfigsParametersHidden ?? predefinedConfigsParametersHidden,
+      logConfig: logConfig?.merge(other.logConfig) ?? other.logConfig,
       uiConfig: uiConfig?.merge(other.uiConfig) ?? other.uiConfig,
       serverConfigs: other.serverConfigs ?? serverConfigs,
       versionConfig: versionConfig?.merge(other.versionConfig) ?? other.versionConfig,

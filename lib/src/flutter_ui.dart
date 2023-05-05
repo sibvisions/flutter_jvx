@@ -98,13 +98,25 @@ class FlutterUI extends StatefulWidget {
   /// Request Collector
   static final HttpBucket httpBucket = HttpBucket();
 
-  /// The log level in the debug mode.
-  static const Level debugLogLevel = Level.info;
+  /// The default log level that is used before the config has been loaded.
+  static const Level _defaultLogLevel = kDebugMode ? Level.info : Level.warning;
+
+  /// The log filter used by [log].
+  static final LogFilter _generalLogFilter = JVxFilter();
+
+  /// The log filter used by [logAPI].
+  static final LogFilter _apiLogFilter = JVxFilter();
+
+  /// The log filter used by [logCommand].
+  static final LogFilter _commandLogFilter = JVxFilter();
+
+  /// The log filter used by [logUI].
+  static final LogFilter _uiLogFilter = JVxFilter();
 
   /// General logger
   static final Logger log = Logger(
-    level: kDebugMode ? debugLogLevel : Level.warning,
-    filter: JVxFilter(),
+    level: _defaultLogLevel,
+    filter: _generalLogFilter,
     printer: JVxPrettyPrinter(
       prefix: "GENERAL",
       printTime: true,
@@ -115,8 +127,8 @@ class FlutterUI extends StatefulWidget {
 
   /// API logger
   static final Logger logAPI = Logger(
-    level: kDebugMode ? debugLogLevel : Level.warning,
-    filter: JVxFilter(),
+    level: _defaultLogLevel,
+    filter: _apiLogFilter,
     printer: JVxPrettyPrinter(
       prefix: "API",
       printTime: true,
@@ -127,8 +139,8 @@ class FlutterUI extends StatefulWidget {
 
   /// Command logger
   static final Logger logCommand = Logger(
-    level: kDebugMode ? debugLogLevel : Level.warning,
-    filter: JVxFilter(),
+    level: _defaultLogLevel,
+    filter: _commandLogFilter,
     printer: JVxPrettyPrinter(
       prefix: "COMMAND",
       printTime: true,
@@ -139,8 +151,8 @@ class FlutterUI extends StatefulWidget {
 
   /// UI logger
   static final Logger logUI = Logger(
-    level: kDebugMode ? debugLogLevel : Level.warning,
-    filter: JVxFilter(),
+    level: _defaultLogLevel,
+    filter: _uiLogFilter,
     printer: JVxPrettyPrinter(
       prefix: "UI",
       printTime: true,
@@ -346,6 +358,12 @@ class FlutterUI extends StatefulWidget {
     appConfig = appConfig.merge(_extractURIConfigParameters(queryParameters));
 
     await configController.loadConfig(appConfig, devConfig != null);
+
+    _generalLogFilter.level = appConfig.logConfig?.levels?.general ?? _defaultLogLevel;
+    _apiLogFilter.level = appConfig.logConfig?.levels?.api ?? _defaultLogLevel;
+    _commandLogFilter.level = appConfig.logConfig?.levels?.command ?? _defaultLogLevel;
+    _uiLogFilter.level = appConfig.logConfig?.levels?.ui ?? _defaultLogLevel;
+
     await AppService().removeObsoletePredefinedApps();
 
     // Layout

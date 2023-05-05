@@ -10,6 +10,14 @@
   "forceSingleAppMode": false,
   "serverConfigsLocked": false,
   "serverConfigsParametersHidden": false,
+  "logConfig": {
+    "levels": {
+      "general": "info",
+      "api": "info",
+      "command": "info",
+      "ui": "info"
+    }
+  },
   "uiConfig": {
     "showRememberMe": true,
     "rememberMeChecked": true
