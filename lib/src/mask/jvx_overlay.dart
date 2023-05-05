@@ -252,8 +252,8 @@ class JVxOverlayState extends State<JVxOverlay> {
                       bottom: 25,
                       child: Align(
                         alignment: Alignment.center,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 130),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: Opacity(
                             opacity: 0.9,
                             child: Material(
@@ -280,7 +280,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                                           color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                       ),
-                                      Expanded(
+                                      Flexible(
                                         child: Text(
                                           FlutterUI.translate("Exit App"),
                                           textAlign: TextAlign.center,
