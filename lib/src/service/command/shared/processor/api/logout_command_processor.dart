@@ -20,15 +20,13 @@ import '../../../../../model/command/api/logout_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_logout_request.dart';
 import '../../../../api/i_api_service.dart';
-import '../../../../config/config_controller.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class LogoutCommandProcessor implements ICommandProcessor<LogoutCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LogoutCommand command) async {
-    await ConfigController().updateUserInfo(pUserInfo: null, pJson: null);
-    await ConfigController().updateAuthKey(null);
-    await ConfigController().updatePassword(null);
+    await IUiService().logout();
 
     return IApiService().sendRequest(ApiLogoutRequest());
   }

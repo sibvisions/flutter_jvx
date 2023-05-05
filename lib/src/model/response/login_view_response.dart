@@ -20,7 +20,11 @@ import '../../service/api/shared/api_object_property.dart';
 import '../command/api/login_command.dart';
 import 'api_response.dart';
 
-/// Response to indicate to display the login screen
+/// Response to indicate to display the login screen.
+///
+/// This can either be due to:
+/// * A login attempt failed.
+/// * The server logged us out.
 class LoginViewResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

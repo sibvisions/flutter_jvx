@@ -25,6 +25,7 @@ import '../../custom/custom_screen.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/frame_dialog.dart';
 import '../../model/command/api/login_command.dart';
+import '../../model/command/api/logout_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
@@ -130,6 +131,9 @@ abstract class IUiService {
     BuildContext? context,
     bool pIsDismissible = true,
   });
+
+  /// Clears all local user data, to trigger a server logout use [LogoutCommand] instead.
+  Future<void> logout();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Meta data management
