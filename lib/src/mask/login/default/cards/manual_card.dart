@@ -173,6 +173,13 @@ class _ManualCardState extends State<ManualCard> {
     );
   }
 
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   void resetButton() {
     setState(() => progressButtonState = ButtonState.idle);
   }

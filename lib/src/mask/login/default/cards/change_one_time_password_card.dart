@@ -23,7 +23,19 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
 
-class ChangeOneTimePasswordCard extends StatelessWidget {
+class ChangeOneTimePasswordCard extends StatefulWidget {
+  final String? errorMessage;
+
+  const ChangeOneTimePasswordCard({
+    super.key,
+    this.errorMessage,
+  });
+
+  @override
+  State<ChangeOneTimePasswordCard> createState() => _ChangeOneTimePasswordCardState();
+}
+
+class _ChangeOneTimePasswordCardState extends State<ChangeOneTimePasswordCard> {
   /// Controller for username text field
   final TextEditingController userNameController = TextEditingController();
 
@@ -35,13 +47,6 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
 
   /// Controller for confirmPassword text field
   final TextEditingController newPasswordConfController = TextEditingController();
-
-  final String? errorMessage;
-
-  ChangeOneTimePasswordCard({
-    super.key,
-    this.errorMessage,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +64,8 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           FlutterUI.translate("Please enter your one-time password and set a new password."),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        if (errorMessage != null) DefaultLogin.buildErrorMessage(context, errorMessage!),
-        if (errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (widget.errorMessage != null) DefaultLogin.buildErrorMessage(context, widget.errorMessage!),
+        if (widget.errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
           textInputAction: TextInputAction.next,
           controller: userNameController,
@@ -103,6 +108,15 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
         _createBottomRow(),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    oneTimeController.dispose();
+    newPasswordController.dispose();
+    newPasswordConfController.dispose();
+    super.dispose();
   }
 
   Widget _createBottomRow() {

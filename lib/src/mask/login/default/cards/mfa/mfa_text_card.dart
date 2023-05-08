@@ -67,6 +67,12 @@ class _MFATextCardState extends State<MFATextCard> {
     );
   }
 
+  @override
+  void dispose() {
+    codeController.dispose();
+    super.dispose();
+  }
+
   Widget _createBottomRow() {
     Widget okButton = ElevatedButton(
       onPressed: _onLoginPressed,

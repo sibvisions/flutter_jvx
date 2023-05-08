@@ -25,26 +25,21 @@ import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
 
-class ChangePassword extends StatelessWidget {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController repeatPasswordController = TextEditingController();
-
+class ChangePassword extends StatefulWidget {
   final String? username;
   final String? password;
   final String? errorMessage;
 
   final bool asDialog;
 
-  ChangePassword({
+  const ChangePassword({
     super.key,
     this.username,
     this.password,
     this.errorMessage,
   }) : asDialog = false;
 
-  ChangePassword.asDialog({
+  const ChangePassword.asDialog({
     super.key,
     this.username,
     this.password,
@@ -52,23 +47,33 @@ class ChangePassword extends StatelessWidget {
   }) : asDialog = true;
 
   @override
+  State<ChangePassword> createState() => _ChangePasswordState();
+}
+
+class _ChangePasswordState extends State<ChangePassword> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController repeatPasswordController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    usernameController.text = username ?? "";
-    passwordController.text = password ?? "";
+    usernameController.text = widget.username ?? "";
+    passwordController.text = widget.password ?? "";
 
     Widget body = Column(
       children: [
-        if (!asDialog)
+        if (!widget.asDialog)
           Text(
             FlutterUI.translate("Change password"),
             style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
-        if (!asDialog) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (!widget.asDialog) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         Text(FlutterUI.translate("Please enter and confirm the new password.")),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
-        if (errorMessage != null) DefaultLogin.buildErrorMessage(context, errorMessage!),
-        if (errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (widget.errorMessage != null) DefaultLogin.buildErrorMessage(context, widget.errorMessage!),
+        if (widget.errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
           enabled: false,
           controller: usernameController,
@@ -79,7 +84,7 @@ class ChangePassword extends StatelessWidget {
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
-          enabled: password == null,
+          enabled: widget.password == null,
           obscureText: true,
           controller: passwordController,
           textInputAction: TextInputAction.next,
@@ -109,7 +114,7 @@ class ChangePassword extends StatelessWidget {
             hintText: FlutterUI.translate("Confirm Password"),
           ),
         ),
-        if (!asDialog)
+        if (!widget.asDialog)
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
             child: Row(
@@ -120,7 +125,7 @@ class ChangePassword extends StatelessWidget {
       ],
     );
 
-    if (asDialog) {
+    if (widget.asDialog) {
       return AlertDialog(
         title: Text(
           FlutterUI.translate("Change password"),
@@ -135,6 +140,15 @@ class ChangePassword extends StatelessWidget {
     } else {
       return body;
     }
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    newPasswordController.dispose();
+    repeatPasswordController.dispose();
+    super.dispose();
   }
 
   Widget passwordError(BuildContext context) {
@@ -160,7 +174,7 @@ class ChangePassword extends StatelessWidget {
       ));
     }
 
-    if (!asDialog) {
+    if (!widget.asDialog) {
       widgetList.add(ElevatedButton(
         onPressed: _submitNewPassword,
         child: Text(FlutterUI.translate("OK")),

@@ -127,6 +127,12 @@ class _MFATextCardState extends State<MFATextCard> {
     );
   }
 
+  @override
+  void dispose() {
+    codeController.dispose();
+    super.dispose();
+  }
+
   void _onCancelPressed() {
     LoginPage.cancelLogin().catchError((error, stackTrace) {
       setState(() => progressButtonState = ButtonState.fail);

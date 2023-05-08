@@ -187,6 +187,12 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
     );
   }
 
+  @override
+  void dispose() {
+    identifierController.dispose();
+    super.dispose();
+  }
+
   void resetButton() {
     setState(() => progressButtonState = ButtonState.idle);
   }
