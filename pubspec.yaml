@@ -39,7 +39,7 @@ dependencies:
   # Device Identification
   package_info_plus: ^3.0.1
   device_info_plus: ^8.0.0
-  android_id: ^0.2.0
+  android_id: ^0.3.2
 
   # Util
   logger: ^1.1.0
@@ -107,7 +107,7 @@ dependencies:
       ref: fix_flutter3.0
   gauges: ^1.0.0
   flutter_keyboard_visibility: ^5.4.0
-  flutter_slidable: ^2.0.0
+  flutter_slidable: ^3.0.0
   action_slider: ^0.6.1
   webview_flutter: ^4.0.2
   card_loading: ^0.3.0
