@@ -534,6 +534,21 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       ),
       transitionDelegate:
           (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate()),
+      guards: [
+        // Guards /apps by beaming to /menu if an app is active
+        BeamGuard(
+          pathPatterns: ["/", "/apps"],
+          check: (context, location) => ConfigController().currentApp.value == null || exitFuture != null,
+          beamToNamed: (origin, target) => "/menu",
+        ),
+        // Guards everything except /apps and /settings by beaming to /apps if there is no active app
+        BeamGuard(
+          guardNonMatching: true,
+          pathPatterns: ["/", "/apps", "/settings"],
+          check: (context, location) => ConfigController().currentApp.value != null && exitFuture == null,
+          beamToNamed: (origin, target) => "/apps",
+        ),
+      ],
     );
 
     WidgetsBinding.instance.addObserver(this);
