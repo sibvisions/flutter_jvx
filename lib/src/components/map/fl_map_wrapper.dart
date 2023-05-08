@@ -17,7 +17,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../model/command/api/set_values_command.dart';
@@ -196,29 +195,52 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   }
 
   Marker getMarker(String? image, LatLng point) {
+    const double markerSize = 64;
+
     Widget img;
     if (image != null) {
       img = ImageLoader.loadImage(
         image,
-        pWantedSize: const Size(64, 64),
+        pWantedSize: const Size.square(markerSize),
       );
     } else if (model.markerImage != null) {
       img = ImageLoader.loadImage(
         model.markerImage!,
-        pWantedSize: const Size(64, 64),
+        pWantedSize: const Size.square(markerSize),
       );
     } else {
-      img = FaIcon(
-        FontAwesomeIcons.locationPin,
-        size: 64,
-        color: Theme.of(context).colorScheme.primary,
+      // OverflowBox is used to remove the spacing between the icon and the actual point
+      return Marker(
+        point: point,
+        width: markerSize,
+        height: markerSize,
+        anchorPos: AnchorPos.exactly(Anchor(markerSize / 2, 0)),
+        rotateAlignment: Alignment.bottomCenter,
+        builder: (_) => Align(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            height: markerSize - 5,
+            width: markerSize,
+            child: OverflowBox(
+              minHeight: markerSize,
+              maxHeight: markerSize,
+              alignment: Alignment.topCenter,
+              child: Icon(
+                Icons.location_pin,
+                size: markerSize,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+        ),
       );
     }
-    return (Marker(
+
+    return Marker(
       point: point,
-      width: 64,
-      height: 64,
+      width: markerSize,
+      height: markerSize,
       builder: (_) => img,
-    ));
+    );
   }
 }
