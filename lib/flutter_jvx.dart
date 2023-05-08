@@ -97,7 +97,7 @@ export 'src/util/misc/debouncer.dart';
 export 'src/util/misc/dialog_result.dart';
 export 'src/util/parse_util.dart';
 export 'src/util/search_mixin.dart';
-export 'src/util/widgets/jvx_qr_scanner.dart';
+export 'src/util/widgets/jvx_scanner.dart';
 export 'src/util/widgets/jvx_webview.dart';
 export 'src/util/widgets/multi_value_listenable_builder.dart';
 export 'src/util/widgets/progress/progress_button.dart';

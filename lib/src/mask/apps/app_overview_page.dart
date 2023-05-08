@@ -31,7 +31,7 @@ import '../../service/config/config_controller.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
-import '../../util/widgets/jvx_qr_scanner.dart';
+import '../../util/widgets/jvx_scanner.dart';
 import '../camera/qr_parser.dart';
 import 'app_edit_dialog.dart';
 import 'app_item.dart';
@@ -62,7 +62,7 @@ class AppOverviewPage extends StatefulWidget {
   }) {
     return IUiService().openDialog(
       context: context,
-      pBuilder: (context) => JVxQRScanner(
+      pBuilder: (context) => JVxScanner(
         allowMultiScan: allowMultiScan,
         callback: (barcodes) async {
           for (var barcode in barcodes) {
