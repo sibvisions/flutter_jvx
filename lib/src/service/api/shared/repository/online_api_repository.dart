@@ -274,8 +274,8 @@ class OnlineApiRepository extends IRepository {
     await super.stop();
 
     // Cancel reconnects
-    _cancelHTTPReconnect();
     await stopWebSocket();
+    _cancelHTTPReconnect();
     resetConnectedStatus(instant: true);
 
     _everConnected = false;
