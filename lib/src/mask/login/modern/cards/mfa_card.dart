@@ -20,17 +20,20 @@ import '../../../../flutter_ui.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../login_page.dart';
+import '../modern_login.dart';
 
 class MFACard extends StatelessWidget {
   final String subTitle;
   final VoidCallback? onCancel;
   final Widget child;
+  final String? errorMessage;
 
   const MFACard({
     super.key,
     this.subTitle = "Waiting for verification.",
     this.onCancel,
     required this.child,
+    this.errorMessage,
   });
 
   @override
@@ -61,6 +64,11 @@ class MFACard extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    if (errorMessage != null)
+                      ModernLogin.buildErrorMessage(
+                        context,
+                        errorMessage!,
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: Text(

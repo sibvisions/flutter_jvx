@@ -25,17 +25,20 @@ import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
+import '../modern_login.dart';
 
 class ChangePasswordCard extends StatefulWidget {
   final bool useOTP;
   final String? username;
   final String? password;
+  final String? errorMessage;
 
   const ChangePasswordCard({
     super.key,
     required this.useOTP,
     this.username,
     this.password,
+    this.errorMessage,
   });
 
   @override
@@ -90,6 +93,11 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    if (widget.errorMessage != null)
+                      ModernLogin.buildErrorMessage(
+                        context,
+                        widget.errorMessage!,
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: Align(

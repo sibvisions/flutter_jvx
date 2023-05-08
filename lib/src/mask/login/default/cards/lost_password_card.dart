@@ -21,13 +21,19 @@ import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
+import '../default_login.dart';
 
 /// Card to be displayed in app-login for resetting the password
 class LostPasswordCard extends StatelessWidget {
+  final String? errorMessage;
+
   /// Controller for Email/Username text field
   final TextEditingController identifierController = TextEditingController();
 
-  LostPasswordCard({super.key});
+  LostPasswordCard({
+    super.key,
+    this.errorMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +51,8 @@ class LostPasswordCard extends StatelessWidget {
           FlutterUI.translate("Please enter your e-mail address."),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (errorMessage != null) DefaultLogin.buildErrorMessage(context, errorMessage!),
+        if (errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
           textInputAction: TextInputAction.done,
           controller: identifierController,

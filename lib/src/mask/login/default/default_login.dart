@@ -154,29 +154,63 @@ class DefaultLogin extends StatelessWidget implements Login {
     );
   }
 
+  /// Returns an error widget depending on the [LoginViewResponse.errorMessage].
+  static Widget buildErrorMessage(BuildContext context, String errorMessage) {
+    return Padding(
+      padding: const EdgeInsets.all(0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Icon(
+              Icons.warning,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+          Flexible(
+            child: Text(
+              errorMessage,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget buildCard(BuildContext context, LoginMode? mode) {
+    Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
     Widget card;
     switch (mode) {
       case LoginMode.LostPassword:
-        card = LostPasswordCard();
+        card = LostPasswordCard(
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+        );
         break;
       case LoginMode.ChangePassword:
-        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = ChangePassword(
           username: dataMap?[ApiObjectProperty.username],
           password: dataMap?[ApiObjectProperty.password],
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
       case LoginMode.ChangeOneTimePassword:
-        card = ChangeOneTimePasswordCard();
+        card = ChangeOneTimePasswordCard(
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+        );
         break;
       case LoginMode.MFTextInput:
         // Is repeatedly called (password is missing on repeated calls)
-        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = MFATextCard(
           username: dataMap?[ApiObjectProperty.username],
           password: dataMap?[ApiObjectProperty.password],
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
       case LoginMode.MFWait:
@@ -186,20 +220,23 @@ class DefaultLogin extends StatelessWidget implements Login {
           timeout: dataMap?[ApiObjectProperty.timeout],
           timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
           confirmationCode: dataMap?[ApiObjectProperty.confirmationCode],
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
       case LoginMode.MFURL:
         // Is repeatedly called
-        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = MFAUrlCard(
           timeout: dataMap?[ApiObjectProperty.timeout],
           timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
           link: dataMap?[ApiObjectProperty.link],
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
       case LoginMode.Manual:
       default:
-        card = const ManualCard();
+        card = ManualCard(
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+        );
         break;
     }
     return card;

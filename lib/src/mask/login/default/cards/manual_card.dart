@@ -29,10 +29,16 @@ import '../../../apps/app_overview_page.dart';
 import '../../../state/app_style.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
+import '../default_login.dart';
 import '../remember_me_checkbox.dart';
 
 class ManualCard extends StatefulWidget {
-  const ManualCard({super.key});
+  final String? errorMessage;
+
+  const ManualCard({
+    super.key,
+    this.errorMessage,
+  });
 
   @override
   State<ManualCard> createState() => _ManualCardState();
@@ -77,6 +83,7 @@ class _ManualCardState extends State<ManualCard> {
           textAlign: TextAlign.center,
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (widget.errorMessage != null) DefaultLogin.buildErrorMessage(context, widget.errorMessage!),
         TextField(
           textInputAction: TextInputAction.next,
           onTap: resetButton,

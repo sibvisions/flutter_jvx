@@ -25,12 +25,14 @@ class MFAUrlCard extends StatefulWidget {
   final int? timeout;
   final bool? timeoutReset;
   final Link? link;
+  final String? errorMessage;
 
   const MFAUrlCard({
     super.key,
     this.timeout,
     this.timeoutReset,
     this.link,
+    this.errorMessage,
   });
 
   @override
@@ -57,6 +59,7 @@ class _MFAUrlCardState extends State<MFAUrlCard> {
   @override
   Widget build(BuildContext context) {
     return MFACard(
+      errorMessage: widget.errorMessage,
       child: Column(
         children: [
           Column(

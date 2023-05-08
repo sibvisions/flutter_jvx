@@ -23,6 +23,7 @@ import '../../../../service/command/i_command_service.dart';
 import '../../../../service/config/config_controller.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
+import '../default_login.dart';
 
 class ChangePassword extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
@@ -32,6 +33,7 @@ class ChangePassword extends StatelessWidget {
 
   final String? username;
   final String? password;
+  final String? errorMessage;
 
   final bool asDialog;
 
@@ -39,12 +41,14 @@ class ChangePassword extends StatelessWidget {
     super.key,
     this.username,
     this.password,
+    this.errorMessage,
   }) : asDialog = false;
 
   ChangePassword.asDialog({
     super.key,
     this.username,
     this.password,
+    this.errorMessage,
   }) : asDialog = true;
 
   @override
@@ -63,6 +67,8 @@ class ChangePassword extends StatelessWidget {
         if (!asDialog) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         Text(FlutterUI.translate("Please enter and confirm the new password.")),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (errorMessage != null) DefaultLogin.buildErrorMessage(context, errorMessage!),
+        if (errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
           enabled: false,
           controller: usernameController,

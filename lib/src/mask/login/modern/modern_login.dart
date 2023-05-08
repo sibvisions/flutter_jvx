@@ -226,28 +226,66 @@ class ModernLogin extends StatelessWidget implements Login {
     );
   }
 
+  /// Returns an error widget depending on the [LoginViewResponse.errorMessage].
+  static Widget buildErrorMessage(BuildContext context, String errorMessage) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Material(
+        color: Theme.of(context).colorScheme.error,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: Icon(
+                  Icons.warning,
+                  color: Theme.of(context).colorScheme.onError,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  errorMessage,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onError,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget buildCard(BuildContext context, LoginMode? mode) {
+    Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
     Widget card;
     switch (mode) {
       case LoginMode.LostPassword:
-        card = const LostPasswordCard();
+        card = LostPasswordCard(
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+        );
         break;
       case LoginMode.ChangePassword:
       case LoginMode.ChangeOneTimePassword:
-        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = ChangePasswordCard(
           useOTP: mode == LoginMode.ChangeOneTimePassword,
           username: dataMap?[ApiObjectProperty.username],
           password: dataMap?[ApiObjectProperty.password],
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
       case LoginMode.MFTextInput:
         // Is repeatedly called (password is missing on repeated calls)
-        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = MFATextCard(
           username: dataMap?[ApiObjectProperty.username],
           password: dataMap?[ApiObjectProperty.password],
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
       case LoginMode.MFWait:
@@ -257,21 +295,25 @@ class ModernLogin extends StatelessWidget implements Login {
           timeout: dataMap?[ApiObjectProperty.timeout],
           timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
           confirmationCode: dataMap?[ApiObjectProperty.confirmationCode],
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
       case LoginMode.MFURL:
         // Is repeatedly called
-        Map<String, dynamic>? dataMap = context.currentBeamLocation.data as Map<String, dynamic>?;
         card = MFAUrlCard(
           timeout: dataMap?[ApiObjectProperty.timeout],
           timeoutReset: dataMap?[ApiObjectProperty.timeoutReset],
           link: dataMap?[ApiObjectProperty.link],
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
         );
         break;
       case LoginMode.Manual:
       default:
         // No need for ValueListenableBuilder, as this in the same LayoutBuilder
-        card = ManualCard(showSettings: showSettingsInCard.value);
+        card = ManualCard(
+          showSettings: showSettingsInCard.value,
+          errorMessage: dataMap?[ApiObjectProperty.errorMessage],
+        );
         break;
     }
     return card;

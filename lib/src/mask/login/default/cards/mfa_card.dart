@@ -19,11 +19,13 @@ import 'package:flutter/material.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
+import '../default_login.dart';
 
 class MFACard extends StatelessWidget {
   final String subTitle;
   final bool showCancel;
   final VoidCallback? onCancel;
+  final String? errorMessage;
   final Widget child;
 
   const MFACard({
@@ -31,6 +33,7 @@ class MFACard extends StatelessWidget {
     this.subTitle = "Waiting for verification.",
     this.showCancel = true,
     this.onCancel,
+    this.errorMessage,
     required this.child,
   });
 
@@ -49,6 +52,8 @@ class MFACard extends StatelessWidget {
         Text(
           FlutterUI.translate(subTitle),
         ),
+        if (errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (errorMessage != null) DefaultLogin.buildErrorMessage(context, errorMessage!),
         Padding(
           padding: EdgeInsets.only(top: 20.0, bottom: (showCancel ? 8.0 : 0.0)),
           child: child,

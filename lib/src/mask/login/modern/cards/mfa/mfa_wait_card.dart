@@ -24,12 +24,14 @@ class MFAWaitCard extends StatefulWidget {
   final int? timeout;
   final bool? timeoutReset;
   final String? confirmationCode;
+  final String? errorMessage;
 
   const MFAWaitCard({
     super.key,
     this.timeout,
     this.timeoutReset,
     this.confirmationCode,
+    this.errorMessage,
   });
 
   @override
@@ -56,6 +58,7 @@ class _MFAWaitCardState extends State<MFAWaitCard> {
   @override
   Widget build(BuildContext context) {
     return MFACard(
+      errorMessage: widget.errorMessage,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

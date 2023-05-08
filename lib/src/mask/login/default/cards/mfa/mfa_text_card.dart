@@ -25,11 +25,13 @@ import '../mfa_card.dart';
 class MFATextCard extends StatefulWidget {
   final String? username;
   final String? password;
+  final String? errorMessage;
 
   const MFATextCard({
     super.key,
     required this.username,
     required this.password,
+    this.errorMessage,
   });
 
   @override
@@ -44,6 +46,7 @@ class _MFATextCardState extends State<MFATextCard> {
     return MFACard(
       subTitle: "Please enter your confirmation code.",
       showCancel: false,
+      errorMessage: widget.errorMessage,
       child: Column(
         children: [
           TextField(

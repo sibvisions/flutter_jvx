@@ -28,13 +28,16 @@ import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../apps/app_overview_page.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
+import '../modern_login.dart';
 
 class ManualCard extends StatefulWidget {
   final bool showSettings;
+  final String? errorMessage;
 
   const ManualCard({
     super.key,
     required this.showSettings,
+    this.errorMessage,
   });
 
   static bool showSettingsInCard(BoxConstraints constraints) =>
@@ -94,6 +97,11 @@ class _ManualCardState extends State<ManualCard> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    if (widget.errorMessage != null)
+                      ModernLogin.buildErrorMessage(
+                        context,
+                        widget.errorMessage!,
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: Row(

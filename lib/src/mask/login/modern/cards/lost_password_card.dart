@@ -25,9 +25,15 @@ import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
+import '../modern_login.dart';
 
 class LostPasswordCard extends StatefulWidget {
-  const LostPasswordCard({super.key});
+  final String? errorMessage;
+
+  const LostPasswordCard({
+    super.key,
+    this.errorMessage,
+  });
 
   @override
   State<LostPasswordCard> createState() => _LostPasswordCardState();
@@ -64,6 +70,11 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    if (widget.errorMessage != null)
+                      ModernLogin.buildErrorMessage(
+                        context,
+                        widget.errorMessage!,
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: Align(

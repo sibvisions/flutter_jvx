@@ -21,6 +21,7 @@ import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
+import '../default_login.dart';
 
 class ChangeOneTimePasswordCard extends StatelessWidget {
   /// Controller for username text field
@@ -35,7 +36,12 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
   /// Controller for confirmPassword text field
   final TextEditingController newPasswordConfController = TextEditingController();
 
-  ChangeOneTimePasswordCard({super.key});
+  final String? errorMessage;
+
+  ChangeOneTimePasswordCard({
+    super.key,
+    this.errorMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +59,8 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
           FlutterUI.translate("Please enter your one-time password and set a new password."),
         ),
         const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+        if (errorMessage != null) DefaultLogin.buildErrorMessage(context, errorMessage!),
+        if (errorMessage != null) const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
         TextField(
           textInputAction: TextInputAction.next,
           controller: userNameController,
