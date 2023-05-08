@@ -27,7 +27,7 @@ import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
-class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
+class StartupCommandProcessor implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
@@ -37,7 +37,7 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       IUiService().closeJVxDialogs();
     }
 
-    ApiStartUpRequest startUpRequest = ApiStartUpRequest(
+    ApiStartupRequest startupRequest = ApiStartupRequest(
       baseUrl: ConfigController().baseUrl.value!.toString(),
       requestUri: kIsWeb ? Uri.base.toString() : null,
       appMode: "full",
@@ -59,9 +59,9 @@ class StartUpCommandProcessor implements ICommandProcessor<StartupCommand> {
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
       serverVersion: FlutterUI.supportedServerVersion,
-      customStartUpProperties: ConfigController().getCustomStartUpProperties(),
+      customProperties: ConfigController().getCustomStartupProperties(),
     );
 
-    return IApiService().sendRequest(startUpRequest);
+    return IApiService().sendRequest(startupRequest);
   }
 }

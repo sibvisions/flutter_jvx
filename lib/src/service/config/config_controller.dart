@@ -55,7 +55,7 @@ class ConfigController {
   /// Map of all active callbacks.
   final Map<String, List<Function>> _callbacks = {};
 
-  final Map<String, dynamic> _customStartUpProperties = {};
+  final Map<String, dynamic> _customStartupProperties = {};
 
   AppConfig? _appConfig;
 
@@ -536,7 +536,7 @@ class ConfigController {
   /// Whether this app config is hidden.
   ValueListenable<bool?> get parametersHidden => _parametersHidden;
 
-  /// Retrieves the last saved authKey, which will be used on [ApiStartUpRequest].
+  /// Retrieves the last saved authKey, which will be used on [ApiStartupRequest].
   ValueListenable<String?> get authKey => _authKey;
 
   /// Sets the authKey.
@@ -629,7 +629,7 @@ class ConfigController {
   /// Returns the timezone which should be used to calculate dates/times shown to the user.
   ///
   /// This is either:
-  /// * The server defined timezone (which in most cases the same as we send in the [ApiStartUpRequest]).
+  /// * The server defined timezone (which in most cases the same as we send in the [ApiStartupRequest]).
   /// * The platform timezone (determined by [getPlatformTimeZone]).
   String getTimezone() {
     return applicationTimeZone.value ?? getPlatformTimeZone()!;
@@ -699,20 +699,20 @@ class ConfigController {
 
   // ------------------------------
 
-  /// Returns a map of all custom parameters which are sent on every [ApiStartUpRequest].
+  /// Returns a map of all custom parameters which are sent on every [ApiStartupRequest].
   ///
   /// See also:
-  /// * [ApiStartUpRequest]
-  Map<String, dynamic> getCustomStartUpProperties() {
-    return _customStartUpProperties;
+  /// * [ApiStartupRequest]
+  Map<String, dynamic> getCustomStartupProperties() {
+    return _customStartupProperties;
   }
 
   /// Set a custom startup parameter.
   ///
   /// See also:
-  /// * [getCustomStartUpProperties]
-  void updateCustomStartUpProperties(String pKey, dynamic pValue) {
-    _customStartUpProperties[pKey] = pValue;
+  /// * [getCustomStartupProperties]
+  void updateCustomStartupProperties(String pKey, dynamic pValue) {
+    _customStartupProperties[pKey] = pValue;
   }
 
   /// Register a callback that will be called when the locally saved images change.

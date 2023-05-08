@@ -112,7 +112,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Processes [StartupCommand]
-  final ICommandProcessor _startUpProcessorCommand = StartUpCommandProcessor();
+  final ICommandProcessor _startupProcessorCommand = StartupCommandProcessor();
 
   /// Processes [LoginCommand]
   final ICommandProcessor _loginCommandProcessor = LoginCommandProcessor();
@@ -225,7 +225,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   Future<List<BaseCommand>> processCommand(ApiCommand command) async {
     // Switch-Case doesn't work with types
     if (command is StartupCommand) {
-      return _startUpProcessorCommand.processCommand(command);
+      return _startupProcessorCommand.processCommand(command);
     } else if (command is LoginCommand) {
       return _loginCommandProcessor.processCommand(command);
     } else if (command is CancelLoginCommand) {

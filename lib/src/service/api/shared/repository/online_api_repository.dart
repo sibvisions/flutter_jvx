@@ -136,7 +136,7 @@ class OnlineApiRepository extends IRepository {
 
   /// Map of all remote request mapped to their route
   static final Map<Type, APIRoute Function(ApiRequest pRequest)> uriMap = {
-    ApiStartUpRequest: (_) => APIRoute.POST_STARTUP,
+    ApiStartupRequest: (_) => APIRoute.POST_STARTUP,
     ApiLoginRequest: (_) => APIRoute.POST_LOGIN,
     ApiCancelLoginRequest: (_) => APIRoute.POST_CANCEL_LOGIN,
     ApiCloseTabRequest: (_) => APIRoute.POST_CLOSE_TAB,
@@ -607,7 +607,7 @@ class OnlineApiRepository extends IRepository {
         var body = await _decodeBody(responseStream.split());
         logResponse(clientRequest, response, body);
         FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
-        if (response.statusCode == 400 && pRequest is ApiStartUpRequest) {
+        if (response.statusCode == 400 && pRequest is ApiStartupRequest) {
           APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
           String routeString = route!.route.replaceAll("api", "");
           throw InvalidServerResponseException("Server doesn't support '$routeString'.", response.statusCode);

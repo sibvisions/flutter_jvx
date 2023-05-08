@@ -363,7 +363,7 @@ class App {
     return _id == null ? false : _isPredefined(_id!);
   }
 
-  /// Whether this config contains enough information to send a [ApiStartUpRequest].
+  /// Whether this config contains enough information to send a [ApiStartupRequest].
   bool get isStartable => (name?.isNotEmpty ?? false) && baseUrl != null;
 
   String? get effectiveTitle => title ?? applicationStyle?["login.title"] ?? name;

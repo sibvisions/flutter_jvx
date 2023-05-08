@@ -83,7 +83,7 @@ class FlutterUI extends StatefulWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Determines the supported server version which will be sent in the [ApiStartUpRequest]
+  /// Determines the supported server version which will be sent in the [ApiStartupRequest]
   static const String supportedServerVersion = "3.1.0";
 
   /// Loads assets with packages prefix
@@ -388,7 +388,7 @@ class FlutterUI extends StatefulWidget {
     services.registerSingleton(uiService);
 
     FlutterUIState.urlConfig = await _extractURIParameters(queryParameters);
-    queryParameters.forEach((key, value) => ConfigController().updateCustomStartUpProperties(key, value));
+    queryParameters.forEach((key, value) => ConfigController().updateCustomStartupProperties(key, value));
 
     // API
     IApiService apiService = ApiService.create(OnlineApiRepository());

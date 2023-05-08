@@ -263,7 +263,7 @@ class ConfigService {
     return setString("icon", icon);
   }
 
-  /// Retrieves the saved authKey, which will be used on [ApiStartUpRequest].
+  /// Retrieves the saved authKey, which will be used on [ApiStartupRequest].
   Future<String?> authKey() {
     return getString("authKey");
   }

@@ -19,7 +19,7 @@ import '../../service/config/config_controller.dart';
 import 'api_request.dart';
 
 /// Request to initialize the app to the remote server
-class ApiStartUpRequest extends ApiRequest {
+class ApiStartupRequest extends ApiRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,13 +88,13 @@ class ApiStartUpRequest extends ApiRequest {
   final String? serverVersion;
 
   /// Custom startup properties.
-  final Map<String, dynamic>? customStartUpProperties;
+  final Map<String, dynamic>? customProperties;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApiStartUpRequest({
+  ApiStartupRequest({
     required this.baseUrl,
     this.requestUri,
     required this.appMode,
@@ -107,7 +107,7 @@ class ApiStartUpRequest extends ApiRequest {
     this.username,
     this.password,
     this.authKey,
-    this.customStartUpProperties,
+    this.customProperties,
     this.readAheadLimit,
     this.deviceId,
     this.technology,
@@ -146,6 +146,6 @@ class ApiStartUpRequest extends ApiRequest {
         if (deviceType != null) ApiObjectProperty.deviceType: deviceType,
         if (deviceTypeModel != null) ApiObjectProperty.deviceTypeModel: deviceTypeModel,
         if (serverVersion != null) ApiObjectProperty.serverVersion: serverVersion,
-        ...?customStartUpProperties?.map((key, value) => MapEntry("custom_$key", value)),
+        ...?customProperties?.map((key, value) => MapEntry("custom_$key", value)),
       };
 }
