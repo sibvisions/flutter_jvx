@@ -131,7 +131,7 @@ class UiService implements IUiService {
   FutureOr<void> clear(bool pFullClear) async {
     await JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.clear(pFullClear);
 
-    _menuNotifier.value = const MenuModel();
+    setMenuModel(null);
     _componentSubscriptions.clear();
     _modelSubscriptions.clear();
     _dataSubscriptions.clear();
