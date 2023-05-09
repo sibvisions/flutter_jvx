@@ -103,9 +103,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   EdgeInsets get iconsPadding {
-    EdgeInsets cPadding = contentPadding;
+    double verticalPadding = max(0, (TEXT_FIELD_HEIGHT - iconAreaSize) / 2);
 
-    return EdgeInsets.fromLTRB(5, cPadding.top - iconInnatePadding, 5, cPadding.bottom - iconInnatePadding);
+    return EdgeInsets.fromLTRB(5, verticalPadding, 5, verticalPadding);
   }
 
   int? get minLines => null;
