@@ -526,8 +526,7 @@ class DataBook {
 
           displayString = cellEditorModel.displayConcatMask!;
           while (displayString.contains("*")) {
-            String columnName = columnViewNames[i];
-            int valueIndex = recordColumns.indexOf(columnName);
+            int valueIndex = i < columnViewNames.length ? recordColumns.indexOf(columnViewNames[i]) : -1;
 
             dynamic value = valueIndex >= 0 ? dataRow[valueIndex] : "";
 
