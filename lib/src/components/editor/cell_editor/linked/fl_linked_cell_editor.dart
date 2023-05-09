@@ -217,6 +217,7 @@ class FlLinkedCellEditor
           .then((value) {
         return IUiService().openDialog(
             pBuilder: (_) => FlLinkedCellPicker(
+                  linkedCellEditor: this,
                   model: model,
                   name: name!,
                   editorColumnDefinition: columnDefinition,

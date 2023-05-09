@@ -35,6 +35,7 @@ import '../../../table/fl_table_widget.dart';
 import '../../../table/table_size.dart';
 import '../../text_field/fl_text_field_widget.dart';
 import '../i_cell_editor.dart';
+import 'fl_linked_cell_editor.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
   static const PAGE_LOAD = 50;
@@ -46,8 +47,11 @@ class FlLinkedCellPicker extends StatefulWidget {
 
   final ColumnDefinition? editorColumnDefinition;
 
+  final FlLinkedCellEditor linkedCellEditor;
+
   const FlLinkedCellPicker({
     super.key,
+    required this.linkedCellEditor,
     required this.name,
     required this.model,
     this.editorColumnDefinition,
@@ -68,13 +72,19 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   final FocusNode focusNode = FocusNode();
 
+  FlLinkedCellEditor get linkedCellEditor => widget.linkedCellEditor;
+
   FlLinkedCellEditorModel get model => widget.model;
+
+  bool get isConcatMask => model.displayConcatMask != null;
 
   int scrollingPage = 1;
   Timer? filterTimer; // 200-300 Milliseconds
   String? lastChangedFilter;
   DataChunk? _chunkData;
+  DataChunk? _chunkDataConcatMask;
   DalMetaData? _metaData;
+  int _selectedRecord = -1;
   bool _currentlyFiltering = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +96,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     super.initState();
 
     tableModel.columnLabels = [];
-    tableModel.tableHeaderVisible = model.tableHeaderVisible;
+    tableModel.tableHeaderVisible = model.tableHeaderVisible && !isConcatMask;
 
     _subscribe();
   }
@@ -166,7 +176,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                         TableSize tableSize = TableSize.direct(
                           metaData: _metaData!,
                           tableModel: tableModel,
-                          dataChunk: _chunkData!,
+                          dataChunk: isConcatMask ? _chunkDataConcatMask! : _chunkData!,
                           availableWidth: constraints.maxWidth,
                         );
                         tableModel.stickyHeaders =
@@ -174,8 +184,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                         tableModel.editable = false;
 
                         return FlTableWidget(
+                          selectedRowIndex: _selectedRecord,
                           metaData: _metaData,
-                          chunkData: _chunkData!,
+                          chunkData: isConcatMask ? _chunkDataConcatMask! : _chunkData!,
                           onEndScroll: _increasePageLoad,
                           model: tableModel,
                           onTap: _onRowTapped,
@@ -226,6 +237,47 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     _createTableColumnView();
 
+    // This is the column index of the column of the linked cell editor in this data chunk.
+    // This data chunk is the referenced databook! Not the databook of the linked cell editor!
+    int colIndex = linkedCellEditor.correctLinkReference.columnNames.indexOf(linkedCellEditor.columnName);
+    colIndex = colIndex == -1 ? 0 : colIndex;
+
+    if (isConcatMask && _chunkData != null) {
+      tableModel.columnNames.clear();
+      tableModel.columnLabels.clear();
+      tableModel.columnNames.add("concat");
+      tableModel.columnLabels.add("concat");
+
+      Map<int, List<dynamic>> concatMaskData = {};
+
+      for (int i = 0; i < _chunkData!.data.length; i++) {
+        dynamic oldValue = _chunkData!.data[i]![colIndex];
+        concatMaskData[i] = [linkedCellEditor.formatValue(oldValue)];
+      }
+
+      _chunkDataConcatMask = DataChunk(
+        columnDefinitions: [
+          ColumnDefinition.fromJson({"name": "concat", "label": "concat"})
+        ],
+        data: concatMaskData,
+        from: _chunkData!.from,
+        to: _chunkData!.to,
+        isAllFetched: _chunkData!.isAllFetched,
+      );
+    }
+
+    if (_chunkData != null && _chunkData!.data.isNotEmpty) {
+      // loop throught the chunkdata data and find the index of the record for which the value equals the linkedcelleditor get value
+      for (int i = 0; i < _chunkData!.data.length; i++) {
+        if (_chunkData!.data[i]![colIndex] == linkedCellEditor.getValue()) {
+          _selectedRecord = i;
+          break;
+        }
+      }
+    } else {
+      _selectedRecord = -1;
+    }
+
     if (mounted) {
       setState(() {});
     }
@@ -243,8 +295,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   void _receiveMetaData(DalMetaData pMetaData) {
     _metaData = pMetaData;
-
-    _createTableColumnView();
 
     if (mounted) {
       setState(() {});
