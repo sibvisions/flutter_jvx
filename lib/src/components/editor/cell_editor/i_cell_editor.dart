@@ -250,10 +250,10 @@ abstract class IFocusableCellEditor<
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // The focus node of this cell editor.
+  /// The focus node of this cell editor.
   FocusNode focusNode = FocusNode();
 
-  // The callback function that is called when the focus of this cell editor changes.
+  /// The callback function that is called when the focus of this cell editor changes.
   Function(bool)? onFocusChanged;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -285,10 +285,10 @@ abstract class IFocusableCellEditor<
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Returns true if the focus changed event can be fired.
+  /// Returns true if the focus changed event can be fired.
   bool firesFocusCallback();
 
-  // Is called when the focus changes.
+  /// Is called when the focus changes.
   void focusChanged(bool pHasFocus);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -304,33 +304,33 @@ abstract class IFocusableCellEditor<
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Focuses this cell editor.
+  /// Focuses this cell editor.
   void focus() {
     focusNode.requestFocus();
   }
 
-  // Unfocuses this cell editor.
+  /// Unfocuses this cell editor.
   void unfocus() {
     focusNode.unfocus();
   }
 
-  // Sets the focus node of this cell editor.
+  /// Sets the focus node of this cell editor.
   void setFocusNode(FocusNode pFocusNode) {
     focusNode.dispose();
     focusNode = pFocusNode;
   }
 
-  // Returns the focus node of this cell editor.
+  /// Returns the focus node of this cell editor.
   FocusNode getFocusNode() {
     return focusNode;
   }
 
-  // Adds a listener to the focus node of this cell editor.
+  /// Adds a listener to the focus node of this cell editor.
   void addFocusNodeListener(Function() listener) {
     focusNode.addListener(listener);
   }
 
-  // Removes a listener from the focus node of this cell editor.
+  /// Removes a listener from the focus node of this cell editor.
   void removeFocusNodeListener(Function() listener) {
     focusNode.removeListener(listener);
   }
