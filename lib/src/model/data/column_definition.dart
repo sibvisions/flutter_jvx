@@ -16,6 +16,7 @@
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/config/config_controller.dart';
+import '../../util/i_types.dart';
 import '../../util/parse_util.dart';
 import '../component/editor/cell_editor/cell_editor_model.dart';
 import '../layout/alignments.dart';
@@ -31,6 +32,7 @@ class ColumnDefinition {
   final String name;
 
   /// Identifier of the columns datatype
+  /// See [Types]
   int dataTypeIdentifier;
 
   /// Label of the column
@@ -115,8 +117,8 @@ class ColumnDefinition {
   ColumnDefinition.fromJson(Map<String, dynamic> json)
       : name = json[ApiObjectProperty.name] ?? "",
         label = json[ApiObjectProperty.label] ?? "",
-        dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? 0,
-        width = json[ApiObjectProperty.width] != 0
+        dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? Types.VARCHAR,
+        width = (json[ApiObjectProperty.width] ?? 0) != 0
             ? (json[ApiObjectProperty.width] as int).toDouble() * ConfigController().getScaling()
             : null,
         readOnly = json[ApiObjectProperty.readOnly] ?? true,
@@ -130,7 +132,9 @@ class ColumnDefinition {
         signed = json[ApiObjectProperty.signed],
         autoTrim = json[ApiObjectProperty.autoTrim] ?? false,
         iFractionalSecondsPrecision = json[ApiObjectProperty.fractionalSecondsPrecision] ?? 0,
-        cellEditorJson = json[ApiObjectProperty.cellEditor],
-        cellEditorModel = ICellEditorModel.fromJson(json[ApiObjectProperty.cellEditor]),
+        cellEditorJson = json[ApiObjectProperty.cellEditor] ?? {},
+        cellEditorModel = json[ApiObjectProperty.cellEditor] != null
+            ? ICellEditorModel.fromJson(json[ApiObjectProperty.cellEditor])
+            : ICellEditorModel(),
         encoding = json[ApiObjectProperty.encoding] ?? "";
 }
