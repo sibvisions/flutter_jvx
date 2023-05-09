@@ -229,7 +229,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       canRequestFocus: false,
       onTap: () {
         if (!model.isReadOnly) {
-          textController.clear();
           if (focusNode.hasFocus) {
             valueChanged("");
           } else {
