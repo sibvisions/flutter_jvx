@@ -935,6 +935,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             dataProvider: model.dataProvider,
             isInTable: true);
 
+        cellEditor.setValue(values[colDef.name]);
+
         if (cellEditor is FlDateCellEditor) {
           currentEditDialog = cellEditor.openDatePicker();
         } else if (cellEditor is FlLinkedCellEditor) {
