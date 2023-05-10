@@ -38,6 +38,9 @@ class FlButtonModel extends FlComponentModel {
   static const String HAPTIC_CLICK = "f_haptic_click";
   static const String HAPTIC = "f_haptic";
 
+  static const String HYPERLINK_STYLE = "hyperlink";
+  static const String MOBILE_GEOLOCATION_STYLE = "mobile-geolocation";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,6 +99,12 @@ class FlButtonModel extends FlComponentModel {
   /// Columnname for QR-Code buttons or telephone button
   String columnName = "";
 
+  /// Columnname for geolocation button
+  String latitudeColumnName = "";
+
+  /// Columnname for geolocation button
+  String longitudeColumnName = "";
+
   /// If the button is a slider button
   bool get isSlideStyle =>
       styles.contains(SLIDE_STYLE) || styles.contains(SLIDE_RESETABLE_STYLE) || styles.contains(SLIDE_AUTO_RESET_STYLE);
@@ -128,7 +137,10 @@ class FlButtonModel extends FlComponentModel {
   bool get isSmallStyle => styles.contains(SMALL_STYLE);
 
   /// If the button is a hyperlink button
-  bool get isHyperLink => styles.contains("hyperlink");
+  bool get isHyperLink => styles.contains(HYPERLINK_STYLE);
+
+  /// If the button is a geolocation button
+  bool get isGeolocationStyle => styles.contains(MOBILE_GEOLOCATION_STYLE);
 
   @override
   Size? get minimumSize {
@@ -251,6 +263,20 @@ class FlButtonModel extends FlComponentModel {
       pKey: ApiObjectProperty.columnName,
       pDefault: defaultModel.columnName,
       pCurrent: columnName,
+    );
+
+    latitudeColumnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.latitudeColumnName,
+      pDefault: defaultModel.latitudeColumnName,
+      pCurrent: latitudeColumnName,
+    );
+
+    longitudeColumnName = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.longitudeColumnName,
+      pDefault: defaultModel.longitudeColumnName,
+      pCurrent: longitudeColumnName,
     );
 
     // Label parsing

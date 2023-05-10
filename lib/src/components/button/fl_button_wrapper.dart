@@ -22,10 +22,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../flutter_ui.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/command/base_command.dart';
@@ -199,6 +201,10 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       ),
     );
 
+    if (model.classNameEventSourceRef == FlButtonWidget.GEO_LOCATION_BUTTON) {
+      commands.add(await locateDevice());
+    }
+
     commands.add(SetFocusCommand(componentId: oldFocus?.id, focus: true, reason: "Button clicked Focus"));
 
     return commands;
@@ -248,5 +254,45 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     String workscreenName = state.pathParameters['workScreenName']!;
     FlPanelModel? screenModel = IStorageService().getComponentByNavigationName(workscreenName);
     OfflineUtil.initOffline(screenModel!.name);
+  }
+
+  Future<BaseCommand> locateDevice() async {
+    Position position = await getPosition();
+    FlutterUI.logUI.d("Received geolocation data: $position");
+
+    return SetValuesCommand(
+      componentId: model.id,
+      dataProvider: model.dataProvider,
+      editorColumnName: model.columnName,
+      columnNames: [model.latitudeColumnName, model.longitudeColumnName],
+      values: [position.latitude, position.longitude],
+      reason: "Location was determined",
+    );
+  }
+
+  /// Determine the current position of the device.
+  ///
+  /// When the location services are not enabled or permissions
+  /// are denied the `Future` will return an error.
+  Future<Position> getPosition() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception("Location services are disabled");
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw Exception("Location permissions are denied");
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      throw Exception("Location permissions are permanently denied");
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 }

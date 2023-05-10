@@ -93,6 +93,7 @@ dependencies:
   # Custom Dependencies
   flutter_map: ^4.0.0
   latlong2: ^0.8.1
+  geolocator: ^9.0.2
   scrollable_positioned_list: ^0.3.1
   url_launcher: ^6.1.5
   linked_scroll_controller: ^0.2.0

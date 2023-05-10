@@ -53,5 +53,7 @@
 		<string>We would like to access your camera in order to be able to scan QR Codes or take pictures for your personal records.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>We would like to access your photo library in order to be able to add data to your personal records.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>We would like to access your location in order to be able to add data to your personal records.</string>
 	</dict>
 </plist>
