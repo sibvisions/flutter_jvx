@@ -18,10 +18,10 @@ import 'package:cross_file/cross_file.dart';
 
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/api_response_names.dart';
-import 'session_request.dart';
+import 'upload_request.dart';
 
 /// Request to change the password of the user
-class ApiUploadRequest extends SessionRequest {
+class ApiUploadRequest extends UploadRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
