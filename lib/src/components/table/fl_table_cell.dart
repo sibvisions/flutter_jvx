@@ -24,11 +24,13 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/layout/alignments.dart';
 import '../../model/response/dal_fetch_response.dart';
+import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
+import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
 import 'fl_table_widget.dart';
 
@@ -288,6 +290,11 @@ class _FlTableCellState extends State<FlTableCell> {
       textAlign = TextAlign.right;
     } else {
       textAlign = TextAlign.left;
+    }
+
+    if (cellEditor.model.className == FlCellEditorClassname.TEXT_CELL_EDITOR &&
+        cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_PASSWORD) {
+      cellText = "•" * cellText.length;
     }
 
     return Text(
