@@ -598,6 +598,9 @@ class OnlineApiRepository extends IRepository {
         if (e is IOException || e is TimeoutException) {
           setConnected(false);
         }
+        if (e is DioError && e.error != null) {
+          Error.throwWithStackTrace(e.error!, e.stackTrace);
+        }
         rethrow;
       } finally {
         // Has to happen after connected field update, depends on field.
