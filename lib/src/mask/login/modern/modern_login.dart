@@ -23,6 +23,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
+import '../../../model/response/login_view_response.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/apps/app_service.dart';
 import '../../../service/config/config_controller.dart';

@@ -39,6 +39,7 @@ import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/command/api/login_command.dart';
 import 'model/config/application_parameters.dart';
+import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
 import 'routing/locations/app_location.dart';
 import 'routing/locations/login_location.dart';
@@ -230,7 +231,7 @@ class FlutterUI extends StatefulWidget {
   /// Translates any text through the translation files loaded by the application.
   ///
   /// See also:
-  /// * [TranslationUtil]
+  /// * [I18n]
   /// * [ConfigController.getLanguage]
   static String translate(String? pText) {
     if (pText == null) return "";
@@ -240,7 +241,7 @@ class FlutterUI extends StatefulWidget {
   /// Translates any text through the local-only translation files.
   ///
   /// See also:
-  /// * [TranslationUtil]
+  /// * [I18n]
   /// * [ConfigController.getLanguage]
   static String translateLocal(String? pText) {
     if (pText == null) return "";

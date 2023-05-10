@@ -26,7 +26,7 @@ import '../../flutter_ui.dart';
 
 /// Definition of the callback for the Scanner.
 ///
-/// In case of [allowMultiScan], this can returns multiple barcodes.
+/// In case of [JVxScanner.allowMultiScan], this can returns multiple barcodes.
 typedef ScannerCallback = FutureOr<void> Function(List<Barcode> barcode);
 
 /// Displays a Scanner with an additional control bar on top.
