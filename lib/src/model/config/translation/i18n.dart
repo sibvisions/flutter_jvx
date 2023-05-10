@@ -44,8 +44,11 @@ class I18n {
   static Future<Iterable<String>> listLocalTranslationFiles() async {
     final Map<String, dynamic> manifestMap =
         await rootBundle.loadString("AssetManifest.json").then((s) => jsonDecode(s));
-    return manifestMap.keys.where((e) => e.startsWith("assets/languages"));
+    return manifestMap.keys.where((e) => _checkPath(e));
   }
+
+  static bool _checkPath(String e) =>
+      e.startsWith("packages/flutter_jvx/assets/languages") || e.startsWith("assets/languages");
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -91,8 +94,7 @@ class I18n {
   Future<void> _loadBundledTranslations(String lang) async {
     Iterable<String> keys = await listLocalTranslationFiles();
 
-    String? path =
-        keys.firstWhereOrNull((e) => e.startsWith("assets/languages") && e.endsWith("/translation_$lang.json"));
+    String? path = keys.firstWhereOrNull((e) => _checkPath(e) && e.endsWith("/translation_$lang.json"));
     if (path != null) {
       _localTranslations.addAll(_extractTranslations(await rootBundle.loadString(path)));
     }
