@@ -134,7 +134,7 @@ class DataBook {
     if (metaData.masterReference == null) {
       dataMap = records;
     } else {
-      if (pFetchResponse.masterRow!.isEmpty) {
+      if (pFetchResponse.masterRow?.isEmpty ?? true) {
         pageKey = "noMasterRow";
       } else {
         pageKey = Filter(
