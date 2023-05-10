@@ -123,13 +123,18 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
 
     listBottomButtons.add(
-      TextButton(
-        child: Text(
-          FlutterUI.translate("Cancel"),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            child: Text(
+              FlutterUI.translate("Cancel"),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
       ),
     );
 
