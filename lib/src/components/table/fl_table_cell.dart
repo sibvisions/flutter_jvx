@@ -310,7 +310,10 @@ class _FlTableCellState extends State<FlTableCell> {
     List<Widget> icons = [];
 
     bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
-    if (cellEditor.tableDeleteIcon && cellEditor.allowedTableEdit && !_isValueNullOrEmpty()) {
+    if (cellEditor.tableDeleteIcon &&
+        cellEditor.allowedTableEdit &&
+        !_isValueNullOrEmpty() &&
+        widget.columnDefinition.nullable == false) {
       icons.add(
         Center(
           child: InkWell(
