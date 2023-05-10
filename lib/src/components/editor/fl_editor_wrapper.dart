@@ -327,6 +327,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       isInTable: false,
     );
 
+    if (model.hideClearIcon) {
+      cellEditor.model.styles.add(FlComponentModel.NO_CLEAR_ICON_STYLE);
+    }
+
     if (pSubscribe) {
       subscribe();
     }

@@ -111,6 +111,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
+          hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
         );
       case (TEXT_PLAIN_PASSWORD):
         return FlPasswordWidget(
@@ -121,6 +122,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
+          hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
         );
       case (TEXT_PLAIN_SINGLELINE):
       default:
@@ -132,6 +134,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
           textController: textController,
           isMandatory: columnDefinition?.nullable == false,
           inputFormatters: [textLimitFormatter],
+          hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
         );
     }
   }

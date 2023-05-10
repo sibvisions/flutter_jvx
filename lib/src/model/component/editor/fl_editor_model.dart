@@ -17,19 +17,37 @@
 part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlEditorModel extends FlComponentModel {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// If the last change to this model changed the editor.
   bool changedCellEditor = false;
 
+  /// The data provider of the editor.
   String dataProvider = "";
 
+  /// The column name of the editor.
   String columnName = "";
 
+  /// The json of the editor.
   Map<String, dynamic> json = {};
 
+  /// If the editor should save immediately.
   bool savingImmediate = false;
 
-  // ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
+  /// If this editor should have a clear icon.
+  bool get hideClearIcon => styles.contains(FlComponentModel.NO_CLEAR_ICON_STYLE);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlEditorModel();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   FlEditorModel get defaultModel => FlEditorModel();

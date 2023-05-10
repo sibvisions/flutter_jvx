@@ -64,6 +64,9 @@ abstract class FlComponentModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The style if an editor should not have a clear button.
+  static const String NO_CLEAR_ICON_STYLE = "f_no_clear";
+
   /// If the component has disabled the mobile scaling
   static const String NO_SCALING_STYLE = "f_no_scaling";
 

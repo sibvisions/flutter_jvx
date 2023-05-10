@@ -64,7 +64,7 @@ class FlLinkedCellEditor
   bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
 
   @override
-  bool get tableDeleteIcon => true;
+  bool get tableDeleteIcon => !model.hideClearIcon;
 
   @override
   IconData? get tableEditIcon => FontAwesomeIcons.caretDown;
@@ -117,7 +117,7 @@ class FlLinkedCellEditor
       valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
-      hideClearIcon: !allowedTableEdit && isInTable,
+      hideClearIcon: model.hideClearIcon,
     );
   }
 

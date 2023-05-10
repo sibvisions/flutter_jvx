@@ -94,6 +94,7 @@ class FlNumberCellEditor
       inputFormatters: [numberFormatter],
       keyboardType: numberFormatter.getKeyboardType(),
       isMandatory: columnDefinition?.nullable == false,
+      hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
     );
   }
 
