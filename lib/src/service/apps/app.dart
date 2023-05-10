@@ -309,6 +309,7 @@ class App {
   /// If [_id] is null or [usesUserParameter] is false, this returns null.
   ///
   /// {@macro app.key}
+  // ignore: unused_element
   bool? _getBool(String key) {
     return !usesUserParameter ? null : (_id != null ? _sharedPrefs.getBool("$_id.$key") : null);
   }
