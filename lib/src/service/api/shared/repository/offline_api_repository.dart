@@ -62,7 +62,7 @@ class OfflineApiRepository extends IRepository {
     _checkStatus();
 
     List<DalMetaData> metaData = await offlineDatabase!.getMetaData(ConfigController().currentApp.value!);
-    metaData.map((element) => IDataService().setMetaData(pMetaData: element));
+    metaData.forEach((element) => IDataService().setMetaData(pMetaData: element));
   }
 
   @override
