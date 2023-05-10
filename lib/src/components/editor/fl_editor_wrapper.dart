@@ -327,6 +327,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       isInTable: false,
     );
 
+    if (cellEditor is FlLinkedCellEditor && model.styles.contains(FlTableModel.NO_ALTERNATING_ROW_COLOR_STYLE)) {
+      (cellEditor as FlLinkedCellEditor).model.styles.add(FlTableModel.NO_ALTERNATING_ROW_COLOR_STYLE);
+    }
+
     if (pSubscribe) {
       subscribe();
     }
