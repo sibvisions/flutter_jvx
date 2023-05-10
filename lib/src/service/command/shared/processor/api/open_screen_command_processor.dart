@@ -40,6 +40,7 @@ class OpenScreenCommandProcessor implements ICommandProcessor<OpenScreenCommand>
         screenClassName: command.screenClassName,
         parameter: command.parameter,
         manualClose: !kIsWeb,
+        reopen: command.reopen,
       ),
     );
   }
