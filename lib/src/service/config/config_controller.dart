@@ -19,7 +19,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:universal_io/io.dart' as universal_io;
 
 import '../../config/app_config.dart';
@@ -193,7 +193,7 @@ class ConfigController {
     _applicationTimeZone = ValueNotifier(null);
 
     // Update native timezone
-    _platformTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    _platformTimeZone = await FlutterTimezone.getLocalTimezone();
   }
 
   Future<void> _updateAppSpecificValues() async {
