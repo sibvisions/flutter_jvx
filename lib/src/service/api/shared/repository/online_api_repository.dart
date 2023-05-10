@@ -137,7 +137,8 @@ class OnlineApiRepository extends IRepository {
     ApiCancelLoginRequest: (_) => APIRoute.POST_CANCEL_LOGIN,
     ApiCloseTabRequest: (_) => APIRoute.POST_CLOSE_TAB,
     ApiDeviceStatusRequest: (_) => APIRoute.POST_DEVICE_STATUS,
-    ApiOpenScreenRequest: (_) => APIRoute.POST_OPEN_SCREEN,
+    ApiOpenScreenRequest: (pRequest) =>
+        (pRequest as ApiOpenScreenRequest).reopen ? APIRoute.POST_REOPEN_SCREEN : APIRoute.POST_OPEN_SCREEN,
     ApiSetScreenParameter: (_) => APIRoute.POST_SET_SCREEN_PARAMETER,
     ApiOpenTabRequest: (_) => APIRoute.POST_SELECT_TAB,
     ApiPressButtonRequest: (_) => APIRoute.POST_PRESS_BUTTON,
@@ -444,10 +445,10 @@ class OnlineApiRepository extends IRepository {
                 ),
               );
             } else if (command == "api/reopenScreen" && className != null) {
-              if (IStorageService().getComponentByScreenClassName(pScreenClassName: className) != null) {}
-              {
+              if (IStorageService().getComponentByScreenClassName(pScreenClassName: className) != null) {
                 IUiService().sendCommand(
                   OpenScreenCommand(
+                    reopen: true,
                     screenClassName: className,
                     reason: "Reload/Reopen screen because server sent api/reopenScreen",
                   ),

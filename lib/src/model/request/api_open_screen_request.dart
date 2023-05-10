@@ -35,6 +35,9 @@ class ApiOpenScreenRequest extends SessionRequest {
   /// Parameters to add to the request.
   final Map<String, dynamic>? parameter;
 
+  /// If the screen should be reopened
+  final bool reopen;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +46,7 @@ class ApiOpenScreenRequest extends SessionRequest {
     this.screenLongName,
     this.screenClassName,
     this.parameter,
+    this.reopen = false,
     required this.manualClose,
   });
 

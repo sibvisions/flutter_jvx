@@ -30,6 +30,9 @@ class OpenScreenCommand extends SessionCommand {
   /// Parameters to add to the request.
   final Map<String, dynamic>? parameter;
 
+  /// If the screen should be reopened
+  final bool reopen;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +41,7 @@ class OpenScreenCommand extends SessionCommand {
     this.screenLongName,
     this.screenClassName,
     this.parameter,
+    this.reopen = false,
     required super.reason,
   });
 
