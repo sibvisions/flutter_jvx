@@ -128,6 +128,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
       valueChanged: valueChanged,
       focusNode: focusNode,
       textController: textController,
+      hideClearIcon: model.hideClearIcon,
     );
     return textFieldWidget;
   }

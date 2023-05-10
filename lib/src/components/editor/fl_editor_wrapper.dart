@@ -331,6 +331,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       (cellEditor as FlLinkedCellEditor).model.styles.add(FlTableModel.NO_ALTERNATING_ROW_COLOR_STYLE);
     }
 
+    if (model.hideClearIcon) {
+      cellEditor.model.styles.add(FlComponentModel.NO_CLEAR_ICON_STYLE);
+    }
+
     if (pSubscribe) {
       subscribe();
     }

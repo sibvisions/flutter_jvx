@@ -18,6 +18,7 @@ import '../../../../service/api/shared/api_object_property.dart';
 import '../../../../service/api/shared/fl_component_classname.dart';
 import '../../../../util/parse_util.dart';
 import '../../../layout/alignments.dart';
+import '../../fl_component_model.dart';
 import 'date/fl_date_cell_editor_model.dart';
 import 'fl_check_box_cell_editor_model.dart';
 import 'fl_choice_cell_editor_model.dart';
@@ -63,6 +64,9 @@ class ICellEditorModel {
 
   /// Styles
   Set<String> styles = {};
+
+  /// If this editor should have a clear icon.
+  bool get hideClearIcon => styles.contains(FlComponentModel.NO_CLEAR_ICON_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

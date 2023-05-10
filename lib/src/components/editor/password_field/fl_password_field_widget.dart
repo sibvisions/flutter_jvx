@@ -30,6 +30,7 @@ class FlPasswordWidget extends FlTextFieldWidget {
     required super.textController,
     super.inputFormatters,
     super.isMandatory,
+    super.hideClearIcon,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

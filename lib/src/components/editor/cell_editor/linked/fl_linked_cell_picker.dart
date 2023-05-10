@@ -120,7 +120,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     List<Widget> listBottomButtons = [];
 
-    if (widget.editorColumnDefinition?.nullable == true) {
+    if (widget.editorColumnDefinition?.nullable == true && !model.hideClearIcon) {
       listBottomButtons.add(
         Expanded(
           child: Align(

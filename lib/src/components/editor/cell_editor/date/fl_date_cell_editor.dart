@@ -52,7 +52,7 @@ class FlDateCellEditor
   bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
 
   @override
-  bool get tableDeleteIcon => true;
+  bool get tableDeleteIcon => !model.hideClearIcon;
 
   @override
   IconData? get tableEditIcon => FontAwesomeIcons.calendar;
@@ -116,7 +116,7 @@ class FlDateCellEditor
       focusNode: focusNode,
       endEditing: onEndEditing,
       valueChanged: onValueChange,
-      hideClearIcon: allowedTableEdit && isInTable,
+      hideClearIcon: model.hideClearIcon,
     );
   }
 
@@ -203,7 +203,7 @@ class FlDateCellEditor
                 initialDate: pInitialDate,
                 firstDate: DateTime(1900),
                 lastDate: DateTime(2100),
-                showClear: columnDefinition?.nullable == true,
+                showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
               );
             },
             pIsDismissible: true)
@@ -219,7 +219,7 @@ class FlDateCellEditor
             .openDialog(
                 pBuilder: (_) => FlTimePickerDialog(
                       initialTime: pInitialTime,
-                      showClear: !(columnDefinition?.nullable == false),
+                      showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
                     ),
                 pIsDismissible: true)
             .then((value) {
@@ -246,7 +246,7 @@ class FlDateCellEditor
                   initialDate: pInitialDate,
                   firstDate: DateTime(1900),
                   lastDate: DateTime(2100),
-                  showClear: !(columnDefinition?.nullable == false),
+                  showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
                 ),
             pIsDismissible: true)
         .then((value) {
@@ -269,7 +269,7 @@ class FlDateCellEditor
         .openDialog(
             pBuilder: (_) => FlTimePickerDialog(
                   initialTime: pInitialTime,
-                  showClear: !(columnDefinition?.nullable == false),
+                  showClear: columnDefinition?.nullable != false && !model.hideClearIcon,
                 ),
             pIsDismissible: true)
         .then((value) {

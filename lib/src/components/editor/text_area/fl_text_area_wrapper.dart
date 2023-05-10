@@ -51,6 +51,7 @@ class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
       valueChanged: valueChanged,
       focusNode: focusNode,
       textController: textController,
+      hideClearIcon: model.hideClearIcon,
     );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
