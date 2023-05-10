@@ -18,13 +18,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:async/async.dart';
 import 'package:collection/collection.dart';
-import 'package:cross_file/cross_file.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
-import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../config/api/api_route.dart';
@@ -84,6 +82,7 @@ import '../../../../model/request/api_startup_request.dart';
 import '../../../../model/request/api_upload_request.dart';
 import '../../../../model/request/download_request.dart';
 import '../../../../model/request/session_request.dart';
+import '../../../../model/request/upload_request.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/application_meta_data_response.dart';
 import '../../../../model/response/application_parameters_response.dart';
@@ -213,7 +212,8 @@ class OnlineApiRepository extends IRepository {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static final HttpClientLogAdapter httpLogAdapter = HttpClientLogAdapter(FlutterUI.httpBucket);
+  // https://github.com/cfug/dio/blob/main/plugins/cookie_manager/lib/src/cookie_mgr.dart
+  final _setCookieReg = RegExp('(?<=)(,)(?=[^;]+?=)');
 
   // Whether we ever had a connection
   bool _everConnected = false;
@@ -223,7 +223,7 @@ class OnlineApiRepository extends IRepository {
   Timer? _statusTimer;
 
   /// Fixed header fields
-  final Map<String, String> _headers = {"Access-Control_Allow_Origin": "*"};
+  final Map<String, dynamic> _headers = {"Access-Control_Allow_Origin": "*"};
 
   /// Cookies used for sessionId
   final Set<Cookie> _cookies = {};
@@ -231,14 +231,8 @@ class OnlineApiRepository extends IRepository {
   /// Maps response names with a corresponding factory
   final Map<String, ResponseFactory> responseFactoryMap = maps;
 
-  static const String boundary = "--dart-http-boundary--";
-
-  /// A regular expression that matches strings that are composed entirely of
-  /// ASCII-compatible characters.
-  final _asciiOnly = RegExp(r'^[\x00-\x7F]+$');
-
-  /// Http client for outgoing connection
-  HttpClient? client;
+  /// Http client for connections
+  Dio? client;
 
   Timer? _aliveTimer;
 
@@ -265,7 +259,19 @@ class OnlineApiRepository extends IRepository {
   @override
   Future<void> start() async {
     if (isStopped()) {
-      client ??= HttpClient();
+      Duration? connectTimeout = ParseUtil.validateDuration(ConfigController().getAppConfig()?.connectTimeout);
+      Duration? requestTimeout = ParseUtil.validateDuration(ConfigController().getAppConfig()?.requestTimeout);
+      BaseOptions options = BaseOptions(
+        connectTimeout: connectTimeout,
+        receiveTimeout: requestTimeout ?? connectTimeout,
+        sendTimeout: requestTimeout ?? connectTimeout,
+        validateStatus: (status) => true,
+        extra: {
+          "withCredentials": true,
+        },
+      );
+
+      client ??= Dio(options)..interceptors.add(DioLogInterceptor(FlutterUI.httpBucket));
     }
   }
 
@@ -526,7 +532,7 @@ class OnlineApiRepository extends IRepository {
   Set<Cookie> getCookies() => _cookies;
 
   @override
-  Map<String, String> getHeaders() => _headers;
+  Map<String, dynamic> getHeaders() => _headers;
 
   @override
   Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
@@ -544,34 +550,47 @@ class OnlineApiRepository extends IRepository {
         }
       }
 
+      dynamic data;
+      if (pRequest is UploadRequest) {
+        if (pRequest is ApiUploadRequest) {
+          data = FormData.fromMap({
+            "clientId": [pRequest.clientId],
+            "fileId": [pRequest.fileId],
+            "data": MultipartFile.fromBytes(
+              await pRequest.file.readAsBytes(),
+              filename: pRequest.file.name,
+            ),
+          });
+        }
+      } else {
+        data = jsonEncode(pRequest);
+      }
+
       /// HttpException can also be an invalid argument, check before retrying.
       ///
       /// Currently known http exceptions:
       /// * HttpException: Connection closed before full header was received, uri = <uri>
       /// * HttpException: Connection closed while receiving data, uri = <uri>
-      bool shouldRetry(Exception error) => (error is HttpException && error.message.contains("Connection closed"));
+      bool shouldRetry(Object? error) {
+        error = (error is DioError ? error.error : null) ?? error;
+        return (error is HttpException && error.message.contains("Connection closed"));
+      }
 
-      HttpClientRequest clientRequest;
-      HttpClientResponse response;
-
+      Response response;
       try {
-        Map<String, dynamic> sentRequest;
         if (retryRequest ?? true) {
-          Duration timeout = ConfigController().getAppConfig()!.requestTimeout!;
-          sentRequest = await retry(
-            () => _sendRequest(pRequest),
+          response = await retry(
+            () => _sendRequest(pRequest, data),
             retryIf: (e) => shouldRetry(e),
-            retryIfResult: (response) => response["response"].statusCode == 503,
+            retryIfResult: (response) => response.statusCode == 503,
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
             onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
             maxAttempts: 3,
-            maxDelay: timeout == Duration.zero || timeout.isNegative ? null : timeout,
+            maxDelay: client?.options.receiveTimeout,
           );
         } else {
-          sentRequest = await _sendRequest(pRequest);
+          response = await _sendRequest(pRequest, data);
         }
-        clientRequest = sentRequest["request"];
-        response = sentRequest["response"];
 
         setConnected(true);
       } catch (e) {
@@ -583,31 +602,20 @@ class OnlineApiRepository extends IRepository {
         // Has to happen after connected field update, depends on field.
         resetAliveInterval();
       }
-      var responseStream = StreamSplitter(response);
 
       if (IUiService().getAppManager() != null) {
         var overrideResponse = await IUiService().getAppManager()?.handleResponse(
               pRequest,
-              responseStream.split(),
-              () async => (await _sendRequest(pRequest))["response"],
+              response,
+              () async => (await _sendRequest(pRequest, data)),
             );
         if (overrideResponse != null) {
           response = overrideResponse;
-          responseStream = StreamSplitter(response);
         }
       }
 
-      void logResponse(HttpClientRequest request, HttpClientResponse response, Object? body) {
-        final Map<String, List<String>> logHeaders = {};
-        response.headers.forEach((name, values) {
-          logHeaders[name] = values;
-        });
-        httpLogAdapter.onResponse(request, response, body);
-      }
-
-      if (response.statusCode >= 400 && response.statusCode <= 599) {
-        var body = await _decodeBody(responseStream.split());
-        logResponse(clientRequest, response, body);
+      if (response.statusCode != null && response.statusCode! >= 400 && response.statusCode! <= 599) {
+        String body = _decodeUTF8(response.data);
         FlutterUI.logAPI.e("Server sent HTTP ${response.statusCode}: $body");
         if (response.statusCode == 400 && pRequest is ApiStartupRequest) {
           APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
@@ -626,21 +634,19 @@ class OnlineApiRepository extends IRepository {
 
       // Download Request needs different handling
       if (pRequest is DownloadRequest) {
-        var body = Uint8List.fromList(await responseStream.split().expand((element) => element).toList());
-        logResponse(clientRequest, response, body);
+        Uint8List body = response.data;
         var parsedDownloadObject = _handleDownload(pBody: body, pRequest: pRequest);
         return parsedDownloadObject;
       }
 
-      String responseBody = await _decodeBody(responseStream.split());
-      logResponse(clientRequest, response, responseBody);
-
+      String responseBody = _decodeUTF8(response.data);
       List<dynamic> jsonResponse = [];
 
       if (response.statusCode != 204) {
-        if (response.headers.contentType?.value != ContentType.json.value) {
+        var contentTypes = response.headers[Headers.contentTypeHeader];
+        if (!(contentTypes?.contains(ContentType.json.value) ?? false)) {
           throw FormatException("Invalid server response"
-              "\nType: ${response.headers.contentType?.subType}"
+              "\nType: $contentTypes"
               "\nStatus: ${response.statusCode}");
         }
         jsonResponse = _parseAndCheckJson(responseBody);
@@ -665,163 +671,64 @@ class OnlineApiRepository extends IRepository {
     }
   }
 
-  void _checkStatus() {
-    if (isStopped()) throw Exception("Repository not initialized");
+  String _decodeUTF8(Uint8List responseBytes) {
+    return utf8.decode(responseBytes, allowMalformed: true);
   }
 
-  Future<String> _decodeBody(Stream response) {
-    return response.transform(utf8.decoder).join();
+  void _checkStatus() {
+    if (isStopped()) throw Exception("Repository not initialized");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Send post request to remote server, applies timeout.
-  ///
-  /// Returns:
-  /// ```json
-  /// {
-  ///   "response": HttpClientResponse,
-  ///   "request": HttpClientRequest
-  /// }
-  /// ```
-  Future<Map<String, dynamic>> _sendRequest(ApiRequest pRequest) async {
-    HttpClientRequest? request;
-    try {
-      APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
+  /// Sends request to remote server, applies timeout.
+  Future<Response> _sendRequest(ApiRequest pRequest, dynamic data) async {
+    APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
 
-      if (route == null) {
-        throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
-      }
+    if (route == null) {
+      throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
+    }
 
-      Uri uri = Uri.parse("${ConfigController().baseUrl.value!}/${route.route}");
-      request = await _createRequest(uri, route.method);
+    Uri uri = Uri.parse("${ConfigController().baseUrl.value!}/${route.route}");
+    List<Cookie>? requestCookies;
+    if (!kIsWeb) {
+      requestCookies = [..._cookies];
+      IUiService().getAppManager()?.modifyCookies(requestCookies);
+    }
+    Map<String, dynamic>? requestHeaders = {..._headers};
+    IUiService().getAppManager()?.modifyHeaders(requestHeaders);
 
-      if (kIsWeb) {
-        if (request is BrowserHttpClientRequest) {
-          // Handles cookies in browser
-          request.browserCredentialsMode = true;
-        }
-      } else {
-        _cookies.forEach((value) => request!.cookies.add(value));
-      }
+    Response response = await client!.requestUri(
+      uri,
+      data: route.method != Method.GET ? data : null,
+      options: Options(
+        method: route.method.name,
+        headers: {
+          if (!kIsWeb) HttpHeaders.cookieHeader: requestCookies?.map((e) => e.toString()).join("; "),
+          ...requestHeaders,
+        },
+        // To ensure maximum flexibility
+        responseType: ResponseType.bytes,
+      ),
+    );
 
-      IUiService().getAppManager()?.modifyCookies(request.cookies);
-
-      _headers.forEach((key, value) => request!.headers.set(key, value));
-      IUiService().getAppManager()?.modifyHeaders(request.headers);
-
-      if (pRequest is ApiUploadRequest) {
-        request.headers.contentType = ContentType(
-          "multipart",
-          "form-data",
-          charset: "utf-8",
-          parameters: {"boundary": boundary},
-        );
-        var content = _addContent(
-          {
-            "clientId": pRequest.clientId,
-            "fileId": pRequest.fileId,
-          },
-          {"data": pRequest.file},
-          boundary,
-        );
-        // await request.addStream(content);
-        // Workaround https://github.com/dint-dev/universal_io/issues/35
-        await for (List<int> c in content) {
-          request.add(c);
-        }
-        httpLogAdapter.onRequest(request, {
-          "clientId": pRequest.clientId,
-          "fileId": pRequest.fileId,
-          "data": pRequest.file,
-        });
-      } else if (route.method != Method.GET) {
-        request.headers.contentType = ContentType("application", "json", charset: "utf-8");
-        request.write(jsonEncode(pRequest));
-        httpLogAdapter.onRequest(
-          request,
-          jsonEncode(pRequest),
+    if (!kIsWeb) {
+      // Extract the session-id cookie to be sent in future
+      final List<String>? responseCookies = response.headers[HttpHeaders.setCookieHeader];
+      if (responseCookies != null) {
+        _cookies.addAll(
+          responseCookies
+              .map((str) => str.split(_setCookieReg))
+              .expand((cookie) => cookie)
+              .where((cookie) => cookie.isNotEmpty)
+              .map((str) => Cookie.fromSetCookieValue(str))
+              .toList(),
         );
       }
-
-      HttpClientResponse response = await request.close();
-
-      if (!kIsWeb) {
-        // Extract the session-id cookie to be sent in future
-        _cookies.addAll(response.cookies);
-      }
-      return {
-        "response": response,
-        "request": request,
-      };
-    } catch (e, stack) {
-      if (request != null) {
-        httpLogAdapter.onError(request, e, stack);
-      }
-      rethrow;
     }
-  }
-
-  Future<HttpClientRequest> _createRequest(Uri pUri, Method method) {
-    switch (method) {
-      case Method.GET:
-        return client!.getUrl(pUri);
-      case Method.PUT:
-        return client!.putUrl(pUri);
-      case Method.HEAD:
-        return client!.headUrl(pUri);
-      case Method.POST:
-        return client!.postUrl(pUri);
-      case Method.PATCH:
-        return client!.patchUrl(pUri);
-      case Method.DELETE:
-        return client!.deleteUrl(pUri);
-      default:
-        return client!.postUrl(pUri);
-    }
-  }
-
-  bool isPlainAscii(String value) {
-    return _asciiOnly.hasMatch(value);
-  }
-
-  String _headerForField(String name, String value) {
-    var header = 'content-disposition: form-data; name="$name"';
-    if (!isPlainAscii(value)) {
-      header = '$header\r\n'
-          'content-type: text/plain; charset=utf-8\r\n'
-          'content-transfer-encoding: binary';
-    }
-    return '$header\r\n\r\n';
-  }
-
-  String _headerForFile(String field, String fileName) {
-    var header = 'content-type: ${ContentType('application', 'octet-stream')}\r\n'
-        'content-disposition: form-data; name="$field"; filename="$fileName"';
-    return '$header\r\n\r\n';
-  }
-
-  Stream<List<int>> _addContent(Map<String, String> fields, Map<String, XFile> files, String boundary) async* {
-    const line = [13, 10]; // \r\n
-    final separator = utf8.encode('--$boundary\r\n');
-    final close = utf8.encode('--$boundary--\r\n');
-
-    for (var field in fields.entries) {
-      yield separator;
-      yield utf8.encode(_headerForField(field.key, field.value));
-      yield utf8.encode(field.value);
-      yield line;
-    }
-
-    for (final file in files.entries) {
-      yield separator;
-      yield utf8.encode(_headerForFile(file.key, basename(file.value.path)));
-      yield* Stream.fromIterable([await file.value.readAsBytes()]);
-      yield line;
-    }
-    yield close;
+    return response;
   }
 
   /// Check if response is an error, an error does not come as array, returns

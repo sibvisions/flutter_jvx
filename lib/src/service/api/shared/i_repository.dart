@@ -50,7 +50,7 @@ abstract class IRepository {
   bool isStopped();
 
   /// Returns all saved headers used for requests
-  Map<String, String> getHeaders();
+  Map<String, dynamic> getHeaders();
 
   /// Returns all saved cookies used for requests
   Set<Cookie> getCookies();

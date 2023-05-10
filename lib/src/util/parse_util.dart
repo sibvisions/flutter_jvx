@@ -39,6 +39,9 @@ abstract class ParseUtil {
     return uri;
   }
 
+  static Duration? validateDuration(Duration? duration) =>
+      duration == null || duration == Duration.zero || duration.isNegative ? null : duration;
+
   /// Will return the boolean, parse a string (true if string == "true", false if string == "false")
   /// otherwise returns null.
   static bool? parseBool(dynamic pBool) {

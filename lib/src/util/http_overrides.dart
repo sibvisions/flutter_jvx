@@ -19,16 +19,16 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import '../service/config/config_controller.dart';
+import 'parse_util.dart';
 
 class JVxHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     var client = super.createHttpClient(context);
     // Global connectionTimeout, also used by (IO-)WebSocket
-    Duration? timeout = ConfigController().getAppConfig()?.requestTimeout;
-    if (timeout != null && timeout != Duration.zero && !timeout.isNegative) {
-      client.connectionTimeout = timeout;
-    }
+    Duration? timeout = ParseUtil.validateDuration(ConfigController().getAppConfig()?.connectTimeout);
+    client.connectionTimeout ??= timeout;
+
     if (!kIsWeb) {
       // TODO find way to not do this
       client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);

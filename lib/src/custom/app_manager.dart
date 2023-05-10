@@ -14,6 +14,9 @@
  * the License.
  */
 
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:universal_io/io.dart';
 
 import '../mask/menu/menu.dart';
@@ -80,7 +83,7 @@ abstract class AppManager {
   void modifyMenuModel(MenuModel pMenuModel) {}
 
   /// Can be used to modify the headers for each request
-  void modifyHeaders(HttpHeaders headers) {}
+  void modifyHeaders(Map<String, dynamic> headers) {}
 
   /// Can be used to modify the cookie list for each request
   void modifyCookies(List<Cookie> cookies) {}
@@ -93,8 +96,13 @@ abstract class AppManager {
 
   /// Is called when a response is returned, use the [resendRequest] function to resend the original request.
   /// Useful for 2FA or retry.
-  Future<HttpClientResponse?> handleResponse(
-          ApiRequest request, Stream<List<int>> responseStream, Future<HttpClientResponse> Function() resendRequest) =>
+  ///
+  /// Currently [Response.data] is always going to be a [Uint8List] to provide maximum flexibility.
+  Future<Response?> handleResponse(
+    ApiRequest request,
+    Response originalResponse,
+    Future<Response> Function() resendRequest,
+  ) =>
       Future.value(null);
 
   /// Is called if a new startup is initiated.

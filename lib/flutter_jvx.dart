@@ -18,6 +18,7 @@
 library flutter_jvx;
 
 export 'package:beamer/beamer.dart';
+export 'package:dio/dio.dart';
 export 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 export 'package:latlong2/latlong.dart';
 

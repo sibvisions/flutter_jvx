@@ -28,6 +28,7 @@ class AppConfig {
 
   final String? title;
   final Uri? privacyPolicy;
+  final Duration? connectTimeout;
   final Duration? requestTimeout;
   final Duration? aliveInterval;
   final Duration? wsPingInterval;
@@ -91,6 +92,7 @@ class AppConfig {
     this.title,
     this.privacyPolicy,
     this.requestTimeout,
+    this.connectTimeout,
     this.aliveInterval,
     this.wsPingInterval,
     this.autoRestartOnSessionExpired,
@@ -110,7 +112,7 @@ class AppConfig {
   const AppConfig.empty()
       : this(
           title: "JVx Mobile",
-          requestTimeout: const Duration(seconds: 10),
+          connectTimeout: const Duration(seconds: 10),
           aliveInterval: const Duration(seconds: 30),
           wsPingInterval: const Duration(seconds: 10),
           autoRestartOnSessionExpired: true,
@@ -130,6 +132,7 @@ class AppConfig {
       : this(
           title: json['title'],
           privacyPolicy: json['privacyPolicy'] != null ? Uri.tryParse(json['privacyPolicy']) : null,
+          connectTimeout: json['connectTimeout'] != null ? Duration(milliseconds: json['connectTimeout']) : null,
           requestTimeout: json['requestTimeout'] != null ? Duration(milliseconds: json['requestTimeout']) : null,
           aliveInterval: json['aliveInterval'] != null ? Duration(milliseconds: json['aliveInterval']) : null,
           wsPingInterval: json['wsPingInterval'] != null ? Duration(milliseconds: json['wsPingInterval']) : null,
@@ -154,6 +157,7 @@ class AppConfig {
     return AppConfig(
       title: other.title ?? title,
       privacyPolicy: other.privacyPolicy ?? privacyPolicy,
+      connectTimeout: other.connectTimeout ?? connectTimeout,
       requestTimeout: other.requestTimeout ?? requestTimeout,
       aliveInterval: other.aliveInterval ?? aliveInterval,
       wsPingInterval: other.wsPingInterval ?? wsPingInterval,
