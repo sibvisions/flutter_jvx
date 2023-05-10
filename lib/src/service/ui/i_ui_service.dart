@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:universal_io/io.dart';
 
@@ -63,7 +64,16 @@ abstract class IUiService {
   FutureOr<void> clear(bool pFullClear);
 
   static String getErrorMessage(Object error) {
-    if (error is SocketException) {
+    if (error is DioError) {
+      if ([
+        DioErrorType.connectionTimeout,
+        DioErrorType.receiveTimeout,
+        DioErrorType.sendTimeout,
+      ].contains(error.type)) {
+        return "Connection to remote server timed out";
+      }
+      return "Could not connect to remote server";
+    } else if (error is SocketException) {
       if (error.message.contains("timed out")) {
         return "Connection to remote server timed out";
       }
