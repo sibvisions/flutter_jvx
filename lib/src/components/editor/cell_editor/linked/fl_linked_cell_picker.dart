@@ -98,6 +98,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     tableModel.columnLabels = [];
     tableModel.tableHeaderVisible = model.tableHeaderVisible && !isConcatMask;
 
+    if (model.disabledAlternatingRowColor) {
+      tableModel.styles.add(FlTableModel.NO_ALTERNATING_ROW_COLOR_STYLE);
+    }
+
     _subscribe();
   }
 

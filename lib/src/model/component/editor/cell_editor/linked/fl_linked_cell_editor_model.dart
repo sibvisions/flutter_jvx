@@ -18,6 +18,7 @@ import 'package:flutter/animation.dart';
 
 import '../../../../../service/api/shared/api_object_property.dart';
 import '../../../../../service/config/config_controller.dart';
+import '../../../fl_component_model.dart';
 import '../cell_editor_model.dart';
 import 'column_view.dart';
 import 'link_reference.dart';
@@ -55,6 +56,9 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
   bool tableReadonly = true;
 
   Size? popupSize;
+
+  /// If the table removes the alternating table row colors.
+  bool get disabledAlternatingRowColor => styles.contains(FlTableModel.NO_ALTERNATING_ROW_COLOR_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

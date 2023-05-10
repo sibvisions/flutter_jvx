@@ -21,7 +21,11 @@ class FlTableModel extends FlComponentModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// This style hides the floating insert button.
   static const String NO_FLOATING_BUTTON_STYLE = "f_no_float_insert";
+
+  /// This style removes the alternating table row colors.
+  static const String NO_ALTERNATING_ROW_COLOR_STYLE = "f_no_alternating_row_color";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -70,6 +74,9 @@ class FlTableModel extends FlComponentModel {
 
   /// If the table hides the floating insert button.
   bool get showFloatButton => !styles.contains(NO_FLOATING_BUTTON_STYLE);
+
+  /// If the table removes the alternating table row colors.
+  bool get disabledAlternatingRowColor => styles.contains(NO_ALTERNATING_ROW_COLOR_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

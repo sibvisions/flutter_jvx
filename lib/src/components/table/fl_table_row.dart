@@ -136,7 +136,12 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
       );
     }).toList();
 
-    double opacity = index % 2 == 0 ? 0.00 : 0.05;
+    double opacity;
+    if (model.disabledAlternatingRowColor) {
+      opacity = 0.0;
+    } else {
+      opacity = index % 2 == 0 ? 0.00 : 0.05;
+    }
 
     if (isSelected && model.showSelection) {
       opacity = 0.25;
