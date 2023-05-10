@@ -469,7 +469,9 @@ class OnlineApiRepository extends IRepository {
         }
 
         if (data == "api/changes") {
-          ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"));
+          ICommandService()
+              .sendCommand(ChangesCommand(reason: "Server sent api/changes"))
+              .catchError((e, stack) => FlutterUI.logUI.e("Failed to handle changes command", e, stack));
         }
       },
       onConnectedChange: (connected) => setConnected(connected),
