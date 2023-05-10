@@ -29,7 +29,8 @@ class APIRoute {
   static const APIRoute POST_LOGIN = APIRoute(Method.POST, "api/v2/login");
   static const APIRoute POST_CANCEL_LOGIN = APIRoute(Method.POST, "api/cancelLogin");
   static const APIRoute POST_OPEN_SCREEN = APIRoute(Method.POST, "api/v2/openScreen");
-  static const APIRoute POST_REOPEN_SCREEN = APIRoute(Method.POST, "api/v2/reopenScreen");
+  static const APIRoute POST_REOPEN_SCREEN =
+      APIRoute(Method.POST, "api/reopenScreen"); // Only v3 uses /v3/reopenScreen. Default v2 is without version
   static const APIRoute POST_SET_SCREEN_PARAMETER = APIRoute(Method.POST, "api/setScreenParameter");
   static const APIRoute POST_DEVICE_STATUS = APIRoute(Method.POST, "api/deviceStatus");
   static const APIRoute POST_PRESS_BUTTON = APIRoute(Method.POST, "api/v2/pressButton");
