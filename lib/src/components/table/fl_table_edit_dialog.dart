@@ -228,7 +228,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
