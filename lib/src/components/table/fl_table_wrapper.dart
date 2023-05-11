@@ -205,6 +205,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onValueChanged: _setValueChanged,
       onRefresh: _refresh,
       onEndScroll: _loadMore,
+      onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
       onLongPress: _onLongPress,
       onTap: _onCellTap,
       onDoubleTap: _onCellDoubleTap,
@@ -693,6 +694,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           itemScrollController.scrollTo(
               index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: alignment);
         }
+
+        // Reset the last scroll notification so that the next scroll will be calculated correctly.
+        lastScrollNotification = null;
       }
     }
   }
