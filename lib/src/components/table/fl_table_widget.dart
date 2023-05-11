@@ -68,6 +68,9 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// Gets called when the user scrolled to the edge of the table.
   final VoidCallback? onEndScroll;
 
+  /// Gets called when the user scrolled the table.
+  final Function(ScrollNotification pScrollNotification)? onScroll;
+
   /// Gets called when the list should refresh
   final Future<void> Function()? onRefresh;
 
@@ -115,6 +118,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.onDoubleTap,
     this.onLongPress,
     this.onEndScroll,
+    this.onScroll,
     this.onRefresh,
     this.slideActionFactory,
     this.itemScrollController,
@@ -208,8 +212,15 @@ class _FlTableWidgetState extends State<FlTableWidget> {
             ? (details) => widget.onLongPress?.call(-1, "", FlDummyCellEditor(), details)
             : null,
         child: NotificationListener<ScrollEndNotification>(
-          onNotification: widget.model.isEnabled ? onInternalEndScroll : null,
-          child: table,
+          onNotification: onInternalEndScroll,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              widget.onScroll?.call(notification);
+              // Let it bubble upwards to our end notification listener!
+              return false;
+            },
+            child: table,
+          ),
         ),
       ),
     );
@@ -311,7 +322,8 @@ class _FlTableWidgetState extends State<FlTableWidget> {
   /// Notifies if the bottom of the table has been reached
   bool onInternalEndScroll(ScrollEndNotification notification) {
     // 25 is a grace value.
-    if (notification.metrics.extentAfter < 25 &&
+    if (widget.model.isEnabled &&
+        notification.metrics.extentAfter < 25 &&
         notification.metrics.atEdge &&
         notification.metrics.axis == Axis.vertical) {
       /// Scrolled to the bottom

@@ -102,6 +102,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
 
+  /// The last selected row. Used to calculate the current scroll position
+  /// if the table has not yet been scrolled.
+  int oldSelectedRow = -1;
+
+  /// If the last scrolled item got scrolled to the top edge or bottom edge.
+  bool? scrolledIndexTopAligned;
+
   /// The currently selected column. null is none.
   String? selectedColumn;
 
@@ -149,6 +156,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// If the selection has to be cancelled.
   bool cancelSelect = false;
+
+  /// The known scroll notification.
+  ScrollNotification? lastScrollNotification;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -212,6 +222,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     });
 
     return getPositioned(child: widget);
+  }
+
+  @override
+  void postFrameCallback(BuildContext context) {
+    if (!mounted) {
+      return;
+    }
+
+    _scrollToSelected();
+
+    super.postFrameCallback(context);
   }
 
   @override
@@ -364,8 +385,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _receiveSelectedRecord(DataRecord? pRecord) {
     currentState |= LOADED_SELECTED_RECORD;
 
-    var oldRecordIndex = selectedRow;
-    var oldSelectedColumn = selectedColumn;
+    oldSelectedRow = selectedRow;
 
     if (pRecord != null) {
       selectedRow = pRecord.index;
@@ -375,16 +395,21 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       selectedRow = -1;
     }
 
-    if (oldRecordIndex != selectedRow || selectedColumn != oldSelectedColumn) {
-      if (oldRecordIndex != selectedRow) {
-        _closeDialog();
-      }
-      if (selectedRow >= (pageCount * FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE)) {
-        pageCount = ((selectedRow + 1) / FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE).ceil();
-        _subscribe();
-      }
-      setState(() {});
+    // Close dialog to edit a row if current row was changed.
+    if (oldSelectedRow != selectedRow) {
+      _closeDialog();
     }
+
+    // If have not fetched until the selected row index, fetch until the selected row page.
+    // This is mostly not needed anymore as we already fetch on reload -1 and
+    // [_onDataProviderReload] already updates the subscription. But we still keep it
+    // as it is a safety net.
+    if (selectedRow >= (pageCount * FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE)) {
+      pageCount = ((selectedRow + 1) / FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE).ceil();
+      _subscribe();
+    }
+
+    setState(() {});
   }
 
   /// Receives the meta data of the table.
@@ -603,6 +628,74 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Scrolls the table to the selected row if it is not visible.
+  /// Can only be called in the post frame callback as the scroll controller
+  /// otherwise has not yet been updated with the most recent items.
+  void _scrollToSelected() {
+    // Only scroll if current selected is not visible
+    if (selectedRow >= 0 && selectedRow < dataChunk.data.length && itemScrollController.isAttached) {
+      int indexToScrollTo = selectedRow;
+      if (!model.stickyHeaders && model.tableHeaderVisible) {
+        indexToScrollTo++;
+      }
+
+      double itemTop = indexToScrollTo * tableSize.rowHeight;
+      double itemBottom = itemTop + tableSize.rowHeight;
+
+      double topViewCutOff;
+      double bottomViewCutOff;
+      double heightOfView;
+
+      if (lastScrollNotification != null) {
+        topViewCutOff = lastScrollNotification!.metrics.extentBefore;
+        heightOfView = lastScrollNotification!.metrics.viewportDimension;
+        bottomViewCutOff = topViewCutOff + heightOfView;
+      } else if (layoutData.layoutPosition == null) {
+        // Needs a position to calculate.
+        // Probably noz fully loaded, dismiss scrolling.
+        return;
+      } else {
+        heightOfView = layoutData.layoutPosition!.height - (tableSize.borderWidth * 2);
+        if (scrolledIndexTopAligned == null) {
+          // Never scrolled = table is at the top
+          topViewCutOff = 0;
+          bottomViewCutOff = topViewCutOff + heightOfView;
+        } else {
+          int indexToScrollFrom = oldSelectedRow;
+          if (!model.stickyHeaders && model.tableHeaderVisible) {
+            indexToScrollFrom++;
+          }
+
+          if (scrolledIndexTopAligned!) {
+            topViewCutOff = indexToScrollFrom * tableSize.rowHeight;
+            bottomViewCutOff = topViewCutOff + heightOfView;
+          } else {
+            bottomViewCutOff = indexToScrollFrom * tableSize.rowHeight + tableSize.rowHeight;
+            topViewCutOff = bottomViewCutOff - heightOfView;
+          }
+        }
+      }
+
+      // Check if the item is visible.
+      if (itemTop < topViewCutOff || itemBottom > bottomViewCutOff) {
+        // Check if the item is above or below the current view.
+        if (itemTop < topViewCutOff) {
+          // Scroll to the top of the item.
+          scrolledIndexTopAligned = true;
+          itemScrollController.scrollTo(index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: 0);
+        } else {
+          // Because alignment 1 means, the top edge of the item is aligned with the bottom view, we have
+          // To calculate the alignment so that the bottom edge of the item is aligned with the bottom view.
+          double alignment = (heightOfView - tableSize.rowHeight) / heightOfView;
+          scrolledIndexTopAligned = false;
+          // Scroll to the bottom of the item.
+          itemScrollController.scrollTo(
+              index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: alignment);
+        }
+      }
+    }
+  }
 
   /// Selects the record.
   void _selectRecord(int pRowIndex, String? pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
