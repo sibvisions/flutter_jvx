@@ -24,6 +24,7 @@ import 'package:rxdart/rxdart.dart';
 import '../../components/components_factory.dart';
 import '../../components/panel/fl_panel_wrapper.dart';
 import '../../custom/custom_screen.dart';
+import '../../exceptions/error_view_exception.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/navigation_command.dart';
@@ -136,14 +137,20 @@ class WorkScreenState extends State<WorkScreen> {
       // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
       if (model == null &&
           (customScreen == null || (customScreen!.sendOpenScreenRequests && !ConfigController().offline.value))) {
-        await ICommandService()
-            .sendCommand(OpenScreenCommand(
-              screenLongName: item!.screenLongName,
-              reason: "Screen was opened",
-            ))
-            .catchError(FlutterUI.createErrorHandler("Open screen failed"));
+        await ICommandService().sendCommand(OpenScreenCommand(
+          screenLongName: item!.screenLongName,
+          reason: "Screen was opened",
+        ));
       }
-    }();
+    }()
+        .catchError((e, stack) {
+      FlutterUI.log.e("Open screen failed", e, stack);
+      if (e is ErrorViewException) {
+        // Server failed to open this screen, beam back to old location.
+        context.beamBack();
+      }
+      throw e;
+    });
   }
 
   @override
