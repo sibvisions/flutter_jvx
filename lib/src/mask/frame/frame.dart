@@ -136,6 +136,10 @@ abstract class Frame extends StatefulWidget {
 }
 
 abstract class FrameState extends State<Frame> {
+  void rebuild() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) => PageStorage(
         bucket: pageStorageBucket,

@@ -16,9 +16,15 @@
 
 import 'package:flutter/material.dart';
 
+import '../../model/command/api/close_screen_command.dart';
+import '../../model/command/storage/delete_screen_command.dart';
+import '../../model/command/ui/function_command.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
+import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../frame/frame.dart';
 import 'grid/grid_menu.dart';
 import 'list/list_menu.dart';
 import 'menu_page.dart';
@@ -96,6 +102,29 @@ abstract class Menu extends StatelessWidget {
     } else {
       IUiService().routeToWorkScreen(pScreenName: item.navigationName);
     }
+  }
+
+  /// Returns the action function based on the [item] parameter.
+  static ButtonCallback? getCloseScreenAction(MenuItemModel item) {
+    return IStorageService().getComponentByNavigationName(item.navigationName) != null &&
+            // Disabling for current screen as this is still buggy.
+            // https://github.com/sibvisions/flutter_jvx/issues/144
+            IUiService().getCurrentWorkscreenName() != item.navigationName
+        ? (BuildContext context, {required MenuItemModel item}) {
+            FlPanelModel? workscreenModel = IStorageService().getComponentByNavigationName(item.navigationName);
+            if (workscreenModel != null) {
+              IUiService()
+                  .sendCommand(FunctionCommand(
+                    function: () async => [
+                      CloseScreenCommand(screenName: workscreenModel.name, reason: "User requested screen closing"),
+                      DeleteScreenCommand(screenName: workscreenModel.name, reason: "User requested screen closing"),
+                    ],
+                    reason: "User requested screen closing",
+                  ))
+                  .then((value) => Frame.of(context).rebuild());
+            }
+          }
+        : null;
   }
 }
 

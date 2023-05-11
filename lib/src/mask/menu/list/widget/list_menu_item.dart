@@ -15,10 +15,12 @@
  */
 
 import 'package:beamer/beamer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../routing/locations/work_screen_location.dart';
+import '../../../../util/jvx_colors.dart';
 import '../../menu_page.dart';
 
 class ListMenuItem extends StatelessWidget {
@@ -26,13 +28,16 @@ class ListMenuItem extends StatelessWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Model of this menu item
+  /// Model of this menu item.
   final MenuItemModel menuItemModel;
 
-  /// Callback to be called when button is pressed
+  /// Callback when button is pressed.
   final ButtonCallback onClick;
 
-  /// Text style for inner widgets
+  /// Callback when the close button was pressed.
+  final ButtonCallback? Function(MenuItemModel)? onClose;
+
+  /// Text style for inner widgets.
   final TextStyle? textStyle;
 
   final bool decreasedDensity;
@@ -46,6 +51,7 @@ class ListMenuItem extends StatelessWidget {
     super.key,
     required this.menuItemModel,
     required this.onClick,
+    this.onClose,
     this.textStyle,
     bool? decreasedDensity,
     bool? useAlternativeLabel,
@@ -83,6 +89,8 @@ class ListMenuItem extends StatelessWidget {
           );
         }
 
+        ButtonCallback? closeAction = onClose?.call(menuItemModel);
+
         return ListTile(
           selected: selected,
           visualDensity:
@@ -93,6 +101,17 @@ class ListMenuItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: textStyle,
           ),
+          trailing: closeAction != null
+              ? IconButton(
+                  icon: const Icon(Icons.close),
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? JVxColors.COMPONENT_DISABLED
+                      : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                  iconSize: 22,
+                  splashRadius: kIsWeb ? 18 : 25,
+                  onPressed: () => closeAction.call(context, item: menuItemModel),
+                )
+              : null,
           onTap: onTap,
         );
       },

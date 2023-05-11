@@ -19,6 +19,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/menu/menu_group_model.dart';
+import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/response/device_status_response.dart';
 import '../../grid/widget/grid_menu_header.dart';
 import '../../menu_page.dart';
@@ -29,17 +30,20 @@ class ListMenuGroup extends StatelessWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Callback for menu items
+  /// Callback for menu items.
   final ButtonCallback onClick;
 
-  /// Model of this group
+  /// Callback for menu items.
+  final ButtonCallback? Function(MenuItemModel)? onClose;
+
+  /// Model of this group.
   final MenuGroupModel menuGroupModel;
   final LayoutMode? layoutMode;
 
-  /// Text style for menu items
+  /// Text style for menu items.
   final TextStyle? textStyle;
 
-  /// Text color for header
+  /// Text color for header.
   final Color? headerColor;
 
   final bool? decreasedDensity;
@@ -54,6 +58,7 @@ class ListMenuGroup extends StatelessWidget {
   const ListMenuGroup({
     super.key,
     required this.onClick,
+    this.onClose,
     required this.menuGroupModel,
     required this.sticky,
     this.layoutMode,
@@ -77,6 +82,7 @@ class ListMenuGroup extends StatelessWidget {
       listGroupItems.add(ListMenuItem(
         menuItemModel: menuGroupModel.items.elementAt(i),
         onClick: onClick,
+        onClose: onClose,
         textStyle: textStyle,
         decreasedDensity: decreasedDensity,
         useAlternativeLabel: useAlternativeLabel,

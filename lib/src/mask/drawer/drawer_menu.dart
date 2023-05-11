@@ -192,7 +192,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return ValueListenableBuilder<MenuModel>(
       valueListenable: IUiService().getMenuNotifier(),
       builder: (context, _, child) {
-        return ColoredBox(
+        return Material(
           color: Theme.of(context).colorScheme.background,
           child: ListTileTheme.merge(
             iconColor: Theme.of(context).colorScheme.primary,
@@ -206,6 +206,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 key: const PageStorageKey('DrawerMenu'),
                 menuModel: IUiService().getMenuModel(),
                 onClick: Menu.menuItemPressed,
+                onClose: Menu.getCloseScreenAction,
                 useAlternativeLabel: true,
                 grouped: true,
               ),

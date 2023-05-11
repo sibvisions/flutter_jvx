@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../../../model/response/device_status_response.dart';
 import '../menu.dart';
+import '../menu_page.dart';
 import 'widget/list_menu_group.dart';
 import 'widget/list_menu_item.dart';
 
@@ -26,6 +27,9 @@ class ListMenu extends Menu {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Callback when the close button was pressed
+  final ButtonCallback? Function(MenuItemModel)? onClose;
 
   final LayoutMode? layoutMode;
 
@@ -50,6 +54,7 @@ class ListMenu extends Menu {
     super.key,
     required super.menuModel,
     required super.onClick,
+    this.onClose,
     this.layoutMode,
     this.textStyle,
     this.headerColor,
@@ -65,9 +70,10 @@ class ListMenu extends Menu {
     return CustomScrollView(
       slivers: grouped && ((groupOnlyOnMultiple && menuModel.menuGroups.length > 1) || !groupOnlyOnMultiple)
           ? menuModel.menuGroups
-              .map((e) => ListMenuGroup(
-                    menuGroupModel: e,
+          .map((e) => ListMenuGroup(
+        menuGroupModel: e,
                     onClick: onClick,
+                    onClose: onClose,
                     sticky: sticky,
                     layoutMode: layoutMode,
                     textStyle: textStyle,
@@ -75,22 +81,23 @@ class ListMenu extends Menu {
                     decreasedDensity: decreasedDensity,
                     useAlternativeLabel: useAlternativeLabel,
                   ))
-              .toList()
+          .toList()
           : [
-              SliverFixedExtentList(
-                itemExtent: 50,
-                delegate: SliverChildListDelegate.fixed(
-                  _getAllMenuItems()
-                      .map((e) => ListMenuItem(
-                            onClick: onClick,
+        SliverFixedExtentList(
+          itemExtent: 50,
+          delegate: SliverChildListDelegate.fixed(
+            _getAllMenuItems()
+                .map((e) => ListMenuItem(
+              onClick: onClick,
+                            onClose: onClose,
                             menuItemModel: e,
                             decreasedDensity: decreasedDensity,
                             useAlternativeLabel: useAlternativeLabel,
                           ))
-                      .toList(),
-                ),
-              ),
-            ],
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 
