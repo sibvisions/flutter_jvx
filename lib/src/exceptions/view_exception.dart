@@ -1,5 +1,5 @@
 /* 
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2023 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,18 +14,14 @@
  * the License.
  */
 
-import '../model/command/ui/view/message/open_server_error_dialog_command.dart';
-import 'view_exception.dart';
+class ViewException implements Exception {
+  /// A message describing the exception.
+  final String? message;
 
-class ErrorViewException extends ViewException {
-  /// The original cause of this exception.
-  final OpenServerErrorDialogCommand errorCommand;
-
-  ErrorViewException(this.errorCommand, [super.message]);
+  ViewException([this.message]);
 
   @override
   String toString() {
-    String s = super.toString();
-    return "${s.isNotEmpty ? "$s " : s}${errorCommand.message}";
+    return message != null ? message! : "";
   }
 }

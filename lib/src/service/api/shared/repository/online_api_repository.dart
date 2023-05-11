@@ -28,6 +28,7 @@ import 'package:universal_io/io.dart';
 import '../../../../config/api/api_route.dart';
 import '../../../../exceptions/invalid_server_response_exception.dart';
 import '../../../../exceptions/session_expired_exception.dart';
+import '../../../../exceptions/view_exception.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../mask/jvx_overlay.dart';
 import '../../../../model/api_interaction.dart';
@@ -664,7 +665,7 @@ class OnlineApiRepository extends IRepository {
         var viewResponse = apiInteraction.responses.firstWhereOrNull((element) => element is MessageView);
         if (viewResponse != null) {
           var messageViewResponse = viewResponse as MessageView;
-          throw StateError("Server sent error: $messageViewResponse");
+          throw ViewException("Server sent error: $messageViewResponse");
         }
       }
 
