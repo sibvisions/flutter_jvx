@@ -841,8 +841,12 @@ class UiService implements IUiService {
 
   @override
   void showJVxDialog(JVxDialog pDialog) {
-    _activeDialogs.add(pDialog);
-    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
+    if (pDialog is! MessageDialog ||
+        _activeDialogs.none(
+            (element) => element is MessageDialog && element.command.componentId == pDialog.command.componentId)) {
+      _activeDialogs.add(pDialog);
+      JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.refreshDialogs();
+    }
   }
 
   @override
