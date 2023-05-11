@@ -47,7 +47,7 @@ class ApiOpenScreenRequest extends SessionRequest {
     this.screenClassName,
     this.parameter,
     this.reopen = false,
-    required this.manualClose,
+    this.manualClose = true,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
