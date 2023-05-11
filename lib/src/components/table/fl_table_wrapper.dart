@@ -104,7 +104,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// The last selected row. Used to calculate the current scroll position
   /// if the table has not yet been scrolled.
-  int oldSelectedRow = -1;
+  int lastScrolledToIndex = -1;
 
   /// If the last scrolled item got scrolled to the top edge or bottom edge.
   bool? scrolledIndexTopAligned;
@@ -386,7 +386,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _receiveSelectedRecord(DataRecord? pRecord) {
     currentState |= LOADED_SELECTED_RECORD;
 
-    oldSelectedRow = selectedRow;
+    var currentSelectedRow = selectedRow;
 
     if (pRecord != null) {
       selectedRow = pRecord.index;
@@ -397,7 +397,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     // Close dialog to edit a row if current row was changed.
-    if (oldSelectedRow != selectedRow) {
+    if (currentSelectedRow != selectedRow) {
       _closeDialog();
     }
 
@@ -663,7 +663,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           topViewCutOff = 0;
           bottomViewCutOff = topViewCutOff + heightOfView;
         } else {
-          int indexToScrollFrom = oldSelectedRow;
+          int indexToScrollFrom = lastScrolledToIndex;
           if (!model.stickyHeaders && model.tableHeaderVisible) {
             indexToScrollFrom++;
           }
@@ -682,20 +682,26 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       if (itemTop < topViewCutOff || itemBottom > bottomViewCutOff) {
         // Check if the item is above or below the current view.
         if (itemTop < topViewCutOff) {
-          // Scroll to the top of the item.
           scrolledIndexTopAligned = true;
+
+          // Scroll to the top of the item.
           itemScrollController.scrollTo(index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: 0);
         } else {
-          // Because alignment 1 means, the top edge of the item is aligned with the bottom view, we have
-          // To calculate the alignment so that the bottom edge of the item is aligned with the bottom view.
-          double alignment = (heightOfView - tableSize.rowHeight) / heightOfView;
           scrolledIndexTopAligned = false;
+          // Alignment 1 means the top edge of the item is aligned with the bottom edge of the view
+          // Calculates the percentage of the height the top edge of the item is from the top of the view,
+          // where the bottom edge of the item touches the bottom edge of the view.
+          double alignment = (heightOfView - tableSize.rowHeight) / heightOfView;
+
           // Scroll to the bottom of the item.
           itemScrollController.scrollTo(
               index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: alignment);
         }
 
-        // Reset the last scroll notification so that the next scroll will be calculated correctly.
+        // Scrolling via the controller does not fire scroll notifications.
+        // The last scrollnotification is therefore not updated and would be wrong for
+        // the next scroll. Therefore, the last scrollnotification is set to null.
+        lastScrolledToIndex = selectedRow;
         lastScrollNotification = null;
       }
     }
