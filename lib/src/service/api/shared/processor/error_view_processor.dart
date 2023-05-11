@@ -23,18 +23,16 @@ import '../i_response_processor.dart';
 class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
   @override
   List<BaseCommand> processResponse(ErrorViewResponse pResponse, ApiRequest? pRequest) {
-    if (!pResponse.silentAbort) {
-      return [
-        OpenServerErrorDialogCommand(
-          reason: "Server sent error in response",
-          componentId: pResponse.componentId,
-          title: pResponse.title,
-          message: pResponse.message,
-          userError: isUserError(pResponse.message),
-        )
-      ];
-    }
-    return [];
+    return [
+      OpenServerErrorDialogCommand(
+        reason: "Server sent error in response",
+        componentId: pResponse.componentId,
+        title: pResponse.title,
+        message: pResponse.message,
+        silentAbort: pResponse.silentAbort,
+        userError: isUserError(pResponse.message),
+      )
+    ];
   }
 
   /// Dirty error message check

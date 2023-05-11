@@ -30,7 +30,7 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
   @override
   Future<List<BaseCommand>> processCommand(OpenServerErrorDialogCommand command) async {
     // Will be displayed in Splash if context is null
-    if (FlutterUI.getCurrentContext() != null) {
+    if (FlutterUI.getCurrentContext() != null && !command.silentAbort) {
       bool goToSettings = command.userError;
       // Don't show "Go to Settings" while in settings
       if (FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == SettingsLocation) {
