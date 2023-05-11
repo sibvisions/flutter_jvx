@@ -310,11 +310,12 @@ class _FlTableWidgetState extends State<FlTableWidget> {
 
   /// Notifies if the bottom of the table has been reached
   bool onInternalEndScroll(ScrollEndNotification notification) {
-    if (notification.metrics.pixels > 0 && notification.metrics.atEdge) {
-      if (notification.metrics.axis == Axis.vertical) {
-        /// Scrolled to the bottom
-        widget.onEndScroll?.call();
-      }
+    // 25 is a grace value.
+    if (notification.metrics.extentAfter < 25 &&
+        notification.metrics.atEdge &&
+        notification.metrics.axis == Axis.vertical) {
+      /// Scrolled to the bottom
+      widget.onEndScroll?.call();
     }
 
     return true;
