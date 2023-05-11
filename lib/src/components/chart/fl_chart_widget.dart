@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:charts_flutter/flutter.dart';
+import 'package:community_charts_flutter/community_charts_flutter.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../model/component/fl_component_model.dart';
