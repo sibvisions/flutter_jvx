@@ -14,8 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/foundation.dart';
-
+import '../../../../../mask/frame/frame.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_open_screen_request.dart';
@@ -39,7 +38,7 @@ class OpenScreenCommandProcessor implements ICommandProcessor<OpenScreenCommand>
         screenLongName: command.screenLongName,
         screenClassName: command.screenClassName,
         parameter: command.parameter,
-        manualClose: !kIsWeb,
+        manualClose: !Frame.isWebFrame(),
         reopen: command.reopen,
       ),
     );
