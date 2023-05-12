@@ -93,7 +93,7 @@ abstract class Menu extends StatelessWidget {
   }
 
   static void menuItemPressed(BuildContext context, {required MenuItemModel item}) {
-    // Always close drawer even on route (e.g. previewer blocks routing)
+    // Always close drawer even on route (Flutter Bug sometimes breaks routing with open drawer)
     Scaffold.maybeOf(context)?.closeEndDrawer();
 
     // Offline screens no not require the server to know that they are open
@@ -106,14 +106,15 @@ abstract class Menu extends StatelessWidget {
 
   /// Returns the action function based on the [item] parameter.
   static ButtonCallback? getCloseScreenAction(MenuItemModel item) {
-    return IStorageService().getComponentByNavigationName(item.navigationName) != null &&
-            // Disabling for current screen as this is still buggy.
-            // https://github.com/sibvisions/flutter_jvx/issues/144
-            IUiService().getCurrentWorkscreenName() != item.navigationName
-        ? (BuildContext context, {required MenuItemModel item}) {
+    return IStorageService().getComponentByNavigationName(item.navigationName) != null
+        ? (BuildContext context, {required MenuItemModel item}) async {
+            // Always close drawer as this can prevent the navigator from correctly updating the screen.
+            // https://github.com/sibvisions/flutter_jvx/issues/145
+            Scaffold.maybeOf(context)?.closeEndDrawer();
+
             FlPanelModel? workscreenModel = IStorageService().getComponentByNavigationName(item.navigationName);
             if (workscreenModel != null) {
-              IUiService()
+              await IUiService()
                   .sendCommand(FunctionCommand(
                     function: () async => [
                       CloseScreenCommand(screenName: workscreenModel.name, reason: "User requested screen closing"),
