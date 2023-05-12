@@ -62,7 +62,7 @@ class FlGroupPanelHeaderWidget<T extends FlGroupPanelModel> extends FlStatelessW
       );
     }
 
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<LayoutMode>(
       valueListenable: IUiService().layoutMode,
       builder: (context, value, child) {
         if (value == LayoutMode.Mini && model.horizontalAlignment == HorizontalAlignment.STRETCH) {
