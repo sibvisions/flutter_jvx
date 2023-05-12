@@ -261,6 +261,7 @@ class TableSize {
       columnWidth = _adjustValue(columnWidth, rowWidth);
     }
 
+    // TODO Check if this is still relevant. Some editors are in the table, how are these icons rendered?
     columnWidth = _adjustValue(columnWidth, columnWidth + cellEditor.getContentPadding(null));
 
     return columnWidth;
