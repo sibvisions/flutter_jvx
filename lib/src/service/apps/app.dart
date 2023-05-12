@@ -137,9 +137,9 @@ class App {
   }
 
   /// {@template app.name}
-  /// The name of this app.
+  /// The application name defined by the server.
   ///
-  /// Used to identify the app on the server.
+  /// Used to identify this app on the server.
   /// {@endtemplate}
   String? get name => _getString("name") ?? getPredefinedConfig(_id)?.appName;
 
@@ -156,7 +156,7 @@ class App {
   /// {@template app.url}
   /// The url of this app.
   ///
-  /// Used to connect to the app server.
+  /// Used to connect to the server.
   /// {@endtemplate}
   Uri? get baseUrl {
     String? sBaseUrl = _getString("baseUrl");
@@ -250,7 +250,7 @@ class App {
     return ConfigController().defaultApp.value == _id;
   }
 
-  /// Sets the name of this app.
+  /// Sets the default state of this app.
   Future<void> updateDefault(bool? isDefault) async {
     assert(!locked);
     if (isDefault ?? false) {
@@ -280,8 +280,8 @@ class App {
       (!predefined && !customAppsAllowed && !forceSingleAppMode);
 
   /// {@template app.parametersHidden}
-  /// Whether the parameters such as [name] or
-  /// [baseUrl] can be seen by the user.
+  /// Whether parameters such as [name] or
+  /// [baseUrl] are shown to the user.
   ///
   /// Implicitly overrides [locked] to true.
   /// {@endtemplate}

@@ -21,8 +21,13 @@ class VersionConfig {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The RCS value that is shown in the settings page.
   final String? commit;
+
+  /// The build date string that is shown in the settings page.
   final String? buildDate;
+
+  /// The build number that is shown in the settings page.
   final int? buildNumber;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

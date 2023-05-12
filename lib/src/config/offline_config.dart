@@ -19,6 +19,14 @@ class OfflineConfig {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Whether data constraints sent by the server are respected while in offline mode.
+  ///
+  /// This should only be used for devices running Android 12+ (API 31+) as this can trigger a bug in previous SQLite versions!
+  ///
+  /// See also:
+  /// * https://sqlite.org/src/info/86ba67afafded936
+  /// * https://developer.android.com/reference/android/database/sqlite/package-summary
+  /// * https://developer.android.com/tools/releases/platforms
   final bool? checkConstraints;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

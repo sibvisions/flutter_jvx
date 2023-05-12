@@ -17,14 +17,35 @@
 import 'package:collection/collection.dart';
 import 'package:logger/logger.dart';
 
+import '../../flutter_ui.dart';
+
 class LogLevelConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Defines the log level used for the general logger.
+  ///
+  /// See also:
+  /// * [FlutterUI.log]
   final Level? general;
+
+  /// Defines the log level used for the API logger.
+  ///
+  /// See also:
+  /// * [FlutterUI.logAPI]
   final Level? api;
+
+  /// Defines the log level used for the command logger.
+  ///
+  /// See also:
+  /// * [FlutterUI.logCommand]
   final Level? command;
+
+  /// Defines the log level used for the UI logger.
+  ///
+  /// See also:
+  /// * [FlutterUI.logUI]
   final Level? ui;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

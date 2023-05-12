@@ -14,12 +14,22 @@
  * the License.
  */
 
+import '../model/response/application_meta_data_response.dart';
+
 class UiConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Whether a "Remember me?" checkbox is shown in the Login view.
+  ///
+  /// This can be overridden by the [ApplicationMetaDataResponse].
+  ///
+  /// See also:
+  /// * [ApplicationMetaDataResponse.rememberMeEnabled]
   final bool? showRememberMe;
+
+  /// Whether the "Remember me?" checkbox is checked by default.
   final bool? rememberMeChecked;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -25,7 +25,7 @@ class CustomMenuItem {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Group name under which this item should appear
+  /// Group name under which this item should appear.
   final String group;
 
   /// Label text of the menu item.
@@ -34,7 +34,7 @@ class CustomMenuItem {
   /// Alternative label text.
   final String? alternativeLabel;
 
-  /// Icon to be used when creating a custom menu item
+  /// Icon to be used when creating a custom menu item.
   final WidgetBuilder? imageBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +46,7 @@ class CustomMenuItem {
     required this.label,
     this.alternativeLabel,
 
-    /// Font Awesome Icon to be used when creating a custom menu item
+    /// Font Awesome Icon to be used when creating a custom menu item.
     IconData? faIcon,
     WidgetBuilder? imageBuilder,
   }) : imageBuilder = (imageBuilder ?? (faIcon != null ? (_) => FaIcon(faIcon) : null));
