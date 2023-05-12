@@ -76,35 +76,21 @@ class JVxDebug extends StatelessWidget {
               "API Service",
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            trailing: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 44),
-              child: ToggleButtons(
-                onPressed: (index) async {
-                  switch (index) {
-                    case 0:
-                      await IApiService().getRepository().start();
-                      break;
-                    case 1:
-                      await IApiService().getRepository().stop();
-                      break;
-                  }
-                },
-                isSelected: const [
-                  false,
-                  false,
-                ],
-                borderRadius: BorderRadius.circular(20),
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Text("Start"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Text("Stop"),
-                  ),
-                ],
-              ),
+            trailing: ControlButtons(
+              onPressed: (index) async {
+                switch (index) {
+                  case 0:
+                    await IApiService().getRepository().start();
+                    break;
+                  case 1:
+                    await IApiService().getRepository().stop();
+                    break;
+                }
+              },
+              labels: const [
+                "Start",
+                "Stop",
+              ],
             ),
           ),
           ListTile(
@@ -112,35 +98,21 @@ class JVxDebug extends StatelessWidget {
               "Web Socket",
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            trailing: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 44),
-              child: ToggleButtons(
-                onPressed: (index) async {
-                  switch (index) {
-                    case 0:
-                      await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
-                      break;
-                    case 1:
-                      await (IApiService().getRepository() as OnlineApiRepository?)?.stopWebSocket();
-                      break;
-                  }
-                },
-                isSelected: const [
-                  false,
-                  false,
-                ],
-                borderRadius: BorderRadius.circular(20),
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Text("Start"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Text("Stop"),
-                  ),
-                ],
-              ),
+            trailing: ControlButtons(
+              onPressed: (index) async {
+                switch (index) {
+                  case 0:
+                    await (IApiService().getRepository() as OnlineApiRepository?)?.startWebSocket();
+                    break;
+                  case 1:
+                    await (IApiService().getRepository() as OnlineApiRepository?)?.stopWebSocket();
+                    break;
+                }
+              },
+              labels: const [
+                "Start",
+                "Stop",
+              ],
             ),
           ),
           ListTile(
@@ -153,6 +125,44 @@ class JVxDebug extends StatelessWidget {
                 cast<OnlineApiRepository>(IApiService().getRepository())?.jvxWebSocket?.reconnectWebSocket();
               },
               child: const Text("Reconnect"),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Navigator",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: ControlButtons(
+              onPressed: (index) async {
+                var effectiveContext = FlutterUI.getEffectiveContext();
+                NavigatorState? navigator;
+                if (effectiveContext != null) {
+                  navigator = Navigator.maybeOf(effectiveContext);
+                }
+                switch (index) {
+                  case 0:
+                    await navigator?.maybePop();
+                    break;
+                  case 1:
+                    navigator?.pop();
+                    break;
+                }
+              },
+              hPadding: 14,
+              labels: const [
+                "Maybe",
+                "Pop",
+              ],
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Beamer",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: OutlinedButton(
+              onPressed: () => FlutterUI.getBeamerDelegate().beamBack(),
+              child: const Text("Back"),
             ),
           ),
           StatefulBuilder(builder: (context, setState) {
@@ -177,35 +187,21 @@ class JVxDebug extends StatelessWidget {
               "Loading Bar",
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            trailing: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 44),
-              child: ToggleButtons(
-                onPressed: (index) async {
-                  switch (index) {
-                    case 0:
-                      JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.showLoading(Duration.zero);
-                      break;
-                    case 1:
-                      JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.hideLoading();
-                      break;
-                  }
-                },
-                isSelected: const [
-                  false,
-                  false,
-                ],
-                borderRadius: BorderRadius.circular(20),
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Text("On"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Text("Off"),
-                  ),
-                ],
-              ),
+            trailing: ControlButtons(
+              onPressed: (index) async {
+                switch (index) {
+                  case 0:
+                    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.showLoading(Duration.zero);
+                    break;
+                  case 1:
+                    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.hideLoading();
+                    break;
+                }
+              },
+              labels: const [
+                "On",
+                "Off",
+              ],
             ),
           ),
           ListTile(
@@ -213,43 +209,26 @@ class JVxDebug extends StatelessWidget {
               "Connection Banner",
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            trailing: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 44),
-              child: ToggleButtons(
-                onPressed: (index) async {
-                  switch (index) {
-                    case 0:
-                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(true);
-                      break;
-                    case 1:
-                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(false);
-                      break;
-                    case 2:
-                      JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.resetConnectionState();
-                      break;
-                  }
-                },
-                isSelected: const [
-                  false,
-                  false,
-                  false,
-                ],
-                borderRadius: BorderRadius.circular(20),
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
-                    child: Text("On"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
-                    child: Text("Off"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
-                    child: Text("Reset"),
-                  ),
-                ],
-              ),
+            trailing: ControlButtons(
+              hPadding: 18,
+              onPressed: (index) async {
+                switch (index) {
+                  case 0:
+                    JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(true);
+                    break;
+                  case 1:
+                    JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(false);
+                    break;
+                  case 2:
+                    JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.resetConnectionState();
+                    break;
+                }
+              },
+              labels: const [
+                "On",
+                "Off",
+                "Reset",
+              ],
             ),
           ),
         ],
@@ -304,54 +283,77 @@ class UIDebug extends StatelessWidget {
               "Banner",
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            trailing: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 44),
-              child: ToggleButtons(
-                onPressed: (index) async {
-                  late StatusBannerLocation location;
-                  late String message;
-                  switch (index) {
-                    case 0:
-                      location = StatusBannerLocation.top;
-                      message = "Top Banner";
-                      break;
-                    case 1:
-                      location = StatusBannerLocation.bottom;
-                      message = "Bottom Banner";
-                      break;
-                  }
+            trailing: ControlButtons(
+              onPressed: (index) async {
+                late StatusBannerLocation location;
+                late String message;
+                switch (index) {
+                  case 0:
+                    location = StatusBannerLocation.top;
+                    message = "Top Banner";
+                    break;
+                  case 1:
+                    location = StatusBannerLocation.bottom;
+                    message = "Bottom Banner";
+                    break;
+                }
 
-                  OverlayEntry? entry;
-                  entry = OverlayEntry(
-                    builder: (context) {
-                      return StatusBanner(
-                        translationCurve: Curves.fastOutSlowIn,
-                        location: location,
-                        onClose: () => entry?.remove(),
-                        child: Text(FlutterUI.translate(message)),
-                      );
-                    },
-                  );
-                  Overlay.of(context).insert(entry);
-                },
-                isSelected: const [
-                  false,
-                  false,
-                ],
-                borderRadius: BorderRadius.circular(20),
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Text("Top"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Text("Bottom"),
-                  ),
-                ],
-              ),
+                OverlayEntry? entry;
+                entry = OverlayEntry(
+                  builder: (context) {
+                    return StatusBanner(
+                      translationCurve: Curves.fastOutSlowIn,
+                      location: location,
+                      onClose: () => entry?.remove(),
+                      child: Text(FlutterUI.translate(message)),
+                    );
+                  },
+                );
+                Overlay.of(context).insert(entry);
+              },
+              hPadding: 18,
+              labels: const [
+                "Top",
+                "Bottom",
+              ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class ControlButtons extends StatelessWidget {
+  final List<String> labels;
+  final void Function(int index) onPressed;
+  final double maxHeight;
+  final double hPadding;
+
+  const ControlButtons({
+    super.key,
+    required this.labels,
+    required this.onPressed,
+    this.maxHeight = 44,
+    this.hPadding = 24,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      child: ToggleButtons(
+        onPressed: onPressed,
+        isSelected: [
+          for (String _ in labels) false,
+        ],
+        borderRadius: BorderRadius.circular(20),
+        children: [
+          for (String label in labels)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: hPadding),
+              child: Text(label),
+            ),
         ],
       ),
     );
