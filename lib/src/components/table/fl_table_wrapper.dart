@@ -634,8 +634,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Can only be called in the post frame callback as the scroll controller
   /// otherwise has not yet been updated with the most recent items.
   void _scrollToSelected() {
+    if (lastScrolledToIndex == selectedRow) {
+      return;
+    }
+
     // Only scroll if current selected is not visible
     if (selectedRow >= 0 && selectedRow < dataChunk.data.length && itemScrollController.isAttached) {
+      lastScrolledToIndex = selectedRow;
       int indexToScrollTo = selectedRow;
       if (!model.stickyHeaders && model.tableHeaderVisible) {
         indexToScrollTo++;
@@ -701,7 +706,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         // Scrolling via the controller does not fire scroll notifications.
         // The last scrollnotification is therefore not updated and would be wrong for
         // the next scroll. Therefore, the last scrollnotification is set to null.
-        lastScrolledToIndex = selectedRow;
         lastScrollNotification = null;
       }
     }
