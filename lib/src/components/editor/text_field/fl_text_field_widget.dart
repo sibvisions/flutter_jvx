@@ -236,6 +236,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         if (!model.isReadOnly) {
           if (focusNode.hasFocus) {
             valueChanged("");
+            textController.clear();
           } else {
             endEditing("");
           }
