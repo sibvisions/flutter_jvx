@@ -20,8 +20,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'parse_util.dart';
 
 abstract class FontAwesomeUtil {
+  static const String FONT_AWESOME_PREFIX = "FontAwesome";
+
   static bool checkFontAwesome(String pText) {
-    return pText.contains("FontAwesome");
+    return pText.contains(FONT_AWESOME_PREFIX);
   }
 
   static FaIcon getFontAwesomeIcon({required String pText, double? pIconSize, Color? pColor}) {

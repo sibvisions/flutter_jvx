@@ -70,6 +70,21 @@ abstract class FlComponentModel {
   /// If the component has disabled the mobile scaling
   static const String NO_SCALING_STYLE = "f_no_scaling";
 
+  /// The prefix of icon styles.
+  static const String ICON_STYLE_STRING_PREFIX = "f_icon";
+
+  /// The icon on the left side of the component.
+  static const String PREFIX_ICON_STYLE = "${ICON_STYLE_STRING_PREFIX}_prefix_";
+
+  /// The icon on the right side of the component.
+  static const String SUFFIX_ICON_STYLE = "${ICON_STYLE_STRING_PREFIX}_suffix_";
+
+  /// The color of the border.
+  static const String BORDER_COLOR_STYLE = "f_border_color_";
+
+  /// The color of the border when focused.
+  static const String BORDER_COLOR_FOCUSED_STYLE = "f_border_focused_color_";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,7 +194,6 @@ abstract class FlComponentModel {
 
   /// If the component sends focus lost events.
   bool eventFocusLost = false;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
