@@ -96,7 +96,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
 
     if (model.styles.contains(FlLabelModel.NO_BOTTOM_PADDING_STYLE)) {
       padding = padding.copyWith(bottom: 0);
-    } else if (model.styles.contains(FlLabelModel.HALF_TOP_PADDING_STYLE)) {
+    } else if (model.styles.contains(FlLabelModel.HALF_BOTTOM_PADDING_STYLE)) {
       padding = padding.copyWith(bottom: padding.bottom / 2);
     }
 
