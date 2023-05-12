@@ -240,9 +240,9 @@ class WorkScreenState extends State<WorkScreen> {
                 } else {
                   const Duration animationDuration = Duration(milliseconds: 750 + 550);
                   const Duration animationDurationTwo = Duration(milliseconds: 450 + 550);
-                  body = Column(
+                  body = const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       CardLoading(
                         height: 25,
                         width: 100,
@@ -352,14 +352,14 @@ class WorkScreenState extends State<WorkScreen> {
       body: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) => LayoutBuilder(
           builder: (context, constraints) {
-            final viewInsets = EdgeInsets.fromWindowPadding(
-              WidgetsBinding.instance.window.viewInsets,
-              WidgetsBinding.instance.window.devicePixelRatio,
+            final viewInsets = EdgeInsets.fromViewPadding(
+              View.of(context).viewInsets,
+              View.of(context).devicePixelRatio,
             );
 
-            final viewPadding = EdgeInsets.fromWindowPadding(
-              WidgetsBinding.instance.window.viewPadding,
-              WidgetsBinding.instance.window.devicePixelRatio,
+            final viewPadding = EdgeInsets.fromViewPadding(
+              View.of(context).viewPadding,
+              View.of(context).devicePixelRatio,
             );
 
             double screenHeight = constraints.maxHeight;

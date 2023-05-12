@@ -357,14 +357,14 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
       child: KeyboardVisibilityBuilder(
         builder: (context, isKeyboardVisible) => LayoutBuilder(
           builder: (context, constraints) {
-            final viewInsets = EdgeInsets.fromWindowPadding(
-              WidgetsBinding.instance.window.viewInsets,
-              WidgetsBinding.instance.window.devicePixelRatio,
+            final viewInsets = EdgeInsets.fromViewPadding(
+              View.of(context).viewInsets,
+              View.of(context).devicePixelRatio,
             );
 
-            final viewPadding = EdgeInsets.fromWindowPadding(
-              WidgetsBinding.instance.window.viewPadding,
-              WidgetsBinding.instance.window.devicePixelRatio,
+            final viewPadding = EdgeInsets.fromViewPadding(
+              View.of(context).viewPadding,
+              View.of(context).devicePixelRatio,
             );
 
             double screenHeight = constraints.maxHeight;
