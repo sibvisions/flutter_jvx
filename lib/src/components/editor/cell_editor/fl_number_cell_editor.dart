@@ -135,6 +135,11 @@ class FlNumberCellEditor
     return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
   }
 
+  @override
+  double getContentPadding(Map<String, dynamic>? pJson) {
+    return createWidget(pJson).extraWidthPaddings();
+  }
+
   void _recreateNumericFormatter() {
     List<String> formatParts = model.numberFormat.split(";").first.split(".");
     String format = formatParts.first;

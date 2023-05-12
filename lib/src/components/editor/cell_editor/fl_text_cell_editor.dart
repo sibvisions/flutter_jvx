@@ -181,6 +181,11 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   }
 
   @override
+  double getContentPadding(Map<String, dynamic>? pJson) {
+    return createWidget(pJson).extraWidthPaddings();
+  }
+
+  @override
   bool firesFocusCallback() {
     if (lastWidgetModel == null) {
       return false;
