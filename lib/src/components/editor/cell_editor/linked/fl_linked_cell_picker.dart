@@ -18,6 +18,8 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/filter_command.dart';
@@ -72,20 +74,49 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   final FocusNode focusNode = FocusNode();
 
+  int scrollingPage = 1;
+
+  Timer? filterTimer; // 200-300 Milliseconds
+
+  String? lastChangedFilter;
+
+  DataChunk? _chunkData;
+
+  DataChunk? _chunkDataConcatMask;
+
+  DalMetaData? _metaData;
+
+  bool _currentlyFiltering = false;
+
+  TableSize? tableSize;
+
+  /// The item scroll controller.
+  final ItemScrollController itemScrollController = ItemScrollController();
+
+  /// The currently selected row. -1 is none selected.
+  int selectedRow = -1;
+
+  /// The last selected row. Used to calculate the current scroll position
+  /// if the table has not yet been scrolled.
+  int lastScrolledToIndex = -1;
+
+  /// If the last scrolled item got scrolled to the top edge or bottom edge.
+  bool? scrolledIndexTopAligned;
+
+  /// The known scroll notification.
+  ScrollNotification? lastScrollNotification;
+
+  /// The last known table constraints.
+  BoxConstraints? lastTableConstraints;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Getters
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   FlLinkedCellEditor get linkedCellEditor => widget.linkedCellEditor;
 
   FlLinkedCellEditorModel get model => widget.model;
 
   bool get isConcatMask => model.displayConcatMask != null;
-
-  int scrollingPage = 1;
-  Timer? filterTimer; // 200-300 Milliseconds
-  String? lastChangedFilter;
-  DataChunk? _chunkData;
-  DataChunk? _chunkDataConcatMask;
-  DalMetaData? _metaData;
-  int _selectedRecord = -1;
-  bool _currentlyFiltering = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -152,6 +183,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       ),
     );
 
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      postFrameCallback(context);
+    });
+
     return Dialog(
       insetPadding: paddingInsets,
       elevation: 10.0,
@@ -182,24 +217,31 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
               child: _chunkData != null && _metaData != null
                   ? LayoutBuilder(
                       builder: ((context, constraints) {
-                        TableSize tableSize = TableSize.direct(
+                        lastTableConstraints = constraints;
+
+                        tableSize = TableSize.direct(
                           metaData: _metaData!,
                           tableModel: tableModel,
                           dataChunk: isConcatMask ? _chunkDataConcatMask! : _chunkData!,
                           availableWidth: constraints.maxWidth,
                         );
                         tableModel.stickyHeaders =
-                            constraints.maxHeight > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
+                            constraints.maxHeight > (2 * tableSize!.rowHeight + tableSize!.tableHeaderHeight);
                         tableModel.editable = false;
 
+                        print("Table values: -----------------");
+                        print(tableModel.columnNames);
+                        print(_chunkData!.columnDefinitions);
+
                         return FlTableWidget(
-                          selectedRowIndex: _selectedRecord,
+                          selectedRowIndex: selectedRow,
+                          itemScrollController: itemScrollController,
                           metaData: _metaData,
                           chunkData: isConcatMask ? _chunkDataConcatMask! : _chunkData!,
                           onEndScroll: _increasePageLoad,
                           model: tableModel,
                           onTap: _onRowTapped,
-                          tableSize: tableSize,
+                          tableSize: tableSize!,
                           showFloatingButton: false,
                         );
                       }),
@@ -252,11 +294,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     colIndex = colIndex == -1 ? 0 : colIndex;
 
     if (isConcatMask && _chunkData != null) {
-      tableModel.columnNames.clear();
-      tableModel.columnLabels.clear();
-      tableModel.columnNames.add("concat");
-      tableModel.columnLabels.add("concat");
-
       Map<int, List<dynamic>> concatMaskData = {};
 
       for (int i = 0; i < _chunkData!.data.length; i++) {
@@ -273,18 +310,20 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         to: _chunkData!.to,
         isAllFetched: _chunkData!.isAllFetched,
       );
+    } else {
+      _chunkDataConcatMask = null;
     }
 
     if (_chunkData != null && _chunkData!.data.isNotEmpty) {
       // loop throught the chunkdata data and find the index of the record for which the value equals the linkedcelleditor get value
       for (int i = 0; i < _chunkData!.data.length; i++) {
         if (_chunkData!.data[i]![colIndex] == linkedCellEditor.getValue()) {
-          _selectedRecord = i;
+          selectedRow = i;
           break;
         }
       }
     } else {
-      _selectedRecord = -1;
+      selectedRow = -1;
     }
 
     if (mounted) {
@@ -295,15 +334,23 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   void _createTableColumnView() {
     tableModel.columnNames.clear();
     tableModel.columnLabels.clear();
-    for (ColumnDefinition colDef
-        in _chunkData!.columnDefinitions.where((element) => _columnNamesToShow().contains(element.name))) {
-      tableModel.columnNames.add(colDef.name);
-      tableModel.columnLabels.add(colDef.label);
+
+    if (isConcatMask && _chunkData != null) {
+      tableModel.columnNames.add("concat");
+      tableModel.columnLabels.add("concat");
+    } else {
+      for (ColumnDefinition colDef
+          in _chunkData!.columnDefinitions.where((element) => _columnNamesToShow().contains(element.name))) {
+        tableModel.columnNames.add(colDef.name);
+        tableModel.columnLabels.add(colDef.label);
+      }
     }
   }
 
   void _receiveMetaData(DalMetaData pMetaData) {
     _metaData = pMetaData;
+
+    _createTableColumnView();
 
     if (mounted) {
       setState(() {});
@@ -470,6 +517,97 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       return _metaData!.columnViewTable;
     } else {
       return model.linkReference.referencedColumnNames;
+    }
+  }
+
+  void postFrameCallback(BuildContext context) {
+    if (!mounted) {
+      return;
+    }
+
+    _scrollToSelected();
+  }
+
+  /// Scrolls the table to the selected row if it is not visible.
+  /// Can only be called in the post frame callback as the scroll controller
+  /// otherwise has not yet been updated with the most recent items.
+  void _scrollToSelected() {
+    if (lastScrolledToIndex == selectedRow || _chunkData == null || tableSize == null) {
+      return;
+    }
+
+    bool headersInTable = !tableModel.stickyHeaders && tableModel.tableHeaderVisible;
+
+    // Only scroll if current selected is not visible
+    if (selectedRow >= 0 && selectedRow < _chunkData!.data.length && itemScrollController.isAttached) {
+      lastScrolledToIndex = selectedRow;
+      int indexToScrollTo = selectedRow;
+      if (headersInTable) {
+        indexToScrollTo++;
+      }
+
+      double itemTop = indexToScrollTo * tableSize!.rowHeight;
+      double itemBottom = itemTop + tableSize!.rowHeight;
+
+      double topViewCutOff;
+      double bottomViewCutOff;
+      double heightOfView;
+
+      if (lastScrollNotification != null) {
+        topViewCutOff = lastScrollNotification!.metrics.extentBefore;
+        heightOfView = lastScrollNotification!.metrics.viewportDimension;
+        bottomViewCutOff = topViewCutOff + heightOfView;
+      } else if (lastTableConstraints == null) {
+        // Needs a position to calculate.
+        // Probably noz fully loaded, dismiss scrolling.
+        return;
+      } else {
+        heightOfView = lastTableConstraints!.maxHeight - (tableSize!.borderWidth * 2);
+        if (scrolledIndexTopAligned == null) {
+          // Never scrolled = table is at the top
+          topViewCutOff = 0;
+          bottomViewCutOff = topViewCutOff + heightOfView;
+        } else {
+          int indexToScrollFrom = lastScrolledToIndex;
+          if (headersInTable) {
+            indexToScrollFrom++;
+          }
+
+          if (scrolledIndexTopAligned!) {
+            topViewCutOff = indexToScrollFrom * tableSize!.rowHeight;
+            bottomViewCutOff = topViewCutOff + heightOfView;
+          } else {
+            bottomViewCutOff = indexToScrollFrom * tableSize!.rowHeight + tableSize!.rowHeight;
+            topViewCutOff = bottomViewCutOff - heightOfView;
+          }
+        }
+      }
+
+      // Check if the item is visible.
+      if (itemTop < topViewCutOff || itemBottom > bottomViewCutOff) {
+        // Check if the item is above or below the current view.
+        if (itemTop < topViewCutOff) {
+          scrolledIndexTopAligned = true;
+
+          // Scroll to the top of the item.
+          itemScrollController.scrollTo(index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: 0);
+        } else {
+          scrolledIndexTopAligned = false;
+          // Alignment 1 means the top edge of the item is aligned with the bottom edge of the view
+          // Calculates the percentage of the height the top edge of the item is from the top of the view,
+          // where the bottom edge of the item touches the bottom edge of the view.
+          double alignment = (heightOfView - tableSize!.rowHeight) / heightOfView;
+
+          // Scroll to the bottom of the item.
+          itemScrollController.scrollTo(
+              index: indexToScrollTo, duration: kThemeAnimationDuration, alignment: alignment);
+        }
+
+        // Scrolling via the controller does not fire scroll notifications.
+        // The last scrollnotification is therefore not updated and would be wrong for
+        // the next scroll. Therefore, the last scrollnotification is set to null.
+        lastScrollNotification = null;
+      }
     }
   }
 }

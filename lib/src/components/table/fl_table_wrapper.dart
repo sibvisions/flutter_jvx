@@ -102,13 +102,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
 
-  /// The last selected row. Used to calculate the current scroll position
-  /// if the table has not yet been scrolled.
-  int lastScrolledToIndex = -1;
-
-  /// If the last scrolled item got scrolled to the top edge or bottom edge.
-  bool? scrolledIndexTopAligned;
-
   /// The currently selected column. null is none.
   String? selectedColumn;
 
@@ -156,6 +149,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// If the selection has to be cancelled.
   bool cancelSelect = false;
+
+  /// The last selected row. Used to calculate the current scroll position
+  /// if the table has not yet been scrolled.
+  int lastScrolledToIndex = -1;
+
+  /// If the last scrolled item got scrolled to the top edge or bottom edge.
+  bool? scrolledIndexTopAligned;
 
   /// The known scroll notification.
   ScrollNotification? lastScrollNotification;
@@ -637,12 +637,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (lastScrolledToIndex == selectedRow) {
       return;
     }
+    bool headersInTable = !model.stickyHeaders && model.tableHeaderVisible;
 
     // Only scroll if current selected is not visible
     if (selectedRow >= 0 && selectedRow < dataChunk.data.length && itemScrollController.isAttached) {
       lastScrolledToIndex = selectedRow;
       int indexToScrollTo = selectedRow;
-      if (!model.stickyHeaders && model.tableHeaderVisible) {
+      if (headersInTable) {
         indexToScrollTo++;
       }
 
@@ -669,7 +670,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           bottomViewCutOff = topViewCutOff + heightOfView;
         } else {
           int indexToScrollFrom = lastScrolledToIndex;
-          if (!model.stickyHeaders && model.tableHeaderVisible) {
+          if (headersInTable) {
             indexToScrollFrom++;
           }
 
