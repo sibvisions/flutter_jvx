@@ -48,6 +48,12 @@ class LogLevelConfig {
   /// * [FlutterUI.logUI]
   final Level? ui;
 
+  /// Defines the log level used for the Layout logger.
+  ///
+  /// See also:
+  /// * [FlutterUI.logLayout]
+  final Level? layout;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,6 +63,7 @@ class LogLevelConfig {
     this.api,
     this.command,
     this.ui,
+    this.layout,
   });
 
   const LogLevelConfig.empty() : this();
@@ -67,6 +74,7 @@ class LogLevelConfig {
           api: parseLevel(json['api']),
           command: parseLevel(json['command']),
           ui: parseLevel(json['ui']),
+          layout: parseLevel(json['layout']),
         );
 
   static Level? parseLevel(String? level) =>
@@ -80,6 +88,7 @@ class LogLevelConfig {
       api: other.api ?? api,
       command: other.command ?? command,
       ui: other.ui ?? ui,
+      layout: other.layout ?? layout,
     );
   }
 }

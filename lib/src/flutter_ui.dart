@@ -114,6 +114,9 @@ class FlutterUI extends StatefulWidget {
   /// The log filter used by [logUI].
   static final LogFilter _uiLogFilter = JVxFilter();
 
+  /// The log filter used by [logLayout].
+  static final LogFilter _layoutLogFilter = JVxFilter();
+
   /// General logger
   static final Logger log = Logger(
     level: _defaultLogLevel,
@@ -159,6 +162,16 @@ class FlutterUI extends StatefulWidget {
       printTime: true,
       methodCount: 0,
       errorMethodCount: 30,
+    ),
+  );
+
+  /// Layout logger
+  static final Logger logLayout = Logger(
+    level: Level.debug,
+    filter: _layoutLogFilter,
+    printer: SimplePrinter(
+      colors: false,
+      printTime: true,
     ),
   );
 
@@ -364,6 +377,7 @@ class FlutterUI extends StatefulWidget {
     _apiLogFilter.level = appConfig.logConfig?.levels?.api ?? _defaultLogLevel;
     _commandLogFilter.level = appConfig.logConfig?.levels?.command ?? _defaultLogLevel;
     _uiLogFilter.level = appConfig.logConfig?.levels?.ui ?? _defaultLogLevel;
+    _layoutLogFilter.level = appConfig.logConfig?.levels?.layout ?? _defaultLogLevel;
 
     await AppService().removeObsoletePredefinedApps();
 

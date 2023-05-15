@@ -15,7 +15,8 @@
       "general": "info",
       "api": "info",
       "command": "info",
-      "ui": "info"
+      "ui": "info",
+      "layout": "info"
     }
   },
   "uiConfig": {
