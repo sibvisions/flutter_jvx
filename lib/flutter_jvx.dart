@@ -49,6 +49,7 @@ export 'src/mask/menu/menu.dart';
 export 'src/mask/splash/jvx_splash.dart';
 export 'src/mask/state/app_style.dart';
 export 'src/mask/state/loading_bar.dart';
+export 'src/model/api_interaction.dart';
 // Model
 export 'src/model/command/base_command.dart';
 export 'src/model/config/translation/i18n.dart';
@@ -59,6 +60,8 @@ export 'src/model/data/filter_condition.dart';
 export 'src/model/data/subscriptions/data_chunk.dart';
 export 'src/model/data/subscriptions/data_record.dart';
 export 'src/model/data/subscriptions/data_subscription.dart';
+export 'src/model/menu/menu_group_model.dart';
+export 'src/model/menu/menu_item_model.dart';
 export 'src/model/menu/menu_model.dart';
 export 'src/model/request/api_request.dart';
 export 'src/model/request/filter.dart';
