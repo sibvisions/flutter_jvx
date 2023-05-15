@@ -38,33 +38,27 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
       background ??= FlTextFieldWidget.defaultBackground(context);
     }
 
-    Widget panelWidget = DecoratedBox(
-      decoration: BoxDecoration(
-        color: background,
-      ),
-      child: Stack(
-        children: [...children],
-      ),
-    );
+    Widget child = Stack(children: children);
 
-    if (!model.hasStandardBorder) {
-      return panelWidget;
+    if (model.hasStandardBorder) {
+      child = ClipRRect(
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(3),
+        child: child,
+      );
     }
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: JVxColors.STANDARD_BORDER,
-        ),
+        color: background,
+        borderRadius: model.hasStandardBorder ? BorderRadius.circular(4) : null,
+        border: model.hasStandardBorder
+            ? Border.all(
+                color: JVxColors.STANDARD_BORDER,
+              )
+            : null,
       ),
-      child: ClipRRect(
-        clipBehavior: Clip.antiAlias,
-        // The clip rect is there to stop the rendering of the children.
-        // Otherwise the children would clip the border of the parent container.
-        borderRadius: BorderRadius.circular(3),
-        child: panelWidget,
-      ),
+      child: child,
     );
   }
 }
