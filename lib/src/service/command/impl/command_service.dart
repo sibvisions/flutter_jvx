@@ -80,6 +80,11 @@ class CommandService implements ICommandService {
   /// have finished execution (excluding layout-ing)
   final Queue _apiCommandsQueue = Queue();
 
+  /// New layout commands will be added to this list and
+  /// will only be executed if the previous command and all of its follow-ups
+  /// have finished execution
+  final Queue _layoutCommandsQueue = Queue();
+
   /// List of all progress handler for commands
   final List<ICommandProgressHandler> progressHandler = [];
 
@@ -98,6 +103,7 @@ class CommandService implements ICommandService {
     if (pFullClear) {
       // drain queue up to this point
       await _apiCommandsQueue.add(() => Future.value(null));
+      await _layoutCommandsQueue.add(() => Future.value(null));
     }
   }
 
@@ -106,13 +112,21 @@ class CommandService implements ICommandService {
     // Only queue api commands
     if (pCommand is ApiCommand) {
       return _apiCommandsQueue.add(() => _sendCommand(pCommand));
-    } else {
-      return _sendCommand(pCommand);
     }
+    // Only queue layout commands
+    else if (pCommand is LayoutCommand) {
+      return _layoutCommandsQueue.add(() => _sendCommand(pCommand));
+    }
+
+    return _sendCommand(pCommand);
   }
 
   @override
   Future<void> sendCommands(List<BaseCommand> pCommands) {
+    if (pCommands.whereType<LayoutCommand>().isNotEmpty) {
+      throw Exception("Layout commands are not supported to be sent in a batch.");
+    }
+
     executeCommands() => Future.wait(pCommands.map((e) => _sendCommand(e)), eagerError: true);
     // Only queue api commands
     if (pCommands.whereType<ApiCommand>().isNotEmpty) {
