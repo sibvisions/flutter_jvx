@@ -31,8 +31,6 @@ dependencies:
   timezone: ^0.9.0
   flutter_timezone: ^1.0.4
 
-  material_color_generator: ^1.1.0
-
   # Config
   shared_preferences: ^2.0.15
 
