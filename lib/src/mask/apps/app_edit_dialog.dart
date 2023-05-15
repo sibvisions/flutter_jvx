@@ -467,7 +467,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
           alignment: Alignment.center,
           child: ConstrainedBox(
             constraints: BoxConstraints.loose(const Size.square(300)),
-            child: QrImage(
+            child: QrImageView(
               data: QRConfig.generateQrCode(
                 ServerConfig(
                   appName: appName,
