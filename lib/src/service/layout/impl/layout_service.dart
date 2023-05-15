@@ -58,7 +58,8 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    FlutterUI.logUI.d("${pLayoutData.id} REPORT: [${pLayoutData.id}]${pLayoutData.layout}");
+    FlutterUI.logLayout.d(
+        "${pLayoutData.name}|${pLayoutData.id} reportLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -77,8 +78,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
-    FlutterUI.logUI.d(
-        "Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
+    FlutterUI.logLayout.d("${pLayoutData.name}|${pLayoutData.id} reportPreferredSize: ${pLayoutData.bestSize}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data.
@@ -119,7 +119,7 @@ class LayoutService implements ILayoutService {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if (data != null) {
-      FlutterUI.logUI.d("$pComponentId was marked as DIRTY");
+      FlutterUI.logLayout.d("$pComponentId was marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
 
       return true;
@@ -177,7 +177,6 @@ class LayoutService implements ILayoutService {
       height: screenSize.height,
       top: 0,
       left: 0,
-      isComponentSize: true,
     );
   }
 
@@ -190,7 +189,8 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   List<BaseCommand> _performLayout({required LayoutData pLayoutData}) {
-    FlutterUI.logUI.d("${pLayoutData.id} PERFORM LAYOUT");
+    FlutterUI.logLayout.d(
+        "${pLayoutData.name}|${pLayoutData.id} performLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
     _currentlyLayouting.add(pLayoutData.id);
 
     try {
@@ -199,8 +199,11 @@ class LayoutService implements ILayoutService {
 
       // Copy of children with deleted positions
       List<LayoutData> children = _getChildrenOrNull(pParentLayout: panel)!.map((data) {
-        LayoutData copy = LayoutData.from(data);
-        return copy;
+        return LayoutData.from(data);
+      }).toList();
+
+      List<LayoutData> oldChildren = _getChildrenOrNull(pParentLayout: panel)!.map((data) {
+        return LayoutData.from(data);
       }).toList();
 
       // All newly constraint children
@@ -210,8 +213,10 @@ class LayoutService implements ILayoutService {
       panel.lastCalculatedSize = panel.calculatedSize;
       panel.layout!.calculateLayout(panel, children);
 
-      FlutterUI.logUI.d(
-          "${panel.id} CALC SIZE: ${panel.calculatedSize} ; OLD CALC SIZE: ${panel.lastCalculatedSize} ; HAS NEW: ${panel.hasNewCalculatedSize}");
+      if (panel.hasNewCalculatedSize) {
+        FlutterUI.logLayout.d(
+            "${pLayoutData.name}|${pLayoutData.id} new calc size ${panel.calculatedSize}; old: ${panel.lastCalculatedSize}");
+      }
 
       // Check if any children have been newly constrained.
       for (LayoutData child in children) {
@@ -242,6 +247,7 @@ class LayoutService implements ILayoutService {
 
         for (LayoutData child in children) {
           if (child.isParent) {
+            FlutterUI.logLayout.d("${child.name}|${child.id} register after parent calc: ${child.layoutPosition}");
             commands.add(RegisterParentCommand(layoutData: child, reason: "New position"));
           }
         }
@@ -256,7 +262,7 @@ class LayoutService implements ILayoutService {
   /// Returns true if conditions to perform the layout are met.
   bool _isLegalState({required LayoutData pParentLayout}) {
     if (!_isValid) {
-      FlutterUI.logUI.d("I am not valid. ${pParentLayout.id}");
+      FlutterUI.logLayout.d("I am not valid. ${pParentLayout.id}");
       return false;
     }
 
@@ -265,7 +271,7 @@ class LayoutService implements ILayoutService {
     if (pParentLayout.layoutState == LayoutState.VALID && children != null) {
       for (LayoutData child in children) {
         if (!(child.layoutState == LayoutState.VALID && (child.hasCalculatedSize || child.hasPreferredSize))) {
-          FlutterUI.logUI.d(
+          FlutterUI.logLayout.d(
               "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
           return false;
         }

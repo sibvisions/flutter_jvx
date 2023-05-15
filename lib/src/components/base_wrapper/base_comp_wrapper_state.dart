@@ -154,7 +154,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new Model
   void modelUpdated() {
-    FlutterUI.logUI.d("${model.id} received new Model");
+    FlutterUI.logUI.d("${model.name}|${model.id} received new Model");
 
     setState(() {
       // Set potentially new layout data contained in the new model
@@ -189,7 +189,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData = pLayoutData;
       calcPosition = null;
     }
-    FlutterUI.logUI.d("${layoutData.id} NEW DATA; ${pLayoutData.layoutPosition}");
+
+    FlutterUI.logLayout.d("${model.name}|${model.id} receiveNewLayoutData ${pLayoutData.layoutPosition}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (!layoutData.isParent && (layoutData.isNewlyConstraint || calcPosition != null) && lastContext != null) {

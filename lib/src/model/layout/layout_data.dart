@@ -60,17 +60,7 @@ class LayoutData implements ICloneable {
   Size? preferredSize;
 
   /// The calculated size of the component.
-  Size? _calculatedSize;
-
-  set calculatedSize(Size? newCalcSize) {
-    FlutterUI.logUI.d("$id CHANGED CALC TO: $newCalcSize");
-
-    _calculatedSize = newCalcSize;
-  }
-
-  Size? get calculatedSize {
-    return _calculatedSize;
-  }
+  Size? calculatedSize;
 
   /// The last calculated size of the component.
   Size? lastCalculatedSize;
