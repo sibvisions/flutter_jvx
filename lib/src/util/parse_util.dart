@@ -157,11 +157,11 @@ abstract class ParseUtil {
 
         if (left != null && top != null && width != null && height != null) {
           return LayoutPosition(
-              width: width.toDouble(),
-              height: height.toDouble(),
-              top: top.toDouble(),
-              left: left.toDouble(),
-              isComponentSize: true);
+            width: width.toDouble(),
+            height: height.toDouble(),
+            top: top.toDouble(),
+            left: left.toDouble(),
+          );
         }
       }
     }

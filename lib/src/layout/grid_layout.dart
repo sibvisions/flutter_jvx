@@ -120,11 +120,11 @@ class GridLayout extends ILayout {
           (fieldSize.width - (gaps.horizontalGap - gaps.horizontalGap / gridSize.columns) + gaps.horizontalGap);
 
       data.layoutPosition = LayoutPosition(
-          width: calculatedWidth,
-          height: calculatedHeight,
-          top: calculatedTop + margins.top,
-          left: calculatedLeft + margins.left,
-          isComponentSize: true);
+        width: calculatedWidth,
+        height: calculatedHeight,
+        top: calculatedTop + margins.top,
+        left: calculatedLeft + margins.left,
+      );
     }
     pParent.calculatedSize = preferredSize;
   }

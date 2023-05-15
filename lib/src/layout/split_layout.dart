@@ -51,11 +51,21 @@ class SplitLayout extends ILayout implements ICloneable {
   /// How the splitter is orientated, defaults to Vertical
   SplitOrientation splitAlignment;
 
-  LayoutPosition firstComponentViewer = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
+  LayoutPosition firstComponentViewer = LayoutPosition(
+    width: 0,
+    height: 0,
+    top: 0,
+    left: 0,
+  );
 
   Size firstComponentSize = Size.zero;
 
-  LayoutPosition secondComponentViewer = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
+  LayoutPosition secondComponentViewer = LayoutPosition(
+    width: 0,
+    height: 0,
+    top: 0,
+    left: 0,
+  );
 
   Size secondComponentSize = Size.zero;
 
@@ -88,29 +98,49 @@ class SplitLayout extends ILayout implements ICloneable {
     // Only set position on children if layout has a position set.
     if (position != null) {
       if (splitAlignment == SplitOrientation.VERTICAL) {
-        double leftTopWidth = max(position.width / 100 * leftTopRatio - splitterSize / 2, 0.0);
-        double rightBottomWidth = max(position.width / 100 * (100 - leftTopRatio) - splitterSize / 2, 0.0);
+        double leftTopWidth = max(
+          position.width / 100 * leftTopRatio - splitterSize / 2,
+          0.0,
+        );
+        double rightBottomWidth = max(
+          position.width / 100 * (100 - leftTopRatio) - splitterSize / 2,
+          0.0,
+        );
 
-        firstComponentViewer =
-            LayoutPosition(width: leftTopWidth, height: position.height, top: 0, left: 0, isComponentSize: false);
+        firstComponentViewer = LayoutPosition(
+          width: leftTopWidth,
+          height: position.height,
+          top: 0,
+          left: 0,
+        );
         secondComponentViewer = LayoutPosition(
-            width: rightBottomWidth,
-            height: position.height,
-            top: 0,
-            left: leftTopWidth + splitterSize,
-            isComponentSize: false);
+          width: rightBottomWidth,
+          height: position.height,
+          top: 0,
+          left: leftTopWidth + splitterSize,
+        );
       } else {
-        double leftTopHeight = max(position.height / 100 * leftTopRatio - splitterSize / 2, 0.0);
-        double rightBottomHeight = max(position.height / 100 * (100 - leftTopRatio) - splitterSize / 2, 0.0);
+        double leftTopHeight = max(
+          position.height / 100 * leftTopRatio - splitterSize / 2,
+          0.0,
+        );
+        double rightBottomHeight = max(
+          position.height / 100 * (100 - leftTopRatio) - splitterSize / 2,
+          0.0,
+        );
 
-        firstComponentViewer =
-            LayoutPosition(width: position.width, height: leftTopHeight, top: 0, left: 0, isComponentSize: false);
+        firstComponentViewer = LayoutPosition(
+          width: position.width,
+          height: leftTopHeight,
+          top: 0,
+          left: 0,
+        );
         secondComponentViewer = LayoutPosition(
-            width: position.width,
-            height: rightBottomHeight,
-            top: leftTopHeight + splitterSize,
-            left: 0,
-            isComponentSize: false);
+          width: position.width,
+          height: rightBottomHeight,
+          top: leftTopHeight + splitterSize,
+          left: 0,
+        );
       }
     }
 
@@ -119,16 +149,22 @@ class SplitLayout extends ILayout implements ICloneable {
           max(leftTopChild.bestSize.height, firstComponentViewer.height));
 
       leftTopChild.layoutPosition = LayoutPosition(
-          width: firstComponentSize.width, height: firstComponentSize.height, top: 0, left: 0, isComponentSize: true);
+        width: firstComponentSize.width,
+        height: firstComponentSize.height,
+        top: 0,
+        left: 0,
+      );
 
       secondComponentSize = Size(max(rightBottomChild.bestSize.width, secondComponentViewer.width),
           max(rightBottomChild.bestSize.height, secondComponentViewer.height));
 
       rightBottomChild.layoutPosition = LayoutPosition(
-          width: secondComponentSize.width, height: secondComponentSize.height, top: 0, left: 0, isComponentSize: true);
+        width: secondComponentSize.width,
+        height: secondComponentSize.height,
+        top: 0,
+        left: 0,
+      );
     } else {
-      firstComponentViewer.isComponentSize = true;
-      secondComponentViewer.isComponentSize = true;
       leftTopChild.layoutPosition = firstComponentViewer;
       rightBottomChild.layoutPosition = secondComponentViewer;
     }

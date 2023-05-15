@@ -16,7 +16,6 @@
 
 import 'dart:collection';
 import 'dart:core';
-import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
@@ -144,13 +143,8 @@ class FormLayout extends ILayout {
     double dimHeight = pMinimumSize.preferredHeight;
 
     if (pParent.hasPosition) {
-      if (pParent.layoutPosition!.isComponentSize) {
-        dimWidth = pParent.layoutPosition!.width;
-        dimHeight = pParent.layoutPosition!.height;
-      } else {
-        dimWidth = max(dimWidth, pParent.layoutPosition!.width);
-        dimHeight = max(dimHeight, pParent.layoutPosition!.height);
-      }
+      dimWidth = pParent.layoutPosition!.width;
+      dimHeight = pParent.layoutPosition!.height;
     }
 
     dimWidth -= pParent.insets.horizontal;
@@ -542,8 +536,7 @@ class FormLayout extends ILayout {
 
       LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
-      layoutData.layoutPosition =
-          LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
+      layoutData.layoutPosition = LayoutPosition(width: width, height: height, left: left, top: top);
     });
 
     Size preferred = Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);

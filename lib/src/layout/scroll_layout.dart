@@ -36,7 +36,7 @@ class ScrollLayout extends ILayout {
             height: heightOfScrollPanel(pParent),
             top: 0,
             left: 0,
-            isComponentSize: true)
+          )
         : null;
 
     originalLayout.calculateLayout(clonedParentData, pChildren);

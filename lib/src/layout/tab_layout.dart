@@ -33,7 +33,12 @@ class TabLayout extends ILayout {
     if (pParent.hasPosition) {
       double width = pParent.layoutPosition!.width;
       double height = pParent.layoutPosition!.height - tabHeaderHeight;
-      childrenPosition = LayoutPosition(width: width, height: height, top: 0, left: 0, isComponentSize: true);
+      childrenPosition = LayoutPosition(
+        width: width,
+        height: height,
+        top: 0,
+        left: 0,
+      );
     }
 
     double calcWidth = 0.0;

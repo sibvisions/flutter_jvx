@@ -151,20 +151,19 @@ class FlowLayout extends ILayout {
 
         if (VerticalAlignment.values[innerAlignment] == VerticalAlignment.STRETCH) {
           child.layoutPosition = LayoutPosition(
-              left: iLeft + x * fW / fPW,
-              top: iTop + y,
-              width: size.width * fW / fPW,
-              height: flowLayoutInfo.gridHeight * fH / fPH,
-              isComponentSize: true);
+            left: iLeft + x * fW / fPW,
+            top: iTop + y,
+            width: size.width * fW / fPW,
+            height: flowLayoutInfo.gridHeight * fH / fPH,
+          );
         } else {
           child.layoutPosition = LayoutPosition(
-              left: iLeft + x * fW / fPW,
-              top: iTop +
-                  y +
-                  ((flowLayoutInfo.gridHeight - size.height) * _getAlignmentFactor(innerAlignment)) * fH / fPH,
-              width: size.width * fW / fPW,
-              height: size.height * fH / fPH,
-              isComponentSize: true);
+            left: iLeft + x * fW / fPW,
+            top:
+                iTop + y + ((flowLayoutInfo.gridHeight - size.height) * _getAlignmentFactor(innerAlignment)) * fH / fPH,
+            width: size.width * fW / fPW,
+            height: size.height * fH / fPH,
+          );
         }
 
         x += size.width + gaps.horizontalGap;
@@ -178,20 +177,19 @@ class FlowLayout extends ILayout {
 
         if (HorizontalAlignment.values[innerAlignment] == HorizontalAlignment.STRETCH) {
           child.layoutPosition = LayoutPosition(
-              left: iLeft + x,
-              top: iTop + y * fH / fPH,
-              width: flowLayoutInfo.gridWidth * fW / fPW,
-              height: size.height * fH / fPH,
-              isComponentSize: true);
+            left: iLeft + x,
+            top: iTop + y * fH / fPH,
+            width: flowLayoutInfo.gridWidth * fW / fPW,
+            height: size.height * fH / fPH,
+          );
         } else {
           child.layoutPosition = LayoutPosition(
-              left: iLeft +
-                  x +
-                  ((flowLayoutInfo.gridWidth - size.width) * _getAlignmentFactor(innerAlignment)) * fW / fPW,
-              top: iTop + y * fH / fPH,
-              width: size.width * fW / fPW,
-              height: size.height * fH / fPH,
-              isComponentSize: true);
+            left:
+                iLeft + x + ((flowLayoutInfo.gridWidth - size.width) * _getAlignmentFactor(innerAlignment)) * fW / fPW,
+            top: iTop + y * fH / fPH,
+            width: size.width * fW / fPW,
+            height: size.height * fH / fPH,
+          );
         }
 
         y += size.height + gaps.verticalGap;

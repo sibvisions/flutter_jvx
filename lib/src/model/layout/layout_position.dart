@@ -24,6 +24,9 @@ class LayoutPosition implements ICloneable {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Date of creation
+  DateTime creationDate = DateTime.now();
+
   /// The width of the component.
   double width;
 
@@ -35,10 +38,6 @@ class LayoutPosition implements ICloneable {
 
   /// The position of the top left component corner from the left in px.
   double left;
-
-  /// Whether the component has this as its size or as a constraint.
-  /// (Fixed size or not, e.g. [BorderLayout] has this always `true`)
-  bool isComponentSize;
 
   /// Whether or not the position is only to recalc the component
   bool isConstraintCalc;
@@ -53,7 +52,6 @@ class LayoutPosition implements ICloneable {
       required this.height,
       required this.top,
       required this.left,
-      required this.isComponentSize,
       this.isConstraintCalc = false});
 
   /// Clones [LayoutPosition] as a deep copy.
@@ -62,8 +60,8 @@ class LayoutPosition implements ICloneable {
         height = pLayoutPosition.height,
         top = pLayoutPosition.top,
         left = pLayoutPosition.left,
-        isComponentSize = pLayoutPosition.isComponentSize,
-        isConstraintCalc = pLayoutPosition.isConstraintCalc;
+        isConstraintCalc = pLayoutPosition.isConstraintCalc,
+        creationDate = pLayoutPosition.creationDate;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -75,13 +73,26 @@ class LayoutPosition implements ICloneable {
     return LayoutPosition.from(this);
   }
 
+  @override
+  bool operator ==(Object other) {
+    return other is LayoutPosition &&
+        width == other.width &&
+        height == other.height &&
+        top == other.top &&
+        left == other.left &&
+        isConstraintCalc == other.isConstraintCalc;
+  }
+
+  @override
+  int get hashCode => width.hashCode ^ height.hashCode ^ top.hashCode ^ left.hashCode ^ isConstraintCalc.hashCode;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   String toString() {
-    return "$top, $left | $width, $height | $isComponentSize";
+    return "$top, $left | $width, $height | $creationDate";
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

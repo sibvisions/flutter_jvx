@@ -16,7 +16,6 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_ui.dart';
 import '../../layout/i_layout.dart';
 import '../../util/i_clonable.dart';
 import 'layout_position.dart';
@@ -104,12 +103,11 @@ class LayoutData implements ICloneable {
       this.preferredSize,
       this.insets = EdgeInsets.zero,
       this.layoutPosition,
-      Size? calculatedSize,
+      this.calculatedSize,
       this.lastCalculatedSize,
       this.indexOf,
       this.layout,
-      this.isFixedSize = false})
-      : _calculatedSize = calculatedSize;
+      this.isFixedSize = false});
 
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
@@ -122,7 +120,7 @@ class LayoutData implements ICloneable {
         minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null,
         maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
         preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null,
-        _calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null,
+        calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null,
         lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
         insets = pLayoutData.insets != EdgeInsets.zero ? pLayoutData.insets.copyWith() : EdgeInsets.zero,
         layoutState = pLayoutData.layoutState,
@@ -172,7 +170,7 @@ class LayoutData implements ICloneable {
     minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null;
     maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null;
     preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null;
-    _calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null;
+    calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null;
     lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null;
     insets = pLayoutData.insets != EdgeInsets.zero ? pLayoutData.insets.copyWith() : EdgeInsets.zero;
     layoutState = pLayoutData.layoutState;
@@ -313,18 +311,12 @@ class LayoutData implements ICloneable {
 
       // If component has position, see if a constrained position has already been set and replace current height or width
       if (hasPosition) {
-        if (width > layoutPosition!.width) {
-          double? constrainedHeight = widthConstrains[layoutPosition!.width];
-          if (constrainedHeight != null) {
-            height = constrainedHeight;
-          }
+        if (widthConstrains.containsKey(layoutPosition!.width)) {
+          height = widthConstrains[layoutPosition!.width]!;
         }
 
-        if (height > layoutPosition!.height) {
-          double? constraintWidth = heightConstrains[layoutPosition!.height];
-          if (constraintWidth != null) {
-            width = constraintWidth;
-          }
+        if (heightConstrains.containsKey(layoutPosition!.height)) {
+          width = heightConstrains[layoutPosition!.height]!;
         }
       }
     }

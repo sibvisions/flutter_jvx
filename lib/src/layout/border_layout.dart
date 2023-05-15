@@ -15,7 +15,6 @@
  */
 
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
@@ -121,13 +120,8 @@ class BorderLayout extends ILayout implements ICloneable {
 
     // If parent has forced this into a size, cant exceed these values.
     if (pParent.hasPosition) {
-      if (pParent.layoutPosition!.isComponentSize) {
-        width = pParent.layoutPosition!.width;
-        height = pParent.layoutPosition!.height;
-      } else {
-        width = max(pParent.layoutPosition!.width, preferredSize.width);
-        height = max(pParent.layoutPosition!.height, preferredSize.height);
-      }
+      width = pParent.layoutPosition!.width;
+      height = pParent.layoutPosition!.height;
     }
 
     width = width - x - margins.right - pParent.insets.horizontal;
@@ -136,8 +130,7 @@ class BorderLayout extends ILayout implements ICloneable {
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
 
-      _childNorth!.layoutPosition =
-          LayoutPosition(left: x, top: y, width: width, height: bestSize.height, isComponentSize: true);
+      _childNorth!.layoutPosition = LayoutPosition(left: x, top: y, width: width, height: bestSize.height);
 
       y += bestSize.height + gaps.verticalGap;
       height -= bestSize.height + gaps.verticalGap;
@@ -146,8 +139,8 @@ class BorderLayout extends ILayout implements ICloneable {
     if (_childSouth != null) {
       Size bestSize = _childSouth!.bestSize;
 
-      _childSouth!.layoutPosition = LayoutPosition(
-          left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
+      _childSouth!.layoutPosition =
+          LayoutPosition(left: x, top: y + height - bestSize.height, width: width, height: bestSize.height);
 
       height -= bestSize.height + gaps.verticalGap;
     }
@@ -155,8 +148,7 @@ class BorderLayout extends ILayout implements ICloneable {
     if (_childWest != null) {
       Size bestSize = _childWest!.bestSize;
 
-      _childWest!.layoutPosition =
-          LayoutPosition(left: x, top: y, width: bestSize.width, height: height, isComponentSize: true);
+      _childWest!.layoutPosition = LayoutPosition(left: x, top: y, width: bestSize.width, height: height);
 
       x += bestSize.width + gaps.horizontalGap;
       width -= bestSize.width + gaps.horizontalGap;
@@ -165,15 +157,14 @@ class BorderLayout extends ILayout implements ICloneable {
     if (_childEast != null) {
       Size bestSize = _childEast!.bestSize;
 
-      _childEast!.layoutPosition = LayoutPosition(
-          left: x + width - bestSize.width, top: y, width: bestSize.width, height: height, isComponentSize: true);
+      _childEast!.layoutPosition =
+          LayoutPosition(left: x + width - bestSize.width, top: y, width: bestSize.width, height: height);
 
       width -= bestSize.width + gaps.horizontalGap;
     }
 
     if (_childCenter != null) {
-      _childCenter!.layoutPosition =
-          LayoutPosition(left: x, top: y, width: width, height: height, isComponentSize: true);
+      _childCenter!.layoutPosition = LayoutPosition(left: x, top: y, width: width, height: height);
     }
   }
 
