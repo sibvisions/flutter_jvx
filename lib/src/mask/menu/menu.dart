@@ -17,8 +17,6 @@
 import 'package:flutter/material.dart';
 
 import '../../model/command/api/close_screen_command.dart';
-import '../../model/command/storage/delete_screen_command.dart';
-import '../../model/command/ui/function_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
@@ -115,13 +113,12 @@ abstract class Menu extends StatelessWidget {
             FlPanelModel? workscreenModel = IStorageService().getComponentByNavigationName(item.navigationName);
             if (workscreenModel != null) {
               await IUiService()
-                  .sendCommand(FunctionCommand(
-                    function: () async => [
-                      CloseScreenCommand(screenName: workscreenModel.name, reason: "User requested screen closing"),
-                      DeleteScreenCommand(screenName: workscreenModel.name, reason: "User requested screen closing"),
-                    ],
-                    reason: "User requested screen closing",
-                  ))
+                  .sendCommand(
+                    CloseScreenCommand(
+                      screenName: workscreenModel.name,
+                      reason: "User requested screen closing",
+                    ),
+                  )
                   .then((value) => Frame.of(context).rebuild());
             }
           }

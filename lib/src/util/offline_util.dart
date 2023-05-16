@@ -208,7 +208,6 @@ abstract class OfflineUtil {
               IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkscreenClassName)!;
           await ICommandService().sendCommands([
             CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
-            DeleteScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
           ]);
 
           failedStep = "Connecting to server for user interaction";
@@ -526,7 +525,6 @@ abstract class OfflineUtil {
       // Close and delete screen
       await ICommandService().sendCommands([
         CloseScreenCommand(screenName: panelModel.name, reason: "We have fetched"),
-        DeleteScreenCommand(screenName: panelModel.name, reason: "We have fetched"),
         ExitCommand(reason: "Going offline"),
       ]);
 

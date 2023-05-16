@@ -30,7 +30,6 @@ import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/command/base_command.dart';
-import '../../model/command/storage/delete_screen_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/model_subscription.dart';
 import '../../model/menu/menu_item_model.dart';
@@ -512,17 +511,11 @@ class WorkScreenState extends State<WorkScreen> {
     List<BaseCommand> commands = [];
     if (!IUiService().usesNativeRouting(item!.screenLongName)) {
       if (isForced) {
-        commands.addAll(
-          [
-            CloseScreenCommand(
-              reason: "Work screen back",
-              screenName: model!.name,
-            ),
-            DeleteScreenCommand(
-              reason: "Work screen back",
-              screenName: model!.name,
-            )
-          ],
+        commands.add(
+          CloseScreenCommand(
+            reason: "Work screen back",
+            screenName: model!.name,
+          ),
         );
       } else {
         commands.add(

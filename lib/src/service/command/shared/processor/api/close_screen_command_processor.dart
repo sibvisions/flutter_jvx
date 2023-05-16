@@ -16,6 +16,7 @@
 
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../../../../model/request/api_close_screen_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
@@ -23,11 +24,21 @@ import '../../i_command_processor.dart';
 class CloseScreenCommandProcessor implements ICommandProcessor<CloseScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command) async {
-    return IApiService().sendRequest(
+    List<BaseCommand> commands = await IApiService().sendRequest(
       ApiCloseScreenRequest(
         screenName: command.screenName,
         parameter: command.parameter,
       ),
     );
+
+    commands = [
+      DeleteScreenCommand(
+        screenName: command.screenName,
+        reason: "Navigation response was empty",
+      ),
+      ...commands
+    ];
+
+    return commands;
   }
 }

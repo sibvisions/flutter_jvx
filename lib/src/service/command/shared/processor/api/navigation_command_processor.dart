@@ -17,7 +17,6 @@
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/api/navigation_command.dart';
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../../../../model/request/api_navigation_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
@@ -34,7 +33,6 @@ class NavigationCommandProcessor implements ICommandProcessor<NavigationCommand>
 
     if (commands.isEmpty) {
       commands.add(CloseScreenCommand(screenName: command.openScreen, reason: "Navigation response was empty"));
-      commands.add(DeleteScreenCommand(screenName: command.openScreen, reason: "Navigation response was empty"));
     }
 
     return commands;
