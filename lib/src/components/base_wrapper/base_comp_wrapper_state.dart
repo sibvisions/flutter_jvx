@@ -179,7 +179,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Is called when a new [LayoutData] is sent from the [ILayoutService].
-  void receiveNewLayoutData(LayoutData pLayoutData, [bool pSetState = true]) {
+  void receiveNewLayoutData(LayoutData pLayoutData) {
     LayoutPosition? calcPosition;
     if (pLayoutData.hasPosition && pLayoutData.layoutPosition!.isConstraintCalc) {
       calcPosition = pLayoutData.layoutPosition;
@@ -197,9 +197,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       sendCalcSize(pLayoutData: calculateConstrainedSize(calcPosition), pReason: "Component has been constrained");
     }
 
-    if (pSetState) {
-      setState(() {});
-    }
+    setState(() {});
   }
 
   /// Calculates the size the components wants to have if a specific side of it is constrained.

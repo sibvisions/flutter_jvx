@@ -246,12 +246,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   @override
-  void receiveNewLayoutData(LayoutData pLayoutData, [bool pSetState = true]) {
+  void receiveNewLayoutData(LayoutData pLayoutData) {
     bool newConstraint = pLayoutData.layoutPosition?.width != layoutData.layoutPosition?.width;
-    super.receiveNewLayoutData(pLayoutData, pSetState);
+    super.receiveNewLayoutData(pLayoutData);
 
     if (newConstraint) {
-      _recalculateTableSize(pSetState);
+      _recalculateTableSize();
     }
   }
 
@@ -267,7 +267,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         model.lastChangedProperties.contains(ApiObjectProperty.columnLabels) ||
         model.lastChangedProperties.contains(ApiObjectProperty.autoResize)) {
       _calcOnDataReceived = true;
-      _recalculateTableSize(true);
+      _recalculateTableSize();
     } else {
       setState(() {});
     }
@@ -275,7 +275,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   @override
   Size calculateSize(BuildContext context) {
-    return tableSize.calculatedSize;
+    return Size(
+      tableSize.calculatedWidth,
+      tableSize.tableHeaderHeight + (tableSize.borderWidth * 2) + (tableSize.rowHeight * dataChunk.data.length),
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -283,21 +286,20 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Recalculates the size of the table.
-  void _recalculateTableSize([bool pSetState = false]) {
-    Size oldSize = tableSize.calculatedSize;
-    tableSize.calculateTableSize(
-      pMetaData: metaData,
-      pTableModel: model,
-      pDataChunk: dataChunk,
-      pAvailableWidth: layoutData.layoutPosition?.width,
-    );
+  void _recalculateTableSize([bool pRecalculateWidth = true]) {
+    if (pRecalculateWidth) {
+      double oldWidth = tableSize.calculatedWidth;
+      tableSize.calculateTableSize(
+        pMetaData: metaData,
+        pTableModel: model,
+        pDataChunk: dataChunk,
+        pAvailableWidth: layoutData.layoutPosition?.width,
+      );
+    }
 
     currentState |= CALCULATION_COMPLETE;
-
-    if (pSetState) {
-      sentCalcSize = sentCalcSize && (oldSize == tableSize.calculatedSize);
-      setState(() {});
-    }
+    sentCalcSize = false;
+    setState(() {});
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -351,16 +353,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Loads data from the server.
   void _receiveTableData(DataChunk pDataChunk) {
-    bool hasToCalc = (currentState & LOADED_DATA) != LOADED_DATA;
+    bool recalculateWidth = (currentState & LOADED_DATA) != LOADED_DATA;
     currentState |= LOADED_DATA;
 
-    if (!hasToCalc) {
+    if (!recalculateWidth) {
       List<String> newColumns = pDataChunk.columnDefinitions.map((e) => e.name).toList();
       List<String> oldColumns = dataChunk.columnDefinitions.map((e) => e.name).toList();
-      hasToCalc = newColumns.any((element) => (!oldColumns.contains(element))) ||
+      recalculateWidth = newColumns.any((element) => (!oldColumns.contains(element))) ||
           oldColumns.any((element) => (!newColumns.contains(element)));
     }
 
+    bool changedDataCount = (dataChunk.data.length != pDataChunk.data.length);
     dataChunk = pDataChunk;
 
     if (selectedRow >= 0 && selectedRow < dataChunk.data.length) {
@@ -373,10 +376,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       dialogValueNotifier.value = valueMap;
     }
 
-    if (hasToCalc || _calcOnDataReceived) {
+    if (recalculateWidth || _calcOnDataReceived || changedDataCount) {
       _closeDialog();
       _calcOnDataReceived = false;
-      _recalculateTableSize(true);
+      _recalculateTableSize(recalculateWidth);
     } else {
       setState(() {});
     }
@@ -441,14 +444,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     if (hasToCalc) {
       _calcOnDataReceived = true;
-      _recalculateTableSize(true);
+      _recalculateTableSize();
     } else {
       setState(() {});
     }
   }
 
   void _onDataToDisplayMapChanged() {
-    _recalculateTableSize(true);
+    _recalculateTableSize();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

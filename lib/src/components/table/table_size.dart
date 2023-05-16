@@ -45,7 +45,7 @@ class TableSize {
   /// The maximum width of a column
   double maxColumnWidth;
 
-  /// The table header heigth
+  /// The table header height
   double tableHeaderHeight;
 
   /// The row height
@@ -107,12 +107,12 @@ class TableSize {
         pTableModel: tableModel, pMetaData: metaData, pAvailableWidth: availableWidth, pDataChunk: dataChunk);
   }
 
-  Size get calculatedSize {
-    return Size(calculatedColumnWidths.values.sum + (borderWidth * 2), tableHeaderHeight + (rowHeight * 10));
+  double get calculatedWidth {
+    return calculatedColumnWidths.values.sum + (borderWidth * 2);
   }
 
-  Size get size {
-    return Size(columnWidths.values.sum, tableHeaderHeight + (rowHeight * 10));
+  double get width {
+    return columnWidths.values.sum + (borderWidth * 2);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -214,7 +214,7 @@ class TableSize {
     columnWidths.clear();
     columnWidths.addAll(calculatedColumnWidths);
 
-    double remainingWidth = pAvailableWidth - size.width;
+    double remainingWidth = pAvailableWidth - width;
 
     // Redistribute the remaining width. AutoSize forces all columns inside the table.
     if (remainingWidth > 0.0) {
@@ -235,7 +235,7 @@ class TableSize {
 
         _redistributeRemainingWidth(columnsToRedistribute, remainingWidth);
 
-        remainingWidth = pAvailableWidth - size.width;
+        remainingWidth = pAvailableWidth - width;
         i++;
       }
     }
@@ -289,7 +289,6 @@ class TableSize {
         _decreaseWidths(pColumnNames, pRemainingWidth, currentColumnsWidth);
       }
     }
-    // Increases can be given percentually.
   }
 
   void _increaseWidths(List<String> pColumnNames, double pRemainingWidth, double pCurrentColumnsWidth) {
