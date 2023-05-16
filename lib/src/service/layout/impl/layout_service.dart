@@ -202,10 +202,6 @@ class LayoutService implements ILayoutService {
         return LayoutData.from(data);
       }).toList();
 
-      List<LayoutData> oldChildren = _getChildrenOrNull(pParentLayout: panel)!.map((data) {
-        return LayoutData.from(data);
-      }).toList();
-
       // All newly constraint children
       List<LayoutData> newlyConstraintChildren = [];
 

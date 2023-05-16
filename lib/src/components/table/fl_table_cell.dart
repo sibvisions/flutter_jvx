@@ -51,7 +51,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
 
   // Callbacks
 
-  /// The callback if a value has ended beeing changed in the table.
+  /// The callback if a value has ended being changed in the table.
   final TableValueChangedCallback? onEndEditing;
 
   /// The callback if a value has been changed in the table.
@@ -132,6 +132,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// How much a table cell needs to be padded to show the content correctly.
   static double getContentPadding(
       ICellEditor<FlComponentModel, FlStatelessWidget<FlComponentModel>, ICellEditorModel, dynamic> cellEditor) {
     if (cellEditor.allowedInTable) {
@@ -301,7 +302,7 @@ class _FlTableCellState extends State<FlTableCell> {
     );
   }
 
-  /// Creates a normale textwidget for the cell.
+  /// Creates a normal text widget for the cell.
   Widget _createTextWidget() {
     String cellText = cellEditor.formatValue(widget.value);
     TextStyle style = widget.model.createTextStyle();

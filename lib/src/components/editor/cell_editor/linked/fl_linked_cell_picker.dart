@@ -229,10 +229,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                             constraints.maxHeight > (2 * tableSize!.rowHeight + tableSize!.tableHeaderHeight);
                         tableModel.editable = false;
 
-                        print("Table values: -----------------");
-                        print(tableModel.columnNames);
-                        print(_chunkData!.columnDefinitions);
-
                         return FlTableWidget(
                           selectedRowIndex: selectedRow,
                           itemScrollController: itemScrollController,
