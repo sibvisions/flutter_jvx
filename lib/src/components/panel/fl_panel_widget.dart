@@ -41,10 +41,30 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
     Widget child = Stack(children: children);
 
     if (model.hasStandardBorder) {
-      child = ClipRRect(
-        clipBehavior: Clip.antiAlias,
-        borderRadius: BorderRadius.circular(3),
-        child: child,
+      child = Stack(
+        children: [
+          Positioned(
+            top: 1,
+            left: 1,
+            bottom: 1,
+            right: 1,
+            child: ClipRRect(
+              clipBehavior: Clip.antiAlias,
+              borderRadius: BorderRadius.circular(3),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -1,
+                    left: -1,
+                    bottom: -1,
+                    right: -1,
+                    child: child,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       );
     }
 

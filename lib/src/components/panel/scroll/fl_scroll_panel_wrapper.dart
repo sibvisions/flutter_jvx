@@ -92,8 +92,6 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   void _createLayout() {
     ILayout originalLayout = ILayout.getLayout(model)!;
 
-    layoutData.insets = EdgeInsets.all(model.hasStandardBorder ? 1 : 0);
-
     layoutData.layout = ScrollLayout(originalLayout);
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();

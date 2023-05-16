@@ -102,31 +102,44 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
       background ??= FlTextFieldWidget.defaultBackground(context);
     }
 
-    panelWidget = DecoratedBox(
+    if (model.hasStandardBorder) {
+      panelWidget = Stack(
+        children: [
+          Positioned(
+            top: 1,
+            left: 1,
+            bottom: 1,
+            right: 1,
+            child: ClipRRect(
+              clipBehavior: Clip.antiAlias,
+              borderRadius: BorderRadius.circular(3),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -1,
+                    left: -1,
+                    bottom: -1,
+                    right: -1,
+                    child: panelWidget,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: background,
+        borderRadius: model.hasStandardBorder ? BorderRadius.circular(4) : null,
+        border: model.hasStandardBorder
+            ? Border.all(
+                color: JVxColors.STANDARD_BORDER,
+              )
+            : null,
       ),
       child: panelWidget,
-    );
-
-    if (!model.hasStandardBorder) {
-      return panelWidget;
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: JVxColors.STANDARD_BORDER,
-        ),
-      ),
-      child: ClipRRect(
-        clipBehavior: Clip.antiAlias,
-        // The clip rect is there to stop the rendering of the children.
-        // Otherwise the children would clip the border of the parent container.
-        borderRadius: BorderRadius.circular(3),
-        child: panelWidget,
-      ),
     );
   }
 }
