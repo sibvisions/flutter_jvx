@@ -128,6 +128,7 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
           ),
         ],
       );
+    }
 
     return DecoratedBox(
       decoration: BoxDecoration(
