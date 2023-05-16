@@ -2,23 +2,8 @@
   "title": "JVx Mobile Demo",
   "privacyPolicy": "https://visionx.sibvisions.com/privacy-policy/",
   "connectTimeout": 5000,
-  "aliveInterval": 30000,
-  "wsPingInterval": 10000,
-  "autoRestartOnSessionExpired": true,
-  "showAppOverviewWithoutDefault": false,
-  "customAppsAllowed": true,
-  "forceSingleAppMode": false,
   "serverConfigsLocked": false,
   "serverConfigsParametersHidden": false,
-  "logConfig": {
-    "levels": {
-      "general": "info",
-      "api": "info",
-      "command": "info",
-      "ui": "info",
-      "layout": "info"
-    }
-  },
   "uiConfig": {
     "showRememberMe": true,
     "rememberMeChecked": true
@@ -34,11 +19,6 @@
       "parametersHidden": false
     }
   ],
-  "versionConfig": {
-    "commit": "<undefined>",
-    "buildDate": 0,
-    "buildNumber": -1
-  },
   "applicationParameters": {
   }
 }
