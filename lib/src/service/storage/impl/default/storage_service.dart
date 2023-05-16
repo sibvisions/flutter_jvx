@@ -61,7 +61,7 @@ class StorageService implements IStorageService {
 
   @override
   FutureOr<void> clear(bool pFullClear) {
-    // The desktoppanel is kept after logging out so we have to exlude it from cleaning.
+    // The desktop panel is kept after logging out so we have to exclude it from cleaning.
 
     List<FlComponentModel> desktopComponentList = pFullClear
         ? [] // Don't keep desktop panel on full clear.
@@ -270,7 +270,7 @@ class StorageService implements IStorageService {
       if (childModel != null && !pIncludeRemoved && childModel.isRemoved) {
         childModel = null;
       }
-      // Tabsetpanels set non selected sub-panels as invisible.
+      // Tabset panel set non selected sub-panels as invisible.
       // We always render them though, even the invisible panels,
       // therefore tabset-children are always visible for us.
       if (childModel != null &&
