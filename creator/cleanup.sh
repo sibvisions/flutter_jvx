@@ -18,8 +18,9 @@ rm -r $pubCache/hosted/pub.dev/device_info_plus-*
 rm -r $pubCache/hosted/pub.dev/flutter_native_splash-*
 rm -r $pubCache/hosted/pub.dev/sqflite-*
 rm -r $pubCache/hosted/pub.dev/flutter_keyboard_visibility-*
-rm -r $pubCache/hosted/pub.dev/flutter_native_timezone-*
+rm -r $pubCache/hosted/pub.dev/geolocator-*
+rm -r $pubCache/hosted/pub.dev/geolocator_*
 rm -r $pubCache/hosted/pub.dev/connectivity_plus-*
 rm -r $pubCache/hosted/pub.dev/path_provider_foundation-*
-#rm -r $pubCache/hosted/pub.dev/file_saver-*
+rm -r $pubCache/hosted/pub.dev/flutter_timezone-*
 rm -r $pubCache/git/fix_file_saver-*
