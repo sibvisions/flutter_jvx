@@ -167,7 +167,7 @@ class FlutterUI extends StatefulWidget {
 
   /// Layout logger
   static final Logger logLayout = Logger(
-    level: Level.debug,
+    level: _defaultLogLevel,
     filter: _layoutLogFilter,
     printer: SimplePrinter(
       colors: false,
