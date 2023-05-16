@@ -19,14 +19,11 @@ import 'dart:math' as math;
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
-import '../../model/data/data_book.dart';
-import '../../model/data/subscriptions/data_chunk.dart';
 import '../../service/api/shared/fl_component_classname.dart';
-import '../../service/config/config_controller.dart';
-import '../../util/parse_util.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
+import 'fl_table_cell.dart';
 
 enum _RedistributionPriority { first, second, third }
 
@@ -191,20 +188,19 @@ class TableSize {
           // Isolate the column from the rows.
           List<dynamic> dataColumn = dataRows.map<dynamic>((e) => e[colIndex!]).toList();
 
+          ICellEditor cellEditor = _createCellEditor(columnDefinition, pMetaData);
           double calculatedWidth;
-          if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHECK_BOX_CELL_EDITOR) {
+          if (cellEditor.allowedInTable && cellEditor is FlCheckBoxCellEditor) {
             calculatedWidth = checkCellWidth;
-          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.CHOICE_CELL_EDITOR) {
+          } else if (cellEditor.allowedInTable && cellEditor is FlChoiceCellEditor) {
             calculatedWidth = choiceCellWidth;
-          } else if (columnDefinition.cellEditorClassName == FlCellEditorClassname.IMAGE_VIEWER) {
+          } else if (cellEditor.allowedInTable && cellEditor is FlImageCellEditor) {
             calculatedWidth = imageCellWidth;
           } else {
-            ICellEditor cellEditor = _createCellEditor(columnDefinition, pMetaData);
-
             calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle);
-
-            cellEditor.dispose();
           }
+          cellEditor.dispose();
+
           calculatedColumnWidths[columnName] = _adjustValue(calculatedColumnWidths[columnName]!, calculatedWidth);
         }
       }
@@ -261,9 +257,7 @@ class TableSize {
       columnWidth = _adjustValue(columnWidth, rowWidth);
     }
 
-    // TODO Check if this is still relevant. Some editors are in the table, how are these icons rendered?
-    columnWidth = _adjustValue(columnWidth, columnWidth + cellEditor.getContentPadding(null));
-
+    columnWidth = _adjustValue(columnWidth, columnWidth + FlTableCell.getContentPadding(cellEditor));
     return columnWidth;
   }
 
@@ -372,36 +366,20 @@ class TableSize {
       return _getHighestPriorityColumns(unconstrainedColDefs);
     }
 
-    Iterable<ColumnDefinition> constrainedColDefs = columnDefinitions.where((element) => element.width != null);
-
-    return _getHighestPriorityColumns(constrainedColDefs);
+    return _getHighestPriorityColumns(columnDefinitions);
   }
 
   List<String> _getHighestPriorityColumns(Iterable<ColumnDefinition> pColumnDefinitions) {
-    Iterable<ColumnDefinition> columnDefinitions;
-    if (pColumnDefinitions.any(
-      (element) => _fulfillsPriority(_RedistributionPriority.first, element.cellEditorClassName),
-    )) {
-      columnDefinitions = pColumnDefinitions.where(
-        (element) => _fulfillsPriority(_RedistributionPriority.first, element.cellEditorClassName),
-      );
-    } else if (pColumnDefinitions.any(
-      (element) => _fulfillsPriority(_RedistributionPriority.second, element.cellEditorClassName),
-    )) {
-      columnDefinitions = pColumnDefinitions.where(
-        (element) => _fulfillsPriority(_RedistributionPriority.second, element.cellEditorClassName),
-      );
-    } else if (pColumnDefinitions.any(
-      (element) => _fulfillsPriority(_RedistributionPriority.third, element.cellEditorClassName),
-    )) {
-      columnDefinitions = pColumnDefinitions.where(
-        (element) => _fulfillsPriority(_RedistributionPriority.third, element.cellEditorClassName),
-      );
-    } else {
-      columnDefinitions = pColumnDefinitions;
+    for (_RedistributionPriority rp in _RedistributionPriority.values) {
+      if (pColumnDefinitions.any((element) => _fulfillsPriority(rp, element.cellEditorClassName))) {
+        return pColumnDefinitions
+            .where((element) => _fulfillsPriority(rp, element.cellEditorClassName))
+            .map((e) => e.name)
+            .toList();
+      }
     }
 
-    return columnDefinitions.map((e) => e.name).toList();
+    return pColumnDefinitions.map((e) => e.name).toList();
   }
 
   bool _fulfillsPriority(_RedistributionPriority pPriority, String? pCellEditorClassName) {

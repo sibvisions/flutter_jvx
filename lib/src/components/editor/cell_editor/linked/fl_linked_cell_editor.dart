@@ -58,13 +58,10 @@ class FlLinkedCellEditor
   ReferencedCellEditor? referencedCellEditor;
 
   @override
-  bool get allowedInTable => false;
-
-  @override
   bool get allowedTableEdit => model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK;
 
   @override
-  bool get tableDeleteIcon => !model.hideClearIcon;
+  bool get tableDeleteIcon => !model.hideClearIcon && super.tableDeleteIcon;
 
   @override
   IconData? get tableEditIcon => FontAwesomeIcons.caretDown;

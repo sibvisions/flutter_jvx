@@ -36,6 +36,16 @@ import 'fl_table_widget.dart';
 
 class FlTableCell extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The size of the icon.
+  static const double iconSize = 16;
+
+  /// The size of the clear icon.
+  static const double clearIconSize = 24;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -117,6 +127,26 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
 
   @override
   State<FlTableCell> createState() => _FlTableCellState();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static double getContentPadding(
+      ICellEditor<FlComponentModel, FlStatelessWidget<FlComponentModel>, ICellEditorModel, dynamic> cellEditor) {
+    if (cellEditor.allowedInTable) {
+      return cellEditor.getContentPadding(null);
+    }
+
+    double dExtraWidth = 0.0;
+    if (cellEditor.tableDeleteIcon) {
+      dExtraWidth += clearIconSize;
+    }
+    if (cellEditor.tableEditIcon != null) {
+      dExtraWidth += iconSize;
+    }
+    return dExtraWidth;
+  }
 }
 
 class _FlTableCellState extends State<FlTableCell> {
@@ -307,6 +337,10 @@ class _FlTableCellState extends State<FlTableCell> {
   }
 
   List<Widget> _createCellIcons() {
+    if (cellEditor.allowedInTable) {
+      return [];
+    }
+
     List<Widget> icons = [];
 
     bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
@@ -322,11 +356,11 @@ class _FlTableCellState extends State<FlTableCell> {
               widget.onEndEditing?.call(null, widget.rowIndex, widget.columnDefinition.name);
             },
             child: SizedBox(
-              width: 24,
-              height: 24,
+              width: FlTableCell.clearIconSize,
+              height: FlTableCell.clearIconSize,
               child: Icon(
                 Icons.clear,
-                size: 16,
+                size: FlTableCell.iconSize,
                 color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
               ),
             ),
@@ -340,7 +374,7 @@ class _FlTableCellState extends State<FlTableCell> {
         Center(
           child: Icon(
             cellEditor.tableEditIcon,
-            size: 16,
+            size: FlTableCell.iconSize,
             color: isLight ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
           ),
         ),

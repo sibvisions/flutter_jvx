@@ -23,6 +23,7 @@ import '../../../model/response/dal_fetch_response.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
+import '../../table/fl_table_cell.dart';
 import 'date/fl_date_cell_editor.dart';
 import 'fl_check_box_cell_editor.dart';
 import 'fl_choice_cell_editor.dart';
@@ -62,11 +63,13 @@ abstract class ICellEditor<
   /// If the cell editor can be inside a table.
   bool get allowedInTable => false;
 
-  /// If the cell editor can be edited inside a table.
+  /// If the cell can be edited inside a table.
   bool get allowedTableEdit => false;
 
-  bool get tableDeleteIcon => false;
+  /// If the cell can be deleted inside a table.
+  bool get tableDeleteIcon => allowedTableEdit;
 
+  /// The icon of the table cell.
   IconData? get tableEditIcon => null;
 
   bool isInTable;
