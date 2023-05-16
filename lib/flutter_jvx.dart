@@ -19,14 +19,17 @@ library flutter_jvx;
 
 export 'package:beamer/beamer.dart';
 export 'package:dio/dio.dart';
-export 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
+export 'package:flutter_debug_overlay/flutter_debug_overlay.dart' hide LogEvent;
 export 'package:latlong2/latlong.dart';
+export 'package:logger/logger.dart';
 
 export 'src/commands.dart';
 export 'src/components.dart';
 // Config
 export 'src/config/api/api_route.dart';
 export 'src/config/app_config.dart';
+export 'src/config/log/log_config.dart';
+export 'src/config/log/log_level_config.dart';
 export 'src/config/offline_config.dart';
 export 'src/config/predefined_server_config.dart';
 export 'src/config/server_config.dart';
