@@ -355,7 +355,7 @@ class ConfigController {
     return universal_io.Platform.localeName.substring(0, end == -1 ? null : end);
   }
 
-  /// Returns the cached platform timezone (retrieved via [FlutterNativeTimezone.getLocalTimezone]).
+  /// Returns the cached platform timezone (retrieved via [FlutterTimezone.getLocalTimezone]).
   String? getPlatformTimeZone() {
     return _platformTimeZone;
   }

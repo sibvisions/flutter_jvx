@@ -17,7 +17,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
 
 import '../../custom/app_manager.dart';
