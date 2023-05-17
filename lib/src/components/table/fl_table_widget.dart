@@ -156,7 +156,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
     if (widget.showFloatingButton && widget.floatingOnPress != null) {
-      children.add(createFloatinButton());
+      children.add(createFloatingButton());
     }
 
     return Container(
@@ -177,7 +177,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
   }
 
   /// Creates the floating button that floats above the table on the bottom right
-  Positioned createFloatinButton() {
+  Positioned createFloatingButton() {
     return Positioned(
       right: 10,
       bottom: 10,
