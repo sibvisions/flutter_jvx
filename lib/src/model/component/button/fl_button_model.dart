@@ -54,9 +54,6 @@ class FlButtonModel extends FlComponentModel {
   /// If, when the borderPainted property is true, to only show the border on mouse over.
   bool borderOnMouseEntered = false;
 
-  /// The aria label.
-  String ariaLabel = "";
-
   /// If this is the default button to press.
   bool defaultButton = false;
 
@@ -210,14 +207,6 @@ class FlButtonModel extends FlComponentModel {
       pDefault: defaultModel.borderPainted,
       pCurrent: borderPainted,
     );
-
-    ariaLabel = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.ariaLabel,
-      pDefault: defaultModel.ariaLabel,
-      pCurrent: ariaLabel,
-    );
-
     image = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.image,

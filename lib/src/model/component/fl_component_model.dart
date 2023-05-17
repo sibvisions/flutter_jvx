@@ -195,6 +195,9 @@ abstract class FlComponentModel {
   /// If the component sends focus lost events.
   bool eventFocusLost = false;
 
+  /// The aria label.
+  String ariaLabel = "";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -379,7 +382,6 @@ abstract class FlComponentModel {
       pConversion: _parseStyle,
       pCurrent: styles,
     );
-
     eventFocusGained = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.eventFocusGained,
@@ -387,7 +389,6 @@ abstract class FlComponentModel {
       pConversion: ParseUtil.parseBool,
       pCurrent: eventFocusGained,
     );
-
     eventFocusLost = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.eventFocusLost,
@@ -395,13 +396,18 @@ abstract class FlComponentModel {
       pConversion: ParseUtil.parseBool,
       pCurrent: eventFocusLost,
     );
-
     font = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.font,
       pDefault: defaultModel.font,
       pConversion: (value) => JVxFont.fromString(cast<String?>(value)),
       pCurrent: font,
+    );
+    ariaLabel = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.ariaLabel,
+      pDefault: defaultModel.ariaLabel,
+      pCurrent: ariaLabel,
     );
   }
 
