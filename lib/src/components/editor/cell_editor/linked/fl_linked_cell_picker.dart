@@ -108,6 +108,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   /// The last known table constraints.
   BoxConstraints? lastTableConstraints;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Getters
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

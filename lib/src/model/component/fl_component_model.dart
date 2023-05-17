@@ -194,6 +194,7 @@ abstract class FlComponentModel {
 
   /// If the component sends focus lost events.
   bool eventFocusLost = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

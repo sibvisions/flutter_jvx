@@ -70,8 +70,8 @@ class ListMenu extends Menu {
     return CustomScrollView(
       slivers: grouped && ((groupOnlyOnMultiple && menuModel.menuGroups.length > 1) || !groupOnlyOnMultiple)
           ? menuModel.menuGroups
-          .map((e) => ListMenuGroup(
-        menuGroupModel: e,
+              .map((e) => ListMenuGroup(
+                    menuGroupModel: e,
                     onClick: onClick,
                     onClose: onClose,
                     sticky: sticky,
@@ -81,23 +81,23 @@ class ListMenu extends Menu {
                     decreasedDensity: decreasedDensity,
                     useAlternativeLabel: useAlternativeLabel,
                   ))
-          .toList()
+              .toList()
           : [
-        SliverFixedExtentList(
-          itemExtent: 50,
-          delegate: SliverChildListDelegate.fixed(
-            _getAllMenuItems()
-                .map((e) => ListMenuItem(
-              onClick: onClick,
+              SliverFixedExtentList(
+                itemExtent: 50,
+                delegate: SliverChildListDelegate.fixed(
+                  _getAllMenuItems()
+                      .map((e) => ListMenuItem(
+                            onClick: onClick,
                             onClose: onClose,
                             menuItemModel: e,
                             decreasedDensity: decreasedDensity,
                             useAlternativeLabel: useAlternativeLabel,
                           ))
-                .toList(),
-          ),
-        ),
-      ],
+                      .toList(),
+                ),
+              ),
+            ],
     );
   }
 
