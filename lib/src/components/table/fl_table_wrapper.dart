@@ -163,6 +163,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The last used selection tap future
   Future<bool>? lastSelectionTapFuture;
 
+  /// If the menu is currently open
+  bool menuOpen = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -520,7 +523,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       _sortColumn(pColumnName);
       return;
     }
-
     lastSelectionTapFuture?.then((value) {
       if (value) {
         if (IStorageService().isVisibleInUI(model.id)) {
@@ -576,6 +578,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (pColumnName.isEmpty || pRowIndex == -1) {
       return;
     }
+    if (menuOpen) {
+      return;
+    }
     lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
   }
 
@@ -599,6 +604,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     if (popupMenuEntries.isNotEmpty) {
+      menuOpen = true;
       showMenu(
         position: RelativeRect.fromRect(
           pGlobalPosition & const Size(40, 40),
@@ -615,7 +621,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             pCellEditor,
           );
         }
-      });
+      }).whenComplete(() => menuOpen = false);
     }
   }
 
