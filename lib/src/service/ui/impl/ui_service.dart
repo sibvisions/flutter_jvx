@@ -268,7 +268,7 @@ class UiService implements IUiService {
   }
 
   @override
-  void routeToCustom({required String pFullPath}) {
+  void routeToCustomScreen({required String pFullPath}) {
     FlutterUI.getBeamerDelegate().beamToNamed(pFullPath);
   }
 

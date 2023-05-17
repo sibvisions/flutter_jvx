@@ -125,7 +125,7 @@ abstract class IUiService {
   void routeToLogin({LoginMode? mode, Map<String, dynamic>? pLoginProps});
 
   /// Route to the provided full path, used for routing to offline screens
-  void routeToCustom({required String pFullPath});
+  void routeToCustomScreen({required String pFullPath});
 
   Future<void> routeToAppOverview();
 
