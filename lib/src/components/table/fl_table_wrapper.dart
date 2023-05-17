@@ -160,6 +160,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The known scroll notification.
   ScrollNotification? lastScrollNotification;
 
+  /// The last used selection tap future
+  Future<bool>? lastSelectionTapFuture;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -209,6 +212,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onLongPress: _onLongPress,
       onTap: _onCellTap,
       onDoubleTap: _onCellDoubleTap,
+      onBeforeTap: _onCellBeforeTap,
       slideActionFactory: createSlideActions,
       showFloatingButton: _metaDataInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
@@ -288,7 +292,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Recalculates the size of the table.
   void _recalculateTableSize([bool pRecalculateWidth = true]) {
     if (pRecalculateWidth) {
-      double oldWidth = tableSize.calculatedWidth;
       tableSize.calculateTableSize(
         pMetaData: metaData,
         pTableModel: model,
@@ -369,8 +372,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (selectedRow >= 0 && selectedRow < dataChunk.data.length) {
       Map<String, dynamic> valueMap = {};
 
-      for (ColumnDefinition coldef in dataChunk.columnDefinitions) {
-        valueMap[coldef.name] = dataChunk.data[selectedRow]![dataChunk.getColumnIndex(coldef.name)];
+      for (ColumnDefinition colDef in dataChunk.columnDefinitions) {
+        valueMap[colDef.name] = dataChunk.data[selectedRow]![dataChunk.getColumnIndex(colDef.name)];
       }
 
       dialogValueNotifier.value = valueMap;
@@ -451,7 +454,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void _onDataToDisplayMapChanged() {
-    _recalculateTableSize();
+    _recalculateTableSize(false);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -486,7 +489,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     // Do nothing
   }
 
-  /// Refreshes this dataprovider
+  /// Refreshes this data provider
   Future<void> _refresh() {
     return IUiService().sendCommand(
       FetchCommand(
@@ -508,10 +511,18 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void _onCellTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    if (pRowIndex == -1 || pColumnName.isEmpty) {
+    if (pColumnName.isEmpty) {
+      return;
+    }
+
+    if (pRowIndex == -1) {
+      // Header was pressed
       _sortColumn(pColumnName);
-    } else {
-      _selectRecord(pRowIndex, pColumnName, pAfterSelect: () async {
+      return;
+    }
+
+    lastSelectionTapFuture?.then((value) {
+      if (value) {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (!pCellEditor.allowedInTable &&
               isRowEditable(pRowIndex) &&
@@ -525,16 +536,24 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             );
           }
         }
-        return [];
-      });
-    }
+      }
+    });
+    lastSelectionTapFuture = null;
   }
 
   void _onCellDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    if (pRowIndex == -1 || pColumnName.isEmpty) {
-      _sortColumn(pColumnName, true);
-    } else {
-      _selectRecord(pRowIndex, pColumnName, pAfterSelect: () async {
+    if (pColumnName.isEmpty) {
+      return;
+    }
+
+    if (pRowIndex == -1) {
+      // Header was pressed
+      _sortColumn(pColumnName);
+      return;
+    }
+
+    lastSelectionTapFuture?.then((value) {
+      if (value) {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (!pCellEditor.allowedInTable &&
               isRowEditable(pRowIndex) &&
@@ -548,12 +567,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             );
           }
         }
-        return [];
-      });
-    }
+      }
+    });
+    lastSelectionTapFuture = null;
   }
 
-  _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, LongPressStartDetails pPressDetails) {
+  void _onCellBeforeTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    if (pColumnName.isEmpty || pRowIndex == -1) {
+      return;
+    }
+    lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
+  }
+
+  _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
     List<PopupMenuEntry<TableContextMenuItem>> popupMenuEntries = <PopupMenuEntry<TableContextMenuItem>>[];
 
     if (_metaDataInsertEnabled) {
@@ -575,7 +601,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (popupMenuEntries.isNotEmpty) {
       showMenu(
         position: RelativeRect.fromRect(
-          pPressDetails.globalPosition & const Size(40, 40),
+          pGlobalPosition & const Size(40, 40),
           Offset.zero & MediaQuery.of(context).size,
         ),
         context: context,
@@ -708,17 +734,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         }
 
         // Scrolling via the controller does not fire scroll notifications.
-        // The last scrollnotification is therefore not updated and would be wrong for
-        // the next scroll. Therefore, the last scrollnotification is set to null.
+        // The last scroll-notification is therefore not updated and would be wrong for
+        // the next scroll. Therefore, the last scroll-notification is set to null.
         lastScrollNotification = null;
       }
     }
   }
 
   /// Selects the record.
-  void _selectRecord(int pRowIndex, String? pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
+  Future<bool> _selectRecord(int pRowIndex, String? pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
     cancelSelect = false;
-    IUiService()
+    return IUiService()
         .saveAllEditors(
           pReason: "Select row in table",
           pId: model.id,
@@ -758,7 +784,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             return commands;
           },
         )
-        .catchError(IUiService().handleAsyncError);
+        .then((value) => true)
+        .catchError((error, stackTrace) {
+      IUiService().handleAsyncError(error, stackTrace);
+      return false;
+    });
   }
 
   /// Sends a [SetValuesCommand] for this row.
@@ -877,7 +907,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     );
   }
 
-  /// Debug feature -> Takes one dataprovider offline
+  /// Debug feature -> Takes one data provider offline
   void _debugGoOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
     String workscreenName = state.pathParameters['workScreenName']!;

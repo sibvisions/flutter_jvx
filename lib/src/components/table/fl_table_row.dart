@@ -49,6 +49,10 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// Allows validation of the click before allowing the cell editor to be clicked.
   final TableTapCallback? onDoubleTap;
 
+  /// Gets called with the index of the row and name of column when the user taps a cell,
+  /// before it evaluates the tap to be either a double or single tap. Fire before the [onTap] and [onDoubleTap] callbacks.
+  final TableTapCallback? onBeforeTap;
+
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
 
@@ -88,6 +92,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     this.onValueChanged,
     this.onTap,
     this.onDoubleTap,
+    this.onBeforeTap,
     this.onLongPress,
     this.slideActionFactory,
     required this.columnDefinitions,
@@ -124,6 +129,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         onLongPress: onLongPress,
         onTap: onTap,
         onDoubleTap: onDoubleTap,
+        onBeforeTap: onBeforeTap,
         columnDefinition: columnDefinition,
         width: tableSize.columnWidths[columnDefinition.name]!,
         paddings: tableSize.cellPaddings,
