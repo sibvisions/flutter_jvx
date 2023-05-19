@@ -64,10 +64,13 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
         dataProvider: pResponse.dataProvider,
       );
       commands.add(fetchCommand);
-    } else if (dataChanged) {
-      IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
-    } else if (selectionChanged) {
-      IUiService().notifySelectionChange(pDataProvider: pResponse.dataProvider);
+    } else {
+      if (dataChanged) {
+        IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
+      }
+      if (selectionChanged) {
+        IUiService().notifySelectionChange(pDataProvider: pResponse.dataProvider);
+      }
     }
 
     if (pResponse.deletedRow != null) {

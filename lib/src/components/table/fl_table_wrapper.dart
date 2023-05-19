@@ -48,6 +48,7 @@ import '../../model/layout/layout_data.dart';
 import '../../model/request/filter.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/fl_component_classname.dart';
+import '../../service/data/i_data_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
@@ -401,8 +402,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       selectedRow = pRecord.index;
       selectedColumn = pRecord.selectedColumn;
     } else {
-      selectedColumn = null;
-      selectedRow = -1;
+      DataBook? dataBook = IDataService().getDataBook(model.dataProvider);
+      if (dataBook != null) {
+        selectedRow = dataBook.selectedRow;
+        selectedColumn = dataBook.selectedColumn;
+      } else {
+        selectedRow = -1;
+        selectedColumn = null;
+      }
     }
 
     // Close dialog to edit a row if current row was changed.
@@ -494,6 +501,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Refreshes this data provider
   Future<void> _refresh() {
+    IUiService().notifySubscriptionsOfReload(pDataprovider: model.dataProvider);
+
     return IUiService().sendCommand(
       FetchCommand(
         fromRow: 0,

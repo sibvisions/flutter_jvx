@@ -304,7 +304,7 @@ abstract class IUiService {
     required String pPageKey,
   });
 
-  /// Returns the highes row which any component is subscribed to on this dataprovider
+  /// Returns the highest row which any component is subscribed to on this data provider
   int getSubscriptionRowcount({required String pDataProvider});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
