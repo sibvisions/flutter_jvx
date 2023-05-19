@@ -107,7 +107,8 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTableCell({
+  const FlTableCell({
+    super.key,
     required super.model,
     this.onEndEditing,
     this.onValueChanged,
@@ -124,7 +125,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     required this.cellDividerWidth,
     this.cellFormat,
     this.isSelected = false,
-  }) : super(key: UniqueKey());
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -175,8 +176,19 @@ class _FlTableCellState extends State<FlTableCell> {
   }
 
   @override
+  void didUpdateWidget(FlTableCell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.columnDefinition.cellEditorJson != widget.columnDefinition.cellEditorJson) {
+      _rebuildCellEditor();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget? cellChild;
+
+    cellEditor.setValue(widget.value);
 
     if (widget.cellFormat?.imageString.isNotEmpty == true) {
       cellChild = ImageLoader.loadImage(

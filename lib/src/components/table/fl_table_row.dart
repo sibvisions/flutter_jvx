@@ -86,7 +86,8 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTableRow({
+  const FlTableRow({
+    super.key,
     required super.model,
     this.onEndEditing,
     this.onValueChanged,
@@ -102,7 +103,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     required this.isSelected,
     this.recordFormats,
     this.selectedColumn,
-  }) : super(key: UniqueKey());
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
