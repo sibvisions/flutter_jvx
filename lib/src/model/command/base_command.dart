@@ -69,5 +69,5 @@ abstract class BaseCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns the delay until the loading progress gets shown.
-  Duration get loadingDelay => const Duration(milliseconds: 250);
+  Duration get loadingDelay => const Duration(milliseconds: 300);
 }

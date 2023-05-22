@@ -554,15 +554,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       lastTappedColumn = pColumnName;
       lastTappedRow = pRowIndex;
       lastSingleTapTimer?.cancel();
-      lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName).then((value) {
-        lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
-          lastSelectionTapFuture?.then((value) {
-            if (value) {
-              _onSingleTap(pRowIndex, pColumnName, pCellEditor);
-            }
-          });
+      lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
+      lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
+        lastSelectionTapFuture?.then((value) {
+          if (value) {
+            _onSingleTap(pRowIndex, pColumnName, pCellEditor);
+          }
         });
-        return value;
       });
     }
   }
