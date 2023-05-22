@@ -77,8 +77,10 @@ abstract class IDataService {
     String? pPageKey,
   });
 
-  /// Returns the full [DalMetaDataResponse] for this dataProvider
-  DalMetaData getMetaData({required String pDataProvider});
+  /// Returns the full [DalMetaData] for this dataProvider.
+  ///
+  /// Returns null if there is no dataBook with [pDataProvider].
+  DalMetaData? getMetaData(String pDataProvider);
 
   /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
   bool databookNeedsFetch({

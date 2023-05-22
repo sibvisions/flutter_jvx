@@ -103,7 +103,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       ];
     }
 
-    DalMetaData metaData = IDataService().getMetaData(pDataProvider: command.dataProvider);
+    DalMetaData metaData = IDataService().getMetaData(command.dataProvider)!;
 
     IUiService().sendSubsMetaData(
       pSubId: command.subId,

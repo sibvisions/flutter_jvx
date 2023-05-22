@@ -306,9 +306,8 @@ class DataService implements IDataService {
   }
 
   @override
-  DalMetaData getMetaData({required String pDataProvider}) {
-    DataBook dataBook = dataBooks[pDataProvider]!;
-    return dataBook.metaData;
+  DalMetaData? getMetaData(String pDataProvider) {
+    return dataBooks[pDataProvider]?.metaData;
   }
 
   @override
