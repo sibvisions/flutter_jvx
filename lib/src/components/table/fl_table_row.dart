@@ -31,9 +31,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Callbacks
-
-  /// The callback if a value has ended beeing changed in the table.
+  /// The callback if a value has ended being changed in the table.
   final TableValueChangedCallback? onEndEditing;
 
   /// The callback if a value has been changed in the table.
@@ -44,19 +42,8 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// Allows validation of the click before allowing the cell editor to be clicked.
   final TableTapCallback? onTap;
 
-  /// Gets called with the index of the row and name of column that was touched when the user taps a cell.
-  /// Provides the celleditor of this cell, allowing to click the cell editor.
-  /// Allows validation of the click before allowing the cell editor to be clicked.
-  final TableTapCallback? onDoubleTap;
-
-  /// Gets called with the index of the row and name of column when the user taps a cell,
-  /// before it evaluates the tap to be either a double or single tap. Fire before the [onTap] and [onDoubleTap] callbacks.
-  final TableTapCallback? onBeforeTap;
-
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
-
-  // Fields
 
   /// The colum definitions to build.
   final List<ColumnDefinition> columnDefinitions;
@@ -92,8 +79,6 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     this.onEndEditing,
     this.onValueChanged,
     this.onTap,
-    this.onDoubleTap,
-    this.onBeforeTap,
     this.onLongPress,
     this.slideActionFactory,
     required this.columnDefinitions,
@@ -129,8 +114,6 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         onValueChanged: onValueChanged,
         onLongPress: onLongPress,
         onTap: onTap,
-        onDoubleTap: onDoubleTap,
-        onBeforeTap: onBeforeTap,
         columnDefinition: columnDefinition,
         width: tableSize.columnWidths[columnDefinition.name]!,
         paddings: tableSize.cellPaddings,

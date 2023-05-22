@@ -164,8 +164,17 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The last used selection tap future
   Future<bool>? lastSelectionTapFuture;
 
+  /// The last single tap timer.
+  Timer? lastSingleTapTimer;
+
   /// If the menu is currently open
   bool menuOpen = false;
+
+  /// The last row tapped
+  int? lastTappedRow;
+
+  /// The last column tapped
+  String? lastTappedColumn;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -215,8 +224,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onScroll: (pScrollNotification) => lastScrollNotification = pScrollNotification,
       onLongPress: _onLongPress,
       onTap: _onCellTap,
-      onDoubleTap: _onCellDoubleTap,
-      onBeforeTap: _onCellBeforeTap,
+      onHeaderTap: _sortColumn,
       slideActionFactory: createSlideActions,
       showFloatingButton: _metaDataInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
@@ -532,65 +540,63 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       _sortColumn(pColumnName);
       return;
     }
-    lastSelectionTapFuture?.then((value) {
-      if (value) {
-        if (IStorageService().isVisibleInUI(model.id)) {
-          if (!pCellEditor.allowedInTable &&
-              isRowEditable(pRowIndex) &&
-              pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
-            _showDialog(
-              rowIndex: pRowIndex,
-              columnDefinitions: [pCellEditor.columnDefinition!],
-              values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
-              onEndEditing: _setValueEnd,
-              newValueNotifier: dialogValueNotifier,
-            );
-          }
+
+    if (lastTappedColumn == pColumnName && lastTappedRow == pRowIndex && lastSingleTapTimer?.isActive == true) {
+      lastTappedColumn = null;
+      lastTappedRow = null;
+      lastSingleTapTimer?.cancel();
+      lastSelectionTapFuture?.then((value) {
+        if (value) {
+          _onDoubleTap(pRowIndex, pColumnName, pCellEditor);
         }
-      }
-    });
-    lastSelectionTapFuture = null;
+      });
+    } else {
+      lastTappedColumn = pColumnName;
+      lastTappedRow = pRowIndex;
+      lastSingleTapTimer?.cancel();
+      lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName).then((value) {
+        lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
+          lastSelectionTapFuture?.then((value) {
+            if (value) {
+              _onSingleTap(pRowIndex, pColumnName, pCellEditor);
+            }
+          });
+        });
+        return value;
+      });
+    }
   }
 
-  void _onCellDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    if (pColumnName.isEmpty) {
-      return;
-    }
-
-    if (pRowIndex == -1) {
-      // Header was pressed
-      _sortColumn(pColumnName);
-      return;
-    }
-
-    lastSelectionTapFuture?.then((value) {
-      if (value) {
-        if (IStorageService().isVisibleInUI(model.id)) {
-          if (!pCellEditor.allowedInTable &&
-              isRowEditable(pRowIndex) &&
-              pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
-            _showDialog(
-              rowIndex: pRowIndex,
-              columnDefinitions: [pCellEditor.columnDefinition!],
-              values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
-              onEndEditing: _setValueEnd,
-              newValueNotifier: dialogValueNotifier,
-            );
-          }
-        }
+  void _onSingleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    if (IStorageService().isVisibleInUI(model.id)) {
+      if (!pCellEditor.allowedInTable &&
+          isRowEditable(pRowIndex) &&
+          pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
+        _showDialog(
+          rowIndex: pRowIndex,
+          columnDefinitions: [pCellEditor.columnDefinition!],
+          values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+          onEndEditing: _setValueEnd,
+          newValueNotifier: dialogValueNotifier,
+        );
       }
-    });
-    lastSelectionTapFuture = null;
+    }
   }
 
-  void _onCellBeforeTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
-    if (pColumnName.isEmpty || pRowIndex == -1) {
-      return;
+  void _onDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+    if (IStorageService().isVisibleInUI(model.id)) {
+      if (!pCellEditor.allowedInTable &&
+          isRowEditable(pRowIndex) &&
+          pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
+        _showDialog(
+          rowIndex: pRowIndex,
+          columnDefinitions: [pCellEditor.columnDefinition!],
+          values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+          onEndEditing: _setValueEnd,
+          newValueNotifier: dialogValueNotifier,
+        );
+      }
     }
-    if (menuOpen) {
-      return;
-    }
-    lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
   }
 
   _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {

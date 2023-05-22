@@ -33,12 +33,7 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
   /// Gets called with the index of the row and name of column that was touched when the user taps a cell.
   /// Provides the celleditor of this cell, allowing to click the cell editor.
   /// Allows validation of the click before allowing the cell editor to be clicked.
-  final TableTapCallback? onTap;
-
-  /// Gets called with the index of the row and name of column that was touched when the user taps a cell.
-  /// Provides the celleditor of this cell, allowing to click the cell editor.
-  /// Allows validation of the click before allowing the cell editor to be clicked.
-  final TableTapCallback? onDoubleTap;
+  final TableHeaderTapCallback? onTap;
 
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
@@ -60,7 +55,6 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
   FlTableHeaderRow({
     required super.model,
     this.onTap,
-    this.onDoubleTap,
     this.onLongPress,
     required this.columnDefinitions,
     required this.tableSize,
@@ -89,7 +83,6 @@ class FlTableHeaderRow extends FlStatelessWidget<FlTableModel> {
         model: model,
         onLongPress: onLongPress,
         onTap: onTap,
-        onDoubleTap: onDoubleTap,
         columnDefinition: columnDefinition,
         width: tableSize.columnWidths[columnDefinition.name]!,
         paddings: tableSize.cellPaddings,

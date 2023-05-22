@@ -35,6 +35,7 @@ import 'fl_table_row.dart';
 typedef TableLongPressCallback = void Function(
     int rowIndex, String column, ICellEditor cellEditor, Offset pGlobalPosition);
 typedef TableTapCallback = void Function(int rowIndex, String column, ICellEditor cellEditor);
+typedef TableHeaderTapCallback = void Function(String column);
 typedef TableValueChangedCallback = void Function(dynamic value, int row, String column);
 typedef TableSlideActionFactory = List<SlidableAction> Function(int pRowIndex);
 
@@ -59,12 +60,8 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// Gets called with the index of the row that was touched when the user tapped a row.
   final TableTapCallback? onTap;
 
-  /// Gets called with the index of the row that was touched when the user tapped a row.
-  final TableTapCallback? onDoubleTap;
-
-  /// Gets called with the index of the row that was touched when the user tapped a row and before
-  /// either a double or single tap callback is triggered.
-  final TableTapCallback? onBeforeTap;
+  /// Gets called the name of the column pressed.
+  final TableHeaderTapCallback? onHeaderTap;
 
   /// Gets called when the user long presses the table or a row/column.
   final TableLongPressCallback? onLongPress;
@@ -119,8 +116,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.selectedRowIndex = -1,
     this.selectedColumn,
     this.onTap,
-    this.onDoubleTap,
-    this.onBeforeTap,
+    this.onHeaderTap,
     this.onLongPress,
     this.onEndScroll,
     this.onScroll,
@@ -300,8 +296,6 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       columnDefinitions: widget.chunkData.columnDefinitions,
       onLongPress: widget.onLongPress,
       onTap: widget.onTap,
-      onDoubleTap: widget.onDoubleTap,
-      onBeforeTap: widget.onBeforeTap,
       slideActionFactory: !canScrollHorizontally ? widget.slideActionFactory : null,
       tableSize: widget.tableSize,
       values: widget.chunkData.data[index]!,
@@ -317,8 +311,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
     return FlTableHeaderRow(
       model: widget.model,
       columnDefinitions: widget.chunkData.columnDefinitions,
-      onTap: widget.onTap,
-      onDoubleTap: widget.onDoubleTap,
+      onTap: widget.onHeaderTap,
       tableSize: widget.tableSize,
       onLongPress: widget.onLongPress,
       sortDefinitions: widget.metaData?.sortDefinitions,

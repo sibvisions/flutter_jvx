@@ -49,8 +49,6 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Callbacks
-
   /// The callback if a value has ended being changed in the table.
   final TableValueChangedCallback? onEndEditing;
 
@@ -62,19 +60,8 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   /// Allows validation of the click before allowing the cell editor to be clicked.
   final TableTapCallback? onTap;
 
-  /// Gets called with the index of the row and name of column when the user taps a cell.
-  /// Provides the celleditor of this cell, allowing to click the cell editor.
-  /// Allows validation of the click before allowing the cell editor to be clicked.
-  final TableTapCallback? onDoubleTap;
-
-  /// Gets called with the index of the row and name of column when the user taps a cell,
-  /// before it evaluates the tap to be either a double or single tap. Fire before the [onTap] and [onDoubleTap] callbacks.
-  final TableTapCallback? onBeforeTap;
-
   /// Gets called with the index of the row and name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
-
-  // Fields
 
   /// The [ColumnDefinition] of this table cell.
   final ColumnDefinition columnDefinition;
@@ -114,8 +101,6 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     this.onValueChanged,
     this.onLongPress,
     this.onTap,
-    this.onDoubleTap,
-    this.onBeforeTap,
     required this.columnDefinition,
     required this.width,
     required this.paddings,
@@ -236,20 +221,12 @@ class _FlTableCellState extends State<FlTableCell> {
     }
 
     return GestureDetector(
-      onLongPressStart: (widget.onLongPress != null || widget.onBeforeTap != null) && widget.model.isEnabled
+      onLongPressStart: (widget.onLongPress != null) && widget.model.isEnabled
           ? (details) => widget.onLongPress
               ?.call(widget.rowIndex, widget.columnDefinition.name, cellEditor, details.globalPosition)
           : null,
       onTap: widget.onTap != null && widget.model.isEnabled
           ? () => widget.onTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
-          : null,
-      onDoubleTap: widget.onDoubleTap != null && widget.model.isEnabled
-          ? () => widget.onDoubleTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
-          : null,
-      // onLongPressCancel is executed before either onTap or onDoubleTap and can therefore be used as a single
-      // tap event before you even yet know that it is a tap or double tap.
-      onLongPressCancel: widget.onBeforeTap != null && widget.model.isEnabled
-          ? () => widget.onBeforeTap!(widget.rowIndex, widget.columnDefinition.name, cellEditor)
           : null,
       child: Container(
         decoration: BoxDecoration(
