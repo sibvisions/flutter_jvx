@@ -92,22 +92,14 @@ class DataBook {
   /// Creates a [DataBook]
   DataBook({
     required this.dataProvider,
-    required this.records,
-    required this.isAllFetched,
-    required this.selectedRow,
+    HashMap<int, List<dynamic>>? records,
+    this.isAllFetched = false,
+    this.selectedRow = -1,
     this.recordFormats,
     HashMap<String, HashMap<int, List<dynamic>>>? pageRecords,
   })  : metaData = DalMetaData(dataProvider),
+        records = records ?? HashMap(),
         pageRecords = pageRecords ?? HashMap();
-
-  /// Creates a [DataBook] with only default values
-  DataBook.empty()
-      : dataProvider = "",
-        records = HashMap(),
-        pageRecords = HashMap(),
-        selectedRow = -1,
-        isAllFetched = false,
-        metaData = DalMetaData("");
 
   @override
   String toString() {

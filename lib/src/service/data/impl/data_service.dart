@@ -62,7 +62,8 @@ class DataService implements IDataService {
 
   @override
   List<BaseCommand> updateData({required SaveFetchDataCommand pCommand}) {
-    DataBook? dataBook = dataBooks[pCommand.response.dataProvider] ?? DataBook.empty();
+    DataBook? dataBook =
+        dataBooks[pCommand.response.dataProvider] ?? DataBook(dataProvider: pCommand.response.dataProvider);
     dataBooks[pCommand.response.dataProvider] = dataBook;
 
     if (pCommand.response.clear) {
@@ -432,7 +433,8 @@ class DataService implements IDataService {
       FlLinkedCellEditorModel cellEditorModel, String dataProvider, String columnName) {
     var linkReference = cellEditorModel.linkReference;
 
-    DataBook referencedDataBook = dataBooks[linkReference.referencedDataprovider] ??= DataBook.empty();
+    DataBook referencedDataBook = dataBooks[linkReference.referencedDataprovider] ??=
+        DataBook(dataProvider: linkReference.referencedDataprovider);
 
     ReferencedCellEditor referencedCellEditor = ReferencedCellEditor(cellEditorModel, columnName, dataProvider);
 
