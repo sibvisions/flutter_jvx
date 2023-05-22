@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../../../../commands.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
@@ -238,6 +239,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
                           onEndScroll: _increasePageLoad,
                           model: tableModel,
                           onTap: _onRowTapped,
+                          onRefresh: _refresh,
                           tableSize: tableSize!,
                           showFloatingButton: false,
                         );
@@ -492,6 +494,21 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         onReload: _onDataProviderReload,
         from: 0,
         to: FlLinkedCellPicker.PAGE_LOAD * scrollingPage,
+      ),
+    );
+  }
+
+  /// Refreshes this data provider
+  Future<void> _refresh() {
+    IUiService().notifySubscriptionsOfReload(pDataprovider: model.linkReference.referencedDataprovider);
+
+    return IUiService().sendCommand(
+      FetchCommand(
+        fromRow: 0,
+        reload: true,
+        rowCount: IUiService().getSubscriptionRowcount(pDataProvider: model.linkReference.referencedDataprovider),
+        dataProvider: model.linkReference.referencedDataprovider,
+        reason: "Table refreshed",
       ),
     );
   }
