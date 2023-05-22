@@ -27,7 +27,7 @@ abstract class ConfigUtil {
   /// Tries to read app config
   static Future<AppConfig?> readAppConfig() async {
     try {
-      return await _readConfigFile("app.conf.json");
+      return _readConfigFile("app.conf.json");
     } catch (e, stack) {
       FlutterUI.log.e("AppConfig failed to load:", e, stack);
     }
@@ -37,7 +37,7 @@ abstract class ConfigUtil {
   /// Tries to read dev app config
   static Future<AppConfig?> readDevConfig() async {
     try {
-      return await _readConfigFile("dev.conf.json");
+      return _readConfigFile("dev.conf.json");
     } catch (e, stack) {
       if (e is FlutterError && e.message.startsWith("Unable to load asset")) {
         FlutterUI.log.d("Unable to load asset", e, stack);

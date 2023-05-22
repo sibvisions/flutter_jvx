@@ -293,6 +293,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       throw Exception("Location permissions are permanently denied");
     }
 
-    return await Geolocator.getCurrentPosition();
+    return Geolocator.getCurrentPosition();
   }
 }

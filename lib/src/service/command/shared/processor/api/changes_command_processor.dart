@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class ChangesCommandProcessor implements ICommandProcessor<ChangesCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(ChangesCommand command) async {
-    return await IApiService().sendRequest(ApiChangesRequest());
+  Future<List<BaseCommand>> processCommand(ChangesCommand command) {
+    return IApiService().sendRequest(ApiChangesRequest());
   }
 }

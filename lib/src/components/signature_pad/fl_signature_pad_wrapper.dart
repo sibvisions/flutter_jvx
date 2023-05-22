@@ -169,22 +169,20 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   void _handleClear() {
     IUiService()
         .saveAllEditors(
-            pId: model.id,
-            pFunction: () async {
-              return await deleteSignature();
-            },
-            pReason: "Signature pad closed.")
+          pId: model.id,
+          pFunction: () => deleteSignature(),
+          pReason: "Signature pad closed.",
+        )
         .catchError(IUiService().handleAsyncError);
   }
 
   void _handleDone() {
     IUiService()
         .saveAllEditors(
-            pId: model.id,
-            pFunction: () async {
-              return await sendSignature();
-            },
-            pReason: "Signature pad closed.")
+          pId: model.id,
+          pFunction: () => sendSignature(),
+          pReason: "Signature pad closed.",
+        )
         .catchError(IUiService().handleAsyncError);
   }
 }
