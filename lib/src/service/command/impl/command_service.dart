@@ -121,21 +121,6 @@ class CommandService implements ICommandService {
     return _sendCommand(pCommand);
   }
 
-  @override
-  Future<void> sendCommands(List<BaseCommand> pCommands) {
-    if (pCommands.whereType<LayoutCommand>().isNotEmpty) {
-      throw Exception("Layout commands are not supported to be sent in a batch.");
-    }
-
-    executeCommands() => Future.wait(pCommands.map((e) => _sendCommand(e)), eagerError: true);
-    // Only queue api commands
-    if (pCommands.whereType<ApiCommand>().isNotEmpty) {
-      return _apiCommandsQueue.add(executeCommands);
-    } else {
-      return executeCommands.call();
-    }
-  }
-
   Future<void> _sendCommand(BaseCommand pCommand) async {
     try {
       progressHandler.forEach((element) => element.notifyProgressStart(pCommand));

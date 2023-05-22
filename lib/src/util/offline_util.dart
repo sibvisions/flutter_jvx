@@ -205,9 +205,10 @@ abstract class OfflineUtil {
           failedStep = "Closing sync connection to server";
           FlPanelModel? workscreenModel =
               IStorageService().getComponentByScreenClassName(pScreenClassName: offlineWorkscreenClassName)!;
-          await ICommandService().sendCommands([
-            CloseScreenCommand(screenName: workscreenModel.name, reason: "We have synced"),
-          ]);
+          await ICommandService().sendCommand(CloseScreenCommand(
+            screenName: workscreenModel.name,
+            reason: "We have synced",
+          ));
 
           failedStep = "Connecting to server for user interaction";
           await ICommandService().sendCommand(
@@ -522,10 +523,11 @@ abstract class OfflineUtil {
       var panelModel = IStorageService().getComponentByName(pComponentName: pScreenName) as FlPanelModel;
 
       // Close and delete screen
-      await ICommandService().sendCommands([
-        CloseScreenCommand(screenName: panelModel.name, reason: "We have fetched"),
-        ExitCommand(reason: "Going offline"),
-      ]);
+      await ICommandService().sendCommand(CloseScreenCommand(
+        screenName: panelModel.name,
+        reason: "We have fetched",
+      ));
+      await ICommandService().sendCommand(ExitCommand(reason: "Going offline"));
 
       // Clear databooks for offline usage
       IDataService().clearDataBooks();
