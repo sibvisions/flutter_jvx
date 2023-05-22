@@ -91,11 +91,11 @@ class GridLayout extends ILayout {
     }
 
     double calcWidth = widest * gridSize.columns +
-        (gridSize.columns - 1) * gaps.verticalGap +
+        (gridSize.columns - 1) * gaps.horizontalGap +
         pParent.insets.horizontal +
         margins.horizontal;
     double calcHeight =
-        tallest * gridSize.rows + (gridSize.rows - 1) * gaps.horizontalGap + pParent.insets.vertical + margins.vertical;
+        tallest * gridSize.rows + (gridSize.rows - 1) * gaps.verticalGap + pParent.insets.vertical + margins.vertical;
 
     Size preferredSize = Size(calcWidth, calcHeight);
 
