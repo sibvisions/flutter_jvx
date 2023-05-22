@@ -45,6 +45,9 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   /// The size of the clear icon.
   static const double clearIconSize = 24;
 
+  /// The gap between icons and text
+  static const double iconTextGap = 5;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,6 +139,9 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     }
     if (cellEditor.tableEditIcon != null) {
       dExtraWidth += iconSize;
+    }
+    if (cellEditor.tableDeleteIcon || cellEditor.tableEditIcon != null) {
+      dExtraWidth += iconTextGap;
     }
     return dExtraWidth;
   }
@@ -378,6 +384,10 @@ class _FlTableCellState extends State<FlTableCell> {
           ),
         ),
       );
+    }
+
+    if (icons.isNotEmpty) {
+      icons = [const SizedBox(width: FlTableCell.iconTextGap), ...icons];
     }
 
     return icons;
