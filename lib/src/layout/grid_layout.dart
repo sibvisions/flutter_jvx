@@ -69,10 +69,10 @@ class GridLayout extends ILayout {
       List<String> splitConstraint = data.constraints!.split(RegExp("[;,]"));
       CellConstraint componentConstraint = CellConstraint(
           margins: ILayout.marginsFromList(marginList: splitConstraint.sublist(4), scaling: scaling),
-          gridHeight: (int.parse(splitConstraint[3]) * scaling).ceil(),
-          gridWidth: (int.parse(splitConstraint[2]) * scaling).ceil(),
-          gridY: (int.parse(splitConstraint[1]) * scaling).ceil(),
-          gridX: (int.parse(splitConstraint[0]) * scaling).ceil());
+          gridHeight: (int.parse(splitConstraint[3])).ceil(),
+          gridWidth: (int.parse(splitConstraint[2])).ceil(),
+          gridY: (int.parse(splitConstraint[1])).ceil(),
+          gridX: (int.parse(splitConstraint[0])).ceil());
 
       cellConstraints[data.id] = componentConstraint;
 
@@ -91,11 +91,11 @@ class GridLayout extends ILayout {
     }
 
     double calcWidth = widest * gridSize.columns +
-        (gridSize.columns - 1) * gaps.horizontalGap +
+        (gridSize.columns - 1) * gaps.verticalGap +
         pParent.insets.horizontal +
         margins.horizontal;
     double calcHeight =
-        tallest * gridSize.rows + (gridSize.rows - 1) * gaps.verticalGap + pParent.insets.vertical + margins.horizontal;
+        tallest * gridSize.rows + (gridSize.rows - 1) * gaps.horizontalGap + pParent.insets.vertical + margins.vertical;
 
     Size preferredSize = Size(calcWidth, calcHeight);
 
