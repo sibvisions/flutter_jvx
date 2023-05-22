@@ -62,9 +62,8 @@ class DataService implements IDataService {
 
   @override
   List<BaseCommand> updateData({required SaveFetchDataCommand pCommand}) {
-    DataBook? dataBook =
-        dataBooks[pCommand.response.dataProvider] ?? DataBook(dataProvider: pCommand.response.dataProvider);
-    dataBooks[pCommand.response.dataProvider] = dataBook;
+    DataBook dataBook =
+        dataBooks[pCommand.response.dataProvider] ??= DataBook(dataProvider: pCommand.response.dataProvider);
 
     if (pCommand.response.clear) {
       dataBook.clearRecords();
