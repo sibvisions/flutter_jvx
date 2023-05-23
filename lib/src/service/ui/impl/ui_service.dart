@@ -374,7 +374,7 @@ class UiService implements IUiService {
         } else {
           // We have no menu item, use the one provided or create one on best-effort basis.
           customMenuItem ??= CustomMenuItem(
-            group: menuGroupModels.firstOrNull?.name ?? "Custom",
+            group: "Custom",
             label: customScreen.screenTitle ?? "Custom Screen",
             faIcon: FontAwesomeIcons.notdef,
           );
