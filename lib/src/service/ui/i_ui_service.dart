@@ -264,32 +264,32 @@ abstract class IUiService {
   });
 
   /// Notify all components belonging to [pDataProvider] that their underlying
-  /// data selection may have changed.
+  /// data selection has changed.
   void notifySelectionChange({
     required String pDataProvider,
   });
 
-  /// Notify all components belonging to [pDataProvider] that their underlying
-  /// meta data may have changed.
+  /// Notify all components belonging to [pDataProvider] that the meta data has been changed.
   void notifyMetaDataChange({
     required String pDataProvider,
   });
 
-  /// Calls the callback of all subscribed [DataSubscription]s which are subscribed to [pDataProvider]
+  /// Calls the callback of all subscribed [DataSubscription]s with the new selected record.
+  /// Null if no record is selected or if the selected record is not fetched.
   void sendSubsSelectedData({
     required String pSubId,
     required String pDataProvider,
     required DataRecord? pDataRow,
   });
 
-  /// Calls the callback of all subscribed [DataSubscription]s
+  /// Calls the callback of all subscribed [DataSubscription]s with the changed data.
   void sendSubsDataChunk({
     required String pSubId,
     required String pDataProvider,
     required DataChunk pDataChunk,
   });
 
-  /// Directly sets the metadata.
+  /// Calls the callback of all subscribed [DataSubscription]s with the changed meta data.
   void sendSubsMetaData({
     required String pSubId,
     required String pDataProvider,

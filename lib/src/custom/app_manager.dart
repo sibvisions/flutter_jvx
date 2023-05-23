@@ -116,6 +116,8 @@ abstract class AppManager {
   void onSuccessfulStartup() {}
 
   /// Is called when going to the menu.
+  ///
+  /// This happens either directly after the startup (in case of an auto-login) or after the login.
   void onMenuPage() {}
 
   /// Is called when going to a workscreen.
