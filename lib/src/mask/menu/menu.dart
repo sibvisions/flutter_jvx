@@ -52,6 +52,7 @@ abstract class Menu extends StatelessWidget {
   }) {
     switch (menuMode) {
       case MenuMode.LIST:
+      // ignore: deprecated_member_use_from_same_package
       case MenuMode.LIST_GROUPED:
         return ListMenu(
           key: key,
@@ -68,6 +69,7 @@ abstract class Menu extends StatelessWidget {
           onClick: onClick,
         );
       case MenuMode.GRID:
+      // ignore: deprecated_member_use_from_same_package
       case MenuMode.GRID_GROUPED:
         return GridMenu(
           key: key,

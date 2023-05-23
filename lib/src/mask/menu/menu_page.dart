@@ -334,6 +334,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
       key: key,
       menuMode,
       menuModel: menuModel,
+      // ignore: deprecated_member_use_from_same_package
       grouped: [MenuMode.GRID_GROUPED, MenuMode.LIST_GROUPED].contains(menuMode) || grouped,
       sticky: sticky,
       groupOnlyOnMultiple: groupOnlyOnMultiple,

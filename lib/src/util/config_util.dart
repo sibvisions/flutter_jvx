@@ -64,6 +64,7 @@ abstract class ConfigUtil {
         menuMode = MenuMode.LIST;
         break;
       case "list_grouped":
+        // ignore: deprecated_member_use_from_same_package
         menuMode = MenuMode.LIST_GROUPED;
         break;
       case "drawer":
@@ -72,12 +73,13 @@ abstract class ConfigUtil {
       case "tabs":
         menuMode = MenuMode.TABS;
         break;
-      case "grid":
-        menuMode = MenuMode.GRID;
-        break;
       case "grid_grouped":
-      default:
+        // ignore: deprecated_member_use_from_same_package
         menuMode = MenuMode.GRID_GROUPED;
+        break;
+      case "grid":
+      default:
+        menuMode = MenuMode.GRID;
     }
     return menuMode;
   }
