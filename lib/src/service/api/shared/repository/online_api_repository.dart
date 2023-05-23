@@ -531,10 +531,18 @@ class OnlineApiRepository extends IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Set<Cookie> getCookies() => _cookies;
+  Set<Cookie> getCookies() {
+    var cookies = List.of(_cookies);
+    IUiService().getAppManager()?.modifyCookies(cookies);
+    return cookies.toSet();
+  }
 
   @override
-  Map<String, dynamic> getHeaders() => _headers;
+  Map<String, dynamic> getHeaders() {
+    var headers = Map.of(_headers);
+    IUiService().getAppManager()?.modifyHeaders(headers);
+    return headers;
+  }
 
   @override
   Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]) async {
