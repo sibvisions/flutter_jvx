@@ -327,14 +327,14 @@ class DataService implements IDataService {
     if (dataBook.isAllFetched) {
       return false;
     } else if ((pTo == null || pTo == -1)) {
-      return fetchingDataBooks[pDataProvider] != -1;
+      return !fetchingDataBooks.containsKey(pDataProvider) || fetchingDataBooks[pDataProvider] != -1;
     }
 
     // Check all indexes if they are present.
     for (int i = pFrom; i < pTo; i++) {
       var record = dataBook.records[i];
       if (record == null) {
-        return fetchingDataBooks[pDataProvider] == null || pTo > (fetchingDataBooks[pDataProvider]!);
+        return !fetchingDataBooks.containsKey(pDataProvider) || pTo > (fetchingDataBooks[pDataProvider]!);
       }
     }
 

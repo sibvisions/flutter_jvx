@@ -55,9 +55,9 @@ class FetchCommand extends SessionCommand {
     this.reload = false,
     required super.reason,
   }) {
-    IDataService().setDatabookFetching(dataProvider, fromRow + rowCount);
+    IDataService().setDatabookFetching(dataProvider, rowCount == -1 ? rowCount : fromRow + rowCount);
     afterProcessing = () {
-      IDataService().removeDatabookFetching(dataProvider, fromRow + rowCount);
+      IDataService().removeDatabookFetching(dataProvider, rowCount == -1 ? rowCount : fromRow + rowCount);
     };
   }
 
