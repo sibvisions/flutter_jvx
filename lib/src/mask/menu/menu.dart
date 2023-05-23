@@ -129,9 +129,11 @@ abstract class Menu extends StatelessWidget {
 enum MenuMode {
   GRID,
   // Legacy mode
+  @Deprecated("Only used by old servers, defaults to GRID")
   GRID_GROUPED,
   LIST,
   // Legacy mode
+  @Deprecated("Only used by old servers, defaults to LIST")
   LIST_GROUPED,
   DRAWER,
   TABS,
