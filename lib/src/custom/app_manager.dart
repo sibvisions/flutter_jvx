@@ -61,7 +61,7 @@ abstract class AppManager {
   /// the menu item provided by the original screen is being used.
   /// * Otherwise, a menu item is constructed using values from [customScreen].
   ///
-  /// A [menuItem] is required when registering an offline-only screen ([CustomScreen.offline]).
+  /// A [menuItem] is required when registering an offline screen ([CustomScreen.offline]).
   void registerScreen(
     CustomScreen customScreen, {
     CustomMenuItem? menuItem,
@@ -89,6 +89,10 @@ abstract class AppManager {
   void modifyCookies(List<Cookie> cookies) {}
 
   /// Can be used to modify the commands list after the command processor
+  ///
+  /// Be warned! This method gets executed on every possible command and their follow up commands.
+  /// Significant performance issues can arise in the whole application the more this function takes to compute.
+  /// This method can be called multiple times within a second.
   void modifyCommands(List<BaseCommand> commands, BaseCommand originalCommand) {}
 
   /// Can be used to modify the responses list after each request
