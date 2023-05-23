@@ -393,8 +393,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     if (recalculateWidth || _calcOnDataReceived || changedDataCount) {
       _closeDialog();
+      _recalculateTableSize(recalculateWidth || _calcOnDataReceived);
       _calcOnDataReceived = false;
-      _recalculateTableSize(recalculateWidth);
     } else {
       setState(() {});
     }
@@ -472,7 +472,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void _onDataToDisplayMapChanged() {
-    _recalculateTableSize(false);
+    _recalculateTableSize();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
