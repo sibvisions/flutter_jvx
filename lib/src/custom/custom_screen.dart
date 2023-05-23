@@ -98,7 +98,7 @@ class CustomScreen {
     this.showOnline = true,
     this.showOffline = true,
     this.sendOpenScreenRequests = false,
-  });
+  }) : assert(showOnline || !sendOpenScreenRequests, "Cannot send open screen requests for offline-only screens.");
 
   /// Creates an online-only custom screen.
   ///
