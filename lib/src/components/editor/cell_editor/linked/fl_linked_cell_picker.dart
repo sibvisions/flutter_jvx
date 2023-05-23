@@ -33,6 +33,7 @@ import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../../../../model/request/filter.dart';
 import '../../../../service/command/i_command_service.dart';
+import '../../../../service/data/i_data_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../table/fl_table_widget.dart';
 import '../../../table/table_size.dart';
@@ -513,9 +514,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     );
   }
 
-  int _onDataProviderReload(int pSelectedRow) {
-    if (pSelectedRow >= 0) {
-      scrollingPage = ((pSelectedRow + 1) / FlLinkedCellPicker.PAGE_LOAD).ceil();
+  int _onDataProviderReload() {
+    int selectedRow = IDataService().getDataBook(model.linkReference.referencedDataprovider)?.selectedRow ?? -1;
+    if (selectedRow >= 0) {
+      scrollingPage = ((selectedRow + 1) / FlLinkedCellPicker.PAGE_LOAD).ceil();
     } else {
       scrollingPage = 1;
     }

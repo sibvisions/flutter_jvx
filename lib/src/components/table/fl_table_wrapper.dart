@@ -355,10 +355,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     currentState &= ~LOADED_SELECTED_RECORD;
   }
 
-  int _onDataProviderReload(int pSelectedRow) {
+  int _onDataProviderReload() {
     cancelSelect = true;
-    if (pSelectedRow >= 0) {
-      pageCount = ((pSelectedRow + 1) / FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE).ceil();
+    int selectedRow = IDataService().getDataBook(model.dataProvider)?.selectedRow ?? -1;
+    if (selectedRow >= 0) {
+      pageCount = ((selectedRow + 1) / FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE).ceil();
     } else {
       pageCount = 1;
     }

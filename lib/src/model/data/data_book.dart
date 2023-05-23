@@ -42,7 +42,6 @@ import '../response/dal_meta_data_response.dart';
 import 'column_definition.dart';
 import 'filter_condition.dart';
 import 'sort_definition.dart';
-import 'subscriptions/data_chunk.dart';
 import 'subscriptions/data_record.dart';
 import 'subscriptions/data_subscription.dart';
 
@@ -453,10 +452,12 @@ class DataBook {
     List<String>? pDataColumns,
     int pFrom = -1,
     int? pTo,
-    void Function(DataChunk)? pOnDataChunk,
-    void Function(DalMetaData)? pOnMetaData,
-    void Function(DataRecord?)? pOnSelectedRecord,
-    int Function(int)? pOnReload,
+    OnDataChunkCallback? pOnDataChunk,
+    OnMetaDataCallback? pOnMetaData,
+    OnSelectedRecordCallback? pOnSelectedRecord,
+    OnDataToDisplayMapChanged? pOnDataToDisplayMapChanged,
+    OnReloadCallback? pOnReload,
+    OnPageCallback? pOnPage,
   }) {
     IUiService().registerDataSubscription(
         pDataSubscription: DataSubscription(
@@ -469,6 +470,8 @@ class DataBook {
       onMetaData: pOnMetaData,
       onSelectedRecord: pOnSelectedRecord,
       onReload: pOnReload,
+      onDataToDisplayMapChanged: pOnDataToDisplayMapChanged,
+      onPage: pOnPage,
     ));
   }
 

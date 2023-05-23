@@ -24,11 +24,13 @@ import 'data_record.dart';
 typedef OnSelectedRecordCallback = void Function(DataRecord? dataRecord);
 typedef OnDataChunkCallback = void Function(DataChunk dataChunk);
 typedef OnMetaDataCallback = void Function(DalMetaData metaData);
-typedef OnReloadCallback = int Function(int selectedRow);
+typedef OnReloadCallback = int Function();
 typedef OnPageCallback = void Function(String pageKey, DataChunk dataChunk);
 typedef OnDataToDisplayMapChanged = void Function();
 
-/// Used for subscribing in [IUiService] to potentially receive data.
+/// Used for subscribing in [IUiService] to receive data.
+///
+///
 class DataSubscription {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -43,13 +45,13 @@ class DataSubscription {
   /// Data provider from which data will be fetched
   final String dataProvider;
 
-  /// Callback will be called with selected row, regardless if only the selected row was fetched
+  /// Callback will be called with selected row.
   final OnSelectedRecordCallback? onSelectedRecord;
 
-  /// Index from which data will be fetched, set to -1 to only receive the selected row
+  /// Index from which data will be fetched. Must be >= 0 if onDataChunk is not null
   int from;
 
-  /// Index to which data will be fetched, if null - will return all data from provider, will fetch if necessary
+  /// Index to which data will be fetched, if null or -1 - will return all data from provider, will fetch all if necessary
   int? to;
 
   /// Callback will only be called with [DataChunk] if from is not -1.
@@ -61,13 +63,20 @@ class DataSubscription {
   /// Callback will be called when dataToDisplayMap changes
   final OnDataToDisplayMapChanged? onDataToDisplayMapChanged;
 
-  /// Callback will be called when a reload happens. Return value is the new subscription count.
+  /// Called with the selected row index of the data provider when it has been reloaded by the server.
+  ///
+  /// The return value of this function then acts as the new `to` of this subscription.
+  /// E.g. A table which only subscribes `to` 100 records but always wants to at least subscribe to the selected should return max(100, selectedRow).
+  /// Therefore this table will always adjust its subscription to the selected row.
   final OnReloadCallback? onReload;
 
   /// Callback will be called when a page is fetched.
   final OnPageCallback? onPage;
 
-  /// List of column names which should be fetched, return order will correspond to order of this list
+  /// Which columns to subscribe to.
+  ///
+  /// If null, all will be retrieved. Works for both onDataChunk and onSelectedRecord.
+  /// The order of this list is important, as it will be used to determine the order of the data.
   List<String>? dataColumns;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +95,8 @@ class DataSubscription {
     this.onPage,
     this.to,
     this.dataColumns,
-  }) : id = getRandomString(15);
+  })  : id = getRandomString(15),
+        assert(onDataChunk == null || from != -1, "onDataChunk can only be used if from is not -1");
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
