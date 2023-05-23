@@ -699,10 +699,10 @@ class OnlineApiRepository extends IRepository {
     Uri uri = Uri.parse("${ConfigController().baseUrl.value!}/${route.route}");
     List<Cookie>? requestCookies;
     if (!kIsWeb) {
-      requestCookies = [..._cookies];
+      requestCookies = List.of(_cookies);
       IUiService().getAppManager()?.modifyCookies(requestCookies);
     }
-    Map<String, dynamic>? requestHeaders = {..._headers};
+    Map<String, dynamic> requestHeaders = Map.of(_headers);
     IUiService().getAppManager()?.modifyHeaders(requestHeaders);
 
     Response response = await client!.requestUri(
