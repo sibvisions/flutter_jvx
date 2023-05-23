@@ -517,33 +517,25 @@ class UiService implements IUiService {
     _dataSubscriptions.add(pDataSubscription);
 
     if (pImmediatlyRetrieveData) {
-      DataBook? databook = IDataService().getDataBook(pDataSubscription.dataProvider);
-      if (databook == null) {
+      if (IDataService().databookNeedsFetch(
+        pFrom: pDataSubscription.from,
+        pTo: pDataSubscription.to,
+        pDataProvider: pDataSubscription.dataProvider,
+      )) {
+        DataBook? databook = IDataService().getDataBook(pDataSubscription.dataProvider);
+        int fromRow = databook?.records.keys.maxOrNull ?? pDataSubscription.from;
+
         sendCommand(FetchCommand(
           dataProvider: pDataSubscription.dataProvider,
-          fromRow: pDataSubscription.from,
+          fromRow: fromRow,
           rowCount: pDataSubscription.to != null
               ? pDataSubscription.to! - pDataSubscription.from
               : IUiService().getSubscriptionRowcount(pDataProvider: pDataSubscription.dataProvider),
           columnNames: pDataSubscription.dataColumns,
           reason: "Fetch for ${pDataSubscription.runtimeType}",
-          includeMetaData: true,
+          includeMetaData: databook == null,
         ));
         return;
-      } else if (pDataSubscription.from != -1 &&
-          IDataService().databookNeedsFetch(
-            pFrom: pDataSubscription.from,
-            pTo: pDataSubscription.to,
-            pDataProvider: pDataSubscription.dataProvider,
-          )) {
-        int fromRow = databook.records.keys.maxOrNull ?? pDataSubscription.from;
-
-        sendCommand(FetchCommand(
-          fromRow: fromRow,
-          rowCount: pDataSubscription.to != null ? pDataSubscription.to! - fromRow : -1,
-          dataProvider: pDataSubscription.dataProvider,
-          reason: "Fetch for ${pDataSubscription.runtimeType}",
-        ));
       }
 
       if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
@@ -578,7 +570,7 @@ class UiService implements IUiService {
       }
 
       if (pDataSubscription.onReload != null) {
-        databook.pageRecords.keys.forEach((pageKey) {
+        IDataService().getDataBook(pDataSubscription.dataProvider)?.pageRecords.keys.forEach((pageKey) {
           GetPageChunkCommand getDataChunkCommand = GetPageChunkCommand(
             reason: "Subscription added",
             dataProvider: pDataSubscription.dataProvider,
@@ -597,7 +589,7 @@ class UiService implements IUiService {
   void notifySubscriptionsOfReload({required String pDataprovider}) {
     _dataSubscriptions.where((element) => element.dataProvider == pDataprovider).toList().forEach((dataSubscription) {
       if (dataSubscription.onReload != null && dataSubscription.onDataChunk != null && dataSubscription.from >= 0) {
-        dataSubscription.to = dataSubscription.onReload!.call(IDataService().getDataBook(pDataprovider)!.selectedRow);
+        dataSubscription.to = dataSubscription.onReload!.call();
       }
     });
   }
@@ -806,7 +798,10 @@ class UiService implements IUiService {
 
     var subscriptions = _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider).toList();
     for (DataSubscription subscription in subscriptions) {
-      rowCount = max(rowCount, subscription.to ?? 0);
+      if (subscription.to == null) {
+        return -1;
+      }
+      rowCount = max(rowCount, subscription.to!);
     }
 
     return rowCount;
