@@ -39,8 +39,8 @@ class ListMenu extends Menu {
   /// Text color for menu header
   final Color? headerColor;
 
-  final bool? decreasedDensity;
-  final bool? useAlternativeLabel;
+  final bool decreasedDensity;
+  final bool useAlternativeLabel;
 
   final bool grouped;
   final bool sticky;
@@ -58,8 +58,8 @@ class ListMenu extends Menu {
     this.layoutMode,
     this.textStyle,
     this.headerColor,
-    this.decreasedDensity,
-    this.useAlternativeLabel,
+    this.decreasedDensity = false,
+    this.useAlternativeLabel = false,
     required this.grouped,
     this.sticky = true,
     this.groupOnlyOnMultiple = false,

@@ -46,8 +46,8 @@ class ListMenuGroup extends StatelessWidget {
   /// Text color for header.
   final Color? headerColor;
 
-  final bool? decreasedDensity;
-  final bool? useAlternativeLabel;
+  final bool decreasedDensity;
+  final bool useAlternativeLabel;
 
   final bool sticky;
 
@@ -64,8 +64,8 @@ class ListMenuGroup extends StatelessWidget {
     this.layoutMode,
     this.textStyle,
     this.headerColor,
-    this.decreasedDensity,
-    this.useAlternativeLabel,
+    this.decreasedDensity = false,
+    this.useAlternativeLabel = false,
   });
 
   @override

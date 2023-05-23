@@ -53,10 +53,9 @@ class ListMenuItem extends StatelessWidget {
     required this.onClick,
     this.onClose,
     this.textStyle,
-    bool? decreasedDensity,
-    bool? useAlternativeLabel,
-  })  : decreasedDensity = decreasedDensity ?? false,
-        useAlternativeLabel = useAlternativeLabel ?? false;
+    this.decreasedDensity = false,
+    this.useAlternativeLabel = false,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
