@@ -19,7 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../model/menu/menu_item_model.dart';
-import '../../../../routing/locations/work_screen_location.dart';
+import '../../../../routing/locations/main_location.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../menu_page.dart';
 
@@ -120,8 +120,8 @@ class ListMenuItem extends StatelessWidget {
   bool _isSelected(BuildContext context) {
     bool? selected;
     var pathSegments = (context.currentBeamLocation.state as BeamState).pathParameters;
-    if (pathSegments.containsKey(WorkScreenLocation.workScreenNameKey)) {
-      String navigationName = pathSegments[WorkScreenLocation.workScreenNameKey]!;
+    if (pathSegments.containsKey(MainLocation.screenNameKey)) {
+      String navigationName = pathSegments[MainLocation.screenNameKey]!;
       selected ??= menuItemModel.navigationName == navigationName;
     }
 

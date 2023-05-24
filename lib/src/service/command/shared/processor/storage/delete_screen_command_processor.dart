@@ -17,12 +17,13 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../../../../model/component/fl_component_model.dart';
-import '../../../../../routing/locations/work_screen_location.dart';
+import '../../../../../routing/locations/main_location.dart';
 import '../../../../data/i_data_service.dart';
 import '../../../../layout/i_layout_service.dart';
 import '../../../../storage/i_storage_service.dart';
@@ -40,10 +41,16 @@ class DeleteScreenCommandProcessor implements ICommandProcessor<DeleteScreenComm
 
     if (screenModel is FlPanelModel) {
       if (command.beamBack && IUiService().getCurrentWorkscreenName() == screenModel.screenNavigationName) {
-        FlutterUI.getBeamerDelegate().beamBack();
+        var navigator = Navigator.of(FlutterUI.getEffectiveContext()!);
+
+        // Tries first to beamBack to retain history for UX, falls back to pop
+        bool success = FlutterUI.getBeamerDelegate().beamBack();
+        if (!success && navigator.canPop()) {
+          navigator.pop();
+        }
       } else if (!kIsWeb) {
-        FlutterUI.getBeamerDelegate().beamingHistory.whereType<WorkScreenLocation>().forEach((workscreenLocation) {
-          workscreenLocation.history.removeWhere(
+        FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
+          location.history.removeWhere(
               (element) => element.routeInformation.location?.endsWith(screenModel.screenNavigationName!) ?? false);
         });
       }

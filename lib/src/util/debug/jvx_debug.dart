@@ -22,7 +22,7 @@ import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import '../../flutter_ui.dart';
 import '../../mask/jvx_overlay.dart';
 import '../../model/command/api/login_command.dart';
-import '../../routing/locations/login_location.dart';
+import '../../routing/locations/main_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -168,7 +168,7 @@ class JVxDebug extends StatelessWidget {
           StatefulBuilder(builder: (context, setState) {
             return DropdownButton<LoginMode>(
               hint: const Text("Route to Login"),
-              value: cast<LoginLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.modeNotifier.value,
+              value: cast<MainLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.loginModeNotifier.value,
               items: LoginMode.values
                   .map((e) => DropdownMenuItem(
                         value: e,

@@ -24,7 +24,6 @@ import '../../model/command/api/reload_command.dart';
 import '../../model/command/api/rollback_command.dart';
 import '../../model/command/api/save_command.dart';
 import '../../model/response/device_status_response.dart';
-import '../../routing/locations/work_screen_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/apps/app_service.dart';
 import '../../service/config/config_controller.dart';
@@ -118,7 +117,7 @@ class WebFrameState extends FrameState {
     Color? iconColor = ParseUtil.parseHexColor(applicationStyle?['web.topmenu.iconColor']);
     String? imagePath = applicationStyle?['web.topmenu.image'];
 
-    bool inWorkscreen = FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == WorkScreenLocation;
+    bool inWorkscreen = IUiService().getCurrentWorkscreenName() != null;
 
     return AppBar(
       titleSpacing: titleSpacing,

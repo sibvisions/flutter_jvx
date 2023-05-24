@@ -70,6 +70,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   void initState() {
     super.initState();
 
+    IUiService().getAppManager()?.onMenuPage();
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
   }
 
@@ -176,17 +177,19 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                 appBar: frameState?.getAppBar(
                   leading: isMenuSearchEnabled
                       ? IconButton(
+                          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                           onPressed: () {
                             isMenuSearchEnabled = false;
                             setState(() {});
                           },
-                          icon: const FaIcon(FontAwesomeIcons.circleXmark))
+                          icon: const FaIcon(FontAwesomeIcons.circleXmark),
+                        )
                       : (AppService().startedManually
                           ? IconButton(
                               tooltip: FlutterUI.translate("Exit App"),
                               splashRadius: kToolbarHeight / 2,
                               icon: const FaIcon(FontAwesomeIcons.angleLeft),
-                              onPressed: () => IUiService().routeToAppOverview(),
+                              onPressed: () => Navigator.maybePop(context),
                             )
                           : null),
                   title: !isMenuSearchEnabled

@@ -73,6 +73,8 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
 
+    IUiService().getAppManager()?.onSettingPage();
+
     // Load Version
     appVersionNotifier = ValueNotifier(FlutterUI.translateLocal("Loading..."));
     PackageInfo.fromPlatform().then((packageInfo) {
@@ -125,6 +127,8 @@ class _SettingsPageState extends State<SettingsPage> {
           titleSpacing: 0,
           leading: context.canBeamBack
               ? IconButton(
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  splashRadius: kToolbarHeight / 2,
                   icon: const FaIcon(FontAwesomeIcons.angleLeft),
                   onPressed: context.beamBack,
                 )

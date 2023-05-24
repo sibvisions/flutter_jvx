@@ -41,11 +41,7 @@ import 'model/command/api/login_command.dart';
 import 'model/config/application_parameters.dart';
 import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
-import 'routing/locations/app_location.dart';
-import 'routing/locations/login_location.dart';
-import 'routing/locations/menu_location.dart';
-import 'routing/locations/settings_location.dart';
-import 'routing/locations/work_screen_location.dart';
+import 'routing/locations/main_location.dart';
 import 'service/api/i_api_service.dart';
 import 'service/api/impl/default/api_service.dart';
 import 'service/api/shared/controller/api_controller.dart';
@@ -535,33 +531,28 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     super.initState();
 
     routerDelegate = BeamerDelegate(
-      initialPath: "/apps",
       setBrowserTabTitle: false,
       navigatorObservers: [routeObserver],
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
-          AppLocation(),
-          LoginLocation(),
-          MenuLocation(),
-          SettingsLocation(),
-          WorkScreenLocation(),
+          MainLocation(),
         ],
       ),
       transitionDelegate:
           (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate()),
       guards: [
-        // Guards /apps by beaming to /menu if an app is active
+        // Guards / by beaming to /menu if an app is active
         BeamGuard(
-          pathPatterns: ["/", "/apps"],
+          pathPatterns: ["/"],
           check: (context, location) => ConfigController().currentApp.value == null || exitFuture != null,
-          beamToNamed: (origin, target) => "/menu",
+          beamToNamed: (origin, target) => "/home",
         ),
-        // Guards everything except /apps and /settings by beaming to /apps if there is no active app
+        // Guards everything except / and /settings (e.g. /menu) by beaming to / if there is no active app
         BeamGuard(
           guardNonMatching: true,
-          pathPatterns: ["/", "/apps", "/settings"],
+          pathPatterns: ["/", "/settings"],
           check: (context, location) => ConfigController().currentApp.value != null && exitFuture == null,
-          beamToNamed: (origin, target) => "/apps",
+          beamToNamed: (origin, target) => "/",
         ),
       ],
     );

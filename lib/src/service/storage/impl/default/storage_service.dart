@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../flutter_ui.dart';
@@ -24,7 +25,6 @@ import '../../../../mask/frame/frame.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/update_components_command.dart';
 import '../../../../model/component/fl_component_model.dart';
-import '../../../../routing/locations/menu_location.dart';
 import '../../../../util/misc/jvx_notifier.dart';
 import '../../../api/shared/api_object_property.dart';
 import '../../../api/shared/fl_component_classname.dart';
@@ -408,7 +408,8 @@ class StorageService implements IStorageService {
     }
 
     if (components.last.className == FlContainerClassname.DESKTOP_PANEL) {
-      return Frame.isWebFrame() && FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == MenuLocation;
+      return Frame.isWebFrame() &&
+          (FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState).pathPatternSegments.contains("menu");
     } else if (components.last.classNameEventSourceRef == FlContainerClassname.DIALOG) {
       return IUiService().isContentVisible(components.last.name);
     } else {
