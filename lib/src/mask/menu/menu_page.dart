@@ -261,43 +261,40 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             "Do you want to switch back online and synchronize all the data?",
           ),
         ),
+        actionsOverflowAlignment: OverflowBarAlignment.center,
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: TextButton(
+              style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+              child: Text(FlutterUI.translate("Discard changes")),
+              onPressed: () async {
+                DialogResult? result = await IUiService().openDialog(
+                  pBuilder: (subContext) => AlertDialog(
+                    title: Text(FlutterUI.translate("Discard offline changes")),
+                    content: Text(FlutterUI.translate(
+                        "Are you sure you want to discard all the changes you made in offline mode?")),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(subContext).pop(DialogResult.NO),
+                        child: Text(FlutterUI.translate("No")),
+                      ),
+                      TextButton(
+                        style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                        onPressed: () => Navigator.of(subContext).pop(DialogResult.DISCARD_CHANGES),
+                        child: Text(FlutterUI.translate("Yes")),
+                      ),
+                    ],
+                  ),
+                );
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop(result);
+              },
+            ),
+          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
-                      child: Text(FlutterUI.translate("Discard changes")),
-                      onPressed: () async {
-                        DialogResult? result = await IUiService().openDialog(
-                          pBuilder: (subContext) => AlertDialog(
-                            title: Text(FlutterUI.translate("Discard offline changes")),
-                            content: Text(FlutterUI.translate(
-                                "Are you sure you want to discard all the changes you made in offline mode?")),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(subContext).pop(DialogResult.NO),
-                                child: Text(FlutterUI.translate("No")),
-                              ),
-                              TextButton(
-                                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
-                                onPressed: () => Navigator.of(subContext).pop(DialogResult.DISCARD_CHANGES),
-                                child: Text(FlutterUI.translate("Yes")),
-                              ),
-                            ],
-                          ),
-                        );
-                        // ignore: use_build_context_synchronously
-                        Navigator.of(context).pop(result);
-                      },
-                    ),
-                  ],
-                ),
-              ),
               TextButton(
                 child: Text(FlutterUI.translate("No")),
                 onPressed: () => Navigator.of(context).pop(DialogResult.NO),
