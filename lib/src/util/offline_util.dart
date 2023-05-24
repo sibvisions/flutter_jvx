@@ -469,6 +469,10 @@ abstract class OfflineUtil {
       // Save password for re-sync
       await ConfigController().updatePassword(FlutterUI.of(FlutterUI.getCurrentContext()!).lastPassword);
 
+      var panelModel = IStorageService().getComponentByName(pComponentName: pScreenName) as FlPanelModel;
+
+      await ConfigController().updateOfflineScreen(panelModel.screenClassName!);
+
       unawaited(IUiService().openDialog(
         pIsDismissible: false,
         pBuilder: (context) {
@@ -520,8 +524,6 @@ abstract class OfflineUtil {
         },
       );
 
-      var panelModel = IStorageService().getComponentByName(pComponentName: pScreenName) as FlPanelModel;
-
       // Close and delete screen
       await ICommandService().sendCommand(CloseScreenCommand(
         screenName: panelModel.name,
@@ -534,7 +536,6 @@ abstract class OfflineUtil {
       await offlineApiRepository.initDataBooks();
 
       IApiService().setRepository(offlineApiRepository);
-      await ConfigController().updateOfflineScreen(panelModel.screenClassName!);
       await onlineApiRepository.stop();
       // Clear menu
       IUiService().setMenuModel(null);
