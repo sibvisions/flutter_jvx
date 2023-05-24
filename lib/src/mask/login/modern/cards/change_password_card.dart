@@ -162,6 +162,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                                 border: InputBorder.none,
                                 suffixIcon: ExcludeFocus(
                                   child: IconButton(
+                                    tooltip: FlutterUI.translate(_passwordHidden ? "Show Password" : "Hide Password"),
                                     icon: Icon(
                                       _passwordHidden ? Icons.visibility : Icons.visibility_off,
                                     ),
@@ -212,6 +213,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                               border: InputBorder.none,
                               suffixIcon: ExcludeFocus(
                                 child: IconButton(
+                                  tooltip: FlutterUI.translate(_newPasswordHidden ? "Show Password" : "Hide Password"),
                                   icon: Icon(
                                     _newPasswordHidden ? Icons.visibility : Icons.visibility_off,
                                   ),
@@ -242,6 +244,8 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
                               border: InputBorder.none,
                               suffixIcon: ExcludeFocus(
                                 child: IconButton(
+                                  tooltip:
+                                      FlutterUI.translate(_confirmPasswordHidden ? "Show Password" : "Hide Password"),
                                   icon: Icon(
                                     _confirmPasswordHidden ? Icons.visibility : Icons.visibility_off,
                                   ),

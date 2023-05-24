@@ -102,12 +102,12 @@ class ListMenuItem extends StatelessWidget {
           ),
           trailing: closeAction != null
               ? IconButton(
+                  splashRadius: kIsWeb ? 18 : 25,
                   icon: const Icon(Icons.close),
                   color: Theme.of(context).brightness == Brightness.light
                       ? JVxColors.COMPONENT_DISABLED
                       : JVxColors.COMPONENT_DISABLED_LIGHTER,
                   iconSize: 22,
-                  splashRadius: kIsWeb ? 18 : 25,
                   onPressed: () => closeAction.call(context, item: menuItemModel),
                 )
               : null,

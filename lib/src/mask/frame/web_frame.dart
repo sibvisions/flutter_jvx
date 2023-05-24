@@ -123,6 +123,7 @@ class WebFrameState extends FrameState {
       titleSpacing: titleSpacing,
       leading: Builder(
         builder: (context) => IconButton(
+          tooltip: FlutterUI.translate("Toggle Menu"),
           icon: FaIcon(
             FontAwesomeIcons.bars,
             color: iconColor,
@@ -150,6 +151,7 @@ class WebFrameState extends FrameState {
           Padding(
             padding: const EdgeInsets.only(right: spacing),
             child: IconButton(
+              tooltip: FlutterUI.translate("Rollback"),
               icon: FaIcon(
                 FontAwesomeIcons.arrowRotateLeft,
                 color: iconColor,
@@ -162,6 +164,7 @@ class WebFrameState extends FrameState {
           Padding(
             padding: const EdgeInsets.only(right: spacing),
             child: IconButton(
+              tooltip: FlutterUI.translate("Save"),
               icon: FaIcon(
                 FontAwesomeIcons.floppyDisk,
                 color: iconColor,
@@ -174,6 +177,7 @@ class WebFrameState extends FrameState {
           Padding(
             padding: const EdgeInsets.only(right: spacing),
             child: IconButton(
+              tooltip: FlutterUI.translate("Reload"),
               icon: FaIcon(
                 FontAwesomeIcons.arrowRotateRight,
                 color: iconColor,
@@ -186,6 +190,7 @@ class WebFrameState extends FrameState {
           Padding(
             padding: const EdgeInsets.only(right: spacing),
             child: IconButton(
+              tooltip: FlutterUI.translate("Home"),
               icon: FaIcon(
                 FontAwesomeIcons.house,
                 color: iconColor,
@@ -198,6 +203,7 @@ class WebFrameState extends FrameState {
             padding: const EdgeInsets.only(right: spacing),
             child: Builder(
               builder: (context) => IconButton(
+                tooltip: FlutterUI.translate("Settings"),
                 icon: FaIcon(
                   FontAwesomeIcons.gear,
                   color: iconColor,
@@ -210,6 +216,7 @@ class WebFrameState extends FrameState {
           Padding(
             padding: const EdgeInsets.only(right: spacing),
             child: IconButton(
+              tooltip: FlutterUI.translate("Change password"),
               icon: FaIcon(
                 FontAwesomeIcons.key,
                 color: iconColor,
@@ -226,6 +233,7 @@ class WebFrameState extends FrameState {
               return Padding(
                 padding: const EdgeInsets.only(right: spacing),
                 child: IconButton(
+                  tooltip: FlutterUI.translate(value ? "Restart" : "Logout"),
                   icon: FaIcon(
                     value ? FontAwesomeIcons.arrowsRotate : FontAwesomeIcons.rightFromBracket,
                     color: iconColor,
@@ -242,6 +250,7 @@ class WebFrameState extends FrameState {
             padding: const EdgeInsets.only(right: spacing),
             child: Builder(
               builder: (context) => IconButton(
+                tooltip: FlutterUI.translate("Apps"),
                 icon: Icon(
                   AppOverviewPage.appsIcon,
                   color: iconColor,

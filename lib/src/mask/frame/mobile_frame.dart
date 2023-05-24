@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../flutter_ui.dart';
 import '../drawer/drawer_menu.dart';
 import '../state/loading_bar.dart';
 import 'frame.dart';
@@ -39,6 +40,8 @@ class MobileFrameState extends FrameState {
       ...super.getActions(),
       Builder(
         builder: (context) => IconButton(
+          tooltip: FlutterUI.translate("Open Drawer"),
+          splashRadius: kToolbarHeight / 2,
           icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
           onPressed: () => Scaffold.of(context).openEndDrawer(),
         ),

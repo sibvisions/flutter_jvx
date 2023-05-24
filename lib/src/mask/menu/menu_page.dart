@@ -88,6 +88,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
             if (!isMenuSearchEnabled && menuModel.count >= 8) {
               actions.add(IconButton(
+                tooltip: FlutterUI.translate("Search"),
+                splashRadius: kToolbarHeight / 2,
                 onPressed: () {
                   isMenuSearchEnabled = true;
                   menuSearchController.clear();
@@ -100,6 +102,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             if (isOffline) {
               actions.add(Builder(
                 builder: (context) => IconButton(
+                  tooltip: FlutterUI.translate("Go Online"),
+                  splashRadius: kToolbarHeight / 2,
                   onPressed: () {
                     showSyncDialog().then(
                       (value) async {
@@ -178,6 +182,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   leading: isMenuSearchEnabled
                       ? IconButton(
                           tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                          splashRadius: kToolbarHeight / 2,
                           onPressed: () {
                             isMenuSearchEnabled = false;
                             setState(() {});
@@ -228,6 +233,8 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
           border: InputBorder.none,
           suffixIcon: menuSearchController.text.isNotEmpty
               ? IconButton(
+                  tooltip: FlutterUI.translate("Clear"),
+                  splashRadius: kToolbarHeight / 2,
                   onPressed: () {
                     menuSearchController.clear();
                     setState(() {});

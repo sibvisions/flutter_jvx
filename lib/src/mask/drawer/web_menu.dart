@@ -185,6 +185,8 @@ class _WebMenuState extends State<WebMenu> with SingleTickerProviderStateMixin, 
           border: _createSearchBorder(),
           suffixIcon: menuSearchController.text.isNotEmpty
               ? IconButton(
+                  tooltip: FlutterUI.translate("Clear"),
+                  splashRadius: kToolbarHeight / 2,
                   onPressed: () {
                     menuSearchController.clear();
                     setState(() {});

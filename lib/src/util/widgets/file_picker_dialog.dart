@@ -59,6 +59,7 @@ abstract class FilePickerDialog {
                         ),
                       ),
                       IconButton(
+                        tooltip: FlutterUI.translate("Close"),
                         color: Colors.grey[300],
                         icon: const FaIcon(FontAwesomeIcons.circleXmark),
                         onPressed: () => Navigator.of(context).pop(),

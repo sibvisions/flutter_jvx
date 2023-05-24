@@ -371,6 +371,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         decoration: const ShapeDecoration(shape: CircleBorder()),
         child: showAddOnFront
             ? IconButton(
+                tooltip: FlutterUI.translateLocal("Settings"),
                 color: Theme.of(context).colorScheme.primary,
                 style: IconButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -379,7 +380,6 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                 ),
                 onPressed: () => IUiService().routeToSettings(),
                 icon: const FaIcon(FontAwesomeIcons.gear),
-                tooltip: FlutterUI.translateLocal("Settings"),
               )
             : ListTileTheme.merge(
                 iconColor: Theme.of(context).colorScheme.primary,

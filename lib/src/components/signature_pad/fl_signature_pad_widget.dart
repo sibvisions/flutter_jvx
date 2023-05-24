@@ -154,7 +154,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: IconButton(
-                            padding: const EdgeInsets.all(8.0),
+                            tooltip: FlutterUI.translate("Clear"),
                             icon: const Icon(Icons.clear),
                             onPressed: widget.onClear,
                           ),
@@ -169,7 +169,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: IconButton(
-                            padding: const EdgeInsets.all(8.0),
+                            tooltip: FlutterUI.translate("Done"),
                             icon: const Icon(Icons.check),
                             onPressed: _onDone,
                           ),
@@ -184,7 +184,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: IconButton(
-                            padding: const EdgeInsets.all(8.0),
+                            tooltip: FlutterUI.translate(_editEnabled ? "Disable Editing" : "Enable Editing"),
                             icon: _editEnabled ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
                             onPressed: editSwitch,
                           ),

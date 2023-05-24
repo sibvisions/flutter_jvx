@@ -394,10 +394,13 @@ class _DrawerMenuState extends State<DrawerMenu> {
       return Flexible(
         child: InkWell(
           onTap: onTap,
-          child: Center(
-            child: FaIcon(
-              leadingIcon,
-              color: Theme.of(context).colorScheme.onPrimary,
+          child: Tooltip(
+            message: text,
+            child: Center(
+              child: FaIcon(
+                leadingIcon,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
           ),
         ),

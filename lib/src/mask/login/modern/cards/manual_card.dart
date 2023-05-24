@@ -115,6 +115,7 @@ class _ManualCardState extends State<ManualCard> {
                           ),
                           if (widget.showSettings)
                             IconButton(
+                              tooltip: FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
                               splashRadius: 30,
                               color: Theme.of(context).colorScheme.primary,
                               style: IconButton.styleFrom(
@@ -128,7 +129,6 @@ class _ManualCardState extends State<ManualCard> {
                               icon: replaceSettingsWithApps
                                   ? const Icon(AppOverviewPage.appsIcon)
                                   : const FaIcon(FontAwesomeIcons.gear),
-                              tooltip: FlutterUI.translate(replaceSettingsWithApps ? "Apps" : "Settings"),
                             ),
                         ],
                       ),
@@ -158,6 +158,7 @@ class _ManualCardState extends State<ManualCard> {
                               suffixIcon: usernameController.text.isNotEmpty
                                   ? ExcludeFocus(
                                       child: IconButton(
+                                        tooltip: FlutterUI.translate("Clear"),
                                         icon: const Icon(Icons.clear),
                                         onPressed: () => setState(() => usernameController.clear()),
                                       ),
@@ -188,6 +189,8 @@ class _ManualCardState extends State<ManualCard> {
                               suffixIcon: passwordController.text.isNotEmpty
                                   ? ExcludeFocus(
                                       child: IconButton(
+                                        tooltip:
+                                            FlutterUI.translate(_passwordHidden ? "Show Password" : "Hide Password"),
                                         icon: Icon(
                                           _passwordHidden ? Icons.visibility : Icons.visibility_off,
                                         ),

@@ -121,6 +121,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                           suffixIcon: appNameController.text.isNotEmpty
                               ? ExcludeFocus(
                                   child: IconButton(
+                                    tooltip: FlutterUI.translate("Clear"),
                                     icon: const Icon(Icons.clear),
                                     onPressed: () => setState(() => appNameController.clear()),
                                   ),
@@ -152,6 +153,7 @@ class _SingleAppViewState extends State<SingleAppView> {
                           suffixIcon: baseUrlController.text.isNotEmpty
                               ? ExcludeFocus(
                                   child: IconButton(
+                                    tooltip: FlutterUI.translate("Clear"),
                                     icon: const Icon(Icons.clear),
                                     onPressed: () => setState(() => baseUrlController.clear()),
                                   ),

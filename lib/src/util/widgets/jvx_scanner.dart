@@ -107,6 +107,8 @@ class _JVxScannerState extends State<JVxScanner> {
           title: Text(FlutterUI.translate(widget.title)),
           actions: [
             IconButton(
+              tooltip: FlutterUI.translate("Toggle Torch"),
+              splashRadius: kToolbarHeight / 2,
               onPressed: () => controller.toggleTorch(),
               icon: ValueListenableBuilder(
                   valueListenable: controller.torchState,
@@ -121,6 +123,7 @@ class _JVxScannerState extends State<JVxScanner> {
             ),
             if (widget.allowMultiScan)
               PopupMenuButton(
+                splashRadius: kToolbarHeight / 2,
                 onSelected: (value) => setState(() => multiScanEnabled = !multiScanEnabled),
                 itemBuilder: (context) {
                   return [

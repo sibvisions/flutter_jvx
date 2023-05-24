@@ -171,6 +171,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                     suffixIcon: !widget.locked && appNameController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
+                                              tooltip: FlutterUI.translate("Clear"),
                                               icon: const Icon(Icons.clear),
                                               onPressed: () => setState(() => appNameController.clear()),
                                             ),
@@ -208,6 +209,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                     suffixIcon: !widget.locked && titleController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
+                                              tooltip: FlutterUI.translate("Clear"),
                                               icon: const Icon(Icons.clear),
                                               onPressed: () => setState(() => titleController.clear()),
                                             ),
@@ -250,6 +252,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                                     suffixIcon: !widget.locked && baseUrlController.text.isNotEmpty
                                         ? ExcludeFocus(
                                             child: IconButton(
+                                              tooltip: FlutterUI.translate("Clear"),
                                               icon: const Icon(Icons.clear),
                                               onPressed: () => setState(() => baseUrlController.clear()),
                                             ),
@@ -298,7 +301,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                           bottomRight: Radius.circular(10),
                         ),
                         child: Tooltip(
-                          message: FlutterUI.translateLocal(qrCodeError ?? ""),
+                          message: FlutterUI.translateLocal(qrCodeError ?? "Show QR Code"),
                           triggerMode: qrCodeError != null ? TooltipTriggerMode.tap : TooltipTriggerMode.longPress,
                           child: InkWell(
                             onTap: qrCodeError == null ? _showQrCodeDialog : null,
