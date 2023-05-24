@@ -46,6 +46,7 @@ import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/request/filter.dart';
+import '../../routing/locations/main_location.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/fl_component_classname.dart';
 import '../../service/data/i_data_service.dart';
@@ -930,7 +931,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Debug feature -> Takes one data provider offline
   void _debugGoOffline() {
     BeamState state = context.currentBeamLocation.state as BeamState;
-    String workscreenName = state.pathParameters['workScreenName']!;
+    String workscreenName = state.pathParameters[MainLocation.screenNameKey]!;
     OfflineUtil.initOffline(workscreenName);
   }
 

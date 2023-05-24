@@ -49,9 +49,7 @@ import '../../../model/response/application_meta_data_response.dart';
 import '../../../model/response/application_parameters_response.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
-import '../../../routing/locations/login_location.dart';
-import '../../../routing/locations/settings_location.dart';
-import '../../../routing/locations/work_screen_location.dart';
+import '../../../routing/locations/main_location.dart';
 import '../../../util/extensions/string_extensions.dart';
 import '../../../util/jvx_colors.dart';
 import '../../command/i_command_service.dart';
@@ -209,7 +207,7 @@ class UiService implements IUiService {
   static bool checkFirstSplash([bool includeWorkScreens = true]) {
     if (FlutterUI.getCurrentContext() == null && !FlutterUI.initiated) {
       if (kIsWeb &&
-          (Uri.base.fragment == "/settings" || (includeWorkScreens && Uri.base.fragment.startsWith("/workScreen")))) {
+          (Uri.base.fragment == "/settings" || (includeWorkScreens && Uri.base.fragment.startsWith("/screens")))) {
         return false;
       }
     }
@@ -220,12 +218,14 @@ class UiService implements IUiService {
   void routeToMenu({bool pReplaceRoute = false}) {
     if (!checkFirstSplash()) return;
 
-    var lastLocation = FlutterUI.getBeamerDelegate().currentBeamLocation;
-    if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
+    var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+    if (pReplaceRoute ||
+        lastBeamState.pathPatternSegments.contains("settings") ||
+        lastBeamState.pathPatternSegments.contains("login")) {
       FlutterUI.clearHistory();
-      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/menu");
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/home");
     } else {
-      FlutterUI.getBeamerDelegate().beamToNamed("/menu");
+      FlutterUI.getBeamerDelegate().beamToNamed("/home");
     }
   }
 
@@ -237,11 +237,13 @@ class UiService implements IUiService {
     String resolvedScreenName = menuItemModel?.navigationName ?? pScreenName;
     FlutterUI.logUI.i("Routing to workscreen: $pScreenName, resolved name: $resolvedScreenName");
 
-    var lastLocation = FlutterUI.getBeamerDelegate().currentBeamLocation;
-    if (pReplaceRoute || lastLocation.runtimeType == SettingsLocation || lastLocation.runtimeType == LoginLocation) {
-      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/workScreen/$resolvedScreenName");
+    var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+    if (pReplaceRoute ||
+        lastBeamState.pathPatternSegments.contains("settings") ||
+        lastBeamState.pathPatternSegments.contains("login")) {
+      FlutterUI.getBeamerDelegate().beamToReplacementNamed("/screens/$resolvedScreenName");
     } else {
-      FlutterUI.getBeamerDelegate().beamToNamed("/workScreen/$resolvedScreenName");
+      FlutterUI.getBeamerDelegate().beamToNamed("/screens/$resolvedScreenName");
     }
   }
 
@@ -279,7 +281,7 @@ class UiService implements IUiService {
     var stopApp = FlutterUI.of(FlutterUI.getEffectiveContext()!).stopApp();
 
     FlutterUI.clearHistory();
-    FlutterUI.getBeamerDelegate().beamToReplacementNamed("/apps");
+    FlutterUI.getBeamerDelegate().beamToReplacementNamed("/");
 
     await stopApp;
   }
@@ -936,10 +938,8 @@ class UiService implements IUiService {
 
   @override
   String? getCurrentWorkscreenName() {
-    if (FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType != WorkScreenLocation) {
-      return null;
-    }
-    return (FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState).pathParameters['workScreenName'];
+    return (FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState)
+        .pathParameters[MainLocation.screenNameKey];
   }
 
   @override

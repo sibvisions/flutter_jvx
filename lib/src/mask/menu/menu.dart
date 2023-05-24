@@ -98,7 +98,7 @@ abstract class Menu extends StatelessWidget {
 
     // Offline screens no not require the server to know that they are open
     if (IUiService().usesNativeRouting(item.screenLongName)) {
-      IUiService().routeToCustomScreen(pFullPath: "/workScreen/${item.navigationName}");
+      IUiService().routeToCustomScreen(pFullPath: "/screens/${item.navigationName}");
     } else {
       IUiService().routeToWorkScreen(pScreenName: item.navigationName);
     }

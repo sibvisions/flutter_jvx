@@ -16,13 +16,13 @@
 
 import 'dart:async';
 
+import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../../../../flutter_ui.dart';
 import '../../../../../../../mask/error/server_error_dialog.dart';
 import '../../../../../../../model/command/base_command.dart';
 import '../../../../../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
-import '../../../../../../../routing/locations/settings_location.dart';
 import '../../../../../../ui/i_ui_service.dart';
 import '../../../../i_command_processor.dart';
 
@@ -33,7 +33,9 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
     if (FlutterUI.getCurrentContext() != null && !command.silentAbort) {
       bool goToSettings = command.userError;
       // Don't show "Go to Settings" while in settings
-      if (FlutterUI.getBeamerDelegate().currentBeamLocation.runtimeType == SettingsLocation) {
+      if ((FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState)
+          .pathPatternSegments
+          .contains("settings")) {
         goToSettings = false;
       }
 

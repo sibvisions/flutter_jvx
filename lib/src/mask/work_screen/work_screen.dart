@@ -105,6 +105,8 @@ class WorkScreenState extends State<WorkScreen> {
   @override
   void initState() {
     super.initState();
+
+    IUiService().getAppManager()?.onScreenPage();
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
 
     item = IUiService().getMenuItem(widget.screenName);
@@ -168,7 +170,7 @@ class WorkScreenState extends State<WorkScreen> {
   void rebuild() {
     IUiService().closeJVxDialogs();
 
-    Navigator.of(FlutterUI.getCurrentContext()!).popUntil((route) => route.isFirst);
+    Navigator.of(FlutterUI.getCurrentContext()!).popUntil((route) => route is! PopupRoute);
 
     sentScreen = false;
     setState(() {});
@@ -300,21 +302,17 @@ class WorkScreenState extends State<WorkScreen> {
     );
   }
 
-  InkWell _buildLeading() {
-    return InkWell(
-      splashFactory: NoSplash.splashFactory,
-      customBorder: const CircleBorder(),
-      onTap: () {
-        _onBack();
-      },
-      onDoubleTap: () {
-        _onBack(true);
-      },
-      child: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Center(
-          child: FaIcon(
-            FontAwesomeIcons.angleLeft,
+  Widget _buildLeading() {
+    return InkResponse(
+      radius: kToolbarHeight / 2,
+      onTap: () => _onBack(),
+      onDoubleTap: () => _onBack(true),
+      child: Tooltip(
+        message: MaterialLocalizations.of(context).backButtonTooltip,
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(
+            child: FaIcon(FontAwesomeIcons.angleLeft),
           ),
         ),
       ),

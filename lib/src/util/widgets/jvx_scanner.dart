@@ -98,8 +98,10 @@ class _JVxScannerState extends State<JVxScanner> {
           automaticallyImplyLeading: false,
           leading: Navigator.canPop(context)
               ? IconButton(
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  splashRadius: kToolbarHeight / 2,
                   icon: const FaIcon(FontAwesomeIcons.angleLeft),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.maybePop(context),
                 )
               : null,
           title: Text(FlutterUI.translate(widget.title)),
