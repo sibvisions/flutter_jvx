@@ -92,16 +92,10 @@ class MenuItemModel {
       icon = pMenuItemModel.imageBuilder!.call(context);
     }
 
-    return Builder(
-      builder: (context) => Container(
-        clipBehavior: Clip.hardEdge,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Colors.transparent,
-          shape: BoxShape.circle,
-        ),
-        width: 40,
-        height: 40,
+    return Builder(builder: (context) {
+      return CircleAvatar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: pColor,
         child: IconTheme(
           data: IconTheme.of(context).copyWith(
             size: pSize,
@@ -109,7 +103,7 @@ class MenuItemModel {
           ),
           child: icon,
         ),
-      ),
-    );
+      );
+    });
   }
 }
