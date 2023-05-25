@@ -329,7 +329,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
     // Overriding menu mode
     AppManager? customAppManager = IUiService().getAppManager();
-    menuMode = customAppManager?.getMenuMode(menuMode) ?? menuMode;
+    menuMode = customAppManager?.onMenuMode(menuMode) ?? menuMode;
 
     if (menuMode == MenuMode.DRAWER) return const SizedBox();
 

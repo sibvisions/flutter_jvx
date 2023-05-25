@@ -617,14 +617,11 @@ class OnlineApiRepository extends IRepository {
       }
 
       if (IUiService().getAppManager() != null) {
-        var overrideResponse = await IUiService().getAppManager()?.handleResponse(
+        response = await IUiService().getAppManager()!.handleResponse(
               pRequest,
               response,
-              () async => (await _sendRequest(pRequest, data)),
+              () => _sendRequest(pRequest, data),
             );
-        if (overrideResponse != null) {
-          response = overrideResponse;
-        }
       }
 
       if (response.statusCode != null && response.statusCode! >= 400 && response.statusCode! <= 599) {

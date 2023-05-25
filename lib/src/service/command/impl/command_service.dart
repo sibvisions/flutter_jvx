@@ -109,16 +109,17 @@ class CommandService implements ICommandService {
 
   @override
   Future<void> sendCommand(BaseCommand pCommand) {
+    BaseCommand command = IUiService().getAppManager()?.interceptCommand(pCommand) ?? pCommand;
     // Only queue api commands
-    if (pCommand is ApiCommand) {
-      return _apiCommandsQueue.add(() => _sendCommand(pCommand));
+    if (command is ApiCommand) {
+      return _apiCommandsQueue.add(() => _sendCommand(command));
     }
     // Only queue layout commands
-    else if (pCommand is LayoutCommand) {
-      return _layoutCommandsQueue.add(() => _sendCommand(pCommand));
+    else if (command is LayoutCommand) {
+      return _layoutCommandsQueue.add(() => _sendCommand(command));
     }
 
-    return _sendCommand(pCommand);
+    return _sendCommand(command);
   }
 
   Future<void> _sendCommand(BaseCommand pCommand) async {
@@ -200,7 +201,7 @@ class CommandService implements ICommandService {
     await pCommand.afterProcessing?.call();
 
     modifyCommands(commands, pCommand);
-    IUiService().getAppManager()?.modifyCommands(commands, pCommand);
+    IUiService().getAppManager()?.modifyFollowUpCommands(pCommand, commands);
 
     if (commands.isNotEmpty) {
       FlutterUI.logCommand.d("$pCommand\n->\n\t$commands");

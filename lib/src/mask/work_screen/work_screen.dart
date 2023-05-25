@@ -106,7 +106,7 @@ class WorkScreenState extends State<WorkScreen> {
   void initState() {
     super.initState();
 
-    IUiService().getAppManager()?.onScreenPage();
+    IUiService().getAppManager()?.onScreenPage(widget.screenName);
     subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
 
     item = IUiService().getMenuItem(widget.screenName);

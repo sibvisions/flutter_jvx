@@ -77,9 +77,9 @@ abstract class AppManager {
   }
 
   /// Gets called on menu mode selection. Default implementation returns original [pCurrentMode]
-  MenuMode? getMenuMode(MenuMode pCurrentMode) => null;
+  MenuMode onMenuMode(MenuMode pCurrentMode) => pCurrentMode;
 
-  /// Gets called on menu model selection. Default implementation returns original [pMenuModel]
+  /// Gets called on menu model selection.
   void modifyMenuModel(MenuModel pMenuModel) {}
 
   /// Can be used to modify the headers for each request
@@ -88,12 +88,21 @@ abstract class AppManager {
   /// Can be used to modify the cookie list for each request
   void modifyCookies(List<Cookie> cookies) {}
 
-  /// Can be used to modify the commands list after the command processor
+  /// Can be used to modify a command which is to be executed. Default implementation returns original [pSentCommand]
+  /// This method can be used to modify command properties, return a different command or even return null to cancel the command.
   ///
-  /// Be warned! This method gets executed on every possible command and their follow up commands.
+  /// Be warned! This method gets executed on every possible command.
   /// Significant performance issues can arise in the whole application the more this function takes to compute.
   /// This method can be called multiple times within a second.
-  void modifyCommands(List<BaseCommand> commands, BaseCommand originalCommand) {}
+  BaseCommand? interceptCommand(BaseCommand pSentCommand) => pSentCommand;
+
+  /// Can be used to modify the commands which follow on a recently executed command.
+  /// This method can be used to modify command properties, return different commands or remove commands to cancel them.
+  ///
+  /// Be warned! This method gets executed on every possible command.
+  /// Significant performance issues can arise in the whole application the more this function takes to compute.
+  /// This method can be called multiple times within a second.
+  void modifyFollowUpCommands(BaseCommand pParentCommand, List<BaseCommand> pFollowUpCommands) {}
 
   /// Can be used to modify the responses list after each request
   void modifyResponses(ApiInteraction responses) {}
@@ -102,12 +111,12 @@ abstract class AppManager {
   /// Useful for 2FA or retry.
   ///
   /// Currently [Response.data] is always going to be a [Uint8List] to provide maximum flexibility.
-  Future<Response?> handleResponse(
+  Future<Response> handleResponse(
     ApiRequest request,
     Response originalResponse,
     Future<Response> Function() resendRequest,
   ) =>
-      Future.value(null);
+      Future.value(originalResponse);
 
   /// Is called if a new startup is initiated.
   void onInitStartup() {}
@@ -121,7 +130,7 @@ abstract class AppManager {
   void onMenuPage() {}
 
   /// Is called when going to a workscreen.
-  void onScreenPage() {}
+  void onScreenPage(String pScreenName) {}
 
   /// Is called when going to the settings.
   void onSettingPage() {}
