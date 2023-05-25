@@ -106,20 +106,16 @@ class _JVxScannerState extends State<JVxScanner> {
               : null,
           title: Text(FlutterUI.translate(widget.title)),
           actions: [
-            IconButton(
-              tooltip: FlutterUI.translate("Toggle Torch"),
-              splashRadius: kToolbarHeight / 2,
-              onPressed: () => controller.toggleTorch(),
-              icon: ValueListenableBuilder(
-                  valueListenable: controller.torchState,
-                  builder: (context, state, child) {
-                    switch (state as TorchState) {
-                      case TorchState.off:
-                        return const Icon(Icons.flash_off);
-                      case TorchState.on:
-                        return const Icon(Icons.flash_on);
-                    }
-                  }),
+            ValueListenableBuilder<TorchState>(
+              valueListenable: controller.torchState,
+              builder: (context, state, child) {
+                return IconButton(
+                  tooltip: FlutterUI.translate(state == TorchState.off ? "Enable Torch" : "Disable Torch"),
+                  splashRadius: kToolbarHeight / 2,
+                  onPressed: () => controller.toggleTorch(),
+                  icon: Icon(_getTorchIcon(state)),
+                );
+              },
             ),
             if (widget.allowMultiScan)
               PopupMenuButton(
@@ -144,6 +140,15 @@ class _JVxScannerState extends State<JVxScanner> {
         ),
       ),
     );
+  }
+
+  IconData _getTorchIcon(TorchState state) {
+    switch (state) {
+      case TorchState.off:
+        return Icons.flash_off;
+      case TorchState.on:
+        return Icons.flash_on;
+    }
   }
 
   @override
