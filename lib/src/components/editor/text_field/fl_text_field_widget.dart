@@ -324,8 +324,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     if (model.isBorderVisible) {
       borderEnabledColor = _extractBorderColor(FlComponentModel.BORDER_COLOR_STYLE) ?? JVxColors.COMPONENT_BORDER;
-      borderFocusedColor = _extractBorderColor(FlComponentModel.BORDER_COLOR_FOCUSED_STYLE) ??
-          _extractBorderColor(FlComponentModel.BORDER_COLOR_STYLE);
+      borderFocusedColor = _extractBorderColor(FlComponentModel.BORDER_COLOR_FOCUSED_STYLE);
     } else {
       borderEnabledColor = Colors.transparent;
       borderFocusedColor = Colors.transparent;
