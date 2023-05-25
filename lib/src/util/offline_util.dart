@@ -36,7 +36,7 @@ import '../service/api/shared/repository/offline/offline_database.dart';
 import '../service/api/shared/repository/offline_api_repository.dart';
 import '../service/api/shared/repository/online_api_repository.dart';
 import '../service/command/i_command_service.dart';
-import '../service/config/config_controller.dart';
+import '../service/config/i_config_service.dart';
 import '../service/data/i_data_service.dart';
 import '../service/storage/i_storage_service.dart';
 import '../service/ui/i_ui_service.dart';
@@ -67,9 +67,9 @@ abstract class OfflineUtil {
     try {
       try {
         await Wakelock.enable();
-        String offlineWorkscreenClassName = ConfigController().offlineScreen.value!;
-        String? offlineUsername = ConfigController().username.value;
-        String? offlinePassword = ConfigController().password.value;
+        String offlineWorkscreenClassName = IConfigService().offlineScreen.value!;
+        String? offlineUsername = IConfigService().username.value;
+        String? offlinePassword = IConfigService().password.value;
 
         var futureDialog = IUiService().openDialog(
           pIsDismissible: false,
@@ -197,8 +197,8 @@ abstract class OfflineUtil {
           await offlineApiRepository.deleteDatabase();
           IDataService().clearDataBooks();
 
-          await ConfigController().updateOffline(false);
-          await ConfigController().updatePassword(null);
+          await IConfigService().updateOffline(false);
+          await IConfigService().updatePassword(null);
           await offlineApiRepository.stop();
 
           failedStep = "Closing sync connection to server";
@@ -234,7 +234,7 @@ abstract class OfflineUtil {
       if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
         await onlineApiRepository?.stop();
         IApiService().setRepository(offlineApiRepository);
-        await ConfigController().updateOffline(true);
+        await IConfigService().updateOffline(true);
         // Clear menu
         IUiService().setMenuModel(null);
       }
@@ -464,13 +464,13 @@ abstract class OfflineUtil {
     try {
       await Wakelock.enable();
       // Set already here to receive errors from api responses
-      await ConfigController().updateOffline(true);
+      await IConfigService().updateOffline(true);
       // Save password for re-sync
-      await ConfigController().updatePassword(FlutterUI.of(FlutterUI.getCurrentContext()!).lastPassword);
+      await IConfigService().updatePassword(FlutterUI.of(FlutterUI.getCurrentContext()!).lastPassword);
 
       var panelModel = IStorageService().getComponentByName(pComponentName: pScreenName) as FlPanelModel;
 
-      await ConfigController().updateOfflineScreen(panelModel.screenClassName!);
+      await IConfigService().updateOfflineScreen(panelModel.screenClassName!);
 
       unawaited(IUiService().openDialog(
         pIsDismissible: false,
@@ -551,7 +551,7 @@ abstract class OfflineUtil {
       }
       await offlineApiRepository?.stop();
       IApiService().setRepository(onlineApiRepository);
-      await ConfigController().updateOffline(false);
+      await IConfigService().updateOffline(false);
 
       ProgressDialogWidget.safeClose(dialogKey);
       await IUiService().openDialog(

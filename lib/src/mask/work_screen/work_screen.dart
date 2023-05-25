@@ -34,7 +34,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/component/model_subscription.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../service/command/i_command_service.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -137,7 +137,7 @@ class WorkScreenState extends State<WorkScreen> {
     future = () async {
       // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
       if (model == null &&
-          (customScreen == null || (customScreen!.sendOpenScreenRequests && !ConfigController().offline.value))) {
+          (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
         await ICommandService().sendCommand(OpenScreenCommand(
           screenLongName: item!.screenLongName,
           reason: "Screen was opened",

@@ -22,7 +22,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_startup_request.dart';
 import '../../../../../util/device_info.dart';
 import '../../../../api/i_api_service.dart';
-import '../../../../config/config_controller.dart';
+import '../../../../config/i_config_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
@@ -38,19 +38,19 @@ class StartupCommandProcessor implements ICommandProcessor<StartupCommand> {
     }
 
     ApiStartupRequest startupRequest = ApiStartupRequest(
-      baseUrl: ConfigController().baseUrl.value!.toString(),
+      baseUrl: IConfigService().baseUrl.value!.toString(),
       requestUri: kIsWeb ? Uri.base.toString() : null,
       appMode: "full",
-      applicationName: ConfigController().appName.value!,
-      authKey: ConfigController().authKey.value,
-      screenHeight: ConfigController().getPhoneSize()?.height.toInt(),
-      screenWidth: ConfigController().getPhoneSize()?.width.toInt(),
+      applicationName: IConfigService().appName.value!,
+      authKey: IConfigService().authKey.value,
+      screenHeight: IConfigService().getPhoneSize()?.height.toInt(),
+      screenWidth: IConfigService().getPhoneSize()?.width.toInt(),
       readAheadLimit: 100,
       deviceMode: (kIsWeb && !IUiService().mobileOnly.value) || IUiService().webOnly.value ? "mobileDesktop" : "mobile",
-      username: command.username ?? ConfigController().username.value,
-      password: command.password ?? ConfigController().password.value,
-      langCode: ConfigController().userLanguage.value ?? ConfigController().getPlatformLocale(),
-      timeZoneCode: ConfigController().getPlatformTimeZone()!,
+      username: command.username ?? IConfigService().username.value,
+      password: command.password ?? IConfigService().password.value,
+      langCode: IConfigService().userLanguage.value ?? IConfigService().getPlatformLocale(),
+      timeZoneCode: IConfigService().getPlatformTimeZone()!,
       technology: deviceInfo.technology,
       osName: deviceInfo.osName,
       osVersion: deviceInfo.osVersion,
@@ -59,7 +59,7 @@ class StartupCommandProcessor implements ICommandProcessor<StartupCommand> {
       deviceTypeModel: deviceInfo.deviceTypeModel,
       deviceId: deviceInfo.deviceId,
       serverVersion: FlutterUI.supportedServerVersion,
-      customProperties: ConfigController().getCustomStartupProperties(),
+      customProperties: IConfigService().getCustomStartupProperties(),
     );
 
     return IApiService().sendRequest(startupRequest);

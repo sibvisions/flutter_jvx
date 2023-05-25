@@ -15,7 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../util/i_types.dart';
 import '../../util/parse_util.dart';
 import '../component/editor/cell_editor/cell_editor_model.dart';
@@ -119,7 +119,7 @@ class ColumnDefinition {
         label = json[ApiObjectProperty.label] ?? "",
         dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? Types.VARCHAR,
         width = (json[ApiObjectProperty.width] ?? 0) != 0
-            ? (json[ApiObjectProperty.width] as int).toDouble() * ConfigController().getScaling()
+            ? (json[ApiObjectProperty.width] as int).toDouble() * IConfigService().getScaling()
             : null,
         readOnly = json[ApiObjectProperty.readOnly] ?? true,
         nullable = json[ApiObjectProperty.nullable] ?? true,

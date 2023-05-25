@@ -118,7 +118,7 @@ import '../../../../util/external/retry.dart';
 import '../../../../util/parse_util.dart';
 import '../../../command/i_command_service.dart';
 import '../../../command/shared/processor/config/save_application_meta_data_command_processor.dart';
-import '../../../config/config_controller.dart';
+import '../../../config/i_config_service.dart';
 import '../../../storage/i_storage_service.dart';
 import '../../../ui/i_ui_service.dart';
 import '../api_object_property.dart';
@@ -261,8 +261,8 @@ class OnlineApiRepository extends IRepository {
   @override
   Future<void> start() async {
     if (isStopped()) {
-      Duration? connectTimeout = ParseUtil.validateDuration(ConfigController().getAppConfig()?.connectTimeout);
-      Duration? requestTimeout = ParseUtil.validateDuration(ConfigController().getAppConfig()?.requestTimeout);
+      Duration? connectTimeout = ParseUtil.validateDuration(IConfigService().getAppConfig()?.connectTimeout);
+      Duration? requestTimeout = ParseUtil.validateDuration(IConfigService().getAppConfig()?.requestTimeout);
       BaseOptions options = BaseOptions(
         connectTimeout: connectTimeout,
         receiveTimeout: requestTimeout ?? connectTimeout,
@@ -395,11 +395,11 @@ class OnlineApiRepository extends IRepository {
     // No session.
     if (IUiService().clientId.value == null) return;
     // Are we offline?
-    if (ConfigController().offline.value) return;
+    if (IConfigService().offline.value) return;
     // Not in foreground.
     if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) return;
 
-    var aliveInterval = ConfigController().getAppConfig()!.aliveInterval!;
+    var aliveInterval = IConfigService().getAppConfig()!.aliveInterval!;
     if (aliveInterval == Duration.zero || aliveInterval.isNegative) return;
 
     _aliveTimer = Timer(aliveInterval, () async {
@@ -483,7 +483,7 @@ class OnlineApiRepository extends IRepository {
         }
       },
       onConnectedChange: (connected) => setConnected(connected),
-      pingInterval: ConfigController().getAppConfig()!.wsPingInterval!,
+      pingInterval: IConfigService().getAppConfig()!.wsPingInterval!,
     ))
         .startWebSocket();
   }
@@ -499,7 +499,7 @@ class OnlineApiRepository extends IRepository {
       return null;
     }
 
-    Uri location = ConfigController().baseUrl.value!;
+    Uri location = IConfigService().baseUrl.value!;
 
     int? end = location.path.lastIndexOf(ParseUtil.urlSuffix);
     if (end == -1) end = null;
@@ -516,7 +516,7 @@ class OnlineApiRepository extends IRepository {
   }
 
   void setConnectedStatus(bool connected) {
-    if (!ConfigController().offline.value) {
+    if (!IConfigService().offline.value) {
       JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.setConnectionState(connected);
     }
   }
@@ -666,7 +666,7 @@ class OnlineApiRepository extends IRepository {
 
       IUiService().getAppManager()?.modifyResponses(apiInteraction);
 
-      if (ConfigController().offline.value) {
+      if (IConfigService().offline.value) {
         var viewResponse = apiInteraction.responses.firstWhereOrNull((element) => element is MessageView);
         if (viewResponse != null) {
           var messageViewResponse = viewResponse as MessageView;
@@ -701,7 +701,7 @@ class OnlineApiRepository extends IRepository {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
 
-    Uri uri = Uri.parse("${ConfigController().baseUrl.value!}/${route.route}");
+    Uri uri = Uri.parse("${IConfigService().baseUrl.value!}/${route.route}");
     List<Cookie>? requestCookies;
     if (!kIsWeb) {
       requestCookies = List.of(_cookies);

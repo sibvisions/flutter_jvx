@@ -23,7 +23,7 @@ import '../../components/panel/tabset/fl_tab_panel_wrapper.dart';
 import '../../flutter_ui.dart';
 import '../../mask/frame/frame.dart';
 import '../../service/api/shared/api_object_property.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
@@ -480,7 +480,7 @@ abstract class FlComponentModel {
     double width = double.parse(split[0]);
     double height = double.parse(split[1]);
 
-    return Size(width, height) * (scalingDisabled ? 1 : ConfigController().getScaling());
+    return Size(width, height) * (scalingDisabled ? 1 : IConfigService().getScaling());
   }
 
   void applyCellFormat(CellFormat cellFormat) {

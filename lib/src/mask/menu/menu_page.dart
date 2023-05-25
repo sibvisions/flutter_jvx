@@ -29,7 +29,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/apps/app_service.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -52,7 +52,7 @@ typedef ButtonCallback = void Function(
 
 /// Menu Page
 ///
-/// Displays menu items accordingly to the menu mode set in [ConfigController]
+/// Displays menu items accordingly to the menu mode set in [IConfigService]
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
 

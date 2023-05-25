@@ -28,9 +28,8 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
-import '../../service/apps/app.dart';
 import '../../service/apps/app_service.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
@@ -55,8 +54,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   final List<int> resolutions = [1024, 640, 320];
 
-  /// App version notifier
-  late ValueNotifier<String> appVersionNotifier;
+  late final Future<String> appFuture;
+  late final Future<String> versionFuture;
 
   late final String? appName;
   late final Uri? baseUrl;
@@ -76,19 +75,17 @@ class _SettingsPageState extends State<SettingsPage> {
     IUiService().getAppManager()?.onSettingPage();
 
     // Load Version
-    appVersionNotifier = ValueNotifier(FlutterUI.translateLocal("Loading..."));
-    PackageInfo.fromPlatform().then((packageInfo) {
-      int? buildNumber = ConfigController().getAppConfig()?.versionConfig?.buildNumber;
+    versionFuture = PackageInfo.fromPlatform().then((packageInfo) {
+      int? buildNumber = IConfigService().getAppConfig()?.versionConfig?.buildNumber;
       String effectiveBuildNumber =
           buildNumber != null && buildNumber >= 0 ? buildNumber.toString() : packageInfo.buildNumber;
-      return appVersionNotifier.value =
-          "${packageInfo.version}${effectiveBuildNumber == "" ? "" : "-$effectiveBuildNumber"}";
+      return "${packageInfo.version}${effectiveBuildNumber == "" ? "" : "-$effectiveBuildNumber"}";
     });
 
-    appName = ConfigController().appName.value;
-    baseUrl = ConfigController().baseUrl.value;
-    language = ConfigController().userLanguage.value;
-    singleAppMode = ConfigController().singleAppMode.value;
+    appName = IConfigService().appName.value;
+    baseUrl = IConfigService().baseUrl.value;
+    language = IConfigService().userLanguage.value;
+    singleAppMode = IConfigService().singleAppMode.value;
   }
 
   @override
@@ -185,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: InkWell(
-        onTap: ConfigController().offline.value ? () => context.beamBack() : _saveClicked,
+        onTap: IConfigService().offline.value ? () => context.beamBack() : _saveClicked,
         child: SizedBox.shrink(
           child: Center(
             child: Text(
@@ -203,13 +200,13 @@ class _SettingsPageState extends State<SettingsPage> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _buildApplicationInfo() {
-    if (ConfigController().privacyPolicy.value != null) {
+    if (IConfigService().privacyPolicy.value != null) {
       SettingItem privacyPolicy = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.link),
         endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
         title: FlutterUI.translateLocal("Privacy Policy"),
         onPressed: (context, value) => launchUrl(
-          ConfigController().privacyPolicy.value!,
+          IConfigService().privacyPolicy.value!,
           mode: LaunchMode.externalApplication,
         ),
       );
@@ -234,8 +231,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildGeneralSettings(BuildContext context) {
     SettingItem? appNameSetting;
-    App app = App.getApp(ConfigController().currentApp.value!)!;
-    bool hideAppDetails = app.parametersHidden;
+    bool hideAppDetails = IConfigService().parametersHidden.value!;
 
     if (!hideAppDetails) {
       appNameSetting = SettingItem(
@@ -257,9 +253,9 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
-    var supportedLanguages = ConfigController().supportedLanguages.value.toList();
+    var supportedLanguages = IConfigService().supportedLanguages.value.toList();
     supportedLanguages.insertAll(0, [
-      "${FlutterUI.translateLocal("System")} (${ConfigController().getPlatformLocale()})",
+      "${FlutterUI.translateLocal("System")} (${IConfigService().getPlatformLocale()})",
       "en",
     ]);
 
@@ -281,7 +277,7 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
-    var resolution = ConfigController().pictureResolution.value ?? resolutions[0];
+    var resolution = IConfigService().pictureResolution.value ?? resolutions[0];
     SettingItem pictureSetting = _buildPickerItem<int>(
       frontIcon: FontAwesomeIcons.image,
       title: "Picture Size",
@@ -292,7 +288,7 @@ class _SettingsPageState extends State<SettingsPage> {
         var items = resolutions.map((e) => "$e ${FlutterUI.translateLocal("px")}").toList();
         _openDropdown(context, items, "$e ${FlutterUI.translateLocal("px")}", onValue: (selectedResolution) async {
           resolution = int.parse(selectedResolution.split(" ")[0]);
-          await ConfigController().updatePictureResolution(resolution);
+          await IConfigService().updatePictureResolution(resolution);
           setState(() {});
         });
       },
@@ -327,7 +323,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(FlutterUI.translateLocal("Manage single application")),
         value: singleAppMode,
         onChanged: (value) {
-          ConfigController().updateSingleAppMode(value);
+          IConfigService().updateSingleAppMode(value);
           setState(() {
             singleAppMode = value;
           });
@@ -341,7 +337,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ThemeMode.dark: FlutterUI.translateLocal("Dark"),
     };
 
-    var theme = ConfigController().themePreference.value;
+    var theme = IConfigService().themePreference.value;
     IconData themeIcon = FontAwesomeIcons.sun;
     if (theme == ThemeMode.light) themeIcon = FontAwesomeIcons.solidSun;
     if (theme == ThemeMode.dark) themeIcon = FontAwesomeIcons.solidMoon;
@@ -355,7 +351,7 @@ class _SettingsPageState extends State<SettingsPage> {
         var items = ThemeMode.values.where((e) => themeMapping.containsKey(e)).map((e) => themeMapping[e]!).toList();
         _openDropdown(context, items, themeMapping[value], onValue: (selectedThemeMode) async {
           theme = themeMapping.entries.firstWhere((entry) => entry.value == selectedThemeMode).key;
-          await ConfigController().updateThemePreference(theme);
+          await IConfigService().updateThemePreference(theme);
           setState(() {});
         });
       },
@@ -435,35 +431,39 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildVersionInfo() {
-    SettingItem appVersionSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.github),
-      endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
-      valueNotifier: appVersionNotifier,
-      title: FlutterUI.translateLocal("App Version"),
-      onPressed: (context, value) => showLicensePage(
-        context: context,
-        applicationIcon: Builder(builder: (context) {
-          double size = IconTheme.of(context).size ?? 24;
-          return SvgPicture.asset(
-            ImageLoader.getAssetPath(
-              FlutterUI.package,
-              "assets/images/J.svg",
+    Widget appVersionSetting = FutureBuilder(
+        future: versionFuture,
+        builder: (context, snapshot) {
+          return SettingItem(
+            frontIcon: const FaIcon(FontAwesomeIcons.github),
+            endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
+            value: snapshot.data ?? FlutterUI.translateLocal("Loading..."),
+            title: FlutterUI.translateLocal("App Version"),
+            onPressed: (context, value) => showLicensePage(
+              context: context,
+              applicationIcon: Builder(builder: (context) {
+                double size = IconTheme.of(context).size ?? 24;
+                return SvgPicture.asset(
+                  ImageLoader.getAssetPath(
+                    FlutterUI.package,
+                    "assets/images/J.svg",
+                  ),
+                  height: max(80, size),
+                );
+              }),
             ),
-            height: max(80, size),
           );
-        }),
-      ),
-    );
+        });
 
     SettingItem commitSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.codeBranch),
-      value: ConfigController().getAppConfig()?.versionConfig?.commit ?? "",
+      value: IConfigService().getAppConfig()?.versionConfig?.commit ?? "",
       title: FlutterUI.translateLocal("RCS"),
     );
 
     SettingItem buildDataSetting = SettingItem(
       frontIcon: const FaIcon(FontAwesomeIcons.calendar),
-      value: ConfigController().getAppConfig()?.versionConfig?.buildDate ?? "",
+      value: IConfigService().getAppConfig()?.versionConfig?.buildDate ?? "",
       title: FlutterUI.translateLocal("Build date"),
     );
 
@@ -552,7 +552,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   bool _changesPending() {
-    return language != ConfigController().userLanguage.value;
+    return language != IConfigService().userLanguage.value;
   }
 
   /// Will send a [StartupCommand] with current values
@@ -560,7 +560,7 @@ class _SettingsPageState extends State<SettingsPage> {
     try {
       BeamerDelegate beamer = Beamer.of(context);
       if (_changesPending()) {
-        await ConfigController().updateUserLanguage(language);
+        await IConfigService().updateUserLanguage(language);
         if (IUiService().clientId.value != null) {
           unawaited(FlutterUI.of(FlutterUI.getCurrentContext()!).startApp());
           return;

@@ -27,7 +27,7 @@ import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../service/apps/app.dart';
 import '../../service/apps/app_service.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
@@ -47,11 +47,7 @@ class AppOverviewPage extends StatefulWidget {
     if (app == null) return null;
     String? styleIcon = app.applicationStyle?["icon"];
     return ((app.icon != null && app.baseUrl != null) || styleIcon != null
-        ? ImageLoader.getImageProvider(
-            styleIcon ?? app.icon!,
-            app: app,
-            baseUrl: app.baseUrl,
-          )
+        ? ImageLoader.getImageProvider(styleIcon ?? app.icon!, app: app)
         : null);
   }
 
@@ -144,8 +140,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   void _refreshApps() {
     setState(() {
       future = () async {
-        var retrievedApps = App.getAppsByIDs(AppService().getAppIds());
-        apps = [...retrievedApps];
+        var retrievedApps = await App.getAppsByIDs(AppService().getAppIds());
+        apps = [...retrievedApps.sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase())];
         currentConfig = _getSingleConfig();
       }()
           .catchError(FlutterUI.createErrorHandler("Failed to init app list"));
@@ -354,8 +350,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   App? _getSingleConfig() {
     App? selectedApp;
     Iterable<String?> appIds = [
-      ConfigController().lastApp.value,
-      ConfigController().defaultApp.value,
+      IConfigService().lastApp.value,
+      IConfigService().defaultApp.value,
     ].whereNotNull();
     if (appIds.isNotEmpty) {
       selectedApp = apps?.firstWhereOrNull((e) => appIds.contains(e.id) && !e.parametersHidden);
@@ -442,7 +438,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       callback: (config) async {
         if (config.apps != null) {
           for (var serverConfig in config.apps!) {
-            var app = App.getApp(App.computeIdFromConfig(serverConfig)!);
+            var app = await App.getApp(App.computeIdFromConfig(serverConfig)!);
             apps?.remove(app);
             await app?.delete();
             app = await App.createAppFromConfig(serverConfig);
@@ -450,7 +446,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         }
 
         if (config.policy != null) {
-          await ConfigController().updatePrivacyPolicy(config.policy);
+          await IConfigService().updatePrivacyPolicy(config.policy);
         }
       },
     ).then((value) => _refreshApps());
@@ -480,11 +476,11 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     );
   }
 
-  /// Returns if the update was successful.
+  /// Returns whether the update was successful.
   Future<App?> _updateApp(BuildContext context, ServerConfig config, {App? editApp}) async {
-    App? app = editApp != null ? App.getApp(editApp.id) : null;
+    App? app = editApp != null ? await App.getApp(editApp.id) : null;
     assert(!(app?.locked ?? false), "Locked apps cannot be updated.");
-    app ??= App.createApp(name: config.appName!, baseUrl: config.baseUrl!);
+    app ??= await App.createApp(name: config.appName!, baseUrl: config.baseUrl!);
 
     // If this is not an predefined app and the key parameters changed, change id.
     if (!app.predefined && (app.name != config.appName || app.baseUrl != config.baseUrl)) {

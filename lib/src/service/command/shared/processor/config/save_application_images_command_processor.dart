@@ -20,14 +20,14 @@ import 'package:archive/archive.dart';
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_images_command.dart';
-import '../../../../config/config_controller.dart';
+import '../../../../config/i_config_service.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
 class SaveApplicationImagesCommandProcessor implements ICommandProcessor<SaveApplicationImagesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationImagesCommand command) async {
-    IFileManager fileManager = ConfigController().getFileManager();
+    IFileManager fileManager = IConfigService().getFileManager();
 
     Uint8List content;
 
@@ -39,11 +39,11 @@ class SaveApplicationImagesCommandProcessor implements ICommandProcessor<SaveApp
         name.replaceFirst("/", "");
       }
 
-      String path = ConfigController().getFileManager().getAppSpecificPath("${IFileManager.IMAGES_PATH}/$name");
+      String path = IConfigService().getFileManager().getAppSpecificPath("${IFileManager.IMAGES_PATH}/$name");
       await fileManager.saveFile(path, pContent: content);
     }
 
-    ConfigController().imagesChanged();
+    IConfigService().imagesChanged();
 
     return [];
   }

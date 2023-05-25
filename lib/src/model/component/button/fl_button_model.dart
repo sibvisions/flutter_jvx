@@ -218,7 +218,7 @@ class FlButtonModel extends FlComponentModel {
       pKey: ApiObjectProperty.imageTextGap,
       pDefault: defaultModel.imageTextGap,
       pCurrent: imageTextGap,
-      pConversion: (imageTextGap) => (imageTextGap! * ConfigController().getScaling()).toInt(),
+      pConversion: (imageTextGap) => (imageTextGap! * IConfigService().getScaling()).toInt(),
     );
     mousePressedImage = getPropertyValue(
       pJson: pJson,
@@ -238,7 +238,7 @@ class FlButtonModel extends FlComponentModel {
         pKey: ApiObjectProperty.margins,
         pDefault: defaultModel._paddings,
         pCurrent: _paddings,
-        pConversion: (value) => ParseUtil.parseMargins(value)! * ConfigController().getScaling());
+        pConversion: (value) => ParseUtil.parseMargins(value)! * IConfigService().getScaling());
 
     dataProvider = getPropertyValue(
       pJson: pJson,

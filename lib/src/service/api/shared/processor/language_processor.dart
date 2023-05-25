@@ -17,15 +17,15 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/language_response.dart';
-import '../../../config/config_controller.dart';
+import '../../../config/i_config_service.dart';
 import '../i_response_processor.dart';
 
 class LanguageProcessor implements IResponseProcessor<LanguageResponse> {
   @override
   List<BaseCommand> processResponse(LanguageResponse pResponse, ApiRequest? pRequest) {
-    ConfigController().updateApplicationLanguage(pResponse.langCode);
+    IConfigService().updateApplicationLanguage(pResponse.langCode);
     // TODO add async
-    ConfigController().updateApplicationTimeZone(pResponse.timeZoneCode);
+    IConfigService().updateApplicationTimeZone(pResponse.timeZoneCode);
     return [];
   }
 }

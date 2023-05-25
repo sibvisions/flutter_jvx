@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../service/api/i_api_service.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../login/default/cards/change_password.dart';
 import 'mobile_frame.dart';
@@ -69,7 +69,7 @@ abstract class Frame extends StatefulWidget {
   void changePassword() {
     IUiService().openDialog(
       pBuilder: (_) => ChangePassword.asDialog(
-        username: ConfigController().userInfo.value?.userName,
+        username: IConfigService().userInfo.value?.userName,
       ),
       pIsDismissible: true,
     );
@@ -114,7 +114,7 @@ abstract class Frame extends StatefulWidget {
     required FrameBuilder builder,
   }) {
     return ValueListenableBuilder<bool>(
-      valueListenable: ConfigController().offline,
+      valueListenable: IConfigService().offline,
       builder: (context, isOffline, child) {
         return Frame.getFrame(
           key: key,

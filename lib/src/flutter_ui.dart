@@ -50,8 +50,9 @@ import 'service/apps/app.dart';
 import 'service/apps/app_service.dart';
 import 'service/command/i_command_service.dart';
 import 'service/command/impl/command_service.dart';
-import 'service/config/config_controller.dart';
-import 'service/config/config_service.dart';
+import 'service/config/i_config_service.dart';
+import 'service/config/impl/config_service.dart';
+import 'service/config/shared/handler/shared_prefs_handler.dart';
 import 'service/data/i_data_service.dart';
 import 'service/data/impl/data_service.dart';
 import 'service/file/file_manager.dart';
@@ -241,7 +242,7 @@ class FlutterUI extends StatefulWidget {
   ///
   /// See also:
   /// * [I18n]
-  /// * [ConfigController.getLanguage]
+  /// * [IConfigService.getLanguage]
   static String translate(String? pText) {
     if (pText == null) return "";
     return IUiService().i18n().translate(pText);
@@ -251,7 +252,7 @@ class FlutterUI extends StatefulWidget {
   ///
   /// See also:
   /// * [I18n]
-  /// * [ConfigController.getLanguage]
+  /// * [IConfigService.getLanguage]
   static String translateLocal(String? pText) {
     if (pText == null) return "";
     return IUiService().i18n().translateLocal(pText);
@@ -345,11 +346,13 @@ class FlutterUI extends StatefulWidget {
     services.registerSingleton(appService);
 
     // Config
-    ConfigController configController = ConfigController.create(
-      configService: ConfigService.create(sharedPrefs: await SharedPreferences.getInstance()),
+    IConfigService configController = ConfigService.create(
+      configService: SharedPrefsHandler.create(sharedPrefs: await SharedPreferences.getInstance()),
       fileManager: await IFileManager.getFileManager(),
     );
     services.registerSingleton(configController);
+
+    await appService.loadConfig();
 
     // Load config files
     AppConfig? devConfig;
@@ -399,7 +402,7 @@ class FlutterUI extends StatefulWidget {
     services.registerSingleton(uiService);
 
     FlutterUIState.urlConfig = await _extractURIParameters(queryParameters);
-    queryParameters.forEach((key, value) => ConfigController().updateCustomStartupProperties(key, value));
+    queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
     // API
     IApiService apiService = ApiService.create(OnlineApiRepository());
@@ -417,8 +420,8 @@ class FlutterUI extends StatefulWidget {
     }
 
     // Init translation
-    await ConfigController().reloadSupportedLanguages();
-    await IUiService().i18n().setLanguage(ConfigController().getLanguage());
+    await IConfigService().reloadSupportedLanguages();
+    await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     IUiService().setAppManager(pAppToRun.appManager);
 
     runApp(pAppToRun);
@@ -468,17 +471,17 @@ class FlutterUI extends StatefulWidget {
       if (urlConfig.isValid) {
         urlApp = await App.createAppFromConfig(urlConfig);
 
-        await ConfigController().updateCurrentApp(urlApp.id);
-        if (ConfigController().currentApp.value != null) {
+        await IConfigService().updateCurrentApp(urlApp.id);
+        if (IConfigService().currentApp.value != null) {
           String? language = queryParameters.remove("language");
           if (language != null) {
-            await ConfigController().updateUserLanguage(
-              language == ConfigController().getPlatformLocale() ? null : language,
+            await IConfigService().updateUserLanguage(
+              language == IConfigService().getPlatformLocale() ? null : language,
             );
           }
           String? timeZone = queryParameters.remove("timeZone");
           if (timeZone != null) {
-            await ConfigController().updateApplicationTimeZone(timeZone);
+            await IConfigService().updateApplicationTimeZone(timeZone);
           }
         }
       }
@@ -544,14 +547,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         // Guards / by beaming to /menu if an app is active
         BeamGuard(
           pathPatterns: ["/"],
-          check: (context, location) => ConfigController().currentApp.value == null || exitFuture != null,
+          check: (context, location) => IConfigService().currentApp.value == null || exitFuture != null,
           beamToNamed: (origin, target) => "/home",
         ),
         // Guards everything except / and /settings (e.g. /menu) by beaming to / if there is no active app
         BeamGuard(
           guardNonMatching: true,
           pathPatterns: ["/", "/settings"],
-          check: (context, location) => ConfigController().currentApp.value != null && exitFuture == null,
+          check: (context, location) => IConfigService().currentApp.value != null && exitFuture == null,
           beamToNamed: (origin, target) => "/",
         ),
       ],
@@ -561,16 +564,16 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     subscription = Connectivity().onConnectivityChanged.listen(didChangeConnectivity);
 
     // Register callbacks
-    ConfigController().disposeImagesCallbacks();
-    ConfigController().registerImagesCallback(refresh);
+    IConfigService().disposeImagesCallbacks();
+    IConfigService().registerImagesCallback(refresh);
 
     // Update style to reflect web colors for theme
     // Don't forget to remove them in [dispose]!
     // ignore: invalid_use_of_protected_member
     assert(!IUiService().layoutMode.hasListeners);
     IUiService().layoutMode.addListener(changedTheme);
-    ConfigController().themePreference.addListener(changedTheme);
-    ConfigController().applicationStyle.addListener(changedTheme);
+    IConfigService().themePreference.addListener(changedTheme);
+    IConfigService().applicationStyle.addListener(changedTheme);
     IUiService().applicationSettings.addListener(refresh);
     IUiService().i18n().currentLanguage.addListener(refresh);
 
@@ -581,19 +584,20 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (urlConfig != null) {
       startApp(appId: urlConfig!.id, autostart: true);
     } else {
-      List<App> apps = App.getAppsByIDs(AppService().getAppIds());
-      AppConfig appConfig = ConfigController().getAppConfig()!;
-      bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
-      App? defaultApp = apps.firstWhereOrNull((e) {
-        return e.isDefault &&
-            (e.predefined || ((appConfig.customAppsAllowed ?? false) || (appConfig.forceSingleAppMode ?? false)));
+      App.getAppsByIDs(AppService().getAppIds()).then((apps) {
+        AppConfig appConfig = IConfigService().getAppConfig()!;
+        bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
+        App? defaultApp = apps.firstWhereOrNull((e) {
+          return e.isDefault &&
+              (e.predefined || ((appConfig.customAppsAllowed ?? false) || (appConfig.forceSingleAppMode ?? false)));
+        });
+        if (defaultApp == null && apps.length == 1 && !showAppOverviewWithoutDefault) {
+          defaultApp = apps.firstOrNull;
+        }
+        if (defaultApp?.isStartable ?? false) {
+          startApp(appId: defaultApp!.id, autostart: true);
+        }
       });
-      if (defaultApp == null && apps.length == 1 && !showAppOverviewWithoutDefault) {
-        defaultApp = apps.firstOrNull;
-      }
-      if (defaultApp?.isStartable ?? false) {
-        startApp(appId: defaultApp!.id, autostart: true);
-      }
     }
   }
 
@@ -621,9 +625,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     List<Locale> supportedLocales = {
-      ConfigController().applicationLanguage.value,
-      ConfigController().getPlatformLocale(),
-      ...ConfigController().supportedLanguages.value,
+      IConfigService().applicationLanguage.value,
+      IConfigService().getPlatformLocale(),
+      ...IConfigService().supportedLanguages.value,
       "en",
     }.whereNotNull().map((e) => Locale(e)).toList();
 
@@ -633,10 +637,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         String title =
             (kIsWeb ? value?.applicationTitleWeb : null) ?? widget.appConfig?.title ?? FlutterUI.packageInfo.appName;
         return MaterialApp.router(
-          themeMode: ConfigController().themePreference.value,
+          themeMode: IConfigService().themePreference.value,
           theme: themeData,
           darkTheme: darkThemeData,
-          locale: Locale(ConfigController().getLanguage()),
+          locale: Locale(IConfigService().getLanguage()),
           supportedLocales: supportedLocales,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
           routeInformationParser: BeamerParser(),
@@ -840,7 +844,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     if (lastState != null) {
       if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
         // App was resumed from a paused state (Permission overlay is not paused)
-        if (IUiService().clientId.value != null && !ConfigController().offline.value) {
+        if (IUiService().clientId.value != null && !IConfigService().offline.value) {
           ICommandService()
               .sendCommand(AliveCommand(reason: "App resumed from paused"))
               .catchError((e, stack) => FlutterUI.logAPI.w("Resume Alive Request failed", e, stack));
@@ -861,15 +865,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     IUiService().i18n().currentLanguage.removeListener(refresh);
     IUiService().layoutMode.removeListener(changedTheme);
-    ConfigController().themePreference.removeListener(changedTheme);
-    ConfigController().applicationStyle.removeListener(changedTheme);
+    IConfigService().themePreference.removeListener(changedTheme);
+    IConfigService().applicationStyle.removeListener(changedTheme);
     IUiService().applicationSettings.removeListener(refresh);
 
     super.dispose();
   }
 
   void changedTheme() {
-    Map<String, String>? styleMap = ConfigController().applicationStyle.value;
+    Map<String, String>? styleMap = IConfigService().applicationStyle.value;
 
     Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap?['web.topmenu.color']) : null;
     styleColor ??= ParseUtil.parseHexColor(styleMap?['theme.color']);

@@ -25,7 +25,7 @@ import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
 import '../model/command/ui/set_focus_command.dart';
 import '../service/command/i_command_service.dart';
-import '../service/config/config_controller.dart';
+import '../service/config/i_config_service.dart';
 import '../service/ui/i_ui_service.dart';
 import '../util/widgets/status_banner.dart';
 import 'apps/app_overview_page.dart';
@@ -190,7 +190,7 @@ class JVxOverlayState extends State<JVxOverlay> {
     backButtonDispatcher.addCallback(_onBackPress);
 
     subscription = _subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
-      if (IUiService().clientId.value != null && !ConfigController().offline.value) {
+      if (IUiService().clientId.value != null && !IConfigService().offline.value) {
         ICommandService()
             .sendCommand(DeviceStatusCommand(
               screenWidth: size.width,
@@ -225,7 +225,7 @@ class JVxOverlayState extends State<JVxOverlay> {
         );
       },
       child: AppStyle(
-        applicationStyle: ConfigController().applicationStyle.value,
+        applicationStyle: IConfigService().applicationStyle.value,
         applicationSettings: IUiService().applicationSettings.value,
         child: FutureBuilder(
           future: _loadingDelayFuture,

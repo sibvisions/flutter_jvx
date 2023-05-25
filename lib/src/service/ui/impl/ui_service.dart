@@ -53,7 +53,7 @@ import '../../../routing/locations/main_location.dart';
 import '../../../util/extensions/string_extensions.dart';
 import '../../../util/jvx_colors.dart';
 import '../../command/i_command_service.dart';
-import '../../config/config_controller.dart';
+import '../../config/i_config_service.dart';
 import '../../data/i_data_service.dart';
 import '../../layout/i_layout_service.dart';
 import '../../storage/i_storage_service.dart';
@@ -313,9 +313,9 @@ class UiService implements IUiService {
 
   @override
   Future<void> logout() async {
-    await ConfigController().updateUserInfo(pUserInfo: null, pJson: null);
-    await ConfigController().updateAuthKey(null);
-    await ConfigController().updatePassword(null);
+    await IConfigService().updateUserInfo(pUserInfo: null, pJson: null);
+    await IConfigService().updateAuthKey(null);
+    await IConfigService().updatePassword(null);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -383,8 +383,8 @@ class UiService implements IUiService {
         }
 
         // Whether we should show the item in the current setting.
-        if ((customScreen.showOnline && !ConfigController().offline.value) ||
-            (customScreen.showOffline && ConfigController().offline.value)) {
+        if ((customScreen.showOnline && !IConfigService().offline.value) ||
+            (customScreen.showOffline && IConfigService().offline.value)) {
           // At this point we either have a custom menu item or an original one.
           MenuItemModel? originalItem = items.firstOrNull;
 
@@ -844,7 +844,7 @@ class UiService implements IUiService {
     }
 
     if (_hasReplaced(pScreenLongName)) {
-      if (ConfigController().offline.value) {
+      if (IConfigService().offline.value) {
         // Offline + Replace => Beam
         return true;
       } else {

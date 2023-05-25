@@ -25,7 +25,7 @@ import '../../flutter_ui.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/app.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../service/file/file_manager.dart';
 import '../font_awesome_util.dart';
 
@@ -132,15 +132,15 @@ abstract class ImageLoader {
   static ImageProvider? getImageProvider(
     String? pImageString, {
     App? app,
-    Uri? baseUrl,
     Function(Size, bool)? pImageStreamListener,
     bool pImageInBase64 = false,
   }) {
+    // assert((appId == null) == (appVersion == null));
     if (pImageString == null || pImageString.isEmpty) {
       return null;
     }
 
-    IFileManager fileManager = ConfigController().getFileManager();
+    IFileManager fileManager = IConfigService().getFileManager();
     ImageProvider imageProvider;
 
     Uri? parsedURI;
@@ -164,8 +164,8 @@ abstract class ImageLoader {
 
         File? file;
 
-        String effectiveAppId = app?.id ?? ConfigController().currentApp.value!;
-        String? effectiveVersion = App.getApp(effectiveAppId)?.version;
+        String effectiveAppId = app?.id ?? IConfigService().currentApp.value!;
+        String? effectiveVersion = app?.version ?? IConfigService().version.value;
 
         if (effectiveVersion != null) {
           String path = fileManager.getAppSpecificPath(
@@ -179,8 +179,8 @@ abstract class ImageLoader {
         if (file != null) {
           imageProvider = FileImage(file);
         } else {
-          Uri effectiveBaseUrl = baseUrl ?? ConfigController().baseUrl.value!;
-          String effectiveAppName = app?.name ?? ConfigController().appName.value!;
+          Uri effectiveBaseUrl = app?.baseUrl ?? IConfigService().baseUrl.value!;
+          String effectiveAppName = app?.name ?? IConfigService().appName.value!;
           imageProvider =
               NetworkImage("$effectiveBaseUrl/resource/$effectiveAppName/$pImageString", headers: _getHeaders());
         }

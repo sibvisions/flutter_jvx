@@ -20,7 +20,7 @@ import 'package:flutter/services.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/change_password_command.dart';
 import '../../../../service/command/i_command_service.dart';
-import '../../../../service/config/config_controller.dart';
+import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
@@ -167,7 +167,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   List<Widget> _createButtons(BuildContext context) {
     List<Widget> widgetList = [];
 
-    if (ConfigController().userInfo.value != null) {
+    if (IConfigService().userInfo.value != null) {
       widgetList.add(TextButton(
         onPressed: () => Navigator.of(context).pop(),
         child: Text(FlutterUI.translate("Cancel")),
@@ -193,7 +193,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (newPasswordController.text == repeatPasswordController.text) {
-      if (ConfigController().userInfo.value == null) {
+      if (IConfigService().userInfo.value == null) {
         LoginPage.doChangePassword(
           username: usernameController.text,
           password: passwordController.text,

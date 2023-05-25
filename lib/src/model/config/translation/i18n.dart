@@ -22,7 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../../../flutter_ui.dart';
-import '../../../service/config/config_controller.dart';
+import '../../../service/config/i_config_service.dart';
 import '../../../service/file/file_manager.dart';
 
 class I18n {
@@ -111,7 +111,7 @@ class I18n {
       }
     }
 
-    var fileManager = ConfigController().getFileManager();
+    var fileManager = IConfigService().getFileManager();
     if (!fileManager.isSatisfied()) return;
 
     // Load the default translation.

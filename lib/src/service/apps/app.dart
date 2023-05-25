@@ -17,7 +17,6 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../config/app_config.dart';
 import '../../config/predefined_server_config.dart';
@@ -25,18 +24,25 @@ import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../mask/apps/app_overview_page.dart';
 import '../../model/request/api_startup_request.dart';
-import '../config/config_controller.dart';
+import '../config/i_config_service.dart';
 import 'app_service.dart';
 
 class App {
   String? _id;
 
+  late String? _name;
+  late String? _baseUrl;
+  late String? _username;
+  late String? _password;
+  late String? _title;
+  late String? _icon;
+  late String? _version;
+  late Map<String, String>? _applicationStyle;
+
   static const String idSplitSequence = "@!@";
   static const String predefinedPrefix = "pr$idSplitSequence";
 
-  static SharedPreferences get _sharedPrefs => ConfigController().getConfigService().getSharedPreferences();
-
-  static AppConfig? get _appConfig => ConfigController().getAppConfig();
+  static AppConfig? get _appConfig => IConfigService().getAppConfig();
 
   static PredefinedServerConfig? getPredefinedConfig(String? id) => id == null
       ? null
@@ -70,56 +76,73 @@ class App {
 
   static bool _isPredefined(String id) => id.startsWith(predefinedPrefix);
 
-  static bool get forceSingleAppMode => ConfigController().getAppConfig()!.forceSingleAppMode!;
+  static bool get forceSingleAppMode => IConfigService().getAppConfig()!.forceSingleAppMode!;
 
-  static bool get customAppsAllowed => ConfigController().getAppConfig()!.customAppsAllowed!;
+  static bool get customAppsAllowed => IConfigService().getAppConfig()!.customAppsAllowed!;
 
   static bool get _isPredefinedLocked =>
-      _isPredefinedHidden || ConfigController().getAppConfig()!.predefinedConfigsLocked!;
+      _isPredefinedHidden || IConfigService().getAppConfig()!.predefinedConfigsLocked!;
 
-  static bool get _isPredefinedHidden => ConfigController().getAppConfig()!.predefinedConfigsParametersHidden!;
+  static bool get _isPredefinedHidden => IConfigService().getAppConfig()!.predefinedConfigsParametersHidden!;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static App? getApp(String id, {bool forceIfMissing = false}) {
+  static Future<App?> getApp(String id, {bool forceIfMissing = false}) async {
     if (_isPredefined(id)) {
       // Predefined
       if (forceIfMissing || getPredefinedConfig(id) != null) {
-        return App._(id);
+        var app = App._(id);
+        await app.loadValues();
+        return app;
       }
     } else {
-      var appIds = AppService().getStoredAppIds();
+      var appIds = AppService().storedAppIds.value;
       if (forceIfMissing || appIds.contains(id)) {
-        return App._(id);
+        var app = App._(id);
+        await app.loadValues();
+        return app;
       }
     }
     return null;
   }
 
-  static List<App> getAppsByIDs(Iterable<String> ids) {
-    return ids
-        .map((id) => App.getApp(id))
-        .whereNotNull()
-        .sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase());
+  static Future<List<App>> getAppsByIDs(Iterable<String> ids) async {
+    return (await Future.wait(ids.map((id) => App.getApp(id)).toList())).whereNotNull().toList();
   }
 
-  static App createApp({required String name, required Uri baseUrl}) {
+  static Future<App> createApp({required String name, required Uri baseUrl}) async {
     var app = App._(computeId(name, baseUrl.toString(), predefined: false)!);
-    app.updateName(name);
-    app.updateBaseUrl(baseUrl);
+    await app.loadValues();
+    await app.updateName(name);
+    await app.updateBaseUrl(baseUrl);
+    await AppService().refreshStoredAppIds();
     return app;
   }
 
   static Future<App> createAppFromConfig(ServerConfig config) async {
     if (!config.isValid) throw ArgumentError("ServerConfig is not valid");
     var app = App._(computeIdFromConfig(config)!);
+    await app.loadValues();
     await app.updateFromConfig(config);
+    await AppService().refreshStoredAppIds();
     return app;
   }
 
   App._(String id) : _id = id;
+
+  Future<void> loadValues() async {
+    _name = await _getString("name");
+    _baseUrl = await _getString("baseUrl");
+    _username = await _getString("username");
+    _password = await _getString("password");
+    _title = await _getString("title");
+    _icon = await _getString("icon");
+    _version = await _getString("version");
+    String? styleJson = await _getString("applicationStyle");
+    _applicationStyle = (styleJson != null ? Map<String, String>.from(jsonDecode(styleJson)) : null);
+  }
 
   String get id {
     _checkId();
@@ -141,16 +164,14 @@ class App {
   ///
   /// Used to identify this app on the server.
   /// {@endtemplate}
-  String? get name => _getString("name") ?? getPredefinedConfig(_id)?.appName;
+  String? get name => _name ?? getPredefinedConfig(_id)?.appName;
 
   /// Sets the name of this app.
   Future<void> updateName(String? name) {
     assert(!locked);
     String? fallback = getPredefinedConfig(_id)?.appName;
-    return _setString(
-      "name",
-      name == fallback ? null : name?.toString(),
-    );
+    var value = name == fallback ? null : name?.toString();
+    return _setString("name", value).then((_) => _name = value);
   }
 
   /// {@template app.url}
@@ -159,7 +180,7 @@ class App {
   /// Used to connect to the server.
   /// {@endtemplate}
   Uri? get baseUrl {
-    String? sBaseUrl = _getString("baseUrl");
+    String? sBaseUrl = _baseUrl;
     return (sBaseUrl != null ? Uri.parse(sBaseUrl) : null) ?? getPredefinedConfig(_id)?.baseUrl;
   }
 
@@ -167,10 +188,8 @@ class App {
   Future<void> updateBaseUrl(Uri? url) {
     assert(!locked);
     Uri? fallback = getPredefinedConfig(_id)?.baseUrl;
-    return _setString(
-      "baseUrl",
-      url == fallback ? null : url?.toString(),
-    );
+    var value = url == fallback ? null : url?.toString();
+    return _setString("baseUrl", value).then((_) => _baseUrl = value);
   }
 
   /// {@template app.username}
@@ -178,15 +197,13 @@ class App {
   ///
   /// Used to auto-login in the app server.
   /// {@endtemplate}
-  String? get username => _getString("username") ?? getPredefinedConfig(_id)?.username;
+  String? get username => _username ?? getPredefinedConfig(_id)?.username;
 
   /// Sets the username of this app.
   Future<void> updateUsername(String? username) {
     String? fallback = getPredefinedConfig(_id)?.username;
-    return _setString(
-      "username",
-      username == fallback ? null : username?.toString(),
-    );
+    var value = username == fallback ? null : username?.toString();
+    return _setString("username", value).then((_) => _username = value);
   }
 
   /// {@template app.password}
@@ -194,15 +211,13 @@ class App {
   ///
   /// Used to auto-login in the app server.
   /// {@endtemplate}
-  String? get password => _getString("password") ?? getPredefinedConfig(_id)?.password;
+  String? get password => _password ?? getPredefinedConfig(_id)?.password;
 
   /// Sets the name of this app.
   Future<void> updatePassword(String? password) {
     String? fallback = getPredefinedConfig(_id)?.password;
-    return _setString(
-      "password",
-      password == fallback ? null : password?.toString(),
-    );
+    var value = password == fallback ? null : password?.toString();
+    return _setString("password", value).then((_) => _password = value);
   }
 
   /// {@template app.title}
@@ -210,16 +225,14 @@ class App {
   ///
   /// Shown in the [AppOverviewPage].
   /// {@endtemplate}
-  String? get title => _getString("title") ?? getPredefinedConfig(_id)?.title;
+  String? get title => _title ?? getPredefinedConfig(_id)?.title;
 
   /// Sets the name of this app.
   Future<void> updateTitle(String? title) {
     assert(!locked);
     String? fallback = getPredefinedConfig(_id)?.title;
-    return _setString(
-      "title",
-      title == fallback ? null : title?.toString(),
-    );
+    var value = title == fallback ? null : title?.toString();
+    return _setString("title", value).then((_) => _title = value);
   }
 
   /// {@template app.icon}
@@ -229,16 +242,14 @@ class App {
   ///
   /// Shown in the [AppOverviewPage].
   /// {@endtemplate}
-  String? get icon => _getString("icon") ?? getPredefinedConfig(_id)?.icon;
+  String? get icon => _icon ?? getPredefinedConfig(_id)?.icon;
 
   /// Sets the name of this app.
   Future<void> updateIcon(String? icon) {
     assert(!locked);
     String? fallback = getPredefinedConfig(_id)?.icon;
-    return _setString(
-      "icon",
-      icon == fallback ? null : icon?.toString(),
-    );
+    var value = icon == fallback ? null : icon?.toString();
+    return _setString("icon", value).then((_) => _icon = value);
   }
 
   /// {@template app.default}
@@ -247,17 +258,17 @@ class App {
   /// Shown in the [AppOverviewPage].
   /// {@endtemplate}
   bool get isDefault {
-    return ConfigController().defaultApp.value == _id;
+    return IConfigService().defaultApp.value == _id;
   }
 
   /// Sets the default state of this app.
   Future<void> updateDefault(bool? isDefault) async {
     assert(!locked);
     if (isDefault ?? false) {
-      await ConfigController().updateDefaultApp(_id);
+      await IConfigService().updateDefaultApp(_id);
     } else {
       if (this.isDefault) {
-        await ConfigController().updateDefaultApp(null);
+        await IConfigService().updateDefaultApp(null);
       }
     }
   }
@@ -294,36 +305,37 @@ class App {
   /// {@template app.version}
   /// The current version of this app, if known.
   /// {@endtemplate}
-  String? get version => _getString("version");
+  String? get version => _version;
 
   /// {@template app.applicationStyle}
   /// The style settings of this app, if saved.
   /// {@endtemplate}
-  Map<String, String>? get applicationStyle {
-    String? jsonMap = _getString("applicationStyle");
-    return (jsonMap != null ? Map<String, String>.from(jsonDecode(jsonMap)) : null);
-  }
+  Map<String, String>? get applicationStyle => _applicationStyle;
 
-  /// Retrieves a bool value by it's key in connection to the app id in [SharedPreferences].
+  /// Retrieves a bool value by its key in connection to the app id.
   ///
   /// If [_id] is null or [usesUserParameter] is false, this returns null.
   ///
   /// {@macro app.key}
   // ignore: unused_element
-  bool? _getBool(String key) {
-    return !usesUserParameter ? null : (_id != null ? _sharedPrefs.getBool("$_id.$key") : null);
+  Future<bool?> _getBool(String key) async {
+    return !usesUserParameter
+        ? null
+        : (_id != null ? IConfigService().getConfigHandler().getPreference("$_id.$key") : null);
   }
 
-  /// Retrieves a string value by it's key in connection to the app id in [SharedPreferences].
+  /// Retrieves a string value by its key in connection to the app id.
   ///
   /// If [_id] is null or [usesUserParameter] is false, this returns null.
   ///
   /// {@macro app.key}
-  String? _getString(String key) {
-    return !usesUserParameter ? null : (_id != null ? _sharedPrefs.getString("$_id.$key") : null);
+  Future<String?> _getString(String key) async {
+    return !usesUserParameter
+        ? null
+        : (_id != null ? IConfigService().getConfigHandler().getPreference("$_id.$key") : null);
   }
 
-  /// Persists a string value by it's key in connection to the app id in [SharedPreferences].
+  /// Persists a string value by its key in connection to the app id.
   ///
   /// {@template app.key}
   /// The key is structured as following:
@@ -336,11 +348,7 @@ class App {
   Future<bool> _setString(String key, String? value) async {
     _checkId();
     String prefix = _id!;
-    if (value != null) {
-      return _sharedPrefs.setString("$prefix.$key", value);
-    } else {
-      return _sharedPrefs.remove("$prefix.$key");
-    }
+    return IConfigService().getConfigHandler().setPreference("$prefix.$key", value);
   }
 
   void _checkId() {
@@ -378,46 +386,25 @@ class App {
 
     String oldAppId = _id!;
 
-    await Future.wait(
-      _sharedPrefs.getKeys().where((e) => e.startsWith("$oldAppId.")).map((e) async {
-        var value = _sharedPrefs.get(e);
-        await _sharedPrefs.remove(e);
-        assert(value != null);
+    await IConfigService().getConfigHandler().updateAppKey(oldAppId, newAppId);
 
-        String subKey = e.substring(e.indexOf(".")); // e.g. ".baseUrl"
-        String newKey = newAppId + subKey;
-
-        if (value is String) {
-          await _sharedPrefs.setString(newKey, value);
-        } else if (value is bool) {
-          await _sharedPrefs.setBool(newKey, value);
-        } else if (value is int) {
-          await _sharedPrefs.setInt(newKey, value);
-        } else if (value is double) {
-          await _sharedPrefs.setDouble(newKey, value);
-        } else if (value is List<String>) {
-          await _sharedPrefs.setStringList(newKey, value);
-        } else {
-          assert(false, "${value.runtimeType} is not supported by SharedPreferences");
-        }
-      }).toList(),
-    );
-
-    String? currentApp = ConfigController().currentApp.value;
+    String? currentApp = IConfigService().currentApp.value;
     if (currentApp == oldAppId) {
-      await ConfigController().updateCurrentApp(newAppId);
+      await IConfigService().updateCurrentApp(newAppId);
     }
-    String? lastApp = ConfigController().lastApp.value;
+    String? lastApp = IConfigService().lastApp.value;
     if (lastApp == oldAppId) {
-      await ConfigController().updateLastApp(newAppId);
+      await IConfigService().updateLastApp(newAppId);
     }
-    String? defaultApp = ConfigController().defaultApp.value;
+    String? defaultApp = IConfigService().defaultApp.value;
     if (defaultApp == oldAppId) {
-      await ConfigController().updateDefaultApp(newAppId);
+      await IConfigService().updateDefaultApp(newAppId);
     }
 
-    await ConfigController().getFileManager().renameIndependentDirectory(
+    await IConfigService().getFileManager().renameIndependentDirectory(
         [oldAppId], id).catchError((e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", e, stack));
+
+    await AppService().refreshStoredAppIds();
 
     _id = newAppId;
   }
@@ -427,7 +414,7 @@ class App {
   /// In case this is a predefined app, removes every persisted data from the storage.
   ///
   /// If this was a custom app the object becomes unusable after this action and may be discarded.
-  Future<void> delete() {
+  Future<void> delete() async {
     _checkId();
 
     String appId = _id!;
@@ -436,19 +423,19 @@ class App {
       _id = null;
     }
 
-    return Future.wait(
-      _sharedPrefs.getKeys().where((e) => e.startsWith("$appId.")).map((e) => _sharedPrefs.remove(e)).toList(),
-    ).then((_) async {
-      if (ConfigController().defaultApp.value == appId) {
-        await ConfigController().updateDefaultApp(null);
-      }
-      if (ConfigController().lastApp.value == appId) {
-        await ConfigController().updateLastApp(null);
-      }
+    await IConfigService().getConfigHandler().removeAppKey(appId);
 
-      await ConfigController().getFileManager().deleteIndependentDirectory([appId], recursive: true).catchError(
-          (e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", e, stack));
-    });
+    if (IConfigService().defaultApp.value == appId) {
+      await IConfigService().updateDefaultApp(null);
+    }
+    if (IConfigService().lastApp.value == appId) {
+      await IConfigService().updateLastApp(null);
+    }
+
+    await IConfigService().getFileManager().deleteIndependentDirectory([appId],
+        recursive: true).catchError((e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", e, stack));
+
+    await AppService().refreshStoredAppIds();
   }
 
   @override

@@ -15,7 +15,7 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import 'api_request.dart';
 
 /// Request to initialize the app to the remote server
@@ -24,7 +24,7 @@ class ApiStartupRequest extends ApiRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The saved base url [ConfigController.baseUrl].
+  /// The saved base url [IConfigService.baseUrl].
   final String baseUrl;
 
   /// The uri entered in the browser.

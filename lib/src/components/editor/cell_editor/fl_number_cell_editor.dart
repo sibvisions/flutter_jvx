@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import '../../../model/component/editor/cell_editor/fl_number_cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
-import '../../../service/config/config_controller.dart';
+import '../../../service/config/i_config_service.dart';
 import '../../../util/parse_util.dart';
 import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
@@ -157,7 +157,7 @@ class FlNumberCellEditor
       precision: columnDefinition?.precision,
       scale: columnDefinition?.scale,
       signed: columnDefinition?.signed,
-      locale: model.locale ?? ConfigController().getLanguage(),
+      locale: model.locale ?? IConfigService().getLanguage(),
     );
   }
 

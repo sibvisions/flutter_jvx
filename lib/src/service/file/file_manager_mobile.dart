@@ -19,7 +19,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../config/config_controller.dart';
+import '../config/i_config_service.dart';
 import 'file_manager.dart';
 
 class FileManagerMobile extends IFileManager {
@@ -50,8 +50,8 @@ class FileManagerMobile extends IFileManager {
 
   @override
   String getAppSpecificPath(String path, {String? appId, String? version}) {
-    String? effectiveAppId = appId ?? ConfigController().currentApp.value;
-    String? effectiveVersion = version ?? ConfigController().version.value;
+    String? effectiveAppId = appId ?? IConfigService().currentApp.value;
+    String? effectiveVersion = version ?? IConfigService().version.value;
     if (effectiveAppId == null || effectiveVersion == null) {
       throw Exception("App Version/Name was not set while trying to build app specific path");
     }

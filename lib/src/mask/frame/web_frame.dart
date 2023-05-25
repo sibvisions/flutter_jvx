@@ -26,7 +26,7 @@ import '../../model/command/api/save_command.dart';
 import '../../model/response/device_status_response.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/apps/app_service.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/parse_util.dart';
@@ -110,7 +110,7 @@ class WebFrameState extends FrameState {
     Color? backgroundColor,
     List<Widget>? actions,
   }) {
-    var profileImage = ConfigController().userInfo.value?.profileImage;
+    var profileImage = IConfigService().userInfo.value?.profileImage;
     var appStyle = AppStyle.of(context);
     var applicationStyle = appStyle.applicationStyle;
     Color? topMenuColor = ParseUtil.parseHexColor(applicationStyle?['web.topmenu.color']);
@@ -276,8 +276,8 @@ class WebFrameState extends FrameState {
           ),
         ),
       ],
-      backgroundColor: ConfigController().offline.value ? Colors.grey.shade500 : topMenuColor,
-      elevation: ConfigController().offline.value ? 0 : null,
+      backgroundColor: IConfigService().offline.value ? Colors.grey.shade500 : topMenuColor,
+      elevation: IConfigService().offline.value ? 0 : null,
     );
   }
 

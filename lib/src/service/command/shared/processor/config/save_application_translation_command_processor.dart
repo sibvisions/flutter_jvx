@@ -18,7 +18,7 @@ import 'package:archive/archive.dart';
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_translation_command.dart';
-import '../../../../config/config_controller.dart';
+import '../../../../config/i_config_service.dart';
 import '../../../../file/file_manager.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
@@ -26,7 +26,7 @@ import '../../i_command_processor.dart';
 class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<SaveApplicationTranslationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationTranslationCommand command) async {
-    IFileManager fileManager = ConfigController().getFileManager();
+    IFileManager fileManager = IConfigService().getFileManager();
     List<Future> saveFutures = [];
 
     for (ArchiveFile translation in command.translations) {
@@ -37,9 +37,9 @@ class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<Sa
     // Wait till all files are saved
     await Future.wait(saveFutures);
 
-    await ConfigController().reloadSupportedLanguages();
+    await IConfigService().reloadSupportedLanguages();
     // Trigger language load
-    await IUiService().i18n().setLanguage(ConfigController().getLanguage());
+    await IUiService().i18n().setLanguage(IConfigService().getLanguage());
 
     return [];
   }

@@ -21,7 +21,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
 import '../../../../service/apps/app_service.dart';
-import '../../../../service/config/config_controller.dart';
+import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
@@ -60,11 +60,11 @@ class _ManualCardState extends State<ManualCard> {
   @override
   void initState() {
     super.initState();
-    usernameController = TextEditingController(text: ConfigController().username.value);
+    usernameController = TextEditingController(text: IConfigService().username.value);
 
     showRememberMe = (IUiService().applicationMetaData.value?.rememberMeEnabled ?? false) ||
-        (ConfigController().getAppConfig()?.uiConfig!.showRememberMe ?? false);
-    rememberMeChecked = ConfigController().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
+        (IConfigService().getAppConfig()?.uiConfig!.showRememberMe ?? false);
+    rememberMeChecked = IConfigService().getAppConfig()?.uiConfig!.rememberMeChecked ?? false;
   }
 
   @override

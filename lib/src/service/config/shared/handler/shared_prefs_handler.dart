@@ -20,25 +20,24 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../model/config/user/user_info.dart';
-import '../../model/request/api_startup_request.dart';
+import '../../../../model/config/user/user_info.dart';
+import '../config_handler.dart';
 
 /// Stores all config and session based data.
 ///
 /// Config service is used to store & access all configurable data,
 /// also stores session based data such as clientId and userData.
-class ConfigService {
+class SharedPrefsHandler implements ConfigHandler {
   final SharedPreferences _sharedPrefs;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ConfigService.create({
+  SharedPrefsHandler.create({
     required SharedPreferences sharedPrefs,
   }) : _sharedPrefs = sharedPrefs;
 
-  /// Returns the current in use [SharedPreferences] instance.
   SharedPreferences getSharedPreferences() {
     return _sharedPrefs;
   }
@@ -47,90 +46,147 @@ class ConfigService {
   // Preferences
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Retrieves the [ThemeMode] preference.
-  ///
-  /// Returns [ThemeMode.system] if none is configured.
-  Future<ThemeMode> themePreference() async {
+  @override
+  Future<ThemeMode?> themePreference() async {
     ThemeMode? themeMode;
     String? theme = _sharedPrefs.getString("theme");
     if (theme != null) {
       themeMode = ThemeMode.values.firstWhereOrNull((e) => e.name == theme);
     }
-    return themeMode ?? ThemeMode.system;
+    return themeMode;
   }
 
-  /// Sets the current [ThemeMode] preference.
-  ///
-  /// If [pThemeMode] is [ThemeMode.system], the preference will be set to `null`.
-  Future<void> updateThemePreference(ThemeMode pThemeMode) async {
-    if (pThemeMode == ThemeMode.system) {
-      await _sharedPrefs.remove("theme");
-    } else {
-      await _sharedPrefs.setString("theme", pThemeMode.name);
-    }
+  @override
+  Future<void> updateThemePreference(ThemeMode? themeMode) {
+    if (themeMode == null) return _sharedPrefs.remove("theme");
+    return _sharedPrefs.setString("theme", themeMode.name);
   }
 
-  /// Retrieves the configured max. picture resolution.
-  ///
-  /// This is being used to limit the resolution of pictures taken via the in-app camera.
+  @override
   Future<int?> pictureResolution() async {
     return _sharedPrefs.getInt("pictureResolution");
   }
 
-  /// Sets the max. picture resolution.
-  Future<void> updatePictureResolution(int pPictureResolution) async {
-    await _sharedPrefs.setInt("pictureResolution", pPictureResolution);
+  @override
+  Future<void> updatePictureResolution(int pictureResolution) async {
+    await _sharedPrefs.setInt("pictureResolution", pictureResolution);
   }
 
-  /// Whether the single app mode is active.
+  @override
   Future<bool> singleAppMode() async {
     return _sharedPrefs.getBool("singleAppMode") ?? false;
   }
 
-  /// Sets the single app mode.
+  @override
   Future<void> updateSingleAppMode(bool? singleAppMode) {
     if (singleAppMode == null || singleAppMode == false) return _sharedPrefs.remove("singleAppMode");
     return _sharedPrefs.setBool("singleAppMode", singleAppMode);
   }
 
-  /// Retrieves the default app.
+  @override
   Future<String?> defaultApp() async {
     return _sharedPrefs.getString("defaultApp");
   }
 
-  /// Sets the default app.
+  @override
   Future<void> updateDefaultApp(String? appId) {
     if (appId == null) return _sharedPrefs.remove("defaultApp");
     return _sharedPrefs.setString("defaultApp", appId);
   }
 
-  /// Retrieves the last opened app.
+  @override
   Future<String?> lastApp() async {
     return _sharedPrefs.getString("lastApp");
   }
 
-  /// Sets the last opened app.
+  @override
   Future<void> updateLastApp(String? appId) {
     if (appId == null) return _sharedPrefs.remove("lastApp");
     return _sharedPrefs.setString("lastApp", appId);
   }
 
-  /// Retrieves the last opened app.
+  @override
   Future<String?> privacyPolicy() async {
     return _sharedPrefs.getString("privacyPolicy");
   }
 
-  /// Sets the last opened app.
+  @override
   Future<void> updatePrivacyPolicy(String? policy) {
     if (policy == null) return _sharedPrefs.remove("privacyPolicy");
     return _sharedPrefs.setString("privacyPolicy", policy);
   }
 
+  @override
+  Future<T?> getPreference<T>(String name) async {
+    return _sharedPrefs.get(name) as T?;
+  }
+
+  @override
+  Future<bool> setPreference<T>(String name, T? value) async {
+    if (value != null) {
+      return _setValue(name, value);
+    } else {
+      return _sharedPrefs.remove(name);
+    }
+  }
+
+  Future<bool> _setValue<T>(String newPrefix, T value) async {
+    if (value is String) {
+      return _sharedPrefs.setString(newPrefix, value);
+    } else if (value is bool) {
+      return _sharedPrefs.setBool(newPrefix, value);
+    } else if (value is int) {
+      return _sharedPrefs.setInt(newPrefix, value);
+    } else if (value is double) {
+      return _sharedPrefs.setDouble(newPrefix, value);
+    } else if (value is List<String>) {
+      return _sharedPrefs.setStringList(newPrefix, value);
+    } else {
+      assert(false, "${value.runtimeType} is not supported by SharedPreferences");
+      return false;
+    }
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Preferences that are saved under the app key
+  // Methods used to manage preferences that are saved under the app key
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Retrieves a string value by it's key in connection to the current app name from [SharedPreferences].
+  @override
+  Future<Set<String>> getAppKeys() async {
+    RegExp regExp = RegExp(r'(.+)\..+');
+    return _sharedPrefs
+        .getKeys()
+        .map((element) => regExp.allMatches(element))
+        .where((e) => e.isNotEmpty)
+        .map((e) => e.first[1].toString())
+        .sorted((a, b) => b.compareTo(a))
+        .toSet();
+  }
+
+  @override
+  Future<void> updateAppKey(String key, String newKey) {
+    return Future.wait(
+      _sharedPrefs.getKeys().where((e) => e.startsWith("$key.")).map((e) async {
+        var value = _sharedPrefs.get(e);
+        await _sharedPrefs.remove(e);
+        assert(value != null);
+
+        String subKey = e.substring(e.indexOf(".")); // e.g. ".baseUrl"
+        String newPrefix = newKey + subKey;
+
+        await _setValue(newPrefix, value);
+      }).toList(),
+    );
+  }
+
+  @override
+  Future<void> removeAppKey(String key) {
+    return Future.wait(
+      _sharedPrefs.getKeys().where((e) => e.startsWith("$key.")).map((e) => _sharedPrefs.remove(e)).toList(),
+    );
+  }
+
+  /// Retrieves a string value by its key in connection to the current app name.
   ///
   /// {@macro app.key}
   Future<String?> getString(String key) async {
@@ -142,7 +198,7 @@ class ConfigService {
     }
   }
 
-  /// Persists a string value by it's key in connection to the current app name in [SharedPreferences].
+  /// Persists a string value by its key in connection to the current app name.
   ///
   /// {@macro app.key}
   ///
@@ -161,7 +217,7 @@ class ConfigService {
     return false;
   }
 
-  /// Retrieves a bool value by it's key in connection to the current app name from [SharedPreferences].
+  /// Retrieves a bool value by its key in connection to the current app name.
   ///
   /// {@macro app.key}
   Future<bool?> getBool(String key) async {
@@ -173,7 +229,7 @@ class ConfigService {
     }
   }
 
-  /// Persists a bool value by it's key in connection to the current app name in [SharedPreferences].
+  /// Persists a bool value by its key in connection to the current app name.
   ///
   /// {@macro app.key}
   ///
@@ -192,164 +248,170 @@ class ConfigService {
     return false;
   }
 
-  /// Returns the id of the current app.
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Preferences that are saved under the app key
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
   Future<String?> currentApp() async {
     return _sharedPrefs.getString("app");
   }
 
-  /// Sets the id of the current app.
+  @override
   Future<void> updateCurrentApp(String? appId) {
     if (appId == null) return _sharedPrefs.remove("app");
     return _sharedPrefs.setString("app", appId);
   }
 
-  /// Returns the name of the current app.
+  @override
   Future<String?> appName() async {
     return getString("name");
   }
 
-  /// Sets the name of the current app.
-  Future<void> updateAppName(String? pAppName) {
-    return setString("name", pAppName);
+  @override
+  Future<void> updateAppName(String? appName) {
+    return setString("name", appName);
   }
 
-  /// Returns the saved base url.
+  @override
   Future<String?> baseUrl() {
     return getString("baseUrl");
   }
 
-  /// Sets the base url for the current app.
-  Future<void> updateBaseUrl(String? pBaseUrl) async {
-    await setString("baseUrl", pBaseUrl);
+  @override
+  Future<void> updateBaseUrl(String? baseUrl) async {
+    await setString("baseUrl", baseUrl);
   }
 
-  /// Retrieves the saved username.
+  @override
   Future<String?> username() {
     return getString("username");
   }
 
-  /// Sets the saved username for the current app.
-  Future<void> updateUsername(String? pUsername) async {
-    await setString("username", pUsername);
+  @override
+  Future<void> updateUsername(String? username) async {
+    await setString("username", username);
   }
 
-  /// Retrieves the saved password.
+  @override
   Future<String?> password() {
     return getString("password");
   }
 
-  /// Sets the saved password for the current app.
-  Future<void> updatePassword(String? pPassword) {
-    return setString("password", pPassword);
+  @override
+  Future<void> updatePassword(String? password) {
+    return setString("password", password);
   }
 
-  /// Retrieves the saved title.
+  @override
   Future<String?> title() {
     return getString("title");
   }
 
-  /// Sets the title for the current app.
+  @override
   Future<void> updateTitle(String? title) {
     return setString("title", title);
   }
 
-  /// Retrieves the saved icon.
+  @override
   Future<String?> icon() {
     return getString("icon");
   }
 
-  /// Sets the icon for the current app.
+  @override
   Future<void> updateIcon(String? icon) {
     return setString("icon", icon);
   }
 
-  /// Retrieves the saved authKey, which will be used on [ApiStartupRequest].
+  @override
   Future<String?> authKey() {
     return getString("authKey");
   }
 
-  /// Sets the authKey.
-  Future<void> updateAuthKey(String? pAuthKey) {
-    return setString("authKey", pAuthKey);
+  @override
+  Future<void> updateAuthKey(String? authKey) {
+    return setString("authKey", authKey);
   }
 
-  /// Retrieves version of the current app.
+  @override
   Future<String?> version() {
     return getString("version");
   }
 
-  /// Sets the version of the current app.
-  Future<void> updateVersion(String? pVersion) async {
-    await setString("version", pVersion);
+  @override
+  Future<void> updateVersion(String? version) async {
+    await setString("version", version);
   }
 
-  /// Returns info about the current user.
+  @override
   Future<UserInfo?> userInfo() async {
     String? jsonMap = await getString("userInfo");
     return jsonMap != null ? UserInfo.fromJson(jsonDecode(jsonMap)) : null;
   }
 
-  /// Sets the current user info.
-  Future<void> updateUserInfo(Map<String, dynamic>? pJson) {
-    return setString("userInfo", pJson != null ? jsonEncode(pJson) : null);
+  @override
+  Future<void> updateUserInfo(Map<String, dynamic>? json) {
+    return setString("userInfo", json != null ? jsonEncode(json) : null);
   }
 
-  /// Returns the user defined language code.
+  @override
   Future<String?> userLanguage() {
     return getString("language");
   }
 
-  /// Set the user defined language code.
-  Future<void> updateUserLanguage(String? pLanguage) async {
-    await setString("language", pLanguage);
+  @override
+  Future<void> updateUserLanguage(String? language) async {
+    await setString("language", language);
   }
 
-  /// Returns the application language returned by the server.
+  @override
   Future<String?> applicationLanguage() {
     return getString("applicationLanguage");
   }
 
-  /// Set the application defined language.
-  Future<void> updateApplicationLanguage(String? pLanguage) async {
-    await setString("applicationLanguage", pLanguage);
+  @override
+  Future<void> updateApplicationLanguage(String? language) async {
+    await setString("applicationLanguage", language);
   }
 
-  /// Returns the application timezone returned by the server.
+  @override
   Future<String?> applicationTimeZone() {
     return getString("timeZoneCode");
   }
 
-  /// Set the application defined timezone.
-  Future<void> updateApplicationTimeZone(String? pTimeZoneCode) async {
-    await setString("timeZoneCode", pTimeZoneCode);
+  @override
+  Future<void> updateApplicationTimeZone(String? timeZoneCode) async {
+    await setString("timeZoneCode", timeZoneCode);
   }
 
-  /// Returns the last saved app style.
+  @override
   Future<Map<String, String>?> applicationStyle() async {
     String? jsonMap = await getString("applicationStyle");
     return (jsonMap != null ? Map<String, String>.from(jsonDecode(jsonMap)) : null);
   }
 
-  /// Sets the app style.
-  Future<void> updateApplicationStyle(Map<String, String>? pAppStyle) async {
-    await setString("applicationStyle", pAppStyle != null ? jsonEncode(pAppStyle) : null);
+  @override
+  Future<void> updateApplicationStyle(Map<String, String>? appStyle) async {
+    await setString("applicationStyle", appStyle != null ? jsonEncode(appStyle) : null);
   }
 
-  /// Returns if the app is currently in offline mode.
+  @override
   Future<bool> offline() async {
     return (await getBool("offline")) ?? false;
   }
 
-  /// Sets the offline mode.
-  Future<void> updateOffline(bool pOffline) async {
-    await setBool("offline", pOffline);
+  @override
+  Future<void> updateOffline(bool offline) async {
+    await setBool("offline", offline);
   }
 
+  @override
   Future<String?> offlineScreen() async {
     return getString("offlineScreen");
   }
 
-  Future<void> updateOfflineScreen(String pWorkscreen) async {
-    await setString("offlineScreen", pWorkscreen);
+  @override
+  Future<void> updateOfflineScreen(String workscreen) async {
+    await setString("offlineScreen", workscreen);
   }
 }

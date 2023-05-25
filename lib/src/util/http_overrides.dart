@@ -18,7 +18,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-import '../service/config/config_controller.dart';
+import '../service/config/i_config_service.dart';
 import 'parse_util.dart';
 
 class JVxHttpOverrides extends HttpOverrides {
@@ -26,7 +26,7 @@ class JVxHttpOverrides extends HttpOverrides {
   HttpClient createHttpClient(SecurityContext? context) {
     var client = super.createHttpClient(context);
     // Global connectionTimeout, also used by (IO-)WebSocket
-    Duration? timeout = ParseUtil.validateDuration(ConfigController().getAppConfig()?.connectTimeout);
+    Duration? timeout = ParseUtil.validateDuration(IConfigService().getAppConfig()?.connectTimeout);
     client.connectionTimeout ??= timeout;
 
     if (!kIsWeb) {

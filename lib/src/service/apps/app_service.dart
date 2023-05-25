@@ -16,7 +16,7 @@
 
 import 'dart:async';
 
-import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/api/exit_command.dart';
@@ -25,7 +25,7 @@ import '../api/i_api_service.dart';
 import '../api/shared/repository/offline_api_repository.dart';
 import '../api/shared/repository/online_api_repository.dart';
 import '../command/i_command_service.dart';
-import '../config/config_controller.dart';
+import '../config/i_config_service.dart';
 import '../service.dart';
 import '../ui/i_ui_service.dart';
 import 'app.dart';
@@ -33,73 +33,74 @@ import 'app.dart';
 class AppService {
   bool _startedManually = false;
 
+  late ValueNotifier<Set<String>> _storedAppIds;
+
   /// Returns the singleton instance.
   factory AppService() => services<AppService>();
 
   AppService.create();
 
+  /// Loads the initial config.
+  Future<void> loadConfig() async {
+    _storedAppIds = ValueNotifier(await IConfigService().getConfigHandler().getAppKeys());
+  }
+
   bool get startedManually => _startedManually;
+
+  ///
+  ValueListenable<Set<String>> get storedAppIds => _storedAppIds;
+
+  /// Refreshes the currently known app ids.
+  Future<void> refreshStoredAppIds() async {
+    _storedAppIds.value = await IConfigService().getConfigHandler().getAppKeys();
+  }
 
   /// Returns a list of all known app IDs.
   ///
   /// Attention: This list doesn't provide any information about the validity
   /// of these apps, they don't have to be "start-able" (meaning there is a name and a base url).
   Set<String> getAppIds() {
-    List<String>? externalConfigs = ConfigController()
+    List<String>? externalConfigs = IConfigService()
         .getAppConfig()
         ?.serverConfigs
         ?.where((e) => e.isValid)
         .map((e) => App.computeId(e.appName, e.baseUrl.toString(), predefined: true)!)
         .toList();
     return {
-      ...getStoredAppIds(),
+      ...storedAppIds.value,
       ...?externalConfigs,
     };
   }
 
-  Set<String> getStoredAppIds() {
-    RegExp regExp = RegExp(r'(.+)\..+');
-    return ConfigController()
-        .getConfigService()
-        .getSharedPreferences()
-        .getKeys()
-        .map((element) => regExp.allMatches(element))
-        .where((e) => e.isNotEmpty)
-        .map((e) => e.first[1].toString())
-        .sorted((a, b) => b.compareTo(a))
-        .toSet();
-  }
-
   bool showAppsButton() {
-    return ConfigController().getAppConfig()!.customAppsAllowed! ||
-        !ConfigController().getAppConfig()!.predefinedConfigsLocked! ||
-        (AppService().getAppIds().length > 1 && !ConfigController().getAppConfig()!.forceSingleAppMode!);
+    return IConfigService().getAppConfig()!.customAppsAllowed! ||
+        !IConfigService().getAppConfig()!.predefinedConfigsLocked! ||
+        (AppService().getAppIds().length > 1 && !IConfigService().getAppConfig()!.forceSingleAppMode!);
   }
 
   bool showSingleAppModeSwitch() {
-    return ConfigController().getAppConfig()!.customAppsAllowed! &&
-        !ConfigController().getAppConfig()!.forceSingleAppMode!;
+    return IConfigService().getAppConfig()!.customAppsAllowed! && !IConfigService().getAppConfig()!.forceSingleAppMode!;
   }
 
   bool isSingleAppMode() {
-    if (ConfigController().getAppConfig()!.forceSingleAppMode!) return true;
-    if (!ConfigController().getAppConfig()!.customAppsAllowed!) return false;
-    return ConfigController().singleAppMode.value;
+    if (IConfigService().getAppConfig()!.forceSingleAppMode!) return true;
+    if (!IConfigService().getAppConfig()!.customAppsAllowed!) return false;
+    return IConfigService().singleAppMode.value;
   }
 
   Future<void> removeAllApps() async {
     await Future.forEach<App>(
-      App.getAppsByIDs(getAppIds()),
+      await App.getAppsByIDs(getAppIds()),
       (e) => e.delete(),
     );
-    await ConfigController().updatePrivacyPolicy(null);
+    await IConfigService().updatePrivacyPolicy(null);
   }
 
   /// Tries to clear as much leftover app data from previous versions as possible.
   ///
   /// [SharedPreferences] are deliberately left behind as these are not versioned.
   Future<void> removePreviousAppVersions(String appId, String currentVersion) async {
-    await ConfigController()
+    await IConfigService()
         .getFileManager()
         .removePreviousAppVersions(appId, currentVersion)
         .catchError((e, stack) => FlutterUI.log.e("Failed to delete old app directories ($appId)", e, stack));
@@ -110,19 +111,17 @@ class AppService {
   /// Obsolete predefined apps are apps that were predefined in previous versions
   /// of this app and are now no longer present, therefore we can clear their data.
   Future<void> removeObsoletePredefinedApps() async {
-    await Future.forEach<App>(
-      getStoredAppIds()
-          .map((id) => App.getApp(id, forceIfMissing: true)!)
-          .where((app) => app.predefined && App.getPredefinedConfig(app.id) == null),
-      (e) {
-        FlutterUI.log.i("Removing data from an now obsolete predefined app: ${e.id}");
-        return e.delete();
-      },
-    );
+    for (String id in storedAppIds.value) {
+      App? app = await App.getApp(id, forceIfMissing: true);
+      if (app!.predefined && App.getPredefinedConfig(app.id) == null) {
+        FlutterUI.log.i("Removing data from an now obsolete predefined app: ${app.id}");
+        return app.delete();
+      }
+    }
   }
 
   Future<void> startApp({String? appId, bool? autostart}) async {
-    if (appId == null && ConfigController().currentApp.value == null) {
+    if (appId == null && IConfigService().currentApp.value == null) {
       FlutterUI.log.e("Called 'startApp' without an appId or a currentApp");
       await IUiService().routeToAppOverview();
       return;
@@ -131,25 +130,25 @@ class AppService {
     await stopApp(false);
 
     if (appId != null) {
-      await ConfigController().updateCurrentApp(appId);
+      await IConfigService().updateCurrentApp(appId);
     }
     _startedManually = !(autostart ?? !_startedManually);
 
     await IApiService().getRepository().stop();
-    var repository = ConfigController().offline.value ? OfflineApiRepository() : OnlineApiRepository();
+    var repository = IConfigService().offline.value ? OfflineApiRepository() : OnlineApiRepository();
     await repository.start();
     IApiService().setRepository(repository);
 
-    await ConfigController().updateLastApp(ConfigController().currentApp.value);
+    await IConfigService().updateLastApp(IConfigService().currentApp.value);
 
-    if (ConfigController().getFileManager().isSatisfied()) {
+    if (IConfigService().getFileManager().isSatisfied()) {
       // Only try to load if FileManager is available
-      await ConfigController().reloadSupportedLanguages();
+      await IConfigService().reloadSupportedLanguages();
       // Update language to application language, if applicable.
-      await IUiService().i18n().setLanguage(ConfigController().getLanguage());
+      await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     }
 
-    if (!ConfigController().offline.value) {
+    if (!IConfigService().offline.value) {
       // Send startup to server
       await ICommandService().sendCommand(StartupCommand(
         reason: "InitApp",
@@ -161,7 +160,7 @@ class AppService {
 
   /// Stops the currently running app.
   Future<void> stopApp([bool resetAppName = true]) async {
-    if (!ConfigController().offline.value && IUiService().clientId.value != null) {
+    if (!IConfigService().offline.value && IUiService().clientId.value != null) {
       unawaited(ICommandService()
           .sendCommand(ExitCommand(reason: "App has been stopped"))
           .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
@@ -170,8 +169,8 @@ class AppService {
     await FlutterUI.clearServices(true);
 
     if (resetAppName) {
-      await ConfigController().updateCurrentApp(null);
-      await IUiService().i18n().setLanguage(ConfigController().getLanguage());
+      await IConfigService().updateCurrentApp(null);
+      await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     }
 
     // Switch back to "default" repository.

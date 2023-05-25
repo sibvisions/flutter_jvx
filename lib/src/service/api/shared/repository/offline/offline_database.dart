@@ -28,7 +28,7 @@ import '../../../../../model/data/data_book.dart';
 import '../../../../../model/data/filter_condition.dart';
 import '../../../../../model/response/dal_meta_data_response.dart';
 import '../../../../../util/i_types.dart';
-import '../../../../config/config_controller.dart';
+import '../../../../config/i_config_service.dart';
 
 /// Manages the offline database, has to be closed with [close].
 ///
@@ -275,7 +275,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
     // TODO Check default value
 
-    if (ConfigController().getAppConfig()?.offlineConfig!.checkConstraints ?? true) {
+    if (IConfigService().getAppConfig()?.offlineConfig!.checkConstraints ?? true) {
       if (pColumn.length != null) {
         columnDef.write(' CHECK(length("$pColumnName") <= ${pColumn.length})');
       }

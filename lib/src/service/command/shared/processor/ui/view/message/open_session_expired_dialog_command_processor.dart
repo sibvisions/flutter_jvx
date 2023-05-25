@@ -20,7 +20,7 @@ import '../../../../../../../flutter_ui.dart';
 import '../../../../../../../mask/error/server_session_expired.dart';
 import '../../../../../../../model/command/base_command.dart';
 import '../../../../../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
-import '../../../../../../config/config_controller.dart';
+import '../../../../../../config/i_config_service.dart';
 import '../../../../../../ui/i_ui_service.dart';
 import '../../../../i_command_processor.dart';
 
@@ -29,7 +29,7 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
   Future<List<BaseCommand>> processCommand(OpenSessionExpiredDialogCommand command) async {
     IUiService().updateClientId(null);
 
-    if (!ConfigController().getAppConfig()!.autoRestartOnSessionExpired!) {
+    if (!IConfigService().getAppConfig()!.autoRestartOnSessionExpired!) {
       IUiService().showJVxDialog(ServerSessionExpired(command: command));
     } else {
       unawaited(FlutterUI.maybeOf(FlutterUI.getCurrentContext())?.startApp());

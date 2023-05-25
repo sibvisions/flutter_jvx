@@ -32,7 +32,7 @@ import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/filter.dart';
 import '../../../../model/response/api_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
-import '../../../config/config_controller.dart';
+import '../../../config/i_config_service.dart';
 import '../../../data/i_data_service.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
@@ -61,7 +61,7 @@ class OfflineApiRepository extends IRepository {
   Future<void> initDataBooks() async {
     _checkStatus();
 
-    List<DalMetaData> metaData = await offlineDatabase!.getMetaData(ConfigController().currentApp.value!);
+    List<DalMetaData> metaData = await offlineDatabase!.getMetaData(IConfigService().currentApp.value!);
     metaData.forEach((element) => IDataService().setMetaData(pMetaData: element));
   }
 
@@ -93,8 +93,8 @@ class OfflineApiRepository extends IRepository {
 
     var dalMetaData = dataBooks.map((e) => e.metaData).toList(growable: false);
     // Drop old data + possible old scheme
-    await offlineDatabase!.dropTables(ConfigController().currentApp.value!);
-    await offlineDatabase!.createTables(ConfigController().currentApp.value!, dalMetaData);
+    await offlineDatabase!.dropTables(IConfigService().currentApp.value!);
+    await offlineDatabase!.createTables(IConfigService().currentApp.value!, dalMetaData);
 
     FlutterUI.logAPI.d(
         "Sum of all dataBook entries: ${dataBooks.isNotEmpty ? dataBooks.map((e) => e.records.entries.length).reduce((value, element) => value + element) : 0}");
@@ -129,7 +129,7 @@ class OfflineApiRepository extends IRepository {
   /// Deletes all currently used dataBooks
   Future<void> deleteDatabase() {
     _checkStatus();
-    return offlineDatabase!.dropTables(ConfigController().currentApp.value!);
+    return offlineDatabase!.dropTables(IConfigService().currentApp.value!);
   }
 
   Future<Map<String, List<Map<String, Object?>>>> getChangedRows(String pDataProvider) {

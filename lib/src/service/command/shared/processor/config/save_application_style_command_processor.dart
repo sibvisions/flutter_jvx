@@ -16,13 +16,13 @@
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_style_command.dart';
-import '../../../../config/config_controller.dart';
+import '../../../../config/i_config_service.dart';
 import '../../i_command_processor.dart';
 
 class SaveApplicationStyleCommandProcessor implements ICommandProcessor<SaveApplicationStyleCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationStyleCommand command) async {
-    await ConfigController().updateApplicationStyle(command.style);
+    await IConfigService().updateApplicationStyle(command.style);
     return [];
   }
 }

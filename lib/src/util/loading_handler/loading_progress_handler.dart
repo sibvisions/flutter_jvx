@@ -17,7 +17,7 @@
 import '../../flutter_ui.dart';
 import '../../mask/jvx_overlay.dart';
 import '../../model/command/base_command.dart';
-import '../../service/config/config_controller.dart';
+import '../../service/config/i_config_service.dart';
 import 'i_command_progress_handler.dart';
 
 /// The [LoadingProgressHandler] triggers the [LoadingBar] through the [JVxOverlay] when a command
@@ -36,7 +36,7 @@ class LoadingProgressHandler implements ICommandProgressHandler {
 
   @override
   void notifyProgressStart(BaseCommand pCommand) {
-    if (isSupported(pCommand) && !ConfigController().offline.value) {
+    if (isSupported(pCommand) && !IConfigService().offline.value) {
       _loadingCommandAmount++;
       JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.showLoading(pCommand.loadingDelay);
     }

@@ -28,7 +28,7 @@ import '../../../../../model/command/config/save_application_meta_data_command.d
 import '../../../../api/i_api_service.dart';
 import '../../../../api/shared/repository/online_api_repository.dart';
 import '../../../../apps/app_service.dart';
-import '../../../../config/config_controller.dart';
+import '../../../../config/i_config_service.dart';
 import '../../../../file/file_manager.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
@@ -39,20 +39,20 @@ class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveA
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 
-    await AppService().removePreviousAppVersions(ConfigController().currentApp.value!, version);
+    await AppService().removePreviousAppVersions(IConfigService().currentApp.value!, version);
 
     IUiService().updateClientId(command.metaData.clientId);
-    await ConfigController().updateVersion(version);
+    await IConfigService().updateVersion(version);
 
-    await ConfigController().updateApplicationLanguage(command.metaData.langCode);
-    await ConfigController().updateApplicationTimeZone(command.metaData.timeZoneCode);
+    await IConfigService().updateApplicationLanguage(command.metaData.langCode);
+    await IConfigService().updateApplicationTimeZone(command.metaData.timeZoneCode);
 
     IUiService().updateApplicationMetaData(command.metaData);
 
-    String languagesPath = ConfigController().getFileManager().getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/");
-    String imagesPath = ConfigController().getFileManager().getAppSpecificPath("${IFileManager.IMAGES_PATH}/");
-    Directory? languagesDir = ConfigController().getFileManager().getDirectory(languagesPath);
-    Directory? imagesDir = ConfigController().getFileManager().getDirectory(imagesPath);
+    String languagesPath = IConfigService().getFileManager().getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/");
+    String imagesPath = IConfigService().getFileManager().getAppSpecificPath("${IFileManager.IMAGES_PATH}/");
+    Directory? languagesDir = IConfigService().getFileManager().getDirectory(languagesPath);
+    Directory? imagesDir = IConfigService().getFileManager().getDirectory(imagesPath);
 
     // Start WebSocket
     unawaited((IApiService().getRepository() as OnlineApiRepository?)
@@ -63,8 +63,8 @@ class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveA
     if (kDebugMode || !(languagesDir?.existsSync() ?? false)) {
       commands.add(DownloadTranslationCommand(reason: "Translation should be downloaded"));
     } else {
-      await ConfigController().reloadSupportedLanguages();
-      await IUiService().i18n().setLanguage(ConfigController().getLanguage());
+      await IConfigService().reloadSupportedLanguages();
+      await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     }
     if (!kIsWeb && (kDebugMode || !(imagesDir?.existsSync() ?? false))) {
       commands.add(DownloadImagesCommand(reason: "Resources should be downloaded"));
