@@ -123,7 +123,7 @@ class WebFrameState extends FrameState {
       titleSpacing: titleSpacing,
       leading: Builder(
         builder: (context) => IconButton(
-          tooltip: FlutterUI.translate("Toggle Menu"),
+          tooltip: FlutterUI.translate("Toggle navigation menu"),
           icon: FaIcon(
             FontAwesomeIcons.bars,
             color: iconColor,

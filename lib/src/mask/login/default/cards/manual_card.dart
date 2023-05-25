@@ -113,7 +113,7 @@ class _ManualCardState extends State<ManualCard> {
             suffixIcon: passwordController.text.isNotEmpty
                 ? ExcludeFocus(
                     child: IconButton(
-                      tooltip: FlutterUI.translate(_passwordHidden ? "Show Password" : "Hide Password"),
+                      tooltip: FlutterUI.translate(_passwordHidden ? "Show password" : "Hide password"),
                       icon: Icon(
                         _passwordHidden ? Icons.visibility : Icons.visibility_off,
                       ),

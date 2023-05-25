@@ -16,6 +16,10 @@
     "translation": "Abbrechen"
   },
   {
+    "text": "Clear",
+    "translation": "Leeren"
+  },
+  {
     "text": "Save",
     "translation": "Speichern"
   },
@@ -185,7 +189,7 @@
   },
   {
     "text": "Show QR Code",
-    "translation": "Zeige QR Code an"
+    "translation": "Zeige QR Code"
   },
   {
     "text": "Auto start",
@@ -266,6 +270,14 @@
   {
     "text": "QR Scanner",
     "translation": "QR Scanner"
+  },
+  {
+    "text": "Enable Torch",
+    "translation": "Blitz einschalten"
+  },
+  {
+    "text": "Disable Torch",
+    "translation": "Blitz ausschalten"
   },
   {
     "text": "Multi Scan",
