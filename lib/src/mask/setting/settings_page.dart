@@ -118,49 +118,44 @@ class _SettingsPageState extends State<SettingsPage> {
 
     body = LoadingBar.wrapLoadingBar(body);
 
-    bool loading = LoadingBar.maybeOf(context)?.show ?? false;
-
-    return WillPopScope(
-      onWillPop: () async => !loading,
-      child: Scaffold(
-        appBar: AppBar(
-          titleSpacing: 0,
-          leading: context.canBeamBack
-              ? IconButton(
-                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                  splashRadius: kToolbarHeight / 2,
-                  icon: const FaIcon(FontAwesomeIcons.angleLeft),
-                  onPressed: context.beamBack,
-                )
-              : null,
-          title: Text(FlutterUI.translateLocal("Settings")),
-          elevation: 0,
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+        leading: context.canBeamBack
+            ? IconButton(
+                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                splashRadius: kToolbarHeight / 2,
+                icon: const FaIcon(FontAwesomeIcons.angleLeft),
+                onPressed: context.beamBack,
+              )
+            : null,
+        title: Text(FlutterUI.translateLocal("Settings")),
+        elevation: 0,
+      ),
+      body: body,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          textTheme: Theme.of(context).primaryTextTheme,
+          iconTheme: Theme.of(context).primaryIconTheme,
         ),
-        body: body,
-        bottomNavigationBar: Theme(
-          data: Theme.of(context).copyWith(
-            textTheme: Theme.of(context).primaryTextTheme,
-            iconTheme: Theme.of(context).primaryIconTheme,
-          ),
-          child: Material(
-            color: Theme.of(context).colorScheme.brightness == Brightness.light
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.surface,
-            child: SafeArea(
-              child: SizedBox(
-                height: bottomBarHeight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    if (context.canBeamBack && _changesPending()) Expanded(child: _createCancelButton(context)),
-                    if (context.canBeamBack && _changesPending())
-                      VerticalDivider(
-                        color: JVxColors.dividerColor(Theme.of(context)),
-                        width: 1,
-                      ),
-                    Expanded(child: _createSaveButton(context)),
-                  ],
-                ),
+        child: Material(
+          color: Theme.of(context).colorScheme.brightness == Brightness.light
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surface,
+          child: SafeArea(
+            child: SizedBox(
+              height: bottomBarHeight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (context.canBeamBack && _changesPending()) Expanded(child: _createCancelButton(context)),
+                  if (context.canBeamBack && _changesPending())
+                    VerticalDivider(
+                      color: JVxColors.dividerColor(Theme.of(context)),
+                      width: 1,
+                    ),
+                  Expanded(child: _createSaveButton(context)),
+                ],
               ),
             ),
           ),
