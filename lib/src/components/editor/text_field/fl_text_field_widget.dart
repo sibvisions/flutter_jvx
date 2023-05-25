@@ -320,11 +320,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   InputBorder? createBorder(FlTextBorderType pBorderType) {
     Color borderEnabledColor;
-    Color borderFocusedColor;
+    Color? borderFocusedColor;
 
     if (model.isBorderVisible) {
       borderEnabledColor = _extractBorderColor(FlComponentModel.BORDER_COLOR_STYLE) ?? JVxColors.COMPONENT_BORDER;
-      borderFocusedColor = _extractBorderColor(FlComponentModel.BORDER_COLOR_FOCUSED_STYLE) ?? borderEnabledColor;
+      borderFocusedColor = _extractBorderColor(FlComponentModel.BORDER_COLOR_FOCUSED_STYLE) ??
+          _extractBorderColor(FlComponentModel.BORDER_COLOR_STYLE);
     } else {
       borderEnabledColor = Colors.transparent;
       borderFocusedColor = Colors.transparent;
@@ -348,11 +349,13 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         );
       case FlTextBorderType.focusedBorder:
       case FlTextBorderType.focusedErrorBorder:
-        return OutlineInputBorder(
-          borderSide: BorderSide(
-            color: borderFocusedColor,
-          ),
-        );
+        return borderFocusedColor != null
+            ? OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: borderFocusedColor,
+                ),
+              )
+            : null;
     }
   }
 
