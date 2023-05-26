@@ -124,9 +124,6 @@ abstract class IUiService {
   /// Route to Login page
   void routeToLogin({LoginMode? mode, Map<String, dynamic>? pLoginProps});
 
-  /// Route to the provided full path, used for routing to offline screens
-  void routeToCustomScreen({required String pFullPath});
-
   Future<void> routeToAppOverview();
 
   /// Gets the current custom manager

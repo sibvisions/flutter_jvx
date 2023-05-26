@@ -95,13 +95,7 @@ abstract class Menu extends StatelessWidget {
   static void menuItemPressed(BuildContext context, {required MenuItemModel item}) {
     // Always close drawer even on route (Flutter Bug sometimes breaks routing with open drawer)
     Scaffold.maybeOf(context)?.closeEndDrawer();
-
-    // Offline screens no not require the server to know that they are open
-    if (IUiService().usesNativeRouting(item.screenLongName)) {
-      IUiService().routeToCustomScreen(pFullPath: "/screens/${item.navigationName}");
-    } else {
-      IUiService().routeToWorkScreen(pScreenName: item.navigationName);
-    }
+    IUiService().routeToWorkScreen(pScreenName: item.navigationName);
   }
 
   /// Returns the action function based on the [item] parameter.

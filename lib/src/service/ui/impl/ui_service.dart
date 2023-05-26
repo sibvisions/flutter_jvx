@@ -270,11 +270,6 @@ class UiService implements IUiService {
   }
 
   @override
-  void routeToCustomScreen({required String pFullPath}) {
-    FlutterUI.getBeamerDelegate().beamToNamed(pFullPath);
-  }
-
-  @override
   Future<void> routeToAppOverview() async {
     if (!checkFirstSplash(false)) return;
 
