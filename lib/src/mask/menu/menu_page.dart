@@ -193,7 +193,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                           ? IconButton(
                               tooltip: FlutterUI.translate("Exit App"),
                               splashRadius: kToolbarHeight / 2,
-                              icon: const FaIcon(FontAwesomeIcons.angleLeft),
+                              icon: const BackButtonIcon(),
                               onPressed: () => Navigator.maybePop(context),
                             )
                           : null),

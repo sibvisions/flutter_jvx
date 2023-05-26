@@ -118,14 +118,12 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        leading: context.canBeamBack
-            ? IconButton(
-                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                splashRadius: kToolbarHeight / 2,
-                icon: const FaIcon(FontAwesomeIcons.angleLeft),
-                onPressed: context.beamBack,
-              )
-            : null,
+        leading: IconButton(
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          splashRadius: kToolbarHeight / 2,
+          icon: const BackButtonIcon(),
+          onPressed: context.beamBack,
+        ),
         title: Text(FlutterUI.translateLocal("Settings")),
         elevation: 0,
       ),

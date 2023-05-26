@@ -18,7 +18,6 @@ import 'package:beamer/beamer.dart';
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../components/components_factory.dart';
@@ -311,9 +310,7 @@ class WorkScreenState extends State<WorkScreen> {
         message: MaterialLocalizations.of(context).backButtonTooltip,
         child: const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Center(
-            child: FaIcon(FontAwesomeIcons.angleLeft),
-          ),
+          child: Center(child: BackButtonIcon()),
         ),
       ),
     );

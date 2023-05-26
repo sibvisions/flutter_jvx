@@ -19,7 +19,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../flutter_ui.dart';
@@ -94,16 +93,9 @@ class _JVxScannerState extends State<JVxScanner> {
       },
       child: Scaffold(
         appBar: AppBar(
-          titleSpacing: Navigator.canPop(context) ? 0 : null,
-          automaticallyImplyLeading: false,
-          leading: Navigator.canPop(context)
-              ? IconButton(
-                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                  splashRadius: kToolbarHeight / 2,
-                  icon: const FaIcon(FontAwesomeIcons.angleLeft),
-                  onPressed: () => Navigator.maybePop(context),
-                )
-              : null,
+          titleSpacing: 0,
+          // Center replicates behavior of AppBar for custom IconButton
+          leading: const Center(child: CloseButton()),
           title: Text(FlutterUI.translate(widget.title)),
           actions: [
             ValueListenableBuilder<TorchState>(
@@ -111,7 +103,6 @@ class _JVxScannerState extends State<JVxScanner> {
               builder: (context, state, child) {
                 return IconButton(
                   tooltip: FlutterUI.translate(state == TorchState.off ? "Enable Torch" : "Disable Torch"),
-                  splashRadius: kToolbarHeight / 2,
                   onPressed: () => controller.toggleTorch(),
                   icon: Icon(_getTorchIcon(state)),
                 );
@@ -119,7 +110,6 @@ class _JVxScannerState extends State<JVxScanner> {
             ),
             if (widget.allowMultiScan)
               PopupMenuButton(
-                splashRadius: kToolbarHeight / 2,
                 onSelected: (value) => setState(() => multiScanEnabled = !multiScanEnabled),
                 itemBuilder: (context) {
                   return [
