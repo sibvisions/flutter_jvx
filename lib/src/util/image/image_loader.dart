@@ -135,7 +135,6 @@ abstract class ImageLoader {
     Function(Size, bool)? pImageStreamListener,
     bool pImageInBase64 = false,
   }) {
-    // assert((appId == null) == (appVersion == null));
     if (pImageString == null || pImageString.isEmpty) {
       return null;
     }

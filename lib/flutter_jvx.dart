@@ -80,6 +80,7 @@ export 'src/service/apps/app_service.dart';
 export 'src/service/command/i_command_service.dart';
 export 'src/service/command/impl/command_service.dart';
 export 'src/service/config/i_config_service.dart';
+export 'src/service/config/impl/config_service.dart';
 export 'src/service/config/shared/config_handler.dart';
 export 'src/service/config/shared/handler/shared_prefs_handler.dart';
 export 'src/service/data/i_data_service.dart';
