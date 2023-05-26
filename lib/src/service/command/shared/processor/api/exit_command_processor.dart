@@ -20,11 +20,16 @@ import '../../../../../model/command/api/exit_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_exit_request.dart';
 import '../../../../api/i_api_service.dart';
+import '../../../../storage/i_storage_service.dart';
 import '../../i_command_processor.dart';
 
 class ExitCommandProcessor implements ICommandProcessor<ExitCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ExitCommand command) async {
-    return IApiService().sendRequest(ApiExitRequest());
+    List<BaseCommand> result = await IApiService().sendRequest(ApiExitRequest());
+
+    IStorageService().clear(true);
+
+    return result;
   }
 }
