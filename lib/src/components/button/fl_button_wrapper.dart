@@ -217,16 +217,18 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     );
   }
 
-  void sendQrCodeResult(List<Barcode> pBarcode) {
-    IUiService().sendCommand(
-      SetValuesCommand(
-        dataProvider: model.dataProvider,
-        editorColumnName: model.columnName,
-        columnNames: [model.columnName],
-        values: [pBarcode.first.rawValue],
-        reason: "Qr code was scanned",
-      ),
-    );
+  void sendQrCodeResult(List<Barcode> pBarcodes) {
+    if (pBarcodes.isNotEmpty) {
+      IUiService().sendCommand(
+        SetValuesCommand(
+          dataProvider: model.dataProvider,
+          editorColumnName: model.columnName,
+          columnNames: [model.columnName],
+          values: [pBarcodes.first.rawValue],
+          reason: "Qr code was scanned",
+        ),
+      );
+    }
   }
 
   void callNumber() {
