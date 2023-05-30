@@ -23,38 +23,61 @@ class FilterCommand extends SessionCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final String editorId;
+  /// Data provider to filter
+  final String dataProvider;
 
-  final String? value;
-
-  final List<String>? columnNames;
-
+  /// A simple filter to apply
   final Filter? filter;
 
+  /// A complex filter to apply
   final FilterCondition? filterCondition;
 
-  final String dataProvider;
+  /// The editor component id to filter by value
+  final String? editorComponentId;
+
+  /// The value to filter by
+  final String? value;
+
+  /// The column names to filter by
+  final List<String>? columnNames;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FilterCommand({
-    required this.editorId,
     required this.dataProvider,
-    this.value,
-    this.columnNames,
     this.filter,
     this.filterCondition,
     required super.reason,
-  });
+  })  : editorComponentId = null,
+        value = null,
+        columnNames = null,
+        assert(filter != null || filterCondition != null, "filter or filterCondition must be set");
 
+  FilterCommand.none({
+    required this.dataProvider,
+    required super.reason,
+  })  : filter = null,
+        filterCondition = null,
+        editorComponentId = null,
+        value = null,
+        columnNames = null;
+
+  FilterCommand.byValue({
+    required this.dataProvider,
+    required this.editorComponentId,
+    required this.value,
+    required this.columnNames,
+    required super.reason,
+  })  : filter = null,
+        filterCondition = null;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   String toString() {
-    return "FilterCommand{editorId: $editorId, value: $value, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, dataProvider: $dataProvider, ${super.toString()}}";
+    return "FilterCommand{editorComponentId: $editorComponentId, value: $value, columnNames: $columnNames, filter: $filter, filterCondition: $filterCondition, dataProvider: $dataProvider, ${super.toString()}}";
   }
 }

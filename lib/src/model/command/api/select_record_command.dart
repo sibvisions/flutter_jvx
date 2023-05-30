@@ -22,18 +22,17 @@ class SelectRecordCommand extends SessionCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Index of selectedRecord
-  final int selectedRecord;
-
-  /// Data provider to change the selected row of
+  /// Data provider to change selected row of
   final String dataProvider;
 
+  /// The filter to identify the record. Null -> deselection.
   final Filter? filter;
 
-  final bool reload;
+  /// The selected row to shortcut the filter. -1 -> deselection.
+  /// This row index will be checked if the filter applies, otherwise checks every row until the filter applies.
+  final int? rowNumber;
 
-  final bool fetch;
-
+  /// The column to select. Null -> no column selection.
   final String? selectedColumn;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,14 +40,28 @@ class SelectRecordCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SelectRecordCommand({
+    required super.reason,
     required this.dataProvider,
-    required this.selectedRecord,
-    this.reload = false,
-    this.fetch = false,
+    this.rowNumber,
     this.filter,
     this.selectedColumn,
+  }) : assert(filter != null || rowNumber == -1,
+            "A filter must be provided except to deselect. Selected row must be -1 to deselect or use .deselect()");
+
+  SelectRecordCommand.select({
     required super.reason,
+    required this.dataProvider,
+    required this.filter,
+    this.rowNumber,
+    this.selectedColumn,
   });
+
+  SelectRecordCommand.deselect({
+    required super.reason,
+    required this.dataProvider,
+  })  : rowNumber = -1,
+        filter = null,
+        selectedColumn = null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -56,6 +69,6 @@ class SelectRecordCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SelectRecordCommand{selectedRecord: $selectedRecord, dataProvider: $dataProvider, filter: $filter, reload: $reload, fetch: $fetch, ${super.toString()}}";
+    return "SelectRecordCommand{rowNumber: $rowNumber, dataProvider: $dataProvider, filter: $filter, ${super.toString()}}";
   }
 }

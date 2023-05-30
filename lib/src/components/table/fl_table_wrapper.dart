@@ -792,7 +792,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
             commands.add(
               SelectRecordCommand(
                 dataProvider: model.dataProvider,
-                selectedRecord: pRowIndex,
+                rowNumber: pRowIndex,
                 reason: "Tapped",
                 filter: filter,
                 selectedColumn: pColumnName,
@@ -815,7 +815,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// Sends a [SetValuesCommand] for this row.
   BaseCommand _setValues(int pRowIndex, List<String> pColumnNames, List<dynamic> pValues, String pEditorColumnName) {
     return SetValuesCommand(
-      componentId: model.id,
       dataProvider: model.dataProvider,
       columnNames: pColumnNames,
       editorColumnName: pEditorColumnName,
@@ -945,7 +944,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
     return DeleteRecordCommand(
       dataProvider: model.dataProvider,
-      selectedRow: pIndex,
+      rowNumber: pIndex,
       reason: "Swiped",
       filter: filter,
     );

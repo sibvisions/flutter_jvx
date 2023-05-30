@@ -56,7 +56,6 @@ export 'model/command/config/save_application_style_command.dart';
 export 'model/command/config/save_application_translation_command.dart';
 export 'model/command/config/save_auth_key_command.dart';
 export 'model/command/config/save_user_data_command.dart';
-export 'model/command/data/change_selected_row_command.dart';
 export 'model/command/data/data_command.dart';
 export 'model/command/data/delete_provider_data_command.dart';
 export 'model/command/data/delete_row_command.dart';

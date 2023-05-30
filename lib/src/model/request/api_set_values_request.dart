@@ -15,7 +15,6 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import '../data/filter_condition.dart';
 import 'filter.dart';
 import 'session_request.dart';
 
@@ -28,34 +27,32 @@ class ApiSetValuesRequest extends SessionRequest {
   /// DataRow or DataProvider of the component
   final String dataProvider;
 
-  /// Id of the component
-  final String componentId;
-
-  /// List of columns, order of which corresponds to order of [values] list
+  /// List of columns, order of which corresponds to order of values list
   final List<String> columnNames;
 
-  /// List of values, order of which corresponds to order of [columnNames] list
+  /// List of values, order of which corresponds to order of columnsName list
   final List<dynamic> values;
+
+  /// The column the server has to check against if it is readOnly.
+  final String? editorColumnName;
 
   /// Filter of this setValues, used in table to edit non selected rows.
   final Filter? filter;
 
-  final FilterCondition? filterCondition;
-
-  /// The column the server has to check against if it is readOnly
-  final String? editorColumnName;
+  /// The row number to shortcut the filter.
+  /// This row index will be checked if the filter applies, otherwise checks every row until the filter applies.
+  final int? rowNumber;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiSetValuesRequest({
-    required this.componentId,
     required this.dataProvider,
     required this.columnNames,
     required this.values,
     this.filter,
-    this.filterCondition,
+    this.rowNumber,
     this.editorColumnName,
   });
 
@@ -67,11 +64,10 @@ class ApiSetValuesRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
-        ApiObjectProperty.componentId: componentId,
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.values: values,
         if (filter != null) ApiObjectProperty.filter: filter?.toJson(),
-        if (filterCondition != null) ApiObjectProperty.filterCondition: filterCondition?.toJson(),
+        if (rowNumber != null) ApiObjectProperty.rowNumber: rowNumber,
         if (editorColumnName != null) ApiObjectProperty.editorColumnName: editorColumnName,
       };
 }

@@ -220,7 +220,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void sendQrCodeResult(List<Barcode> pBarcode) {
     IUiService().sendCommand(
       SetValuesCommand(
-        componentId: model.id,
         dataProvider: model.dataProvider,
         editorColumnName: model.columnName,
         columnNames: [model.columnName],
@@ -262,7 +261,6 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     FlutterUI.logUI.d("Received geolocation data: $position");
 
     return SetValuesCommand(
-      componentId: model.id,
       dataProvider: model.dataProvider,
       editorColumnName: model.columnName,
       columnNames: [model.latitudeColumnName, model.longitudeColumnName],

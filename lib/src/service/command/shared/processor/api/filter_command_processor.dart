@@ -28,7 +28,7 @@ class FilterCommandProcessor implements ICommandProcessor<FilterCommand> {
         dataProvider: command.dataProvider,
         columnNames: command.columnNames,
         value: command.value,
-        editorComponentId: command.editorId,
+        editorComponentId: command.editorComponentId,
         filter: command.filter,
         filterCondition: command.filterCondition,
       ),

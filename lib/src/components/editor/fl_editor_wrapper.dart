@@ -282,7 +282,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     if (pValue is HashMap<String, dynamic>) {
       FlutterUI.logUI.d("Values of ${model.id} set to $pValue");
       return SetValuesCommand(
-        componentId: model.id,
         editorColumnName: model.columnName,
         dataProvider: model.dataProvider,
         columnNames: pValue.keys.toList(),
@@ -292,7 +291,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     } else {
       FlutterUI.logUI.d("Value of ${model.id} set to $pValue");
       return SetValuesCommand(
-        componentId: model.id,
         dataProvider: model.dataProvider,
         editorColumnName: model.columnName,
         columnNames: [model.columnName],
@@ -342,7 +340,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       return null;
     }
     return SetValuesCommand(
-      componentId: model.id,
       dataProvider: model.dataProvider,
       editorColumnName: model.columnName,
       columnNames: [model.columnName],

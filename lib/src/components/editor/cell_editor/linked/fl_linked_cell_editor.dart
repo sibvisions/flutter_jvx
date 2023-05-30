@@ -206,11 +206,10 @@ class FlLinkedCellEditor
       isOpen = true;
 
       return ICommandService()
-          .sendCommand(FilterCommand(
-              editorId: name!,
-              value: "",
-              dataProvider: model.linkReference.referencedDataprovider,
-              reason: "Opened the linked cell picker"))
+          .sendCommand(FilterCommand.none(
+        dataProvider: model.linkReference.referencedDataprovider,
+        reason: "Opened the linked cell picker",
+      ))
           .then((value) {
         return IUiService().openDialog(
             pBuilder: (_) => FlLinkedCellPicker(
@@ -297,11 +296,9 @@ class FlLinkedCellEditor
   dynamic receiveNull(dynamic pValue) {
     return ICommandService()
         .sendCommand(
-      SelectRecordCommand(
+      SelectRecordCommand.deselect(
         dataProvider: model.linkReference.referencedDataprovider,
-        selectedRecord: -1,
         reason: "Tapped",
-        filter: null,
       ),
     )
         .then((value) {

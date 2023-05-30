@@ -265,9 +265,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     );
 
     IUiService().sendCommand(
-      FilterCommand(
-        editorId: widget.name,
-        value: "",
+      FilterCommand.none(
         dataProvider: widget.model.linkReference.referencedDataprovider,
         reason: "Closed the linked cell picker",
       ),
@@ -414,7 +412,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     return ICommandService().sendCommand(
       SelectRecordCommand(
         dataProvider: model.linkReference.referencedDataprovider,
-        selectedRecord: pRowIndex,
+        rowNumber: pRowIndex,
         reason: "Tapped",
         filter: filter,
       ),
@@ -450,27 +448,12 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   }
 
   void _onTextFieldValueChanged() {
-    List<String> filterColumns = [];
-
-    if (model.linkReference.columnNames.isEmpty) {
-      filterColumns.add(model.linkReference.referencedColumnNames[0]);
-    } else {
-      for (int i = 0; i < model.linkReference.columnNames.length; i++) {
-        String referencedColumnName = model.linkReference.referencedColumnNames[i];
-        String columnName = model.linkReference.columnNames[i];
-
-        if (model.columnView == null || model.columnView!.columnNames.contains(referencedColumnName)) {
-          filterColumns.add(columnName);
-        }
-      }
-    }
-
     IUiService()
         .sendCommand(
-          FilterCommand(
-            editorId: widget.name,
+          FilterCommand.byValue(
+            editorComponentId: widget.name,
             value: lastChangedFilter,
-            columnNames: filterColumns,
+            columnNames: [linkedCellEditor.columnName],
             dataProvider: widget.model.linkReference.referencedDataprovider,
             reason: "Filtered the linked cell picker",
           ),

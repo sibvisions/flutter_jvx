@@ -25,13 +25,11 @@ class SetValuesCommandProcessor implements ICommandProcessor<SetValuesCommand> {
   Future<List<BaseCommand>> processCommand(SetValuesCommand command) {
     return IApiService().sendRequest(
       ApiSetValuesRequest(
-        componentId: command.componentId,
         dataProvider: command.dataProvider,
         columnNames: command.columnNames,
         editorColumnName: command.editorColumnName,
         values: command.values,
         filter: command.filter,
-        filterCondition: command.filterCondition,
       ),
     );
   }

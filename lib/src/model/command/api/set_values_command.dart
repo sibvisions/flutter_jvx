@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../data/filter_condition.dart';
 import '../../request/api_set_values_request.dart';
 import '../../request/filter.dart';
 import 'session_command.dart';
@@ -25,38 +24,36 @@ class SetValuesCommand extends SessionCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of component
-  final String componentId;
-
   /// DataRow or DataProvider of the component
   final String dataProvider;
 
   /// List of columns, order of which corresponds to order of values list
   final List<String> columnNames;
 
-  /// The column the server has to check against if it is readOnly
-  final String? editorColumnName;
-
   /// List of values, order of which corresponds to order of columnsName list
   final List<dynamic> values;
+
+  /// The column the server has to check against if it is readOnly.
+  final String? editorColumnName;
 
   /// Filter of this setValues, used in table to edit non selected rows.
   final Filter? filter;
 
-  final FilterCondition? filterCondition;
+  /// The row number to shortcut the filter.
+  /// This row index will be checked if the filter applies, otherwise checks every row until the filter applies.
+  final int? rowNumber;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SetValuesCommand({
-    required this.componentId,
     required this.dataProvider,
     required this.columnNames,
     required this.values,
-    this.editorColumnName,
     this.filter,
-    this.filterCondition,
+    this.rowNumber,
+    this.editorColumnName,
     required super.reason,
   });
 
@@ -66,6 +63,6 @@ class SetValuesCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SetValuesCommand{componentId: $componentId, dataProvider: $dataProvider, columnNames: $columnNames, values: $values, filter: $filter, filterCondition: $filterCondition, editorColumnName: $editorColumnName ${super.toString()}}";
+    return "SetValuesCommand{dataProvider: $dataProvider, columnNames: $columnNames, values: $values, filter: $filter, editorColumnName: $editorColumnName ${super.toString()}}";
   }
 }

@@ -108,7 +108,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
       return [
         SetValuesCommand(
-            componentId: model.id,
             dataProvider: model.dataProvider!,
             editorColumnName: model.columnName,
             columnNames: [model.columnName!],
@@ -127,7 +126,6 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
       return [
         SetValuesCommand(
-            componentId: model.id,
             dataProvider: model.dataProvider!,
             editorColumnName: model.columnName,
             columnNames: [model.columnName!],

@@ -26,15 +26,14 @@ class ApiSelectRecordRequest extends SessionRequest {
   /// Data provider to change selected row of
   final String dataProvider;
 
-  /// Filter
+  /// The filter to identify the record. Null -> deselection.
   final Filter? filter;
 
-  final int selectedRow;
+  /// The row number to shortcut the filter. -1 -> deselection.
+  /// This row index will be checked if the filter applies, otherwise checks every row until the filter applies.
+  final int? rowNumber;
 
-  final bool fetch;
-
-  final bool reload;
-
+  /// The column to select. Null -> no column selection.
   final String? selectedColumn;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,12 +42,11 @@ class ApiSelectRecordRequest extends SessionRequest {
 
   ApiSelectRecordRequest({
     required this.dataProvider,
-    required this.selectedRow,
-    this.fetch = false,
-    this.reload = false,
+    this.rowNumber,
     this.filter,
     this.selectedColumn,
-  });
+  }) : assert(filter != null || rowNumber == -1,
+            "A filter must be provided except to deselect. Selected row must be -1 to deselect.");
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -58,10 +56,8 @@ class ApiSelectRecordRequest extends SessionRequest {
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
-        ApiObjectProperty.rowNumber: selectedRow,
-        ApiObjectProperty.fetch: fetch,
-        ApiObjectProperty.reload: reload,
         if (filter != null) ApiObjectProperty.filter: filter?.toJson(),
+        if (rowNumber != null) ApiObjectProperty.rowNumber: rowNumber,
         if (selectedColumn != null) ApiObjectProperty.selectedColumn: selectedColumn,
       };
 }

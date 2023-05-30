@@ -15,7 +15,6 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import '../data/filter_condition.dart';
 import 'filter.dart';
 import 'session_request.dart';
 
@@ -24,17 +23,15 @@ class ApiDeleteRecordRequest extends SessionRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Data provider to change selected row of
+  /// Data provider to delete the row of.
   final String dataProvider;
 
-  /// Filter
+  /// Filter of this setValues, used in table to edit non selected rows.
   final Filter? filter;
 
-  final FilterCondition? filterCondition;
-
-  final int? selectedRow;
-
-  final bool fetch;
+  /// The row number to shortcut the filter.
+  /// This row index will be checked if the filter applies, otherwise checks every row until the filter applies.
+  final int? rowNumber;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -42,10 +39,8 @@ class ApiDeleteRecordRequest extends SessionRequest {
 
   ApiDeleteRecordRequest({
     required this.dataProvider,
-    this.selectedRow,
+    this.rowNumber,
     this.filter,
-    this.filterCondition,
-    this.fetch = false,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,8 +52,6 @@ class ApiDeleteRecordRequest extends SessionRequest {
         ...super.toJson(),
         ApiObjectProperty.dataProvider: dataProvider,
         if (filter != null) ApiObjectProperty.filter: filter?.toJson(),
-        if (filterCondition != null) ApiObjectProperty.filterCondition: filterCondition?.toJson(),
-        if (selectedRow != null) ApiObjectProperty.selectedRow: selectedRow,
-        ApiObjectProperty.fetch: fetch,
+        if (rowNumber != null) ApiObjectProperty.rowNumber: rowNumber,
       };
 }

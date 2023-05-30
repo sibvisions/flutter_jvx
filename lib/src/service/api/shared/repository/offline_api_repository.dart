@@ -178,13 +178,13 @@ class OfflineApiRepository extends IRepository {
   Future<DalFetchResponse?> _delete(ApiDeleteRecordRequest pRequest) async {
     List<FilterCondition> filters = [];
 
-    FilterCondition? requestFilter = _getFilter(pRequest.filter, pRequest.filterCondition);
+    FilterCondition? requestFilter = _getFilter(pRequest.filter, null);
     if (requestFilter != null) {
       filters.add(requestFilter);
     }
 
-    if (filters.isEmpty && pRequest.selectedRow != null) {
-      filters.add(FilterCondition(columnName: "ROWID", value: pRequest.selectedRow));
+    if (filters.isEmpty && pRequest.rowNumber != null) {
+      filters.add(FilterCondition(columnName: "ROWID", value: pRequest.rowNumber));
     }
 
     // Fallback
@@ -305,7 +305,7 @@ class OfflineApiRepository extends IRepository {
   Future<DalFetchResponse?> _setValues(ApiSetValuesRequest pRequest) async {
     List<FilterCondition> filters = [];
 
-    FilterCondition? requestFilter = _getFilter(pRequest.filter, pRequest.filterCondition);
+    FilterCondition? requestFilter = _getFilter(pRequest.filter, null);
     if (requestFilter != null) {
       filters.add(requestFilter);
     }

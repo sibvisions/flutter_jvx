@@ -184,7 +184,6 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
     if (model.pointSelectionEnabled && model.pointsDataBook != null) {
       IUiService().sendCommand(
         SetValuesCommand(
-          componentId: model.id,
           dataProvider: model.pointsDataBook!,
           columnNames: [model.latitudeColumnName, model.longitudeColumnName],
           values: [latLng.latitude, latLng.longitude],

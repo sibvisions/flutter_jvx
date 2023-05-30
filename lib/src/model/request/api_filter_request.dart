@@ -26,7 +26,7 @@ class ApiFilterRequest extends SessionRequest {
 
   final String? value;
 
-  final String editorComponentId;
+  final String? editorComponentId;
 
   final Filter? filter;
 
@@ -56,11 +56,11 @@ class ApiFilterRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.columnNames: columnNames,
-        ApiObjectProperty.value: value,
-        ApiObjectProperty.filter: filter?.toJson(),
-        ApiObjectProperty.filterCondition: filterCondition?.toJson(),
-        ApiObjectProperty.editorComponentId: editorComponentId,
+        if (columnNames != null) ApiObjectProperty.columnNames: columnNames,
+        if (value != null) ApiObjectProperty.value: value,
+        if (filter != null) ApiObjectProperty.filter: filter?.toJson(),
+        if (filterCondition != null) ApiObjectProperty.filterCondition: filterCondition?.toJson(),
+        if (editorComponentId != null) ApiObjectProperty.editorComponentId: editorComponentId,
         ApiObjectProperty.dataProvider: dataProvider,
       };
 }

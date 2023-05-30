@@ -374,7 +374,6 @@ abstract class OfflineUtil {
 
     return ICommandService().sendCommand(SetValuesCommand(
       reason: "Re-sync: Insert",
-      componentId: "",
       dataProvider: dataBook.dataProvider,
       columnNames: newColumns.keys.toList(growable: false),
       values: newColumns.values.toList(growable: false),
@@ -390,7 +389,6 @@ abstract class OfflineUtil {
     };
     return ICommandService().sendCommand(SetValuesCommand(
       reason: "Re-sync: Update",
-      componentId: "",
       dataProvider: dataBook.dataProvider,
       columnNames: newColumns.keys.toList(growable: false),
       values: newColumns.values.toList(growable: false),
@@ -405,7 +403,6 @@ abstract class OfflineUtil {
     return ICommandService().sendCommand(DeleteRecordCommand(
       reason: "Re-sync: Delete",
       dataProvider: dataBook.dataProvider,
-      selectedRow: -1,
       filter: Filter(
         columnNames: primaryColumns.keys.toList(growable: false),
         values: primaryColumns.values.toList(growable: false),

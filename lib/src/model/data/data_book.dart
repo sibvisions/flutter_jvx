@@ -370,7 +370,7 @@ class DataBook {
     var future = ICommandService().sendCommand(SelectRecordCommand(
       reason: "Select record | DataBook selectRecord",
       dataProvider: pDataProvider,
-      selectedRecord: pSelectedRecord,
+      rowNumber: pSelectedRecord,
     ));
     return _handleCommandFuture(future, asyncErrorHandling);
   }
@@ -382,7 +382,6 @@ class DataBook {
     bool asyncErrorHandling = true,
   }) {
     var future = ICommandService().sendCommand(FilterCommand(
-      editorId: "custom",
       filter: pFilter,
       filterCondition: pFilterCondition,
       dataProvider: pDataProvider,
@@ -411,12 +410,10 @@ class DataBook {
     bool asyncErrorHandling = true,
   }) {
     var future = ICommandService().sendCommand(SetValuesCommand(
-      componentId: "custom",
       dataProvider: pDataProvider,
       columnNames: pColumnNames,
       values: pValues,
       filter: pFilter,
-      filterCondition: pFilterCondition,
       reason: "Update record | DataBook updateRecord",
     ));
     return _handleCommandFuture(future, asyncErrorHandling);
@@ -425,15 +422,13 @@ class DataBook {
   static Future<void> deleteRecord({
     required String pDataProvider,
     Filter? pFilter,
-    FilterCondition? pFilterCondition,
     int? pRowIndex,
     bool asyncErrorHandling = true,
   }) {
     var future = ICommandService().sendCommand(DeleteRecordCommand(
       dataProvider: pDataProvider,
       filter: pFilter,
-      filterCondition: pFilterCondition,
-      selectedRow: pRowIndex,
+      rowNumber: pRowIndex,
       reason: "Delete record | DataBook deleteRecord",
     ));
     return _handleCommandFuture(future, asyncErrorHandling);

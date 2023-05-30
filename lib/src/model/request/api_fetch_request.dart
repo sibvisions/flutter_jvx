@@ -16,6 +16,7 @@
 
 import '../../service/api/shared/api_object_property.dart';
 import '../command/api/fetch_command.dart';
+import 'api_filter_request.dart';
 import 'filter.dart';
 import 'session_request.dart';
 
@@ -24,20 +25,28 @@ class ApiFetchRequest extends SessionRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Data provider to fetch the data from.
+  final String dataProvider;
+
+  // TODO: evaluate if we can remove this
+  /// Column names to fetch.
   final List<String>? columnNames;
 
+  /// Filter of this fetch. This is only used for tree/page fetches.
+  /// For normal fetches, the filter is should be set with [ApiFilterRequest]
+  final Filter? filter;
+
+  /// If `true`, the meta data will be included.
   final bool includeMetaData;
 
+  /// The row number to start fetching from.
   final int fromRow;
 
+  /// The row count to fetch.
   final int rowCount;
-
-  final String dataProvider;
 
   /// If `true`, the data provider will be reloaded server side.
   bool reload;
-
-  final Filter? filter;
 
   final FetchCommand? command;
 

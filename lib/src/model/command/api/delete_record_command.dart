@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../data/filter_condition.dart';
 import '../../request/filter.dart';
 import 'session_command.dart';
 
@@ -24,17 +23,15 @@ class DeleteRecordCommand extends SessionCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Data provider to change selected row of
+  /// Data provider to delete the row of.
   final String dataProvider;
 
-  /// Filter
+  /// Filter of this setValues, used in table to edit non selected rows.
   final Filter? filter;
 
-  final FilterCondition? filterCondition;
-
-  final int? selectedRow;
-
-  final bool fetch;
+  /// The row number to shortcut the filter.
+  /// This row index will be checked if the filter applies, otherwise checks every row until the filter applies.
+  final int? rowNumber;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -42,10 +39,8 @@ class DeleteRecordCommand extends SessionCommand {
 
   DeleteRecordCommand({
     required this.dataProvider,
-    this.selectedRow,
-    this.fetch = false,
     this.filter,
-    this.filterCondition,
+    this.rowNumber,
     required super.reason,
   });
 
@@ -55,6 +50,6 @@ class DeleteRecordCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "DeleteRecordCommand{dataProvider: $dataProvider, filter: $filter, filterCondition: $filterCondition, selectedRow: $selectedRow, fetch: $fetch, ${super.toString()}}";
+    return "DeleteRecordCommand{dataProvider: $dataProvider, filter: $filter, rowNumber: $rowNumber, ${super.toString()}}";
   }
 }
