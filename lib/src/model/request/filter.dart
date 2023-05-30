@@ -66,15 +66,18 @@ class Filter {
     ));
   }
 
-  /// Returns this filter as list of filter conditions
-  List<FilterCondition> asFilterConditions() => asMap()
-      .entries
-      .map((entry) => FilterCondition(
-            columnName: entry.key,
-            value: entry.value,
-            compareType: CompareType.EQUALS,
-          ))
-      .toList();
+  /// Returns this filter as [FilterCondition].
+  FilterCondition asFilterCondition() => FilterCondition(
+        conditions: asMap()
+            .entries
+            .map((entry) => FilterCondition(
+                  columnName: entry.key,
+                  value: entry.value,
+                  compareType: CompareType.EQUALS,
+                ))
+            .toList(),
+        operatorType: OperatorType.AND,
+      );
 
   String toPageKey() {
     return jsonEncode(asMap());

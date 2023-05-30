@@ -388,9 +388,9 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return (txn ?? db).rawQuery(sql, [...?pFilter?.values]).then((results) => results[0]['COUNT'] as int > 0);
   }
 
-  /// Executes a SQL SELECT COUNT query for [pTableName] and returns the number of valid rows found, optionally with [pFilters] applied.
-  Future<int> getCount({required String pTableName, List<FilterCondition>? pFilters, Transaction? txn}) {
-    var where = _getWhere(pFilters);
+  /// Executes a SQL SELECT COUNT query for [pTableName] and returns the number of valid rows found, optionally with [pFilter] applied.
+  Future<int> getCount({required String pTableName, FilterCondition? pFilter, Transaction? txn}) {
+    var where = _getWhere(pFilter);
     return (txn ?? db)
         .query(formatOfflineTableName(pTableName),
             columns: ["COUNT(*) AS COUNT"], where: where?[0], whereArgs: where?[1])
@@ -401,7 +401,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<List<Map<String, dynamic>>> select({
     required String pTableName,
     List<String>? pColumns,
-    List<FilterCondition>? pFilters,
+    FilterCondition? pFilter,
     String? pGroupBy,
     String? pHaving,
     String? pOrderBy,
@@ -409,7 +409,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     int? pOffset,
     Transaction? txn,
   }) {
-    var where = _getWhere(pFilters);
+    var where = _getWhere(pFilter);
     return (txn ?? db).query(
       formatOfflineTableName(pTableName),
       columns: pColumns,
@@ -466,9 +466,9 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   Future<int> update({
     required String pTableName,
     required Map<String, dynamic> pUpdate,
-    List<FilterCondition>? pFilters,
+    FilterCondition? pFilter,
   }) {
-    var where = _getWhere(pFilters);
+    var where = _getWhere(pFilter);
     var offlineTableName = formatOfflineTableName(pTableName);
 
     return db.transaction((txn) async {
@@ -514,8 +514,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
   /// * [ROW_STATE_INSERTED], which then simply deletes the row.
   /// * [ROW_STATE_UPDATED], which rolls back all changes (copying back from offline/old columns)
   /// to preserve primary keys and sets the state to [ROW_STATE_DELETED].
-  Future<int> delete({required String pTableName, List<FilterCondition>? pFilters}) {
-    var where = _getWhere(pFilters);
+  Future<int> delete({required String pTableName, FilterCondition? pFilter}) {
+    var where = _getWhere(pFilter);
     var offlineTableName = formatOfflineTableName(pTableName);
 
     return db.transaction((txn) async {
@@ -547,15 +547,15 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     });
   }
 
-  /// Builds a where clause using [pFilters] which excludes all "deleted" columns.
+  /// Builds a where clause using [pFilter] which excludes all "deleted" columns.
   ///
-  /// Returns either a list in the format {String, List} or just {String, null}.
-  List<dynamic>? _getWhere(List<FilterCondition>? pFilters) {
+  /// Returns either a list in the format `{String, List}` or just `{String, null}`.
+  List<dynamic>? _getWhere(FilterCondition? pFilter) {
     String where = '"$STATE_COLUMN" IS NULL OR "$STATE_COLUMN" != \'$ROW_STATE_DELETED\'';
-    if (!(pFilters?.isEmpty ?? true)) {
-      String filterWhere = pFilters!.map((e) => _buildWhereClause(e)).where((s) => s != null).join(") AND (");
-      where = '(($filterWhere)) AND ($where)';
-      var whereArgs = pFilters.expand((e) => e.getValues()).map((e) {
+    if (pFilter != null) {
+      String? filterWhere = _buildWhereClause(pFilter);
+      where = '($filterWhere) AND ($where)';
+      var whereArgs = pFilter.getValues().map((e) {
         if (e is String) {
           return e.replaceAll("*", "%").replaceAll("?", "_");
         }
@@ -566,39 +566,39 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     return [where, null];
   }
 
-  /// Transforms [condition] to a valid SQL where clause.
-  String? _buildWhereClause(FilterCondition? condition) {
+  /// Transforms [filter] to a valid SQL where clause.
+  ///
+  /// Wraps the returned statement in parentheses.
+  /// Returns `null` if [filter] contains no properties to build a where clause.
+  String? _buildWhereClause(FilterCondition filter) {
     String? where;
 
-    if (condition != null) {
-      String? topWhere;
-      if (condition.columnName != null) {
-        topWhere = _getWhereCondition(condition);
-      }
+    // The main where of the condition, if applicable.
+    String? superWhere;
+    if (filter.columnName != null) {
+      superWhere = _getWhereCondition(filter);
+    }
 
-      List<FilterCondition> subConditions = [
-        if (condition.condition != null) condition.condition!,
-        ...condition.conditions,
-      ];
+    List<FilterCondition> subConditions = [
+      if (filter.condition != null) filter.condition!,
+      ...filter.conditions,
+    ];
 
-      if (topWhere != null || subConditions.isNotEmpty) {
-        where = [
-          if (topWhere != null) topWhere,
-          ...subConditions
-              .map((subCondition) => _buildWhereClause(subCondition))
-              .where((s) => s != null)
-              .map((e) => "($e)")
-        ].join(" ${condition.operatorType.name} ");
-      }
+    if (superWhere != null || subConditions.isNotEmpty) {
+      where = [
+        if (superWhere != null) superWhere,
+        ...subConditions.map((e) => _buildWhereClause(e)).whereNotNull(),
+      ].join(" ${filter.operatorType.name} ");
+      where = "($where)";
     }
     return where;
   }
 
-  /// Transforms a [condition] to a valid SQL condition.
-  String _getWhereCondition(FilterCondition condition) {
-    if (condition.value != null) {
+  /// Transforms a [filter] to a valid SQL condition.
+  String _getWhereCondition(FilterCondition filter) {
+    if (filter.value != null) {
       String operator;
-      switch (condition.compareType) {
+      switch (filter.compareType) {
         case CompareType.LIKE:
         case CompareType.LIKE_IGNORE_CASE:
           operator = "LIKE";
@@ -621,21 +621,21 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       }
 
       String clause;
-      if (condition.compareType.toString().toLowerCase().contains("ignore_case")) {
-        clause = "LOWER(${condition.columnName}) $operator LOWER(?)";
+      if (filter.compareType.toString().toLowerCase().contains("ignore_case")) {
+        clause = "LOWER(${filter.columnName}) $operator LOWER(?)";
       } else {
-        clause = "${condition.columnName} $operator ?";
+        clause = "${filter.columnName} $operator ?";
       }
-      if (condition.not == true) {
+      if (filter.not == true) {
         return "NOT ($clause)";
       } else {
         return clause;
       }
     } else {
-      if (condition.not == true) {
-        return "${condition.columnName} NOT IS NULL";
+      if (filter.not == true) {
+        return "${filter.columnName} NOT IS NULL";
       } else {
-        return "${condition.columnName} IS NULL";
+        return "${filter.columnName} IS NULL";
       }
     }
   }
