@@ -14,44 +14,52 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
+
 import '../../service/api/shared/api_object_property.dart';
 import '../../util/parse_util.dart';
 
-enum OperatorType { AND, OR }
+enum OperatorType {
+  And,
+  Or,
+}
 
 enum CompareType {
-  EQUALS,
-  LIKE,
-  LIKE_IGNORE_CASE,
-  // LIKE_REVERSE,
-  // LIKE_REVERSE_IGNORE_CASE,
-  LESS,
-  LESS_EQUALS,
-  GREATER,
-  GREATER_EQUALS,
-  // CONTAINS_IGNORE_CASE,
-  // STARTS_WITH_IGNORE_CASE,
-  // ENDS_WITH_IGNORE_CASE,
+  Equals,
+  Like,
+  LikeIgnoreCase,
+  // LikeReverse,
+  // LikeReverseIgnoreCase,
+  Less,
+  LessEquals,
+  Greater,
+  GreaterEquals,
+  // ContainsIgnoreCase,
+  // StartsWithIgnoreCase,
+  // EndsWithIgnoreCase,
 }
 
 class FilterCondition {
-  String? columnName;
-  dynamic value;
-  late OperatorType operatorType;
-  late CompareType compareType;
-  late bool not;
-  FilterCondition? condition;
-  List<FilterCondition> conditions = [];
+  late final String? columnName;
+  late final dynamic value;
+  late final OperatorType operatorType;
+  late final CompareType compareType;
+  late final bool not;
+  late final List<FilterCondition> conditions;
 
   FilterCondition({
     this.columnName,
     this.value,
-    this.operatorType = OperatorType.AND,
-    this.compareType = CompareType.EQUALS,
+    this.operatorType = OperatorType.And,
+    this.compareType = CompareType.Equals,
     this.not = false,
-    this.condition,
+    FilterCondition? condition,
     this.conditions = const [],
-  });
+  }) {
+    if (condition != null) {
+      conditions.insert(0, condition);
+    }
+  }
 
   FilterCondition.fromJson(Map<String, dynamic> pJson) {
     columnName = pJson[ApiObjectProperty.columnName];
@@ -61,20 +69,20 @@ class FilterCondition {
     operatorType = ParseUtil.getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.operatorType,
-      pDefault: OperatorType.AND,
+      pDefault: OperatorType.And,
       pCurrent: operatorType,
-      pConversion: (value) => OperatorType.values[value],
+      pConversion: (value) => OperatorType.values.firstWhereOrNull((e) => e.name == value),
     );
     compareType = ParseUtil.getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.compareType,
-      pDefault: CompareType.EQUALS,
+      pDefault: CompareType.Equals,
       pCurrent: compareType,
-      pConversion: (value) => CompareType.values[value],
+      pConversion: (value) => CompareType.values.firstWhereOrNull((e) => e.name == value),
     );
 
     if (pJson.containsKey(ApiObjectProperty.condition)) {
-      condition = FilterCondition.fromJson(pJson[ApiObjectProperty.condition]);
+      conditions.add(FilterCondition.fromJson(pJson[ApiObjectProperty.condition]));
     }
     if (pJson.containsKey(ApiObjectProperty.conditions)) {
       pJson[ApiObjectProperty.conditions].forEach((c) => conditions.add(FilterCondition.fromJson(c)));
@@ -86,27 +94,21 @@ class FilterCondition {
         ApiObjectProperty.value: value,
         ApiObjectProperty.operatorType: ParseUtil.propertyAsString(operatorType.name),
         ApiObjectProperty.compareType: ParseUtil.propertyAsString(compareType.name),
-        ApiObjectProperty.not: value,
-        ApiObjectProperty.condition: condition?.toJson(),
+        ApiObjectProperty.not: not,
         ApiObjectProperty.conditions: conditions.map<Map<String, dynamic>>((c) => c.toJson()).toList()
       };
 
   /// Collects recursively all values
-  List<dynamic> getValues() {
-    return _collectSubValues([this]);
-  }
+  List<dynamic> getValues() => _collectValues([this]);
 
-  /// Collects the values from the sub conditions recursively
-  static List<dynamic> _collectSubValues(List<FilterCondition> subConditions) {
+  /// Recursively collects the values from the sub conditions.
+  static List<dynamic> _collectValues(List<FilterCondition> subConditions) {
     var list = [];
     for (var subCondition in subConditions) {
       if (subCondition.columnName != null) {
         list.add(subCondition.value);
       }
-      list.addAll(_collectSubValues([
-        if (subCondition.condition != null) subCondition.condition!,
-        ...subCondition.conditions,
-      ]));
+      list.addAll(_collectValues(subCondition.conditions));
     }
     return list;
   }

@@ -73,10 +73,10 @@ class Filter {
             .map((entry) => FilterCondition(
                   columnName: entry.key,
                   value: entry.value,
-                  compareType: CompareType.EQUALS,
+                  compareType: CompareType.Equals,
                 ))
             .toList(),
-        operatorType: OperatorType.AND,
+        operatorType: OperatorType.And,
       );
 
   String toPageKey() {

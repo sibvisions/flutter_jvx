@@ -579,15 +579,10 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       superWhere = _getWhereCondition(filter);
     }
 
-    List<FilterCondition> subConditions = [
-      if (filter.condition != null) filter.condition!,
-      ...filter.conditions,
-    ];
-
-    if (superWhere != null || subConditions.isNotEmpty) {
+    if (superWhere != null || filter.conditions.isNotEmpty) {
       where = [
         if (superWhere != null) superWhere,
-        ...subConditions.map((e) => _buildWhereClause(e)).whereNotNull(),
+        ...filter.conditions.map((e) => _buildWhereClause(e)).whereNotNull(),
       ].join(" ${filter.operatorType.name} ");
       where = "($where)";
     }
@@ -599,23 +594,23 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     if (filter.value != null) {
       String operator;
       switch (filter.compareType) {
-        case CompareType.LIKE:
-        case CompareType.LIKE_IGNORE_CASE:
+        case CompareType.Like:
+        case CompareType.LikeIgnoreCase:
           operator = "LIKE";
           break;
-        case CompareType.LESS:
+        case CompareType.Less:
           operator = "<";
           break;
-        case CompareType.LESS_EQUALS:
+        case CompareType.LessEquals:
           operator = "<=";
           break;
-        case CompareType.GREATER:
+        case CompareType.Greater:
           operator = ">";
           break;
-        case CompareType.GREATER_EQUALS:
+        case CompareType.GreaterEquals:
           operator = ">=";
           break;
-        case CompareType.EQUALS:
+        case CompareType.Equals:
         default:
           operator = "=";
       }
