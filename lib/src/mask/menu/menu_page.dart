@@ -183,10 +183,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                       ? IconButton(
                           tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                           splashRadius: kToolbarHeight / 2,
-                          onPressed: () {
-                            isMenuSearchEnabled = false;
-                            setState(() {});
-                          },
+                          onPressed: () => Navigator.maybePop(context),
                           icon: const FaIcon(FontAwesomeIcons.circleXmark),
                         )
                       : (AppService().startedManually
@@ -217,8 +214,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     return Focus(
       onFocusChange: (hasFocus) {
         if (!hasFocus && menuSearchController.text.isEmpty) {
-          isMenuSearchEnabled = false;
-          setState(() {});
+          Navigator.maybePop(context);
         }
       },
       child: TextField(
