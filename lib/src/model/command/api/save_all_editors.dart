@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../base_command.dart';
 import '../ui/function_command.dart';
 import 'session_command.dart';
 
@@ -27,9 +26,9 @@ class SaveAllEditorsCommand extends SessionCommand {
 
   FunctionCommand? thenFunctionCommand;
 
-  SaveAllEditorsCommand({this.componentId, required super.reason, Future<List<BaseCommand>> Function()? pFunction}) {
+  SaveAllEditorsCommand({this.componentId, required super.reason, CommandCallback? pFunction}) {
     if (pFunction != null) {
-      thenFunctionCommand = FunctionCommand(function: pFunction, reason: "After save all editing");
+      thenFunctionCommand = FunctionCommand(pFunction, reason: "After save all editing");
     }
   }
 

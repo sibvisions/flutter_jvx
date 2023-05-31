@@ -14,19 +14,23 @@
  * the License.
  */
 
+import 'dart:async';
+
 import '../base_command.dart';
 import 'ui_command.dart';
 
+typedef CommandCallback = FutureOr<List<BaseCommand>> Function();
+
 /// Command to execute a custom function as a command.
 class FunctionCommand extends UiCommand {
-  final Future<List<BaseCommand>> Function() function;
+  final CommandCallback commandCallback;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FunctionCommand({
-    required this.function,
+  FunctionCommand(
+    this.commandCallback, {
     required super.reason,
   });
 

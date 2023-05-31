@@ -31,6 +31,7 @@ import '../../../model/command/data/get_data_chunk_command.dart';
 import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_page_chunk_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
+import '../../../model/command/ui/function_command.dart';
 import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -894,7 +895,7 @@ class UiService implements IUiService {
   }
 
   @override
-  Future<void> saveAllEditors({String? pId, required String pReason, Future<List<BaseCommand>> Function()? pFunction}) {
+  Future<void> saveAllEditors({String? pId, required String pReason, CommandCallback? pFunction}) {
     return ICommandService().sendCommand(
       SaveAllEditorsCommand(
         componentId: pId,

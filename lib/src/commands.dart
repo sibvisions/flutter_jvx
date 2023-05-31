@@ -70,6 +70,7 @@ export 'model/command/layout/register_parent_command.dart';
 export 'model/command/storage/delete_screen_command.dart';
 export 'model/command/storage/save_components_command.dart';
 export 'model/command/storage/storage_command.dart';
+export 'model/command/ui/function_command.dart';
 export 'model/command/ui/open_error_dialog_command.dart';
 export 'model/command/ui/route/route_command.dart';
 export 'model/command/ui/route/route_to_login_command.dart';

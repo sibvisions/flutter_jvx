@@ -211,9 +211,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     IUiService()
         .saveAllEditors(
           pId: model.id,
-          pFunction: () async {
-            return [_sendValueToServer(pValue)];
-          },
+          pFunction: () => [_sendValueToServer(pValue)],
           pReason: "Value of ${model.id} set to $pValue",
         )
         .catchError(IUiService().handleAsyncError);
@@ -253,7 +251,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     IUiService()
         .saveAllEditors(
           pId: model.id,
-          pFunction: () async {
+          pFunction: () {
             List<BaseCommand> commands = [];
 
             var oldFocus = IUiService().getFocus();

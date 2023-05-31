@@ -521,7 +521,7 @@ class WorkScreenState extends State<WorkScreen> {
     return IUiService().usesNativeRouting(item!.screenLongName);
   }
 
-  Future<List<BaseCommand>> _closeScreen() async {
+  List<BaseCommand> _closeScreen() {
     List<BaseCommand> commands = [];
     if (!IUiService().usesNativeRouting(item!.screenLongName)) {
       if (isForced) {

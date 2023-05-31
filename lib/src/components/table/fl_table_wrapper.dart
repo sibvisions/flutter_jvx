@@ -485,7 +485,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     _selectRecord(
       pRow,
       pColumnName,
-      pAfterSelect: () async {
+      pAfterSelect: () {
         if (_metaDataUpdateAllowed && model.editable) {
           int colIndex = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
@@ -643,36 +643,37 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _menuItemPressed(TableContextMenuItem val, int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
     IUiService()
         .saveAllEditors(
-            pId: model.id,
-            pFunction: () async {
-              List<BaseCommand> commands = [];
+          pId: model.id,
+          pFunction: () {
+            List<BaseCommand> commands = [];
 
-              if (val == TableContextMenuItem.INSERT) {
-                commands.add(_createInsertCommand());
-              } else if (val == TableContextMenuItem.DELETE) {
-                int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
-                BaseCommand? command = _createDeleteCommand(indexToDelete);
-                if (command != null) {
-                  commands.add(command);
-                }
-              } else if (val == TableContextMenuItem.OFFLINE) {
-                _debugGoOffline();
-              } else if (val == TableContextMenuItem.FETCH) {
-                unawaited(_refresh());
-              } else if (val == TableContextMenuItem.SORT) {
-                BaseCommand? command = _createSortColumnCommand(pColumnName);
-                if (command != null) {
-                  commands.add(command);
-                }
-              } else if (val == TableContextMenuItem.EDIT) {
-                _editRow(pRowIndex);
+            if (val == TableContextMenuItem.INSERT) {
+              commands.add(_createInsertCommand());
+            } else if (val == TableContextMenuItem.DELETE) {
+              int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
+              BaseCommand? command = _createDeleteCommand(indexToDelete);
+              if (command != null) {
+                commands.add(command);
               }
-              if (commands.isNotEmpty) {
-                commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+            } else if (val == TableContextMenuItem.OFFLINE) {
+              _debugGoOffline();
+            } else if (val == TableContextMenuItem.FETCH) {
+              unawaited(_refresh());
+            } else if (val == TableContextMenuItem.SORT) {
+              BaseCommand? command = _createSortColumnCommand(pColumnName);
+              if (command != null) {
+                commands.add(command);
               }
-              return commands;
-            },
-            pReason: "Table menu item pressed")
+            } else if (val == TableContextMenuItem.EDIT) {
+              _editRow(pRowIndex);
+            }
+            if (commands.isNotEmpty) {
+              commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+            }
+            return commands;
+          },
+          pReason: "Table menu item pressed",
+        )
         .catchError(IUiService().handleAsyncError);
   }
 
@@ -763,13 +764,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Selects the record.
-  Future<bool> _selectRecord(int pRowIndex, String? pColumnName, {Future<List<BaseCommand>> Function()? pAfterSelect}) {
+  Future<bool> _selectRecord(int pRowIndex, String? pColumnName, {CommandCallback? pAfterSelect}) {
     cancelSelect = false;
     return IUiService()
         .saveAllEditors(
           pReason: "Select row in table",
           pId: model.id,
-          pFunction: () async {
+          pFunction: () {
             List<BaseCommand> commands = [];
 
             if (cancelSelect) {
@@ -799,7 +800,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
               ),
             );
             if (pAfterSelect != null) {
-              commands.add(FunctionCommand(function: pAfterSelect, reason: "After selected row"));
+              commands.add(FunctionCommand(pAfterSelect, reason: "After selected row"));
             }
 
             return commands;
@@ -830,15 +831,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         .saveAllEditors(
           pReason: "Insert row in table",
           pId: model.id,
-          pFunction: () async {
-            List<BaseCommand> commands = [];
-
-            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Insert on table"));
-
-            commands.add(_createInsertCommand());
-
-            return commands;
-          },
+          pFunction: () => [
+            SetFocusCommand(componentId: model.id, focus: true, reason: "Insert on table"),
+            _createInsertCommand(),
+          ],
         )
         .catchError(IUiService().handleAsyncError);
   }
@@ -991,15 +987,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         .saveAllEditors(
           pReason: "Select row in table",
           pId: model.id,
-          pFunction: () async {
-            List<BaseCommand> commands = [];
-
-            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
-
-            commands.add(sortCommand);
-
-            return commands;
-          },
+          pFunction: () => [
+            SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"),
+            sortCommand,
+          ],
         )
         .catchError(IUiService().handleAsyncError);
   }
@@ -1017,7 +1008,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     _selectRecord(
       pRowIndex,
       null,
-      pAfterSelect: () async {
+      pAfterSelect: () {
         if (IStorageService().isVisibleInUI(model.id)) {
           if (_metaDataUpdateAllowed && model.editable) {
             _showDialog(

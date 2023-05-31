@@ -57,12 +57,11 @@ class ContentProcessor implements IResponseProcessor<ContentResponse> {
     if (!pResponse.update && panel != null) {
       commands.add(
         FunctionCommand(
-          reason: "Server sent content response with update = 'false'",
-          function: () async {
+          () {
             IUiService().openContent(panel!.name);
-
             return [];
           },
+          reason: "Server sent content response with update = 'false'",
         ),
       );
     }

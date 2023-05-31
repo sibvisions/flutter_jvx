@@ -115,10 +115,10 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
             reason: "Drawing has ended on ${model.id}")
       ];
     }
-    return List.empty();
+    return [];
   }
 
-  Future<List<BaseCommand>> deleteSignature() async {
+  List<BaseCommand> deleteSignature() {
     signatureController.clear();
 
     if (model.dataProvider != null && model.columnName != null) {
@@ -133,7 +133,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
             reason: "Drawing has ended on ${model.id}"),
       ];
     }
-    return List.empty();
+    return [];
   }
 
   @override
