@@ -1,5 +1,5 @@
-/* 
- * Copyright 2022 SIB Visions GmbH
+/*
+ * Copyright 2023 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,16 +14,14 @@
  * the License.
  */
 
-import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/ui/route_to_work_command.dart';
-import '../../../../ui/i_ui_service.dart';
-import '../../i_command_processor.dart';
+import '../ui_command.dart';
 
-class RouteToWorkCommandProcessor extends ICommandProcessor<RouteToWorkCommand> {
+/// Routing command
+class RouteCommand extends UiCommand {
+  RouteCommand({
+    required super.reason,
+  });
+
   @override
-  Future<List<BaseCommand>> processCommand(RouteToWorkCommand command) async {
-    IUiService().routeToWorkScreen(pScreenName: command.screenName, pReplaceRoute: command.replaceRoute);
-
-    return [];
-  }
+  Duration get loadingDelay => Duration.zero;
 }

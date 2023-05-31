@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2022 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -14,28 +14,26 @@
  * the License.
  */
 
-import '../api/login_command.dart';
-import 'ui_command.dart';
+import 'route_command.dart';
 
-/// Command to route to login
-class RouteToLoginCommand extends UiCommand {
+/// Command to route to the currently active workScreen
+class RouteToWorkCommand extends RouteCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Login mode
-  final LoginMode? mode;
+  final String screenName;
 
-  /// Username and password
-  final Map<String, dynamic> loginData;
+  /// 'True' if the route should replace the the current one in the stack
+  final bool replaceRoute;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  RouteToLoginCommand({
-    this.mode,
-    required this.loginData,
+  RouteToWorkCommand({
+    required this.screenName,
+    this.replaceRoute = false,
     required super.reason,
   });
 
@@ -45,6 +43,6 @@ class RouteToLoginCommand extends UiCommand {
 
   @override
   String toString() {
-    return "RouteToLoginCommand{mode: $mode, loginData: $loginData, ${super.toString()}}";
+    return "RouteToWorkCommand{screenName: $screenName, replaceRoute: $replaceRoute, ${super.toString()}}";
   }
 }

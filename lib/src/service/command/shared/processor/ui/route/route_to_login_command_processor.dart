@@ -14,33 +14,23 @@
  * the License.
  */
 
-import 'ui_command.dart';
+import '../../../../../../model/command/base_command.dart';
+import '../../../../../../model/command/ui/route/route_to_login_command.dart';
+import '../../../../../ui/i_ui_service.dart';
+import '../../../i_command_processor.dart';
 
-/// Will Route to menu, may be ignored if other commands in a batch take routing
-/// priority.
-class RouteToMenuCommand extends UiCommand {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// 'True' if the route should replace the the current one in the stack
-  final bool replaceRoute;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  RouteToMenuCommand({
-    this.replaceRoute = false,
-    required super.reason,
-  });
-
+class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String toString() {
-    return "RouteToMenuCommand{replaceRoute: $replaceRoute, ${super.toString()}}";
+  Future<List<BaseCommand>> processCommand(RouteToLoginCommand command) async {
+    // As [LoginViewResponse] can also indicate a logout initiated by the server, clear user data here.
+    await IUiService().logout();
+
+    IUiService().routeToLogin(mode: command.mode, pLoginProps: command.loginData);
+
+    return [];
   }
 }

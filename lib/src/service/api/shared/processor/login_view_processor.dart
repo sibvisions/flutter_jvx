@@ -15,7 +15,7 @@
  */
 
 import '../../../../model/command/base_command.dart';
-import '../../../../model/command/ui/route_to_login_command.dart';
+import '../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../model/request/api_login_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/login_view_response.dart';

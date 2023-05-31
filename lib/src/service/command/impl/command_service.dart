@@ -32,9 +32,10 @@ import '../../../model/command/data/data_command.dart';
 import '../../../model/command/layout/layout_command.dart';
 import '../../../model/command/storage/delete_screen_command.dart';
 import '../../../model/command/storage/storage_command.dart';
-import '../../../model/command/ui/route_to_login_command.dart';
-import '../../../model/command/ui/route_to_menu_command.dart';
-import '../../../model/command/ui/route_to_work_command.dart';
+import '../../../model/command/ui/route/route_command.dart';
+import '../../../model/command/ui/route/route_to_login_command.dart';
+import '../../../model/command/ui/route/route_to_menu_command.dart';
+import '../../../model/command/ui/route/route_to_work_command.dart';
 import '../../../model/command/ui/ui_command.dart';
 import '../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
@@ -211,10 +212,7 @@ class CommandService implements ICommandService {
     // Call routing commands last, all other actions must take priority.
 
     // Isolate possible route commands
-    var routeCommands = commands
-        .where((element) =>
-            element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
-        .toList();
+    var routeCommands = commands.whereType<RouteCommand>().toList();
 
     var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
     // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));

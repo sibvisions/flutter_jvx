@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2022 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -14,15 +14,14 @@
  * the License.
  */
 
-import 'ui_command.dart';
+import 'route_command.dart';
 
-/// Command to route to the currently active workScreen
-class RouteToWorkCommand extends UiCommand {
+/// Will Route to menu, may be ignored if other commands in a batch take routing
+/// priority.
+class RouteToMenuCommand extends RouteCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  final String screenName;
 
   /// 'True' if the route should replace the the current one in the stack
   final bool replaceRoute;
@@ -31,8 +30,7 @@ class RouteToWorkCommand extends UiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  RouteToWorkCommand({
-    required this.screenName,
+  RouteToMenuCommand({
     this.replaceRoute = false,
     required super.reason,
   });
@@ -42,10 +40,7 @@ class RouteToWorkCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Duration get loadingDelay => Duration.zero;
-
-  @override
   String toString() {
-    return "RouteToWorkCommand{screenName: $screenName, replaceRoute: $replaceRoute, ${super.toString()}}";
+    return "RouteToMenuCommand{replaceRoute: $replaceRoute, ${super.toString()}}";
   }
 }

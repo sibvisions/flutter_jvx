@@ -15,7 +15,7 @@
  */
 
 import '../../../../model/command/base_command.dart';
-import '../../../../model/command/ui/route_to_menu_command.dart';
+import '../../../../model/command/ui/route/route_to_menu_command.dart';
 import '../../../../model/command/ui/save_menu_command.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
