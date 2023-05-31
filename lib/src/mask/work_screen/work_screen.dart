@@ -187,7 +187,7 @@ class WorkScreenState extends State<WorkScreen> {
               FrameState? frame = Frame.maybeOf(context);
               List<Widget>? actions = frame?.getActions();
 
-              if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
                 Widget body = _buildBody(context, isOffline);
                 return Scaffold(
                   resizeToAvoidBottomInset: false,
@@ -213,11 +213,28 @@ class WorkScreenState extends State<WorkScreen> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   );
-                } else if (snapshot.hasError) {
+                } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
                   body = Center(
-                    child: Text(
-                      FlutterUI.translate("Error occurred while opening the screen."),
-                      style: Theme.of(context).textTheme.titleLarge,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Tooltip(
+                          message: snapshot.error.toString(),
+                          child: Text(
+                            FlutterUI.translate("Error occurred while opening the screen."),
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        if (item != null) const SizedBox(height: 20),
+                        if (item != null)
+                          ElevatedButton(
+                            onPressed: () {
+                              _initScreen();
+                              setState(() {});
+                            },
+                            child: Text(FlutterUI.translate("Retry")),
+                          )
+                      ],
                     ),
                   );
                 } else {
