@@ -223,60 +223,62 @@ class WorkScreenState extends State<WorkScreen> {
                 } else {
                   const Duration animationDuration = Duration(milliseconds: 750 + 550);
                   const Duration animationDurationTwo = Duration(milliseconds: 450 + 550);
-                  body = Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        CardLoading(
-                          height: 25,
-                          width: 100,
-                          animationDuration: animationDuration,
-                          animationDurationTwo: animationDurationTwo,
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          margin: EdgeInsets.only(bottom: 10),
-                        ),
-                        CardLoading(
+                  body = Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      CardLoading(
+                        height: 25,
+                        width: 100,
+                        animationDuration: animationDuration,
+                        animationDurationTwo: animationDurationTwo,
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        margin: EdgeInsets.only(bottom: 10),
+                      ),
+                      CardLoading(
+                        height: 50,
+                        animationDuration: animationDuration,
+                        animationDurationTwo: animationDurationTwo,
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        margin: EdgeInsets.only(bottom: 10),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: CardLoading(
                           height: 50,
+                          width: 120,
                           animationDuration: animationDuration,
                           animationDurationTwo: animationDurationTwo,
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           margin: EdgeInsets.only(bottom: 10),
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: CardLoading(
-                            height: 50,
-                            width: 120,
-                            animationDuration: animationDuration,
-                            animationDurationTwo: animationDurationTwo,
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            margin: EdgeInsets.only(bottom: 10),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                        ),
-                        CardLoading(
-                          height: 25,
-                          width: 100,
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      CardLoading(
+                        height: 25,
+                        width: 100,
+                        animationDuration: animationDuration,
+                        animationDurationTwo: animationDurationTwo,
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        margin: EdgeInsets.only(bottom: 10),
+                      ),
+                      Expanded(
+                        child: CardLoading(
+                          height: double.infinity,
                           animationDuration: animationDuration,
                           animationDurationTwo: animationDurationTwo,
                           borderRadius: BorderRadius.all(Radius.circular(5)),
-                          margin: EdgeInsets.only(bottom: 10),
                         ),
-                        Expanded(
-                          child: CardLoading(
-                            height: double.infinity,
-                            animationDuration: animationDuration,
-                            animationDurationTwo: animationDurationTwo,
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 }
+
+                body = Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: body,
+                );
 
                 // Skeleton scaffold shown while loading.
                 return Scaffold(
