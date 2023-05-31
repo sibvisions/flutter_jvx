@@ -72,7 +72,7 @@ class DefaultLogin extends StatelessWidget implements Login {
           buildBackground(context, loginLogo, topColor, bottomColor, colorGradient),
           Center(
             child: SizedBox(
-              width: min(600, MediaQuery.of(context).size.width / 10 * 8),
+              width: min(600, MediaQuery.sizeOf(context).width / 10 * 8),
               child: Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: SingleChildScrollView(

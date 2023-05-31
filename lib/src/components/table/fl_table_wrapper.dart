@@ -624,7 +624,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       showMenu(
         position: RelativeRect.fromRect(
           pGlobalPosition & const Size(40, 40),
-          Offset.zero & MediaQuery.of(context).size,
+          Offset.zero & MediaQuery.sizeOf(context),
         ),
         context: context,
         items: popupMenuEntries,

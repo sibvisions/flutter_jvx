@@ -214,7 +214,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    _subject.add(MediaQuery.of(context).size);
+    _subject.add(MediaQuery.sizeOf(context));
 
     return GestureDetector(
       onTap: () {

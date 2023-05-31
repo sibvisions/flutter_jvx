@@ -57,7 +57,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   @override
   Widget build(BuildContext context) {
-    bool isNormalSize = MediaQuery.of(context).size.height > 650;
+    bool isNormalSize = MediaQuery.sizeOf(context).height > 650;
 
     return Opacity(
       opacity: double.parse(AppStyle.of(context).applicationStyle?['opacity.sidemenu'] ?? "1"),

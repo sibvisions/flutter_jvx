@@ -319,7 +319,7 @@ class WebFrameState extends FrameState {
   @override
   Widget? getEndDrawer(BuildContext context) => Builder(
         builder: (context) {
-          double screenWidth = MediaQuery.of(context).size.width;
+          double screenWidth = MediaQuery.sizeOf(context).width;
 
           return SizedBox(
             width: max(screenWidth / 4, min(screenWidth, 300)),

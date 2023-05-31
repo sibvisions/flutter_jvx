@@ -110,7 +110,7 @@ class ModernLogin extends StatelessWidget implements Login {
                 ),
               Center(
                 child: SizedBox(
-                  width: min(600, MediaQuery.of(context).size.width / 10 * 8),
+                  width: min(600, MediaQuery.sizeOf(context).width / 10 * 8),
                   child: SingleChildScrollView(
                     child: Stack(
                       children: [
