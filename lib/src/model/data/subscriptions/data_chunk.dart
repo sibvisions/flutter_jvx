@@ -38,9 +38,6 @@ class DataChunk {
   /// index of first record in databook
   final int from;
 
-  /// index to which data has been fetched
-  final int to;
-
   /// Contains record formats
   Map<String, RecordFormat>? recordFormats;
 
@@ -53,7 +50,6 @@ class DataChunk {
     required this.isAllFetched,
     required this.columnDefinitions,
     required this.from,
-    required this.to,
     this.recordFormats,
   });
 

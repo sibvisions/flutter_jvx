@@ -51,7 +51,12 @@ class DataSubscription {
   /// Index from which data will be fetched. Must be >= 0 if onDataChunk is not null
   int from;
 
-  /// Index to which data will be fetched, if null or -1 - will return all data from provider, will fetch all if necessary
+  /// Index to which, excluding itself, data will be fetched.
+  /// If null or -1 - will return all data from provider, will fetch all if necessary.
+  ///
+  /// [from] : 0; [to] : 0; will return no record.
+  /// [from] : 0; [to] : 1; will return 1 record.
+  ///
   int? to;
 
   /// Callback will only be called with [DataChunk] if from is not -1.

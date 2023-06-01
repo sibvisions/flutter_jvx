@@ -305,7 +305,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         ],
         data: concatMaskData,
         from: _chunkData!.from,
-        to: _chunkData!.to,
         isAllFetched: _chunkData!.isAllFetched,
       );
     } else {

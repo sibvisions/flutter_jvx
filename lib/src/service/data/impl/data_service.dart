@@ -284,6 +284,7 @@ class DataService implements IDataService {
 
     // Build rows out of column data
     HashMap<int, List<dynamic>> data = HashMap();
+
     for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
       List<dynamic> row = [];
       for (List column in columnsData) {
@@ -297,7 +298,6 @@ class DataService implements IDataService {
       isAllFetched: dataBook.isAllFetched,
       columnDefinitions: columnDefinitions,
       from: pFrom,
-      to: data.length + pFrom,
       recordFormats: dataBook.recordFormats,
     );
   }

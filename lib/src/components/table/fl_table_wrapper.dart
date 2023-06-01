@@ -111,7 +111,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   DalMetaData metaData = DalMetaData("");
 
   /// The data of the table.
-  DataChunk dataChunk = DataChunk(data: HashMap(), isAllFetched: false, columnDefinitions: [], from: 0, to: 0);
+  DataChunk dataChunk = DataChunk(data: HashMap(), isAllFetched: false, columnDefinitions: [], from: 0);
 
   /// The sizes of the table.
   late TableSize tableSize;
