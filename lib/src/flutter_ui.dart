@@ -401,7 +401,7 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
-    FlutterUIState.urlConfig = await _extractURIParameters(queryParameters);
+    FlutterUIState.urlApp = await _extractURIParameters(queryParameters);
     queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
     // API
@@ -506,7 +506,7 @@ GlobalKey<NavigatorState>? splashNavigatorKey;
 PageStorageBucket pageStorageBucket = PageStorageBucket();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
-  static App? urlConfig;
+  static App? urlApp;
 
   final RoutesObserver routeObserver = RoutesObserver();
 
@@ -581,8 +581,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     changedTheme();
 
     // Init
-    if (urlConfig != null) {
-      startApp(appId: urlConfig!.id, autostart: true);
+    if (urlApp != null) {
+      startApp(appId: urlApp!.id, autostart: true);
     } else {
       App.getAppsByIDs(AppService().getAppIds()).then((apps) {
         AppConfig appConfig = IConfigService().getAppConfig()!;
