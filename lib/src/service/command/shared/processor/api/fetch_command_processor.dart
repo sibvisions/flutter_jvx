@@ -28,7 +28,6 @@ class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
         dataProvider: command.dataProvider,
         fromRow: command.fromRow,
         rowCount: command.rowCount,
-        columnNames: command.columnNames,
         includeMetaData: command.includeMetaData,
         filter: command.filter,
         reload: command.reload,

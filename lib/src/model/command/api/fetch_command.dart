@@ -27,10 +27,6 @@ class FetchCommand extends SessionCommand {
   /// Data provider to fetch the data from.
   final String dataProvider;
 
-  // TODO: evaluate if we can remove this
-  /// Column names to fetch.
-  final List<String>? columnNames;
-
   /// Filter of this fetch. This is only used for tree/page fetches.
   /// For normal fetches, the filter is should be set with [FilterCommand]
   final Filter? filter;
@@ -59,7 +55,6 @@ class FetchCommand extends SessionCommand {
     required this.rowCount,
     required this.dataProvider,
     this.includeMetaData = false,
-    this.columnNames,
     this.filter,
     this.reload = false,
     this.setRootKey = false,
@@ -77,6 +72,6 @@ class FetchCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "FetchCommand{columnNames: $columnNames, includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, reload:$reload ${super.toString()}}";
+    return "FetchCommand{includeMetaData: $includeMetaData, fromRow: $fromRow, rowCount: $rowCount, dataProvider: $dataProvider, reload:$reload ${super.toString()}}";
   }
 }

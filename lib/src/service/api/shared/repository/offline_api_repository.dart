@@ -240,7 +240,7 @@ class OfflineApiRepository extends IRepository {
 
     DataBook dataBook = IDataService().getDataBook(pRequest.dataProvider)!;
 
-    List<String> columnNames = pRequest.columnNames ?? dataBook.metaData.columnDefinitions.map((e) => e.name).toList();
+    List<String> columnNames = dataBook.metaData.columnDefinitions.map((e) => e.name).toList();
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
       pColumns: columnNames,

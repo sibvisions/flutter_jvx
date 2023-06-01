@@ -28,9 +28,9 @@ class ApiFetchRequest extends SessionRequest {
   /// Data provider to fetch the data from.
   final String dataProvider;
 
-  // TODO: evaluate if we can remove this
+  // unused
   /// Column names to fetch.
-  final List<String>? columnNames;
+  //final List<String>? columnNames;
 
   /// Filter of this fetch. This is only used for tree/page fetches.
   /// For normal fetches, the filter is should be set with [ApiFilterRequest]
@@ -59,7 +59,6 @@ class ApiFetchRequest extends SessionRequest {
     required this.rowCount,
     required this.dataProvider,
     required this.includeMetaData,
-    this.columnNames,
     this.filter,
     this.reload = false,
     this.command,
@@ -72,7 +71,6 @@ class ApiFetchRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.includeMetaData: includeMetaData,
         ApiObjectProperty.fromRow: fromRow,
         ApiObjectProperty.rowCount: rowCount,
