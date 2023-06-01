@@ -254,9 +254,6 @@ class DataService implements IDataService {
 
     DataBook dataBook = dataBooks[pDataProvider]!;
 
-    // If pTo is null, all possible records are being requested
-    pTo ??= dataBook.records.length;
-
     // Get data from databook and add column definitions in correct order -
     // either same as requested or as received from server
     if (pColumnNames != null) {
@@ -300,7 +297,7 @@ class DataService implements IDataService {
       isAllFetched: dataBook.isAllFetched,
       columnDefinitions: columnDefinitions,
       from: pFrom,
-      to: pTo,
+      to: data.length + pFrom,
       recordFormats: dataBook.recordFormats,
     );
   }

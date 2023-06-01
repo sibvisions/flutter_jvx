@@ -333,7 +333,7 @@ class DataBook {
     int indexOfColumn = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
     HashMap<int, List<dynamic>> dataMap = pPageKey != null ? (pageRecords[pPageKey] ?? HashMap()) : records;
-    pTo = min(pTo ?? 0, dataMap.length);
+    pTo = min(pTo ?? dataMap.length, dataMap.length);
     for (int i = pFrom; i < pTo; i++) {
       var a = dataMap[i];
       if (a != null) {
