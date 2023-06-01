@@ -444,7 +444,7 @@ class StorageService implements IStorageService {
 
   @override
   List<FlComponentModel> getComponentModels() {
-    return List.from(_componentMap.values);
+    return List.of(_componentMap.values);
   }
 
   List<FlComponentModel> _getComponents(bool isDesktopPanel, bool isContent, String screenName) {

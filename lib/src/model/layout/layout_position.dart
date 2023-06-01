@@ -25,7 +25,7 @@ class LayoutPosition implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Date of creation
-  DateTime creationDate = DateTime.now();
+  DateTime creationDate;
 
   /// The width of the component.
   double width;
@@ -47,21 +47,19 @@ class LayoutPosition implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [LayoutPosition].
-  LayoutPosition(
-      {required this.width,
-      required this.height,
-      required this.top,
-      required this.left,
-      this.isConstraintCalc = false});
+  LayoutPosition({
+    required this.width,
+    required this.height,
+    required this.top,
+    required this.left,
+    this.isConstraintCalc = false,
+    DateTime? creationDate,
+  }) : creationDate = creationDate ?? DateTime.now();
 
   /// Clones [LayoutPosition] as a deep copy.
-  LayoutPosition.from(LayoutPosition pLayoutPosition)
-      : width = pLayoutPosition.width,
-        height = pLayoutPosition.height,
-        top = pLayoutPosition.top,
-        left = pLayoutPosition.left,
-        isConstraintCalc = pLayoutPosition.isConstraintCalc,
-        creationDate = pLayoutPosition.creationDate;
+  factory LayoutPosition.from(LayoutPosition pLayoutPosition) {
+    return pLayoutPosition.clone();
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -70,7 +68,14 @@ class LayoutPosition implements ICloneable {
   /// Clones [LayoutPosition] as a deep copy.
   @override
   LayoutPosition clone() {
-    return LayoutPosition.from(this);
+    return LayoutPosition(
+      width: width,
+      height: height,
+      top: top,
+      left: left,
+      isConstraintCalc: isConstraintCalc,
+      creationDate: creationDate,
+    );
   }
 
   @override

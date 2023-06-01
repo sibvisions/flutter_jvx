@@ -488,9 +488,8 @@ class UiService implements IUiService {
 
   @override
   void setLayoutPosition({required LayoutData layoutData}) {
-    List<ComponentSubscription>.from(_componentSubscriptions)
-        .where((element) => element.compId == layoutData.id)
-        .forEach((element) {
+    // Copy list to avoid concurrent modification
+    List.of(_componentSubscriptions).where((element) => element.compId == layoutData.id).forEach((element) {
       element.layoutCallback?.call(layoutData);
     });
   }
@@ -606,7 +605,8 @@ class UiService implements IUiService {
 
   @override
   List<BaseCommand> collectAllEditorSaveCommands(String? pId) {
-    return List<ComponentSubscription>.from(_componentSubscriptions)
+    // Copy list to avoid concurrent modification
+    return List.of(_componentSubscriptions)
         .where((element) => element.compId != pId)
         .map((e) => e.saveCallback?.call())
         .whereNotNull()
@@ -620,9 +620,8 @@ class UiService implements IUiService {
   @override
   void notifyAffectedComponents({required Set<String> affectedIds}) {
     for (String affectedId in affectedIds) {
-      List<ComponentSubscription>.from(_componentSubscriptions)
-          .where((element) => element.compId == affectedId)
-          .forEach((element) {
+      // Copy list to avoid concurrent modification
+      List.of(_componentSubscriptions).where((element) => element.compId == affectedId).forEach((element) {
         element.affectedCallback?.call();
       });
     }
@@ -631,10 +630,9 @@ class UiService implements IUiService {
   @override
   void notifyChangedComponents({required List<String> updatedModels}) {
     for (String updatedModelId in updatedModels) {
-      // Notify active component
-      List<ComponentSubscription>.from(_componentSubscriptions)
-          .where((element) => element.compId == updatedModelId)
-          .forEach((element) {
+      // Copy list to avoid concurrent modification
+      List.of(_componentSubscriptions).where((element) => element.compId == updatedModelId).forEach((element) {
+        // Notify active component
         element.modelCallback?.call();
       });
     }

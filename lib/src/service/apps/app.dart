@@ -141,7 +141,7 @@ class App {
     _icon = await _getString("icon");
     _version = await _getString("version");
     String? styleJson = await _getString("applicationStyle");
-    _applicationStyle = (styleJson != null ? Map<String, String>.from(jsonDecode(styleJson)) : null);
+    _applicationStyle = (styleJson != null ? Map.from(jsonDecode(styleJson)) : null);
   }
 
   String get id {

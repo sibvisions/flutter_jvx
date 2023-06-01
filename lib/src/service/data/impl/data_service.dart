@@ -415,7 +415,7 @@ class DataService implements IDataService {
 
   @override
   HashMap<String, DataBook> getDataBooks() {
-    return HashMap.from(dataBooks);
+    return HashMap.of(dataBooks);
   }
 
   @override

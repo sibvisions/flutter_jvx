@@ -61,11 +61,12 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
     );
 
     listValues = getPropertyValue(
-        pJson: pJson,
-        pKey: ApiObjectProperty.allowedValues,
-        pDefault: defaultModel.listValues,
-        pCurrent: listValues,
-        pConversion: (value) => List<dynamic>.from(value));
+      pJson: pJson,
+      pKey: ApiObjectProperty.allowedValues,
+      pDefault: defaultModel.listValues,
+      pCurrent: listValues,
+      pConversion: (value) => List.of(value),
+    );
 
     listImages = getPropertyValue(
       pJson: pJson,

@@ -387,7 +387,7 @@ class SharedPrefsHandler implements ConfigHandler {
   @override
   Future<Map<String, String>?> applicationStyle() async {
     String? jsonMap = await getString("applicationStyle");
-    return (jsonMap != null ? Map<String, String>.from(jsonDecode(jsonMap)) : null);
+    return (jsonMap != null ? Map.from(jsonDecode(jsonMap)) : null);
   }
 
   @override

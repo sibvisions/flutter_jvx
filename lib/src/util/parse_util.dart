@@ -285,7 +285,7 @@ abstract class ParseUtil {
 
       if (value is Map<String, dynamic>) {
         if (pDestination[sourceKey] == null) {
-          pDestination[sourceKey] = Map<String, dynamic>.from(value);
+          pDestination[sourceKey] = Map.of(value);
         } else {
           applyJsonToJson(value, pDestination[sourceKey]);
         }

@@ -93,7 +93,7 @@ class ApiController implements IController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiController() {
-    responseToProcessorMap = HashMap.from({
+    responseToProcessorMap = HashMap.of({
       ApiResponseNames.applicationParameters: _applicationParameterProcessor,
       ApiResponseNames.applicationMetaData: _applicationMetaDataProcessor,
       ApiResponseNames.applicationSettings: _applicationSettingsProcessor,

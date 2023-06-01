@@ -35,7 +35,7 @@ class LayoutData implements ICloneable {
   final String name;
 
   /// State of layout
-  LayoutState layoutState = LayoutState.VALID;
+  LayoutState layoutState;
 
   /// The id of the parent component.
   String? parentId;
@@ -71,7 +71,7 @@ class LayoutData implements ICloneable {
   bool isFixedSize;
 
   /// The insets of the component.
-  EdgeInsets insets = EdgeInsets.zero;
+  EdgeInsets insets;
 
   /// The actual position of the component inside their parent.
   LayoutPosition? layoutPosition;
@@ -90,45 +90,31 @@ class LayoutData implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [LayoutData].
-  LayoutData(
-      {required this.id,
-      required this.name,
-      required this.widthConstrains,
-      required this.heightConstrains,
-      this.parentId,
-      this.children = const [],
-      this.constraints,
-      this.minSize,
-      this.maxSize,
-      this.preferredSize,
-      this.insets = EdgeInsets.zero,
-      this.layoutPosition,
-      this.calculatedSize,
-      this.lastCalculatedSize,
-      this.indexOf,
-      this.layout,
-      this.isFixedSize = false});
+  LayoutData({
+    required this.id,
+    required this.name,
+    required this.widthConstrains,
+    required this.heightConstrains,
+    this.layoutState = LayoutState.VALID,
+    this.parentId,
+    this.children = const [],
+    this.constraints,
+    this.minSize,
+    this.maxSize,
+    this.preferredSize,
+    this.insets = EdgeInsets.zero,
+    this.layoutPosition,
+    this.calculatedSize,
+    this.lastCalculatedSize,
+    this.indexOf,
+    this.layout,
+    this.isFixedSize = false,
+  });
 
   /// Clones [LayoutData] as a deep copy.
-  LayoutData.from(LayoutData pLayoutData)
-      : id = pLayoutData.id,
-        name = pLayoutData.name,
-        parentId = pLayoutData.parentId,
-        layout = pLayoutData.layout?.clone(),
-        children = List.from(pLayoutData.children),
-        constraints = pLayoutData.constraints,
-        minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null,
-        maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
-        preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null,
-        calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null,
-        lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
-        insets = pLayoutData.insets != EdgeInsets.zero ? pLayoutData.insets.copyWith() : EdgeInsets.zero,
-        layoutState = pLayoutData.layoutState,
-        layoutPosition = pLayoutData.layoutPosition?.clone(),
-        indexOf = pLayoutData.indexOf,
-        heightConstrains = Map.from(pLayoutData.heightConstrains),
-        widthConstrains = Map.from(pLayoutData.widthConstrains),
-        isFixedSize = pLayoutData.isFixedSize;
+  factory LayoutData.from(LayoutData pLayoutData) {
+    return pLayoutData.clone();
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -137,7 +123,26 @@ class LayoutData implements ICloneable {
   /// Clones [LayoutData] as a deep copy.
   @override
   LayoutData clone() {
-    return LayoutData.from(this);
+    return LayoutData(
+      id: id,
+      name: name,
+      parentId: parentId,
+      layout: layout?.clone(),
+      children: List.of(children),
+      constraints: constraints,
+      minSize: minSize != null ? Size.copy(minSize!) : null,
+      maxSize: maxSize != null ? Size.copy(maxSize!) : null,
+      preferredSize: hasPreferredSize ? Size.copy(preferredSize!) : null,
+      calculatedSize: hasCalculatedSize ? Size.copy(calculatedSize!) : null,
+      lastCalculatedSize: hasLastCalculatedSize ? Size.copy(lastCalculatedSize!) : null,
+      insets: insets != EdgeInsets.zero ? insets.copyWith() : EdgeInsets.zero,
+      layoutState: layoutState,
+      layoutPosition: layoutPosition?.clone(),
+      indexOf: indexOf,
+      heightConstrains: Map.of(heightConstrains),
+      widthConstrains: Map.of(widthConstrains),
+      isFixedSize: isFixedSize,
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -165,7 +170,7 @@ class LayoutData implements ICloneable {
   applyFromOther(LayoutData pLayoutData) {
     parentId = pLayoutData.parentId;
     layout = pLayoutData.layout?.clone();
-    children = List.from(pLayoutData.children);
+    children = List.of(pLayoutData.children);
     constraints = pLayoutData.constraints;
     minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null;
     maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null;
@@ -176,8 +181,8 @@ class LayoutData implements ICloneable {
     layoutState = pLayoutData.layoutState;
     layoutPosition = pLayoutData.layoutPosition?.clone();
     indexOf = pLayoutData.indexOf;
-    heightConstrains = Map.from(pLayoutData.heightConstrains);
-    widthConstrains = Map.from(pLayoutData.widthConstrains);
+    heightConstrains = Map.of(pLayoutData.heightConstrains);
+    widthConstrains = Map.of(pLayoutData.widthConstrains);
     isFixedSize = pLayoutData.isFixedSize;
   }
 

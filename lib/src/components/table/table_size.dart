@@ -283,7 +283,7 @@ class TableSize {
   }
 
   void _redistributeRemainingWidth(List<String> pColumnNames, double pRemainingWidth) {
-    Map<String, double> currentColumns = Map.from(columnWidths);
+    Map<String, double> currentColumns = Map.of(columnWidths);
     currentColumns.removeWhere((key, value) => !pColumnNames.contains(key) || value <= 0.0);
     double currentColumnsWidth = currentColumns.values.sum;
 

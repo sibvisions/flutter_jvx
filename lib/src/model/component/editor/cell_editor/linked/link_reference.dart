@@ -41,11 +41,11 @@ class LinkReference {
   LinkReference.fromJson(Map<String, dynamic> json) {
     var jsonColumnNames = json[ApiObjectProperty.columnNames];
     if (jsonColumnNames != null) {
-      columnNames = List<String>.from(jsonColumnNames);
+      columnNames = List.from(jsonColumnNames);
     }
     var jsonReferencedColumnNames = json[ApiObjectProperty.referencedColumnNames];
     if (jsonReferencedColumnNames != null) {
-      referencedColumnNames = List<String>.from(jsonReferencedColumnNames);
+      referencedColumnNames = List.from(jsonReferencedColumnNames);
     }
     var jsonReferencedDataBook = json[ApiObjectProperty.referencedDataBook];
     if (jsonReferencedDataBook != null) {

@@ -25,11 +25,11 @@ class ColumnMap {
   ColumnMap.fromJson(Map<String, dynamic> json) {
     var jsonColumnNames = json[ApiObjectProperty.columnNames];
     if (jsonColumnNames != null) {
-      columnNames = List<String>.from(jsonColumnNames);
+      columnNames = List.of(jsonColumnNames);
     }
     var jsonReferencedColumnNames = json[ApiObjectProperty.referencedColumnNames];
     if (jsonReferencedColumnNames != null) {
-      referencedColumnNames = List<String>.from(jsonReferencedColumnNames);
+      referencedColumnNames = List.of(jsonReferencedColumnNames);
     }
   }
 

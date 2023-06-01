@@ -310,7 +310,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void recreateCellEditor([bool pSubscribe = true]) {
     cellEditor.dispose();
 
-    var jsonCellEditor = Map<String, dynamic>.from(model.json[ApiObjectProperty.cellEditor]);
+    Map<String, dynamic> jsonCellEditor = Map.of(model.json[ApiObjectProperty.cellEditor]);
     cellEditor = ICellEditor.getCellEditor(
       pName: model.name,
       pCellEditorJson: jsonCellEditor,
