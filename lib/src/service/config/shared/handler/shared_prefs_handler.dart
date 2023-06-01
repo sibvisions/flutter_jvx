@@ -117,12 +117,12 @@ class SharedPrefsHandler implements ConfigHandler {
   }
 
   @override
-  Future<T?> getPreference<T>(String name) async {
+  Future<T?> getValue<T>(String name) async {
     return _sharedPrefs.get(name) as T?;
   }
 
   @override
-  Future<bool> setPreference<T>(String name, T? value) async {
+  Future<bool> setValue<T>(String name, T? value) async {
     if (value != null) {
       return _setValue(name, value);
     } else {
