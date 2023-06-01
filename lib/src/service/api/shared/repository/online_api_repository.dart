@@ -262,11 +262,12 @@ class OnlineApiRepository extends IRepository {
   Future<void> start() async {
     if (isStopped()) {
       Duration? connectTimeout = ParseUtil.validateDuration(IConfigService().getAppConfig()?.connectTimeout);
-      Duration? requestTimeout = ParseUtil.validateDuration(IConfigService().getAppConfig()?.requestTimeout);
+      Duration? requestTimeout = ParseUtil.validateDuration(
+          IConfigService().getAppConfig()?.requestTimeout ?? IConfigService().getAppConfig()?.connectTimeout);
       BaseOptions options = BaseOptions(
         connectTimeout: connectTimeout,
-        receiveTimeout: requestTimeout ?? connectTimeout,
-        sendTimeout: requestTimeout ?? connectTimeout,
+        receiveTimeout: requestTimeout,
+        sendTimeout: requestTimeout,
         validateStatus: (status) => true,
         extra: {
           "withCredentials": true,
