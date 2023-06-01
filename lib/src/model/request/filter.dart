@@ -80,6 +80,8 @@ class Filter {
       );
 
   String toPageKey() {
-    return jsonEncode(asMap());
+    return jsonEncode(Map.fromEntries(columnNames.mapIndexed(
+      (index, element) => MapEntry(element, values[index].toString()),
+    )));
   }
 }
