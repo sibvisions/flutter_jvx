@@ -260,14 +260,14 @@ abstract class FlComponentModel {
       pKey: ApiObjectProperty.remove,
       pDefault: defaultModel.isRemoved,
       pCurrent: isRemoved,
-      pConversion: ParseUtil.parseBool,
+      pConversion: (e) => ParseUtil.parseBool(e)!,
     );
     isDestroyed = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.destroy,
       pDefault: defaultModel.isDestroyed,
       pCurrent: isDestroyed,
-      pConversion: ParseUtil.parseBool,
+      pConversion: (e) => ParseUtil.parseBool(e)!,
     );
     isVisible = getPropertyValue(
       pJson: pJson,
@@ -386,14 +386,14 @@ abstract class FlComponentModel {
       pJson: pJson,
       pKey: ApiObjectProperty.eventFocusGained,
       pDefault: defaultModel.eventFocusGained,
-      pConversion: ParseUtil.parseBool,
+      pConversion: (e) => ParseUtil.parseBool(e)!,
       pCurrent: eventFocusGained,
     );
     eventFocusLost = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.eventFocusLost,
       pDefault: defaultModel.eventFocusLost,
-      pConversion: ParseUtil.parseBool,
+      pConversion: (e) => ParseUtil.parseBool(e)!,
       pCurrent: eventFocusLost,
     );
     font = getPropertyValue(
@@ -448,12 +448,12 @@ abstract class FlComponentModel {
     );
   }
 
-  dynamic getPropertyValue({
+  T getPropertyValue<T>({
     required Map<String, dynamic> pJson,
     required String pKey,
-    required dynamic pDefault,
-    required dynamic pCurrent,
-    dynamic Function(dynamic)? pConversion,
+    required T pDefault,
+    required T pCurrent,
+    T Function(dynamic)? pConversion,
     bool Function(dynamic)? pCondition,
   }) {
     return ParseUtil.getPropertyValue(

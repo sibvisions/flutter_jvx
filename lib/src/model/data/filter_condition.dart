@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'package:collection/collection.dart';
-
 import '../../service/api/shared/api_object_property.dart';
 import '../../util/parse_util.dart';
 
@@ -71,14 +69,14 @@ class FilterCondition {
       pKey: ApiObjectProperty.operatorType,
       pDefault: OperatorType.And,
       pCurrent: operatorType,
-      pConversion: (value) => OperatorType.values.firstWhereOrNull((e) => e.name == value),
+      pConversion: (value) => OperatorType.values.firstWhere((e) => e.name == value),
     );
     compareType = ParseUtil.getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.compareType,
       pDefault: CompareType.Equals,
       pCurrent: compareType,
-      pConversion: (value) => CompareType.values.firstWhereOrNull((e) => e.name == value),
+      pConversion: (value) => CompareType.values.firstWhere((e) => e.name == value),
     );
 
     if (pJson.containsKey(ApiObjectProperty.condition)) {

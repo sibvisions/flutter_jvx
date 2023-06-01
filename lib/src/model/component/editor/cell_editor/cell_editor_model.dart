@@ -189,12 +189,12 @@ class ICellEditorModel {
     );
   }
 
-  dynamic getPropertyValue({
+  T getPropertyValue<T>({
     required Map<String, dynamic> pJson,
     required String pKey,
-    required dynamic pDefault,
-    required dynamic pCurrent,
-    dynamic Function(dynamic)? pConversion,
+    required T pDefault,
+    required T pCurrent,
+    T Function(dynamic)? pConversion,
     bool Function(dynamic)? pCondition,
   }) {
     return ParseUtil.getPropertyValue(

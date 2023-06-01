@@ -77,7 +77,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
     );
   }
 
-  List<Widget>? _parseImgList(dynamic pValue) {
+  List<Widget> _parseImgList(dynamic pValue) {
     List<Widget> imageList = [];
     if (pValue != null) {
       for (var jsonValueDynamic in pValue) {
