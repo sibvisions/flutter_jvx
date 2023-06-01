@@ -19,6 +19,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:universal_io/io.dart';
 
+import '../flutter_ui.dart';
 import '../mask/menu/menu.dart';
 import '../model/api_interaction.dart';
 import '../model/command/base_command.dart';
@@ -47,6 +48,16 @@ abstract class AppManager {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   AppManager();
+
+  /// Called after [FlutterUI] finished initializing.
+  ///
+  /// Can be used to initialize the manager using async methods.
+  Future<void> init() async {}
+
+  /// Called when [FlutterUI] is being disposed.
+  ///
+  /// Can be used to dispose this manager.
+  void dispose() {}
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods

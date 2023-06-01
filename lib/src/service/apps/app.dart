@@ -319,9 +319,7 @@ class App {
   /// {@macro app.key}
   // ignore: unused_element
   Future<bool?> _getBool(String key) async {
-    return !usesUserParameter
-        ? null
-        : (_id != null ? IConfigService().getConfigHandler().getPreference("$_id.$key") : null);
+    return !usesUserParameter ? null : (_id != null ? IConfigService().getConfigHandler().getValue("$_id.$key") : null);
   }
 
   /// Retrieves a string value by its key in connection to the app id.
@@ -330,9 +328,7 @@ class App {
   ///
   /// {@macro app.key}
   Future<String?> _getString(String key) async {
-    return !usesUserParameter
-        ? null
-        : (_id != null ? IConfigService().getConfigHandler().getPreference("$_id.$key") : null);
+    return !usesUserParameter ? null : (_id != null ? IConfigService().getConfigHandler().getValue("$_id.$key") : null);
   }
 
   /// Persists a string value by its key in connection to the app id.
@@ -348,7 +344,7 @@ class App {
   Future<bool> _setString(String key, String? value) async {
     _checkId();
     String prefix = _id!;
-    return IConfigService().getConfigHandler().setPreference("$prefix.$key", value);
+    return IConfigService().getConfigHandler().setValue("$prefix.$key", value);
   }
 
   void _checkId() {

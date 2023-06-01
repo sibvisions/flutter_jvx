@@ -60,13 +60,13 @@ abstract class ConfigHandler {
   /// Sets the last opened app.
   Future<void> updatePrivacyPolicy(String? policy);
 
-  /// Retrieves a global preference.
-  Future<T?> getPreference<T>(String name);
+  /// Retrieves a global value.
+  Future<T?> getValue<T>(String name);
 
-  /// Sets a global preference.
+  /// Sets a global value.
   ///
   /// `null` removes the value.
-  Future<bool> setPreference<T>(String name, T? value);
+  Future<bool> setValue<T>(String name, T? value);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods used to manage preferences that are saved under the app key
