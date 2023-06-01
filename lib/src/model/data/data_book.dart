@@ -371,25 +371,46 @@ class DataBook {
     isAllFetched = false;
   }
 
+  /// Selects the first record which fulfills the filter.
+  ///
+  /// A column selection can be added optionally.
   static Future<void> selectRecord({
     required String pDataProvider,
-    required int pSelectedRecord,
+    required Filter pFilter,
+    String? pColumn,
     bool asyncErrorHandling = true,
   }) {
-    var future = ICommandService().sendCommand(SelectRecordCommand(
+    var future = ICommandService().sendCommand(SelectRecordCommand.select(
       reason: "Select record | DataBook selectRecord",
       dataProvider: pDataProvider,
-      rowNumber: pSelectedRecord,
+      filter: pFilter,
+      selectedColumn: pColumn,
     ));
     return _handleCommandFuture(future, asyncErrorHandling);
   }
 
+  /// Deselects the currently selected record.
+  static Future<void> deselectRecord({
+    required String pDataProvider,
+    bool asyncErrorHandling = true,
+  }) {
+    var future = ICommandService().sendCommand(SelectRecordCommand.deselect(
+      reason: "Select record | DataBook selectRecord",
+      dataProvider: pDataProvider,
+    ));
+    return _handleCommandFuture(future, asyncErrorHandling);
+  }
+
+  /// Filters the data book with the provided filter.
   static Future<void> filterRecords({
     required String pDataProvider,
     Filter? pFilter,
     FilterCondition? pFilterCondition,
     bool asyncErrorHandling = true,
   }) {
+    assert((pFilter == null) != (pFilterCondition == null), "Only either filter or filterCondition is to be provided");
+    assert((pFilter != null) || (pFilterCondition != null), "Either filter or filterCondition is to be provided");
+
     var future = ICommandService().sendCommand(FilterCommand(
       filter: pFilter,
       filterCondition: pFilterCondition,
@@ -399,6 +420,7 @@ class DataBook {
     return _handleCommandFuture(future, asyncErrorHandling);
   }
 
+  /// Inserts a new record into the databook.
   static Future<void> insertRecord({
     required String pDataProvider,
     bool asyncErrorHandling = true,
@@ -410,12 +432,14 @@ class DataBook {
     return _handleCommandFuture(future, asyncErrorHandling);
   }
 
+  /// Updates the record with the provided values.
+  ///
+  /// If no filter is provided, the currently selected record will be updated.
   static Future<void> updateRecord({
     required String pDataProvider,
     required List<String> pColumnNames,
     required List<dynamic> pValues,
     Filter? pFilter,
-    FilterCondition? pFilterCondition,
     bool asyncErrorHandling = true,
   }) {
     var future = ICommandService().sendCommand(SetValuesCommand(
@@ -428,6 +452,9 @@ class DataBook {
     return _handleCommandFuture(future, asyncErrorHandling);
   }
 
+  /// Deletes the record with the provided filter.
+  ///
+  /// If no filter is provided, the currently selected record will be deleted.
   static Future<void> deleteRecord({
     required String pDataProvider,
     Filter? pFilter,

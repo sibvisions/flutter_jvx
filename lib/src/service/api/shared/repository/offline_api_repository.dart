@@ -211,7 +211,7 @@ class OfflineApiRepository extends IRepository {
     // JVx Server does also ignore fetch and always fetches.
     // if (pRequest.fetch) {
 
-    await DataBook.selectRecord(pDataProvider: pRequest.dataProvider, pSelectedRecord: -1);
+    await DataBook.deselectRecord(pDataProvider: pRequest.dataProvider);
 
     return _refetchMaximum(pRequest.dataProvider);
     // }
