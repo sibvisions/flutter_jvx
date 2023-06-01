@@ -373,7 +373,7 @@ class DataBook {
 
   /// Selects the first record which fulfills the filter.
   ///
-  /// A column selection can be added optionally.
+  /// A column can be optionally selected.
   static Future<void> selectRecord({
     required String pDataProvider,
     required Filter pFilter,
