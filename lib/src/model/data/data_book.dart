@@ -69,8 +69,8 @@ class DataBook {
   /// Contains all metadata
   DalMetaData metaData;
 
-  /// Contains record formats
-  Map<String, RecordFormat>? recordFormats;
+  /// Contains record formats. The key is the name of the component accessing the formats.
+  Map<String, RecordFormat> recordFormats = HashMap();
 
   /// The selected column
   String? selectedColumn;
@@ -94,15 +94,16 @@ class DataBook {
     HashMap<int, List<dynamic>>? records,
     this.isAllFetched = false,
     this.selectedRow = -1,
-    this.recordFormats,
+    Map<String, RecordFormat>? recordFormats,
     HashMap<String, HashMap<int, List<dynamic>>>? pageRecords,
   })  : metaData = DalMetaData(dataProvider),
         records = records ?? HashMap(),
-        pageRecords = pageRecords ?? HashMap();
+        pageRecords = pageRecords ?? HashMap(),
+        recordFormats = recordFormats ?? HashMap();
 
   @override
   String toString() {
-    return 'DataBook{dataProvider: $dataProvider, isAllFetched: $isAllFetched, selectedRow: $selectedRow, records.length: ${records.length}, recordFormats.length: ${recordFormats?.length}}';
+    return 'DataBook{dataProvider: $dataProvider, isAllFetched: $isAllFetched, selectedRow: $selectedRow, records.length: ${records.length}, recordFormats.length: ${recordFormats.length}}';
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,7 +122,15 @@ class DataBook {
         selectedColumn = pFetchResponse.selectedColumn;
       }
       treePath = pFetchResponse.treePath;
-      recordFormats = pFetchResponse.recordFormats;
+      if (pFetchResponse.recordFormats != null) {
+        for (String key in pFetchResponse.recordFormats!.keys) {
+          var newRecordFormat = pFetchResponse.recordFormats![key]!;
+          var recordFormat = recordFormats[key] ??= RecordFormat();
+          for (int rowIndex in pFetchResponse.recordFormats![key]!.rowFormats.keys) {
+            recordFormat.rowFormats[rowIndex] = newRecordFormat.rowFormats[rowIndex]!;
+          }
+        }
+      }
       updateSortDefinitions(pFetchResponse.sortDefinitions);
 
       referencedCellEditors

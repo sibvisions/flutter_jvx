@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import '../../commands.dart';
@@ -104,7 +102,8 @@ class DalFetchResponse extends ApiResponse {
         clear = json[ApiObjectProperty.clear] ?? false,
         recordFormats = json[ApiObjectProperty.recordFormat] != null
             ? Map.fromIterable((json[ApiObjectProperty.recordFormat] as Map<String, dynamic>).keys,
-                value: (key) => RecordFormat.fromJson(json[ApiObjectProperty.recordFormat]![key]))
+                value: (key) =>
+                    RecordFormat.fromJson(json[ApiObjectProperty.recordFormat]![key], json[ApiObjectProperty.from]))
             : null,
         sortDefinitions =
             (json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList(),
@@ -113,39 +112,55 @@ class DalFetchResponse extends ApiResponse {
 }
 
 class RecordFormat {
-  final List<CellFormat?> _formats = [];
-  final List<List<int>> _recordFormatIndexes = [];
+  Map<int, RowFormat> rowFormats = {};
 
-  RecordFormat.fromJson(Map<String, dynamic> json) {
-    List<String>? formatJson = cast<List<String>?>(json[ApiObjectProperty.format]);
-    for (String? formatString in formatJson ?? []) {
-      _formats.add(CellFormat.fromString(formatString));
+  RecordFormat();
+
+  RecordFormat.fromJson(Map<String, dynamic> json, int from) {
+    List<String?>? formatJson = List<String?>.from(json[ApiObjectProperty.format]);
+
+    List<CellFormat> formats = [];
+    for (String? formatString in formatJson) {
+      formats.add(CellFormat.fromString(formatString));
     }
 
     dynamic recordsJson = json[ApiObjectProperty.records];
+    int recordIndex = from;
     for (List<dynamic> recordIndexesDynamic in recordsJson ?? []) {
-      _recordFormatIndexes.add(recordIndexesDynamic.map<int>((e) => e).toList());
+      rowFormats[recordIndex] = RowFormat(List<int>.from(recordIndexesDynamic), formats);
+      recordIndex++;
     }
   }
 
   CellFormat? getCellFormat(int row, int column) {
-    if (row >= _recordFormatIndexes.length || row < 0) {
+    if (!rowFormats.containsKey(row) || column < 0) {
       return null;
     }
 
-    List<int> rowFormatIndex = _recordFormatIndexes[row];
-
-    if (rowFormatIndex.isEmpty) {
-      return null;
-    }
-
+    RowFormat rowFormat = rowFormats[row]!;
     // Every row has column indexes. The last one counts for all following columns
     // E.g. 5 Columns, indexes are 0, 1, 2 -> Format applied is 0, 1, 2, 2, 2
 
-    int formatIndex = rowFormatIndex[min(column, rowFormatIndex.length - 1)];
+    int formatIndex;
+    if (column < rowFormat.columnIndexToFormatIndex.length) {
+      formatIndex = rowFormat.columnIndexToFormatIndex[column];
+    } else {
+      formatIndex = rowFormat.columnIndexToFormatIndex.last;
+    }
 
-    return _formats[formatIndex];
+    if (formatIndex >= rowFormat.formats.length) {
+      return null;
+    }
+
+    return rowFormat.formats[formatIndex];
   }
+}
+
+class RowFormat {
+  List<int> columnIndexToFormatIndex = [];
+  List<CellFormat?> formats = [];
+
+  RowFormat(this.columnIndexToFormatIndex, this.formats);
 }
 
 class CellFormat {
