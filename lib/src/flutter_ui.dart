@@ -424,6 +424,8 @@ class FlutterUI extends StatefulWidget {
     await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     IUiService().setAppManager(pAppToRun.appManager);
 
+    await pAppToRun.appManager?.init();
+
     runApp(pAppToRun);
   }
 
@@ -859,6 +861,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    widget.appManager?.dispose();
+
     IApiService().getRepository().stop();
     subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
