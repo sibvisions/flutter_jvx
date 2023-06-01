@@ -65,8 +65,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   HashMap<String, HashMap<String?, DataChunk>> data = HashMap<String, HashMap<String?, DataChunk>>();
 
   /// First key is the dataprovider, second key is the page. The value is a list of nodes which are receiving the page.
-  HashMap<String, HashMap<String?, List<String>>> nodesReceivingPage =
-      HashMap<String, HashMap<String?, List<String>>>();
+  HashMap<String, HashMap<String, List<String>>> nodesReceivingPage = HashMap<String, HashMap<String, List<String>>>();
 
   /// The meta datas.
   HashMap<String, DalMetaData> metaDatas = HashMap<String, DalMetaData>();
@@ -409,7 +408,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     });
 
     if (isLevelZeroData) {
-      controller = controller.copyWith(children: newNodesPerParent.values.first);
+      controller = controller.copyWith(children: newNodesPerParent.isNotEmpty ? newNodesPerParent.values.first : []);
     } else {
       for (Node<NodeData> parentNode in parentNodes) {
         List<Node<NodeData>> children = newNodesPerParent[parentNode.key] ?? [];
