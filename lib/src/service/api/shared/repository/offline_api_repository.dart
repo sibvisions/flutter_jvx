@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'package:collection/collection.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:universal_io/io.dart';
 
@@ -393,9 +392,7 @@ class OfflineApiRepository extends IRepository {
     }
 
     if (iFoundRow < 0) {
-      throw Exception("Record not found in databook, with [${filterColumns.mapIndexed((index, element) => {
-            element: filterValues[index]
-          })}]");
+      throw Exception("Record not found in databook, with [${Map.fromIterables(filterColumns, filterValues)}]");
     }
 
     return DalDataProviderChangedResponse.fromJson(
