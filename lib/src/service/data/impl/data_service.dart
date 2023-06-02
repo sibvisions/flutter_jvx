@@ -313,6 +313,10 @@ class DataService implements IDataService {
     required String pDataProvider,
     int? pTo,
   }) {
+    if (pFrom <= -1) {
+      return false;
+    }
+
     if (!dataBooks.containsKey(pDataProvider)) {
       return true;
     }

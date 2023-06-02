@@ -408,9 +408,6 @@ class DataBook {
     FilterCondition? pFilterCondition,
     bool asyncErrorHandling = true,
   }) {
-    assert((pFilter == null) != (pFilterCondition == null), "Only either filter or filterCondition is to be provided");
-    assert((pFilter != null) || (pFilterCondition != null), "Either filter or filterCondition is to be provided");
-
     var future = ICommandService().sendCommand(FilterCommand(
       filter: pFilter,
       filterCondition: pFilterCondition,

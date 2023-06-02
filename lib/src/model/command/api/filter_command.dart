@@ -53,7 +53,10 @@ class FilterCommand extends SessionCommand {
   })  : editorComponentId = null,
         value = null,
         columnNames = null,
-        assert(filter != null || filterCondition != null, "filter or filterCondition must be set");
+        assert(
+          (filter == null) || (filterCondition == null),
+          "Only either filter or filterCondition is to be provided",
+        );
 
   FilterCommand.none({
     required this.dataProvider,
@@ -72,6 +75,7 @@ class FilterCommand extends SessionCommand {
     required super.reason,
   })  : filter = null,
         filterCondition = null;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
