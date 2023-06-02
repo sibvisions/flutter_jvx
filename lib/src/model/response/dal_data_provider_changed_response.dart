@@ -16,7 +16,6 @@
 
 import '../../flutter_ui.dart';
 import '../../service/api/shared/api_object_property.dart';
-import '../../service/api/shared/api_response_names.dart';
 import '../data/sort_definition.dart';
 import 'api_response.dart';
 
@@ -72,23 +71,6 @@ class DalDataProviderChangedResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  DalDataProviderChangedResponse(
-      {required this.dataProvider,
-      this.reload,
-      this.changedColumns,
-      this.selectedRow,
-      this.deletedRow,
-      this.changedColumnNames,
-      this.changedValues,
-      this.deleteEnabled,
-      this.insertEnabled,
-      this.readOnly,
-      this.updateEnabled,
-      this.treePath,
-      this.selectedColumn,
-      this.sortDefinitions})
-      : super(name: ApiResponseNames.dalDataProviderChanged);
 
   DalDataProviderChangedResponse.fromJson(super.json)
       : dataProvider = json[ApiObjectProperty.dataProvider],

@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:universal_io/io.dart';
 
@@ -28,12 +29,16 @@ import '../../../../model/request/api_fetch_request.dart';
 import '../../../../model/request/api_filter_request.dart';
 import '../../../../model/request/api_insert_record_request.dart';
 import '../../../../model/request/api_request.dart';
+import '../../../../model/request/api_select_record_request.dart';
 import '../../../../model/request/api_set_values_request.dart';
 import '../../../../model/request/filter.dart';
 import '../../../../model/response/api_response.dart';
+import '../../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../../../config/i_config_service.dart';
 import '../../../data/i_data_service.dart';
+import '../api_object_property.dart';
+import '../api_response_names.dart';
 import '../i_repository.dart';
 import 'offline/offline_database.dart';
 
@@ -160,6 +165,8 @@ class OfflineApiRepository extends IRepository {
       response = await _insert(pRequest);
     } else if (pRequest is ApiSetValuesRequest) {
       response = await _setValues(pRequest);
+    } else if (pRequest is ApiSelectRecordRequest) {
+      response = await _select(pRequest);
     } else {
       throw Exception("${pRequest.runtimeType} is not supported while offline");
     }
@@ -300,6 +307,105 @@ class OfflineApiRepository extends IRepository {
     await offlineDatabase!.insert(pTableName: pRequest.dataProvider, pInsert: {});
 
     return _refetchMaximum(pRequest.dataProvider);
+  }
+
+  DalDataProviderChangedResponse _deselect(String pDataprovider) {
+    return DalDataProviderChangedResponse.fromJson(
+      {
+        ApiObjectProperty.name: ApiResponseNames.dalDataProviderChanged,
+        ApiObjectProperty.dataProvider: pDataprovider,
+        ApiObjectProperty.selectedRow: -1,
+        ApiObjectProperty.selectedColumn: null,
+      },
+    );
+  }
+
+  Future<DalDataProviderChangedResponse?> _select(ApiSelectRecordRequest pRequest) async {
+    if (pRequest.filter == null) {
+      if (pRequest.rowNumber != null && pRequest.rowNumber! < 0) {
+        return _deselect(pRequest.dataProvider);
+      } else {
+        // Cancel when no filter
+        throw Exception("A filter is required!");
+      }
+    }
+
+    Filter selectionFilter = pRequest.filter!;
+
+    var filterColumns = selectionFilter.columnNames;
+    var filterValues = selectionFilter.values;
+
+    if (filterColumns.isEmpty && filterValues.isEmpty) {
+      throw Exception("A filter is required!");
+    }
+
+    DataBook dataBook = IDataService().getDataBook(pRequest.dataProvider)!;
+
+    //no specific filter columns -> we support using the PK columns
+    if (filterColumns.isEmpty) {
+      filterColumns = dataBook.metaData.primaryKeyColumns;
+    }
+
+    if (filterColumns.length != filterValues.length) {
+      throw Exception("The filter doesn't contain enough values to search with primary key!");
+    }
+
+    List<String> columnNames = dataBook.metaData.columnDefinitions.map((e) => e.name).toList();
+
+    List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
+      pColumns: columnNames,
+      pTableName: pRequest.dataProvider,
+      pOffset: 0,
+      pLimit: -1,
+      pFilter: _getLastFilter(pRequest.dataProvider),
+    );
+
+    int iFoundRow = -1;
+
+    if (selectionResult.isNotEmpty) {
+      if (pRequest.rowNumber != null && selectionResult.length > pRequest.rowNumber!) {
+        /// check if every value of the selected result at this row number fullfills all values provided by the filter
+        bool bFound = true;
+        var rowToCheck = selectionResult[pRequest.rowNumber!];
+        for (int i = 0; i < filterColumns.length && bFound; i++) {
+          bFound = rowToCheck[filterColumns[i]] == filterValues[i];
+        }
+
+        if (bFound) {
+          iFoundRow = pRequest.rowNumber!;
+        }
+      }
+
+      if (iFoundRow < 0) {
+        bool bFound = false;
+        for (int rowIndex = 0; rowIndex < selectionResult.length && !bFound; rowIndex++) {
+          bFound = true;
+          var rowToCheck = selectionResult[pRequest.rowNumber!];
+          for (int i = 0; i < filterColumns.length && bFound; i++) {
+            bFound = rowToCheck[filterColumns[i]] == filterValues[i];
+          }
+
+          if (bFound) {
+            iFoundRow = pRequest.rowNumber!;
+          }
+        }
+      }
+    }
+
+    if (iFoundRow < 0) {
+      throw Exception("Record not found in databook, with [${filterColumns.mapIndexed((index, element) => {
+            element: filterValues[index]
+          })}]");
+    }
+
+    return DalDataProviderChangedResponse.fromJson(
+      {
+        ApiObjectProperty.name: ApiResponseNames.dalDataProviderChanged,
+        ApiObjectProperty.dataProvider: pRequest.dataProvider,
+        ApiObjectProperty.selectedRow: iFoundRow,
+        if (pRequest.selectedColumn != null) ApiObjectProperty.selectedColumn: pRequest.selectedColumn,
+      },
+    );
   }
 
   Future<DalFetchResponse?> _setValues(ApiSetValuesRequest pRequest) async {
