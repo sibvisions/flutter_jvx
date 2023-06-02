@@ -25,10 +25,10 @@ class SelectRecordCommand extends SessionCommand {
   /// Data provider to change selected row of
   final String dataProvider;
 
-  /// The filter to identify the record. Null -> deselection.
+  /// The filter to identify the record.
   final Filter? filter;
 
-  /// The selected row to shortcut the filter. -1 -> deselection.
+  /// The selected row to shortcut the filter.
   /// This row index will be checked if the filter applies, otherwise checks every row until the filter applies.
   final int? rowNumber;
 

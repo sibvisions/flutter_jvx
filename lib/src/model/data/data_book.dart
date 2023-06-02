@@ -373,10 +373,14 @@ class DataBook {
 
   /// Selects the first record which fulfills the filter.
   ///
+  /// The [pRowNumber] is to shortcut the filter.
+  ///  This row index will be checked against the filter if it applies, otherwise checks every row until the filter applies.
+  ///
   /// A column can be optionally selected.
   static Future<void> selectRecord({
     required String pDataProvider,
     required Filter pFilter,
+    int? pRowNumber,
     String? pColumn,
     bool asyncErrorHandling = true,
   }) {
@@ -384,6 +388,7 @@ class DataBook {
       reason: "Select record | DataBook selectRecord",
       dataProvider: pDataProvider,
       filter: pFilter,
+      rowNumber: pRowNumber,
       selectedColumn: pColumn,
     ));
     return _handleCommandFuture(future, asyncErrorHandling);
