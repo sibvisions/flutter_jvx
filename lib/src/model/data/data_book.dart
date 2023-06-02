@@ -20,7 +20,6 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 
-import '../../components/editor/cell_editor/linked/fl_linked_cell_editor.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
@@ -292,49 +291,6 @@ class DataBook {
       treePath: treePath,
     );
   }
-
-  dynamic getLinkedDisplayValue(FlLinkedCellEditor pCellEditor, int pRowIndex, dynamic pValue) async {
-    // FlLinkedCellEditorModel model = pCellEditor.model;
-
-    // await Future.delayed(const Duration(seconds: 3));
-
-    // if ((model.displayReferencedColumnName?.isEmpty ?? true) && (model.displayConcatMask?.isEmpty ?? true)) {
-    //   return pValue;
-    // }
-
-    // String referencedDataprovider = model.linkReference.referencedDataprovider;
-
-    // /// Referenced Databook, Concat Mask Key, Column, Value, Concat Mask Value
-    // if (pCellEditor.model.displayConcatMask != null && pCellEditor.model.displayConcatMask!.isNotEmpty) {
-    //   String cellEditorColumn = pCellEditor.columnName;
-
-    //   LinkReference linkReference = pCellEditor.model.linkReference;
-    //   String concatMaskKey = _buildConcatKey(linkReference, pCellEditor.model.displayConcatMask!);
-
-    //   /// Get the list, create it if it doesn't exist
-    // } else {}
-  }
-
-  // String _buildConcatKey(LinkReference pReference, String pConcatMask) {
-  //   String concatMask = pConcatMask;
-
-  //   if (pConcatMask.contains("*")) {
-  //     if (pConcatMask.allMatches("*").length > pReference.referencedColumnNames.length) {
-  //       throw Exception("Concat mask contains more stars than referenced columns");
-  //     }
-
-  //     int i = 0;
-  //     while (concatMask.contains("*")) {
-  //       /// Replaces all stars with the referenced columns in the order they come in the link reference
-  //       concatMask = concatMask.replaceFirst("*", pReference.referencedColumnNames[i]);
-  //       i++;
-  //     }
-  //   } else {
-  //     concatMask = pReference.referencedColumnNames.join(concatMask);
-  //   }
-
-  //   return concatMask;
-  // }
 
   /// Will return all available data from the column in the provided range
   List<dynamic> getDataFromColumn({required String pColumnName, required int pFrom, int? pTo, String? pPageKey}) {
