@@ -255,7 +255,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       }
       if (AppService().showAppsButton()) {
         children.addAll([
-          _buildFooterVerticalDivider(context),
+          if (children.isNotEmpty) _buildFooterVerticalDivider(context),
           Expanded(
             flex: 7,
             child: _buildAppsEntry(context, isNormalSize),
