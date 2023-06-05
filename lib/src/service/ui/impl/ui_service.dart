@@ -514,12 +514,15 @@ class UiService implements IUiService {
     _dataSubscriptions.add(pDataSubscription);
 
     if (pImmediatlyRetrieveData) {
-      if (IDataService().databookNeedsFetch(
+      DataBook? databook = IDataService().getDataBook(pDataSubscription.dataProvider);
+      bool needsToFetch = IDataService().databookNeedsFetch(
         pFrom: pDataSubscription.from,
         pTo: pDataSubscription.to,
         pDataProvider: pDataSubscription.dataProvider,
-      )) {
-        DataBook? databook = IDataService().getDataBook(pDataSubscription.dataProvider);
+      );
+      bool fetchMetaData = needsToFetch && databook == null;
+
+      if (needsToFetch) {
         int fromRow = databook?.records.keys.maxOrNull ?? pDataSubscription.from;
 
         sendCommand(FetchCommand(
@@ -529,54 +532,53 @@ class UiService implements IUiService {
               ? pDataSubscription.to! - pDataSubscription.from
               : IUiService().getSubscriptionRowcount(pDataProvider: pDataSubscription.dataProvider),
           reason: "Fetch for ${pDataSubscription.runtimeType}",
-          includeMetaData: databook == null,
+          includeMetaData: fetchMetaData,
         ));
-        return;
+      } else {
+        if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
+          GetDataChunkCommand getDataChunkCommand = GetDataChunkCommand(
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            from: pDataSubscription.from,
+            to: pDataSubscription.to,
+            subId: pDataSubscription.id,
+            dataColumns: pDataSubscription.dataColumns,
+          );
+          sendCommand(getDataChunkCommand);
+        }
+
+        if (pDataSubscription.onSelectedRecord != null) {
+          GetSelectedDataCommand getSelectedDataCommand = GetSelectedDataCommand(
+            subId: pDataSubscription.id,
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            columnNames: pDataSubscription.dataColumns,
+          );
+          sendCommand(getSelectedDataCommand);
+        }
+
+        if (pDataSubscription.onPage != null) {
+          IDataService().getDataBook(pDataSubscription.dataProvider)?.pageRecords.keys.forEach((pageKey) {
+            GetPageChunkCommand getDataChunkCommand = GetPageChunkCommand(
+              reason: "Subscription added",
+              dataProvider: pDataSubscription.dataProvider,
+              from: pDataSubscription.from,
+              to: pDataSubscription.to,
+              subId: pDataSubscription.id,
+              pageKey: pageKey,
+            );
+            sendCommand(getDataChunkCommand);
+          });
+        }
       }
 
-      if (pDataSubscription.from != -1 && pDataSubscription.onDataChunk != null) {
-        GetDataChunkCommand getDataChunkCommand = GetDataChunkCommand(
-          reason: "Subscription added",
-          dataProvider: pDataSubscription.dataProvider,
-          from: pDataSubscription.from,
-          to: pDataSubscription.to,
-          subId: pDataSubscription.id,
-          dataColumns: pDataSubscription.dataColumns,
-        );
-        sendCommand(getDataChunkCommand);
-      }
-
-      if (pDataSubscription.onSelectedRecord != null) {
-        GetSelectedDataCommand getSelectedDataCommand = GetSelectedDataCommand(
-          subId: pDataSubscription.id,
-          reason: "Subscription added",
-          dataProvider: pDataSubscription.dataProvider,
-          columnNames: pDataSubscription.dataColumns,
-        );
-        sendCommand(getSelectedDataCommand);
-      }
-
-      if (pDataSubscription.onMetaData != null) {
+      if (!fetchMetaData && pDataSubscription.onMetaData != null) {
         GetMetaDataCommand getMetaDataCommand = GetMetaDataCommand(
           reason: "Subscription added",
           dataProvider: pDataSubscription.dataProvider,
           subId: pDataSubscription.id,
         );
         sendCommand(getMetaDataCommand);
-      }
-
-      if (pDataSubscription.onReload != null) {
-        IDataService().getDataBook(pDataSubscription.dataProvider)?.pageRecords.keys.forEach((pageKey) {
-          GetPageChunkCommand getDataChunkCommand = GetPageChunkCommand(
-            reason: "Subscription added",
-            dataProvider: pDataSubscription.dataProvider,
-            from: pDataSubscription.from,
-            to: pDataSubscription.to,
-            subId: pDataSubscription.id,
-            pageKey: pageKey,
-          );
-          sendCommand(getDataChunkCommand);
-        });
       }
     }
   }
