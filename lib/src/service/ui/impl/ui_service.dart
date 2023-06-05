@@ -556,20 +556,20 @@ class UiService implements IUiService {
           );
           sendCommand(getSelectedDataCommand);
         }
+      }
 
-        if (pDataSubscription.onPage != null) {
-          IDataService().getDataBook(pDataSubscription.dataProvider)?.pageRecords.keys.forEach((pageKey) {
-            GetPageChunkCommand getDataChunkCommand = GetPageChunkCommand(
-              reason: "Subscription added",
-              dataProvider: pDataSubscription.dataProvider,
-              from: pDataSubscription.from,
-              to: pDataSubscription.to,
-              subId: pDataSubscription.id,
-              pageKey: pageKey,
-            );
-            sendCommand(getDataChunkCommand);
-          });
-        }
+      if (pDataSubscription.onPage != null) {
+        databook?.pageRecords.keys.forEach((pageKey) {
+          GetPageChunkCommand getDataChunkCommand = GetPageChunkCommand(
+            reason: "Subscription added",
+            dataProvider: pDataSubscription.dataProvider,
+            from: pDataSubscription.from,
+            to: pDataSubscription.to,
+            subId: pDataSubscription.id,
+            pageKey: pageKey,
+          );
+          sendCommand(getDataChunkCommand);
+        });
       }
 
       if (!fetchMetaData && pDataSubscription.onMetaData != null) {
