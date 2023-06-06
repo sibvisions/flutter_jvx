@@ -230,6 +230,7 @@ abstract class OfflineUtil {
       IApiService().setRepository(offlineApiRepository);
       IUiService().setMenuModel(null);
 
+      ProgressDialogWidget.safeClose(dialogKey);
       DialogResult? result = await IUiService().openDialog(
         pIsDismissible: false,
         pBuilder: (context) => AlertDialog(
@@ -523,25 +524,24 @@ abstract class OfflineUtil {
       // Clear databooks for offline usage
       IDataService().clearDataBooks();
       await offlineApiRepository.initDataBooks();
-
       IApiService().setRepository(offlineApiRepository);
-      await onlineApiRepository.stop();
+
       // Clear menu
       IUiService().setMenuModel(null);
-
-      ProgressDialogWidget.close(FlutterUI.getCurrentContext()!);
-
       IUiService().routeToMenu(pReplaceRoute: true);
+
+      await onlineApiRepository.stop();
     } catch (e, stack) {
       FlutterUI.logAPI.e("Error while downloading offline data", e, stack);
 
       // Revert all changes
-      if (offlineApiRepository != null && !offlineApiRepository.isStopped()) {
+      if (!offlineApiRepository.isStopped()) {
         await offlineApiRepository.deleteDatabase();
       }
-      await offlineApiRepository?.stop();
-      IApiService().setRepository(onlineApiRepository);
+
+      await offlineApiRepository.stop();
       await IConfigService().updateOffline(false);
+      IApiService().setRepository(onlineApiRepository);
 
       ProgressDialogWidget.safeClose(dialogKey);
       await IUiService().openDialog(
