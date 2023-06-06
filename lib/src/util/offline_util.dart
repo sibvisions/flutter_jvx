@@ -64,10 +64,10 @@ abstract class OfflineUtil {
     OnlineApiRepository onlineApiRepository = OnlineApiRepository();
     OfflineApiRepository offlineApiRepository = IApiService().getRepository() as OfflineApiRepository;
     String failedStep = "Initializing";
+    String offlineWorkscreenClassName = IConfigService().offlineScreen.value!;
 
     try {
       await Wakelock.enable();
-      String offlineWorkscreenClassName = IConfigService().offlineScreen.value!;
       String? offlineUsername = IConfigService().username.value;
       String? offlinePassword = IConfigService().password.value;
 
@@ -229,6 +229,7 @@ abstract class OfflineUtil {
       await onlineApiRepository.stop();
       IApiService().setRepository(offlineApiRepository);
       IUiService().setMenuModel(null);
+      IStorageService().deleteScreen(screenName: offlineWorkscreenClassName);
 
       ProgressDialogWidget.safeClose(dialogKey);
       DialogResult? result = await IUiService().openDialog(
