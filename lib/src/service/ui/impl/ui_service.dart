@@ -348,7 +348,11 @@ class UiService implements IUiService {
   /// });
   /// ```
   MenuModel _updateMenuModel(MenuModel? pMenuModel) {
-    List<MenuGroupModel> menuGroupModels = [...?pMenuModel?.copy().menuGroups];
+    List<MenuGroupModel> menuGroupModels = [];
+
+    if (!IConfigService().offline.value && pMenuModel != null) {
+      menuGroupModels.addAll(pMenuModel.copy().menuGroups);
+    }
 
     if (appManager != null) {
       appManager!.customScreens.forEach((customScreen) {
