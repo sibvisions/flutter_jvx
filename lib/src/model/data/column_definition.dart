@@ -15,7 +15,6 @@
  */
 
 import '../../service/api/shared/api_object_property.dart';
-import '../../service/config/i_config_service.dart';
 import '../../util/i_types.dart';
 import '../../util/parse_util.dart';
 import '../component/editor/cell_editor/cell_editor_model.dart';
@@ -118,9 +117,7 @@ class ColumnDefinition {
       : name = json[ApiObjectProperty.name] ?? "",
         label = json[ApiObjectProperty.label] ?? "",
         dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? Types.VARCHAR,
-        width = (json[ApiObjectProperty.width] ?? 0) != 0
-            ? (json[ApiObjectProperty.width] as int).toDouble() * IConfigService().getScaling()
-            : null,
+        width = (json[ApiObjectProperty.width] ?? 0) != 0 ? (json[ApiObjectProperty.width] as int).toDouble() : null,
         readOnly = json[ApiObjectProperty.readOnly] ?? true,
         nullable = json[ApiObjectProperty.nullable] ?? true,
         resizable = json[ApiObjectProperty.resizable] ?? true,
@@ -137,4 +134,26 @@ class ColumnDefinition {
             ? ICellEditorModel.fromJson(json[ApiObjectProperty.cellEditor])
             : ICellEditorModel(),
         encoding = json[ApiObjectProperty.encoding] ?? "";
+
+  Map<String, dynamic> toJson() {
+    return {
+      ApiObjectProperty.name: name,
+      ApiObjectProperty.label: label,
+      ApiObjectProperty.dataTypeIdentifier: dataTypeIdentifier,
+      ApiObjectProperty.width: width,
+      ApiObjectProperty.readOnly: readOnly,
+      ApiObjectProperty.nullable: nullable,
+      ApiObjectProperty.resizable: resizable,
+      ApiObjectProperty.sortable: sortable,
+      ApiObjectProperty.movable: movable,
+      ApiObjectProperty.length: length,
+      ApiObjectProperty.scale: scale,
+      ApiObjectProperty.precision: precision,
+      ApiObjectProperty.signed: signed,
+      ApiObjectProperty.autoTrim: autoTrim,
+      ApiObjectProperty.fractionalSecondsPrecision: iFractionalSecondsPrecision,
+      ApiObjectProperty.cellEditor: cellEditorJson,
+      ApiObjectProperty.encoding: encoding,
+    };
+  }
 }

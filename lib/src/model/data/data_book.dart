@@ -602,6 +602,32 @@ class DalMetaData {
 
   DalMetaData(this.dataProvider);
 
+  DalMetaData.fromJson(Map<String, dynamic> pJson)
+      : masterReference = pJson[ApiObjectProperty.masterReference] != null
+            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.masterReference])
+            : null,
+        detailReference = pJson[ApiObjectProperty.detailReference] != null
+            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.detailReference])
+            : null,
+        rootReference = pJson[ApiObjectProperty.rootReference] != null
+            ? ReferenceDefinition.fromJson(pJson[ApiObjectProperty.rootReference])
+            : null,
+        dataProvider = pJson[ApiObjectProperty.dataProvider],
+        columnViewTable = pJson[ApiObjectProperty.columnViewTable]?.cast<String>(),
+        columnViewTree = pJson[ApiObjectProperty.columnViewTree]?.cast<String>(),
+        columnDefinitions =
+            (pJson[ApiObjectProperty.columns] as List<dynamic>?)?.map((e) => ColumnDefinition.fromJson(e)).toList() ??
+                [],
+        readOnly = pJson[ApiObjectProperty.readOnly],
+        deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],
+        updateEnabled = pJson[ApiObjectProperty.updateEnabled],
+        insertEnabled = pJson[ApiObjectProperty.insertEnabled],
+        primaryKeyColumns = pJson[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
+        additionalRowVisible = pJson[ApiObjectProperty.additionalRowVisible],
+        json = pJson["json"] ?? {} {
+    changedProperties = json.keys.toList();
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -658,6 +684,26 @@ class DalMetaData {
   bool isSelfJoined() {
     return masterReference != null && masterReference!.referencedDataBook == dataProvider;
   }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data[ApiObjectProperty.masterReference] = masterReference?.toJson();
+    data[ApiObjectProperty.detailReference] = detailReference?.toJson();
+    data[ApiObjectProperty.rootReference] = rootReference?.toJson();
+    data[ApiObjectProperty.columns] =
+        columnDefinitions.isNotEmpty ? columnDefinitions.map((e) => e.toJson()).toList() : null;
+    data[ApiObjectProperty.dataProvider] = dataProvider;
+    data[ApiObjectProperty.columnViewTable] = columnViewTable;
+    data[ApiObjectProperty.columnViewTree] = columnViewTree;
+    data[ApiObjectProperty.readOnly] = readOnly;
+    data[ApiObjectProperty.deleteEnabled] = deleteEnabled;
+    data[ApiObjectProperty.updateEnabled] = updateEnabled;
+    data[ApiObjectProperty.insertEnabled] = insertEnabled;
+    data[ApiObjectProperty.primaryKeyColumns] = primaryKeyColumns;
+    data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
+    data["json"] = json;
+    return data;
+  }
 }
 
 class ReferenceDefinition {
@@ -666,15 +712,15 @@ class ReferenceDefinition {
   String referencedDataBook;
 
   ReferenceDefinition.fromJson(Map<String, dynamic> json)
-      : columnNames = json['columnNames'].cast<String>(),
-        referencedColumnNames = json['referencedColumnNames'].cast<String>(),
-        referencedDataBook = json['referencedDataBook'];
+      : columnNames = json[ApiObjectProperty.columnNames].cast<String>(),
+        referencedColumnNames = json[ApiObjectProperty.referencedColumnNames].cast<String>(),
+        referencedDataBook = json[ApiObjectProperty.referencedDataBook];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['columnNames'] = columnNames;
-    data['referencedColumnNames'] = referencedColumnNames;
-    data['referencedDataBook'] = referencedDataBook;
+    data[ApiObjectProperty.columnNames] = columnNames;
+    data[ApiObjectProperty.referencedColumnNames] = referencedColumnNames;
+    data[ApiObjectProperty.referencedDataBook] = referencedDataBook;
     return data;
   }
 }

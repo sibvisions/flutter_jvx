@@ -26,7 +26,6 @@ import '../../../../../flutter_ui.dart';
 import '../../../../../model/data/column_definition.dart';
 import '../../../../../model/data/data_book.dart';
 import '../../../../../model/data/filter_condition.dart';
-import '../../../../../model/response/dal_meta_data_response.dart';
 import '../../../../../util/i_types.dart';
 import '../../../../config/i_config_service.dart';
 
@@ -162,7 +161,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
             "APP_ID": appId,
             "DATA_PROVIDER": metaData.dataProvider,
             "TABLE_NAME": formatOfflineTableName(metaData.dataProvider),
-            "META_DATA": jsonEncode(metaData.json),
+            "META_DATA": jsonEncode(metaData.toJson()),
           },
         ));
   }
@@ -174,7 +173,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     batch.execute(createTableSQL);
   }
 
-  /// Drops all [DalMetaDataResponse.dataProvider] tables and removes all metadata entries from the current app.
+  /// Drops all [DalMetaData.dataProvider] tables and removes all metadata entries from the current app.
   ///
   /// Uses a [Transaction] and [Batch] to efficiently execute and gracefully fail in case of an error.
   Future<dynamic> dropTables(String appKey) {
@@ -211,7 +210,7 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
     }
   }
 
-  /// Retrieves all saved [DalMetaDataResponse]s from [OFFLINE_APPS_TABLE].
+  /// Retrieves all saved [DalMetaData]s from [OFFLINE_APPS_TABLE].
   Future<List<DalMetaData>> getMetaData(String appId, {String? pDataProvider, Transaction? txn}) {
     List<String> whereArgs = [appId];
     if (pDataProvider != null) {
@@ -225,10 +224,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
               "APP_ID = (SELECT ID FROM $OFFLINE_APPS_TABLE WHERE APP LIKE ?)${pDataProvider != null ? " AND DATA_PROVIDER LIKE ?" : ""}",
           whereArgs: whereArgs,
         )
-        .then((result) => result.map((e) {
-              var metaDataResponse = DalMetaDataResponse.fromJson(jsonDecode(e['META_DATA'] as String));
-              return DalMetaData(metaDataResponse.dataProvider)..applyMetaDataResponse(metaDataResponse);
-            }).toList(growable: false));
+        .then((result) =>
+            result.map((e) => DalMetaData.fromJson(jsonDecode(e['META_DATA'] as String))).toList(growable: false));
   }
 
   /// Closes the database.

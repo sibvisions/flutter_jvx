@@ -29,6 +29,11 @@ class SortDefinition {
       : columnName = pJson[ApiObjectProperty.columnName],
         mode = _parseSortMode(pJson[ApiObjectProperty.mode]);
 
+  Map<String, dynamic> toJson() => {
+        ApiObjectProperty.columnName: columnName,
+        ApiObjectProperty.mode: _sortString,
+      };
+
   SortMode? get nextMode {
     switch (mode) {
       case null:
@@ -64,11 +69,6 @@ class SortDefinition {
         return SortMode.ascending;
     }
   }
-
-  Map<String, dynamic> toJson() => {
-        ApiObjectProperty.columnName: columnName,
-        ApiObjectProperty.mode: _sortString,
-      };
 }
 
 enum SortMode { ascending, descending }
