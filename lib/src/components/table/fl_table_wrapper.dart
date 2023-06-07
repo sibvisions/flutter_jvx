@@ -310,6 +310,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         pTableModel: model,
         pDataChunk: dataChunk,
         pAvailableWidth: layoutData.layoutPosition?.width,
+        scaling: model.scaling,
       );
     }
 

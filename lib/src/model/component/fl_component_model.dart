@@ -243,6 +243,15 @@ abstract class FlComponentModel {
       pDefault: defaultModel.name,
       pCurrent: name,
     );
+    // Styles have to be read as one of the first properties, as styles can influence how some properties are read/converted
+    // E.g. Scaling can be disabled by a style, which influences how the size is read
+    styles = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.style,
+      pDefault: defaultModel.styles,
+      pConversion: _parseStyle,
+      pCurrent: styles,
+    );
     className = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.className,
@@ -375,13 +384,6 @@ abstract class FlComponentModel {
       pDefault: defaultModel.classNameEventSourceRef,
       pCurrent: classNameEventSourceRef,
     );
-    styles = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.style,
-      pDefault: defaultModel.styles,
-      pConversion: _parseStyle,
-      pCurrent: styles,
-    );
     eventFocusGained = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.eventFocusGained,
@@ -480,7 +482,7 @@ abstract class FlComponentModel {
     double width = double.parse(split[0]);
     double height = double.parse(split[1]);
 
-    return Size(width, height) * (scalingDisabled ? 1 : IConfigService().getScaling());
+    return Size(width, height) * scaling;
   }
 
   void applyCellFormat(CellFormat cellFormat) {
@@ -489,5 +491,7 @@ abstract class FlComponentModel {
     font = cellFormat.font ?? font;
   }
 
-  bool get scalingDisabled => styles.contains(NO_SCALING_STYLE);
+  bool get scalingEnabled => !styles.contains(NO_SCALING_STYLE);
+
+  double get scaling => scalingEnabled ? IConfigService().getScaling() : 1.0;
 }

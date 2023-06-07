@@ -24,7 +24,6 @@ import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../service/api/shared/fl_component_classname.dart';
-import '../../service/config/i_config_service.dart';
 import '../../util/parse_util.dart';
 import '../editor/cell_editor/fl_check_box_cell_editor.dart';
 import '../editor/cell_editor/fl_choice_cell_editor.dart';
@@ -132,6 +131,7 @@ class TableSize {
     required DalMetaData pMetaData,
     int pRowsToCalculate = 10,
     double? pAvailableWidth,
+    double scaling = 1.0,
   }) {
     calculatedColumnWidths.clear();
 
@@ -183,7 +183,7 @@ class TableSize {
               columnDefinition.width! <= imageCellWidth) {
             calculatedColumnWidths[columnName] = imageCellWidth;
           } else {
-            calculatedColumnWidths[columnName] = columnDefinition.width! * IConfigService().getScaling();
+            calculatedColumnWidths[columnName] = columnDefinition.width! * scaling;
           }
         } else {
           // Get all rows before [calculateUntilRowIndex]
