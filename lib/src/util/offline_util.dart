@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -109,11 +110,30 @@ abstract class OfflineUtil {
       int successfulSyncedRows = 0;
       int changedRowsSum = 0;
 
-      // TODO keep same order as the one the server sents the databooks in.
       // To keep foreign key relations intact. First execute inserts, then updates.
       // Deletes should be executed when traversing the list in reverse
       var dataBooks = IDataService().getDataBooks();
+
+      Map<int, List<DataBook>> dataBooksByLevel = {};
       for (DataBook dataBook in dataBooks.values) {
+        int iLevel = 0;
+
+        for (String? masterDataBook = dataBook.metaData.masterReference?.referencedDataBook;
+            masterDataBook != null;
+            masterDataBook = dataBooks[masterDataBook]?.metaData.masterReference?.referencedDataBook) {
+          iLevel++;
+        }
+
+        dataBooksByLevel.putIfAbsent(iLevel, () => []);
+        dataBooksByLevel[iLevel]!.add(dataBook);
+      }
+
+      List<DataBook> sortedList = [];
+      dataBooksByLevel.keys
+          .sorted((a, b) => a.compareTo(b))
+          .forEach((key) => sortedList.addAll(dataBooksByLevel[key]!));
+
+      for (DataBook dataBook in sortedList) {
         failedStep = "${FlutterUI.translate("Preparing")} ${dataBook.dataProvider}";
         FlutterUI.logAPI.i("DataBook: ${dataBook.dataProvider} | ${dataBook.records.length}");
         List<Map<String, Object?>> successfulSyncedPrimaryKeys = [];
