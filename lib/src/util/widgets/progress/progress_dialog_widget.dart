@@ -63,7 +63,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
   }
 
   /// Pass a new (partly filled) config to update the state.
-  void update({required Config config}) {
+  void update(Config config) {
     _config = _config.merge(config);
     setState(() {});
   }

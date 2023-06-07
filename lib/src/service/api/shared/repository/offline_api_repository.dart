@@ -141,9 +141,9 @@ class OfflineApiRepository extends IRepository {
     return offlineDatabase!.getChangedRows(pDataProvider);
   }
 
-  Future<int> resetStates(String pDataProvider, {required List<Map<String, Object?>> pResetRows}) {
+  Future<int> resetState(String pDataProvider, Map<String, Object?> pResetRow) {
     _checkStatus();
-    return offlineDatabase!.resetStates(pDataProvider, pResetRows);
+    return offlineDatabase!.resetState(pDataProvider, pResetRow);
   }
 
   @override

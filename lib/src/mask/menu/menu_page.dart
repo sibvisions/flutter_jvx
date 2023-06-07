@@ -112,8 +112,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                             unawaited(OfflineUtil.initOnline());
                             break;
                           case DialogResult.DISCARD_CHANGES:
-                            await OfflineUtil.discardChanges(context);
-                            unawaited(OfflineUtil.initOnline());
+                            unawaited(OfflineUtil.initOnline(true));
                             break;
                           default:
                         }

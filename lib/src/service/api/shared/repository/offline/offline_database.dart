@@ -340,37 +340,32 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
 
   /// Resets all state columns for [pDataProvider]. (Sets all [STATE_COLUMN]s back to `null`)
   ///
-  /// * If [pResetRows] is empty, returns `0` and does nothing.
-  /// * If row in [pResetRows] contains no columns, it is skipped.
-  /// * Otherwise the columns in [pResetRows] are used to create a where clause.
-  Future<int> resetStates(String pDataProvider, List<Map<String, Object?>> pResetRows, {Transaction? txn}) {
-    if (pResetRows.isEmpty) {
-      return Future.value(0);
-    }
-
+  /// * If [pResetRow] is empty, returns `0` and does nothing.
+  /// * If row in [pResetRow] contains no columns, it is skipped.
+  /// * Otherwise the columns in [pResetRow] are used to create a where clause.
+  Future<int> resetState(String pDataProvider, Map<String, Object?> pResetRow, {Transaction? txn}) {
     String where = "1 = 0";
-    for (var row in pResetRows) {
-      if (row.isNotEmpty) {
-        where += " OR (";
-        List<String> columns = [];
-        for (var column in row.entries) {
-          String s = '"${column.key}"';
-          if (column.value != null) {
-            s += " = ?";
-          } else {
-            s += " IS NULL";
-          }
-          columns.add(s);
+
+    if (pResetRow.isNotEmpty) {
+      where += " OR (";
+      List<String> columns = [];
+      for (var column in pResetRow.entries) {
+        String s = '"${column.key}"';
+        if (column.value != null) {
+          s += " = ?";
+        } else {
+          s += " IS NULL";
         }
-        where += "${columns.join(" AND ")})";
+        columns.add(s);
       }
+      where += "${columns.join(" AND ")})";
     }
 
     return (txn ?? db).update(
       formatOfflineTableName(pDataProvider),
       {'"$STATE_COLUMN"': null},
       where: where,
-      whereArgs: pResetRows.expand((e) => e.values).whereType<Object>().toList(growable: false),
+      whereArgs: pResetRow.values.whereType<Object>().toList(growable: false),
     );
   }
 
