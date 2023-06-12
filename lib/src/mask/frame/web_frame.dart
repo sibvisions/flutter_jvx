@@ -323,7 +323,9 @@ class WebFrameState extends FrameState {
 
           return SizedBox(
             width: max(screenWidth / 4, min(screenWidth, 300)),
-            child: const SettingsPage(),
+            child: SettingsPage(
+              onClosed: () => Scaffold.of(context).closeEndDrawer(),
+            ),
           );
         },
       );

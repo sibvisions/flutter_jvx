@@ -39,7 +39,9 @@ import 'widgets/setting_item.dart';
 
 /// Displays all settings of the app.
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  final VoidCallback? onClosed;
+
+  const SettingsPage({super.key, this.onClosed});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -122,7 +124,7 @@ class _SettingsPageState extends State<SettingsPage> {
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           splashRadius: kToolbarHeight / 2,
           icon: const BackButtonIcon(),
-          onPressed: context.beamBack,
+          onPressed: routeBack,
         ),
         title: Text(FlutterUI.translateLocal("Settings")),
         elevation: 0,
@@ -143,8 +145,8 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  if (context.canBeamBack && _changesPending()) Expanded(child: _createCancelButton(context)),
-                  if (context.canBeamBack && _changesPending())
+                  if (_changesPending()) Expanded(child: _createCancelButton(context)),
+                  if (_changesPending())
                     VerticalDivider(
                       color: JVxColors.dividerColor(Theme.of(context)),
                       width: 1,
@@ -163,7 +165,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: InkWell(
-        onTap: context.beamBack,
+        onTap: routeBack,
         child: SizedBox.shrink(
           child: Center(
             child: Text(
@@ -180,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: InkWell(
-        onTap: IConfigService().offline.value ? () => context.beamBack() : _saveClicked,
+        onTap: IConfigService().offline.value ? routeBack : _saveClicked,
         child: SizedBox.shrink(
           child: Center(
             child: Text(
@@ -556,7 +558,6 @@ class _SettingsPageState extends State<SettingsPage> {
   /// Will send a [StartupCommand] with current values
   Future<void> _saveClicked() async {
     try {
-      BeamerDelegate beamer = Beamer.of(context);
       if (_changesPending()) {
         await IConfigService().updateUserLanguage(language);
         if (IUiService().clientId.value != null) {
@@ -565,13 +566,23 @@ class _SettingsPageState extends State<SettingsPage> {
         }
       }
 
-      if (beamer.canBeamBack) {
-        beamer.beamBack();
+      await routeBack();
+    } catch (e, stackTrace) {
+      IUiService().handleAsyncError(e, stackTrace);
+    }
+  }
+
+  Future<void> routeBack() async {
+    if (!mounted) return;
+
+    if (widget.onClosed != null) {
+      widget.onClosed!();
+    } else {
+      if (context.canBeamBack) {
+        context.beamBack();
       } else {
         await IUiService().routeToAppOverview();
       }
-    } catch (e, stackTrace) {
-      IUiService().handleAsyncError(e, stackTrace);
     }
   }
 }
