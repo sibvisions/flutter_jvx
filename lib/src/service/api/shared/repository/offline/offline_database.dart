@@ -418,7 +418,8 @@ CREATE TABLE IF NOT EXISTS $OFFLINE_METADATA_TABLE (
       groupBy: pGroupBy,
       having: pHaving,
       orderBy: pOrderBy,
-      limit: pLimit,
+      // Workaround for https://github.com/tekartik/sqflite/issues/1018
+      limit: pLimit ?? (pOffset != null ? -1 : null),
       offset: pOffset,
     );
   }
