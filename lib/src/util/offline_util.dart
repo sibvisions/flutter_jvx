@@ -175,7 +175,7 @@ abstract class OfflineUtil {
 
           dialogKey.currentState?.update(Config(
             message:
-                "${FlutterUI.translate("Inserting rows")} ($dataBookCounter / ${sortedListInserts.length} DataBooks)",
+                "${FlutterUI.translate("Inserting rows")} ($dataBookCounter / ${sortedListInserts.length} ${FlutterUI.translate("Tables")})",
             progress: 0,
             maxProgress: rowsToInsert.length,
           ));
@@ -205,7 +205,7 @@ abstract class OfflineUtil {
 
           dialogKey.currentState?.update(Config(
             message:
-                "${FlutterUI.translate("Updating rows")} ($dataBookCounter / ${sortedListUpdates.length} DataBooks)",
+                "${FlutterUI.translate("Updating rows")} ($dataBookCounter / ${sortedListUpdates.length} ${FlutterUI.translate("Tables")})",
             progress: 0,
             maxProgress: rowsToUpdate.length,
           ));
@@ -235,7 +235,7 @@ abstract class OfflineUtil {
 
           dialogKey.currentState?.update(Config(
             message:
-                "${FlutterUI.translate("Deleting rows")} ($dataBookCounter / ${sortedListDeletes.length} DataBooks)",
+                "${FlutterUI.translate("Deleting rows")} ($dataBookCounter / ${sortedListDeletes.length} ${FlutterUI.translate("Tables")}",
             progress: 0,
             maxProgress: rowsToDelete.length,
           ));
@@ -551,7 +551,7 @@ abstract class OfflineUtil {
         dataBooks,
         (value, max, {progress}) {
           dialogKey.currentState?.update(Config(
-            message: "${FlutterUI.translate("Processing DataBooks")} ($value / $max)",
+            message: "${FlutterUI.translate("Processing Tables")} ($value / $max)",
             progress: progress ?? 0,
           ));
         },
