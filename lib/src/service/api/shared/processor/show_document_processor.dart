@@ -28,10 +28,21 @@ class ShowDocumentProcessor implements IResponseProcessor<ShowDocumentResponse> 
 
   @override
   List<BaseCommand> processResponse(ShowDocumentResponse pResponse, ApiRequest? pRequest) {
-    launchUrlString(
-      pResponse.url,
-      mode: LaunchMode.externalApplication,
-    );
+    String url = pResponse.url;
+
+    if (url.isNotEmpty) {
+      if (url.startsWith("\"")) {
+        url = url.substring(1);
+        url = url.substring(0, url.indexOf("\""));
+      } else {
+        url = url.split(';').first;
+      }
+
+      launchUrlString(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+    }
 
     return [];
   }
