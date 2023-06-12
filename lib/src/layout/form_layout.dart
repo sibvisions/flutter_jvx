@@ -625,6 +625,32 @@ class FormLayout extends ILayout {
           leftTopAnchor.position = -pos;
         }
       }
+    } else if (rightBottomAnchor.relative) {
+      FormLayoutAnchor leftTop = leftTopAnchor.getRelativeAnchor();
+      if (leftTop != rightBottomAnchor) {
+        double pref = leftTopAnchor.getAbsolutePosition() - leftTop.getAbsolutePosition() + preferredSize;
+        double size = 0;
+        if (rightBottomAnchor.relatedAnchor != null && leftTop.relatedAnchor != null) {
+          size = rightBottomAnchor.relatedAnchor!.getAbsolutePosition() - leftTop.relatedAnchor!.getAbsolutePosition();
+        }
+
+        double pos = pref - size;
+
+        if (pos < 0) {
+          pos -= pos / 2;
+        } else {
+          pos /= 2;
+        }
+        if (leftTop.firstCalculation || pos < leftTop.position) {
+          leftTop.firstCalculation = false;
+          leftTop.position = pos;
+        }
+        pos = pref - size - pos;
+        if (rightBottomAnchor.firstCalculation || pos > -rightBottomAnchor.position) {
+          rightBottomAnchor.firstCalculation = false;
+          rightBottomAnchor.position = -pos;
+        }
+      }
     }
   }
 
