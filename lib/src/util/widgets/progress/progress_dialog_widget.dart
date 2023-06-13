@@ -72,11 +72,13 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
   Widget build(BuildContext context) {
     double? progress =
         _config.progress == 0 || _config.maxProgress == 0 ? null : _config.progress! / _config.maxProgress!;
+    Color effectiveBackgroundColor = _config.backgroundColor ?? Theme.of(context).colorScheme.background;
     Color effectiveValueColor = _config.progressValueColor ?? Theme.of(context).colorScheme.primary;
+    Color effectiveProgressBgColor = _config.progressBgColor ?? Theme.of(context).colorScheme.background;
 
     return WillPopScope(
       child: AlertDialog(
-        backgroundColor: _config.backgroundColor,
+        backgroundColor: effectiveBackgroundColor,
         elevation: _config.elevation ?? Theme.of(context).dialogTheme.elevation,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
@@ -102,7 +104,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                         borderRadius: BorderRadius.circular(13.0),
                         child: LinearProgressIndicator(
                           valueColor: AlwaysStoppedAnimation(effectiveValueColor),
-                          backgroundColor: _config.progressBgColor,
+                          backgroundColor: effectiveProgressBgColor,
                         ),
                       ),
                     )
@@ -110,7 +112,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                       value: progress,
                       valueColor: AlwaysStoppedAnimation(effectiveValueColor),
                       // Workaround to disable wave on 100%
-                      backgroundColor: progress >= 1 ? effectiveValueColor : _config.progressBgColor,
+                      backgroundColor: progress >= 1 ? effectiveValueColor : effectiveProgressBgColor,
                       borderRadius: 15.0,
                       borderWidth: 2.0,
                       borderColor: effectiveValueColor,
@@ -120,7 +122,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                         style: TextStyle(
                           color: progress > 0.6
                               ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.onSurface,
+                              : Theme.of(context).colorScheme.onBackground,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -136,7 +138,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
                 textAlign: _config.messageTextAlign,
                 style: TextStyle(
                   fontSize: 17.0,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Theme.of(context).colorScheme.onBackground,
                   fontWeight: FontWeight.bold,
                 ).merge(_config.messageTextStyle),
               ),
@@ -212,8 +214,6 @@ class Config {
     return Config(
       progress: 0,
       maxProgress: 100,
-      backgroundColor: Colors.white,
-      progressBgColor: Colors.white,
       messageTextAlign: TextAlign.center,
       borderRadius: 15.0,
       barrierDismissible: false,
