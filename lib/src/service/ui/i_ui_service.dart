@@ -65,11 +65,11 @@ abstract class IUiService {
   FutureOr<void> clear(bool pFullClear);
 
   static String getErrorMessage(Object error) {
-    if (error is DioError) {
+    if (error is DioException) {
       if ([
-        DioErrorType.connectionTimeout,
-        DioErrorType.receiveTimeout,
-        DioErrorType.sendTimeout,
+        DioExceptionType.connectionTimeout,
+        DioExceptionType.receiveTimeout,
+        DioExceptionType.sendTimeout,
       ].contains(error.type)) {
         return "Connection to remote server timed out";
       }

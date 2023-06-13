@@ -583,7 +583,7 @@ class OnlineApiRepository extends IRepository {
       /// * HttpException: Connection closed before full header was received, uri = <uri>
       /// * HttpException: Connection closed while receiving data, uri = <uri>
       bool shouldRetry(Object? error) {
-        error = (error is DioError ? error.error : null) ?? error;
+        error = (error is DioException ? error.error : null) ?? error;
         return (error is HttpException && error.message.contains("Connection closed"));
       }
 
@@ -608,7 +608,7 @@ class OnlineApiRepository extends IRepository {
         if (e is IOException || e is TimeoutException) {
           setConnected(false);
         }
-        if (e is DioError && e.error != null) {
+        if (e is DioException && e.error != null) {
           Error.throwWithStackTrace(e.error!, e.stackTrace);
         }
         rethrow;
