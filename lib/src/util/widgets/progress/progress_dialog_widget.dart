@@ -79,7 +79,7 @@ class ProgressDialogState extends State<ProgressDialogWidget> {
     return WillPopScope(
       child: AlertDialog(
         backgroundColor: effectiveBackgroundColor,
-        elevation: _config.elevation ?? Theme.of(context).dialogTheme.elevation,
+        elevation: _config.elevation,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(_config.borderRadius!),
