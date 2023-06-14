@@ -327,6 +327,7 @@ the License.
         <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
           <arg value="build" />
           <arg value="ipa" />
+		  <arg value="--no-tree-shake-icons" />
           <arg value="--release" />
         </exec>
 
@@ -349,6 +350,7 @@ the License.
     <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
       <arg value="build" />
       <arg value="apk" />
+	  <arg value="--no-tree-shake-icons" />
       <arg value="--release" />
     </exec>
 
@@ -361,6 +363,7 @@ the License.
     <exec executable="flutter" dir="${project.temp}" vmlauncher="false">
       <arg value="build" />
       <arg value="web" />
+	  <arg value="--no-tree-shake-icons" />
       <arg value="--release" />
     </exec>
 
@@ -384,6 +387,7 @@ the License.
       <arg value="build" />
       <arg value="web" />
       <arg value="--dart-define=FLUTTER_WEB_CANVASKIT_URL=canvaskit/" />
+	  <arg value="--no-tree-shake-icons" />
       <arg value="--release" />
     </exec>
 
