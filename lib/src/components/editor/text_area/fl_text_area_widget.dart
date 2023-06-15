@@ -118,7 +118,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     });
   }
 
-  static Size calculateTextAreaHight(Size pCalculatedSize, FlTextAreaModel pModel) {
+  static Size calculateTextAreaHeight(Size pCalculatedSize, FlTextAreaModel pModel) {
     double height = pCalculatedSize.height;
 
     EdgeInsets paddings = FlTextFieldWidget.TEXT_FIELD_PADDING(pModel.createTextStyle());

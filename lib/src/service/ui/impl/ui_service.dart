@@ -610,13 +610,21 @@ class UiService implements IUiService {
   }
 
   @override
-  List<BaseCommand> collectAllEditorSaveCommands(String? pId) {
+  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId) async {
     // Copy list to avoid concurrent modification
-    return List.of(_componentSubscriptions)
-        .where((element) => element.compId != pId)
-        .map((e) => e.saveCallback?.call())
-        .whereNotNull()
-        .toList();
+    List<BaseCommand> saveCommands = [];
+
+    List<ComponentSubscription> listOfSubs =
+        List.of(_componentSubscriptions).where((element) => element.compId != pId).toList();
+
+    for (var sub in listOfSubs) {
+      var command = await sub.saveCallback?.call();
+      if (command != null) {
+        saveCommands.add(command);
+      }
+    }
+
+    return saveCommands;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

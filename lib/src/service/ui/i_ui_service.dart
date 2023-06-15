@@ -237,7 +237,7 @@ abstract class IUiService {
   void disposeDataSubscription({required Object pSubscriber, String? pDataProvider});
 
   /// Collects all commands to do to save all editors.
-  List<BaseCommand> collectAllEditorSaveCommands(String? pId);
+  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves

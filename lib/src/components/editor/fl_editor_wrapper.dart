@@ -148,7 +148,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
         newCalcSize = Size(
           width,
-          FlTextAreaWidget.calculateTextAreaHight(pLayoutData.calculatedSize!, textModel).height,
+          FlTextAreaWidget.calculateTextAreaHeight(pLayoutData.calculatedSize!, textModel).height,
         );
       } else {
         newCalcSize = Size(
@@ -331,8 +331,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   @override
-  BaseCommand? createSaveCommand() {
-    dynamic value = cellEditor.getValue();
+  Future<BaseCommand?> createSaveCommand() async {
+    dynamic value = await cellEditor.getValue();
     // cellEditor.formatValue(pValue)
     if (_isSameValue(value)) {
       return null;

@@ -65,6 +65,6 @@ class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
   Size calculateSize(BuildContext context) {
     Size size = super.calculateSize(context);
 
-    return Size(size.width, FlTextAreaWidget.calculateTextAreaHight(size, model).height);
+    return Size(size.width, FlTextAreaWidget.calculateTextAreaHeight(size, model).height);
   }
 }

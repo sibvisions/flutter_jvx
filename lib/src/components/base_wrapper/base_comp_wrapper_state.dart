@@ -255,7 +255,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   /// Creates a save command.
   ///
   /// Will return null if there is nothing to save.
-  BaseCommand? createSaveCommand() {
+  Future<BaseCommand?> createSaveCommand() async {
     return null;
   }
 
@@ -274,7 +274,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     return layoutData.hasPosition ? layoutData.layoutPosition!.width : 0.0;
   }
 
-  /// The geight value for [getPositioned].
+  /// The height value for [getPositioned].
   double getHeightForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.height : 0.0;
   }

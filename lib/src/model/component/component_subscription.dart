@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import '../command/base_command.dart';
 import '../layout/layout_data.dart';
 import 'fl_component_model.dart';
@@ -35,7 +37,7 @@ class ComponentSubscription<T extends FlComponentModel> {
   final Function(LayoutData pLayout)? layoutCallback;
 
   /// Component callback to notify of saving.
-  final BaseCommand? Function()? saveCallback;
+  final FutureOr<BaseCommand?> Function()? saveCallback;
 
   ComponentSubscription({
     required this.compId,
