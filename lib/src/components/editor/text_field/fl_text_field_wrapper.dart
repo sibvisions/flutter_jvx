@@ -163,7 +163,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   @override
-  BaseCommand? createSaveCommand() {
+  Future<BaseCommand?> createSaveCommand() async {
     if (lastSentValue == textController.value.text) {
       return null;
     }
