@@ -25,7 +25,7 @@ import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFieldWidget, ICellEditorModel, String> {
+class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,8 +51,20 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
 
   final TextEditingController textController = TextEditingController();
 
+  /// If the [HtmlEditor] has been initialized.
+  bool htmlInitialized = false;
+
+  /// The last created Widget.
   FlTextFieldModel? lastWidgetModel;
 
+  /// If the cell editor is an html editor.
+  bool get isHtml => model.contentType == TEXT_HTML;
+
+  /// If the cell editor is initialized.
+  bool get isInitialized => !isHtml || htmlInitialized;
+
+  /// The last value.
+  dynamic lastSentValue;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,8 +174,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   }
 
   @override
-    return textController.text;
   Future<String> getValue() async {
+        return textController.text;
   }
 
   @override
@@ -180,6 +192,14 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
       case (TEXT_PLAIN_MULTILINE):
         FlTextAreaModel widgetModel = FlTextAreaModel();
         applyEditorJson(widgetModel, pJson);
+        return FlTextAreaWidget.calculateTextAreaHeight(widgetModel);
+      case (TEXT_PLAIN_SINGLELINE):
+      case (TEXT_PLAIN_PASSWORD):
+      default:
+        return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
+    }
+  }
+
   @override
   double getEditorWidth(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
@@ -191,7 +211,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
 
   @override
   double getContentPadding(Map<String, dynamic>? pJson) {
-    return createWidget(pJson).extraWidthPaddings();
+      return (createWidget(pJson) as FlTextFieldWidget).extraWidthPaddings();
     }
   }
 
@@ -205,18 +225,19 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   }
 
   @override
-  void focusChanged(bool pHasFocus) {
-    if (lastWidgetModel == null) {
   Future<void> focusChanged(bool pHasFocus) async {
     if (lastWidgetModel == null || !isInitialized) {
       return;
     }
+
     var widgetModel = lastWidgetModel!;
 
     if (!widgetModel.isReadOnly) {
-      if (!focusNode.hasFocus) {
-        onEndEditing(textController.text);
+      if (!pHasFocus) {
+        onEndEditing(await getValue());
       }
     }
+
+    super.focusChanged(pHasFocus);
   }
 }
