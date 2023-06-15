@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import '../../../flutter_ui.dart';
@@ -118,17 +116,16 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
     });
   }
 
-  static Size calculateTextAreaHeight(Size pCalculatedSize, FlTextAreaModel pModel) {
-    double height = pCalculatedSize.height;
-
-    EdgeInsets paddings = FlTextFieldWidget.TEXT_FIELD_PADDING(pModel.createTextStyle());
+  static double calculateTextAreaHeight(FlTextAreaModel pModel) {
+    double height = FlTextFieldWidget.TEXT_FIELD_HEIGHT;
 
     if (pModel.rows > 1) {
+      EdgeInsets paddings = FlTextFieldWidget.TEXT_FIELD_PADDING(pModel.createTextStyle());
       height -= paddings.vertical;
       height *= pModel.rows;
       height += paddings.vertical;
     }
 
-    return Size(pCalculatedSize.width, max(pCalculatedSize.height, height));
+    return height;
   }
 }

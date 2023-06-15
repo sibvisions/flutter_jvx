@@ -22,7 +22,6 @@ import '../../../model/data/column_definition.dart';
 import '../../../model/response/dal_fetch_response.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
 import 'date/fl_date_cell_editor.dart';
 import 'fl_check_box_cell_editor.dart';
 import 'fl_choice_cell_editor.dart';
@@ -35,10 +34,7 @@ import 'linked/fl_linked_cell_editor.dart';
 typedef RecalculateCallback = Function([bool pRecalculate]);
 
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.
-abstract class ICellEditor<
-    WidgetModelType extends FlComponentModel,
-    WidgetType extends FlStatelessWidget<WidgetModelType>,
-    CellEditorModelType extends ICellEditorModel,
+abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorModelType extends ICellEditorModel,
     ReturnValueType> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -104,7 +100,7 @@ abstract class ICellEditor<
 
   void dispose();
 
-  ReturnValueType? getValue();
+  Future<ReturnValueType?> getValue();
 
   void setValue(dynamic pValue);
 
@@ -113,7 +109,7 @@ abstract class ICellEditor<
   ColumnDefinition? getColumnDefinition() => columnDefinition;
 
   /// Returns the widget representing the cell editor.
-  WidgetType createWidget(Map<String, dynamic>? pJson);
+  Widget createWidget(Map<String, dynamic>? pJson);
 
   /// Returns the model of the widget representing the cell editor.
   WidgetModelType createWidgetModel();
@@ -125,6 +121,8 @@ abstract class ICellEditor<
   }
 
   double? getEditorWidth(Map<String, dynamic>? pJson);
+
+  double? getEditorHeight(Map<String, dynamic>? pJson);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Static methods
@@ -245,9 +243,8 @@ abstract class ICellEditor<
 /// A cell editor that can be focused.
 abstract class IFocusableCellEditor<
     WidgetModelType extends FlComponentModel,
-    WidgetType extends FlStatelessWidget<WidgetModelType>,
     CellEditorModelType extends ICellEditorModel,
-    ReturnValueType> extends ICellEditor<WidgetModelType, WidgetType, CellEditorModelType, ReturnValueType> {
+    ReturnValueType> extends ICellEditor<WidgetModelType, CellEditorModelType, ReturnValueType> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -276,10 +273,6 @@ abstract class IFocusableCellEditor<
   }) {
     focusNode.addListener(() {
       focusChanged(focusNode.hasFocus);
-
-      if (onFocusChanged != null && firesFocusCallback()) {
-        onFocusChanged!(focusNode.hasFocus);
-      }
     });
   }
 
@@ -287,11 +280,15 @@ abstract class IFocusableCellEditor<
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Returns true if the focus changed event can be fired.
-  bool firesFocusCallback();
+  /// Returns true if the onFocusChanged callback is fired on "focusChanged".
+  bool firesFocusCallback() => true;
 
   /// Is called when the focus changes.
-  void focusChanged(bool pHasFocus);
+  void focusChanged(bool pHasFocus) {
+    if (onFocusChanged != null && firesFocusCallback()) {
+      onFocusChanged!(focusNode.hasFocus);
+    }
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

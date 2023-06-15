@@ -19,7 +19,7 @@ import '../../../model/component/fl_component_model.dart';
 import '../../dummy/fl_dummy_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEditorModel, dynamic> {
+class FlDummyCellEditor extends ICellEditor<FlDummyModel, ICellEditorModel, dynamic> {
   dynamic _value;
 
   FlDummyCellEditor()
@@ -49,7 +49,7 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
   }
 
   @override
-  dynamic getValue() {
+  Future<dynamic> getValue() async {
     return _value;
   }
 
@@ -60,6 +60,11 @@ class FlDummyCellEditor extends ICellEditor<FlDummyModel, FlDummyWidget, ICellEd
 
   @override
   double? getEditorWidth(Map<String, dynamic>? pJson) {
+    return null;
+  }
+
+  @override
+  double? getEditorHeight(Map<String, dynamic>? pJson) {
     return null;
   }
 

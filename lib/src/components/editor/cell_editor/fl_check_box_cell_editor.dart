@@ -22,8 +22,7 @@ import '../../../service/api/shared/api_object_property.dart';
 import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlCheckBoxCellEditor
-    extends IFocusableCellEditor<FlCheckBoxModel, FlCheckBoxWidget, FlCheckBoxCellEditorModel, dynamic> {
+class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheckBoxCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +65,7 @@ class FlCheckBoxCellEditor
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson) {
+  FlCheckBoxWidget createWidget(Map<String, dynamic>? pJson) {
     FlCheckBoxModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -98,7 +97,7 @@ class FlCheckBoxCellEditor
   }
 
   @override
-  dynamic getValue() {
+  Future<dynamic> getValue() async {
     return _value;
   }
 
@@ -119,17 +118,17 @@ class FlCheckBoxCellEditor
   }
 
   @override
+  double? getEditorHeight(Map<String, dynamic>? pJson) {
+    return null;
+  }
+
+  @override
   bool firesFocusCallback() {
     if (lastWidgetModel == null) {
       return false;
     }
 
     return lastWidgetModel!.isFocusable;
-  }
-
-  @override
-  void focusChanged(bool pHasFocus) {
-    // Nothing to do here.
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

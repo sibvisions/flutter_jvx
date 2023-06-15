@@ -281,7 +281,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _receiveData(DataChunk pChunkData) {
+  Future<void> _receiveData(DataChunk pChunkData) async {
     _chunkData = pChunkData;
 
     _createTableColumnView();
@@ -312,9 +312,9 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     }
 
     if (_chunkData != null && _chunkData!.data.isNotEmpty) {
-      // loop throught the chunkdata data and find the index of the record for which the value equals the linkedcelleditor get value
+      // loop through the chunkdata data and find the index of the record for which the value equals the linkedcelleditor get value
       for (int i = 0; i < _chunkData!.data.length; i++) {
-        if (_chunkData!.data[i]![colIndex] == linkedCellEditor.getValue()) {
+        if (_chunkData!.data[i]![colIndex] == await linkedCellEditor.getValue()) {
           selectedRow = i;
           break;
         }

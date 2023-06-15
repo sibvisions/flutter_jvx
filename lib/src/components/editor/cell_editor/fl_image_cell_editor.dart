@@ -25,7 +25,7 @@ import '../../../util/image/image_loader.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCellEditorModel, dynamic> {
+class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,7 +132,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   }
 
   @override
-  dynamic getValue() {
+  Future<dynamic> getValue() async {
     return _value;
   }
 
@@ -149,6 +149,11 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlImageCe
   @override
   double getEditorWidth(Map<String, dynamic>? pJson) {
     return imageSize.width;
+  }
+
+  @override
+  double getEditorHeight(Map<String, dynamic>? pJson) {
+    return imageSize.height;
   }
 
   @override

@@ -19,6 +19,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../../../components.dart';
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
 import '../../../../model/component/fl_component_model.dart';
@@ -26,12 +27,10 @@ import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';
 import '../i_cell_editor.dart';
-import 'fl_date_editor_widget.dart';
 import 'fl_date_picker.dart';
 import 'fl_time_picker.dart';
 
-class FlDateCellEditor
-    extends IFocusableCellEditor<FlDateEditorModel, FlDateEditorWidget, FlDateCellEditorModel, dynamic> {
+class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,7 +99,7 @@ class FlDateCellEditor
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson) {
+  FlDateEditorWidget createWidget(Map<String, dynamic>? pJson) {
     FlDateEditorModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -127,13 +126,8 @@ class FlDateCellEditor
   }
 
   @override
-  dynamic getValue() {
+  Future<dynamic> getValue() async {
     return _value;
-  }
-
-  @override
-  bool firesFocusCallback() {
-    return false;
   }
 
   @override
@@ -338,5 +332,10 @@ class FlDateCellEditor
       return colWidth * widgetModel.columns / 2;
     }
     return colWidth * widgetModel.columns;
+  }
+
+  @override
+  double getEditorHeight(Map<String, dynamic>? pJson) {
+    return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
   }
 }

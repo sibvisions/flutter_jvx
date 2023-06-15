@@ -89,7 +89,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson) {
+  Widget createWidget(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -162,8 +162,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   }
 
   @override
-  String getValue() {
     return textController.text;
+  Future<String> getValue() async {
   }
 
   @override
@@ -171,6 +171,15 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
     return pValue?.toString() ?? "";
   }
 
+  @override
+  double getEditorHeight(Map<String, dynamic>? pJson) {
+    switch (model.contentType) {
+      case (TEXT_HTML):
+        return 250;
+      case (TEXT_PLAIN_WRAPPEDMULTILINE):
+      case (TEXT_PLAIN_MULTILINE):
+        FlTextAreaModel widgetModel = FlTextAreaModel();
+        applyEditorJson(widgetModel, pJson);
   @override
   double getEditorWidth(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
@@ -183,6 +192,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   @override
   double getContentPadding(Map<String, dynamic>? pJson) {
     return createWidget(pJson).extraWidthPaddings();
+    }
   }
 
   @override
@@ -197,6 +207,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlTextFiel
   @override
   void focusChanged(bool pHasFocus) {
     if (lastWidgetModel == null) {
+  Future<void> focusChanged(bool pHasFocus) async {
+    if (lastWidgetModel == null || !isInitialized) {
       return;
     }
     var widgetModel = lastWidgetModel!;

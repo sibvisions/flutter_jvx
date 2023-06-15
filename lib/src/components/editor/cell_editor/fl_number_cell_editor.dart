@@ -27,8 +27,7 @@ import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlNumberCellEditor
-    extends IFocusableCellEditor<FlTextFieldModel, FlTextFieldWidget, FlNumberCellEditorModel, dynamic> {
+class FlNumberCellEditor extends IFocusableCellEditor<FlTextFieldModel, FlNumberCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,7 +77,7 @@ class FlNumberCellEditor
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson) {
+  FlTextFieldWidget createWidget(Map<String, dynamic>? pJson) {
     FlTextFieldModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -105,7 +104,7 @@ class FlNumberCellEditor
   }
 
   @override
-  String getValue() {
+  Future<String> getValue() async {
     return textController.text;
   }
 
@@ -133,6 +132,11 @@ class FlNumberCellEditor
     applyEditorJson(widgetModel, pJson);
 
     return (ParseUtil.getTextWidth(text: "w", style: widgetModel.createTextStyle()) * widgetModel.columns);
+  }
+
+  @override
+  double getEditorHeight(Map<String, dynamic>? pJson) {
+    return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
   }
 
   @override
@@ -182,5 +186,7 @@ class FlNumberCellEditor
         onEndEditing(textController.text);
       }
     }
+
+    super.focusChanged(pHasFocus);
   }
 }

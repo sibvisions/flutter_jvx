@@ -19,7 +19,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
-import '../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/layout/alignments.dart';
@@ -28,7 +27,6 @@ import '../../service/api/shared/fl_component_classname.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
@@ -127,8 +125,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// How much a table cell needs to be padded to show the content correctly.
-  static double getContentPadding(
-      ICellEditor<FlComponentModel, FlStatelessWidget<FlComponentModel>, ICellEditorModel, dynamic> cellEditor) {
+  static double getContentPadding(ICellEditor cellEditor) {
     if (cellEditor.allowedInTable) {
       return cellEditor.getContentPadding(null);
     }
@@ -178,8 +175,6 @@ class _FlTableCellState extends State<FlTableCell> {
   @override
   Widget build(BuildContext context) {
     Widget? cellChild;
-
-    cellEditor.setValue(widget.value);
 
     if (widget.cellFormat?.imageString.isNotEmpty == true) {
       cellChild = ImageLoader.loadImage(
@@ -287,7 +282,10 @@ class _FlTableCellState extends State<FlTableCell> {
     );
 
     cellEditor.cellFormat = widget.cellFormat;
-    cellEditor.setValue(widget.value);
+
+    if (cellEditor.allowedInTable) {
+      cellEditor.setValue(widget.value);
+    }
   }
 
   void _doNothing(dynamic pNothing) {}
@@ -298,7 +296,7 @@ class _FlTableCellState extends State<FlTableCell> {
       return null;
     }
 
-    FlStatelessWidget tableWidget = cellEditor.createWidget(widget.model.json);
+    Widget tableWidget = cellEditor.createWidget(widget.model.json);
 
     return AbsorbPointer(
       absorbing: !widget.model.isEnabled || !widget.model.editable,

@@ -21,6 +21,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../components.dart';
 import '../../../../model/command/api/fetch_command.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
@@ -36,11 +37,8 @@ import '../../../../service/data/i_data_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/parse_util.dart';
 import '../i_cell_editor.dart';
-import 'fl_linked_cell_picker.dart';
-import 'fl_linked_editor_widget.dart';
 
-class FlLinkedCellEditor
-    extends IFocusableCellEditor<FlLinkedEditorModel, FlLinkedEditorWidget, FlLinkedCellEditorModel, dynamic> {
+class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLinkedCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,7 +99,7 @@ class FlLinkedCellEditor
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson) {
+  FlLinkedEditorWidget createWidget(Map<String, dynamic>? pJson) {
     FlLinkedEditorModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -130,7 +128,7 @@ class FlLinkedCellEditor
   }
 
   @override
-  dynamic getValue() {
+  Future<dynamic> getValue() async {
     return _value;
   }
 
@@ -177,8 +175,8 @@ class FlLinkedCellEditor
   }
 
   @override
-  bool firesFocusCallback() {
-    return false;
+  double getEditorHeight(Map<String, dynamic>? pJson) {
+    return FlTextFieldWidget.TEXT_FIELD_HEIGHT;
   }
 
   @override

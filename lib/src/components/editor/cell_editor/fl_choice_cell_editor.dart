@@ -22,7 +22,7 @@ import '../../../service/api/shared/api_object_property.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoiceCellEditorModel, dynamic> {
+class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,7 +71,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  createWidget(Map<String, dynamic>? pJson) {
+  FlIconWidget createWidget(Map<String, dynamic>? pJson) {
     FlIconModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -109,7 +109,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   createWidgetModel() => FlIconModel();
 
   @override
-  dynamic getValue() {
+  Future<dynamic> getValue() async {
     return _value;
   }
 
@@ -124,7 +124,12 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlIconWidget, FlChoice
   }
 
   @override
-  double? getEditorWidth(Map<String, dynamic>? pJson) {
+  double getEditorWidth(Map<String, dynamic>? pJson) {
+    return model.imageSize;
+  }
+
+  @override
+  double getEditorHeight(Map<String, dynamic>? pJson) {
     return model.imageSize;
   }
 }

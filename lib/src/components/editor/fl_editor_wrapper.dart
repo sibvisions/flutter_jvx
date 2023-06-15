@@ -16,6 +16,7 @@
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
@@ -31,18 +32,15 @@ import '../../model/data/data_book.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
+import '../../model/layout/layout_position.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'cell_editor/date/fl_date_cell_editor.dart';
-import 'cell_editor/fl_choice_cell_editor.dart';
 import 'cell_editor/fl_dummy_cell_editor.dart';
-import 'cell_editor/fl_image_cell_editor.dart';
-import 'cell_editor/fl_text_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
 import 'cell_editor/linked/fl_linked_cell_editor.dart';
-import 'text_area/fl_text_area_widget.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layouting wrapper of various non layouting widgets.
@@ -130,46 +128,52 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   @override
-  void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
-    Size? newCalcSize;
-
-    double? width = cellEditor.getEditorWidth(model.json);
-    if (width != null) {
-      width += cellEditor.getContentPadding(model.json);
-
-      if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
-        newCalcSize = Size.square(width);
-      } else if (cellEditor is FlTextCellEditor &&
-          (cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_WRAPPEDMULTILINE ||
-              cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_MULTILINE)) {
-        FlTextAreaModel textModel = cellEditor.createWidgetModel() as FlTextAreaModel;
-
-        textModel.applyFromJson(model.json);
-
-        newCalcSize = Size(
-          width,
-          FlTextAreaWidget.calculateTextAreaHeight(pLayoutData.calculatedSize!, textModel).height,
-        );
-      } else {
-        newCalcSize = Size(
-          width,
-          layoutData.calculatedSize!.height,
-        );
-      }
+  Size calculateSize(BuildContext context) {
+    double? sizeWidth = cellEditor.getEditorWidth(model.json);
+    if (sizeWidth != null) {
+      sizeWidth += cellEditor.getContentPadding(model.json);
     }
 
-    if (newCalcSize != null) {
-      pLayoutData = pLayoutData.clone();
-      pLayoutData.calculatedSize = newCalcSize;
+    double? sizeHeight = cellEditor.getEditorHeight(model.json);
 
-      pLayoutData.widthConstrains.forEach((key, value) {
-        pLayoutData.widthConstrains[key] = newCalcSize!.height;
-      });
-      pLayoutData.heightConstrains.forEach((key, value) {
-        pLayoutData.heightConstrains[key] = newCalcSize!.width;
-      });
+    if (sizeWidth == null || sizeHeight == null) {
+      Size calculatedSize = super.calculateSize(context);
+      sizeWidth ??= calculatedSize.width;
+      sizeHeight ??= calculatedSize.height;
     }
-    super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);
+
+    return Size(sizeWidth, sizeHeight);
+  }
+
+  @override
+  LayoutData calculateConstrainedSize(LayoutPosition? calcPosition) {
+    double calcWidth = layoutData.calculatedSize!.width;
+    double calcHeight = layoutData.calculatedSize!.height;
+
+    LayoutPosition constraintPos = calcPosition ?? layoutData.layoutPosition!;
+
+    double positionWidth = constraintPos.width;
+    double positionHeight = constraintPos.height;
+
+    // Constraint by width
+    if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
+      double newHeight = cellEditor.getEditorHeight(model.json) ??
+          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionWidth)).ceilToDouble();
+
+      layoutData.widthConstrains[positionWidth] = newHeight;
+    }
+
+    // Constraint by height
+    if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
+      double? newWidth = cellEditor.getEditorWidth(model.json) ??
+          (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionHeight)).ceilToDouble();
+
+      layoutData.heightConstrains[positionHeight] = newWidth;
+    }
+
+    var sentData = LayoutData.from(layoutData);
+    sentData.layoutPosition = constraintPos;
+    return sentData;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -240,7 +244,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   /// Sets the state of the widget and sends a set value command.
-  void onEndEditing(dynamic pValue) {
+  Future<void> onEndEditing(dynamic pValue) async {
     onChangeTimer?.cancel();
     if (_isSameValue(pValue) || !model.isEnabled) {
       cellEditor.setValue(_currentValue);
@@ -248,7 +252,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       return;
     }
 
-    IUiService()
+    await IUiService()
         .saveAllEditors(
           pId: model.id,
           pFunction: () {

@@ -105,7 +105,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
     width += createWidget().extraWidthPaddings();
 
-    return Size(width, super.calculateSize(context).height);
+    return Size(width, FlTextFieldWidget.TEXT_FIELD_HEIGHT);
   }
 
   @override
