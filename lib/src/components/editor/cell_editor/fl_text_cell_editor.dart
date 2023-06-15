@@ -175,7 +175,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   Future<String> getValue() async {
-        return textController.text;
+    return textController.text;
   }
 
   @override
@@ -211,8 +211,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   double getContentPadding(Map<String, dynamic>? pJson) {
-      return (createWidget(pJson) as FlTextFieldWidget).extraWidthPaddings();
-    }
+    return (createWidget(pJson) as FlTextFieldWidget).extraWidthPaddings();
   }
 
   @override
