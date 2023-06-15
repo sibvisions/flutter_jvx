@@ -247,7 +247,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   Future<void> onEndEditing(dynamic pValue) async {
     onChangeTimer?.cancel();
     if (_isSameValue(pValue) || !model.isEnabled) {
-      cellEditor.setValue(_currentValue);
       setState(() {});
       return;
     }

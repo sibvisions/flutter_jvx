@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/api/restore_data_command.dart';
@@ -212,48 +213,55 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         clipBehavior: Clip.hardEdge,
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
         decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4.0))),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              dialogLabel,
-              style: Theme.of(context).dialogTheme.titleTextStyle,
-            ),
-            const SizedBox(height: 12),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: editorWidgets,
+        child: GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+
+            SystemChannels.textInput.invokeMethod('TextInput.hide');
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                dialogLabel,
+                style: Theme.of(context).dialogTheme.titleTextStyle,
+              ),
+              const SizedBox(height: 12),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: editorWidgets,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
-                      onPressed: _handleCancel,
-                      child: Text(
-                        FlutterUI.translate("Cancel"),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: _handleCancel,
+                        child: Text(
+                          FlutterUI.translate("Cancel"),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                TextButton(
-                  onPressed: _handleOk,
-                  child: Text(
-                    FlutterUI.translate("OK"),
+                  const SizedBox(
+                    width: 8,
                   ),
-                ),
-              ],
-            ),
-          ],
+                  TextButton(
+                    onPressed: _handleOk,
+                    child: Text(
+                      FlutterUI.translate("OK"),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -290,13 +298,14 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
     });
   }
 
-  void _handleOk() {
+  Future<void> _handleOk() async {
     dismissedByButton = true;
     if (isSingleColumnEdit) {
-      widget.onEndEditing(localValue, widget.rowIndex, widget.columnDefinitions.first.name);
+      widget.onEndEditing(await cellEditors[0].getValue(), widget.rowIndex, widget.columnDefinitions.first.name);
     }
 
-    Navigator.of(context).pop();
+    // ignore: use_build_context_synchronously
+    context.mounted ? Navigator.of(context).pop() : null;
   }
 
   void _handleCancel([bool fromDispose = false]) {

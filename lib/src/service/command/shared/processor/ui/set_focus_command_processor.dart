@@ -55,7 +55,7 @@ class SetFocusCommandProcessor implements ICommandProcessor<SetFocusCommand> {
       if (component?.isFocusable == true) {
         IUiService().setFocus(pComponentId);
         if (component!.eventFocusGained) {
-          commands.add(FocusGainedCommand(componentName: component.name, reason: "Focused"));
+          commands.add(FocusGainedCommand(componentName: component.name, reason: "${component.name} Focused"));
         }
       }
     }
@@ -74,6 +74,6 @@ class SetFocusCommandProcessor implements ICommandProcessor<SetFocusCommand> {
       return [];
     }
 
-    return [FocusLostCommand(componentName: component.name, reason: "Unfocused")];
+    return [FocusLostCommand(componentName: component.name, reason: "${component.name} Unfocused")];
   }
 }

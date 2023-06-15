@@ -18,12 +18,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../flutter_ui.dart';
 import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
-import '../model/command/ui/set_focus_command.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
 import '../service/ui/i_ui_service.dart';
@@ -220,9 +220,7 @@ class JVxOverlayState extends State<JVxOverlay> {
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
 
-        IUiService().sendCommand(
-          SetFocusCommand(componentId: IUiService().getFocus()?.id, focus: false, reason: "Unfocus, pressed somewhere"),
-        );
+        SystemChannels.textInput.invokeMethod('TextInput.hide');
       },
       child: AppStyle(
         applicationStyle: IConfigService().applicationStyle.value,

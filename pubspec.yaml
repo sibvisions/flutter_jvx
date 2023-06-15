@@ -113,6 +113,10 @@ dependencies:
   qr_flutter: ^4.1.0
   screen_brightness: ^0.2.2
 
+  #WYSIWYG HTML-Editor
+  html_editor_enhanced: ^2.5.0
+  #quill_html_editor: ^2.1.9
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

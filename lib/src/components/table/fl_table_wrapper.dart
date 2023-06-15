@@ -568,7 +568,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
   }
 
-  void _onSingleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+  Future<void> _onSingleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) async {
     if (IStorageService().isVisibleInUI(model.id)) {
       if (!pCellEditor.allowedInTable &&
           isRowEditable(pRowIndex) &&
@@ -576,7 +576,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         _showDialog(
           rowIndex: pRowIndex,
           columnDefinitions: [pCellEditor.columnDefinition!],
-          values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+          values: {pCellEditor.columnDefinition!.name: await pCellEditor.getValue()},
           onEndEditing: _setValueEnd,
           newValueNotifier: dialogValueNotifier,
         );
@@ -584,7 +584,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
   }
 
-  void _onDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
+  Future<void> _onDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) async {
     if (IStorageService().isVisibleInUI(model.id)) {
       if (!pCellEditor.allowedInTable &&
           isRowEditable(pRowIndex) &&
@@ -592,7 +592,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         _showDialog(
           rowIndex: pRowIndex,
           columnDefinitions: [pCellEditor.columnDefinition!],
-          values: {pCellEditor.columnDefinition!.name: pCellEditor.getValue()},
+          values: {pCellEditor.columnDefinition!.name: await pCellEditor.getValue()},
           onEndEditing: _setValueEnd,
           newValueNotifier: dialogValueNotifier,
         );

@@ -16,12 +16,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../util/parse_util.dart';
 import '../password_field/fl_password_field_widget.dart';
 import '../text_area/fl_text_area_widget.dart';
+import '../text_field/fl_html_text_field_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
@@ -49,6 +51,13 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The [HtmlEditorController] of the [HtmlEditor] widget.
+  final HtmlEditorController htmlController = HtmlEditorController();
+
+  // /// The [HtmlEditorController] of the [QuillHtmlEditor] widget.
+  // final QuillEditorController htmlController = QuillEditorController();
+
+  /// The [TextEditingController] of the [TextField] widget.
   final TextEditingController textController = TextEditingController();
 
   /// If the [HtmlEditor] has been initialized.
@@ -64,6 +73,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   bool get isInitialized => !isHtml || htmlInitialized;
 
   /// The last value.
+  dynamic lastReceivedValue;
+
+  /// The last sent value;
   dynamic lastSentValue;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -88,15 +100,26 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   void setValue(dynamic pValue) {
-    if (pValue == null) {
-      textController.clear();
-    } else {
-      if (pValue is! String) {
-        pValue = pValue.toString();
-      }
+    lastReceivedValue = pValue;
+    if (isInitialized && lastReceivedValue.toString() != lastSentValue.toString()) {
+      if (pValue == null) {
+        if (isHtml) {
+          htmlController.clear();
+        } else {
+          textController.clear();
+        }
+      } else {
+        if (pValue is! String) {
+          pValue = pValue.toString();
+        }
 
-      textController.value =
-          TextEditingValue(text: pValue, selection: TextSelection.collapsed(offset: pValue.runes.length));
+        if (isHtml) {
+          htmlController.setText(pValue);
+        } else {
+          textController.value =
+              TextEditingValue(text: pValue, selection: TextSelection.collapsed(offset: pValue.runes.length));
+        }
+      }
     }
   }
 
@@ -111,10 +134,11 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
     var textLimitFormatter =
         LengthLimitingTextInputFormatter(columnDefinition?.length, maxLengthEnforcement: MaxLengthEnforcement.enforced);
 
+    _fixEditorEnableStatus();
+
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
-      case (TEXT_HTML):
         return FlTextAreaWidget(
           model: widgetModel as FlTextAreaModel,
           valueChanged: onValueChange,
@@ -125,6 +149,30 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
           inputFormatters: [textLimitFormatter],
           hideClearIcon: columnDefinition?.nullable == false || model.hideClearIcon,
         );
+      case (TEXT_HTML):
+        return FlHtmlTextFieldWidget(
+          model: widgetModel,
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          htmlController: htmlController,
+          onFocusChanged: focusChanged,
+          onInit: () {
+            htmlInitialized = true;
+            setValue(lastReceivedValue);
+            _fixEditorEnableStatus();
+          },
+        );
+      // return FlQuillHtmlTextFieldWidget(
+      //   model: widgetModel,
+      //   valueChanged: onValueChange,
+      //   endEditing: onEndEditing,
+      //   htmlController: htmlController,
+      //   focusNode: focusNode,
+      //   onInit: () {
+      //     htmlInitialized = true;
+      //     setValue(lastReceivedValue);
+      //   },
+      // );
       case (TEXT_PLAIN_PASSWORD):
         return FlPasswordWidget(
           model: widgetModel,
@@ -154,14 +202,12 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   @override
   createWidgetModel() {
     switch (model.contentType) {
-      case (TEXT_HTML):
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
         return FlTextAreaModel();
+      case (TEXT_HTML):
       case (TEXT_PLAIN_SINGLELINE):
-        return FlTextFieldModel();
       case (TEXT_PLAIN_PASSWORD):
-        return FlTextFieldModel();
       default:
         return FlTextFieldModel();
     }
@@ -175,7 +221,27 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   Future<String> getValue() async {
-    return textController.text;
+    if (isInitialized) {
+      if (isHtml) {
+        var html = await htmlController.getText();
+
+        if (html.isNotEmpty) {
+          if (!html.startsWith("<html>")) {
+            html = "<html>$html";
+          }
+
+          if (!html.endsWith("</html>")) {
+            html = "$html</html>";
+          }
+        }
+
+        return html;
+      } else {
+        return textController.text;
+      }
+    }
+
+    return lastReceivedValue.toString();
   }
 
   @override
@@ -202,6 +268,10 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   double getEditorWidth(Map<String, dynamic>? pJson) {
+    if (isHtml) {
+      return 250;
+    }
+
     FlTextFieldModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -211,7 +281,11 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   double getContentPadding(Map<String, dynamic>? pJson) {
-    return (createWidget(pJson) as FlTextFieldWidget).extraWidthPaddings();
+    if (isHtml) {
+      return 0;
+    } else {
+      return (createWidget(pJson) as FlTextFieldWidget).extraWidthPaddings();
+    }
   }
 
   @override
@@ -233,10 +307,24 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
     if (!widgetModel.isReadOnly) {
       if (!pHasFocus) {
-        onEndEditing(await getValue());
+        lastSentValue = await getValue();
+        onEndEditing(lastSentValue);
       }
     }
 
     super.focusChanged(pHasFocus);
+  }
+
+  /// The [HtmlEditor] does not update its status of enable/disable on its own through the constructor.
+  ///
+  /// Instead, it must be handled by the controller but only after having been initialized.
+  void _fixEditorEnableStatus() {
+    if (isInitialized && isHtml && lastWidgetModel != null) {
+      if (lastWidgetModel!.isReadOnly) {
+        htmlController.disable();
+      } else {
+        htmlController.enable();
+      }
+    }
   }
 }

@@ -286,7 +286,7 @@ abstract class IFocusableCellEditor<
   /// Is called when the focus changes.
   void focusChanged(bool pHasFocus) {
     if (onFocusChanged != null && firesFocusCallback()) {
-      onFocusChanged!(focusNode.hasFocus);
+      onFocusChanged!(pHasFocus);
     }
   }
 
