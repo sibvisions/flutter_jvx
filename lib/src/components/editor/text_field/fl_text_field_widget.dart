@@ -359,7 +359,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   }
 
   /// Returns all extra paddings this text field has in sum apart from the text size itself.
-  // TODO Add bool for inside a table if there is a need for it.
   double extraWidthPaddings() {
     int iconAmount = createSuffixIconItems(true).length + createPrefixIconItems().length;
 
