@@ -31,16 +31,24 @@ class ShowDocumentProcessor implements IResponseProcessor<ShowDocumentResponse> 
     String url = pResponse.url;
 
     if (url.isNotEmpty) {
+      List<String> splitUrl;
       if (url.startsWith("\"")) {
         url = url.substring(1);
+        splitUrl = url.substring(url.indexOf("\"")).split(";");
         url = url.substring(0, url.indexOf("\""));
       } else {
-        url = url.split(';').first;
+        splitUrl = url.split(';');
+        url = splitUrl.first;
+      }
+
+      if (url.startsWith("www.")) {
+        url = "http://" + url;
       }
 
       launchUrlString(
         url,
         mode: LaunchMode.externalApplication,
+        webOnlyWindowName: splitUrl.length > 1 ? splitUrl[1] : null,
       );
     }
 
