@@ -15,6 +15,8 @@
  */
 
 import '../../../../model/command/base_command.dart';
+import '../../../../model/command/ui/function_command.dart';
+import '../../../../model/command/ui/route/route_to_command.dart';
 import '../../../../model/command/ui/route/route_to_menu_command.dart';
 import '../../../../model/command/ui/save_menu_command.dart';
 import '../../../../model/menu/menu_group_model.dart';
@@ -22,6 +24,7 @@ import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/menu_view_response.dart';
+import '../../../apps/app_service.dart';
 import '../../../config/i_config_service.dart';
 import '../i_response_processor.dart';
 
@@ -47,9 +50,24 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     commands.add(saveMenuCommand);
 
     if (!IConfigService().offline.value) {
-      RouteToMenuCommand routeToMenuCommand =
-          RouteToMenuCommand(replaceRoute: true, reason: "Server sent a menu, likely on login");
-      commands.add(routeToMenuCommand);
+      if (AppService().savedReturnUri == null) {
+        commands.add(RouteToMenuCommand(
+          replaceRoute: true,
+          reason: "Server sent a menu, likely on login",
+        ));
+      } else {
+        commands.add(RouteToCommand(
+          uri: AppService().savedReturnUri.toString(),
+          reason: "Found returnUri",
+        ));
+        commands.add(FunctionCommand(
+          () {
+            AppService().savedReturnUri = null;
+            return [];
+          },
+          reason: "Reset returnUri",
+        ));
+      }
     }
 
     return commands;

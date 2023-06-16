@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../config/server_config.dart';
 import '../flutter_ui.dart';
 import '../model/layout/layout_position.dart';
 import '../model/response/application_settings_response.dart';
@@ -337,5 +338,35 @@ abstract class ParseUtil {
 
   static String? ensureNullOnEmpty(String? value) {
     return value == "" ? null : value;
+  }
+
+  /// Extracts a [ServerConfig] from [queryParameters].
+  ///
+  /// Returns either a valid [ServerConfig] or `null`.
+  static ServerConfig? extractURIAppParameters(Map<String, String> queryParameters) {
+    String? appName = queryParameters.remove("appName");
+    String? baseUrl = queryParameters.remove("baseUrl");
+    if (appName != null && baseUrl != null) {
+      Uri? baseUri;
+      try {
+        baseUri = Uri.parse(baseUrl);
+      } on FormatException catch (e, stack) {
+        FlutterUI.log.w("Failed to parse baseUrl url parameter", e, stack);
+      }
+      String? username = queryParameters.remove("username") ?? queryParameters.remove("userName");
+      String? password = queryParameters.remove("password");
+
+      ServerConfig? urlConfig = ServerConfig(
+        appName: appName,
+        baseUrl: baseUri,
+        username: username,
+        password: password,
+      );
+
+      if (urlConfig.isValid) {
+        return urlConfig;
+      }
+    }
+    return null;
   }
 }

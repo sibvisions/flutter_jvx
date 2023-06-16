@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -323,6 +324,22 @@ class JVxOverlayState extends State<JVxOverlay> {
                       child: Text(
                         FlutterUI.translate(_connectedMessage),
                         style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  // TODO remove
+                  if (kDebugMode)
+                    Positioned(
+                      top: 50,
+                      left: 150,
+                      right: 150,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Material(
+                          child: Text(
+                            routerDelegate.configuration.location.toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
                     ),
                 ],

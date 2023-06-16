@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../flutter_ui.dart';
@@ -23,6 +24,7 @@ import '../../../../model/command/ui/route/route_to_work_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/generic_screen_view_response.dart';
+import '../../../../routing/locations/main_location.dart';
 import '../../../config/i_config_service.dart';
 import '../i_response_processor.dart';
 
@@ -60,11 +62,15 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
     // if update == false => new screen that should be routed to
     if (!pResponse.update && !IConfigService().offline.value) {
       if (panel?.screenNavigationName != null) {
-        RouteToWorkCommand workCommand = RouteToWorkCommand(
-          screenName: panel!.screenNavigationName!,
-          reason: "Server sent screen.generic response with update = 'false'",
-        );
-        commands.add(workCommand);
+        var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+        // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
+        if (lastBeamState.pathParameters[MainLocation.screenNameKey] != panel!.screenNavigationName!) {
+          RouteToWorkCommand workCommand = RouteToWorkCommand(
+            screenName: panel.screenNavigationName!,
+            reason: "Server sent screen.generic response with update = 'false'",
+          );
+          commands.add(workCommand);
+        }
       } else {
         FlutterUI.logUI.w("Server sent screen.generic response with update = 'false' "
             "but no panel with a matching screen name");

@@ -22,6 +22,19 @@
 		<string>????</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<key>CFBundleURLTypes</key>
+        <array>
+           <dict>
+              <key>CFBundleTypeRole</key>
+              <string>Editor</string>
+              <key>CFBundleURLName</key>
+              <string>com.sibvisions.flutterJvx</string>
+              <key>CFBundleURLSchemes</key>
+              <array>
+                 <string>jvx</string>
+              </array>
+           </dict>
+        </array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>
@@ -57,5 +70,7 @@
 		<string>We would like to access your location in order to be able to add data to your personal records.</string>
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 		<string>We would like to always access your location in order to be able to add data to your personal records.</string>
+		<key>FlutterDeepLinkingEnabled</key>
+		<true/>
 	</dict>
 </plist>

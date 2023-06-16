@@ -33,6 +33,7 @@ import '../../../model/command/layout/layout_command.dart';
 import '../../../model/command/storage/delete_screen_command.dart';
 import '../../../model/command/storage/storage_command.dart';
 import '../../../model/command/ui/route/route_command.dart';
+import '../../../model/command/ui/route/route_to_command.dart';
 import '../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../model/command/ui/route/route_to_menu_command.dart';
 import '../../../model/command/ui/route/route_to_work_command.dart';
@@ -231,6 +232,9 @@ class CommandService implements ICommandService {
         }
         if (routeCommands.any((element) => element is RouteToWorkCommand)) {
           await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+        }
+        if (routeCommands.any((element) => element is RouteToCommand)) {
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToCommand));
         }
       }
     } catch (error) {

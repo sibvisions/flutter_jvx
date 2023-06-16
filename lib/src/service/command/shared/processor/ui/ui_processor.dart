@@ -19,6 +19,7 @@ import '../../../../../model/command/ui/delete_frame_command.dart';
 import '../../../../../model/command/ui/download_action_command.dart';
 import '../../../../../model/command/ui/function_command.dart';
 import '../../../../../model/command/ui/open_error_dialog_command.dart';
+import '../../../../../model/command/ui/route/route_to_command.dart';
 import '../../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../../model/command/ui/route/route_to_menu_command.dart';
 import '../../../../../model/command/ui/route/route_to_work_command.dart';
@@ -36,6 +37,7 @@ import 'delete_frame_command_processor.dart';
 import 'download_action_command_processor.dart';
 import 'function_command_processor.dart';
 import 'open_error_dialog_command_processor.dart';
+import 'route/route_to_command_processor.dart';
 import 'route/route_to_login_command_processor.dart';
 import 'route/route_to_menu_command_processor.dart';
 import 'route/route_to_work_command_processor.dart';
@@ -60,6 +62,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   final ICommandProcessor _routeToWorkProcessor = RouteToWorkCommandProcessor();
   final ICommandProcessor _saveMenuProcessor = SaveMenuCommandProcessor();
   final ICommandProcessor _routeToLoginProcessor = RouteToLoginCommandProcessor();
+  final ICommandProcessor _routeToProcessor = RouteToCommandProcessor();
   final ICommandProcessor _openServerErrorDialogProcessor = OpenServerErrorDialogCommandProcessor();
   final ICommandProcessor _openErrorDialogProcessor = OpenErrorDialogCommandProcessor();
   final ICommandProcessor _openSessionExpiredDialogProcessor = OpenSessionExpiredDialogCommandProcessor();
@@ -89,6 +92,8 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _routeToWorkProcessor.processCommand(command);
     } else if (command is RouteToLoginCommand) {
       return _routeToLoginProcessor.processCommand(command);
+    } else if (command is RouteToCommand) {
+      return _routeToProcessor.processCommand(command);
     } else if (command is OpenServerErrorDialogCommand) {
       return _openServerErrorDialogProcessor.processCommand(command);
     } else if (command is OpenErrorDialogCommand) {

@@ -73,6 +73,7 @@ export 'model/command/storage/storage_command.dart';
 export 'model/command/ui/function_command.dart';
 export 'model/command/ui/open_error_dialog_command.dart';
 export 'model/command/ui/route/route_command.dart';
+export 'model/command/ui/route/route_to_command.dart';
 export 'model/command/ui/route/route_to_login_command.dart';
 export 'model/command/ui/route/route_to_menu_command.dart';
 export 'model/command/ui/route/route_to_work_command.dart';

@@ -401,7 +401,7 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
-    FlutterUIState.urlApp = await _extractURIParameters(queryParameters);
+    FlutterUIState.urlApp = await _handleURIParameters(queryParameters);
     queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
     // API
@@ -447,47 +447,7 @@ class FlutterUI extends StatefulWidget {
     );
   }
 
-  static Future<App?> _extractURIParameters(Map<String, String> queryParameters) async {
-    App? urlApp;
-
-    String? appName = queryParameters.remove("appName");
-    String? baseUrl = queryParameters.remove("baseUrl");
-    if (appName != null && baseUrl != null) {
-      Uri? baseUri;
-      try {
-        baseUri = Uri.parse(baseUrl);
-      } on FormatException catch (e, stack) {
-        FlutterUI.log.w("Failed to parse baseUrl url parameter", e, stack);
-      }
-      String? username = queryParameters.remove("username") ?? queryParameters.remove("userName");
-      String? password = queryParameters.remove("password");
-
-      ServerConfig? urlConfig = ServerConfig(
-        appName: appName,
-        baseUrl: baseUri,
-        username: username,
-        password: password,
-        isDefault: true,
-      );
-
-      if (urlConfig.isValid) {
-        urlApp = await App.createAppFromConfig(urlConfig);
-
-        await IConfigService().updateCurrentApp(urlApp.id);
-        if (IConfigService().currentApp.value != null) {
-          String? language = queryParameters.remove("language");
-          if (language != null) {
-            await IConfigService().updateUserLanguage(
-              language == IConfigService().getPlatformLocale() ? null : language,
-            );
-          }
-          String? timeZone = queryParameters.remove("timeZone");
-          if (timeZone != null) {
-            await IConfigService().updateApplicationTimeZone(timeZone);
-          }
-        }
-      }
-    }
+  static Future<App?> _handleURIParameters(Map<String, String> queryParameters) async {
     String? mobileOnly = queryParameters.remove("mobileOnly");
     if (mobileOnly != null) {
       IUiService().updateMobileOnly(mobileOnly == "true");
@@ -497,7 +457,28 @@ class FlutterUI extends StatefulWidget {
       IUiService().updateWebOnly(webOnly == "true");
     }
 
-    return urlApp;
+    ServerConfig? urlConfig = ParseUtil.extractURIAppParameters(queryParameters);
+    if (urlConfig != null) {
+      App urlApp = await App.createAppFromConfig(urlConfig);
+      await urlApp.updateDefault(true);
+
+      await IConfigService().updateCurrentApp(urlApp.id);
+      if (IConfigService().currentApp.value != null) {
+        String? language = queryParameters.remove("language");
+        if (language != null) {
+          await IConfigService().updateUserLanguage(
+            language == IConfigService().getPlatformLocale() ? null : language,
+          );
+        }
+        String? timeZone = queryParameters.remove("timeZone");
+        if (timeZone != null) {
+          await IConfigService().updateApplicationTimeZone(timeZone);
+        }
+      }
+      return urlApp;
+    }
+
+    return null;
   }
 }
 
@@ -557,7 +538,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           guardNonMatching: true,
           pathPatterns: ["/", "/settings"],
           check: (context, location) => IConfigService().currentApp.value != null && exitFuture == null,
-          beamToNamed: (origin, target) => "/",
+          beamToNamed: (origin, target) {
+            BeamState targetState = target.state as BeamState;
+            var parameters = Map.of(targetState.queryParameters);
+            parameters["returnUri"] = targetState.uri.path;
+            return Uri(path: "/", queryParameters: parameters).toString();
+          },
         ),
       ],
     );

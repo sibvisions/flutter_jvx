@@ -137,7 +137,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     _refreshApps();
   }
 
-  void _refreshApps() {
+  Future<void> _refreshApps() {
     setState(() {
       future = () async {
         var retrievedApps = await App.getAppsByIDs(AppService().getAppIds());
@@ -146,6 +146,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       }()
           .catchError(FlutterUI.createErrorHandler("Failed to init app list"));
     });
+    return future!;
   }
 
   bool get containsCustomApps => (apps?.where((app) => !app.predefined).isNotEmpty ?? false);
@@ -470,7 +471,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
               Navigator.pop(context);
               apps?.remove(editApp);
               await editApp!.delete();
-              _refreshApps();
+              unawaited(_refreshApps());
             }
           }),
     );
@@ -491,7 +492,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     if (mounted) {
       Navigator.pop(context);
     }
-    _refreshApps();
+    unawaited(_refreshApps());
     return app;
   }
 
@@ -601,7 +602,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     );
     if (shouldClear ?? false) {
       await AppService().removeAllApps();
-      _refreshApps();
+      unawaited(_refreshApps());
     }
   }
 

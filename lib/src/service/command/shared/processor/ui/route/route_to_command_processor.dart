@@ -14,31 +14,19 @@
  * the License.
  */
 
-import 'package:beamer/beamer.dart';
-
 import '../../../../../../flutter_ui.dart';
 import '../../../../../../model/command/base_command.dart';
-import '../../../../../../model/command/ui/route/route_to_login_command.dart';
-import '../../../../../apps/app_service.dart';
-import '../../../../../ui/i_ui_service.dart';
+import '../../../../../../model/command/ui/route/route_to_command.dart';
 import '../../../i_command_processor.dart';
 
-class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand> {
+class RouteToCommandProcessor extends ICommandProcessor<RouteToCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> processCommand(RouteToLoginCommand command) async {
-    // As [LoginViewResponse] can also indicate a logout initiated by the server, clear user data here.
-    await IUiService().logout();
-
-    BeamState? targetState = FlutterUI.getCurrentContext()?.currentBeamLocation.state as BeamState?;
-    if (targetState != null) {
-      AppService().savedReturnUri = Uri(path: targetState.uri.path);
-    }
-
-    IUiService().routeToLogin(mode: command.mode, pLoginProps: command.loginData);
+  Future<List<BaseCommand>> processCommand(RouteToCommand command) async {
+    FlutterUI.getBeamerDelegate().beamToNamed(command.uri, replaceRouteInformation: command.replaceRoute);
 
     return [];
   }

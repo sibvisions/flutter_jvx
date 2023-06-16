@@ -46,6 +46,7 @@ class AppService {
   }
 
   bool get startedManually => _startedManually;
+  Uri? savedReturnUri;
 
   ///
   ValueListenable<Set<String>> get storedAppIds => _storedAppIds;
@@ -166,6 +167,7 @@ class AppService {
           .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
     }
 
+    savedReturnUri = null;
     await FlutterUI.clearServices(true);
 
     if (resetAppName) {
