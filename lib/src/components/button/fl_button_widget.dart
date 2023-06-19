@@ -156,7 +156,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           children: [
             image!,
             SizedBox(height: model.imageTextGap.toDouble()),
-            Flexible(child: createTextWidget()),
+            Flexible(child: createTextWidget(context)),
           ],
         );
       } else {
@@ -169,12 +169,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           children: [
             image!,
             SizedBox(width: model.imageTextGap.toDouble()),
-            Flexible(child: createTextWidget()),
+            Flexible(child: createTextWidget(context)),
           ],
         );
       }
     } else if (model.labelModel.text.isNotEmpty) {
-      return createTextWidget();
+      return createTextWidget(context);
     } else if (image != null) {
       return image!;
     } else {
@@ -201,7 +201,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   }
 
   /// Gets the text widget of the button with the label model.
-  Widget createTextWidget() {
+  Widget createTextWidget(BuildContext context) {
     TextStyle textStyle = model.labelModel.createTextStyle();
 
     if (!model.isEnabled) {
@@ -209,7 +209,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     } else if (model.labelModel.foreground == null && model.isHyperLink) {
       textStyle = textStyle.copyWith(color: Colors.blue);
     } else if (!model.borderPainted || model.borderOnMouseEntered) {
-      textStyle = textStyle.copyWith(color: JVxColors.LIGHTER_BLACK);
+      textStyle = textStyle.copyWith(
+        color: Theme.of(context).brightness == Brightness.light ? JVxColors.LIGHTER_BLACK : JVxColors.DARKER_WHITE,
+      );
     }
 
     return FlLabelWidget.getTextWidget(
