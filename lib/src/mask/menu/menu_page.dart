@@ -100,27 +100,25 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             }
 
             if (isOffline) {
-              actions.add(Builder(
-                builder: (context) => IconButton(
-                  tooltip: FlutterUI.translate("Go Online"),
-                  splashRadius: kToolbarHeight / 2,
-                  onPressed: () {
-                    showSyncDialog().then(
-                      (value) async {
-                        switch (value) {
-                          case DialogResult.YES:
-                            unawaited(OfflineUtil.initOnline());
-                            break;
-                          case DialogResult.DISCARD_CHANGES:
-                            unawaited(OfflineUtil.initOnline(true));
-                            break;
-                          default:
-                        }
-                      },
-                    );
-                  },
-                  icon: const FaIcon(FontAwesomeIcons.towerBroadcast),
-                ),
+              actions.add(IconButton(
+                tooltip: FlutterUI.translate("Go Online"),
+                splashRadius: kToolbarHeight / 2,
+                onPressed: () {
+                  showSyncDialog().then(
+                    (value) async {
+                      switch (value) {
+                        case DialogResult.YES:
+                          unawaited(OfflineUtil.initOnline());
+                          break;
+                        case DialogResult.DISCARD_CHANGES:
+                          unawaited(OfflineUtil.initOnline(true));
+                          break;
+                        default:
+                      }
+                    },
+                  );
+                },
+                icon: const FaIcon(FontAwesomeIcons.towerBroadcast),
               ));
             }
 
