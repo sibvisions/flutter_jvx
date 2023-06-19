@@ -17,7 +17,6 @@
 import '../../service/api/shared/api_object_property.dart';
 import 'api_response.dart';
 
-/// Used when downloading application images archive
 class ShowDocumentResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
