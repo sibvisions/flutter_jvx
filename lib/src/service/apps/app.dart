@@ -37,6 +37,7 @@ class App {
   late String? _title;
   late String? _icon;
   late String? _version;
+  late bool? _offline;
   late Map<String, String>? _applicationStyle;
 
   static const String idSplitSequence = "@!@";
@@ -140,6 +141,7 @@ class App {
     _title = await _getString("title");
     _icon = await _getString("icon");
     _version = await _getString("version");
+    _offline = await _getBool("offline");
     String? styleJson = await _getString("applicationStyle");
     _applicationStyle = (styleJson != null ? Map.from(jsonDecode(styleJson)) : null);
   }
@@ -307,6 +309,11 @@ class App {
   /// {@endtemplate}
   String? get version => _version;
 
+  /// {@template app.offline}
+  /// Whether this app is currently offline.
+  /// {@endtemplate}
+  bool get offline => _offline ?? false;
+
   /// {@template app.applicationStyle}
   /// The style settings of this app, if saved.
   /// {@endtemplate}
@@ -317,7 +324,6 @@ class App {
   /// If [_id] is null or [usesUserParameter] is false, this returns null.
   ///
   /// {@macro app.key}
-  // ignore: unused_element
   Future<bool?> _getBool(String key) async {
     return !usesUserParameter ? null : (_id != null ? IConfigService().getConfigHandler().getValue("$_id.$key") : null);
   }

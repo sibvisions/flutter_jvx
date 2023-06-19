@@ -33,6 +33,7 @@ class AppItem extends StatelessWidget {
     this.predefined = false,
     this.locked = false,
     this.hidden = false,
+    this.offline = false,
   });
 
   final String appTitle;
@@ -45,6 +46,7 @@ class AppItem extends StatelessWidget {
   final bool predefined;
   final bool locked;
   final bool hidden;
+  final bool offline;
 
   bool get isEnabled => onTap != null && enabled;
 
@@ -128,20 +130,35 @@ class AppItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (locked || hidden)
-                  Positioned(
-                    top: 4,
-                    left: 4,
-                    child: CircleAvatar(
-                      backgroundColor: Theme.of(context).cardColor.withOpacity(0.75),
-                      radius: 12,
-                      child: Icon(
-                        hidden ? Icons.visibility_off : Icons.lock,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
+                Positioned(
+                  top: 4,
+                  left: 4,
+                  child: Row(
+                    children: [
+                      if (locked || hidden)
+                        CircleAvatar(
+                          // CardColor matches background
+                          backgroundColor: Theme.of(context).cardColor.withOpacity(0.75),
+                          radius: 12,
+                          child: Icon(
+                            hidden ? Icons.visibility_off : Icons.lock,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      if (offline)
+                        CircleAvatar(
+                          backgroundColor: Theme.of(context).cardColor.withOpacity(0.75),
+                          radius: 12,
+                          child: Icon(
+                            Icons.cloud_off,
+                            size: 16,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                    ],
                   ),
+                ),
                 if (predefined)
                   Positioned(
                     top: 0,

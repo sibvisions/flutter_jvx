@@ -311,6 +311,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         isDefault: app.isDefault,
                         locked: app.locked,
                         hidden: app.parametersHidden,
+                        offline: app.offline,
                         predefined: app.predefined,
                         onTap: app.isStartable
                             ? () {
