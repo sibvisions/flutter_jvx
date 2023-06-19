@@ -339,7 +339,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
           ),
         ),
       ),
-      actionsPadding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
+      actionsPadding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 12.0),
       actionsAlignment: actions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
       actions: actions,
     );
