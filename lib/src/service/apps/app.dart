@@ -398,7 +398,7 @@ class App {
     }
 
     await IConfigService().getFileManager().renameIndependentDirectory(
-        [oldAppId], id).catchError((e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", e, stack));
+        [oldAppId], newAppId).catchError((e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", e, stack));
 
     await AppService().refreshStoredAppIds();
 
