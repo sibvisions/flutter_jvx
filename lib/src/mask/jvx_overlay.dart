@@ -226,7 +226,6 @@ class JVxOverlayState extends State<JVxOverlay> {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-
         SystemChannels.textInput.invokeMethod('TextInput.hide');
       },
       child: AppStyle(

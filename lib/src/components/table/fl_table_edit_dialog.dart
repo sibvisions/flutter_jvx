@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/api/restore_data_command.dart';
@@ -213,55 +212,48 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         clipBehavior: Clip.hardEdge,
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
         decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4.0))),
-        child: GestureDetector(
-          onTap: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-
-            SystemChannels.textInput.invokeMethod('TextInput.hide');
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                dialogLabel,
-                style: Theme.of(context).dialogTheme.titleTextStyle,
-              ),
-              const SizedBox(height: 12),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: editorWidgets,
-                  ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              dialogLabel,
+              style: Theme.of(context).dialogTheme.titleTextStyle,
+            ),
+            const SizedBox(height: 12),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: editorWidgets,
                 ),
               ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(
-                        onPressed: _handleCancel,
-                        child: Text(
-                          FlutterUI.translate("Cancel"),
-                        ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      onPressed: _handleCancel,
+                      child: Text(
+                        FlutterUI.translate("Cancel"),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 8,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                TextButton(
+                  onPressed: _handleOk,
+                  child: Text(
+                    FlutterUI.translate("OK"),
                   ),
-                  TextButton(
-                    onPressed: _handleOk,
-                    child: Text(
-                      FlutterUI.translate("OK"),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
