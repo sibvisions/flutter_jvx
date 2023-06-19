@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../model/command/base_command.dart';
@@ -45,11 +46,21 @@ class ShowDocumentProcessor implements IResponseProcessor<ShowDocumentResponse> 
         url = "http://" + url;
       }
 
-      launchUrlString(
-        url,
-        mode: LaunchMode.externalApplication,
-        webOnlyWindowName: splitUrl.length > 1 ? splitUrl[1] : null,
-      );
+      Uri? uri = Uri.tryParse(url);
+
+      if (uri != null) {
+        launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+          webOnlyWindowName: splitUrl.length > 2 ? splitUrl[2] : null,
+        );
+      } else {
+        launchUrlString(
+          url,
+          mode: LaunchMode.externalApplication,
+          webOnlyWindowName: splitUrl.length > 2 ? splitUrl[2] : null,
+        );
+      }
     }
 
     return [];
