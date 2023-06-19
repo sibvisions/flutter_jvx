@@ -21,12 +21,14 @@ class ApplicationParameters {
   final String? applicationTitleWeb;
   final String? authenticated;
   final String? openScreen;
+  final bool designModeAllowed;
 
   const ApplicationParameters({
     this.applicationTitleName,
     this.applicationTitleWeb,
     this.authenticated,
     this.openScreen,
+    this.designModeAllowed = false,
   });
 
   const ApplicationParameters.empty() : this();
@@ -39,6 +41,7 @@ class ApplicationParameters {
       applicationTitleWeb: other.applicationTitleWeb ?? applicationTitleWeb,
       authenticated: other.authenticated ?? authenticated,
       openScreen: other.openScreen ?? openScreen,
+      designModeAllowed: other.designModeAllowed,
     );
   }
 
@@ -50,6 +53,7 @@ class ApplicationParameters {
       applicationTitleWeb: other.applicationTitleWeb ?? applicationTitleWeb,
       authenticated: other.authenticated ?? authenticated,
       openScreen: other.openScreen ?? openScreen,
+      designModeAllowed: other.designModeAllowed ?? designModeAllowed,
     );
   }
 }

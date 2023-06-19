@@ -54,6 +54,6 @@ class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperSt
       postFrameCallback(context);
     });
 
-    return getPositioned(child: (widget as FlCustomWrapper).customComponent.componentBuilder.call());
+    return wrapWidget(child: (widget as FlCustomWrapper).customComponent.componentBuilder.call());
   }
 }

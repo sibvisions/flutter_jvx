@@ -94,7 +94,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       postFrameCallback(context);
     });
 
-    return getPositioned(child: popupButtonWidget);
+    return wrapWidget(child: popupButtonWidget);
   }
 
   List<PopupMenuEntry<String>> _createPopupItems() {

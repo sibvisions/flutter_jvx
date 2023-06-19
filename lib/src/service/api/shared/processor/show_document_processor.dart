@@ -42,10 +42,6 @@ class ShowDocumentProcessor implements IResponseProcessor<ShowDocumentResponse> 
         url = splitUrl.first;
       }
 
-      if (url.startsWith("www.")) {
-        url = "http://" + url;
-      }
-
       Uri? uri = Uri.tryParse(url);
 
       if (uri != null) {

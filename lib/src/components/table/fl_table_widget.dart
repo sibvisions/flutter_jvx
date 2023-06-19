@@ -147,8 +147,6 @@ class _FlTableWidgetState extends State<FlTableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    BorderRadius borderRadius = BorderRadius.circular(4.0);
-
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
     if (widget.showFloatingButton && widget.floatingOnPress != null) {
@@ -157,14 +155,17 @@ class _FlTableWidgetState extends State<FlTableWidget> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        border: Border.all(width: widget.tableSize.borderWidth, color: Theme.of(context).colorScheme.primary),
+        borderRadius: BorderRadius.circular(4.0),
+        border: Border.all(
+          width: widget.tableSize.borderWidth,
+          color: Theme.of(context).colorScheme.primary,
+        ),
         color: Theme.of(context).colorScheme.background,
       ),
       child: ClipRRect(
         // The clip rect is there to stop the rendering of the children.
         // Otherwise the children would clip the border of the parent container.
-        borderRadius: borderRadius,
+        borderRadius: BorderRadius.circular(4.0 - widget.tableSize.borderWidth),
         child: Stack(
           children: children,
         ),

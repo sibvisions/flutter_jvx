@@ -74,7 +74,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
       children: children.values.toList(),
     );
 
-    return (getPositioned(child: panelWidget));
+    return (wrapWidget(child: panelWidget));
   }
 
   @override

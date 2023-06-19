@@ -98,7 +98,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _buildFlat(BuildContext context) {
-    return (getPositioned(
+    return (wrapWidget(
       child: Column(
         verticalDirection: verticalDirection,
         children: [
@@ -138,7 +138,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
       ];
     }
 
-    return getPositioned(
+    return wrapWidget(
       child: Padding(
         padding: paddings,
         child: DecoratedBox(

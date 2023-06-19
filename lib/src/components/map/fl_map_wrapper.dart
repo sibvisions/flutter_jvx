@@ -67,7 +67,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: widget);
+    return wrapWidget(child: widget);
   }
 
   @override

@@ -40,6 +40,6 @@ class _FlGaugeWrapperState extends BaseCompWrapperState<FlGaugeModel> {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: widget);
+    return wrapWidget(child: widget);
   }
 }

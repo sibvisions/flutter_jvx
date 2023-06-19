@@ -73,7 +73,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   @override
   Widget build(BuildContext context) {
-    return getPositioned(
+    return wrapWidget(
       child: MouseRegion(
         cursor: mouseCursor,
         child: FlSplitPanelWidget(

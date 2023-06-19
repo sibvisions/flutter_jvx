@@ -66,7 +66,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
       postFrameCallback(context);
     });
 
-    return getPositioned(child: widget);
+    return wrapWidget(child: widget);
   }
 
   @override

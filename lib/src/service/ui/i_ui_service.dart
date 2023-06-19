@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
 
@@ -93,6 +94,18 @@ abstract class IUiService {
   MenuItemModel? getMenuItem(String pScreenName);
 
   I18n i18n();
+
+  /// Whether or not the app is currently in design mode.
+  ValueListenable<bool> get designMode;
+
+  /// Updates the design mode.
+  void updateDesignMode(bool designMode);
+
+  /// The currently selected element in the design mode.
+  ValueListenable<String?> get designModeElement;
+
+  /// Updates the design mode element.
+  void updateDesignModeElement(String? pId);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Communication with other services
@@ -176,7 +189,7 @@ abstract class IUiService {
   void updateApplicationSettings(ApplicationSettingsResponse pApplicationSettings);
 
   /// Retrieves the last known [ApplicationParameters].
-  ValueNotifier<ApplicationParameters?> get applicationParameters;
+  ValueNotifier<ApplicationParameters> get applicationParameters;
 
   /// Sets the [ApplicationParameters].
   void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters);

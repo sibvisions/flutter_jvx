@@ -54,6 +54,6 @@ class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlRadioButtonWra
       postFrameCallback(context);
     });
 
-    return getPositioned(child: checkboxWidget);
+    return wrapWidget(child: checkboxWidget);
   }
 }

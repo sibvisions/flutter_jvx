@@ -60,7 +60,7 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: widget);
+    return wrapWidget(child: widget);
   }
 
   @override

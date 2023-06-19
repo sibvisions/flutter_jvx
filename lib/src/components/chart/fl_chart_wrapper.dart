@@ -63,7 +63,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: widget);
+    return wrapWidget(child: widget);
   }
 
   void subscribe() {

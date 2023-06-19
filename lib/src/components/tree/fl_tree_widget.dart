@@ -43,8 +43,6 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
-    BorderRadius borderRadius = BorderRadius.circular(4.0);
-
     Widget treeWidget = TreeView(
       theme: TreeViewTheme(
         colorScheme: Theme.of(context).colorScheme.copyWith(
@@ -68,14 +66,14 @@ class FlTreeWidget<T extends FlTreeModel> extends FlStatelessWidget<T> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: borderRadius,
+        borderRadius: BorderRadius.circular(4.0),
         border: Border.all(width: 1, color: Theme.of(context).primaryColor),
         color: Theme.of(context).colorScheme.background,
       ),
       child: ClipRRect(
         // The clip rect is there to stop the rendering of the children.
         // Otherwise the children would clip the border of the parent container.
-        borderRadius: borderRadius,
+        borderRadius: BorderRadius.circular(3.0),
         child: treeWidget,
       ),
     );

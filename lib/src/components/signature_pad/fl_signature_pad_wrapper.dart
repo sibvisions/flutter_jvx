@@ -84,7 +84,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
       postFrameCallback(context);
     });
 
-    return getPositioned(child: widget);
+    return wrapWidget(child: widget);
   }
 
   @override

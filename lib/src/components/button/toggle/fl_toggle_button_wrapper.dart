@@ -43,6 +43,6 @@ class FlToggleButtonWrapperState<T extends FlToggleButtonModel> extends FlButton
       postFrameCallback(context);
     });
 
-    return getPositioned(child: buttonWidget);
+    return wrapWidget(child: buttonWidget);
   }
 }

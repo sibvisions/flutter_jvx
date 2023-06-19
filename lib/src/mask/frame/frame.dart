@@ -151,7 +151,33 @@ abstract class FrameState extends State<Frame> {
         ),
       );
 
-  List<Widget> getActions() => [];
+  List<Widget> getActions() {
+    List<Widget> actions = [];
+
+    if (IUiService().applicationParameters.value.designModeAllowed) {
+      actions.add(
+        ValueListenableBuilder(
+          valueListenable: IUiService().designMode,
+          builder: (context, designMode, _) {
+            return IconButton(
+              tooltip:
+                  "${FlutterUI.translate("Design Mode")}:${designMode ? FlutterUI.translate("On") : FlutterUI.translate("Off")}",
+              splashRadius: kToolbarHeight / 2,
+              onPressed: () {
+                IUiService().updateDesignMode(!designMode);
+              },
+              icon: Icon(
+                designMode ? Icons.design_services : Icons.design_services_outlined,
+                size: 26,
+              ),
+            );
+          },
+        ),
+      );
+    }
+
+    return actions;
+  }
 
   Widget? getDrawer(BuildContext context) => null;
 

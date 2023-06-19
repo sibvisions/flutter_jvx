@@ -75,7 +75,7 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
       postFrameCallback(context);
     });
 
-    return getPositioned(child: radioButtonWidget);
+    return wrapWidget(child: radioButtonWidget);
   }
 
   @override

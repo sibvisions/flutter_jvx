@@ -41,7 +41,7 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: widget);
+    return wrapWidget(child: widget);
   }
 
   @override

@@ -239,7 +239,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: widget);
+    return wrapWidget(child: widget);
   }
 
   @override

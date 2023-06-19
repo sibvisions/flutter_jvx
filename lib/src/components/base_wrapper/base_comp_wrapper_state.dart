@@ -16,7 +16,7 @@
 
 import 'dart:math';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/command/base_command.dart';
@@ -119,23 +119,127 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   ///
   /// Every wrapper itself is "wrapped" in a [Positioned] widget,
   /// which will positioned itself inside the [Stack] of a [BaseContWrapperState]'s widget.
-  Positioned getPositioned({required Widget child}) {
+  Positioned wrapWidget({required Widget child}) {
     return Positioned(
       top: getTopForPositioned(),
       left: getLeftForPositioned(),
       width: getWidthForPositioned(),
       height: getHeightForPositioned(),
-      child: Opacity(
-        opacity: double.parse(IConfigService().applicationStyle.value?['opacity.controls'] ?? "1"),
-        child: model.ariaLabel.isNotEmpty
-            ? Semantics(
-                container: true,
-                explicitChildNodes: true,
-                label: model.ariaLabel,
-                child: child,
-              )
-            : child,
+      child: wrapWithSemantic(
+        wrapWithDesignListener(
+          wrapWithOpacity(
+            child,
+          ),
+        ),
       ),
+    );
+  }
+
+  Widget wrapWithOpacity(Widget pChild) {
+    return ValueListenableBuilder(
+      valueListenable: IConfigService().applicationStyle,
+      builder: (context, value, builderChild) {
+        return Opacity(
+          opacity: double.parse(value?['opacity.controls'] ?? "1"),
+          child: builderChild,
+        );
+      },
+      child: pChild,
+    );
+  }
+
+  Widget wrapWithSemantic(Widget pChild) {
+    return Semantics(
+      enabled: model.ariaLabel.isNotEmpty,
+      container: true,
+      explicitChildNodes: true,
+      label: model.ariaLabel,
+      child: pChild,
+    );
+  }
+
+  Widget wrapWithDesignListener(Widget pChild) {
+    return ValueListenableBuilder(
+      valueListenable: IUiService().applicationParameters,
+      child: pChild,
+      builder: (context, applicationParameters, builderChild) {
+        if (!applicationParameters.designModeAllowed) {
+          return builderChild!;
+        }
+
+        return ValueListenableBuilder(
+          valueListenable: IUiService().designMode,
+          child: builderChild,
+          builder: (context, designMode, builderChild) {
+            if (!designMode) {
+              return builderChild!;
+            }
+
+            return GestureDetector(
+              onLongPress: () {
+                if (IUiService().designModeElement.value == model.id) {
+                  IUiService().updateDesignModeElement(null);
+                } else {
+                  IUiService().updateDesignModeElement(model.id);
+                }
+              },
+              child: AbsorbPointer(
+                absorbing: absorbPointerInDesignMode,
+                child: wrapWithDesignSelection(builderChild!),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// Whether or not the component should absorb pointer events for its children while designing.
+  ///
+  /// Container should not absorb, while components do.
+  ///
+  /// Default: true
+  bool get absorbPointerInDesignMode {
+    return true;
+  }
+
+  Widget wrapWithDesignSelection(Widget pChild) {
+    return ValueListenableBuilder(
+      valueListenable: IUiService().designModeElement,
+      child: pChild,
+      builder: (context, designModeElement, builderChild) {
+        if (designModeElement != model.id) {
+          return builderChild!;
+        }
+
+        return Container(
+          foregroundDecoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: const Alignment(0, 0),
+              end: const Alignment(0.25, 0), // 0.5/2 = 1/4 * 2 colors = 8 lines
+              stops: const [0, 0.5, 0.5, 1],
+              transform: const GradientRotation(1 / 4 * pi), // rotate the gradient by 45 degrees
+              tileMode: TileMode.repeated, // repeats the gradient over the canvas
+              colors: [
+                // Colors are easy thanks to Flutter's Colors class.
+                Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.primary, //Theme.of(context).primaryColor,
+              width: 2,
+            ),
+          ),
+          child: Opacity(
+            opacity: 0.25,
+            child: builderChild,
+          ),
+        );
+      },
     );
   }
 
@@ -259,22 +363,22 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     return null;
   }
 
-  /// The top value for [getPositioned].
+  /// The top value for [wrapWidget].
   double getTopForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.top : 0.0;
   }
 
-  /// The left value for [getPositioned].
+  /// The left value for [wrapWidget].
   double getLeftForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.left : 0.0;
   }
 
-  /// The width value for [getPositioned].
+  /// The width value for [wrapWidget].
   double getWidthForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.width : 0.0;
   }
 
-  /// The height value for [getPositioned].
+  /// The height value for [wrapWidget].
   double getHeightForPositioned() {
     return layoutData.hasPosition ? layoutData.layoutPosition!.height : 0.0;
   }

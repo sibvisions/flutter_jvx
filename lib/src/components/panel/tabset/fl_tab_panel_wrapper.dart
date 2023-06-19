@@ -188,7 +188,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     }).toList();
     FlutterUI.logUI.d("ChildrenToHide: $childrenToHide");
 
-    return getPositioned(
+    return wrapWidget(
       child: Wrap(
         direction: Axis.vertical,
         verticalDirection: TabPlacements.BOTTOM == model.tabPlacement ? VerticalDirection.up : VerticalDirection.down,

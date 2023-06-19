@@ -111,7 +111,8 @@ class UiService implements IUiService {
       ValueNotifier(ApplicationSettingsResponse.empty());
 
   /// JVx Application Parameters.
-  final ValueNotifier<ApplicationParameters?> _applicationParameters = ValueNotifier(null);
+  final ValueNotifier<ApplicationParameters> _applicationParameters =
+      ValueNotifier(const ApplicationParameters.empty());
 
   /// JVx Application Metadata.
   final ValueNotifier<ApplicationMetaDataResponse?> _applicationMetaData = ValueNotifier(null);
@@ -119,6 +120,10 @@ class UiService implements IUiService {
   final ValueNotifier<bool> _mobileOnly = ValueNotifier(false);
 
   final ValueNotifier<bool> _webOnly = ValueNotifier(false);
+
+  final ValueNotifier<bool> _designMode = ValueNotifier(true);
+
+  final ValueNotifier<String?> _designModeElement = ValueNotifier(null);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -140,8 +145,9 @@ class UiService implements IUiService {
       _clientId.value = null;
       _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
       _applicationSettings.value = ApplicationSettingsResponse.empty();
-      _applicationParameters.value = null;
+      _applicationParameters.value = const ApplicationParameters.empty();
       _applicationMetaData.value = null;
+      _designMode.value = false;
     }
   }
 
@@ -155,6 +161,26 @@ class UiService implements IUiService {
 
   @override
   I18n i18n() => _i18n;
+
+  @override
+  ValueListenable<bool> get designMode {
+    return _designMode;
+  }
+
+  @override
+  void updateDesignMode(bool designMode) {
+    _designMode.value = designMode;
+  }
+
+  @override
+  ValueListenable<String?> get designModeElement {
+    return _designModeElement;
+  }
+
+  @override
+  void updateDesignModeElement(String? pId) {
+    _designModeElement.value = pId;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Communication with other services
@@ -454,7 +480,7 @@ class UiService implements IUiService {
   }
 
   @override
-  ValueNotifier<ApplicationParameters?> get applicationParameters => _applicationParameters;
+  ValueNotifier<ApplicationParameters> get applicationParameters => _applicationParameters;
 
   @override
   void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) {

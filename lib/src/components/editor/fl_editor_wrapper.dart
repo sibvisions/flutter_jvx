@@ -118,7 +118,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       postFrameCallback(context);
     });
 
-    return getPositioned(child: cellEditor.createWidget(model.json));
+    return wrapWidget(child: cellEditor.createWidget(model.json));
   }
 
   @override

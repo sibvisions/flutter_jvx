@@ -86,40 +86,51 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
 
             var menuModel = IUiService().getMenuModel();
 
-            if (!isMenuSearchEnabled && menuModel.count >= 8) {
-              actions.add(IconButton(
-                tooltip: FlutterUI.translate("Search"),
-                splashRadius: kToolbarHeight / 2,
-                onPressed: () {
-                  isMenuSearchEnabled = true;
-                  menuSearchController.clear();
-                  setState(() {});
-                },
-                icon: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 22),
-              ));
-            }
-
-            if (isOffline) {
-              actions.add(IconButton(
-                tooltip: FlutterUI.translate("Go Online"),
-                splashRadius: kToolbarHeight / 2,
-                onPressed: () {
-                  showSyncDialog().then(
-                    (value) async {
-                      switch (value) {
-                        case DialogResult.YES:
-                          unawaited(OfflineUtil.initOnline());
-                          break;
-                        case DialogResult.DISCARD_CHANGES:
-                          unawaited(OfflineUtil.initOnline(true));
-                          break;
-                        default:
-                      }
+            if (!isMenuSearchEnabled) {
+              if (menuModel.count >= 8) {
+                actions.add(
+                  IconButton(
+                    tooltip: FlutterUI.translate("Search"),
+                    splashRadius: kToolbarHeight / 2,
+                    onPressed: () {
+                      isMenuSearchEnabled = true;
+                      menuSearchController.clear();
+                      setState(() {});
                     },
-                  );
-                },
-                icon: const FaIcon(FontAwesomeIcons.towerBroadcast),
-              ));
+                    icon: const FaIcon(
+                      FontAwesomeIcons.magnifyingGlass,
+                      size: 22,
+                    ),
+                  ),
+                );
+              }
+
+              if (isOffline) {
+                actions.add(
+                  IconButton(
+                    tooltip: FlutterUI.translate("Go Online"),
+                    splashRadius: kToolbarHeight / 2,
+                    onPressed: () {
+                      showSyncDialog().then(
+                        (value) async {
+                          switch (value) {
+                            case DialogResult.YES:
+                              unawaited(OfflineUtil.initOnline());
+                              break;
+                            case DialogResult.DISCARD_CHANGES:
+                              unawaited(OfflineUtil.initOnline(true));
+                              break;
+                            default:
+                          }
+                        },
+                      );
+                    },
+                    icon: const FaIcon(
+                      FontAwesomeIcons.towerBroadcast,
+                    ),
+                  ),
+                );
+              }
             }
 
             var appStyle = AppStyle.of(context).applicationStyle;

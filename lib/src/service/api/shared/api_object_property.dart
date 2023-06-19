@@ -387,4 +387,6 @@ abstract class ApiObjectProperty {
   static const String timeout = "timeout";
   static const String timeoutReset = "timeoutReset";
   static const String errorMessage = "errorMessage";
+
+  static const String designMode = "designMode";
 }

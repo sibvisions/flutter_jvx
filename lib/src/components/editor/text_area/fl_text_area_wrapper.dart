@@ -58,7 +58,7 @@ class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: textAreaWidget);
+    return wrapWidget(child: textAreaWidget);
   }
 
   @override

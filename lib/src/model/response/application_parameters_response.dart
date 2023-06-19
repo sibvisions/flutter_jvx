@@ -14,8 +14,7 @@
  * the License.
  */
 
-import '../../service/api/shared/api_object_property.dart';
-import 'api_response.dart';
+import '../../../flutter_jvx.dart';
 
 class ApplicationParametersResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,6 +32,8 @@ class ApplicationParametersResponse extends ApiResponse {
   /// Which screen to open, is a screen name
   final String? openScreen;
 
+  final bool? designModeAllowed;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,5 +43,6 @@ class ApplicationParametersResponse extends ApiResponse {
         applicationTitleWeb = json[ApiObjectProperty.applicationTitleWeb],
         authenticated = json[ApiObjectProperty.authenticated],
         openScreen = json[ApiObjectProperty.openScreen],
+        designModeAllowed = ParseUtil.parseBool(json[ApiObjectProperty.designMode]),
         super.fromJson();
 }

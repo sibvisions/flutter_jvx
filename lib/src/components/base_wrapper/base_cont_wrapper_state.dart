@@ -119,4 +119,9 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
     return changeDetected;
   }
+
+  @override
+  bool get absorbPointerInDesignMode {
+    return false;
+  }
 }
