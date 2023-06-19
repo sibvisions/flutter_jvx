@@ -80,10 +80,22 @@ class FileManagerWeb extends IFileManager {
   }
 
   @override
-  Future<void> renameIndependentDirectory(List<String> pPath, String pNewName) {
+  Future<void> renameIndependentDirectory(List<String> pPath, String pNewName) async {
     String path = _preparePath(pPath.join("/"));
-    _files.entries.where((element) => element.key.startsWith(path));
-    throw UnimplementedError();
+    List<String> parentPath = List.of(pPath)
+      ..removeLast()
+      ..add(pNewName);
+    String newPath = _preparePath(parentPath.join("/"));
+
+    Map<String, File> copyMap = Map.of(_files);
+    for (MapEntry<String, File> entry in copyMap.entries) {
+      if (entry.key.startsWith(path)) {
+        String newKey = entry.key.replaceFirst(path, newPath);
+        if (entry.key == newKey) continue;
+        _files[newKey] = entry.value;
+        _files.remove(entry.key);
+      }
+    }
   }
 
   @override
