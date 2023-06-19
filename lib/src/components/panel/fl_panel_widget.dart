@@ -38,16 +38,20 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
       background ??= FlTextFieldWidget.defaultBackground(context);
     }
 
-    return DecoratedBox(
-      position: DecorationPosition.foreground,
+    BoxDecoration? foregroundDecoration;
+    if (model.hasStandardBorder) {
+      foregroundDecoration = BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: JVxColors.STANDARD_BORDER,
+        ),
+      );
+    }
+
+    return Container(
+      foregroundDecoration: foregroundDecoration,
       decoration: BoxDecoration(
         color: background,
-        borderRadius: model.hasStandardBorder ? BorderRadius.circular(4) : null,
-        border: model.hasStandardBorder
-            ? Border.all(
-                color: JVxColors.STANDARD_BORDER,
-              )
-            : null,
       ),
       child: Stack(children: children),
     );
