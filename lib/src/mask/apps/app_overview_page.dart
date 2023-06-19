@@ -134,6 +134,11 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   void initState() {
     super.initState();
     backgroundBuilder = FlutterUI.of(context).widget.backgroundBuilder;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _refreshApps();
   }
 
