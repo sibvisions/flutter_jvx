@@ -133,6 +133,7 @@ class JVxDebug extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: ControlButtons(
+              hPadding: 14,
               onPressed: (index) async {
                 var effectiveContext = FlutterUI.getEffectiveContext();
                 NavigatorState? navigator;
@@ -148,7 +149,6 @@ class JVxDebug extends StatelessWidget {
                     break;
                 }
               },
-              hPadding: 14,
               labels: const [
                 "Maybe",
                 "Pop",
@@ -165,26 +165,32 @@ class JVxDebug extends StatelessWidget {
               child: const Text("Back"),
             ),
           ),
-          StatefulBuilder(builder: (context, setState) {
-            return DropdownButton<LoginMode>(
-              hint: const Text("Route to Login"),
-              value: cast<MainLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.loginModeNotifier.value,
-              items: LoginMode.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.name),
-                      ))
-                  .toList(),
-              onChanged: (LoginMode? value) {
-                IUiService().routeToLogin(mode: value!);
-                setState(() {});
-              },
-              isExpanded: true,
-            );
-          }),
           ListTile(
             title: Text(
-              "Loading Bar",
+              "Internal URL",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: ControlButtons(
+              hPadding: 14,
+              onPressed: (index) async {
+                switch (index) {
+                  case 0:
+                    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.showInternalUrl = true;
+                    break;
+                  case 1:
+                    JVxOverlay.maybeOf(FlutterUI.getCurrentContext())?.showInternalUrl = false;
+                    break;
+                }
+              },
+              labels: const [
+                "Show",
+                "Hide",
+              ],
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Loading",
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: ControlButtons(
@@ -206,7 +212,7 @@ class JVxDebug extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              "Connection Banner",
+              "Connection State",
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: ControlButtons(
@@ -283,6 +289,7 @@ class UIDebug extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: ControlButtons(
+              hPadding: 18,
               onPressed: (index) async {
                 late StatusBannerLocation location;
                 late String message;
@@ -310,13 +317,29 @@ class UIDebug extends StatelessWidget {
                 );
                 Overlay.of(context).insert(entry);
               },
-              hPadding: 18,
               labels: const [
                 "Top",
                 "Bottom",
               ],
             ),
           ),
+          StatefulBuilder(builder: (context, setState) {
+            return DropdownButton<LoginMode>(
+              hint: const Text("Route to Login"),
+              value: cast<MainLocation>(FlutterUI.getBeamerDelegate().currentBeamLocation)?.loginModeNotifier.value,
+              items: LoginMode.values
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e.name),
+                      ))
+                  .toList(),
+              onChanged: (LoginMode? value) {
+                IUiService().routeToLogin(mode: value!);
+                setState(() {});
+              },
+              isExpanded: true,
+            );
+          }),
         ],
       ),
     );

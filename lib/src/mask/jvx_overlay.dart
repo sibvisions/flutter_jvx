@@ -16,7 +16,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -101,6 +100,13 @@ class JVxOverlayState extends State<JVxOverlay> {
       _forceDisableBarrier = forceDisableBarrier;
     });
   }
+
+  bool _showInternalUrl = false;
+
+  bool get showInternalUrl => _showInternalUrl;
+
+  /// Displays the internal app url on top of the screen.
+  set showInternalUrl(bool value) => setState(() => _showInternalUrl = value);
 
   bool get loading => _loading;
 
@@ -326,18 +332,35 @@ class JVxOverlayState extends State<JVxOverlay> {
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),
-                  // TODO remove
-                  if (kDebugMode)
+                  if (showInternalUrl)
                     Positioned(
-                      top: 50,
-                      left: 150,
-                      right: 150,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Material(
-                          child: Text(
-                            routerDelegate.configuration.location.toString(),
-                            textAlign: TextAlign.center,
+                      top: kToolbarHeight - 16,
+                      left: 0,
+                      right: 0,
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Opacity(
+                              opacity: 0.8,
+                              child: Material(
+                                clipBehavior: Clip.hardEdge,
+                                borderRadius: BorderRadius.circular(20),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListenableBuilder(
+                                    listenable: routerDelegate,
+                                    builder: (context, child) {
+                                      return Text(
+                                        routerDelegate.configuration.location.toString(),
+                                        textAlign: TextAlign.center,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
