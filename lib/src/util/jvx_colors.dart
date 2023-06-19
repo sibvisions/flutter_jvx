@@ -67,59 +67,33 @@ abstract class JVxColors {
       );
     }
 
-    colorScheme = applyJVxColorScheme(colorScheme);
-
     var themeData = ThemeData.from(colorScheme: colorScheme);
     themeData = applyJVxTheme(themeData);
 
     return themeData;
   }
 
-  /// Applies JVx specific color requirements to the [colorScheme].
-  ///
-  /// Basically this overrides every "known" theme color that is black with our [JVxColors.LIGHTER_BLACK].
-  ///
-  /// See also:
-  /// * [applyJVxTheme]
-  static ColorScheme applyJVxColorScheme(ColorScheme colorScheme) {
-    bool isDark(Color color) {
-      return ThemeData.estimateBrightnessForColor(color) == Brightness.dark;
-    }
-
-    if (!isDark(colorScheme.background)) {
-      colorScheme = colorScheme.copyWith(background: JVxColors.DARKER_WHITE);
-    }
-    if (isDark(colorScheme.onPrimary)) {
-      colorScheme = colorScheme.copyWith(onPrimary: JVxColors.LIGHTER_BLACK);
-    }
-    if (isDark(colorScheme.onPrimaryContainer)) {
-      colorScheme = colorScheme.copyWith(onPrimaryContainer: JVxColors.LIGHTER_BLACK);
-    }
-    if (isDark(colorScheme.onBackground)) {
-      colorScheme = colorScheme.copyWith(onBackground: JVxColors.LIGHTER_BLACK);
-    }
-    if (isDark(colorScheme.onSurface)) {
-      colorScheme = colorScheme.copyWith(onSurface: JVxColors.LIGHTER_BLACK);
-    }
-
-    return colorScheme;
+  /// Whether this [color] is darker than the predefined [LIGHTER_BLACK] and therefore considered "black".
+  static bool _isBlack(Color? color) {
+    if (color == null) return false;
+    return color.computeLuminance() <= JVxColors.LIGHTER_BLACK.computeLuminance();
   }
 
   /// Applies JVx specific color requirements to the [themeData].
   ///
-  /// Same as [applyJVxColorScheme] but for [ThemeData].
+  /// Basically this overrides every "known" theme color that is black with our [JVxColors.LIGHTER_BLACK].
   static ThemeData applyJVxTheme(ThemeData themeData) {
-    if (ThemeData.estimateBrightnessForColor(themeData.canvasColor) == Brightness.dark) {
+    if (_isBlack(themeData.canvasColor)) {
       themeData = themeData.copyWith(
         canvasColor: JVxColors.LIGHTER_BLACK,
       );
     }
-    if (ThemeData.estimateBrightnessForColor(themeData.cardColor) == Brightness.dark) {
+    if (_isBlack(themeData.cardColor)) {
       themeData = themeData.copyWith(
         cardColor: JVxColors.LIGHTER_BLACK,
       );
     }
-    if (themeData.textTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
+    if (_isBlack(themeData.textTheme.bodyLarge?.color)) {
       themeData = themeData.copyWith(
         textTheme: themeData.textTheme.apply(
           bodyColor: JVxColors.LIGHTER_BLACK,
@@ -127,7 +101,7 @@ abstract class JVxColors {
         ),
       );
     }
-    if (themeData.primaryTextTheme.bodyLarge?.color?.computeLuminance() == 0.0) {
+    if (_isBlack(themeData.primaryTextTheme.bodyLarge?.color)) {
       themeData = themeData.copyWith(
         primaryTextTheme: themeData.primaryTextTheme.apply(
           bodyColor: JVxColors.LIGHTER_BLACK,
@@ -135,14 +109,14 @@ abstract class JVxColors {
         ),
       );
     }
-    if (themeData.iconTheme.color?.computeLuminance() == 0.0) {
+    if (_isBlack(themeData.iconTheme.color)) {
       themeData = themeData.copyWith(
         iconTheme: themeData.iconTheme.copyWith(
           color: JVxColors.LIGHTER_BLACK,
         ),
       );
     }
-    if (themeData.primaryIconTheme.color?.computeLuminance() == 0.0) {
+    if (_isBlack(themeData.primaryIconTheme.color)) {
       themeData = themeData.copyWith(
         iconTheme: themeData.primaryIconTheme.copyWith(
           color: JVxColors.LIGHTER_BLACK,

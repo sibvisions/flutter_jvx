@@ -156,10 +156,10 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     return Theme(
       data: JVxColors.applyJVxTheme(ThemeData(
         useMaterial3: true,
-        colorScheme: JVxColors.applyJVxColorScheme(ColorScheme.fromSeed(
+        colorScheme: ColorScheme.fromSeed(
           brightness: Theme.of(context).colorScheme.brightness,
           seedColor: Colors.blue,
-        )),
+        ),
       )),
       child: Navigator(
         key: kDebugMode ? GlobalKey() : null,

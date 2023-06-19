@@ -275,7 +275,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                           height: 40,
                           alignment: Alignment.centerRight,
                           decoration: BoxDecoration(
-                            color: parentTheme.canvasColor,
+                            color: parentTheme.colorScheme.surface,
                             borderRadius: const BorderRadius.only(
                               bottomRight: Radius.circular(10),
                             ),
@@ -296,7 +296,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                       child: Material(
                         elevation: 1,
                         clipBehavior: Clip.hardEdge,
-                        color: parentTheme.canvasColor,
+                        color: parentTheme.colorScheme.surface,
                         borderRadius: const BorderRadius.only(
                           bottomRight: Radius.circular(10),
                         ),

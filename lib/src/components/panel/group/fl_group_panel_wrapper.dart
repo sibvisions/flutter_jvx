@@ -143,7 +143,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
         padding: paddings,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: Theme.of(context).colorScheme.background,
             borderRadius: BorderRadius.circular(4.0),
             boxShadow: shadows,
           ),

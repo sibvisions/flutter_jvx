@@ -499,9 +499,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   late ThemeData darkThemeData;
 
   final ThemeData splashTheme = JVxColors.applyJVxTheme(ThemeData(
-    colorScheme: JVxColors.applyJVxColorScheme(ColorScheme.fromSeed(
-      seedColor: Colors.blue,
-    )),
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
   ));
 
   late final StreamSubscription<ConnectivityResult> subscription;
