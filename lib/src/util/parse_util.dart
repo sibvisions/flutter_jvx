@@ -49,9 +49,9 @@ abstract class ParseUtil {
     if (pBool != null) {
       if (pBool is bool) {
         return pBool;
-      } else if (pBool == "true") {
+      } else if (pBool.toString().toLowerCase() == "true") {
         return true;
-      } else if (pBool == "false") {
+      } else if (pBool.toString().toLowerCase() == "false") {
         return false;
       }
     }
