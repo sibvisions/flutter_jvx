@@ -22,14 +22,14 @@ import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_dummy_widget.dart';
 
-class FlDummyWrapper<M extends FlDummyModel> extends BaseCompWrapperWidget<M> {
+class FlDummyWrapper<M extends FlComponentModel> extends BaseCompWrapperWidget<M> {
   const FlDummyWrapper({super.key, required super.model});
 
   @override
   BaseCompWrapperState createState() => _FlDummyWrapperState();
 }
 
-class _FlDummyWrapperState extends BaseCompWrapperState<FlDummyModel> {
+class _FlDummyWrapperState extends BaseCompWrapperState<FlComponentModel> {
   _FlDummyWrapperState() : super();
 
   @override

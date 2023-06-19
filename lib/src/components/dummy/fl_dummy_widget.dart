@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
-class FlDummyWidget extends FlStatelessWidget<FlDummyModel> {
+class FlDummyWidget extends FlStatelessWidget<FlComponentModel> {
   const FlDummyWidget({super.key, required super.model});
 
   @override

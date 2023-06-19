@@ -109,7 +109,7 @@ abstract class ComponentsFactory {
 
       alsoDefault:
       default:
-        return FlDummyWrapper(model: model as FlDummyModel, key: GlobalObjectKey(model.id));
+        return FlDummyWrapper(model: model, key: GlobalObjectKey(model.id));
     }
   }
 
