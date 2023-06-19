@@ -224,8 +224,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
                 // Colors are easy thanks to Flutter's Colors class.
                 Theme.of(context).colorScheme.primary.withOpacity(0.5),
                 Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                Theme.of(context).colorScheme.background.withOpacity(0.5),
+                Theme.of(context).colorScheme.background.withOpacity(0.5),
               ],
             ),
             borderRadius: BorderRadius.circular(4),
@@ -234,10 +234,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
               width: 2,
             ),
           ),
-          child: Opacity(
-            opacity: 0.25,
-            child: builderChild,
-          ),
+          child: builderChild,
         );
       },
     );
