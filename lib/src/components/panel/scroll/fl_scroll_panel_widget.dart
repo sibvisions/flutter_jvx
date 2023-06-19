@@ -102,35 +102,8 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
       background ??= FlTextFieldWidget.defaultBackground(context);
     }
 
-    if (model.hasStandardBorder) {
-      panelWidget = Stack(
-        children: [
-          Positioned(
-            top: 1,
-            left: 1,
-            bottom: 1,
-            right: 1,
-            child: ClipRRect(
-              clipBehavior: Clip.antiAlias,
-              borderRadius: BorderRadius.circular(3),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: -1,
-                    left: -1,
-                    bottom: -1,
-                    right: -1,
-                    child: panelWidget,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
     return DecoratedBox(
+      position: DecorationPosition.foreground,
       decoration: BoxDecoration(
         color: background,
         borderRadius: model.hasStandardBorder ? BorderRadius.circular(4) : null,
