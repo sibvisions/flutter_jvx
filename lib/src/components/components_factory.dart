@@ -60,12 +60,6 @@ abstract class ComponentsFactory {
         return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: GlobalObjectKey(model.id));
       case FlContainerClassname.TABSET_PANEL:
         return FlTabPanelWrapper(model: model as FlTabPanelModel, key: GlobalObjectKey(model.id));
-      case FlContainerClassname.CUSTOM_CONTAINER:
-        switch (model.classNameEventSourceRef) {
-          case "SignaturePad":
-            return FlSignaturePadWrapper(model: model as FlCustomContainerModel, key: GlobalObjectKey(model.id));
-        }
-        continue alsoDefault;
 
       // Components
       case FlComponentClassname.BUTTON:
@@ -102,6 +96,15 @@ abstract class ComponentsFactory {
         return FlGaugeWrapper(model: model as FlGaugeModel, key: GlobalObjectKey(model.id));
       case FlComponentClassname.TREE:
         return FlTreeWrapper(model: model as FlTreeModel, key: GlobalObjectKey(model.id));
+
+      // Custom
+      case FlContainerClassname.CUSTOM_CONTAINER:
+      case FlComponentClassname.CUSTOM_COMPONENT:
+        switch (model.classNameEventSourceRef) {
+          case FlComponentClassname.SIGNATURE_PAD:
+            return FlSignaturePadWrapper(model: model as FlCustomContainerModel, key: GlobalObjectKey(model.id));
+        }
+        continue alsoDefault;
 
       // Cell editors:
       case FlComponentClassname.EDITOR:

@@ -21,7 +21,8 @@ abstract class FlComponentClassname {
   static const String ICON = "Icon";
   static const String POPUP_MENU = "PopupMenu";
   static const String MENU_ITEM = "MenuItem";
-  static const String SEPERATOR = "Separator";
+  static const String SEPARATOR = "Separator";
+  static const String SIGNATURE_PAD = "SignaturePad";
   static const String POPUP_MENU_BUTTON = "PopupMenuButton";
   static const String CHECK_BOX = "CheckBox";
   static const String PASSWORD_FIELD = "PasswordField";
@@ -35,6 +36,7 @@ abstract class FlComponentClassname {
   static const String GAUGE = "Gauge";
   static const String EDITOR = "Editor";
   static const String TREE = "Tree";
+  static const String CUSTOM_COMPONENT = "CustomComponent";
 }
 
 abstract class FlContainerClassname {

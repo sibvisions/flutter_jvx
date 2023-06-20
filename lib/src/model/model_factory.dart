@@ -54,7 +54,7 @@ abstract class ModelFactory {
         return FlPopupMenuModel();
       case FlComponentClassname.MENU_ITEM:
         return FlPopupMenuItemModel();
-      case FlComponentClassname.SEPERATOR:
+      case FlComponentClassname.SEPARATOR:
         return FlSeparatorModel();
       case FlComponentClassname.POPUP_MENU_BUTTON:
         return FlPopupMenuButtonModel();
