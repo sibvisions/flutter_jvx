@@ -15,7 +15,6 @@
  */
 
 import 'package:beamer/beamer.dart';
-import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:rxdart/rxdart.dart';
@@ -43,6 +42,8 @@ import '../../util/parse_util.dart';
 import '../frame/frame.dart';
 import '../state/app_style.dart';
 import '../state/loading_bar.dart';
+import 'error_screen.dart';
+import 'skeleton_screen.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for
@@ -207,89 +208,19 @@ class WorkScreenState extends State<WorkScreen> {
                 Widget body;
                 if (snapshot.connectionState == ConnectionState.none) {
                   // Invalid screen name
-                  body = Center(
-                    child: Text(
-                      FlutterUI.translate("Screen not found."),
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
+                  body = const ErrorScreen(
+                    message: "Screen not found.",
                   );
                 } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                  body = Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Tooltip(
-                          message: snapshot.error.toString(),
-                          child: Text(
-                            FlutterUI.translate("Error occurred while opening the screen."),
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ),
-                        if (item != null) const SizedBox(height: 20),
-                        if (item != null)
-                          ElevatedButton(
-                            onPressed: () {
-                              _initScreen();
-                              setState(() {});
-                            },
-                            child: Text(FlutterUI.translate("Retry")),
-                          )
-                      ],
-                    ),
+                  body = ErrorScreen(
+                    extra: snapshot.error?.toString(),
+                    retry: () {
+                      _initScreen();
+                      setState(() {});
+                    },
                   );
                 } else {
-                  const Duration animationDuration = Duration(milliseconds: 750 + 550);
-                  const Duration animationDurationTwo = Duration(milliseconds: 450 + 550);
-                  body = const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CardLoading(
-                        height: 25,
-                        width: 100,
-                        animationDuration: animationDuration,
-                        animationDurationTwo: animationDurationTwo,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        margin: EdgeInsets.only(bottom: 10),
-                      ),
-                      CardLoading(
-                        height: 50,
-                        animationDuration: animationDuration,
-                        animationDurationTwo: animationDurationTwo,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        margin: EdgeInsets.only(bottom: 10),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: CardLoading(
-                          height: 50,
-                          width: 120,
-                          animationDuration: animationDuration,
-                          animationDurationTwo: animationDurationTwo,
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          margin: EdgeInsets.only(bottom: 10),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      CardLoading(
-                        height: 25,
-                        width: 100,
-                        animationDuration: animationDuration,
-                        animationDurationTwo: animationDurationTwo,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        margin: EdgeInsets.only(bottom: 10),
-                      ),
-                      Expanded(
-                        child: CardLoading(
-                          height: double.infinity,
-                          animationDuration: animationDuration,
-                          animationDurationTwo: animationDurationTwo,
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                        ),
-                      ),
-                    ],
-                  );
+                  body = const SkeletonScreen();
                 }
 
                 body = Padding(
@@ -297,7 +228,7 @@ class WorkScreenState extends State<WorkScreen> {
                   child: body,
                 );
 
-                // Skeleton scaffold shown while loading.
+                // Dummy scaffold shown while loading/error.
                 return Scaffold(
                   resizeToAvoidBottomInset: false,
                   appBar: frame?.getAppBar(
