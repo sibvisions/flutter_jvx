@@ -14,7 +14,7 @@
  * the License.
  */
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../util/jvx_colors.dart';
@@ -38,22 +38,31 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
       background ??= FlTextFieldWidget.defaultBackground(context);
     }
 
-    BoxDecoration? foregroundDecoration;
+    Widget panelWidget = DecoratedBox(
+      decoration: BoxDecoration(color: model.hasStandardBorder ? Colors.green : background),
+      child: Stack(children: children),
+    );
+
     if (model.hasStandardBorder) {
-      foregroundDecoration = BoxDecoration(
+      return wrapWithStandardBorder(panelWidget);
+    }
+
+    return panelWidget;
+  }
+
+  static Widget wrapWithStandardBorder(Widget pPanelWidget) {
+    return Container(
+      foregroundDecoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
         border: Border.all(
           color: JVxColors.STANDARD_BORDER,
         ),
-      );
-    }
-
-    return Container(
-      foregroundDecoration: foregroundDecoration,
-      decoration: BoxDecoration(
-        color: background,
       ),
-      child: Stack(children: children),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: pPanelWidget,
     );
   }
 }

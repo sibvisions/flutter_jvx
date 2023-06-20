@@ -18,7 +18,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/component/fl_component_model.dart';
-import '../../../util/jvx_colors.dart';
 import '../../editor/text_field/fl_text_field_widget.dart';
 import '../fl_panel_widget.dart';
 
@@ -102,22 +101,15 @@ class FlScrollPanelWidget extends FlPanelWidget<FlPanelModel> {
       background ??= FlTextFieldWidget.defaultBackground(context);
     }
 
-    BoxDecoration? foregroundDecoration;
-    if (model.hasStandardBorder) {
-      foregroundDecoration = BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: JVxColors.STANDARD_BORDER,
-        ),
-      );
-    }
-
-    return Container(
-      foregroundDecoration: foregroundDecoration,
-      decoration: BoxDecoration(
-        color: background,
-      ),
+    panelWidget = DecoratedBox(
+      decoration: BoxDecoration(color: background),
       child: panelWidget,
     );
+
+    if (model.hasStandardBorder) {
+      return FlPanelWidget.wrapWithStandardBorder(panelWidget);
+    }
+
+    return panelWidget;
   }
 }
