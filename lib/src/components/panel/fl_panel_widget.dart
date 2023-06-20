@@ -39,7 +39,7 @@ class FlPanelWidget<T extends FlPanelModel> extends FlStatelessWidget<T> {
     }
 
     Widget panelWidget = DecoratedBox(
-      decoration: BoxDecoration(color: model.hasStandardBorder ? Colors.green : background),
+      decoration: BoxDecoration(color: background),
       child: Stack(children: children),
     );
 
