@@ -34,6 +34,7 @@ abstract class ModelFactory {
         return FlSplitPanelModel();
       case FlContainerClassname.TABSET_PANEL:
         return FlTabPanelModel();
+      case FlComponentClassname.SIGNATURE_PAD:
       case FlContainerClassname.CUSTOM_CONTAINER:
         return FlCustomContainerModel();
 
