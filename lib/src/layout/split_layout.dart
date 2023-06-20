@@ -188,12 +188,16 @@ class SplitLayout extends ILayout implements ICloneable {
 
   @override
   ILayout clone() {
-    var clone = SplitLayout(leftTopRatio: leftTopRatio, splitAlignment: splitAlignment, splitterSize: splitterSize);
-    clone.firstComponentSize = firstComponentSize;
-    clone.secondComponentSize = secondComponentSize;
-    clone.firstComponentViewer = firstComponentViewer;
-    clone.secondComponentViewer = secondComponentViewer;
-    return clone;
+    return SplitLayout(
+      leftTopRatio: leftTopRatio,
+      splitAlignment: splitAlignment,
+      splitterSize: splitterSize,
+      calculateLikeScroll: calculateLikeScroll,
+    )
+      ..firstComponentSize = firstComponentSize
+      ..secondComponentSize = secondComponentSize
+      ..firstComponentViewer = firstComponentViewer
+      ..secondComponentViewer = secondComponentViewer;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
