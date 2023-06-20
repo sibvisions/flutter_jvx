@@ -24,52 +24,63 @@ class SkeletonScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const Duration animationDuration = Duration(milliseconds: 750 + 550);
     const Duration animationDurationTwo = Duration(milliseconds: 450 + 550);
-    return const Column(
+    final CardLoadingTheme cardLoadingTheme = Theme.of(context).brightness == Brightness.light
+        ? CardLoadingTheme.defaultTheme
+        : const CardLoadingTheme(
+            colorOne: Color(0x40E5E5E5),
+            colorTwo: Color(0x40F0F0F0),
+          );
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CardLoading(
+          cardLoadingTheme: cardLoadingTheme,
           height: 25,
           width: 100,
           animationDuration: animationDuration,
           animationDurationTwo: animationDurationTwo,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          margin: EdgeInsets.only(bottom: 10),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          margin: const EdgeInsets.only(bottom: 10),
         ),
         CardLoading(
+          cardLoadingTheme: cardLoadingTheme,
           height: 50,
           animationDuration: animationDuration,
           animationDurationTwo: animationDurationTwo,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          margin: EdgeInsets.only(bottom: 10),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          margin: const EdgeInsets.only(bottom: 10),
         ),
         Align(
           alignment: Alignment.centerRight,
           child: CardLoading(
+            cardLoadingTheme: cardLoadingTheme,
             height: 50,
             width: 120,
             animationDuration: animationDuration,
             animationDurationTwo: animationDurationTwo,
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            margin: EdgeInsets.only(bottom: 10),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+            margin: const EdgeInsets.only(bottom: 10),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 50,
         ),
         CardLoading(
+          cardLoadingTheme: cardLoadingTheme,
           height: 25,
           width: 100,
           animationDuration: animationDuration,
           animationDurationTwo: animationDurationTwo,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          margin: EdgeInsets.only(bottom: 10),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          margin: const EdgeInsets.only(bottom: 10),
         ),
         Expanded(
           child: CardLoading(
+            cardLoadingTheme: cardLoadingTheme,
             height: double.infinity,
             animationDuration: animationDuration,
             animationDurationTwo: animationDurationTwo,
-            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
           ),
         ),
       ],
