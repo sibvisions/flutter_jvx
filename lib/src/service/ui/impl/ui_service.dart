@@ -53,6 +53,7 @@ import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/main_location.dart';
 import '../../../util/extensions/string_extensions.dart';
 import '../../../util/jvx_colors.dart';
+import '../../apps/app_service.dart';
 import '../../command/i_command_service.dart';
 import '../../config/i_config_service.dart';
 import '../../data/i_data_service.dart';
@@ -300,7 +301,7 @@ class UiService implements IUiService {
   Future<void> routeToAppOverview() async {
     if (!checkFirstSplash(false)) return;
 
-    var stopApp = FlutterUI.of(FlutterUI.getEffectiveContext()!).stopApp();
+    var stopApp = AppService().stopApp();
 
     FlutterUI.clearHistory();
     FlutterUI.getBeamerDelegate().beamToReplacementNamed("/");

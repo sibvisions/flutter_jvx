@@ -124,11 +124,10 @@ class MainLocation extends BeamLocation<BeamState> {
   }
 
   Future<void> _startDeepLinkApp(BuildContext context, ServerConfig deepLinkConfig) async {
-    var flutterUIState = FlutterUI.of(context);
     App deepLinkApp = await App.createAppFromConfig(deepLinkConfig);
     // Only start app if it isn't already running
     if (IConfigService().currentApp.value != deepLinkApp.id) {
-      await flutterUIState
+      await AppService()
           .startApp(appId: deepLinkApp.id, autostart: true)
           .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
     }

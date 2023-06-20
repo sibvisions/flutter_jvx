@@ -38,7 +38,6 @@ import 'mask/jvx_overlay.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/command/api/login_command.dart';
-import 'model/config/application_parameters.dart';
 import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
 import 'routing/locations/main_location.dart';
@@ -504,9 +503,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   late final StreamSubscription<ConnectivityResult> subscription;
 
-  Future<void>? startupFuture;
-  Future<void>? exitFuture;
-
   /// The last password that the user entered, used for offline switch.
   String? lastPassword;
 
@@ -528,14 +524,17 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         // Guards / by beaming to /menu if an app is active
         BeamGuard(
           pathPatterns: ["/"],
-          check: (context, location) => IConfigService().currentApp.value == null || exitFuture != null,
+          check: (context, location) =>
+              IConfigService().currentApp.value == null || AppService().exitFuture.value != null,
           beamToNamed: (origin, target) => "/home",
         ),
         // Guards everything except / and /settings (e.g. /menu) by beaming to / if there is no active app
         BeamGuard(
           guardNonMatching: true,
           pathPatterns: ["/", "/settings"],
-          check: (context, location) => IConfigService().currentApp.value != null && exitFuture == null,
+          check: (context, location) {
+            return IConfigService().currentApp.value != null && AppService().exitFuture.value == null;
+          },
           beamToNamed: (origin, target) {
             BeamState targetState = target.state as BeamState;
             var parameters = Map.of(targetState.queryParameters);
@@ -568,44 +567,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     // Init
     if (urlApp != null) {
-      startApp(appId: urlApp!.id, autostart: true);
+      AppService().startApp(appId: urlApp!.id, autostart: true);
     } else {
-      App.getAppsByIDs(AppService().getAppIds()).then((apps) {
-        AppConfig appConfig = IConfigService().getAppConfig()!;
-        bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
-        App? defaultApp = apps.firstWhereOrNull((e) {
-          return e.isDefault &&
-              (e.predefined || ((appConfig.customAppsAllowed ?? false) || (appConfig.forceSingleAppMode ?? false)));
-        });
-        if (defaultApp == null && apps.length == 1 && !showAppOverviewWithoutDefault) {
-          defaultApp = apps.firstOrNull;
-        }
-        if (defaultApp?.isStartable ?? false) {
-          startApp(appId: defaultApp!.id, autostart: true);
-        }
-      });
+      AppService().startDefaultApp();
     }
-  }
-
-  Future<void> startApp({String? appId, bool? autostart}) {
-    setState(() {
-      exitFuture = null;
-      startupFuture = AppService()
-          .startApp(appId: appId, autostart: autostart)
-          .then((value) => changedTheme())
-          .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
-    });
-    return startupFuture!;
-  }
-
-  Future<void> stopApp([bool resetAppName = true]) {
-    setState(() {
-      startupFuture = null;
-      exitFuture = AppService()
-          .stopApp(resetAppName)
-          .catchError(FlutterUI.createErrorHandler("There was an error while exiting the app"));
-    });
-    return exitFuture!;
   }
 
   @override
@@ -617,11 +582,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       "en",
     }.whereNotNull().map((e) => Locale(e)).toList();
 
-    return ValueListenableBuilder<ApplicationParameters?>(
-      valueListenable: IUiService().applicationParameters,
-      builder: (context, value, _) {
-        String title =
-            (kIsWeb ? value?.applicationTitleWeb : null) ?? widget.appConfig?.title ?? FlutterUI.packageInfo.appName;
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        IUiService().applicationParameters,
+        IConfigService().applicationStyle,
+      ]),
+      builder: (context, _) {
+        String title = (kIsWeb ? IUiService().applicationParameters.value.applicationTitleWeb : null) ??
+            widget.appConfig?.title ??
+            FlutterUI.packageInfo.appName;
         return MaterialApp.router(
           themeMode: IConfigService().themePreference.value,
           theme: themeData,
@@ -633,68 +602,75 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           routerDelegate: routerDelegate,
           backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
           title: title,
-          builder: _routeBuilder(),
+          builder: _routeBuilder,
         );
       },
     );
   }
 
-  TransitionBuilder _routeBuilder() {
-    return (context, child) {
-      Widget futureBuilder = FutureBuilder(
-        future: startupFuture,
-        builder: (context, startupSnapshot) => FutureBuilder(
-          future: exitFuture,
-          builder: (context, exitSnapshot) {
-            if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
-                (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
-              retrySplash() => startApp();
-              splashReturnToApps() {
-                IUiService().routeToAppOverview();
-                setState(() {
-                  startupFuture = null;
-                });
+  Widget _routeBuilder(BuildContext context, Widget? child) {
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        AppService().startupFuture,
+        AppService().exitFuture,
+      ]),
+      child: child,
+      builder: (context, child) {
+        Widget futureBuilder = FutureBuilder(
+          future: AppService().startupFuture.value,
+          builder: (context, startupSnapshot) => FutureBuilder(
+            future: AppService().exitFuture.value,
+            builder: (context, exitSnapshot) {
+              if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
+                  (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
+                retrySplash() => AppService().startApp();
+                splashReturnToApps() {
+                  IUiService().routeToAppOverview();
+                  setState(() {
+                    AppService().startupFuture.value = null;
+                  });
+                }
+
+                return _buildSplash(
+                  AppService().startupFuture.value!,
+                  retry: retrySplash,
+                  returnToApps: splashReturnToApps,
+                  childrenBuilder: (snapshot) => [
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
+                      _getStartupErrorDialog(
+                        context,
+                        snapshot,
+                        retry: retrySplash,
+                        returnToApps: splashReturnToApps,
+                      ),
+                  ],
+                );
+              }
+              FlutterUI.initiated = true;
+
+              if (startupSnapshot.connectionState == ConnectionState.none &&
+                  ![ConnectionState.none, ConnectionState.done].contains(exitSnapshot.connectionState)) {
+                return _buildExitSplash(JVxOverlay(child: child), snapshot: exitSnapshot);
               }
 
-              return _buildSplash(
-                startupFuture!,
-                retry: retrySplash,
-                returnToApps: splashReturnToApps,
-                childrenBuilder: (snapshot) => [
-                  if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
-                    _getStartupErrorDialog(
-                      context,
-                      snapshot,
-                      retry: retrySplash,
-                      returnToApps: splashReturnToApps,
-                    ),
-                ],
-              );
-            }
-            FlutterUI.initiated = true;
+              return JVxOverlay(child: child);
+            },
+          ),
+        );
 
-            if (startupSnapshot.connectionState == ConnectionState.none &&
-                ![ConnectionState.none, ConnectionState.done].contains(exitSnapshot.connectionState)) {
-              return _buildExitSplash(JVxOverlay(child: child), snapshot: exitSnapshot);
-            }
-
-            return JVxOverlay(child: child);
-          },
-        ),
-      );
-
-      return DebugOverlay(
-        opacity: 0.95,
-        logBucket: FlutterUI.logBucket,
-        httpBucket: FlutterUI.httpBucket,
-        debugEntries: [
-          const JVxDebug(),
-          ...widget.debugOverlayEntries,
-          const UIDebug(),
-        ],
-        child: futureBuilder,
-      );
-    };
+        return DebugOverlay(
+          opacity: 0.95,
+          logBucket: FlutterUI.logBucket,
+          httpBucket: FlutterUI.httpBucket,
+          debugEntries: [
+            const JVxDebug(),
+            ...widget.debugOverlayEntries,
+            const UIDebug(),
+          ],
+          child: futureBuilder,
+        );
+      },
+    );
   }
 
   /// Builds a Navigator with a custom theme to push dialogs in the splash.

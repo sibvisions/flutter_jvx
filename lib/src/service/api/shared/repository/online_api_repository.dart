@@ -116,6 +116,7 @@ import '../../../../model/response/view/message/message_view.dart';
 import '../../../../model/response/view/message/session_expired_response.dart';
 import '../../../../util/external/retry.dart';
 import '../../../../util/parse_util.dart';
+import '../../../apps/app_service.dart';
 import '../../../command/i_command_service.dart';
 import '../../../command/shared/processor/config/save_application_meta_data_command_processor.dart';
 import '../../../config/i_config_service.dart';
@@ -435,7 +436,7 @@ class OnlineApiRepository extends IRepository {
             String? className = jsonData["arguments"]?["className"];
 
             if (command == "dyn:relaunch") {
-              FlutterUI.of(FlutterUI.getCurrentContext()!).startApp();
+              AppService().startApp();
             } else if (command == "dyn:reloadCss") {
               // not relevant for mobile
             } else if (command == "dyn:previewScreen" && className != null) {

@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../service/api/i_api_service.dart';
+import '../../service/apps/app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../login/default/cards/change_password.dart';
@@ -77,7 +78,7 @@ abstract class Frame extends StatefulWidget {
 
   void logoutOrRestart() {
     if (IApiService().getRepository().cancelledSessionExpired.value) {
-      FlutterUI.of(FlutterUI.getCurrentContext()!).startApp();
+      AppService().startApp();
     } else {
       LogoutCommand logoutCommand = LogoutCommand(reason: "Drawer menu logout");
       IUiService().sendCommand(logoutCommand);

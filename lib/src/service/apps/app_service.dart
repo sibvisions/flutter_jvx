@@ -16,8 +16,10 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../config/app_config.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/exit_command.dart';
 import '../../model/command/api/startup_command.dart';
@@ -34,6 +36,9 @@ class AppService {
   bool _startedManually = false;
 
   late ValueNotifier<Set<String>> _storedAppIds;
+
+  ValueNotifier<Future<void>?> startupFuture = ValueNotifier(null);
+  ValueNotifier<Future<void>?> exitFuture = ValueNotifier(null);
 
   /// Returns the singleton instance.
   factory AppService() => services<AppService>();
@@ -121,14 +126,48 @@ class AppService {
     }
   }
 
-  Future<void> startApp({String? appId, bool? autostart}) async {
+  /// Retrieves all known apps and starts a default app, if applicable.
+  Future<void> startDefaultApp() {
+    return App.getAppsByIDs(getAppIds()).then((apps) {
+      AppConfig appConfig = IConfigService().getAppConfig()!;
+      bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
+      App? defaultApp = apps.firstWhereOrNull((e) {
+        return e.isDefault &&
+            (e.predefined || ((appConfig.customAppsAllowed ?? false) || (appConfig.forceSingleAppMode ?? false)));
+      });
+      if (defaultApp == null && apps.length == 1 && !showAppOverviewWithoutDefault) {
+        defaultApp = apps.firstOrNull;
+      }
+      if (defaultApp?.isStartable ?? false) {
+        startApp(appId: defaultApp!.id, autostart: true);
+      }
+    });
+  }
+
+  /// Starts an app known by its [appId] and stops the currently running app, if applicable.
+  ///
+  /// This can be used to restart the current app, by calling it without parameters.
+  ///
+  /// [autostart] controls if this call should be considered as a non-user action,
+  /// for example when starting a default app without any user interaction.
+  ///
+  /// See also:
+  /// * [App.createApp]
+  /// * [stopApp]
+  Future<void> startApp({String? appId, bool? autostart}) {
+    exitFuture.value = null;
+    return startupFuture.value = _startApp(appId: appId, autostart: autostart)
+        .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
+  }
+
+  Future<void> _startApp({String? appId, bool? autostart}) async {
     if (appId == null && IConfigService().currentApp.value == null) {
       FlutterUI.log.e("Called 'startApp' without an appId or a currentApp");
       await IUiService().routeToAppOverview();
       return;
     }
 
-    await stopApp(false);
+    await _stopApp(false);
 
     if (appId != null) {
       await IConfigService().updateCurrentApp(appId);
@@ -160,7 +199,13 @@ class AppService {
   }
 
   /// Stops the currently running app.
-  Future<void> stopApp([bool resetAppName = true]) async {
+  Future<void> stopApp() {
+    startupFuture.value = null;
+    return exitFuture.value =
+        _stopApp().catchError(FlutterUI.createErrorHandler("There was an error while exiting the app"));
+  }
+
+  Future<void> _stopApp([bool resetAppName = true]) async {
     if (!IConfigService().offline.value && IUiService().clientId.value != null) {
       unawaited(ICommandService()
           .sendCommand(ExitCommand(reason: "App has been stopped"))

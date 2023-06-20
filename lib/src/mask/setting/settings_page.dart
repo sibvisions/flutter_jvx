@@ -561,7 +561,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (_changesPending()) {
         await IConfigService().updateUserLanguage(language);
         if (IUiService().clientId.value != null) {
-          unawaited(FlutterUI.of(FlutterUI.getCurrentContext()!).startApp());
+          unawaited(AppService().startApp());
           return;
         }
       }
