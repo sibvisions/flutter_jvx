@@ -365,10 +365,11 @@ class WorkScreenState extends State<WorkScreen> {
 
     if (builtScreen?.screen == null) {
       FlutterUI.logUI.wtf("Model/Custom screen not found for work screen: $screenLongName");
-      return Center(
-        child: Text(
-          FlutterUI.translate("Failed to load screen, please try again."),
-          style: Theme.of(context).textTheme.titleLarge,
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ErrorScreen(
+          message: FlutterUI.translate("Failed to load screen, please try again."),
+          extra: "Model/Custom screen not found for work screen: $screenLongName",
         ),
       );
     }
