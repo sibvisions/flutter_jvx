@@ -177,7 +177,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       selectedRecords.remove(dataProvider);
     }
 
-    if (initialized && _hasAllMetaData()) {
+    if (initialized) {
       _updateSelection();
     }
   }
@@ -251,7 +251,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     if (pExpanded) {
       if (node.children.isEmpty) {
         _fetchNodeChildren(node);
-      } else {
+      } else if (model.detectEndNode) {
         for (Node<NodeData> child in List<Node<NodeData>>.from(node.children)) {
           if (child.children.isEmpty && child.parent) {
             _fetchNodeChildren(child);
@@ -508,11 +508,20 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
     if (selectedTreePath.isEmpty) {
       controller = controller.copyWith(selectedKey: "");
     } else {
-      Node? selectedNode = getNodeFromTreePath(selectedTreePath);
+      // Select nearest node and open it. Should fetch until the selected row through the fetching of child nodes of
+      // expanding parents, which in turn goes in here, opens the children which fetch their children and so on.
+      // Until the selected row is fetched and selected.
+
+      Node? selectedNode;
+      for (int i = selectedTreePath.length; i >= 0 && selectedNode == null; i--) {
+        selectedNode = getNodeFromTreePath(selectedTreePath.sublist(0, i));
+      }
+
       if (selectedNode != null) {
-        controller = controller.copyWith(selectedKey: selectedNode.key);
-      } else {
-        controller = controller.copyWith(selectedKey: "");
+        controller = controller.copyWith(
+          selectedKey: selectedNode.key,
+          children: controller.expandToNode(selectedNode.key),
+        );
       }
     }
 
@@ -520,9 +529,9 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   Node? getNodeFromTreePath(List<int> pTreePath, [Node? parentNode]) {
-    Iterator iter = (parentNode?.children ?? controller.children).iterator;
-    while (iter.moveNext()) {
-      Node<NodeData> child = iter.current;
+    Iterator iterator = (parentNode?.children ?? controller.children).iterator;
+    while (iterator.moveNext()) {
+      Node<NodeData> child = iterator.current;
       if (listEquals(child.data!.treePath, pTreePath)) {
         return child;
       } else if (child.isParent &&
