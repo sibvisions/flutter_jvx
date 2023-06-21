@@ -23,8 +23,10 @@ import '../flutter_ui.dart';
 import '../mask/menu/menu.dart';
 import '../model/api_interaction.dart';
 import '../model/command/base_command.dart';
+import '../model/config/application_parameters.dart';
 import '../model/menu/menu_model.dart';
 import '../model/request/api_request.dart';
+import '../service/ui/i_ui_service.dart';
 import 'custom_menu_item.dart';
 import 'custom_screen.dart';
 
@@ -98,6 +100,9 @@ abstract class AppManager {
 
   /// Can be used to modify the cookie list for each request
   void modifyCookies(List<Cookie> cookies) {}
+
+  /// Can be used to modify the application parameters before they get updated via [IUiService.updateApplicationParameters]
+  void modifyApplicationParameters(ApplicationParameters pApplicationParameters) {}
 
   /// Can be used to modify a command which is to be executed. Default implementation returns original [pSentCommand]
   /// This method can be used to modify command properties, return a different command or even return null to cancel the command.

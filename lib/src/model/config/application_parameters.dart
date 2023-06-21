@@ -14,46 +14,26 @@
  * the License.
  */
 
-import '../response/application_parameters_response.dart';
-
 class ApplicationParameters {
-  final String? applicationTitleName;
-  final String? applicationTitleWeb;
-  final String? authenticated;
-  final String? openScreen;
-  final bool designModeAllowed;
+  String? applicationTitleName;
+  String? applicationTitleWeb;
+  String? authenticated;
+  String? openScreen;
+  bool designModeAllowed;
 
-  const ApplicationParameters({
+  ApplicationParameters({
     this.applicationTitleName,
     this.applicationTitleWeb,
     this.authenticated,
     this.openScreen,
-    this.designModeAllowed = false,
-  });
+    bool? designModeAllowed,
+  }) : designModeAllowed = designModeAllowed ?? false;
 
-  const ApplicationParameters.empty() : this();
-
-  ApplicationParameters merge(ApplicationParameters? other) {
-    if (other == null) return this;
-
-    return ApplicationParameters(
-      applicationTitleName: other.applicationTitleName ?? applicationTitleName,
-      applicationTitleWeb: other.applicationTitleWeb ?? applicationTitleWeb,
-      authenticated: other.authenticated ?? authenticated,
-      openScreen: other.openScreen ?? openScreen,
-      designModeAllowed: other.designModeAllowed,
-    );
-  }
-
-  ApplicationParameters mergeResponse(ApplicationParametersResponse? other) {
-    if (other == null) return this;
-
-    return ApplicationParameters(
-      applicationTitleName: other.applicationTitleName ?? applicationTitleName,
-      applicationTitleWeb: other.applicationTitleWeb ?? applicationTitleWeb,
-      authenticated: other.authenticated ?? authenticated,
-      openScreen: other.openScreen ?? openScreen,
-      designModeAllowed: other.designModeAllowed ?? designModeAllowed,
-    );
+  void merge(ApplicationParameters other) {
+    applicationTitleName = other.applicationTitleName ?? applicationTitleName;
+    applicationTitleWeb = other.applicationTitleWeb ?? applicationTitleWeb;
+    authenticated = other.authenticated ?? authenticated;
+    openScreen = other.openScreen ?? openScreen;
+    designModeAllowed = other.designModeAllowed;
   }
 }

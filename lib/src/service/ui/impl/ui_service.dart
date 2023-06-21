@@ -47,7 +47,6 @@ import '../../../model/menu/menu_group_model.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../model/response/application_meta_data_response.dart';
-import '../../../model/response/application_parameters_response.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/main_location.dart';
@@ -112,8 +111,7 @@ class UiService implements IUiService {
       ValueNotifier(ApplicationSettingsResponse.empty());
 
   /// JVx Application Parameters.
-  final ValueNotifier<ApplicationParameters> _applicationParameters =
-      ValueNotifier(const ApplicationParameters.empty());
+  final ValueNotifier<ApplicationParameters> _applicationParameters = ValueNotifier(ApplicationParameters());
 
   /// JVx Application Metadata.
   final ValueNotifier<ApplicationMetaDataResponse?> _applicationMetaData = ValueNotifier(null);
@@ -146,7 +144,7 @@ class UiService implements IUiService {
       _clientId.value = null;
       _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
       _applicationSettings.value = ApplicationSettingsResponse.empty();
-      _applicationParameters.value = const ApplicationParameters.empty();
+      _applicationParameters.value = ApplicationParameters();
       _applicationMetaData.value = null;
       _designMode.value = false;
     }
@@ -484,9 +482,14 @@ class UiService implements IUiService {
   ValueNotifier<ApplicationParameters> get applicationParameters => _applicationParameters;
 
   @override
-  void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) {
-    _applicationParameters.value =
-        const ApplicationParameters.empty().merge(_applicationParameters.value).mergeResponse(pApplicationParameters);
+  void updateApplicationParameters(ApplicationParameters pApplicationParameters) {
+    var newAppParam = ApplicationParameters()
+      ..merge(_applicationParameters.value)
+      ..merge(pApplicationParameters);
+
+    getAppManager()?.modifyApplicationParameters(newAppParam);
+
+    _applicationParameters.value = newAppParam;
   }
 
   @override
