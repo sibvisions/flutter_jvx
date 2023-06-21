@@ -49,11 +49,11 @@ class GridMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return InkWell(
-      onTap: () => onClick(context, item: menuItemModel),
-      child: Ink(
-        color: (theme.brightness == Brightness.light ? theme.colorScheme.primary : theme.colorScheme.background)
-            .withOpacity(double.parse(AppStyle.of(context).applicationStyle?['opacity.menu'] ?? "1")),
+    return Material(
+      color: (theme.brightness == Brightness.light ? theme.colorScheme.primary : theme.colorScheme.background)
+          .withOpacity(double.parse(AppStyle.of(context).applicationStyle?['opacity.menu'] ?? "1")),
+      child: InkWell(
+        onTap: () => onClick(context, item: menuItemModel),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
