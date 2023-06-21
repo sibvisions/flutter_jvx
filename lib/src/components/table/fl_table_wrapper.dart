@@ -226,6 +226,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onLongPress: _onLongPress,
       onTap: _onCellTap,
       onHeaderTap: _sortColumn,
+      onHeaderDoubleTap: (pColumn) => _sortColumn(pColumn, true),
       slideActionFactory: createSlideActions,
       showFloatingButton: _metaDataInsertEnabled &&
           ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&

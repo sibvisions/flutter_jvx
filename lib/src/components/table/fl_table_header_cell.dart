@@ -35,12 +35,13 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
 
   // Callbacks
 
-  /// Gets called with the index of the row and name of column when the user taps a cell.
-  /// Provides the dummyCellEditor of this cell, allowing to click the cell editor.
-  /// Allows validation of the click before allowing the cell editor to be clicked.
+  /// Gets called with the name of column when the user taps a cell.
   final TableHeaderTapCallback? onTap;
 
-  /// Gets called with the index of the row and name of column when the user long presses a cell.
+  /// Gets called with the name of column when the user taps a cell.
+  final TableHeaderTapCallback? onDoubleTap;
+
+  /// Gets called with the name of column when the user long presses a cell.
   final TableLongPressCallback? onLongPress;
 
   // Fields
@@ -80,6 +81,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
     required super.model,
     this.onLongPress,
     this.onTap,
+    this.onDoubleTap,
     required this.columnDefinition,
     required this.width,
     required this.paddings,
@@ -121,6 +123,7 @@ class FlTableHeaderCell extends FlStatelessWidget<FlTableModel> {
           ? (details) => onLongPress!(rowIndex, columnDefinition.name, dummyCellEditor, details.globalPosition)
           : null,
       onTap: onTap != null && model.isEnabled ? () => onTap!(columnDefinition.name) : null,
+      onDoubleTap: onDoubleTap != null && model.isEnabled ? () => onDoubleTap!(columnDefinition.name) : null,
       child: Container(
         decoration: BoxDecoration(
           border: border,

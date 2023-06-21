@@ -63,6 +63,9 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
   /// Gets called the name of the column pressed.
   final TableHeaderTapCallback? onHeaderTap;
 
+  /// Gets called the name of the column pressed.
+  final TableHeaderTapCallback? onHeaderDoubleTap;
+
   /// Gets called when the user long presses the table or a row/column.
   final TableLongPressCallback? onLongPress;
 
@@ -117,6 +120,7 @@ class FlTableWidget extends FlStatefulWidget<FlTableModel> {
     this.selectedColumn,
     this.onTap,
     this.onHeaderTap,
+    this.onHeaderDoubleTap,
     this.onLongPress,
     this.onEndScroll,
     this.onScroll,
@@ -313,6 +317,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       model: widget.model,
       columnDefinitions: widget.chunkData.columnDefinitions,
       onTap: widget.onHeaderTap,
+      onDoubleTap: widget.onHeaderDoubleTap,
       tableSize: widget.tableSize,
       onLongPress: widget.onLongPress,
       sortDefinitions: widget.metaData?.sortDefinitions,
