@@ -29,9 +29,8 @@ class SaveApplicationParametersCommandProcessor implements ICommandProcessor<Sav
       ApplicationParameters(
         applicationTitleName: command.parameters.applicationTitleName,
         applicationTitleWeb: command.parameters.applicationTitleWeb,
-        authenticated: command.parameters.authenticated,
-        openScreen: command.parameters.openScreen,
         designModeAllowed: command.parameters.designModeAllowed,
+        parameters: command.parameters.json,
       ),
     );
     return [];

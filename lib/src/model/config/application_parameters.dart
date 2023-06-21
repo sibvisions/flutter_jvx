@@ -17,23 +17,21 @@
 class ApplicationParameters {
   String? applicationTitleName;
   String? applicationTitleWeb;
-  String? authenticated;
-  String? openScreen;
   bool designModeAllowed;
+  Map<String, dynamic> parameters;
 
   ApplicationParameters({
     this.applicationTitleName,
     this.applicationTitleWeb,
-    this.authenticated,
-    this.openScreen,
     bool? designModeAllowed,
-  }) : designModeAllowed = designModeAllowed ?? false;
+    Map<String, dynamic>? parameters,
+  })  : designModeAllowed = designModeAllowed ?? false,
+        parameters = parameters ?? {};
 
   void merge(ApplicationParameters other) {
     applicationTitleName = other.applicationTitleName ?? applicationTitleName;
     applicationTitleWeb = other.applicationTitleWeb ?? applicationTitleWeb;
-    authenticated = other.authenticated ?? authenticated;
-    openScreen = other.openScreen ?? openScreen;
     designModeAllowed = other.designModeAllowed;
+    parameters = other.parameters;
   }
 }
