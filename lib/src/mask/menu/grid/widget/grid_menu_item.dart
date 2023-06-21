@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../state/app_style.dart';
-import '../../menu_page.dart';
+import '../../menu.dart';
 
 class GridMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,7 +27,7 @@ class GridMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Callback for menu item
-  final ButtonCallback onClick;
+  final MenuItemCallback onClick;
 
   /// Model of this item
   final MenuItemModel menuItemModel;

@@ -25,6 +25,10 @@ class GridMenu extends Menu {
   final bool grouped;
   final bool sticky;
   final bool groupOnlyOnMultiple;
+  final double maxCrossAxisExtent;
+  final double mainAxisSpacing;
+  final double crossAxisSpacing;
+  final double childAspectRatio;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -37,6 +41,10 @@ class GridMenu extends Menu {
     required this.grouped,
     this.sticky = true,
     this.groupOnlyOnMultiple = false,
+    this.maxCrossAxisExtent = 210.0,
+    this.mainAxisSpacing = 1.0,
+    this.crossAxisSpacing = 1.0,
+    this.childAspectRatio = 1.0,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,13 +55,24 @@ class GridMenu extends Menu {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: grouped && (!groupOnlyOnMultiple || menuModel.menuGroups.length == 1)
-          ? menuModel.menuGroups.map((e) => GridMenuGroup(menuGroupModel: e, onClick: onClick, sticky: sticky)).toList()
+          ? menuModel.menuGroups
+              .map((e) => GridMenuGroup(
+                    menuGroupModel: e,
+                    onClick: onClick,
+                    sticky: sticky,
+                    maxCrossAxisExtent: maxCrossAxisExtent,
+                    mainAxisSpacing: mainAxisSpacing,
+                    crossAxisSpacing: crossAxisSpacing,
+                    childAspectRatio: childAspectRatio,
+                  ))
+              .toList()
           : [
               SliverGrid(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  mainAxisSpacing: 1,
-                  crossAxisSpacing: 1,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: maxCrossAxisExtent,
+                  mainAxisSpacing: mainAxisSpacing,
+                  crossAxisSpacing: crossAxisSpacing,
+                  childAspectRatio: childAspectRatio,
                 ),
                 delegate: SliverChildListDelegate.fixed(
                   _getAllMenuItems().map((e) => GridMenuItem(onClick: onClick, menuItemModel: e)).toList(),

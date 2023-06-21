@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../routing/locations/main_location.dart';
 import '../../../../util/jvx_colors.dart';
-import '../../menu_page.dart';
+import '../../menu.dart';
 
 class ListMenuItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,10 +32,10 @@ class ListMenuItem extends StatelessWidget {
   final MenuItemModel menuItemModel;
 
   /// Callback when button is pressed.
-  final ButtonCallback onClick;
+  final MenuItemCallback onClick;
 
   /// Callback when the close button was pressed.
-  final ButtonCallback? Function(MenuItemModel)? onClose;
+  final MenuItemCallback? Function(MenuItemModel)? onClose;
 
   /// Text style for inner widgets.
   final TextStyle? textStyle;
@@ -88,7 +88,7 @@ class ListMenuItem extends StatelessWidget {
           );
         }
 
-        ButtonCallback? closeAction = onClose?.call(menuItemModel);
+        MenuItemCallback? closeAction = onClose?.call(menuItemModel);
 
         return ListTile(
           selected: selected,

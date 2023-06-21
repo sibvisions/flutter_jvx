@@ -35,9 +35,10 @@ import 'config/server_config.dart';
 import 'custom/app_manager.dart';
 import 'exceptions/error_view_exception.dart';
 import 'mask/jvx_overlay.dart';
+import 'mask/login/login.dart';
+import 'mask/menu/menu.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
-import 'model/command/api/login_command.dart';
 import 'model/config/translation/i18n.dart';
 import 'model/request/api_startup_request.dart';
 import 'routing/locations/main_location.dart';
@@ -184,7 +185,10 @@ class FlutterUI extends StatefulWidget {
   final WidgetBuilder? backgroundBuilder;
 
   /// Builder function for custom login widget
-  final Widget Function(BuildContext context, LoginMode mode)? loginBuilder;
+  final LoginBuilder? loginBuilder;
+
+  /// Builder function for custom menu implementation.
+  final MenuBuilder? menuBuilder;
 
   final List<Widget> debugOverlayEntries;
 
@@ -200,6 +204,7 @@ class FlutterUI extends StatefulWidget {
     this.splashBuilder,
     this.backgroundBuilder,
     this.loginBuilder,
+    this.menuBuilder,
     this.debugOverlayEntries = const [],
   });
 

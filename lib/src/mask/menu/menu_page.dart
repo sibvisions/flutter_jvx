@@ -26,14 +26,12 @@ import '../../components/components_factory.dart';
 import '../../custom/app_manager.dart';
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/apps/app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
-import '../../util/config_util.dart';
 import '../../util/misc/dialog_result.dart';
 import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
@@ -43,12 +41,6 @@ import '../frame/web_frame.dart';
 import '../state/app_style.dart';
 import '../work_screen/work_screen.dart';
 import 'menu.dart';
-
-/// Each menu item does get this callback
-typedef ButtonCallback = void Function(
-  BuildContext context, {
-  required MenuItemModel item,
-});
 
 /// Menu Page
 ///
@@ -329,24 +321,41 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
     Key? key,
     required Map<String, String>? appStyle,
   }) {
-    MenuMode menuMode = ConfigUtil.getMenuMode(appStyle?['menu.mode']);
+    MenuMode menuMode = MenuMode.fromString(appStyle?['menu.mode']);
 
     // Overriding menu mode
     AppManager? customAppManager = IUiService().getAppManager();
     menuMode = customAppManager?.onMenuMode(menuMode) ?? menuMode;
 
-    if (menuMode == MenuMode.DRAWER) return const SizedBox();
-
     bool? grouped = ParseUtil.parseBool(appStyle?['menu.grouped']) ?? false;
+    // ignore: deprecated_member_use_from_same_package
+    grouped = [MenuMode.GRID_GROUPED, MenuMode.LIST_GROUPED].contains(menuMode) || grouped;
     bool? sticky = ParseUtil.parseBool(appStyle?['menu.sticky']) ?? true;
     bool? groupOnlyOnMultiple = ParseUtil.parseBool(appStyle?['menu.group_only_on_multiple']) ?? false;
+
+    // ignore: deprecated_member_use_from_same_package
+    menuMode = menuMode.migrate();
+
+    var widget = FlutterUI.of(context).widget.menuBuilder?.call(
+          context,
+          key,
+          menuMode,
+          menuModel,
+          Menu.menuItemPressed,
+          grouped,
+          sticky,
+          groupOnlyOnMultiple,
+        );
+    if (widget != null) return widget;
+
+    if (menuMode == MenuMode.DRAWER) return const SizedBox();
 
     return Menu.fromMode(
       key: key,
       menuMode,
       menuModel: menuModel,
-      // ignore: deprecated_member_use_from_same_package
-      grouped: [MenuMode.GRID_GROUPED, MenuMode.LIST_GROUPED].contains(menuMode) || grouped,
+      onClick: Menu.menuItemPressed,
+      grouped: grouped,
       sticky: sticky,
       groupOnlyOnMultiple: groupOnlyOnMultiple,
     );

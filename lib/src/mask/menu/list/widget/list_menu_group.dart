@@ -22,7 +22,7 @@ import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/response/device_status_response.dart';
 import '../../grid/widget/grid_menu_header.dart';
-import '../../menu_page.dart';
+import '../../menu.dart';
 import 'list_menu_item.dart';
 
 class ListMenuGroup extends StatelessWidget {
@@ -31,10 +31,10 @@ class ListMenuGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Callback for menu items.
-  final ButtonCallback onClick;
+  final MenuItemCallback onClick;
 
   /// Callback for menu items.
-  final ButtonCallback? Function(MenuItemModel)? onClose;
+  final MenuItemCallback? Function(MenuItemModel)? onClose;
 
   /// Model of this group.
   final MenuGroupModel menuGroupModel;

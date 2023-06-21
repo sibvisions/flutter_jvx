@@ -25,15 +25,31 @@ import '../../service/ui/i_ui_service.dart';
 import '../frame/frame.dart';
 import 'grid/grid_menu.dart';
 import 'list/list_menu.dart';
-import 'menu_page.dart';
 import 'tab/tab_menu.dart';
+
+/// Each menu item does get this callback
+typedef MenuItemCallback = void Function(
+  BuildContext context, {
+  required MenuItemModel item,
+});
+
+typedef MenuBuilder = Widget? Function(
+  BuildContext context,
+  Key? key,
+  MenuMode mode,
+  MenuModel menuModel,
+  MenuItemCallback onClick,
+  bool grouped,
+  bool sticky,
+  bool groupOnlyOnMultiple,
+);
 
 abstract class Menu extends StatelessWidget {
   /// Model of this menu
   final MenuModel menuModel;
 
   /// Callback when a button was pressed
-  final ButtonCallback onClick;
+  final MenuItemCallback onClick;
 
   const Menu({
     super.key,
@@ -41,11 +57,25 @@ abstract class Menu extends StatelessWidget {
     required this.onClick,
   });
 
+  /// Returns a Menu depending on the [menuMode].
+  ///
+  /// [key] is in most cases a [PageStorageKey].
+  ///
+  /// [menuModel] contains the final menu items which should be shown by the responsible menu implementation.
+  ///
+  /// [onClick] is the callback that should be executed when a menu item is pressed.
+  ///
+  /// [grouped] controls whether the items should be grouped by their respective groups, if applicable.
+  ///
+  /// [sticky] controls whether the group headers should be sticky during scrolling.
+  ///
+  /// [groupOnlyOnMultiple] controls whether groups should only be shown if there is more than one group.
+  /// Is only considered if [grouped] is `true`.
   factory Menu.fromMode(
     MenuMode menuMode, {
     Key? key,
     required MenuModel menuModel,
-    ButtonCallback onClick = Menu.menuItemPressed,
+    required MenuItemCallback onClick,
     bool grouped = false,
     bool sticky = true,
     bool groupOnlyOnMultiple = true,
@@ -99,7 +129,7 @@ abstract class Menu extends StatelessWidget {
   }
 
   /// Returns the action function based on the [item] parameter.
-  static ButtonCallback? getCloseScreenAction(MenuItemModel item) {
+  static MenuItemCallback? getCloseScreenAction(MenuItemModel item) {
     return IStorageService().getComponentByNavigationName(item.navigationName) != null
         ? (BuildContext context, {required MenuItemModel item}) async {
             // Always close drawer as this can prevent the navigator from correctly updating the screen.
@@ -133,4 +163,46 @@ enum MenuMode {
   LIST_GROUPED,
   DRAWER,
   TABS,
+  ;
+
+  factory MenuMode.fromString(String? menuModeString) {
+    MenuMode menuMode;
+    switch (menuModeString) {
+      case "list":
+        menuMode = MenuMode.LIST;
+        break;
+      case "list_grouped":
+        // ignore: deprecated_member_use_from_same_package
+        menuMode = MenuMode.LIST_GROUPED;
+        break;
+      case "drawer":
+        menuMode = MenuMode.DRAWER;
+        break;
+      case "tabs":
+        menuMode = MenuMode.TABS;
+        break;
+      case "grid_grouped":
+        // ignore: deprecated_member_use_from_same_package
+        menuMode = MenuMode.GRID_GROUPED;
+        break;
+      case "grid":
+      default:
+        menuMode = MenuMode.GRID;
+    }
+    return menuMode;
+  }
+
+  @Deprecated("Only used to migrate deprecated modes")
+  MenuMode migrate() {
+    switch (this) {
+      // ignore: deprecated_member_use_from_same_package
+      case MenuMode.GRID_GROUPED:
+        return MenuMode.LIST;
+      // ignore: deprecated_member_use_from_same_package
+      case MenuMode.LIST_GROUPED:
+        return MenuMode.LIST;
+      default:
+        return this;
+    }
+  }
 }

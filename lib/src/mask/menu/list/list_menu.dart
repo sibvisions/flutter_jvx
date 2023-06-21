@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../../../model/response/device_status_response.dart';
 import '../menu.dart';
-import '../menu_page.dart';
 import 'widget/list_menu_group.dart';
 import 'widget/list_menu_item.dart';
 
@@ -29,7 +28,7 @@ class ListMenu extends Menu {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Callback when the close button was pressed
-  final ButtonCallback? Function(MenuItemModel)? onClose;
+  final MenuItemCallback? Function(MenuItemModel)? onClose;
 
   final LayoutMode? layoutMode;
 

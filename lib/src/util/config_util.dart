@@ -21,7 +21,6 @@ import 'package:flutter/widgets.dart';
 
 import '../config/app_config.dart';
 import '../flutter_ui.dart';
-import '../mask/menu/menu.dart';
 
 abstract class ConfigUtil {
   /// Tries to read app config
@@ -55,32 +54,5 @@ abstract class ConfigUtil {
     return rootBundle
         .loadString("assets/config/$name")
         .then((rawAppConfig) => AppConfig.fromJson(jsonDecode(rawAppConfig)));
-  }
-
-  static MenuMode getMenuMode(String? menuModeString) {
-    MenuMode menuMode;
-    switch (menuModeString) {
-      case "list":
-        menuMode = MenuMode.LIST;
-        break;
-      case "list_grouped":
-        // ignore: deprecated_member_use_from_same_package
-        menuMode = MenuMode.LIST_GROUPED;
-        break;
-      case "drawer":
-        menuMode = MenuMode.DRAWER;
-        break;
-      case "tabs":
-        menuMode = MenuMode.TABS;
-        break;
-      case "grid_grouped":
-        // ignore: deprecated_member_use_from_same_package
-        menuMode = MenuMode.GRID_GROUPED;
-        break;
-      case "grid":
-      default:
-        menuMode = MenuMode.GRID;
-    }
-    return menuMode;
   }
 }

@@ -18,6 +18,8 @@ import 'package:flutter/widgets.dart';
 
 import '../../model/command/api/login_command.dart';
 
+typedef LoginBuilder = Widget Function(BuildContext context, LoginMode mode);
+
 abstract class Login {
   /// Returns the background widget.
   ///

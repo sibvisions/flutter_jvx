@@ -19,7 +19,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/menu/menu_group_model.dart';
-import '../../menu_page.dart';
+import '../../menu.dart';
 import 'grid_menu_header.dart';
 import 'grid_menu_item.dart';
 
@@ -29,12 +29,17 @@ class GridMenuGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Callback for menu items
-  final ButtonCallback onClick;
+  final MenuItemCallback onClick;
 
   /// Model of this group
   final MenuGroupModel menuGroupModel;
 
   final bool sticky;
+
+  final double maxCrossAxisExtent;
+  final double mainAxisSpacing;
+  final double crossAxisSpacing;
+  final double childAspectRatio;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -45,6 +50,10 @@ class GridMenuGroup extends StatelessWidget {
     required this.menuGroupModel,
     required this.onClick,
     required this.sticky,
+    this.maxCrossAxisExtent = 210.0,
+    this.mainAxisSpacing = 1.0,
+    this.crossAxisSpacing = 1.0,
+    this.childAspectRatio = 1.0,
   });
 
   @override
@@ -59,10 +68,11 @@ class GridMenuGroup extends StatelessWidget {
               height: 48,
             )),
         SliverGrid(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 210,
-            mainAxisSpacing: 1,
-            crossAxisSpacing: 1,
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: maxCrossAxisExtent,
+            mainAxisSpacing: mainAxisSpacing,
+            crossAxisSpacing: crossAxisSpacing,
+            childAspectRatio: childAspectRatio,
           ),
           delegate: SliverChildListDelegate.fixed(
             menuGroupModel.items.map((e) => GridMenuItem(menuItemModel: e, onClick: onClick)).toList(),
