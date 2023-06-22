@@ -67,12 +67,34 @@ abstract class ImageLoader {
     };
   }
 
+  static Widget loadImageWithSize(
+    String pImageString, {
+    ImageProvider? imageProvider,
+    Function(Size, bool)? pImageStreamListener,
+    Size? pWantedSize,
+    Color? pWantedColor,
+    BoxFit pFit = BoxFit.none,
+    AlignmentGeometry pAlignment = Alignment.center,
+  }) {
+    return loadImage(
+      pImageString,
+      imageProvider: imageProvider,
+      pImageStreamListener: pImageStreamListener,
+      pWidth: pWantedSize?.width,
+      pHeight: pWantedSize?.height,
+      pWantedColor: pWantedColor,
+      pFit: pFit,
+      pAlignment: pAlignment,
+    );
+  }
+
   /// Loads any server sent image string.
   static Widget loadImage(
     String pImageString, {
     ImageProvider? imageProvider,
     Function(Size, bool)? pImageStreamListener,
-    Size? pWantedSize,
+    double? pWidth,
+    double? pHeight,
     Color? pWantedColor,
     BoxFit pFit = BoxFit.none,
     AlignmentGeometry pAlignment = Alignment.center,
@@ -83,7 +105,7 @@ abstract class ImageLoader {
       if (FontAwesomeUtil.checkFontAwesome(pImageString)) {
         FaIcon faIcon = FontAwesomeUtil.getFontAwesomeIcon(
           pText: pImageString,
-          pIconSize: pWantedSize?.width,
+          pIconSize: pWidth,
           pColor: pWantedColor,
         );
         pImageStreamListener?.call(Size.square(faIcon.size!), true);
@@ -100,14 +122,12 @@ abstract class ImageLoader {
           }
         }
 
-        size ??= pWantedSize;
-
         return Image(
           image: imageProvider,
           loadingBuilder: createImageLoadingBuilder(),
           errorBuilder: createImageErrorBuilder(imageProvider),
-          width: size?.width,
-          height: size?.height,
+          width: size?.width ?? pWidth,
+          height: size?.height ?? pHeight,
           color: pWantedColor,
           fit: pFit,
           alignment: pAlignment,

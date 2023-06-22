@@ -64,6 +64,11 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
   }
 
   @override
+  Size calculateSize(BuildContext context) {
+    return model.image.isNotEmpty ? model.originalSize : Size.zero;
+  }
+
+  @override
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
     Size calcSize = model.image.isNotEmpty ? model.originalSize : Size.zero;
 

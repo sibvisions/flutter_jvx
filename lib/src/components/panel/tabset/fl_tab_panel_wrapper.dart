@@ -365,7 +365,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     Widget? image;
     if (imageString.isNotEmpty) {
-      image = ImageLoader.loadImage(
+      image = ImageLoader.loadImageWithSize(
         imageString,
         pWantedSize: const Size(16, 16),
         pWantedColor: enabled ? null : JVxColors.COMPONENT_DISABLED,

@@ -105,6 +105,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
     FlIconModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
+    widgetModel.originalSize = imageSize;
 
     return FlIconWidget(
       model: widgetModel,

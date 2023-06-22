@@ -49,7 +49,7 @@ class FlSlideButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> 
 
   Widget? get image {
     if (model.image != null) {
-      return ImageLoader.loadImage(
+      return ImageLoader.loadImageWithSize(
         model.image!,
         pWantedColor: model.createTextStyle().color,
       );

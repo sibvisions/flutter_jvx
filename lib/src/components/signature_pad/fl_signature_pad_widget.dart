@@ -84,7 +84,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
       var imageValue = widget.dataRecord?.values[0];
       try {
         if (imageValue is String) {
-          contentWidget = ImageLoader.loadImage(
+          contentWidget = ImageLoader.loadImageWithSize(
             imageValue,
             imageProvider: ImageLoader.getImageProvider(imageValue, pImageInBase64: true),
             pFit: BoxFit.scaleDown,

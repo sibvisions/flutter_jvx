@@ -198,12 +198,12 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
 
     Widget img;
     if (image != null) {
-      img = ImageLoader.loadImage(
+      img = ImageLoader.loadImageWithSize(
         image,
         pWantedSize: const Size.square(markerSize),
       );
     } else if (model.markerImage != null) {
-      img = ImageLoader.loadImage(
+      img = ImageLoader.loadImageWithSize(
         model.markerImage!,
         pWantedSize: const Size.square(markerSize),
       );

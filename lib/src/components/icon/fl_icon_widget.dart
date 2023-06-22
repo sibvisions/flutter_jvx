@@ -93,7 +93,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     }
   }
 
-  BoxFit getBoxFit() {
+  BoxFit? getBoxFit() {
     if (inTable) {
       return BoxFit.scaleDown;
     }
@@ -111,10 +111,9 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       if ((model.horizontalAlignment == HorizontalAlignment.STRETCH) &&
           (model.verticalAlignment == VerticalAlignment.STRETCH)) {
         return BoxFit.fill;
-      } else if (model.horizontalAlignment == HorizontalAlignment.STRETCH) {
-        return BoxFit.fitWidth;
-      } else if (model.verticalAlignment == VerticalAlignment.STRETCH) {
-        return BoxFit.fitHeight;
+      } else if (model.horizontalAlignment == HorizontalAlignment.STRETCH ||
+          model.verticalAlignment == VerticalAlignment.STRETCH) {
+        return null;
       }
     }
     return BoxFit.none;
@@ -125,12 +124,43 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       return null;
     }
 
-    return ImageLoader.loadImage(
-      model.image,
-      imageProvider: imageProvider,
-      pWantedColor: model.isEnabled ? null : JVxColors.COMPONENT_DISABLED,
-      pFit: getBoxFit(),
-      pAlignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-    );
+    BoxFit? boxFit = getBoxFit();
+
+    if (boxFit == null) {
+      return LayoutBuilder(builder: (context, constraints) {
+        double width = model.originalSize.width;
+        double height = model.originalSize.height;
+
+        if (boxFit == null) {
+          if (model.horizontalAlignment == HorizontalAlignment.STRETCH) {
+            width = constraints.maxWidth;
+          }
+          if (model.verticalAlignment == VerticalAlignment.STRETCH) {
+            height = constraints.maxHeight;
+          }
+        }
+
+        return Align(
+          alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: ImageLoader.loadImage(
+              model.image,
+              imageProvider: imageProvider,
+              pWantedColor: model.isEnabled ? null : JVxColors.COMPONENT_DISABLED,
+              pFit: BoxFit.fill,
+            ),
+          ),
+        );
+      });
+    } else {
+      return ImageLoader.loadImage(
+        model.image,
+        imageProvider: imageProvider,
+        pWantedColor: model.isEnabled ? null : JVxColors.COMPONENT_DISABLED,
+        pFit: boxFit,
+      );
+    }
   }
 }

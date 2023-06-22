@@ -69,7 +69,7 @@ class FlPopupMenuItemWidget extends PopupMenuItem<String> {
     if (icon == null) {
       return const SizedBox.square(dimension: 16.0);
     } else {
-      return ImageLoader.loadImage(
+      return ImageLoader.loadImageWithSize(
         icon,
         pWantedSize: const Size.square(16),
       );
