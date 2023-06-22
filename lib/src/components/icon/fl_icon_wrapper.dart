@@ -19,6 +19,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
+import '../../model/layout/layout_position.dart';
 import '../../util/image/image_loader.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -69,19 +70,19 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
   }
 
   @override
-  void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
-    Size calcSize = model.image.isNotEmpty ? model.originalSize : Size.zero;
+  LayoutData calculateConstrainedSize(LayoutPosition? calcPosition) {
+    LayoutPosition constraintPos = calcPosition ?? layoutData.layoutPosition!;
 
-    LayoutData layoutData = pLayoutData.clone();
-    layoutData.calculatedSize = calcSize;
+    double positionWidth = constraintPos.width;
+    double positionHeight = constraintPos.height;
 
-    layoutData.widthConstrains.forEach((key, value) {
-      layoutData.widthConstrains[key] = calcSize.height;
-    });
-    layoutData.heightConstrains.forEach((key, value) {
-      layoutData.heightConstrains[key] = calcSize.width;
-    });
+    // Constraint by width
+    layoutData.widthConstrains[positionWidth] = model.originalSize.width;
+    // Constraint by height
+    layoutData.heightConstrains[positionHeight] = model.originalSize.height;
 
-    super.sendCalcSize(pLayoutData: layoutData, pReason: pReason);
+    var sentData = LayoutData.from(layoutData);
+    sentData.layoutPosition = constraintPos;
+    return sentData;
   }
 }
