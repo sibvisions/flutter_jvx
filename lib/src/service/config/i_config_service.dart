@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -44,6 +45,9 @@ abstract class IConfigService {
   /// If [devConfig] is true, this call removes all saved values for [ServerConfig]
   /// which would prevent the default config to be used.
   Future<void> loadConfig(AppConfig pAppConfig, [bool devConfig = false]);
+
+  /// Basically resets the service
+  FutureOr<void> clear(bool pFullClear);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Helper-methods for non-persistent fields

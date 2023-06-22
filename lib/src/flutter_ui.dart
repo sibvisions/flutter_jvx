@@ -320,6 +320,7 @@ class FlutterUI extends StatefulWidget {
     await IUiService().clear(pFullClear);
     await ICommandService().clear(pFullClear);
     await IApiService().clear(pFullClear);
+    await IConfigService().clear(pFullClear);
   }
 
   static void resetPageBucket() {

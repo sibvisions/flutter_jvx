@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -322,6 +323,13 @@ class ConfigService implements IConfigService {
       }
 
       await sharedPrefs.remove("appName");
+    }
+  }
+
+  @override
+  FutureOr<void> clear(bool pFullClear) async {
+    if (pFullClear) {
+      getCustomStartupProperties().clear();
     }
   }
 
