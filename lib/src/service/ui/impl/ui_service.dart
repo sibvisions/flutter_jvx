@@ -299,12 +299,10 @@ class UiService implements IUiService {
   Future<void> routeToAppOverview() async {
     if (!checkFirstSplash(false)) return;
 
-    var stopApp = AppService().stopApp();
-
     FlutterUI.clearHistory();
     FlutterUI.getBeamerDelegate().beamToReplacementNamed("/");
 
-    await stopApp;
+    await AppService().stopApp();
   }
 
   @override
