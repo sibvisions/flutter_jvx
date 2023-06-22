@@ -197,7 +197,7 @@ enum MenuMode {
     switch (this) {
       // ignore: deprecated_member_use_from_same_package
       case MenuMode.GRID_GROUPED:
-        return MenuMode.LIST;
+        return MenuMode.GRID;
       // ignore: deprecated_member_use_from_same_package
       case MenuMode.LIST_GROUPED:
         return MenuMode.LIST;
