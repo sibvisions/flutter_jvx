@@ -112,11 +112,25 @@ class FileManagerWeb extends IFileManager {
   }
 
   @override
-  List<File> listTranslationFiles() {
+  List<File> listTranslationFiles({String? appId, String? version}) {
     List<File> listFiles = [];
 
+    String? effectiveAppId = appId ?? IConfigService().currentApp.value;
+    String? effectiveVersion = version ?? IConfigService().version.value;
+
+    if (effectiveAppId == null || effectiveVersion == null) {
+      return listFiles;
+    }
+
+    String appPath = _preparePath(getAppSpecificPath(
+      IFileManager.LANGUAGES_PATH,
+      appId: effectiveAppId,
+      version: effectiveVersion,
+    ));
+    appPath += "/";
+
     _files.forEach((key, value) {
-      if (key.contains("/${IFileManager.LANGUAGES_PATH}/")) {
+      if (key.contains(appPath)) {
         listFiles.add(value);
       }
     });

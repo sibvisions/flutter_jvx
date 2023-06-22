@@ -150,10 +150,23 @@ class FileManagerMobile extends IFileManager {
   }
 
   @override
-  List<File> listTranslationFiles() {
+  List<File> listTranslationFiles({String? appId, String? version}) {
     List<File> listFiles = [];
 
-    Directory dir = Directory(_getSavePath("${IFileManager.LANGUAGES_PATH}/"));
+    String? effectiveAppId = appId ?? IConfigService().currentApp.value;
+    String? effectiveVersion = version ?? IConfigService().version.value;
+
+    if (effectiveAppId == null || effectiveVersion == null) {
+      return listFiles;
+    }
+
+    Directory dir = Directory(_getSavePath(
+      getAppSpecificPath(
+        IFileManager.LANGUAGES_PATH,
+        appId: effectiveAppId,
+        version: effectiveVersion,
+      ),
+    ));
 
     if (dir.existsSync()) {
       listFiles.addAll(dir.listSync().whereType<File>().toList());
