@@ -345,7 +345,7 @@
   },
   {
     "text": "Connection to remote server timed out",
-    "translation": "Zeitüberschreitung bei der Verbindung zum Server"
+    "translation": "Die Verbindung zum Server wurde aufgrund eines Timeouts getrennt"
   },
   {
     "text": "Server Connection lost, retrying...",
