@@ -62,6 +62,10 @@ class StartupCommandProcessor implements ICommandProcessor<StartupCommand> {
       customProperties: IConfigService().getCustomStartupProperties(),
     );
 
-    return IApiService().sendRequest(startupRequest);
+    return IApiService().sendRequest(startupRequest).then((value) {
+      // Only clear on successful startup.
+      IConfigService().getCustomStartupProperties().clear();
+      return value;
+    });
   }
 }

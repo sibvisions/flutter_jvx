@@ -327,11 +327,7 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  FutureOr<void> clear(bool pFullClear) async {
-    if (pFullClear) {
-      getCustomStartupProperties().clear();
-    }
-  }
+  FutureOr<void> clear(bool pFullClear) {}
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Helper-methods for non-persistent fields
