@@ -40,6 +40,9 @@ class AppService {
   ValueNotifier<Future<void>?> startupFuture = ValueNotifier(null);
   ValueNotifier<Future<void>?> exitFuture = ValueNotifier(null);
 
+  bool get startedManually => _startedManually;
+  Uri? savedReturnUri;
+
   /// Returns the singleton instance.
   factory AppService() => services<AppService>();
 
@@ -50,10 +53,6 @@ class AppService {
     _storedAppIds = ValueNotifier(await IConfigService().getConfigHandler().getAppKeys());
   }
 
-  bool get startedManually => _startedManually;
-  Uri? savedReturnUri;
-
-  ///
   ValueListenable<Set<String>> get storedAppIds => _storedAppIds;
 
   /// Refreshes the currently known app ids.
