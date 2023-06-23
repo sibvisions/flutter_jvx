@@ -134,7 +134,7 @@ class WebFrameState extends FrameState {
       title: SizedBox(
         height: kToolbarHeight,
         child: imagePath != null
-            ? ImageLoader.loadImageWithSize(
+            ? ImageLoader.loadImage(
                 imagePath,
               )
             : Image.asset(

@@ -129,7 +129,7 @@ class DefaultLogin extends StatelessWidget implements Login {
                 child: ConstrainedBox(
                   constraints: BoxConstraints.loose(const Size.fromWidth(650)),
                   child: loginLogo != null
-                      ? ImageLoader.loadImageWithSize(
+                      ? ImageLoader.loadImage(
                           loginLogo,
                           pFit: BoxFit.scaleDown,
                         )

@@ -181,7 +181,7 @@ class ModernLogin extends StatelessWidget implements Login {
                 child: ConstrainedBox(
                   constraints: BoxConstraints.tight(const Size.fromWidth(650)),
                   child: loginLogo != null
-                      ? ImageLoader.loadImageWithSize(
+                      ? ImageLoader.loadImage(
                           loginLogo,
                           pFit: BoxFit.scaleDown,
                         )

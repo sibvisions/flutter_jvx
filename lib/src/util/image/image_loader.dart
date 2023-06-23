@@ -67,27 +67,6 @@ abstract class ImageLoader {
     };
   }
 
-  static Widget loadImageWithSize(
-    String pImageString, {
-    ImageProvider? imageProvider,
-    Function(Size, bool)? pImageStreamListener,
-    Size? pWantedSize,
-    Color? pWantedColor,
-    BoxFit pFit = BoxFit.none,
-    AlignmentGeometry pAlignment = Alignment.center,
-  }) {
-    return loadImage(
-      pImageString,
-      imageProvider: imageProvider,
-      pImageStreamListener: pImageStreamListener,
-      pWidth: pWantedSize?.width,
-      pHeight: pWantedSize?.height,
-      pWantedColor: pWantedColor,
-      pFit: pFit,
-      pAlignment: pAlignment,
-    );
-  }
-
   /// Loads any server sent image string.
   static Widget loadImage(
     String pImageString, {

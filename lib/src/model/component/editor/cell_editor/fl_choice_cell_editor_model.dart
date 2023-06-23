@@ -54,7 +54,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
       pKey: ApiObjectProperty.defaultImageName,
       pDefault: defaultModel.defaultImage,
       pCurrent: defaultImage,
-      pConversion: (value) => ImageLoader.loadImageWithSize(
+      pConversion: (value) => ImageLoader.loadImage(
         value,
         pImageStreamListener: newMaxSize,
       ),
@@ -84,7 +84,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
         String jsonValue = jsonValueDynamic as String;
 
         imageList.add(
-          ImageLoader.loadImageWithSize(
+          ImageLoader.loadImage(
             jsonValue,
             pImageStreamListener: newMaxSize,
           ),

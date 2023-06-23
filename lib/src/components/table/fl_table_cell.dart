@@ -177,7 +177,7 @@ class _FlTableCellState extends State<FlTableCell> {
     Widget? cellChild;
 
     if (widget.cellFormat?.imageString.isNotEmpty == true) {
-      cellChild = ImageLoader.loadImageWithSize(
+      cellChild = ImageLoader.loadImage(
         widget.cellFormat!.imageString,
         pWantedColor: widget.cellFormat?.foreground,
       );

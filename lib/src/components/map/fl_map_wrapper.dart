@@ -196,16 +196,16 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
   Marker getMarker(String? image, LatLng point) {
     const double markerSize = 64;
 
-    Widget img;
-    if (image != null) {
-      img = ImageLoader.loadImageWithSize(
-        image,
-        pWantedSize: const Size.square(markerSize),
-      );
-    } else if (model.markerImage != null) {
-      img = ImageLoader.loadImageWithSize(
-        model.markerImage!,
-        pWantedSize: const Size.square(markerSize),
+    if (image != null || model.markerImage != null) {
+      return Marker(
+        point: point,
+        width: markerSize,
+        height: markerSize,
+        builder: (_) => ImageLoader.loadImage(
+          image ?? model.markerImage!,
+          pWidth: markerSize,
+          pHeight: markerSize,
+        ),
       );
     } else {
       // OverflowBox is used to remove the spacing between the icon and the actual point
@@ -234,12 +234,5 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
         ),
       );
     }
-
-    return Marker(
-      point: point,
-      width: markerSize,
-      height: markerSize,
-      builder: (_) => img,
-    );
   }
 }

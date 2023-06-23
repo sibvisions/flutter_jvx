@@ -66,7 +66,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   Widget? get image {
     if (model.image != null) {
-      return ImageLoader.loadImageWithSize(
+      return ImageLoader.loadImage(
         model.image!,
         pWantedColor: (!model.borderPainted || model.borderOnMouseEntered)
             ? JVxColors.LIGHTER_BLACK

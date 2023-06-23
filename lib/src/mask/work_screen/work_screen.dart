@@ -67,7 +67,7 @@ class WorkScreen extends StatefulWidget {
         color: backgroundColor,
         child: Center(
           child: backgroundImage != null
-              ? ImageLoader.loadImageWithSize(
+              ? ImageLoader.loadImage(
                   backgroundImage,
                   pFit: BoxFit.scaleDown,
                 )
