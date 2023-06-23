@@ -35,7 +35,7 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
 
     BeamState? targetState = FlutterUI.getCurrentContext()?.currentBeamLocation.state as BeamState?;
     if (targetState != null) {
-      AppService().savedReturnUri = Uri(path: targetState.uri.path);
+      AppService().savedReturnUri ??= Uri(path: targetState.uri.path);
     }
 
     IUiService().routeToLogin(mode: command.mode, pLoginProps: command.loginData);
