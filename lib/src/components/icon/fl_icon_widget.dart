@@ -160,6 +160,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
         imageProvider: imageProvider,
         pWantedColor: model.isEnabled ? null : JVxColors.COMPONENT_DISABLED,
         pFit: boxFit,
+        pAlignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       );
     }
   }
