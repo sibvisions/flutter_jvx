@@ -14,7 +14,9 @@
  * the License.
  */
 
-import '../../../flutter_jvx.dart';
+import '../../service/api/shared/api_object_property.dart';
+import '../../util/parse_util.dart';
+import 'api_response.dart';
 
 class ApplicationParametersResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
