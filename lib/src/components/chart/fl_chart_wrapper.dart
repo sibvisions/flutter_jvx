@@ -170,7 +170,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
       return;
     }
 
-    var primaryKeyFilter = IUiService()
+    IUiService()
         .saveAllEditors(
           pId: model.id,
           pFunction: () {
