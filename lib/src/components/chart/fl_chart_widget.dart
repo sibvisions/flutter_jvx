@@ -23,10 +23,13 @@ import '../base_wrapper/fl_stateless_widget.dart';
 class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   final List<Series<dynamic, num>> series;
 
+  final Function(int? index)? onIndexSelected;
+
   const FlChartWidget({
     super.key,
     required super.model,
     required this.series,
+    this.onIndexSelected,
   });
 
   @override
@@ -37,6 +40,14 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
 
     return LineChart(
       series,
+      selectionModels: [
+        SelectionModelConfig(
+          type: SelectionModelType.info,
+          changedListener: (SelectionModel model) {
+            onIndexSelected?.call(model.hasDatumSelection ? model.selectedDatum.first.index : null);
+          },
+        ),
+      ],
       animate: false,
       layoutConfig: LayoutConfig(
         topMarginSpec: MarginSpec.fromPercent(minPercent: 2, maxPercent: 100),
