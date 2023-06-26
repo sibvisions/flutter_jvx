@@ -487,53 +487,56 @@ class DataBook {
 
     if (cellEditorModel.displayConcatMask?.isNotEmpty == true ||
         cellEditorModel.displayReferencedColumnName?.isNotEmpty == true) {
-      records.forEach((dataRow) {
-        if (linkReference.columnNames.isEmpty) {
-          linkReference.columnNames.add(referencedCellEditor.columnName);
-        }
-        var colToRefColIndex =
-            linkReference.columnNames.indexWhere((colName) => colName == referencedCellEditor.columnName);
+      if (linkReference.columnNames.isEmpty) {
+        linkReference.columnNames.add(referencedCellEditor.columnName);
+      }
+      var colToRefColIndex =
+          linkReference.columnNames.indexWhere((colName) => colName == referencedCellEditor.columnName);
 
-        // It says referenced column name but it is a column in this data book, not the other.
-        String valueColumnName = linkReference.referencedColumnNames[colToRefColIndex];
+      String valueColumnName = linkReference.referencedColumnNames[colToRefColIndex];
+      var refColIndex = recordColumns.indexOf(valueColumnName);
 
-        var refColIndex = recordColumns.indexOf(valueColumnName);
-        var refColValue = dataRow[refColIndex];
-        Map<String, dynamic> valueKeyMap = {valueColumnName: refColValue.toString()};
-        var valueKey = jsonEncode(valueKeyMap);
+      if (refColIndex >= 0) {
+        records.forEach((dataRow) {
+          // It says referenced column name but it is a column in this data book, not the other.
 
-        String displayString = "";
+          var refColValue = dataRow[refColIndex];
+          Map<String, dynamic> valueKeyMap = {valueColumnName: refColValue.toString()};
+          var valueKey = jsonEncode(valueKeyMap);
 
-        if (cellEditorModel.displayConcatMask?.isNotEmpty == true) {
-          List<String> columnViewNames = cellEditorModel.columnView?.columnNames ?? metaData.columnViewTable;
+          String displayString = "";
 
-          if (cellEditorModel.displayConcatMask!.contains("*")) {
-            int i = 0;
+          if (cellEditorModel.displayConcatMask?.isNotEmpty == true) {
+            List<String> columnViewNames = cellEditorModel.columnView?.columnNames ?? metaData.columnViewTable;
 
-            displayString = cellEditorModel.displayConcatMask!;
-            while (displayString.contains("*")) {
-              int valueIndex = i < columnViewNames.length ? recordColumns.indexOf(columnViewNames[i]) : -1;
+            if (cellEditorModel.displayConcatMask!.contains("*")) {
+              int i = 0;
 
-              dynamic value = valueIndex >= 0 ? dataRow[valueIndex] : "";
+              displayString = cellEditorModel.displayConcatMask!;
+              while (displayString.contains("*")) {
+                int valueIndex = i < columnViewNames.length ? recordColumns.indexOf(columnViewNames[i]) : -1;
 
-              displayString = displayString.replaceFirst('*', value.toString());
-              i++;
+                dynamic value = valueIndex >= 0 ? dataRow[valueIndex] : "";
+
+                displayString = displayString.replaceFirst('*', value.toString());
+                i++;
+              }
+            } else {
+              List<String> values = [];
+              columnViewNames.forEach((columnName) {
+                int valueIndex = recordColumns.indexOf(columnName);
+
+                values.add(valueIndex >= 0 ? dataRow[valueIndex] : "");
+              });
+              displayString = values.join(cellEditorModel.displayConcatMask!);
             }
-          } else {
-            List<String> values = [];
-            columnViewNames.forEach((columnName) {
-              int valueIndex = recordColumns.indexOf(columnName);
-
-              values.add(valueIndex >= 0 ? dataRow[valueIndex] : "");
-            });
-            displayString = values.join(cellEditorModel.displayConcatMask!);
+          } else if (cellEditorModel.displayReferencedColumnName?.isNotEmpty == true) {
+            displayString = dataRow[recordColumns.indexOf(cellEditorModel.displayReferencedColumnName!)].toString();
           }
-        } else if (cellEditorModel.displayReferencedColumnName?.isNotEmpty == true) {
-          displayString = dataRow[recordColumns.indexOf(cellEditorModel.displayReferencedColumnName!)].toString();
-        }
 
-        dataToDisplayMap[valueKey] = displayString;
-      });
+          dataToDisplayMap[valueKey] = displayString;
+        });
+      }
 
       IUiService().notifyDataToDisplayMapChanged(pDataProvider: referencedCellEditor.dataProvider);
     }
