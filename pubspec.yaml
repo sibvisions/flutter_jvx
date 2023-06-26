@@ -115,7 +115,6 @@ dependencies:
 
   #WYSIWYG HTML-Editor
   html_editor_enhanced: ^2.5.0
-  #quill_html_editor: ^2.1.9
 
 dev_dependencies:
   flutter_test:
