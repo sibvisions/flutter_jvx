@@ -36,6 +36,8 @@ class AppImage extends StatelessWidget {
   final IconData? icon;
   final BoxFit fit;
 
+  static String _normalizeName(String name) => name.replaceAll(RegExp("[^a-zA-Z\\d\\s]"), "");
+
   @override
   Widget build(BuildContext context) {
     const double avatarRadius = 50;
@@ -67,7 +69,7 @@ class AppImage extends StatelessWidget {
           if (image == null && icon == null && (name?.isNotEmpty ?? false))
             Avatar(
               shape: AvatarShape.circle(avatarRadius),
-              name: name,
+              name: _normalizeName(name!),
               loader: const SizedBox(),
             ),
           if (image == null && icon == null && (name?.isEmpty ?? true))
