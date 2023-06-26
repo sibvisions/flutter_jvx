@@ -455,8 +455,9 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         if (config.policy != null) {
           await IConfigService().updatePrivacyPolicy(config.policy);
         }
+        unawaited(_refreshApps());
       },
-    ).then((value) => _refreshApps());
+    );
   }
 
   void _openAppEditor(BuildContext context, {App? editApp}) {
