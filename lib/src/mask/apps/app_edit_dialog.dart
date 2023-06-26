@@ -153,7 +153,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: TextField(
-                                  autofocus: true,
+                                  autofocus: widget.config == null,
                                   readOnly: widget.locked,
                                   controller: appNameController,
                                   textInputAction: TextInputAction.next,
