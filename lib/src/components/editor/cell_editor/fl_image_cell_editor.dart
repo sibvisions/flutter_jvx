@@ -39,7 +39,7 @@ class FlImageCellEditor extends ICellEditor<FlIconModel, FlImageCellEditorModel,
   RecalculateCallback? recalculateSizeCallback;
 
   /// The size of the image.
-  Size imageSize = const Size(16, 16);
+  Size imageSize = const Size.square(FlIconModel.DEFAULT_ICON_SIZE);
 
   /// The image loading callback.
   late Function(Size, bool)? imageStreamListener = onImage;

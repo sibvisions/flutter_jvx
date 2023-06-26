@@ -18,6 +18,13 @@ part of 'package:flutter_jvx/src/model/component/fl_component_model.dart';
 
 class FlIconModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The default icon size.
+  static const double DEFAULT_ICON_SIZE = 16;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -29,7 +36,7 @@ class FlIconModel extends FlComponentModel {
 
   /// Original size of the image.
   /// This is used to calculate the size of the image in the layout.
-  Size originalSize = const Size(16, 16);
+  Size originalSize = const Size.square(DEFAULT_ICON_SIZE);
 
   @override
   Size? get minimumSize {

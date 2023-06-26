@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutter_ui.dart';
+import '../../model/component/fl_component_model.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/app.dart';
@@ -87,7 +88,7 @@ abstract class ImageLoader {
           pIconSize: pWidth,
           pColor: pWantedColor,
         );
-        pImageStreamListener?.call(Size.square(faIcon.size!), true);
+        pImageStreamListener?.call(Size.square(faIcon.size ?? FlIconModel.DEFAULT_ICON_SIZE), true);
         return faIcon;
       } else if (imageProvider != null) {
         List<String> split = pImageString.split(",");
