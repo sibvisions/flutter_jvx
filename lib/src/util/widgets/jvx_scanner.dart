@@ -70,6 +70,8 @@ class _JVxScannerState extends State<JVxScanner> {
   final List<Barcode> scannedBarcodes = [];
   bool multiScanEnabled = false;
 
+  bool calledCallback = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,17 +154,20 @@ class _JVxScannerState extends State<JVxScanner> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Future<void> _onDetect(BarcodeCapture capture) async {
-    if (multiScanEnabled) {
-      if (scannedBarcodes.map((e) => e.rawValue).none((e) => capture.barcodes.map((e) => e.rawValue).contains(e))) {
+    if (!calledCallback) {
+      if (multiScanEnabled) {
+        if (scannedBarcodes.map((e) => e.rawValue).none((e) => capture.barcodes.map((e) => e.rawValue).contains(e))) {
+          unawaited(HapticFeedback.vibrate());
+          scannedBarcodes.addAll(capture.barcodes);
+        }
+      } else {
+        calledCallback = true;
         unawaited(HapticFeedback.vibrate());
-        scannedBarcodes.addAll(capture.barcodes);
-      }
-    } else {
-      unawaited(HapticFeedback.vibrate());
-      var result = widget.callback(capture.barcodes);
-      if (result is Future) await result;
-      if (mounted) {
-        Navigator.pop(context);
+        var result = widget.callback(capture.barcodes);
+        if (result is Future) await result;
+        if (mounted) {
+          Navigator.pop(context);
+        }
       }
     }
   }
