@@ -26,7 +26,7 @@ import '../../mask/apps/app_overview_page.dart';
 import '../../mask/login/login_page.dart';
 import '../../mask/menu/menu_page.dart';
 import '../../mask/setting/settings_page.dart';
-import '../../mask/work_screen/work_screen.dart';
+import '../../mask/work_screen/work_screen_page.dart';
 import '../../model/command/api/login_command.dart';
 import '../../service/apps/app.dart';
 import '../../service/apps/app_service.dart';
@@ -102,7 +102,7 @@ class MainLocation extends BeamLocation<BeamState> {
         BeamPage(
           title: FlutterUI.translate("Workscreen"),
           key: ValueKey(workScreenName),
-          child: WorkScreen(
+          child: WorkScreenPage(
             screenName: workScreenName,
           ),
         ),

@@ -24,7 +24,7 @@ import '../../service/layout/i_layout_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/parse_util.dart';
 import '../state/app_style.dart';
-import 'work_screen.dart';
+import 'work_screen_page.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for
@@ -115,7 +115,7 @@ class ContentState extends State<Content> {
                 SizedBox(
                   height: screenHeight,
                   width: constraints.maxWidth,
-                  child: WorkScreen.buildBackground(backgroundColor, backgroundImageString),
+                  child: WorkScreenPage.buildBackground(backgroundColor, backgroundImageString),
                 ),
                 screenWidget
               ],

@@ -39,7 +39,7 @@ import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
 import '../state/app_style.dart';
-import '../work_screen/work_screen.dart';
+import '../work_screen/work_screen_page.dart';
 import 'menu.dart';
 
 /// Menu Page
@@ -149,7 +149,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   child: Stack(
                     children: [
                       if (backgroundColor != null || backgroundImage != null)
-                        WorkScreen.buildBackground(backgroundColor, backgroundImage),
+                        WorkScreenPage.buildBackground(backgroundColor, backgroundImage),
                       _getMenu(
                         key: const PageStorageKey('MainMenu'),
                         appStyle: appStyle,
