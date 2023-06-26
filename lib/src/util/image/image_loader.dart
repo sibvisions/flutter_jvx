@@ -80,8 +80,6 @@ abstract class ImageLoader {
     AlignmentGeometry pAlignment = Alignment.center,
   }) {
     if (pImageString.isNotEmpty) {
-      imageProvider ??= ImageLoader.getImageProvider(pImageString, pImageStreamListener: pImageStreamListener);
-
       if (FontAwesomeUtil.checkFontAwesome(pImageString)) {
         FaIcon faIcon = FontAwesomeUtil.getFontAwesomeIcon(
           pText: pImageString,
@@ -90,7 +88,10 @@ abstract class ImageLoader {
         );
         pImageStreamListener?.call(Size.square(faIcon.size ?? FlIconModel.DEFAULT_ICON_SIZE), true);
         return faIcon;
-      } else if (imageProvider != null) {
+      }
+
+      imageProvider ??= ImageLoader.getImageProvider(pImageString, pImageStreamListener: pImageStreamListener);
+      if (imageProvider != null) {
         List<String> split = pImageString.split(",");
 
         Size? size;
@@ -115,7 +116,7 @@ abstract class ImageLoader {
       }
     }
 
-    pImageStreamListener?.call(const Size.square(16), true);
+    pImageStreamListener?.call(const Size.square(FlIconModel.DEFAULT_ICON_SIZE), true);
     return DEFAULT_IMAGE;
   }
 
