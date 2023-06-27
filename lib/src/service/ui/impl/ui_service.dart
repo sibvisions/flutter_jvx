@@ -47,6 +47,7 @@ import '../../../model/menu/menu_group_model.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../model/response/application_meta_data_response.dart';
+import '../../../model/response/application_parameters_response.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/main_location.dart';
@@ -480,10 +481,14 @@ class UiService implements IUiService {
   ValueNotifier<ApplicationParameters> get applicationParameters => _applicationParameters;
 
   @override
-  void updateApplicationParameters(ApplicationParameters pApplicationParameters) {
-    var newAppParam = ApplicationParameters()
-      ..merge(_applicationParameters.value)
-      ..merge(pApplicationParameters);
+  void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters) {
+    var oldAppParam = _applicationParameters.value;
+    var newAppParam = ApplicationParameters(
+      applicationTitleName: oldAppParam.applicationTitleName,
+      applicationTitleWeb: oldAppParam.applicationTitleWeb,
+      designModeAllowed: oldAppParam.designModeAllowed,
+      parameters: oldAppParam.parameters,
+    )..applyResponse(pApplicationParameters);
 
     getAppManager()?.modifyApplicationParameters(newAppParam);
 

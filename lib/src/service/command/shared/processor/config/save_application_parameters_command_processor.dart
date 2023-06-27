@@ -18,21 +18,13 @@ import 'dart:async';
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_parameters_command.dart';
-import '../../../../../model/config/application_parameters.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class SaveApplicationParametersCommandProcessor implements ICommandProcessor<SaveApplicationParametersCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationParametersCommand command) async {
-    IUiService().updateApplicationParameters(
-      ApplicationParameters(
-        applicationTitleName: command.parameters.applicationTitleName,
-        applicationTitleWeb: command.parameters.applicationTitleWeb,
-        designModeAllowed: command.parameters.designModeAllowed,
-        parameters: command.parameters.json,
-      ),
-    );
+    IUiService().updateApplicationParameters(command.parameters);
     return [];
   }
 }

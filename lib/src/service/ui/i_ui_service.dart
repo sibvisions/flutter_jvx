@@ -43,6 +43,7 @@ import '../../model/layout/layout_data.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/response/application_meta_data_response.dart';
+import '../../model/response/application_parameters_response.dart';
 import '../../model/response/application_settings_response.dart';
 import '../../model/response/device_status_response.dart';
 import '../command/i_command_service.dart';
@@ -191,7 +192,7 @@ abstract class IUiService {
   ValueNotifier<ApplicationParameters> get applicationParameters;
 
   /// Sets the [ApplicationParameters].
-  void updateApplicationParameters(ApplicationParameters pApplicationParameters);
+  void updateApplicationParameters(ApplicationParametersResponse pApplicationParameters);
 
   /// Returns the app's layout mode.
   ///
