@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../service/ui/i_ui_service.dart';
 import '../response/application_parameters_response.dart';
 
 class ApplicationParameters {
@@ -28,7 +27,7 @@ class ApplicationParameters {
     this.applicationTitleWeb,
     bool? designModeAllowed,
     Map<String, dynamic>? parameters,
-  })  : designModeAllowed = designModeAllowed ?? IUiService().applicationParameters.value.designModeAllowed,
+  })  : designModeAllowed = designModeAllowed ?? false,
         parameters = parameters ?? {};
 
   void applyResponse(ApplicationParametersResponse other) {
