@@ -577,7 +577,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         _showDialog(
           rowIndex: pRowIndex,
           columnDefinitions: [pCellEditor.columnDefinition!],
-          values: {pCellEditor.columnDefinition!.name: await pCellEditor.getValue()},
+          values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
           onEndEditing: _setValueEnd,
           newValueNotifier: dialogValueNotifier,
         );
@@ -593,7 +593,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         _showDialog(
           rowIndex: pRowIndex,
           columnDefinitions: [pCellEditor.columnDefinition!],
-          values: {pCellEditor.columnDefinition!.name: await pCellEditor.getValue()},
+          values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
           onEndEditing: _setValueEnd,
           newValueNotifier: dialogValueNotifier,
         );
