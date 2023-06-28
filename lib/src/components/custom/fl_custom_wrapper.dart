@@ -75,18 +75,18 @@ class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperSt
   void initState() {
     // Cant use model here, because it is not yet initialized
     // Will be initialized in initState of super
-    widget.model.minimumSize = customComponent.minSize;
-    widget.model.maximumSize = customComponent.maxSize;
-    widget.model.preferredSize = customComponent.preferredSize;
+    widget.model.minimumSize = customComponent.minSize ?? widget.model.minimumSize;
+    widget.model.maximumSize = customComponent.maxSize ?? widget.model.maximumSize;
+    widget.model.preferredSize = customComponent.preferredSize ?? widget.model.preferredSize;
 
     super.initState();
   }
 
   @override
   void modelUpdated() {
-    model.minimumSize = customComponent.minSize;
-    model.maximumSize = customComponent.maxSize;
-    model.preferredSize = customComponent.preferredSize;
+    model.minimumSize = customComponent.minSize ?? model.minimumSize;
+    model.maximumSize = customComponent.maxSize ?? model.maximumSize;
+    model.preferredSize = customComponent.preferredSize ?? model.preferredSize;
 
     super.modelUpdated();
   }
