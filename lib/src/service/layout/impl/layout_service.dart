@@ -62,7 +62,7 @@ class LayoutService implements ILayoutService {
         "${pLayoutData.name}|${pLayoutData.id} reportLayout: [${pLayoutData.bestSize}]; pos: [${pLayoutData.layoutPosition}]");
     pLayoutData.layoutState = LayoutState.VALID;
 
-    // Set object with new data, if component isn't a child its treated as the top most panel
+    // Set object with new data, if component isn't a child it's treated as the top most panel
     if (!pLayoutData.isChild) {
       applyScreenSize(pLayoutData);
     }
@@ -228,10 +228,10 @@ class LayoutService implements ILayoutService {
         return [UpdateLayoutPositionCommand(layoutDataList: newlyConstraintChildren, reason: "Was constrained")];
       }
 
-      /// Only save information AFTER calculations after constrained children.
+      // Only save information AFTER calculations after constrained children.
       _layoutDataSet[panel.id] = panel;
 
-      // Nothing has been "newly" constrained meaning now, i can tell my parent exactly how big i want to be.
+      // Nothing has been "newly" constrained meaning now, the panel can tell its parent exactly how big it wants to be.
       // So if my calc size has changed - tell parent, if not, tell children their position.
       var commands = <BaseCommand>[];
 
@@ -256,6 +256,8 @@ class LayoutService implements ILayoutService {
   }
 
   /// Returns true if conditions to perform the layout are met.
+  ///
+  /// Checks if [pParentLayout] is valid and all it's children layout data are present and valid as well.
   bool _isLegalState({required LayoutData pParentLayout}) {
     if (!_isValid) {
       FlutterUI.logLayout.d("I am not valid. ${pParentLayout.id}");

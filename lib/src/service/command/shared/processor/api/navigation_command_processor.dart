@@ -22,6 +22,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/save_components_command.dart';
 import '../../../../../model/request/api_navigation_request.dart';
 import '../../../../api/i_api_service.dart';
+import '../../../../api/shared/api_object_property.dart';
 import '../../i_command_processor.dart';
 
 /// Will send [ApiNavigationRequest] to remote server
@@ -40,12 +41,13 @@ class NavigationCommandProcessor implements ICommandProcessor<NavigationCommand>
     // if commands is not empty, check if there are only changes with ~remove and ~destroy
     if (!closeScreen && commands.length == 1 && commands.first is SaveComponentsCommand) {
       SaveComponentsCommand saveComponentsCommand = commands.first as SaveComponentsCommand;
-      if (saveComponentsCommand.isUpdate && saveComponentsCommand.componentsToSave == null) {
-        if (saveComponentsCommand.updatedComponent == null) {
+      if (saveComponentsCommand.isUpdate && saveComponentsCommand.newComponents == null) {
+        if (saveComponentsCommand.changedComponents == null) {
           closeScreen = true;
         } else {
-          closeScreen = saveComponentsCommand.updatedComponent!.none((dynamic updatedComponent) {
-            return !updatedComponent.containsKey("~remove") && !updatedComponent.containsKey("~destroy");
+          closeScreen = saveComponentsCommand.changedComponents!.none((changedComponents) {
+            return !changedComponents.containsKey(ApiObjectProperty.remove) &&
+                !changedComponents.containsKey(ApiObjectProperty.destroy);
           });
         }
       }

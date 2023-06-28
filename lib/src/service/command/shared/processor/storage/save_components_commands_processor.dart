@@ -26,8 +26,8 @@ class SaveComponentsCommandProcessor implements ICommandProcessor<SaveComponents
 
     commands.addAll(
       IStorageService().saveComponents(
-        command.updatedComponent,
-        command.componentsToSave,
+        command.changedComponents,
+        command.newComponents,
         command.isDesktopPanel,
         command.isContent,
         command.screenName,

@@ -47,7 +47,7 @@ class ContentProcessor implements IResponseProcessor<ContentResponse> {
       );
       commands.add(saveComponentsCommand);
 
-      panel = saveComponentsCommand.componentsToSave?.whereType<FlPanelModel>().firstWhereOrNull((element) =>
+      panel = saveComponentsCommand.newComponents?.whereType<FlPanelModel>().firstWhereOrNull((element) =>
           element.classNameEventSourceRef == FlContainerClassname.DIALOG ||
           element.classNameEventSourceRef == FlContainerClassname.CONTENT);
     }

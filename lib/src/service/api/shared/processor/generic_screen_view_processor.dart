@@ -53,7 +53,7 @@ class GenericScreenViewProcessor implements IResponseProcessor<GenericScreenView
       );
       commands.add(saveComponentsCommand);
 
-      panel = saveComponentsCommand.componentsToSave
+      panel = saveComponentsCommand.newComponents
           ?.whereType<FlPanelModel>()
           .firstWhereOrNull((element) => element.name == pResponse.screenName);
     }

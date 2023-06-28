@@ -226,16 +226,9 @@ class LayoutData implements ICloneable {
     return lastCalculatedSize != null;
   }
 
-  /// If this componen has a new [calculatedSize] that does not equal its [lastCalculatedSize].
+  /// If this component has a new [calculatedSize] that does not equal its [lastCalculatedSize].
   bool get hasNewCalculatedSize {
-    if (calculatedSize == null && lastCalculatedSize == null) {
-      return false;
-    } else if (calculatedSize != null && lastCalculatedSize == null ||
-        calculatedSize == null && lastCalculatedSize != null) {
-      return true;
-    }
-
-    return calculatedSize!.width != lastCalculatedSize!.width || calculatedSize!.height != lastCalculatedSize!.height;
+    return calculatedSize != lastCalculatedSize;
   }
 
   /// If this component is constrained by its position and has no corresponding entries in its constrain maps.

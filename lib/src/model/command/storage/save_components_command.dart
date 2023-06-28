@@ -25,10 +25,10 @@ class SaveComponentsCommand extends StorageCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// List of [FlComponentModel] to save.
-  final List<FlComponentModel>? componentsToSave;
+  final List<FlComponentModel>? newComponents;
 
   /// List of maps representing the changes done to a component.
-  final List<dynamic>? updatedComponent;
+  final List<dynamic>? changedComponents;
 
   /// If it is the desktop panel.
   bool isDesktopPanel = false;
@@ -53,8 +53,8 @@ class SaveComponentsCommand extends StorageCommand {
     this.isContent = false,
     required this.isUpdate,
     required super.reason,
-  })  : componentsToSave = ModelFactory.retrieveNewComponents(components),
-        updatedComponent = ModelFactory.retrieveChangedComponents(components);
+  })  : newComponents = ModelFactory.retrieveNewComponents(components),
+        changedComponents = ModelFactory.retrieveChangedComponents(components);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -62,7 +62,7 @@ class SaveComponentsCommand extends StorageCommand {
 
   @override
   String toString() {
-    String? updateCompIds = updatedComponent?.whereType<Map>().map((e) => e[ApiObjectProperty.id]).join(";");
-    return "SaveComponentsCommand{componentsToSave: $componentsToSave, updatedComponent: $updateCompIds, screenName: $screenName, ${super.toString()}}";
+    String? updateCompIds = changedComponents?.whereType<Map>().map((e) => e[ApiObjectProperty.id]).join(";");
+    return "SaveComponentsCommand{newComponents: $newComponents, changedComponents: $updateCompIds, screenName: $screenName, ${super.toString()}}";
   }
 }

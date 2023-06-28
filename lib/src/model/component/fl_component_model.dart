@@ -108,7 +108,7 @@ abstract class FlComponentModel {
   /// If this component is currently removed, defaults to false
   bool isRemoved = false;
 
-  /// If this component is indef removed, defaults to false
+  /// If this component is indefinitely removed, defaults to false
   bool isDestroyed = false;
 
   /// If the component is visible.

@@ -84,14 +84,13 @@ class StorageService implements IStorageService {
 
   @override
   List<BaseCommand> saveComponents(
-    List<dynamic>? componentsToUpdate,
+    List<dynamic>? changedComponents,
     List<FlComponentModel>? newComponents,
     bool isDesktopPanel,
     bool isContent,
     String screenName,
   ) {
-    if ((componentsToUpdate == null || componentsToUpdate.isEmpty) &&
-        (newComponents == null || newComponents.isEmpty)) {
+    if ((changedComponents == null || changedComponents.isEmpty) && (newComponents == null || newComponents.isEmpty)) {
       return [];
     }
 
@@ -102,11 +101,7 @@ class StorageService implements IStorageService {
 
     Set<FlComponentModel> destroyedOrRemovedModels = {};
 
-    List<FlComponentModel> oldScreenComps;
-
-    oldScreenComps = _getComponents(isDesktopPanel, isContent, screenName);
-
-    if (isContent && newComponents?.isNotEmpty == true) {}
+    List<FlComponentModel> oldScreenComps = _getComponents(isDesktopPanel, isContent, screenName);
 
     // Handle new Components
     if (newComponents != null) {
@@ -121,15 +116,15 @@ class StorageService implements IStorageService {
       }
     }
 
-    // Handle components to Update
-    if (componentsToUpdate != null) {
-      for (Map<String, dynamic> changedData in componentsToUpdate) {
+    // Handle components to update
+    if (changedComponents != null) {
+      for (Map<String, dynamic> changedData in changedComponents) {
         String changedId = changedData[ApiObjectProperty.id];
 
-        // Get old Model
+        // Get old model
         FlComponentModel? model = _componentMap[changedId];
         if (model != null) {
-          // Update Component and add to changedModels
+          // Update component and add to changedModels
           String? oldParentId = model.parent;
           bool wasVisible = model.isVisible;
           bool wasRemoved = model.isRemoved;
@@ -174,15 +169,17 @@ class StorageService implements IStorageService {
 
     // Build UI Notification
     // Check for new or changed active components
+    // (children of now visible parents have to be added again as well)
     for (FlComponentModel currentModel in currentScreenComps) {
       // Was model already sent once, present in oldScreen
-      bool isExisting = oldScreenComps.isNotEmpty && oldScreenComps.any((oldModel) => oldModel.id == currentModel.id);
+      bool existsInScreen =
+          oldScreenComps.isNotEmpty && oldScreenComps.any((oldModel) => oldModel.id == currentModel.id);
 
-      // IF component has not been rendered before it is new.
-      if (!isExisting) {
+      // If component has not been rendered before it is new.
+      if (!existsInScreen) {
         newUiComponents.add(currentModel);
       } else {
-        // IF component has been rendered, check if it has been changed.
+        // If component has been rendered, check if it has been changed.
         bool hasChanged = changedModels.any((changedModels) => changedModels == currentModel.id);
         // If model has been changed and is still in the screen.
         if (hasChanged) {
@@ -193,21 +190,21 @@ class StorageService implements IStorageService {
 
     // Check for components which are not active anymore, e.g. not visible, removed or destroyed
     for (FlComponentModel oldModel in oldScreenComps) {
-      bool isExisting = currentScreenComps.any((newModel) => newModel.id == oldModel.id);
+      bool existsInNewScreen = currentScreenComps.any((newModel) => newModel.id == oldModel.id);
 
-      if (!isExisting) {
+      if (!existsInNewScreen) {
         deletedUiComponents.add(oldModel.id);
       }
     }
 
-    // Components can only be affected if any other component has either changed, was deleted or is new.
+    // Parent components can only be affected if any other component has either changed, was deleted or is new.
     if (newUiComponents.isNotEmpty || changedUiComponents.isNotEmpty || deletedUiComponents.isNotEmpty) {
-      // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
+      // Only add models to affected if they are not new or changed, to avoid unnecessary re-renders.
       for (String affectedModel in affectedModels) {
-        bool isExisting = oldScreenComps.any((oldModel) => oldModel.id == affectedModel);
+        bool existsInNewScreen = currentScreenComps.any((oldModel) => oldModel.id == affectedModel);
         bool isChanged = changedUiComponents.any((changedModel) => changedModel == affectedModel);
         bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
-        if (!isChanged && !isNew && isExisting) {
+        if (!isChanged && !isNew && existsInNewScreen) {
           affectedUiComponents.add(affectedModel);
         }
       }
@@ -345,10 +342,11 @@ class StorageService implements IStorageService {
         list.add(screenModels.first);
       }
       list.addAll(getAllComponentsBelow(
-          pParentModel: screenModels.first,
-          pIgnoreVisibility: pIgnoreVisibility,
-          pIncludeRemoved: pIncludeRemoved,
-          pRecursively: pRecursively));
+        pParentModel: screenModels.first,
+        pIgnoreVisibility: pIgnoreVisibility,
+        pIncludeRemoved: pIncludeRemoved,
+        pRecursively: pRecursively,
+      ));
     }
 
     return list;
