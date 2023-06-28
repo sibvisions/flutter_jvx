@@ -27,13 +27,13 @@ class CustomComponent {
   /// Name of the component
   final String componentName;
 
-  /// The minimum size of the component.
+  /// The minimum size of the component. If not set, uses the one provided by the model of the original component.
   final Size? minSize;
 
-  /// The maximum size of the component.
+  /// The maximum size of the component. If not set, uses the one provided by the model of the original component.
   final Size? maxSize;
 
-  /// The preferred size of the component.
+  /// The preferred size of the component. If not set, uses the one provided by the model of the original component.
   ///
   /// This is the size that is used in the layout.
   /// If not set, the component will be asked for its intrinsic height.
