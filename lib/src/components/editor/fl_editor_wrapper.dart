@@ -87,10 +87,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void initState() {
     // Exception where we have to do stuff before we init the sate.
     // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
-    model = widget.model;
-
     recreateCellEditor(false);
-
     model.applyComponentInformation(cellEditor.createWidgetModel());
 
     super.initState();
@@ -100,7 +97,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   modelUpdated() {
-    // If a change of cell editors has occured.
+    // If a change of cell editors has occurred.
     if (model.changedCellEditor) {
       unsubscribe();
 
@@ -303,7 +300,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void recalculateSize([bool pRecalculcate = true]) {
     if (pRecalculcate) {
-      sentCalcSize = false;
+      sentLayoutData = false;
     }
 
     setState(() {});

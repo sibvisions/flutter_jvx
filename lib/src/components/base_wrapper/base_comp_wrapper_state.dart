@@ -32,7 +32,7 @@ import '../../service/ui/i_ui_service.dart';
 import 'base_comp_wrapper_widget.dart';
 import 'base_cont_wrapper_state.dart';
 
-/// The base class for all states of FlutterJVx's component wrapper.
+/// The base class for all states of FlutterJVxs component wrapper.
 ///
 /// A wrapper is a stateful widget that wraps FlutterJVx widgets and handles all JVx specific implementations and functionality.
 /// e.g:
@@ -49,13 +49,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   BuildContext? lastContext;
 
   /// [FlComponentModel] of the component, will be set in [initState]
-  late T model;
+  T get model => widget.model;
 
   /// [LayoutData] of the component, will be set in [initState]
   late LayoutData layoutData;
 
-  /// 'True' if the calc size has been sent.
-  bool sentCalcSize = false;
+  /// `true` if the layout data has been sent.
+  bool sentLayoutData = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -70,8 +70,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   @override
   void initState() {
     super.initState();
-    // Models need to be same type, dart doesn't see that both extend [FlComponentModel]
-    model = widget.model;
 
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(
@@ -216,10 +214,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
           foregroundDecoration: BoxDecoration(
             gradient: LinearGradient(
               begin: const Alignment(0, 0),
-              end: const Alignment(0.25, 0), // 0.5/2 = 1/4 * 2 colors = 8 lines
+              end: const Alignment(0.25, 0),
+              // 0.25/2 = 1/8 * 2 colors = 16 lines
               stops: const [0, 0.5, 0.5, 1],
-              transform: const GradientRotation(1 / 4 * pi), // rotate the gradient by 45 degrees
-              tileMode: TileMode.repeated, // repeats the gradient over the canvas
+              transform: const GradientRotation(1 / 4 * pi),
+              // rotate the gradient by 45 degrees
+              tileMode: TileMode.repeated,
+              // repeats the gradient over the canvas
               colors: [
                 // Colors are easy thanks to Flutter's Colors class.
                 Theme.of(context).colorScheme.primary.withOpacity(0.5),
@@ -248,7 +249,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
     lastContext = context;
 
-    if (!sentCalcSize) {
+    if (!sentLayoutData) {
       if (!layoutData.hasPreferredSize) {
         layoutData.calculatedSize = calculateSize(context);
       } else {
@@ -256,7 +257,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       }
 
       sendCalcSize(pLayoutData: layoutData.clone(), pReason: "Component has been rendered");
-      sentCalcSize = true;
+      sentLayoutData = true;
     }
   }
 
@@ -277,13 +278,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData.heightConstrains = {};
 
       // new model may have changed the calc size.
-      sentCalcSize = false;
+      sentLayoutData = false;
     });
   }
 
   /// Callback that notifiers this component that it's children have been changed.
   void affected() {
-    // Components usually dont have children, therefore -> Does nothing
+    // Components usually don't have children, therefore -> Does nothing
   }
 
   /// Is called when a new [LayoutData] is sent from the [ILayoutService].
@@ -301,7 +302,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     FlutterUI.logLayout.d("${model.name}|${model.id} receiveNewLayoutData ${pLayoutData.layoutPosition}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
-    if (!layoutData.isParent && (layoutData.isNewlyConstraint || calcPosition != null) && lastContext != null) {
+    if (calcPosition != null && lastContext != null) {
       sendCalcSize(pLayoutData: calculateConstrainedSize(calcPosition), pReason: "Component has been constrained");
     }
 

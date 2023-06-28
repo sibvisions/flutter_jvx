@@ -217,7 +217,7 @@ class LayoutService implements ILayoutService {
       // Check if any children have been newly constrained.
       for (LayoutData child in children) {
         _layoutDataSet[child.id] = child;
-        if (child.isNewlyConstraint && !child.isParent) {
+        if (child.isNewlyConstraint) {
           newlyConstraintChildren.add(child);
           markLayoutAsDirty(pComponentId: child.id);
           child.layoutPosition!.isConstraintCalc = true;

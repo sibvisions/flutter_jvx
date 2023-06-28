@@ -316,7 +316,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     currentState |= CALCULATION_COMPLETE;
-    sentCalcSize = false;
+    sentLayoutData = false;
     setState(() {});
   }
 

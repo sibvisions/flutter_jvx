@@ -233,7 +233,7 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position and has no corresponding entries in its constrain maps.
   bool get isNewlyConstraint {
-    if (!hasPreferredSize && !isFixedSize && (isWidthNewlyConstraint || isHeightNewlyConstraint)) {
+    if (!hasPreferredSize && !isFixedSize && (isWidthNewlyConstraint || isHeightNewlyConstraint) && !isParent) {
       return true;
     }
     return false;
