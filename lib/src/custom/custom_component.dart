@@ -16,6 +16,8 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../model/component/fl_component_model.dart';
+
 /// Used to replace specific components in a screen
 class CustomComponent {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,8 +27,23 @@ class CustomComponent {
   /// Name of the component
   final String componentName;
 
+  /// The minimum size of the component.
+  final Size? minSize;
+
+  /// The maximum size of the component.
+  final Size? maxSize;
+
+  /// The preferred size of the component.
+  ///
+  /// This is the size that is used in the layout.
+  /// If not set, the component will be asked for its intrinsic height.
+  /// Therefore the uppermost widget in the custom component should either support having its intrinsic height asked,
+  /// or set this property.
+  /// For example, a LayoutBuilder can not be asked for its intrinsic height, therefore this property must be set.
+  final Size? preferredSize;
+
   /// Component that will replace the server sent component with matching name
-  final Widget Function() componentBuilder;
+  final Widget Function(BuildContext context, FlComponentModel model) componentBuilder;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -35,5 +52,8 @@ class CustomComponent {
   CustomComponent({
     required this.componentName,
     required this.componentBuilder,
+    this.minSize,
+    this.maxSize,
+    this.preferredSize,
   });
 }

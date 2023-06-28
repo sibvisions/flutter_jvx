@@ -46,7 +46,21 @@ class FlCustomWrapper<M extends FlComponentModel> extends BaseCompWrapperWidget<
 }
 
 class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperState<M> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  CustomComponent get customComponent => (widget as FlCustomWrapper).customComponent;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   FlCustomWrapperState() : super();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +68,26 @@ class FlCustomWrapperState<M extends FlComponentModel> extends BaseCompWrapperSt
       postFrameCallback(context);
     });
 
-    return wrapWidget(child: (widget as FlCustomWrapper).customComponent.componentBuilder.call());
+    return wrapWidget(child: customComponent.componentBuilder.call(context, model));
+  }
+
+  @override
+  void initState() {
+    // Cant use model here, because it is not yet initialized
+    // Will be initialized in initState of super
+    widget.model.minimumSize = customComponent.minSize;
+    widget.model.maximumSize = customComponent.maxSize;
+    widget.model.preferredSize = customComponent.preferredSize;
+
+    super.initState();
+  }
+
+  @override
+  void modelUpdated() {
+    model.minimumSize = customComponent.minSize;
+    model.maximumSize = customComponent.maxSize;
+    model.preferredSize = customComponent.preferredSize;
+
+    super.modelUpdated();
   }
 }
