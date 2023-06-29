@@ -36,6 +36,7 @@ abstract class ModelFactory {
         return FlTabPanelModel();
       case FlComponentClassname.SIGNATURE_PAD:
       case FlContainerClassname.CUSTOM_CONTAINER:
+      case FlComponentClassname.CUSTOM_COMPONENT:
         return FlCustomContainerModel();
 
       // Components
