@@ -300,10 +300,14 @@ class UiService implements IUiService {
   Future<void> routeToAppOverview() async {
     if (!checkFirstSplash(false)) return;
 
+    // First fire the future, then route.
+    // Otherwise, the BeamGuard routing check would fail.
+    var stopApp = AppService().stopApp();
+
     FlutterUI.clearHistory();
     FlutterUI.getBeamerDelegate().beamToReplacementNamed("/");
 
-    await AppService().stopApp();
+    await stopApp;
   }
 
   @override
