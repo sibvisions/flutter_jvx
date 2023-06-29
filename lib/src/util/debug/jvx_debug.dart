@@ -15,7 +15,9 @@
  */
 
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 
@@ -250,6 +252,19 @@ class JVxDebug extends StatelessWidget {
               ],
             ),
           ),
+          if (kDebugMode)
+            ListTile(
+              title: Text(
+                "Debugger",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              trailing: OutlinedButton(
+                onPressed: () {
+                  debugger(message: "Manually triggered break point.");
+                },
+                child: const Text("Trigger"),
+              ),
+            ),
         ],
       ),
     );
