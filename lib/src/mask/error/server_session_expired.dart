@@ -46,10 +46,12 @@ class ServerSessionExpired extends JVxDialog {
 
   @override
   Widget build(BuildContext context) {
+    // We have to translate the server response because it will always be in english
+    // as the server has no session and therefore no translation.
     return AlertDialog(
-      title: Text(command.title?.isNotEmpty == true ? command.title! : FlutterUI.translate("Session Expired")),
+      title: Text(FlutterUI.translate(command.title?.isNotEmpty == true ? command.title! : "Session Expired")),
       content:
-          Text(command.message?.isNotEmpty == true ? command.message! : FlutterUI.translate("Session has expired")),
+          Text(FlutterUI.translate(command.message?.isNotEmpty == true ? command.message! : "Session has expired")),
       actions: [
         TextButton(
           onPressed: _close,
