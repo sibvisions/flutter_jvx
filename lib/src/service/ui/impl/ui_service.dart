@@ -279,11 +279,11 @@ class UiService implements IUiService {
     if (!checkFirstSplash(false)) return;
 
     FlutterUI.clearHistory();
-
     FlutterUI.getBeamerDelegate().beamToReplacementNamed(
       "/login${mode != null ? "?mode=${mode.name.firstCharLower()}" : ""}",
       data: pLoginProps,
     );
+    FlutterUI.clearLocationHistory();
   }
 
   @override

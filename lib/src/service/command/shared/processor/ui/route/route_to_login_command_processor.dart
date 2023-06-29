@@ -33,6 +33,9 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
     // As [LoginViewResponse] can also indicate a logout initiated by the server, clear user data here.
     await IUiService().logout();
 
+    await FlutterUI.clearServices(false);
+
+    // Save the current location (if inside a screen) to return to it after login.
     BeamState? targetState = FlutterUI.getCurrentContext()?.currentBeamLocation.state as BeamState?;
     if (targetState != null) {
       AppService().savedReturnUri ??= Uri(path: targetState.uri.path);
