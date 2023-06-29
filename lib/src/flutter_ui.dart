@@ -296,13 +296,20 @@ class FlutterUI extends StatefulWidget {
     return splashNavigatorKey?.currentContext;
   }
 
+  /// Clears the global beaming history.
+  ///
+  /// Uses [JVxListExtension.removeAllExceptLast] because the "history" also contains the present.
   static void clearHistory() {
-    // Beamer's history also contains the present!
     routerDelegate.beamingHistory.removeAllExceptLast();
   }
 
+  /// Clears the location beaming history.
+  ///
+  /// This is only to be done AFTER routing to a new page, as before routing,
+  /// the now past location would have not benn counted as "history".
+  ///
+  /// Uses [JVxListExtension.removeAllExceptLast] because the "history" also contains the present.
   static void clearLocationHistory() {
-    // We have to clear the history only after routing, as before the past location would have not benn counted as "history".
     routerDelegate.currentBeamLocation.history.removeAllExceptLast();
   }
 
