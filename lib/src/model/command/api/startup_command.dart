@@ -47,7 +47,6 @@ class StartupCommand extends ApiCommand {
     afterProcessing = () async {
       // Beamer's history also contains the present!
       FlutterUI.clearHistory();
-      FlutterUI.resetPageBucket();
     };
     onFinish = () {
       // We have to clear the history only after routing, as before the past location would have not benn counted as "history".

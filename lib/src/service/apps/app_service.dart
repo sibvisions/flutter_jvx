@@ -213,6 +213,7 @@ class AppService {
 
     savedReturnUri = null;
     await FlutterUI.clearServices(true);
+    FlutterUI.resetPageBucket();
 
     if (resetAppName) {
       await IConfigService().updateCurrentApp(null);
