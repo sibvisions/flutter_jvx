@@ -86,6 +86,9 @@ class OfflineApiRepository extends IRepository {
   Set<Cookie> getCookies() => {};
 
   @override
+  void setCookies(Set<Cookie> pCookies) => {};
+
+  @override
   Map<String, String> getHeaders() => {};
 
   /// Init database with currently available dataBooks.
