@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../../flutter_ui.dart';
 import 'session_command.dart';
 
 class LogoutCommand extends SessionCommand {
@@ -24,17 +23,7 @@ class LogoutCommand extends SessionCommand {
 
   LogoutCommand({
     required super.reason,
-  }) {
-    afterProcessing = () async {
-      // Beamer's history also contains the present!
-      FlutterUI.clearHistory();
-      await FlutterUI.clearServices(false);
-    };
-    onFinish = () {
-      // We have to clear the history only after routing, as before the past location would have not benn counted as "history".
-      FlutterUI.clearLocationHistory();
-    };
-  }
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,7 +24,9 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/cancel_login_command.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/reset_password_command.dart';
+import '../../service/apps/app_service.dart';
 import '../../service/command/i_command_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../../util/widgets/jvx_webview.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
@@ -39,6 +43,19 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return WillPopScope(
+      child: _buildLogin(context),
+      onWillPop: () async {
+        if (AppService().startedManually) {
+          unawaited(IUiService().routeToAppOverview());
+          return false;
+        }
+        return true;
+      },
+    );
+  }
+
+  Widget _buildLogin(BuildContext context) {
     var widget = FlutterUI.of(context).widget.loginBuilder?.call(context, loginMode);
     if (widget != null) return widget;
 
