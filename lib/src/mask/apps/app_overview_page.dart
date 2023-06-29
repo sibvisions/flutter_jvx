@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
@@ -60,6 +61,8 @@ class AppOverviewPage extends StatefulWidget {
       context: context,
       pBuilder: (context) => JVxScanner(
         allowMultiScan: allowMultiScan,
+        title: "QR Scanner",
+        formats: const [BarcodeFormat.qrCode],
         callback: (barcodes) async {
           for (var barcode in barcodes) {
             FlutterUI.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");

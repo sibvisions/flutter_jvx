@@ -48,8 +48,8 @@ class JVxScanner extends StatefulWidget {
     super.key,
     required this.callback,
     this.allowMultiScan = false,
-    this.title = "QR Scanner",
-    this.formats = const [BarcodeFormat.qrCode],
+    this.title = "Scanner",
+    this.formats = const [BarcodeFormat.all],
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
