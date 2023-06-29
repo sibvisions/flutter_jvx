@@ -540,6 +540,12 @@ class OnlineApiRepository extends IRepository {
   }
 
   @override
+  void setCookies(Set<Cookie> pCookies) {
+    _cookies.clear();
+    _cookies.addAll(pCookies);
+  }
+
+  @override
   Map<String, dynamic> getHeaders() {
     var headers = Map.of(_headers);
     IUiService().getAppManager()?.modifyHeaders(headers);

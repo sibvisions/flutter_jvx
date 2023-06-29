@@ -55,6 +55,9 @@ abstract class IRepository {
   /// Returns all saved cookies used for requests
   Set<Cookie> getCookies();
 
+  /// Sets new cookies used for requests
+  void setCookies(Set<Cookie> pCookies);
+
   /// Executes [pRequest],
   /// will throw an exception if request fails to be executed
   Future<ApiInteraction> sendRequest(ApiRequest pRequest, [bool? retryRequest]);

@@ -74,6 +74,18 @@ class JVxDebug extends StatelessWidget {
           ),
           ListTile(
             title: Text(
+              "Delete Cookies",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: OutlinedButton(
+              onPressed: () {
+                IApiService().getRepository().setCookies({});
+              },
+              child: const Text("Delete"),
+            ),
+          ),
+          ListTile(
+            title: Text(
               "API Service",
               style: Theme.of(context).textTheme.titleMedium,
             ),
