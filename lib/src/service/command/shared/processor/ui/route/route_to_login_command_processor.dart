@@ -37,7 +37,7 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
 
     // Save the current location (if inside a screen) to return to it after login.
     BeamState? targetState = FlutterUI.getCurrentContext()?.currentBeamLocation.state as BeamState?;
-    if (targetState != null) {
+    if (targetState != null && targetState.uri.path.startsWith("/screens/")) {
       AppService().savedReturnUri ??= Uri(path: targetState.uri.path);
     }
 
