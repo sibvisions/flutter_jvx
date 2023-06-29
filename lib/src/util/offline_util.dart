@@ -564,6 +564,9 @@ abstract class OfflineUtil {
       ));
       await ICommandService().sendCommand(ExitCommand(reason: "Going offline"));
 
+      // Clear screen storage
+      IStorageService().clear(true);
+
       // Clear databooks for offline usage
       IDataService().clearDataBooks();
       await offlineApiRepository.initDataBooks();
