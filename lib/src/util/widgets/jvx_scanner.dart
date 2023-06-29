@@ -157,8 +157,8 @@ class _JVxScannerState extends State<JVxScanner> {
     if (!calledCallback) {
       if (multiScanEnabled) {
         if (scannedBarcodes.map((e) => e.rawValue).none((e) => capture.barcodes.map((e) => e.rawValue).contains(e))) {
-          unawaited(HapticFeedback.vibrate());
           scannedBarcodes.addAll(capture.barcodes);
+          unawaited(HapticFeedback.vibrate());
         }
       } else {
         calledCallback = true;
