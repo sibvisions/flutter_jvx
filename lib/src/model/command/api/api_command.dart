@@ -14,8 +14,8 @@
  * the License.
  */
 
-import '../../../commands.dart';
-import 'queue_command.dart';
+import '../base_command.dart';
+import '../queue_command.dart';
 
 /// BaseType of any command interacting with the [IApiService]
 abstract class ApiCommand extends BaseCommand implements QueueCommand {

@@ -16,8 +16,8 @@
 
 import 'dart:async';
 
-import '../api/queue_command.dart';
 import '../base_command.dart';
+import '../queue_command.dart';
 import 'ui_command.dart';
 
 typedef CommandCallback = FutureOr<List<BaseCommand>> Function();

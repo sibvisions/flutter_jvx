@@ -16,8 +16,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../../commands.dart';
 import '../../flutter_ui.dart';
+import '../../service/api/shared/api_object_property.dart';
 import '../../util/parse_util.dart';
 import '../component/i_font_style.dart';
 import '../data/sort_definition.dart';

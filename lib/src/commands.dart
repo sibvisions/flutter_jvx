@@ -67,6 +67,7 @@ export 'model/command/data/save_meta_data_command.dart';
 export 'model/command/layout/layout_command.dart';
 export 'model/command/layout/preferred_size_command.dart';
 export 'model/command/layout/register_parent_command.dart';
+export 'model/command/queue_command.dart';
 export 'model/command/storage/delete_screen_command.dart';
 export 'model/command/storage/save_components_command.dart';
 export 'model/command/storage/storage_command.dart';
