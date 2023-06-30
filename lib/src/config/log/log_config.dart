@@ -31,7 +31,7 @@ class LogConfig {
     this.levels,
   });
 
-  const LogConfig.empty() : this();
+  const LogConfig.defaults() : this();
 
   LogConfig.fromJson(Map<String, dynamic> json)
       : this(

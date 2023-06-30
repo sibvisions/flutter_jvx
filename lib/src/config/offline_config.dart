@@ -37,7 +37,7 @@ class OfflineConfig {
     this.checkConstraints,
   });
 
-  const OfflineConfig.empty()
+  const OfflineConfig.defaults()
       : this(
           checkConstraints: true,
         );

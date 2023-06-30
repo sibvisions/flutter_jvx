@@ -109,7 +109,7 @@ class UiService implements IUiService {
 
   /// JVx Application Settings.
   final ValueNotifier<ApplicationSettingsResponse> _applicationSettings =
-      ValueNotifier(ApplicationSettingsResponse.empty());
+      ValueNotifier(ApplicationSettingsResponse.defaults());
 
   /// JVx Application Parameters.
   final ValueNotifier<ApplicationParameters> _applicationParameters = ValueNotifier(ApplicationParameters());
@@ -144,7 +144,7 @@ class UiService implements IUiService {
     if (pFullClear) {
       _clientId.value = null;
       _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
-      _applicationSettings.value = ApplicationSettingsResponse.empty();
+      _applicationSettings.value = ApplicationSettingsResponse.defaults();
       _applicationParameters.value = ApplicationParameters();
       _applicationMetaData.value = null;
       _designMode.value = false;

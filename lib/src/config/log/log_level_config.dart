@@ -66,7 +66,7 @@ class LogLevelConfig {
     this.layout,
   });
 
-  const LogLevelConfig.empty() : this();
+  const LogLevelConfig.defaults() : this();
 
   LogLevelConfig.fromJson(Map<String, dynamic> json)
       : this(

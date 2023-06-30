@@ -59,7 +59,7 @@ class ApplicationSettingsResponse extends ApiResponse {
     required super.name,
   });
 
-  ApplicationSettingsResponse.empty()
+  ApplicationSettingsResponse.defaults()
       : saveVisible = true,
         reloadVisible = true,
         rollbackVisible = true,

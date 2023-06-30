@@ -143,7 +143,7 @@ class AppConfig {
     this.applicationParameters,
   });
 
-  const AppConfig.empty()
+  const AppConfig.defaults()
       : this(
           title: "JVx Mobile",
           connectTimeout: const Duration(seconds: 10),
@@ -155,11 +155,11 @@ class AppConfig {
           forceSingleAppMode: false,
           predefinedConfigsLocked: true,
           predefinedConfigsParametersHidden: true,
-          logConfig: const LogConfig.empty(),
-          uiConfig: const UiConfig.empty(),
+          logConfig: const LogConfig.defaults(),
+          uiConfig: const UiConfig.defaults(),
           serverConfigs: const [],
-          versionConfig: const VersionConfig.empty(),
-          offlineConfig: const OfflineConfig.empty(),
+          versionConfig: const VersionConfig.defaults(),
+          offlineConfig: const OfflineConfig.defaults(),
         );
 
   AppConfig.fromJson(Map<String, dynamic> json)

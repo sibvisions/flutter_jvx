@@ -376,7 +376,7 @@ class FlutterUI extends StatefulWidget {
     }
 
     AppConfig appConfig =
-        const AppConfig.empty().merge(pAppToRun.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
+        const AppConfig.defaults().merge(pAppToRun.appConfig).merge(await ConfigUtil.readAppConfig()).merge(devConfig);
 
     // ?baseUrl=http%3A%2F%2Flocalhost%3A8888%2FJVx.mobile%2Fservices%2Fmobile&appName=demo
     Map<String, String> queryParameters = {...Uri.base.queryParameters};

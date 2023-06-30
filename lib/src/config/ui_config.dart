@@ -41,7 +41,7 @@ class UiConfig {
     this.rememberMeChecked,
   });
 
-  const UiConfig.empty()
+  const UiConfig.defaults()
       : this(
           showRememberMe: false,
           rememberMeChecked: false,

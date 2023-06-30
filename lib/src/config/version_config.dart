@@ -40,7 +40,7 @@ class VersionConfig {
     this.buildNumber,
   });
 
-  const VersionConfig.empty() : this();
+  const VersionConfig.defaults() : this();
 
   VersionConfig.fromJson(Map<String, dynamic> json)
       : this(
