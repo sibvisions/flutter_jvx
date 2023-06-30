@@ -546,23 +546,31 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       return;
     }
 
+    FlutterUI.logUI.d("Table cell tapped: $pRowIndex, $pColumnName");
+    FlutterUI.logUI.d("Active last single tap timer: ${lastSingleTapTimer?.isActive}");
     if (lastTappedColumn == pColumnName && lastTappedRow == pRowIndex && lastSingleTapTimer?.isActive == true) {
+      FlutterUI.logUI.d("Tap type: double");
       lastTappedColumn = null;
       lastTappedRow = null;
       lastSingleTapTimer?.cancel();
       lastSelectionTapFuture?.then((value) {
+        FlutterUI.logUI.d("Selecting was: $value");
         if (value) {
+          FlutterUI.logUI.d("Double tap action");
           _onDoubleTap(pRowIndex, pColumnName, pCellEditor);
         }
       });
     } else {
+      FlutterUI.logUI.d("Tap type: single");
       lastTappedColumn = pColumnName;
       lastTappedRow = pRowIndex;
       lastSingleTapTimer?.cancel();
       lastSelectionTapFuture = _selectRecord(pRowIndex, pColumnName);
       lastSingleTapTimer = Timer(const Duration(milliseconds: 300), () {
         lastSelectionTapFuture?.then((value) {
+          FlutterUI.logUI.d("Selecting was: $value");
           if (value) {
+            FlutterUI.logUI.d("Single tap action");
             _onSingleTap(pRowIndex, pColumnName, pCellEditor);
           }
         });
