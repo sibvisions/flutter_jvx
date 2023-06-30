@@ -779,7 +779,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     cancelSelect = false;
 
     return ICommandService()
-        .sendCommand(FunctionCommand(
+        .sendCommand(QueuedFunctionCommand(
           () async {
             List<BaseCommand> commands = await IUiService().collectAllEditorSaveCommands(model.id);
 
