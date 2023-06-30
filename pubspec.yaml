@@ -115,6 +115,9 @@ dependencies:
   #WYSIWYG HTML-Editor
   html_editor_enhanced: ^2.5.0
 
+  flutter_tts: ^3.7.0
+  speech_to_text: ^6.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
