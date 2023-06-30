@@ -24,6 +24,7 @@ import 'package:rxdart/rxdart.dart';
 import '../flutter_ui.dart';
 import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
+import '../model/command/base_command.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
 import '../service/ui/i_ui_service.dart';
@@ -80,6 +81,8 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   bool _loading = false;
   Future? _loadingDelayFuture;
+
+  bool _lockDelayed = false;
   bool _forceDisableBarrier = false;
 
   bool? _connected;
@@ -111,10 +114,11 @@ class JVxOverlayState extends State<JVxOverlay> {
   bool get loading => _loading;
 
   /// Shows the [LoadingBar] after a specified [delay], and continues to show it until [hideLoading] is called.
-  void showLoading(Duration delay) {
+  void showLoading(BaseCommand pCommand) {
     if (!_loading) {
-      _loadingDelayFuture = Future.delayed(delay);
+      _loadingDelayFuture = Future.delayed(pCommand.loadingDelay);
       _loading = true;
+      _lockDelayed = pCommand.delayUILocking;
 
       if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
         SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
@@ -129,6 +133,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   void hideLoading() {
     if (_loading) {
       _loading = false;
+      _lockDelayed = false;
       setState(() {});
     }
   }
@@ -187,6 +192,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   FutureOr<void> clear(bool pFullClear) {
     _forceDisableBarrier = false;
     _loading = false;
+    _lockDelayed = false;
     resetConnectionState(instant: true);
   }
 
@@ -240,7 +246,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                 children: [
                   if (widget.child != null) widget.child!,
                   DialogsWidget(key: _dialogsKey),
-                  if (_isLocked)
+                  if (_isLocked && (!_lockDelayed || snapshot.connectionState == ConnectionState.done))
                     const ModalBarrier(
                       dismissible: false,
                     ),
