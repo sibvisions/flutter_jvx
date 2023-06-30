@@ -49,6 +49,7 @@ import '../../model/request/filter.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/fl_component_classname.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -766,14 +767,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   /// Selects the record.
-  Future<bool> _selectRecord(int pRowIndex, String? pColumnName, {CommandCallback? pAfterSelect}) {
+  Future<bool> _selectRecord(int pRowIndex, String? pColumnName, {CommandCallback? pAfterSelect}) async {
     cancelSelect = false;
-    return IUiService()
-        .saveAllEditors(
-          pReason: "Select row in table",
-          pId: model.id,
-          pFunction: () {
-            List<BaseCommand> commands = [];
+
+    return ICommandService()
+        .sendCommand(FunctionCommand(
+          () async {
+            List<BaseCommand> commands = await IUiService().collectAllEditorSaveCommands(model.id);
 
             if (cancelSelect) {
               FlutterUI.logUI.i("Select canceled, server sent reload");
@@ -807,7 +807,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
             return commands;
           },
-        )
+          reason: "Select row in table",
+          delayUILocking: true,
+        ))
         .then((value) => true)
         .catchError((error, stackTrace) {
       IUiService().handleAsyncError(error, stackTrace);
