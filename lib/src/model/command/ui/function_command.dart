@@ -31,6 +31,9 @@ class FunctionCommand extends UiCommand {
 
   FunctionCommand(
     this.commandCallback, {
+    super.showLoading = true,
+    super.delayUILocking = false,
+    super.onFinish,
     required super.reason,
   });
 
