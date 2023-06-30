@@ -31,6 +31,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static const String OFFLINE_BUTTON = "OfflineButton";
+  static const String SCANNER_BUTTON = "ScannerButton";
   static const String QR_SCANNER_BUTTON = "QRScannerButton";
   static const String CALL_BUTTON = "CallButton";
   static const String GEO_LOCATION_BUTTON = "GeoLocationButton";

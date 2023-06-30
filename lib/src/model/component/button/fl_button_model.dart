@@ -102,6 +102,9 @@ class FlButtonModel extends FlComponentModel {
   /// Columnname for geolocation button
   String longitudeColumnName = "";
 
+  /// List of supported scan formats
+  List<BarcodeFormat>? scanFormats;
+
   /// If the button is a slider button
   bool get isSlideStyle =>
       styles.contains(SLIDE_STYLE) || styles.contains(SLIDE_RESETABLE_STYLE) || styles.contains(SLIDE_AUTO_RESET_STYLE);
@@ -266,6 +269,20 @@ class FlButtonModel extends FlComponentModel {
       pKey: ApiObjectProperty.longitudeColumnName,
       pDefault: defaultModel.longitudeColumnName,
       pCurrent: longitudeColumnName,
+    );
+
+    scanFormats = getPropertyValue<List<BarcodeFormat>?>(
+      pJson: pJson,
+      pKey: ApiObjectProperty.scanFormats,
+      pDefault: defaultModel.scanFormats,
+      pCurrent: scanFormats,
+      pConversion: (e) => (e as List<dynamic>?)
+          ?.map((e) => e as String)
+          .map<List<BarcodeFormat>?>((e) => ParseUtil.parseScanFormat(e))
+          .whereNotNull()
+          .expand((e) => e)
+          .toSet()
+          .toList(),
     );
 
     // Label parsing

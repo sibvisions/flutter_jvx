@@ -180,8 +180,9 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
       } else if (!kIsWeb) {
         if (model.classNameEventSourceRef == FlButtonWidget.OFFLINE_BUTTON) {
           goOffline();
-        } else if (model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
-          openQrCodeScanner();
+        } else if (model.classNameEventSourceRef == FlButtonWidget.SCANNER_BUTTON ||
+            model.classNameEventSourceRef == FlButtonWidget.QR_SCANNER_BUTTON) {
+          openScanner();
         } else if (model.classNameEventSourceRef == FlButtonWidget.CALL_BUTTON) {
           callNumber();
         }
@@ -211,13 +212,16 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     return commands;
   }
 
-  void openQrCodeScanner() {
+  void openScanner() {
     IUiService().openDialog(
-      pBuilder: (_) => JVxScanner(callback: sendQrCodeResult),
+      pBuilder: (_) => JVxScanner(
+        formats: model.scanFormats ?? const [BarcodeFormat.all],
+        callback: sendScannerResult,
+      ),
     );
   }
 
-  void sendQrCodeResult(List<Barcode> pBarcodes) {
+  void sendScannerResult(List<Barcode> pBarcodes) {
     if (pBarcodes.isNotEmpty) {
       IUiService().sendCommand(
         SetValuesCommand(
@@ -225,7 +229,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           editorColumnName: model.columnName,
           columnNames: [model.columnName],
           values: [pBarcodes.first.rawValue],
-          reason: "Qr code was scanned",
+          reason: "Code was scanned",
         ),
       );
     }

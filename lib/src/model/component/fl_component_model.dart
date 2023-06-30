@@ -14,9 +14,11 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../components/editor/text_field/fl_text_field_widget.dart';
 import '../../components/panel/tabset/fl_tab_panel_wrapper.dart';

@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../config/server_config.dart';
 import '../flutter_ui.dart';
@@ -368,5 +369,59 @@ abstract class ParseUtil {
       }
     }
     return null;
+  }
+
+  static List<BarcodeFormat>? parseScanFormat(String s) {
+    List<BarcodeFormat> formats = [];
+    switch (s) {
+      case "All":
+        return [BarcodeFormat.all];
+      case "CodeAll":
+        formats.addAll([
+          BarcodeFormat.code128,
+          BarcodeFormat.code39,
+          BarcodeFormat.code93,
+          BarcodeFormat.codebar,
+        ]);
+      case "Code128":
+        formats.add(BarcodeFormat.code128);
+      case "Code39":
+        formats.add(BarcodeFormat.code39);
+      case "Code93":
+        formats.add(BarcodeFormat.code93);
+      case "Codebar":
+        formats.add(BarcodeFormat.codebar);
+      case "DataMatrix":
+        formats.add(BarcodeFormat.dataMatrix);
+      case "EanAll":
+        formats.addAll([
+          BarcodeFormat.ean13,
+          BarcodeFormat.ean8,
+        ]);
+      case "Ean13":
+        formats.add(BarcodeFormat.ean13);
+      case "Ean8":
+        formats.add(BarcodeFormat.ean8);
+      case "Itf":
+        formats.add(BarcodeFormat.itf);
+      case "QrCode":
+        formats.add(BarcodeFormat.qrCode);
+      case "UpcAll":
+        return [
+          BarcodeFormat.upcA,
+          BarcodeFormat.upcE,
+        ];
+      case "UpcA":
+        formats.add(BarcodeFormat.upcA);
+      case "UpcE":
+        formats.add(BarcodeFormat.upcE);
+      case "pdf417":
+        formats.add(BarcodeFormat.pdf417);
+      case "Aztec":
+        formats.add(BarcodeFormat.aztec);
+      default:
+        return null;
+    }
+    return formats;
   }
 }
