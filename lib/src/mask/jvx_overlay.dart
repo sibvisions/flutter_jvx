@@ -24,7 +24,6 @@ import 'package:rxdart/rxdart.dart';
 import '../flutter_ui.dart';
 import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
-import '../model/command/base_command.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
 import '../service/ui/i_ui_service.dart';
@@ -114,11 +113,11 @@ class JVxOverlayState extends State<JVxOverlay> {
   bool get loading => _loading;
 
   /// Shows the [LoadingBar] after a specified [delay], and continues to show it until [hideLoading] is called.
-  void showLoading(BaseCommand pCommand) {
+  void showLoading(Duration delay, [bool lockDelayed = false]) {
     if (!_loading) {
-      _loadingDelayFuture = Future.delayed(pCommand.loadingDelay);
+      _loadingDelayFuture = Future.delayed(delay);
       _loading = true;
-      _lockDelayed = pCommand.delayUILocking;
+      _lockDelayed = lockDelayed;
 
       if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
         SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
