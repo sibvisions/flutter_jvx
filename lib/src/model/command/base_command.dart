@@ -34,6 +34,9 @@ abstract class BaseCommand {
   /// If a loading progress should be displayed for this instance.
   final bool showLoading;
 
+  /// If the ui lock is delayed until the loading bar is shown.
+  final bool delayUILocking;
+
   /// Will be called when the command is being processed.
   FutureOr<void> Function()? beforeProcessing;
 
@@ -53,6 +56,7 @@ abstract class BaseCommand {
     this.afterProcessing,
     this.onFinish,
     this.showLoading = true,
+    this.delayUILocking = false,
   }) : id = DateTime.now().millisecondsSinceEpoch;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
