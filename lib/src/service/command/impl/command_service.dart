@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:flutter_jvx/src/model/command/api/queue_command.dart';
 import 'package:queue/queue.dart';
 
 import '../../../exceptions/error_view_exception.dart';
@@ -80,7 +81,7 @@ class CommandService implements ICommandService {
   /// New api commands will be added to this list and
   /// will only be executed if the previous command and all of its follow-ups
   /// have finished execution
-  final Queue _apiCommandsQueue = Queue();
+  final Queue _commandsQueue = Queue();
 
   /// New layout commands will be added to this list and
   /// will only be executed if the previous command and all of its follow-ups
@@ -104,7 +105,7 @@ class CommandService implements ICommandService {
   FutureOr<void> clear(bool pFullClear) async {
     if (pFullClear) {
       // drain queue up to this point
-      await _apiCommandsQueue.add(() => Future.value(null));
+      await _commandsQueue.add(() => Future.value(null));
       await _layoutCommandsQueue.add(() => Future.value(null));
     }
   }
@@ -112,13 +113,13 @@ class CommandService implements ICommandService {
   @override
   Future<void> sendCommand(BaseCommand pCommand) {
     BaseCommand command = IUiService().getAppManager()?.interceptCommand(pCommand) ?? pCommand;
-    // Only queue api commands
-    if (command is ApiCommand) {
-      return _apiCommandsQueue.add(() => _sendCommand(command));
-    }
     // Only queue layout commands
-    else if (command is LayoutCommand) {
+    if (command is LayoutCommand) {
       return _layoutCommandsQueue.add(() => _sendCommand(command));
+    }
+    // Only queue queue commands
+    else if (command is QueueCommand) {
+      return _commandsQueue.add(() => _sendCommand(command));
     }
 
     return _sendCommand(command);

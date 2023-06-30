@@ -14,16 +14,5 @@
  * the License.
  */
 
-import 'package:flutter_jvx/src/commands.dart';
-
-import 'queue_command.dart';
-
-/// BaseType of any command interacting with the [IApiService]
-abstract class ApiCommand extends BaseCommand implements QueueCommand {
-  ApiCommand({
-    required super.reason,
-    super.showLoading,
-    super.beforeProcessing,
-    super.afterProcessing,
-  });
-}
+/// BaseType of any command being placed in a queue.
+abstract class QueueCommand {}
