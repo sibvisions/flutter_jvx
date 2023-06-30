@@ -79,7 +79,7 @@ class CommandService implements ICommandService {
 
   /// New api commands will be added to this list and
   /// will only be executed if the previous command and all of its follow-ups
-  /// have finished execution (excluding layout-ing)
+  /// have finished execution
   final Queue _apiCommandsQueue = Queue();
 
   /// New layout commands will be added to this list and
