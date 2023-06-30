@@ -17,7 +17,6 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:flutter_jvx/src/model/command/api/queue_command.dart';
 import 'package:queue/queue.dart';
 
 import '../../../exceptions/error_view_exception.dart';
@@ -26,6 +25,7 @@ import '../../../flutter_ui.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/api/device_status_command.dart';
 import '../../../model/command/api/exit_command.dart';
+import '../../../model/command/api/queue_command.dart';
 import '../../../model/command/api/session_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
