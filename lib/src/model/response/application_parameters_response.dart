@@ -29,6 +29,11 @@ class ApplicationParametersResponse extends ApiResponse {
   /// Tab title
   final String? applicationTitleWeb;
 
+  final String? authenticated;
+
+  /// Which screen to open, is a screen name
+  final String? openScreen;
+
   final bool? designModeAllowed;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +43,8 @@ class ApplicationParametersResponse extends ApiResponse {
   ApplicationParametersResponse.fromJson(super.json)
       : applicationTitleName = json[ApiObjectProperty.applicationTitleName],
         applicationTitleWeb = json[ApiObjectProperty.applicationTitleWeb],
+        authenticated = json[ApiObjectProperty.authenticated],
+        openScreen = json[ApiObjectProperty.openScreen],
         designModeAllowed = ParseUtil.parseBool(json[ApiObjectProperty.designMode]),
         super.fromJson();
 }
