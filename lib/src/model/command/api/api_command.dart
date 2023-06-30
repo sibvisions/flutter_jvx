@@ -14,8 +14,7 @@
  * the License.
  */
 
-import 'package:flutter_jvx/src/commands.dart';
-
+import '../../../commands.dart';
 import 'queue_command.dart';
 
 /// BaseType of any command interacting with the [IApiService]

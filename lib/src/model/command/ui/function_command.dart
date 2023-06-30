@@ -16,8 +16,7 @@
 
 import 'dart:async';
 
-import 'package:flutter_jvx/src/model/command/api/queue_command.dart';
-
+import '../api/queue_command.dart';
 import '../base_command.dart';
 import 'ui_command.dart';
 
