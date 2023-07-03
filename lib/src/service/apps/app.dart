@@ -170,7 +170,7 @@ class App {
 
   /// Sets the name of this app.
   Future<void> updateName(String? name) {
-    assert(!locked);
+    assert(!locked, "Locked apps cannot be updated.");
     String? fallback = getPredefinedConfig(_id)?.appName;
     var value = name == fallback ? null : name?.toString();
     return _setString("name", value).then((_) => _name = value);
@@ -188,7 +188,7 @@ class App {
 
   /// Sets the base-url of this app.
   Future<void> updateBaseUrl(Uri? url) {
-    assert(!locked);
+    assert(!locked, "Locked apps cannot be updated.");
     Uri? fallback = getPredefinedConfig(_id)?.baseUrl;
     var value = url == fallback ? null : url?.toString();
     return _setString("baseUrl", value).then((_) => _baseUrl = value);
@@ -231,7 +231,7 @@ class App {
 
   /// Sets the name of this app.
   Future<void> updateTitle(String? title) {
-    assert(!locked);
+    assert(!locked, "Locked apps cannot be updated.");
     String? fallback = getPredefinedConfig(_id)?.title;
     var value = title == fallback ? null : title?.toString();
     return _setString("title", value).then((_) => _title = value);
@@ -248,7 +248,7 @@ class App {
 
   /// Sets the name of this app.
   Future<void> updateIcon(String? icon) {
-    assert(!locked);
+    assert(!locked, "Locked apps cannot be updated.");
     String? fallback = getPredefinedConfig(_id)?.icon;
     var value = icon == fallback ? null : icon?.toString();
     return _setString("icon", value).then((_) => _icon = value);
@@ -265,7 +265,7 @@ class App {
 
   /// Sets the default state of this app.
   Future<void> updateDefault(bool? isDefault) async {
-    assert(!locked);
+    assert(!locked, "Locked apps cannot be updated.");
     if (isDefault ?? false) {
       await IConfigService().updateDefaultApp(_id);
     } else {

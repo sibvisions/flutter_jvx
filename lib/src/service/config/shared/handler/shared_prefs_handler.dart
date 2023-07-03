@@ -205,7 +205,7 @@ class SharedPrefsHandler implements ConfigHandler {
   /// `null` removes the value from the storage.
   Future<bool> setString(String key, String? value) async {
     String? prefix = await currentApp();
-    assert(prefix != null && prefix.isNotEmpty);
+    assert(prefix != null && prefix.isNotEmpty, "Can't set $key=$value without a prefix!");
 
     if (prefix != null) {
       if (value != null) {
@@ -236,7 +236,7 @@ class SharedPrefsHandler implements ConfigHandler {
   /// `null` removes the value from the storage.
   Future<bool> setBool(String key, bool? value) async {
     String? prefix = await currentApp();
-    assert(prefix != null && prefix.isNotEmpty);
+    assert(prefix != null && prefix.isNotEmpty, "Can't set $key=$value without a prefix!");
 
     if (prefix != null) {
       if (value != null) {
