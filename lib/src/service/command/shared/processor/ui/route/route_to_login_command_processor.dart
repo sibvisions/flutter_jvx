@@ -20,6 +20,7 @@ import '../../../../../../flutter_ui.dart';
 import '../../../../../../model/command/base_command.dart';
 import '../../../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../../apps/app_service.dart';
+import '../../../../../config/i_config_service.dart';
 import '../../../../../ui/i_ui_service.dart';
 import '../../../i_command_processor.dart';
 
@@ -30,8 +31,10 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
 
   @override
   Future<List<BaseCommand>> processCommand(RouteToLoginCommand command) async {
-    // As [LoginViewResponse] can also indicate a logout initiated by the server, clear user data here.
-    await IUiService().logout();
+    // As a [LoginViewResponse] can also indicate a logout initiated by the server, clear user data here.
+    await IConfigService().updateUserInfo(pUserInfo: null, pJson: null);
+    await IConfigService().updateAuthKey(null);
+    await IConfigService().updatePassword(null);
 
     await FlutterUI.clearServices(false);
 

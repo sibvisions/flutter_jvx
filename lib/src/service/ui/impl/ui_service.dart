@@ -335,13 +335,6 @@ class UiService implements IUiService {
         ),
       );
 
-  @override
-  Future<void> logout() async {
-    await IConfigService().updateUserInfo(pUserInfo: null, pJson: null);
-    await IConfigService().updateAuthKey(null);
-    await IConfigService().updatePassword(null);
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Meta data management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

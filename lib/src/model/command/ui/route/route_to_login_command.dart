@@ -17,17 +17,17 @@
 import '../../api/login_command.dart';
 import 'route_command.dart';
 
-/// Command to route to login
+/// Command to show the login page.
 class RouteToLoginCommand extends RouteCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Login mode
+  /// Login mode.
   final LoginMode? mode;
 
-  /// Username and password
-  final Map<String, dynamic> loginData;
+  /// Username and password.
+  final Map<String, dynamic>? loginData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -35,7 +35,7 @@ class RouteToLoginCommand extends RouteCommand {
 
   RouteToLoginCommand({
     this.mode,
-    required this.loginData,
+    this.loginData,
     required super.reason,
   });
 

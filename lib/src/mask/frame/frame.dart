@@ -80,8 +80,7 @@ abstract class Frame extends StatefulWidget {
     if (IApiService().getRepository().cancelledSessionExpired.value) {
       AppService().startApp();
     } else {
-      LogoutCommand logoutCommand = LogoutCommand(reason: "Drawer menu logout");
-      IUiService().sendCommand(logoutCommand);
+      IUiService().sendCommand(LogoutCommand(reason: "Drawer menu logout"));
     }
   }
 

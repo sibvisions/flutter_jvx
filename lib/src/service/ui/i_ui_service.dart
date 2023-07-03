@@ -135,7 +135,9 @@ abstract class IUiService {
   /// Route to settings page
   void routeToSettings({bool pReplaceRoute = false});
 
-  /// Route to Login page
+  /// Routes to Login page.
+  ///
+  /// This method **does not** clear any data, this is just routing, for a full logout use [LogoutCommand] instead.
   void routeToLogin({LoginMode? mode, Map<String, dynamic>? pLoginProps});
 
   Future<void> routeToAppOverview();
@@ -152,9 +154,6 @@ abstract class IUiService {
     BuildContext? context,
     bool pIsDismissible = true,
   });
-
-  /// Clears all local user data, to trigger a server logout use [LogoutCommand] instead.
-  Future<void> logout();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Meta data management
