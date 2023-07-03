@@ -30,37 +30,37 @@ class ApiStartupRequest extends ApiRequest {
   /// The uri entered in the browser.
   final String? requestUri;
 
-  /// Name of the JVx application
+  /// Name of the JVx application.
   final String applicationName;
 
-  /// Mode of the Device
+  /// Mode of the Device.
   final String deviceMode;
 
-  /// Mode of this app
+  /// Mode of this app.
   final String appMode;
 
-  /// Total available (for workscreens) width of the screen
+  /// Total available (for WorkScreens) width of the screen.
   final int? screenWidth;
 
-  /// Total available (for workscreens) height of the screen
+  /// Total available (for WorkScreens) height of the screen.
   final int? screenHeight;
 
-  /// Name of the user
+  /// Name of the user.
   final String? username;
 
-  /// Password of the user
+  /// Password of the user.
   final String? password;
 
-  /// Auth-key from previous auto-login
+  /// Auth-key from previous auto-login.
   final String? authKey;
 
-  /// Language code
+  /// Language code.
   final String langCode;
 
-  /// Time zone code (e.g. Europe/Vienna)
+  /// Time zone code (e.g. Europe/Vienna).
   final String timeZoneCode;
 
-  /// How many records the app should fetch ahead
+  /// How many records the app should fetch ahead.
   final int? readAheadLimit;
 
   /// Unique id of this device.
