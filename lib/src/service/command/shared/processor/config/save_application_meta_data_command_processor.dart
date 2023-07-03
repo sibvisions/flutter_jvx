@@ -27,6 +27,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_meta_data_command.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../api/shared/repository/online_api_repository.dart';
+import '../../../../apps/app.dart';
 import '../../../../apps/i_app_service.dart';
 import '../../../../config/i_config_service.dart';
 import '../../../../file/file_manager.dart';
@@ -38,6 +39,22 @@ class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveAppl
   Future<List<BaseCommand>> processCommand(SaveApplicationMetaDataCommand command, BaseCommand? origin) async {
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
+
+    if (IConfigService().currentApp.value == null) {
+      // In case we did a startup without a currentApp, here we are fixing this.
+      Uri? calculatedBaseUrl = IAppService().calculatedBaseUrl;
+      String? applicationName = command.metaData.applicationName;
+      if (applicationName != null && calculatedBaseUrl != null) {
+        App calculatedApp =
+            (await App.getApp(App.computeId(applicationName, calculatedBaseUrl.toString(), predefined: false)!)) ??
+                await App.createApp(name: applicationName, baseUrl: calculatedBaseUrl);
+        await IConfigService().updateCurrentApp(calculatedApp.id);
+      } else {
+        // Problem we can't fix it but can't continue too.
+        throw Exception("Failed to create app from calculatedBaseUrl, aborting."
+            "\nCalculatedBaseUrl: $calculatedBaseUrl, ApplicationName: $applicationName");
+      }
+    }
 
     await IAppService().removePreviousAppVersions(IConfigService().currentApp.value!, version);
 

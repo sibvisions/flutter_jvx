@@ -58,6 +58,10 @@ abstract class IAppService implements Service {
   /// Returns whether the app was started manually, returns `false` if unset.
   bool wasStartedManually();
 
+  bool get beforeFirstStart;
+
+  Uri? get calculatedBaseUrl;
+
   /// Returns a value notifier for the set of stored app IDs.
   ValueListenable<Set<String>> getStoredAppIds();
 

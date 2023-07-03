@@ -524,7 +524,7 @@ class OnlineApiRepository extends IRepository {
       return null;
     }
 
-    Uri location = IConfigService().baseUrl.value!;
+    Uri location = _getBaseUrl();
 
     int? end = location.path.lastIndexOf(ParseUtil.urlSuffix);
     if (end == -1) end = null;
@@ -538,6 +538,29 @@ class OnlineApiRepository extends IRepository {
         "reconnect": true.toString(),
       },
     );
+  }
+
+  /// Returns the effective base url.
+  ///
+  /// If there is a calculated base url (only in web, if there is no default app)
+  /// return this url on the first start, otherwise the one from the config.
+  ///
+  /// Background info:
+  /// Flutter Web should be start-able without configuring it nor providing
+  /// a baseUrl and appName parameter in the url.
+  /// Currently only VisionX and deployed version need this.
+  ///
+  /// Throws if there is no url.
+  Uri _getBaseUrl() {
+    Uri? location = IConfigService().baseUrl.value;
+    // On first start, check with calculated url if possible.
+    if (location == null) {
+      if (IAppService().beforeFirstStart) {
+        location = IAppService().calculatedBaseUrl;
+      }
+    }
+    location = location!;
+    return location;
   }
 
   void setConnectedStatus(bool connected) {
@@ -602,7 +625,7 @@ class OnlineApiRepository extends IRepository {
         return (error is HttpException && error.message.contains("Connection closed"));
       }
 
-      client!.options.baseUrl = IConfigService().baseUrl.value!.toString();
+      client!.options.baseUrl = _getBaseUrl().toString();
       sendFunction() => _sendRequest(
             pRequest,
             client: client!,

@@ -46,10 +46,10 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
     Size? phoneSize = MediaQuery.maybeSizeOf(FlutterUI.getEffectiveContext()!);
 
     ApiStartupRequest startupRequest = ApiStartupRequest(
-      baseUrl: IConfigService().baseUrl.value!.toString(),
+      baseUrl: command.calculatedBaseUrl?.toString() ?? IConfigService().baseUrl.value!.toString(),
       requestUri: kIsWeb ? Uri.base.toString() : null,
       appMode: "full",
-      applicationName: IConfigService().appName.value!,
+      applicationName: IConfigService().appName.value,
       authKey: IConfigService().authKey.value,
       screenHeight: phoneSize?.height.toInt(),
       screenWidth: phoneSize?.width.toInt(),

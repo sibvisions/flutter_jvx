@@ -31,7 +31,9 @@ class ApiStartupRequest extends ApiRequest {
   final String? requestUri;
 
   /// Name of the JVx application.
-  final String applicationName;
+  ///
+  /// Null-able because of the calculatedBaseUrl attempt.
+  final String? applicationName;
 
   /// Mode of the device.
   final String deviceMode;
@@ -134,7 +136,7 @@ class ApiStartupRequest extends ApiRequest {
         ApiObjectProperty.appMode: appMode,
         ApiObjectProperty.deviceMode: deviceMode,
         ApiObjectProperty.darkMode: darkMode,
-        ApiObjectProperty.applicationName: applicationName,
+        if (applicationName != null) ApiObjectProperty.applicationName: applicationName,
         if (username != null) ApiObjectProperty.userName: username,
         if (password != null) ApiObjectProperty.password: password,
         if (screenHeight != null) ApiObjectProperty.screenHeight: screenHeight,

@@ -25,6 +25,9 @@ class ApplicationMetaDataResponse extends ApiResponse {
   /// SessionId
   final String clientId;
 
+  /// Name of the remote app
+  final String? applicationName;
+
   /// Version of the remote app
   final String version;
 
@@ -49,6 +52,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
 
   ApplicationMetaDataResponse({
     required this.clientId,
+    this.applicationName,
     required this.version,
     this.serverVersion,
     required this.langCode,
@@ -60,6 +64,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
 
   ApplicationMetaDataResponse.fromJson(super.json)
       : clientId = json[ApiObjectProperty.clientId],
+        applicationName = json[ApiObjectProperty.applicationName],
         version = json[ApiObjectProperty.version],
         serverVersion = json[ApiObjectProperty.serverVersion],
         langCode = json[ApiObjectProperty.langCode],
@@ -70,6 +75,6 @@ class ApplicationMetaDataResponse extends ApiResponse {
 
   @override
   String toString() {
-    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, serverVersion: $serverVersion, langCode: $langCode, timeZoneCode: $timeZoneCode, lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled}';
+    return 'ApplicationMetaDataResponse{clientId: $clientId, applicationName: $applicationName, version: $version, serverVersion: $serverVersion, langCode: $langCode, timeZoneCode: $timeZoneCode, lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled}';
   }
 }

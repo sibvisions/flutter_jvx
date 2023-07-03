@@ -23,8 +23,11 @@ import '../i_response_processor.dart';
 class LanguageProcessor implements IResponseProcessor<LanguageResponse> {
   @override
   Future<List<BaseCommand>> processResponse(LanguageResponse pResponse, ApiRequest? pRequest) async {
-    await IConfigService().updateApplicationLanguage(pResponse.langCode);
-    await IConfigService().updateApplicationTimeZone(pResponse.timeZoneCode);
+    // TODO fix for calculatedBaseUrl startup
+    if (IConfigService().currentApp.value != null) {
+      await IConfigService().updateApplicationLanguage(pResponse.langCode);
+      await IConfigService().updateApplicationTimeZone(pResponse.timeZoneCode);
+    }
     return [];
   }
 }
