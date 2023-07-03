@@ -179,6 +179,8 @@ class LoginPage extends StatelessWidget {
 
   /// Sends a [ResetPasswordCommand]
   ///
+  /// [identifier] can be either an e-mail address or a username which identifies the user.
+  ///
   /// Server responses:
   /// * If user logged in, sends message view
   /// * If user not logged in, sends new login view

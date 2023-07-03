@@ -23,7 +23,7 @@ class ApiResetPasswordRequest extends SessionRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// To identify the user. either e-mail or username
+  /// To identify the user, either e-mail or username.
   final String identifier;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
