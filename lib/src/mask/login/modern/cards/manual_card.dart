@@ -273,7 +273,7 @@ class _ManualCardState extends State<ManualCard> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
+                        onPressed: () => LoginPage.changeMode(mode: LoginMode.LostPassword),
                         child: Text(FlutterUI.translate("Reset password?")),
                       ),
                   ],

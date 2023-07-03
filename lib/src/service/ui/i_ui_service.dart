@@ -26,8 +26,6 @@ import '../../custom/custom_component.dart';
 import '../../custom/custom_screen.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/frame_dialog.dart';
-import '../../model/command/api/login_command.dart';
-import '../../model/command/api/logout_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/command/ui/function_command.dart';
 import '../../model/component/component_subscription.dart';
@@ -134,11 +132,6 @@ abstract class IUiService {
 
   /// Route to settings page
   void routeToSettings({bool pReplaceRoute = false});
-
-  /// Routes to Login page.
-  ///
-  /// This method **does not** clear any data, this is just routing, for a full logout use [LogoutCommand] instead.
-  void routeToLogin({LoginMode? mode, Map<String, dynamic>? pLoginProps});
 
   Future<void> routeToAppOverview();
 

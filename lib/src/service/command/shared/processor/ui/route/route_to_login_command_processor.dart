@@ -17,11 +17,12 @@
 import 'package:beamer/beamer.dart';
 
 import '../../../../../../flutter_ui.dart';
+import '../../../../../../mask/login/login_page.dart';
 import '../../../../../../model/command/base_command.dart';
 import '../../../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../../apps/app_service.dart';
 import '../../../../../config/i_config_service.dart';
-import '../../../../../ui/i_ui_service.dart';
+import '../../../../../ui/impl/ui_service.dart';
 import '../../../i_command_processor.dart';
 
 class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand> {
@@ -44,7 +45,11 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
       AppService().savedReturnUri ??= Uri(path: targetState.uri.path);
     }
 
-    IUiService().routeToLogin(mode: command.mode, pLoginProps: command.loginData);
+    if (UiService.checkFirstSplash(false)) {
+      FlutterUI.clearHistory();
+      LoginPage.changeMode(mode: command.mode, loginData: command.loginData);
+      FlutterUI.clearLocationHistory();
+    }
 
     return [];
   }

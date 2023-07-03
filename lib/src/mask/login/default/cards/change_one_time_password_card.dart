@@ -126,7 +126,7 @@ class _ChangeOneTimePasswordCardState extends State<ChangeOneTimePasswordCard> {
     );
 
     Widget backButton = TextButton(
-      onPressed: () => IUiService().routeToLogin(mode: LoginMode.Manual),
+      onPressed: () => LoginPage.changeMode(mode: LoginMode.Manual),
       child: Text(
         FlutterUI.translate("Cancel"),
         overflow: TextOverflow.ellipsis,

@@ -163,7 +163,7 @@ class _ManualCardState extends State<ManualCard> {
           Align(
             alignment: Alignment.center,
             child: TextButton(
-              onPressed: () => IUiService().routeToLogin(mode: LoginMode.LostPassword),
+              onPressed: () => LoginPage.changeMode(mode: LoginMode.LostPassword),
               child: Text(
                 FlutterUI.translate("Reset password?"),
                 overflow: TextOverflow.ellipsis,

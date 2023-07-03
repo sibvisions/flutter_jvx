@@ -23,6 +23,7 @@ import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 
 import '../../flutter_ui.dart';
 import '../../mask/jvx_overlay.dart';
+import '../../mask/login/login_page.dart';
 import '../../model/command/api/login_command.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/i_api_service.dart';
@@ -362,7 +363,7 @@ class UIDebug extends StatelessWidget {
                       ))
                   .toList(),
               onChanged: (LoginMode? value) {
-                IUiService().routeToLogin(mode: value!);
+                LoginPage.changeMode(mode: value!);
                 setState(() {});
               },
               isExpanded: true,

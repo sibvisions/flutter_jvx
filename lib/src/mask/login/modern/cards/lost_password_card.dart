@@ -174,7 +174,7 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: () => IUiService().routeToLogin(mode: LoginMode.Manual),
+                      onPressed: () => LoginPage.changeMode(mode: LoginMode.Manual),
                       child: Text(FlutterUI.translate("Back")),
                     ),
                   ],

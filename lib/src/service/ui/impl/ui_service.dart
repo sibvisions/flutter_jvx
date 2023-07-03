@@ -24,7 +24,6 @@ import '../../../mask/work_screen/content.dart';
 import '../../../model/command/api/close_content_command.dart';
 import '../../../model/command/api/feedback_command.dart';
 import '../../../model/command/api/fetch_command.dart';
-import '../../../model/command/api/login_command.dart';
 import '../../../model/command/api/save_all_editors.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_data_chunk_command.dart';
@@ -51,7 +50,6 @@ import '../../../model/response/application_parameters_response.dart';
 import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/main_location.dart';
-import '../../../util/extensions/string_extensions.dart';
 import '../../../util/jvx_colors.dart';
 import '../../apps/app_service.dart';
 import '../../command/i_command_service.dart';
@@ -272,18 +270,6 @@ class UiService implements IUiService {
     } else {
       FlutterUI.getBeamerDelegate().beamToNamed("/screens/$resolvedScreenName");
     }
-  }
-
-  @override
-  void routeToLogin({LoginMode? mode, Map<String, dynamic>? pLoginProps}) {
-    if (!checkFirstSplash(false)) return;
-
-    FlutterUI.clearHistory();
-    FlutterUI.getBeamerDelegate().beamToReplacementNamed(
-      "/login${mode != null ? "?mode=${mode.name.firstCharLower()}" : ""}",
-      data: pLoginProps,
-    );
-    FlutterUI.clearLocationHistory();
   }
 
   @override
