@@ -178,8 +178,6 @@ class AppService {
     await repository.start();
     IApiService().setRepository(repository);
 
-    await IConfigService().updateLastApp(IConfigService().currentApp.value);
-
     if (IConfigService().getFileManager().isSatisfied()) {
       // Only try to load if FileManager is available
       await IConfigService().reloadSupportedLanguages();

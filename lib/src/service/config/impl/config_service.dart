@@ -431,6 +431,9 @@ class ConfigService implements IConfigService {
     // Only setting that also persists the default value, as this is used in the key for other settings.
     await _configHandler.updateCurrentApp(appId);
     _appId.value = appId;
+    if (appId != null) {
+      await updateLastApp(appId);
+    }
     await _updateAppSpecificValues();
   }
 
