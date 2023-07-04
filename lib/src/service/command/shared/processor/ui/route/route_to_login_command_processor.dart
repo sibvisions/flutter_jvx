@@ -18,6 +18,7 @@ import 'package:beamer/beamer.dart';
 
 import '../../../../../../flutter_ui.dart';
 import '../../../../../../mask/login/login_page.dart';
+import '../../../../../../model/command/api/logout_command.dart';
 import '../../../../../../model/command/base_command.dart';
 import '../../../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../../apps/app_service.dart';
@@ -40,9 +41,11 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
     await FlutterUI.clearServices(false);
 
     // Save the current location (if inside a screen) to return to it after login.
-    BeamState? targetState = FlutterUI.getCurrentContext()?.currentBeamLocation.state as BeamState?;
-    if (targetState != null && targetState.uri.path.startsWith("/screens/")) {
-      AppService().savedReturnUri ??= Uri(path: targetState.uri.path);
+    if (origin is! LogoutCommand) {
+      BeamState? targetState = FlutterUI.getCurrentContext()?.currentBeamLocation.state as BeamState?;
+      if (targetState != null && targetState.uri.path.startsWith("/screens/")) {
+        AppService().savedReturnUri ??= Uri(path: targetState.uri.path);
+      }
     }
 
     if (UiService.checkFirstSplash(false)) {
