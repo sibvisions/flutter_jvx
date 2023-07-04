@@ -544,9 +544,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         BeamGuard(
           guardNonMatching: true,
           pathPatterns: ["/", "/settings"],
-          check: (context, location) {
-            return IConfigService().currentApp.value != null && IAppService().exitFuture.value == null;
-          },
+          check: (context, location) =>
+              IConfigService().currentApp.value != null && IAppService().exitFuture.value == null,
           beamToNamed: (origin, target) {
             BeamState targetState = target.state as BeamState;
             var parameters = Map.of(targetState.queryParameters);
