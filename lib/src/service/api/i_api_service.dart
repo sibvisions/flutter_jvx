@@ -34,7 +34,7 @@ abstract class IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  FutureOr<void> clear(bool pFullClear);
+  FutureOr<void> clear(ClearReason reason);
 
   /// Any API Request will be sent to an [IRepository] to execute the request
   /// after which it will be processed to [BaseCommand]s in an [IController]

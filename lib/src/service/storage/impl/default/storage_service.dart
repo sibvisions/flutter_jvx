@@ -28,6 +28,7 @@ import '../../../../model/component/fl_component_model.dart';
 import '../../../../util/misc/jvx_notifier.dart';
 import '../../../api/shared/api_object_property.dart';
 import '../../../api/shared/fl_component_classname.dart';
+import '../../../service.dart';
 import '../../../ui/i_ui_service.dart';
 import '../../i_storage_service.dart';
 
@@ -60,10 +61,9 @@ class StorageService implements IStorageService {
   StorageService.create();
 
   @override
-  FutureOr<void> clear(bool pFullClear) {
+  FutureOr<void> clear(ClearReason reason) {
     // The desktop panel is kept after logging out so we have to exclude it from cleaning.
-
-    List<FlComponentModel> desktopComponentList = pFullClear
+    List<FlComponentModel> desktopComponentList = reason.isFull()
         ? [] // Don't keep desktop panel on full clear.
         : getAllComponentsBelowByWhere(
             pWhere: (element) => element.className == FlContainerClassname.DESKTOP_PANEL,

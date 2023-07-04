@@ -15,9 +15,10 @@
  */
 
 import '../../../../../isolate/isolate_message.dart';
+import '../../../../../service.dart';
 
 class ClearMessage extends IsolateMessage {
-  final bool pFullClear;
+  final ClearReason reason;
 
-  ClearMessage(this.pFullClear);
+  ClearMessage(this.reason);
 }

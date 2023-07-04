@@ -313,21 +313,19 @@ class FlutterUI extends StatefulWidget {
     routerDelegate.currentBeamLocation.history.removeAllExceptLast();
   }
 
-  /// Clears all service depending on [pFullClear].
+  /// Clears all service depending on [reason].
   ///
-  /// When [pFullClear] is `true`, then a full app restart/change happened.
-  /// If `false`, just a logout.
-  ///
-  /// This can not be called with [pFullClear] = `true` from within a command processing
+  /// This **can not** be called with [ClearReason.LOGOUT] from within a command processing
   /// as the command service then awaits its queue and would therefore end up in a deadlock.
-  static FutureOr<void> clearServices(bool pFullClear) async {
-    await ILayoutService().clear(pFullClear);
-    await IStorageService().clear(pFullClear);
-    await IDataService().clear(pFullClear);
-    await IUiService().clear(pFullClear);
-    await ICommandService().clear(pFullClear);
-    await IApiService().clear(pFullClear);
-    await IConfigService().clear(pFullClear);
+  static FutureOr<void> clearServices(ClearReason reason) async {
+    await ILayoutService().clear(reason);
+    await IStorageService().clear(reason);
+    await IDataService().clear(reason);
+    await IUiService().clear(reason);
+    await ICommandService().clear(reason);
+    await IApiService().clear(reason);
+    await IConfigService().clear(reason);
+    await AppService().clear(reason);
   }
 
   static void resetPageBucket() {

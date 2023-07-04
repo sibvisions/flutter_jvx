@@ -46,7 +46,7 @@ void layoutCallback(SendPort callerSendPort) {
     dynamic response;
 
     if (isolateMessage is ClearMessage) {
-      layoutStorage.clear(isolateMessage.pFullClear);
+      layoutStorage.clear(isolateMessage.reason);
     } else if (isolateMessage is MarkAsDirtyMessage) {
       response = await layoutStorage.markLayoutAsDirty(pComponentId: isolateMessage.id);
     } else if (isolateMessage is ReportLayoutMessage) {

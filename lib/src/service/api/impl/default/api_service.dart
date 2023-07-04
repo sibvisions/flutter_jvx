@@ -18,6 +18,7 @@ import 'dart:async';
 
 import '../../../../model/command/base_command.dart';
 import '../../../../model/request/api_request.dart';
+import '../../../service.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
 import '../../shared/i_repository.dart';
@@ -70,8 +71,8 @@ class ApiService implements IApiService {
   }
 
   @override
-  FutureOr<void> clear(bool pFullClear) async {
-    if (pFullClear) {
+  FutureOr<void> clear(ClearReason reason) async {
+    if (reason.isFull()) {
       // (Re-)start repository
       await repository.stop();
       await repository.start();
