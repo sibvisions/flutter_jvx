@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class RollbackCommandProcessor implements ICommandProcessor<RollbackCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(RollbackCommand command) {
+  Future<List<BaseCommand>> processCommand(RollbackCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiRollbackRequest(),
     );

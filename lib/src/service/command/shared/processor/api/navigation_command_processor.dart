@@ -27,7 +27,7 @@ import '../../i_command_processor.dart';
 /// Will send [ApiNavigationRequest] to remote server
 class NavigationCommandProcessor implements ICommandProcessor<NavigationCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(NavigationCommand command) async {
+  Future<List<BaseCommand>> processCommand(NavigationCommand command, BaseCommand? origin) async {
     List<BaseCommand> commands = await IApiService().sendRequest(
       ApiNavigationRequest(
         screenName: command.openScreen,

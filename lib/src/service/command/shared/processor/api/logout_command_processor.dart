@@ -24,7 +24,7 @@ import '../../i_command_processor.dart';
 
 class LogoutCommandProcessor implements ICommandProcessor<LogoutCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(LogoutCommand command) async {
+  Future<List<BaseCommand>> processCommand(LogoutCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiLogoutRequest());
   }
 }

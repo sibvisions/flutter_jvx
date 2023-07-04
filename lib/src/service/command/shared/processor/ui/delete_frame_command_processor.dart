@@ -23,7 +23,7 @@ import '../../i_command_processor.dart';
 
 class DeleteFrameCommandProcessor implements ICommandProcessor<DeleteFrameCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(DeleteFrameCommand command) async {
+  Future<List<BaseCommand>> processCommand(DeleteFrameCommand command, BaseCommand? origin) async {
     IUiService().closeMessageDialog(componentId: command.componentId);
     return [];
   }

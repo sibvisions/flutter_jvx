@@ -35,7 +35,7 @@ import '../../i_command_processor.dart';
 
 class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveApplicationMetaDataCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveApplicationMetaDataCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveApplicationMetaDataCommand command, BaseCommand? origin) async {
     // Remove '.' to allow easy saving of images in filesystem
     String version = command.metaData.version.replaceAll(".", "_");
 

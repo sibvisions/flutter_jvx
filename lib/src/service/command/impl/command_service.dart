@@ -136,7 +136,7 @@ class CommandService implements ICommandService {
       }
 
       FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
-      await processCommand(pCommand);
+      await processCommand(pCommand, null);
       await pCommand.onFinish?.call();
       FlutterUI.logCommand.d("Finished ${pCommand.runtimeType}-chain");
     } catch (error) {
@@ -152,14 +152,14 @@ class CommandService implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns true when all provided commands have been executed
-  _waitTillFinished({required List<BaseCommand> pCommands}) async {
+  _waitTillFinished(List<BaseCommand> pCommands, {BaseCommand? origin}) async {
     // Execute incoming commands
     for (BaseCommand command in pCommands) {
-      await processCommand(command);
+      await processCommand(command, origin);
     }
   }
 
-  Future<void> processCommand(BaseCommand pCommand) async {
+  Future<void> processCommand(BaseCommand pCommand, BaseCommand? origin) async {
     if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
       FlutterUI.logCommand.i("Processing ${pCommand.runtimeType} (${pCommand.reason})");
     }
@@ -169,17 +169,17 @@ class CommandService implements ICommandService {
     try {
       // Switch-Case doesn't work with types
       if (pCommand is ApiCommand) {
-        commands = await _apiProcessor.processCommand(pCommand);
+        commands = await _apiProcessor.processCommand(pCommand, origin);
       } else if (pCommand is ConfigCommand) {
-        commands = await _configProcessor.processCommand(pCommand);
+        commands = await _configProcessor.processCommand(pCommand, origin);
       } else if (pCommand is StorageCommand) {
-        commands = await _storageProcessor.processCommand(pCommand);
+        commands = await _storageProcessor.processCommand(pCommand, origin);
       } else if (pCommand is UiCommand) {
-        commands = await _uiProcessor.processCommand(pCommand);
+        commands = await _uiProcessor.processCommand(pCommand, origin);
       } else if (pCommand is LayoutCommand) {
-        commands = await _layoutProcessor.processCommand(pCommand);
+        commands = await _layoutProcessor.processCommand(pCommand, origin);
       } else if (pCommand is DataCommand) {
-        commands = await _dataProcessor.processCommand(pCommand);
+        commands = await _dataProcessor.processCommand(pCommand, origin);
       } else {
         FlutterUI.logCommand.w("Command (${pCommand.runtimeType}) without Processor found");
         return;
@@ -221,21 +221,21 @@ class CommandService implements ICommandService {
 
     try {
       // When all commands are finished execute routing commands sorted by priority
-      await _waitTillFinished(pCommands: nonRouteCommands);
+      await _waitTillFinished(nonRouteCommands, origin: pCommand);
 
       // Don't route if there is a server error
       if (!nonRouteCommands.any((element) => element is OpenServerErrorDialogCommand)) {
         if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand), pCommand);
         }
         if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand), pCommand);
         }
         if (routeCommands.any((element) => element is RouteToWorkCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand), pCommand);
         }
         if (routeCommands.any((element) => element is RouteToCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToCommand));
+          await processCommand(routeCommands.firstWhere((element) => element is RouteToCommand), pCommand);
         }
       }
     } catch (error) {
@@ -256,7 +256,7 @@ class CommandService implements ICommandService {
     }
   }
 
-  void modifyCommands(List<BaseCommand> commands, BaseCommand originalCommand) {
+  void modifyCommands(List<BaseCommand> commands, BaseCommand origin) {
     if (commands.any((element) => element is RouteToWorkCommand)) {
       commands.whereType<DeleteScreenCommand>().forEach((element) {
         element.beamBack = false;

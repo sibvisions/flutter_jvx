@@ -25,7 +25,7 @@ import '../../i_command_processor.dart';
 
 class SetFocusCommandProcessor implements ICommandProcessor<SetFocusCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SetFocusCommand command) async {
+  Future<List<BaseCommand>> processCommand(SetFocusCommand command, BaseCommand? origin) async {
     if (command.focus) {
       return focus(command.componentId);
     } else {

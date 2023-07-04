@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class RestoreDataCommandProcessor implements ICommandProcessor<RestoreDataCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(RestoreDataCommand command) async {
+  Future<List<BaseCommand>> processCommand(RestoreDataCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiRestoreDataRequest(
         dataProvider: command.dataProvider,

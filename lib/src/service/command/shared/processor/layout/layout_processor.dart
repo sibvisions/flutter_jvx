@@ -25,7 +25,7 @@ import '../../i_command_processor.dart';
 
 class LayoutProcessor implements ICommandProcessor {
   @override
-  Future<List<BaseCommand>> processCommand(BaseCommand command) async {
+  Future<List<BaseCommand>> processCommand(BaseCommand command, BaseCommand? origin) async {
     if (command is PreferredSizeCommand) {
       return ILayoutService().reportPreferredSize(pLayoutData: command.layoutData);
     } else if (command is RegisterParentCommand) {

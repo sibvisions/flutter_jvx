@@ -24,7 +24,7 @@ import '../../../../i_command_processor.dart';
 
 class OpenMessageDialogCommandProcessor extends ICommandProcessor<OpenMessageDialogCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(OpenMessageDialogCommand command) async {
+  Future<List<BaseCommand>> processCommand(OpenMessageDialogCommand command, BaseCommand? origin) async {
     IUiService().showJVxDialog(
       MessageDialog(
         command: command,

@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class ReloadCommandProcessor implements ICommandProcessor<ReloadCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(ReloadCommand command) {
+  Future<List<BaseCommand>> processCommand(ReloadCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiReloadRequest(),
     );

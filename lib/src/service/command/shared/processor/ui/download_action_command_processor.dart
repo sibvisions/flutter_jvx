@@ -24,7 +24,7 @@ import '../../i_command_processor.dart';
 
 class DownloadActionCommandProcessor implements ICommandProcessor<DownloadActionCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(DownloadActionCommand command) async {
+  Future<List<BaseCommand>> processCommand(DownloadActionCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiDownloadRequest(
         url: command.url,

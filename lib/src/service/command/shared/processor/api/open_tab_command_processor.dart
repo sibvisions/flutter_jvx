@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class OpenTabCommandProcessor implements ICommandProcessor<OpenTabCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(OpenTabCommand command) async {
+  Future<List<BaseCommand>> processCommand(OpenTabCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiOpenTabRequest(
         index: command.index,

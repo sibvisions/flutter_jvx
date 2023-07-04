@@ -29,7 +29,7 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> processCommand(RouteToLoginCommand command) async {
+  Future<List<BaseCommand>> processCommand(RouteToLoginCommand command, BaseCommand? origin) async {
     // As [LoginViewResponse] can also indicate a logout initiated by the server, clear user data here.
     await IUiService().logout();
 

@@ -26,7 +26,7 @@ import '../../i_command_processor.dart';
 
 class LoginCommandProcessor implements ICommandProcessor<LoginCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(LoginCommand command) async {
+  Future<List<BaseCommand>> processCommand(LoginCommand command, BaseCommand? origin) async {
     String? clientId = IUiService().clientId.value;
 
     if (clientId != null) {

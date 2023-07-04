@@ -24,7 +24,7 @@ import '../../i_command_processor.dart';
 
 class AliveCommandProcessor implements ICommandProcessor<AliveCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(AliveCommand command) async {
+  Future<List<BaseCommand>> processCommand(AliveCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiAliveRequest(), command.retryRequest);
   }
 }

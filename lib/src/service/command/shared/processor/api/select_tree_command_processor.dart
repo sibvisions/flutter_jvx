@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class SelectTreeCommandProcessor implements ICommandProcessor<SelectTreeCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SelectTreeCommand command) async {
+  Future<List<BaseCommand>> processCommand(SelectTreeCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiSelectTreeRequest(
         componentName: command.componentName,

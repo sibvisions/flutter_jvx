@@ -36,7 +36,7 @@ class DeleteScreenCommandProcessor implements ICommandProcessor<DeleteScreenComm
   /// If we are in the web ([kIsWeb]), we don't try to manipulate the history, as it makes no sense
   /// without also manipulating browser history (which is not possible).
   @override
-  Future<List<BaseCommand>> processCommand(DeleteScreenCommand command) async {
+  Future<List<BaseCommand>> processCommand(DeleteScreenCommand command, BaseCommand? origin) async {
     FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: command.screenName);
 
     if (screenModel is FlPanelModel) {

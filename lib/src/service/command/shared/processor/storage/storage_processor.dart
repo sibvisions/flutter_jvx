@@ -27,11 +27,11 @@ class StorageProcessor implements ICommandProcessor<StorageCommand> {
   final ICommandProcessor _deleteScreenProcessor = DeleteScreenCommandProcessor();
 
   @override
-  Future<List<BaseCommand>> processCommand(StorageCommand command) async {
+  Future<List<BaseCommand>> processCommand(StorageCommand command, BaseCommand? origin) async {
     if (command is SaveComponentsCommand) {
-      return _saveComponentsProcessor.processCommand(command);
+      return _saveComponentsProcessor.processCommand(command, origin);
     } else if (command is DeleteScreenCommand) {
-      return _deleteScreenProcessor.processCommand(command);
+      return _deleteScreenProcessor.processCommand(command, origin);
     }
 
     return [];

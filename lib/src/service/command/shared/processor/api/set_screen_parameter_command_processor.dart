@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class SetScreenParameterCommandProcessor implements ICommandProcessor<SetScreenParameterCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SetScreenParameterCommand command) {
+  Future<List<BaseCommand>> processCommand(SetScreenParameterCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiSetScreenParameter(
         screenLongName: command.screenLongName,

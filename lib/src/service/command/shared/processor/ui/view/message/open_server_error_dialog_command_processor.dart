@@ -28,7 +28,7 @@ import '../../../../i_command_processor.dart';
 
 class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServerErrorDialogCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(OpenServerErrorDialogCommand command) async {
+  Future<List<BaseCommand>> processCommand(OpenServerErrorDialogCommand command, BaseCommand? origin) async {
     // Will be displayed in Splash if context is null
     if (FlutterUI.getCurrentContext() != null && !command.silentAbort) {
       bool goToSettings = command.userError;

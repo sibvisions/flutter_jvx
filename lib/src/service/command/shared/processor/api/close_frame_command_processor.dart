@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class CloseFrameCommandProcessor implements ICommandProcessor<CloseFrameCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(CloseFrameCommand command) async {
+  Future<List<BaseCommand>> processCommand(CloseFrameCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiCloseFrameRequest(
         frameName: command.frameName,

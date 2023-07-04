@@ -64,25 +64,25 @@ class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
   final SaveDownloadCommandProcessor _saveDownloadCommandProcessor = SaveDownloadCommandProcessor();
 
   @override
-  Future<List<BaseCommand>> processCommand(ConfigCommand command) async {
+  Future<List<BaseCommand>> processCommand(ConfigCommand command, BaseCommand? origin) async {
     if (command is SaveApplicationMetaDataCommand) {
-      return _saveApplicationMetaDataProcessor.processCommand(command);
+      return _saveApplicationMetaDataProcessor.processCommand(command, origin);
     } else if (command is SaveApplicationParametersCommand) {
-      return _saveApplicationParametersProcessor.processCommand(command);
+      return _saveApplicationParametersProcessor.processCommand(command, origin);
     } else if (command is SaveApplicationSettingsCommand) {
-      return _saveApplicationSettingsProcessor.processCommand(command);
+      return _saveApplicationSettingsProcessor.processCommand(command, origin);
     } else if (command is SaveUserDataCommand) {
-      return _saveUserDataCommandProcessor.processCommand(command);
+      return _saveUserDataCommandProcessor.processCommand(command, origin);
     } else if (command is SaveAuthKeyCommand) {
-      return _authKeyCommandProcessor.processCommand(command);
+      return _authKeyCommandProcessor.processCommand(command, origin);
     } else if (command is SaveApplicationImagesCommand) {
-      return _applicationImagesCommandProcessor.processCommand(command);
+      return _applicationImagesCommandProcessor.processCommand(command, origin);
     } else if (command is SaveApplicationTranslationCommand) {
-      return _applicationTranslationCommandProcessor.processCommand(command);
+      return _applicationTranslationCommandProcessor.processCommand(command, origin);
     } else if (command is SaveApplicationStyleCommand) {
-      return _applicationStyleCommandProcessor.processCommand(command);
+      return _applicationStyleCommandProcessor.processCommand(command, origin);
     } else if (command is SaveDownloadCommand) {
-      return _saveDownloadCommandProcessor.processCommand(command);
+      return _saveDownloadCommandProcessor.processCommand(command, origin);
     }
 
     return [];

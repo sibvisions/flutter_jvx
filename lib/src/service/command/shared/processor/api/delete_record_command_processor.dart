@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class DeleteRecordCommandProcessor extends ICommandProcessor<DeleteRecordCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(DeleteRecordCommand command) {
+  Future<List<BaseCommand>> processCommand(DeleteRecordCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiDeleteRecordRequest(
         dataProvider: command.dataProvider,

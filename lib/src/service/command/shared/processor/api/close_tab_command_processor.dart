@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class CloseTabCommandProcessor implements ICommandProcessor<CloseTabCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(CloseTabCommand command) {
+  Future<List<BaseCommand>> processCommand(CloseTabCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiCloseTabRequest(
         index: command.index,

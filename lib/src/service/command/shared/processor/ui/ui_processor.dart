@@ -78,40 +78,40 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> processCommand(UiCommand command) async {
+  Future<List<BaseCommand>> processCommand(UiCommand command, BaseCommand? origin) async {
     // Switch-Case doesn't work for types
     if (command is UpdateComponentsCommand) {
-      return _updateComponentsProcessor.processCommand(command);
+      return _updateComponentsProcessor.processCommand(command, origin);
     } else if (command is UpdateLayoutPositionCommand) {
-      return _updateLayoutPositionProcessor.processCommand(command);
+      return _updateLayoutPositionProcessor.processCommand(command, origin);
     } else if (command is RouteToMenuCommand) {
-      return _routeToMenuProcessor.processCommand(command);
+      return _routeToMenuProcessor.processCommand(command, origin);
     } else if (command is SaveMenuCommand) {
-      return _saveMenuProcessor.processCommand(command);
+      return _saveMenuProcessor.processCommand(command, origin);
     } else if (command is RouteToWorkCommand) {
-      return _routeToWorkProcessor.processCommand(command);
+      return _routeToWorkProcessor.processCommand(command, origin);
     } else if (command is RouteToLoginCommand) {
-      return _routeToLoginProcessor.processCommand(command);
+      return _routeToLoginProcessor.processCommand(command, origin);
     } else if (command is RouteToCommand) {
-      return _routeToProcessor.processCommand(command);
+      return _routeToProcessor.processCommand(command, origin);
     } else if (command is OpenServerErrorDialogCommand) {
-      return _openServerErrorDialogProcessor.processCommand(command);
+      return _openServerErrorDialogProcessor.processCommand(command, origin);
     } else if (command is OpenErrorDialogCommand) {
-      return _openErrorDialogProcessor.processCommand(command);
+      return _openErrorDialogProcessor.processCommand(command, origin);
     } else if (command is OpenSessionExpiredDialogCommand) {
-      return _openSessionExpiredDialogProcessor.processCommand(command);
+      return _openSessionExpiredDialogProcessor.processCommand(command, origin);
     } else if (command is OpenMessageDialogCommand) {
-      return _openMessageDialogProcessor.processCommand(command);
+      return _openMessageDialogProcessor.processCommand(command, origin);
     } else if (command is UploadActionCommand) {
-      return _uploadActionProcessor.processCommand(command);
+      return _uploadActionProcessor.processCommand(command, origin);
     } else if (command is DownloadActionCommand) {
-      return _downloadActionProcessor.processCommand(command);
+      return _downloadActionProcessor.processCommand(command, origin);
     } else if (command is DeleteFrameCommand) {
-      return _deleteFrameProcessor.processCommand(command);
+      return _deleteFrameProcessor.processCommand(command, origin);
     } else if (command is FunctionCommand) {
-      return _functionProcessor.processCommand(command);
+      return _functionProcessor.processCommand(command, origin);
     } else if (command is SetFocusCommand) {
-      return _setFocusProcessor.processCommand(command);
+      return _setFocusProcessor.processCommand(command, origin);
     }
 
     return [];

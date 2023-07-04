@@ -32,7 +32,7 @@ class DeviceStatusCommandProcessor implements ICommandProcessor<DeviceStatusComm
   double? lastSentHeight;
 
   @override
-  Future<List<BaseCommand>> processCommand(DeviceStatusCommand command) async {
+  Future<List<BaseCommand>> processCommand(DeviceStatusCommand command, BaseCommand? origin) async {
     if ((lastSentWidth != command.screenWidth || lastSentHeight != command.screenHeight) &&
         IUiService().clientId.value != null &&
         !IConfigService().offline.value) {

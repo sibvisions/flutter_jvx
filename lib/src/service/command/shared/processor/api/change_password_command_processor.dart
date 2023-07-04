@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class ChangePasswordCommandProcessor implements ICommandProcessor<ChangePasswordCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(ChangePasswordCommand command) {
+  Future<List<BaseCommand>> processCommand(ChangePasswordCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiChangePasswordRequest(
         password: command.password,

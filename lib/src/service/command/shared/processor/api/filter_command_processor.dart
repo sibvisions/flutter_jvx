@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class FilterCommandProcessor implements ICommandProcessor<FilterCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(FilterCommand command) async {
+  Future<List<BaseCommand>> processCommand(FilterCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiFilterRequest(
         dataProvider: command.dataProvider,

@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class DownloadStyleCommandProcessor implements ICommandProcessor<DownloadStyleCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(DownloadStyleCommand command) {
+  Future<List<BaseCommand>> processCommand(DownloadStyleCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(ApiDownloadStyleRequest());
   }
 }

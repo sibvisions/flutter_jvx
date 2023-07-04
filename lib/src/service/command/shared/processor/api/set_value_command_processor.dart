@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class SetValueCommandProcessor implements ICommandProcessor<SetValueCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SetValueCommand command) {
+  Future<List<BaseCommand>> processCommand(SetValueCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiSetValueRequest(
         componentName: command.componentName,
