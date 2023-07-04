@@ -14,15 +14,23 @@
  * the License.
  */
 
+import 'package:beamer/beamer.dart';
+
+import '../../../../../../flutter_ui.dart';
 import '../../../../../../model/command/base_command.dart';
 import '../../../../../../model/command/ui/route/route_to_work_command.dart';
+import '../../../../../../routing/locations/main_location.dart';
 import '../../../../../ui/i_ui_service.dart';
 import '../../../i_command_processor.dart';
 
 class RouteToWorkCommandProcessor extends ICommandProcessor<RouteToWorkCommand> {
   @override
   Future<List<BaseCommand>> processCommand(RouteToWorkCommand command) async {
-    IUiService().routeToWorkScreen(pScreenName: command.screenName, pReplaceRoute: command.replaceRoute);
+    var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+    // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
+    if (lastBeamState.pathParameters[MainLocation.screenNameKey] != command.screenName) {
+      IUiService().routeToWorkScreen(pScreenName: command.screenName, pReplaceRoute: command.replaceRoute);
+    }
 
     return [];
   }
