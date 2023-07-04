@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
     return WillPopScope(
       child: _buildLogin(context),
       onWillPop: () async {
-        if (AppService().startedManually) {
+        if (AppService().wasStartedManually()) {
           unawaited(IUiService().routeToAppOverview());
           return false;
         }

@@ -34,14 +34,12 @@ import '../ui/i_ui_service.dart';
 import 'app.dart';
 
 class AppService {
-  bool _startedManually = false;
-
   late ValueNotifier<Set<String>> _storedAppIds;
 
   ValueNotifier<Future<void>?> startupFuture = ValueNotifier(null);
   ValueNotifier<Future<void>?> exitFuture = ValueNotifier(null);
 
-  bool get startedManually => _startedManually;
+  bool? _startedManually;
   Uri? savedReturnUri;
 
   /// Returns the singleton instance.
@@ -52,6 +50,7 @@ class AppService {
   /// Basically resets the service
   FutureOr<void> clear(ClearReason reason) {
     if (reason == ClearReason.DEFAULT) {
+      _startedManually = null;
       savedReturnUri = null;
     }
   }
@@ -60,6 +59,10 @@ class AppService {
   Future<void> loadConfig() async {
     _storedAppIds = ValueNotifier(await IConfigService().getConfigHandler().getAppKeys());
   }
+
+  bool? get startedManually => _startedManually;
+
+  bool wasStartedManually() => _startedManually ?? false;
 
   ValueListenable<Set<String>> get storedAppIds => _storedAppIds;
 
@@ -189,7 +192,7 @@ class AppService {
     if (appId != null) {
       await IConfigService().updateCurrentApp(appId);
     }
-    _startedManually = !(autostart ?? !_startedManually);
+    _startedManually = !(autostart ?? !wasStartedManually());
 
     await IApiService().getRepository().stop();
     var repository = IConfigService().offline.value ? OfflineApiRepository() : OnlineApiRepository();

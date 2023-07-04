@@ -167,7 +167,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   isMenuSearchEnabled = false;
                   setState(() {});
                   return false;
-                } else if (AppService().startedManually) {
+                } else if (AppService().wasStartedManually()) {
                   unawaited(IUiService().routeToAppOverview());
                   return false;
                 }
@@ -186,7 +186,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                           onPressed: () => Navigator.maybePop(context),
                           icon: const FaIcon(FontAwesomeIcons.circleXmark),
                         )
-                      : (AppService().startedManually
+                      : (AppService().wasStartedManually()
                           ? IconButton(
                               tooltip: FlutterUI.translate("Exit App"),
                               splashRadius: kToolbarHeight / 2,
@@ -197,7 +197,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   title: !isMenuSearchEnabled
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
-                  titleSpacing: isMenuSearchEnabled || AppService().startedManually ? 0.0 : null,
+                  titleSpacing: isMenuSearchEnabled || AppService().wasStartedManually() ? 0.0 : null,
                   backgroundColor: isOffline ? Colors.grey.shade500 : null,
                   actions: actions,
                 ),
