@@ -33,7 +33,7 @@ abstract class ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  FutureOr<void> clear(bool pFullClear);
+  FutureOr<void> clear(ClearReason reason);
 
   /// Process the incoming [BaseCommand].
   Future<void> sendCommand(BaseCommand command);

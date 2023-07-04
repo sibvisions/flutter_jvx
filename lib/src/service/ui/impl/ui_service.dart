@@ -58,6 +58,7 @@ import '../../command/i_command_service.dart';
 import '../../config/i_config_service.dart';
 import '../../data/i_data_service.dart';
 import '../../layout/i_layout_service.dart';
+import '../../service.dart';
 import '../../storage/i_storage_service.dart';
 import '../i_ui_service.dart';
 
@@ -132,8 +133,8 @@ class UiService implements IUiService {
   UiService.create();
 
   @override
-  FutureOr<void> clear(bool pFullClear) async {
-    await JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.clear(pFullClear);
+  FutureOr<void> clear(ClearReason reason) async {
+    await JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.clear(reason);
 
     setMenuModel(null);
     _componentSubscriptions.clear();
@@ -141,7 +142,7 @@ class UiService implements IUiService {
     _dataSubscriptions.clear();
     _activeDialogs.clear();
 
-    if (pFullClear) {
+    if (reason.isFull()) {
       _clientId.value = null;
       _layoutMode.value = kIsWeb ? LayoutMode.Full : LayoutMode.Mini;
       _applicationSettings.value = ApplicationSettingsResponse.empty();

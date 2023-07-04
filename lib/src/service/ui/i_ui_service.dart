@@ -63,7 +63,7 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  FutureOr<void> clear(bool pFullClear);
+  FutureOr<void> clear(ClearReason reason);
 
   static String getErrorMessage(Object error) {
     if (error is DioException) {

@@ -42,6 +42,7 @@ import '../../../model/command/ui/ui_command.dart';
 import '../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
+import '../../service.dart';
 import '../../ui/i_ui_service.dart';
 import '../i_command_service.dart';
 import '../shared/i_command_processor.dart';
@@ -102,8 +103,8 @@ class CommandService implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  FutureOr<void> clear(bool pFullClear) async {
-    if (pFullClear) {
+  FutureOr<void> clear(ClearReason reason) async {
+    if (reason.isFull()) {
       // drain queue up to this point
       await _commandsQueue.add(() => Future.value(null));
       await _layoutCommandsQueue.add(() => Future.value(null));

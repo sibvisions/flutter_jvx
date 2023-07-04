@@ -17,3 +17,19 @@
 import 'package:get_it/get_it.dart';
 
 GetIt services = GetIt.I;
+
+enum ClearReason {
+  /// Full app stop (no restart planned).
+  DEFAULT,
+
+  /// Full app restart.
+  RESTART,
+
+  /// User log out.
+  LOGOUT,
+  ;
+
+  bool isFull() {
+    return [DEFAULT, RESTART].contains(this);
+  }
+}

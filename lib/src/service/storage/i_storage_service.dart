@@ -37,7 +37,7 @@ abstract class IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Basically resets the service
-  FutureOr<void> clear(bool pFullClear);
+  FutureOr<void> clear(ClearReason reason);
 
   /// Updates [FlComponentModel]
   /// Returns [BaseCommand] to update UI with all effected components.

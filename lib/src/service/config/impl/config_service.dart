@@ -32,6 +32,7 @@ import '../../../model/config/user/user_info.dart';
 import '../../apps/app.dart';
 import '../../apps/app_service.dart';
 import '../../file/file_manager.dart';
+import '../../service.dart';
 import '../../ui/i_ui_service.dart';
 import '../i_config_service.dart';
 import '../shared/config_handler.dart';
@@ -327,7 +328,7 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  FutureOr<void> clear(bool pFullClear) {}
+  FutureOr<void> clear(ClearReason reason) {}
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Helper-methods for non-persistent fields

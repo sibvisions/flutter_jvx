@@ -25,6 +25,7 @@ import '../../../model/command/layout/register_parent_command.dart';
 import '../../../model/command/ui/update_layout_position_command.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/layout/layout_position.dart';
+import '../../service.dart';
 import '../i_layout_service.dart';
 
 class LayoutService implements ILayoutService {
@@ -50,7 +51,7 @@ class LayoutService implements ILayoutService {
   LayoutService.create();
 
   @override
-  FutureOr<void> clear(bool pFullClear) {
+  FutureOr<void> clear(ClearReason reason) {
     _isValid = true;
     _currentlyLayouting.clear();
     _layoutDataSet.clear();

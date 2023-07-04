@@ -47,7 +47,7 @@ abstract class IConfigService {
   Future<void> loadConfig(AppConfig pAppConfig, [bool devConfig = false]);
 
   /// Basically resets the service
-  FutureOr<void> clear(bool pFullClear);
+  FutureOr<void> clear(ClearReason reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Helper-methods for non-persistent fields

@@ -39,6 +39,7 @@ import '../service/api/shared/repository/online_api_repository.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
 import '../service/data/i_data_service.dart';
+import '../service/service.dart';
 import '../service/storage/i_storage_service.dart';
 import '../service/ui/i_ui_service.dart';
 import 'misc/dialog_result.dart';
@@ -565,7 +566,7 @@ abstract class OfflineUtil {
       await ICommandService().sendCommand(ExitCommand(reason: "Going offline"));
 
       // Clear screen storage
-      IStorageService().clear(true);
+      IStorageService().clear(ClearReason.DEFAULT);
 
       // Clear databooks for offline usage
       IDataService().clearDataBooks();

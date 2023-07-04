@@ -49,6 +49,13 @@ class AppService {
 
   AppService.create();
 
+  /// Basically resets the service
+  FutureOr<void> clear(ClearReason reason) {
+    if (reason == ClearReason.DEFAULT) {
+      savedReturnUri = null;
+    }
+  }
+
   /// Loads the initial config.
   Future<void> loadConfig() async {
     _storedAppIds = ValueNotifier(await IConfigService().getConfigHandler().getAppKeys());
@@ -222,10 +229,10 @@ class AppService {
           .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
     }
 
-    await FlutterUI.clearServices(true);
+    await FlutterUI.clearServices(restart ? ClearReason.RESTART : ClearReason.DEFAULT);
+    FlutterUI.resetPageBucket();
 
     if (!restart) {
-      savedReturnUri = null;
       await IConfigService().updateCurrentApp(null);
       await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     }

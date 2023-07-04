@@ -26,6 +26,7 @@ import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
 import '../service/command/i_command_service.dart';
 import '../service/config/i_config_service.dart';
+import '../service/service.dart';
 import '../service/ui/i_ui_service.dart';
 import '../util/widgets/status_banner.dart';
 import 'apps/app_overview_page.dart';
@@ -188,7 +189,7 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   bool get _showExit => _showConnectedBarrier && _connectedMessage != null;
 
-  FutureOr<void> clear(bool pFullClear) {
+  FutureOr<void> clear(ClearReason reason) {
     _forceDisableBarrier = false;
     _loading = false;
     _lockDelayed = false;
