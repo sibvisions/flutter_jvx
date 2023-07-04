@@ -41,6 +41,7 @@ abstract class IAppService implements Service {
   Future<void> loadConfig();
 
   ValueListenable<Future<void>?> get startupFuture;
+
   ValueListenable<Future<void>?> get exitFuture;
 
   /// The saved return URI.
