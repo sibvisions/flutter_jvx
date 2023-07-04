@@ -81,6 +81,7 @@ export 'src/model/response/dal_meta_data_response.dart';
 // Services
 export 'src/service/api/i_api_service.dart';
 export 'src/service/api/impl/default/api_service.dart';
+export 'src/service/api/shared/api_object_property.dart';
 export 'src/service/api/shared/i_repository.dart';
 export 'src/service/api/shared/repository/jvx_web_socket.dart';
 export 'src/service/apps/app.dart';
