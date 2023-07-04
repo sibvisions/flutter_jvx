@@ -21,7 +21,7 @@ import '../../i_command_processor.dart';
 
 class SaveComponentsCommandProcessor implements ICommandProcessor<SaveComponentsCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveComponentsCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveComponentsCommand command, BaseCommand? origin) async {
     List<BaseCommand> commands = [];
 
     commands.addAll(

@@ -25,7 +25,7 @@ import '../../../i_command_processor.dart';
 
 class RouteToWorkCommandProcessor extends ICommandProcessor<RouteToWorkCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(RouteToWorkCommand command) async {
+  Future<List<BaseCommand>> processCommand(RouteToWorkCommand command, BaseCommand? origin) async {
     var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
     if (lastBeamState.pathParameters[MainLocation.screenNameKey] != command.screenName) {

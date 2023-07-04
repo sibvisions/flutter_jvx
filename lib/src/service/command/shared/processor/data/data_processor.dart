@@ -39,7 +39,7 @@ import '../../i_command_processor.dart';
 /// Sends [DataCommand] to their respective processor
 class DataProcessor extends ICommandProcessor<DataCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(DataCommand command) async {
+  Future<List<BaseCommand>> processCommand(DataCommand command, BaseCommand? origin) async {
     if (command is SaveMetaDataCommand) {
       return _saveMetaData(command);
     } else if (command is SaveFetchDataCommand) {

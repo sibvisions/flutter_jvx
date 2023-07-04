@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class CloseContentCommandProcessor implements ICommandProcessor<CloseContentCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(CloseContentCommand command) async {
+  Future<List<BaseCommand>> processCommand(CloseContentCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiCloseContentRequest(
         componentName: command.componentName,

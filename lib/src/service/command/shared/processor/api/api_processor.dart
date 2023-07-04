@@ -222,94 +222,94 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> processCommand(ApiCommand command) async {
+  Future<List<BaseCommand>> processCommand(ApiCommand command, BaseCommand? origin) async {
     // Switch-Case doesn't work with types
     if (command is StartupCommand) {
-      return _startupProcessorCommand.processCommand(command);
+      return _startupProcessorCommand.processCommand(command, origin);
     } else if (command is LoginCommand) {
-      return _loginCommandProcessor.processCommand(command);
+      return _loginCommandProcessor.processCommand(command, origin);
     } else if (command is CancelLoginCommand) {
-      return _cancelLoginCommandProcessor.processCommand(command);
+      return _cancelLoginCommandProcessor.processCommand(command, origin);
     } else if (command is OpenScreenCommand) {
-      return _openScreenCommandProcessor.processCommand(command);
+      return _openScreenCommandProcessor.processCommand(command, origin);
     } else if (command is ReloadMenuCommand) {
-      return _reloadMenuCommandProcessor.processCommand(command);
+      return _reloadMenuCommandProcessor.processCommand(command, origin);
     } else if (command is DeviceStatusCommand) {
-      return _deviceStatusProcessor.processCommand(command);
+      return _deviceStatusProcessor.processCommand(command, origin);
     } else if (command is PressButtonCommand) {
-      return _pressButtonProcessor.processCommand(command);
+      return _pressButtonProcessor.processCommand(command, origin);
     } else if (command is SetValueCommand) {
-      return _setValueProcessor.processCommand(command);
+      return _setValueProcessor.processCommand(command, origin);
     } else if (command is SetValuesCommand) {
-      return _setValuesProcessor.processCommand(command);
+      return _setValuesProcessor.processCommand(command, origin);
     } else if (command is DownloadImagesCommand) {
-      return _downloadImagesProcessor.processCommand(command);
+      return _downloadImagesProcessor.processCommand(command, origin);
     } else if (command is CloseTabCommand) {
-      return _tabCloseProcessor.processCommand(command);
+      return _tabCloseProcessor.processCommand(command, origin);
     } else if (command is OpenTabCommand) {
-      return _tabOpenProcessor.processCommand(command);
+      return _tabOpenProcessor.processCommand(command, origin);
     } else if (command is ChangePasswordCommand) {
-      return _changePasswordProcessor.processCommand(command);
+      return _changePasswordProcessor.processCommand(command, origin);
     } else if (command is ResetPasswordCommand) {
-      return _resetPasswordProcessor.processCommand(command);
+      return _resetPasswordProcessor.processCommand(command, origin);
     } else if (command is NavigationCommand) {
-      return _navigationProcessor.processCommand(command);
+      return _navigationProcessor.processCommand(command, origin);
     } else if (command is FilterCommand) {
-      return _filterProcessor.processCommand(command);
+      return _filterProcessor.processCommand(command, origin);
     } else if (command is FetchCommand) {
-      return _fetchProcessor.processCommand(command);
+      return _fetchProcessor.processCommand(command, origin);
     } else if (command is LogoutCommand) {
-      return _logoutProcessor.processCommand(command);
+      return _logoutProcessor.processCommand(command, origin);
     } else if (command is SelectRecordCommand) {
-      return _selectRecordProcessor.processCommand(command);
+      return _selectRecordProcessor.processCommand(command, origin);
     } else if (command is DeleteRecordCommand) {
-      return _deleteRecordCommandProcessor.processCommand(command);
+      return _deleteRecordCommandProcessor.processCommand(command, origin);
     } else if (command is DalSaveCommand) {
-      return _dalSaveProcessor.processCommand(command);
+      return _dalSaveProcessor.processCommand(command, origin);
     } else if (command is CloseScreenCommand) {
-      return _closeScreenProcessor.processCommand(command);
+      return _closeScreenProcessor.processCommand(command, origin);
     } else if (command is InsertRecordCommand) {
-      return _insertRecordProcessor.processCommand(command);
+      return _insertRecordProcessor.processCommand(command, origin);
     } else if (command is DownloadTranslationCommand) {
-      return _downloadTranslationProcessor.processCommand(command);
+      return _downloadTranslationProcessor.processCommand(command, origin);
     } else if (command is DownloadStyleCommand) {
-      return _downloadStyleProcessor.processCommand(command);
+      return _downloadStyleProcessor.processCommand(command, origin);
     } else if (command is CloseFrameCommand) {
-      return _closeFrameProcessor.processCommand(command);
+      return _closeFrameProcessor.processCommand(command, origin);
     } else if (command is UploadCommand) {
-      return _uploadProcessor.processCommand(command);
+      return _uploadProcessor.processCommand(command, origin);
     } else if (command is ChangesCommand) {
-      return _changesProcessor.processCommand(command);
+      return _changesProcessor.processCommand(command, origin);
     } else if (command is SaveAllEditorsCommand) {
-      return _saveAllEditorsProcessor.processCommand(command);
+      return _saveAllEditorsProcessor.processCommand(command, origin);
     } else if (command is MouseCommand) {
-      return _mouseProcessor.processCommand(command);
+      return _mouseProcessor.processCommand(command, origin);
     } else if (command is FocusGainedCommand) {
-      return _focusGainedProcessor.processCommand(command);
+      return _focusGainedProcessor.processCommand(command, origin);
     } else if (command is FocusLostCommand) {
-      return _focusLostProcessor.processCommand(command);
+      return _focusLostProcessor.processCommand(command, origin);
     } else if (command is AliveCommand) {
-      return _aliveProcessor.processCommand(command);
+      return _aliveProcessor.processCommand(command, origin);
     } else if (command is ExitCommand) {
-      return _exitProcessor.processCommand(command);
+      return _exitProcessor.processCommand(command, origin);
     } else if (command is FeedbackCommand) {
-      return _feedbackProcessor.processCommand(command);
+      return _feedbackProcessor.processCommand(command, origin);
     } else if (command is SaveCommand) {
-      return _saveProcessor.processCommand(command);
+      return _saveProcessor.processCommand(command, origin);
     } else if (command is ReloadCommand) {
-      return _reloadProcessor.processCommand(command);
+      return _reloadProcessor.processCommand(command, origin);
     } else if (command is RollbackCommand) {
-      return _rollbackProcessor.processCommand(command);
+      return _rollbackProcessor.processCommand(command, origin);
     } else if (command is SortCommand) {
-      return _sortProcessor.processCommand(command);
+      return _sortProcessor.processCommand(command, origin);
     } else if (command is SetScreenParameterCommand) {
-      return _setScreenParameterProcessor.processCommand(command);
+      return _setScreenParameterProcessor.processCommand(command, origin);
     } else if (command is RestoreDataCommand) {
-      return _restoreDataProcessor.processCommand(command);
+      return _restoreDataProcessor.processCommand(command, origin);
     } else if (command is SelectTreeCommand) {
-      return _selectTreeCommand.processCommand(command);
+      return _selectTreeCommand.processCommand(command, origin);
     } else if (command is CloseContentCommand) {
-      return _closeContentProcessor.processCommand(command);
+      return _closeContentProcessor.processCommand(command, origin);
     }
 
     return [];

@@ -25,7 +25,7 @@ class RouteToCommandProcessor extends ICommandProcessor<RouteToCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> processCommand(RouteToCommand command) async {
+  Future<List<BaseCommand>> processCommand(RouteToCommand command, BaseCommand? origin) async {
     FlutterUI.getBeamerDelegate().beamToNamed(command.uri, replaceRouteInformation: command.replaceRoute);
 
     return [];

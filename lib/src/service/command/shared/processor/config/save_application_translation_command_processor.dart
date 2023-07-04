@@ -25,7 +25,7 @@ import '../../i_command_processor.dart';
 
 class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<SaveApplicationTranslationCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveApplicationTranslationCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveApplicationTranslationCommand command, BaseCommand? origin) async {
     IFileManager fileManager = IConfigService().getFileManager();
     List<Future> saveFutures = [];
 

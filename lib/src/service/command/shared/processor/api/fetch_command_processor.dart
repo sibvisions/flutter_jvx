@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(FetchCommand command) {
+  Future<List<BaseCommand>> processCommand(FetchCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiFetchRequest(
         dataProvider: command.dataProvider,

@@ -21,7 +21,7 @@ import '../../i_command_processor.dart';
 
 class SaveAuthKeyCommandProcessor implements ICommandProcessor<SaveAuthKeyCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveAuthKeyCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveAuthKeyCommand command, BaseCommand? origin) async {
     await IConfigService().updateAuthKey(command.authKey);
     return [];
   }

@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class SortCommandProcessor implements ICommandProcessor<SortCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SortCommand command) {
+  Future<List<BaseCommand>> processCommand(SortCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiSortRequest(
         dataProvider: command.dataProvider,

@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class DalSaveCommandProcessor implements ICommandProcessor<DalSaveCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(DalSaveCommand command) {
+  Future<List<BaseCommand>> processCommand(DalSaveCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiDalSaveRequest(
         dataProvider: command.dataProvider,

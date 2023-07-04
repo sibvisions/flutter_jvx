@@ -20,7 +20,7 @@ import '../../i_command_processor.dart';
 
 class FunctionCommandProcessor extends ICommandProcessor<FunctionCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(FunctionCommand command) async {
+  Future<List<BaseCommand>> processCommand(FunctionCommand command, BaseCommand? origin) async {
     return await command.commandCallback.call();
   }
 }

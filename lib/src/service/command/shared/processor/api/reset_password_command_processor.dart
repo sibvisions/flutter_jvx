@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class ResetPasswordCommandProcessor implements ICommandProcessor<ResetPasswordCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(ResetPasswordCommand command) {
+  Future<List<BaseCommand>> processCommand(ResetPasswordCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiResetPasswordRequest(
         identifier: command.identifier,

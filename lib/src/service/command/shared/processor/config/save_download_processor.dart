@@ -26,7 +26,7 @@ import '../../i_command_processor.dart';
 
 class SaveDownloadCommandProcessor implements ICommandProcessor<SaveDownloadCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveDownloadCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveDownloadCommand command, BaseCommand? origin) async {
     if (kIsWeb) {
       // https://github.com/incrediblezayed/file_saver/issues/42
       // File saver ignores the extension property so we have to include it in the name itself

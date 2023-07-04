@@ -18,6 +18,8 @@ import '../../../model/command/base_command.dart';
 
 /// Defines the base construct of a [ICommandProcessor].
 abstract class ICommandProcessor<T extends BaseCommand> {
-  /// Processes input [BaseCommand] and will return eventual resulting commands.
-  Future<List<BaseCommand>> processCommand(T command);
+  /// Processes [command] and will return resulting commands.
+  ///
+  /// [origin] describes the original command that produced [command].
+  Future<List<BaseCommand>> processCommand(T command, BaseCommand? origin);
 }

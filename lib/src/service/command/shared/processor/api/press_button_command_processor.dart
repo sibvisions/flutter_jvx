@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class PressButtonCommandProcessor implements ICommandProcessor<PressButtonCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(PressButtonCommand command) async {
+  Future<List<BaseCommand>> processCommand(PressButtonCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiPressButtonRequest(
         componentName: command.componentName,

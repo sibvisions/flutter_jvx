@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class SaveUserDataCommandProcessor implements ICommandProcessor<SaveUserDataCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveUserDataCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveUserDataCommand command, BaseCommand? origin) async {
     UserInfo userInfo = UserInfo(
       userName: command.userData.userName,
       displayName: command.userData.displayName,

@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class FocusGainedCommandProcessor extends ICommandProcessor<FocusGainedCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(FocusGainedCommand command) async {
+  Future<List<BaseCommand>> processCommand(FocusGainedCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiFocusGainedRequest(
         componentName: command.componentName,

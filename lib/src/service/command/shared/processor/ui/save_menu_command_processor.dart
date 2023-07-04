@@ -21,7 +21,7 @@ import '../../i_command_processor.dart';
 
 class SaveMenuCommandProcessor implements ICommandProcessor<SaveMenuCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveMenuCommand command) {
+  Future<List<BaseCommand>> processCommand(SaveMenuCommand command, BaseCommand? origin) {
     IUiService().setMenuModel(command.menuModel);
     return Future.value([]);
   }

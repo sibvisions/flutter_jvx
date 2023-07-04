@@ -31,7 +31,7 @@ class OpenScreenCommandProcessor implements ICommandProcessor<OpenScreenCommand>
   /// See also:
   /// * [DeleteScreenCommandProcessor.processCommand]
   @override
-  Future<List<BaseCommand>> processCommand(OpenScreenCommand command) {
+  Future<List<BaseCommand>> processCommand(OpenScreenCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiOpenScreenRequest(
         screenLongName: command.screenLongName,

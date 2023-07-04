@@ -27,7 +27,7 @@ import '../../i_command_processor.dart';
 
 class MouseCommandProcessor extends ICommandProcessor<MouseCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(MouseCommand command) async {
+  Future<List<BaseCommand>> processCommand(MouseCommand command, BaseCommand? origin) async {
     if (command is MouseClickedCommand) {
       return IApiService().sendRequest(
         ApiMouseClickedRequest(

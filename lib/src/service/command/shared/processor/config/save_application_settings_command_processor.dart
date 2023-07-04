@@ -23,7 +23,7 @@ import '../../i_command_processor.dart';
 
 class SaveApplicationSettingsCommandProcessor implements ICommandProcessor<SaveApplicationSettingsCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveApplicationSettingsCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveApplicationSettingsCommand command, BaseCommand? origin) async {
     IUiService().updateApplicationSettings(command.settings);
     return [];
   }

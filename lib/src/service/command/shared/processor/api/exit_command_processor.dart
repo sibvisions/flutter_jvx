@@ -24,7 +24,7 @@ import '../../i_command_processor.dart';
 
 class ExitCommandProcessor implements ICommandProcessor<ExitCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(ExitCommand command) async {
+  Future<List<BaseCommand>> processCommand(ExitCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiExitRequest());
   }
 }

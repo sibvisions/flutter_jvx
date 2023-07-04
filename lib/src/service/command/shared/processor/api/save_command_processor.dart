@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class SaveCommandProcessor implements ICommandProcessor<SaveCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveCommand command) {
+  Future<List<BaseCommand>> processCommand(SaveCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
       ApiSaveRequest(),
     );

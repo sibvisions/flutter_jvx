@@ -26,7 +26,7 @@ import '../../../../i_command_processor.dart';
 
 class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSessionExpiredDialogCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(OpenSessionExpiredDialogCommand command) async {
+  Future<List<BaseCommand>> processCommand(OpenSessionExpiredDialogCommand command, BaseCommand? origin) async {
     IUiService().updateClientId(null);
 
     if (!IConfigService().getAppConfig()!.autoRestartOnSessionExpired!) {

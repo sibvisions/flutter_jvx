@@ -38,7 +38,7 @@ import '../../i_command_processor.dart';
 
 class CancelLoginCommandProcessor implements ICommandProcessor<CancelLoginCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(CancelLoginCommand command) async {
+  Future<List<BaseCommand>> processCommand(CancelLoginCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiCancelLoginRequest());
   }
 }

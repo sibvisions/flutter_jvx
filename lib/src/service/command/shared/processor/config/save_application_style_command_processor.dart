@@ -21,7 +21,7 @@ import '../../i_command_processor.dart';
 
 class SaveApplicationStyleCommandProcessor implements ICommandProcessor<SaveApplicationStyleCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SaveApplicationStyleCommand command) async {
+  Future<List<BaseCommand>> processCommand(SaveApplicationStyleCommand command, BaseCommand? origin) async {
     await IConfigService().updateApplicationStyle(command.style);
     return [];
   }

@@ -22,7 +22,7 @@ import '../../i_command_processor.dart';
 
 class SelectRecordCommandProcessor implements ICommandProcessor<SelectRecordCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(SelectRecordCommand command) async {
+  Future<List<BaseCommand>> processCommand(SelectRecordCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
       ApiSelectRecordRequest(
         dataProvider: command.dataProvider,
