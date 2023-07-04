@@ -39,6 +39,8 @@ class MainLocation extends BeamLocation<BeamState> {
   final ValueNotifier<LoginMode> loginModeNotifier = ValueNotifier(LoginMode.Manual);
   static const screenNameKey = "workScreenName";
 
+  BeamPage? lastPage;
+
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     FlutterUI.logUI.d("Building main location");
@@ -55,21 +57,6 @@ class MainLocation extends BeamLocation<BeamState> {
           child: const AppOverviewPage(),
         ),
       );
-
-      if (state.pathPatternSegments.isEmpty) {
-        return pages;
-      }
-    }
-
-    // Global page, uses exclusively [beamBack].
-    if (state.pathPatternSegments.contains("settings")) {
-      return [
-        BeamPage(
-          title: FlutterUI.translate("Settings"),
-          key: const ValueKey("Settings"),
-          child: const SettingsPage(),
-        ),
-      ];
     }
 
     if (state.pathPatternSegments.contains("login")) {
@@ -86,27 +73,41 @@ class MainLocation extends BeamLocation<BeamState> {
           ),
         ),
       );
-
-      return pages;
     }
 
-    final String? workScreenName = state.pathParameters[screenNameKey];
-
-    pages.addAll([
-      BeamPage(
-        title: FlutterUI.translate("Menu"),
-        key: const ValueKey("Menu"),
-        child: const MenuPage(),
-      ),
-      if (workScreenName != null)
+    if (state.pathPatternSegments.contains("home") || state.pathPatternSegments.contains("screens")) {
+      final String? workScreenName = state.pathParameters[screenNameKey];
+      pages.addAll([
         BeamPage(
-          title: FlutterUI.translate("Workscreen"),
-          key: ValueKey(workScreenName),
-          child: WorkScreenPage(
-            screenName: workScreenName,
-          ),
+          title: FlutterUI.translate("Menu"),
+          key: const ValueKey("Menu"),
+          child: const MenuPage(),
         ),
-    ]);
+        if (workScreenName != null)
+          BeamPage(
+            title: FlutterUI.translate("Workscreen"),
+            key: ValueKey(workScreenName),
+            child: WorkScreenPage(
+              screenName: workScreenName,
+            ),
+          ),
+      ]);
+    }
+
+    // Global page.
+    if (state.pathPatternSegments.contains("settings")) {
+      return [
+        if (lastPage != null) lastPage!,
+        BeamPage(
+          title: FlutterUI.translate("Settings"),
+          key: const ValueKey("Settings"),
+          child: const SettingsPage(),
+          onPopPage: BeamPage.routePop,
+        ),
+      ];
+    }
+
+    lastPage = pages.lastOrNull;
 
     return pages;
   }
