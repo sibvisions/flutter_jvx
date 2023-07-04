@@ -32,6 +32,7 @@ class OpenSessionExpiredDialogCommandProcessor extends ICommandProcessor<OpenSes
     if (!IConfigService().getAppConfig()!.autoRestartOnSessionExpired!) {
       IUiService().showJVxDialog(ServerSessionExpired(command: command));
     } else {
+      AppService().saveLocationAsReturnUri();
       unawaited(AppService().startApp());
     }
 

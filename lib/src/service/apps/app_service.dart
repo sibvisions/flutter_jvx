@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -75,6 +76,16 @@ class AppService {
       ...storedAppIds.value,
       ...?externalConfigs,
     };
+  }
+
+  /// Saves the current screen location (if applicable) to return to after the next start/login.
+  ///
+  /// For example when the server logs us out or sends a session expired.
+  void saveLocationAsReturnUri() {
+    BeamState? targetState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState?;
+    if (targetState != null && targetState.uri.path.startsWith("/screens/")) {
+      savedReturnUri ??= Uri(path: targetState.uri.path);
+    }
   }
 
   bool showAppsButton() {
@@ -166,7 +177,7 @@ class AppService {
       return;
     }
 
-    await _stopApp(false);
+    await _stopApp(restart: appId == null);
 
     if (appId != null) {
       await IConfigService().updateCurrentApp(appId);
@@ -204,17 +215,17 @@ class AppService {
         _stopApp().catchError(FlutterUI.createErrorHandler("There was an error while exiting the app"));
   }
 
-  Future<void> _stopApp([bool resetAppName = true]) async {
+  Future<void> _stopApp({bool restart = false}) async {
     if (!IConfigService().offline.value && IUiService().clientId.value != null) {
       unawaited(ICommandService()
           .sendCommand(ExitCommand(reason: "App has been stopped"))
           .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
     }
 
-    savedReturnUri = null;
     await FlutterUI.clearServices(true);
 
-    if (resetAppName) {
+    if (!restart) {
+      savedReturnUri = null;
       await IConfigService().updateCurrentApp(null);
       await IUiService().i18n().setLanguage(IConfigService().getLanguage());
     }
