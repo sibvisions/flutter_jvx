@@ -22,19 +22,17 @@ import '../service.dart';
 import 'shared/i_controller.dart';
 import 'shared/i_repository.dart';
 
-abstract class IApiService {
+abstract class IApiService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns the singleton instance.
   factory IApiService() => services<IApiService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Basically resets the service
-  FutureOr<void> clear(ClearReason reason);
 
   /// Any API Request will be sent to an [IRepository] to execute the request
   /// after which it will be processed to [BaseCommand]s in an [IController]

@@ -23,9 +23,7 @@ import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
 import '../../shared/i_repository.dart';
 
-///
-/// Will execute all actions on the main Isolate
-///
+/// Handles the API to the server and manages the [IRepository].
 class ApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -41,7 +39,7 @@ class ApiService implements IApiService {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Initializes a Instance where [repository] and [controller] are null
+  /// Initializes an instance where [repository] and [controller] are `null`
   /// and need to be set before any request can be sent.
   ApiService.create(this.repository);
 

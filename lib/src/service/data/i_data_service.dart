@@ -14,7 +14,6 @@
  * the License.
  */
 
-import 'dart:async';
 import 'dart:collection';
 
 import '../../model/command/base_command.dart';
@@ -28,19 +27,17 @@ import '../../model/response/dal_meta_data_response.dart';
 import '../service.dart';
 
 /// Interface for a dataService meant to handle all dataBook related tasks,
-abstract class IDataService {
+abstract class IDataService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns the singleton instance.
   factory IDataService() => services<IDataService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Basically resets the service
-  FutureOr<void> clear(ClearReason reason);
 
   /// Establishes the meta data of the given dataBook
   bool updateMetaData({required DalMetaDataResponse pChangedResponse});

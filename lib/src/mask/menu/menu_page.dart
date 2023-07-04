@@ -27,7 +27,7 @@ import '../../custom/app_manager.dart';
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
-import '../../service/apps/app_service.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
@@ -167,7 +167,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   isMenuSearchEnabled = false;
                   setState(() {});
                   return false;
-                } else if (AppService().wasStartedManually()) {
+                } else if (IAppService().wasStartedManually()) {
                   unawaited(IUiService().routeToAppOverview());
                   return false;
                 }
@@ -186,7 +186,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                           onPressed: () => Navigator.maybePop(context),
                           icon: const FaIcon(FontAwesomeIcons.circleXmark),
                         )
-                      : (AppService().wasStartedManually()
+                      : (IAppService().wasStartedManually()
                           ? IconButton(
                               tooltip: FlutterUI.translate("Exit App"),
                               splashRadius: kToolbarHeight / 2,
@@ -197,7 +197,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   title: !isMenuSearchEnabled
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
-                  titleSpacing: isMenuSearchEnabled || AppService().wasStartedManually() ? 0.0 : null,
+                  titleSpacing: isMenuSearchEnabled || IAppService().wasStartedManually() ? 0.0 : null,
                   backgroundColor: isOffline ? Colors.grey.shade500 : null,
                   actions: actions,
                 ),

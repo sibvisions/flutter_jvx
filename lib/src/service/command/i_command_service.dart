@@ -21,19 +21,17 @@ import '../service.dart';
 
 /// Defines the base construct of a [ICommandService]
 /// Command service is used to facilitate communication between different services.
-abstract class ICommandService {
+abstract class ICommandService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns the singleton instance.
   factory ICommandService() => services<ICommandService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Basically resets the service
-  FutureOr<void> clear(ClearReason reason);
 
   /// Process the incoming [BaseCommand].
   Future<void> sendCommand(BaseCommand command);

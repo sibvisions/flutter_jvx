@@ -28,7 +28,7 @@ import '../../model/command/api/login_command.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
-import '../../service/apps/app_service.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../widgets/progress/progress_dialog_widget.dart';
 import '../widgets/status_banner.dart';
@@ -48,7 +48,7 @@ class JVxDebug extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: OutlinedButton(
-              onPressed: () => AppService().startApp(),
+              onPressed: () => IAppService().startApp(),
               child: const Text("Restart"),
             ),
           ),

@@ -25,7 +25,7 @@ import '../../model/command/api/rollback_command.dart';
 import '../../model/command/api/save_command.dart';
 import '../../model/response/device_status_response.dart';
 import '../../service/api/i_api_service.dart';
-import '../../service/apps/app_service.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -245,7 +245,7 @@ class WebFrameState extends FrameState {
             return const SizedBox.shrink();
           },
         ),
-        if (appStyle.applicationSettings.userSettingsVisible && AppService().showAppsButton())
+        if (appStyle.applicationSettings.userSettingsVisible && IAppService().showAppsButton())
           Padding(
             padding: const EdgeInsets.only(right: spacing),
             child: Builder(

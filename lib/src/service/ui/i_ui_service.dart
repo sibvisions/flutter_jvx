@@ -49,19 +49,17 @@ import '../service.dart';
 
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
-abstract class IUiService {
+abstract class IUiService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns the singleton instance.
   factory IUiService() => services<IUiService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Basically resets the service
-  FutureOr<void> clear(ClearReason reason);
 
   static String getErrorMessage(Object error) {
     if (error is DioException) {

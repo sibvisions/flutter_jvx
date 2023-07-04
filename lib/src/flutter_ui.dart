@@ -47,7 +47,8 @@ import 'service/api/impl/default/api_service.dart';
 import 'service/api/shared/controller/api_controller.dart';
 import 'service/api/shared/repository/online_api_repository.dart';
 import 'service/apps/app.dart';
-import 'service/apps/app_service.dart';
+import 'service/apps/i_app_service.dart';
+import 'service/apps/impl/app_service.dart';
 import 'service/command/i_command_service.dart';
 import 'service/command/impl/command_service.dart';
 import 'service/config/i_config_service.dart';
@@ -325,7 +326,7 @@ class FlutterUI extends StatefulWidget {
     await ICommandService().clear(reason);
     await IApiService().clear(reason);
     await IConfigService().clear(reason);
-    await AppService().clear(reason);
+    await IAppService().clear(reason);
   }
 
   static void resetPageBucket() {
@@ -352,7 +353,7 @@ class FlutterUI extends StatefulWidget {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // Apps
-    AppService appService = AppService.create();
+    IAppService appService = AppService.create();
     services.registerSingleton(appService);
 
     // Config
@@ -388,7 +389,7 @@ class FlutterUI extends StatefulWidget {
     _uiLogFilter.level = appConfig.logConfig?.levels?.ui ?? _defaultLogLevel;
     _layoutLogFilter.level = appConfig.logConfig?.levels?.layout ?? _defaultLogLevel;
 
-    await AppService().removeObsoletePredefinedApps();
+    await IAppService().removeObsoletePredefinedApps();
 
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService.create() : await IsolateLayoutService.create();
@@ -536,7 +537,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         BeamGuard(
           pathPatterns: ["/"],
           check: (context, location) =>
-              IConfigService().currentApp.value == null || AppService().exitFuture.value != null,
+              IConfigService().currentApp.value == null || IAppService().exitFuture.value != null,
           beamToNamed: (origin, target) => "/home",
         ),
         // Guards everything except / and /settings (e.g. /menu) by beaming to / if there is no active app
@@ -544,7 +545,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           guardNonMatching: true,
           pathPatterns: ["/", "/settings"],
           check: (context, location) {
-            return IConfigService().currentApp.value != null && AppService().exitFuture.value == null;
+            return IConfigService().currentApp.value != null && IAppService().exitFuture.value == null;
           },
           beamToNamed: (origin, target) {
             BeamState targetState = target.state as BeamState;
@@ -578,9 +579,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     // Init
     if (urlApp != null) {
-      AppService().startApp(appId: urlApp!.id, autostart: true);
+      IAppService().startApp(appId: urlApp!.id, autostart: true);
     } else {
-      AppService().startDefaultApp();
+      IAppService().startDefaultApp();
     }
   }
 
@@ -622,28 +623,23 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   Widget _routeBuilder(BuildContext context, Widget? child) {
     return ListenableBuilder(
       listenable: Listenable.merge([
-        AppService().startupFuture,
-        AppService().exitFuture,
+        IAppService().startupFuture,
+        IAppService().exitFuture,
       ]),
       child: child,
       builder: (context, child) {
         Widget futureBuilder = FutureBuilder(
-          future: AppService().startupFuture.value,
+          future: IAppService().startupFuture.value,
           builder: (context, startupSnapshot) => FutureBuilder(
-            future: AppService().exitFuture.value,
+            future: IAppService().exitFuture.value,
             builder: (context, exitSnapshot) {
               if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
                   (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
-                retrySplash() => AppService().startApp();
-                splashReturnToApps() {
-                  IUiService().routeToAppOverview();
-                  setState(() {
-                    AppService().startupFuture.value = null;
-                  });
-                }
+                retrySplash() => IAppService().startApp();
+                splashReturnToApps() => IUiService().routeToAppOverview();
 
                 return _buildSplash(
-                  AppService().startupFuture.value!,
+                  IAppService().startupFuture.value!,
                   retry: retrySplash,
                   returnToApps: splashReturnToApps,
                   childrenBuilder: (snapshot) => [

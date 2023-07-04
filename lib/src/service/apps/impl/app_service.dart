@@ -20,61 +20,86 @@ import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../config/app_config.dart';
-import '../../flutter_ui.dart';
-import '../../model/command/api/exit_command.dart';
-import '../../model/command/api/startup_command.dart';
-import '../api/i_api_service.dart';
-import '../api/shared/repository/offline_api_repository.dart';
-import '../api/shared/repository/online_api_repository.dart';
-import '../command/i_command_service.dart';
-import '../config/i_config_service.dart';
-import '../service.dart';
-import '../ui/i_ui_service.dart';
-import 'app.dart';
+import '../../../config/app_config.dart';
+import '../../../flutter_ui.dart';
+import '../../../model/command/api/exit_command.dart';
+import '../../../model/command/api/startup_command.dart';
+import '../../api/i_api_service.dart';
+import '../../api/shared/repository/offline_api_repository.dart';
+import '../../api/shared/repository/online_api_repository.dart';
+import '../../command/i_command_service.dart';
+import '../../config/i_config_service.dart';
+import '../../service.dart';
+import '../../ui/i_ui_service.dart';
+import '../app.dart';
+import '../i_app_service.dart';
 
-class AppService {
+/// Manages and controls the individual apps.
+class AppService implements IAppService {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   late ValueNotifier<Set<String>> _storedAppIds;
 
-  ValueNotifier<Future<void>?> startupFuture = ValueNotifier(null);
-  ValueNotifier<Future<void>?> exitFuture = ValueNotifier(null);
+  final ValueNotifier<Future<void>?> _startupFuture = ValueNotifier(null);
+  final ValueNotifier<Future<void>?> _exitFuture = ValueNotifier(null);
 
   bool? _startedManually;
-  Uri? savedReturnUri;
+  Uri? _returnUri;
 
-  /// Returns the singleton instance.
-  factory AppService() => services<AppService>();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   AppService.create();
 
-  /// Basically resets the service
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
   FutureOr<void> clear(ClearReason reason) {
     if (reason == ClearReason.DEFAULT) {
       _startedManually = null;
-      savedReturnUri = null;
+      _returnUri = null;
     }
   }
 
-  /// Loads the initial config.
+  @override
   Future<void> loadConfig() async {
     _storedAppIds = ValueNotifier(await IConfigService().getConfigHandler().getAppKeys());
   }
 
+  @override
+  ValueNotifier<Future<void>?> get startupFuture => _startupFuture;
+
+  @override
+  ValueNotifier<Future<void>?> get exitFuture => _exitFuture;
+
+  @override
+  Uri? get returnUri => _returnUri;
+
+  @override
+  set returnUri(Uri? value) => _returnUri;
+
+  @override
   bool? get startedManually => _startedManually;
 
+  @override
   bool wasStartedManually() => _startedManually ?? false;
 
-  ValueListenable<Set<String>> get storedAppIds => _storedAppIds;
+  @override
+  ValueListenable<Set<String>> getStoredAppIds() {
+    return _storedAppIds;
+  }
 
-  /// Refreshes the currently known app ids.
+  @override
   Future<void> refreshStoredAppIds() async {
     _storedAppIds.value = await IConfigService().getConfigHandler().getAppKeys();
   }
 
-  /// Returns a list of all known app IDs.
-  ///
-  /// Attention: This list doesn't provide any information about the validity
-  /// of these apps, they don't have to be "start-able" (meaning there is a name and a base url).
+  @override
   Set<String> getAppIds() {
     List<String>? externalConfigs = IConfigService()
         .getAppConfig()
@@ -83,37 +108,39 @@ class AppService {
         .map((e) => App.computeId(e.appName, e.baseUrl.toString(), predefined: true)!)
         .toList();
     return {
-      ...storedAppIds.value,
+      ..._storedAppIds.value,
       ...?externalConfigs,
     };
   }
 
-  /// Saves the current screen location (if applicable) to return to after the next start/login.
-  ///
-  /// For example when the server logs us out or sends a session expired.
+  @override
   void saveLocationAsReturnUri() {
     BeamState? targetState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState?;
     if (targetState != null && targetState.uri.path.startsWith("/screens/")) {
-      savedReturnUri ??= Uri(path: targetState.uri.path);
+      _returnUri ??= Uri(path: targetState.uri.path);
     }
   }
 
+  @override
   bool showAppsButton() {
     return IConfigService().getAppConfig()!.customAppsAllowed! ||
         !IConfigService().getAppConfig()!.predefinedConfigsLocked! ||
-        (AppService().getAppIds().length > 1 && !IConfigService().getAppConfig()!.forceSingleAppMode!);
+        (IAppService().getAppIds().length > 1 && !IConfigService().getAppConfig()!.forceSingleAppMode!);
   }
 
+  @override
   bool showSingleAppModeSwitch() {
     return IConfigService().getAppConfig()!.customAppsAllowed! && !IConfigService().getAppConfig()!.forceSingleAppMode!;
   }
 
+  @override
   bool isSingleAppMode() {
     if (IConfigService().getAppConfig()!.forceSingleAppMode!) return true;
     if (!IConfigService().getAppConfig()!.customAppsAllowed!) return false;
     return IConfigService().singleAppMode.value;
   }
 
+  @override
   Future<void> removeAllApps() async {
     await Future.forEach<App>(
       await App.getAppsByIDs(getAppIds()),
@@ -122,9 +149,7 @@ class AppService {
     await IConfigService().updatePrivacyPolicy(null);
   }
 
-  /// Tries to clear as much leftover app data from previous versions as possible.
-  ///
-  /// [SharedPreferences] are deliberately left behind as these are not versioned.
+  @override
   Future<void> removePreviousAppVersions(String appId, String currentVersion) async {
     await IConfigService()
         .getFileManager()
@@ -132,12 +157,9 @@ class AppService {
         .catchError((e, stack) => FlutterUI.log.e("Failed to delete old app directories ($appId)", e, stack));
   }
 
-  /// Removes obsolete predefined apps.
-  ///
-  /// Obsolete predefined apps are apps that were predefined in previous versions
-  /// of this app and are now no longer present, therefore we can clear their data.
+  @override
   Future<void> removeObsoletePredefinedApps() async {
-    for (String id in storedAppIds.value) {
+    for (String id in _storedAppIds.value) {
       App? app = await App.getApp(id, forceIfMissing: true);
       if (app!.predefined && App.getPredefinedConfig(app.id) == null) {
         FlutterUI.log.i("Removing data from an now obsolete predefined app: ${app.id}");
@@ -146,7 +168,7 @@ class AppService {
     }
   }
 
-  /// Retrieves all known apps and starts a default app, if applicable.
+  @override
   Future<void> startDefaultApp() {
     return App.getAppsByIDs(getAppIds()).then((apps) {
       AppConfig appConfig = IConfigService().getAppConfig()!;
@@ -164,19 +186,10 @@ class AppService {
     });
   }
 
-  /// Starts an app known by its [appId] and stops the currently running app, if applicable.
-  ///
-  /// This can be used to restart the current app, by calling it without parameters.
-  ///
-  /// [autostart] controls if this call should be considered as a non-user action,
-  /// for example when starting a default app without any user interaction.
-  ///
-  /// See also:
-  /// * [App.createApp]
-  /// * [stopApp]
+  @override
   Future<void> startApp({String? appId, bool? autostart}) {
-    exitFuture.value = null;
-    return startupFuture.value = _startApp(appId: appId, autostart: autostart)
+    _exitFuture.value = null;
+    return _startupFuture.value = _startApp(appId: appId, autostart: autostart)
         .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
   }
 
@@ -216,10 +229,10 @@ class AppService {
     }
   }
 
-  /// Stops the currently running app.
+  @override
   Future<void> stopApp() {
-    startupFuture.value = null;
-    return exitFuture.value =
+    _startupFuture.value = null;
+    return _exitFuture.value =
         _stopApp().catchError(FlutterUI.createErrorHandler("There was an error while exiting the app"));
   }
 

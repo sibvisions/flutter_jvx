@@ -32,7 +32,7 @@ import 'shared/config_handler.dart';
 
 /// Allows to read user settings, update user settings, or listen
 /// to user settings changes.
-abstract class IConfigService {
+abstract class IConfigService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,14 +40,11 @@ abstract class IConfigService {
   /// Returns the singleton instance.
   factory IConfigService() => services<IConfigService>();
 
-  /// Loads the initial config.
+  /// Loads the initial configuration.
   ///
   /// If [devConfig] is true, this call removes all saved values for [ServerConfig]
   /// which would prevent the default config to be used.
   Future<void> loadConfig(AppConfig pAppConfig, [bool devConfig = false]);
-
-  /// Basically resets the service
-  FutureOr<void> clear(ClearReason reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Helper-methods for non-persistent fields

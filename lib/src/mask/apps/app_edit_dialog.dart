@@ -24,7 +24,7 @@ import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../service/apps/app.dart';
-import '../../service/apps/app_service.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import 'app_image.dart';
@@ -66,7 +66,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
   @override
   void initState() {
     super.initState();
-    appIds = AppService().getAppIds();
+    appIds = IAppService().getAppIds();
     titleController = TextEditingController(text: widget.config?.title);
     appNameController = TextEditingController(text: widget.config?.name);
     baseUrlController = TextEditingController(text: widget.config?.baseUrl?.toString());

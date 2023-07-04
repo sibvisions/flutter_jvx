@@ -25,7 +25,7 @@ import '../../flutter_ui.dart';
 import '../../mask/apps/app_overview_page.dart';
 import '../../model/request/api_startup_request.dart';
 import '../config/i_config_service.dart';
-import 'app_service.dart';
+import 'i_app_service.dart';
 
 class App {
   String? _id;
@@ -99,7 +99,7 @@ class App {
         return app;
       }
     } else {
-      var appIds = AppService().storedAppIds.value;
+      var appIds = IAppService().getStoredAppIds().value;
       if (forceIfMissing || appIds.contains(id)) {
         var app = App._(id);
         await app.loadValues();
@@ -118,7 +118,7 @@ class App {
     await app.loadValues();
     await app.updateName(name);
     await app.updateBaseUrl(baseUrl);
-    await AppService().refreshStoredAppIds();
+    await IAppService().refreshStoredAppIds();
     return app;
   }
 
@@ -127,7 +127,7 @@ class App {
     var app = App._(computeIdFromConfig(config)!);
     await app.loadValues();
     await app.updateFromConfig(config);
-    await AppService().refreshStoredAppIds();
+    await IAppService().refreshStoredAppIds();
     return app;
   }
 
@@ -406,7 +406,7 @@ class App {
     await IConfigService().getFileManager().renameIndependentDirectory(
         [oldAppId], newAppId).catchError((e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", e, stack));
 
-    await AppService().refreshStoredAppIds();
+    await IAppService().refreshStoredAppIds();
 
     _id = newAppId;
   }
@@ -437,7 +437,7 @@ class App {
     await IConfigService().getFileManager().deleteIndependentDirectory([appId],
         recursive: true).catchError((e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", e, stack));
 
-    await AppService().refreshStoredAppIds();
+    await IAppService().refreshStoredAppIds();
   }
 
   @override

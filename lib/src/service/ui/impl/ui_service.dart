@@ -51,7 +51,7 @@ import '../../../model/response/application_settings_response.dart';
 import '../../../model/response/device_status_response.dart';
 import '../../../routing/locations/main_location.dart';
 import '../../../util/jvx_colors.dart';
-import '../../apps/app_service.dart';
+import '../../apps/i_app_service.dart';
 import '../../command/i_command_service.dart';
 import '../../config/i_config_service.dart';
 import '../../data/i_data_service.dart';
@@ -60,7 +60,7 @@ import '../../service.dart';
 import '../../storage/i_storage_service.dart';
 import '../i_ui_service.dart';
 
-/// Manages all interactions with the UI
+/// Manages all interactions with the UI.
 class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
@@ -289,7 +289,7 @@ class UiService implements IUiService {
 
     // First fire the future, then route.
     // Otherwise, the BeamGuard routing check would fail.
-    var stopApp = AppService().stopApp();
+    var stopApp = IAppService().stopApp();
 
     FlutterUI.clearHistory();
     FlutterUI.getBeamerDelegate().beamToReplacementNamed("/");

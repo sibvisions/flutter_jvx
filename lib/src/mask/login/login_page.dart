@@ -25,7 +25,7 @@ import '../../model/command/api/cancel_login_command.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../model/command/api/reset_password_command.dart';
-import '../../service/apps/app_service.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/extensions/string_extensions.dart';
@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
     return WillPopScope(
       child: _buildLogin(context),
       onWillPop: () async {
-        if (AppService().wasStartedManually()) {
+        if (IAppService().wasStartedManually()) {
           unawaited(IUiService().routeToAppOverview());
           return false;
         }

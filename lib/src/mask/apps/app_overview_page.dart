@@ -27,7 +27,7 @@ import '../../config/qr_config.dart';
 import '../../config/server_config.dart';
 import '../../flutter_ui.dart';
 import '../../service/apps/app.dart';
-import '../../service/apps/app_service.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -148,7 +148,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   Future<void> _refreshApps() {
     setState(() {
       future = () async {
-        var retrievedApps = await App.getAppsByIDs(AppService().getAppIds());
+        var retrievedApps = await App.getAppsByIDs(IAppService().getAppIds());
         apps = [...retrievedApps.sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase())];
         currentConfig = _getSingleConfig();
       }()
@@ -207,7 +207,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                         alignment: Alignment.centerLeft,
                                         child: Text(
                                           FlutterUI.translateLocal(
-                                              AppService().isSingleAppMode() ? "Application" : "Applications"),
+                                              IAppService().isSingleAppMode() ? "Application" : "Applications"),
                                           style: const TextStyle(
                                             color: JVxColors.LIGHTER_BLACK,
                                             fontWeight: FontWeight.bold,
@@ -234,7 +234,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                 right: 8.0,
                                 child: _buildMenuButton(
                                   context,
-                                  AppService().isSingleAppMode() || showAddOnFront,
+                                  IAppService().isSingleAppMode() || showAddOnFront,
                                 ),
                               ),
                             ],
@@ -245,7 +245,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                   ),
                 ],
               ),
-              floatingActionButton: AppService().isSingleAppMode()
+              floatingActionButton: IAppService().isSingleAppMode()
                   ? FloatingActionButton(
                       tooltip: FlutterUI.translateLocal("Scan QR Code"),
                       onPressed: () => AppOverviewPage.openQRScanner(
@@ -274,7 +274,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     if (snapshot.hasError) {
       child = const FaIcon(FontAwesomeIcons.circleExclamation);
     } else {
-      if (AppService().isSingleAppMode()) {
+      if (IAppService().isSingleAppMode()) {
         child = SingleAppView(
           config: currentConfig,
           onStart: (config) async {
@@ -283,7 +283,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
               config.merge(const ServerConfig(isDefault: true)),
             );
             if (editedApp != null && mounted) {
-              unawaited(AppService().startApp(appId: editedApp.id, autostart: false));
+              unawaited(IAppService().startApp(appId: editedApp.id, autostart: false));
             }
           },
         );
@@ -324,7 +324,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                         onTap: app.isStartable
                             ? () {
                                 if (app.predefined || App.customAppsAllowed) {
-                                  AppService().startApp(appId: app.id, autostart: false);
+                                  IAppService().startApp(appId: app.id, autostart: false);
                                 } else {
                                   _showForbiddenAppStart(context);
                                 }
@@ -611,7 +611,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
       },
     );
     if (shouldClear ?? false) {
-      await AppService().removeAllApps();
+      await IAppService().removeAllApps();
       unawaited(_refreshApps());
     }
   }

@@ -14,9 +14,18 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:get_it/get_it.dart';
 
 GetIt services = GetIt.I;
+
+/// Defines the base construct of a service.
+abstract class Service {
+  /// Clears/reset the service based on the provided [reason]
+  /// and prepare it for reinitialization.
+  FutureOr<void> clear(ClearReason reason);
+}
 
 enum ClearReason {
   /// Full app stop (no restart planned).

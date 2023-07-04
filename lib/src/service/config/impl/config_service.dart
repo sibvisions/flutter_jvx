@@ -30,7 +30,7 @@ import '../../../mask/frame/frame.dart';
 import '../../../model/config/translation/i18n.dart';
 import '../../../model/config/user/user_info.dart';
 import '../../apps/app.dart';
-import '../../apps/app_service.dart';
+import '../../apps/i_app_service.dart';
 import '../../file/file_manager.dart';
 import '../../service.dart';
 import '../../ui/i_ui_service.dart';
@@ -296,7 +296,7 @@ class ConfigService implements IConfigService {
         });
       }
 
-      var iterable = AppService().storedAppIds.value.where((id) =>
+      var iterable = IAppService().getStoredAppIds().value.where((id) =>
           !id.contains(App.idSplitSequence) &&
           !id.startsWith(App.predefinedPrefix) &&
           !sharedPrefs.containsKey("$id.name"));

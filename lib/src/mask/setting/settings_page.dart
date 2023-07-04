@@ -28,7 +28,7 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/startup_command.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/api/shared/repository/online_api_repository.dart';
-import '../../service/apps/app_service.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -316,7 +316,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildApplicationSettings(BuildContext context) {
     Widget? singleAppSetting;
-    if (AppService().showSingleAppModeSwitch()) {
+    if (IAppService().showSingleAppModeSwitch()) {
       singleAppSetting = SwitchListTile(
         contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
         secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),
@@ -561,7 +561,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (_changesPending()) {
         await IConfigService().updateUserLanguage(language);
         if (IUiService().clientId.value != null) {
-          unawaited(AppService().startApp());
+          unawaited(IAppService().startApp());
           return;
         }
       }

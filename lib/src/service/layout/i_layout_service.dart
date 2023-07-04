@@ -22,19 +22,17 @@ import '../../model/layout/layout_data.dart';
 import '../service.dart';
 
 /// An [ILayoutService] handles the layouting of components.
-abstract class ILayoutService {
+abstract class ILayoutService implements Service {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns the singleton instance.
   factory ILayoutService() => services<ILayoutService>();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Basically resets the service
-  FutureOr<void> clear(ClearReason reason);
 
   /// Registers a parent for receiving child constraint changes.
   ///

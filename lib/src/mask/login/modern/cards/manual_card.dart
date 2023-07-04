@@ -20,7 +20,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
-import '../../../../service/apps/app_service.dart';
+import '../../../../service/apps/i_app_service.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
@@ -69,7 +69,7 @@ class _ManualCardState extends State<ManualCard> {
 
   @override
   Widget build(BuildContext context) {
-    bool replaceSettingsWithApps = AppService().showAppsButton();
+    bool replaceSettingsWithApps = IAppService().showAppsButton();
 
     return Card(
       color: Theme.of(context).colorScheme.surface.withOpacity(0.9),

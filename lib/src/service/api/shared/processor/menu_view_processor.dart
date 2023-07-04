@@ -23,7 +23,7 @@ import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/menu_view_response.dart';
-import '../../../apps/app_service.dart';
+import '../../../apps/i_app_service.dart';
 import '../../../config/i_config_service.dart';
 import '../i_response_processor.dart';
 
@@ -51,7 +51,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     if (!IConfigService().offline.value) {
       if (isReturnUriSuitable(response.responseMenuItems)) {
         commands.add(RouteToCommand(
-          uri: AppService().savedReturnUri.toString(),
+          uri: IAppService().returnUri.toString(),
           reason: "Found returnUri",
         ));
       } else {
@@ -61,7 +61,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
         ));
       }
       // Reset in every case, either it worked or it won't/shouldn't work next time.
-      AppService().savedReturnUri = null;
+      IAppService().returnUri = null;
     }
 
     return commands;
@@ -70,7 +70,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
   /// Checks whether a return uri exists, is a screen uri and is available
   /// to the current user by checking the available menu items.
   bool isReturnUriSuitable(List<MenuEntryResponse> menuItems) {
-    var uri = AppService().savedReturnUri;
+    var uri = IAppService().returnUri;
     return (uri != null && uri.pathSegments.length >= 2 && uri.pathSegments[0] == "screens") &&
         menuItems.any((e) => e.navigationName == uri.pathSegments[1]);
   }
