@@ -140,9 +140,9 @@ class App {
     _password = await _getString("password");
     _title = await _getString("title");
     _icon = await _getString("icon");
-    _version = await _getString("version");
-    _offline = await _getBool("offline");
-    String? styleJson = await _getString("applicationStyle");
+    _version = await _getString("version", respectUserBlock: false);
+    _offline = await _getBool("offline", respectUserBlock: false);
+    String? styleJson = await _getString("applicationStyle", respectUserBlock: false);
     _applicationStyle = (styleJson != null ? Map.from(jsonDecode(styleJson)) : null);
   }
 
@@ -284,13 +284,13 @@ class App {
   /// This is determined by whether this is a predefined app and this
   /// or all predefined apps are locked, or if it isn't a predefined app
   /// and customs aren't allowed.
-  bool get locked =>
-      (predefined &&
-          (_isPredefinedLocked ||
-              (getPredefinedConfig(_id) != null &&
-                  ((getPredefinedConfig(_id)!.locked ?? true) ||
-                      (getPredefinedConfig(_id)!.parametersHidden ?? false))))) ||
-      (!predefined && !customAppsAllowed && !forceSingleAppMode);
+  bool get locked {
+    var prConfig = getPredefinedConfig(_id);
+    return (predefined &&
+            (_isPredefinedLocked ||
+                (prConfig != null && ((prConfig.locked ?? true) || (prConfig.parametersHidden ?? false))))) ||
+        (!predefined && !customAppsAllowed && !forceSingleAppMode);
+  }
 
   /// {@template app.parametersHidden}
   /// Whether parameters such as [name] or
@@ -324,8 +324,10 @@ class App {
   /// If [_id] is null or [usesUserParameter] is false, this returns null.
   ///
   /// {@macro app.key}
-  Future<bool?> _getBool(String key) async {
-    return !usesUserParameter ? null : (_id != null ? IConfigService().getConfigHandler().getValue("$_id.$key") : null);
+  Future<bool?> _getBool(String key, {bool respectUserBlock = true}) async {
+    return !usesUserParameter && respectUserBlock
+        ? null
+        : (_id != null ? IConfigService().getConfigHandler().getValue("$_id.$key") : null);
   }
 
   /// Retrieves a string value by its key in connection to the app id.
@@ -333,8 +335,10 @@ class App {
   /// If [_id] is null or [usesUserParameter] is false, this returns null.
   ///
   /// {@macro app.key}
-  Future<String?> _getString(String key) async {
-    return !usesUserParameter ? null : (_id != null ? IConfigService().getConfigHandler().getValue("$_id.$key") : null);
+  Future<String?> _getString(String key, {bool respectUserBlock = true}) async {
+    return !usesUserParameter && respectUserBlock
+        ? null
+        : (_id != null ? IConfigService().getConfigHandler().getValue("$_id.$key") : null);
   }
 
   /// Persists a string value by its key in connection to the app id.
