@@ -21,6 +21,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.16
 
   # iOS Dep
@@ -128,6 +129,16 @@ flutter:
     - assets/config/
     - assets/images/
     - assets/languages/
+
+flutter_launcher_icons:
+  image_path: "assets/images/JVx.png"
+  android: "ic_launcher"
+  min_sdk_android: 21
+  ios: true
+  web:
+    generate: true
+    background_color: "#DADADA"
+    theme_color: "#E3E3E3"
 
 flutter_native_splash:
   # This package generates native code to customize Flutter's default white native splash screen
