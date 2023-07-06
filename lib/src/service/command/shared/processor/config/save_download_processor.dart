@@ -27,21 +27,22 @@ import '../../i_command_processor.dart';
 class SaveDownloadCommandProcessor extends ICommandProcessor<SaveDownloadCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveDownloadCommand command, BaseCommand? origin) async {
+    String extension = path.extension(command.fileName);
+    if (extension.startsWith(".")) {
+      extension = extension.substring(1);
+    }
+
     if (kIsWeb) {
-      // https://github.com/incrediblezayed/file_saver/issues/42
-      // File saver ignores the extension property so we have to include it in the name itself
+      // saveAs is not implemented for web.
       unawaited(
         FileSaver.instance.saveFile(
-          name: path.basename(command.fileName),
+          name: path.basenameWithoutExtension(command.fileName),
           bytes: command.bodyBytes,
-          ext: "",
+          ext: extension,
+          mimeType: MimeType.other,
         ),
       );
     } else {
-      String extension = path.extension(command.fileName);
-      if (extension.startsWith(".")) {
-        extension = extension.substring(1);
-      }
       unawaited(
         FileSaver.instance.saveAs(
           name: path.basenameWithoutExtension(command.fileName),
