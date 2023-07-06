@@ -32,9 +32,9 @@ class SaveDownloadCommandProcessor implements ICommandProcessor<SaveDownloadComm
       // File saver ignores the extension property so we have to include it in the name itself
       unawaited(
         FileSaver.instance.saveFile(
-          path.basename(command.fileName),
-          command.bodyBytes,
-          "",
+          name: path.basename(command.fileName),
+          bytes: command.bodyBytes,
+          ext: "",
         ),
       );
     } else {
@@ -44,10 +44,10 @@ class SaveDownloadCommandProcessor implements ICommandProcessor<SaveDownloadComm
       }
       unawaited(
         FileSaver.instance.saveAs(
-          path.basenameWithoutExtension(command.fileName),
-          command.bodyBytes,
-          extension,
-          MimeType.OTHER,
+          name: path.basenameWithoutExtension(command.fileName),
+          bytes: command.bodyBytes,
+          ext: extension,
+          mimeType: MimeType.other,
         ),
       );
     }
