@@ -18,7 +18,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../flutter_ui.dart';
 import '../model/command/api/close_screen_command.dart';
@@ -69,7 +69,7 @@ abstract class OfflineUtil {
     String offlineWorkscreenClassName = IConfigService().offlineScreen.value!;
 
     try {
-      await Wakelock.enable();
+      await WakelockPlus.enable();
       String? offlineUsername = IConfigService().username.value;
       String? offlinePassword = IConfigService().password.value;
 
@@ -355,7 +355,7 @@ abstract class OfflineUtil {
         await initOnline();
       }
     } finally {
-      await Wakelock.disable();
+      await WakelockPlus.disable();
       // In case it hasn't been closed yet
       ProgressDialogWidget.safeClose(dialogKey);
     }
@@ -501,7 +501,7 @@ abstract class OfflineUtil {
     OfflineApiRepository offlineApiRepository = OfflineApiRepository();
 
     try {
-      await Wakelock.enable();
+      await WakelockPlus.enable();
       // Set already here to receive errors from api responses
       await IConfigService().updateOffline(true);
       // Save password for re-sync
@@ -606,7 +606,7 @@ abstract class OfflineUtil {
         ),
       );
     } finally {
-      await Wakelock.disable();
+      await WakelockPlus.disable();
       // In case it hasn't been closed yet
       ProgressDialogWidget.safeClose(dialogKey);
     }

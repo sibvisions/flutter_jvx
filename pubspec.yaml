@@ -36,8 +36,8 @@ dependencies:
   shared_preferences: ^2.0.15
 
   # Device Identification
-  package_info_plus: ^3.0.1
-  device_info_plus: ^8.0.0
+  package_info_plus: ^4.0.1
+  device_info_plus: ^9.0.0
   android_id: ^0.3.2
 
   # Util
@@ -56,7 +56,7 @@ dependencies:
   connectivity_plus: ^4.0.0
 
   cross_file: ^0.3.3+2
-  image_picker: ^0.8.6
+  image_picker: '>=0.8.9 <2.0.0' # Recommended range
   file_picker: ^5.0.1
   file_saver:
     git:
@@ -85,13 +85,13 @@ dependencies:
   beamer: ^1.5.2
   # Used for offline mode
   sqflite: ^2.0.3
-  wakelock: ^0.6.2
+  wakelock_plus: ^1.0.0+3
   # Used for debugging
   flutter_debug_overlay: ^0.1.0
 
   # Custom Dependencies
-  flutter_map: ^4.0.0
-  latlong2: ^0.8.1
+  flutter_map: ^5.0.0
+  latlong2: ^0.9.0
   geolocator: ^9.0.2
   scrollable_positioned_list: ^0.3.1
   url_launcher: ^6.1.5

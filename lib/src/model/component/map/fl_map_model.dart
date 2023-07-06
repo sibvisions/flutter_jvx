@@ -22,7 +22,7 @@ class FlMapModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Where the map should be centered
-  LatLng? center = LatLng(48, 17);
+  LatLng? center = const LatLng(48, 17);
 
   // List of Markers that will be shown on the map
   List<Marker> markers = [];
