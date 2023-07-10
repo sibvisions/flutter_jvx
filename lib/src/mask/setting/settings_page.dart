@@ -31,6 +31,7 @@ import '../../service/api/shared/repository/online_api_repository.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../../util/extensions/string_extensions.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../state/loading_bar.dart';
@@ -331,8 +332,10 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
+    final Brightness systemBrightness = MediaQuery.platformBrightnessOf(context);
     final Map<ThemeMode, String> themeMapping = {
-      ThemeMode.system: FlutterUI.translateLocal("System"),
+      ThemeMode.system:
+          "${FlutterUI.translateLocal("System")} (${FlutterUI.translateLocal(systemBrightness.name.capitalize())})",
       ThemeMode.light: FlutterUI.translateLocal("Light"),
       ThemeMode.dark: FlutterUI.translateLocal("Dark"),
     };
