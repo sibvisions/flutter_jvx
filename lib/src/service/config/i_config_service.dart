@@ -263,6 +263,13 @@ abstract class IConfigService implements Service {
   /// * [DownloadStyleResponse]
   Future<void> updateApplicationStyle(Map<String, String>? pAppStyle);
 
+  /// Returns the theme mode which should be set to the app.
+  ///
+  /// This is either:
+  /// * The server set theme mode.
+  /// * The user chosen theme mode (defaults to [ThemeMode.system]).
+  ThemeMode getThemeMode();
+
   /// Returns the scaling multiplier for server sent sizes
   double getScaling();
 

@@ -603,7 +603,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             widget.appConfig?.title ??
             FlutterUI.packageInfo.appName;
         return MaterialApp.router(
-          themeMode: IConfigService().themePreference.value,
+          themeMode: IConfigService().getThemeMode(),
           theme: themeData,
           darkTheme: darkThemeData,
           locale: Locale(IConfigService().getLanguage()),

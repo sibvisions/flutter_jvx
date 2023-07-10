@@ -607,6 +607,14 @@ class ConfigService implements IConfigService {
   }
 
   @override
+  ThemeMode getThemeMode() {
+    String? serverThemeMode = IConfigService().applicationStyle.value?["theme.mode"]?.toLowerCase();
+    ThemeMode? themeMode =
+        serverThemeMode == null ? null : ThemeMode.values.firstWhereOrNull((e) => e.name == serverThemeMode);
+    return themeMode ?? IConfigService().themePreference.value;
+  }
+
+  @override
   double getScaling() {
     if (Frame.isWebFrame()) {
       return 1.0;
