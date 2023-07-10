@@ -64,9 +64,6 @@ abstract class IConfigService implements Service {
   /// Returns the cached platform timezone (retrieved via [FlutterTimezone.getLocalTimezone]).
   String? getPlatformTimeZone();
 
-  /// Returns the phone size determined by [MediaQueryData.size].
-  Size? getPhoneSize();
-
   /// Returns the initial configured app config.
   ///
   /// To get up to date values, use their respective getters:

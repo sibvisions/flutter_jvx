@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/startup_command.dart';
@@ -37,14 +38,16 @@ class StartupCommandProcessor implements ICommandProcessor<StartupCommand> {
       IUiService().closeJVxDialogs();
     }
 
+    Size? phoneSize = MediaQuery.maybeSizeOf(FlutterUI.getEffectiveContext()!);
+
     ApiStartupRequest startupRequest = ApiStartupRequest(
       baseUrl: IConfigService().baseUrl.value!.toString(),
       requestUri: kIsWeb ? Uri.base.toString() : null,
       appMode: "full",
       applicationName: IConfigService().appName.value!,
       authKey: IConfigService().authKey.value,
-      screenHeight: IConfigService().getPhoneSize()?.height.toInt(),
-      screenWidth: IConfigService().getPhoneSize()?.width.toInt(),
+      screenHeight: phoneSize?.height.toInt(),
+      screenWidth: phoneSize?.width.toInt(),
       readAheadLimit: 100,
       deviceMode: (kIsWeb && !IUiService().mobileOnly.value) || IUiService().webOnly.value ? "mobileDesktop" : "mobile",
       username: command.username ?? IConfigService().username.value,

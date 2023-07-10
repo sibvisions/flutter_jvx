@@ -356,11 +356,6 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  Size? getPhoneSize() {
-    return MediaQueryData.fromView(View.of(FlutterUI.getEffectiveContext()!)).size;
-  }
-
-  @override
   AppConfig? getAppConfig() {
     return _appConfig;
   }
