@@ -43,6 +43,8 @@ export 'model/command/api/reset_password_command.dart';
 export 'model/command/api/rollback_command.dart';
 export 'model/command/api/save_command.dart';
 export 'model/command/api/select_record_command.dart';
+export 'model/command/api/set_parameter_command.dart';
+export 'model/command/api/set_screen_parameter_command.dart';
 export 'model/command/api/set_value_command.dart';
 export 'model/command/api/set_values_command.dart';
 export 'model/command/api/startup_command.dart';

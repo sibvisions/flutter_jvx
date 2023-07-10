@@ -52,6 +52,7 @@ import '../../../../../model/command/api/save_all_editors.dart';
 import '../../../../../model/command/api/save_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/api/select_tree_command.dart';
+import '../../../../../model/command/api/set_parameter_command.dart';
 import '../../../../../model/command/api/set_screen_parameter_command.dart';
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
@@ -97,6 +98,7 @@ import 'save_all_editors_command_processor.dart';
 import 'save_command_processor.dart';
 import 'select_record_command_processor.dart';
 import 'select_tree_command_processor.dart';
+import 'set_parameter_command_processor.dart';
 import 'set_screen_parameter_command_processor.dart';
 import 'set_value_command_processor.dart';
 import 'set_values_command_processor.dart';
@@ -211,6 +213,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _sortProcessor = SortCommandProcessor();
 
+  final ICommandProcessor _setParameterProcessor = SetParameterCommandProcessor();
+
   final ICommandProcessor _setScreenParameterProcessor = SetScreenParameterCommandProcessor();
 
   final ICommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
@@ -302,6 +306,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _rollbackProcessor.processCommand(command, origin);
     } else if (command is SortCommand) {
       return _sortProcessor.processCommand(command, origin);
+    } else if (command is SetParameterCommand) {
+      return _setParameterProcessor.processCommand(command, origin);
     } else if (command is SetScreenParameterCommand) {
       return _setScreenParameterProcessor.processCommand(command, origin);
     } else if (command is RestoreDataCommand) {

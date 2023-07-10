@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SIB Visions GmbH
+ * Copyright 2023 SIB Visions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,13 +16,10 @@
 
 import 'session_command.dart';
 
-class SetScreenParameterCommand extends SessionCommand {
+class SetParameterCommand extends SessionCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Component id.
-  final String? screenLongName;
 
   /// Parameters to add to the request.
   final Map<String, dynamic> parameter;
@@ -31,8 +28,7 @@ class SetScreenParameterCommand extends SessionCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SetScreenParameterCommand({
-    this.screenLongName,
+  SetParameterCommand({
     required this.parameter,
     required super.reason,
   });
@@ -43,6 +39,6 @@ class SetScreenParameterCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "SetScreenParameterCommand{screenLongName: $screenLongName, parameter: $parameter, ${super.toString()}}";
+    return "SetParameterCommand{parameter: $parameter, ${super.toString()}}";
   }
 }
