@@ -19,7 +19,10 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../components/panel/fl_panel_wrapper.dart';
 import '../../flutter_ui.dart';
+import '../../model/command/api/set_parameter_command.dart';
+import '../../model/command/api/set_screen_parameter_command.dart';
 import '../../model/menu/menu_item_model.dart';
+import '../../service/command/i_command_service.dart';
 import '../../util/offline_util.dart';
 import '../../util/parse_util.dart';
 import '../state/app_style.dart';
@@ -144,5 +147,25 @@ class WorkScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Sends a [SetParameterCommand].
+  static Future<void> setParameter(Map<String, dynamic> parameter) {
+    return ICommandService().sendCommand(SetParameterCommand(
+      parameter: parameter,
+      reason: "SetParameter API",
+    ));
+  }
+
+  /// Sends a [SetScreenParameterCommand].
+  static Future<void> setScreenParameter({
+    String? screenLongName,
+    required Map<String, dynamic> parameter,
+  }) {
+    return ICommandService().sendCommand(SetScreenParameterCommand(
+      screenLongName: screenLongName,
+      parameter: parameter,
+      reason: "SetScreenParameter API",
+    ));
   }
 }
