@@ -33,17 +33,20 @@ class ApiStartupRequest extends ApiRequest {
   /// Name of the JVx application.
   final String applicationName;
 
-  /// Mode of the Device.
+  /// Mode of the device.
   final String deviceMode;
+
+  /// Current platform brightness of the device.
+  final bool darkMode;
 
   /// Mode of this app.
   final String appMode;
 
-  /// Total available (for WorkScreens) width of the screen.
-  final int? screenWidth;
-
   /// Total available (for WorkScreens) height of the screen.
   final int? screenHeight;
+
+  /// Total available (for WorkScreens) width of the screen.
+  final int? screenWidth;
 
   /// Name of the user.
   final String? username;
@@ -99,6 +102,7 @@ class ApiStartupRequest extends ApiRequest {
     this.requestUri,
     required this.appMode,
     required this.deviceMode,
+    required this.darkMode,
     required this.applicationName,
     required this.langCode,
     required this.timeZoneCode,
@@ -129,11 +133,12 @@ class ApiStartupRequest extends ApiRequest {
         if (requestUri != null) ApiObjectProperty.requestUri: requestUri,
         ApiObjectProperty.appMode: appMode,
         ApiObjectProperty.deviceMode: deviceMode,
+        ApiObjectProperty.darkMode: darkMode,
         ApiObjectProperty.applicationName: applicationName,
         if (username != null) ApiObjectProperty.userName: username,
         if (password != null) ApiObjectProperty.password: password,
-        if (screenWidth != null) ApiObjectProperty.screenWidth: screenWidth,
         if (screenHeight != null) ApiObjectProperty.screenHeight: screenHeight,
+        if (screenWidth != null) ApiObjectProperty.screenWidth: screenWidth,
         if (authKey != null) ApiObjectProperty.authKey: authKey,
         ApiObjectProperty.langCode: langCode,
         ApiObjectProperty.timeZoneCode: timeZoneCode,

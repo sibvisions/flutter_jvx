@@ -50,6 +50,7 @@ class StartupCommandProcessor implements ICommandProcessor<StartupCommand> {
       screenWidth: phoneSize?.width.toInt(),
       readAheadLimit: 100,
       deviceMode: (kIsWeb && !IUiService().mobileOnly.value) || IUiService().webOnly.value ? "mobileDesktop" : "mobile",
+      darkMode: MediaQuery.platformBrightnessOf(FlutterUI.getEffectiveContext()!) == Brightness.dark,
       username: command.username ?? IConfigService().username.value,
       password: command.password ?? IConfigService().password.value,
       langCode: IConfigService().userLanguage.value ?? IConfigService().getPlatformLocale(),

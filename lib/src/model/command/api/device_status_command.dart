@@ -21,19 +21,23 @@ class DeviceStatusCommand extends SessionCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The screen width.
-  final double screenWidth;
-
   /// The screen height.
-  final double screenHeight;
+  final int? screenHeight;
+
+  /// The screen width.
+  final int? screenWidth;
+
+  /// Describes the current platform brightness.
+  final bool? darkMode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DeviceStatusCommand({
-    required this.screenWidth,
-    required this.screenHeight,
+    this.screenHeight,
+    this.screenWidth,
+    this.darkMode,
     required super.reason,
   }) : super(showLoading: false);
 
@@ -43,6 +47,6 @@ class DeviceStatusCommand extends SessionCommand {
 
   @override
   String toString() {
-    return "DeviceStatusCommand{screenWidth: $screenWidth, screenHeight: $screenHeight, ${super.toString()}}";
+    return "DeviceStatusCommand{screenHeight: $screenHeight, screenWidth: $screenWidth, darkMode: $darkMode, ${super.toString()}}";
   }
 }

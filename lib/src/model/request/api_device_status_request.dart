@@ -17,26 +17,52 @@
 import '../../service/api/shared/api_object_property.dart';
 import 'session_request.dart';
 
-/// Request to update the available screen size to the app
+/// Request to update device properties (e.g. the available screen size) to the app.
 class ApiDeviceStatusRequest extends SessionRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Available width of the device for workscreens
-  final double screenWidth;
+  /// Available height of the device for workscreens.
+  final int? screenHeight;
 
-  /// Available height of the device for workscreens
-  final double screenHeight;
+  /// Available width of the device for workscreens.
+  final int? screenWidth;
+
+  /// Describes the current platform brightness.
+  final bool? darkMode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiDeviceStatusRequest({
-    required this.screenWidth,
-    required this.screenHeight,
+    this.screenHeight,
+    this.screenWidth,
+    this.darkMode,
   });
+
+  ApiDeviceStatusRequest merge(ApiDeviceStatusRequest? other) {
+    if (other == null) return this;
+
+    return ApiDeviceStatusRequest(
+      screenHeight: other.screenHeight ?? screenHeight,
+      screenWidth: other.screenWidth ?? screenWidth,
+      darkMode: other.darkMode ?? darkMode,
+    );
+  }
+
+  /// Whether this object has new properties in comparison to [other].
+  ///
+  /// `null` values are not considered as "new".
+  bool hasNewProperties(ApiDeviceStatusRequest? other) {
+    if (other == null) return true;
+
+    return !identical(this, other) &&
+        ((other.screenHeight != screenHeight && screenHeight != null) ||
+            (other.screenWidth != screenWidth && screenWidth != null) ||
+            (other.darkMode != darkMode && darkMode != null));
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -45,7 +71,8 @@ class ApiDeviceStatusRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ApiObjectProperty.screenHeight: screenHeight,
-        ApiObjectProperty.screenWidth: screenWidth,
+        if (screenHeight != null) ApiObjectProperty.screenHeight: screenHeight,
+        if (screenWidth != null) ApiObjectProperty.screenWidth: screenWidth,
+        if (darkMode != null) ApiObjectProperty.darkMode: darkMode,
       };
 }

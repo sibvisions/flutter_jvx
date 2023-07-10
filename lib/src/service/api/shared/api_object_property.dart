@@ -131,8 +131,8 @@ abstract class ApiObjectProperty {
   static const String manualClose = "manualClose";
   static const String action = "action";
   static const String label = "label";
-  static const String screenWidth = "screenWidth";
   static const String screenHeight = "screenHeight";
+  static const String screenWidth = "screenWidth";
   static const String value = "value";
   static const String values = "values";
   static const String fileId = "fileId";
@@ -221,6 +221,7 @@ abstract class ApiObjectProperty {
   static const String logout = "logout";
   static const String userSettings = "userSettings";
   static const String colors = "colors";
+  static const String darkMode = "darkMode";
 
   // MessageDialogResponse
   static const String iconType = "iconType";

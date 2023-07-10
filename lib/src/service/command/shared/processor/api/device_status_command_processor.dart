@@ -28,24 +28,21 @@ class DeviceStatusCommandProcessor implements ICommandProcessor<DeviceStatusComm
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  double? lastSentWidth;
-  double? lastSentHeight;
+  ApiDeviceStatusRequest? lastSentRequest;
 
   @override
   Future<List<BaseCommand>> processCommand(DeviceStatusCommand command, BaseCommand? origin) async {
-    if ((lastSentWidth != command.screenWidth || lastSentHeight != command.screenHeight) &&
-        IUiService().clientId.value != null &&
-        !IConfigService().offline.value) {
-      lastSentWidth = command.screenWidth;
-      lastSentHeight = command.screenHeight;
-
+    if (IUiService().clientId.value != null && !IConfigService().offline.value) {
       ApiDeviceStatusRequest deviceStatusRequest = ApiDeviceStatusRequest(
         screenWidth: command.screenWidth,
         screenHeight: command.screenHeight,
+        darkMode: command.darkMode,
       );
-      return IApiService().sendRequest(deviceStatusRequest);
-    } else {
-      return [];
+      if (deviceStatusRequest.hasNewProperties(lastSentRequest)) {
+        lastSentRequest = lastSentRequest?.merge(deviceStatusRequest) ?? deviceStatusRequest;
+        return IApiService().sendRequest(deviceStatusRequest);
+      }
     }
+    return [];
   }
 }
