@@ -254,46 +254,64 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
-    var supportedLanguages = IConfigService().supportedLanguages.value.toList();
-    supportedLanguages.insertAll(0, [
-      "${FlutterUI.translateLocal("System")} (${IConfigService().getPlatformLocale()})",
-      "en",
-    ]);
+    Widget? languageSetting;
+    if (!(IConfigService().getAppConfig()?.uiConfig?.hideLanguageSetting ?? false)) {
+      var supportedLanguages = IConfigService().supportedLanguages.value.toList();
+      supportedLanguages.insertAll(0, [
+        "${FlutterUI.translateLocal("System")} (${IConfigService().getPlatformLocale()})",
+        "en",
+      ]);
 
-    SettingItem languageSetting = _buildPickerItem<String>(
-      frontIcon: FontAwesomeIcons.language,
-      title: "Language",
-      // "System" is default
-      value: language ?? supportedLanguages[0],
-      onPressed: (context, value) {
-        _openDropdown(context, supportedLanguages, value, onValue: (selectedLanguage) {
-          if (selectedLanguage == supportedLanguages[0]) {
-            // "System" selected
-            language = null;
-          } else {
-            language = selectedLanguage;
-          }
-          setState(() {});
-        });
-      },
-    );
+      languageSetting = _buildPickerItem<String>(
+        frontIcon: FontAwesomeIcons.language,
+        title: "Language",
+        // "System" is default
+        value: language ?? supportedLanguages[0],
+        onPressed: (context, value) {
+          _openDropdown(context, supportedLanguages, value, onValue: (selectedLanguage) {
+            if (selectedLanguage == supportedLanguages[0]) {
+              // "System" selected
+              language = null;
+            } else {
+              language = selectedLanguage;
+            }
+            setState(() {});
+          });
+        },
+      );
+    }
 
-    var resolution = IConfigService().pictureResolution.value ?? resolutions[0];
-    SettingItem pictureSetting = _buildPickerItem<int>(
-      frontIcon: FontAwesomeIcons.image,
-      title: "Picture Size",
-      value: resolution,
-      itemBuilder: <int>(BuildContext context, int value, Widget? widget) =>
-          Text("$value ${FlutterUI.translateLocal("px")}"),
-      onPressed: (context, value) {
-        var items = resolutions.map((e) => "$e ${FlutterUI.translateLocal("px")}").toList();
-        _openDropdown(context, items, "$e ${FlutterUI.translateLocal("px")}", onValue: (selectedResolution) async {
-          resolution = int.parse(selectedResolution.split(" ")[0]);
-          await IConfigService().updatePictureResolution(resolution);
-          setState(() {});
-        });
-      },
-    );
+    Widget? pictureSizeSetting;
+
+    if (!(IConfigService().getAppConfig()?.uiConfig?.hidePictureSizeSetting ?? false)) {
+      var resolution = IConfigService().pictureResolution.value ?? resolutions[0];
+      pictureSizeSetting = _buildPickerItem<int>(
+        frontIcon: FontAwesomeIcons.image,
+        title: "Picture Size",
+        value: resolution,
+        itemBuilder: <int>(BuildContext context, int value, Widget? widget) =>
+            Text("$value ${FlutterUI.translateLocal("px")}"),
+        onPressed: (context, value) {
+          var items = resolutions.map((e) => "$e ${FlutterUI.translateLocal("px")}").toList();
+          _openDropdown(context, items, "$e ${FlutterUI.translateLocal("px")}", onValue: (selectedResolution) async {
+            resolution = int.parse(selectedResolution.split(" ")[0]);
+            await IConfigService().updatePictureResolution(resolution);
+            setState(() {});
+          });
+        },
+      );
+    }
+
+    var items = [
+      if (appNameSetting != null) appNameSetting,
+      if (baseUrlSetting != null) baseUrlSetting,
+      if (languageSetting != null) languageSetting,
+      if (pictureSizeSetting != null) pictureSizeSetting,
+    ];
+
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return SettingGroup(
       groupHeader: Padding(
@@ -306,12 +324,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      items: [
-        if (appNameSetting != null) appNameSetting,
-        if (baseUrlSetting != null) baseUrlSetting,
-        languageSetting,
-        pictureSetting,
-      ],
+      items: items,
     );
   }
 
@@ -332,33 +345,45 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     }
 
-    final Brightness systemBrightness = MediaQuery.platformBrightnessOf(context);
-    final Map<ThemeMode, String> themeMapping = {
-      ThemeMode.system:
-          "${FlutterUI.translateLocal("System")} (${FlutterUI.translateLocal(systemBrightness.name.capitalize())})",
-      ThemeMode.light: FlutterUI.translateLocal("Light"),
-      ThemeMode.dark: FlutterUI.translateLocal("Dark"),
-    };
+    Widget? themeSetting;
+    if (!(IConfigService().getAppConfig()?.uiConfig?.hideThemeSetting ?? false)) {
+      final Brightness systemBrightness = MediaQuery.platformBrightnessOf(context);
+      final Map<ThemeMode, String> themeMapping = {
+        ThemeMode.system:
+            "${FlutterUI.translateLocal("System")} (${FlutterUI.translateLocal(systemBrightness.name.capitalize())})",
+        ThemeMode.light: FlutterUI.translateLocal("Light"),
+        ThemeMode.dark: FlutterUI.translateLocal("Dark"),
+      };
 
-    var theme = IConfigService().themePreference.value;
-    IconData themeIcon = FontAwesomeIcons.sun;
-    if (theme == ThemeMode.light) themeIcon = FontAwesomeIcons.solidSun;
-    if (theme == ThemeMode.dark) themeIcon = FontAwesomeIcons.solidMoon;
+      var theme = IConfigService().themePreference.value;
+      IconData themeIcon = FontAwesomeIcons.sun;
+      if (theme == ThemeMode.light) themeIcon = FontAwesomeIcons.solidSun;
+      if (theme == ThemeMode.dark) themeIcon = FontAwesomeIcons.solidMoon;
 
-    SettingItem themeSetting = _buildPickerItem<ThemeMode>(
-      frontIcon: themeIcon,
-      title: "Theme",
-      value: theme,
-      itemBuilder: (BuildContext context, value, Widget? widget) => Text(themeMapping[value]!),
-      onPressed: (context, value) {
-        var items = ThemeMode.values.where((e) => themeMapping.containsKey(e)).map((e) => themeMapping[e]!).toList();
-        _openDropdown(context, items, themeMapping[value], onValue: (selectedThemeMode) async {
-          theme = themeMapping.entries.firstWhere((entry) => entry.value == selectedThemeMode).key;
-          await IConfigService().updateThemePreference(theme);
-          setState(() {});
-        });
-      },
-    );
+      themeSetting = _buildPickerItem<ThemeMode>(
+        frontIcon: themeIcon,
+        title: "Theme",
+        value: theme,
+        itemBuilder: (BuildContext context, value, Widget? widget) => Text(themeMapping[value]!),
+        onPressed: (context, value) {
+          var items = ThemeMode.values.where((e) => themeMapping.containsKey(e)).map((e) => themeMapping[e]!).toList();
+          _openDropdown(context, items, themeMapping[value], onValue: (selectedThemeMode) async {
+            theme = themeMapping.entries.firstWhere((entry) => entry.value == selectedThemeMode).key;
+            await IConfigService().updateThemePreference(theme);
+            setState(() {});
+          });
+        },
+      );
+    }
+
+    var items = [
+      if (singleAppSetting != null) singleAppSetting,
+      if (themeSetting != null) themeSetting,
+    ];
+
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return SettingGroup(
       groupHeader: Padding(
@@ -371,10 +396,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      items: [
-        if (singleAppSetting != null) singleAppSetting,
-        themeSetting,
-      ],
+      items: items,
     );
   }
 
