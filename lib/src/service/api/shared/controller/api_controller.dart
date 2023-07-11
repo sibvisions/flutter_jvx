@@ -130,14 +130,14 @@ class ApiController implements IController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(ApiInteraction apiInteraction) {
+  Future<List<BaseCommand>> processResponse(ApiInteraction apiInteraction) async {
     List<BaseCommand> commands = [];
 
     for (ApiResponse response in apiInteraction.responses) {
       IResponseProcessor? processor = responseToProcessorMap[response.name];
 
       if (processor != null) {
-        commands.addAll(processor.processResponse(response, apiInteraction.request));
+        commands.addAll(await processor.processResponse(response, apiInteraction.request));
       } else {
         throw Exception("Couldn't find processor belonging to ${response.name}, add it to the map");
       }
