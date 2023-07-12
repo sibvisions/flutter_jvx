@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -40,13 +41,13 @@ class DeleteScreenCommandProcessor implements ICommandProcessor<DeleteScreenComm
     FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: command.screenName);
 
     if (screenModel is FlPanelModel) {
-      if (command.beamBack && IUiService().getCurrentWorkscreenName() == screenModel.screenNavigationName) {
-        var navigator = Navigator.of(FlutterUI.getEffectiveContext()!);
-
-        // Tries first to beamBack to retain history for UX, falls back to pop
-        bool success = FlutterUI.getBeamerDelegate().beamBack();
-        if (!success && navigator.canPop()) {
+      if (command.popPage && IUiService().getCurrentWorkscreenName() == screenModel.screenNavigationName) {
+        var context = FlutterUI.getEffectiveContext()!;
+        var navigator = Navigator.of(context);
+        if (navigator.canPop()) {
           navigator.pop();
+        } else if (context.canBeamBack) {
+          context.beamBack();
         }
       } else if (!kIsWeb) {
         FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {

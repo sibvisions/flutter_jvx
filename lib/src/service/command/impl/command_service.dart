@@ -260,7 +260,7 @@ class CommandService implements ICommandService {
   void modifyCommands(List<BaseCommand> commands, BaseCommand origin) {
     if (commands.any((element) => element is RouteToWorkCommand)) {
       commands.whereType<DeleteScreenCommand>().forEach((element) {
-        element.beamBack = false;
+        element.popPage = false;
       });
     }
   }

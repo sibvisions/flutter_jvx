@@ -18,7 +18,7 @@ import 'storage_command.dart';
 
 class DeleteScreenCommand extends StorageCommand {
   final String screenName;
-  bool beamBack = true;
+  bool popPage = true;
 
   DeleteScreenCommand({
     required this.screenName,
@@ -27,6 +27,6 @@ class DeleteScreenCommand extends StorageCommand {
 
   @override
   String toString() {
-    return "DeleteScreenCommand{screenName: $screenName, beamBack: $beamBack, ${super.toString()}}";
+    return "DeleteScreenCommand{screenName: $screenName, popPage: $popPage, ${super.toString()}}";
   }
 }

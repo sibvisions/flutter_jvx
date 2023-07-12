@@ -14,6 +14,9 @@
  * the License.
  */
 
+import 'package:beamer/beamer.dart';
+
+import '../../../../flutter_ui.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route/route_to_command.dart';
 import '../../../../model/command/ui/route/route_to_menu_command.dart';
@@ -50,7 +53,9 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
 
     if (!IConfigService().offline.value) {
       if (isReturnUriSuitable(response.responseMenuItems)) {
+        var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
         commands.add(RouteToCommand(
+          replaceRoute: lastBeamState.pathPatternSegments.contains("login"),
           uri: IAppService().returnUri.toString(),
           reason: "Found returnUri",
         ));
