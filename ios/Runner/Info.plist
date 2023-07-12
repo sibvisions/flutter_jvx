@@ -23,18 +23,18 @@
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>CFBundleURLTypes</key>
-        <array>
-           <dict>
-              <key>CFBundleTypeRole</key>
-              <string>Editor</string>
-              <key>CFBundleURLName</key>
-              <string>com.sibvisions.flutterJvx</string>
-              <key>CFBundleURLSchemes</key>
-              <array>
-                 <string>jvx</string>
-              </array>
-           </dict>
-        </array>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>com.sibvisions.flutterJvx</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>jvx</string>
+				</array>
+			</dict>
+		</array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>
