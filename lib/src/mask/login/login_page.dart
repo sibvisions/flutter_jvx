@@ -25,17 +25,16 @@ import '../../model/command/api/cancel_login_command.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../model/command/api/reset_password_command.dart';
-import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
-import '../../service/ui/i_ui_service.dart';
 import '../../util/extensions/string_extensions.dart';
 import '../../util/widgets/jvx_webview.dart';
+import '../state/app_pop_aware.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
 import 'modern/modern_login.dart';
 
 /// Login page of the app, also used for reset/change password
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   final LoginMode loginMode;
 
   const LoginPage({
@@ -44,32 +43,7 @@ class LoginPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      child: _buildLogin(context),
-      onWillPop: () async {
-        if (IAppService().wasStartedManually()) {
-          unawaited(IUiService().routeToAppOverview());
-          return false;
-        }
-        return true;
-      },
-    );
-  }
-
-  Widget _buildLogin(BuildContext context) {
-    var widget = FlutterUI.of(context).widget.loginBuilder?.call(context, loginMode);
-    if (widget != null) return widget;
-
-    var appStyle = AppStyle.of(context).applicationStyle;
-    String? loginLayout = appStyle?['login.layout'];
-
-    if (loginLayout == "modern") {
-      return ModernLogin(mode: loginMode);
-    } else {
-      return DefaultLogin(mode: loginMode);
-    }
-  }
+  State<LoginPage> createState() => _LoginPageState();
 
   /// Routes to the login page with the specified login mode.
   ///
@@ -225,4 +199,25 @@ class LoginPage extends StatelessWidget {
         newPassword: newPassword,
         reason: "Password Reset",
       ));
+}
+
+class _LoginPageState extends State<LoginPage> with RouteAware, AppPopAware {
+  @override
+  Widget build(BuildContext context) {
+    return _buildLogin(context);
+  }
+
+  Widget _buildLogin(BuildContext context) {
+    var customWidget = FlutterUI.of(context).widget.loginBuilder?.call(context, widget.loginMode);
+    if (customWidget != null) return customWidget;
+
+    var appStyle = AppStyle.of(context).applicationStyle;
+    String? loginLayout = appStyle?['login.layout'];
+
+    if (loginLayout == "modern") {
+      return ModernLogin(mode: widget.loginMode);
+    } else {
+      return DefaultLogin(mode: widget.loginMode);
+    }
+  }
 }

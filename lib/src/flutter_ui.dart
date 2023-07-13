@@ -499,6 +499,8 @@ GlobalKey<NavigatorState>? splashNavigatorKey;
 /// Global Bucket to persist the storage between different locations
 PageStorageBucket pageStorageBucket = PageStorageBucket();
 
+final RouteObserver<ModalRoute> routeObserver = RouteObserver();
+
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   static App? urlApp;
 
@@ -524,7 +526,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     routerDelegate = BeamerDelegate(
       setBrowserTabTitle: false,
-      navigatorObservers: [jvxRouteObserver],
+      navigatorObservers: [routeObserver, jvxRouteObserver],
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
           MainLocation(),

@@ -38,6 +38,7 @@ import '../../util/parse_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
+import '../state/app_pop_aware.dart';
 import '../state/app_style.dart';
 import '../work_screen/work_screen_page.dart';
 import 'menu.dart';
@@ -52,7 +53,7 @@ class MenuPage extends StatefulWidget {
   State<MenuPage> createState() => _MenuPageState();
 }
 
-class _MenuPageState extends State<MenuPage> with SearchMixin {
+class _MenuPageState extends State<MenuPage> with SearchMixin, RouteAware, AppPopAware {
   /// Debounce re-layouts
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
@@ -162,17 +163,13 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
             );
 
             return WillPopScope(
-              onWillPop: () async {
-                if (isMenuSearchEnabled) {
-                  isMenuSearchEnabled = false;
-                  setState(() {});
-                  return false;
-                } else if (IAppService().wasStartedManually()) {
-                  unawaited(IUiService().routeToAppOverview());
-                  return false;
-                }
-                return true;
-              },
+              onWillPop: isMenuSearchEnabled
+                  ? () async {
+                      isMenuSearchEnabled = false;
+                      setState(() {});
+                      return false;
+                    }
+                  : null,
               child: Scaffold(
                 drawerEnableOpenDragGesture: false,
                 endDrawerEnableOpenDragGesture: false,
