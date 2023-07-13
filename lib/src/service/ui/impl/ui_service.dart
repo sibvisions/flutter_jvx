@@ -969,7 +969,7 @@ class UiService implements IUiService {
   @override
   bool isContentVisible(String pContentName) {
     return _activeContents.contains(pContentName) &&
-        FlutterUI.of(FlutterUI.getCurrentContext()!).routeObserver.knownRoutes.firstWhereOrNull(
+        FlutterUI.of(FlutterUI.getCurrentContext()!).jvxRouteObserver.knownRoutes.firstWhereOrNull(
                 (element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName)) !=
             null;
   }
@@ -1043,7 +1043,7 @@ class UiService implements IUiService {
     _activeContents.remove(pContentName);
 
     Route? route = FlutterUI.maybeOf(FlutterUI.getCurrentContext()!)
-        ?.routeObserver
+        ?.jvxRouteObserver
         .knownRoutes
         .firstWhereOrNull((element) => element.settings.name == (Content.ROUTE_SETTINGS_PREFIX + pContentName));
 

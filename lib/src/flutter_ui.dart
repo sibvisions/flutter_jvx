@@ -72,9 +72,9 @@ import 'util/extensions/list_extensions.dart';
 import 'util/http_overrides.dart';
 import 'util/import_handler/import_handler.dart';
 import 'util/jvx_colors.dart';
+import 'util/jvx_routes_observer.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
-import 'util/routes_observer.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterUI extends StatefulWidget {
@@ -502,7 +502,7 @@ PageStorageBucket pageStorageBucket = PageStorageBucket();
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   static App? urlApp;
 
-  final RoutesObserver routeObserver = RoutesObserver();
+  final JVxRoutesObserver jvxRouteObserver = JVxRoutesObserver();
 
   AppLifecycleState? lastState;
 
@@ -524,7 +524,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     routerDelegate = BeamerDelegate(
       setBrowserTabTitle: false,
-      navigatorObservers: [routeObserver],
+      navigatorObservers: [jvxRouteObserver],
       locationBuilder: BeamerLocationBuilder(
         beamLocations: [
           MainLocation(),

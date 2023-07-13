@@ -16,7 +16,7 @@
 
 import 'package:flutter/widgets.dart';
 
-class RoutesObserver extends NavigatorObserver {
+class JVxRoutesObserver extends NavigatorObserver {
   final List<Route> knownRoutes = [];
 
   @override
