@@ -22,7 +22,5 @@ abstract class ApiCommand extends BaseCommand implements QueueCommand {
   ApiCommand({
     required super.reason,
     super.showLoading,
-    super.beforeProcessing,
-    super.afterProcessing,
   });
 }

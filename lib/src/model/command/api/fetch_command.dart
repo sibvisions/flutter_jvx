@@ -60,10 +60,10 @@ class FetchCommand extends SessionCommand {
     this.setRootKey = false,
     required super.reason,
   }) {
-    IDataService().setDatabookFetching(dataProvider, rowCount == -1 ? rowCount : fromRow + rowCount);
-    afterProcessing = () {
-      IDataService().removeDatabookFetching(dataProvider, rowCount == -1 ? rowCount : fromRow + rowCount);
-    };
+    IDataService().setDatabookFetching(
+      dataProvider,
+      rowCount == -1 ? rowCount : fromRow + rowCount,
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -14,12 +14,23 @@
  * the License.
  */
 
+import 'dart:async';
+
 import '../../../model/command/base_command.dart';
 
 /// Defines the base construct of a [ICommandProcessor].
 abstract class ICommandProcessor<T extends BaseCommand> {
+  /// Will be called when the command is being processed.
+  Future<void> beforeProcessing(T command, BaseCommand? origin) async {}
+
   /// Processes [command] and will return resulting commands.
   ///
   /// [origin] describes the original command that produced [command].
   Future<List<BaseCommand>> processCommand(T command, BaseCommand? origin);
+
+  /// Will be called when the command is done processing.
+  Future<void> afterProcessing(T command, BaseCommand? origin) async {}
+
+  /// Will be called when all follow-up commands have been fully processed and the command therefore is done processing.
+  Future<void> onFinish(T command) async {}
 }

@@ -14,8 +14,6 @@
  * the License.
  */
 
-import '../../../flutter_ui.dart';
-import '../../../service/ui/i_ui_service.dart';
 import 'api_command.dart';
 
 class StartupCommand extends ApiCommand {
@@ -42,16 +40,7 @@ class StartupCommand extends ApiCommand {
     this.password,
     super.showLoading,
     required super.reason,
-  }) {
-    beforeProcessing = () => IUiService().getAppManager()?.onInitStartup();
-    afterProcessing = () async {
-      FlutterUI.clearHistory();
-    };
-    onFinish = () {
-      FlutterUI.clearLocationHistory();
-      IUiService().getAppManager()?.onSuccessfulStartup();
-    };
-  }
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

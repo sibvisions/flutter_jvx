@@ -22,7 +22,5 @@ abstract class ConfigCommand extends BaseCommand {
   ConfigCommand({
     required super.reason,
     super.showLoading = false,
-    super.beforeProcessing,
-    super.afterProcessing,
   });
 }

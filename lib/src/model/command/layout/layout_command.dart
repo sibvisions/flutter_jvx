@@ -21,7 +21,5 @@ abstract class LayoutCommand extends BaseCommand {
   LayoutCommand({
     required super.reason,
     super.showLoading = false,
-    super.beforeProcessing,
-    super.afterProcessing,
   });
 }

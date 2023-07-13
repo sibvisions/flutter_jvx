@@ -18,9 +18,15 @@ import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_fetch_request.dart';
 import '../../../../api/i_api_service.dart';
+import '../../../../data/i_data_service.dart';
 import '../../i_command_processor.dart';
 
 class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
+  @override
+  Future<void> beforeProcessing(FetchCommand command, BaseCommand? origin) async {
+    // TODO Move code from FetchCommand constructor here.
+  }
+
   @override
   Future<List<BaseCommand>> processCommand(FetchCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(
@@ -33,6 +39,14 @@ class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
         reload: command.reload,
         command: command,
       ),
+    );
+  }
+
+  @override
+  Future<void> afterProcessing(FetchCommand command, BaseCommand? origin) async {
+    IDataService().removeDatabookFetching(
+      command.dataProvider,
+      command.rowCount == -1 ? command.rowCount : command.fromRow + command.rowCount,
     );
   }
 }

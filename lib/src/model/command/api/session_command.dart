@@ -23,8 +23,6 @@ abstract class SessionCommand extends ApiCommand {
 
   SessionCommand({
     required super.reason,
-    super.beforeProcessing,
-    super.afterProcessing,
     super.showLoading,
   }) : clientId = IUiService().clientId.value;
 }

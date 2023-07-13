@@ -30,6 +30,11 @@ import '../../i_command_processor.dart';
 /// Used to process [StartupCommand], will call ApiService
 class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   @override
+  Future<void> beforeProcessing(StartupCommand command, BaseCommand? origin) async {
+    IUiService().getAppManager()?.onInitStartup();
+  }
+
+  @override
   Future<List<BaseCommand>> processCommand(StartupCommand command, BaseCommand? origin) async {
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();
 
@@ -71,5 +76,16 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
       IConfigService().getCustomStartupProperties().clear();
       return value;
     });
+  }
+
+  @override
+  Future<void> afterProcessing(StartupCommand command, BaseCommand? origin) async {
+    FlutterUI.clearHistory();
+  }
+
+  @override
+  Future<void> onFinish(StartupCommand command) async {
+    FlutterUI.clearLocationHistory();
+    IUiService().getAppManager()?.onSuccessfulStartup();
   }
 }

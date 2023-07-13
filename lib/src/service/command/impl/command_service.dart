@@ -127,7 +127,6 @@ class CommandService implements ICommandService {
 
       FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
       await processCommand(pCommand, null);
-      await pCommand.onFinish?.call();
       FlutterUI.logCommand.d("Finished ${pCommand.runtimeType}-chain");
     } catch (error) {
       FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
@@ -153,7 +152,6 @@ class CommandService implements ICommandService {
     if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
       FlutterUI.logCommand.i("Processing ${pCommand.runtimeType} (${pCommand.reason})");
     }
-    await pCommand.beforeProcessing?.call();
 
     ICommandProcessor? processor;
     if (pCommand is ApiCommand) {
@@ -175,6 +173,8 @@ class CommandService implements ICommandService {
       return;
     }
 
+    await processor.beforeProcessing(pCommand, origin);
+
     List<BaseCommand> commands = [];
     try {
       commands = await processor.processCommand(pCommand, origin);
@@ -195,7 +195,7 @@ class CommandService implements ICommandService {
     }
 
     FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");
-    await pCommand.afterProcessing?.call();
+    await processor.afterProcessing(pCommand, origin);
 
     modifyCommands(commands, pCommand);
     IUiService().getAppManager()?.modifyFollowUpCommands(pCommand, commands);
@@ -247,6 +247,11 @@ class CommandService implements ICommandService {
         .firstWhereOrNull((element) => element is OpenSessionExpiredDialogCommand) as OpenSessionExpiredDialogCommand?;
     if (sessionExpiredCommand != null) {
       throw SessionExpiredException();
+    }
+
+    // Only call it when the this is the origin command.
+    if (origin == null) {
+      await processor.onFinish(pCommand);
     }
   }
 

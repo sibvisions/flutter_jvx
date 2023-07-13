@@ -34,7 +34,6 @@ class FunctionCommand extends UiCommand {
     this.commandCallback, {
     super.showLoading = true,
     super.delayUILocking = false,
-    super.onFinish,
     required super.reason,
   });
 
@@ -54,7 +53,6 @@ class QueuedFunctionCommand extends FunctionCommand implements QueueCommand {
     super.commandCallback, {
     super.showLoading = true,
     super.delayUILocking = false,
-    super.onFinish,
     required super.reason,
   });
 }

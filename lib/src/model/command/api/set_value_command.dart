@@ -37,7 +37,6 @@ class SetValueCommand extends SessionCommand {
     required this.componentName,
     required this.value,
     required super.reason,
-    super.afterProcessing,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -168,11 +168,11 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
       return null;
     }
 
+    lastSentValue = textController.value.text;
     return SetValueCommand(
       componentName: model.name,
       value: textController.value.text,
       reason: "Editing has ended on ${model.id}",
-      afterProcessing: () => lastSentValue = textController.value.text,
     );
   }
 }

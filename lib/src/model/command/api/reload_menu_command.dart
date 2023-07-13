@@ -14,8 +14,6 @@
  * the License.
  */
 
-import '../../../service/ui/i_ui_service.dart';
-import 'open_screen_command.dart';
 import 'session_command.dart';
 
 class ReloadMenuCommand extends SessionCommand {
@@ -31,25 +29,7 @@ class ReloadMenuCommand extends SessionCommand {
     required super.reason,
     this.screenLongName,
     this.screenClassName,
-  }) {
-    onFinish = () {
-      if (screenLongName != null) {
-        if (IUiService().getMenuModel().containsScreen(screenLongName!)) {
-          IUiService().sendCommand(OpenScreenCommand(
-            screenLongName: screenLongName!,
-            reason: reason,
-          ));
-        }
-      } else if (screenClassName != null) {
-        if (IUiService().getMenuModel().getMenuItemByClassName(screenClassName!) != null) {
-          IUiService().sendCommand(OpenScreenCommand(
-            screenClassName: screenClassName!,
-            reason: reason,
-          ));
-        }
-      }
-    };
-  }
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

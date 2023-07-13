@@ -23,8 +23,5 @@ abstract class UiCommand extends BaseCommand {
     required super.reason,
     super.showLoading = false,
     super.delayUILocking = false,
-    super.beforeProcessing,
-    super.afterProcessing,
-    super.onFinish,
   });
 }

@@ -14,8 +14,6 @@
  * the License.
  */
 
-import 'dart:async';
-
 ///
 /// Base Class for communication between services, every [BaseCommand] should always be directed at a specific Service.
 ///
@@ -37,24 +35,12 @@ abstract class BaseCommand {
   /// If the ui lock is delayed until the loading bar is shown.
   final bool delayUILocking;
 
-  /// Will be called when the command is being processed.
-  FutureOr<void> Function()? beforeProcessing;
-
-  /// Will be called when the command is done processing.
-  FutureOr<void> Function()? afterProcessing;
-
-  /// Internal callback, when all follow-up commands have been fully processed and the command therefore is done processing.
-  FutureOr<void> Function()? onFinish;
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   BaseCommand({
     required this.reason,
-    this.beforeProcessing,
-    this.afterProcessing,
-    this.onFinish,
     this.showLoading = true,
     this.delayUILocking = false,
   }) : id = DateTime.now().millisecondsSinceEpoch;
