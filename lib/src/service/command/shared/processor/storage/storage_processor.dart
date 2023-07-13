@@ -14,26 +14,27 @@
  * the License.
  */
 
-import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../../../../model/command/storage/save_components_command.dart';
 import '../../../../../model/command/storage/storage_command.dart';
 import '../../i_command_processor.dart';
+import '../../i_command_processor_handler.dart';
 import 'delete_screen_command_processor.dart';
 import 'save_components_commands_processor.dart';
 
-class StorageProcessor implements ICommandProcessor<StorageCommand> {
-  final ICommandProcessor _saveComponentsProcessor = SaveComponentsCommandProcessor();
-  final ICommandProcessor _deleteScreenProcessor = DeleteScreenCommandProcessor();
+/// Handles the processors of [StorageCommand].
+class StorageProcessor implements ICommandProcessorHandler<StorageCommand> {
+  final SaveComponentsCommandProcessor _saveComponentsProcessor = SaveComponentsCommandProcessor();
+  final DeleteScreenCommandProcessor _deleteScreenProcessor = DeleteScreenCommandProcessor();
 
   @override
-  Future<List<BaseCommand>> processCommand(StorageCommand command, BaseCommand? origin) async {
+  ICommandProcessor<StorageCommand>? getProcessor(StorageCommand command) {
     if (command is SaveComponentsCommand) {
-      return _saveComponentsProcessor.processCommand(command, origin);
+      return _saveComponentsProcessor;
     } else if (command is DeleteScreenCommand) {
-      return _deleteScreenProcessor.processCommand(command, origin);
+      return _deleteScreenProcessor;
     }
 
-    return [];
+    return null;
   }
 }

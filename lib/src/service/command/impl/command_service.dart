@@ -61,23 +61,12 @@ class CommandService implements ICommandService {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Will process all Commands with superclass [ApiCommand].
-  final ICommandProcessor _apiProcessor = ApiProcessor();
-
-  /// Will process all Commands with superclass [ConfigCommand].
-  final ICommandProcessor _configProcessor = ConfigProcessor();
-
-  /// Will process all Commands with superclass [StorageCommand].
-  final ICommandProcessor _storageProcessor = StorageProcessor();
-
-  /// Will process all Commands with superclass [UiCommand].
-  final ICommandProcessor _uiProcessor = UiProcessor();
-
-  /// Will process all Commands with superclass [LayoutCommand]
-  final ICommandProcessor _layoutProcessor = LayoutProcessor();
-
-  /// Will process all Commands with superclass [DataCommand]
-  final ICommandProcessor _dataProcessor = DataProcessor();
+  final ApiProcessor _apiProcessor = ApiProcessor();
+  final ConfigProcessor _configProcessor = ConfigProcessor();
+  final StorageProcessor _storageProcessor = StorageProcessor();
+  final UiProcessor _uiProcessor = UiProcessor();
+  final LayoutProcessor _layoutProcessor = LayoutProcessor();
+  final DataProcessor _dataProcessor = DataProcessor();
 
   /// New api commands will be added to this list and
   /// will only be executed if the previous command and all of its follow-ups
@@ -166,25 +155,29 @@ class CommandService implements ICommandService {
     }
     await pCommand.beforeProcessing?.call();
 
+    ICommandProcessor? processor;
+    if (pCommand is ApiCommand) {
+      processor = _apiProcessor.getProcessor(pCommand);
+    } else if (pCommand is ConfigCommand) {
+      processor = _configProcessor.getProcessor(pCommand);
+    } else if (pCommand is StorageCommand) {
+      processor = _storageProcessor.getProcessor(pCommand);
+    } else if (pCommand is UiCommand) {
+      processor = _uiProcessor.getProcessor(pCommand);
+    } else if (pCommand is LayoutCommand) {
+      processor = _layoutProcessor.getProcessor(pCommand);
+    } else if (pCommand is DataCommand) {
+      processor = _dataProcessor.getProcessor(pCommand);
+    }
+
+    if (processor == null) {
+      FlutterUI.logCommand.w("Command (${pCommand.runtimeType}) without Processor found");
+      return;
+    }
+
     List<BaseCommand> commands = [];
     try {
-      // Switch-Case doesn't work with types
-      if (pCommand is ApiCommand) {
-        commands = await _apiProcessor.processCommand(pCommand, origin);
-      } else if (pCommand is ConfigCommand) {
-        commands = await _configProcessor.processCommand(pCommand, origin);
-      } else if (pCommand is StorageCommand) {
-        commands = await _storageProcessor.processCommand(pCommand, origin);
-      } else if (pCommand is UiCommand) {
-        commands = await _uiProcessor.processCommand(pCommand, origin);
-      } else if (pCommand is LayoutCommand) {
-        commands = await _layoutProcessor.processCommand(pCommand, origin);
-      } else if (pCommand is DataCommand) {
-        commands = await _dataProcessor.processCommand(pCommand, origin);
-      } else {
-        FlutterUI.logCommand.w("Command (${pCommand.runtimeType}) without Processor found");
-        return;
-      }
+      commands = await processor.processCommand(pCommand, origin);
     } on SessionExpiredException catch (e) {
       // Don't process ExitCommands
       if (pCommand is ExitCommand) {

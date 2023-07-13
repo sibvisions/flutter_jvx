@@ -59,8 +59,8 @@ import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/api/sort_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/api/upload_command.dart';
-import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
+import '../../i_command_processor_handler.dart';
 import 'alive_command_processor.dart';
 import 'cancel_login_command_processor.dart';
 import 'change_password_command_processor.dart';
@@ -106,218 +106,145 @@ import 'sort_command_processor.dart';
 import 'start_up_command_processor.dart';
 import 'upload_command_processor.dart';
 
-///
-/// Processes all [ApiCommand], delegates all commands to their respective [ICommandProcessor].
-class ApiProcessor implements ICommandProcessor<ApiCommand> {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class Members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Processes [StartupCommand]
-  final ICommandProcessor _startupProcessorCommand = StartupCommandProcessor();
-
-  /// Processes [LoginCommand]
-  final ICommandProcessor _loginCommandProcessor = LoginCommandProcessor();
-
-  /// Processes [CancelLoginCommand]
-  final ICommandProcessor _cancelLoginCommandProcessor = CancelLoginCommandProcessor();
-
-  /// Processes [OpenScreenCommand]
-  final ICommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
-
-  /// Processes [ReloadMenuCommand]
-  final ICommandProcessor _reloadMenuCommandProcessor = ReloadMenuCommandProcessor();
-
-  /// Processes [DeviceStatusCommand]
-  final ICommandProcessor _deviceStatusProcessor = DeviceStatusCommandProcessor();
-
-  /// Processes [PressButtonCommand]
-  final ICommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
-
-  /// Processes [SetValueCommand]
-  final ICommandProcessor _setValueProcessor = SetValueCommandProcessor();
-
-  /// Processes [SetValuesCommand]
-  final ICommandProcessor _setValuesProcessor = SetValuesCommandProcessor();
-
-  /// Processes [DownloadImagesCommand]
-  final ICommandProcessor _downloadImagesProcessor = DownloadImagesCommandProcessor();
-
-  /// Processes [CloseTabCommand]
-  final ICommandProcessor _tabCloseProcessor = CloseTabCommandProcessor();
-
-  /// Processes [OpenTabCommand]
-  final ICommandProcessor _tabOpenProcessor = OpenTabCommandProcessor();
-
-  /// Processes [ChangePasswordCommand]
-  final ICommandProcessor _changePasswordProcessor = ChangePasswordCommandProcessor();
-
-  /// Processes [ResetPasswordCommand]
-  final ICommandProcessor _resetPasswordProcessor = ResetPasswordCommandProcessor();
-
-  /// Processes [NavigationCommand]
-  final ICommandProcessor _navigationProcessor = NavigationCommandProcessor();
-
-  /// Processes [FilterCommand]
-  final ICommandProcessor _filterProcessor = FilterCommandProcessor();
-
-  /// Processes [FetchCommand]
-  final ICommandProcessor _fetchProcessor = FetchCommandProcessor();
-
-  /// Processes [LogoutCommand]
-  final ICommandProcessor _logoutProcessor = LogoutCommandProcessor();
-
-  /// Processes [SelectRecordCommand]
-  final ICommandProcessor _selectRecordProcessor = SelectRecordCommandProcessor();
-
-  final ICommandProcessor _deleteRecordCommandProcessor = DeleteRecordCommandProcessor();
-
-  final ICommandProcessor _dalSaveProcessor = DalSaveCommandProcessor();
-
-  final ICommandProcessor _closeScreenProcessor = CloseScreenCommandProcessor();
-
-  final ICommandProcessor _insertRecordProcessor = InsertRecordCommandProcessor();
-
-  final ICommandProcessor _downloadTranslationProcessor = DownloadTranslationCommandProcessor();
-
-  final ICommandProcessor _downloadStyleProcessor = DownloadStyleCommandProcessor();
-
-  final ICommandProcessor _closeFrameProcessor = CloseFrameCommandProcessor();
-
-  final ICommandProcessor _closeContentProcessor = CloseContentCommandProcessor();
-
-  /// Processes [UploadCommand]
-  final ICommandProcessor _uploadProcessor = UploadCommandProcessor();
-
-  final ICommandProcessor _changesProcessor = ChangesCommandProcessor();
-
-  final ICommandProcessor _saveAllEditorsProcessor = SaveAllEditorsCommandProcessor();
-
-  final ICommandProcessor _mouseProcessor = MouseCommandProcessor();
-
-  final ICommandProcessor _focusGainedProcessor = FocusGainedCommandProcessor();
-
-  final ICommandProcessor _focusLostProcessor = FocusLostCommandProcessor();
-
-  final ICommandProcessor _aliveProcessor = AliveCommandProcessor();
-
-  final ICommandProcessor _exitProcessor = ExitCommandProcessor();
-
-  final ICommandProcessor _feedbackProcessor = FeedbackCommandProcessor();
-
-  final ICommandProcessor _saveProcessor = SaveCommandProcessor();
-
-  final ICommandProcessor _reloadProcessor = ReloadCommandProcessor();
-
-  final ICommandProcessor _rollbackProcessor = RollbackCommandProcessor();
-
-  final ICommandProcessor _sortProcessor = SortCommandProcessor();
-
-  final ICommandProcessor _setParameterProcessor = SetParameterCommandProcessor();
-
-  final ICommandProcessor _setScreenParameterProcessor = SetScreenParameterCommandProcessor();
-
-  final ICommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
-
-  final ICommandProcessor _selectTreeCommand = SelectTreeCommandProcessor();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Interface implementation
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/// Handles the processors of [ApiCommand].
+class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
+  final StartupCommandProcessor _startupProcessorCommand = StartupCommandProcessor();
+  final LoginCommandProcessor _loginCommandProcessor = LoginCommandProcessor();
+  final CancelLoginCommandProcessor _cancelLoginCommandProcessor = CancelLoginCommandProcessor();
+  final OpenScreenCommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
+  final ReloadMenuCommandProcessor _reloadMenuCommandProcessor = ReloadMenuCommandProcessor();
+  final DeviceStatusCommandProcessor _deviceStatusProcessor = DeviceStatusCommandProcessor();
+  final PressButtonCommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
+  final SetValueCommandProcessor _setValueProcessor = SetValueCommandProcessor();
+  final SetValuesCommandProcessor _setValuesProcessor = SetValuesCommandProcessor();
+  final DownloadImagesCommandProcessor _downloadImagesProcessor = DownloadImagesCommandProcessor();
+  final CloseTabCommandProcessor _tabCloseProcessor = CloseTabCommandProcessor();
+  final OpenTabCommandProcessor _tabOpenProcessor = OpenTabCommandProcessor();
+  final ChangePasswordCommandProcessor _changePasswordProcessor = ChangePasswordCommandProcessor();
+  final ResetPasswordCommandProcessor _resetPasswordProcessor = ResetPasswordCommandProcessor();
+  final NavigationCommandProcessor _navigationProcessor = NavigationCommandProcessor();
+  final FilterCommandProcessor _filterProcessor = FilterCommandProcessor();
+  final FetchCommandProcessor _fetchProcessor = FetchCommandProcessor();
+  final LogoutCommandProcessor _logoutProcessor = LogoutCommandProcessor();
+  final SelectRecordCommandProcessor _selectRecordProcessor = SelectRecordCommandProcessor();
+  final DeleteRecordCommandProcessor _deleteRecordCommandProcessor = DeleteRecordCommandProcessor();
+  final DalSaveCommandProcessor _dalSaveProcessor = DalSaveCommandProcessor();
+  final CloseScreenCommandProcessor _closeScreenProcessor = CloseScreenCommandProcessor();
+  final InsertRecordCommandProcessor _insertRecordProcessor = InsertRecordCommandProcessor();
+  final DownloadTranslationCommandProcessor _downloadTranslationProcessor = DownloadTranslationCommandProcessor();
+  final DownloadStyleCommandProcessor _downloadStyleProcessor = DownloadStyleCommandProcessor();
+  final CloseFrameCommandProcessor _closeFrameProcessor = CloseFrameCommandProcessor();
+  final CloseContentCommandProcessor _closeContentProcessor = CloseContentCommandProcessor();
+  final UploadCommandProcessor _uploadProcessor = UploadCommandProcessor();
+  final ChangesCommandProcessor _changesProcessor = ChangesCommandProcessor();
+  final SaveAllEditorsCommandProcessor _saveAllEditorsProcessor = SaveAllEditorsCommandProcessor();
+  final MouseCommandProcessor _mouseProcessor = MouseCommandProcessor();
+  final FocusGainedCommandProcessor _focusGainedProcessor = FocusGainedCommandProcessor();
+  final FocusLostCommandProcessor _focusLostProcessor = FocusLostCommandProcessor();
+  final AliveCommandProcessor _aliveProcessor = AliveCommandProcessor();
+  final ExitCommandProcessor _exitProcessor = ExitCommandProcessor();
+  final FeedbackCommandProcessor _feedbackProcessor = FeedbackCommandProcessor();
+  final SaveCommandProcessor _saveProcessor = SaveCommandProcessor();
+  final ReloadCommandProcessor _reloadProcessor = ReloadCommandProcessor();
+  final RollbackCommandProcessor _rollbackProcessor = RollbackCommandProcessor();
+  final SortCommandProcessor _sortProcessor = SortCommandProcessor();
+  final SetParameterCommandProcessor _setParameterProcessor = SetParameterCommandProcessor();
+  final SetScreenParameterCommandProcessor _setScreenParameterProcessor = SetScreenParameterCommandProcessor();
+  final RestoreDataCommandProcessor _restoreDataProcessor = RestoreDataCommandProcessor();
+  final SelectTreeCommandProcessor _selectTreeCommand = SelectTreeCommandProcessor();
 
   @override
-  Future<List<BaseCommand>> processCommand(ApiCommand command, BaseCommand? origin) async {
-    // Switch-Case doesn't work with types
+  ICommandProcessor<ApiCommand>? getProcessor(ApiCommand command) {
     if (command is StartupCommand) {
-      return _startupProcessorCommand.processCommand(command, origin);
+      return _startupProcessorCommand;
     } else if (command is LoginCommand) {
-      return _loginCommandProcessor.processCommand(command, origin);
+      return _loginCommandProcessor;
     } else if (command is CancelLoginCommand) {
-      return _cancelLoginCommandProcessor.processCommand(command, origin);
+      return _cancelLoginCommandProcessor;
     } else if (command is OpenScreenCommand) {
-      return _openScreenCommandProcessor.processCommand(command, origin);
+      return _openScreenCommandProcessor;
     } else if (command is ReloadMenuCommand) {
-      return _reloadMenuCommandProcessor.processCommand(command, origin);
+      return _reloadMenuCommandProcessor;
     } else if (command is DeviceStatusCommand) {
-      return _deviceStatusProcessor.processCommand(command, origin);
+      return _deviceStatusProcessor;
     } else if (command is PressButtonCommand) {
-      return _pressButtonProcessor.processCommand(command, origin);
+      return _pressButtonProcessor;
     } else if (command is SetValueCommand) {
-      return _setValueProcessor.processCommand(command, origin);
+      return _setValueProcessor;
     } else if (command is SetValuesCommand) {
-      return _setValuesProcessor.processCommand(command, origin);
+      return _setValuesProcessor;
     } else if (command is DownloadImagesCommand) {
-      return _downloadImagesProcessor.processCommand(command, origin);
+      return _downloadImagesProcessor;
     } else if (command is CloseTabCommand) {
-      return _tabCloseProcessor.processCommand(command, origin);
+      return _tabCloseProcessor;
     } else if (command is OpenTabCommand) {
-      return _tabOpenProcessor.processCommand(command, origin);
+      return _tabOpenProcessor;
     } else if (command is ChangePasswordCommand) {
-      return _changePasswordProcessor.processCommand(command, origin);
+      return _changePasswordProcessor;
     } else if (command is ResetPasswordCommand) {
-      return _resetPasswordProcessor.processCommand(command, origin);
+      return _resetPasswordProcessor;
     } else if (command is NavigationCommand) {
-      return _navigationProcessor.processCommand(command, origin);
+      return _navigationProcessor;
     } else if (command is FilterCommand) {
-      return _filterProcessor.processCommand(command, origin);
+      return _filterProcessor;
     } else if (command is FetchCommand) {
-      return _fetchProcessor.processCommand(command, origin);
+      return _fetchProcessor;
     } else if (command is LogoutCommand) {
-      return _logoutProcessor.processCommand(command, origin);
+      return _logoutProcessor;
     } else if (command is SelectRecordCommand) {
-      return _selectRecordProcessor.processCommand(command, origin);
+      return _selectRecordProcessor;
     } else if (command is DeleteRecordCommand) {
-      return _deleteRecordCommandProcessor.processCommand(command, origin);
+      return _deleteRecordCommandProcessor;
     } else if (command is DalSaveCommand) {
-      return _dalSaveProcessor.processCommand(command, origin);
+      return _dalSaveProcessor;
     } else if (command is CloseScreenCommand) {
-      return _closeScreenProcessor.processCommand(command, origin);
+      return _closeScreenProcessor;
     } else if (command is InsertRecordCommand) {
-      return _insertRecordProcessor.processCommand(command, origin);
+      return _insertRecordProcessor;
     } else if (command is DownloadTranslationCommand) {
-      return _downloadTranslationProcessor.processCommand(command, origin);
+      return _downloadTranslationProcessor;
     } else if (command is DownloadStyleCommand) {
-      return _downloadStyleProcessor.processCommand(command, origin);
+      return _downloadStyleProcessor;
     } else if (command is CloseFrameCommand) {
-      return _closeFrameProcessor.processCommand(command, origin);
+      return _closeFrameProcessor;
     } else if (command is UploadCommand) {
-      return _uploadProcessor.processCommand(command, origin);
+      return _uploadProcessor;
     } else if (command is ChangesCommand) {
-      return _changesProcessor.processCommand(command, origin);
+      return _changesProcessor;
     } else if (command is SaveAllEditorsCommand) {
-      return _saveAllEditorsProcessor.processCommand(command, origin);
+      return _saveAllEditorsProcessor;
     } else if (command is MouseCommand) {
-      return _mouseProcessor.processCommand(command, origin);
+      return _mouseProcessor;
     } else if (command is FocusGainedCommand) {
-      return _focusGainedProcessor.processCommand(command, origin);
+      return _focusGainedProcessor;
     } else if (command is FocusLostCommand) {
-      return _focusLostProcessor.processCommand(command, origin);
+      return _focusLostProcessor;
     } else if (command is AliveCommand) {
-      return _aliveProcessor.processCommand(command, origin);
+      return _aliveProcessor;
     } else if (command is ExitCommand) {
-      return _exitProcessor.processCommand(command, origin);
+      return _exitProcessor;
     } else if (command is FeedbackCommand) {
-      return _feedbackProcessor.processCommand(command, origin);
+      return _feedbackProcessor;
     } else if (command is SaveCommand) {
-      return _saveProcessor.processCommand(command, origin);
+      return _saveProcessor;
     } else if (command is ReloadCommand) {
-      return _reloadProcessor.processCommand(command, origin);
+      return _reloadProcessor;
     } else if (command is RollbackCommand) {
-      return _rollbackProcessor.processCommand(command, origin);
+      return _rollbackProcessor;
     } else if (command is SortCommand) {
-      return _sortProcessor.processCommand(command, origin);
+      return _sortProcessor;
     } else if (command is SetParameterCommand) {
-      return _setParameterProcessor.processCommand(command, origin);
+      return _setParameterProcessor;
     } else if (command is SetScreenParameterCommand) {
-      return _setScreenParameterProcessor.processCommand(command, origin);
+      return _setScreenParameterProcessor;
     } else if (command is RestoreDataCommand) {
-      return _restoreDataProcessor.processCommand(command, origin);
+      return _restoreDataProcessor;
     } else if (command is SelectTreeCommand) {
-      return _selectTreeCommand.processCommand(command, origin);
+      return _selectTreeCommand;
     } else if (command is CloseContentCommand) {
-      return _closeContentProcessor.processCommand(command, origin);
+      return _closeContentProcessor;
     }
 
-    return [];
+    return null;
   }
 }

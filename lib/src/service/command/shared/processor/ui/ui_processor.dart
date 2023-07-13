@@ -14,7 +14,6 @@
  * the License.
  */
 
-import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/delete_frame_command.dart';
 import '../../../../../model/command/ui/download_action_command.dart';
 import '../../../../../model/command/ui/function_command.dart';
@@ -33,6 +32,7 @@ import '../../../../../model/command/ui/view/message/open_message_dialog_command
 import '../../../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../i_command_processor.dart';
+import '../../i_command_processor_handler.dart';
 import 'delete_frame_command_processor.dart';
 import 'download_action_command_processor.dart';
 import 'function_command_processor.dart';
@@ -50,70 +50,62 @@ import 'view/message/open_message_dialog_command_processor.dart';
 import 'view/message/open_server_error_dialog_command_processor.dart';
 import 'view/message/open_session_expired_dialog_command_processor.dart';
 
-/// Process all sub-types of [UiCommand], delegates commands to specific sub [ICommandProcessor]
-class UiProcessor implements ICommandProcessor<UiCommand> {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  final ICommandProcessor _updateComponentsProcessor = UpdateComponentsCommandProcessor();
-  final ICommandProcessor _updateLayoutPositionProcessor = UpdateLayoutPositionCommandProcessor();
-  final ICommandProcessor _routeToMenuProcessor = RouteToMenuCommandProcessor();
-  final ICommandProcessor _routeToWorkProcessor = RouteToWorkCommandProcessor();
-  final ICommandProcessor _saveMenuProcessor = SaveMenuCommandProcessor();
-  final ICommandProcessor _routeToLoginProcessor = RouteToLoginCommandProcessor();
-  final ICommandProcessor _routeToProcessor = RouteToCommandProcessor();
-  final ICommandProcessor _openServerErrorDialogProcessor = OpenServerErrorDialogCommandProcessor();
-  final ICommandProcessor _openErrorDialogProcessor = OpenErrorDialogCommandProcessor();
-  final ICommandProcessor _openSessionExpiredDialogProcessor = OpenSessionExpiredDialogCommandProcessor();
-  final ICommandProcessor _openMessageDialogProcessor = OpenMessageDialogCommandProcessor();
-  final ICommandProcessor _uploadActionProcessor = UploadActionCommandProcessor();
-  final ICommandProcessor _downloadActionProcessor = DownloadActionCommandProcessor();
-  final ICommandProcessor _deleteFrameProcessor = DeleteFrameCommandProcessor();
-  final ICommandProcessor _functionProcessor = FunctionCommandProcessor();
-  final ICommandProcessor _setFocusProcessor = SetFocusCommandProcessor();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Interface implementation
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/// Handles the processors of [UiCommand].
+class UiProcessor implements ICommandProcessorHandler<UiCommand> {
+  final UpdateComponentsCommandProcessor _updateComponentsProcessor = UpdateComponentsCommandProcessor();
+  final UpdateLayoutPositionCommandProcessor _updateLayoutPositionProcessor = UpdateLayoutPositionCommandProcessor();
+  final RouteToMenuCommandProcessor _routeToMenuProcessor = RouteToMenuCommandProcessor();
+  final RouteToWorkCommandProcessor _routeToWorkProcessor = RouteToWorkCommandProcessor();
+  final SaveMenuCommandProcessor _saveMenuProcessor = SaveMenuCommandProcessor();
+  final RouteToLoginCommandProcessor _routeToLoginProcessor = RouteToLoginCommandProcessor();
+  final RouteToCommandProcessor _routeToProcessor = RouteToCommandProcessor();
+  final OpenServerErrorDialogCommandProcessor _openServerErrorDialogProcessor = OpenServerErrorDialogCommandProcessor();
+  final OpenErrorDialogCommandProcessor _openErrorDialogProcessor = OpenErrorDialogCommandProcessor();
+  final OpenSessionExpiredDialogCommandProcessor _openSessionExpiredDialogProcessor =
+      OpenSessionExpiredDialogCommandProcessor();
+  final OpenMessageDialogCommandProcessor _openMessageDialogProcessor = OpenMessageDialogCommandProcessor();
+  final UploadActionCommandProcessor _uploadActionProcessor = UploadActionCommandProcessor();
+  final DownloadActionCommandProcessor _downloadActionProcessor = DownloadActionCommandProcessor();
+  final DeleteFrameCommandProcessor _deleteFrameProcessor = DeleteFrameCommandProcessor();
+  final FunctionCommandProcessor _functionProcessor = FunctionCommandProcessor();
+  final SetFocusCommandProcessor _setFocusProcessor = SetFocusCommandProcessor();
 
   @override
-  Future<List<BaseCommand>> processCommand(UiCommand command, BaseCommand? origin) async {
-    // Switch-Case doesn't work for types
+  ICommandProcessor<UiCommand>? getProcessor(UiCommand command) {
     if (command is UpdateComponentsCommand) {
-      return _updateComponentsProcessor.processCommand(command, origin);
+      return _updateComponentsProcessor;
     } else if (command is UpdateLayoutPositionCommand) {
-      return _updateLayoutPositionProcessor.processCommand(command, origin);
+      return _updateLayoutPositionProcessor;
     } else if (command is RouteToMenuCommand) {
-      return _routeToMenuProcessor.processCommand(command, origin);
+      return _routeToMenuProcessor;
     } else if (command is SaveMenuCommand) {
-      return _saveMenuProcessor.processCommand(command, origin);
+      return _saveMenuProcessor;
     } else if (command is RouteToWorkCommand) {
-      return _routeToWorkProcessor.processCommand(command, origin);
+      return _routeToWorkProcessor;
     } else if (command is RouteToLoginCommand) {
-      return _routeToLoginProcessor.processCommand(command, origin);
+      return _routeToLoginProcessor;
     } else if (command is RouteToCommand) {
-      return _routeToProcessor.processCommand(command, origin);
+      return _routeToProcessor;
     } else if (command is OpenServerErrorDialogCommand) {
-      return _openServerErrorDialogProcessor.processCommand(command, origin);
+      return _openServerErrorDialogProcessor;
     } else if (command is OpenErrorDialogCommand) {
-      return _openErrorDialogProcessor.processCommand(command, origin);
+      return _openErrorDialogProcessor;
     } else if (command is OpenSessionExpiredDialogCommand) {
-      return _openSessionExpiredDialogProcessor.processCommand(command, origin);
+      return _openSessionExpiredDialogProcessor;
     } else if (command is OpenMessageDialogCommand) {
-      return _openMessageDialogProcessor.processCommand(command, origin);
+      return _openMessageDialogProcessor;
     } else if (command is UploadActionCommand) {
-      return _uploadActionProcessor.processCommand(command, origin);
+      return _uploadActionProcessor;
     } else if (command is DownloadActionCommand) {
-      return _downloadActionProcessor.processCommand(command, origin);
+      return _downloadActionProcessor;
     } else if (command is DeleteFrameCommand) {
-      return _deleteFrameProcessor.processCommand(command, origin);
+      return _deleteFrameProcessor;
     } else if (command is FunctionCommand) {
-      return _functionProcessor.processCommand(command, origin);
+      return _functionProcessor;
     } else if (command is SetFocusCommand) {
-      return _setFocusProcessor.processCommand(command, origin);
+      return _setFocusProcessor;
     }
 
-    return [];
+    return null;
   }
 }

@@ -14,17 +14,11 @@
  * the License.
  */
 
-import '../../../../../model/command/layout/layout_command.dart';
-import '../../i_command_processor.dart';
-import '../../i_command_processor_handler.dart';
-import 'layout_command_processor.dart';
+import '../../../model/command/base_command.dart';
+import 'i_command_processor.dart';
 
-/// Handles the processors of [LayoutCommand].
-class LayoutProcessor implements ICommandProcessorHandler<LayoutCommand> {
-  final LayoutCommandProcessor _layoutCommandProcessor = LayoutCommandProcessor();
-
-  @override
-  ICommandProcessor<LayoutCommand>? getProcessor(LayoutCommand command) {
-    return _layoutCommandProcessor;
-  }
+/// Defines the base construct of a [ICommandProcessorHandler].
+abstract class ICommandProcessorHandler<T extends BaseCommand> {
+  /// Retrieves the processor that handles the [command].
+  ICommandProcessor<T>? getProcessor(T command);
 }
