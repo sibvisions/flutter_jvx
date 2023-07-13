@@ -21,7 +21,7 @@ import '../../../../../model/command/config/save_application_parameters_command.
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class SaveApplicationParametersCommandProcessor implements ICommandProcessor<SaveApplicationParametersCommand> {
+class SaveApplicationParametersCommandProcessor extends ICommandProcessor<SaveApplicationParametersCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationParametersCommand command, BaseCommand? origin) async {
     IUiService().updateApplicationParameters(command.parameters);

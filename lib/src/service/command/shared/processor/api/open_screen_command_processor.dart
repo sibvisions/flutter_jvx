@@ -21,7 +21,7 @@ import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 import '../storage/delete_screen_command_processor.dart';
 
-class OpenScreenCommandProcessor implements ICommandProcessor<OpenScreenCommand> {
+class OpenScreenCommandProcessor extends ICommandProcessor<OpenScreenCommand> {
   /// Send the open screen request to the server.
   ///
   /// [ApiOpenScreenRequest.manualClose] is only used while we are not in the web,

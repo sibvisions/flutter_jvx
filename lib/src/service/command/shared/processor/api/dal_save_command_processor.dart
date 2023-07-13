@@ -20,7 +20,7 @@ import '../../../../../model/request/api_dal_save_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class DalSaveCommandProcessor implements ICommandProcessor<DalSaveCommand> {
+class DalSaveCommandProcessor extends ICommandProcessor<DalSaveCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DalSaveCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

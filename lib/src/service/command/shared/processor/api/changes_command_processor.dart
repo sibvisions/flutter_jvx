@@ -20,7 +20,7 @@ import '../../../../../model/request/api_changes_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class ChangesCommandProcessor implements ICommandProcessor<ChangesCommand> {
+class ChangesCommandProcessor extends ICommandProcessor<ChangesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ChangesCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(ApiChangesRequest());

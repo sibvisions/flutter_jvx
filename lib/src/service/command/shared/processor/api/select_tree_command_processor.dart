@@ -20,7 +20,7 @@ import '../../../../../model/request/api_select_tree_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class SelectTreeCommandProcessor implements ICommandProcessor<SelectTreeCommand> {
+class SelectTreeCommandProcessor extends ICommandProcessor<SelectTreeCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SelectTreeCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(

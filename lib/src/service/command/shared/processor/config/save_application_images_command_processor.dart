@@ -24,7 +24,7 @@ import '../../../../config/i_config_service.dart';
 import '../../../../file/file_manager.dart';
 import '../../i_command_processor.dart';
 
-class SaveApplicationImagesCommandProcessor implements ICommandProcessor<SaveApplicationImagesCommand> {
+class SaveApplicationImagesCommandProcessor extends ICommandProcessor<SaveApplicationImagesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationImagesCommand command, BaseCommand? origin) async {
     IFileManager fileManager = IConfigService().getFileManager();

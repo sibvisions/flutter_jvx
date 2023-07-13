@@ -24,7 +24,7 @@ import '../../../../layout/i_layout_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class LayoutCommandProcessor implements ICommandProcessor<LayoutCommand> {
+class LayoutCommandProcessor extends ICommandProcessor<LayoutCommand> {
   @override
   Future<List<BaseCommand>> processCommand(BaseCommand command, BaseCommand? origin) async {
     if (command is PreferredSizeCommand) {

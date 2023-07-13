@@ -20,7 +20,7 @@ import '../../../../../model/request/api_set_screen_parameter.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class SetScreenParameterCommandProcessor implements ICommandProcessor<SetScreenParameterCommand> {
+class SetScreenParameterCommandProcessor extends ICommandProcessor<SetScreenParameterCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetScreenParameterCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

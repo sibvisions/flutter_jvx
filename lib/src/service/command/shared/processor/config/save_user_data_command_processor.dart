@@ -20,7 +20,7 @@ import '../../../../../model/config/user/user_info.dart';
 import '../../../../config/i_config_service.dart';
 import '../../i_command_processor.dart';
 
-class SaveUserDataCommandProcessor implements ICommandProcessor<SaveUserDataCommand> {
+class SaveUserDataCommandProcessor extends ICommandProcessor<SaveUserDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveUserDataCommand command, BaseCommand? origin) async {
     UserInfo userInfo = UserInfo(

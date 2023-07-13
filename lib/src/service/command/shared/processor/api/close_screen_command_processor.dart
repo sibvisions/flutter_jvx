@@ -21,7 +21,7 @@ import '../../../../../model/request/api_close_screen_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class CloseScreenCommandProcessor implements ICommandProcessor<CloseScreenCommand> {
+class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseScreenCommand command, BaseCommand? origin) async {
     List<BaseCommand> commands = await IApiService().sendRequest(

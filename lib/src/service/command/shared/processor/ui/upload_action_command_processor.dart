@@ -23,7 +23,7 @@ import '../../../../../util/widgets/file_picker_dialog.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class UploadActionCommandProcessor implements ICommandProcessor<UploadActionCommand> {
+class UploadActionCommandProcessor extends ICommandProcessor<UploadActionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UploadActionCommand command, BaseCommand? origin) async {
     unawaited(FilePickerDialog.openFilePicker().then((value) {

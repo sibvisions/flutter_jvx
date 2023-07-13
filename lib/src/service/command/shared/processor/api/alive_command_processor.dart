@@ -22,7 +22,7 @@ import '../../../../../model/request/api_alive_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class AliveCommandProcessor implements ICommandProcessor<AliveCommand> {
+class AliveCommandProcessor extends ICommandProcessor<AliveCommand> {
   @override
   Future<List<BaseCommand>> processCommand(AliveCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiAliveRequest(), command.retryRequest);

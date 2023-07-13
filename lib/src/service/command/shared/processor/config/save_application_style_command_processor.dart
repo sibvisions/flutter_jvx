@@ -19,7 +19,7 @@ import '../../../../../model/command/config/save_application_style_command.dart'
 import '../../../../config/i_config_service.dart';
 import '../../i_command_processor.dart';
 
-class SaveApplicationStyleCommandProcessor implements ICommandProcessor<SaveApplicationStyleCommand> {
+class SaveApplicationStyleCommandProcessor extends ICommandProcessor<SaveApplicationStyleCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationStyleCommand command, BaseCommand? origin) async {
     await IConfigService().updateApplicationStyle(command.style);

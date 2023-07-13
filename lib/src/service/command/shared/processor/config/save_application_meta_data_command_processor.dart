@@ -33,7 +33,7 @@ import '../../../../file/file_manager.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class SaveApplicationMetaDataCommandProcessor implements ICommandProcessor<SaveApplicationMetaDataCommand> {
+class SaveApplicationMetaDataCommandProcessor extends ICommandProcessor<SaveApplicationMetaDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationMetaDataCommand command, BaseCommand? origin) async {
     // Remove '.' to allow easy saving of images in filesystem

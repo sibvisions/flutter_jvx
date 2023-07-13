@@ -20,7 +20,7 @@ import '../../../../../model/request/api_rollback_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class RollbackCommandProcessor implements ICommandProcessor<RollbackCommand> {
+class RollbackCommandProcessor extends ICommandProcessor<RollbackCommand> {
   @override
   Future<List<BaseCommand>> processCommand(RollbackCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

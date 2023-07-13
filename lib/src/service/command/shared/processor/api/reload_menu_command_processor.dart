@@ -20,7 +20,7 @@ import '../../../../../model/request/api_reload_menu_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class ReloadMenuCommandProcessor implements ICommandProcessor<ReloadMenuCommand> {
+class ReloadMenuCommandProcessor extends ICommandProcessor<ReloadMenuCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ReloadMenuCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiReloadMenuRequest());

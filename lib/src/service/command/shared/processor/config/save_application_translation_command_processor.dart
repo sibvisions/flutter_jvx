@@ -23,7 +23,7 @@ import '../../../../file/file_manager.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class SaveApplicationTranslationCommandProcessor implements ICommandProcessor<SaveApplicationTranslationCommand> {
+class SaveApplicationTranslationCommandProcessor extends ICommandProcessor<SaveApplicationTranslationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationTranslationCommand command, BaseCommand? origin) async {
     IFileManager fileManager = IConfigService().getFileManager();

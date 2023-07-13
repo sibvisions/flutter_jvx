@@ -24,7 +24,7 @@ import '../../../../config/i_config_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class LoginCommandProcessor implements ICommandProcessor<LoginCommand> {
+class LoginCommandProcessor extends ICommandProcessor<LoginCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LoginCommand command, BaseCommand? origin) async {
     String? clientId = IUiService().clientId.value;

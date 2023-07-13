@@ -20,7 +20,7 @@ import '../../../../../model/request/api_insert_record_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class InsertRecordCommandProcessor implements ICommandProcessor<InsertRecordCommand> {
+class InsertRecordCommandProcessor extends ICommandProcessor<InsertRecordCommand> {
   @override
   Future<List<BaseCommand>> processCommand(InsertRecordCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

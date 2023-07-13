@@ -23,7 +23,7 @@ import '../../../../storage/i_storage_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class SetFocusCommandProcessor implements ICommandProcessor<SetFocusCommand> {
+class SetFocusCommandProcessor extends ICommandProcessor<SetFocusCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetFocusCommand command, BaseCommand? origin) async {
     if (command.focus) {

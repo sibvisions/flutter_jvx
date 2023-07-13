@@ -20,7 +20,7 @@ import '../../../../../model/request/api_select_record_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class SelectRecordCommandProcessor implements ICommandProcessor<SelectRecordCommand> {
+class SelectRecordCommandProcessor extends ICommandProcessor<SelectRecordCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SelectRecordCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(

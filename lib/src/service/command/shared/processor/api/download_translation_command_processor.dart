@@ -20,7 +20,7 @@ import '../../../../../model/request/api_download_translation_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class DownloadTranslationCommandProcessor implements ICommandProcessor<DownloadTranslationCommand> {
+class DownloadTranslationCommandProcessor extends ICommandProcessor<DownloadTranslationCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadTranslationCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(ApiDownloadTranslationRequest());

@@ -24,7 +24,7 @@ import '../../../../storage/i_storage_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class UpdateComponentsCommandProcessor implements ICommandProcessor<UpdateComponentsCommand> {
+class UpdateComponentsCommandProcessor extends ICommandProcessor<UpdateComponentsCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command, BaseCommand? origin) async {
     final stopwatch = Stopwatch()..start();

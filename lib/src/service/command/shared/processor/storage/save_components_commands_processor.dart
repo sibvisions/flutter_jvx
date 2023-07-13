@@ -19,7 +19,7 @@ import '../../../../../model/command/storage/save_components_command.dart';
 import '../../../../storage/i_storage_service.dart';
 import '../../i_command_processor.dart';
 
-class SaveComponentsCommandProcessor implements ICommandProcessor<SaveComponentsCommand> {
+class SaveComponentsCommandProcessor extends ICommandProcessor<SaveComponentsCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveComponentsCommand command, BaseCommand? origin) async {
     List<BaseCommand> commands = [];

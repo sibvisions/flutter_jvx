@@ -20,7 +20,7 @@ import '../../../../../model/request/api_restore_data_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class RestoreDataCommandProcessor implements ICommandProcessor<RestoreDataCommand> {
+class RestoreDataCommandProcessor extends ICommandProcessor<RestoreDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(RestoreDataCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(

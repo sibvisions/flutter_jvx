@@ -20,7 +20,7 @@ import '../../../../../model/request/api_reset_password_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class ResetPasswordCommandProcessor implements ICommandProcessor<ResetPasswordCommand> {
+class ResetPasswordCommandProcessor extends ICommandProcessor<ResetPasswordCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ResetPasswordCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

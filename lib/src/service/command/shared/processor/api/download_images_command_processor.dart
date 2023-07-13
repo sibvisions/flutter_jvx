@@ -20,7 +20,7 @@ import '../../../../../model/request/api_download_images_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class DownloadImagesCommandProcessor implements ICommandProcessor<DownloadImagesCommand> {
+class DownloadImagesCommandProcessor extends ICommandProcessor<DownloadImagesCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadImagesCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(ApiDownloadImagesRequest());

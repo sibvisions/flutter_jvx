@@ -20,7 +20,7 @@ import '../../../../../model/request/api_sort_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class SortCommandProcessor implements ICommandProcessor<SortCommand> {
+class SortCommandProcessor extends ICommandProcessor<SortCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SortCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

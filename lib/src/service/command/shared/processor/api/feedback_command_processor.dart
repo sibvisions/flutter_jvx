@@ -22,7 +22,7 @@ import '../../../../../model/request/api_feedback_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class FeedbackCommandProcessor implements ICommandProcessor<FeedbackCommand> {
+class FeedbackCommandProcessor extends ICommandProcessor<FeedbackCommand> {
   @override
   Future<List<BaseCommand>> processCommand(FeedbackCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiFeedbackRequest(properties: command.properties));

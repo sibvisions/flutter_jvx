@@ -22,7 +22,7 @@ import '../../../../../model/request/api_download_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class DownloadActionCommandProcessor implements ICommandProcessor<DownloadActionCommand> {
+class DownloadActionCommandProcessor extends ICommandProcessor<DownloadActionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadActionCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(

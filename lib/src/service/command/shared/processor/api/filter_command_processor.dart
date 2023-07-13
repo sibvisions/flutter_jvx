@@ -20,7 +20,7 @@ import '../../../../../model/request/api_filter_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class FilterCommandProcessor implements ICommandProcessor<FilterCommand> {
+class FilterCommandProcessor extends ICommandProcessor<FilterCommand> {
   @override
   Future<List<BaseCommand>> processCommand(FilterCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(

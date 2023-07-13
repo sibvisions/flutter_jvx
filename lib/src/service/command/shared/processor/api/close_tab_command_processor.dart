@@ -20,7 +20,7 @@ import '../../../../../model/request/api_close_tab_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class CloseTabCommandProcessor implements ICommandProcessor<CloseTabCommand> {
+class CloseTabCommandProcessor extends ICommandProcessor<CloseTabCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseTabCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

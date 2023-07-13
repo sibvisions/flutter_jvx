@@ -20,7 +20,7 @@ import '../../../../../ui/i_ui_service.dart';
 import '../../../i_command_processor.dart';
 
 /// Takes [RouteToMenuCommand] and tell [IUiService] to route there
-class RouteToMenuCommandProcessor implements ICommandProcessor<RouteToMenuCommand> {
+class RouteToMenuCommandProcessor extends ICommandProcessor<RouteToMenuCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

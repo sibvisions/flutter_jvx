@@ -22,7 +22,7 @@ import '../../../../../model/request/api_exit_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class ExitCommandProcessor implements ICommandProcessor<ExitCommand> {
+class ExitCommandProcessor extends ICommandProcessor<ExitCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ExitCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiExitRequest());

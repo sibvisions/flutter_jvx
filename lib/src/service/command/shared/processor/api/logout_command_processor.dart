@@ -22,7 +22,7 @@ import '../../../../../model/request/api_logout_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class LogoutCommandProcessor implements ICommandProcessor<LogoutCommand> {
+class LogoutCommandProcessor extends ICommandProcessor<LogoutCommand> {
   @override
   Future<List<BaseCommand>> processCommand(LogoutCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(ApiLogoutRequest());

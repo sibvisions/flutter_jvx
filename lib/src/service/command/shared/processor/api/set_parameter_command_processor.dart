@@ -20,7 +20,7 @@ import '../../../../../model/request/api_set_parameter.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class SetParameterCommandProcessor implements ICommandProcessor<SetParameterCommand> {
+class SetParameterCommandProcessor extends ICommandProcessor<SetParameterCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetParameterCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

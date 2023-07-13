@@ -31,7 +31,7 @@ import '../../../../storage/i_storage_service.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class DeleteScreenCommandProcessor implements ICommandProcessor<DeleteScreenCommand> {
+class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand> {
   /// Removes every trace of this screen.
   ///
   /// If we are in the web ([kIsWeb]), we don't try to manipulate the history, as it makes no sense

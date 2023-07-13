@@ -24,7 +24,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_download_command.dart';
 import '../../i_command_processor.dart';
 
-class SaveDownloadCommandProcessor implements ICommandProcessor<SaveDownloadCommand> {
+class SaveDownloadCommandProcessor extends ICommandProcessor<SaveDownloadCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveDownloadCommand command, BaseCommand? origin) async {
     if (kIsWeb) {

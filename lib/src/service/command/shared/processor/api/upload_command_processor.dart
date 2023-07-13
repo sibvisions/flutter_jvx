@@ -22,7 +22,7 @@ import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
-class UploadCommandProcessor implements ICommandProcessor<UploadCommand> {
+class UploadCommandProcessor extends ICommandProcessor<UploadCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UploadCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(

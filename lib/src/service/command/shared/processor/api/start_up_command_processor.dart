@@ -28,7 +28,7 @@ import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
-class StartupCommandProcessor implements ICommandProcessor<StartupCommand> {
+class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command, BaseCommand? origin) async {
     DeviceInfo deviceInfo = await DeviceInfo.fromPlatform();

@@ -19,7 +19,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class SaveAllEditorsCommandProcessor implements ICommandProcessor<SaveAllEditorsCommand> {
+class SaveAllEditorsCommandProcessor extends ICommandProcessor<SaveAllEditorsCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveAllEditorsCommand command, BaseCommand? origin) async {
     List<BaseCommand> commands = await IUiService().collectAllEditorSaveCommands(command.componentId);

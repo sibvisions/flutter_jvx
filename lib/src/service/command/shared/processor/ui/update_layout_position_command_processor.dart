@@ -20,7 +20,7 @@ import '../../../../../model/layout/layout_data.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class UpdateLayoutPositionCommandProcessor implements ICommandProcessor<UpdateLayoutPositionCommand> {
+class UpdateLayoutPositionCommandProcessor extends ICommandProcessor<UpdateLayoutPositionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(UpdateLayoutPositionCommand command, BaseCommand? origin) {
     for (LayoutData element in command.layoutDataList) {

@@ -20,7 +20,7 @@ import '../../../../../model/request/api_reload_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class ReloadCommandProcessor implements ICommandProcessor<ReloadCommand> {
+class ReloadCommandProcessor extends ICommandProcessor<ReloadCommand> {
   @override
   Future<List<BaseCommand>> processCommand(ReloadCommand command, BaseCommand? origin) {
     return IApiService().sendRequest(

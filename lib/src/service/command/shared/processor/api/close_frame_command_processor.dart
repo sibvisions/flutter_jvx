@@ -20,7 +20,7 @@ import '../../../../../model/request/api_close_frame_request.dart';
 import '../../../../api/i_api_service.dart';
 import '../../i_command_processor.dart';
 
-class CloseFrameCommandProcessor implements ICommandProcessor<CloseFrameCommand> {
+class CloseFrameCommandProcessor extends ICommandProcessor<CloseFrameCommand> {
   @override
   Future<List<BaseCommand>> processCommand(CloseFrameCommand command, BaseCommand? origin) async {
     return IApiService().sendRequest(
