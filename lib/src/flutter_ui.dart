@@ -74,7 +74,7 @@ import 'util/import_handler/import_handler.dart';
 import 'util/jvx_colors.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
-import 'util/route_observer.dart';
+import 'util/routes_observer.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterUI extends StatefulWidget {
