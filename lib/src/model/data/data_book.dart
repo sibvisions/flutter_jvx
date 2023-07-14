@@ -31,7 +31,6 @@ import '../command/api/insert_record_command.dart';
 import '../command/api/select_record_command.dart';
 import '../command/api/set_values_command.dart';
 import '../command/data/save_fetch_data_command.dart';
-import '../component/editor/cell_editor/cell_editor_model.dart';
 import '../component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../component/editor/cell_editor/linked/link_reference.dart';
 import '../request/filter.dart';
@@ -66,7 +65,7 @@ class DataBook {
   int selectedRow;
 
   /// Contains all metadata
-  DalMetaData metaData;
+  DalMetaData? metaData;
 
   /// Contains record formats. The key is the name of the component accessing the formats.
   Map<String, RecordFormat> recordFormats = HashMap();
@@ -83,6 +82,9 @@ class DataBook {
   /// Referenced linked cellEditors
   List<ReferencedCellEditor> referencedCellEditors = [];
 
+  /// Has meta data set.
+  bool hasMetaData = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,8 +97,7 @@ class DataBook {
     this.selectedRow = -1,
     Map<String, RecordFormat>? recordFormats,
     HashMap<String, HashMap<int, List<dynamic>>>? pageRecords,
-  })  : metaData = DalMetaData(dataProvider),
-        records = records ?? HashMap(),
+  })  : records = records ?? HashMap(),
         pageRecords = pageRecords ?? HashMap(),
         recordFormats = recordFormats ?? HashMap();
 
@@ -131,22 +132,19 @@ class DataBook {
         }
       }
       updateSortDefinitions(pFetchResponse.sortDefinitions);
-
-      referencedCellEditors
-          .forEach((column) => buildDataToDisplayMap(column, pFetchResponse.records, pFetchResponse.columnNames));
     }
 
     HashMap<int, List> dataMap;
     String? pageKey;
-    if (metaData.masterReference == null) {
+    if (metaData?.masterReference == null) {
       dataMap = records;
     } else {
       if (pFetchResponse.masterRow?.isEmpty ?? true) {
         pageKey = "noMasterRow";
       } else {
         pageKey = Filter(
-          columnNames: metaData.masterReference!.columnNames,
-          values: metaData.masterReference!.columnNames
+          columnNames: metaData!.masterReference!.columnNames,
+          values: metaData!.masterReference!.columnNames
               .mapIndexed((index, referencedColumn) => pFetchResponse.masterRow![index])
               .toList(),
         ).toPageKey();
@@ -180,6 +178,8 @@ class DataBook {
       }
     }
 
+    referencedCellEditors.forEach((refCellEditor) => buildDataToDisplayMap(refCellEditor));
+
     IUiService().notifyDataChange(
       pDataProvider: dataProvider,
       pUpdatedCurrentPage: dataMap == records,
@@ -211,7 +211,7 @@ class DataBook {
       String columnName = pChangedResponse.changedColumnNames![index];
       dynamic columnData = pChangedResponse.changedValues![index];
 
-      int intColIndex = metaData.columnDefinitions.indexWhere((element) => element.name == columnName);
+      int intColIndex = metaData?.columnDefinitions.indexWhere((element) => element.name == columnName) ?? -1;
       if (intColIndex >= 0) {
         rowData[intColIndex] = columnData;
         changed = true;
@@ -223,13 +223,17 @@ class DataBook {
 
   /// Sets the sort definition and returns if anything changed
   bool updateSortDefinitions(List<SortDefinition>? pSortDefinitions) {
-    if (metaData.sortDefinitions == null || pSortDefinitions == null) {
-      bool areDifferent = metaData.sortDefinitions != pSortDefinitions;
-      metaData.sortDefinitions = pSortDefinitions;
+    if (metaData == null) {
+      return false;
+    }
+
+    if (metaData!.sortDefinitions == null || pSortDefinitions == null) {
+      bool areDifferent = metaData!.sortDefinitions != pSortDefinitions;
+      metaData!.sortDefinitions = pSortDefinitions;
       return areDifferent;
     }
 
-    bool changeDetected = metaData.sortDefinitions!.length != pSortDefinitions.length;
+    bool changeDetected = metaData!.sortDefinitions!.length != pSortDefinitions.length;
 
     if (!changeDetected) {
       for (SortDefinition sortDefinition in pSortDefinitions) {
@@ -238,13 +242,13 @@ class DataBook {
         }
 
         var oldSortDefinition =
-            metaData.sortDefinitions!.firstWhereOrNull((element) => element.columnName == sortDefinition.columnName);
+            metaData!.sortDefinitions!.firstWhereOrNull((element) => element.columnName == sortDefinition.columnName);
 
         changeDetected = oldSortDefinition == null || oldSortDefinition.mode != sortDefinition.mode;
       }
     }
 
-    metaData.sortDefinitions = pSortDefinitions;
+    metaData!.sortDefinitions = pSortDefinitions;
     return changeDetected;
   }
 
@@ -258,18 +262,18 @@ class DataBook {
   /// Gets a record
   /// If row is not found returns null
   DataRecord? getRecord({required List<String>? pDataColumnNames, required int pRecordIndex}) {
-    if (!records.containsKey(pRecordIndex)) {
+    if (!records.containsKey(pRecordIndex) || metaData == null) {
       return null;
     }
 
     List<dynamic> selectedRecord = records[pRecordIndex]!;
-    List<ColumnDefinition> definitions = metaData.columnDefinitions;
+    List<ColumnDefinition> definitions = metaData!.columnDefinitions;
 
     if (pDataColumnNames != null) {
       // Get provided column definitions
       definitions = [];
       for (String columnName in pDataColumnNames) {
-        var colDef = metaData.columnDefinitions.firstWhereOrNull((element) => element.name == columnName);
+        var colDef = metaData!.columnDefinitions.firstWhereOrNull((element) => element.name == columnName);
         if (colDef != null) {
           definitions.add(colDef);
         }
@@ -278,7 +282,7 @@ class DataBook {
       // Get full selected record, then only take requested columns
       List<dynamic> fullRecord = records[pRecordIndex]!;
       selectedRecord = definitions.map((e) {
-        int indexOfDef = metaData.columnDefinitions.indexOf(e);
+        int indexOfDef = metaData!.columnDefinitions.indexOf(e);
         return fullRecord[indexOfDef];
       }).toList();
     }
@@ -295,13 +299,13 @@ class DataBook {
   /// Will return all available data from the column in the provided range
   List<dynamic> getDataFromColumn({required String pColumnName, required int pFrom, int? pTo, String? pPageKey}) {
     List<dynamic> data = [];
-    int indexOfColumn = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
+    int indexOfColumn = metaData?.columnDefinitions.indexWhere((element) => element.name == pColumnName) ?? -1;
 
     HashMap<int, List<dynamic>> dataMap = pPageKey != null ? (pageRecords[pPageKey] ?? HashMap()) : records;
     pTo = min(pTo ?? dataMap.length, dataMap.length);
     for (int i = pFrom; i < pTo; i++) {
       var a = dataMap[i];
-      if (a != null) {
+      if (a != null && indexOfColumn >= 0 && indexOfColumn < a.length) {
         data.add(a[indexOfColumn]);
       }
     }
@@ -475,13 +479,8 @@ class DataBook {
     return columnDefinitions.indexWhere((colDef) => colDef.name == columnName);
   }
 
-  buildDataToDisplayMap(
-      ReferencedCellEditor referencedCellEditor, List<List<dynamic>> records, List<String> recordColumns) {
-    if (referencedCellEditor.cellEditorModel is! FlLinkedCellEditorModel) {
-      return;
-    }
-
-    FlLinkedCellEditorModel cellEditorModel = referencedCellEditor.cellEditorModel as FlLinkedCellEditorModel;
+  buildDataToDisplayMap(ReferencedCellEditor referencedCellEditor) {
+    var cellEditorModel = referencedCellEditor.cellEditorModel;
     LinkReference linkReference = cellEditorModel.linkReference;
     Map<String, String> dataToDisplayMap = linkReference.dataToDisplay;
 
@@ -494,10 +493,10 @@ class DataBook {
           linkReference.columnNames.indexWhere((colName) => colName == referencedCellEditor.columnName);
 
       String valueColumnName = linkReference.referencedColumnNames[colToRefColIndex];
-      var refColIndex = recordColumns.indexOf(valueColumnName);
+      var refColIndex = metaData?.columnDefinitions.indexWhere((colDef) => colDef.name == valueColumnName) ?? -1;
 
       if (refColIndex >= 0) {
-        records.forEach((dataRow) {
+        records.values.forEach((dataRow) {
           // It says referenced column name but it is a column in this data book, not the other.
 
           var refColValue = dataRow[refColIndex];
@@ -507,14 +506,16 @@ class DataBook {
           String displayString = "";
 
           if (cellEditorModel.displayConcatMask?.isNotEmpty == true) {
-            List<String> columnViewNames = cellEditorModel.columnView?.columnNames ?? metaData.columnViewTable;
+            List<String> columnViewNames = cellEditorModel.columnView?.columnNames ?? metaData!.columnViewTable;
 
             if (cellEditorModel.displayConcatMask!.contains("*")) {
               int i = 0;
 
               displayString = cellEditorModel.displayConcatMask!;
               while (displayString.contains("*")) {
-                int valueIndex = i < columnViewNames.length ? recordColumns.indexOf(columnViewNames[i]) : -1;
+                int valueIndex = i < columnViewNames.length
+                    ? metaData!.columnDefinitions.indexWhere((colDef) => colDef.name == columnViewNames[i])
+                    : -1;
 
                 dynamic value = valueIndex >= 0 ? dataRow[valueIndex] : "";
 
@@ -524,14 +525,16 @@ class DataBook {
             } else {
               List<String> values = [];
               columnViewNames.forEach((columnName) {
-                int valueIndex = recordColumns.indexOf(columnName);
+                int valueIndex = metaData!.columnDefinitions.indexWhere((colDef) => colDef.name == columnName);
 
                 values.add(valueIndex >= 0 ? dataRow[valueIndex] : "");
               });
               displayString = values.join(cellEditorModel.displayConcatMask!);
             }
           } else if (cellEditorModel.displayReferencedColumnName?.isNotEmpty == true) {
-            displayString = dataRow[recordColumns.indexOf(cellEditorModel.displayReferencedColumnName!)].toString();
+            displayString = dataRow[metaData!.columnDefinitions
+                    .indexWhere((colDef) => colDef.name == cellEditorModel.displayReferencedColumnName)]
+                .toString();
           }
 
           dataToDisplayMap[valueKey] = displayString;
@@ -729,14 +732,14 @@ class ReferenceDefinition {
 }
 
 class ReferencedCellEditor {
-  ICellEditorModel cellEditorModel;
+  FlLinkedCellEditorModel cellEditorModel;
   String columnName;
   String dataProvider;
 
   ReferencedCellEditor(this.cellEditorModel, this.columnName, this.dataProvider);
 
   void dispose() {
-    DataBook? databook = IDataService().getDataBook(dataProvider);
+    DataBook? databook = IDataService().getDataBook(cellEditorModel.linkReference.referencedDataprovider);
     if (databook != null) {
       databook.referencedCellEditors.remove(this);
     }

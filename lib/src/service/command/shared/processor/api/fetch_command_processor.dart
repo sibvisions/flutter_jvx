@@ -34,7 +34,7 @@ class FetchCommandProcessor extends ICommandProcessor<FetchCommand> {
         dataProvider: command.dataProvider,
         fromRow: command.fromRow,
         rowCount: command.rowCount,
-        includeMetaData: command.includeMetaData,
+        includeMetaData: command.includeMetaData || IDataService().getMetaData(command.dataProvider) == null,
         filter: command.filter,
         reload: command.reload,
         command: command,

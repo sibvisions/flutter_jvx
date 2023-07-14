@@ -20,6 +20,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 
 import '../../../flutter_ui.dart';
+import '../../../model/command/api/fetch_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/save_fetch_data_command.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -32,6 +33,7 @@ import '../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../api/shared/api_object_property.dart';
 import '../../service.dart';
+import '../../ui/i_ui_service.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
@@ -128,7 +130,8 @@ class DataService implements IDataService {
       dataBooks[dataBook.dataProvider] = dataBook;
     }
 
-    dataBook.metaData.applyMetaDataResponse(pChangedResponse);
+    dataBook.metaData = (dataBook.metaData ?? DalMetaData(pChangedResponse.dataProvider))
+      ..applyMetaDataResponse(pChangedResponse);
 
     return true;
   }
@@ -257,26 +260,29 @@ class DataService implements IDataService {
 
     // Get data from databook and add column definitions in correct order -
     // either same as requested or as received from server
-    if (pColumnNames != null) {
-      for (String columnName in pColumnNames) {
-        columnDefinitions.add(dataBook.metaData.columnDefinitions.firstWhere((element) => element.name == columnName));
-        columnsData.add(dataBook.getDataFromColumn(
-          pColumnName: columnName,
-          pFrom: pFrom,
-          pTo: pTo,
-          pPageKey: pPageKey,
-        ));
-      }
-    } else {
-      columnDefinitions.addAll(dataBook.metaData.columnDefinitions);
+    if (dataBook.metaData != null) {
+      if (pColumnNames != null) {
+        for (String columnName in pColumnNames) {
+          columnDefinitions
+              .add(dataBook.metaData!.columnDefinitions.firstWhere((element) => element.name == columnName));
+          columnsData.add(dataBook.getDataFromColumn(
+            pColumnName: columnName,
+            pFrom: pFrom,
+            pTo: pTo,
+            pPageKey: pPageKey,
+          ));
+        }
+      } else {
+        columnDefinitions.addAll(dataBook.metaData!.columnDefinitions);
 
-      for (ColumnDefinition colDef in columnDefinitions) {
-        columnsData.add(dataBook.getDataFromColumn(
-          pColumnName: colDef.name,
-          pFrom: pFrom,
-          pTo: pTo,
-          pPageKey: pPageKey,
-        ));
+        for (ColumnDefinition colDef in columnDefinitions) {
+          columnsData.add(dataBook.getDataFromColumn(
+            pColumnName: colDef.name,
+            pFrom: pFrom,
+            pTo: pTo,
+            pPageKey: pPageKey,
+          ));
+        }
       }
     }
 
@@ -444,8 +450,17 @@ class DataService implements IDataService {
       linkReference.columnNames.add(columnName);
     }
 
-    referencedDataBook.buildDataToDisplayMap(referencedCellEditor, referencedDataBook.records.values.toList(),
-        referencedDataBook.metaData.columnDefinitions.map((e) => e.name).toList());
+    if (getMetaData(linkReference.referencedDataprovider) == null) {
+      IUiService().sendCommand(FetchCommand(
+        includeMetaData: true,
+        fromRow: -1,
+        rowCount: 0,
+        dataProvider: linkReference.referencedDataprovider,
+        reason: "Created referenced cell editor on non data book without metadata",
+      ));
+    } else {
+      referencedDataBook.buildDataToDisplayMap(referencedCellEditor);
+    }
 
     return referencedCellEditor;
   }

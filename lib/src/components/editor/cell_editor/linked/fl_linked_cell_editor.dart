@@ -324,7 +324,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     ColumnDefinition? colDef = IDataService()
         .getDataBook(dataProvider)
         ?.metaData
-        .columnDefinitions
+        ?.columnDefinitions
         .firstWhereOrNull((element) => element.name == columnName);
 
     return (colDef?.cellEditorModel is FlLinkedCellEditorModel)

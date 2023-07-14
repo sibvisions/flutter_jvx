@@ -119,9 +119,9 @@ abstract class OfflineUtil {
         for (DataBook dataBook in dataBooks.values) {
           int iLevel = 0;
 
-          for (String? masterDataBook = dataBook.metaData.masterReference?.referencedDataBook;
+          for (String? masterDataBook = dataBook.metaData?.masterReference?.referencedDataBook;
               masterDataBook != null;
-              masterDataBook = dataBooks[masterDataBook]?.metaData.masterReference?.referencedDataBook) {
+              masterDataBook = dataBooks[masterDataBook]?.metaData?.masterReference?.referencedDataBook) {
             iLevel++;
           }
 
@@ -454,7 +454,7 @@ abstract class OfflineUtil {
   static Map<String, Object?> _getPrimaryColumns(Map<String, Object?> row, DataBook dataBook) {
     var primaryColumns = {
       for (var entry in row.entries.where(
-          (rowColumn) => dataBook.metaData.primaryKeyColumns.any((primaryColumn) => primaryColumn == rowColumn.key)))
+          (rowColumn) => dataBook.metaData!.primaryKeyColumns.any((primaryColumn) => primaryColumn == rowColumn.key)))
         entry.key: entry.value
     };
     return primaryColumns;

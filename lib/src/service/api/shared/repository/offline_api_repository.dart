@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:universal_io/io.dart';
 
@@ -98,7 +99,7 @@ class OfflineApiRepository extends IRepository {
   ) async {
     _checkStatus();
 
-    var dalMetaData = dataBooks.map((e) => e.metaData).toList(growable: false);
+    var dalMetaData = dataBooks.map((e) => e.metaData).whereNotNull().toList(growable: false);
     // Drop old data + possible old scheme
     await offlineDatabase!.dropTables(IConfigService().currentApp.value!);
     await offlineDatabase!.createTables(IConfigService().currentApp.value!, dalMetaData);
@@ -114,8 +115,8 @@ class OfflineApiRepository extends IRepository {
         for (var entry in dataBook.records.entries) {
           Map<String, dynamic> rowData = {};
           entry.value.asMap().forEach((key, value) {
-            if (key < dataBook.metaData.columnDefinitions.length) {
-              var columnName = dataBook.metaData.columnDefinitions[key].name;
+            if (key < dataBook.metaData!.columnDefinitions.length) {
+              var columnName = dataBook.metaData!.columnDefinitions[key].name;
               rowData[columnName] = value;
             }
           });
@@ -249,7 +250,7 @@ class OfflineApiRepository extends IRepository {
 
     DataBook dataBook = IDataService().getDataBook(pRequest.dataProvider)!;
 
-    List<String> columnNames = dataBook.metaData.columnDefinitions.map((e) => e.name).toList();
+    List<String> columnNames = dataBook.metaData!.columnDefinitions.map((e) => e.name).toList();
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
       pColumns: columnNames,
@@ -345,14 +346,14 @@ class OfflineApiRepository extends IRepository {
 
     //no specific filter columns -> we support using the PK columns
     if (filterColumns.isEmpty) {
-      filterColumns = dataBook.metaData.primaryKeyColumns;
+      filterColumns = dataBook.metaData!.primaryKeyColumns;
     }
 
     if (filterColumns.length != filterValues.length) {
       throw Exception("The filter doesn't contain enough values to search with primary key!");
     }
 
-    List<String> columnNames = dataBook.metaData.columnDefinitions.map((e) => e.name).toList();
+    List<String> columnNames = dataBook.metaData!.columnDefinitions.map((e) => e.name).toList();
 
     List<Map<String, dynamic>> selectionResult = await offlineDatabase!.select(
       pColumns: columnNames,
@@ -483,7 +484,7 @@ class OfflineApiRepository extends IRepository {
     DataBook dataBook = IDataService().getDataBook(pDataProvider)!;
 
     DataRecord? dataRecord = dataBook.getRecord(
-      pDataColumnNames: dataBook.metaData.primaryKeyColumns,
+      pDataColumnNames: dataBook.metaData!.primaryKeyColumns,
       pRecordIndex: pSelectedRow ?? dataBook.selectedRow,
     );
 
