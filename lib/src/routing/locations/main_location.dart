@@ -18,6 +18,7 @@ import 'dart:async';
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../config/server_config.dart';
@@ -41,6 +42,8 @@ class MainLocation extends BeamLocation<BeamState> {
 
   BeamPage? lastPage;
 
+  BeamPageType get beamPageType => kIsWeb ? BeamPageType.noTransition : BeamPageType.material;
+
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     FlutterUI.logUI.d("Building main location");
@@ -55,6 +58,7 @@ class MainLocation extends BeamLocation<BeamState> {
           title: FlutterUI.translate("Apps"),
           key: const ValueKey("app_overview"),
           child: const AppOverviewPage(),
+          type: beamPageType,
         ),
       );
     }
@@ -67,6 +71,7 @@ class MainLocation extends BeamLocation<BeamState> {
         BeamPage(
           title: FlutterUI.translate("Login"),
           key: const ValueKey("login"),
+          type: beamPageType,
           child: ValueListenableBuilder<LoginMode>(
             valueListenable: loginModeNotifier,
             builder: (context, mode, child) => LoginPage(loginMode: mode),
@@ -81,12 +86,14 @@ class MainLocation extends BeamLocation<BeamState> {
         BeamPage(
           title: FlutterUI.translate("Menu"),
           key: const ValueKey("Menu"),
+          type: beamPageType,
           child: const MenuPage(),
         ),
         if (workScreenName != null)
           BeamPage(
             title: FlutterUI.translate("Workscreen"),
             key: ValueKey(workScreenName),
+            type: beamPageType,
             child: WorkScreenPage(
               screenName: workScreenName,
             ),
@@ -101,6 +108,7 @@ class MainLocation extends BeamLocation<BeamState> {
         BeamPage(
           title: FlutterUI.translate("Settings"),
           key: const ValueKey("Settings"),
+          type: beamPageType,
           child: const SettingsPage(),
           onPopPage: BeamPage.routePop,
         ),

@@ -494,6 +494,10 @@ class FlutterUI extends StatefulWidget {
 }
 
 late BeamerDelegate routerDelegate;
+
+TransitionDelegate get transitionDelegate =>
+    (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate());
+
 GlobalKey<NavigatorState>? splashNavigatorKey;
 
 /// Global Bucket to persist the storage between different locations
@@ -532,8 +536,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           MainLocation(),
         ],
       ),
-      transitionDelegate:
-          (kIsWeb ? const NoAnimationTransitionDelegate() as TransitionDelegate : const DefaultTransitionDelegate()),
+      transitionDelegate: transitionDelegate,
+      beamBackTransitionDelegate: transitionDelegate,
       guards: [
         // Guards / by beaming to /menu if an app is active
         BeamGuard(
@@ -700,9 +704,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       child: Navigator(
         // Update key to force Navigator update, which in turn re-generates the route with the new future.
         key: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
-        onGenerateRoute: (settings) => MaterialPageRoute(
+        transitionDelegate: transitionDelegate,
+        onGenerateRoute: (settings) => PageRouteBuilder(
           settings: settings,
-          builder: (context) => FutureBuilder(
+          pageBuilder: (context, _, __) => FutureBuilder(
             future: future,
             builder: (context, snapshot) => Stack(
               children: [
