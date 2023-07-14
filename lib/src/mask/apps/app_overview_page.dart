@@ -17,7 +17,6 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -169,102 +168,94 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
           seedColor: Colors.blue,
         ),
       )),
-      child: Navigator(
-        key: kDebugMode ? GlobalKey() : null,
-        onGenerateRoute: (settings) => MaterialPageRoute(
-          settings: settings,
-          builder: (context) {
-            return Scaffold(
-              body: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (backgroundBuilder != null) backgroundBuilder!.call(context),
-                  if (backgroundBuilder == null)
-                    SvgPicture.asset(
-                      ImageLoader.getAssetPath(
-                        FlutterUI.package,
-                        "assets/images/JVx_Bg.svg",
-                      ),
-                      fit: BoxFit.fill,
-                    ),
-                  SafeArea(
-                    child: FutureBuilder(
-                      future: future,
-                      builder: (context, snapshot) {
-                        bool showAddOnFront = (apps?.isEmpty ?? false);
+      child: Scaffold(
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (backgroundBuilder != null) backgroundBuilder!.call(context),
+            if (backgroundBuilder == null)
+              SvgPicture.asset(
+                ImageLoader.getAssetPath(
+                  FlutterUI.package,
+                  "assets/images/JVx_Bg.svg",
+                ),
+                fit: BoxFit.fill,
+              ),
+            SafeArea(
+              child: FutureBuilder(
+                future: future,
+                builder: (context, snapshot) {
+                  bool showAddOnFront = (apps?.isEmpty ?? false);
 
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
-                          child: Stack(
-                            fit: StackFit.expand,
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Positioned.fill(
+                          child: Column(
                             children: [
-                              Positioned.fill(
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          FlutterUI.translateLocal(
-                                              IAppService().isSingleAppMode() ? "Application" : "Applications"),
-                                          style: const TextStyle(
-                                            color: JVxColors.LIGHTER_BLACK,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 32,
-                                          ),
-                                        ),
-                                      ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    FlutterUI.translateLocal(
+                                        IAppService().isSingleAppMode() ? "Application" : "Applications"),
+                                    style: const TextStyle(
+                                      color: JVxColors.LIGHTER_BLACK,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 32,
                                     ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 16.0),
-                                        child: _buildAppList(
-                                          context,
-                                          snapshot,
-                                          showAddOnFront,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                              Positioned(
-                                top: 0.0,
-                                right: 8.0,
-                                child: _buildMenuButton(
-                                  context,
-                                  IAppService().isSingleAppMode() || showAddOnFront,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: _buildAppList(
+                                    context,
+                                    snapshot,
+                                    showAddOnFront,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        );
-                      },
+                        ),
+                        Positioned(
+                          top: 0.0,
+                          right: 8.0,
+                          child: _buildMenuButton(
+                            context,
+                            IAppService().isSingleAppMode() || showAddOnFront,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-              floatingActionButton: IAppService().isSingleAppMode()
-                  ? FloatingActionButton(
-                      tooltip: FlutterUI.translateLocal("Scan QR Code"),
-                      onPressed: () => AppOverviewPage.openQRScanner(
-                        context,
-                        callback: (config) async {
-                          var serverConfig = config.apps?.firstOrNull;
-                          if (serverConfig != null) {
-                            currentConfig = await App.createAppFromConfig(serverConfig);
-                            setState(() {});
-                          }
-                        },
-                      ),
-                      child: const Icon(Icons.qr_code),
-                    )
-                  : null,
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-            );
-          },
+            ),
+          ],
         ),
+        floatingActionButton: IAppService().isSingleAppMode()
+            ? FloatingActionButton(
+                tooltip: FlutterUI.translateLocal("Scan QR Code"),
+                onPressed: () => AppOverviewPage.openQRScanner(
+                  context,
+                  callback: (config) async {
+                    var serverConfig = config.apps?.firstOrNull;
+                    if (serverConfig != null) {
+                      currentConfig = await App.createAppFromConfig(serverConfig);
+                      setState(() {});
+                    }
+                  },
+                ),
+                child: const Icon(Icons.qr_code),
+              )
+            : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
