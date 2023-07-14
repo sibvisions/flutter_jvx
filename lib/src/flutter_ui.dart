@@ -23,6 +23,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart' hide LogEvent;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,7 @@ import 'mask/jvx_overlay.dart';
 import 'mask/login/login.dart';
 import 'mask/menu/menu.dart';
 import 'mask/splash/jvx_exit_splash.dart';
+import 'mask/splash/jvx_splash.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/config/translation/i18n.dart';
@@ -70,6 +72,7 @@ import 'util/debug/jvx_debug.dart';
 import 'util/extensions/jvx_logger_extensions.dart';
 import 'util/extensions/list_extensions.dart';
 import 'util/http_overrides.dart';
+import 'util/image/image_loader.dart';
 import 'util/import_handler/import_handler.dart';
 import 'util/jvx_colors.dart';
 import 'util/jvx_routes_observer.dart';
@@ -703,9 +706,25 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       builder: (context, snapshot) => Stack(
         children: [
           Splash(
-            splashBuilder: widget.splashBuilder,
             snapshot: snapshot,
             onReturn: returnToApps,
+            splashBuilder: widget.splashBuilder ??
+                (context, snapshot) => JVxSplash(
+                      snapshot: snapshot,
+                      logo: SvgPicture.asset(
+                        ImageLoader.getAssetPath(FlutterUI.package, "assets/images/J.svg"),
+                        width: 138,
+                        height: 145,
+                      ),
+                      background: SvgPicture.asset(
+                        ImageLoader.getAssetPath(FlutterUI.package, "assets/images/JVx_Bg.svg"),
+                        fit: BoxFit.fill,
+                      ),
+                      branding: Image.asset(
+                        ImageLoader.getAssetPath(FlutterUI.package, "assets/images/logo.png"),
+                        width: 200,
+                      ),
+                    ),
           ),
           ...?childrenBuilder?.call(snapshot),
         ],
@@ -725,9 +744,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       transitionDelegate: transitionDelegate,
       builder: (context, delayedSnapshot) => Splash(
         snapshot: delayedSnapshot,
-        splashBuilder: (context, delayedSnapshot) {
-          return JVxExitSplash(snapshot: delayedSnapshot);
-        },
+        splashBuilder: (context, delayedSnapshot) => JVxExitSplash(snapshot: delayedSnapshot),
       ),
       child: child,
     );

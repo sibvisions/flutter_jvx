@@ -17,11 +17,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../flutter_ui.dart';
-import '../../util/image/image_loader.dart';
-import 'jvx_splash.dart';
 
 typedef SplashBuilder = Widget Function(
   BuildContext context,
@@ -33,7 +28,7 @@ class Splash extends StatefulWidget {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final SplashBuilder? splashBuilder;
+  final SplashBuilder splashBuilder;
   final AsyncSnapshot? snapshot;
   final VoidCallback? onReturn;
 
@@ -43,7 +38,7 @@ class Splash extends StatefulWidget {
 
   const Splash({
     super.key,
-    this.splashBuilder,
+    required this.splashBuilder,
     this.snapshot,
     this.onReturn,
   });
@@ -80,31 +75,6 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.splashBuilder?.call(context, widget.snapshot) ??
-        JVxSplash(
-          snapshot: widget.snapshot,
-          logo: SvgPicture.asset(
-            ImageLoader.getAssetPath(
-              FlutterUI.package,
-              "assets/images/J.svg",
-            ),
-            width: 138,
-            height: 145,
-          ),
-          background: SvgPicture.asset(
-            ImageLoader.getAssetPath(
-              FlutterUI.package,
-              "assets/images/JVx_Bg.svg",
-            ),
-            fit: BoxFit.fill,
-          ),
-          branding: Image.asset(
-            ImageLoader.getAssetPath(
-              FlutterUI.package,
-              "assets/images/logo.png",
-            ),
-            width: 200,
-          ),
-        );
+    return widget.splashBuilder.call(context, widget.snapshot);
   }
 }
