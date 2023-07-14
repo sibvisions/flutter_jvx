@@ -19,7 +19,6 @@ import 'dart:async';
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
@@ -37,6 +36,7 @@ import 'exceptions/error_view_exception.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/login/login.dart';
 import 'mask/menu/menu.dart';
+import 'mask/splash/jvx_exit_splash.dart';
 import 'mask/splash/splash.dart';
 import 'model/command/api/alive_command.dart';
 import 'model/config/translation/i18n.dart';
@@ -75,6 +75,7 @@ import 'util/jvx_colors.dart';
 import 'util/jvx_routes_observer.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
+import 'util/widgets/future_nested_navigator.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
 class FlutterUI extends StatefulWidget {
@@ -644,7 +645,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                 splashReturnToApps() => IUiService().routeToAppOverview();
 
                 return _buildSplash(
-                  IAppService().startupFuture.value!,
+                  future: IAppService().startupFuture.value!,
                   retry: retrySplash,
                   returnToApps: splashReturnToApps,
                   childrenBuilder: (snapshot) => [
@@ -662,7 +663,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
               if (startupSnapshot.connectionState == ConnectionState.none &&
                   ![ConnectionState.none, ConnectionState.done].contains(exitSnapshot.connectionState)) {
-                return _buildExitSplash(JVxOverlay(child: child), snapshot: exitSnapshot);
+                return _buildExitSplash(child: JVxOverlay(child: child), future: IAppService().exitFuture.value!);
               }
 
               return JVxOverlay(child: child);
@@ -686,92 +687,49 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     );
   }
 
-  /// Builds a Navigator with a custom theme to push dialogs in the splash.
-  ///
-  /// This uses a Navigator instead of full blown MaterialApp to not touch existing routes, see [Navigator.reportsRouteUpdateToEngine].
-  /// It also connects the [NavigatorState] to the [future] object, so this can be re-used by multiple futures.
-  ///
-  /// [AsyncSnapshot] from the parent [FutureBuilder] can't be used, because [Navigator.onGenerateRoute]
-  /// is only called once-ish, therefore we have to trigger the update from inside.
-  Widget _buildSplash(
-    Future future, {
+  /// Builds a widget to show when starting an app.
+  Widget _buildSplash({
+    required Future future,
+    Widget? child,
     List<Widget> Function(AsyncSnapshot snapshot)? childrenBuilder,
     required VoidCallback retry,
     required VoidCallback returnToApps,
   }) {
-    return Theme(
-      data: splashTheme,
-      child: Navigator(
-        // Update key to force Navigator update, which in turn re-generates the route with the new future.
-        key: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
-        transitionDelegate: transitionDelegate,
-        onGenerateRoute: (settings) => PageRouteBuilder(
-          settings: settings,
-          pageBuilder: (context, _, __) => FutureBuilder(
-            future: future,
-            builder: (context, snapshot) => Stack(
-              children: [
-                Splash(
-                  splashBuilder: widget.splashBuilder,
-                  snapshot: snapshot,
-                  onReturn: returnToApps,
-                ),
-                ...?childrenBuilder?.call(snapshot),
-              ],
-            ),
+    return FutureNestedNavigator(
+      theme: splashTheme,
+      future: future,
+      transitionDelegate: transitionDelegate,
+      navigatorKey: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
+      builder: (context, snapshot) => Stack(
+        children: [
+          Splash(
+            splashBuilder: widget.splashBuilder,
+            snapshot: snapshot,
+            onReturn: returnToApps,
           ),
-        ),
+          ...?childrenBuilder?.call(snapshot),
+        ],
       ),
+      child: child,
     );
   }
 
   /// Builds a widget to show when exiting an app.
-  Widget _buildExitSplash(
-    Widget child, {
-    AsyncSnapshot? snapshot,
+  Widget _buildExitSplash({
+    required Widget child,
+    required Future future,
   }) {
-    return Splash(
-      splashBuilder: (context, snapshot) {
-        return Stack(
-          children: [
-            child,
-            Theme(
-              data: splashTheme,
-              child: FutureBuilder(
-                  future: Future.delayed(const Duration(milliseconds: 250)),
-                  builder: (context, snapshot) {
-                    return Stack(
-                      children: [
-                        ModalBarrier(
-                          dismissible: false,
-                          color: snapshot.connectionState == ConnectionState.done ? Colors.black54 : null,
-                        ),
-                        if (snapshot.connectionState == ConnectionState.done)
-                          Center(
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const CupertinoActivityIndicator(color: Colors.white, radius: 18),
-                                  const SizedBox(height: 15),
-                                  Text(
-                                    FlutterUI.translateLocal("Exiting..."),
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(fontSize: 16, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
-                    );
-                  }),
-            ),
-          ],
-        );
-      },
-      snapshot: snapshot,
+    return FutureNestedNavigator(
+      theme: splashTheme,
+      future: Future.delayed(const Duration(milliseconds: 250)),
+      transitionDelegate: transitionDelegate,
+      builder: (context, delayedSnapshot) => Splash(
+        snapshot: delayedSnapshot,
+        splashBuilder: (context, delayedSnapshot) {
+          return JVxExitSplash(snapshot: delayedSnapshot);
+        },
+      ),
+      child: child,
     );
   }
 

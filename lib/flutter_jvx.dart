@@ -60,6 +60,7 @@ export 'src/mask/menu/list/widget/list_menu_group.dart';
 export 'src/mask/menu/list/widget/list_menu_item.dart';
 export 'src/mask/menu/menu.dart';
 export 'src/mask/menu/tab/tab_menu.dart';
+export 'src/mask/splash/jvx_exit_splash.dart';
 export 'src/mask/splash/jvx_splash.dart';
 export 'src/mask/state/app_style.dart';
 export 'src/mask/state/loading_bar.dart';
