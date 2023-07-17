@@ -264,20 +264,7 @@ class OnlineApiRepository extends IRepository {
   @override
   Future<void> start() async {
     if (isStopped()) {
-      Duration? connectTimeout = ParseUtil.validateDuration(IConfigService().getAppConfig()?.connectTimeout);
-      Duration? requestTimeout = ParseUtil.validateDuration(
-          IConfigService().getAppConfig()?.requestTimeout ?? IConfigService().getAppConfig()?.connectTimeout);
-      BaseOptions options = BaseOptions(
-        connectTimeout: connectTimeout,
-        receiveTimeout: requestTimeout,
-        sendTimeout: requestTimeout,
-        validateStatus: (status) => true,
-        extra: {
-          "withCredentials": true,
-        },
-      );
-
-      client ??= Dio(options)..interceptors.add(DioLogInterceptor(FlutterUI.httpBucket));
+      client ??= _createClient();
     }
   }
 
@@ -303,6 +290,24 @@ class OnlineApiRepository extends IRepository {
   @override
   bool isStopped() {
     return client == null;
+  }
+
+  Dio _createClient({Uri? baseUrl}) {
+    Duration? connectTimeout = ParseUtil.validateDuration(IConfigService().getAppConfig()?.connectTimeout);
+    Duration? requestTimeout = ParseUtil.validateDuration(
+        IConfigService().getAppConfig()?.requestTimeout ?? IConfigService().getAppConfig()?.connectTimeout);
+    BaseOptions options = BaseOptions(
+      baseUrl: baseUrl?.toString() ?? '',
+      connectTimeout: connectTimeout,
+      receiveTimeout: requestTimeout,
+      sendTimeout: requestTimeout,
+      validateStatus: (status) => true,
+      extra: {
+        "withCredentials": true,
+      },
+    );
+
+    return Dio(options)..interceptors.add(DioLogInterceptor(FlutterUI.httpBucket));
   }
 
   void setConnected(bool connected) {
@@ -559,31 +564,8 @@ class OnlineApiRepository extends IRepository {
     _checkStatus();
 
     try {
-      if (pRequest is SessionRequest) {
-        if (IUiService().clientId.value?.isNotEmpty == true) {
-          pRequest.clientId = IUiService().clientId.value!;
-        } else {
-          if (cancelledSessionExpired.value) {
-            return ApiInteraction(responses: [], request: pRequest);
-          }
-          throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
-        }
-      }
-
-      dynamic data;
-      if (pRequest is UploadRequest) {
-        if (pRequest is ApiUploadRequest) {
-          data = FormData.fromMap({
-            "clientId": [pRequest.clientId],
-            "fileId": [pRequest.fileId],
-            "data": MultipartFile.fromBytes(
-              await pRequest.file.readAsBytes(),
-              filename: pRequest.file.name,
-            ),
-          });
-        }
-      } else {
-        data = jsonEncode(pRequest);
+      if (cancelledSessionExpired.value && (IUiService().clientId.value?.isEmpty ?? true)) {
+        return ApiInteraction(responses: [], request: pRequest);
       }
 
       /// HttpException can also be an invalid argument, check before retrying.
@@ -596,11 +578,20 @@ class OnlineApiRepository extends IRepository {
         return (error is HttpException && error.message.contains("Connection closed"));
       }
 
+      client!.options.baseUrl = IConfigService().baseUrl.value!.toString();
+      sendFunction() => _sendRequest(
+            pRequest,
+            client: client!,
+            headers: _headers,
+            cookies: _cookies,
+            clientId: IUiService().clientId.value,
+          );
+
       Response response;
       try {
         if (retryRequest ?? true) {
           response = await retry(
-            () => _sendRequest(pRequest, data),
+            sendFunction,
             retryIf: (e) => shouldRetry(e),
             retryIfResult: (response) => response.statusCode == 503,
             onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
@@ -609,7 +600,7 @@ class OnlineApiRepository extends IRepository {
             maxDelay: client?.options.receiveTimeout,
           );
         } else {
-          response = await _sendRequest(pRequest, data);
+          response = await sendFunction();
         }
 
         setConnected(true);
@@ -627,11 +618,7 @@ class OnlineApiRepository extends IRepository {
       }
 
       if (IUiService().getAppManager() != null) {
-        response = await IUiService().getAppManager()!.handleResponse(
-              pRequest,
-              response,
-              () => _sendRequest(pRequest, data),
-            );
+        response = await IUiService().getAppManager()!.handleResponse(pRequest, response, sendFunction);
       }
 
       if (response.statusCode != null && response.statusCode! >= 400 && response.statusCode! <= 599) {
@@ -691,6 +678,42 @@ class OnlineApiRepository extends IRepository {
     }
   }
 
+  Future<Object> _getData(ApiRequest pRequest) async {
+    if (pRequest is UploadRequest) {
+      if (pRequest is ApiUploadRequest) {
+        return FormData.fromMap({
+          "clientId": [pRequest.clientId],
+          "fileId": [pRequest.fileId],
+          "data": MultipartFile.fromBytes(
+            await pRequest.file.readAsBytes(),
+            filename: pRequest.file.name,
+          ),
+        });
+      } else {
+        throw UnimplementedError("${pRequest.runtimeType} is an unknown UploadRequest.");
+      }
+    } else {
+      return jsonEncode(pRequest);
+    }
+  }
+
+  /// Sends a single [ApiRequest] by creating a new client, ignoring every response and closing it after.
+  Future<void> sendRequestAndForget(ApiRequest pRequest) async {
+    Dio? client;
+    try {
+      client = _createClient(baseUrl: IConfigService().baseUrl.value);
+      await _sendRequest(
+        pRequest,
+        client: client,
+        headers: _headers,
+        cookies: _cookies,
+        clientId: IUiService().clientId.value,
+      );
+    } finally {
+      client?.close();
+    }
+  }
+
   String _decodeUTF8(Uint8List responseBytes) {
     return utf8.decode(responseBytes, allowMalformed: true);
   }
@@ -704,24 +727,39 @@ class OnlineApiRepository extends IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Sends request to remote server, applies timeout.
-  Future<Response> _sendRequest(ApiRequest pRequest, dynamic data) async {
+  Future<Response> _sendRequest(
+    ApiRequest pRequest, {
+    required Dio client,
+    required Set<Cookie> cookies,
+    required Map<String, dynamic> headers,
+    required String? clientId,
+  }) async {
+    if (pRequest is SessionRequest) {
+      if (clientId?.isNotEmpty == true) {
+        pRequest.clientId = clientId!;
+      } else {
+        throw Exception("No Client ID found while trying to send ${pRequest.runtimeType}");
+      }
+    }
+
+    Object? data = await _getData(pRequest);
+
     APIRoute? route = uriMap[pRequest.runtimeType]?.call(pRequest);
 
     if (route == null) {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
 
-    Uri uri = Uri.parse("${IConfigService().baseUrl.value!}/${route.route}");
     List<Cookie>? requestCookies;
     if (!kIsWeb) {
-      requestCookies = List.of(_cookies);
+      requestCookies = List.of(cookies);
       IUiService().getAppManager()?.modifyCookies(requestCookies);
     }
-    Map<String, dynamic> requestHeaders = Map.of(_headers);
+    Map<String, dynamic> requestHeaders = Map.of(headers);
     IUiService().getAppManager()?.modifyHeaders(requestHeaders);
 
-    Response response = await client!.requestUri(
-      uri,
+    Response response = await client.requestUri(
+      Uri(path: "/${route.route}"),
       data: route.method != Method.GET ? data : null,
       options: Options(
         method: route.method.name,
@@ -738,7 +776,7 @@ class OnlineApiRepository extends IRepository {
       // Extract the session-id cookie to be sent in future
       final List<String>? responseCookies = response.headers[HttpHeaders.setCookieHeader];
       if (responseCookies != null) {
-        _cookies.addAll(
+        cookies.addAll(
           responseCookies
               .map((str) => str.split(_setCookieReg))
               .expand((cookie) => cookie)

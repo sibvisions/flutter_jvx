@@ -22,8 +22,8 @@ import 'package:flutter/foundation.dart';
 
 import '../../../config/app_config.dart';
 import '../../../flutter_ui.dart';
-import '../../../model/command/api/exit_command.dart';
 import '../../../model/command/api/startup_command.dart';
+import '../../../model/request/api_exit_request.dart';
 import '../../api/i_api_service.dart';
 import '../../api/shared/repository/offline_api_repository.dart';
 import '../../api/shared/repository/online_api_repository.dart';
@@ -237,9 +237,11 @@ class AppService implements IAppService {
   }
 
   Future<void> _stopApp({bool restart = false}) async {
-    if (!IConfigService().offline.value && IUiService().clientId.value != null) {
-      unawaited(ICommandService()
-          .sendCommand(ExitCommand(reason: "App has been stopped"))
+    var repository = IApiService().getRepository();
+    if (repository is OnlineApiRepository && IUiService().clientId.value != null) {
+      // Send request directly to avoid blocking command service shutdown.
+      unawaited(repository
+          .sendRequestAndForget(ApiExitRequest())
           .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
     }
 
