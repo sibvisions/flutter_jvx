@@ -356,8 +356,6 @@ abstract class OfflineUtil {
       }
     } finally {
       await WakelockPlus.disable();
-      // In case it hasn't been closed yet
-      ProgressDialogWidget.safeClose(dialogKey);
     }
   }
 
@@ -558,6 +556,10 @@ abstract class OfflineUtil {
         },
       );
 
+      // Currently kinda unnecessary as the CloseScreenCommand triggers
+      // a DeleteScreenCommand which in turn triggers routing that kills the dialog.
+      ProgressDialogWidget.safeClose(dialogKey);
+
       // Close and delete screen
       await ICommandService().sendCommand(CloseScreenCommand(
         screenName: panelModel.name,
@@ -607,8 +609,6 @@ abstract class OfflineUtil {
       );
     } finally {
       await WakelockPlus.disable();
-      // In case it hasn't been closed yet
-      ProgressDialogWidget.safeClose(dialogKey);
     }
   }
 }
