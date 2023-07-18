@@ -14,17 +14,23 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:push/push.dart';
 
 import '../../../../../flutter_ui.dart';
+import '../../../../../model/command/api/set_parameter_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/request/api_startup_request.dart';
 import '../../../../../util/device_info.dart';
+import '../../../../../util/push_util.dart';
 import '../../../../api/i_api_service.dart';
 import '../../../../config/i_config_service.dart';
 import '../../../../ui/i_ui_service.dart';
+import '../../../i_command_service.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
@@ -87,5 +93,42 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   Future<void> onFinish(StartupCommand command) async {
     FlutterUI.clearLocationHistory();
     IUiService().getAppManager()?.onSuccessfulStartup();
+
+    unawaited(_sendPushToken());
+  }
+
+  Future<void> _sendPushToken() async {
+    String? pushToken;
+    try {
+      // In case Push-Swift receives no token in time, it blocks until one arrives.
+      pushToken = await Push.instance.token.timeout(const Duration(seconds: 1));
+    } catch (e, stack) {
+      FlutterUI.log.e("Error retrieving push token", error: e, stackTrace: stack);
+    }
+    if (pushToken != null) {
+      try {
+        await ICommandService().sendCommand(
+          SetParameterCommand(
+            parameter: {"pushToken": pushToken},
+            reason: "Send PushToken after startup",
+          ),
+        );
+
+        var state = FlutterUI.of(FlutterUI.getEffectiveContext()!);
+        var data = PushUtil.notificationWhichLaunchedApp ?? state.tappedNotificationPayloads.value.lastOrNull;
+        if (data != null) {
+          await ICommandService().sendCommand(
+            SetParameterCommand(
+              parameter: {"pushData": data},
+              reason: "Send PushData after startup",
+            ),
+          );
+        }
+        // Clear on success
+        state.tappedNotificationPayloads.value.clear();
+      } catch (e, stack) {
+        FlutterUI.log.w("Failed to send push token/data to server", error: e, stackTrace: stack);
+      }
+    }
   }
 }

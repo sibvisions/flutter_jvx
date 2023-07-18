@@ -17,8 +17,11 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:push/push.dart';
+import 'package:universal_io/io.dart';
 
 import '../../../flutter_jvx.dart';
 import '../../routing/locations/main_location.dart';
@@ -257,6 +260,83 @@ class JVxDebug extends StatelessWidget {
                 child: const Text("Trigger"),
               ),
             ),
+          ListTile(
+            title: Text(
+              "Push Token",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: OutlinedButton(
+              onPressed: () async {
+                String? token;
+                String? error = "none";
+                try {
+                  token = await Push.instance.token.timeout(const Duration(seconds: 1));
+                } catch (e, stack) {
+                  FlutterUI.log.e("Error retrieving token", error: e, stackTrace: stack);
+                  error = e.toString();
+                }
+
+                // ignore: use_build_context_synchronously
+                if (!context.mounted) return;
+                if (Platform.isIOS) {
+                  await showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: const Text("APNS/FCM Token"),
+                        content: SelectableText(token ?? "Token unavailable (Error: $error)"),
+                        actions: [
+                          CupertinoDialogAction(
+                            onPressed: () => Navigator.pop(context),
+                            isDefaultAction: true,
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("APNS/FCM Token"),
+                        content: SelectableText(token ?? "Token unavailable (Error: $error)"),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+              child: const Text("Retrieve and show"),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Push Permission",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: OutlinedButton(
+              onPressed: () async {
+                final isGranted = await Push.instance.requestPermission();
+                // ignore: use_build_context_synchronously
+                if (!context.mounted) return;
+                await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Notification Permission"),
+                    content: Text(isGranted ? "Granted" : "Denied"),
+                  ),
+                );
+              },
+              child: const Text("Request"),
+            ),
+          ),
         ],
       ),
     );

@@ -36,6 +36,8 @@ class ApplicationParametersResponse extends ApiResponse {
 
   final bool? designModeAllowed;
 
+  final bool? pushNotificationsEnabled;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,5 +48,6 @@ class ApplicationParametersResponse extends ApiResponse {
         authenticated = json[ApiObjectProperty.authenticated],
         openScreen = json[ApiObjectProperty.openScreen],
         designModeAllowed = ParseUtil.parseBool(json[ApiObjectProperty.designMode]),
+        pushNotificationsEnabled = ParseUtil.parseBool(json[ApiObjectProperty.pushNotifications]),
         super.fromJson();
 }

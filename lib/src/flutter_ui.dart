@@ -15,6 +15,7 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
@@ -22,10 +23,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart' hide LogEvent;
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:push/push.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:universal_io/io.dart';
@@ -78,6 +81,7 @@ import 'util/jvx_colors.dart';
 import 'util/jvx_routes_observer.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
 import 'util/parse_util.dart';
+import 'util/push_util.dart';
 import 'util/widgets/future_nested_navigator.dart';
 
 /// The base Widget representing the JVx to Flutter bridge.
@@ -354,6 +358,23 @@ class FlutterUI extends StatefulWidget {
 
     BrowserHttpClientException.verbose = !kReleaseMode;
 
+    await PushUtil.localNotificationsPlugin.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings("@mipmap/ic_launcher"),
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        ),
+      ),
+      onDidReceiveNotificationResponse: (details) {
+        var state = FlutterUI.maybeOf(FlutterUI.getEffectiveContext());
+        if (state != null) {
+          PushUtil.handleLocalNotificationTap(state.tappedNotificationPayloads, details);
+        }
+      },
+    );
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Service init
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -418,7 +439,7 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
-    FlutterUIState.startupApp = await _handleURIParameters(queryParameters);
+    App? urlApp = await _handleURIParameters(queryParameters);
     queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
     // API
@@ -442,6 +463,39 @@ class FlutterUI extends StatefulWidget {
     IUiService().setAppManager(pAppToRun.appManager);
 
     await pAppToRun.appManager?.init();
+
+    if (urlApp != null) {
+      FlutterUIState.startupApp = urlApp;
+    } else {
+      // Handle notification launching app from terminated state
+      Map<String?, Object?>? data = await Push.instance.notificationTapWhichLaunchedAppFromTerminated;
+      data = PushUtil.extractJVxData(data);
+      // "payload" means it's a local notification, handle below.
+      if (data?.containsKey("payload") ?? false) data = null;
+      if (data == null) {
+        var notificationLaunchDetails = await PushUtil.localNotificationsPlugin.getNotificationAppLaunchDetails();
+        if (notificationLaunchDetails?.didNotificationLaunchApp ?? false) {
+          var payload = notificationLaunchDetails!.notificationResponse?.payload;
+          if (payload != null) {
+            try {
+              data = jsonDecode(payload);
+            } catch (e, stack) {
+              FlutterUI.log.f("Failed to parse notification payload", error: e, stackTrace: stack);
+            }
+          }
+        }
+      }
+
+      if (data != null) {
+        FlutterUI.log.d("App launched from notification");
+        PushUtil.notificationWhichLaunchedApp = data;
+        var notificationConfig = PushUtil.handleNotificationData(data);
+        if (notificationConfig != null) {
+          App notificationApp = await App.createAppFromConfig(notificationConfig);
+          FlutterUIState.startupApp = notificationApp;
+        }
+      }
+    }
 
     runApp(pAppToRun);
   }
@@ -530,6 +584,14 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   /// The last password that the user entered, used for offline switch.
   String? lastPassword;
 
+  late final StreamSubscription newTokenSubscription;
+  late final StreamSubscription notificationTapSubscription;
+  final ValueNotifier<List<Map<String?, Object?>>> tappedNotificationPayloads = ValueNotifier([]);
+  late final StreamSubscription<RemoteMessage> notificationSubscription;
+  final ValueNotifier<List<RemoteMessage>> messagesReceived = ValueNotifier([]);
+  late final StreamSubscription<RemoteMessage> backgroundNotificationSubscription;
+  final ValueNotifier<List<RemoteMessage>> backgroundMessagesReceived = ValueNotifier([]);
+
   @override
   void initState() {
     super.initState();
@@ -575,6 +637,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addObserver(this);
     subscription = Connectivity().onConnectivityChanged.listen(didChangeConnectivity);
+
+    registerPushStreams();
 
     // Register callbacks
     IConfigService().disposeImagesCallbacks();
@@ -823,6 +887,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
+    disposePushStreams();
+
     IUiService().i18n().currentLanguage.removeListener(refresh);
     IUiService().layoutMode.removeListener(changedTheme);
     IConfigService().themePreference.removeListener(changedTheme);
@@ -899,6 +965,36 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         ),
       ],
     );
+  }
+
+  void registerPushStreams() {
+    newTokenSubscription = Push.instance.onNewToken.listen(PushUtil.handleTokenUpdates);
+
+    notificationTapSubscription = Push.instance.onNotificationTap.listen((data) {
+      // "payload" means it's a local notification, handle elsewhere.
+      if (data.containsKey("payload")) return;
+
+      PushUtil.handleNotificationTap(tappedNotificationPayloads, data);
+    });
+
+    notificationSubscription = Push.instance.onMessage.listen((message) {
+      PushUtil.handleOnMessage(messagesReceived, message);
+    });
+
+    backgroundNotificationSubscription = Push.instance.onBackgroundMessage.listen((message) {
+      PushUtil.handleOnBackgroundMessages(backgroundMessagesReceived, message);
+    });
+  }
+
+  void disposePushStreams() {
+    newTokenSubscription.cancel();
+    notificationTapSubscription.cancel();
+    notificationSubscription.cancel();
+    backgroundNotificationSubscription.cancel();
+
+    tappedNotificationPayloads.dispose();
+    messagesReceived.dispose();
+    backgroundMessagesReceived.dispose();
   }
 }
 

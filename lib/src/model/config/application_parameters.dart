@@ -22,6 +22,7 @@ class ApplicationParameters {
   String? authenticated;
   String? openScreen;
   bool designModeAllowed;
+  bool? pushNotificationsEnabled;
   Map<String, dynamic> parameters;
 
   ApplicationParameters({
@@ -30,6 +31,7 @@ class ApplicationParameters {
     this.authenticated,
     this.openScreen,
     bool? designModeAllowed,
+    this.pushNotificationsEnabled,
     Map<String, dynamic>? parameters,
   })  : designModeAllowed = designModeAllowed ?? false,
         parameters = parameters ?? {};
@@ -40,6 +42,7 @@ class ApplicationParameters {
     authenticated = other.authenticated ?? authenticated;
     openScreen = other.openScreen ?? openScreen;
     designModeAllowed = other.designModeAllowed ?? designModeAllowed;
+    pushNotificationsEnabled = other.pushNotificationsEnabled ?? pushNotificationsEnabled;
     parameters = {...parameters, ...(other.json)};
   }
 }

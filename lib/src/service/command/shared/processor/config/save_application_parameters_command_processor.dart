@@ -16,6 +16,8 @@
 
 import 'dart:async';
 
+import 'package:push/push.dart';
+
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_application_parameters_command.dart';
 import '../../../../ui/i_ui_service.dart';
@@ -25,6 +27,9 @@ class SaveApplicationParametersCommandProcessor extends ICommandProcessor<SaveAp
   @override
   Future<List<BaseCommand>> processCommand(SaveApplicationParametersCommand command, BaseCommand? origin) async {
     IUiService().updateApplicationParameters(command.parameters);
+    if (command.parameters.pushNotificationsEnabled == true) {
+      unawaited(Push.instance.requestPermission());
+    }
     return [];
   }
 }
