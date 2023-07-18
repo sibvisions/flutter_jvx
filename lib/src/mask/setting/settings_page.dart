@@ -183,7 +183,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: bottomBarHeight),
       child: InkWell(
-        onTap: IConfigService().offline.value ? routeBack : _saveClicked,
+        onTap: _saveClicked,
         child: SizedBox.shrink(
           child: Center(
             child: Text(
@@ -585,7 +585,7 @@ class _SettingsPageState extends State<SettingsPage> {
     try {
       if (_changesPending()) {
         await IConfigService().updateUserLanguage(language);
-        if (IUiService().clientId.value != null) {
+        if (!IConfigService().offline.value && IUiService().clientId.value != null) {
           unawaited(IAppService().startApp());
           return;
         }
