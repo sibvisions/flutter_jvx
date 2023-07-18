@@ -328,6 +328,7 @@ class OnlineApiRepository extends IRepository {
       } else {
         setConnectedStatus(true);
       }
+      askServerForChanges();
     } else if (_connected != connected) {
       resetConnectedStatus();
     }
@@ -533,6 +534,15 @@ class OnlineApiRepository extends IRepository {
   void resetConnectedStatus({bool instant = false}) {
     _statusTimer?.cancel();
     JVxOverlay.maybeOf(FlutterUI.getEffectiveContext())?.resetConnectionState(instant: instant);
+  }
+
+  /// Triggers a [ChangesCommand] for the case that changes have been dropped during reconnect.
+  void askServerForChanges() {
+    if (IUiService().clientId.value != null && !IConfigService().offline.value) {
+      ICommandService()
+          .sendCommand(ChangesCommand(reason: "Check for changes after reconnect"))
+          .catchError((e, stack) => FlutterUI.logUI.w("Failed to handle reconnect changes command", e, stack));
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
