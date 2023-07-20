@@ -81,7 +81,7 @@ class AppService implements IAppService {
   Uri? get returnUri => _returnUri;
 
   @override
-  set returnUri(Uri? value) => _returnUri;
+  set returnUri(Uri? value) => _returnUri = value;
 
   @override
   bool? get startedManually => _startedManually;
@@ -117,7 +117,7 @@ class AppService implements IAppService {
   void saveLocationAsReturnUri() {
     BeamState? targetState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState?;
     if (targetState != null && targetState.uri.path.startsWith("/screens/")) {
-      _returnUri ??= Uri(path: targetState.uri.path);
+      returnUri ??= Uri(path: targetState.uri.path);
     }
   }
 
