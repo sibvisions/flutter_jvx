@@ -22,7 +22,6 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../components.dart';
-import '../../../../model/command/api/fetch_command.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -252,18 +251,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       if (model.linkReference == correctLinkReference) {
         referencedCellEditor = IDataService().createReferencedCellEditors(model, dataProvider, columnName);
       }
-
-      if (IDataService()
-          .databookNeedsFetch(pDataProvider: model.linkReference.referencedDataprovider, pFrom: 0, pTo: -1)) {
-        IUiService().sendCommand(
-          FetchCommand(
-            fromRow: 0,
-            rowCount: -1,
-            dataProvider: model.linkReference.referencedDataprovider,
-            reason: "Linked cell editor fetches referenced dataprovider",
-          ),
-        );
-      }
     }
   }
 
@@ -322,8 +309,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
   LinkReference get correctLinkReference {
     ColumnDefinition? colDef = IDataService()
-        .getDataBook(dataProvider)
-        ?.metaData
+        .getMetaData(dataProvider)
         ?.columnDefinitions
         .firstWhereOrNull((element) => element.name == columnName);
 

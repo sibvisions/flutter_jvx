@@ -450,14 +450,17 @@ class DataService implements IDataService {
       linkReference.columnNames.add(columnName);
     }
 
-    if (getMetaData(linkReference.referencedDataprovider) == null) {
-      IUiService().sendCommand(FetchCommand(
-        includeMetaData: true,
-        fromRow: -1,
-        rowCount: 0,
-        dataProvider: linkReference.referencedDataprovider,
-        reason: "Created referenced cell editor on non data book without metadata",
-      ));
+    var databook = getDataBook(linkReference.referencedDataprovider);
+    if (databook == null || databook.metaData == null || !databook.isAllFetched) {
+      IUiService().sendCommand(
+        FetchCommand(
+          includeMetaData: true,
+          fromRow: 0,
+          rowCount: -1,
+          dataProvider: linkReference.referencedDataprovider,
+          reason: "Created referenced cell editor on data book without metadata",
+        ),
+      );
     } else {
       referencedDataBook.buildDataToDisplayMap(referencedCellEditor);
     }

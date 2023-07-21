@@ -541,9 +541,9 @@ class UiService implements IUiService {
         pTo: pDataSubscription.to,
         pDataProvider: pDataSubscription.dataProvider,
       );
-      bool fetchMetaData = needsToFetch && databook == null;
+      bool fetchMetaData = databook?.metaData == null;
 
-      if (needsToFetch) {
+      if (needsToFetch || fetchMetaData) {
         int fromRow = databook?.records.keys.maxOrNull ?? pDataSubscription.from;
 
         sendCommand(FetchCommand(
