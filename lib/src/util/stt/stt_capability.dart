@@ -37,7 +37,6 @@ mixin SttCapability<T extends StatefulWidget> on State<T> {
   Future<void> initStt() async {
     await (sttInit ??= () async {
       speechAvailable = await speechToTextProvider.initialize(
-        finalTimeout: const Duration(seconds: 5),
         options: [
           SpeechToText.androidNoBluetooth,
           SpeechToText.iosNoBluetooth,
