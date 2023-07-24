@@ -982,7 +982,7 @@ class UiService implements IUiService {
 
     FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
     if (panelModel == null || panelModel is! FlPanelModel) {
-      FlutterUI.logUI.e("Tried to open a content which is not panel!", StackTrace.current);
+      FlutterUI.logUI.e("Tried to open a content which is not panel!", null, StackTrace.current);
       return;
     }
 
@@ -1036,7 +1036,7 @@ class UiService implements IUiService {
 
     FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
     if (panelModel == null || panelModel is! FlPanelModel) {
-      FlutterUI.logUI.e("Tried to close a content which is not panel!", StackTrace.current);
+      FlutterUI.logUI.e("Tried to close a content which is not panel!", null, StackTrace.current);
       return;
     }
 
