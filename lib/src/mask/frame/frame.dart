@@ -154,6 +154,10 @@ abstract class FrameState extends State<Frame> {
   List<Widget> getActions() {
     List<Widget> actions = [];
 
+    IUiService().getAppManager()?.getAdditionalActions().forEach((element) {
+      actions.add(element);
+    });
+
     if (IUiService().applicationParameters.value.designModeAllowed) {
       actions.add(
         ValueListenableBuilder(

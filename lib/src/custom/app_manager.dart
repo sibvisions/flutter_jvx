@@ -17,6 +17,7 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:universal_io/io.dart';
 
 import '../flutter_ui.dart';
@@ -95,6 +96,9 @@ abstract class AppManager {
   /// Gets called on menu model selection.
   void modifyMenuModel(MenuModel pMenuModel) {}
 
+  /// This lets you modify the list of actions shown in the app bar.
+  List<Widget> getAdditionalActions() => [];
+
   /// Can be used to modify the headers for each request
   void modifyHeaders(Map<String, dynamic> headers) {}
 
@@ -153,7 +157,4 @@ abstract class AppManager {
 
   /// Is called when going to the login.
   void onLoginPage() {}
-
-// /// Is called if a login is successfully completed.
-// void onLoginSuccess() {}
 }
