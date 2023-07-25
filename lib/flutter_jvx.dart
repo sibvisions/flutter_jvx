@@ -68,6 +68,7 @@ export 'src/model/api_interaction.dart';
 // Model
 export 'src/model/command/base_command.dart';
 export 'src/model/component/fl_component_model.dart';
+export 'src/model/config/application_parameters.dart';
 export 'src/model/config/translation/i18n.dart';
 // Data
 export 'src/model/data/column_definition.dart';
