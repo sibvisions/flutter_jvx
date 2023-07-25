@@ -365,25 +365,15 @@ class UiService implements IUiService {
     if (appManager != null) {
       appManager!.customScreens.forEach((customScreen) {
         CustomMenuItem? customMenuItem = appManager!.customMenuItems[customScreen.key];
-        MenuItemModel? originalItem;
 
-        originalItem = menuGroupModels
+        MenuItemModel? originalItem = menuGroupModels
             .expand((element) => element.items)
             .where((menuItem) => [menuItem.navigationName, menuItem.screenLongName].contains(customScreen.key))
             .firstOrNull;
 
-        if (originalItem != null) {
-          // We have an menu item that we can replace.
-          // if (customMenuItem == null) {
-          //   customMenuItem ??= CustomMenuItem(
-          //     group: items.firstOrNull?.name ?? "Custom",
-          //     label: customScreen.screenTitle ?? "Custom Screen",
-          //     faIcon: FontAwesomeIcons.notdef,
-          //   );
-          // }
-        } else {
-          // We have no menu item, use the one provided or create one on best-effort basis.
-          customMenuItem ??= CustomMenuItem(
+        if (originalItem == null && customMenuItem == null) {
+          // We have no menu item, therefore, create one on best-effort basis.
+          customMenuItem = CustomMenuItem(
             group: "Custom",
             label: customScreen.screenTitle ?? "Custom Screen",
             faIcon: FontAwesomeIcons.notdef,
@@ -391,38 +381,34 @@ class UiService implements IUiService {
         }
 
         // Whether we should show the item in the current setting.
-        if ((customScreen.showOnline && !IConfigService().offline.value) ||
-            (customScreen.showOffline && IConfigService().offline.value)) {
-          // At this point we either have a custom menu item or an original one.
-
+        if (customMenuItem != null &&
+            ((customScreen.showOnline && !IConfigService().offline.value) ||
+                (customScreen.showOffline && IConfigService().offline.value))) {
           MenuItemModel overrideMenuItem = MenuItemModel(
             screenLongName: originalItem?.screenLongName ?? customScreen.key,
             navigationName: originalItem?.navigationName ?? customScreen.keyNavigationName,
-            label: customMenuItem?.label ?? originalItem!.label,
-            alternativeLabel: customMenuItem?.alternativeLabel ?? originalItem?.alternativeLabel,
-            imageBuilder: customMenuItem?.imageBuilder,
+            label: customMenuItem.label,
+            alternativeLabel: customMenuItem.alternativeLabel ?? originalItem?.alternativeLabel,
+            imageBuilder: customMenuItem.imageBuilder,
             // Only override image if there is no image builder.
-            image: customMenuItem?.imageBuilder == null ? originalItem?.image : null,
+            image: customMenuItem.imageBuilder == null ? originalItem?.image : null,
           );
 
           // Check if group already exists.
-          MenuGroupModel? menuGroupModel = customMenuItem?.group != null
-              // Custom group doesn't have to exist
-              ? menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem!.group)
-              : menuGroupModels.firstWhere((element) => element.items.any((item) => item == originalItem));
+          MenuGroupModel? menuGroupModel =
+              menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem!.group);
 
           if (menuGroupModel == null) {
             // Make new group if it didn't exist.
             menuGroupModel = MenuGroupModel(
-              name: customMenuItem!.group,
+              name: customMenuItem.group,
               items: [],
             );
             menuGroupModels.add(menuGroupModel);
           }
-          menuGroupModel.items.add(overrideMenuItem);
-        }
 
-        if (customMenuItem != null) {
+          menuGroupModel.items.add(overrideMenuItem);
+
           // Finally remove menu items that we replaced.
           menuGroupModels.forEach((menuGroup) => menuGroup.items.remove(originalItem));
         }
