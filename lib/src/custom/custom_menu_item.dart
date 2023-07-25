@@ -49,5 +49,7 @@ class CustomMenuItem {
     /// Font Awesome Icon to be used when creating a custom menu item.
     IconData? faIcon,
     WidgetBuilder? imageBuilder,
-  }) : imageBuilder = (imageBuilder ?? (faIcon != null ? (_) => FaIcon(faIcon) : null));
+  })  : imageBuilder = (imageBuilder ?? (faIcon != null ? (_) => FaIcon(faIcon) : null)),
+        assert(group.isNotEmpty, "Group name must not be empty"),
+        assert(label.isNotEmpty, "Label must not be empty");
 }
