@@ -365,14 +365,14 @@ class UiService implements IUiService {
     if (appManager != null) {
       appManager!.customScreens.forEach((customScreen) {
         CustomMenuItem? customMenuItem = appManager!.customMenuItems[customScreen.key];
+        MenuItemModel? originalItem;
 
-        // Check for screen replacing by retrieving every menu item who open the same screen.
-        Iterable<Iterable<MenuItemModel>> it = menuGroupModels.map((e) => e.items).map((menuItems) => menuItems
-            .where((menuItem) => [menuItem.screenLongName, menuItem.navigationName].contains(customScreen.key)));
-        // This is usually just one item.
-        List<MenuItemModel> items = it.isNotEmpty ? it.reduce((value, element) => [...value, ...element]).toList() : [];
+        originalItem = menuGroupModels
+            .expand((element) => element.items)
+            .where((menuItem) => [menuItem.navigationName, menuItem.screenLongName].contains(customScreen.key))
+            .firstOrNull;
 
-        if (items.isNotEmpty) {
+        if (originalItem != null) {
           // We have an menu item that we can replace.
           // if (customMenuItem == null) {
           //   customMenuItem ??= CustomMenuItem(
@@ -394,7 +394,6 @@ class UiService implements IUiService {
         if ((customScreen.showOnline && !IConfigService().offline.value) ||
             (customScreen.showOffline && IConfigService().offline.value)) {
           // At this point we either have a custom menu item or an original one.
-          MenuItemModel? originalItem = items.firstOrNull;
 
           MenuItemModel overrideMenuItem = MenuItemModel(
             screenLongName: originalItem?.screenLongName ?? customScreen.key,
@@ -410,7 +409,7 @@ class UiService implements IUiService {
           MenuGroupModel? menuGroupModel = customMenuItem?.group != null
               // Custom group doesn't have to exist
               ? menuGroupModels.firstWhereOrNull((element) => element.name == customMenuItem!.group)
-              : menuGroupModels.firstWhere((element) => items.any((item) => item == originalItem));
+              : menuGroupModels.firstWhere((element) => element.items.any((item) => item == originalItem));
 
           if (menuGroupModel == null) {
             // Make new group if it didn't exist.
@@ -425,7 +424,7 @@ class UiService implements IUiService {
 
         if (customMenuItem != null) {
           // Finally remove menu items that we replaced.
-          menuGroupModels.forEach((menuGroup) => menuGroup.items.removeWhere((menuItem) => items.contains(menuItem)));
+          menuGroupModels.forEach((menuGroup) => menuGroup.items.remove(originalItem));
         }
       });
     }
