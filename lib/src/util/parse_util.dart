@@ -341,31 +341,31 @@ abstract class ParseUtil {
     return value == "" ? null : value;
   }
 
-  /// Extracts a [ServerConfig] from [queryParameters].
+  /// Extracts a [ServerConfig] from [data].
   ///
   /// Returns either a valid [ServerConfig] or `null`.
-  static ServerConfig? extractURIAppParameters(Map<String, String> queryParameters) {
-    String? appName = queryParameters.remove("appName");
-    String? baseUrl = queryParameters.remove("baseUrl");
+  static ServerConfig? extractAppParameters(Map<String, String> data) {
+    String? appName = data.remove("appName");
+    String? baseUrl = data.remove("baseUrl");
     if (appName != null && baseUrl != null) {
       Uri? baseUri;
       try {
         baseUri = Uri.parse(baseUrl);
       } on FormatException catch (e, stack) {
-        FlutterUI.log.w("Failed to parse baseUrl url parameter", e, stack);
+        FlutterUI.log.w("Failed to parse baseUrl from data", e, stack);
       }
-      String? username = queryParameters.remove("username") ?? queryParameters.remove("userName");
-      String? password = queryParameters.remove("password");
+      String? username = data.remove("username") ?? data.remove("userName");
+      String? password = data.remove("password");
 
-      ServerConfig? urlConfig = ServerConfig(
+      ServerConfig? extractedConfig = ServerConfig(
         appName: appName,
         baseUrl: baseUri,
         username: username,
         password: password,
       );
 
-      if (urlConfig.isValid) {
-        return urlConfig;
+      if (extractedConfig.isValid) {
+        return extractedConfig;
       }
     }
     return null;

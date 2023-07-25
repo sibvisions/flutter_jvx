@@ -122,7 +122,7 @@ class MainLocation extends BeamLocation<BeamState> {
 
   void _handleDeepLinks(BuildContext context, BeamState state) {
     Map<String, String> queryParameters = Map.of(state.queryParameters);
-    ServerConfig? deepLinkConfig = ParseUtil.extractURIAppParameters(queryParameters);
+    ServerConfig? deepLinkConfig = ParseUtil.extractAppParameters(queryParameters);
     queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
     if (deepLinkConfig != null) {

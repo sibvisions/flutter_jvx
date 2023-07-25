@@ -416,7 +416,7 @@ class FlutterUI extends StatefulWidget {
     IUiService uiService = UiService.create();
     services.registerSingleton(uiService);
 
-    FlutterUIState.urlApp = await _handleURIParameters(queryParameters);
+    FlutterUIState.startupApp = await _handleURIParameters(queryParameters);
     queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
     // API
@@ -472,7 +472,7 @@ class FlutterUI extends StatefulWidget {
       IUiService().updateWebOnly(webOnly == "true");
     }
 
-    ServerConfig? urlConfig = ParseUtil.extractURIAppParameters(queryParameters);
+    ServerConfig? urlConfig = ParseUtil.extractAppParameters(queryParameters);
     if (urlConfig != null) {
       App urlApp = await App.createAppFromConfig(urlConfig);
       await urlApp.updateDefault(true);
@@ -510,7 +510,7 @@ PageStorageBucket pageStorageBucket = PageStorageBucket();
 final RouteObserver<ModalRoute> routeObserver = RouteObserver();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
-  static App? urlApp;
+  static App? startupApp;
 
   final JVxRoutesObserver jvxRouteObserver = JVxRoutesObserver();
 
@@ -587,8 +587,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     changedTheme();
 
     // Init
-    if (urlApp != null) {
-      IAppService().startApp(appId: urlApp!.id, autostart: true);
+    if (startupApp != null) {
+      IAppService().startApp(appId: startupApp!.id, autostart: true);
     } else {
       IAppService().startDefaultApp();
     }
