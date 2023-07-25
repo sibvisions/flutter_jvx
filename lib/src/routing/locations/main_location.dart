@@ -29,7 +29,6 @@ import '../../mask/menu/menu_page.dart';
 import '../../mask/setting/settings_page.dart';
 import '../../mask/work_screen/work_screen_page.dart';
 import '../../model/command/api/login_command.dart';
-import '../../service/apps/app.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -128,17 +127,7 @@ class MainLocation extends BeamLocation<BeamState> {
     if (deepLinkConfig != null) {
       String? strUri = state.queryParameters["returnUri"];
       IAppService().returnUri = (strUri != null ? Uri.parse(strUri) : Uri(path: state.uri.path));
-      unawaited(_startDeepLinkApp(context, deepLinkConfig));
-    }
-  }
-
-  Future<void> _startDeepLinkApp(BuildContext context, ServerConfig deepLinkConfig) async {
-    App deepLinkApp = await App.createAppFromConfig(deepLinkConfig);
-    // Only start app if it isn't already running
-    if (IConfigService().currentApp.value != deepLinkApp.id) {
-      await IAppService()
-          .startApp(appId: deepLinkApp.id, autostart: true)
-          .catchError(FlutterUI.createErrorHandler("Failed to send startup"));
+      unawaited(IAppService().startCustomApp(deepLinkConfig));
     }
   }
 

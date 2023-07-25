@@ -21,6 +21,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../config/app_config.dart';
+import '../../../config/server_config.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/startup_command.dart';
 import '../../../model/request/api_exit_request.dart';
@@ -184,6 +185,15 @@ class AppService implements IAppService {
         startApp(appId: defaultApp!.id, autostart: true);
       }
     });
+  }
+
+  @override
+  Future<void> startCustomApp(ServerConfig customConfig) async {
+    App customApp = await App.createAppFromConfig(customConfig);
+    // Only start app if it isn't already running.
+    if (IConfigService().currentApp.value != customApp.id) {
+      await IAppService().startApp(appId: customApp.id, autostart: true);
+    }
   }
 
   @override

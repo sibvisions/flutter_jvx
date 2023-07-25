@@ -17,6 +17,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../../config/server_config.dart';
 import '../service.dart';
 import 'app.dart';
 
@@ -102,6 +103,11 @@ abstract class IAppService implements Service {
 
   /// Retrieves all known apps and starts a default app, if applicable.
   Future<void> startDefaultApp();
+
+  /// Creates an [App] from [customConfig] and starts it, if it isn't already running.
+  ///
+  /// Used by DeepLinks and Notifications.
+  Future<void> startCustomApp(ServerConfig customConfig);
 
   /// Starts the app specified by [appId] and stops the currently running app, if applicable.
   ///
