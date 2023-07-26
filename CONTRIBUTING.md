@@ -1,6 +1,6 @@
 # Classes
 
- The following rules are defined by this template:
+The following rules are defined by this template:
 
     Variable declaration at the beginning (first constants, then variables)
     Then constructors and initialization methods
@@ -13,10 +13,9 @@
 
     Each parameter of a method is marked using the prefix “p”
 
-
 # Interfaces
 
- The following rules are defined by this template:
+The following rules are defined by this template:
 
     Constants are defined at the beginning
     Then interface methods
