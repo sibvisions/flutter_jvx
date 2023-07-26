@@ -192,7 +192,7 @@ class UiService implements IUiService {
 
   @override
   handleAsyncError(Object error, StackTrace stackTrace) {
-    FlutterUI.logUI.e("Error while handling async", error, stackTrace);
+    FlutterUI.logUI.e("Error while handling async", error: error, stackTrace: stackTrace);
 
     if (error is! ErrorViewException && error is! SessionExpiredException) {
       bool isTimeout = error is TimeoutException || error is SocketException;
@@ -203,7 +203,8 @@ class UiService implements IUiService {
             canBeFixedInSettings: isTimeout,
             reason: "UIService async error",
           ))
-          .catchError((e, stack) => FlutterUI.logUI.e("Another error while handling async error", e, stack));
+          .catchError(
+              (e, stack) => FlutterUI.logUI.e("Another error while handling async error", error: e, stackTrace: stack));
 
       // If there is a current session and a "probably" working connection, report to the server.
       if (!isTimeout && IUiService().clientId.value != null) {
@@ -215,7 +216,8 @@ class UiService implements IUiService {
               },
               reason: "UIService async error",
             ))
-            .catchError((e, stack) => FlutterUI.logUI.e("Failed to send feedback to server", e, stack));
+            .catchError(
+                (e, stack) => FlutterUI.logUI.e("Failed to send feedback to server", error: e, stackTrace: stack));
       }
     }
 
@@ -967,7 +969,7 @@ class UiService implements IUiService {
 
     FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
     if (panelModel == null || panelModel is! FlPanelModel) {
-      FlutterUI.logUI.e("Tried to open a content which is not panel!", null, StackTrace.current);
+      FlutterUI.logUI.e("Tried to open a content which is not panel!", stackTrace: StackTrace.current);
       return;
     }
 
@@ -1021,7 +1023,7 @@ class UiService implements IUiService {
 
     FlComponentModel? panelModel = IStorageService().getComponentByName(pComponentName: pContentName);
     if (panelModel == null || panelModel is! FlPanelModel) {
-      FlutterUI.logUI.e("Tried to close a content which is not panel!", null, StackTrace.current);
+      FlutterUI.logUI.e("Tried to close a content which is not panel!", stackTrace: StackTrace.current);
       return;
     }
 

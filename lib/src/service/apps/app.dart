@@ -407,8 +407,8 @@ class App {
       await IConfigService().updateDefaultApp(newAppId);
     }
 
-    await IConfigService().getFileManager().renameIndependentDirectory(
-        [oldAppId], newAppId).catchError((e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", e, stack));
+    await IConfigService().getFileManager().renameIndependentDirectory([oldAppId], newAppId).catchError(
+        (e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", error: e, stackTrace: stack));
 
     await IAppService().refreshStoredAppIds();
 
@@ -438,8 +438,8 @@ class App {
       await IConfigService().updateLastApp(null);
     }
 
-    await IConfigService().getFileManager().deleteIndependentDirectory([appId],
-        recursive: true).catchError((e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", e, stack));
+    await IConfigService().getFileManager().deleteIndependentDirectory([appId], recursive: true).catchError(
+        (e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", error: e, stackTrace: stack));
 
     await IAppService().refreshStoredAppIds();
   }

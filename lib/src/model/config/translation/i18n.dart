@@ -123,7 +123,7 @@ class I18n {
       String transFilePath = fileManager.getAppSpecificPath("${IFileManager.LANGUAGES_PATH}/translation_$lang.json");
       File? transFile = fileManager.getFileSync(transFilePath);
       if (transFile == null) {
-        FlutterUI.logUI.v("Translation file for code $lang could not be found.");
+        FlutterUI.logUI.t("Translation file for code $lang could not be found.");
       } else {
         addFromFile(transFile);
       }

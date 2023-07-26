@@ -54,7 +54,7 @@ class AppImage extends StatelessWidget {
                 fit: fit,
                 loadingBuilder: ImageLoader.createImageLoadingBuilder(),
                 errorBuilder: (context, error, stackTrace) {
-                  FlutterUI.logUI.e("Failed to load app image", error, stackTrace);
+                  FlutterUI.logUI.e("Failed to load app image", error: error, stackTrace: stackTrace);
                   return const Center(child: FaIcon(FontAwesomeIcons.triangleExclamation, size: 40));
                 },
               ),

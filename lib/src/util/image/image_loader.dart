@@ -63,7 +63,7 @@ abstract class ImageLoader {
 
   static ImageErrorWidgetBuilder createImageErrorBuilder(ImageProvider provider) {
     return (BuildContext context, Object error, StackTrace? stackTrace) {
-      FlutterUI.logUI.e("Failed to load image $provider", error, stackTrace);
+      FlutterUI.logUI.e("Failed to load image $provider", error: error, stackTrace: stackTrace);
       return ImageLoader.DEFAULT_IMAGE;
     };
   }

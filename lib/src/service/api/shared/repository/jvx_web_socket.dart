@@ -120,7 +120,7 @@ class JVxWebSocket {
 
     await retry(
       maxAttempts: retryAttempts,
-      onRetry: (e) => FlutterUI.logAPI.w("${_logPrefix}Retrying initial WebSocket connection", e),
+      onRetry: (e) => FlutterUI.logAPI.w("${_logPrefix}Retrying initial WebSocket connection", error: e),
       () => _connect(uri),
     );
   }
@@ -164,14 +164,14 @@ class JVxWebSocket {
             }
             onData.call(data);
           } catch (e, stack) {
-            FlutterUI.logAPI.e("${_logPrefix}Error handling websocket message:", e, stack);
+            FlutterUI.logAPI.e("${_logPrefix}Error handling websocket message:", error: e, stackTrace: stack);
           }
         }
       },
       onError: (error) {
         // As there is no cancel of a currently connecting websocket (yet),
         // this is only triggered when the connection websocket fails to initially connect.
-        FlutterUI.logAPI.w("${_logPrefix}Connection to WebSocket#${webSocket.hashCode} failed", error);
+        FlutterUI.logAPI.w("${_logPrefix}Connection to WebSocket#${webSocket.hashCode} failed", error: error);
 
         _handleError(error);
       },
@@ -273,7 +273,7 @@ class JVxWebSocket {
           reconnectWebSocket();
         });
       } on IOException catch (e, stack) {
-        FlutterUI.logAPI.w("${_logPrefix}Ping failed", e, stack);
+        FlutterUI.logAPI.w("${_logPrefix}Ping failed", error: e, stackTrace: stack);
       }
     });
     FlutterUI.logAPI.d("${_logPrefix}Ping Interval started");
@@ -288,7 +288,7 @@ class JVxWebSocket {
         FlutterUI.logAPI.i("${_logPrefix}Retrying WebSocket connection");
         await _openWebSocket(retryAttempts: 0);
       } catch (e, stack) {
-        FlutterUI.logAPI.w("${_logPrefix}WebSocket Retry failed", e, stack);
+        FlutterUI.logAPI.w("${_logPrefix}WebSocket Retry failed", error: e, stackTrace: stack);
         _handleError(e);
       }
     });
@@ -310,7 +310,8 @@ class JVxWebSocket {
         FlutterUI.logAPI.i("${_logPrefix}Connection to WebSocket successfully closed");
       }
     } on TimeoutException catch (_) {
-      // FlutterUI.logAPI.w("${_logPrefix}Closing WebSocket timed out, continuing", e, stack);
+      // FlutterUI.logAPI.w("${_logPrefix}Closing WebSocket timed out, continuing",
+      //     error: e, stackTrace: stack);
     } finally {
       _connectedState.value = false;
     }

@@ -319,7 +319,7 @@ abstract class OfflineUtil {
       ));
       await futureDialog;
     } catch (e, stack) {
-      FlutterUI.logAPI.e("Error while switching to online", e, stack);
+      FlutterUI.logAPI.e("Error while switching to online", error: e, stackTrace: stack);
 
       // Revert all changes in case we have an in-tact offline state
       await onlineApiRepository.stop();
@@ -365,7 +365,7 @@ abstract class OfflineUtil {
       await _insertOfflineRecord(dataBook, insertedRow);
       await offlineApiRepository.resetState(dataBook.dataProvider, insertedRow);
     } catch (e, stack) {
-      FlutterUI.logAPI.e("Error while syncing inserted row: $insertedRow", e, stack);
+      FlutterUI.logAPI.e("Error while syncing inserted row: $insertedRow", error: e, stackTrace: stack);
       return false;
     }
     return true;
@@ -377,7 +377,7 @@ abstract class OfflineUtil {
       await _updateOfflineRecord(updatedRow, dataBook);
       await offlineApiRepository.resetState(dataBook.dataProvider, updatedRow);
     } catch (e, stack) {
-      FlutterUI.logAPI.e("Error while syncing updated row: $updatedRow", e, stack);
+      FlutterUI.logAPI.e("Error while syncing updated row: $updatedRow", error: e, stackTrace: stack);
       return false;
     }
     return true;
@@ -389,7 +389,7 @@ abstract class OfflineUtil {
       await _deleteOfflineRecord(dataBook, deletedRow);
       await offlineApiRepository.resetState(dataBook.dataProvider, deletedRow);
     } catch (e, stack) {
-      FlutterUI.logAPI.e("Error while syncing updated row: $deletedRow", e, stack);
+      FlutterUI.logAPI.e("Error while syncing updated row: $deletedRow", error: e, stackTrace: stack);
       return false;
     }
     return true;
@@ -581,7 +581,7 @@ abstract class OfflineUtil {
 
       await onlineApiRepository.stop();
     } catch (e, stack) {
-      FlutterUI.logAPI.e("Error while downloading offline data", e, stack);
+      FlutterUI.logAPI.e("Error while downloading offline data", error: e, stackTrace: stack);
 
       // Revert all changes
       if (!offlineApiRepository.isStopped()) {

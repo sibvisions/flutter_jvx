@@ -19,7 +19,7 @@ import 'package:logger/logger.dart';
 class JVxFilter extends LogFilter {
   @override
   bool shouldLog(LogEvent event) {
-    return event.level.index >= level!.index;
+    return event.level.value >= level!.value;
   }
 }
 
@@ -54,6 +54,9 @@ class JVxPrettyPrinter extends PrettyPrinter {
     super.printTime,
     super.excludeBox,
     super.noBoxingByDefault,
+    super.excludePaths,
+    super.levelColors,
+    super.levelEmojis,
   });
 
   @override

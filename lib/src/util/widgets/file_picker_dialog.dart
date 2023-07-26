@@ -173,7 +173,7 @@ abstract class FilePickerDialog {
           }
       }
     } catch (e, stack) {
-      FlutterUI.logUI.e("Failed to pick file", e, stack);
+      FlutterUI.logUI.e("Failed to pick file", error: e, stackTrace: stack);
     }
     return null;
   }

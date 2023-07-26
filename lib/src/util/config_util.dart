@@ -29,7 +29,7 @@ abstract class ConfigUtil {
       // Await here to trigger catch block
       return await _readConfigFile("app.conf.json");
     } catch (e, stack) {
-      FlutterUI.log.e("AppConfig failed to load:", e, stack);
+      FlutterUI.log.e("AppConfig failed to load:", error: e, stackTrace: stack);
     }
     return null;
   }
@@ -41,10 +41,10 @@ abstract class ConfigUtil {
       return await _readConfigFile("dev.conf.json");
     } catch (e, stack) {
       if (e is FlutterError && e.message.startsWith("Unable to load asset")) {
-        FlutterUI.log.d("Unable to load asset", e, stack);
+        FlutterUI.log.d("Unable to load asset", error: e, stackTrace: stack);
         return null;
       }
-      FlutterUI.log.e("Dev AppConfig failed to load:", e, stack);
+      FlutterUI.log.e("Dev AppConfig failed to load:", error: e, stackTrace: stack);
     }
     return null;
   }

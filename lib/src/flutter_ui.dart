@@ -273,7 +273,7 @@ class FlutterUI extends StatefulWidget {
   /// Intended do be use in [Future.catchError].
   static Function(Object error, StackTrace stackTrace) createErrorHandler(String pMessage) {
     return (error, stackTrace) {
-      FlutterUI.log.e(pMessage, error, stackTrace);
+      FlutterUI.log.e(pMessage, error: error, stackTrace: stackTrace);
       throw error;
     };
   }
@@ -341,8 +341,10 @@ class FlutterUI extends StatefulWidget {
     WidgetsFlutterBinding.ensureInitialized();
 
     Logger.addOutputListener((event) {
+      LogLevel? level = LogLevel.values.firstWhereOrNull((element) => element.name == event.origin.level.name);
+      if (level == null) return;
       logBucket.add(LogEvent(
-        level: LogLevel.values.firstWhere((element) => element.name == event.origin.level.name),
+        level: level,
         message: event.origin.message,
         error: event.origin.error,
         stackTrace: event.origin.stackTrace,
@@ -798,7 +800,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         if (IUiService().clientId.value != null && !IConfigService().offline.value) {
           ICommandService()
               .sendCommand(AliveCommand(reason: "App resumed from paused"))
-              .catchError((e, stack) => FlutterUI.logAPI.w("Resume Alive Request failed", e, stack));
+              .catchError((e, stack) => FlutterUI.logAPI.w("Resume Alive Request failed", error: e, stackTrace: stack));
         }
       }
     }

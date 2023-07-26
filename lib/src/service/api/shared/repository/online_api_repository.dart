@@ -364,14 +364,14 @@ class OnlineApiRepository extends IRepository {
         FlutterUI.logAPI.i("Alive Request succeeded");
       } on DioException catch (e, stack) {
         if (_shouldRetryDioRequest(e)) {
-          FlutterUI.logAPI.w("Alive Request timed out, retry", e, stack);
+          FlutterUI.logAPI.w("Alive Request timed out, retry", error: e, stackTrace: stack);
           _reconnectHTTP();
         }
       } on IOException catch (e, stack) {
-        FlutterUI.logAPI.w("Alive Request failed, retry", e, stack);
+        FlutterUI.logAPI.w("Alive Request failed, retry", error: e, stackTrace: stack);
         _reconnectHTTP();
       } catch (e, stack) {
-        FlutterUI.logAPI.e("Alive Request failed", e, stack);
+        FlutterUI.logAPI.e("Alive Request failed", error: e, stackTrace: stack);
       }
     });
   }
@@ -434,7 +434,7 @@ class OnlineApiRepository extends IRepository {
         await ICommandService().sendCommand(AliveCommand(reason: "Inactivity check", retryRequest: false));
         // The CommandService already resets the connected state and therefore this timer.
       } catch (e, stack) {
-        FlutterUI.logAPI.w("Inactivity Alive Request failed", e, stack);
+        FlutterUI.logAPI.w("Inactivity Alive Request failed", error: e, stackTrace: stack);
       }
     });
     FlutterUI.logAPI.d("Alive Interval started");
@@ -503,9 +503,8 @@ class OnlineApiRepository extends IRepository {
         }
 
         if (data == "api/changes") {
-          ICommandService()
-              .sendCommand(ChangesCommand(reason: "Server sent api/changes"))
-              .catchError((e, stack) => FlutterUI.logUI.e("Failed to handle changes command", e, stack));
+          ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes")).catchError(
+              (e, stack) => FlutterUI.logUI.e("Failed to handle changes command", error: e, stackTrace: stack));
         }
       },
       onConnectedChange: (connected) => setConnected(connected),
@@ -555,9 +554,8 @@ class OnlineApiRepository extends IRepository {
   /// Triggers a [ChangesCommand] for the case that changes have been dropped during reconnect.
   void askServerForChanges() {
     if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-      ICommandService()
-          .sendCommand(ChangesCommand(reason: "Check for changes after reconnect"))
-          .catchError((e, stack) => FlutterUI.logUI.w("Failed to handle reconnect changes command", e, stack));
+      ICommandService().sendCommand(ChangesCommand(reason: "Check for changes after reconnect")).catchError(
+          (e, stack) => FlutterUI.logUI.w("Failed to handle reconnect changes command", error: e, stackTrace: stack));
     }
   }
 
@@ -620,7 +618,7 @@ class OnlineApiRepository extends IRepository {
             sendFunction,
             retryIf: (e) => shouldRetry(e),
             retryIfResult: (response) => response.statusCode == 503,
-            onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", e),
+            onRetry: (e) => FlutterUI.logAPI.w("Retrying failed request: ${pRequest.runtimeType}", error: e),
             onRetryResult: (response) => FlutterUI.logAPI.w("Retrying failed request (503): ${pRequest.runtimeType}"),
             maxAttempts: 3,
             maxDelay: client?.options.receiveTimeout,

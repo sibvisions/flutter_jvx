@@ -96,8 +96,8 @@ class FormLayout extends ILayout {
     } catch (error, stacktrace) {
       FlutterUI.logLayout.w(
         "FormLayout of {${pParent.id}} crashed while getting the component constraints.",
-        error,
-        stacktrace,
+        error: error,
+        stackTrace: stacktrace,
       );
       return;
     }
@@ -585,8 +585,8 @@ class FormLayout extends ILayout {
         anchorNames.sort();
         FlutterUI.logLayout.e(keys.toString());
         FlutterUI.logLayout.e(anchorNames.toString());
-        FlutterUI.logLayout
-            .e(anchorNames.where((anchorName) => !keys.contains(anchorName)).toString(), error, stacktrace);
+        FlutterUI.logLayout.e(anchorNames.where((anchorName) => !keys.contains(anchorName)).toString(),
+            error: error, stackTrace: stacktrace);
         rethrow;
       }
     }

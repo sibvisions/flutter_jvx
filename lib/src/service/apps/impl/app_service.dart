@@ -152,10 +152,8 @@ class AppService implements IAppService {
 
   @override
   Future<void> removePreviousAppVersions(String appId, String currentVersion) async {
-    await IConfigService()
-        .getFileManager()
-        .removePreviousAppVersions(appId, currentVersion)
-        .catchError((e, stack) => FlutterUI.log.e("Failed to delete old app directories ($appId)", e, stack));
+    await IConfigService().getFileManager().removePreviousAppVersions(appId, currentVersion).catchError(
+        (e, stack) => FlutterUI.log.e("Failed to delete old app directories ($appId)", error: e, stackTrace: stack));
   }
 
   @override
@@ -252,7 +250,7 @@ class AppService implements IAppService {
       // Send request directly to avoid blocking command service shutdown.
       unawaited(repository
           .sendRequestAndForget(ApiExitRequest())
-          .catchError((e, stack) => FlutterUI.log.e("Exit request failed", e, stack)));
+          .catchError((e, stack) => FlutterUI.log.e("Exit request failed", error: e, stackTrace: stack)));
     }
 
     await FlutterUI.clearServices(restart ? ClearReason.RESTART : ClearReason.DEFAULT);

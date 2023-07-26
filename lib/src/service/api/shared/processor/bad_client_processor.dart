@@ -36,7 +36,7 @@ class BadClientProcessor implements IResponseProcessor<BadClientResponse> {
       try {
         parsedServerVersion = info.substring(info.indexOf("!") + 1, info.lastIndexOf("]")).trim();
       } catch (e, stack) {
-        FlutterUI.log.w("Failed to parse server version from badClient response", e, stack);
+        FlutterUI.log.w("Failed to parse server version from badClient response", error: e, stackTrace: stack);
       }
     }
 

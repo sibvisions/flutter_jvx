@@ -54,7 +54,7 @@ class WorkScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (screen?.screen == null) {
-      FlutterUI.logUI.wtf("Model/Custom screen not found for work screen: $screenLongName");
+      FlutterUI.logUI.f("Model/Custom screen not found for work screen: $screenLongName");
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: ErrorScreen(

@@ -233,7 +233,7 @@ class _SingleAppViewState extends State<SingleAppView> {
 
         widget.onStart.call(newConfig);
       } on FormatException catch (e, stack) {
-        FlutterUI.log.i("User entered invalid URL", e, stack);
+        FlutterUI.log.i("User entered invalid URL", error: e, stackTrace: stack);
         await AppOverviewPage.showInvalidURLDialog(context, e);
       }
     } else {

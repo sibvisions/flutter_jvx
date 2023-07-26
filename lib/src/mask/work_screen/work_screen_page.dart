@@ -175,7 +175,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       }
     }()
         .catchError((e, stack) {
-      FlutterUI.log.e("Open screen failed", e, stack);
+      FlutterUI.log.e("Open screen failed", error: e, stackTrace: stack);
       if (e is ErrorViewException) {
         // Server failed to open this screen, beam back to old location.
         context.beamBack();

@@ -334,7 +334,7 @@ class StorageService implements IStorageService {
     List<FlComponentModel> screenModels = _componentMap.values.where(pWhere).toList();
 
     if (screenModels.length >= 2) {
-      FlutterUI.logUI.wtf("The same screen is found twice in the storage service!!!!");
+      FlutterUI.logUI.f("The same screen is found twice in the storage service!!!!");
     } else if (screenModels.length == 1 &&
         (pIgnoreVisibility || screenModels.first.isVisible) &&
         (pIncludeRemoved || !screenModels.first.isRemoved)) {

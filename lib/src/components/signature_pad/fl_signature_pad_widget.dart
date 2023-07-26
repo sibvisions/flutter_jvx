@@ -93,7 +93,7 @@ class _FlSignaturePadWidgetState extends State<FlSignaturePadWidget> {
           contentWidget = Image.memory(imageValue, fit: BoxFit.scaleDown);
         }
       } catch (error, stacktrace) {
-        FlutterUI.logUI.e("Failed to show image", error, stacktrace);
+        FlutterUI.logUI.e("Failed to show image", error: error, stackTrace: stacktrace);
       }
     }
 

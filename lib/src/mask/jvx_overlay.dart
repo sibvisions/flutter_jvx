@@ -210,7 +210,7 @@ class JVxOverlayState extends State<JVxOverlay> {
               screenHeight: size.height.toInt(),
               reason: "Device Size changed",
             ))
-            .catchError((e, stack) => FlutterUI.logAPI.d("Failed to send device status", e, stack));
+            .catchError((e, stack) => FlutterUI.logAPI.d("Failed to send device status", error: e, stackTrace: stack));
       }
     });
   }
@@ -225,7 +225,7 @@ class JVxOverlayState extends State<JVxOverlay> {
             darkMode: Theme.of(context).brightness == Brightness.dark,
             reason: "Platform Brightness changed",
           ))
-          .catchError((e, stack) => FlutterUI.logAPI.w("Failed to send device status", e, stack));
+          .catchError((e, stack) => FlutterUI.logAPI.w("Failed to send device status", error: e, stackTrace: stack));
     }
   }
 

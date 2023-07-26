@@ -267,7 +267,7 @@ class ConfigService implements IConfigService {
         try {
           await getFileManager().renameIndependentDirectory([id], newAppId);
         } catch (e, stack) {
-          FlutterUI.log.w("Failed to migrate app directory ($id)", e, stack);
+          FlutterUI.log.w("Failed to migrate app directory ($id)", error: e, stackTrace: stack);
         }
       }
 
@@ -291,7 +291,7 @@ class ConfigService implements IConfigService {
           try {
             await getFileManager().deleteIndependentDirectory([id], recursive: true);
           } catch (e, stack) {
-            FlutterUI.log.w("Failed to delete old app directory ($id)", e, stack);
+            FlutterUI.log.w("Failed to delete old app directory ($id)", error: e, stackTrace: stack);
           }
         });
       }
@@ -319,7 +319,7 @@ class ConfigService implements IConfigService {
             await removeApp(id);
           }
         } catch (e, stack) {
-          FlutterUI.log.e("Failed to migrate app ($id)", e, stack);
+          FlutterUI.log.e("Failed to migrate app ($id)", error: e, stackTrace: stack);
         }
       }
 

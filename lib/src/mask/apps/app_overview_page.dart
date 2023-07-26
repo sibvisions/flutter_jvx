@@ -69,7 +69,7 @@ class AppOverviewPage extends StatefulWidget {
               final QRConfig config = QRParser.parse(barcode.rawValue!);
               await callback.call(config);
             } catch (e, stack) {
-              FlutterUI.logUI.w("Error parsing QR Code", e, stack);
+              FlutterUI.logUI.w("Error parsing QR Code", error: e, stackTrace: stack);
               if (barcodes.length == 1) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   behavior: SnackBarBehavior.floating,

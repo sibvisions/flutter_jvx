@@ -30,7 +30,7 @@ class JVxWebViewState extends State<JVxWebView> {
           onWebResourceError: (WebResourceError error) {
             FlutterUI.logAPI.w(
               "WebView ResourceError: ${error.errorCode} ${error.errorType} ${error.description}",
-              error,
+              error: error,
             );
           },
         ),

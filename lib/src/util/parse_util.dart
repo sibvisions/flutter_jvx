@@ -352,7 +352,7 @@ abstract class ParseUtil {
       try {
         baseUri = Uri.parse(baseUrl);
       } on FormatException catch (e, stack) {
-        FlutterUI.log.w("Failed to parse baseUrl from data", e, stack);
+        FlutterUI.log.w("Failed to parse baseUrl from data", error: e, stackTrace: stack);
       }
       String? username = data.remove("username") ?? data.remove("userName");
       String? password = data.remove("password");
