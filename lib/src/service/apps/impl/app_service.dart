@@ -186,10 +186,10 @@ class AppService implements IAppService {
   }
 
   @override
-  Future<void> startCustomApp(ServerConfig customConfig) async {
+  Future<void> startCustomApp(ServerConfig customConfig, {bool force = false}) async {
     App customApp = await App.createAppFromConfig(customConfig);
     // Only start app if it isn't already running.
-    if (IConfigService().currentApp.value != customApp.id) {
+    if (IConfigService().currentApp.value != customApp.id || force) {
       await IAppService().startApp(appId: customApp.id, autostart: true);
     }
   }
