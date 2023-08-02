@@ -373,7 +373,7 @@ class UiService implements IUiService {
             .where((menuItem) => [menuItem.navigationName, menuItem.screenLongName].contains(customScreen.key))
             .firstOrNull;
 
-        if (originalItem == null && customMenuItem == null) {
+        if (originalItem == null && customMenuItem == null && customScreen.screenBuilder != null) {
           // We have no menu item, therefore, create one on best-effort basis.
           customMenuItem = CustomMenuItem(
             group: "Custom",
