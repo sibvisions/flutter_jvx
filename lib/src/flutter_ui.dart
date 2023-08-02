@@ -548,8 +548,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         // Guards / by beaming to /menu if an app is active
         BeamGuard(
           pathPatterns: ["/"],
-          check: (context, location) =>
-              IConfigService().currentApp.value == null || IAppService().exitFuture.value != null,
+          check: (context, location) {
+            ServerConfig? deepLinkConfig = ParseUtil.extractAppParameters(Map.of((location.state as BeamState).queryParameters));
+            return deepLinkConfig != null || IConfigService().currentApp.value == null || IAppService().exitFuture.value != null;
+          },
           beamToNamed: (origin, target) => "/home",
         ),
         // Guards everything except / and /settings (e.g. /menu) by beaming to / if there is no active app
