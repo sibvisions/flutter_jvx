@@ -344,9 +344,9 @@ abstract class ParseUtil {
   /// Extracts a [ServerConfig] from [data].
   ///
   /// Returns either a valid [ServerConfig] or `null`.
-  static ServerConfig? extractAppParameters(Map<String, String> data) {
-    String? appName = data.remove("appName");
-    String? baseUrl = data.remove("baseUrl");
+  static ServerConfig? extractAppParameters(Map<String, Object> data) {
+    String? appName = data.remove("appName") as String?;
+    String? baseUrl = data.remove("baseUrl") as String?;
     if (appName != null && baseUrl != null) {
       Uri? baseUri;
       try {
@@ -354,8 +354,8 @@ abstract class ParseUtil {
       } on FormatException catch (e, stack) {
         FlutterUI.log.w("Failed to parse baseUrl from data", error: e, stackTrace: stack);
       }
-      String? username = data.remove("username") ?? data.remove("userName");
-      String? password = data.remove("password");
+      String? username = (data.remove("username") ?? data.remove("userName")) as String?;
+      String? password = data.remove("password") as String?;
 
       ServerConfig? extractedConfig = ServerConfig(
         appName: appName,
