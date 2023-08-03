@@ -285,7 +285,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
     if (newModel != null) {
       model = newModel;
-      builtScreen = ScreenWrapper.jvx(newModel!);
+      builtScreen = ScreenWrapper.jvx(newModel);
     } else if (model != null) {
       builtScreen = ScreenWrapper.empty(model);
     }
