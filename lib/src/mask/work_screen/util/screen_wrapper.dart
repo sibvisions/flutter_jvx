@@ -50,6 +50,13 @@ class ScreenWrapper {
     );
   }
 
+  factory ScreenWrapper.empty(FlPanelModel? model) {
+    return ScreenWrapper(
+      screen: Container(),
+      screenTitle: model?.screenTitle ?? "",
+    );
+  }
+
   factory ScreenWrapper.customScreen(
     BuildContext context,
     CustomScreen customScreen,
