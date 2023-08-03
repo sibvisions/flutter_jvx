@@ -549,8 +549,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         BeamGuard(
           pathPatterns: ["/"],
           check: (context, location) {
-            ServerConfig? deepLinkConfig = ParseUtil.extractAppParameters(Map.of((location.state as BeamState).queryParameters));
-            return deepLinkConfig != null || IConfigService().currentApp.value == null || IAppService().exitFuture.value != null;
+            ServerConfig? deepLinkConfig =
+                ParseUtil.extractAppParameters(Map.of((location.state as BeamState).queryParameters));
+            return deepLinkConfig != null ||
+                IConfigService().currentApp.value == null ||
+                IAppService().exitFuture.value != null;
           },
           beamToNamed: (origin, target) => "/home",
         ),
