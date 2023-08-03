@@ -280,12 +280,14 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     // Update the model if a new one is found, otherwise use the old one.
     // Happens when you close a screen and Flutter rebuilds it.
     FlPanelModel? newModel = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
-    model = newModel ?? model;
 
     ScreenWrapper? builtScreen;
 
-    if (model != null) {
-      builtScreen = ScreenWrapper.jvx(model!);
+    if (newModel != null) {
+      model = newModel;
+      builtScreen = ScreenWrapper.jvx(newModel!);
+    } else if (model != null) {
+      builtScreen = ScreenWrapper.empty(model);
     }
 
     // Custom config for this screen
