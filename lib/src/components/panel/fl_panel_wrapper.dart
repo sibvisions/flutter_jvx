@@ -66,6 +66,10 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
   @override
   Widget build(BuildContext context) {
+    if (model.isScreen && !model.exists) {
+      return wrapWidget(child: Container());
+    }
+
     FlPanelWidget panelWidget = FlPanelWidget(
       model: model,
       children: children.values.toList(),
