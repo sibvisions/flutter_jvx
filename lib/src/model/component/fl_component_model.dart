@@ -26,6 +26,7 @@ import '../../flutter_ui.dart';
 import '../../mask/frame/frame.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/config/i_config_service.dart';
+import '../../service/storage/i_storage_service.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
@@ -496,4 +497,7 @@ abstract class FlComponentModel {
   bool get scalingEnabled => !styles.contains(NO_SCALING_STYLE);
 
   double get scaling => scalingEnabled ? IConfigService().getScaling() : 1.0;
+
+  /// If the component exists in the storage service.
+  bool get exists => IStorageService().getComponentModel(pComponentId: id) != null;
 }

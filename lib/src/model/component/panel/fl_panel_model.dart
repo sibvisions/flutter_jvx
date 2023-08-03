@@ -145,4 +145,14 @@ class FlPanelModel extends FlComponentModel {
       pCurrent: contentClassName,
     );
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // If the panel is a screen.
+  bool get isScreen => screenClassName != null || screenNavigationName != null || screenTitle != null;
+
+  // If the panel is a content.
+  bool get isContent => contentClassName != null;
 }
