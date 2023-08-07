@@ -249,6 +249,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       }
 
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           header,
           Expanded(

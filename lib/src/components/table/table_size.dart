@@ -221,7 +221,7 @@ class TableSize {
     columnWidths.clear();
     columnWidths.addAll(calculatedColumnWidths);
 
-    double remainingWidth = pAvailableWidth - width;
+    double remainingWidth = pAvailableWidth - columnWidths.values.sum;
 
     // Redistribute the remaining width. AutoSize forces all columns inside the table.
     if (remainingWidth > 0.0) {
@@ -242,7 +242,7 @@ class TableSize {
 
         _redistributeRemainingWidth(columnsToRedistribute, remainingWidth);
 
-        remainingWidth = pAvailableWidth - width;
+        remainingWidth = pAvailableWidth - columnWidths.values.sum;
         i++;
       }
     }
