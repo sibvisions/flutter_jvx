@@ -110,10 +110,10 @@ class WorkScreen extends StatelessWidget {
 
             double screenHeight = constraints.maxHeight;
 
-            if (isKeyboardVisible) {
-              screenHeight += viewInsets.bottom;
-              screenHeight -= viewPadding.bottom;
-            }
+            // Re add the keyboard height
+            screenHeight += viewInsets.bottom;
+            // Removes padding because of some devices
+            screenHeight -= viewPadding.bottom;
 
             Widget screenWidget = wrappedScreen.screen!;
             if (!wrappedScreen.customScreen && screenWidget is FlPanelWrapper) {
