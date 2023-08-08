@@ -225,25 +225,13 @@ class TableSize {
 
     // Redistribute the remaining width. AutoSize forces all columns inside the table.
     if (remainingWidth > 0.0) {
-      List<String> columnsToRedistribute =
-          _getColumnsToRedistribute(columnWidths.keys.toList(), pDataChunk) ?? columnWidths.keys.toList();
-      _redistributeRemainingWidth(columnsToRedistribute, remainingWidth);
+      _redistributeRemainingWidth(_getColumnsToRedistribute(pDataChunk, false), remainingWidth);
     } else if ((pTableModel.autoResize || remainingWidth >= -10.0) && remainingWidth < 0.0) {
-      int i = 0;
-      bool useMinWidth = true;
-      while (remainingWidth < 0.0 && i < 30) {
-        List<String>? columnsToRedistribute;
-        if (useMinWidth) {
-          columnsToRedistribute = _getColumnsToRedistribute(columnWidths.keys.toList(), pDataChunk, minColumnWidth);
-          useMinWidth = columnsToRedistribute != null;
-        }
-        columnsToRedistribute ??= _getColumnsToRedistribute(columnWidths.keys.toList(), pDataChunk);
-        columnsToRedistribute = columnWidths.keys.toList();
-
-        _redistributeRemainingWidth(columnsToRedistribute, remainingWidth);
+      // '30' is only there to stop if infinite loop happens.
+      for (int i = 0; remainingWidth < 0.0 && i < 30; i++) {
+        _redistributeRemainingWidth(_getColumnsToRedistribute(pDataChunk), remainingWidth);
 
         remainingWidth = pAvailableWidth - columnWidths.values.sum;
-        i++;
       }
     }
   }
@@ -347,23 +335,26 @@ class TableSize {
     );
   }
 
-  List<String>? _getColumnsToRedistribute(List<String> pColumnNames, DataChunk? pDataChunk,
-      [double pMinimumDistributionLimit = 0.0]) {
+  List<String> _getColumnsToRedistribute(DataChunk? pDataChunk, [bool pUseMinWidth = true]) {
+    List<String> columnNames = columnWidths.keys.toList();
+
     if (pDataChunk == null) {
-      return pColumnNames;
+      return columnNames;
     }
 
     List<ColumnDefinition> columnDefinitions =
-        pDataChunk.columnDefinitions.where((colDef) => pColumnNames.contains(colDef.name)).toList();
+        pDataChunk.columnDefinitions.where((colDef) => columnNames.contains(colDef.name)).toList();
 
     if (columnDefinitions.isEmpty) {
-      return pColumnNames;
+      return columnNames;
     }
 
-    columnDefinitions.removeWhere((element) => (columnWidths[element.name] ?? 0.0) <= pMinimumDistributionLimit);
-
-    if (columnDefinitions.isEmpty) {
-      return null;
+    if (pUseMinWidth) {
+      if (columnDefinitions.none((element) => (columnWidths[element.name] ?? 0.0) > minColumnWidth)) {
+        return _getColumnsToRedistribute(pDataChunk, false);
+      } else {
+        columnDefinitions.removeWhere((element) => (columnWidths[element.name] ?? 0.0) <= minColumnWidth);
+      }
     }
 
     Iterable<ColumnDefinition> unconstrainedColDefs = columnDefinitions.where((element) => element.width == null);
