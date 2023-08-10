@@ -257,34 +257,7 @@ class _SettingsPageState extends State<SettingsPage> {
     Widget? languageSetting;
     if (!(IConfigService().customLanguage.value ?? false) &&
         !(IConfigService().getAppConfig()?.uiConfig?.hideLanguageSetting ?? false)) {
-      var supportedLanguages = IConfigService().supportedLanguages.value.toList();
-      supportedLanguages.insertAll(0, [
-        "${FlutterUI.translateLocal("System")} (${IConfigService().getPlatformLocale()})",
-        "en",
-      ]);
-
-      var userLanguage = IConfigService().userLanguage.value;
-
-      languageSetting = _buildPickerItem<String>(
-        frontIcon: FontAwesomeIcons.language,
-        endIcons: (userLanguage ?? IConfigService().getPlatformLocale()) != IConfigService().getLanguage()
-            ? [_buildOverrideIcon()]
-            : null,
-        title: "Language",
-        // "System" is default
-        value: language ?? supportedLanguages[0],
-        onPressed: (context, value) {
-          _openDropdown(context, supportedLanguages, value, onValue: (selectedLanguage) {
-            if (selectedLanguage == supportedLanguages[0]) {
-              // "System" selected
-              language = null;
-            } else {
-              language = selectedLanguage;
-            }
-            setState(() {});
-          });
-        },
-      );
+      languageSetting = _buildLanguageSetting();
     }
 
     Widget? pictureSizeSetting;
@@ -330,6 +303,40 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       items: items,
+    );
+  }
+
+  Widget _buildLanguageSetting() {
+    var supportedLanguages = IConfigService().supportedLanguages.value.toList();
+    supportedLanguages.insertAll(0, [
+      "${FlutterUI.translateLocal("System")} (${IConfigService().getPlatformLocale()})",
+      "en",
+    ]);
+
+    var userLanguage = IConfigService().userLanguage.value;
+
+    return _buildPickerItem<String>(
+      frontIcon: FontAwesomeIcons.language,
+      endIcons: (userLanguage ?? IConfigService().getPlatformLocale()) != IConfigService().getLanguage()
+          ? [_buildOverrideIcon()]
+          : null,
+      title: "Language",
+      // "System" is default
+      value: language ?? supportedLanguages[0],
+      onPressed: (context, value) {
+        _openDropdown(context, supportedLanguages, value, onValue: (selectedLanguage) async {
+          if (selectedLanguage == supportedLanguages[0]) {
+            // "System" selected
+            language = null;
+          } else {
+            language = selectedLanguage;
+          }
+          if (appName == null) {
+            await IConfigService().updateUserLanguage(language);
+          }
+          setState(() {});
+        });
+      },
     );
   }
 
@@ -385,6 +392,7 @@ class _SettingsPageState extends State<SettingsPage> {
     var items = [
       if (singleAppSetting != null) singleAppSetting,
       if (themeSetting != null) themeSetting,
+      if (appName == null) _buildLanguageSetting(),
     ];
 
     if (items.isEmpty) {
@@ -593,13 +601,15 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   bool _changesPending() {
-    return language != IConfigService().userLanguage.value;
+    // TODO replace app check with global property
+    return appName != null && language != IConfigService().userLanguage.value;
   }
 
   /// Will send a [StartupCommand] with current values
   Future<void> _saveClicked() async {
     try {
       if (_changesPending()) {
+        // TODO save globally
         await IConfigService().updateUserLanguage(language);
         if (!IConfigService().offline.value && IUiService().clientId.value != null) {
           unawaited(IAppService().startApp());
