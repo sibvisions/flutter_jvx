@@ -203,76 +203,58 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   Widget build(BuildContext context) {
     return Frame.wrapWithFrame(
       builder: (context, isOffline) {
-        return WillPopScope(
-          onWillPop: () => _onWillPop(context),
-          child: FutureBuilder(
-            future: future,
-            builder: (context, snapshot) {
-              FrameState? frame = Frame.maybeOf(context);
-              List<Widget>? actions = frame?.getActions();
+        return FutureBuilder(
+          future: future,
+          builder: (context, snapshot) {
+            FrameState? frame = Frame.maybeOf(context);
+            List<Widget>? actions = frame?.getActions();
 
-              if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                Widget body = _buildWorkScreen(context, isOffline);
+            PreferredSizeWidget? appBar;
+            Widget body;
 
-                return Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  appBar: frame?.getAppBar(
-                    leading: _buildLeading(),
-                    titleSpacing: 0,
-                    title: Text(screenTitle!),
-                    actions: actions,
-                  ),
-                  drawerEnableOpenDragGesture: false,
-                  endDrawerEnableOpenDragGesture: false,
-                  drawer: frame?.getDrawer(context),
-                  endDrawer: frame?.getEndDrawer(context),
-                  body: frame?.wrapBody(body) ?? body,
-                );
-              } else {
-                Widget body;
-                if (snapshot.connectionState == ConnectionState.none) {
-                  // Invalid screen name
-                  body = const ErrorScreen(
-                    message: "Screen not found.",
-                  );
-                } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
-                  body = ErrorScreen(
-                    extra: snapshot.error?.toString(),
-                    retry: () {
-                      _init();
-                      setState(() {});
-                    },
-                  );
-                } else {
-                  body = const SkeletonScreen();
-                }
+            if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+              // Has to called first as it initializes [screenTitle].
+              body = _buildWorkScreen(context, isOffline);
 
-                body = SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: body,
-                  ),
-                );
+              appBar = frame?.getAppBar(
+                leading: _buildLeading(),
+                titleSpacing: 0,
+                title: Text(screenTitle!),
+                actions: actions,
+              );
+            } else {
+              appBar = frame?.getAppBar(
+                leading: _buildLeading(),
+                titleSpacing: 0,
+                title:
+                    Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading...")),
+                actions: actions,
+              );
 
-                // Dummy scaffold shown while loading/error.
-                return Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  appBar: frame?.getAppBar(
-                    leading: _buildLeading(),
-                    titleSpacing: 0,
-                    title: Text(
-                        customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading...")),
-                    actions: actions,
-                  ),
-                  drawerEnableOpenDragGesture: false,
-                  endDrawerEnableOpenDragGesture: false,
-                  drawer: frame?.getDrawer(context),
-                  endDrawer: frame?.getEndDrawer(context),
-                  body: frame?.wrapBody(body) ?? body,
-                );
-              }
-            },
-          ),
+              // Dummy body shown while loading/error.
+              body = _buildDummyScreen(snapshot);
+            }
+
+            // _onWillPop needs to access Scaffold.
+            Widget content = Builder(
+              builder: (context) => WillPopScope(
+                onWillPop: () => _onWillPop(context),
+                child: SafeArea(
+                  child: body,
+                ),
+              ),
+            );
+
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: appBar,
+              drawerEnableOpenDragGesture: false,
+              endDrawerEnableOpenDragGesture: false,
+              drawer: frame?.getDrawer(context),
+              endDrawer: frame?.getEndDrawer(context),
+              body: frame?.wrapBody(content) ?? content,
+            );
+          },
         );
       },
     );
@@ -301,21 +283,44 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     // Update screenTitle
     screenTitle = builtScreen?.screenTitle ?? FlutterUI.translate("No title");
 
-    return SafeArea(
-      child: WorkScreen(
-        isOffline: isOffline,
-        item: item!,
-        screen: builtScreen,
-        updateSize: (size) {
-          if (!sentScreen) {
-            // Trigger update synchronously for layout.
-            _setScreenSize(size);
-            sentScreen = true;
-          } else {
-            subject.add(size);
-          }
+    return WorkScreen(
+      isOffline: isOffline,
+      item: item!,
+      screen: builtScreen,
+      updateSize: (size) {
+        if (!sentScreen) {
+          // Trigger update synchronously for layout.
+          _setScreenSize(size);
+          sentScreen = true;
+        } else {
+          subject.add(size);
+        }
+      },
+    );
+  }
+
+  Widget _buildDummyScreen(AsyncSnapshot<void> snapshot) {
+    Widget body;
+    if (snapshot.connectionState == ConnectionState.none) {
+      // Invalid screen name
+      body = const ErrorScreen(
+        message: "Screen not found.",
+      );
+    } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
+      body = ErrorScreen(
+        extra: snapshot.error?.toString(),
+        retry: () {
+          _init();
+          setState(() {});
         },
-      ),
+      );
+    } else {
+      body = const SkeletonScreen();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: body,
     );
   }
 
@@ -358,6 +363,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   /// Is being called by [WillPopScope].
   Future<bool> _onWillPop(BuildContext context) async {
+    if (Scaffold.of(context).isDrawerOpen || Scaffold.of(context).isEndDrawerOpen) {
+      return true;
+    }
+
     if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
       return false;
     }
