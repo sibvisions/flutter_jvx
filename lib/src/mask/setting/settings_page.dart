@@ -282,7 +282,6 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     Widget? pictureSizeSetting;
-
     if (!(IConfigService().getAppConfig()?.uiConfig?.hidePictureSizeSetting ?? false)) {
       var resolution = IConfigService().pictureResolution.value ?? resolutions[0];
       pictureSizeSetting = _buildPickerItem<int>(
