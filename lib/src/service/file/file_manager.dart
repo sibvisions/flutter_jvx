@@ -75,6 +75,6 @@ abstract class IFileManager {
   /// More specific, removes all [appId] app directories with another version than [currentVersion].
   Future<void> removePreviousAppVersions(String appId, String currentVersion);
 
-  /// Returns directory, will always return null if in web
+  /// Returns a list of currently available translation files.
   List<File> listTranslationFiles({String? appId, String? version});
 }
