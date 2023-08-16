@@ -65,18 +65,16 @@ class WorkScreen extends StatelessWidget {
     }
 
     return FocusTraversalGroup(
-      child: SafeArea(
-        child: Column(
-          children: [
-            if (isOffline) OfflineUtil.getOfflineBar(context),
-            Expanded(
-              child: _wrapJVxScreen(
-                context,
-                screen!,
-              ),
+      child: Column(
+        children: [
+          if (isOffline) OfflineUtil.getOfflineBar(context),
+          Expanded(
+            child: _wrapJVxScreen(
+              context,
+              screen!,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

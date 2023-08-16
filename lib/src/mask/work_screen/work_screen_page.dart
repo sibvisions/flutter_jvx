@@ -247,9 +247,11 @@ class WorkScreenPageState extends State<WorkScreenPage> {
                   body = const SkeletonScreen();
                 }
 
-                body = Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: body,
+                body = SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: body,
+                  ),
                 );
 
                 // Dummy scaffold shown while loading/error.
@@ -299,21 +301,22 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     // Update screenTitle
     screenTitle = builtScreen?.screenTitle ?? FlutterUI.translate("No title");
 
-    Widget body = WorkScreen(
-      isOffline: isOffline,
-      item: item!,
-      screen: builtScreen,
-      updateSize: (size) {
-        if (!sentScreen) {
-          // Trigger update synchronously for layout.
-          _setScreenSize(size);
-          sentScreen = true;
-        } else {
-          subject.add(size);
-        }
-      },
+    return SafeArea(
+      child: WorkScreen(
+        isOffline: isOffline,
+        item: item!,
+        screen: builtScreen,
+        updateSize: (size) {
+          if (!sentScreen) {
+            // Trigger update synchronously for layout.
+            _setScreenSize(size);
+            sentScreen = true;
+          } else {
+            subject.add(size);
+          }
+        },
+      ),
     );
-    return body;
   }
 
   @override
