@@ -466,7 +466,7 @@ class FlutterUI extends StatefulWidget {
 
     if (urlApp != null) {
       FlutterUIState.startupApp = urlApp;
-    } else {
+    } else if (!kIsWeb) {
       // Handle notification launching app from terminated state
       Map<String?, Object?>? data = await Push.instance.notificationTapWhichLaunchedAppFromTerminated;
       data = PushUtil.extractJVxData(data);
@@ -586,11 +586,11 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
   late final StreamSubscription newTokenSubscription;
   late final StreamSubscription notificationTapSubscription;
-  final ValueNotifier<List<Map<String?, Object?>>> tappedNotificationPayloads = ValueNotifier([]);
+  late final ValueNotifier<List<Map<String?, Object?>>> tappedNotificationPayloads;
   late final StreamSubscription<RemoteMessage> notificationSubscription;
-  final ValueNotifier<List<RemoteMessage>> messagesReceived = ValueNotifier([]);
+  late final ValueNotifier<List<RemoteMessage>> messagesReceived;
   late final StreamSubscription<RemoteMessage> backgroundNotificationSubscription;
-  final ValueNotifier<List<RemoteMessage>> backgroundMessagesReceived = ValueNotifier([]);
+  late final ValueNotifier<List<RemoteMessage>> backgroundMessagesReceived;
 
   @override
   void initState() {
@@ -638,7 +638,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     subscription = Connectivity().onConnectivityChanged.listen(didChangeConnectivity);
 
-    registerPushStreams();
+    if (!kIsWeb) {
+      registerPushStreams();
+    }
 
     // Register callbacks
     IConfigService().disposeImagesCallbacks();
@@ -887,7 +889,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
-    disposePushStreams();
+    if (!kIsWeb) {
+      disposePushStreams();
+    }
 
     IUiService().i18n().currentLanguage.removeListener(refresh);
     IUiService().layoutMode.removeListener(changedTheme);
@@ -968,6 +972,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   void registerPushStreams() {
+    tappedNotificationPayloads = ValueNotifier([]);
+    messagesReceived = ValueNotifier([]);
+    backgroundMessagesReceived = ValueNotifier([]);
+
     newTokenSubscription = Push.instance.onNewToken.listen(PushUtil.handleTokenUpdates);
 
     notificationTapSubscription = Push.instance.onNotificationTap.listen((data) {
