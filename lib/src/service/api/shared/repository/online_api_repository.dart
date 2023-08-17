@@ -706,8 +706,7 @@ class OnlineApiRepository extends IRepository {
     if (pRequest is UploadRequest) {
       if (pRequest is ApiUploadRequest) {
         return FormData.fromMap({
-          "clientId": [pRequest.clientId],
-          "fileId": [pRequest.fileId],
+          ...pRequest.toJson(),
           "data": MultipartFile.fromBytes(
             await pRequest.file.readAsBytes(),
             filename: pRequest.file.name,
@@ -716,9 +715,8 @@ class OnlineApiRepository extends IRepository {
       } else {
         throw UnimplementedError("${pRequest.runtimeType} is an unknown UploadRequest.");
       }
-    } else {
-      return jsonEncode(pRequest);
     }
+    return jsonEncode(pRequest);
   }
 
   /// Sends a single [ApiRequest] by creating a new client, ignoring every response and closing it after.
