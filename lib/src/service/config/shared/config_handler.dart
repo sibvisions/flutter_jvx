@@ -75,8 +75,14 @@ abstract class ConfigHandler {
   /// Retrieves all known app keys.
   Future<Set<String>> getAppKeys();
 
+  /// Moves every preference that satisfies [test] to [newKey].
+  Future<void> updateWhere(bool Function(String key) test, String newKey);
+
   /// Moves every preference referenced by [key] to [newKey].
   Future<void> updateAppKey(String key, String newKey);
+
+  /// Removes every preference that satisfies [test].
+  Future<void> removeWhere(bool Function(String key) test);
 
   /// Removes every preference referenced by [key].
   Future<void> removeAppKey(String key);

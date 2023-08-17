@@ -236,6 +236,14 @@
     "translation": "Möchten Sie diese Applikation wirklich löschen?"
   },
   {
+    "text": "Delete app data?",
+    "translation": "Applikationsdaten löschen?"
+  },
+  {
+    "text": "Are you sure you want to delete the data of this app?",
+    "translation": "Möchten Sie die Applikationsdaten wirklich löschen?"
+  },
+  {
     "text": "Reset",
     "translation": "Zurücksetzen"
   },

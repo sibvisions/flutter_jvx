@@ -164,9 +164,9 @@ class SharedPrefsHandler implements ConfigHandler {
   }
 
   @override
-  Future<void> updateAppKey(String key, String newKey) {
+  Future<void> updateWhere(bool Function(String key) test, String newKey) {
     return Future.wait(
-      _sharedPrefs.getKeys().where((e) => e.startsWith("$key.")).map((e) async {
+      _sharedPrefs.getKeys().where(test).map((e) async {
         var value = _sharedPrefs.get(e);
         await _sharedPrefs.remove(e);
         assert(value != null);
@@ -180,10 +180,20 @@ class SharedPrefsHandler implements ConfigHandler {
   }
 
   @override
-  Future<void> removeAppKey(String key) {
+  Future<void> updateAppKey(String key, String newKey) {
+    return updateWhere((e) => e.startsWith("$key."), newKey);
+  }
+
+  @override
+  Future<void> removeWhere(bool Function(String key) test) {
     return Future.wait(
-      _sharedPrefs.getKeys().where((e) => e.startsWith("$key.")).map((e) => _sharedPrefs.remove(e)).toList(),
+      _sharedPrefs.getKeys().where(test).map((e) => _sharedPrefs.remove(e)).toList(),
     );
+  }
+
+  @override
+  Future<void> removeAppKey(String key) {
+    return removeWhere((e) => e.startsWith("$key."));
   }
 
   /// Retrieves a string value by its key in connection to the current app name.

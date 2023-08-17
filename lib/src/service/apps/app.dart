@@ -444,6 +444,16 @@ class App {
     await IAppService().refreshStoredAppIds();
   }
 
+  /// Deletes the data of this app.
+  Future<void> deleteData() async {
+    _checkId();
+
+    String appId = _id!;
+
+    await IConfigService().getFileManager().deleteIndependentDirectory([appId], recursive: true).catchError(
+        (e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", error: e, stackTrace: stack));
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is App && runtimeType == other.runtimeType && id == other.id;

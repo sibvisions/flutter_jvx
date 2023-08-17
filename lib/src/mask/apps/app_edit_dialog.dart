@@ -39,6 +39,7 @@ class AppEditDialog extends StatefulWidget {
   final void Function(ServerConfig config) onSubmit;
   final VoidCallback onCancel;
   final VoidCallback onDelete;
+  final VoidCallback? onLongDelete;
 
   const AppEditDialog({
     super.key,
@@ -48,6 +49,7 @@ class AppEditDialog extends StatefulWidget {
     required this.onSubmit,
     required this.onCancel,
     required this.onDelete,
+    this.onLongDelete,
   });
 
   @override
@@ -350,6 +352,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
       if (widget.config != null)
         TextButton(
           onPressed: widget.onDelete,
+          onLongPress: widget.onLongDelete,
           style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
           child: Text(FlutterUI.translateLocal(widget.predefined ? "Reset" : "Delete")),
         ),

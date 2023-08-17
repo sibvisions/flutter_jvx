@@ -458,23 +458,33 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     IUiService().openDialog(
       context: context,
       pBuilder: (context) => AppEditDialog(
-          config: editApp,
-          predefined: editApp?.predefined ?? false,
-          locked: editApp?.locked ?? false,
-          onSubmit: (config) => _updateApp(context, config, editApp: editApp),
-          onCancel: () {
+        config: editApp,
+        predefined: editApp?.predefined ?? false,
+        locked: editApp?.locked ?? false,
+        onSubmit: (config) => _updateApp(context, config, editApp: editApp),
+        onCancel: () {
+          Navigator.pop(context);
+        },
+        onDelete: () async {
+          bool? shouldDelete = await _showDeleteDialog(context, editApp?.predefined ?? false);
+          if (!mounted) return;
+          if (shouldDelete ?? false) {
             Navigator.pop(context);
-          },
-          onDelete: () async {
-            bool? shouldDelete = await _showDeleteDialog(context, editApp?.predefined ?? false);
-            if (!mounted) return;
-            if (shouldDelete ?? false) {
-              Navigator.pop(context);
-              apps?.remove(editApp);
-              await editApp!.delete();
-              unawaited(_refreshApps());
-            }
-          }),
+            apps?.remove(editApp);
+            await editApp!.delete();
+            unawaited(_refreshApps());
+          }
+        },
+        onLongDelete: () async {
+          bool? shouldDelete = await _showDeleteDataDialog(context);
+          if (!mounted) return;
+          if (shouldDelete ?? false) {
+            Navigator.pop(context);
+            await editApp!.deleteData();
+            unawaited(_refreshApps());
+          }
+        },
+      ),
     );
   }
 
@@ -562,6 +572,29 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
           title: Text(FlutterUI.translateLocal("${predefined ? "Reset" : "Delete"} this app?")),
           content:
               Text(FlutterUI.translateLocal("Are you sure you want to ${predefined ? "reset" : "delete"} this app?")),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(FlutterUI.translateLocal("No")),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(FlutterUI.translateLocal("Yes")),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool?> _showDeleteDataDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(FlutterUI.translateLocal("Delete app data?")),
+          content: Text(FlutterUI.translateLocal("Are you sure you want to delete the data of this app?")),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
