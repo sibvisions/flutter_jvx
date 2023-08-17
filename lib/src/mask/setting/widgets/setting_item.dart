@@ -26,7 +26,7 @@ class SettingItem<T> extends StatelessWidget {
   final FaIcon? frontIcon;
 
   /// Icon displayed at the end
-  final FaIcon? endIcon;
+  final List<Widget>? endIcons;
 
   /// Title of the setting
   final String title;
@@ -57,7 +57,7 @@ class SettingItem<T> extends StatelessWidget {
     this.valueNotifier,
     this.enabled,
     this.frontIcon,
-    this.endIcon,
+    this.endIcons,
     this.onPressed,
     this.itemBuilder,
   });
@@ -77,10 +77,11 @@ class SettingItem<T> extends StatelessWidget {
               children: [frontIcon!],
             )
           : null,
-      trailing: endIcon != null
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [endIcon!],
+      trailing: endIcons?.isNotEmpty ?? false
+          ? Wrap(
+              spacing: 12,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: endIcons!,
             )
           : null,
       title: Text(title),

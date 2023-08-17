@@ -204,7 +204,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (IConfigService().privacyPolicy.value != null) {
       SettingItem privacyPolicy = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.link),
-        endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
+        endIcons: const [FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey)],
         title: FlutterUI.translateLocal("Privacy Policy"),
         onPressed: (context, value) => launchUrl(
           IConfigService().privacyPolicy.value!,
@@ -263,8 +263,13 @@ class _SettingsPageState extends State<SettingsPage> {
         "en",
       ]);
 
+      var userLanguage = IConfigService().userLanguage.value;
+
       languageSetting = _buildPickerItem<String>(
         frontIcon: FontAwesomeIcons.language,
+        endIcons: (userLanguage ?? IConfigService().getPlatformLocale()) != IConfigService().getLanguage()
+            ? [_buildOverrideIcon()]
+            : null,
         title: "Language",
         // "System" is default
         value: language ?? supportedLanguages[0],
@@ -362,6 +367,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
       themeSetting = _buildPickerItem<ThemeMode>(
         frontIcon: themeIcon,
+        endIcons: theme != IConfigService().getThemeMode() ? [_buildOverrideIcon()] : null,
         title: "Theme",
         value: theme,
         itemBuilder: (BuildContext context, value, Widget? widget) => Text(themeMapping[value]!),
@@ -402,6 +408,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   SettingItem _buildPickerItem<T>({
     required IconData frontIcon,
+    List<Widget>? endIcons,
     required String title,
     required T value,
     required Function(BuildContext context, T value) onPressed,
@@ -409,12 +416,22 @@ class _SettingsPageState extends State<SettingsPage> {
   }) =>
       SettingItem<T>(
         frontIcon: FaIcon(frontIcon, color: Theme.of(context).colorScheme.primary),
-        endIcon: const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
+        endIcons: [
+          ...?endIcons,
+          const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
+        ],
         title: FlutterUI.translateLocal(title),
         value: value,
         itemBuilder: itemBuilder,
         onPressed: onPressed,
       );
+
+  Widget _buildOverrideIcon() {
+    return Tooltip(
+      message: FlutterUI.translateLocal("Overridden by the application"),
+      child: const Icon(Icons.hide_source, size: 18),
+    );
+  }
 
   void _openDropdown(
     BuildContext context,
@@ -461,7 +478,7 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (context, snapshot) {
           return SettingItem(
             frontIcon: const FaIcon(FontAwesomeIcons.github),
-            endIcon: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey),
+            endIcons: const [FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey)],
             value: snapshot.data ?? FlutterUI.translateLocal("Loading..."),
             title: FlutterUI.translateLocal("App Version"),
             onPressed: (context, value) => showLicensePage(
