@@ -355,6 +355,16 @@ class SharedPrefsHandler implements ConfigHandler {
   }
 
   @override
+  Future<bool?> customLanguage() {
+    return getBool("customLanguage");
+  }
+
+  @override
+  Future<void> updateCustomLanguage(bool? customLanguage) async {
+    await setBool("customLanguage", customLanguage);
+  }
+
+  @override
   Future<String?> userLanguage() {
     return getString("language");
   }

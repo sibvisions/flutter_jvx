@@ -145,6 +145,12 @@ abstract class ConfigHandler {
   /// Sets the current user info.
   Future<void> updateUserInfo(Map<String, dynamic>? json);
 
+  /// Retrieves whether the language is customised and therefore fixed by the server.
+  Future<bool?> customLanguage();
+
+  /// Sets whether the language is customised and therefore fixed.
+  Future<void> updateCustomLanguage(bool? customLanguage);
+
   /// Retrieves the user defined language code.
   Future<String?> userLanguage();
 

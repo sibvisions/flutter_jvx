@@ -31,6 +31,9 @@ class ApplicationMetaDataResponse extends ApiResponse {
   /// Version of the server
   final String? serverVersion;
 
+  /// Whether the language is fixed by the server.
+  final bool? customLanguage;
+
   /// Lang code of the app
   final String langCode;
 
@@ -51,6 +54,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
     required this.clientId,
     required this.version,
     this.serverVersion,
+    this.customLanguage,
     required this.langCode,
     this.timeZoneCode,
     required this.lostPasswordEnabled,
@@ -62,6 +66,7 @@ class ApplicationMetaDataResponse extends ApiResponse {
       : clientId = json[ApiObjectProperty.clientId],
         version = json[ApiObjectProperty.version],
         serverVersion = json[ApiObjectProperty.serverVersion],
+        customLanguage = json[ApiObjectProperty.customLanguage],
         langCode = json[ApiObjectProperty.langCode],
         timeZoneCode = json[ApiObjectProperty.timeZoneCode],
         lostPasswordEnabled = json[ApiObjectProperty.lostPasswordEnabled],
@@ -70,6 +75,6 @@ class ApplicationMetaDataResponse extends ApiResponse {
 
   @override
   String toString() {
-    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, serverVersion: $serverVersion, langCode: $langCode, timeZoneCode: $timeZoneCode, lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled}';
+    return 'ApplicationMetaDataResponse{clientId: $clientId, version: $version, serverVersion: $serverVersion, customLanguage: $customLanguage, langCode: $langCode, timeZoneCode: $timeZoneCode, lostPasswordEnabled: $lostPasswordEnabled, rememberMeEnabled: $rememberMeEnabled}';
   }
 }

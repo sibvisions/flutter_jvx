@@ -207,6 +207,12 @@ abstract class IConfigService implements Service {
   /// * The platform locale (determined by [getPlatformLocale]).
   String getLanguage();
 
+  /// Retrieves whether the language is customised and therefore fixed by the server.
+  ValueListenable<bool?> get customLanguage;
+
+  /// Sets whether the language is customised and therefore fixed.
+  Future<void> updateCustomLanguage(bool? customLanguage);
+
   /// Returns the application language code returned by the server.
   ///
   /// Returns `null` before initial startup.

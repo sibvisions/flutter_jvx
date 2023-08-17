@@ -22,6 +22,9 @@ class LanguageResponse extends ApiResponse {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Whether the language is fixed by the server.
+  final bool? customLanguage;
+
   /// Lang code of the app
   final String langCode;
 
@@ -35,6 +38,7 @@ class LanguageResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   LanguageResponse({
+    this.customLanguage,
     required this.langCode,
     this.timeZoneCode,
     this.languageResource,
@@ -42,13 +46,14 @@ class LanguageResponse extends ApiResponse {
   });
 
   LanguageResponse.fromJson(super.json)
-      : langCode = json[ApiObjectProperty.langCode],
+      : customLanguage = json[ApiObjectProperty.customLanguage],
+        langCode = json[ApiObjectProperty.langCode],
         timeZoneCode = json[ApiObjectProperty.timeZoneCode],
         languageResource = json[ApiObjectProperty.languageResource],
         super.fromJson();
 
   @override
   String toString() {
-    return 'LanguageResponse{langCode: $langCode, timeZoneCode: $timeZoneCode, languageResource: $languageResource}';
+    return 'LanguageResponse{customLanguage: $customLanguage, langCode: $langCode, timeZoneCode: $timeZoneCode, languageResource: $languageResource}';
   }
 }

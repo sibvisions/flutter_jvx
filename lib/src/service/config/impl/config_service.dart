@@ -98,6 +98,8 @@ class ConfigService implements IConfigService {
   /// Application style sent from server.
   late ValueNotifier<Map<String, String>?> _applicationStyle;
 
+  late ValueNotifier<bool?> _customLanguage;
+
   late ValueNotifier<String?> _userLanguage;
 
   late ValueNotifier<String?> _applicationLanguage;
@@ -177,6 +179,7 @@ class ConfigService implements IConfigService {
     _userInfo = ValueNotifier(null);
     _offline = ValueNotifier(false);
     _offlineScreen = ValueNotifier(null);
+    _customLanguage = ValueNotifier(null);
     _userLanguage = ValueNotifier(null);
     _applicationStyle = ValueNotifier(null);
     _applicationLanguage = ValueNotifier(null);
@@ -207,6 +210,7 @@ class ConfigService implements IConfigService {
     _userInfo.value = await _configHandler.userInfo();
     _offline.value = await _configHandler.offline();
     _offlineScreen.value = await _configHandler.offlineScreen();
+    _customLanguage.value = await _configHandler.customLanguage();
     _userLanguage.value = await _configHandler.userLanguage();
     _applicationStyle.value = await _configHandler.applicationStyle();
     _applicationLanguage.value = await _configHandler.applicationLanguage();
@@ -532,7 +536,20 @@ class ConfigService implements IConfigService {
 
   @override
   String getLanguage() {
-    return applicationLanguage.value ?? userLanguage.value ?? getPlatformLocale();
+    String? language;
+    if (!offline.value || (customLanguage.value ?? false)) {
+      language = applicationLanguage.value;
+    }
+    return language ?? userLanguage.value ?? getPlatformLocale();
+  }
+
+  @override
+  ValueListenable<bool?> get customLanguage => _customLanguage;
+
+  @override
+  Future<void> updateCustomLanguage(bool? customLanguage) async {
+    await _configHandler.updateCustomLanguage(customLanguage);
+    _customLanguage.value = customLanguage;
   }
 
   @override

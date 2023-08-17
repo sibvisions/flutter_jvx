@@ -255,7 +255,8 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     Widget? languageSetting;
-    if (!(IConfigService().getAppConfig()?.uiConfig?.hideLanguageSetting ?? false)) {
+    if (!(IConfigService().customLanguage.value ?? false) &&
+        !(IConfigService().getAppConfig()?.uiConfig?.hideLanguageSetting ?? false)) {
       var supportedLanguages = IConfigService().supportedLanguages.value.toList();
       supportedLanguages.insertAll(0, [
         "${FlutterUI.translateLocal("System")} (${IConfigService().getPlatformLocale()})",
