@@ -15,7 +15,6 @@
  */
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -580,14 +579,7 @@ class ConfigService implements IConfigService {
     // Add supported languages by parsing all translation file names
     Set<String> supportedLanguage = {};
 
-    Iterable<String> localTranslations = await I18n.listLocalTranslationFiles();
-    List<File> appTranslations = _fileManager.listTranslationFiles();
-
-    List<String> fileNames = [
-      ...localTranslations.map((e) => e.split("/").last),
-      ...appTranslations.map((e) => e.path.split("/").last),
-    ];
-
+    Iterable<String> fileNames = _fileManager.listTranslationFiles().map((e) => e.path.split("/").last);
     for (String fileName in fileNames) {
       RegExpMatch? match = I18n.langRegex.firstMatch(fileName);
       if (match != null) {
