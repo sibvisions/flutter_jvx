@@ -659,12 +659,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     // Init default themes (if applicable)
     changedTheme();
 
-    // Init
-    if (startupApp != null) {
-      IAppService().startApp(appId: startupApp!.id, autostart: true);
-    } else {
-      IAppService().startDefaultApp();
-    }
+    // Let Flutter build it once, so we can access the context.
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Init
+      if (startupApp != null) {
+        IAppService().startApp(appId: startupApp!.id, autostart: true);
+      } else {
+        IAppService().startDefaultApp();
+      }
+    });
   }
 
   @override
