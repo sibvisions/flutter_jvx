@@ -14,6 +14,10 @@
  * the License.
  */
 
+import 'dart:convert';
+import 'dart:typed_data';
+
+import '../command/api/feedback_command.dart';
 import 'session_request.dart';
 
 /// Sends feedback (errors) to the server
@@ -22,14 +26,27 @@ class ApiFeedbackRequest extends SessionRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final Map<String, dynamic> properties;
+  /// What type of feedback this is.
+  final FeedbackType type;
+
+  /// Text Feedback (in case of a user feedback).
+  final String? text;
+
+  /// UI Screenshot (in case of a user feedback).
+  final Uint8List? image;
+
+  /// Custom properties.
+  final Map<String, dynamic>? properties;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiFeedbackRequest({
-    required this.properties,
+    required this.type,
+    this.text,
+    this.image,
+    this.properties,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +56,9 @@ class ApiFeedbackRequest extends SessionRequest {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        ...properties.map((key, value) => MapEntry(key.toString(), value.toString())),
+        "name": "feedback.${type.name}",
+        if (text != null) "text": text,
+        if (image != null) "image": base64Encode(image!),
+        ...?properties?.map((key, value) => MapEntry(key.toString(), value.toString())),
       };
 }

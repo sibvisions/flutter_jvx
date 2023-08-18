@@ -25,6 +25,11 @@ import '../../i_command_processor.dart';
 class FeedbackCommandProcessor extends ICommandProcessor<FeedbackCommand> {
   @override
   Future<List<BaseCommand>> processCommand(FeedbackCommand command, BaseCommand? origin) async {
-    return IApiService().sendRequest(ApiFeedbackRequest(properties: command.properties));
+    return IApiService().sendRequest(ApiFeedbackRequest(
+      type: command.type,
+      text: command.text,
+      image: command.image,
+      properties: command.properties,
+    ));
   }
 }

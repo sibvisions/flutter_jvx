@@ -14,19 +14,40 @@
  * the License.
  */
 
+import 'dart:typed_data';
+
 import 'session_command.dart';
 
+enum FeedbackType {
+  user,
+  error,
+}
+
 class FeedbackCommand extends SessionCommand {
-  final Map<String, dynamic> properties;
+  /// What type of feedback this is.
+  final FeedbackType type;
+
+  /// Text Feedback (in case of a user feedback).
+  final String? text;
+
+  /// UI Screenshot (in case of a user feedback).
+  final Uint8List? image;
+
+  /// Custom properties.
+  final Map<String, dynamic>? properties;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FeedbackCommand({
-    required this.properties,
+    required this.type,
+    this.text,
+    this.image,
+    this.properties,
     required super.reason,
-  }) : super(showLoading: false);
+  })  : assert(type != FeedbackType.user || (text != null || image != null)),
+        super(showLoading: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -34,6 +55,6 @@ class FeedbackCommand extends SessionCommand {
 
   @override
   String toString() {
-    return 'FeedbackCommand{$properties, ${super.toString()}}';
+    return 'FeedbackCommand{type: $type, text: $text, image: $image, properties: $properties, ${super.toString()}}';
   }
 }

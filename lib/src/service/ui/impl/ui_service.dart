@@ -210,14 +210,14 @@ class UiService implements IUiService {
       if (!isTimeout && IUiService().clientId.value != null) {
         ICommandService()
             .sendCommand(FeedbackCommand(
+              type: FeedbackType.error,
               properties: {
                 "message": IUiService.getErrorMessage(error),
                 "error": error,
               },
               reason: "UIService async error",
             ))
-            .catchError(
-                (e, stack) => FlutterUI.logUI.e("Failed to send feedback to server", error: e, stackTrace: stack));
+            .catchError((e, stack) => FlutterUI.logUI.e("Failed to send error to server", error: e, stackTrace: stack));
       }
     }
 
