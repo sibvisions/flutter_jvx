@@ -20,6 +20,7 @@ import 'dart:convert';
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
@@ -677,29 +678,31 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       "en",
     }.whereNotNull().map((e) => Locale(e)).toList();
 
-    return ListenableBuilder(
-      listenable: Listenable.merge([
-        IUiService().applicationParameters,
-        IConfigService().applicationStyle,
-      ]),
-      builder: (context, _) {
-        String title = (kIsWeb ? IUiService().applicationParameters.value.applicationTitleWeb : null) ??
-            widget.appConfig?.title ??
-            FlutterUI.packageInfo.appName;
-        return MaterialApp.router(
-          themeMode: IConfigService().getThemeMode(),
-          theme: themeData,
-          darkTheme: darkThemeData,
-          locale: Locale(IConfigService().getLanguage()),
-          supportedLocales: supportedLocales,
-          localizationsDelegates: GlobalMaterialLocalizations.delegates,
-          routeInformationParser: BeamerParser(),
-          routerDelegate: routerDelegate,
-          backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
-          title: title,
-          builder: _routeBuilder,
-        );
-      },
+    return BetterFeedback(
+      child: ListenableBuilder(
+        listenable: Listenable.merge([
+          IUiService().applicationParameters,
+          IConfigService().applicationStyle,
+        ]),
+        builder: (context, _) {
+          String title = (kIsWeb ? IUiService().applicationParameters.value.applicationTitleWeb : null) ??
+              widget.appConfig?.title ??
+              FlutterUI.packageInfo.appName;
+          return MaterialApp.router(
+            themeMode: IConfigService().getThemeMode(),
+            theme: themeData,
+            darkTheme: darkThemeData,
+            locale: Locale(IConfigService().getLanguage()),
+            supportedLocales: supportedLocales,
+            localizationsDelegates: GlobalMaterialLocalizations.delegates,
+            routeInformationParser: BeamerParser(),
+            routerDelegate: routerDelegate,
+            backButtonDispatcher: BeamerBackButtonDispatcher(delegate: routerDelegate),
+            title: title,
+            builder: _routeBuilder,
+          );
+        },
+      ),
     );
   }
 

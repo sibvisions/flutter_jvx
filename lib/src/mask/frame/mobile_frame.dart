@@ -16,6 +16,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../util/widgets/feedback_detector.dart';
 import '../drawer/drawer_menu.dart';
 import '../state/loading_bar.dart';
 import 'frame.dart';
@@ -51,7 +52,7 @@ class MobileFrameState extends FrameState {
   }) {
     return AppBar(
       leading: leading,
-      title: title,
+      title: FeedbackDetector(child: title),
       centerTitle: false,
       titleSpacing: titleSpacing,
       actions: actions,

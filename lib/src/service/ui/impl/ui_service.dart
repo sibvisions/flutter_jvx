@@ -4,8 +4,10 @@ import 'dart:math' hide log;
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
+import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -1055,5 +1057,21 @@ class UiService implements IUiService {
     }
     IStorageService().deleteScreen(screenName: pContentName);
     await ILayoutService().deleteScreen(pComponentId: panelModel.id);
+  }
+
+  @override
+  void showFeedback(BuildContext context) {
+    unawaited(HapticFeedback.lightImpact());
+    BetterFeedback.of(context).show((feedback) {
+      ICommandService()
+          .sendCommand(FeedbackCommand(
+            type: FeedbackType.user,
+            text: feedback.text.isNotEmpty ? feedback.text : null,
+            image: feedback.screenshot,
+            reason: "User filled feedback",
+          ))
+          .then((value) => FlutterUI.of(context).refresh())
+          .catchError(handleAsyncError);
+    });
   }
 }

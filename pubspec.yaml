@@ -112,6 +112,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0-pre
   qr_flutter: ^4.1.0
   screen_brightness: ^0.2.2
+  feedback: ^2.6.0
 
   #WYSIWYG HTML-Editor
   html_editor_enhanced: ^2.5.0

@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
@@ -368,4 +369,7 @@ abstract class IUiService implements Service {
   bool isContentVisible(String pContentName);
 
   void notifyDataToDisplayMapChanged({required String pDataProvider});
+
+  /// Shows the [BetterFeedback] widget.
+  void showFeedback(BuildContext context);
 }

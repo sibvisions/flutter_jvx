@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:feedback/feedback.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -335,6 +336,29 @@ class JVxDebug extends StatelessWidget {
                 );
               },
               child: const Text("Request"),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Feedback",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: ControlButtons(
+              hPadding: 18,
+              onPressed: (index) async {
+                switch (index) {
+                  case 0:
+                    IUiService().showFeedback(context);
+                    break;
+                  case 1:
+                    BetterFeedback.of(context).hide();
+                    break;
+                }
+              },
+              labels: const [
+                "Show",
+                "Hide",
+              ],
             ),
           ),
         ],

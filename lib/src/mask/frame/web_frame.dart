@@ -30,6 +30,7 @@ import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/parse_util.dart';
+import '../../util/widgets/feedback_detector.dart';
 import '../apps/app_overview_page.dart';
 import '../drawer/web_menu.dart';
 import '../setting/settings_page.dart';
@@ -131,19 +132,21 @@ class WebFrameState extends FrameState {
           onPressed: toggleWebMenu,
         ),
       ),
-      title: SizedBox(
-        height: kToolbarHeight,
-        child: imagePath != null
-            ? ImageLoader.loadImage(
-                imagePath,
-              )
-            : Image.asset(
-                ImageLoader.getAssetPath(
-                  FlutterUI.package,
-                  "assets/images/logo.png",
+      title: FeedbackDetector(
+        child: SizedBox(
+          height: kToolbarHeight,
+          child: imagePath != null
+              ? ImageLoader.loadImage(
+                  imagePath,
+                )
+              : Image.asset(
+                  ImageLoader.getAssetPath(
+                    FlutterUI.package,
+                    "assets/images/logo.png",
+                  ),
+                  fit: BoxFit.scaleDown,
                 ),
-                fit: BoxFit.scaleDown,
-              ),
+        ),
       ),
       centerTitle: false,
       actions: [

@@ -38,6 +38,7 @@ import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
+import '../../util/widgets/feedback_detector.dart';
 import '../frame/frame.dart';
 import '../frame/open_drawer_action.dart';
 import '../state/loading_bar.dart';
@@ -236,15 +237,18 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               appBar = frame?.getAppBar(
                 leading: _buildLeading(),
                 titleSpacing: 8,
-                title: Text(screenTitle!),
+                title: FeedbackDetector(child: Text(screenTitle!)),
                 actions: actions,
               );
             } else {
               appBar = frame?.getAppBar(
                 leading: _buildLeading(),
                 titleSpacing: 8,
-                title:
-                    Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading...")),
+                title: FeedbackDetector(
+                  child: Text(
+                    customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading..."),
+                  ),
+                ),
                 actions: actions,
               );
 
