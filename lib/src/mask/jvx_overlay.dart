@@ -392,7 +392,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                                     listenable: routerDelegate,
                                     builder: (context, child) {
                                       return Text(
-                                        routerDelegate.configuration.location.toString(),
+                                        routerDelegate.configuration.uri.toString(),
                                         textAlign: TextAlign.center,
                                       );
                                     },

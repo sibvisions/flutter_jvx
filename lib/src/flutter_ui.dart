@@ -76,7 +76,6 @@ import 'util/extensions/jvx_logger_extensions.dart';
 import 'util/extensions/list_extensions.dart';
 import 'util/http_overrides.dart';
 import 'util/image/image_loader.dart';
-import 'util/import_handler/import_handler.dart';
 import 'util/jvx_colors.dart';
 import 'util/jvx_routes_observer.dart';
 import 'util/loading_handler/loading_progress_handler.dart';
@@ -441,8 +440,6 @@ class FlutterUI extends StatefulWidget {
     services.registerSingleton(apiService);
 
     packageInfo = await PackageInfo.fromPlatform();
-
-    fixUrlStrategy();
 
     tz.initializeTimeZones();
 
