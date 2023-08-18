@@ -63,6 +63,7 @@ class AppOverviewPage extends StatefulWidget {
         title: "QR Scanner",
         formats: const [BarcodeFormat.qrCode],
         callback: (barcodes) async {
+          var messengerState = ScaffoldMessenger.of(context);
           for (var barcode in barcodes) {
             FlutterUI.logUI.d("Parsing scanned qr code:\n\n${barcode.rawValue}");
             try {
@@ -71,7 +72,7 @@ class AppOverviewPage extends StatefulWidget {
             } catch (e, stack) {
               FlutterUI.logUI.w("Error parsing QR Code", error: e, stackTrace: stack);
               if (barcodes.length == 1) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                messengerState.showSnackBar(SnackBar(
                   behavior: SnackBarBehavior.floating,
                   content: Text(
                     e is FormatException
