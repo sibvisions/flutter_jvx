@@ -33,6 +33,8 @@ import 'parse_util.dart';
 abstract class PushUtil {
   static FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
   static Map<String?, Object?>? notificationWhichLaunchedApp;
+  static const String parameterPushToken = "Mobile.pushToken";
+  static const String parameterPushData = "Mobile.pushData";
 
   static ServerConfig? handleNotificationData(Map<String?, Object?>? data) {
     if (data != null) {
@@ -83,7 +85,8 @@ abstract class PushUtil {
       if (notificationConfig != null) {
         unawaited(IAppService().startCustomApp(notificationConfig, force: true));
       } else {
-        await PushUtil.sendPushData({"pushData": data});
+        // Potentially check for current app == notification app and send it.
+        // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});
       }
     }
   }
@@ -101,7 +104,8 @@ abstract class PushUtil {
     if (notificationConfig != null) {
       unawaited(IAppService().startCustomApp(notificationConfig, force: true));
     } else {
-      await PushUtil.sendPushData({"pushData": data});
+      // Potentially check for current app == notification app and send it.
+      // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});
     }
   }
 
@@ -134,7 +138,8 @@ abstract class PushUtil {
         return;
       }
 
-      await PushUtil.sendPushData({"pushData": data});
+      // Potentially check for current app == notification app and send it.
+      // await PushUtil.sendPushData({parameterPushData: jsonEncode(data)});
     }
   }
 
@@ -145,14 +150,25 @@ abstract class PushUtil {
   ) async {
     notifier.value += [message];
 
-    await PushUtil.sendPushData({
-      "pushData": PushUtil.extractJVxData<Map<String?, Object?>?, String?, Object?>(message.data),
-    });
+    // await PushUtil.sendPushData({
+    //   parameterPushData: jsonEncode(PushUtil.extractJVxData<Map<String?, Object?>?, String?, Object?>(message.data)),
+    // });
+  }
+
+  static Future<String?> retrievePushToken() async {
+    String? pushToken;
+    try {
+      // In case Push-Swift receives no token in time, it blocks until one arrives.
+      pushToken = await Push.instance.token.timeout(const Duration(seconds: 1));
+    } catch (e, stack) {
+      FlutterUI.log.e("Error retrieving push token", error: e, stackTrace: stack);
+    }
+    return pushToken;
   }
 
   /// Handles device token updates.
   static Future<void> handleTokenUpdates(String token) async {
     FlutterUI.log.d("New APNS/FCM registration token: $token");
-    await PushUtil.sendPushData({"pushToken": token});
+    await PushUtil.sendPushData({parameterPushToken: token});
   }
 }

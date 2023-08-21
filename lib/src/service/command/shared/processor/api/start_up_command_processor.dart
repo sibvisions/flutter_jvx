@@ -15,10 +15,10 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:push/push.dart';
 
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/set_parameter_command.dart';
@@ -98,34 +98,29 @@ class StartupCommandProcessor extends ICommandProcessor<StartupCommand> {
   }
 
   Future<void> _sendPushToken() async {
-    String? pushToken;
-    try {
-      // In case Push-Swift receives no token in time, it blocks until one arrives.
-      pushToken = await Push.instance.token.timeout(const Duration(seconds: 1));
-    } catch (e, stack) {
-      FlutterUI.log.e("Error retrieving push token", error: e, stackTrace: stack);
-    }
+    String? pushToken = await PushUtil.retrievePushToken();
     if (pushToken != null) {
       try {
         await ICommandService().sendCommand(
           SetParameterCommand(
-            parameter: {"pushToken": pushToken},
+            parameter: {PushUtil.parameterPushToken: pushToken},
             reason: "Send PushToken after startup",
           ),
         );
 
         var state = FlutterUI.of(FlutterUI.getEffectiveContext()!);
-        var data = PushUtil.notificationWhichLaunchedApp ?? state.tappedNotificationPayloads.value.lastOrNull;
+        var data = state.tappedNotificationPayloads.value.lastOrNull ?? PushUtil.notificationWhichLaunchedApp;
         if (data != null) {
           await ICommandService().sendCommand(
             SetParameterCommand(
-              parameter: {"pushData": data},
+              parameter: {PushUtil.parameterPushData: jsonEncode(data)},
               reason: "Send PushData after startup",
             ),
           );
         }
         // Clear on success
         state.tappedNotificationPayloads.value.clear();
+        PushUtil.notificationWhichLaunchedApp = null;
       } catch (e, stack) {
         FlutterUI.log.w("Failed to send push token/data to server", error: e, stackTrace: stack);
       }
