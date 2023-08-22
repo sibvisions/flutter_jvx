@@ -16,22 +16,23 @@
 
 import '../../../../../service/api/shared/api_object_property.dart';
 
-class ColumnMap {
-  List<String> columnNames = <String>[];
-  List<String> referencedColumnNames = <String>[];
+/// Maps different column names between referenced tables.
+class ColumnMapping {
+  /// The column names of the current data book.
+  List<String> columnNames = [];
 
-  ColumnMap();
+  /// The column names of the referenced data book.
+  List<String> referencedColumnNames = [];
 
-  ColumnMap.fromJson(Map<String, dynamic> json) {
-    var jsonColumnNames = json[ApiObjectProperty.columnNames];
-    if (jsonColumnNames != null) {
-      columnNames = List.of(jsonColumnNames);
-    }
-    var jsonReferencedColumnNames = json[ApiObjectProperty.referencedColumnNames];
-    if (jsonReferencedColumnNames != null) {
-      referencedColumnNames = List.of(jsonReferencedColumnNames);
-    }
-  }
+  ColumnMapping({
+    List<String>? columnNames,
+    List<String>? referencedColumnNames,
+  })  : columnNames = columnNames ?? [],
+        referencedColumnNames = referencedColumnNames ?? [];
+
+  ColumnMapping.fromJson(Map<String, dynamic> json)
+      : columnNames = json[ApiObjectProperty.columnNames].cast<String>(),
+        referencedColumnNames = json[ApiObjectProperty.referencedColumnNames].cast<String>();
 
   String? getColumnName(String? pReferencedColumnName) {
     if (pReferencedColumnName == null) {
@@ -56,7 +57,7 @@ class ColumnMap {
   }
 
   Map<String, dynamic> toJson() => {
-        "columnNames": columnNames,
-        "referencedColumnNames": referencedColumnNames,
+        ApiObjectProperty.columnNames: columnNames,
+        ApiObjectProperty.referencedColumnNames: referencedColumnNames,
       };
 }

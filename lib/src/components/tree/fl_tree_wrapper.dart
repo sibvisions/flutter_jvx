@@ -25,6 +25,7 @@ import 'package:flutter_treeview/flutter_treeview.dart';
 import '../../model/command/api/fetch_command.dart';
 import '../../model/command/api/select_tree_command.dart';
 import '../../model/command/data/get_meta_data_command.dart';
+import '../../model/component/editor/cell_editor/linked/reference_definition.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
 import '../../model/data/data_book.dart';

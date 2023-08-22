@@ -439,8 +439,8 @@ class DataService implements IDataService {
       FlLinkedCellEditorModel cellEditorModel, String dataProvider, String columnName) {
     var linkReference = cellEditorModel.linkReference;
 
-    DataBook referencedDataBook = dataBooks[linkReference.referencedDataprovider] ??=
-        DataBook(dataProvider: linkReference.referencedDataprovider);
+    DataBook referencedDataBook =
+        dataBooks[linkReference.referencedDataBook] ??= DataBook(dataProvider: linkReference.referencedDataBook);
 
     ReferencedCellEditor referencedCellEditor = ReferencedCellEditor(cellEditorModel, columnName, dataProvider);
 
@@ -450,14 +450,14 @@ class DataService implements IDataService {
       linkReference.columnNames.add(columnName);
     }
 
-    var databook = getDataBook(linkReference.referencedDataprovider);
+    var databook = getDataBook(linkReference.referencedDataBook);
     if (databook == null || databook.metaData == null || !databook.isAllFetched) {
       IUiService().sendCommand(
         FetchCommand(
           includeMetaData: true,
           fromRow: 0,
           rowCount: -1,
-          dataProvider: linkReference.referencedDataprovider,
+          dataProvider: linkReference.referencedDataBook,
           reason: "Created referenced cell editor on data book without metadata",
         ),
       );

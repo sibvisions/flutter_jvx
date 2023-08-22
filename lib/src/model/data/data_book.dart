@@ -32,7 +32,7 @@ import '../command/api/select_record_command.dart';
 import '../command/api/set_values_command.dart';
 import '../command/data/save_fetch_data_command.dart';
 import '../component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
-import '../component/editor/cell_editor/linked/link_reference.dart';
+import '../component/editor/cell_editor/linked/reference_definition.dart';
 import '../request/filter.dart';
 import '../response/dal_data_provider_changed_response.dart';
 import '../response/dal_fetch_response.dart';
@@ -481,7 +481,7 @@ class DataBook {
 
   buildDataToDisplayMap(ReferencedCellEditor referencedCellEditor) {
     var cellEditorModel = referencedCellEditor.cellEditorModel;
-    LinkReference linkReference = cellEditorModel.linkReference;
+    ReferenceDefinition linkReference = cellEditorModel.linkReference;
     Map<String, String> dataToDisplayMap = linkReference.dataToDisplay;
 
     if (cellEditorModel.displayConcatMask?.isNotEmpty == true ||
@@ -712,25 +712,6 @@ class DalMetaData {
   }
 }
 
-class ReferenceDefinition {
-  List<String> columnNames;
-  List<String> referencedColumnNames;
-  String referencedDataBook;
-
-  ReferenceDefinition.fromJson(Map<String, dynamic> json)
-      : columnNames = json[ApiObjectProperty.columnNames].cast<String>(),
-        referencedColumnNames = json[ApiObjectProperty.referencedColumnNames].cast<String>(),
-        referencedDataBook = json[ApiObjectProperty.referencedDataBook];
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data[ApiObjectProperty.columnNames] = columnNames;
-    data[ApiObjectProperty.referencedColumnNames] = referencedColumnNames;
-    data[ApiObjectProperty.referencedDataBook] = referencedDataBook;
-    return data;
-  }
-}
-
 class ReferencedCellEditor {
   FlLinkedCellEditorModel cellEditorModel;
   String columnName;
@@ -739,7 +720,7 @@ class ReferencedCellEditor {
   ReferencedCellEditor(this.cellEditorModel, this.columnName, this.dataProvider);
 
   void dispose() {
-    DataBook? databook = IDataService().getDataBook(cellEditorModel.linkReference.referencedDataprovider);
+    DataBook? databook = IDataService().getDataBook(cellEditorModel.linkReference.referencedDataBook);
     if (databook != null) {
       databook.referencedCellEditors.remove(this);
     }

@@ -26,7 +26,7 @@ import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/command/api/select_record_command.dart';
 import '../../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
-import '../../../../model/component/editor/cell_editor/linked/link_reference.dart';
+import '../../../../model/component/editor/cell_editor/linked/reference_definition.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/data/column_definition.dart';
 import '../../../../model/data/data_book.dart';
@@ -136,7 +136,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     dynamic showValue = pValue;
 
     if (model.displayConcatMask != null || model.displayReferencedColumnName != null) {
-      LinkReference linkReference = correctLinkReference;
+      ReferenceDefinition linkReference = correctLinkReference;
       int colIndex = linkReference.columnNames.indexOf(columnName);
 
       if (colIndex == -1) {
@@ -204,7 +204,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
       return ICommandService()
           .sendCommand(FilterCommand.none(
-        dataProvider: model.linkReference.referencedDataprovider,
+        dataProvider: model.linkReference.referencedDataBook,
         reason: "Opened the linked cell picker",
       ))
           .then((value) {
@@ -282,7 +282,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     return ICommandService()
         .sendCommand(
       SelectRecordCommand.deselect(
-        dataProvider: model.linkReference.referencedDataprovider,
+        dataProvider: model.linkReference.referencedDataBook,
         reason: "Tapped",
       ),
     )
@@ -307,7 +307,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     _setValueIntoController(true);
   }
 
-  LinkReference get correctLinkReference {
+  ReferenceDefinition get correctLinkReference {
     ColumnDefinition? colDef = IDataService()
         .getMetaData(dataProvider)
         ?.columnDefinitions

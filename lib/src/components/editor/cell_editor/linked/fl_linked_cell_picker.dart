@@ -266,7 +266,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     IUiService().sendCommand(
       FilterCommand.none(
-        dataProvider: widget.model.linkReference.referencedDataprovider,
+        dataProvider: widget.model.linkReference.referencedDataBook,
         reason: "Closed the linked cell picker",
       ),
     );
@@ -410,7 +410,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     return ICommandService().sendCommand(
       SelectRecordCommand(
-        dataProvider: model.linkReference.referencedDataprovider,
+        dataProvider: model.linkReference.referencedDataBook,
         rowNumber: pRowIndex,
         reason: "Tapped",
         filter: filter,
@@ -453,7 +453,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
             editorComponentId: widget.name,
             value: lastChangedFilter,
             columnNames: [linkedCellEditor.columnName],
-            dataProvider: widget.model.linkReference.referencedDataprovider,
+            dataProvider: widget.model.linkReference.referencedDataBook,
             reason: "Filtered the linked cell picker",
           ),
         )
@@ -471,7 +471,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
     IUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
-        dataProvider: model.linkReference.referencedDataprovider,
+        dataProvider: model.linkReference.referencedDataBook,
         onDataChunk: _receiveData,
         onMetaData: _receiveMetaData,
         onReload: _onDataProviderReload,
@@ -483,21 +483,21 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
   /// Refreshes this data provider
   Future<void> _refresh() {
-    IUiService().notifySubscriptionsOfReload(pDataprovider: model.linkReference.referencedDataprovider);
+    IUiService().notifySubscriptionsOfReload(pDataprovider: model.linkReference.referencedDataBook);
 
     return IUiService().sendCommand(
       FetchCommand(
         fromRow: 0,
         reload: true,
-        rowCount: IUiService().getSubscriptionRowcount(pDataProvider: model.linkReference.referencedDataprovider),
-        dataProvider: model.linkReference.referencedDataprovider,
+        rowCount: IUiService().getSubscriptionRowcount(pDataProvider: model.linkReference.referencedDataBook),
+        dataProvider: model.linkReference.referencedDataBook,
         reason: "Table refreshed",
       ),
     );
   }
 
   int _onDataProviderReload() {
-    int selectedRow = IDataService().getDataBook(model.linkReference.referencedDataprovider)?.selectedRow ?? -1;
+    int selectedRow = IDataService().getDataBook(model.linkReference.referencedDataBook)?.selectedRow ?? -1;
     if (selectedRow >= 0) {
       scrollingPage = ((selectedRow + 1) / FlLinkedCellPicker.PAGE_LOAD).ceil();
     } else {

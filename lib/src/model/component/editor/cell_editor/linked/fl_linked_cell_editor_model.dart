@@ -20,16 +20,16 @@ import '../../../../../service/api/shared/api_object_property.dart';
 import '../../../../../service/config/i_config_service.dart';
 import '../../../fl_component_model.dart';
 import '../cell_editor_model.dart';
+import 'column_mapping.dart';
 import 'column_view.dart';
-import 'link_reference.dart';
-import 'search_column_mapping.dart';
+import 'reference_definition.dart';
 
 class FlLinkedCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  LinkReference linkReference = LinkReference();
+  ReferenceDefinition linkReference = ReferenceDefinition(referencedDataBook: "");
 
   ColumnView? columnView;
 
@@ -39,7 +39,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
 
   String? displayConcatMask;
 
-  ColumnMap? searchColumnMapping;
+  ColumnMapping? searchColumnMapping;
 
   bool searchTextAnywhere = true;
 
@@ -76,7 +76,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
         pKey: ApiObjectProperty.linkReference,
         pDefault: defaultModel.linkReference,
         pCurrent: linkReference,
-        pConversion: (value) => LinkReference.fromJson(value));
+        pConversion: (value) => ReferenceDefinition.fromJson(value));
 
     columnView = getPropertyValue(
         pJson: pJson,
@@ -110,7 +110,7 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
       pJson: pJson,
       pKey: ApiObjectProperty.searchColumnMapping,
       pDefault: defaultModel.searchColumnMapping,
-      pConversion: (value) => ColumnMap.fromJson(value),
+      pConversion: (value) => ColumnMapping.fromJson(value),
       pCurrent: searchColumnMapping,
     );
 
