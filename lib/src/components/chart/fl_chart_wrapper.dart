@@ -204,9 +204,9 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
             }
 
             commands.addAll([
-              MousePressedCommand(reason: "Selected record in chart", componentName: model.id),
-              MouseReleasedCommand(reason: "Selected record in chart", componentName: model.id),
-              MouseClickedCommand(reason: "Selected record in chart", componentName: model.id)
+              MousePressedCommand(reason: "Selected record in chart", componentName: model.name),
+              MouseReleasedCommand(reason: "Selected record in chart", componentName: model.name),
+              MouseClickedCommand(reason: "Selected record in chart", componentName: model.name)
             ]);
 
             if (oldFocus != null) {
