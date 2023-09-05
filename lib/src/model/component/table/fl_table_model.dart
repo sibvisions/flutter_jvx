@@ -69,7 +69,7 @@ class FlTableModel extends FlComponentModel {
   /// Word wrap
   bool wordWrapEnabled = false;
 
-  /// If the table allowes deletions.
+  /// If the table allows deletions.
   bool deleteEnabled = true;
 
   /// If the table hides the floating insert button.
