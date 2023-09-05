@@ -60,10 +60,10 @@ class FilterCommand extends SessionCommand {
 
   FilterCommand.none({
     required this.dataProvider,
+    this.editorComponentId,
     required super.reason,
   })  : filter = null,
         filterCondition = null,
-        editorComponentId = null,
         value = null,
         columnNames = null;
 

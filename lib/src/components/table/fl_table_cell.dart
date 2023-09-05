@@ -24,12 +24,14 @@ import '../../model/data/column_definition.dart';
 import '../../model/layout/alignments.dart';
 import '../../model/response/dal_fetch_response.dart';
 import '../../service/api/shared/fl_component_classname.dart';
+import '../../service/data/i_data_service.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateful_widget.dart';
 import '../editor/cell_editor/fl_dummy_cell_editor.dart';
 import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
+import '../editor/cell_editor/linked/fl_linked_cell_editor.dart';
 import 'fl_table_widget.dart';
 
 class FlTableCell extends FlStatefulWidget<FlTableModel> {
@@ -284,7 +286,7 @@ class _FlTableCellState extends State<FlTableCell> {
     cellEditor.cellFormat = widget.cellFormat;
 
     if (cellEditor.allowedInTable) {
-      cellEditor.setValue(widget.value);
+      _handleLinkedCellEditor(widget.value);
     }
   }
 
@@ -306,6 +308,7 @@ class _FlTableCellState extends State<FlTableCell> {
 
   /// Creates a normal text widget for the cell.
   Widget _createTextWidget() {
+    _setLinkedCellValue(widget.value);
     String cellText = cellEditor.formatValue(widget.value);
     TextStyle style = widget.model.createTextStyle();
 
@@ -337,6 +340,24 @@ class _FlTableCellState extends State<FlTableCell> {
       maxLines: widget.model.wordWrapEnabled ? null : 1,
       textAlign: textAlign,
     );
+  }
+
+  void _handleLinkedCellEditor(dynamic value) {
+    if (cellEditor is FlLinkedCellEditor) {
+      _setLinkedCellValue(value);
+    } else {
+      cellEditor.setValue(value);
+    }
+  }
+
+  void _setLinkedCellValue(value) {
+    cellEditor.setValue((
+      value,
+      IDataService()
+          .getDataBook(widget.model.dataProvider)!
+          .getRecord(pDataColumnNames: null, pRecordIndex: widget.rowIndex)!
+          .values,
+    ));
   }
 
   List<Widget> _createCellIcons() {

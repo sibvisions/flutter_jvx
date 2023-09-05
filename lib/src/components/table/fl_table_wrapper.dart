@@ -603,6 +603,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           rowIndex: pRowIndex,
           columnDefinitions: [pCellEditor.columnDefinition!],
           values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
+          dataRow: dataChunk.data[pRowIndex],
           onEndEditing: _setValueEnd,
           newValueNotifier: dialogValueNotifier,
         );
@@ -1080,6 +1081,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     required Map<String, dynamic> values,
     required void Function(dynamic, int, String) onEndEditing,
     required ValueNotifier<Map<String, dynamic>?> newValueNotifier,
+    List<dynamic>? dataRow,
   }) {
     if (currentEditDialog == null) {
       if (columnDefinitions.length == 1 &&
@@ -1089,17 +1091,22 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
                   FlCellEditorClassname.DATE_CELL_EDITOR)) {
         ColumnDefinition colDef = columnDefinitions.first;
         ICellEditor cellEditor = ICellEditor.getCellEditor(
-            pName: model.name,
-            pCellEditorJson: columnDefinitions.first.cellEditorJson,
-            columnDefinition: colDef,
-            onChange: (_) {},
-            onEndEditing: (value) => onEndEditing(value, rowIndex, colDef.name),
-            onFocusChanged: (_) {},
-            columnName: colDef.name,
-            dataProvider: model.dataProvider,
-            isInTable: true);
+          pName: model.name,
+          pCellEditorJson: columnDefinitions.first.cellEditorJson,
+          columnDefinition: colDef,
+          onChange: (_) {},
+          onEndEditing: (value) => onEndEditing(value, rowIndex, colDef.name),
+          onFocusChanged: (_) {},
+          columnName: colDef.name,
+          dataProvider: model.dataProvider,
+          isInTable: true,
+        );
 
-        cellEditor.setValue(values[colDef.name]);
+        if (cellEditor is FlLinkedCellEditor) {
+          cellEditor.setValue((values[colDef.name], dataRow));
+        } else {
+          cellEditor.setValue(values[colDef.name]);
+        }
 
         if (cellEditor is FlDateCellEditor) {
           currentEditDialog = cellEditor.openDatePicker();

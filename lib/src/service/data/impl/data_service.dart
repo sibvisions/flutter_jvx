@@ -19,6 +19,7 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 
+import '../../../components/editor/cell_editor/referenced_cell_editor.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/fetch_command.dart';
 import '../../../model/command/base_command.dart';
@@ -462,7 +463,7 @@ class DataService implements IDataService {
         ),
       );
     } else {
-      referencedDataBook.buildDataToDisplayMap(referencedCellEditor);
+      referencedCellEditor.buildDataToDisplayMap(referencedDataBook);
     }
 
     return referencedCellEditor;

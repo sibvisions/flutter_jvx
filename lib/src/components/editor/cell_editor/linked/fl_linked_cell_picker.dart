@@ -136,7 +136,17 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       tableModel.styles.add(FlTableModel.NO_ALTERNATING_ROW_COLOR_STYLE);
     }
 
+    tableModel.dataProvider = linkedCellEditor.dataProvider;
+
     _subscribe();
+  }
+
+  @override
+  void didUpdateWidget(covariant FlLinkedCellPicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (linkedCellEditor != oldWidget.linkedCellEditor) {
+      tableModel.dataProvider = linkedCellEditor.dataProvider;
+    }
   }
 
   @override
@@ -288,7 +298,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
 
     // This is the column index of the column of the linked cell editor in this data chunk.
     // This data chunk is the referenced databook! Not the databook of the linked cell editor!
-    int colIndex = linkedCellEditor.correctLinkReference.columnNames.indexOf(linkedCellEditor.columnName);
+    int colIndex = linkedCellEditor.effectiveLinkReference.columnNames.indexOf(linkedCellEditor.columnName);
     colIndex = colIndex == -1 ? 0 : colIndex;
 
     if (isConcatMask && _chunkData != null) {

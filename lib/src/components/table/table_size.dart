@@ -29,6 +29,7 @@ import '../editor/cell_editor/fl_check_box_cell_editor.dart';
 import '../editor/cell_editor/fl_choice_cell_editor.dart';
 import '../editor/cell_editor/fl_image_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
+import '../editor/cell_editor/linked/fl_linked_cell_editor.dart';
 import 'fl_table_cell.dart';
 
 enum _RedistributionPriority { first, second, third }
@@ -204,7 +205,7 @@ class TableSize {
           } else if (cellEditor.allowedInTable && cellEditor is FlImageCellEditor) {
             calculatedWidth = imageCellWidth;
           } else {
-            calculatedWidth = _calculateDataWidth(dataColumn, cellEditor, textStyle);
+            calculatedWidth = _calculateDataWidth(dataRows, dataColumn, cellEditor, textStyle);
           }
           cellEditor.dispose();
 
@@ -237,14 +238,19 @@ class TableSize {
   }
 
   double _calculateDataWidth(
+    List<dynamic> dataRows,
     List<dynamic> dataColumn,
     ICellEditor cellEditor,
     TextStyle pTextStyle,
   ) {
     double columnWidth = 0.0;
 
-    Iterable<dynamic> valuesToCheck = dataColumn.whereNotNull();
-    for (dynamic value in valuesToCheck) {
+    var valuesToCheck = dataColumn.whereNotNull().toList();
+    for (int i = 0; i < valuesToCheck.length; i++) {
+      dynamic value = valuesToCheck[i];
+      if (cellEditor is FlLinkedCellEditor) {
+        cellEditor.setValue((value, dataRows[i]));
+      }
       String formattedText = cellEditor.formatValue(value);
 
       double rowWidth = _calculateTableTextWidth(pTextStyle, formattedText);

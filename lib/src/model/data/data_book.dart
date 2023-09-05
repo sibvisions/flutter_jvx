@@ -15,11 +15,11 @@
  */
 
 import 'dart:collection';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
 
+import '../../components/editor/cell_editor/referenced_cell_editor.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
@@ -178,7 +178,7 @@ class DataBook {
       }
     }
 
-    referencedCellEditors.forEach((refCellEditor) => buildDataToDisplayMap(refCellEditor));
+    referencedCellEditors.forEach((refCellEditor) => refCellEditor.buildDataToDisplayMap(this));
 
     IUiService().notifyDataChange(
       pDataProvider: dataProvider,
@@ -478,72 +478,6 @@ class DataBook {
   static int getColumnIndex(List<ColumnDefinition> columnDefinitions, String columnName) {
     return columnDefinitions.indexWhere((colDef) => colDef.name == columnName);
   }
-
-  buildDataToDisplayMap(ReferencedCellEditor referencedCellEditor) {
-    var cellEditorModel = referencedCellEditor.cellEditorModel;
-    ReferenceDefinition linkReference = cellEditorModel.linkReference;
-    Map<String, String> dataToDisplayMap = linkReference.dataToDisplay;
-
-    if (cellEditorModel.displayConcatMask?.isNotEmpty == true ||
-        cellEditorModel.displayReferencedColumnName?.isNotEmpty == true) {
-      if (linkReference.columnNames.isEmpty) {
-        linkReference.columnNames.add(referencedCellEditor.columnName);
-      }
-      var colToRefColIndex =
-          linkReference.columnNames.indexWhere((colName) => colName == referencedCellEditor.columnName);
-
-      String valueColumnName = linkReference.referencedColumnNames[colToRefColIndex];
-      var refColIndex = metaData?.columnDefinitions.indexWhere((colDef) => colDef.name == valueColumnName) ?? -1;
-
-      if (refColIndex >= 0) {
-        records.values.forEach((dataRow) {
-          // It says referenced column name but it is a column in this data book, not the other.
-
-          var refColValue = dataRow[refColIndex];
-          Map<String, dynamic> valueKeyMap = {valueColumnName: refColValue.toString()};
-          var valueKey = jsonEncode(valueKeyMap);
-
-          String displayString = "";
-
-          if (cellEditorModel.displayConcatMask?.isNotEmpty == true) {
-            List<String> columnViewNames = cellEditorModel.columnView?.columnNames ?? metaData!.columnViewTable;
-
-            if (cellEditorModel.displayConcatMask!.contains("*")) {
-              int i = 0;
-
-              displayString = cellEditorModel.displayConcatMask!;
-              while (displayString.contains("*")) {
-                int valueIndex = i < columnViewNames.length
-                    ? metaData!.columnDefinitions.indexWhere((colDef) => colDef.name == columnViewNames[i])
-                    : -1;
-
-                dynamic value = valueIndex >= 0 ? dataRow[valueIndex] : "";
-
-                displayString = displayString.replaceFirst('*', value.toString());
-                i++;
-              }
-            } else {
-              List<String> values = [];
-              columnViewNames.forEach((columnName) {
-                int valueIndex = metaData!.columnDefinitions.indexWhere((colDef) => colDef.name == columnName);
-
-                values.add(valueIndex >= 0 ? dataRow[valueIndex] : "");
-              });
-              displayString = values.join(cellEditorModel.displayConcatMask!);
-            }
-          } else if (cellEditorModel.displayReferencedColumnName?.isNotEmpty == true) {
-            displayString = dataRow[metaData!.columnDefinitions
-                    .indexWhere((colDef) => colDef.name == cellEditorModel.displayReferencedColumnName)]
-                .toString();
-          }
-
-          dataToDisplayMap[valueKey] = displayString;
-        });
-      }
-
-      IUiService().notifyDataToDisplayMapChanged(pDataProvider: referencedCellEditor.dataProvider);
-    }
-  }
 }
 
 class DalMetaData {
@@ -709,20 +643,5 @@ class DalMetaData {
     data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
     data["json"] = json;
     return data;
-  }
-}
-
-class ReferencedCellEditor {
-  FlLinkedCellEditorModel cellEditorModel;
-  String columnName;
-  String dataProvider;
-
-  ReferencedCellEditor(this.cellEditorModel, this.columnName, this.dataProvider);
-
-  void dispose() {
-    DataBook? databook = IDataService().getDataBook(cellEditorModel.linkReference.referencedDataBook);
-    if (databook != null) {
-      databook.referencedCellEditors.remove(this);
-    }
   }
 }

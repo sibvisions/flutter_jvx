@@ -61,6 +61,7 @@ class ApiFilterRequest extends SessionRequest {
         if (filter != null) ApiObjectProperty.filter: filter?.toJson(),
         if (filterCondition != null) ApiObjectProperty.filterCondition: filterCondition?.toJson(),
         if (editorComponentId != null) ApiObjectProperty.editorComponentId: editorComponentId,
+        ApiObjectProperty.includeMetaData: true,
         ApiObjectProperty.dataProvider: dataProvider,
       };
 }

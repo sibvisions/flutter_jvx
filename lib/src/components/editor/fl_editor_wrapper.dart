@@ -34,6 +34,7 @@ import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
 import '../../service/api/shared/api_object_property.dart';
+import '../../service/api/shared/fl_component_classname.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -186,10 +187,15 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           dataProvider: model.dataProvider,
           onSelectedRecord: setValue,
           onMetaData: receiveMetaData,
-          dataColumns: [model.columnName],
+          dataColumns: isLinkedEditor() ? null : [model.columnName],
         ),
       );
     }
+  }
+
+  bool isLinkedEditor() {
+    return model.json[ApiObjectProperty.cellEditor][ApiObjectProperty.className] ==
+        FlCellEditorClassname.LINKED_CELL_EDITOR;
   }
 
   /// Unsubscribes the callback of the cell editor from value changes.
@@ -223,7 +229,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void setValue(DataRecord? pDataRecord) {
     var oldValue = _currentValue;
     if (pDataRecord != null && pDataRecord.values.isNotEmpty && pDataRecord.columnDefinitions.isNotEmpty) {
-      _currentValue = pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)];
+      var newValue = pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)];
+      if (isLinkedEditor()) {
+        _currentValue = (newValue, pDataRecord.values);
+      } else {
+        _currentValue = newValue;
+      }
     } else {
       _currentValue = null;
     }

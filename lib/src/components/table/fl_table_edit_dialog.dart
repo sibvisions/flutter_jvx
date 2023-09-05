@@ -12,6 +12,7 @@ import '../editor/cell_editor/fl_choice_cell_editor.dart';
 import '../editor/cell_editor/fl_image_cell_editor.dart';
 import '../editor/cell_editor/fl_text_cell_editor.dart';
 import '../editor/cell_editor/i_cell_editor.dart';
+import '../editor/cell_editor/linked/fl_linked_cell_editor.dart';
 import '../editor/text_area/fl_text_area_widget.dart';
 import 'fl_table_widget.dart';
 
@@ -108,7 +109,11 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         onFocusChanged: (_) {},
         isInTable: false,
       );
-      cellEditor.setValue(widget.values[colDef.name]);
+      if (cellEditor is FlLinkedCellEditor) {
+        cellEditor.setValue((widget.values[colDef.name], widget.values.values.toList()));
+      } else {
+        cellEditor.setValue(widget.values[colDef.name]);
+      }
       cellEditors.add(cellEditor);
     });
 
@@ -140,7 +145,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
       dialogLabel = widget.columnDefinitions.first.label;
 
       ICellEditor cellEditor = cellEditors[0];
-      Widget editorWidget = cellEditor.createWidget(null);
+      Widget editorWidget = cellEditor.createWidget(widget.model.json);
 
       if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
         editorWidget = SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget);
@@ -169,7 +174,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
       for (int i = 0; i < widget.columnDefinitions.length; i++) {
         ICellEditor cellEditor = cellEditors[i];
-        Widget editorWidget = cellEditor.createWidget(null);
+        Widget editorWidget = cellEditor.createWidget(widget.model.json);
 
         if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
           editorWidget = Align(
@@ -283,7 +288,12 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
         for (String columnName in newValues.keys) {
           int colIndex = widget.columnDefinitions.indexWhere((element) => element.name == columnName);
           if (colIndex >= 0) {
-            cellEditors[colIndex].setValue(newValues[columnName]);
+            var cellEditor = cellEditors[colIndex];
+            if (cellEditor is FlLinkedCellEditor) {
+              cellEditor.setValue((newValues[columnName], newValues.values.toList()));
+            } else {
+              cellEditor.setValue(newValues[columnName]);
+            }
           }
         }
       }

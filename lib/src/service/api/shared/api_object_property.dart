@@ -261,8 +261,10 @@ abstract class ApiObjectProperty {
   static const String from = "from";
   static const String columnNames = "columnNames";
   static const String columnName = "columnName";
+  static const String ignoreNull = "ignoreNull";
   static const String savingImmediate = "savingImmediate";
   static const String dataRow = "dataRow";
+  static const String dataRowColumnName = "dataRowColumnName";
   static const String isAllFetched = "isAllFetched";
   static const String selectedRow = "selectedRow";
   static const String deletedRow = "deletedRow";
@@ -393,4 +395,6 @@ abstract class ApiObjectProperty {
   static const String designMode = "designMode";
   static const String pushNotifications = "pushNotifications";
   static const String customLanguage = "customLanguage";
+
+  static const String type = "type";
 }

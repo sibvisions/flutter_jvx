@@ -29,7 +29,6 @@ import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_edi
 import '../../../../model/component/editor/cell_editor/linked/reference_definition.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/data/column_definition.dart';
-import '../../../../model/data/data_book.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../../../../service/command/i_command_service.dart';
 import '../../../../service/data/i_data_service.dart';
@@ -42,7 +41,9 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  dynamic _value;
+  (dynamic, List<dynamic>)? _record;
+
+  dynamic get _value => _record?.$1;
 
   TextEditingController textController = TextEditingController();
 
@@ -92,7 +93,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
   @override
   void setValue(dynamic pValue) {
-    _value = pValue;
+    _record = pValue;
 
     _setValueIntoController();
   }
@@ -132,26 +133,49 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   }
 
   @override
-  String formatValue(dynamic pValue) {
-    dynamic showValue = pValue;
-
-    if (model.displayConcatMask != null || model.displayReferencedColumnName != null) {
-      ReferenceDefinition linkReference = correctLinkReference;
-      int colIndex = linkReference.columnNames.indexOf(columnName);
-
-      if (colIndex == -1) {
-        colIndex = 0;
-      }
-
-      String valueColumnName = linkReference.referencedColumnNames[colIndex];
-
-      Map<String, dynamic> valueKeyMap = {valueColumnName: showValue.toString()};
-      var valueKey = jsonEncode(valueKeyMap);
-
-      showValue = linkReference.dataToDisplay[valueKey] ?? showValue;
+  String formatValue(Object? pValue) {
+    Object? showValue = pValue;
+    if (showValue == null) {
+      return "";
     }
 
-    return showValue?.toString() ?? "";
+    if (model.displayConcatMask != null || model.displayReferencedColumnName != null) {
+      ReferenceDefinition linkReference = effectiveLinkReference;
+
+      int linkRefColumnIndex = linkReference.columnNames.indexOf(columnName);
+      if (linkRefColumnIndex == -1) {
+        // Invalid definition by the developer, Swing throws InvalidArgumentException.
+        // Possible solution: just return value and ignore concatMask and others.
+        linkRefColumnIndex = 0;
+      }
+
+      if (model.additionalCondition != null || model.searchColumnMapping != null) {
+        var dataBook = IDataService().getDataBook(dataProvider);
+        if (dataBook != null && _record != null) {
+          Map<String, dynamic> displayKeyMap = model.createDisplayMapKey(
+            dataBook.metaData!.columnDefinitions,
+            _record!.$2,
+            linkReference,
+            columnName,
+            dataProvider: dataProvider,
+          );
+          var displayKey = jsonEncode(displayKeyMap);
+
+          if (linkReference.dataToDisplay.containsKey(displayKey)) {
+            return linkReference.dataToDisplay[displayKey] ?? showValue.toString();
+          }
+        }
+      }
+
+      var fallbackDataKey = jsonEncode(
+          model.createFallbackDisplayKey(linkReference.referencedColumnNames[linkRefColumnIndex], showValue));
+
+      if (linkReference.dataToDisplay.containsKey(fallbackDataKey)) {
+        return linkReference.dataToDisplay[fallbackDataKey] ?? showValue.toString();
+      }
+    }
+
+    return showValue.toString();
   }
 
   @override
@@ -203,8 +227,12 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       isOpen = true;
 
       return ICommandService()
-          .sendCommand(FilterCommand.none(
+          .sendCommand(FilterCommand.byValue(
         dataProvider: model.linkReference.referencedDataBook,
+        editorComponentId: (lastWidgetModel?.name.isNotEmpty ?? false) ? lastWidgetModel!.name : name,
+        columnNames: [columnName],
+        // Same as React
+        value: "",
         reason: "Opened the linked cell picker",
       ))
           .then((value) {
@@ -248,7 +276,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
       // Checks if the column of the metadata has a link reference
       // If not, then we have to create the referenced cell editor ourselves
-      if (model.linkReference == correctLinkReference) {
+      if (model.linkReference == effectiveLinkReference) {
         referencedCellEditor = IDataService().createReferencedCellEditors(model, dataProvider, columnName);
       }
     }
@@ -258,7 +286,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     if (_value == null) {
       textController.clear();
     } else {
-      dynamic showValue = formatValue(_value);
+      dynamic showValue = formatValue(_value!);
 
       if (showValue == null) {
         textController.clear();
@@ -307,7 +335,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     _setValueIntoController(true);
   }
 
-  ReferenceDefinition get correctLinkReference {
+  ReferenceDefinition get effectiveLinkReference {
     ColumnDefinition? colDef = IDataService()
         .getMetaData(dataProvider)
         ?.columnDefinitions

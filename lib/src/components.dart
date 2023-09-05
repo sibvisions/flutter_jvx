@@ -33,6 +33,7 @@ export '../../src/components/editor/cell_editor/fl_text_cell_editor.dart';
 export '../../src/components/editor/cell_editor/linked/fl_linked_cell_editor.dart';
 export '../../src/components/editor/cell_editor/linked/fl_linked_cell_picker.dart';
 export '../../src/components/editor/cell_editor/linked/fl_linked_editor_widget.dart';
+export '../../src/components/editor/cell_editor/referenced_cell_editor.dart';
 export '../../src/components/editor/number_field/numeric_text_formatter.dart';
 export '../../src/components/editor/password_field/fl_password_field_widget.dart';
 export '../../src/components/editor/text_area/fl_text_area_widget.dart';
