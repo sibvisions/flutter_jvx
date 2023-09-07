@@ -40,8 +40,8 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
   Future<List<BaseCommand>> processCommand(DeleteScreenCommand command, BaseCommand? origin) async {
     FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: command.screenName);
 
-    if (screenModel is FlPanelModel) {
-      if (command.popPage && IUiService().getCurrentWorkscreenName() == screenModel.screenNavigationName) {
+    if (screenModel is FlPanelModel && command.popPage) {
+      if (IUiService().getCurrentWorkscreenName() == screenModel.screenNavigationName) {
         var context = FlutterUI.getEffectiveContext()!;
         // We need to try beamBack first.
         // (PopupExampleWorkScreen) For example, a Modal WorkScreen should show the underlying WorkScreen again after closing, not the menu.

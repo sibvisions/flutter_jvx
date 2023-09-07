@@ -25,6 +25,7 @@ import '../../../flutter_ui.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/api/device_status_command.dart';
 import '../../../model/command/api/exit_command.dart';
+import '../../../model/command/api/open_screen_command.dart';
 import '../../../model/command/api/session_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
@@ -256,8 +257,15 @@ class CommandService implements ICommandService {
   }
 
   void modifyCommands(List<BaseCommand> commands, BaseCommand origin) {
-    if (commands.any((element) => element is RouteToWorkCommand)) {
-      commands.whereType<DeleteScreenCommand>().forEach((element) {
+    if (origin is OpenScreenCommand) {
+      commands
+          .whereType<DeleteScreenCommand>()
+          .where((deleteScreen) =>
+              deleteScreen.screenName == origin.screenLongName &&
+              commands
+                  .whereType<RouteToWorkCommand>()
+                  .any((routeToWork) => routeToWork.screenName == deleteScreen.screenName))
+          .forEach((element) {
         element.popPage = false;
       });
     }
