@@ -25,7 +25,6 @@ import '../../../flutter_ui.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/api/device_status_command.dart';
 import '../../../model/command/api/exit_command.dart';
-import '../../../model/command/api/open_screen_command.dart';
 import '../../../model/command/api/session_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
@@ -42,8 +41,11 @@ import '../../../model/command/ui/route/route_to_work_command.dart';
 import '../../../model/command/ui/ui_command.dart';
 import '../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
 import '../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
+import '../../../model/component/fl_component_model.dart';
+import '../../../model/menu/menu_item_model.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
 import '../../service.dart';
+import '../../storage/i_storage_service.dart';
 import '../../ui/i_ui_service.dart';
 import '../i_command_service.dart';
 import '../shared/i_command_processor.dart';
@@ -257,17 +259,38 @@ class CommandService implements ICommandService {
   }
 
   void modifyCommands(List<BaseCommand> commands, BaseCommand origin) {
-    if (origin is OpenScreenCommand) {
-      commands
-          .whereType<DeleteScreenCommand>()
-          .where((deleteScreen) =>
-              deleteScreen.screenName == origin.screenLongName &&
-              commands
-                  .whereType<RouteToWorkCommand>()
-                  .any((routeToWork) => routeToWork.screenName == deleteScreen.screenName))
-          .forEach((element) {
-        element.popPage = false;
-      });
-    }
+    commands.whereType<DeleteScreenCommand>().where((deleteScreen) {
+      Set<String> setNamesOfScreen = {deleteScreen.screenName};
+
+      FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: deleteScreen.screenName);
+      if (screenModel is FlPanelModel) {
+        if (screenModel.screenNavigationName != null) {
+          setNamesOfScreen.add(screenModel.screenNavigationName!);
+        }
+        if (screenModel.screenClassName != null) {
+          setNamesOfScreen.add(screenModel.screenClassName!);
+        }
+        if (screenModel.screenTitle != null) {
+          setNamesOfScreen.add(screenModel.screenTitle!);
+        }
+      }
+
+      MenuItemModel? menuItemModel;
+      for (String screenName in setNamesOfScreen) {
+        menuItemModel = IUiService().getMenuItem(screenName);
+        if (menuItemModel != null) {
+          setNamesOfScreen.add(menuItemModel.label);
+          setNamesOfScreen.add(menuItemModel.navigationName);
+          setNamesOfScreen.add(menuItemModel.screenLongName);
+          break;
+        }
+      }
+
+      return commands
+          .whereType<RouteToWorkCommand>()
+          .any((routeToWork) => setNamesOfScreen.contains(routeToWork.screenName));
+    }).forEach((element) {
+      element.popPage = false;
+    });
   }
 }

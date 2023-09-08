@@ -61,12 +61,7 @@ class MenuItemModel {
   });
 
   bool matchesScreenName(String screenName) {
-    return [
-          label,
-          alternativeLabel,
-          navigationName,
-        ].contains(screenName) ||
-        (screenName.isNotEmpty && screenLongName == (screenName));
+    return [label, alternativeLabel, navigationName, screenLongName].contains(screenName);
   }
 
   static Widget getImage(

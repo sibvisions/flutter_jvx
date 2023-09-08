@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 
 import '../../model/command/api/close_screen_command.dart';
+import '../../model/command/ui/route/route_to_work_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
@@ -125,7 +126,7 @@ abstract class Menu extends StatelessWidget {
   static void menuItemPressed(BuildContext context, {required MenuItemModel item}) {
     // Always close drawer even on route (Flutter Bug sometimes breaks routing with open drawer)
     Scaffold.maybeOf(context)?.closeEndDrawer();
-    IUiService().routeToWorkScreen(pScreenName: item.navigationName);
+    IUiService().sendCommand(RouteToWorkCommand(screenName: item.navigationName, reason: "Menu item pressed"));
   }
 
   /// Returns the action function based on the [item] parameter.

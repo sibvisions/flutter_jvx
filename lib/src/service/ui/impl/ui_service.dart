@@ -261,11 +261,25 @@ class UiService implements IUiService {
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
     if (!checkFirstSplash()) return;
 
+    var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+    // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
+    if (lastBeamState.pathParameters[MainLocation.screenNameKey] == pScreenName) {
+      return;
+    }
+
     MenuItemModel? menuItemModel = getMenuItem(pScreenName);
     String resolvedScreenName = menuItemModel?.navigationName ?? pScreenName;
+
+    // Clear the history of the screen we are going to so we don't jump back into the history.
+    if (!kIsWeb) {
+      FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
+        location.history
+            .removeWhere((element) => element.routeInformation.location?.endsWith(resolvedScreenName) ?? false);
+      });
+    }
+
     FlutterUI.logUI.i("Routing to workscreen: $pScreenName, resolved name: $resolvedScreenName");
 
-    var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     if (pReplaceRoute ||
         lastBeamState.pathPatternSegments.contains("settings") ||
         lastBeamState.pathPatternSegments.contains("login")) {
