@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:gauges/gauges.dart';
 
@@ -168,7 +170,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
       }
     }
     if (model.maxErrorValue != null) {
-      if (model.maxErrorValue! < model.value && model.value < model.maxValue) {
+      if (model.maxErrorValue! < model.value) {
         colorToShow = Colors.red;
       }
     }
@@ -299,7 +301,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
         minValue: model.minValue,
         maxValue: model.minWarningValue!,
         minAngle: -90,
-        maxAngle: -90 + gradePerVal * model.value,
+        maxAngle: min(270, -90 + gradePerVal * model.value),
         color: getRangeColor(),
       ));
     }
@@ -324,7 +326,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
         minValue: model.minValue,
         maxValue: model.minWarningValue!,
         minAngle: -90,
-        maxAngle: -90 + gradePerVal * model.value,
+        maxAngle: min(90, -90 + gradePerVal * model.value),
         color: getRangeColor(),
       ));
     }
