@@ -87,7 +87,7 @@ abstract class FontAwesomeUtil {
     "FontAwesome.search-minus": FontAwesomeIcons.magnifyingGlassMinus,
     "FontAwesome.power-off": FontAwesomeIcons.powerOff,
     "FontAwesome.signal": FontAwesomeIcons.signal,
-    "FontAwesome.gear": FontAwesomeIcons.gears,
+    "FontAwesome.gear": FontAwesomeIcons.gear,
     "FontAwesome.cog": FontAwesomeIcons.gear,
     "FontAwesome.trash-o": FontAwesomeIcons.solidTrashCan,
     "FontAwesome.home": FontAwesomeIcons.house,
