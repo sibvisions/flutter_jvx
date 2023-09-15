@@ -39,6 +39,16 @@ class MainLocation extends BeamLocation<BeamState> {
   final ValueNotifier<LoginMode> loginModeNotifier = ValueNotifier(LoginMode.Manual);
   static const screenNameKey = "workScreenName";
 
+  /// The global return URI key used in [BeamState.queryParameters].
+  ///
+  /// Used for return URIs that are supposed to survive app (re-)starts.
+  /// For example, deep-links and web-reloads.
+  ///
+  /// See also:
+  /// * [BeamGuard] in [FlutterUI].
+  /// * [IAppService.getApplicableReturnUri]
+  static const returnUriKey = "returnUri";
+
   BeamPage? lastPage;
 
   BeamPageType get beamPageType => kIsWeb ? BeamPageType.noTransition : BeamPageType.material;
@@ -47,7 +57,7 @@ class MainLocation extends BeamLocation<BeamState> {
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     FlutterUI.logUI.d("Building main location");
 
-    _handleDeepLinks(context, state);
+    _handleRoutes(context, state);
 
     List<BeamPage> pages = [];
 
@@ -119,14 +129,17 @@ class MainLocation extends BeamLocation<BeamState> {
     return pages;
   }
 
-  void _handleDeepLinks(BuildContext context, BeamState state) {
+  void _handleRoutes(BuildContext context, BeamState state) {
     Map<String, String> queryParameters = Map.of(state.queryParameters);
     ServerConfig? deepLinkConfig = ParseUtil.extractAppParameters(queryParameters);
     queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
+    _handleDeepLinks(deepLinkConfig, state);
+  }
+
+  void _handleDeepLinks(ServerConfig? deepLinkConfig, BeamState state) {
     if (deepLinkConfig != null) {
-      String? strUri = state.queryParameters["returnUri"];
-      IAppService().returnUri = (strUri != null ? Uri.parse(strUri) : Uri(path: state.uri.path));
+      // Don't use `force` as this could result in repeated restarts. (No guarantee that url parameters were removed)
       unawaited(IAppService().startCustomApp(deepLinkConfig));
     }
   }

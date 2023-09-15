@@ -18,6 +18,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../../config/server_config.dart';
+import '../../model/response/menu_view_response.dart';
+import '../../routing/locations/main_location.dart';
 import '../service.dart';
 import 'app.dart';
 
@@ -45,9 +47,14 @@ abstract class IAppService implements Service {
 
   ValueListenable<Future<void>?> get exitFuture;
 
-  /// The saved return URI.
+  /// The per-app saved return URI.
   ///
-  /// Represents the last screen location to which we should return to after the next start/login.
+  /// Used for inner-app returns.
+  /// For example, after server-side logouts and expired sessions.
+  ///
+  /// See also:
+  /// * [saveLocationAsReturnUri]
+  /// * [getApplicableReturnUri]
   Uri? get returnUri;
 
   set returnUri(Uri? value);
@@ -74,9 +81,22 @@ abstract class IAppService implements Service {
 
   /// Saves the current screen location as the return URI (if applicable).
   ///
-  /// The return URI is used to navigate back to the previous screen after the next start/login.
-  /// For example when the server logs us out or sends a session expired.
+  /// See also:
+  /// * [getApplicableReturnUri]
   void saveLocationAsReturnUri();
+
+  /// Returns the optional return URI in case it is a screen route and is available
+  /// to the current user by checking the available menu items.
+  ///
+  /// The return URI is used to navigate back to the previous screen after the next start/login.
+  ///
+  /// Sources of return URI:
+  /// * [IAppService.returnUri] from inner-app returning.
+  /// * [MainLocation.returnUriKey] from deep-linking and web-reloads.
+  ///
+  /// See also:
+  /// * [saveLocationAsReturnUri]
+  Uri? getApplicableReturnUri(List<MenuEntryResponse> menuItems);
 
   /// Determines whether the "Apps" button should be shown.
   bool showAppsButton();

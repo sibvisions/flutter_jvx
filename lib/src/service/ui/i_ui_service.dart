@@ -150,7 +150,13 @@ abstract class IUiService implements Service {
   // Meta data management
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Returns the current menu
+  /// Returns the original sever-sent menu.
+  ///
+  /// **Not recommended for building the menu!**
+  /// Use [getMenuModel] instead.
+  MenuModel? getOriginalMenuModel();
+
+  /// Returns the current menu.
   MenuModel getMenuModel();
 
   /// Returns the value notifier for the menu model
@@ -159,6 +165,11 @@ abstract class IUiService implements Service {
 
   /// Set menu model to be used when opening the menu
   void setMenuModel(MenuModel? pMenuModel);
+
+  /// Whether the user is currently logged in.
+  ///
+  /// **This method can only approximate the current status, so use this with caution!**
+  bool loggedIn();
 
   /// Returns the current clientId.
   ///

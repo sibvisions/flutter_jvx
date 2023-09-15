@@ -43,7 +43,7 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
       IAppService().saveLocationAsReturnUri();
     }
 
-    if (UiService.checkFirstSplash(false)) {
+    if (UiService.checkForExistingRoute(false)) {
       FlutterUI.clearHistory();
       LoginPage.changeMode(mode: command.mode, loginData: command.loginData);
       FlutterUI.clearLocationHistory();

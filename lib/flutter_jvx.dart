@@ -108,6 +108,7 @@ export 'src/model/response/menu_view_response.dart';
 export 'src/model/response/show_document_response.dart';
 export 'src/model/response/upload_action_response.dart';
 export 'src/model/response/user_data_response.dart';
+export 'src/routing/locations/main_location.dart';
 // Services
 export 'src/service/api/i_api_service.dart';
 export 'src/service/api/impl/default/api_service.dart';

@@ -25,6 +25,8 @@ import '../../../config/server_config.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/startup_command.dart';
 import '../../../model/request/api_exit_request.dart';
+import '../../../model/response/menu_view_response.dart';
+import '../../../routing/locations/main_location.dart';
 import '../../api/i_api_service.dart';
 import '../../api/shared/repository/offline_api_repository.dart';
 import '../../api/shared/repository/online_api_repository.dart';
@@ -116,10 +118,29 @@ class AppService implements IAppService {
 
   @override
   void saveLocationAsReturnUri() {
-    BeamState? targetState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState?;
-    if (targetState != null && targetState.uri.path.startsWith("/screens/")) {
+    BeamState targetState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+    if (targetState.uri.path.startsWith("/screens/")) {
       returnUri ??= Uri(path: targetState.uri.path);
     }
+  }
+
+  @override
+  Uri? getApplicableReturnUri(List<MenuEntryResponse> menuItems) {
+    Uri? uri = IAppService().returnUri;
+    if (uri == null) {
+      BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+      var returnString = state.queryParameters[MainLocation.returnUriKey];
+      if (returnString != null) {
+        uri = Uri.tryParse(returnString);
+      }
+    }
+
+    if ((uri != null && uri.pathSegments.length >= 2 && uri.pathSegments[0] == "screens") &&
+        menuItems.any((e) => e.navigationName == uri!.pathSegments[1])) {
+      return uri;
+    }
+
+    return null;
   }
 
   @override
@@ -188,8 +209,11 @@ class AppService implements IAppService {
   @override
   Future<void> startCustomApp(ServerConfig customConfig, {bool force = false}) async {
     App customApp = await App.createAppFromConfig(customConfig);
-    // Only start app if it isn't already running.
-    if (IConfigService().currentApp.value != customApp.id || force) {
+    BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+    bool loggedOut = (state.uri.path.startsWith("/login") || !IUiService().loggedIn());
+
+    // Only start app if it isn't already running or the user isn't logged in.
+    if (force || IConfigService().currentApp.value != customApp.id || loggedOut) {
       await IAppService().startApp(appId: customApp.id, autostart: true);
     }
   }

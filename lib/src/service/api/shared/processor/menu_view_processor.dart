@@ -52,11 +52,12 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     commands.add(saveMenuCommand);
 
     if (!IConfigService().offline.value) {
-      if (isReturnUriSuitable(response.responseMenuItems)) {
+      var returnUri = IAppService().getApplicableReturnUri(response.responseMenuItems);
+      if (returnUri != null) {
         var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
         commands.add(RouteToCommand(
           replaceRoute: lastBeamState.pathPatternSegments.contains("login"),
-          uri: IAppService().returnUri.toString(),
+          uri: returnUri.toString(),
           reason: "Found returnUri",
         ));
       } else {
@@ -70,14 +71,6 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     }
 
     return commands;
-  }
-
-  /// Checks whether a return uri exists, is a screen uri and is available
-  /// to the current user by checking the available menu items.
-  bool isReturnUriSuitable(List<MenuEntryResponse> menuItems) {
-    var uri = IAppService().returnUri;
-    return (uri != null && uri.pathSegments.length >= 2 && uri.pathSegments[0] == "screens") &&
-        menuItems.any((e) => e.navigationName == uri.pathSegments[1]);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

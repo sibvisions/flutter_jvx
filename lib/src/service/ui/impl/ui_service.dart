@@ -230,12 +230,11 @@ class UiService implements IUiService {
   // Beaming history will be cleared when it should not be possible to go back,
   // as you should not be able to go back to the splash screen or back to menu when u logged out
 
-  /// If we are currently in splash and never had a context before (initiated = false),
-  /// then ignore route request while in settings (and later also while in work screen)
-  static bool checkFirstSplash([bool includeWorkScreens = true]) {
-    if (FlutterUI.getCurrentContext() == null && !FlutterUI.initiated) {
-      if (kIsWeb &&
-          (Uri.base.fragment == "/settings" || (includeWorkScreens && Uri.base.fragment.startsWith("/screens")))) {
+  /// Whether the current route would be settings or optionally a work screen and the splash screen is active.
+  static bool checkForExistingRoute([bool includeWorkScreens = true]) {
+    if (FlutterUI.getCurrentContext() == null) {
+      BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+      if (state.uri.path == "/settings" || (includeWorkScreens && state.uri.path.startsWith("/screens"))) {
         return false;
       }
     }
@@ -244,7 +243,7 @@ class UiService implements IUiService {
 
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
-    if (!checkFirstSplash()) return;
+    if (!checkForExistingRoute()) return;
 
     var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     if (pReplaceRoute ||
@@ -259,7 +258,7 @@ class UiService implements IUiService {
 
   @override
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
-    if (!checkFirstSplash()) return;
+    if (!checkForExistingRoute()) return;
 
     var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
@@ -301,7 +300,7 @@ class UiService implements IUiService {
 
   @override
   Future<void> routeToAppOverview() async {
-    if (!checkFirstSplash(false)) return;
+    if (!checkForExistingRoute(false)) return;
 
     // First fire the future, then route.
     // Otherwise, the BeamGuard routing check would fail.
@@ -343,6 +342,11 @@ class UiService implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  MenuModel? getOriginalMenuModel() {
+    return _originalMenuModel;
+  }
+
+  @override
   MenuModel getMenuModel() {
     return _updateMenuModel(_originalMenuModel);
   }
@@ -356,6 +360,13 @@ class UiService implements IUiService {
   void setMenuModel(MenuModel? pMenuModel) {
     _originalMenuModel = pMenuModel;
     _menuNotifier.value = _originalMenuModel ?? const MenuModel();
+  }
+
+  @override
+  bool loggedIn() {
+    return IConfigService().currentApp.value != null &&
+        getOriginalMenuModel() != null &&
+        IConfigService().userInfo.value != null;
   }
 
   /// Modifies the original menu model to include custom screens and replace screens.

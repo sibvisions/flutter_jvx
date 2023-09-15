@@ -96,9 +96,6 @@ class FlutterUI extends StatefulWidget {
   /// Loads assets with packages prefix
   static bool package = true;
 
-  /// Have we ever had a context?
-  static bool initiated = false;
-
   /// Log Collector
   static final LogBucket logBucket = LogBucket();
 
@@ -628,7 +625,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           beamToNamed: (origin, target) {
             BeamState targetState = target.state as BeamState;
             var parameters = Map.of(targetState.queryParameters);
-            parameters["returnUri"] = targetState.uri.path;
+            parameters[MainLocation.returnUriKey] = targetState.uri.path;
+
             return Uri(path: "/", queryParameters: parameters).toString();
           },
         ),
@@ -738,7 +736,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                   ],
                 );
               }
-              FlutterUI.initiated = true;
 
               if (startupSnapshot.connectionState == ConnectionState.none &&
                   ![ConnectionState.none, ConnectionState.done].contains(exitSnapshot.connectionState)) {
