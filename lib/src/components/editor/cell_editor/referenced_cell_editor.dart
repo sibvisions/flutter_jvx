@@ -29,7 +29,7 @@ class ReferencedCellEditor {
 
   ReferencedCellEditor(this.cellEditorModel, this.columnName, this.dataProvider);
 
-  /// Builds a lookup table for the [referencedCellEditor].
+  /// Builds a lookup table for this editor.
   ///
   /// Keys are json encoded maps that are inserted for every row.
   ///

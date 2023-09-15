@@ -36,7 +36,6 @@ abstract class JVxColors {
   /// Creates a JVx-conform theme.
   ///
   /// See also:
-  /// * [applyJVxColorScheme]
   /// * [applyJVxTheme]
   static ThemeData createTheme(
     Color seedColor,
