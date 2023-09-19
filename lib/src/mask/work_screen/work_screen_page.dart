@@ -36,10 +36,12 @@ import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../frame/frame.dart';
+import '../frame/open_drawer_action.dart';
 import '../state/loading_bar.dart';
 import 'error_screen.dart';
 import 'skeleton_screen.dart';
 import 'util/screen_wrapper.dart';
+import 'util/simple_menu_action.dart';
 import 'work_screen.dart';
 
 /// Screen used to show JVx WorkScreens either custom or from the server.
@@ -209,8 +211,20 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             FrameState? frame = Frame.maybeOf(context);
             List<Widget>? actions = frame?.getActions();
 
+            model = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
+            bool hasMenu = model?.hasDrawerMenu ?? true;
+            bool hasSimpleMenu = model?.hasSimpleMenu ?? false;
+
             PreferredSizeWidget? appBar;
             Widget body;
+
+            if (!hasMenu) {
+              actions?.removeWhere((element) => element is OpenDrawerAction);
+            }
+
+            if (hasSimpleMenu) {
+              actions?.add(const SimpleMenuAction());
+            }
 
             if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
               // Has to called first as it initializes [screenTitle].
@@ -218,14 +232,14 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
               appBar = frame?.getAppBar(
                 leading: _buildLeading(),
-                titleSpacing: 0,
+                titleSpacing: 8,
                 title: Text(screenTitle!),
                 actions: actions,
               );
             } else {
               appBar = frame?.getAppBar(
                 leading: _buildLeading(),
-                titleSpacing: 0,
+                titleSpacing: 8,
                 title:
                     Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading...")),
                 actions: actions,
@@ -250,8 +264,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               appBar: appBar,
               drawerEnableOpenDragGesture: false,
               endDrawerEnableOpenDragGesture: false,
-              drawer: frame?.getDrawer(context),
-              endDrawer: frame?.getEndDrawer(context),
+              drawer: hasMenu ? frame?.getDrawer(context) : null,
+              endDrawer: hasMenu ? frame?.getEndDrawer(context) : null,
               body: frame?.wrapBody(content) ?? content,
             );
           },
@@ -261,17 +275,12 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   Widget _buildWorkScreen(BuildContext context, bool isOffline) {
-    // Update the model if a new one is found, otherwise use the old one.
-    // Happens when you close a screen and Flutter rebuilds it.
-    FlPanelModel? newModel = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
-
     ScreenWrapper? builtScreen;
 
-    if (newModel != null) {
-      model = newModel;
-      builtScreen = ScreenWrapper.jvx(newModel);
-    } else if (model != null) {
-      builtScreen = ScreenWrapper.empty(model);
+    if (model != null) {
+      builtScreen = ScreenWrapper.jvx(model!);
+    } else {
+      builtScreen = ScreenWrapper.empty(screenTitle);
     }
 
     // Custom config for this screen
@@ -281,7 +290,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     }
 
     // Update screenTitle
-    screenTitle = builtScreen?.screenTitle ?? FlutterUI.translate("No title");
+    screenTitle = builtScreen.screenTitle;
 
     return WorkScreen(
       isOffline: isOffline,
@@ -331,7 +340,11 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     super.dispose();
   }
 
-  Widget _buildLeading() {
+  Widget? _buildLeading() {
+    if (model?.noBack == true) {
+      return null;
+    }
+
     return InkResponse(
       radius: kToolbarHeight / 2,
       onTap: () => _onBack(),
@@ -339,7 +352,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       child: Tooltip(
         message: MaterialLocalizations.of(context).backButtonTooltip,
         child: const Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
           child: Center(child: BackButtonIcon()),
         ),
       ),
@@ -376,6 +389,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     // We have no working screen, allow back.
     if (item?.screenLongName == null || (model == null && customScreen == null)) {
       return true;
+    }
+
+    if (model?.noBack == true) {
+      return false;
     }
 
     await IUiService()

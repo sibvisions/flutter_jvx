@@ -18,6 +18,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../components/components_factory.dart';
 import '../../../custom/custom_screen.dart';
+import '../../../flutter_ui.dart';
 import '../../../model/component/fl_component_model.dart';
 
 class ScreenWrapper {
@@ -50,10 +51,10 @@ class ScreenWrapper {
     );
   }
 
-  factory ScreenWrapper.empty(FlPanelModel? model) {
+  factory ScreenWrapper.empty(String? screenTitle) {
     return ScreenWrapper(
       screen: Container(),
-      screenTitle: model?.screenTitle ?? "",
+      screenTitle: screenTitle ?? FlutterUI.translate("No title"),
     );
   }
 
