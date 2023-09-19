@@ -15,11 +15,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../drawer/drawer_menu.dart';
 import '../state/loading_bar.dart';
 import 'frame.dart';
+import 'open_drawer_action.dart';
 
 class MobileFrame extends Frame {
   const MobileFrame({
@@ -37,14 +37,7 @@ class MobileFrameState extends FrameState {
   List<Widget> getActions() {
     return [
       ...super.getActions(),
-      Builder(
-        builder: (context) => IconButton(
-          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-          splashRadius: kToolbarHeight / 2,
-          icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
-          onPressed: () => Scaffold.of(context).openEndDrawer(),
-        ),
-      ),
+      const OpenDrawerAction(),
     ];
   }
 
@@ -64,6 +57,7 @@ class MobileFrameState extends FrameState {
       actions: actions,
       backgroundColor: backgroundColor,
       elevation: 0,
+      automaticallyImplyLeading: false,
     );
   }
 
