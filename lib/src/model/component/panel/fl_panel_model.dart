@@ -28,6 +28,14 @@ class FlPanelModel extends FlComponentModel {
   /// If a panel should the same background color as the default editor background color.
   static const String DEFAULT_EDITOR_BACKGROUND_STYLE = "f_default_editorbackground";
 
+  /// If a panel should not have a back button.
+  static const String NO_BACK_STYLE = "f_no_back";
+
+  /// If a workscreen should have no menu.
+  static const String NO_MENU_STYLE = "f_no_menu";
+
+  /// If a workscreen should have a simple menu.
+  static const String SIMPLE_MENU_STYLE = "f_simple_menu";
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,6 +78,15 @@ class FlPanelModel extends FlComponentModel {
 
   /// If the panel has the same background color as the default editor background color.
   bool get hasDefaultEditorBackground => styles.contains(DEFAULT_EDITOR_BACKGROUND_STYLE);
+
+  /// If the screen cannot go back.
+  bool get removeBack => styles.contains(NO_BACK_STYLE);
+
+  /// If the screen has a menu.
+  bool get hasMenu => !styles.contains(NO_MENU_STYLE) && !hasSimpleMenu;
+
+  /// If the screen has a simple menu.
+  bool get hasSimpleMenu => styles.contains(SIMPLE_MENU_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
