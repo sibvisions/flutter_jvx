@@ -80,10 +80,10 @@ class FlPanelModel extends FlComponentModel {
   bool get hasDefaultEditorBackground => styles.contains(DEFAULT_EDITOR_BACKGROUND_STYLE);
 
   /// If the screen cannot go back.
-  bool get removeBack => styles.contains(NO_BACK_STYLE);
+  bool get noBack => styles.contains(NO_BACK_STYLE);
 
-  /// If the screen has a menu.
-  bool get hasMenu => !styles.contains(NO_MENU_STYLE) && !hasSimpleMenu;
+  /// If the screen has a drawer menu.
+  bool get hasDrawerMenu => !styles.contains(NO_MENU_STYLE) && !hasSimpleMenu;
 
   /// If the screen has a simple menu.
   bool get hasSimpleMenu => styles.contains(SIMPLE_MENU_STYLE);
