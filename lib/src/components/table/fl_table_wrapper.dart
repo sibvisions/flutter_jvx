@@ -633,9 +633,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     if (popupMenuEntries.isNotEmpty) {
       menuOpen = true;
       showMenu(
-        position: RelativeRect.fromRect(
+        position: RelativeRect.fromSize(
           pGlobalPosition & const Size(40, 40),
-          Offset.zero & MediaQuery.sizeOf(context),
+          MediaQuery.sizeOf(context),
         ),
         context: context,
         items: popupMenuEntries,
