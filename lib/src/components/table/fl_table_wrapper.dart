@@ -637,6 +637,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           pGlobalPosition & const Size(40, 40),
           MediaQuery.sizeOf(context),
         ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
         context: context,
         items: popupMenuEntries,
       ).then((val) {
