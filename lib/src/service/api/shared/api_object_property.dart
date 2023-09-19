@@ -397,4 +397,5 @@ abstract class ApiObjectProperty {
   static const String customLanguage = "customLanguage";
 
   static const String type = "type";
+  static const String chartStyle = "chartStyle";
 }

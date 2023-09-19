@@ -14,12 +14,14 @@
  * the License.
  */
 
+import 'dart:async';
+import 'dart:math';
+
 import 'package:collection/collection.dart';
-import 'package:community_charts_flutter/community_charts_flutter.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:graphic/graphic.dart' show Selected;
 
-import '../../flutter_ui.dart';
 import '../../model/command/api/mouse_clicked_command.dart';
 import '../../model/command/api/mouse_pressed_command.dart';
 import '../../model/command/api/mouse_released_command.dart';
@@ -44,15 +46,25 @@ class FlChartWrapper extends BaseCompWrapperWidget<FlChartModel> {
 }
 
 class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
-  DataChunk? _chunkData;
+  DataChunk? chunkData;
+  DalMetaData? metaData;
 
-  DalMetaData? _metaData;
+  (List<Map<String, dynamic>>, num, num)? computedChartData;
+  late final StreamController<Selected?> selectionStream;
 
-  _FlChartWrapperState() : super();
+  int? lastIndex;
 
   @override
   void initState() {
     super.initState();
+
+    selectionStream = StreamController.broadcast();
+    selectionStream.stream.listen((event) {
+      if (event == null || event.containsKey("select")) {
+        onIndexSelected(event?['select']?.firstOrNull);
+      }
+    });
+
     subscribe();
   }
 
@@ -64,12 +76,25 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
   }
 
   @override
+  void dispose() {
+    selectionStream.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final FlChartWidget widget = FlChartWidget(
-      model: model,
-      series: getChartSeries(),
-      onIndexSelected: onIndexSelected,
-    );
+    final Widget widget;
+    if (computedChartData == null) {
+      widget = Container();
+    } else {
+      widget = FlChartWidget(
+        model: model,
+        data: computedChartData!.$1,
+        maxYvalue: computedChartData!.$2,
+        maxCombinedYvalue: computedChartData!.$3,
+        selectionStream: selectionStream,
+      );
+    }
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
@@ -91,84 +116,190 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     }
   }
 
-  void receiveMetaData(DalMetaData pMetaData) {
-    _metaData = pMetaData;
-
-    setState(() {});
-  }
-
-  void receiveChartData(DataChunk pChunkData) {
-    _chunkData = pChunkData;
-
-    setState(() {});
-  }
-
-  List<Series<dynamic, num>> getChartSeries() {
-    if (_chunkData == null || _metaData == null) {
-      return [];
-    }
-
-    DataChunk chunkData = _chunkData!;
-
-    List<Series<dynamic, num>> seriesList = [];
-    int xColumnIndex = chunkData.columnDefinitions.indexWhere((element) => element.name == model.xColumnName);
-
-    for (String column in model.yColumnNames) {
-      int yColumnIndex = chunkData.columnDefinitions.indexWhere((element) => element.name == column);
-
-      seriesList.add(
-        Series<dynamic, num>(
-          id: model.name,
-          data: chunkData.data.entries.sorted((a, b) => a.key.compareTo(b.key)),
-          domainFn: (mapEntry, _) => createXData(mapEntry.key, xColumnIndex),
-          measureFn: (mapEntry, _) => createYData(mapEntry.key, yColumnIndex),
-        ),
-      );
-    }
-
-    return seriesList;
-  }
-
-  num createYData(int? pIndex, int pColumnIndex) {
-    var data = _chunkData!.data[pIndex]!;
-
-    if (data.length <= pColumnIndex) {
-      FlutterUI.logUI.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${data.length}");
-      return pIndex ?? 0;
-    }
-
-    dynamic value = data[pColumnIndex];
-    if (value is num) {
-      return value;
-    } else {
-      return double.tryParse(value) ?? 0.0;
-    }
-  }
-
-  num createXData(int? pIndex, int pColumnIndex) {
-    var data = _chunkData!.data[pIndex]!;
-
-    if (data.length <= pColumnIndex) {
-      FlutterUI.logUI.e("Chart error: ColumnIndex is: $pColumnIndex, Datalist lenght is: ${data.length}");
-      return pIndex ?? 0;
-    }
-
-    dynamic value = data[pColumnIndex];
-    if (value is num) {
-      return value;
-    } else {
-      return double.tryParse(value) ?? pIndex ?? 0.0;
-    }
-  }
-
   void unsubscribe() {
     IUiService().disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
+  void receiveChartData(DataChunk pChunkData) {
+    chunkData = pChunkData;
+
+    if (model.matchesStyles(const [
+      // Area
+      FlChartModel.STYLE_STACKEDAREA,
+      FlChartModel.STYLE_STACKEDPERCENTAREA,
+      // Bar
+      FlChartModel.STYLE_RING,
+      FlChartModel.STYLE_BARS,
+      FlChartModel.STYLE_STACKEDBARS,
+      FlChartModel.STYLE_STACKEDPERCENTBARS,
+      // FlChartModel.STYLE_OVERLAPPEDBARS,
+      // HBar
+      FlChartModel.STYLE_HBARS,
+      FlChartModel.STYLE_STACKEDHBARS,
+      FlChartModel.STYLE_STACKEDPERCENTHBARS,
+      FlChartModel.STYLE_OVERLAPPEDHBARS,
+      // Pie
+      FlChartModel.STYLE_PIE,
+      FlChartModel.STYLE_RING,
+    ])) {
+      computedChartData = computeChartData(chunkData);
+    } else {
+      computedChartData = computeGenericChartData(chunkData);
+    }
+
+    setState(() {});
+  }
+
+  void receiveMetaData(DalMetaData pMetaData) {
+    metaData = pMetaData;
+    setState(() {});
+  }
+
+  /// Transforms chart data into the appropriate format.
+  ///
+  /// Used for [FlChartModel.STYLE_PIE], [FlChartModel.STYLE_RING] and stacked charts.
+  ///
+  /// Single Y-Column:
+  /// ```dart
+  /// [
+  ///   {Index: 0, X: A, Y: 9},
+  ///   {Index: 1, X: B, Y: 27},
+  ///   {Index: 2, X: C, Y: 16},
+  ///   {Index: 3, X: D, Y: 11},
+  ///   {Index: 4, X: E, Y: 6},
+  /// ]
+  /// ```
+  (List<Map<String, dynamic>>, num, num) computeChartData(DataChunk? dataChunk) {
+    List<Map<String, dynamic>> chartData = [];
+    num maxValue = 1;
+    num maxCombinedValue = 1;
+
+    if (dataChunk != null) {
+      var entries = dataChunk.data.entries.sorted((a, b) => a.key.compareTo(b.key));
+      int xColumnIndex = dataChunk.getColumnIndex(model.xColumnName);
+
+      if (model.isPieChart()) {
+        if (model.yColumnNames.length == 1) {
+          String yColumn = model.yColumnNames.first;
+          int yColumnIndex = dataChunk.getColumnIndex(yColumn);
+
+          // Group by `xColumnIndex`: {'A': [[1, 1, 2, 3, 'A'], ...], 'B': [...], ...}
+          Map<dynamic, List<List<dynamic>>> typeMap =
+              entries.map((e) => e.value).groupListsBy((element) => element[xColumnIndex]);
+
+          // Then sum all `yColumn` values: {A: 9, B: 27, C: 16, D: 11, E: 6}
+          Map<dynamic, dynamic> groupedValues = typeMap.map((key, value) =>
+              MapEntry(key, value.map((e) => e[yColumnIndex]).reduce((value, element) => value + element)));
+
+          var groupedEntries = groupedValues.entries.toList();
+          for (int i = 0; i < groupedEntries.length; i++) {
+            var entry = groupedEntries[i];
+            chartData.add(
+              {
+                "Index": i,
+                "X": entry.key,
+                "Y": entry.value,
+              },
+            );
+            maxValue = max(maxValue, entry.value);
+          }
+          maxCombinedValue = maxValue;
+        } else {
+          // TODO
+          // {'X': 'Y1', Y: 63}
+          for (String yColumn in model.yColumnNames) {
+            Map<String, dynamic> chartEntry = {
+              'X': yColumn,
+            };
+
+            for (var entry in entries) {
+              int yColumnIndex = dataChunk.getColumnIndex(yColumn);
+              num y = extractValue(entry.value[yColumnIndex]);
+
+              chartEntry['Y'] = y + (chartEntry['Y'] ?? 0);
+              maxValue = max(maxValue, chartEntry['Y']);
+            }
+
+            chartData.add(chartEntry);
+          }
+          maxCombinedValue = maxValue;
+        }
+      } else {
+        for (var entry in entries) {
+          num combinedYvalue = 0;
+          for (String yColumn in model.yColumnNames) {
+            int yColumnIndex = dataChunk.getColumnIndex(yColumn);
+
+            dynamic x = extractValue(entry.value[xColumnIndex]);
+            num y = extractValue(entry.value[yColumnIndex]);
+            chartData.add(
+              {
+                "X": x,
+                "Y": y,
+                "Category": yColumn,
+              },
+            );
+
+            combinedYvalue = combinedYvalue + y;
+            maxValue = max(maxValue, y);
+          }
+
+          maxCombinedValue = max(maxCombinedValue, combinedYvalue);
+        }
+      }
+    }
+
+    return (chartData, maxValue, maxCombinedValue);
+  }
+
+  /// Transforms the chart data into the appropriate format.
+  ///
+  /// e.g. {A: 9, B: 27, C: 16, D: 11, E: 6}
+  (List<Map<String, dynamic>>, num, num) computeGenericChartData(DataChunk? dataChunk) {
+    List<Map<String, dynamic>> chartData = [];
+    num maxValue = 1;
+    num maxCombinedValue = 1;
+
+    if (dataChunk != null) {
+      var entries = dataChunk.data.entries.sorted((a, b) => a.key.compareTo(b.key));
+
+      int xColumnIndex = dataChunk.getColumnIndex(model.xColumnName);
+      for (var entry in entries) {
+        num combinedYvalue = 1;
+        var chartEntry = {
+          "X": extractValue(entry.value[xColumnIndex], fallback: entry.key),
+        };
+
+        for (String yColumn in model.yColumnNames) {
+          num y = extractValue(entry.value[dataChunk.getColumnIndex(yColumn)]);
+          chartEntry[yColumn] = y;
+
+          combinedYvalue = combinedYvalue + y;
+          maxValue = max(maxValue, y);
+        }
+
+        chartData.add(chartEntry);
+
+        maxCombinedValue = max(maxCombinedValue, combinedYvalue);
+      }
+    }
+
+    return (chartData, maxValue, maxCombinedValue);
+  }
+
+  dynamic extractValue(dynamic e, {dynamic fallback}) {
+    return e is num ? e : double.tryParse(e) ?? fallback ?? e.toString();
+  }
+
   void onIndexSelected(int? pIndex) {
-    if (_chunkData == null || _metaData == null) {
+    if (chunkData == null || metaData == null) {
       return;
     }
+
+    if (lastIndex == pIndex) {
+      return;
+    }
+    lastIndex = pIndex;
 
     IUiService()
         .saveAllEditors(
@@ -185,10 +316,10 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
                   reason: "Selected record in chart",
                   dataProvider: model.dataProvider,
                   filter: Filter(
-                    columnNames: _metaData!.primaryKeyColumns,
-                    values: _metaData!.primaryKeyColumns
-                        .map((columnName) => _chunkData!.data[pIndex]![
-                            _chunkData!.columnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
+                    columnNames: metaData!.primaryKeyColumns,
+                    values: metaData!.primaryKeyColumns
+                        .map((columnName) => chunkData!.data[pIndex]![
+                            chunkData!.columnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
                         .toList(),
                   ),
                   rowNumber: pIndex,
@@ -197,7 +328,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
             } else {
               commands.add(
                 SelectRecordCommand.deselect(
-                  reason: "Selected record in chart",
+                  reason: "Deselected record in chart",
                   dataProvider: model.dataProvider,
                 ),
               );

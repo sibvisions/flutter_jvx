@@ -102,6 +102,7 @@ dependencies:
 
   community_charts_flutter: ^1.0.1
   gauges: ^1.0.0
+  graphic: ^2.2.0
   flutter_keyboard_visibility: ^5.4.0
   flutter_slidable: ^3.0.0
   action_slider: ^0.6.1
