@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../flutter_ui.dart';
 import '../../../service/config/i_config_service.dart';
 import '../../../service/ui/i_ui_service.dart';
+import '../../apps/app_overview_page.dart';
 
 class SimpleMenuAction extends StatefulWidget {
   const SimpleMenuAction({Key? key}) : super(key: key);
@@ -53,14 +54,50 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
       items: [
         PopupMenuItem(
           value: 0,
-          child: Text(
-            FlutterUI.translate("Settings"),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 24,
+                alignment: Alignment.center,
+                child: const FaIcon(
+                  FontAwesomeIcons.gear,
+                  size: 20,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Text(
+                  FlutterUI.translate(
+                    "Settings",
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         PopupMenuItem(
           value: 1,
-          child: Text(
-            FlutterUI.translate("Apps"),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 24,
+                alignment: Alignment.center,
+                child: const FaIcon(
+                  AppOverviewPage.appsIcon,
+                  size: 20,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Text(
+                  FlutterUI.translate(
+                    "Apps",
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
