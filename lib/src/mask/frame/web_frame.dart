@@ -278,6 +278,7 @@ class WebFrameState extends FrameState {
       ],
       backgroundColor: IConfigService().offline.value ? Colors.grey.shade500 : topMenuColor,
       elevation: IConfigService().offline.value ? 0 : null,
+      automaticallyImplyLeading: false,
     );
   }
 
