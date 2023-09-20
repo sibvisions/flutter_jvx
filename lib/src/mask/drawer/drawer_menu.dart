@@ -290,7 +290,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
       context: context,
       text: FlutterUI.translate("Apps"),
       leadingIcon: AppOverviewPage.appsIcon,
-      onTap: widget.onAppChange,
+      onTap: () {
+        Navigator.pop(context);
+        widget.onAppChange();
+      },
       isNormalSize: isNormalSize,
     );
   }
@@ -311,7 +314,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
       context: context,
       text: FlutterUI.translate(text),
       leadingIcon: icon,
-      onTap: widget.onLogoutPressed,
+      onTap: () {
+        Navigator.pop(context);
+        widget.onLogoutPressed();
+      },
       isNormalSize: isNormalSize,
     );
   }
