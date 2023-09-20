@@ -32,7 +32,7 @@ mixin AppPopAware<T extends StatefulWidget> on State<T>, RouteAware {
 
   @override
   void didPop() {
-    if (IAppService().wasStartedManually()) {
+    if (IAppService().wasStartedManually() && IAppService().exitFuture.value == null) {
       unawaited(IUiService().routeToAppOverview());
     }
   }
