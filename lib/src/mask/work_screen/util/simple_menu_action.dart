@@ -16,18 +16,16 @@ class SimpleMenuAction extends StatefulWidget {
 class _SimpleMenuActionState extends State<SimpleMenuAction> {
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) => IconButton(
-        onPressed: () {
-          if (IConfigService().singleAppMode.value) {
-            IUiService().routeToSettings();
-          } else {
-            _showMenu(context);
-          }
-        },
-        icon: const FaIcon(
-          FontAwesomeIcons.ellipsisVertical,
-        ),
+    return IconButton(
+      onPressed: () {
+        if (IConfigService().singleAppMode.value) {
+          IUiService().routeToSettings();
+        } else {
+          _showMenu(context);
+        }
+      },
+      icon: const FaIcon(
+        FontAwesomeIcons.ellipsisVertical,
       ),
     );
   }
@@ -60,8 +58,9 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
               Container(
                 width: 24,
                 alignment: Alignment.center,
-                child: const FaIcon(
+                child: FaIcon(
                   FontAwesomeIcons.gear,
+                  color: FlutterUI.of(context).themeData.iconTheme.color,
                   size: 20,
                 ),
               ),
@@ -84,8 +83,9 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
               Container(
                 width: 24,
                 alignment: Alignment.center,
-                child: const FaIcon(
+                child: FaIcon(
                   AppOverviewPage.appsIcon,
+                  color: FlutterUI.of(context).themeData.iconTheme.color,
                   size: 20,
                 ),
               ),
