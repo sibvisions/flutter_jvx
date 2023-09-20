@@ -43,6 +43,7 @@ mixin SttCapability<T extends StatefulWidget> on State<T> {
         ],
       );
     }());
+    setState(() {});
     await subscription?.cancel();
     subscription = speechToTextProvider.stream.listen(onSttEvent);
   }
