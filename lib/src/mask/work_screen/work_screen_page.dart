@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -29,6 +31,7 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/component/model_subscription.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/request/api_navigation_request.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
@@ -212,18 +215,18 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             List<Widget>? actions = frame?.getActions();
 
             model = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
-            bool hasMenu = model?.hasDrawerMenu ?? true;
-            bool hasSimpleMenu = model?.hasSimpleMenu ?? false;
+            bool noMenu = model?.noMenu ?? false;
+            bool simpleMenu = model?.hasSimpleMenu ?? false;
 
             PreferredSizeWidget? appBar;
             Widget body;
 
-            if (!hasMenu) {
+            if (noMenu) {
               actions?.removeWhere((element) => element is OpenDrawerAction);
-            }
 
-            if (hasSimpleMenu) {
-              actions?.add(const SimpleMenuAction());
+              if (simpleMenu) {
+                actions?.add(const SimpleMenuAction());
+              }
             }
 
             if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
@@ -264,8 +267,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               appBar: appBar,
               drawerEnableOpenDragGesture: false,
               endDrawerEnableOpenDragGesture: false,
-              drawer: hasMenu ? frame?.getDrawer(context) : null,
-              endDrawer: hasMenu ? frame?.getEndDrawer(context) : null,
+              drawer: noMenu ? null : frame?.getDrawer(context),
+              endDrawer: noMenu ? null : frame?.getEndDrawer(context),
               body: frame?.wrapBody(content) ?? content,
             );
           },
@@ -341,7 +344,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   Widget? _buildLeading() {
-    if (model?.noBack == true) {
+    if (noBack || (overviewBack && !canGoToOverview)) {
       return null;
     }
 
@@ -391,10 +394,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       return true;
     }
 
-    if (model?.noBack == true) {
-      return false;
-    }
-
     await IUiService()
         .saveAllEditors(pReason: "Closing Screen", pFunction: _closeScreen)
         .catchError(IUiService().handleAsyncError)
@@ -403,7 +402,17 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       isNavigating = false;
     });
 
-    return IUiService().usesNativeRouting(item!.screenLongName);
+    if (!IUiService().usesNativeRouting(item!.screenLongName)) {
+      return false;
+    } else {
+      if (noBack || overviewBack) {
+        if (overviewBack && canGoToOverview) {
+          unawaited(IUiService().routeToAppOverview());
+        }
+        return false;
+      }
+      return true;
+    }
   }
 
   List<BaseCommand> _closeScreen() {
@@ -427,4 +436,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     }
     return commands;
   }
+
+  bool get noBack => model?.noBack == true;
+
+  bool get overviewBack => model?.overviewBack == true;
+
+  bool get canGoToOverview => !IConfigService().singleAppMode.value && IAppService().getAppIds().length > 1;
 }

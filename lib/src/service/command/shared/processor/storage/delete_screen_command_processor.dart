@@ -23,6 +23,7 @@ import 'package:flutter/widgets.dart';
 import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
+import '../../../../../model/command/ui/function_command.dart';
 import '../../../../../model/component/fl_component_model.dart';
 import '../../../../../routing/locations/main_location.dart';
 import '../../../../data/i_data_service.dart';
@@ -38,9 +39,10 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
   /// without also manipulating browser history (which is not possible).
   @override
   Future<List<BaseCommand>> processCommand(DeleteScreenCommand command, BaseCommand? origin) async {
-    FlComponentModel? screenModel = IStorageService().getComponentByName(pComponentName: command.screenName);
+    FlPanelModel? screenModel =
+        IStorageService().getComponentByName(pComponentName: command.screenName) as FlPanelModel?;
 
-    if (screenModel is FlPanelModel && command.popPage) {
+    if (screenModel != null && command.popPage) {
       if (IUiService().getCurrentWorkscreenName() == screenModel.screenNavigationName) {
         var context = FlutterUI.getEffectiveContext()!;
         // We need to try beamBack first.
@@ -66,6 +68,18 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
       await ILayoutService().deleteScreen(pComponentId: screenModel.id);
     }
     IDataService().clearData(command.screenName);
+
+    if (screenModel != null && screenModel.overviewBack) {
+      return [
+        FunctionCommand(
+          () async {
+            unawaited(IUiService().routeToAppOverview());
+            return [];
+          },
+          reason: "Closed screen - route to app overview",
+        )
+      ];
+    }
 
     return [];
   }
