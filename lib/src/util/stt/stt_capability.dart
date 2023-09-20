@@ -25,7 +25,7 @@ mixin SttCapability<T extends StatefulWidget> on State<T> {
   static final SpeechToText speechToText = SpeechToText();
   static final SpeechToTextProvider speechToTextProvider = SpeechToTextProvider(speechToText);
 
-  SpeechToText get sst => SttCapability.speechToText;
+  SpeechToText get stt => SttCapability.speechToText;
 
   SpeechToTextProvider get sttProvider => SttCapability.speechToTextProvider;
 
