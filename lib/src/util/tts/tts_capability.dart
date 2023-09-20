@@ -18,6 +18,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:universal_io/io.dart';
 
+import '../../service/config/i_config_service.dart';
+
 mixin TtsCapability<T extends StatefulWidget> on State<T> {
   final FlutterTts tts = FlutterTts();
   Future<void>? ttsInit;
@@ -28,6 +30,7 @@ mixin TtsCapability<T extends StatefulWidget> on State<T> {
       if (Platform.isIOS || Platform.isMacOS) {
         await tts.autoStopSharedSession(true);
       }
+      await tts.setLanguage(IConfigService().getLanguage());
       await tts.setIosAudioCategory(
         IosTextToSpeechAudioCategory.playback,
         [
