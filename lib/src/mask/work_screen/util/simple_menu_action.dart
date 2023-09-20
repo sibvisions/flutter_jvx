@@ -60,7 +60,7 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
                 alignment: Alignment.center,
                 child: FaIcon(
                   FontAwesomeIcons.gear,
-                  color: FlutterUI.of(context).themeData.iconTheme.color,
+                  color: Theme.of(context).iconTheme.color,
                   size: 20,
                 ),
               ),
@@ -85,7 +85,7 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
                 alignment: Alignment.center,
                 child: FaIcon(
                   AppOverviewPage.appsIcon,
-                  color: FlutterUI.of(context).themeData.iconTheme.color,
+                  color: Theme.of(context).iconTheme.color,
                   size: 20,
                 ),
               ),
