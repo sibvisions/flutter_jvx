@@ -14,6 +14,8 @@
  * the License.
  */
 
+import 'dart:async';
+
 import '../../../../../model/command/api/close_screen_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/storage/delete_screen_command.dart';
@@ -23,6 +25,7 @@ import '../../../../api/i_api_service.dart';
 import '../../../../apps/i_app_service.dart';
 import '../../../../config/i_config_service.dart';
 import '../../../../storage/i_storage_service.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> {
@@ -48,6 +51,11 @@ class CloseScreenCommandProcessor extends ICommandProcessor<CloseScreenCommand> 
         parameter: command.parameter,
       ),
     );
+
+    if (modelOfScreen.overviewBack) {
+      unawaited(IUiService().routeToAppOverview());
+      return [];
+    }
 
     commands = [
       DeleteScreenCommand(
