@@ -22,7 +22,6 @@ import '../../../../../../model/command/ui/route/route_to_login_command.dart';
 import '../../../../../apps/i_app_service.dart';
 import '../../../../../config/i_config_service.dart';
 import '../../../../../service.dart';
-import '../../../../../ui/impl/ui_service.dart';
 import '../../../i_command_processor.dart';
 
 class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand> {
@@ -43,11 +42,9 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
       IAppService().saveLocationAsReturnUri();
     }
 
-    if (UiService.checkForExistingRoute(false)) {
-      FlutterUI.clearHistory();
-      LoginPage.changeMode(mode: command.mode, loginData: command.loginData);
-      FlutterUI.clearLocationHistory();
-    }
+    FlutterUI.clearHistory();
+    LoginPage.changeMode(mode: command.mode, loginData: command.loginData);
+    FlutterUI.clearLocationHistory();
 
     return [];
   }

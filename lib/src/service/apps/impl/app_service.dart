@@ -135,7 +135,9 @@ class AppService implements IAppService {
       }
     }
 
-    if ((uri != null && uri.pathSegments.length >= 2 && uri.pathSegments[0] == "screens") &&
+    if (uri != null &&
+        uri.pathSegments.length >= 2 &&
+        uri.pathSegments[0] == "screens" &&
         menuItems.any((e) => e.navigationName == uri!.pathSegments[1])) {
       return uri;
     }

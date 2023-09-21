@@ -230,21 +230,8 @@ class UiService implements IUiService {
   // Beaming history will be cleared when it should not be possible to go back,
   // as you should not be able to go back to the splash screen or back to menu when u logged out
 
-  /// Whether the current route would be settings or optionally a work screen and the splash screen is active.
-  static bool checkForExistingRoute([bool includeWorkScreens = true]) {
-    if (FlutterUI.getCurrentContext() == null) {
-      BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
-      if (state.uri.path == "/settings" || (includeWorkScreens && state.uri.path.startsWith("/screens"))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
-    if (!checkForExistingRoute()) return;
-
     var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     if (pReplaceRoute ||
         lastBeamState.pathPatternSegments.contains("settings") ||
@@ -258,8 +245,6 @@ class UiService implements IUiService {
 
   @override
   void routeToWorkScreen({required String pScreenName, bool pReplaceRoute = false}) {
-    if (!checkForExistingRoute()) return;
-
     var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
     if (lastBeamState.pathParameters[MainLocation.screenNameKey] == pScreenName) {
@@ -300,8 +285,6 @@ class UiService implements IUiService {
 
   @override
   Future<void> routeToAppOverview() async {
-    if (!checkForExistingRoute(false)) return;
-
     // First fire the future, then route.
     // Otherwise, the BeamGuard routing check would fail.
     var stopApp = IAppService().stopApp();
