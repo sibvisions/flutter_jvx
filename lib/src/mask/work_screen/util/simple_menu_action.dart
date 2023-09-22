@@ -105,7 +105,9 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
       if (value == 0) {
         IUiService().routeToSettings();
       } else if (value == 1) {
-        IUiService().routeToAppOverview();
+        // Wait for popup menu close, mitigates navigator update bug:
+        // https://github.com/flutter/flutter/issues/82437
+        Future.delayed(const Duration(milliseconds: 350)).then((_) => IUiService().routeToAppOverview());
       }
     });
   }
