@@ -41,8 +41,30 @@ class JVxDebug extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             trailing: OutlinedButton(
-              onPressed: () => IAppService().startApp(),
-              child: const Text("Restart"),
+              onPressed: () => FlutterUI.maybeOf(FlutterUI.getEffectiveContext())?.refresh(),
+              child: const Text("Reload"),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "App Service",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: ControlButtons(
+              onPressed: (index) async {
+                switch (index) {
+                  case 0:
+                    unawaited(IAppService().startApp());
+                    break;
+                  case 1:
+                    unawaited(IUiService().routeToAppOverview());
+                    break;
+                }
+              },
+              labels: const [
+                "Restart",
+                "Overview",
+              ],
             ),
           ),
           ListTile(
