@@ -27,7 +27,7 @@ import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
-  static const double _legendPadding = 15;
+  static const double _legendPadding = 30;
 
   final List<Map<String, dynamic>> data;
   final num maxYvalue;
