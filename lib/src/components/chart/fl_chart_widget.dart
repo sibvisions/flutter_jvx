@@ -22,6 +22,7 @@ import 'package:graphic/graphic.dart';
 // ignore: implementation_imports
 import 'package:graphic/src/encode/color.dart';
 
+import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
@@ -55,6 +56,10 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
+    if (data.isEmpty) {
+      return Center(child: Text(FlutterUI.translate("No data to display")));
+    }
+
     if (model.matchesStyles(const [
       FlChartModel.STYLE_STACKEDAREA,
       FlChartModel.STYLE_STACKEDPERCENTAREA,
