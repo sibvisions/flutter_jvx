@@ -165,8 +165,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin, RouteAware, AppPo
             return WillPopScope(
               onWillPop: isMenuSearchEnabled
                   ? () async {
-                      isMenuSearchEnabled = false;
-                      setState(() {});
+                      setState(() => isMenuSearchEnabled = false);
                       return false;
                     }
                   : null,
@@ -180,7 +179,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin, RouteAware, AppPo
                       ? IconButton(
                           tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                           splashRadius: kToolbarHeight / 2,
-                          onPressed: () => Navigator.maybePop(context),
+                          onPressed: () => setState(() => isMenuSearchEnabled = false),
                           icon: const FaIcon(FontAwesomeIcons.circleXmark),
                         )
                       : (IAppService().wasStartedManually()
@@ -211,7 +210,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin, RouteAware, AppPo
     return Focus(
       onFocusChange: (hasFocus) {
         if (!hasFocus && menuSearchController.text.isEmpty) {
-          Navigator.maybePop(context);
+          setState(() => isMenuSearchEnabled = false);
         }
       },
       child: TextField(
