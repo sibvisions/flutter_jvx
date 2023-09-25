@@ -656,7 +656,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     IUiService().i18n().currentLanguage.addListener(refresh);
 
     // Init default themes (if applicable)
-    changedTheme();
+    changeTheme(null);
 
     // Let Flutter build it once, so we can access the context.
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -689,6 +689,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           themeMode: IConfigService().getThemeMode(),
           theme: themeData,
           darkTheme: darkThemeData,
+          themeAnimationDuration: Duration.zero,
           locale: Locale(IConfigService().getLanguage()),
           supportedLocales: supportedLocales,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
@@ -934,7 +935,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     Color? styleColor = kIsWeb ? ParseUtil.parseHexColor(styleMap?['web.topmenu.color']) : null;
     styleColor ??= ParseUtil.parseHexColor(styleMap?['theme.color']);
 
-    changeTheme(styleColor);
+    if (styleMap != null) {
+      changeTheme(styleColor);
+    }
   }
 
   void changeTheme(Color? pColor) {

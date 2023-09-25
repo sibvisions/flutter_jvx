@@ -93,73 +93,90 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget body = SingleChildScrollView(
-      child: Column(
-        children: [
-          _buildApplicationInfo(),
-          if (appName != null)
-            IconTheme.merge(
-              data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-              child: Builder(builder: (context) => _buildGeneralSettings(context)),
+    Widget widget = Builder(
+      builder: (context) {
+        Widget body = SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildApplicationInfo(),
+              if (appName != null)
+                IconTheme.merge(
+                  data: IconThemeData(color: Theme.of(context).colorScheme.primary),
+                  child: Builder(builder: (context) => _buildGeneralSettings(context)),
+                ),
+              IconTheme.merge(
+                data: IconThemeData(color: Theme.of(context).colorScheme.primary),
+                child: Builder(builder: (context) => _buildApplicationSettings(context)),
+              ),
+              _buildVersionInfo(),
+              IconTheme.merge(
+                data: IconThemeData(color: Theme.of(context).colorScheme.primary),
+                child: Builder(builder: (context) => _buildStatus(context)),
+              ),
+              const SizedBox(height: 5),
+            ],
+          ),
+        );
+
+        body = LoadingBar.wrapLoadingBar(body);
+
+        return Scaffold(
+          appBar: AppBar(
+            titleSpacing: 0,
+            leading: IconButton(
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              splashRadius: kToolbarHeight / 2,
+              icon: const BackButtonIcon(),
+              onPressed: routeBack,
             ),
-          IconTheme.merge(
-            data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-            child: Builder(builder: (context) => _buildApplicationSettings(context)),
+            title: Text(FlutterUI.translateLocal("Settings")),
+            elevation: 0,
           ),
-          _buildVersionInfo(),
-          IconTheme.merge(
-            data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-            child: Builder(builder: (context) => _buildStatus(context)),
-          ),
-          const SizedBox(height: 5),
-        ],
-      ),
-    );
-
-    body = LoadingBar.wrapLoadingBar(body);
-
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        leading: IconButton(
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          splashRadius: kToolbarHeight / 2,
-          icon: const BackButtonIcon(),
-          onPressed: routeBack,
-        ),
-        title: Text(FlutterUI.translateLocal("Settings")),
-        elevation: 0,
-      ),
-      body: body,
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          textTheme: Theme.of(context).primaryTextTheme,
-          iconTheme: Theme.of(context).primaryIconTheme,
-        ),
-        child: Material(
-          color: Theme.of(context).colorScheme.brightness == Brightness.light
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.surface,
-          child: SafeArea(
-            child: SizedBox(
-              height: bottomBarHeight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  if (_changesPending()) Expanded(child: _createCancelButton(context)),
-                  if (_changesPending())
-                    VerticalDivider(
-                      color: JVxColors.dividerColor(Theme.of(context)),
-                      width: 1,
-                    ),
-                  Expanded(child: _createSaveButton(context)),
-                ],
+          body: body,
+          bottomNavigationBar: Theme(
+            data: Theme.of(context).copyWith(
+              textTheme: Theme.of(context).primaryTextTheme,
+              iconTheme: Theme.of(context).primaryIconTheme,
+            ),
+            child: Material(
+              color: Theme.of(context).colorScheme.brightness == Brightness.light
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.surface,
+              child: SafeArea(
+                child: SizedBox(
+                  height: bottomBarHeight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (_changesPending()) Expanded(child: _createCancelButton(context)),
+                      if (_changesPending())
+                        VerticalDivider(
+                          color: JVxColors.dividerColor(Theme.of(context)),
+                          width: 1,
+                        ),
+                      Expanded(child: _createSaveButton(context)),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
+
+    if (IConfigService().currentApp.value == null) {
+      widget = Theme(
+        data: JVxColors.applyJVxTheme(ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            brightness: Theme.of(context).colorScheme.brightness,
+            seedColor: Colors.blue,
+          ),
+        )),
+        child: widget,
+      );
+    }
+    return widget;
   }
 
   Widget _createCancelButton(BuildContext context) {
@@ -266,6 +283,7 @@ class _SettingsPageState extends State<SettingsPage> {
       var userLanguage = IConfigService().userLanguage.value;
 
       languageSetting = _buildPickerItem<String>(
+        context,
         frontIcon: FontAwesomeIcons.language,
         endIcons: (userLanguage ?? IConfigService().getPlatformLocale()) != IConfigService().getLanguage()
             ? [_buildOverrideIcon()]
@@ -291,6 +309,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (!(IConfigService().getAppConfig()?.uiConfig?.hidePictureSizeSetting ?? false)) {
       var resolution = IConfigService().pictureResolution.value ?? resolutions[0];
       pictureSizeSetting = _buildPickerItem<int>(
+        context,
         frontIcon: FontAwesomeIcons.image,
         title: "Picture Size",
         value: resolution,
@@ -366,6 +385,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (theme == ThemeMode.dark) themeIcon = FontAwesomeIcons.solidMoon;
 
       themeSetting = _buildPickerItem<ThemeMode>(
+        context,
         frontIcon: themeIcon,
         endIcons: theme != IConfigService().getThemeMode() ? [_buildOverrideIcon()] : null,
         title: "Theme",
@@ -406,7 +426,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  SettingItem _buildPickerItem<T>({
+  SettingItem _buildPickerItem<T>(
+    BuildContext context, {
     required IconData frontIcon,
     List<Widget>? endIcons,
     required String title,
