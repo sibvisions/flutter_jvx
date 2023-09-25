@@ -192,8 +192,8 @@ class SharedPrefsHandler implements ConfigHandler {
   }
 
   @override
-  Future<void> removeAppKey(String key) {
-    return removeWhere((e) => e.startsWith("$key."));
+  Future<void> removeAppKeys(String key, {bool Function(String subKey)? filter}) {
+    return removeWhere((e) => e.startsWith("$key.") && (filter == null || filter(e)));
   }
 
   /// Retrieves a string value by its key in connection to the current app name.

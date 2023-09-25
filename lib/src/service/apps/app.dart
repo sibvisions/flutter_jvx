@@ -429,7 +429,7 @@ class App {
       _id = null;
     }
 
-    await IConfigService().getConfigHandler().removeAppKey(appId);
+    await IConfigService().getConfigHandler().removeAppKeys(appId);
 
     if (IConfigService().defaultApp.value == appId) {
       await IConfigService().updateDefaultApp(null);
@@ -449,6 +449,10 @@ class App {
     _checkId();
 
     String appId = _id!;
+
+    await IConfigService()
+        .getConfigHandler()
+        .removeAppKeys(appId, filter: (subKey) => !subKey.endsWith("name") && !subKey.endsWith("baseUrl"));
 
     await IConfigService().getFileManager().deleteIndependentDirectory([appId], recursive: true).catchError(
         (e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", error: e, stackTrace: stack));

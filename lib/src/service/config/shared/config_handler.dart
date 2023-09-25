@@ -85,7 +85,7 @@ abstract class ConfigHandler {
   Future<void> removeWhere(bool Function(String key) test);
 
   /// Removes every preference referenced by [key].
-  Future<void> removeAppKey(String key);
+  Future<void> removeAppKeys(String key, {bool Function(String key)? filter});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Preferences that are saved under the app key
