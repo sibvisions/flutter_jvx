@@ -161,102 +161,105 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: JVxColors.applyJVxTheme(ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          brightness: Theme.of(context).colorScheme.brightness,
-          seedColor: Colors.blue,
-        ),
-      )),
-      child: Scaffold(
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            if (backgroundBuilder != null) backgroundBuilder!.call(context),
-            if (backgroundBuilder == null)
-              SvgPicture.asset(
-                ImageLoader.getAssetPath(
-                  FlutterUI.package,
-                  "assets/images/JVx_Bg.svg",
+    return PageStorage(
+      bucket: FlutterUI.of(context).globalStorageBucket,
+      child: Theme(
+        data: JVxColors.applyJVxTheme(ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            brightness: Theme.of(context).colorScheme.brightness,
+            seedColor: Colors.blue,
+          ),
+        )),
+        child: Scaffold(
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (backgroundBuilder != null) backgroundBuilder!.call(context),
+              if (backgroundBuilder == null)
+                SvgPicture.asset(
+                  ImageLoader.getAssetPath(
+                    FlutterUI.package,
+                    "assets/images/JVx_Bg.svg",
+                  ),
+                  fit: BoxFit.fill,
                 ),
-                fit: BoxFit.fill,
-              ),
-            SafeArea(
-              child: FutureBuilder(
-                future: future,
-                builder: (context, snapshot) {
-                  bool showAddOnFront = (apps?.isEmpty ?? false);
+              SafeArea(
+                child: FutureBuilder(
+                  future: future,
+                  builder: (context, snapshot) {
+                    bool showAddOnFront = (apps?.isEmpty ?? false);
 
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Positioned.fill(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    FlutterUI.translateLocal(
-                                        IAppService().isSingleAppMode() ? "Application" : "Applications"),
-                                    style: const TextStyle(
-                                      color: JVxColors.LIGHTER_BLACK,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 32,
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Positioned.fill(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      FlutterUI.translateLocal(
+                                          IAppService().isSingleAppMode() ? "Application" : "Applications"),
+                                      style: const TextStyle(
+                                        color: JVxColors.LIGHTER_BLACK,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 32,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 16.0),
-                                  child: _buildAppList(
-                                    context,
-                                    snapshot,
-                                    showAddOnFront,
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: _buildAppList(
+                                      context,
+                                      snapshot,
+                                      showAddOnFront,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Positioned(
-                          top: 0.0,
-                          right: 8.0,
-                          child: _buildMenuButton(
-                            context,
-                            IAppService().isSingleAppMode() || showAddOnFront,
+                          Positioned(
+                            top: 0.0,
+                            right: 8.0,
+                            child: _buildMenuButton(
+                              context,
+                              IAppService().isSingleAppMode() || showAddOnFront,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: IAppService().isSingleAppMode()
-            ? FloatingActionButton(
-                tooltip: FlutterUI.translateLocal("Scan QR Code"),
-                onPressed: () => AppOverviewPage.openQRScanner(
-                  context,
-                  callback: (config) async {
-                    var serverConfig = config.apps?.firstOrNull;
-                    if (serverConfig != null) {
-                      currentConfig = await App.createAppFromConfig(serverConfig);
-                      setState(() {});
-                    }
+                        ],
+                      ),
+                    );
                   },
                 ),
-                child: const Icon(Icons.qr_code),
-              )
-            : null,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              ),
+            ],
+          ),
+          floatingActionButton: IAppService().isSingleAppMode()
+              ? FloatingActionButton(
+                  tooltip: FlutterUI.translateLocal("Scan QR Code"),
+                  onPressed: () => AppOverviewPage.openQRScanner(
+                    context,
+                    callback: (config) async {
+                      var serverConfig = config.apps?.firstOrNull;
+                      if (serverConfig != null) {
+                        currentConfig = await App.createAppFromConfig(serverConfig);
+                        setState(() {});
+                      }
+                    },
+                  ),
+                  child: const Icon(Icons.qr_code),
+                )
+              : null,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        ),
       ),
     );
   }
@@ -281,6 +284,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         );
       } else {
         child = CustomScrollView(
+          key: const PageStorageKey("OverviewList"),
           slivers: [
             SliverPadding(
               // Padding to keep card effects visible (prevent cropping),

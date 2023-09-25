@@ -280,7 +280,6 @@ class AppService implements IAppService {
     }
 
     await FlutterUI.clearServices(restart ? ClearReason.RESTART : ClearReason.DEFAULT);
-    FlutterUI.resetPageBucket();
 
     if (!restart) {
       await IConfigService().updateCurrentApp(null);

@@ -79,6 +79,8 @@ class JVxOverlayState extends State<JVxOverlay> {
 
   late final RootBackButtonDispatcher backButtonDispatcher;
 
+  PageStorageBucket _storageBucket = PageStorageBucket();
+
   bool _loading = false;
   Future? _loadingDelayFuture;
 
@@ -193,7 +195,25 @@ class JVxOverlayState extends State<JVxOverlay> {
     _forceDisableBarrier = false;
     _loading = false;
     _lockDelayed = false;
+    resetStorageBucket();
     resetConnectionState(instant: true);
+  }
+
+  /// The per-app [PageStorageBucket].
+  ///
+  /// This bucket is cleared on app (re-)starts!
+  ///
+  /// See also:
+  /// * [resetStorageBucket]
+  /// * [FlutterUIState.globalStorageBucket]
+  PageStorageBucket get storageBucket => _storageBucket;
+
+  /// Resets the [storageBucket].
+  ///
+  /// See also:
+  /// * [FlutterUIState.resetGlobalStorageBucket]
+  void resetStorageBucket() {
+    _storageBucket = PageStorageBucket();
   }
 
   @override

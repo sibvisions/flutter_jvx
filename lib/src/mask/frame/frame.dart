@@ -23,6 +23,7 @@ import '../../service/api/i_api_service.dart';
 import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../jvx_overlay.dart';
 import '../login/default/cards/change_password.dart';
 import 'mobile_frame.dart';
 import 'web_frame.dart';
@@ -142,7 +143,7 @@ abstract class FrameState extends State<Frame> {
 
   @override
   Widget build(BuildContext context) => PageStorage(
-        bucket: pageStorageBucket,
+        bucket: JVxOverlay.of(context).storageBucket,
         child: Builder(
           builder: (context) => widget.builder.call(
             context,

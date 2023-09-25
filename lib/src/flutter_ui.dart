@@ -334,10 +334,6 @@ class FlutterUI extends StatefulWidget {
     await IAppService().clear(reason);
   }
 
-  static void resetPageBucket() {
-    pageStorageBucket = PageStorageBucket();
-  }
-
   static start([FlutterUI pAppToRun = const FlutterUI()]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -557,9 +553,6 @@ TransitionDelegate get transitionDelegate =>
 
 GlobalKey<NavigatorState>? splashNavigatorKey;
 
-/// Global Bucket to persist the storage between different locations
-PageStorageBucket pageStorageBucket = PageStorageBucket();
-
 final RouteObserver<ModalRoute> routeObserver = RouteObserver();
 
 class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
@@ -568,6 +561,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   final JVxRoutesObserver jvxRouteObserver = JVxRoutesObserver();
 
   AppLifecycleState? lastState;
+
+  PageStorageBucket _storageBucket = PageStorageBucket();
 
   late ThemeData themeData;
   late ThemeData darkThemeData;
@@ -900,6 +895,23 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     IUiService().applicationSettings.removeListener(refresh);
 
     super.dispose();
+  }
+
+  /// The global [PageStorageBucket].
+  ///
+  /// This bucket survives app (re-)starts.
+  ///
+  /// See also:
+  /// * [resetGlobalStorageBucket]
+  /// * [JVxOverlayState.storageBucket]
+  PageStorageBucket get globalStorageBucket => _storageBucket;
+
+  /// Resets the [globalStorageBucket].
+  ///
+  /// See also:
+  /// * [JVxOverlayState.resetStorageBucket]
+  void resetGlobalStorageBucket() {
+    _storageBucket = PageStorageBucket();
   }
 
   void changedTheme() {
