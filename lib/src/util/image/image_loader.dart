@@ -29,6 +29,7 @@ import '../../service/apps/app.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/file/file_manager.dart';
 import '../font_awesome_util.dart';
+import '../material_icons_util.dart';
 
 abstract class ImageLoader {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,6 +89,15 @@ abstract class ImageLoader {
         );
         pImageStreamListener?.call(Size.square(faIcon.size ?? FlIconModel.DEFAULT_ICON_SIZE), true);
         return faIcon;
+      }
+      if (MaterialIconUtil.checkMaterial(pImageString)) {
+        Icon icon = MaterialIconUtil.getMaterialIcon(
+          pText: pImageString,
+          pIconSize: pWidth,
+          pColor: pWantedColor,
+        );
+        pImageStreamListener?.call(Size.square(icon.size ?? FlIconModel.DEFAULT_ICON_SIZE), true);
+        return icon;
       }
 
       imageProvider ??= ImageLoader.getImageProvider(pImageString, pImageStreamListener: pImageStreamListener);
