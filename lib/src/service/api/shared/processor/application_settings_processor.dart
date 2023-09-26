@@ -33,7 +33,7 @@ class ApplicationSettingsProcessor implements IResponseProcessor<ApplicationSett
       SaveComponentsCommand(
         components: pResponse.components,
         isDesktopPanel: true,
-        isUpdate: true,
+        isUpdate: false,
         reason: "${ApiResponseNames.applicationSettings} was sent",
       ),
     ];
