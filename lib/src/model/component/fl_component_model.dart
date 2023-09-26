@@ -180,6 +180,7 @@ abstract class FlComponentModel {
   HorizontalAlignment horizontalAlignment = HorizontalAlignment.CENTER;
 
   /// The font of the component.
+  // TODO maybe make this nullable? -> Should be set by theme and not here as default
   JVxFont font = JVxFont();
 
   /// The tooltip text of the component.
