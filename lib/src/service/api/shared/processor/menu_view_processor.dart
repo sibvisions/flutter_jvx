@@ -24,6 +24,7 @@ import '../../../../model/command/ui/save_menu_command.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
+import '../../../../model/request/api_reload_menu_request.dart';
 import '../../../../model/request/api_request.dart';
 import '../../../../model/response/menu_view_response.dart';
 import '../../../apps/i_app_service.dart';
@@ -51,7 +52,7 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
     SaveMenuCommand saveMenuCommand = SaveMenuCommand(menuModel: menuModel, reason: "Server sent menu items");
     commands.add(saveMenuCommand);
 
-    if (!IConfigService().offline.value) {
+    if (!IConfigService().offline.value && pRequest is! ApiReloadMenuRequest) {
       var returnUri = IAppService().getApplicableReturnUri(response.responseMenuItems);
       if (returnUri != null) {
         var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
@@ -66,9 +67,10 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
           reason: "Server sent a menu, likely on login",
         ));
       }
-      // Reset in every case, either it worked or it won't/shouldn't work next time.
-      IAppService().returnUri = null;
     }
+
+    // Reset in every case, either it worked or it won't/shouldn't work next time.
+    IAppService().returnUri = null;
 
     return commands;
   }
