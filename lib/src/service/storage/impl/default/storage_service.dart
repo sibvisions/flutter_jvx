@@ -89,8 +89,14 @@ class StorageService implements IStorageService {
     bool isDesktopPanel,
     bool isContent,
     String screenName,
+    bool isUpdate,
   ) {
     if ((changedComponents == null || changedComponents.isEmpty) && (newComponents == null || newComponents.isEmpty)) {
+      return [];
+    }
+
+    // If we don't have the screen yet and it is an update, ignore it.
+    if (isUpdate && getComponentByName(pComponentName: screenName) == null) {
       return [];
     }
 
