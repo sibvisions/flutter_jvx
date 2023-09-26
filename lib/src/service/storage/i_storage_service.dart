@@ -43,6 +43,7 @@ abstract class IStorageService implements Service {
     bool isDesktopPanel,
     bool isContent,
     String screenName,
+    bool isUpdate,
   );
 
   /// Deletes Screen Model, and all descendants.

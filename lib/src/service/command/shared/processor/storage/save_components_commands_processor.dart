@@ -31,6 +31,7 @@ class SaveComponentsCommandProcessor extends ICommandProcessor<SaveComponentsCom
         command.isDesktopPanel,
         command.isContent,
         command.screenName,
+        command.isUpdate,
       ),
     );
 
