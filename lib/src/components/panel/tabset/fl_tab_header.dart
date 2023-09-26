@@ -41,7 +41,10 @@ class FlTabHeader extends StatelessWidget {
     //     children: tabHeaderList,
     //   ),
     // );
+    var colorScheme = Theme.of(context).colorScheme;
     return TabBar(
+      labelColor: colorScheme.onSurface,
+      indicatorColor: colorScheme.onSurface,
       controller: tabController,
       tabs: tabHeaderList,
       isScrollable: true,
