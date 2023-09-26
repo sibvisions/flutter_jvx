@@ -218,9 +218,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             bool noMenu = model?.noMenu ?? false;
             bool simpleMenu = model?.hasSimpleMenu ?? false;
 
-            PreferredSizeWidget? appBar;
-            Widget body;
-
             if (noMenu) {
               actions?.removeWhere((element) => element is OpenDrawerAction);
 
@@ -229,35 +226,34 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               }
             }
 
+            Widget? body;
+            Widget? title;
             if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
               // Has to called first as it initializes [screenTitle].
               body = _buildWorkScreen(context, isOffline);
 
-              appBar = frame?.getAppBar(
-                leading: _buildLeading(),
-                titleSpacing: 8,
-                title: Text(screenTitle!),
-                actions: actions,
-              );
-            } else {
-              appBar = frame?.getAppBar(
-                leading: _buildLeading(),
-                titleSpacing: 8,
-                title:
-                    Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading...")),
-                actions: actions,
-              );
-
-              // Dummy body shown while loading/error.
-              body = _buildDummyScreen(snapshot);
+              title = Text(screenTitle!);
             }
+
+            Widget? leading = _buildLeading();
+            title ??=
+                Text(customScreen?.screenTitle ?? item?.label ?? screenTitle ?? FlutterUI.translate("Loading..."));
+            PreferredSizeWidget? appBar = frame?.getAppBar(
+              leading: leading,
+              titleSpacing: leading != null ? 0 : 8,
+              title: title,
+              actions: actions,
+            );
+
+            // Dummy body shown while loading/error.
+            body ??= _buildDummyScreen(snapshot);
 
             // _onWillPop needs to access Scaffold.
             Widget content = Builder(
               builder: (context) => WillPopScope(
                 onWillPop: () => _onWillPop(context),
                 child: SafeArea(
-                  child: body,
+                  child: body!,
                 ),
               ),
             );
@@ -355,7 +351,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       child: Tooltip(
         message: MaterialLocalizations.of(context).backButtonTooltip,
         child: const Padding(
-          padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
+          padding: EdgeInsets.all(8),
           child: Center(child: BackButtonIcon()),
         ),
       ),
