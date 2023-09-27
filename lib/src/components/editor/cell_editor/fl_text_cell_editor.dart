@@ -101,8 +101,8 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   void setValue(dynamic pValue) {
-    lastReceivedValue = pValue;
-    if (isInitialized && lastReceivedValue.toString() != lastSentValue.toString()) {
+    if (isInitialized && getValue() != pValue) {
+      lastReceivedValue = pValue;
       if (pValue == null) {
         if (isHtml) {
           htmlController.clear();
@@ -117,8 +117,12 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
         if (isHtml) {
           htmlController.setText(pValue);
         } else {
-          textController.value =
-              TextEditingValue(text: pValue, selection: TextSelection.collapsed(offset: pValue.runes.length));
+          textController.value = TextEditingValue(
+            text: pValue,
+            selection: TextSelection.collapsed(
+              offset: pValue.runes.length,
+            ),
+          );
         }
       }
     }

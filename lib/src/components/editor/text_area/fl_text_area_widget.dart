@@ -70,7 +70,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   }
 
   @override
-  bool get isExpandend => true;
+  bool get isExpanded => true;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

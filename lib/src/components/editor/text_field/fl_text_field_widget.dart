@@ -114,7 +114,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   int? get maxLines => 1;
 
-  bool get isExpandend => false;
+  bool get isExpanded => false;
 
   bool get obscureText => false;
 
@@ -197,7 +197,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       style: model.createTextStyle(),
       onChanged: valueChanged,
       onEditingComplete: focusNode.unfocus,
-      expands: isExpandend,
+      expands: isExpanded,
       minLines: minLines,
       maxLines: maxLines,
       keyboardType: keyboardType,
