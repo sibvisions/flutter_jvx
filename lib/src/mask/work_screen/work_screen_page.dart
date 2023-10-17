@@ -157,6 +157,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
       _init();
     } else {
+      // TODO maybe reset init future?
       Navigator.of(context).pop();
     }
   }
