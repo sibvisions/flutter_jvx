@@ -156,6 +156,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       ));
 
       _init();
+    } else {
+      Navigator.of(context).pop();
     }
   }
 
@@ -214,7 +216,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
             FrameState? frame = Frame.maybeOf(context);
             List<Widget>? actions = frame?.getActions();
 
-            model = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
+            model = IStorageService().getComponentByScreenClassName(pScreenClassName: item?.screenLongName ?? "");
             bool noMenu = model?.noMenu ?? false;
             bool simpleMenu = model?.hasSimpleMenu ?? false;
 
