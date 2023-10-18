@@ -18,6 +18,7 @@ import 'dart:async';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../custom/custom_screen.dart';
@@ -157,8 +158,12 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
       _init();
     } else {
-      // TODO maybe reset init future?
-      Navigator.of(context).pop();
+      future = Future.error("No menu item model found for this workscreen!");
+
+      // _onBack() needs a usable context.
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _onBack();
+      });
     }
   }
 
@@ -317,7 +322,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       body = const ErrorScreen(
         message: "Screen not found.",
       );
-    } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
+    } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError && item != null) {
+      // item != null -> should route back on next frame; Don't visualize anything;
       body = ErrorScreen(
         extra: snapshot.error?.toString(),
         retry: () {
@@ -325,6 +331,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           setState(() {});
         },
       );
+    } else if (item == null) {
+      body = const SizedBox.expand();
     } else {
       body = const SkeletonScreen();
     }
@@ -369,71 +377,73 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
     isForced = pForced;
 
-    NavigatorState navigator = Navigator.of(context);
-    if (!(await navigator.maybePop())) {
-      if (!mounted) return;
-      context.beamBack();
+    // Calls _onWillPop -> call server, beam back or pop.
+    if (mounted) {
+      await Navigator.maybePop(context);
     }
   }
 
-  /// Is being called by [WillPopScope].
+  /// This will intercept any "maybePop" and allows sending relevant server requests.
+  ///
+  /// Additionally will try to beam back before allowing a pop to go through.
+  ///
+  /// Returning true will allow the pop to go through.
+  /// Pop will close the whole location and not just "beam back" a page in the history.
+  /// Pop is still needed to close down scaffold drawer.
   Future<bool> _onWillPop(BuildContext context) async {
-    if (Scaffold.of(context).isDrawerOpen || Scaffold.of(context).isEndDrawerOpen) {
-      return true;
-    }
-
     if (isNavigating || (LoadingBar.maybeOf(context)?.show ?? false)) {
       return false;
     }
 
-    isNavigating = true;
-
-    // We have no working screen, allow back.
-    if (item?.screenLongName == null || (model == null && customScreen == null)) {
-      return true;
+    ScaffoldState? scaffoldState = Scaffold.maybeOf(context);
+    if (scaffoldState != null && (scaffoldState.isDrawerOpen || scaffoldState.isEndDrawerOpen)) {
+      return true; // Must pop drawer.
     }
 
-    await IUiService()
-        .saveAllEditors(pReason: "Closing Screen", pFunction: _closeScreen)
-        .catchError(IUiService().handleAsyncError)
-        .whenComplete(() {
-      isForced = false;
-      isNavigating = false;
-    });
+    isNavigating = true;
 
-    if (!IUiService().usesNativeRouting(item!.screenLongName)) {
-      return false;
-    } else {
-      if (noBack || overviewBack) {
+    try {
+      if (item?.screenLongName == null || (model == null && customScreen == null)) {
+        return !context.beamBack();
+      } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
+        await IUiService()
+            .saveAllEditors(
+              pReason: "Closing Screen",
+              pFunction: _closeScreen,
+            )
+            .catchError(
+              IUiService().handleAsyncError,
+            );
+        return false;
+      } else if (noBack || overviewBack) {
         if (overviewBack && canGoToOverview) {
           unawaited(IUiService().routeToAppOverview());
         }
         return false;
       }
-      return true;
+      return !context.beamBack();
+    } finally {
+      isForced = false;
+      isNavigating = false;
     }
   }
 
   List<BaseCommand> _closeScreen() {
-    List<BaseCommand> commands = [];
-    if (!IUiService().usesNativeRouting(item!.screenLongName)) {
-      if (isForced) {
-        commands.add(
-          CloseScreenCommand(
-            reason: "Work screen back",
-            screenName: model!.name,
-          ),
-        );
-      } else {
-        commands.add(
-          NavigationCommand(
-            reason: "Back button pressed",
-            openScreen: model!.name,
-          ),
-        );
-      }
+    if (isForced) {
+      return [
+        CloseScreenCommand(
+          reason: "Work screen back",
+          screenName: model!.name,
+        ),
+      ];
     }
-    return commands;
+
+    return [
+      NavigationCommand(
+        reason: "Back button pressed",
+        openScreen: model!.name,
+      )
+    ];
   }
 
   bool get noBack => model?.noBack == true;
