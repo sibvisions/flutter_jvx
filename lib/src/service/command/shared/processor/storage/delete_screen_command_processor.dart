@@ -46,13 +46,9 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
         var context = FlutterUI.getEffectiveContext()!;
         // We need to try beamBack first.
         // (PopupExampleWorkScreen) For example, a Modal WorkScreen should show the underlying WorkScreen again after closing, not the menu.
-        if (context.canBeamBack) {
-          context.beamBack();
-        } else {
-          var navigator = Navigator.of(context);
-          if (navigator.canPop()) {
-            navigator.pop();
-          }
+        if (!context.beamBack() && Navigator.canPop(context)) {
+          // Pop ignores willPopScope! Do not use maybePop; it calls willPopScope
+          Navigator.pop(context);
         }
       } else if (!kIsWeb) {
         FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
