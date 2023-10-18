@@ -322,8 +322,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       body = const ErrorScreen(
         message: "Screen not found.",
       );
-    } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError && item != null) {
-      // item != null -> should route back on next frame; Don't visualize anything;
+    } else if (item == null) {
+      // should route back on next frame; Don't visualize anything;
+      body = const SizedBox.expand();
+    } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
       body = ErrorScreen(
         extra: snapshot.error?.toString(),
         retry: () {
@@ -331,8 +333,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           setState(() {});
         },
       );
-    } else if (item == null) {
-      body = const SizedBox.expand();
     } else {
       body = const SkeletonScreen();
     }
