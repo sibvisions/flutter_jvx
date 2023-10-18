@@ -16,11 +16,9 @@
 
 import 'package:beamer/beamer.dart';
 
+import '../../../../commands.dart';
 import '../../../../flutter_ui.dart';
-import '../../../../model/command/base_command.dart';
-import '../../../../model/command/ui/route/route_to_command.dart';
-import '../../../../model/command/ui/route/route_to_menu_command.dart';
-import '../../../../model/command/ui/save_menu_command.dart';
+import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
@@ -29,6 +27,7 @@ import '../../../../model/request/api_request.dart';
 import '../../../../model/response/menu_view_response.dart';
 import '../../../apps/i_app_service.dart';
 import '../../../config/i_config_service.dart';
+import '../../../storage/i_storage_service.dart';
 import '../i_response_processor.dart';
 
 /// Processes the menu response into a [MenuModel], will try to route to menu,
@@ -56,16 +55,33 @@ class MenuViewProcessor implements IResponseProcessor<MenuViewResponse> {
       var returnUri = IAppService().getApplicableReturnUri(response.responseMenuItems);
       if (returnUri != null) {
         var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
-        commands.add(RouteToCommand(
-          replaceRoute: lastBeamState.pathPatternSegments.contains("login"),
-          uri: returnUri.toString(),
-          reason: "Found returnUri",
-        ));
+        commands.add(
+          RouteToCommand(
+            replaceRoute: lastBeamState.pathPatternSegments.contains("login"),
+            uri: returnUri.toString(),
+            reason: "Found returnUri",
+          ),
+        );
       } else {
-        commands.add(RouteToMenuCommand(
-          replaceRoute: true,
-          reason: "Server sent a menu, likely on login",
-        ));
+        commands.add(
+          RouteToMenuCommand(
+            replaceRoute: true,
+            reason: "Server sent a menu, likely on login",
+          ),
+        );
+      }
+    }
+
+    List<String> listViableNavigationNames =
+        menuModel.menuGroups.expand((group) => group.items).map((menuItem) => menuItem.navigationName).toList();
+    for (FlPanelModel openScreenModel in IStorageService().getScreens()) {
+      if (!listViableNavigationNames.contains(openScreenModel.screenNavigationName)) {
+        commands.add(
+          CloseScreenCommand(
+            screenName: openScreenModel.name,
+            reason: "Screen no longer found in menu item list.",
+          ),
+        );
       }
     }
 
