@@ -90,6 +90,9 @@ abstract class IStorageService implements Service {
   /// Returns panel model with matching [FlPanelModel.screenNavigationName].
   FlPanelModel? getComponentByNavigationName(String pNavigationName);
 
+  /// Returns all panel models with a [FlPanelModel.screenNavigationName]
+  List<FlPanelModel> getScreens();
+
   /// Returns component model with name matching [FlContainerClassname.DESKTOP_PANEL].
   JVxNotifier<FlComponentModel?> getDesktopPanelNotifier();
 

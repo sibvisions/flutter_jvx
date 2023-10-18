@@ -384,6 +384,14 @@ class StorageService implements IStorageService {
   }
 
   @override
+  List<FlPanelModel> getScreens() {
+    return _componentMap.values
+        .whereType<FlPanelModel>()
+        .where((element) => element.screenNavigationName?.isNotEmpty ?? false)
+        .toList();
+  }
+
+  @override
   JVxNotifier<FlComponentModel?> getDesktopPanelNotifier() {
     return _desktopNotifier;
   }
