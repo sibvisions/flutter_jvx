@@ -547,7 +547,7 @@ class UiService implements IUiService {
           rowCount: pDataSubscription.to != null
               ? pDataSubscription.to! - pDataSubscription.from
               : IUiService().getSubscriptionRowcount(pDataProvider: pDataSubscription.dataProvider),
-          reason: "Fetch for ${pDataSubscription.runtimeType}",
+          reason: "Fetch for DataSubscription [${pDataSubscription.dataProvider}]",
           includeMetaData: fetchMetaData,
         ));
       } else {
