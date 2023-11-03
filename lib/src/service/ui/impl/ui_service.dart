@@ -997,9 +997,6 @@ class UiService implements IUiService {
     } else {
       showBarModalBottomSheet(
         context: FlutterUI.getCurrentContext()!,
-        builder: (context) => ContentBottomSheet(
-          model: panelModel,
-        ),
         barrierColor: JVxColors.LIGHTER_BLACK.withOpacity(0.75),
         topControl: Container(
           height: 20,
@@ -1019,6 +1016,9 @@ class UiService implements IUiService {
         expand: true,
         bounce: false,
         settings: routeSettings,
+        builder: (context) => ContentBottomSheet(
+          model: panelModel,
+        ),
       );
     }
   }
