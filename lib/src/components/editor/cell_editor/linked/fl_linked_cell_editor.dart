@@ -108,7 +108,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
     return FlLinkedEditorWidget(
       model: widgetModel,
-      endEditing: (_) => receiveNull,
+      endEditing: (_) => receiveNull(),
       valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
