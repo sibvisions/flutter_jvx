@@ -113,6 +113,10 @@ class App {
     return (await Future.wait(ids.map((id) => App.getApp(id)).toList())).whereNotNull().toList();
   }
 
+  static Future<List<App>> getApps() async {
+    return (await Future.wait(IAppService().getAppIds().map((id) => App.getApp(id)).toList())).whereNotNull().toList();
+  }
+
   static Future<App> createApp({required String name, required Uri baseUrl}) async {
     var app = App._(computeId(name, baseUrl.toString(), predefined: false)!);
     await app.loadValues();

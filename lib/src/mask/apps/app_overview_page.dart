@@ -33,6 +33,7 @@ import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/widgets/jvx_scanner.dart';
 import '../camera/qr_parser.dart';
+import 'app_change_urls_dialog.dart';
 import 'app_edit_dialog.dart';
 import 'app_item.dart';
 import 'select_item.dart';
@@ -466,7 +467,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         config: editApp,
         predefined: editApp?.predefined ?? false,
         locked: editApp?.locked ?? false,
-        onSubmit: (config) => _updateApp(context, config, editApp: editApp),
+        onSubmit: (config) => _updateApp(context, config, oldApp: editApp),
         onCancel: () {
           Navigator.pop(context);
         },
@@ -494,20 +495,46 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
   }
 
   /// Returns whether the update was successful.
-  Future<App?> _updateApp(BuildContext context, ServerConfig config, {App? editApp}) async {
-    App? app = editApp != null ? await App.getApp(editApp.id) : null;
-    assert(!(app?.locked ?? false), "Locked apps cannot be updated.");
-    app ??= await App.createApp(name: config.appName!, baseUrl: config.baseUrl!);
+  Future<App?> _updateApp(BuildContext context, ServerConfig config, {App? oldApp}) async {
+    App? app = oldApp != null ? await App.getApp(oldApp.id) : null;
+    assert(oldApp == null || !oldApp.locked, "Locked apps cannot be updated.");
 
-    // If this is not an predefined app and the key parameters changed, change id.
-    if (!app.predefined && (app.name != config.appName || app.baseUrl != config.baseUrl)) {
-      await app.updateId(App.computeId(config.appName, config.baseUrl.toString(), predefined: false)!);
+    if (app == null) {
+      app = await App.createAppFromConfig(config);
+    } else {
+      String oldHost = app.baseUrl?.host ?? "";
+      bool changedUrl = config.baseUrl != null && oldHost != config.baseUrl!.host;
+
+      // If this is not an predefined app and the key parameters changed, change id.
+      if (!app.predefined && (app.name != config.appName || app.baseUrl != config.baseUrl)) {
+        await app.updateId(App.computeId(config.appName, config.baseUrl.toString(), predefined: false)!);
+      }
+
+      await app.updateFromConfig(config);
+
+      if (changedUrl) {
+        // All apps with the same host will be asked if they should be updated too.
+        final List<App> appsSameHost = (await App.getApps())
+            .where((element) => element.id != app!.id && element.baseUrl != null && element.baseUrl!.host == oldHost)
+            .toList();
+
+        if (appsSameHost.isNotEmpty && context.mounted) {
+          await showDialog(
+            context: context,
+            builder: (context) => AppChangeUrlsDialog(
+              oldHost: oldHost,
+              newHost: app!.baseUrl!.host,
+              appsToChange: appsSameHost,
+            ),
+          );
+        }
+      }
     }
-    await app.updateFromConfig(config);
 
-    if (mounted) {
+    if (context.mounted) {
       Navigator.pop(context);
     }
+
     unawaited(_refreshApps());
     return app;
   }
