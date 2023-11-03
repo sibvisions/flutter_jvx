@@ -351,13 +351,15 @@ class _FlTableCellState extends State<FlTableCell> {
   }
 
   void _setLinkedCellValue(value) {
-    cellEditor.setValue((
-      value,
-      IDataService()
-          .getDataBook(widget.model.dataProvider)!
-          .getRecord(pDataColumnNames: null, pRecordIndex: widget.rowIndex)!
-          .values,
-    ));
+    cellEditor.setValue(
+      (
+        value,
+        IDataService()
+            .getDataBook(widget.model.dataProvider)!
+            .getRecord(pDataColumnNames: null, pRecordIndex: widget.rowIndex)
+            ?.values,
+      ),
+    );
   }
 
   List<Widget> _createCellIcons() {

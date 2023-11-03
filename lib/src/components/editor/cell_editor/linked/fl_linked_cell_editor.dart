@@ -41,7 +41,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  (dynamic, List<dynamic>)? _record;
+  (dynamic, List<dynamic>?)? _record;
 
   dynamic get _value => _record?.$1;
 
@@ -151,10 +151,10 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
       if (model.additionalCondition != null || model.searchColumnMapping != null) {
         var dataBook = IDataService().getDataBook(dataProvider);
-        if (dataBook != null && _record != null) {
+        if (dataBook != null && _record?.$2 != null) {
           Map<String, dynamic> displayKeyMap = model.createDisplayMapKey(
             dataBook.metaData!.columnDefinitions,
-            _record!.$2,
+            _record!.$2!,
             linkReference,
             columnName,
             dataProvider: dataProvider,
