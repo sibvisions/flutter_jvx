@@ -378,12 +378,19 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       if (data == null) {
         return;
       }
-      if (model.linkReference.columnNames.isEmpty) {
-        Navigator.of(context).pop(data[_chunkData!.columnDefinitions
-            .indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0])]);
-      } else {
-        HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
 
+      Map<String, dynamic> dataMap = HashMap<String, dynamic>();
+
+      if (model.additionalClearColumnNames?.isNotEmpty == true) {
+        for (String columnName in model.additionalClearColumnNames!) {
+          dataMap[columnName] = null;
+        }
+      }
+
+      if (model.linkReference.columnNames.isEmpty) {
+        dataMap[linkedCellEditor.columnName] = data[_chunkData!.columnDefinitions
+            .indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0])];
+      } else {
         for (int i = 0; i < model.linkReference.columnNames.length; i++) {
           String columnName = model.linkReference.columnNames[i];
           String referencedColumnName = model.linkReference.referencedColumnNames[i];
@@ -391,9 +398,8 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           dataMap[columnName] =
               data[_chunkData!.columnDefinitions.indexWhere((element) => element.name == referencedColumnName)];
         }
-
-        Navigator.of(context).pop(dataMap);
       }
+      Navigator.of(context).pop(dataMap);
     }).catchError(IUiService().handleAsyncError);
   }
 

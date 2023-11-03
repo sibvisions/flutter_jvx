@@ -108,7 +108,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
     return FlLinkedEditorWidget(
       model: widgetModel,
-      endEditing: receiveNull,
+      endEditing: (_) => receiveNull,
       valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
@@ -247,7 +247,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       }).then((value) {
         if (value != null) {
           if (value == FlLinkedCellPicker.NULL_OBJECT) {
-            receiveNull(null);
+            receiveNull();
           } else {
             onEndEditing(value);
           }
@@ -306,29 +306,39 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     recalculateSizeCallback?.call(recalculateSize);
   }
 
-  dynamic receiveNull(dynamic pValue) {
-    return ICommandService()
+  void receiveNull() {
+    List<String> columnsToSend = [columnName];
+    if (model.linkReference.columnNames.isNotEmpty) {
+      columnsToSend = model.linkReference.columnNames;
+    }
+
+    if (model.additionalClearColumnNames?.isNotEmpty == true) {
+      columnsToSend.addAll(model.additionalClearColumnNames!);
+    }
+
+    if (model.clearColumnNames?.isNotEmpty == true) {
+      columnsToSend.addAll(model.clearColumnNames!);
+    }
+
+    Map<String, dynamic> dataMap = HashMap<String, dynamic>();
+
+    for (String columnName in columnsToSend) {
+      dataMap[columnName] = null;
+    }
+
+    ICommandService()
         .sendCommand(
-      SelectRecordCommand.deselect(
-        dataProvider: model.linkReference.referencedDataBook,
-        reason: "Tapped",
-      ),
-    )
-        .then((value) {
-      if (model.linkReference.columnNames.isEmpty) {
-        onEndEditing(null);
-      } else {
-        HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
-
-        for (int i = 0; i < model.linkReference.columnNames.length; i++) {
-          String columnName = model.linkReference.columnNames[i];
-
-          dataMap[columnName] = null;
-        }
-
-        onEndEditing(dataMap);
-      }
-    }).catchError(IUiService().handleAsyncError);
+          SelectRecordCommand.deselect(
+            dataProvider: model.linkReference.referencedDataBook,
+            reason: "Tapped",
+          ),
+        )
+        .then(
+          (_) => onEndEditing(dataMap),
+        )
+        .catchError(
+          IUiService().handleAsyncError,
+        );
   }
 
   void _onDataToDisplayMapChanged() {

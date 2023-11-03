@@ -61,6 +61,10 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
 
   bool tableReadonly = true;
 
+  List<String>? additionalClearColumnNames;
+
+  List<String>? clearColumnNames;
+
   Size? popupSize;
 
   /// If the table removes the alternating table row colors.
@@ -169,6 +173,22 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
       pDefault: defaultModel.popupSize,
       pCurrent: popupSize,
       pConversion: (pJson) => _parsePopupSize(pJson),
+    );
+
+    additionalClearColumnNames = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.additionalClearColumns,
+      pDefault: defaultModel.additionalClearColumnNames,
+      pCurrent: additionalClearColumnNames,
+      pConversion: (value) => value.cast<String>(),
+    );
+
+    clearColumnNames = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.clearColumns,
+      pDefault: defaultModel.clearColumnNames,
+      pCurrent: clearColumnNames,
+      pConversion: (value) => value.cast<String>(),
     );
   }
 
