@@ -33,8 +33,11 @@ class _AppChangeUrlsDialogState extends State<AppChangeUrlsDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-              "${FlutterUI.translateLocal("Changes apps from")} '${widget.oldHost}' ${FlutterUI.translateLocal("to")} '${widget.newHost}'"),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+                "${FlutterUI.translateLocal("Changes apps from")} '${widget.oldHost}' ${FlutterUI.translateLocal("to")} '${widget.newHost}'"),
+          ),
           Flexible(
             child: SingleChildScrollView(
               child: ExpansionTile(
