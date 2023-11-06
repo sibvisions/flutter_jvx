@@ -30,6 +30,7 @@ class SetValuesCommandProcessor extends ICommandProcessor<SetValuesCommand> {
         editorColumnName: command.editorColumnName,
         values: command.values,
         filter: command.filter,
+        rowNumber: command.rowNumber,
       ),
     );
   }
