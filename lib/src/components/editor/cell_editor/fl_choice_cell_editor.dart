@@ -71,7 +71,7 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
   }
 
   @override
-  FlIconWidget createWidget(Map<String, dynamic>? pJson) {
+  Widget createWidget(Map<String, dynamic>? pJson) {
     FlIconModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -88,11 +88,15 @@ class FlChoiceCellEditor extends ICellEditor<FlIconModel, FlChoiceCellEditorMode
       isEditable = pJson![ApiObjectProperty.cellEditorEditable];
     }
 
-    return FlIconWidget(
-      model: widgetModel,
-      directImage: image,
-      inTable: isInTable,
-      onPress: isEditable ? _onPress : null,
+    return SizedBox(
+      height: model.imageSize,
+      width: model.imageSize,
+      child: FlIconWidget(
+        model: widgetModel,
+        directImage: image,
+        inTable: isInTable,
+        onPress: isEditable ? _onPress : null,
+      ),
     );
   }
 
