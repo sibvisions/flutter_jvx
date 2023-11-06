@@ -245,7 +245,9 @@ class _FlTableCellState extends State<FlTableCell> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
+            Flexible(
+              // cell editors in tables should only use the amount of space they need
+              fit: cellEditor.allowedInTable ? FlexFit.loose : FlexFit.tight,
               child: cellChild,
             ),
             ..._createCellIcons(),
