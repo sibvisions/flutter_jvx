@@ -40,9 +40,9 @@ class Filter {
     required this.values,
   });
 
-  Filter.empty()
-      : columnNames = [],
-        values = [];
+  const Filter.empty()
+      : columnNames = const [],
+        values = const [];
 
   /// Creates a filter from a pagekey
   Filter.fromPageKey(Map<String, dynamic> pPageKey)
@@ -59,6 +59,8 @@ class Filter {
       };
 
   bool get isEmpty => columnNames.isEmpty && values.isEmpty;
+
+  bool get isNotEmpty => !isEmpty;
 
   Map<String, dynamic> asMap() {
     return Map.fromEntries(columnNames.mapIndexed(

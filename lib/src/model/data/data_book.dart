@@ -115,7 +115,7 @@ class DataBook {
     var pFetchResponse = pCommand.response;
     dataProvider = pFetchResponse.dataProvider;
 
-    if (pCommand.fetchCommand?.filter == null || pCommand.fetchCommand!.filter!.isEmpty) {
+    if (pCommand.requestFilter.isEmpty) {
       isAllFetched = pFetchResponse.isAllFetched;
       selectedRow = pFetchResponse.selectedRow;
       if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
@@ -154,14 +154,14 @@ class DataBook {
         pageRecords[pageKey] = HashMap();
       }
 
-      if (pCommand.fetchCommand?.filter != null) {
+      if (pCommand.requestFilter.isNotEmpty) {
         dataMap = pageRecords[pageKey]!;
       } else {
         dataMap = records = pageRecords[pageKey]!;
       }
     }
 
-    if (pCommand.fetchCommand?.setRootKey == true) {
+    if (pCommand.setRootKey == true) {
       rootKey = pageKey;
     }
 
@@ -171,7 +171,7 @@ class DataBook {
     }
 
     // Remove values with higher index if all records are fetched (clean old data)
-    if (isAllFetched) {
+    if (pCommand.response.isAllFetched) {
       dataMap.removeWhere((key, value) => key > pFetchResponse.to);
       if (pFetchResponse.records.isEmpty) {
         dataMap.remove(0);

@@ -19,16 +19,28 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/data/save_fetch_data_command.dart';
 import '../../../../model/request/api_fetch_request.dart';
 import '../../../../model/request/api_request.dart';
+import '../../../../model/request/api_set_values_request.dart';
+import '../../../../model/request/filter.dart';
 import '../../../../model/response/dal_fetch_response.dart';
 import '../i_response_processor.dart';
 
 class DalFetchProcessor extends IResponseProcessor<DalFetchResponse> {
   @override
   List<BaseCommand> processResponse(DalFetchResponse pResponse, ApiRequest? pRequest) {
+    bool setRootKey = false;
+    Filter filter = const Filter.empty();
+    if (pRequest is ApiFetchRequest) {
+      filter = pRequest.filter ?? filter;
+      setRootKey = pRequest.command?.setRootKey ?? setRootKey;
+    } else if (pRequest is ApiSetValuesRequest) {
+      filter = pRequest.filter ?? filter;
+    }
+
     SaveFetchDataCommand saveFetchDataCommand = SaveFetchDataCommand(
       response: pResponse,
       reason: "Server sent FetchData",
-      fetchCommand: cast<ApiFetchRequest>(pRequest)?.command,
+      requestFilter: filter,
+      setRootKey: setRootKey,
     );
 
     return [saveFetchDataCommand];

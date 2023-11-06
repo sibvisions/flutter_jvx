@@ -14,19 +14,24 @@
  * the License.
  */
 
+import '../../request/filter.dart';
 import '../../response/dal_fetch_response.dart';
-import '../api/fetch_command.dart';
 import 'data_command.dart';
 
 class SaveFetchDataCommand extends DataCommand {
   /// Server response
   final DalFetchResponse response;
 
-  final FetchCommand? fetchCommand;
+  /// The last filter used by a request. Filtered fetch responses do not represent the "whole" state. e.g. isAllFetched is ignored.
+  /// As a filtered response usually does not represent "all" the data.
+  final Filter requestFilter;
+
+  final bool setRootKey;
 
   SaveFetchDataCommand({
     required this.response,
-    this.fetchCommand,
+    this.requestFilter = const Filter.empty(),
+    this.setRootKey = false,
     required super.reason,
   });
 
