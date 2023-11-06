@@ -836,9 +836,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return SetValuesCommand(
       dataProvider: model.dataProvider,
       columnNames: pColumnNames,
-      editorColumnName: pEditorColumnName,
       values: pValues,
       filter: _createFilter(pRowIndex: pRowIndex),
+      rowNumber: pRowIndex,
       reason: "Values changed in table",
     );
   }
