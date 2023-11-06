@@ -185,6 +185,8 @@ class _FlTableCellState extends State<FlTableCell> {
       );
     }
 
+    _setCellEditorValue(widget.value);
+
     cellChild ??= _createCellEditorWidget();
 
     cellChild ??= _createTextWidget();
@@ -241,6 +243,7 @@ class _FlTableCellState extends State<FlTableCell> {
             [VerticalAlignment.CENTER.index],
         padding: paddings,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: cellChild,
@@ -284,10 +287,6 @@ class _FlTableCellState extends State<FlTableCell> {
     );
 
     cellEditor.cellFormat = widget.cellFormat;
-
-    if (cellEditor.allowedInTable) {
-      _handleLinkedCellEditor(widget.value);
-    }
   }
 
   void _doNothing(dynamic pNothing) {}
@@ -308,7 +307,6 @@ class _FlTableCellState extends State<FlTableCell> {
 
   /// Creates a normal text widget for the cell.
   Widget _createTextWidget() {
-    _setLinkedCellValue(widget.value);
     String cellText = cellEditor.formatValue(widget.value);
     TextStyle style = widget.model.createTextStyle();
 
@@ -342,24 +340,20 @@ class _FlTableCellState extends State<FlTableCell> {
     );
   }
 
-  void _handleLinkedCellEditor(dynamic value) {
+  void _setCellEditorValue(dynamic value) {
     if (cellEditor is FlLinkedCellEditor) {
-      _setLinkedCellValue(value);
+      cellEditor.setValue(
+        (
+          value,
+          IDataService()
+              .getDataBook(widget.model.dataProvider)!
+              .getRecord(pDataColumnNames: null, pRecordIndex: widget.rowIndex)
+              ?.values,
+        ),
+      );
     } else {
       cellEditor.setValue(value);
     }
-  }
-
-  void _setLinkedCellValue(value) {
-    cellEditor.setValue(
-      (
-        value,
-        IDataService()
-            .getDataBook(widget.model.dataProvider)!
-            .getRecord(pDataColumnNames: null, pRecordIndex: widget.rowIndex)
-            ?.values,
-      ),
-    );
   }
 
   List<Widget> _createCellIcons() {
