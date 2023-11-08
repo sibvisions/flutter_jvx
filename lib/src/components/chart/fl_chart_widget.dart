@@ -56,6 +56,23 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (model.title.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              FlutterUI.translate(model.title),
+              style: const TextStyle(fontSize: 24),
+            ),
+          ),
+        Expanded(child: _buildChart()),
+      ],
+    );
+  }
+
+  Widget _buildChart() {
     if (data.isEmpty) {
       return Center(child: Text(FlutterUI.translate("No data to display")));
     }
@@ -416,12 +433,107 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
 
   /// Builds pie charts.
   Widget _buildPieChart({bool showLegend = true}) {
+    if (model.yColumnNames.length == 1) {
+      return Padding(
+        padding: showLegend ? const EdgeInsets.only(bottom: _legendPadding) : EdgeInsets.zero,
+        child: Chart<Map<String, dynamic>>(
+          data: data,
+          rebuild: true,
+          variables: {
+            'X': Variable(
+              accessor: (e) => e['X'].toString(),
+            ),
+            'Y': Variable(
+              accessor: (e) => e['Y'] as num,
+            ),
+          },
+          transforms: [
+            Proportion(
+              variable: 'Y',
+              as: 'percent',
+            ),
+          ],
+          marks: [
+            IntervalMark(
+              position: Varset('percent') / Varset('X'),
+              label: LabelEncode(
+                encoder: (tuple) => Label(
+                  "${tuple['X']}: ${(tuple['percent'] * 100).round()}%",
+                  LabelStyle(
+                    align: Alignment.center,
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xe6ffffff),
+                    ),
+                  ),
+                ),
+              ),
+              color: ColorEncode(variable: 'X', values: FlChartWidget.colors),
+              modifiers: [StackModifier()],
+              // selectionStream: selectionStream,
+            ),
+          ],
+          coord: PolarCoord(
+            transposed: true,
+            dimCount: 1,
+            startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.80 : 0,
+          ),
+          // Selection broken, wrong Tooltip -> disabled
+          // selections: {
+          //   'select': PointSelection(
+          //     on: {
+          //       GestureType.tap,
+          //     },
+          //     clear: {
+          //       GestureType.doubleTap,
+          //     },
+          //   ),
+          // },
+          // tooltip: TooltipGuide(
+          //   multiTuples: true,
+          //   offset: const Offset(-20, -20),
+          //   align: Alignment.bottomRight,
+          // ),
+          // crosshair: CrosshairGuide(
+          //   followPointer: [true, true],
+          //   layer: 100,
+          //   selections: {
+          //     "touchMove",
+          //     "select",
+          //   },
+          // ),
+          annotations: showLegend
+              ? [
+                  if (model.yColumnNames.length > 1)
+                    for (int i = 0; i < model.yColumnNames.length; i++)
+                      ..._buildAnnotation(
+                        i,
+                        model.yColumnNames.length,
+                        model.yColumnLabels[i],
+                      ),
+                  if (model.yColumnNames.length == 1)
+                    for (int i = 0; i < data.length; i++)
+                      ..._buildAnnotation(
+                        i,
+                        data.length,
+                        data[i]['X'],
+                      ),
+                ]
+              : null,
+        ),
+      );
+    }
+
     return Padding(
       padding: showLegend ? const EdgeInsets.only(bottom: _legendPadding) : EdgeInsets.zero,
       child: Chart<Map<String, dynamic>>(
         data: data,
         rebuild: true,
         variables: {
+          // 'Category': Variable(
+          //   accessor: (e) => e['Category'] as String,
+          // ),
           'X': Variable(
             accessor: (e) => e['X'].toString(),
           ),
@@ -461,30 +573,75 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
           dimCount: 1,
           startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.80 : 0,
         ),
-        // Selection broken, wrong Tooltip -> disabled
-        // selections: {
-        //   'select': PointSelection(
-        //     on: {
-        //       GestureType.tap,
-        //     },
-        //     clear: {
-        //       GestureType.doubleTap,
-        //     },
-        //   ),
-        // },
-        // tooltip: TooltipGuide(
-        //   multiTuples: true,
-        //   offset: const Offset(-20, -20),
-        //   align: Alignment.bottomRight,
-        // ),
-        // crosshair: CrosshairGuide(
-        //   followPointer: [true, true],
-        //   layer: 100,
-        //   selections: {
-        //     "touchMove",
-        //     "select",
-        //   },
-        // ),
+        annotations: showLegend
+            ? [
+                if (model.yColumnNames.length > 1)
+                  for (int i = 0; i < model.yColumnNames.length; i++)
+                    ..._buildAnnotation(
+                      i,
+                      model.yColumnNames.length,
+                      model.yColumnLabels[i],
+                    ),
+                if (model.yColumnNames.length == 1)
+                  for (int i = 0; i < data.length; i++)
+                    ..._buildAnnotation(
+                      i,
+                      data.length,
+                      data[i]['X'],
+                    ),
+              ]
+            : null,
+      ),
+    );
+
+    return Padding(
+      padding: showLegend ? const EdgeInsets.only(bottom: _legendPadding) : EdgeInsets.zero,
+      child: Chart<Map<String, dynamic>>(
+        data: data,
+        rebuild: true,
+        variables: {
+          'X': Variable(
+            accessor: (e) => e['X'].toString(),
+          ),
+          for (String yColumnName in model.yColumnNames)
+            yColumnName: Variable(
+              accessor: (e) => e[yColumnName] as num,
+            ),
+        },
+        transforms: [
+          for (String yColumnName in model.yColumnNames)
+            Proportion(
+              variable: yColumnName,
+              as: 'percent_$yColumnName',
+            ),
+        ],
+        marks: [
+          for (String yColumnName in model.yColumnNames)
+            IntervalMark(
+              position: Varset('percent_$yColumnName') / Varset('X'),
+              label: LabelEncode(
+                encoder: (tuple) => Label(
+                  "$yColumnName: ${(tuple['percent_$yColumnName'] * 100).round()}%",
+                  LabelStyle(
+                    align: Alignment.center,
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xe6ffffff),
+                    ),
+                  ),
+                ),
+              ),
+              color: ColorEncode(variable: yColumnName, values: FlChartWidget.colors),
+              // modifiers: [StackModifier()],
+              // selectionStream: selectionStream,
+            ),
+        ],
+        coord: PolarCoord(
+          transposed: true,
+          dimCount: 1,
+          startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.80 : 0,
+        ),
         annotations: showLegend
             ? [
                 if (model.yColumnNames.length > 1)
@@ -509,6 +666,8 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
 
   List<Mark<Shape>> _createMark(int chartStyle, int layer, String yColumnName) {
     switch (chartStyle) {
+      case FlChartModel.STYLE_STEPLINES:
+      // StepLines not possible: https://github.com/entronad/graphic/issues/182
       case FlChartModel.STYLE_LINES:
         return _createLineMark(layer, yColumnName);
       case FlChartModel.STYLE_OVERLAPPEDBARS:
