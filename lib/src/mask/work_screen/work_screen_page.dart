@@ -271,8 +271,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               ),
             );
 
-            print("building screen: ${screenTitle ?? ""}");
-
             return Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: appBar,

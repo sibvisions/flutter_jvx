@@ -257,8 +257,7 @@ class UiService implements IUiService {
     // Clear the history of the screen we are going to so we don't jump back into the history.
     if (!kIsWeb) {
       FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
-        location.history
-            .removeWhere((element) => element.routeInformation.location?.endsWith(resolvedScreenName) ?? false);
+        location.history.removeWhere((element) => element.routeInformation.location.endsWith(resolvedScreenName));
       });
     }
 

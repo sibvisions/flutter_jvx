@@ -52,8 +52,8 @@ class DeleteScreenCommandProcessor extends ICommandProcessor<DeleteScreenCommand
         }
       } else if (!kIsWeb) {
         FlutterUI.getBeamerDelegate().beamingHistory.whereType<MainLocation>().forEach((location) {
-          location.history.removeWhere(
-              (element) => element.routeInformation.location?.endsWith(screenModel.screenNavigationName!) ?? false);
+          location.history
+              .removeWhere((element) => element.routeInformation.location.endsWith(screenModel.screenNavigationName!));
         });
       }
     }
