@@ -28,6 +28,9 @@ class DataChunk {
   /// Data map, key is the index of the data in the dataBook
   final Map<int, List<dynamic>> data;
 
+  /// Whether or not a data entry is read only.
+  final Map<int, List<bool>>? dataReadOnly;
+
   /// List of all column definitions, order is the same as the columnNames requested in [DataSubscription],
   /// if left empty - will contain all columns
   final List<ColumnDefinition> columnDefinitions;
@@ -50,6 +53,7 @@ class DataChunk {
     required this.isAllFetched,
     required this.columnDefinitions,
     required this.from,
+    this.dataReadOnly,
     this.recordFormats,
   });
 

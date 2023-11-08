@@ -581,12 +581,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   Future<void> _onSingleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) async {
     if (IStorageService().isVisibleInUI(model.id)) {
       if (!pCellEditor.allowedInTable &&
-          isRowEditable(pRowIndex) &&
+          isCellEditable(pRowIndex, pColumnName) &&
           pCellEditor.model.preferredEditorMode == ICellEditorModel.SINGLE_CLICK) {
         _showDialog(
           rowIndex: pRowIndex,
           columnDefinitions: [pCellEditor.columnDefinition!],
           values: {pCellEditor.columnDefinition!.name: dataChunk.getValue(pColumnName, pRowIndex)},
+          dataRow: dataChunk.data[pRowIndex],
           onEndEditing: _setValueEnd,
           newValueNotifier: dialogValueNotifier,
         );
@@ -597,7 +598,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   Future<void> _onDoubleTap(int pRowIndex, String pColumnName, ICellEditor pCellEditor) async {
     if (IStorageService().isVisibleInUI(model.id)) {
       if (!pCellEditor.allowedInTable &&
-          isRowEditable(pRowIndex) &&
+          isCellEditable(pRowIndex, pColumnName) &&
           pCellEditor.model.preferredEditorMode == ICellEditorModel.DOUBLE_CLICK) {
         _showDialog(
           rowIndex: pRowIndex,
@@ -626,7 +627,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.sort, "Sort", TableContextMenuItem.SORT));
     }
 
-    if (isRowEditable(pRowIndex)) {
+    if (isAnyCellInRowEditable(pRowIndex)) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.penToSquare, "Edit", TableContextMenuItem.EDIT));
     }
 
@@ -1014,9 +1015,12 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void _editRow(int pRowIndex) {
-    List<ColumnDefinition> columnsToShow = tableSize.columnWidths.keys
-        .map((e) => dataChunk.columnDefinitions.firstWhere((element) => element.name == e))
-        .toList();
+    if (!isAnyCellInRowEditable(pRowIndex)) {
+      return;
+    }
+
+    List<ColumnDefinition> columnsToShow =
+        getColumnsToShow().where((column) => isCellEditable(pRowIndex, column.name)).toList();
 
     Map<String, dynamic> values = {};
     for (ColumnDefinition colDef in columnsToShow) {
@@ -1027,16 +1031,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pRowIndex,
       null,
       pAfterSelect: () {
-        if (IStorageService().isVisibleInUI(model.id)) {
-          if (_metaDataUpdateAllowed && model.editable) {
-            _showDialog(
-              rowIndex: pRowIndex,
-              columnDefinitions: columnsToShow,
-              values: values,
-              onEndEditing: _setValueEnd,
-              newValueNotifier: dialogValueNotifier,
-            );
-          }
+        if (IStorageService().isVisibleInUI(model.id) && _metaDataUpdateAllowed && model.editable) {
+          _showDialog(
+            rowIndex: pRowIndex,
+            columnDefinitions: columnsToShow,
+            values: values,
+            onEndEditing: _setValueEnd,
+            newValueNotifier: dialogValueNotifier,
+          );
         }
         return [];
       },
@@ -1046,7 +1048,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   List<SlidableAction> createSlideActions(int pRowIndex) {
     List<SlidableAction> slideActions = [];
 
-    if (isRowEditable(pRowIndex)) {
+    if (isAnyCellInRowEditable(pRowIndex)) {
       slideActions.add(
         SlidableAction(
           onPressed: (context) {
@@ -1164,6 +1166,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
         isDataRow(pRowIndex) &&
         (_metaDataUpdateAllowed || pRowIndex != selectedRow) &&
         !metaData.readOnly;
+  }
+
+  bool isCellEditable(int pRowIndex, String pColumn) {
+    return isRowEditable(pRowIndex) &&
+        !(dataChunk.dataReadOnly?[pRowIndex]?[dataChunk.getColumnIndex(pColumn)] ?? false);
+  }
+
+  bool isAnyCellInRowEditable(int pRowIndex) {
+    return isRowEditable(pRowIndex) && getColumnsToShow().any((column) => isCellEditable(pRowIndex, column.name));
+  }
+
+  List<ColumnDefinition> getColumnsToShow() {
+    return dataChunk.columnDefinitions.where((element) => tableSize.columnWidths.containsKey(element.name)).toList();
   }
 }
 

@@ -93,6 +93,9 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
   /// If this column is selected.
   final bool isSelected;
 
+  /// If this cell is read only.
+  final bool readOnly;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,6 +116,7 @@ class FlTableCell extends FlStatefulWidget<FlTableModel> {
     required this.cellDividerWidth,
     this.cellFormat,
     this.isSelected = false,
+    this.readOnly = false,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -302,7 +306,7 @@ class _FlTableCellState extends State<FlTableCell> {
     Widget tableWidget = cellEditor.createWidget(widget.model.json);
 
     return AbsorbPointer(
-      absorbing: !widget.model.isEnabled || !widget.model.editable,
+      absorbing: !widget.model.isEnabled || !widget.model.editable || widget.readOnly,
       child: tableWidget,
     );
   }

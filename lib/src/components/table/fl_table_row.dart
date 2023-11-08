@@ -69,6 +69,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
   /// Which slide actions are to be allowed to the row.
   final TableSlideActionFactory? slideActionFactory;
 
+  /// Whether or not specific entries are read only.
+  final List<bool>? recordReadOnly;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,6 +91,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     required this.isSelected,
     this.recordFormats,
     this.selectedColumn,
+    this.recordReadOnly,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,6 +123,7 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
         paddings: tableSize.cellPaddings,
         cellDividerWidth: tableSize.columnDividerWidth,
         value: values[columnDefinitions.indexOf(columnDefinition)],
+        readOnly: recordReadOnly?[columnDefinitions.indexOf(columnDefinition)] ?? false,
         rowIndex: index,
         cellIndex: cellIndex,
         cellFormat: recordFormats?.getCellFormat(index, columnDefinitions.indexOf(columnDefinition)),

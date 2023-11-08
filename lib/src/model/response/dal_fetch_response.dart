@@ -52,6 +52,9 @@ class DalFetchResponse extends ApiResponse {
   /// Fetched records
   final List<List<dynamic>> records;
 
+  /// Saves which records are read only and which are not.
+  final List<List<dynamic>>? recordReadOnly;
+
   /// Clear data before filling
   final bool clear;
 
@@ -79,6 +82,7 @@ class DalFetchResponse extends ApiResponse {
     required this.columnNames,
     required this.to,
     required this.records,
+    required this.recordReadOnly,
     this.masterRow,
     this.clear = false,
     this.recordFormats,
@@ -101,9 +105,11 @@ class DalFetchResponse extends ApiResponse {
         dataProvider = json[ApiObjectProperty.dataProvider],
         clear = json[ApiObjectProperty.clear] ?? false,
         recordFormats = json[ApiObjectProperty.recordFormat] != null
-            ? Map.fromIterable((json[ApiObjectProperty.recordFormat] as Map<String, dynamic>).keys,
-                value: (key) =>
-                    RecordFormat.fromJson(json[ApiObjectProperty.recordFormat]![key], json[ApiObjectProperty.from]))
+            ? (json[ApiObjectProperty.recordFormat] as Map<String, dynamic>).map((componentName, recordFormatJson) =>
+                MapEntry(componentName, RecordFormat.fromJson(recordFormatJson, json[ApiObjectProperty.from])))
+            : null,
+        recordReadOnly = json[ApiObjectProperty.recordReadOnly] != null
+            ? List.from(json[ApiObjectProperty.recordReadOnly][ApiObjectProperty.records])
             : null,
         sortDefinitions =
             (json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList(),
@@ -111,6 +117,7 @@ class DalFetchResponse extends ApiResponse {
         super.fromJson();
 }
 
+/// A RecordFormat represents the cell formats of all records inside a specific component.
 class RecordFormat {
   Map<int, RowFormat> rowFormats = {};
 

@@ -307,6 +307,7 @@ class DataService implements IDataService {
       columnDefinitions: columnDefinitions,
       from: pFrom,
       recordFormats: dataBook.recordFormats,
+      dataReadOnly: dataBook.recordReadOnly,
     );
   }
 

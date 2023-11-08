@@ -286,6 +286,7 @@ abstract class ApiObjectProperty {
   static const String primaryKeyColumns = "primaryKeyColumns";
   static const String clear = "clear";
   static const String recordFormat = "recordFormat";
+  static const String recordReadOnly = "recordReadOnly";
   static const String format = "format";
   static const String masterRow = "masterRow";
 

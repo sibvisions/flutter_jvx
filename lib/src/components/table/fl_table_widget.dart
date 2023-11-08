@@ -306,6 +306,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
       tableSize: widget.tableSize,
       values: widget.chunkData.data[index]!,
       recordFormats: widget.chunkData.recordFormats?[widget.model.name],
+      recordReadOnly: widget.chunkData.dataReadOnly?[index],
       index: index,
       isSelected: index == widget.selectedRowIndex,
       selectedColumn: widget.selectedColumn,

@@ -16,17 +16,17 @@
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_jvx/src/flutter_ui.dart';
-import 'package:flutter_jvx/src/routing/locations/main_location.dart';
-import 'package:flutter_jvx/src/service/command/i_command_service.dart';
 
 import '../../custom/custom_screen.dart';
+import '../../flutter_ui.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
+import '../../routing/locations/main_location.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../frame/frame.dart';

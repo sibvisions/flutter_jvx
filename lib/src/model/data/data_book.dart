@@ -46,6 +46,16 @@ import 'subscriptions/data_subscription.dart';
 /// Holds all data and column definitions of a data provider
 class DataBook {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The int value for readonly records in recordReadOnly.
+  static const int RECORD_READONLY = 0;
+
+  /// The int value for editable records in recordReadOnly.
+  static const int RECORD_EDITABLE = 1;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -53,10 +63,13 @@ class DataBook {
   String dataProvider;
 
   /// All fetched records of this databook with specific page names.
-  HashMap<String, HashMap<int, List<dynamic>>> pageRecords;
+  Map<String, Map<int, List<dynamic>>> pageRecords;
 
   /// All fetched records of this dataBook
-  HashMap<int, List<dynamic>> records;
+  Map<int, List<dynamic>> records;
+
+  /// All fetched records of this dataBook
+  Map<int, List<bool>> recordReadOnly;
 
   /// If this dataBook has already fetched all possible data
   bool isAllFetched;
@@ -92,14 +105,16 @@ class DataBook {
   /// Creates a [DataBook]
   DataBook({
     required this.dataProvider,
-    HashMap<int, List<dynamic>>? records,
+    Map<int, List<dynamic>>? records,
     this.isAllFetched = false,
     this.selectedRow = -1,
     Map<String, RecordFormat>? recordFormats,
-    HashMap<String, HashMap<int, List<dynamic>>>? pageRecords,
+    Map<String, Map<int, List<dynamic>>>? pageRecords,
+    Map<int, List<bool>>? recordReadOnly,
   })  : records = records ?? HashMap(),
         pageRecords = pageRecords ?? HashMap(),
-        recordFormats = recordFormats ?? HashMap();
+        recordFormats = recordFormats ?? HashMap(),
+        recordReadOnly = recordReadOnly ?? HashMap();
 
   @override
   String toString() {
@@ -113,28 +128,8 @@ class DataBook {
   /// Saves all data from a fetchRequest
   void saveFromFetch({required SaveFetchDataCommand pCommand}) {
     var pFetchResponse = pCommand.response;
-    dataProvider = pFetchResponse.dataProvider;
 
-    if (pCommand.requestFilter.isEmpty) {
-      isAllFetched = pFetchResponse.isAllFetched;
-      selectedRow = pFetchResponse.selectedRow;
-      if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
-        selectedColumn = pFetchResponse.selectedColumn;
-      }
-      treePath = pFetchResponse.treePath;
-      if (pFetchResponse.recordFormats != null) {
-        for (String key in pFetchResponse.recordFormats!.keys) {
-          var newRecordFormat = pFetchResponse.recordFormats![key]!;
-          var recordFormat = recordFormats[key] ??= RecordFormat();
-          for (int rowIndex in pFetchResponse.recordFormats![key]!.rowFormats.keys) {
-            recordFormat.rowFormats[rowIndex] = newRecordFormat.rowFormats[rowIndex]!;
-          }
-        }
-      }
-      updateSortDefinitions(pFetchResponse.sortDefinitions);
-    }
-
-    HashMap<int, List> dataMap;
+    Map<int, List> dataMap;
     String? pageKey;
     if (metaData?.masterReference == null) {
       dataMap = records;
@@ -175,6 +170,42 @@ class DataBook {
       dataMap.removeWhere((key, value) => key > pFetchResponse.to);
       if (pFetchResponse.records.isEmpty) {
         dataMap.remove(0);
+      }
+    }
+
+    if (pCommand.requestFilter.isEmpty) {
+      isAllFetched = pFetchResponse.isAllFetched;
+      selectedRow = pFetchResponse.selectedRow;
+      if (pFetchResponse.json.containsKey(ApiObjectProperty.selectedColumn)) {
+        selectedColumn = pFetchResponse.selectedColumn;
+      }
+      treePath = pFetchResponse.treePath;
+
+      if (pFetchResponse.recordFormats != null) {
+        for (String key in pFetchResponse.recordFormats!.keys) {
+          var newRecordFormat = pFetchResponse.recordFormats![key]!;
+          var recordFormat = recordFormats[key] ??= RecordFormat();
+          for (int rowIndex in pFetchResponse.recordFormats![key]!.rowFormats.keys) {
+            recordFormat.rowFormats[rowIndex] = newRecordFormat.rowFormats[rowIndex]!;
+          }
+        }
+      }
+
+      updateSortDefinitions(pFetchResponse.sortDefinitions);
+
+      if (pFetchResponse.recordReadOnly != null) {
+        pFetchResponse.recordReadOnly!.forEachIndexed(
+          (index, element) {
+            List<bool> readOnlyList = element.map((e) => e == RECORD_READONLY).toList();
+
+            // length -1 -> Last column of the values is no "column", it is the state of the row.
+            for (int i = readOnlyList.length; i < (dataMap.values.first.length - 1); i++) {
+              readOnlyList.add(readOnlyList.last);
+            }
+
+            recordReadOnly[pFetchResponse.from + index] = readOnlyList;
+          },
+        );
       }
     }
 
@@ -301,7 +332,7 @@ class DataBook {
     List<dynamic> data = [];
     int indexOfColumn = metaData?.columnDefinitions.indexWhere((element) => element.name == pColumnName) ?? -1;
 
-    HashMap<int, List<dynamic>> dataMap = pPageKey != null ? (pageRecords[pPageKey] ?? HashMap()) : records;
+    Map<int, List<dynamic>> dataMap = pPageKey != null ? (pageRecords[pPageKey] ?? HashMap()) : records;
     pTo = min(pTo ?? dataMap.length, dataMap.length);
     for (int i = pFrom; i < pTo; i++) {
       var a = dataMap[i];
