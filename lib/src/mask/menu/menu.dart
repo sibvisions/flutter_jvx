@@ -14,10 +14,16 @@
  * the License.
  */
 
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_jvx/src/flutter_ui.dart';
+import 'package:flutter_jvx/src/routing/locations/main_location.dart';
+import 'package:flutter_jvx/src/service/command/i_command_service.dart';
 
+import '../../custom/custom_screen.dart';
 import '../../model/command/api/close_screen_command.dart';
-import '../../model/command/ui/route/route_to_work_command.dart';
+import '../../model/command/api/open_screen_command.dart';
+import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
@@ -126,7 +132,32 @@ abstract class Menu extends StatelessWidget {
   static void menuItemPressed(BuildContext context, {required MenuItemModel item}) {
     // Always close drawer even on route (Flutter Bug sometimes breaks routing with open drawer)
     Scaffold.maybeOf(context)?.closeEndDrawer();
-    IUiService().sendCommand(RouteToWorkCommand(screenName: item.navigationName, reason: "Menu item pressed"));
+
+    var lastBeamState = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
+    // Don't route if we are already there (can create history duplicates when using query parameters; e.g. in deep links)
+    if (lastBeamState.pathParameters[MainLocation.screenNameKey] == item.navigationName) {
+      return;
+    }
+
+    FlPanelModel? model = IStorageService().getComponentByScreenClassName(pScreenClassName: item.screenLongName);
+    CustomScreen? customScreen = IUiService().getCustomScreen(item.screenLongName);
+
+    if (customScreen != null && !customScreen.sendOpenScreenRequests) {
+      return;
+    }
+
+    BaseCommand commandToSend;
+    if (model != null) {
+      // TODO activateScreenCommand
+      commandToSend = OpenScreenCommand(reason: "menu item clicked", screenLongName: item.screenLongName);
+    } else {
+      commandToSend = OpenScreenCommand(reason: "menu item clicked", screenLongName: item.screenLongName);
+    }
+
+    ICommandService()
+        .sendCommand(commandToSend)
+        .then((value) => IUiService().routeToWorkScreen(pScreenName: item.navigationName))
+        .catchError(IUiService().handleAsyncError);
   }
 
   /// Returns the action function based on the [item] parameter.
