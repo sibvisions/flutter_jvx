@@ -131,25 +131,27 @@ abstract class Menu extends StatelessWidget {
 
   /// Returns the action function based on the [item] parameter.
   static MenuItemCallback? getCloseScreenAction(MenuItemModel item) {
-    return IStorageService().getComponentByNavigationName(item.navigationName) != null
-        ? (BuildContext context, {required MenuItemModel item}) async {
-            // Always close drawer as this can prevent the navigator from correctly updating the screen.
-            // https://github.com/sibvisions/flutter_jvx/issues/145
-            Scaffold.maybeOf(context)?.closeEndDrawer();
+    if (IStorageService().getComponentByNavigationName(item.navigationName) != null) {
+      return (BuildContext context, {required MenuItemModel item}) async {
+        // Always close drawer as this can prevent the navigator from correctly updating the screen.
+        // https://github.com/sibvisions/flutter_jvx/issues/145
+        Scaffold.maybeOf(context)?.closeEndDrawer();
 
-            FlPanelModel? workscreenModel = IStorageService().getComponentByNavigationName(item.navigationName);
-            if (workscreenModel != null) {
-              await IUiService()
-                  .sendCommand(
-                    CloseScreenCommand(
-                      screenName: workscreenModel.name,
-                      reason: "User requested screen closing",
-                    ),
-                  )
-                  .then((value) => Frame.of(context).rebuild());
-            }
-          }
-        : null;
+        FlPanelModel? workscreenModel = IStorageService().getComponentByNavigationName(item.navigationName);
+        if (workscreenModel != null) {
+          await IUiService()
+              .sendCommand(
+                CloseScreenCommand(
+                  screenName: workscreenModel.name,
+                  reason: "User requested screen closing",
+                ),
+              )
+              .then((value) => Frame.of(context).rebuild());
+        }
+      };
+    }
+
+    return null;
   }
 }
 
