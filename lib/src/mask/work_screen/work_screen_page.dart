@@ -122,7 +122,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   bool isNavigating = false;
   bool isForced = false;
 
-  bool sentScreen = false;
+  bool sentScreenSizeForLayout = false;
 
   MenuItemModel? item;
   Future<void>? future;
@@ -138,18 +138,18 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
     item = IUiService().getMenuItem(widget.screenName);
     if (item != null) {
-      String className = IStorageService().convertLongScreenToClassName(item!.screenLongName);
-
       model = IStorageService().getComponentByScreenClassName(pScreenClassName: item!.screenLongName);
       customScreen = IUiService().getCustomScreen(item!.screenLongName);
+
+      String className = model?.screenClassName ?? IStorageService().convertLongScreenToClassName(item!.screenLongName);
 
       // Listen to new models with the same class names (needed for work screen reload, model id changes)
       IUiService().registerModelSubscription(ModelSubscription(
         subbedObj: this,
-        check: (model) => model is FlPanelModel && model.screenClassName == className,
-        onNewModel: (model) {
-          if (model.id != this.model?.id) {
-            this.model = model as FlPanelModel?;
+        check: (newModel) => newModel is FlPanelModel && newModel.screenClassName == className,
+        onNewModel: (newModel) {
+          if (newModel.id != model?.id) {
+            model = newModel as FlPanelModel;
             FlutterUI.logUI.d("Received new model for className: $className");
             rebuild();
           }
@@ -207,14 +207,14 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
     Navigator.of(FlutterUI.getCurrentContext()!).popUntil((route) => route is! PopupRoute);
 
-    sentScreen = false;
+    sentScreenSizeForLayout = false;
     setState(() {});
   }
 
   @override
   void didUpdateWidget(covariant WorkScreenPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    sentScreen = false;
+    sentScreenSizeForLayout = false;
   }
 
   @override
@@ -311,10 +311,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       item: item!,
       screen: builtScreen,
       updateSize: (size) {
-        if (!sentScreen) {
+        if (!sentScreenSizeForLayout) {
           // Trigger update synchronously for layout.
           _setScreenSize(size);
-          sentScreen = true;
+          sentScreenSizeForLayout = true;
         } else {
           subject.add(size);
         }
