@@ -185,7 +185,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
         return ICommandService().sendCommand(OpenScreenCommand(
           screenLongName: item!.screenLongName,
-          reason: "Screen was opened",
+          reason: "Screen was opened inside $runtimeType",
         ));
       }
     }).catchError((e, stack) {
