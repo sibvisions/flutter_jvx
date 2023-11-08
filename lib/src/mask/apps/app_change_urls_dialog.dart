@@ -21,8 +21,6 @@ class AppChangeUrlsDialog extends StatefulWidget {
 class _AppChangeUrlsDialogState extends State<AppChangeUrlsDialog> {
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-
     return AlertDialog(
       title: Text(FlutterUI.translateLocal("Change other apps?")),
       clipBehavior: Clip.hardEdge,
