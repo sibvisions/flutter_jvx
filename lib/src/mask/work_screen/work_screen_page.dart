@@ -177,17 +177,16 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   void _init() {
-    future = () async {
+    future = Future(() {
       // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
       if (model == null &&
           (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
-        await ICommandService().sendCommand(OpenScreenCommand(
+        return ICommandService().sendCommand(OpenScreenCommand(
           screenLongName: item!.screenLongName,
           reason: "Screen was opened",
         ));
       }
-    }()
-        .catchError((e, stack) {
+    }).catchError((e, stack) {
       FlutterUI.log.e("Open screen failed", error: e, stackTrace: stack);
       if (e is ErrorViewException) {
         // Server failed to open this screen, beam back to old location.
@@ -322,7 +321,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       body = const ErrorScreen(
         message: "Screen not found.",
       );
-    } else if (item == null) {
+    } else if (item?.screenLongName == null || (model == null && customScreen == null)) {
       // should route back on next frame; Don't visualize anything;
       body = const SizedBox.expand();
     } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
