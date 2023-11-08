@@ -161,8 +161,10 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       future = Future.error("No menu item model found for this workscreen!");
 
       // _onBack() needs a usable context.
+      // Wait for popup menu close, mitigates navigator update bug:
+      // https://github.com/flutter/flutter/issues/82437
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        _onBack();
+        Future.delayed(const Duration(milliseconds: 350)).then((_) => _onBack());
       });
     }
   }
@@ -190,10 +192,14 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       FlutterUI.log.e("Open screen failed", error: e, stackTrace: stack);
       if (e is ErrorViewException) {
         // Server failed to open this screen, beam back to old location.
-        context.beamBack();
+        // Wait for popup menu close, mitigates navigator update bug:
+        // https://github.com/flutter/flutter/issues/82437
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Future.delayed(const Duration(milliseconds: 350)).then((_) => _onBack());
+        });
       }
       throw e;
-    });
+    }).catchError(IUiService().handleAsyncError);
   }
 
   void rebuild() {
@@ -264,6 +270,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
                 ),
               ),
             );
+
+            print("building screen: ${screenTitle ?? ""}");
 
             return Scaffold(
               resizeToAvoidBottomInset: false,
