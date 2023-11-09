@@ -82,7 +82,7 @@ class DalFetchResponse extends ApiResponse {
     required this.columnNames,
     required this.to,
     required this.records,
-    required this.recordReadOnly,
+    this.recordReadOnly,
     this.masterRow,
     this.clear = false,
     this.recordFormats,
