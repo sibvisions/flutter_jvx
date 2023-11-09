@@ -114,12 +114,14 @@ class TableSize {
         pTableModel: tableModel, pMetaData: metaData, pAvailableWidth: availableWidth, pDataChunk: dataChunk);
   }
 
+  /// The width every column would like to have. Does not include the Border!
   double get calculatedWidth {
-    return calculatedColumnWidths.values.sum + (borderWidth * 2);
+    return calculatedColumnWidths.values.sum;
   }
 
+  /// The width every column actually gets allotted. Does not include the Border!
   double get width {
-    return columnWidths.values.sum + (borderWidth * 2);
+    return columnWidths.values.sum;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

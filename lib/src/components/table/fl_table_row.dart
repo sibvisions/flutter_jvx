@@ -108,7 +108,9 @@ class FlTableRow extends FlStatelessWidget<FlTableModel> {
     int cellIndex = -1;
 
     double rowWidth = 0.0;
-    List<Widget> rowWidgets = columnsToShow.map((columnDefinition) {
+    List<Widget> rowWidgets = columnsToShow
+        .where((columnDefinition) => tableSize.columnWidths[columnDefinition.name]! > 0.0)
+        .map((columnDefinition) {
       cellIndex += 1;
       rowWidth += tableSize.columnWidths[columnDefinition.name]!;
 

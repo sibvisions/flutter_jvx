@@ -295,7 +295,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   @override
   Size calculateSize(BuildContext context) {
     return Size(
-      tableSize.calculatedWidth,
+      tableSize.calculatedWidth + (tableSize.borderWidth * 2),
       tableSize.tableHeaderHeight + (tableSize.borderWidth * 2) + (tableSize.rowHeight * dataChunk.data.length),
     );
   }
