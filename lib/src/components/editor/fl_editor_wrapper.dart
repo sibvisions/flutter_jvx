@@ -346,7 +346,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   Future<BaseCommand?> createSaveCommand() async {
-    if (metaData == null || !metaData!.updateEnabled) {
+    if (!model.isEnabled || metaData == null || !metaData!.updateEnabled) {
       return null;
     }
 
