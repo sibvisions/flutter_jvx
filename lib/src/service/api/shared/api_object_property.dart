@@ -244,6 +244,7 @@ abstract class ApiObjectProperty {
   static const String width = "width";
   static const String height = "height";
   static const String readOnly = "readOnly";
+  static const String forcedStateless = "forcedStateless";
   static const String nullable = "nullable";
   static const String resizable = "resizable";
   static const String closable = "closable";

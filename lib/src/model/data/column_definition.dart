@@ -70,6 +70,11 @@ class ColumnDefinition {
   /// The cell editor of this column.
   ICellEditorModel cellEditorModel;
 
+  /// If the column can be edited inside a table while ignoring updateEnabled and the readOnly property of the metadata.
+  /// Also ignores the editable property of the table.
+  /// Does NOT! ignore it's own readOnly property.
+  bool forcedStateless = false;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Datatype specific information
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,6 +124,7 @@ class ColumnDefinition {
         dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? Types.VARCHAR,
         width = (json[ApiObjectProperty.width] ?? 0) != 0 ? (json[ApiObjectProperty.width] as int).toDouble() : null,
         readOnly = json[ApiObjectProperty.readOnly] ?? false,
+        forcedStateless = json[ApiObjectProperty.forcedStateless] ?? false,
         nullable = json[ApiObjectProperty.nullable] ?? true,
         resizable = json[ApiObjectProperty.resizable] ?? true,
         sortable = json[ApiObjectProperty.sortable] ?? false,
@@ -143,6 +149,7 @@ class ColumnDefinition {
       ApiObjectProperty.width: width,
       ApiObjectProperty.readOnly: readOnly,
       ApiObjectProperty.nullable: nullable,
+      ApiObjectProperty.forcedStateless: forcedStateless,
       ApiObjectProperty.resizable: resizable,
       ApiObjectProperty.sortable: sortable,
       ApiObjectProperty.movable: movable,

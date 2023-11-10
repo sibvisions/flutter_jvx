@@ -62,6 +62,10 @@ class DataChunk {
     return DataBook.getColumnIndex(columnDefinitions, columnName);
   }
 
+  ColumnDefinition getColumn(String columnName) {
+    return columnDefinitions[getColumnIndex(columnName)];
+  }
+
   dynamic getValue(String columnName, int rowIndex) {
     return data[rowIndex]?[getColumnIndex(columnName)];
   }
