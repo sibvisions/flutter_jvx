@@ -17,10 +17,36 @@
 import '../column_definition.dart';
 import '../data_book.dart';
 
+enum RecordStatus {
+  INSERTED,
+  UPDATED,
+  NONE;
+
+  static parseRecordStatus(List<dynamic>? values) {
+    if (values == null || values.isEmpty || values.last == null) {
+      return NONE;
+    }
+
+    String recordStatus = values.last.toString();
+
+    switch (recordStatus) {
+      case "I":
+        return INSERTED;
+      case "U":
+        return UPDATED;
+      default:
+        return NONE;
+    }
+  }
+}
+
 class DataRecord {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The record status of this row.
+  RecordStatus get recordStatus => RecordStatus.parseRecordStatus(values);
 
   /// Index of this row in the dataProvider
   final int index;

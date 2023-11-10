@@ -18,6 +18,7 @@ import '../../../service/data/i_data_service.dart';
 import '../../response/record_format.dart';
 import '../column_definition.dart';
 import '../data_book.dart';
+import 'data_record.dart';
 
 /// Used as return value when getting subscriptions data from [IDataService]
 class DataChunk {
@@ -65,7 +66,6 @@ class DataChunk {
     return data[rowIndex]?[getColumnIndex(columnName)];
   }
 
-  List<dynamic> getValues(String columnName) {
-    return data.values.map((value) => value[getColumnIndex(columnName)]).toList();
-  }
+  /// The record status of this row.
+  RecordStatus getRecordStatus(pRowIndex) => RecordStatus.parseRecordStatus(data[pRowIndex]);
 }
