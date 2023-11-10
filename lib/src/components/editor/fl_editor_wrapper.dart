@@ -80,6 +80,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   /// The onChangeTimer that is used to send the value to the server if saving [savingImmediate] is true.
   Timer? onChangeTimer;
 
+  DalMetaData? metaData;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -245,8 +247,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   void receiveMetaData(DalMetaData pMetaData) {
+    metaData = pMetaData;
     ColumnDefinition? newColDef =
-        pMetaData.columnDefinitions.firstWhereOrNull((element) => element.name == model.columnName);
+        metaData!.columnDefinitions.firstWhereOrNull((element) => element.name == model.columnName);
     cellEditor.setColumnDefinition(newColDef);
     setState(() {});
   }
@@ -343,11 +346,16 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   Future<BaseCommand?> createSaveCommand() async {
+    if (metaData == null || !metaData!.updateEnabled) {
+      return null;
+    }
+
     dynamic value = await cellEditor.getValue();
     // cellEditor.formatValue(pValue)
     if (_isSameValue(value)) {
       return null;
     }
+
     return SetValuesCommand(
       dataProvider: model.dataProvider,
       editorColumnName: model.columnName,
