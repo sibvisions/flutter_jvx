@@ -18,6 +18,7 @@ import '../../flutter_ui.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../data/sort_definition.dart';
 import 'api_response.dart';
+import 'record_format.dart';
 
 class DalDataProviderChangedResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,6 +69,12 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// The changed sort definitions
   final List<SortDefinition>? sortDefinitions;
 
+  /// The cell formats for this dataprovider.
+  final Map<String, RecordFormat>? recordFormats;
+
+  /// Saves which records are read only and which are not.
+  final List<List<dynamic>>? recordReadOnly;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,6 +94,13 @@ class DalDataProviderChangedResponse extends ApiResponse {
         updateEnabled = json[ApiObjectProperty.updateEnabled],
         treePath = cast<List<int>?>(json[ApiObjectProperty.treePath]),
         selectedColumn = json[ApiObjectProperty.selectedColumn],
+        recordFormats = json[ApiObjectProperty.recordFormat] != null
+            ? (json[ApiObjectProperty.recordFormat] as Map<String, dynamic>).map((componentName, recordFormatJson) =>
+                MapEntry(componentName, RecordFormat.fromJson(recordFormatJson, 0)))
+            : null,
+        recordReadOnly = json[ApiObjectProperty.recordReadOnly] != null
+            ? List.from(json[ApiObjectProperty.recordReadOnly][ApiObjectProperty.records])
+            : null,
         sortDefinitions =
             (json[ApiObjectProperty.sortDefinition] as List<dynamic>?)?.map((e) => SortDefinition.fromJson(e)).toList(),
         super.fromJson();

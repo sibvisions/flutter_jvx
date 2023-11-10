@@ -1155,22 +1155,29 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return model.isEnabled &&
         isDataRow(pRowIndex) &&
         model.deleteEnabled &&
-        (_metaDataDeleteEnabled || pRowIndex != selectedRow) &&
+        _metaDataDeleteEnabled &&
         (!metaData.additionalRowVisible || pRowIndex != 0) &&
         !metaData.readOnly;
   }
 
   bool isRowEditable(int pRowIndex) {
-    return model.isEnabled &&
-        model.editable &&
-        isDataRow(pRowIndex) &&
-        (_metaDataUpdateAllowed || pRowIndex != selectedRow) &&
-        !metaData.readOnly;
+    return model.isEnabled && isDataRow(pRowIndex) && model.editable && _metaDataUpdateAllowed && !metaData.readOnly;
   }
 
   bool isCellEditable(int pRowIndex, String pColumn) {
-    return isRowEditable(pRowIndex) &&
-        !(dataChunk.dataReadOnly?[pRowIndex]?[dataChunk.getColumnIndex(pColumn)] ?? false);
+    if (!isRowEditable(pRowIndex)) {
+      return false;
+    }
+
+    if (dataChunk.columnDefinitions[dataChunk.getColumnIndex(pColumn)].readOnly) {
+      return false;
+    }
+
+    if (dataChunk.dataReadOnly?[pRowIndex]?[dataChunk.getColumnIndex(pColumn)] ?? false) {
+      return false;
+    }
+
+    return true;
   }
 
   bool isAnyCellInRowEditable(int pRowIndex) {

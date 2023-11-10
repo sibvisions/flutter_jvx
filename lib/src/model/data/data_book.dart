@@ -225,6 +225,33 @@ class DataBook {
       changed = updateSortDefinitions(pChangedResponse.sortDefinitions);
     }
 
+    if (pChangedResponse.recordReadOnly != null) {
+      pChangedResponse.recordReadOnly!.forEachIndexed(
+        (index, element) {
+          List<bool> readOnlyList = element.map((e) => e == RECORD_READONLY).toList();
+
+          // length -1 -> Last column of the values is no "column", it is the state of the row.
+          for (int i = readOnlyList.length; i < (records.values.first.length - 1); i++) {
+            readOnlyList.add(readOnlyList.last);
+          }
+
+          recordReadOnly[index] = readOnlyList;
+        },
+      );
+      changed = true;
+    }
+
+    if (pChangedResponse.recordFormats != null) {
+      for (String key in pChangedResponse.recordFormats!.keys) {
+        var newRecordFormat = pChangedResponse.recordFormats![key]!;
+        var recordFormat = recordFormats[key] ??= RecordFormat();
+        for (int rowIndex in pChangedResponse.recordFormats![key]!.rowFormats.keys) {
+          recordFormat.rowFormats[rowIndex] = newRecordFormat.rowFormats[rowIndex]!;
+        }
+      }
+      changed = true;
+    }
+
     if (pChangedResponse.changedColumnNames == null ||
         pChangedResponse.changedValues == null ||
         pChangedResponse.selectedRow == null) {
