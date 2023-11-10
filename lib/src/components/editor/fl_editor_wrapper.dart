@@ -229,17 +229,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void setValue(DataRecord? pDataRecord) {
     var oldValue = _currentValue;
     if (pDataRecord != null && pDataRecord.values.isNotEmpty && pDataRecord.columnDefinitions.isNotEmpty) {
-      var newValue = pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)];
-      if (isLinkedEditor()) {
-        _currentValue = (newValue, pDataRecord.values);
-      } else {
-        _currentValue = newValue;
-      }
+      _currentValue = pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)];
     } else {
       _currentValue = null;
     }
+
     if (oldValue != _currentValue) {
-      cellEditor.setValue(_currentValue);
+      if (isLinkedEditor() && _currentValue != null) {
+        cellEditor.setValue((_currentValue, pDataRecord!.values));
+      } else {
+        cellEditor.setValue(_currentValue);
+      }
       setState(() {});
     }
   }
