@@ -118,7 +118,7 @@ class ColumnDefinition {
         label = json[ApiObjectProperty.label] ?? "",
         dataTypeIdentifier = json[ApiObjectProperty.dataTypeIdentifier] ?? Types.VARCHAR,
         width = (json[ApiObjectProperty.width] ?? 0) != 0 ? (json[ApiObjectProperty.width] as int).toDouble() : null,
-        readOnly = json[ApiObjectProperty.readOnly] ?? true,
+        readOnly = json[ApiObjectProperty.readOnly] ?? false,
         nullable = json[ApiObjectProperty.nullable] ?? true,
         resizable = json[ApiObjectProperty.resizable] ?? true,
         sortable = json[ApiObjectProperty.sortable] ?? false,
