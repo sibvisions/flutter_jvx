@@ -129,15 +129,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   /// The scroll group to synchronize sticky header scrolling.
   final LinkedScrollControllerGroup linkedScrollGroup = LinkedScrollControllerGroup();
 
-  /// If deletion of a row is allowed.
-  bool get _metaDataDeleteEnabled => (metaData.deleteEnabled) && !(metaData.readOnly);
-
-  /// If inserting a row is allowed.
-  bool get _metaDataInsertEnabled => (metaData.insertEnabled) && !(metaData.readOnly);
-
-  /// If update a row is allowed.
-  bool get _metaDataUpdateAllowed => (metaData.updateEnabled) && !(metaData.readOnly);
-
   /// The value notifier for a potential editing dialog.
   ValueNotifier<Map<String, dynamic>?> dialogValueNotifier = ValueNotifier<Map<String, dynamic>?>(null);
 
@@ -177,6 +168,16 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// The last column tapped
   String? lastTappedColumn;
+
+  /// If the table should show a floating insert button
+  bool get showFloatingButton =>
+      model.showFloatButton &&
+      model.isEnabled &&
+      !metaData.readOnly &&
+      metaData.insertEnabled &&
+      // Only shows the floating button if we are bigger than 150x150
+      ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
+      ((layoutData.layoutPosition?.width ?? 0.0) >= 100);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -229,11 +230,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       onHeaderTap: _sortColumn,
       onHeaderDoubleTap: (pColumn) => _sortColumn(pColumn, true),
       slideActionFactory: createSlideActions,
-      showFloatingButton: _metaDataInsertEnabled &&
-          ((layoutData.layoutPosition?.height ?? 0.0) >= 150) &&
-          ((layoutData.layoutPosition?.width ?? 0.0) >= 100) &&
-          model.showFloatButton &&
-          model.isEnabled,
+      showFloatingButton: showFloatingButton,
       floatingOnPress: _insertRecord,
     );
 
@@ -489,13 +486,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       pRow,
       pColumnName,
       pAfterSelect: () {
-        if (_metaDataUpdateAllowed && model.editable) {
-          int colIndex = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
+        int colIndex = metaData.columnDefinitions.indexWhere((element) => element.name == pColumnName);
 
-          if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
-            if (pValue is HashMap<String, dynamic>) {
+        if (colIndex >= 0 && pRow >= 0 && pRow < dataChunk.data.length && colIndex < dataChunk.data[pRow]!.length) {
+          if (pValue is HashMap<String, dynamic>) {
+            if (pValue.keys.none((columnName) => !isCellEditable(pRow, columnName))) {
               return [_setValues(pRow, pValue.keys.toList(), pValue.values.toList(), pColumnName)];
-            } else {
+            }
+          } else {
+            if (isCellEditable(pRow, pColumnName)) {
               return [
                 _setValues(pRow, [pColumnName], [pValue], pColumnName)
               ];
@@ -615,7 +614,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   _onLongPress(int pRowIndex, String pColumnName, ICellEditor pCellEditor, Offset pGlobalPosition) {
     List<PopupMenuEntry<TableContextMenuItem>> popupMenuEntries = <PopupMenuEntry<TableContextMenuItem>>[];
 
-    if (_metaDataInsertEnabled) {
+    if (metaData.insertEnabled && !metaData.readOnly) {
       popupMenuEntries.add(_createContextMenuItem(FontAwesomeIcons.squarePlus, "New", TableContextMenuItem.INSERT));
     }
 
@@ -1015,23 +1014,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   void _editRow(int pRowIndex) {
-    if (!isAnyCellInRowEditable(pRowIndex)) {
-      return;
-    }
-
-    List<ColumnDefinition> columnsToShow =
-        getColumnsToShow().where((column) => isCellEditable(pRowIndex, column.name)).toList();
-
-    Map<String, dynamic> values = {};
-    for (ColumnDefinition colDef in columnsToShow) {
-      values[colDef.name] = dataChunk.getValue(colDef.name, pRowIndex);
-    }
-
     _selectRecord(
       pRowIndex,
       null,
       pAfterSelect: () {
-        if (IStorageService().isVisibleInUI(model.id) && _metaDataUpdateAllowed && model.editable) {
+        if (IStorageService().isVisibleInUI(model.id) && isAnyCellInRowEditable(pRowIndex)) {
+          List<ColumnDefinition> columnsToShow =
+              getColumnsToShow().where((column) => isCellEditable(pRowIndex, column.name)).toList();
+
+          Map<String, dynamic> values = {};
+          for (ColumnDefinition colDef in columnsToShow) {
+            values[colDef.name] = dataChunk.getValue(colDef.name, pRowIndex);
+          }
+
           _showDialog(
             rowIndex: pRowIndex,
             columnDefinitions: columnsToShow,
@@ -1155,13 +1150,41 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return model.isEnabled &&
         isDataRow(pRowIndex) &&
         model.deleteEnabled &&
-        _metaDataDeleteEnabled &&
+        metaData.deleteEnabled &&
         (!metaData.additionalRowVisible || pRowIndex != 0) &&
         !metaData.readOnly;
   }
 
   bool isRowEditable(int pRowIndex) {
-    return model.isEnabled && isDataRow(pRowIndex) && model.editable && _metaDataUpdateAllowed && !metaData.readOnly;
+    if (!isDataRow(pRowIndex)) {
+      return false;
+    }
+
+    if (!model.isEnabled) {
+      return false;
+    }
+
+    if (!model.editable) {
+      return false;
+    }
+
+    if (metaData.readOnly) {
+      return false;
+    }
+
+    if (selectedRow == pRowIndex) {
+      if (!metaData.updateEnabled &&
+          (dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED || !metaData.insertEnabled)) {
+        return false;
+      }
+    } else {
+      if (!metaData.modelUpdateEnabled &&
+          (dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED || !metaData.modelInsertEnabled)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   bool isCellEditable(int pRowIndex, String pColumn) {
