@@ -149,7 +149,9 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
       if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
         editorWidget = SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget);
-      } else if (cellEditor is FlTextCellEditor && editorWidget is FlTextAreaWidget) {
+      } else if (cellEditor is FlTextCellEditor && cellEditor.model.contentType == FlTextCellEditor.TEXT_HTML ||
+          cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_MULTILINE ||
+          cellEditor.model.contentType == FlTextCellEditor.TEXT_PLAIN_WRAPPEDMULTILINE) {
         editorWidget = SizedBox(
           height: 100,
           child: editorWidget,
@@ -172,14 +174,19 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
 
       labelColumnWidth += 5;
 
+      labelColumnWidth = max(labelColumnWidth, 150);
+
       for (int i = 0; i < widget.columnDefinitions.length; i++) {
         ICellEditor cellEditor = cellEditors[i];
         Widget editorWidget = cellEditor.createWidget(widget.model.json);
 
         if (cellEditor is FlChoiceCellEditor || cellEditor is FlImageCellEditor) {
           editorWidget = Align(
-            alignment: Alignment.centerLeft,
-            child: SizedBox.square(dimension: cellEditor.getEditorWidth(null), child: editorWidget),
+            alignment: Alignment.center,
+            child: SizedBox.square(
+              dimension: cellEditor.getEditorWidth(null),
+              child: editorWidget,
+            ),
           );
         } else if (cellEditor is FlTextCellEditor && editorWidget is FlTextAreaWidget) {
           editorWidget = SizedBox(
@@ -194,9 +201,12 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
             children: [
               SizedBox(
                 width: labelColumnWidth,
-                child: Text(
-                  widget.columnDefinitions[i].label,
-                  style: widget.model.createTextStyle(),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 5.0),
+                  child: Text(
+                    widget.columnDefinitions[i].label,
+                    style: widget.model.createTextStyle(),
+                  ),
                 ),
               ),
               Expanded(child: editorWidget),
