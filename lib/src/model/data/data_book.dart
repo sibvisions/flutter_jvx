@@ -35,8 +35,8 @@ import '../component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart'
 import '../component/editor/cell_editor/linked/reference_definition.dart';
 import '../request/filter.dart';
 import '../response/dal_data_provider_changed_response.dart';
-import '../response/dal_fetch_response.dart';
 import '../response/dal_meta_data_response.dart';
+import '../response/record_format.dart';
 import 'column_definition.dart';
 import 'filter_condition.dart';
 import 'sort_definition.dart';

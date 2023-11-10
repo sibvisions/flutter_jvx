@@ -16,6 +16,7 @@
 
 import '../../../service/data/i_data_service.dart';
 import '../../response/dal_fetch_response.dart';
+import '../../response/record_format.dart';
 import '../column_definition.dart';
 import '../data_book.dart';
 
