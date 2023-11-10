@@ -21,8 +21,14 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The style to make the checkbox to a switch.
   static const String SWITCH_STYLE = "f_switch";
 
+  /// The style to make the checkbox to a checkbox.
+  ///
+  /// This serves as an override to allow editors to override a switch style,
+  /// allowing a celleditor to be a switch inside a table,
+  /// and the cell editor to be overridden by an editor style.
   static const String CHECKBOX_STYLE = "f_checkbox";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
