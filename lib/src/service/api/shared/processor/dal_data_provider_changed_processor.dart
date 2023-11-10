@@ -29,7 +29,7 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
   List<BaseCommand> processResponse(DalDataProviderChangedResponse pResponse, ApiRequest? pRequest) {
     List<BaseCommand> commands = [];
 
-    if (IDataService().updateMetaDataChangedRepsonse(pChangedResponse: pResponse)) {
+    if (IDataService().updateMetaDataChangedResponse(pChangedResponse: pResponse)) {
       IUiService().notifyMetaDataChange(pDataProvider: pResponse.dataProvider);
     }
 

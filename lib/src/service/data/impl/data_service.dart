@@ -164,7 +164,7 @@ class DataService implements IDataService {
   }
 
   @override
-  bool updateMetaDataChangedRepsonse({required DalDataProviderChangedResponse pChangedResponse}) {
+  bool updateMetaDataChangedResponse({required DalDataProviderChangedResponse pChangedResponse}) {
     DataBook? dataBook = dataBooks[pChangedResponse.dataProvider];
     DalMetaData? metaData = dataBook?.metaData;
     if (metaData == null) {
@@ -172,10 +172,12 @@ class DataService implements IDataService {
     }
 
     bool anyChanges = false;
+
     if (pChangedResponse.insertEnabled != null && metaData.insertEnabled != pChangedResponse.insertEnabled) {
       metaData.insertEnabled = pChangedResponse.insertEnabled!;
       anyChanges = true;
     }
+
     if (pChangedResponse.updateEnabled != null && metaData.updateEnabled != pChangedResponse.updateEnabled) {
       metaData.updateEnabled = pChangedResponse.updateEnabled!;
       anyChanges = true;
@@ -183,6 +185,24 @@ class DataService implements IDataService {
 
     if (pChangedResponse.deleteEnabled != null && metaData.deleteEnabled != pChangedResponse.deleteEnabled) {
       metaData.deleteEnabled = pChangedResponse.deleteEnabled!;
+      anyChanges = true;
+    }
+
+    if (pChangedResponse.modelInsertEnabled != null &&
+        metaData.modelInsertEnabled != pChangedResponse.modelInsertEnabled) {
+      metaData.modelInsertEnabled = pChangedResponse.modelInsertEnabled!;
+      anyChanges = true;
+    }
+
+    if (pChangedResponse.modelUpdateEnabled != null &&
+        metaData.modelUpdateEnabled != pChangedResponse.modelUpdateEnabled) {
+      metaData.modelUpdateEnabled = pChangedResponse.modelUpdateEnabled!;
+      anyChanges = true;
+    }
+
+    if (pChangedResponse.modelDeleteEnabled != null &&
+        metaData.modelDeleteEnabled != pChangedResponse.modelDeleteEnabled) {
+      metaData.modelDeleteEnabled = pChangedResponse.modelDeleteEnabled!;
       anyChanges = true;
     }
 

@@ -279,6 +279,9 @@ abstract class ApiObjectProperty {
   static const String deleteEnabled = "deleteEnabled";
   static const String updateEnabled = "updateEnabled";
   static const String insertEnabled = "insertEnabled";
+  static const String modelDeleteEnabled = "modelDeleteEnabled";
+  static const String modelUpdateEnabled = "modelUpdateEnabled";
+  static const String modelInsertEnabled = "modelInsertEnabled";
   static const String additionalRowVisible = "additionalRowVisible";
   static const String filter = "filter";
   static const String fetch = "fetch";

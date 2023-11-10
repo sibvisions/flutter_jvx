@@ -51,14 +51,23 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// If data book is readOnly
   final bool? readOnly;
 
-  /// If data book has deletion enabled
+  /// If data book allows deletion of the current row.
   final bool? deleteEnabled;
 
-  /// If data book has update enabled
+  /// If data book allows deletion of any row.
+  final bool? modelDeleteEnabled;
+
+  /// If data book allows update of the current row.
   final bool? updateEnabled;
 
-  /// If data book has insert enabled
+  /// If data book allows update of any row.
+  final bool? modelUpdateEnabled;
+
+  /// If data book allows insertion of the current row.
   final bool? insertEnabled;
+
+  /// If data book allows insertion of any row.
+  final bool? modelInsertEnabled;
 
   /// The tree path
   final List<int>? treePath;
@@ -90,8 +99,11 @@ class DalDataProviderChangedResponse extends ApiResponse {
         changedValues = json[ApiObjectProperty.changedValues],
         deleteEnabled = json[ApiObjectProperty.deleteEnabled],
         insertEnabled = json[ApiObjectProperty.insertEnabled],
-        readOnly = json[ApiObjectProperty.readOnly],
         updateEnabled = json[ApiObjectProperty.updateEnabled],
+        modelDeleteEnabled = json[ApiObjectProperty.modelDeleteEnabled],
+        modelInsertEnabled = json[ApiObjectProperty.modelInsertEnabled],
+        modelUpdateEnabled = json[ApiObjectProperty.modelUpdateEnabled],
+        readOnly = json[ApiObjectProperty.readOnly],
         treePath = cast<List<int>?>(json[ApiObjectProperty.treePath]),
         selectedColumn = json[ApiObjectProperty.selectedColumn],
         recordFormats = json[ApiObjectProperty.recordFormat] != null

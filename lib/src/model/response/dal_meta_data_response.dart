@@ -48,14 +48,23 @@ class DalMetaDataResponse extends ApiResponse {
   /// If the databook is readonly.
   bool? readOnly;
 
-  /// If deletion is allowed.
+  /// If data book allows deletion of the current row.
   bool? deleteEnabled;
 
-  /// If updating a row is allowed.
+  /// If data book allows deletion of any row.
+  bool? modelDeleteEnabled;
+
+  /// If data book allows update of the current row.
   bool? updateEnabled;
 
-  /// If inserting a row is allowed.
+  /// If data book allows update of any row.
+  bool? modelUpdateEnabled;
+
+  /// If data book allows insertion of the current row.
   bool? insertEnabled;
+
+  /// If data book allows insertion of any row.
+  bool? modelInsertEnabled;
 
   /// The primary key columns of the dataBook
   List<String>? primaryKeyColumns;
@@ -77,6 +86,9 @@ class DalMetaDataResponse extends ApiResponse {
         deleteEnabled = json[ApiObjectProperty.deleteEnabled],
         updateEnabled = json[ApiObjectProperty.updateEnabled],
         insertEnabled = json[ApiObjectProperty.insertEnabled],
+        modelDeleteEnabled = json[ApiObjectProperty.modelDeleteEnabled],
+        modelInsertEnabled = json[ApiObjectProperty.modelInsertEnabled],
+        modelUpdateEnabled = json[ApiObjectProperty.modelUpdateEnabled],
         primaryKeyColumns = json[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
         masterReference = json[ApiObjectProperty.masterReference] != null
             ? ReferenceDefinition.fromJson(json[ApiObjectProperty.masterReference])

@@ -567,14 +567,23 @@ class DalMetaData {
   /// If the databook is readonly.
   bool readOnly = false;
 
-  /// If deletion is allowed.
+  /// If data book allows deletion of the current row.
   bool deleteEnabled = true;
 
-  /// If updating a row is allowed.
+  /// If data book allows deletion of any row.
+  bool modelDeleteEnabled = true;
+
+  /// If data book allows update of the current row.
   bool updateEnabled = true;
 
-  /// If inserting a row is allowed.
+  /// If data book allows update of any row.
+  bool modelUpdateEnabled = true;
+
+  /// If data book allows insertion of the current row.
   bool insertEnabled = true;
+
+  /// If data book allows insertion of any row.
+  bool modelInsertEnabled = true;
 
   /// The primary key columns of the dataBook
   List<String> primaryKeyColumns = [];
@@ -620,6 +629,9 @@ class DalMetaData {
         deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],
         updateEnabled = pJson[ApiObjectProperty.updateEnabled],
         insertEnabled = pJson[ApiObjectProperty.insertEnabled],
+        modelDeleteEnabled = pJson[ApiObjectProperty.modelDeleteEnabled],
+        modelInsertEnabled = pJson[ApiObjectProperty.modelInsertEnabled],
+        modelUpdateEnabled = pJson[ApiObjectProperty.modelUpdateEnabled],
         primaryKeyColumns = pJson[ApiObjectProperty.primaryKeyColumns]?.cast<String>(),
         additionalRowVisible = pJson[ApiObjectProperty.additionalRowVisible],
         json = pJson["json"] ?? {} {
@@ -666,11 +678,20 @@ class DalMetaData {
     if (pResponse.insertEnabled != null) {
       insertEnabled = pResponse.insertEnabled!;
     }
-    if (pResponse.readOnly != null) {
-      readOnly = pResponse.readOnly!;
-    }
     if (pResponse.updateEnabled != null) {
       updateEnabled = pResponse.updateEnabled!;
+    }
+    if (pResponse.modelDeleteEnabled != null) {
+      modelDeleteEnabled = pResponse.modelDeleteEnabled!;
+    }
+    if (pResponse.modelInsertEnabled != null) {
+      modelInsertEnabled = pResponse.modelInsertEnabled!;
+    }
+    if (pResponse.modelUpdateEnabled != null) {
+      modelUpdateEnabled = pResponse.modelUpdateEnabled!;
+    }
+    if (pResponse.readOnly != null) {
+      readOnly = pResponse.readOnly!;
     }
     if (pResponse.additionalRowVisible != null) {
       additionalRowVisible = pResponse.additionalRowVisible!;
@@ -697,6 +718,9 @@ class DalMetaData {
     data[ApiObjectProperty.deleteEnabled] = deleteEnabled;
     data[ApiObjectProperty.updateEnabled] = updateEnabled;
     data[ApiObjectProperty.insertEnabled] = insertEnabled;
+    data[ApiObjectProperty.modelDeleteEnabled] = modelDeleteEnabled;
+    data[ApiObjectProperty.modelUpdateEnabled] = modelUpdateEnabled;
+    data[ApiObjectProperty.modelInsertEnabled] = modelInsertEnabled;
     data[ApiObjectProperty.primaryKeyColumns] = primaryKeyColumns;
     data[ApiObjectProperty.additionalRowVisible] = additionalRowVisible;
     data["json"] = json;
