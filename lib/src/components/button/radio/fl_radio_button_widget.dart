@@ -57,8 +57,6 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final bool inTable;
-
   final FocusNode radioFocusNode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,7 +71,6 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
     super.onPress,
     super.onPressDown,
     super.onPressUp,
-    this.inTable = false,
   });
 
   @override
@@ -99,7 +96,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
         canRequestFocus: false,
         onTap: super.getOnPressed(context),
         child: Ink(
-          padding: inTable ? EdgeInsets.zero : const EdgeInsets.only(right: 10),
+          padding: model.labelModel.text.isEmpty ? EdgeInsets.zero : const EdgeInsets.only(right: 10),
           child: child,
         ),
       );

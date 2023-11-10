@@ -82,7 +82,6 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
       focusNode: _buttonFocusNode,
       model: widgetModel,
       onPress: isEditable ? _onPress : null,
-      inTable: isInTable,
     );
   }
 

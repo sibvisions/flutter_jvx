@@ -35,17 +35,17 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
       );
     }
 
-    BorderSide? borderside;
+    BorderSide? borderSide;
 
     if (!model.isEnabled) {
-      borderside = const BorderSide(
+      borderSide = const BorderSide(
         color: JVxColors.COMPONENT_DISABLED,
         width: 2,
       );
     }
 
     return Checkbox(
-      side: borderside,
+      side: borderSide,
       focusNode: radioFocusNode,
       visualDensity: VisualDensity.compact,
       value: model.selected,
@@ -62,7 +62,6 @@ class FlCheckBoxWidget extends FlRadioButtonWidget<FlCheckBoxModel> {
     required super.model,
     required super.focusNode,
     required super.radioFocusNode,
-    super.inTable = false,
     super.onPress,
     super.onPressDown,
     super.onPressUp,
