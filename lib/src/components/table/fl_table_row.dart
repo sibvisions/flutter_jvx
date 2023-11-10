@@ -20,7 +20,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../components.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
-import '../../model/response/dal_fetch_response.dart';
 import '../../model/response/record_format.dart';
 import 'fl_table_cell.dart';
 

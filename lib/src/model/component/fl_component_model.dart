@@ -33,7 +33,7 @@ import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';
 import '../layout/alignments.dart';
 import '../layout/layout_position.dart';
-import '../response/dal_fetch_response.dart';
+
 import '../response/record_format.dart';
 import 'i_font_style.dart';
 

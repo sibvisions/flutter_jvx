@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
-import '../../../model/response/dal_fetch_response.dart';
 import '../../../model/response/record_format.dart';
 import '../../../service/api/shared/api_object_property.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
@@ -30,6 +29,7 @@ import 'fl_dummy_cell_editor.dart';
 import 'fl_image_cell_editor.dart';
 import 'fl_number_cell_editor.dart';
 import 'fl_text_cell_editor.dart';
+
 import 'linked/fl_linked_cell_editor.dart';
 
 typedef RecalculateCallback = Function([bool pRecalculate]);
