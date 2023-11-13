@@ -124,7 +124,7 @@ abstract class IAppService implements Service {
   /// Creates an [App] from [customConfig] and starts it, if it isn't already running.
   ///
   /// Used by DeepLinks and Notifications.
-  Future<void> startCustomApp(ServerConfig customConfig, {bool force = false});
+  Future<void> startCustomApp(ServerConfig customConfig, {bool force = false, bool autostart = true});
 
   /// Starts the app specified by [appId] and stops the currently running app, if applicable.
   ///

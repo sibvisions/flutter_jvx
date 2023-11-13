@@ -206,14 +206,14 @@ class AppService implements IAppService {
   }
 
   @override
-  Future<void> startCustomApp(ServerConfig customConfig, {bool force = false}) async {
+  Future<void> startCustomApp(ServerConfig customConfig, {bool force = false, bool autostart = true}) async {
     App customApp = await App.createAppFromConfig(customConfig);
     BeamState state = FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState;
     bool loggedOut = (state.uri.path.startsWith("/login") || !IUiService().loggedIn());
 
     // Only start app if it isn't already running or the user isn't logged in.
     if (force || IConfigService().currentApp.value != customApp.id || loggedOut) {
-      await IAppService().startApp(appId: customApp.id, autostart: true);
+      await IAppService().startApp(appId: customApp.id, autostart: autostart);
     }
   }
 
