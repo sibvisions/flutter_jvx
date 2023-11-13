@@ -222,17 +222,22 @@ class JVxOverlayState extends State<JVxOverlay> {
     backButtonDispatcher = RootBackButtonDispatcher();
     backButtonDispatcher.addCallback(_onBackPress);
 
-    subscription = _subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) {
-      if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-        ICommandService()
-            .sendCommand(DeviceStatusCommand(
-              screenWidth: size.width.toInt(),
-              screenHeight: size.height.toInt(),
-              reason: "Device Size changed",
-            ))
-            .catchError((e, stack) => FlutterUI.logAPI.d("Failed to send device status", error: e, stackTrace: stack));
-      }
-    });
+    subscription = _subject.debounceTime(const Duration(milliseconds: 50)).listen(
+      (size) {
+        if (IUiService().clientId.value != null && !IConfigService().offline.value) {
+          ICommandService()
+              .sendCommand(
+                DeviceStatusCommand(
+                  screenWidth: size.width.toInt(),
+                  screenHeight: size.height.toInt(),
+                  reason: "Device Size changed",
+                ),
+              )
+              .catchError(
+                  (e, stack) => FlutterUI.logAPI.d("Failed to send device status", error: e, stackTrace: stack));
+        }
+      },
+    );
   }
 
   @override
@@ -416,6 +421,7 @@ class JVxOverlayState extends State<JVxOverlay> {
   @override
   void dispose() {
     subscription.cancel();
+    _subject.close();
     backButtonDispatcher.removeCallback(_onBackPress);
     super.dispose();
   }

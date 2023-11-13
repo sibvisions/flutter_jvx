@@ -89,7 +89,7 @@ class WorkScreen extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      // If true, rebuilds and therefore can activate scrolling or not.
+      // If true, resize to enable scrolling, otherwise screen is behind the keyboard.
       appBar: wrappedScreen.header,
       bottomNavigationBar: wrappedScreen.footer,
       backgroundColor: Colors.transparent,

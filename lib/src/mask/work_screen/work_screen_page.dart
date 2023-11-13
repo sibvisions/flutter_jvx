@@ -113,6 +113,8 @@ class WorkScreenPage extends StatefulWidget {
 class WorkScreenPageState extends State<WorkScreenPage> {
   /// Debounce re-layouts if keyboard opens.
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
+  late final StreamSubscription<Size> subscription;
+
   FlPanelModel? model;
 
   /// Title displayed on the top
@@ -134,7 +136,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     super.initState();
 
     IUiService().getAppManager()?.onScreenPage(widget.screenName);
-    subject.throttleTime(const Duration(milliseconds: 8), trailing: true).listen((size) => _setScreenSize(size));
+    subscription =
+        subject.throttleTime(const Duration(milliseconds: 16), leading: false, trailing: true).listen(_setScreenSize);
 
     item = IUiService().getMenuItem(widget.screenName);
     if (item != null) {
@@ -350,6 +353,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
   @override
   void dispose() {
+    subscription.cancel();
     subject.close();
     IUiService().disposeSubscriptions(pSubscriber: this);
     super.dispose();
