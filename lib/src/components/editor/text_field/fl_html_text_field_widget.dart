@@ -65,7 +65,7 @@ class FlHtmlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataW
       htmlEditorOptions: HtmlEditorOptions(
         hint: model.placeholder,
         darkMode: Theme.of(context).brightness == Brightness.dark,
-        shouldEnsureVisible: true,
+        shouldEnsureVisible: false,
         adjustHeightForKeyboard: false,
         // Disabled: Only affects the startup of the widget.
         // Subsequent changes are not taken into account.

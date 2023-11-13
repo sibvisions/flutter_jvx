@@ -101,8 +101,9 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
 
   @override
   void setValue(dynamic pValue) {
+    lastReceivedValue = pValue;
+
     if (isInitialized && getValue() != pValue) {
-      lastReceivedValue = pValue;
       if (pValue == null) {
         if (isHtml) {
           htmlController.clear();
@@ -225,7 +226,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
   }
 
   @override
-  Future<String> getValue() async {
+  Future<String?> getValue() async {
     if (isInitialized) {
       if (isHtml) {
         var html = await htmlController.getText();
@@ -246,7 +247,7 @@ class FlTextCellEditor extends IFocusableCellEditor<FlTextFieldModel, ICellEdito
       }
     }
 
-    return lastReceivedValue.toString();
+    return null;
   }
 
   @override
