@@ -59,10 +59,7 @@ abstract class IAppService implements Service {
 
   set returnUri(Uri? value);
 
-  /// Indicates whether the app was started manually.
-  bool? get startedManually;
-
-  /// Returns whether the app was started manually, returns `false` if unset.
+  /// Returns whether the app was started manually
   bool wasStartedManually();
 
   /// Returns a value notifier for the set of stored app IDs.

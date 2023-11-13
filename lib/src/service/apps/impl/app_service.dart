@@ -48,7 +48,7 @@ class AppService implements IAppService {
   final ValueNotifier<Future<void>?> _startupFuture = ValueNotifier(null);
   final ValueNotifier<Future<void>?> _exitFuture = ValueNotifier(null);
 
-  bool? _startedManually;
+  bool _startedManually = false;
   Uri? _returnUri;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +64,7 @@ class AppService implements IAppService {
   @override
   FutureOr<void> clear(ClearReason reason) {
     if (reason == ClearReason.DEFAULT) {
-      _startedManually = null;
+      _startedManually = false;
       _returnUri = null;
     }
   }
@@ -87,10 +87,7 @@ class AppService implements IAppService {
   set returnUri(Uri? value) => _returnUri = value;
 
   @override
-  bool? get startedManually => _startedManually;
-
-  @override
-  bool wasStartedManually() => _startedManually ?? false;
+  bool wasStartedManually() => _startedManually;
 
   @override
   ValueListenable<Set<String>> getStoredAppIds() {
@@ -239,7 +236,10 @@ class AppService implements IAppService {
     if (appId != null) {
       await IConfigService().updateCurrentApp(appId);
     }
-    _startedManually = !(autostart ?? !wasStartedManually());
+
+    if (autostart != null) {
+      _startedManually = !autostart;
+    }
 
     await IApiService().getRepository().stop();
     var repository = IConfigService().offline.value ? OfflineApiRepository() : OnlineApiRepository();
