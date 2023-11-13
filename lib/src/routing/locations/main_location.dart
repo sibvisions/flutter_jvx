@@ -57,7 +57,7 @@ class MainLocation extends BeamLocation<BeamState> {
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     FlutterUI.logUI.d("Building main location");
 
-    _handleRoutes(context, state);
+    _handleRoutes(context, Map.of(state.queryParameters));
 
     List<BeamPage> pages = [];
 
@@ -129,17 +129,11 @@ class MainLocation extends BeamLocation<BeamState> {
     return pages;
   }
 
-  void _handleRoutes(BuildContext context, BeamState state) {
-    Map<String, String> queryParameters = Map.of(state.queryParameters);
+  void _handleRoutes(BuildContext context, Map<String, String> queryParameters) {
     ServerConfig? deepLinkConfig = ParseUtil.extractAppParameters(queryParameters);
-    queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
-    _handleDeepLinks(deepLinkConfig, state);
-  }
-
-  void _handleDeepLinks(ServerConfig? deepLinkConfig, BeamState state) {
     if (deepLinkConfig != null) {
-      // Don't use `force` as this could result in repeated restarts. (No guarantee that url parameters were removed)
+      queryParameters.forEach(IConfigService().updateCustomStartupProperties);
       unawaited(IAppService().startCustomApp(deepLinkConfig));
     }
   }
