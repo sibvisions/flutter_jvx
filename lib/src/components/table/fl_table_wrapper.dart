@@ -1165,13 +1165,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     if (selectedRow == pRowIndex) {
-      if (!metaData.updateEnabled &&
-          (dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED || !metaData.insertEnabled)) {
+      if (!metaData.updateEnabled && dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED) {
         return false;
       }
     } else {
-      if (!metaData.modelUpdateEnabled &&
-          (dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED || !metaData.modelInsertEnabled)) {
+      if (!metaData.modelUpdateEnabled && dataChunk.getRecordStatus(pRowIndex) != RecordStatus.INSERTED) {
         return false;
       }
     }
