@@ -50,7 +50,7 @@ class ConfigService implements IConfigService {
   /// Map of all active callbacks.
   final Map<String, List<Function>> _callbacks = {};
 
-  final Map<String, dynamic> _customStartupProperties = {};
+  Map<String, dynamic> _customStartupProperties = {};
 
   AppConfig? _appConfig;
 
@@ -654,12 +654,12 @@ class ConfigService implements IConfigService {
 
   @override
   Map<String, dynamic> getCustomStartupProperties() {
-    return _customStartupProperties;
+    return Map.of(_customStartupProperties);
   }
 
   @override
-  void updateCustomStartupProperties(String pKey, dynamic pValue) {
-    _customStartupProperties[pKey] = pValue;
+  void setCustomStartupProperties(Map<String, dynamic> pProperties) {
+    _customStartupProperties = Map.of(pProperties);
   }
 
   @override

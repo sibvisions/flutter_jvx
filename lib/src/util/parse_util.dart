@@ -344,7 +344,7 @@ abstract class ParseUtil {
   /// Extracts a [ServerConfig] from [data].
   ///
   /// Returns either a valid [ServerConfig] or `null`.
-  static ServerConfig? extractAppParameters(Map<String, Object> data) {
+  static ServerConfig? extractAppParameters(Map<String, dynamic> data) {
     String? appName = data.remove("appName") as String?;
     String? baseUrl = data.remove("baseUrl") as String?;
     if (appName != null && baseUrl != null) {
@@ -356,10 +356,12 @@ abstract class ParseUtil {
       }
       String? username = (data.remove("username") ?? data.remove("userName")) as String?;
       String? password = data.remove("password") as String?;
+      String? title = data.remove("title") as String?;
 
       ServerConfig? extractedConfig = ServerConfig(
         appName: appName,
         baseUrl: baseUri,
+        title: title,
         username: username,
         password: password,
       );

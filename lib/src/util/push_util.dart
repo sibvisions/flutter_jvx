@@ -36,17 +36,19 @@ abstract class PushUtil {
   static const String parameterPushToken = "Mobile.pushToken";
   static const String parameterPushData = "Mobile.pushData";
 
-  static ServerConfig? handleNotificationData(Map<String?, Object?>? data) {
-    if (data != null) {
-      var notificationConfig = ParseUtil.extractAppParameters(Map.from(data));
+  static ServerConfig? handleNotificationData(Map<String?, Object?> data) {
+    Map<String, dynamic> parameters = Map.fromEntries(
+      data.entries.where((entry) => entry.key != null).map((e) => MapEntry(e.key!, e.value)),
+    );
 
-      if (notificationConfig != null) {
-        data.entries
-            .where((element) => element.key != null)
-            .forEach((entry) => IConfigService().updateCustomStartupProperties(entry.key!, entry.value));
-        return notificationConfig;
-      }
+    var notificationConfig = ParseUtil.extractAppParameters(parameters);
+
+    if (notificationConfig != null) {
+      IConfigService().setCustomStartupProperties(parameters);
+
+      return notificationConfig;
     }
+
     return null;
   }
 

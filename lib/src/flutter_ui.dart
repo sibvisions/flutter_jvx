@@ -433,7 +433,6 @@ class FlutterUI extends StatefulWidget {
     services.registerSingleton(uiService);
 
     App? urlApp = await _handleURIParameters(queryParameters);
-    queryParameters.forEach((key, value) => IConfigService().updateCustomStartupProperties(key, value));
 
     // API
     IApiService apiService = ApiService.create(OnlineApiRepository());
@@ -459,6 +458,7 @@ class FlutterUI extends StatefulWidget {
 
     if (urlApp != null) {
       FlutterUIState.startupApp = urlApp;
+      IConfigService().setCustomStartupProperties(queryParameters);
     } else if (!kIsWeb) {
       // Handle notification launching app from terminated state
       Map<String?, Object?>? data = await Push.instance.notificationTapWhichLaunchedAppFromTerminated;

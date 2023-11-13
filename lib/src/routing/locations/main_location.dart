@@ -133,7 +133,7 @@ class MainLocation extends BeamLocation<BeamState> {
     ServerConfig? deepLinkConfig = ParseUtil.extractAppParameters(queryParameters);
 
     if (deepLinkConfig != null) {
-      queryParameters.forEach(IConfigService().updateCustomStartupProperties);
+      IConfigService().setCustomStartupProperties(queryParameters);
       unawaited(IAppService().startCustomApp(deepLinkConfig));
     }
   }
