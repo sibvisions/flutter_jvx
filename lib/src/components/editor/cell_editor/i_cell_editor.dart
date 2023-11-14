@@ -29,7 +29,6 @@ import 'fl_dummy_cell_editor.dart';
 import 'fl_image_cell_editor.dart';
 import 'fl_number_cell_editor.dart';
 import 'fl_text_cell_editor.dart';
-
 import 'linked/fl_linked_cell_editor.dart';
 
 typedef RecalculateCallback = Function([bool pRecalculate]);
@@ -208,7 +207,6 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
-          recalculateSizeCallback: pRecalculateCallback,
           columnName: columnName,
           dataProvider: dataProvider,
         );
@@ -221,7 +219,6 @@ abstract class ICellEditor<WidgetModelType extends FlComponentModel, CellEditorM
           onEndEditing: onEndEditing,
           onFocusChanged: onFocusChanged,
           isInTable: isInTable,
-          recalculateSizeCallback: pRecalculateCallback,
           columnName: columnName,
           dataProvider: dataProvider,
         );

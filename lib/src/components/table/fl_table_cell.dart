@@ -288,7 +288,6 @@ class _FlTableCellState extends State<FlTableCell> {
           ? (value) => widget.onEndEditing?.call(value, widget.rowIndex, widget.columnDefinition.name)
           : _doNothing,
       onFocusChanged: (_) {},
-      pRecalculateCallback: ([pRecalculate = false]) => setState(() {}),
       isInTable: true,
     );
 

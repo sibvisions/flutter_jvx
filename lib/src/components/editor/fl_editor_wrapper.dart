@@ -312,8 +312,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
   }
 
-  void recalculateSize([bool pRecalculcate = true]) {
-    if (pRecalculcate) {
+  void recalculateSize([bool pRecalculate = true]) {
+    if (pRecalculate) {
       sentLayoutData = false;
     }
 

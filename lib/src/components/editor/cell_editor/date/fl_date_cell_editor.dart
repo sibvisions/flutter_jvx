@@ -40,8 +40,6 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
 
   bool isOpen = false;
 
-  RecalculateCallback? recalculateSizeCallback;
-
   FlDateEditorModel? lastWidgetModel;
 
   @override
@@ -66,7 +64,6 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
     required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
-    this.recalculateSizeCallback,
   }) : super(
           model: FlDateCellEditorModel(),
         ) {
@@ -94,8 +91,6 @@ class FlDateCellEditor extends IFocusableCellEditor<FlDateEditorModel, FlDateCel
         composing: null,
       );
     }
-
-    recalculateSizeCallback?.call(false);
   }
 
   @override

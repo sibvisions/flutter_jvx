@@ -47,8 +47,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
 
   TextEditingController textController = TextEditingController();
 
-  RecalculateCallback? recalculateSizeCallback;
-
   bool isOpen = false;
 
   FlLinkedEditorModel? lastWidgetModel;
@@ -78,7 +76,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     required super.dataProvider,
     super.onFocusChanged,
     super.isInTable,
-    this.recalculateSizeCallback,
   }) : super(
           model: FlLinkedCellEditorModel(),
         ) {
@@ -95,7 +92,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
   void setValue(dynamic pValue) {
     _record = pValue;
 
-    _setValueIntoController();
+    _updateControllerValue();
   }
 
   @override
@@ -270,7 +267,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
           dataProvider: dataProvider,
           from: 0,
           to: -1,
-          onDataToDisplayMapChanged: _onDataToDisplayMapChanged,
+          onDataToDisplayMapChanged: _updateControllerValue,
         ),
       );
 
@@ -282,7 +279,7 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     }
   }
 
-  void _setValueIntoController([bool recalculateSize = false]) {
+  void _updateControllerValue() {
     if (_value == null) {
       textController.clear();
     } else {
@@ -302,8 +299,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
         );
       }
     }
-
-    recalculateSizeCallback?.call(recalculateSize);
   }
 
   void receiveNull() {
@@ -339,10 +334,6 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
         .catchError(
           IUiService().handleAsyncError,
         );
-  }
-
-  void _onDataToDisplayMapChanged() {
-    _setValueIntoController(true);
   }
 
   ReferenceDefinition get effectiveLinkReference {
