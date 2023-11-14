@@ -14,6 +14,7 @@
  * the License.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../custom/custom_component.dart';
@@ -73,45 +74,42 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
   /// Will contact [IStorageService] to get its children [FlComponentModel], will only call setState if
   /// children were either added or removed.
+  ///
+  /// Returns `TRUE` if the children have changed, `FALSE` if no change has occurred.
   bool buildChildren({bool pSetStateOnChange = true}) {
-    List<FlComponentModel> models =
+    List<FlComponentModel> childModels =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false);
-    Map<String, Widget> newChildrenList = {};
+    Map<String, Widget> updatedChildren = {};
 
     bool changeDetected = false;
 
     // Only new children will be checked
-    for (FlComponentModel model in models) {
+    for (FlComponentModel model in childModels) {
       if (!children.containsKey(model.id)) {
         // If custom component with name exits create a custom widget instead of a normal one
         CustomComponent? customComp = IUiService().getCustomComponent(pComponentName: model.name);
         if (customComp != null) {
-          newChildrenList[model.id] = ComponentsFactory.buildCustomWidget(model, customComp);
+          updatedChildren[model.id] = ComponentsFactory.buildCustomWidget(model, customComp);
         } else {
-          newChildrenList[model.id] = ComponentsFactory.buildWidget(model);
+          updatedChildren[model.id] = ComponentsFactory.buildWidget(model);
         }
 
         changeDetected = true;
       } else {
-        newChildrenList[model.id] = children[model.id]!;
+        updatedChildren[model.id] = children[model.id]!;
       }
     }
 
     // Check if there are children in the old list not present in the new List
-    children.forEach((key, value) {
-      if (!models.any((element) => element.id == key)) {
-        changeDetected = true;
-      }
-    });
+    if (!changeDetected) {
+      changeDetected = children.keys.any((key) => childModels.none((element) => element.id == key));
+    }
 
     // Only re-render if children did change
     if (changeDetected) {
-      layoutData.children.clear();
-      newChildrenList.forEach((key, value) {
-        layoutData.children.add(key);
-      });
+      layoutData.children = updatedChildren.keys.toList();
 
-      children = newChildrenList;
+      children = updatedChildren;
       if (pSetStateOnChange) {
         setState(() {});
       }
