@@ -473,7 +473,8 @@ class DataService implements IDataService {
     }
 
     var databook = getDataBook(linkReference.referencedDataBook);
-    if (databook == null || databook.metaData == null || !databook.isAllFetched) {
+    if (databookNeedsFetch(pFrom: 0, pDataProvider: linkReference.referencedDataBook, pTo: -1) ||
+        (databook != null && databook.metaData == null)) {
       IUiService().sendCommand(
         FetchCommand(
           includeMetaData: true,
