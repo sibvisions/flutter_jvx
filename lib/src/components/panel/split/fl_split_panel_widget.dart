@@ -26,7 +26,7 @@ import '../scroll/fl_scroll_panel_widget.dart';
 class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
   final SplitLayout layout;
 
-  final ScrollController firstVerticalcontroller;
+  final ScrollController firstVerticalController;
   final ScrollController firstHorizontalController;
   final ScrollController secondVerticalController;
   final ScrollController secondHorizontalController;
@@ -35,7 +35,7 @@ class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
     super.key,
     required super.model,
     required this.layout,
-    required this.firstVerticalcontroller,
+    required this.firstVerticalController,
     required this.firstHorizontalController,
     required this.secondVerticalController,
     required this.secondHorizontalController,
@@ -65,7 +65,7 @@ class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
           viewerPosition = layout.firstComponentViewer;
           childPosition = layout.firstComponentSize;
           horizontalController = firstHorizontalController;
-          verticalController = firstVerticalcontroller;
+          verticalController = firstVerticalController;
         } else {
           viewerPosition = layout.secondComponentViewer;
           childPosition = layout.secondComponentSize;

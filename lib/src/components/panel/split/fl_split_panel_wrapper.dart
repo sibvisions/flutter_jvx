@@ -78,7 +78,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         cursor: mouseCursor,
         child: FlSplitPanelWidget(
           model: model,
-          firstVerticalcontroller: firstVerticalcontroller,
+          firstVerticalController: firstVerticalcontroller,
           firstHorizontalController: firstHorizontalController,
           secondVerticalController: secondVerticalController,
           secondHorizontalController: secondHorizontalController,
