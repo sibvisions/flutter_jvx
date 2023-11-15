@@ -34,7 +34,8 @@ class SplitLayout extends ILayout implements ICloneable {
   /// The second component constraint (right or bottom).
   static const String SECOND_COMPONENT = "SECOND_COMPONENT";
 
-  static const Duration UPDATE_INTERVALL = Duration(milliseconds: 16);
+  /// How often a SplitPanelWidget will try to initiate a layout call while dragging.
+  static const Duration UPDATE_INTERVAL = Duration(milliseconds: 50);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members

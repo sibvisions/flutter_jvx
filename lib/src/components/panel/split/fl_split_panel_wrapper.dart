@@ -38,12 +38,14 @@ class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
 class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> {
   final BehaviorSubject subject = BehaviorSubject();
 
-  final ScrollController firstVerticalcontroller = ScrollController();
+  final ScrollController firstVerticalController = ScrollController();
   final ScrollController firstHorizontalController = ScrollController();
   final ScrollController secondVerticalController = ScrollController();
   final ScrollController secondHorizontalController = ScrollController();
 
   MouseCursor mouseCursor = MouseCursor.defer;
+  double overrideLeftTopRatio = 0.0;
+  SplitLayout get splitLayout => (layoutData.layout as SplitLayout);
 
   _FlSplitPanelWrapperState() : super();
 
@@ -53,7 +55,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
     _createLayout();
 
-    subject.throttleTime(SplitLayout.UPDATE_INTERVALL, trailing: true).listen((_) {
+    subject.throttleTime(SplitLayout.UPDATE_INTERVAL, leading: false, trailing: true).listen((_) {
       registerParent();
     });
 
@@ -78,7 +80,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         cursor: mouseCursor,
         child: FlSplitPanelWidget(
           model: model,
-          firstVerticalController: firstVerticalcontroller,
+          firstVerticalController: firstVerticalController,
           firstHorizontalController: firstHorizontalController,
           secondVerticalController: secondVerticalController,
           secondHorizontalController: secondHorizontalController,
@@ -94,12 +96,18 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
 
   @override
   void dispose() {
-    firstVerticalcontroller.dispose();
+    firstVerticalController.dispose();
     firstHorizontalController.dispose();
     secondVerticalController.dispose();
     secondHorizontalController.dispose();
     subject.close();
     super.dispose();
+  }
+
+  @override
+  void registerParent() {
+    splitLayout.leftTopRatio = overrideLeftTopRatio;
+    super.registerParent();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -112,13 +120,13 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
       leftTopRatio: model.dividerPosition,
       calculateLikeScroll: model.isScrollStyle,
     );
+    overrideLeftTopRatio = splitLayout.leftTopRatio;
     layoutData.children =
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
   }
 
   Widget getDragSlider() {
     if (layoutData.hasPosition) {
-      SplitLayout splitLayout = (layoutData.layout as SplitLayout);
       LayoutPosition currentPosition = layoutData.layoutPosition!;
 
       double top = 0.0;
@@ -127,12 +135,14 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
       double width = splitLayout.splitterSize;
       double height = splitLayout.splitterSize;
 
+      double leftTopRatio = overrideLeftTopRatio;
+
       if (model.orientation == SplitOrientation.HORIZONTAL) {
         width = currentPosition.width;
-        top = (currentPosition.height * (splitLayout.leftTopRatio / 100.0)) - (splitLayout.splitterSize / 2);
+        top = (currentPosition.height * (leftTopRatio / 100.0)) - (splitLayout.splitterSize / 2);
       } else {
         height = currentPosition.height;
-        left = (currentPosition.width * (splitLayout.leftTopRatio / 100.0)) - (splitLayout.splitterSize / 2);
+        left = (currentPosition.width * (leftTopRatio / 100.0)) - (splitLayout.splitterSize / 2);
       }
 
       double splitterWidth = model.orientation == SplitOrientation.VERTICAL ? width : width * 0.3;
@@ -199,13 +209,12 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     final RenderBox container = context.findRenderObject() as RenderBox;
     final pos = container.globalToLocal(pDragDetails.globalPosition);
 
-    SplitLayout splitLayout = (layoutData.layout as SplitLayout);
     double positionalPixel = pHorizontal ? pos.dx : pos.dy;
     double containerPixel = pHorizontal ? container.size.width : container.size.height;
 
-    splitLayout.leftTopRatio = max(0.0, min(1.0, positionalPixel / containerPixel)) * 100;
-    // model.dividerPosition = splitLayout.leftTopRatio;
-
+    overrideLeftTopRatio = max(0.0, min(1.0, positionalPixel / containerPixel)) * 100;
     subject.add(null);
+
+    setState(() {});
   }
 }
