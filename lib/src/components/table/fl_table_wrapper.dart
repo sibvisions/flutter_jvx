@@ -1151,7 +1151,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     return model.isEnabled &&
         _isDataRow(pRowIndex) &&
         model.deleteEnabled &&
-        metaData.deleteEnabled &&
+        ((selectedRow == pRowIndex && metaData.deleteEnabled) ||
+            (selectedRow != pRowIndex && metaData.modelDeleteEnabled)) &&
         (!metaData.additionalRowVisible || pRowIndex != 0) &&
         !metaData.readOnly;
   }
