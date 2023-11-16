@@ -70,18 +70,15 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       textWidget = SelectableHtml(data: pModel.text);
     } else if (ParseUtil.isHTML(pModel.text)) {
       textWidget = Html(data: pModel.text);
-    } else if (pSelectable) {
-      textWidget = SelectableText(
-        pModel.text,
-        style: pTextStyle ?? pModel.createTextStyle(),
-        textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
-      );
     } else {
       textWidget = Text(
-        pModel.text,
+        pModel.text.replaceAll("\n", ""),
         style: pTextStyle ?? pModel.createTextStyle(),
         textAlign: HorizontalAlignmentE.toTextAlign(pModel.horizontalAlignment),
       );
+      if (pSelectable) {
+        textWidget = SelectionArea(child: textWidget);
+      }
     }
 
     return textWidget;
