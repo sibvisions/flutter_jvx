@@ -45,7 +45,7 @@ class FlSplitPanelWidget extends FlPanelWidget<FlSplitPanelModel> {
   @override
   Widget build(BuildContext context) {
     // All layout information of our children.
-    if (model.isScrollStyle) {
+    if (model.isScrollStyle || layout.calculateLikeScroll) {
       List<BaseCompWrapperWidget> childrenToWrap = [];
 
       for (Widget childWidget in children) {
