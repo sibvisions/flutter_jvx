@@ -210,6 +210,11 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
       widget = const Center(child: CircularProgressIndicator());
     }
 
+    if (layoutData.hasPosition) {
+      model.stickyHeaders =
+          layoutData.layoutPosition!.height > (2 * tableSize!.rowHeight + tableSize!.tableHeaderHeight);
+    }
+
     widget ??= FlTableWidget(
       headerHorizontalController: headerHorizontalController,
       itemScrollController: itemScrollController,
