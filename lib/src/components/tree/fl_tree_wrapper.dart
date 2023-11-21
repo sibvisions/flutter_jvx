@@ -357,11 +357,17 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
           DalMetaData childMetaData = metaDatas[childDataBook]!;
           childFilter = _createChildFilter(childMetaData, metaDatas[pDataProvider]!, dataRow);
 
-          // Add this node to the list of the page they are receiving.
-          nodesReceivingPage
-              .putIfAbsent(childDataBook, () => HashMap())
-              .putIfAbsent(childFilter.toPageKey(), () => [])
-              .add(nodeKey);
+          String childPageKey = childFilter.toPageKey();
+
+          // An new row has values with null, so check that we don't accidentally create the same page as our current parent.
+          // Otherwise it is a recursion for self joined.
+          if (parentNode?.data?.subPageKey != childPageKey) {
+            // Add this node to the list of the page they are receiving.
+            nodesReceivingPage
+                .putIfAbsent(childDataBook, () => HashMap())
+                .putIfAbsent(childPageKey, () => [])
+                .add(nodeKey);
+          }
         }
 
         bool isPotentialParent = childDataBook != null;
@@ -369,14 +375,11 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         List<Node> oldNodes = isLevelZeroData ? controller.children : parentNode?.children ?? [];
         Node? oldNode = oldNodes.firstWhereOrNull(
             (element) => (element as Node<NodeData>).data!.rowFilter.toPageKey() == rowFilter.toPageKey());
-        if (oldNode != null && !oldNode.parent) {
-          isPotentialParent = false;
-        }
 
         Node<NodeData> newNode = Node<NodeData>(
           key: nodeKey,
           children: oldNode?.children ?? [],
-          expanded: oldNode?.expanded ?? false,
+          expanded: (oldNode?.expanded ?? false) && (oldNode?.parent ?? false),
           data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider,
               childFilter?.toPageKey()),
           parent: isPotentialParent,
@@ -488,7 +491,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   void _updateSelection() {
     // Checks which data providers have selected rows.
     // Then checks which of these data providers has the highest tree depth.
-    // The one with the highes tree depth is the one that is used to determine the selection.
+    // The one with the highest tree depth is the one that is used to determine the selection.
 
     List<int> selectedTreePath = [];
 
@@ -519,6 +522,10 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       }
 
       if (selectedNode != null) {
+        if (!selectedNode.expanded && selectedNode.parent) {
+          _handleExpansionChanged(selectedNode.key, true);
+        }
+
         controller = controller.copyWith(
           selectedKey: selectedNode.key,
           children: controller.expandToNode(selectedNode.key),
