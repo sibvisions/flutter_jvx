@@ -60,6 +60,7 @@ class APIRoute {
   static const APIRoute POST_FOCUS_LOST = APIRoute(Method.POST, "api/focusLost");
   static const APIRoute POST_ALIVE = APIRoute(Method.POST, "api/alive");
   static const APIRoute POST_SAVE = APIRoute(Method.POST, "api/save");
+  static const APIRoute POST_DAL_SAVE = APIRoute(Method.POST, "api/dal/save");
   static const APIRoute POST_RELOAD = APIRoute(Method.POST, "api/reload");
   static const APIRoute POST_ROLLBACK = APIRoute(Method.POST, "api/rollback");
   static const APIRoute POST_SORT = APIRoute(Method.POST, "api/dal/sort");

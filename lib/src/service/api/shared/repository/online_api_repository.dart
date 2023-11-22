@@ -44,6 +44,7 @@ import '../../../../model/request/api_close_content_request.dart';
 import '../../../../model/request/api_close_frame_request.dart';
 import '../../../../model/request/api_close_screen_request.dart';
 import '../../../../model/request/api_close_tab_request.dart';
+import '../../../../model/request/api_dal_save_request.dart';
 import '../../../../model/request/api_delete_record_request.dart';
 import '../../../../model/request/api_device_status_request.dart';
 import '../../../../model/request/api_download_images_request.dart';
@@ -184,6 +185,7 @@ class OnlineApiRepository extends IRepository {
     ApiRollbackRequest: (_) => APIRoute.POST_ROLLBACK,
     ApiSortRequest: (_) => APIRoute.POST_SORT,
     ApiCloseContentRequest: (_) => APIRoute.POST_CLOSE_CONTENT,
+    ApiDalSaveRequest: (_) => APIRoute.POST_DAL_SAVE,
   };
 
   static const Map<String, ResponseFactory> maps = {
