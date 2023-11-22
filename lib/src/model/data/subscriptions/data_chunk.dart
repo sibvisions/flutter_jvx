@@ -43,7 +43,7 @@ class DataChunk {
   final int from;
 
   /// Contains record formats
-  Map<String, RecordFormat>? recordFormats;
+  final Map<String, RecordFormat>? recordFormats;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -57,6 +57,14 @@ class DataChunk {
     this.dataReadOnly,
     this.recordFormats,
   });
+
+  DataChunk.empty()
+      : data = {},
+        isAllFetched = false,
+        columnDefinitions = [],
+        from = 0,
+        dataReadOnly = null,
+        recordFormats = null;
 
   int getColumnIndex(String columnName) {
     return DataBook.getColumnIndex(columnDefinitions, columnName);
