@@ -45,8 +45,9 @@ export 'src/custom/custom_header.dart';
 export 'src/custom/custom_menu_item.dart';
 export 'src/custom/custom_screen.dart';
 export 'src/flutter_ui.dart';
-export 'src/mask/jvx_overlay.dart';
 // Mask
+export 'src/mask/jvx_overlay.dart';
+export 'src/mask/login/default/arc_clipper.dart';
 export 'src/mask/login/default/default_login.dart';
 export 'src/mask/login/login.dart';
 export 'src/mask/login/login_page.dart';
