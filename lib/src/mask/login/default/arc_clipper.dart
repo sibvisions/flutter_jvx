@@ -17,20 +17,37 @@
 import 'package:flutter/widgets.dart';
 
 class ArcClipper extends CustomClipper<Path> {
+  final bool reverse;
+
+  const ArcClipper([this.reverse = false]);
+
   @override
   Path getClip(Size size) {
     var path = Path();
-    path.lineTo(0.0, size.height - 30);
 
-    var firstControlPoint = Offset(size.width / 4, size.height);
-    var firstPoint = Offset(size.width / 2, size.height);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy, firstPoint.dx, firstPoint.dy);
+    double curveStartPointXCoord = reverse ? 30 : size.height - 30;
+    double curveEndPointXCoord = reverse ? 0 : size.height;
 
-    var secondControlPoint = Offset(size.width - (size.width / 4), size.height);
-    var secondPoint = Offset(size.width, size.height - 30);
-    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy, secondPoint.dx, secondPoint.dy);
+    var startPoint = Offset(0, curveStartPointXCoord);
+    var firstQuadrant = Offset(size.width / 4, curveEndPointXCoord);
+    var middlePoint = Offset(size.width / 2, curveEndPointXCoord);
+    var secondQuadrant = Offset(size.width - (size.width / 4), curveEndPointXCoord);
+    var endPoint = Offset(size.width, curveStartPointXCoord);
 
-    path.lineTo(size.width, 0.0);
+    if (!reverse) {
+      path.lineTo(startPoint.dx, startPoint.dy);
+      path.quadraticBezierTo(firstQuadrant.dx, firstQuadrant.dy, middlePoint.dx, middlePoint.dy);
+      path.quadraticBezierTo(secondQuadrant.dx, secondQuadrant.dy, endPoint.dx, endPoint.dy);
+      path.lineTo(size.width, 0.0);
+    } else {
+      path.lineTo(0.0, size.height);
+      path.lineTo(size.width, size.height);
+      path.lineTo(endPoint.dx, endPoint.dy);
+      path.quadraticBezierTo(secondQuadrant.dx, secondQuadrant.dy, middlePoint.dx, middlePoint.dy);
+      path.quadraticBezierTo(firstQuadrant.dx, firstQuadrant.dy, startPoint.dx, startPoint.dy);
+      path.lineTo(0.0, 0.0);
+    }
+
     path.close();
 
     return path;
