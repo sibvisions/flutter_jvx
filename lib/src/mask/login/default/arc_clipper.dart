@@ -18,14 +18,15 @@ import 'package:flutter/widgets.dart';
 
 class ArcClipper extends CustomClipper<Path> {
   final bool reverse;
+  final double curveHeight;
 
-  const ArcClipper([this.reverse = false]);
+  const ArcClipper([this.reverse = false, this.curveHeight = 30]);
 
   @override
   Path getClip(Size size) {
     var path = Path();
 
-    double curveStartPointXCoord = reverse ? 30 : size.height - 30;
+    double curveStartPointXCoord = reverse ? curveHeight : size.height - curveHeight;
     double curveEndPointXCoord = reverse ? 0 : size.height;
 
     var startPoint = Offset(0, curveStartPointXCoord);
