@@ -20,23 +20,20 @@ class FlChartModel extends FlComponentModel {
   /// Style constant for showing a line chart.
   static const int STYLE_LINES = 0;
 
-  /// Style constant for showing an area chart.
-  static const int STYLE_AREA = 1;
-
-  /// Style constant for showing a bar chart.
-  static const int STYLE_BARS = 2;
-
-  /// Style constant for showing a pie chart.
-  static const int STYLE_PIE = 3;
-
   /// Style constant for showing an step line chart.
   static const int STYLE_STEPLINES = 100;
+
+  /// Style constant for showing an area chart.
+  static const int STYLE_AREA = 1;
 
   /// Style constant for showing an area chart.
   static const int STYLE_STACKEDAREA = 101;
 
   /// Style constant for showing an area chart.
   static const int STYLE_STACKEDPERCENTAREA = 201;
+
+  /// Style constant for showing a bar chart.
+  static const int STYLE_BARS = 2;
 
   /// Style constant for showing a stacked bar chart.
   static const int STYLE_STACKEDBARS = 102;
@@ -59,6 +56,9 @@ class FlChartModel extends FlComponentModel {
   /// Style constant for showing a overlapped bar chart.
   static const int STYLE_OVERLAPPEDHBARS = 1302;
 
+  /// Style constant for showing a pie chart.
+  static const int STYLE_PIE = 3;
+
   /// Style constant for showing a ring chart.
   static const int STYLE_RING = 103;
 
@@ -66,13 +66,13 @@ class FlChartModel extends FlComponentModel {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  String title = "";
   String xAxisTitle = "";
   String yAxisTitle = "";
   String xColumnName = "";
+  String xColumnLabel = "";
   List<String> yColumnNames = [];
   List yColumnLabels = [];
-  String xColumnLabel = "";
-  String title = "";
   int chartStyle = 0;
 
   String dataProvider = "";
@@ -96,6 +96,13 @@ class FlChartModel extends FlComponentModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
+    title = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.title,
+      pDefault: defaultModel.title,
+      pCurrent: title,
+    );
+
     xAxisTitle = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.xAxisTitle,
@@ -109,11 +116,19 @@ class FlChartModel extends FlComponentModel {
       pDefault: defaultModel.yAxisTitle,
       pCurrent: yAxisTitle,
     );
+
     xColumnName = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.xColumnName,
       pDefault: defaultModel.xColumnName,
       pCurrent: xColumnName,
+    );
+
+    xColumnLabel = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.xColumnLabel,
+      pDefault: defaultModel.xColumnLabel,
+      pCurrent: xColumnLabel,
     );
 
     yColumnNames = getPropertyValue(
@@ -124,13 +139,6 @@ class FlChartModel extends FlComponentModel {
       pConversion: (value) => List<String>.from(value),
     );
 
-    title = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.title,
-      pDefault: defaultModel.title,
-      pCurrent: title,
-    );
-
     yColumnLabels = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.yColumnLabels,
@@ -139,18 +147,13 @@ class FlChartModel extends FlComponentModel {
       pConversion: (value) => List<String>.from(value),
     );
 
-    xColumnLabel = getPropertyValue(
-      pJson: pJson,
-      pKey: ApiObjectProperty.xColumnLabel,
-      pDefault: defaultModel.xColumnLabel,
-      pCurrent: xColumnLabel,
-    );
     dataProvider = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.dataBook,
       pDefault: defaultModel.dataProvider,
       pCurrent: dataProvider,
     );
+
     chartStyle = getPropertyValue(
       pJson: pJson,
       pKey: ApiObjectProperty.chartStyle,
@@ -174,12 +177,74 @@ class FlChartModel extends FlComponentModel {
     ]);
   }
 
-  bool isHorizontalBarStyle() {
+  bool isLineChart() {
+    return matchesStyles(const [
+      FlChartModel.STYLE_LINES,
+      FlChartModel.STYLE_STEPLINES,
+    ]);
+  }
+
+  bool isAreaChart() {
+    return matchesStyles(const [
+      FlChartModel.STYLE_AREA,
+      FlChartModel.STYLE_STACKEDAREA,
+      FlChartModel.STYLE_STACKEDPERCENTAREA,
+    ]);
+  }
+
+  bool isBarChart() {
+    return matchesStyles(const [
+      FlChartModel.STYLE_BARS,
+      FlChartModel.STYLE_HBARS,
+      FlChartModel.STYLE_OVERLAPPEDBARS,
+      FlChartModel.STYLE_OVERLAPPEDHBARS,
+      FlChartModel.STYLE_STACKEDBARS,
+      FlChartModel.STYLE_STACKEDHBARS,
+      FlChartModel.STYLE_STACKEDPERCENTBARS,
+      FlChartModel.STYLE_STACKEDPERCENTHBARS
+    ]);
+  }
+
+  bool isHorizontalBarChart() {
     return matchesStyles(const [
       FlChartModel.STYLE_HBARS,
+      FlChartModel.STYLE_OVERLAPPEDHBARS,
       FlChartModel.STYLE_STACKEDHBARS,
       FlChartModel.STYLE_STACKEDPERCENTHBARS,
+    ]);
+  }
+
+  bool isOverlappedBarChart() {
+    return matchesStyles(const [
+      FlChartModel.STYLE_OVERLAPPEDBARS,
       FlChartModel.STYLE_OVERLAPPEDHBARS,
     ]);
   }
+
+  bool isPercentChart() {
+    return matchesStyles(const [
+      FlChartModel.STYLE_STACKEDPERCENTAREA,
+      FlChartModel.STYLE_STACKEDPERCENTBARS,
+      FlChartModel.STYLE_STACKEDPERCENTHBARS,
+    ]);
+  }
+
+  bool isStackedChart() {
+    return matchesStyles(const [
+      FlChartModel.STYLE_STACKEDPERCENTAREA,
+      FlChartModel.STYLE_STACKEDPERCENTBARS,
+      FlChartModel.STYLE_STACKEDPERCENTHBARS,
+      FlChartModel.STYLE_STACKEDAREA,
+      FlChartModel.STYLE_STACKEDBARS,
+      FlChartModel.STYLE_STACKEDHBARS,
+    ]);
+  }
+
+  bool isCategoryChart(int dataType) =>
+      dataType == Types.CHAR ||
+      dataType == Types.LONGNVARCHAR ||
+      dataType == Types.LONGVARCHAR ||
+      dataType == Types.NCHAR ||
+      dataType == Types.NVARCHAR ||
+      dataType == Types.VARCHAR;
 }
