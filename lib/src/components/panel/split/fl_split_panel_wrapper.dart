@@ -154,7 +154,9 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         width: width,
         height: height,
         child: MouseRegion(
-          cursor: SystemMouseCursors.resizeLeftRight,
+          cursor: model.orientation == SplitOrientation.HORIZONTAL
+              ? SystemMouseCursors.resizeUpDown
+              : SystemMouseCursors.resizeLeftRight,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onVerticalDragStart: model.orientation == SplitOrientation.HORIZONTAL ? _dragStart : null,
@@ -188,7 +190,12 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
   }
 
   void _dragStart(DragStartDetails pDragDetails) {
-    mouseCursor = SystemMouseCursors.resizeLeftRight;
+    if (model.orientation == SplitOrientation.HORIZONTAL) {
+      mouseCursor = SystemMouseCursors.resizeUpDown;
+    } else {
+      mouseCursor = SystemMouseCursors.resizeLeftRight;
+    }
+
     setState(() {});
   }
 
