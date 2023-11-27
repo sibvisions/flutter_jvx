@@ -16,11 +16,8 @@
 
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
-// ignore: implementation_imports
-import 'package:graphic/src/encode/color.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
@@ -34,7 +31,6 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   final num highestStackedValue;
   final StreamController<Selected?>? selectionStream;
   final bool showLegend;
-  final bool indexAreCategory;
 
   static const colors = [
     Color(0xffe41a1c),
@@ -54,19 +50,34 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     Color(0xc8ffff33),
   ];
 
-  const FlChartWidget({
-    super.key,
-    required super.model,
-    required this.highestValue,
-    required this.highestStackedValue,
-    required this.data,
-    this.selectionStream,
-    this.showLegend = true,
-    this.indexAreCategory = false,
-  });
+  const FlChartWidget(
+      {super.key,
+      required super.model,
+      required this.highestValue,
+      required this.highestStackedValue,
+      required this.data,
+      this.selectionStream,
+      this.showLegend = true});
 
   @override
   Widget build(BuildContext context) {
+    Widget chart;
+
+    if (data.isEmpty) {
+      chart = Center(child: Text(FlutterUI.translate("No data to display")));
+    }
+
+    // There exist 4 types of "charts"
+    // Line; Area; Bars; Horizontal Bars;
+
+    if (model.isLineChart() || model.isAreaChart() || model.isBarChart()) {
+      chart = _buildChart(context);
+    } else if (model.isPieChart()) {
+      chart = Center(child: Text(FlutterUI.translate("Pie Chart")));
+    } else {
+      chart = Center(child: Text(FlutterUI.translate("Unknown Chart")));
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -78,238 +89,10 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
               style: const TextStyle(fontSize: 24),
             ),
           ),
-        Expanded(child: _buildChart(context)),
+        Expanded(
+          child: chart,
+        ),
       ],
-    );
-  }
-
-  Widget _buildChart(BuildContext context) {
-    if (data.isEmpty) {
-      return Center(child: Text(FlutterUI.translate("No data to display")));
-    }
-
-    // There exist 4 types of "charts"
-    // Line; Area; Bars; Horizontal Bars;
-
-    if (model.isLineChart()) {
-      return _buildLineChart(context);
-    } else if (model.isAreaChart()) {
-      return _buildAreaChart(context);
-    } else if (model.isBarChart()) {
-      if (model.isHorizontalBarChart()) {
-        return Center(child: Text(FlutterUI.translate("H Bar Chart")));
-      } else {
-        return Center(child: Text(FlutterUI.translate("Bar Chart")));
-      }
-    } else if (model.isPieChart()) {
-      return Center(child: Text(FlutterUI.translate("Pie Chart")));
-    } else {
-      return Center(child: Text(FlutterUI.translate("Unknown Chart")));
-    }
-  }
-
-  /// Builds the generic charts.
-  ///
-  /// Colors are mixed!
-  Widget _buildGenericChart({bool showLegend = false}) {
-    return Padding(
-      padding: showLegend ? const EdgeInsets.only(bottom: _legendPadding) : EdgeInsets.zero,
-      child: Chart<Map<String, dynamic>>(
-        data: data,
-        rebuild: true,
-        variables: {
-          "index": Variable(
-            accessor: (e) => e["index"] as num,
-          ),
-          for (String yColumnName in model.yColumnNames)
-            yColumnName: Variable(
-              accessor: (e) => e[yColumnName] as num,
-              scale:
-                  LinearScale(max: model.isStyle(FlChartModel.STYLE_OVERLAPPEDBARS) ? highestValue + 1 : highestValue),
-            ),
-        },
-        marks: [
-          for (String yColumnName in model.yColumnNames)
-            ..._createMark(
-              model.chartStyle,
-              model.yColumnNames.length - model.yColumnNames.indexOf(yColumnName),
-              yColumnName,
-            ),
-        ],
-        transforms: model.matchesStyles(const [
-          FlChartModel.STYLE_STACKEDPERCENTAREA,
-          FlChartModel.STYLE_STACKEDPERCENTBARS,
-          FlChartModel.STYLE_STACKEDPERCENTHBARS,
-        ])
-            ? [
-                for (String yColumnName in model.yColumnNames)
-                  Proportion(
-                    variable: yColumnName,
-                    as: 'percent_$yColumnName',
-                  ),
-              ]
-            : null,
-        coord: RectCoord(color: const Color(0x00ffffff)),
-        axes: [
-          Defaults.horizontalAxis,
-          Defaults.verticalAxis,
-        ],
-        selections: {
-          'select': PointSelection(
-            on: {
-              GestureType.tap,
-            },
-            clear: {
-              GestureType.doubleTap,
-            },
-            dim: Dim.x,
-          ),
-          'touchMove': PointSelection(
-            on: kIsWeb
-                ? {
-                    GestureType.tap,
-                    GestureType.hover,
-                  }
-                : {
-                    GestureType.longPress,
-                    GestureType.longPressMoveUpdate,
-                  },
-            clear: {
-              GestureType.mouseExit,
-            },
-            dim: Dim.x,
-            // toggle: true,
-          ),
-        },
-        tooltip: TooltipGuide(
-          multiTuples: false,
-          followPointer: [true, true],
-          align: Alignment.topLeft,
-          offset: const Offset(-20, -20),
-          variables: [
-            "index",
-            for (String yColumnLabel in model.yColumnLabels) yColumnLabel,
-          ],
-          layer: 100,
-          selections: {
-            "touchMove",
-          },
-        ),
-        crosshair: CrosshairGuide(
-          followPointer: [true, true],
-          layer: 100,
-          selections: {
-            "touchMove",
-            "select",
-          },
-        ),
-        annotations: showLegend
-            ? [
-                for (int i = 0; i < model.yColumnNames.length; i++)
-                  ..._buildAnnotation(
-                    i,
-                    model.yColumnNames.length,
-                    model.yColumnLabels[i],
-                  ),
-              ]
-            : null,
-      ),
-    );
-  }
-
-  /// Builds bar charts.
-  Widget _buildBarChart({bool showLegend = true}) {
-    return Padding(
-      padding: showLegend ? const EdgeInsets.only(bottom: _legendPadding) : EdgeInsets.zero,
-      child: Chart<Map<String, dynamic>>(
-        data: data,
-        rebuild: true,
-        variables: {
-          "group": Variable(
-            accessor: (e) => e["group"] as String,
-          ),
-          "index": Variable(
-            // toString() is necessary, don't ask me why.
-            accessor: (e) => e["index"].toString(),
-          ),
-          "value": Variable(
-            accessor: (e) => e["value"] as num,
-            scale: model.isStyle(FlChartModel.STYLE_STACKEDBARS) || model.isStyle(FlChartModel.STYLE_STACKEDHBARS)
-                ? LinearScale(
-                    max: highestStackedValue + 1,
-                  )
-                : LinearScale(
-                    max: highestValue + 1,
-                  ),
-          ),
-        },
-        marks: [
-          if (model.isStyle(FlChartModel.STYLE_BARS) || model.isStyle(FlChartModel.STYLE_HBARS))
-            IntervalMark(
-              position: Varset("index") * Varset("value") / Varset("group"),
-              color: ColorEncode(variable: "group", values: FlChartWidget.colors),
-              label: LabelEncode(encoder: (tuple) => Label(tuple["value"].toString())),
-              size: SizeEncode(value: 10),
-              modifiers: [DodgeModifier(ratio: 0.29)],
-              // selectionStream: selectionStream,
-            ),
-          if (model.isStyle(FlChartModel.STYLE_STACKEDBARS) || model.isStyle(FlChartModel.STYLE_STACKEDHBARS))
-            IntervalMark(
-              position: Varset("index") * Varset("value") / Varset("group"),
-              color: ColorEncode(variable: "group", values: FlChartWidget.colors),
-              label: LabelEncode(encoder: (tuple) => Label(tuple["value"].toString())),
-              modifiers: [StackModifier()],
-              // selectionStream: selectionStream,
-            ),
-          if (model.isStyle(FlChartModel.STYLE_STACKEDPERCENTBARS) ||
-              model.isStyle(FlChartModel.STYLE_STACKEDPERCENTHBARS))
-            // TODO
-            IntervalMark(
-              position: Varset("index") * Varset('percent') / Varset("group"),
-              color: ColorEncode(variable: "group", values: FlChartWidget.colors),
-              label: LabelEncode(encoder: (tuple) => Label(tuple["value"].toString())),
-              modifiers: [StackModifier()],
-              // selectionStream: selectionStream,
-            ),
-          if (model.isStyle(FlChartModel.STYLE_OVERLAPPEDBARS) || model.isStyle(FlChartModel.STYLE_OVERLAPPEDHBARS))
-            IntervalMark(
-              position: Varset("index") * Varset("value") / Varset("group"),
-              color: ColorEncode(variable: "group", values: FlChartWidget.colors),
-              label: LabelEncode(encoder: (tuple) => Label(tuple["value"].toString())),
-              // selectionStream: selectionStream,
-            ),
-        ],
-        transforms: model.isStyle(FlChartModel.STYLE_STACKEDPERCENTBARS) ||
-                model.isStyle(FlChartModel.STYLE_STACKEDPERCENTHBARS)
-            ? [
-                Proportion(
-                  variable: "value",
-                  as: 'percent',
-                ),
-              ]
-            : null,
-        // coord: RectCoord(transposed: model.isHorizontalBarStyle()),
-        // axes: model.isHorizontalBarStyle()
-        //     ? [
-        //         Defaults.verticalAxis,
-        //         Defaults.horizontalAxis,
-        //       ]
-        //     : [
-        //         Defaults.horizontalAxis,
-        //         Defaults.verticalAxis,
-        //       ],
-        // Selection has same problem as single mark chart. Solution -> ? as multi marks break StackModifier.
-        annotations: showLegend
-            ? [
-                for (int i = 0; i < model.yColumnNames.length; i++)
-                  ..._buildAnnotation(
-                    i,
-                    model.yColumnNames.length,
-                    model.yColumnLabels[i],
-                  ),
-              ]
-            : null,
-      ),
     );
   }
 
@@ -546,206 +329,176 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     );
   }
 
-  List<Mark<Shape>> _createMark(int chartStyle, int layer, String yColumnName) {
-    switch (chartStyle) {
-      case FlChartModel.STYLE_STEPLINES:
-      // StepLines not possible: https://github.com/entronad/graphic/issues/182
-      case FlChartModel.STYLE_LINES:
-        return _createLineMark(layer, yColumnName);
-      case FlChartModel.STYLE_OVERLAPPEDBARS:
-        return _createOverlappedBarMark(layer, yColumnName);
-      case FlChartModel.STYLE_STACKEDPERCENTAREA:
-        // TODO implement correctly
-        return _createStackedPercentAreaMark(layer, yColumnName);
-      case FlChartModel.STYLE_STACKEDPERCENTBARS:
-        // TODO implement correctly
-        return _createStackedPercentBarMark(layer, yColumnName);
-      case FlChartModel.STYLE_STACKEDPERCENTHBARS:
-        // TODO implement correctly
-        return _createStackedPercentHBarMark(layer, yColumnName);
-      case FlChartModel.STYLE_AREA:
-      default:
-        return _createAreaMark(layer, yColumnName);
-    }
-  }
-
-  List<Mark<Shape>> _createLineMark(int layer, String yColumnName) {
-    return [
-      LineMark(
-        position: Varset("index") * Varset(yColumnName),
-        shape: ShapeEncode(value: BasicLineShape(dash: [5, 2])),
-        color: ColorEncode(
-          variable: yColumnName,
-          values: FlChartWidget.colors,
-        ),
-        layer: layer,
-        selectionStream: selectionStream,
-      ),
-      PointMark(
-        position: Varset("index") * Varset(yColumnName),
-        size: SizeEncode(value: 12),
-        color: ColorEncode(
-          encoder: (_) {
-            return ContinuousColorConv(
-              FlChartWidget.colors,
-              _defaultStops(FlChartWidget.colors.length),
-            ).convert(model.yColumnNames.indexOf(yColumnName) / FlChartWidget.colors.length);
-          },
-        ),
-      ),
-    ];
-  }
-
-  List<Mark<Shape>> _createAreaMark(int layer, String yColumnName) {
-    return [
-      AreaMark(
-        position: Varset("index") * Varset(yColumnName),
-        color: ColorEncode(
-          variable: yColumnName,
-          values: FlChartWidget.colors,
-        ),
-        layer: layer,
-        selectionStream: selectionStream,
-      ),
-    ];
-  }
-
-  List<Mark<Shape>> _createOverlappedBarMark(int layer, String yColumnName) {
-    return [
-      IntervalMark(
-        position: Varset("index") * Varset(yColumnName),
-        label: LabelEncode(encoder: (tuple) => Label(tuple[yColumnName].toString())),
-        color: ColorEncode(
-          variable: yColumnName,
-          values: FlChartWidget.colors,
-        ),
-        layer: layer,
-        selectionStream: selectionStream,
-      )
-    ];
-  }
-
-  /// Currently unused.
-  List<Mark<Shape>> _createStackedPercentAreaMark(int layer, String yColumnName) {
-    return [
-      AreaMark(
-        position: Varset("index") * Varset(yColumnName),
-        color: ColorEncode(
-          variable: yColumnName,
-          values: FlChartWidget.colors,
-        ),
-        layer: layer,
-        modifiers: [StackModifier()],
-        selectionStream: selectionStream,
-      ),
-    ];
-  }
-
-  /// Currently unused.
-  List<Mark<Shape>> _createStackedPercentBarMark(int layer, String yColumnName) {
-    return [
-      IntervalMark(
-        position: Varset("index") * Varset('percent_$yColumnName'),
-        label: LabelEncode(encoder: (tuple) => Label(tuple[yColumnName].toString())),
-        color: ColorEncode(
-          variable: yColumnName,
-          values: FlChartWidget.colors,
-        ),
-        modifiers: [StackModifier()],
-        selectionStream: selectionStream,
-      )
-    ];
-  }
-
-  /// Currently unused.
-  List<Mark<Shape>> _createStackedPercentHBarMark(int layer, String yColumnName) {
-    return [
-      IntervalMark(
-        position: Varset("index") * Varset('percent_$yColumnName'),
-        label: LabelEncode(encoder: (tuple) => Label(tuple[yColumnName].toString())),
-        color: ColorEncode(
-          variable: yColumnName,
-          values: FlChartWidget.colors,
-        ),
-        modifiers: [StackModifier()],
-        selectionStream: selectionStream,
-      )
-    ];
-  }
-
-  /// Gets default equidistant stops.
-  ///
-  /// Copied from `graphic-2.2.0/lib/src/encode/channel.dart`.
-  List<double> _defaultStops(int length) {
-    final step = 1 / (length - 1);
-    final rst = <double>[0];
-    for (var i = 1; i < length - 1; i++) {
-      rst.add(step * i);
-    }
-    rst.add(1);
-    return rst;
-  }
-
-  /// Currently unused as this orders the layers randomly and only shows the tooltip for the top-most mark.
-  Chart<Map<String, dynamic>> _buildSingleMarkLineChart() {
-    return Chart<Map<String, dynamic>>(
-      data: data,
-      variables: {
-        "index": Variable(
-          accessor: (e) => e["index"] as num,
-        ),
-        "value": Variable(
-          accessor: (e) => e["value"] as num,
-        ),
-        "group": Variable(
-          accessor: (e) => e["group"] as String,
-        ),
+  Widget _buildChart(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Chart<Map<String, dynamic>>(
+          data: data,
+          variables: getVariables(),
+          marks: getMarks(context, constraints),
+          transforms: getPercentTransformIfNecessary(),
+          coord: getCoordinateSystem(context),
+          axes: getAxes(),
+          selections: getSelections(),
+        );
       },
-      marks: [
-        LineMark(
-          position: Varset("index") * Varset("value") / Varset("group"),
-          shape: ShapeEncode(value: BasicLineShape(dash: [5, 2])),
-          // size: SizeEncode(value: 0.9),
-          selected: {
-            'touchMove': {1, 2, 3},
-          },
-          color: colorEncode(),
-          layer: 0,
-        ),
-        AreaMark(
-          position: Varset("index") * Varset("value") / Varset("group"),
-          color: colorEncode(),
-          layer: 0,
-        ),
-      ],
-      coord: RectCoord(color: const Color(0x00ffffff)),
-      axes: [
-        Defaults.horizontalAxis,
-        Defaults.verticalAxis,
-      ],
-      selections: {
-        'touchMove': PointSelection(
-          // variable: "Category",
-          on: {
-            GestureType.scaleUpdate,
-            GestureType.tapDown,
-            GestureType.longPressMoveUpdate,
-          },
-          dim: Dim.x,
-        )
-      },
-      tooltip: TooltipGuide(
-        followPointer: [false, true],
-        align: Alignment.topLeft,
-        offset: const Offset(-20, -20),
-        variables: [
-          "index",
-          "value",
-          "group",
-        ],
-      ),
-      crosshair: CrosshairGuide(followPointer: [false, true]),
     );
+  }
+
+  List<AxisGuide<dynamic>> getAxes() {
+    return [
+      Defaults.horizontalAxis,
+      Defaults.verticalAxis,
+    ];
+  }
+
+  /// Default variables for the charts.
+  Map<String, Variable<Map<String, dynamic>, dynamic>> getVariables() {
+    // Most graphs work with a linear scale for the index, but some charts need an ordinal scale
+    // Linear is when the index is a num, ordinal is when the index is a string
+    // Because "numbers" as a "string" are already correctly sorted, we can just always use an ordinal scale.
+    // E.g. A - B - C will be sorted to numbers with an ordinal scale.
+    // E.g. 1 - 2 - 3 will also be sorted correctly.
+    return {
+      "index": Variable(
+        accessor: (map) => map["index"].toString(),
+      ),
+      "value": Variable(
+        accessor: (map) => map["value"] as num,
+        scale: LinearScale(min: 0, max: (model.isStackedChart() ? highestStackedValue : highestValue) * 1.05),
+      ),
+      "group": Variable(
+        accessor: (map) => map["group"] as String,
+      ),
+    };
+  }
+
+  List<Mark> getMarks(BuildContext context, BoxConstraints constraints) {
+    List<Mark> marks = [];
+
+    if (model.isLineChart() || model.isAreaChart()) {
+      marks.add(
+        LineMark(
+          position: getMarkPositions(),
+          shape: ShapeEncode(value: BasicLineShape()),
+          color: getColors(),
+          layer: 1,
+          modifiers: model.isStackedChart() ? [StackModifier()] : null,
+        ),
+      );
+
+      if (model.isLineChart()) {
+        marks.add(
+          PointMark(
+            position: getMarkPositions(),
+            color: getColors(),
+            layer: 2,
+          ),
+        );
+      }
+    }
+
+    if (model.isAreaChart()) {
+      AreaMark areaMark = AreaMark(
+        position: getMarkPositions(),
+        color: getTransparentColors(),
+        modifiers: model.isStackedChart() ? [StackModifier()] : null,
+        layer: 0,
+      );
+
+      marks.add(areaMark);
+    }
+
+    if (model.isBarChart()) {
+      // 20 is the bottom padding and 40 is the left padding.
+      int countOfBars = data.map((e) => e["index"]).toSet().length;
+
+      double sizeToUse =
+          (model.isHorizontalBarChart() ? constraints.maxHeight - 20 : constraints.maxWidth - 40) - countOfBars;
+      double sizeOfOneBar = sizeToUse / countOfBars;
+
+      int? countOfGroups;
+      if (!model.isStackedChart() && !model.isOverlappedBarChart()) {
+        // individual bars
+        countOfGroups = data.map((e) => e["group"]).toSet().length;
+        sizeOfOneBar = sizeOfOneBar / countOfGroups;
+      }
+
+      List<Modifier>? modifiers;
+
+      if (model.isStackedChart()) {
+        modifiers = [StackModifier()];
+      } else if (!model.isOverlappedBarChart()) {
+        modifiers = [DodgeModifier(symmetric: false)];
+      }
+
+      IntervalMark intervalMark = IntervalMark(
+        position: getMarkPositions(),
+        color: model.isOverlappedBarChart() ? getTransparentColors() : getColors(),
+        size: SizeEncode(
+          value: sizeOfOneBar,
+        ),
+        modifiers: modifiers,
+        layer: 0,
+      );
+
+      marks.add(intervalMark);
+    }
+
+    return marks;
+  }
+
+  Varset getMarkPositions() {
+    if (model.isPercentChart()) {
+      return Varset("index") * Varset("percent") / Varset("group");
+    }
+
+    return Varset("index") * Varset("value") / Varset("group");
+  }
+
+  ColorEncode getTransparentColors() {
+    return ColorEncode(
+      variable: "group",
+      values: colorsTransparent,
+    );
+  }
+
+  ColorEncode getColors() {
+    return ColorEncode(
+      variable: "group",
+      values: colors,
+    );
+  }
+
+  Coord getCoordinateSystem(BuildContext context) {
+    return RectCoord(
+      transposed: model.isHorizontalBarChart(),
+      color: Theme.of(context).colorScheme.background,
+    );
+  }
+
+  List<VariableTransform>? getPercentTransformIfNecessary() {
+    if (model.isPercentChart()) {
+      return [
+        Proportion(
+          variable: "value",
+          as: "percent",
+          nest: Varset("index"),
+        ),
+      ];
+    }
+  }
+
+  Map<String, Selection> getSelections() {
+    return {
+      'select': PointSelection(
+        nearest: false,
+        on: {
+          GestureType.tap,
+        },
+        dim: Dim.x,
+      )
+    };
   }
 
   List<Annotation> _buildAnnotation(int i, int length, String label) {
@@ -770,121 +523,5 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
         anchor: (size) => Offset(getHorizontalPosition(size, i, length), size.height + 10),
       ),
     ];
-  }
-
-  Widget _buildLineChart(BuildContext context) {
-    return Chart<Map<String, dynamic>>(
-      data: data,
-      variables: variables(),
-      marks: [
-        LineMark(
-          position: position(),
-          shape: ShapeEncode(value: BasicLineShape()),
-          color: colorEncode(),
-        ),
-        PointMark(
-          position: position(),
-          color: colorEncode(),
-        )
-      ],
-      coord: coord(context),
-      axes: [
-        Defaults.horizontalAxis,
-        Defaults.verticalAxis,
-      ],
-      selections: {
-        'select': PointSelection(
-          nearest: false,
-          on: {
-            GestureType.tap,
-          },
-          dim: Dim.x,
-        )
-      },
-    );
-  }
-
-  Widget _buildAreaChart(BuildContext context) {
-    AreaMark areaMark = AreaMark(
-      position: position(),
-      color: colorEncode(),
-    );
-
-    if (model.isStackedChart()) {
-      areaMark.modifiers = [StackModifier()];
-    }
-
-    return Chart<Map<String, dynamic>>(
-      data: data,
-      rebuild: true,
-      variables: variables(),
-      marks: [areaMark],
-      transforms: transform(),
-      coord: coord(context),
-      axes: [
-        Defaults.horizontalAxis,
-        Defaults.verticalAxis,
-      ],
-      selections: {
-        'select': PointSelection(
-          nearest: false,
-          on: {
-            GestureType.tap,
-          },
-          dim: Dim.x,
-        )
-      },
-    );
-  }
-
-  /// Default variables for the charts.
-  Map<String, Variable<Map<String, dynamic>, dynamic>> variables() {
-    // indexAreCategory => must replace whole "accessor" function,
-    // as the return type gets checked via type check and not actual value.
-    return {
-      "index": Variable(
-        accessor: indexAreCategory ? ((e) => e["index"] as String) : ((e) => e["index"] as num),
-      ),
-      "value": Variable(
-        accessor: (e) => e["value"] as num,
-        scale: LinearScale(min: 0, max: maxValue()),
-      ),
-      "group": Variable(
-        accessor: (e) => e["group"] as String,
-      ),
-    };
-  }
-
-  num maxValue() => (model.isStackedChart() ? highestStackedValue : highestValue) * 1.05;
-
-  Varset position() {
-    if (model.isPercentChart()) {
-      return Varset("index") * Varset("percent") / Varset("group");
-    }
-
-    return Varset("index") * Varset("value") / Varset("group");
-  }
-
-  ColorEncode colorEncode() {
-    return ColorEncode(
-      variable: "group",
-      values: colors,
-    );
-  }
-
-  Coord coord(BuildContext context) {
-    return RectCoord(color: Theme.of(context).colorScheme.background);
-  }
-
-  List<VariableTransform>? transform() {
-    if (model.isPercentChart()) {
-      return [
-        Proportion(
-          variable: "value",
-          as: "percent",
-          nest: Varset("index"),
-        ),
-      ];
-    }
   }
 }

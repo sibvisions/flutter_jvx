@@ -99,8 +99,12 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
       postFrameCallback(context);
     });
 
+    if (model.yColumnNames.isEmpty && model.xColumnName.isEmpty) {
+      return wrapWidget(child: Center(child: Text("Invalid Chart: ${model.name}")));
+    }
+
     if (dataChunk == null || metaData == null) {
-      return const Center(child: CircularProgressIndicator());
+      return wrapWidget(child: const Center(child: CircularProgressIndicator()));
     }
 
     return wrapWidget(
@@ -110,7 +114,6 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
         highestValue: highestValue,
         highestStackedValue: highestStackedValue,
         selectionStream: selectionStream,
-        indexAreCategory: isCategoryChart,
       ),
     );
   }
@@ -167,7 +170,6 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     chartData = [];
     highestValue = 1;
     highestStackedValue = 1;
-    isCategoryChart = false;
 
     if (model.isPieChart()) {
     } else {
@@ -185,8 +187,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
       //   3      2     B
       // Line1 has the coordinates of A=3, B=5
       // Line2 has the coordinates of A=2, B=4
-      isCategoryChart = model.isCategoryChart(dataChunk.columnDefinitions[indexColumnName].dataTypeIdentifier);
-      if (isCategoryChart) {
+      if (model.isCategoryChart(dataChunk.columnDefinitions[indexColumnName].dataTypeIdentifier)) {
         LinkedHashMap<String, LinkedHashMap<String, num>> mapOfIndexRows = LinkedHashMap();
 
         for (var dataRow in sortedDataRows) {
