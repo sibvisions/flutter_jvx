@@ -69,8 +69,14 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     selectionStream = StreamController.broadcast();
 
     selectionStream.stream.listen((event) {
-      if (event == null || event.containsKey("select")) {
-        onIndexSelected(event?['select']?.firstOrNull);
+      if (event != null) {
+        print("Selected");
+        for (var entry in event.entries) {
+          print("${entry.key}: ${entry.value}");
+        }
+        // No idea how to transpose these values back to the index of the dataChunk or
+        // find the corresponding chartData entry.
+        // onIndexSelected(????)
       }
     });
 
@@ -147,8 +153,10 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
   void receiveSelectedChartData(DataRecord? pDataRecord) {
     dataRecord = pDataRecord;
 
-    computeData();
-    setState(() {});
+    if (model.isPieChart() && model.yColumnLabels.length > 1) {
+      computeData();
+      setState(() {});
+    }
   }
 
   void receiveMetaData(DalMetaData pMetaData) {
@@ -160,6 +168,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
   void computeData() {
     final dataChunk = this.dataChunk;
+    final dataRecord = this.dataRecord;
 
     if (metaData == null || dataChunk == null) {
       return;
@@ -171,10 +180,50 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     highestValue = 1;
     highestStackedValue = 1;
 
-    if (model.isPieChart()) {
-    } else {
-      int indexColumnName = dataChunk.getColumnIndex(model.xColumnName);
+    int indexColumnIndex = dataChunk.getColumnIndex(model.xColumnName);
 
+    if (model.isPieChart()) {
+      if (model.yColumnLabels.length == 1) {
+        LinkedHashMap<String, num> mapOfIndexValues = LinkedHashMap();
+        int valueColumnIndex = dataChunk.getColumnIndex(model.yColumnNames.first);
+
+        for (var dataRow in sortedDataRows) {
+          String index = dataRow[indexColumnIndex].toString();
+          num value = parseToNum(dataRow[valueColumnIndex]);
+
+          mapOfIndexValues[index] = (mapOfIndexValues[index] ?? 0.0) + value;
+        }
+
+        highestStackedValue = 0.0;
+        for (MapEntry entry in mapOfIndexValues.entries) {
+          chartData.add(
+            {
+              "index": entry.key,
+              "value": entry.value,
+            },
+          );
+
+          highestStackedValue += entry.value;
+          highestValue = max(highestValue, entry.value);
+        }
+      } else if (dataRecord != null && dataChunk.data.containsKey(dataRecord.index)) {
+        var dataRow = dataChunk.data[dataRecord.index]!;
+
+        for (String valueColumnName in model.yColumnNames) {
+          num value = parseToNum(dataRow[dataChunk.getColumnIndex(valueColumnName)]);
+
+          chartData.add(
+            {
+              "index": valueColumnName,
+              "value": value,
+            },
+          );
+
+          highestStackedValue += value;
+          highestValue = max(highestValue, value);
+        }
+      }
+    } else {
       // Category charts have a string column as their xColumn (index column).
       // The index for the chart data is still the value inside the column but the value can
       // occur multiple times. The values of the yColumns (value columns) must the added together so every
@@ -187,11 +236,11 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
       //   3      2     B
       // Line1 has the coordinates of A=3, B=5
       // Line2 has the coordinates of A=2, B=4
-      if (model.isCategoryChart(dataChunk.columnDefinitions[indexColumnName].dataTypeIdentifier)) {
+      if (model.isCategoryChart(dataChunk.columnDefinitions[indexColumnIndex].dataTypeIdentifier)) {
         LinkedHashMap<String, LinkedHashMap<String, num>> mapOfIndexRows = LinkedHashMap();
 
         for (var dataRow in sortedDataRows) {
-          String index = dataRow[indexColumnName];
+          String index = dataRow[indexColumnIndex];
 
           for (String groupName in model.yColumnNames) {
             num value = parseToNum(dataRow[dataChunk.getColumnIndex(groupName)]);
@@ -225,7 +274,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
       } else {
         for (var dataRow in sortedDataRows) {
           num sumOfRowValues = 0;
-          num index = parseToNum(dataRow[indexColumnName]);
+          num index = parseToNum(dataRow[indexColumnIndex]);
 
           for (String groupName in model.yColumnNames) {
             num value = parseToNum(dataRow[dataChunk.getColumnIndex(groupName)]);

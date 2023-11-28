@@ -72,7 +72,7 @@ class FlChartModel extends FlComponentModel {
   String xColumnName = "";
   String xColumnLabel = "";
   List<String> yColumnNames = [];
-  List yColumnLabels = [];
+  List<String> yColumnLabels = [];
   int chartStyle = 0;
 
   String dataProvider = "";

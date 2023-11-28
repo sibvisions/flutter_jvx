@@ -16,11 +16,14 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 
 import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
@@ -30,7 +33,6 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   final num highestValue;
   final num highestStackedValue;
   final StreamController<Selected?>? selectionStream;
-  final bool showLegend;
 
   static const colors = [
     Color(0xffe41a1c),
@@ -50,14 +52,14 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     Color(0xc8ffff33),
   ];
 
-  const FlChartWidget(
-      {super.key,
-      required super.model,
-      required this.highestValue,
-      required this.highestStackedValue,
-      required this.data,
-      this.selectionStream,
-      this.showLegend = true});
+  const FlChartWidget({
+    super.key,
+    required super.model,
+    required this.highestValue,
+    required this.highestStackedValue,
+    required this.data,
+    this.selectionStream,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +72,14 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     // There exist 4 types of "charts"
     // Line; Area; Bars; Horizontal Bars;
 
-    if (model.isLineChart() || model.isAreaChart() || model.isBarChart()) {
+    if (model.isLineChart() || model.isAreaChart() || model.isBarChart() || model.isPieChart()) {
       chart = _buildChart(context);
-    } else if (model.isPieChart()) {
-      chart = Center(child: Text(FlutterUI.translate("Pie Chart")));
     } else {
-      chart = Center(child: Text(FlutterUI.translate("Unknown Chart")));
+      chart = Center(
+        child: Text(
+          FlutterUI.translate("Unknown Chart"),
+        ),
+      );
     }
 
     return Column(
@@ -96,256 +100,41 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     );
   }
 
-  /// Builds pie charts.
-  Widget _buildPieChart({bool showLegend = true}) {
-    if (model.yColumnNames.length == 1) {
-      return Padding(
-        padding: showLegend ? const EdgeInsets.only(bottom: _legendPadding) : EdgeInsets.zero,
-        child: Chart<Map<String, dynamic>>(
-          data: data,
-          rebuild: true,
-          variables: {
-            "index": Variable(
-              accessor: (e) => e["index"].toString(),
-            ),
-            "value": Variable(
-              accessor: (e) => e["value"] as num,
-            ),
-          },
-          transforms: [
-            Proportion(
-              variable: "value",
-              as: 'percent',
-            ),
-          ],
-          marks: [
-            IntervalMark(
-              position: Varset('percent') / Varset("index"),
-              label: LabelEncode(
-                encoder: (tuple) => Label(
-                  "${tuple["index"]}: ${(tuple['percent'] * 100).round()}%",
-                  LabelStyle(
-                    align: Alignment.center,
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xe6ffffff),
-                    ),
-                  ),
-                ),
-              ),
-              color: ColorEncode(variable: "index", values: FlChartWidget.colors),
-              modifiers: [StackModifier()],
-              // selectionStream: selectionStream,
-            ),
-          ],
-          coord: PolarCoord(
-            transposed: true,
-            dimCount: 1,
-            startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.80 : 0,
-          ),
-          // Selection broken, wrong Tooltip -> disabled
-          // selections: {
-          //   'select': PointSelection(
-          //     on: {
-          //       GestureType.tap,
-          //     },
-          //     clear: {
-          //       GestureType.doubleTap,
-          //     },
-          //   ),
-          // },
-          // tooltip: TooltipGuide(
-          //   multiTuples: true,
-          //   offset: const Offset(-20, -20),
-          //   align: Alignment.bottomRight,
-          // ),
-          // crosshair: CrosshairGuide(
-          //   followPointer: [true, true],
-          //   layer: 100,
-          //   selections: {
-          //     "touchMove",
-          //     "select",
-          //   },
-          // ),
-          annotations: showLegend
-              ? [
-                  if (model.yColumnNames.length > 1)
-                    for (int i = 0; i < model.yColumnNames.length; i++)
-                      ..._buildAnnotation(
-                        i,
-                        model.yColumnNames.length,
-                        model.yColumnLabels[i],
-                      ),
-                  if (model.yColumnNames.length == 1)
-                    for (int i = 0; i < data.length; i++)
-                      ..._buildAnnotation(
-                        i,
-                        data.length,
-                        data[i]["index"],
-                      ),
-                ]
-              : null,
-        ),
-      );
-    }
-
-    return Padding(
-      padding: showLegend ? const EdgeInsets.only(bottom: _legendPadding) : EdgeInsets.zero,
-      child: Chart<Map<String, dynamic>>(
-        data: data,
-        rebuild: true,
-        variables: {
-          // "group": Variable(
-          //   accessor: (e) => e["group"] as String,
-          // ),
-          "index": Variable(
-            accessor: (e) => e["index"].toString(),
-          ),
-          "value": Variable(
-            accessor: (e) => e["value"] as num,
-          ),
-        },
-        transforms: [
-          Proportion(
-            variable: "value",
-            as: 'percent',
-          ),
-        ],
-        marks: [
-          IntervalMark(
-            position: Varset('percent') / Varset("index"),
-            label: LabelEncode(
-              encoder: (tuple) => Label(
-                "${tuple["index"]}: ${(tuple['percent'] * 100).round()}%",
-                LabelStyle(
-                  align: Alignment.center,
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xe6ffffff),
-                  ),
-                ),
-              ),
-            ),
-            color: ColorEncode(variable: "index", values: FlChartWidget.colors),
-            modifiers: [StackModifier()],
-            // selectionStream: selectionStream,
-          ),
-        ],
-        coord: PolarCoord(
-          transposed: true,
-          dimCount: 1,
-          startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.80 : 0,
-        ),
-        annotations: showLegend
-            ? [
-                if (model.yColumnNames.length > 1)
-                  for (int i = 0; i < model.yColumnNames.length; i++)
-                    ..._buildAnnotation(
-                      i,
-                      model.yColumnNames.length,
-                      model.yColumnLabels[i],
-                    ),
-                if (model.yColumnNames.length == 1)
-                  for (int i = 0; i < data.length; i++)
-                    ..._buildAnnotation(
-                      i,
-                      data.length,
-                      data[i]["index"],
-                    ),
-              ]
-            : null,
-      ),
-    );
-
-    return Padding(
-      padding: showLegend ? const EdgeInsets.only(bottom: _legendPadding) : EdgeInsets.zero,
-      child: Chart<Map<String, dynamic>>(
-        data: data,
-        rebuild: true,
-        variables: {
-          "index": Variable(
-            accessor: (e) => e["index"].toString(),
-          ),
-          for (String yColumnName in model.yColumnNames)
-            yColumnName: Variable(
-              accessor: (e) => e[yColumnName] as num,
-            ),
-        },
-        transforms: [
-          for (String yColumnName in model.yColumnNames)
-            Proportion(
-              variable: yColumnName,
-              as: 'percent_$yColumnName',
-            ),
-        ],
-        marks: [
-          for (String yColumnName in model.yColumnNames)
-            IntervalMark(
-              position: Varset('percent_$yColumnName') / Varset("index"),
-              label: LabelEncode(
-                encoder: (tuple) => Label(
-                  "$yColumnName: ${(tuple['percent_$yColumnName'] * 100).round()}%",
-                  LabelStyle(
-                    align: Alignment.center,
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xe6ffffff),
-                    ),
-                  ),
-                ),
-              ),
-              color: ColorEncode(variable: yColumnName, values: FlChartWidget.colors),
-              // modifiers: [StackModifier()],
-              // selectionStream: selectionStream,
-            ),
-        ],
-        coord: PolarCoord(
-          transposed: true,
-          dimCount: 1,
-          startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.80 : 0,
-        ),
-        annotations: showLegend
-            ? [
-                if (model.yColumnNames.length > 1)
-                  for (int i = 0; i < model.yColumnNames.length; i++)
-                    ..._buildAnnotation(
-                      i,
-                      model.yColumnNames.length,
-                      model.yColumnLabels[i],
-                    ),
-                if (model.yColumnNames.length == 1)
-                  for (int i = 0; i < data.length; i++)
-                    ..._buildAnnotation(
-                      i,
-                      data.length,
-                      data[i]["index"],
-                    ),
-              ]
-            : null,
-      ),
-    );
-  }
-
   Widget _buildChart(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Chart<Map<String, dynamic>>(
-          data: data,
-          variables: getVariables(),
-          marks: getMarks(context, constraints),
-          transforms: getPercentTransformIfNecessary(),
-          coord: getCoordinateSystem(context),
-          axes: getAxes(),
-          selections: getSelections(),
+        return Padding(
+          // Annotation needs some padding, otherwise the labels paint outside the boundaries.
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Chart<Map<String, dynamic>>(
+            data: data,
+            variables: createVariables(),
+            marks: createMarks(context, constraints),
+            transforms: createPercentTransformIfNecessary(),
+            coord: createCoordinateSystem(context),
+            axes: createAxes(),
+            selections: createSelections(),
+            annotations: createAnnotations(),
+          ),
         );
       },
     );
   }
 
-  List<AxisGuide<dynamic>> getAxes() {
+  List<AxisGuide<dynamic>>? createAxes() {
+    if (model.isPieChart()) {
+      return null;
+    }
+
+    // Must switch them for horizontal bar charts
+    // Otherwise the label offset is wrong
+    if (model.isHorizontalBarChart()) {
+      return [
+        Defaults.verticalAxis,
+        Defaults.horizontalAxis,
+      ];
+    }
+
     return [
       Defaults.horizontalAxis,
       Defaults.verticalAxis,
@@ -353,7 +142,23 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   }
 
   /// Default variables for the charts.
-  Map<String, Variable<Map<String, dynamic>, dynamic>> getVariables() {
+  Map<String, Variable<Map<String, dynamic>, dynamic>> createVariables() {
+    if (model.isPieChart()) {
+      return {
+        "index": Variable(
+          accessor: (map) => map["index"].toString(),
+        ),
+        "value": Variable(
+          accessor: (map) => map["value"] as num,
+          // scale: LinearScale(
+          //   min: 0,
+          //   max: highestStackedValue,
+          //   title: model.yAxisTitle,
+          // ),
+        ),
+      };
+    }
+
     // Most graphs work with a linear scale for the index, but some charts need an ordinal scale
     // Linear is when the index is a num, ordinal is when the index is a string
     // Because "numbers" as a "string" are already correctly sorted, we can just always use an ordinal scale.
@@ -362,10 +167,15 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     return {
       "index": Variable(
         accessor: (map) => map["index"].toString(),
+        scale: OrdinalScale(title: model.xAxisTitle),
       ),
       "value": Variable(
         accessor: (map) => map["value"] as num,
-        scale: LinearScale(min: 0, max: (model.isStackedChart() ? highestStackedValue : highestValue) * 1.05),
+        scale: LinearScale(
+          min: 0,
+          max: (model.isStackedChart() ? highestStackedValue : highestValue) * 1.05,
+          title: model.yAxisTitle,
+        ),
       ),
       "group": Variable(
         accessor: (map) => map["group"] as String,
@@ -373,48 +183,34 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     };
   }
 
-  List<Mark> getMarks(BuildContext context, BoxConstraints constraints) {
+  List<Mark> createMarks(BuildContext context, BoxConstraints constraints) {
     List<Mark> marks = [];
 
-    if (model.isLineChart() || model.isAreaChart()) {
-      marks.add(
-        LineMark(
-          position: getMarkPositions(),
-          shape: ShapeEncode(value: BasicLineShape()),
-          color: getColors(),
-          layer: 1,
-          modifiers: model.isStackedChart() ? [StackModifier()] : null,
-        ),
-      );
+    if (model.isLineChart()) {
+      marks.add(LineMark(color: getColors()));
 
-      if (model.isLineChart()) {
-        marks.add(
-          PointMark(
-            position: getMarkPositions(),
-            color: getColors(),
-            layer: 2,
-          ),
-        );
-      }
+      marks.add(PointMark(color: getColors(), selectionStream: selectionStream));
     }
 
     if (model.isAreaChart()) {
-      AreaMark areaMark = AreaMark(
-        position: getMarkPositions(),
-        color: getTransparentColors(),
-        modifiers: model.isStackedChart() ? [StackModifier()] : null,
-        layer: 0,
-      );
-
-      marks.add(areaMark);
+      marks.add(LineMark(color: getColors()));
+      marks.add(AreaMark(selectionStream: selectionStream));
     }
 
     if (model.isBarChart()) {
       // 20 is the bottom padding and 40 is the left padding.
       int countOfBars = data.map((e) => e["index"]).toSet().length;
 
-      double sizeToUse =
-          (model.isHorizontalBarChart() ? constraints.maxHeight - 20 : constraints.maxWidth - 40) - countOfBars;
+      double sizeToUse;
+      if (model.isHorizontalBarChart()) {
+        sizeToUse = constraints.maxHeight - 20;
+        sizeToUse = sizeToUse * 0.95; // same as the vertical range in the rect coord
+      } else {
+        sizeToUse = constraints.maxWidth - 40;
+      }
+
+      // space between the bars
+      sizeToUse -= countOfBars;
       double sizeOfOneBar = sizeToUse / countOfBars;
 
       int? countOfGroups;
@@ -424,31 +220,60 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
         sizeOfOneBar = sizeOfOneBar / countOfGroups;
       }
 
-      List<Modifier>? modifiers;
-
-      if (model.isStackedChart()) {
-        modifiers = [StackModifier()];
-      } else if (!model.isOverlappedBarChart()) {
-        modifiers = [DodgeModifier(symmetric: false)];
-      }
-
       IntervalMark intervalMark = IntervalMark(
-        position: getMarkPositions(),
-        color: model.isOverlappedBarChart() ? getTransparentColors() : getColors(),
         size: SizeEncode(
           value: sizeOfOneBar,
         ),
-        modifiers: modifiers,
-        layer: 0,
+        modifiers: !model.isStackedChart() && !model.isOverlappedBarChart() ? [DodgeModifier(symmetric: false)] : null,
+        selectionStream: selectionStream,
       );
 
       marks.add(intervalMark);
     }
 
+    if (model.isPieChart()) {
+      marks.add(
+        IntervalMark(
+          label: LabelEncode(
+            encoder: (tuple) {
+              int value;
+              if (tuple.containsKey("percent")) {
+                value = (tuple["percent"] * 100).round();
+              } else {
+                value = tuple["value"];
+              }
+
+              return Label(
+                "$value%",
+                LabelStyle(
+                  textStyle: Defaults.textStyle.copyWith(color: JVxColors.DARKER_WHITE),
+                  align: Alignment.center,
+                ),
+              );
+            },
+          ),
+          modifiers: [StackModifier()],
+          selectionStream: selectionStream,
+        ),
+      );
+    }
+
+    for (Mark mark in marks) {
+      mark.position ??= getMarkPositions();
+      mark.color ??= getTransparentColors();
+      mark.modifiers ??= model.isStackedChart() ? [StackModifier()] : null;
+    }
+
     return marks;
   }
 
-  Varset getMarkPositions() {
+  Varset? getMarkPositions() {
+    if (model.isPieChart()) {
+      // The pie chart only has one dimension, so we must "divide" like the groups.
+      // This way we get another value inside the one dimension.
+      return Varset("percent") / Varset("index");
+    }
+
     if (model.isPercentChart()) {
       return Varset("index") * Varset("percent") / Varset("group");
     }
@@ -458,26 +283,37 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
 
   ColorEncode getTransparentColors() {
     return ColorEncode(
-      variable: "group",
+      variable: model.isPieChart() ? "index" : "group",
       values: colorsTransparent,
     );
   }
 
   ColorEncode getColors() {
     return ColorEncode(
-      variable: "group",
+      variable: model.isPieChart() ? "index" : "group",
       values: colors,
     );
   }
 
-  Coord getCoordinateSystem(BuildContext context) {
+  Coord createCoordinateSystem(BuildContext context) {
+    if (model.isPieChart()) {
+      return PolarCoord(
+        // Makes the rose chart to a pie chart.
+        transposed: true,
+        // dimCount 1, Otherwise each group would be a different ring.
+        dimCount: 1,
+        startRadius: model.isStyle(FlChartModel.STYLE_RING) ? 0.80 : null,
+      );
+    }
+
     return RectCoord(
       transposed: model.isHorizontalBarChart(),
+      verticalRange: model.isHorizontalBarChart() ? [0, 0.95] : null,
       color: Theme.of(context).colorScheme.background,
     );
   }
 
-  List<VariableTransform>? getPercentTransformIfNecessary() {
+  List<VariableTransform>? createPercentTransformIfNecessary() {
     if (model.isPercentChart()) {
       return [
         Proportion(
@@ -486,42 +322,139 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
           nest: Varset("index"),
         ),
       ];
+    } else if (model.isPieChart()) {
+      return [
+        Proportion(
+          variable: "value",
+          as: "percent",
+        ),
+      ];
     }
+
+    return null;
   }
 
-  Map<String, Selection> getSelections() {
+  Map<String, Selection>? createSelections() {
+    if (!kDebugMode) {
+      // Disable the selection in release mode for now.
+      return null;
+    }
+
+    if (model.isPieChart()) {
+      return null;
+    }
+
+    // TODO: Fix/Implement the selection;
     return {
-      'select': PointSelection(
+      'X': PointSelection(
         nearest: false,
+        testRadius: 5.0,
         on: {
           GestureType.tap,
         },
         dim: Dim.x,
-      )
+      ),
+      'Y': PointSelection(
+        nearest: false,
+        testRadius: 5.0,
+        on: {
+          GestureType.tap,
+        },
+        dim: Dim.y,
+      ),
+      'index X': PointSelection(
+        nearest: false,
+        testRadius: 5.0,
+        on: {
+          GestureType.tap,
+        },
+        variable: "index",
+        dim: Dim.x,
+      ),
+      'index Y': PointSelection(
+        nearest: false,
+        testRadius: 5.0,
+        on: {
+          GestureType.tap,
+        },
+        variable: "index",
+        dim: Dim.y,
+      ),
+      'value X': PointSelection(
+        nearest: false,
+        testRadius: 5.0,
+        on: {
+          GestureType.tap,
+        },
+        variable: "value",
+        dim: Dim.x,
+      ),
+      'value Y': PointSelection(
+        nearest: false,
+        testRadius: 5.0,
+        on: {
+          GestureType.tap,
+        },
+        variable: "value",
+        dim: Dim.y,
+      ),
+      'group X': PointSelection(
+        nearest: false,
+        testRadius: 5.0,
+        on: {
+          GestureType.tap,
+        },
+        variable: "group",
+        dim: Dim.x,
+      ),
+      'group Y': PointSelection(
+        nearest: false,
+        testRadius: 5.0,
+        on: {
+          GestureType.tap,
+        },
+        variable: "group",
+        dim: Dim.y,
+      ),
     };
   }
 
-  List<Annotation> _buildAnnotation(int i, int length, String label) {
-    double getHorizontalPosition(Size size, int i, int length) => (size.width / (length + 1)) * (i + 1);
+  List<Annotation>? createAnnotations() {
+    List<String> labels;
 
-    return [
-      CustomAnnotation(
-        renderer: (_, size) => [
-          CircleElement(
-            center: Offset(getHorizontalPosition(size, i, length) - 10, size.height + 10),
-            radius: 5,
-            style: PaintStyle(fillColor: FlChartWidget.colors[i]),
-          ),
-        ],
-        anchor: (p0) => const Offset(0, 0),
-      ),
-      TagAnnotation(
-        label: Label(
-          label,
-          LabelStyle(textStyle: Defaults.textStyle, align: Alignment.centerRight),
+    if (model.isPieChart() && model.yColumnLabels.length == 1) {
+      labels = data.map((e) => e["index"].toString()).toList();
+    } else {
+      labels = model.yColumnLabels;
+    }
+
+    List<Annotation> annotations = [];
+    double getHorizontalPosition(Size size, int i) => (size.width / (labels.length + 1)) * (i + 1);
+
+    labels.forEachIndexed((i, label) {
+      annotations.add(
+        CustomAnnotation(
+          renderer: (_, size) => [
+            CircleElement(
+              center: Offset(getHorizontalPosition(size, i) - 10, size.height + 10),
+              radius: 5,
+              style: PaintStyle(fillColor: colors[i]),
+            ),
+          ],
+          anchor: (size) => const Offset(0, 0),
         ),
-        anchor: (size) => Offset(getHorizontalPosition(size, i, length), size.height + 10),
-      ),
-    ];
+      );
+      annotations.add(
+        TagAnnotation(
+          label: Label(
+            label,
+            LabelStyle(textStyle: Defaults.textStyle, align: Alignment.centerRight),
+          ),
+          anchor: (size) => Offset(getHorizontalPosition(size, i), size.height + 10),
+        ),
+      );
+    });
+
+    return annotations;
   }
 }
