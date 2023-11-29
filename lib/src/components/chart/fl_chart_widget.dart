@@ -372,77 +372,20 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
       return null;
     }
 
-    // TODO: Fix/Implement the selection;
     return {
-      'X': PointSelection(
+      'index': PointSelection(
         nearest: false,
-        testRadius: 5.0,
-        on: {
-          GestureType.tap,
-        },
-        dim: Dim.x,
-      ),
-      'Y': PointSelection(
-        nearest: false,
-        testRadius: 5.0,
-        on: {
-          GestureType.tap,
-        },
-        dim: Dim.y,
-      ),
-      'index X': PointSelection(
-        nearest: false,
-        testRadius: 5.0,
         on: {
           GestureType.tap,
         },
         variable: "index",
-        dim: Dim.x,
       ),
-      'index Y': PointSelection(
+      'value': PointSelection(
         nearest: false,
-        testRadius: 5.0,
-        on: {
-          GestureType.tap,
-        },
-        variable: "index",
-        dim: Dim.y,
-      ),
-      'value X': PointSelection(
-        nearest: false,
-        testRadius: 5.0,
         on: {
           GestureType.tap,
         },
         variable: "value",
-        dim: Dim.x,
-      ),
-      'value Y': PointSelection(
-        nearest: false,
-        testRadius: 5.0,
-        on: {
-          GestureType.tap,
-        },
-        variable: "value",
-        dim: Dim.y,
-      ),
-      'group X': PointSelection(
-        nearest: false,
-        testRadius: 5.0,
-        on: {
-          GestureType.tap,
-        },
-        variable: "group",
-        dim: Dim.x,
-      ),
-      'group Y': PointSelection(
-        nearest: false,
-        testRadius: 5.0,
-        on: {
-          GestureType.tap,
-        },
-        variable: "group",
-        dim: Dim.y,
       ),
     };
   }

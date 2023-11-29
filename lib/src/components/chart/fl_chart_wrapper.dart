@@ -68,19 +68,49 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
     selectionStream = StreamController.broadcast();
 
-    selectionStream.stream.listen((event) {
-      if (event != null) {
-        print("Selected");
-        for (var entry in event.entries) {
-          print("${entry.key}: ${entry.value}");
-        }
-        // No idea how to transpose these values back to the index of the dataChunk or
-        // find the corresponding chartData entry.
-        // onIndexSelected(????)
-      }
-    });
+    selectionStream.stream.listen(_handleSelection);
 
     subscribe();
+  }
+
+  void _handleSelection(event) {
+    final dataChunk = this.dataChunk;
+    final metaData = this.metaData;
+
+    if (dataChunk == null || metaData == null) {
+      return;
+    }
+
+    // Category charts sum the values, we can't therefore find the index of the dataChunk.
+    if (model.isCategoryChart(dataChunk.getColumn(model.xColumnName).dataTypeIdentifier)) {
+      return;
+    }
+
+    // Pie charts with one yColumn also sum the values, therefore we can't find the index.
+    if (model.isPieChart() && model.yColumnLabels.length == 1) {
+      return;
+    }
+
+    Set<int>? indexValues = event?["index"];
+    Set<int>? valueValues = event?["value"];
+
+    // Cross the index and value indices to find the index of the chartData entry.
+    int? index = indexValues?.firstWhereOrNull((element) => valueValues?.contains(element) ?? false);
+    if (index != null && index < chartData.length) {
+      var chartDataEntry = chartData[index];
+
+      if (model.isPieChart()) {
+        if (index >= 0 && index < model.yColumnNames.length) {
+          onIndexSelected(dataRecord!.index, model.yColumnNames[index]);
+        }
+      } else {
+        int indeOfDataChunk = (index / model.yColumnNames.length).floor();
+
+        onIndexSelected(indeOfDataChunk, chartDataEntry["group"]);
+      }
+    } else {
+      onIndexSelected(null, null);
+    }
   }
 
   @override
@@ -310,7 +340,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     return num.tryParse(e.toString()) ?? fallback;
   }
 
-  void onIndexSelected(int? pIndex) {
+  void onIndexSelected(int? pIndex, String? pColumn) {
     if (dataChunk == null || metaData == null) {
       return;
     }
@@ -332,7 +362,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
             var oldFocus = IUiService().getFocus();
             commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Selected record in chart"));
 
-            if (lastIndex != null) {
+            if (pIndex != null) {
               commands.add(
                 SelectRecordCommand.select(
                   reason: "Selected record in chart",
@@ -345,6 +375,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
                         .toList(),
                   ),
                   rowNumber: pIndex,
+                  selectedColumn: pColumn,
                 ),
               );
             } else {
