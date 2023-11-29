@@ -62,55 +62,17 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
   int? lastIndex;
 
+  String? lastColumn;
+
   @override
   void initState() {
     super.initState();
 
     selectionStream = StreamController.broadcast();
 
-    selectionStream.stream.listen(_handleSelection);
+    selectionStream.stream.listen(handleSelection);
 
     subscribe();
-  }
-
-  void _handleSelection(event) {
-    final dataChunk = this.dataChunk;
-    final metaData = this.metaData;
-
-    if (dataChunk == null || metaData == null) {
-      return;
-    }
-
-    // Category charts sum the values, we can't therefore find the index of the dataChunk.
-    if (model.isCategoryChart(dataChunk.getColumn(model.xColumnName).dataTypeIdentifier)) {
-      return;
-    }
-
-    // Pie charts with one yColumn also sum the values, therefore we can't find the index.
-    if (model.isPieChart() && model.yColumnLabels.length == 1) {
-      return;
-    }
-
-    Set<int>? indexValues = event?["index"];
-    Set<int>? valueValues = event?["value"];
-
-    // Cross the index and value indices to find the index of the chartData entry.
-    int? index = indexValues?.firstWhereOrNull((element) => valueValues?.contains(element) ?? false);
-    if (index != null && index < chartData.length) {
-      var chartDataEntry = chartData[index];
-
-      if (model.isPieChart()) {
-        if (index >= 0 && index < model.yColumnNames.length) {
-          onIndexSelected(dataRecord!.index, model.yColumnNames[index]);
-        }
-      } else {
-        int indeOfDataChunk = (index / model.yColumnNames.length).floor();
-
-        onIndexSelected(indeOfDataChunk, chartDataEntry["group"]);
-      }
-    } else {
-      onIndexSelected(null, null);
-    }
   }
 
   @override
@@ -340,18 +302,80 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     return num.tryParse(e.toString()) ?? fallback;
   }
 
+  void handleSelection(event) {
+    final dataChunk = this.dataChunk;
+    final metaData = this.metaData;
+
+    if (dataChunk == null || metaData == null) {
+      return;
+    }
+
+    Set<int>? indexValues = event?["index"];
+    Set<int>? valueValues = event?["value"];
+
+    // Cross the index and value indices to find the index of the chartData entry.
+    int? index = indexValues?.firstWhereOrNull((element) => valueValues?.contains(element) ?? false);
+    if (index != null && index < chartData.length) {
+      var chartDataEntry = chartData[index];
+
+      if (model.isPieChart()) {
+        if (model.yColumnLabels.length == 1) {
+          var indexValue = chartDataEntry["index"];
+
+          // Find they key of the first row which has the "index" value of the graph inside the x column.
+          var indexInDataChunk = dataChunk.data.entries.firstWhereOrNull((entry) {
+            var dataRow = entry.value;
+            var indexColumnIndex = dataChunk.getColumnIndex(model.xColumnName);
+            var indexValueInDataRow = dataRow[indexColumnIndex];
+
+            return indexValueInDataRow?.toString() == indexValue?.toString();
+          })?.key;
+
+          onIndexSelected(indexInDataChunk, null);
+        } else {
+          onIndexSelected(dataRecord!.index, model.yColumnNames[index]);
+        }
+      } else {
+        if (model.isCategoryChart(dataChunk.getColumn(model.xColumnName).dataTypeIdentifier)) {
+          // Category charts have a string column as their xColumn (index column).
+          // The first row that satisfies the index and group condition is the correct one.
+          var indexValue = chartDataEntry["index"];
+          var groupValue = chartDataEntry["group"];
+
+          // Find they key of the first row which has the "index" value of the graph inside the x column.
+          var indexInDataChunk = dataChunk.data.entries.firstWhereOrNull((entry) {
+            var dataRow = entry.value;
+            var indexColumnIndex = dataChunk.getColumnIndex(model.xColumnName);
+            var indexValueInDataRow = dataRow[indexColumnIndex];
+
+            return indexValueInDataRow?.toString() == indexValue?.toString();
+          })?.key;
+
+          onIndexSelected(indexInDataChunk, groupValue);
+        } else {
+          int indexOfDataChunk = (index / model.yColumnNames.length).floor();
+
+          onIndexSelected(indexOfDataChunk, chartDataEntry["group"]);
+        }
+      }
+    } else {
+      onIndexSelected(null, null);
+    }
+  }
+
   void onIndexSelected(int? pIndex, String? pColumn) {
     if (dataChunk == null || metaData == null) {
       return;
     }
 
-    print("Selected Index: $pIndex");
-
-    if (lastIndex == pIndex) {
+    if (lastIndex == pIndex && lastColumn == pColumn) {
       return;
     }
 
     lastIndex = pIndex;
+    lastColumn = pColumn;
+
+    print("Selected index: $pIndex, column: $pColumn");
 
     IUiService()
         .saveAllEditors(

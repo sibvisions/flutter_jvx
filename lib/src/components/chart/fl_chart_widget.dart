@@ -368,8 +368,46 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
       return null;
     }
 
+    if (model.isBarChart()) {
+      return {
+        'index': PointSelection(
+          nearest: false,
+          on: {
+            GestureType.tap,
+          },
+          dim: Dim.x,
+          variable: "index",
+        ),
+        'value': PointSelection(
+          nearest: false,
+          on: {
+            GestureType.tap,
+          },
+          dim: Dim.x,
+          variable: "value",
+        ),
+      };
+    }
+
     if (model.isPieChart()) {
-      return null;
+      return {
+        'index': PointSelection(
+          nearest: false,
+          on: {
+            GestureType.tap,
+          },
+          dim: Dim.y,
+          variable: "index",
+        ),
+        'value': PointSelection(
+          nearest: false,
+          on: {
+            GestureType.tap,
+          },
+          dim: Dim.y,
+          variable: "value",
+        ),
+      };
     }
 
     return {
