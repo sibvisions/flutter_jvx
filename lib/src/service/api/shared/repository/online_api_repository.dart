@@ -22,7 +22,6 @@ import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../config/api/api_route.dart';
@@ -309,7 +308,7 @@ class OnlineApiRepository extends IRepository {
       },
     );
 
-    return Dio(options)..interceptors.add(DioLogInterceptor(FlutterUI.httpBucket));
+    return Dio(options);
   }
 
   void setConnected(bool connected) {
