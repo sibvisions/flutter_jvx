@@ -18,6 +18,8 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
+
 import '../../../flutter_ui.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/layout/preferred_size_command.dart';
@@ -70,7 +72,7 @@ class LayoutService implements ILayoutService {
     _layoutDataSet[pLayoutData.id] = pLayoutData;
 
     // Handle possible re-layout
-    if (_isLegalState(pParentLayout: pLayoutData)) {
+    if (_isLegalState(pLayoutData: pLayoutData)) {
       return _performLayout(pLayoutData: pLayoutData);
     }
 
@@ -83,20 +85,37 @@ class LayoutService implements ILayoutService {
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data.
+    var oldLayoutData = _layoutDataSet[pLayoutData.id];
     _layoutDataSet[pLayoutData.id] = pLayoutData;
+
+    List<BaseCommand> commands = [];
+    // If child lost its position, give it back the old one.
+    if (!pLayoutData.hasPosition && oldLayoutData != null && oldLayoutData.hasPosition == true) {
+      pLayoutData.layoutPosition = oldLayoutData.layoutPosition;
+      commands.add(UpdateLayoutPositionCommand(layoutDataList: [pLayoutData], reason: "Receive old position"));
+    }
 
     // Handle possible re-layout, check if parentId exists -> special case for first panel
     String? parentId = pLayoutData.parentId;
-    if (parentId != null) {
-      LayoutData? parentData = _layoutDataSet[parentId];
-      if (parentData != null) {
-        if (_isLegalState(pParentLayout: parentData)) {
-          return _performLayout(pLayoutData: parentData);
-        }
-      }
+    if (parentId == null) {
+      return commands;
     }
 
-    return [];
+    LayoutData? parentData = _layoutDataSet[parentId];
+    if (parentData == null) {
+      return commands;
+    }
+
+    if (!_isLegalState(pLayoutData: parentData)) {
+      return commands;
+    }
+
+    if (parentData.hasPosition && oldLayoutData?.bestSize == pLayoutData.bestSize) {
+      FlutterUI.logLayout.d("${pLayoutData.id} same: ${pLayoutData.bestSize} is same as before");
+      return commands;
+    }
+
+    return _performLayout(pLayoutData: parentData);
   }
 
   @override
@@ -107,7 +126,7 @@ class LayoutService implements ILayoutService {
     if (existingLayout != null && existingLayout.layoutPosition?.toSize() != pSize) {
       applyScreenSize(existingLayout);
 
-      if (_isLegalState(pParentLayout: existingLayout)) {
+      if (_isLegalState(pLayoutData: existingLayout)) {
         return _performLayout(pLayoutData: existingLayout);
       }
     }
@@ -120,7 +139,7 @@ class LayoutService implements ILayoutService {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if (data != null) {
-      FlutterUI.logLayout.d("$pComponentId was marked as DIRTY");
+      FlutterUI.logLayout.d("$pComponentId marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
 
       return true;
@@ -199,9 +218,7 @@ class LayoutService implements ILayoutService {
       LayoutData panel = LayoutData.from(pLayoutData);
 
       // Copy of children with deleted positions
-      List<LayoutData> children = _getChildrenOrNull(pParentLayout: panel)!.map((data) {
-        return LayoutData.from(data);
-      }).toList();
+      List<LayoutData> children = _getChildren(pParentLayout: panel).map((data) => LayoutData.from(data)).toList();
 
       // All newly constraint children
       List<LayoutData> newlyConstraintChildren = [];
@@ -229,16 +246,17 @@ class LayoutService implements ILayoutService {
         return [UpdateLayoutPositionCommand(layoutDataList: newlyConstraintChildren, reason: "Was constrained")];
       }
 
-      // Only save information AFTER calculations after constrained children.
-      _layoutDataSet[panel.id] = panel;
-
       // Nothing has been "newly" constrained meaning now, the panel can tell its parent exactly how big it wants to be.
       // So if my calc size has changed - tell parent, if not, tell children their position.
       var commands = <BaseCommand>[];
 
       if (panel.isChild && panel.hasNewCalculatedSize) {
+        FlutterUI.logLayout.d(
+            "${pLayoutData.name}|${pLayoutData.id} has new calc size: ${panel.calculatedSize} -> PreferredSizeCommand");
         return [PreferredSizeCommand(layoutData: panel, reason: "Has new calc size")];
       } else {
+        // Only save information AFTER calculations after constrained children.
+        _layoutDataSet[panel.id] = panel;
         // Bugfix: Update layout position always has to come first.
         commands.add(UpdateLayoutPositionCommand(layoutDataList: [panel, ...children], reason: "New position"));
 
@@ -258,40 +276,56 @@ class LayoutService implements ILayoutService {
 
   /// Returns true if conditions to perform the layout are met.
   ///
-  /// Checks if [pParentLayout] is valid and all it's children layout data are present and valid as well.
-  bool _isLegalState({required LayoutData pParentLayout}) {
+  /// Checks if [pLayoutData] is valid and all it's children layout data are present and valid as well.
+  bool _isLegalState({required LayoutData pLayoutData}) {
     if (!_isValid) {
-      FlutterUI.logLayout.d("I am not valid. ${pParentLayout.id}");
+      FlutterUI.logLayout.d("${pLayoutData.id} not valid, layoutService is not valid");
       return false;
     }
 
-    List<LayoutData>? children = _getChildrenOrNull(pParentLayout: pParentLayout);
+    if (pLayoutData.layoutState != LayoutState.VALID) {
+      FlutterUI.logLayout.d("${pLayoutData.id} not valid, layoutState: ${pLayoutData.layoutState}");
+      return false;
+    }
 
-    if (pParentLayout.layoutState == LayoutState.VALID && children != null) {
-      for (LayoutData child in children) {
-        if (!(child.layoutState == LayoutState.VALID && (child.hasCalculatedSize || child.hasPreferredSize))) {
-          FlutterUI.logLayout.d(
-              "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
-          return false;
-        }
+    List<LayoutData> children = _getChildren(pParentLayout: pLayoutData);
+
+    if (children.length != pLayoutData.children.length) {
+      int diff = pLayoutData.children.length - children.length;
+      if (diff > 5) {
+        FlutterUI.logLayout.d("${pLayoutData.id} not valid, missing children count: $diff");
+      } else {
+        var listMissing = pLayoutData.children.where((childId) => !children.any((child) => child.id == childId));
+        FlutterUI.logLayout.d("${pLayoutData.id} not valid, missing children: $listMissing");
+      }
+      return false;
+    }
+
+    return children.none((child) {
+      if (child.layoutState != LayoutState.VALID) {
+        FlutterUI.logLayout.d("${pLayoutData.id} not valid because ${child.id} not valid");
+        return true;
       }
 
-      return true;
-    }
-    return false;
+      if (!child.hasCalculatedSize && !child.hasPreferredSize) {
+        FlutterUI.logLayout.d("${pLayoutData.id} not valid because ${child.id} has no size");
+        return true;
+      }
+
+      return false;
+    });
   }
 
-  List<LayoutData>? _getChildrenOrNull({required LayoutData pParentLayout}) {
+  List<LayoutData> _getChildren({required LayoutData pParentLayout}) {
     List<LayoutData> childrenData = [];
 
     for (String childId in pParentLayout.children) {
       LayoutData? childData = _layoutDataSet[childId];
       if (childData != null) {
         childrenData.add(childData);
-      } else {
-        return null;
       }
     }
+
     return childrenData;
   }
 
