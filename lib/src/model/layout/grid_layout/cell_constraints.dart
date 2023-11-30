@@ -15,6 +15,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_jvx/src/layout/i_layout.dart';
 
 /// Constraints of a cell in a gridLayout
 class CellConstraint {
@@ -28,10 +29,10 @@ class CellConstraint {
   /// The position on the y-axis
   int gridY;
 
-  /// The width of the component in grids
+  /// The width of the component in grids (how many grids it spans)
   int gridWidth;
 
-  /// The height of the component in grids
+  /// The height of the component in grids (how many grids it spans)
   int gridHeight;
 
   /// The margins of the component
@@ -48,4 +49,11 @@ class CellConstraint {
       required this.gridWidth,
       required this.gridX,
       required this.gridY});
+
+  CellConstraint.fromList(List<String> splitConstraint, double scaling)
+      : margins = ILayout.marginsFromList(marginList: splitConstraint.sublist(4), scaling: scaling),
+        gridHeight = int.parse(splitConstraint[3]),
+        gridWidth = int.parse(splitConstraint[2]),
+        gridY = int.parse(splitConstraint[1]),
+        gridX = int.parse(splitConstraint[0]);
 }
