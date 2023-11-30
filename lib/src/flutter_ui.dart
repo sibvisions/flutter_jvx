@@ -599,13 +599,15 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       transitionDelegate: transitionDelegate,
       beamBackTransitionDelegate: transitionDelegate,
       guards: [
-        // Guards / by beaming to /menu if an app is active
+        // Guards AppOverview (/) by beaming to /home if an app is active
         BeamGuard(
           pathPatterns: ["/"],
           check: (context, location) {
-            ServerConfig? deepLinkConfig =
-                ParseUtil.extractAppParameters(Map.of((location.state as BeamState).queryParameters));
-            return deepLinkConfig != null ||
+            // This check must not enforce a more restrictive test than AppService#startCustomApp!
+            var deepLinkId = App.computeIdFromConfig(
+                ParseUtil.extractAppParameters(Map.of((location.state as BeamState).queryParameters)));
+
+            return (deepLinkId != null && IConfigService().currentApp.value != deepLinkId) ||
                 IConfigService().currentApp.value == null ||
                 IAppService().exitFuture.value != null;
           },
