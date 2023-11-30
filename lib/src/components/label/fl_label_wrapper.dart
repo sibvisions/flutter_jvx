@@ -34,6 +34,13 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
   _FlLabelWrapperState() : super();
 
   @override
+  initState() {
+    super.initState();
+
+    layoutData.isFixedSize = true;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final FlLabelWidget widget = FlLabelWidget(model: model);
 
