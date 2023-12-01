@@ -443,7 +443,7 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
                   shape: BoxShape.circle,
                 ),
               ),
-              SizedBox(width: padding),
+              const SizedBox(width: padding),
               Text(
                 FlutterUI.translate(label),
                 style: Defaults.textStyle,
