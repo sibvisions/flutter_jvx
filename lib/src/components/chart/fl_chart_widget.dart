@@ -21,14 +21,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 
-import '../../flutter_ui.dart';
-import '../../model/component/fl_component_model.dart';
-import '../../util/jvx_colors.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
+import '../../../flutter_jvx.dart';
 
 class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
-  static const double _legendPadding = 30;
-
   final List<Map<String, dynamic>> data;
   final num highestValue;
   final num highestStackedValue;
@@ -124,6 +119,7 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
         Expanded(
           child: chart,
         ),
+        _buildLegend(context),
       ],
     );
   }
@@ -131,19 +127,14 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
   Widget _buildChart(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Padding(
-          // Annotation needs some padding, otherwise the labels paint outside the boundaries.
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Chart<Map<String, dynamic>>(
-            data: data,
-            variables: createVariables(),
-            marks: createMarks(context, constraints),
-            transforms: createPercentTransformIfNecessary(),
-            coord: createCoordinateSystem(context),
-            axes: createAxes(),
-            selections: createSelections(),
-            annotations: createAnnotations(),
-          ),
+        return Chart<Map<String, dynamic>>(
+          data: data,
+          variables: createVariables(),
+          marks: createMarks(context, constraints),
+          transforms: createPercentTransformIfNecessary(),
+          coord: createCoordinateSystem(context),
+          axes: createAxes(),
+          selections: createSelections(),
         );
       },
     );
@@ -428,42 +419,49 @@ class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
     };
   }
 
-  List<Annotation>? createAnnotations() {
+  Widget _buildLegend(BuildContext context) {
     List<String> labels;
-
     if (model.isPieChart() && model.yColumnLabels.length == 1) {
       labels = data.map((e) => e["index"].toString()).toList();
     } else {
       labels = model.yColumnLabels;
     }
 
-    List<Annotation> annotations = [];
-    double getHorizontalPosition(Size size, int i) => (size.width / (labels.length + 1)) * (i + 1);
+    const double padding = 5;
+    const double circleSize = 10;
 
-    labels.forEachIndexed((i, label) {
-      annotations.add(
-        CustomAnnotation(
-          renderer: (_, size) => [
-            CircleElement(
-              center: Offset(getHorizontalPosition(size, i) - 10, size.height + 10),
-              radius: 5,
-              style: PaintStyle(fillColor: colors[i]),
-            ),
-          ],
-          anchor: (size) => const Offset(0, 0),
-        ),
-      );
-      annotations.add(
-        TagAnnotation(
-          label: Label(
-            label,
-            LabelStyle(textStyle: Defaults.textStyle, align: Alignment.centerRight),
+    List<Widget> children = labels
+        .mapIndexed(
+          (index, label) => Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: circleSize,
+                height: circleSize,
+                decoration: BoxDecoration(
+                  color: colors[index],
+                  shape: BoxShape.circle,
+                ),
+              ),
+              SizedBox(width: padding),
+              Text(
+                FlutterUI.translate(label),
+                style: Defaults.textStyle,
+              ),
+            ],
           ),
-          anchor: (size) => Offset(getHorizontalPosition(size, i), size.height + 10),
-        ),
-      );
-    });
+        )
+        .toList();
 
-    return annotations;
+    return Padding(
+      padding: const EdgeInsets.all(padding),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        clipBehavior: Clip.hardEdge,
+        runSpacing: padding,
+        spacing: padding,
+        children: children,
+      ),
+    );
   }
 }
