@@ -211,8 +211,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
     }
 
     if (layoutData.hasPosition) {
-      model.stickyHeaders =
-          layoutData.layoutPosition!.height > (2 * tableSize!.rowHeight + tableSize!.tableHeaderHeight);
+      model.stickyHeaders = layoutData.layoutPosition!.height > (2 * tableSize.rowHeight + tableSize.tableHeaderHeight);
     }
 
     widget ??= FlTableWidget(

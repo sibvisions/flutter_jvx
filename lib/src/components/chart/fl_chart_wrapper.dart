@@ -167,7 +167,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     }
 
     List<int> sortedRowIndexKeys = dataChunk.data.keys.sorted((a, b) => a.compareTo(b));
-    List<List<dynamic>> sortedDataRows = sortedRowIndexKeys.map((key) => dataChunk!.data[key]!).toList();
+    List<List<dynamic>> sortedDataRows = sortedRowIndexKeys.map((key) => dataChunk.data[key]!).toList();
     chartData = [];
     highestValue = 1;
     highestStackedValue = 1;
@@ -374,8 +374,6 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
 
     lastIndex = pIndex;
     lastColumn = pColumn;
-
-    print("Selected index: $pIndex, column: $pColumn");
 
     IUiService()
         .saveAllEditors(

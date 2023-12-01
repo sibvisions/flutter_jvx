@@ -400,7 +400,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
             FetchCommand(
               fromRow: 0,
               rowCount: -1,
-              dataProvider: childDataBook!,
+              dataProvider: childDataBook,
               reason: "detecting first level end nodes",
               filter: childFilter,
             ),

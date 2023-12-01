@@ -15,7 +15,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_jvx/src/layout/i_layout.dart';
+
+import '../../../layout/i_layout.dart';
 
 /// Constraints of a cell in a gridLayout
 class CellConstraint {

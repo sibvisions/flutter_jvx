@@ -109,7 +109,7 @@ class DefaultLogin extends StatelessWidget implements Login {
         Expanded(
           flex: 4,
           child: ClipPath(
-            clipper: ArcClipper(),
+            clipper: const ArcClipper(),
             child: Container(
               decoration: BoxDecoration(
                 color: topColor ?? Colors.transparent,
