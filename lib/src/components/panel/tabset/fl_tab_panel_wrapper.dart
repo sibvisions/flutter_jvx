@@ -204,6 +204,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                   (e) {
                     return Visibility(
                       visible: tabController.isTabEnabled(e.model.indexOf),
+                      maintainAnimation: true,
                       maintainState: true,
                       maintainSize: true,
                       child: Stack(
@@ -221,6 +222,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
             child: childrenToHide.isNotEmpty
                 ? Visibility(
                     visible: false,
+                    maintainAnimation: true,
                     maintainState: true,
                     maintainSize: true,
                     child: Stack(
