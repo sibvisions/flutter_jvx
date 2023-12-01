@@ -203,11 +203,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                 children: tabContentList.map(
                   (e) {
                     return Visibility(
-                      maintainAnimation: true,
-                      maintainInteractivity: true,
-                      maintainSemantics: true,
-                      maintainState: true,
                       visible: tabController.isTabEnabled(e.model.indexOf),
+                      maintainState: true,
                       maintainSize: true,
                       child: Stack(
                         children: [e],
@@ -223,11 +220,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
             height: 0,
             child: childrenToHide.isNotEmpty
                 ? Visibility(
-                    maintainAnimation: true,
-                    maintainInteractivity: false,
-                    maintainSemantics: false,
-                    maintainState: true,
                     visible: false,
+                    maintainState: true,
                     maintainSize: true,
                     child: Stack(
                       children: childrenToHide,
