@@ -19,6 +19,7 @@ import 'dart:collection';
 
 import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../mask/frame/frame.dart';
@@ -222,6 +223,14 @@ class StorageService implements IStorageService {
     FlutterUI.logUI
         .d("NewUiComponents {${newUiComponents.length}}:${newUiComponents.map((e) => e.id).toList()..sort()}");
 
+    // Enable to print "tree" of screen
+    // getAllComponentsBelowByWhere(
+    //   pWhere: (element) => element.name == screenName,
+    //   pRecursively: true,
+    //   pIncludeItself: true,
+    //   pPrint: true,
+    // );
+
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
       affectedComponents: affectedUiComponents,
       changedComponents: changedUiComponents,
@@ -246,6 +255,7 @@ class StorageService implements IStorageService {
         pParentModel: screenModel,
         pIgnoreVisibility: true,
         pIncludeRemoved: true,
+        pDepth: 0,
       );
       models.forEach((element) {
         _componentMap.remove(element.id);
@@ -264,9 +274,19 @@ class StorageService implements IStorageService {
     bool pIgnoreVisibility = false,
     bool pIncludeRemoved = false,
     bool pRecursively = true,
+    bool pIncludeItself = false,
+    bool pPrint = false,
+    int pDepth = 0,
   }) {
     List<FlComponentModel> allDescendants = [];
     Set<String> directChildren = _childrenTree[pParentModel.id] ?? {};
+
+    if (pIncludeItself) {
+      if (pPrint) {
+        debugPrint(List.filled(pDepth, "-").join() + pParentModel.id);
+      }
+      allDescendants.add(pParentModel);
+    }
 
     for (String childId in directChildren) {
       FlComponentModel? childModel = _componentMap[childId];
@@ -279,6 +299,9 @@ class StorageService implements IStorageService {
       if (childModel != null &&
           (pIgnoreVisibility || childModel.isVisible || pParentModel.className == FlContainerClassname.TABSET_PANEL)) {
         allDescendants.add(childModel);
+        if (pPrint) {
+          debugPrint(List.filled(pDepth + 1, "-").join() + childModel.id);
+        }
         if (pRecursively) {
           allDescendants.addAll(
             getAllComponentsBelow(
@@ -286,6 +309,8 @@ class StorageService implements IStorageService {
               pIgnoreVisibility: pIgnoreVisibility,
               pIncludeRemoved: pIncludeRemoved,
               pRecursively: pRecursively,
+              pPrint: pPrint,
+              pDepth: pDepth + 1,
             ),
           );
         }
@@ -335,6 +360,8 @@ class StorageService implements IStorageService {
     bool pIncludeRemoved = false,
     bool pRecursively = true,
     bool pIncludeItself = false,
+    bool pPrint = false,
+    int pDepth = 0,
   }) {
     List<FlComponentModel> list = [];
     List<FlComponentModel> screenModels = _componentMap.values.where(pWhere).toList();
@@ -344,15 +371,17 @@ class StorageService implements IStorageService {
     } else if (screenModels.length == 1 &&
         (pIgnoreVisibility || screenModels.first.isVisible) &&
         (pIncludeRemoved || !screenModels.first.isRemoved)) {
-      if (pIncludeItself) {
-        list.add(screenModels.first);
-      }
-      list.addAll(getAllComponentsBelow(
-        pParentModel: screenModels.first,
-        pIgnoreVisibility: pIgnoreVisibility,
-        pIncludeRemoved: pIncludeRemoved,
-        pRecursively: pRecursively,
-      ));
+      list.addAll(
+        getAllComponentsBelow(
+          pParentModel: screenModels.first,
+          pIgnoreVisibility: pIgnoreVisibility,
+          pIncludeRemoved: pIncludeRemoved,
+          pRecursively: pRecursively,
+          pIncludeItself: pIncludeItself,
+          pPrint: pPrint,
+          pDepth: pDepth,
+        ),
+      );
     }
 
     return list;
