@@ -34,7 +34,6 @@ import '../../base_wrapper/base_cont_wrapper_state.dart';
 import '../../label/fl_label_widget.dart';
 import 'fl_tab_controller.dart';
 import 'fl_tab_header.dart';
-import 'fl_tab_view.dart';
 
 enum TabPlacements { WRAP, TOP, LEFT, BOTTOM, RIGHT }
 
@@ -91,18 +90,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
         IStorageService().getAllComponentsBelowById(pParentId: model.id, pRecursively: false).map((e) => e.id).toList();
     super.modelUpdated();
 
-    // Performance optimization.
-    // If ever inplemented, need to add a callback to the layout service "cleaning" itself from the "dirty" status.
-    // There must be a mechanic that if a child is updated, and I, as a parent, have already cleaned myself, to layout after a child calls.
-    // There must also be a mechanic that if a child is updated and I, as a parent, don't need relayouting, to still update because my Child has been updated.
-    // if (newModel.lastChangedProperties.isNotEmpty) {
-    //   if (newModel.lastChangedProperties.any((element) => LAYOUT_RELEVANT_PROPERTIES.contains(element))) {
     layoutAfterBuild = true;
-    //   } else if (newModel.lastChangedProperties.contains(ApiObjectProperty.selectedIndex) &&
-    //       tabController.widgetsSelectedOnce.contains(newModel.selectedIndex)) {
-    //     layoutAfterBuild = true;
-    //   }
-    // }
 
     if (!buildChildren()) {
       setState(() {});
@@ -183,7 +171,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> childrenToHide = tabContentList.where((e) {
+    List<BaseCompWrapperWidget> childrenToHide = tabContentList.where((e) {
       return !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e));
     }).toList();
     FlutterUI.logUI.d("ChildrenToHide: $childrenToHide");
@@ -212,21 +200,21 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
               child: TabBarView(
                 controller: tabController,
                 physics: const NeverScrollableScrollPhysics(),
-                children: tabContentList
-                    .map(
-                      (e) => Visibility(
-                        maintainAnimation: true,
-                        maintainInteractivity: true,
-                        maintainSemantics: true,
-                        maintainState: true,
-                        visible: tabController.isTabEnabled(e.model.indexOf),
-                        maintainSize: true,
-                        child: Stack(
-                          children: [FlTabView(child: e)],
-                        ),
+                children: tabContentList.map(
+                  (e) {
+                    return Visibility(
+                      maintainAnimation: true,
+                      maintainInteractivity: true,
+                      maintainSemantics: true,
+                      maintainState: true,
+                      visible: tabController.isTabEnabled(e.model.indexOf),
+                      maintainSize: true,
+                      child: Stack(
+                        children: [e],
                       ),
-                    )
-                    .toList(),
+                    );
+                  },
+                ).toList(),
               ),
             ),
           ),
