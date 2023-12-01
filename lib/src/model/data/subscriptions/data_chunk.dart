@@ -79,5 +79,5 @@ class DataChunk {
   }
 
   /// The record status of this row.
-  RecordStatus getRecordStatus(pRowIndex) => RecordStatus.parseRecordStatus(data[pRowIndex]);
+  RecordStatus getRecordStatus(pRowIndex) => RecordStatus.parseRecordStatus(data[pRowIndex], columnDefinitions);
 }

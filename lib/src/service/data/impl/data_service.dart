@@ -16,6 +16,7 @@
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 
@@ -274,8 +275,8 @@ class DataService implements IDataService {
     String? pPageKey,
   }) {
     // Get data from all requested columns
-    List<List<dynamic>> columnsData = [];
     List<ColumnDefinition> columnDefinitions = [];
+    List<int> colDefIndexes = [];
 
     DataBook dataBook = dataBooks[pDataProvider]!;
 
@@ -284,45 +285,47 @@ class DataService implements IDataService {
     if (dataBook.metaData != null) {
       if (pColumnNames != null) {
         for (String columnName in pColumnNames) {
-          columnDefinitions
-              .add(dataBook.metaData!.columnDefinitions.firstWhere((element) => element.name == columnName));
-          columnsData.add(dataBook.getDataFromColumn(
-            pColumnName: columnName,
-            pFrom: pFrom,
-            pTo: pTo,
-            pPageKey: pPageKey,
-          ));
+          ColumnDefinition? colDef = dataBook.metaData!.columnDefinitions.firstWhereOrNull((element) {
+            return element.name == columnName;
+          });
+
+          if (colDef != null) {
+            columnDefinitions.add(colDef);
+          } else {
+            throw Exception("Column $columnName not found in metadata of $pDataProvider");
+          }
         }
       } else {
         columnDefinitions.addAll(dataBook.metaData!.columnDefinitions);
-
-        for (ColumnDefinition colDef in columnDefinitions) {
-          columnsData.add(dataBook.getDataFromColumn(
-            pColumnName: colDef.name,
-            pFrom: pFrom,
-            pTo: pTo,
-            pPageKey: pPageKey,
-          ));
-        }
       }
     }
 
-    // Check if requested range of fetch is too long
-    int rowCount = columnsData.firstOrNull?.length ?? 0;
+    for (int i = 0; i < columnDefinitions.length; i++) {
+      ColumnDefinition colDef = columnDefinitions[i];
+      colDefIndexes.add(dataBook.metaData!.columnDefinitions.indexOf(colDef));
+    }
 
     // Build rows out of column data
-    HashMap<int, List<dynamic>> data = HashMap();
+    Map<int, List<dynamic>> resultData = HashMap();
 
-    for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-      List<dynamic> row = [];
-      for (List column in columnsData) {
-        row.add(column[rowIndex]);
-      }
-      data[rowIndex + pFrom] = row;
+    Map<int, List<dynamic>> currentDataMap =
+        pPageKey != null ? (dataBook.pageRecords[pPageKey] ?? HashMap()) : dataBook.records;
+    int toIndex = min(pTo ?? currentDataMap.length, currentDataMap.length);
+
+    for (int i = pFrom; i < toIndex; i++) {
+      var resultRow = List<dynamic>.filled(columnDefinitions.length + 1, null);
+      var dataRow = currentDataMap[i]!;
+
+      columnDefinitions.forEachIndexed((index, colDef) {
+        resultRow[index] = dataRow[colDefIndexes[index]];
+      });
+
+      resultRow.last = dataRow.last;
+      resultData[i] = resultRow;
     }
 
     return DataChunk(
-      data: data,
+      data: resultData,
       isAllFetched: dataBook.isAllFetched,
       columnDefinitions: columnDefinitions,
       from: pFrom,

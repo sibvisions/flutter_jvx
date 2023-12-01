@@ -338,11 +338,13 @@ class DataBook {
       }
 
       // Get full selected record, then only take requested columns
-      List<dynamic> fullRecord = records[pRecordIndex]!;
+      List<dynamic> fullRecord = selectedRecord;
       selectedRecord = definitions.map((e) {
         int indexOfDef = metaData!.columnDefinitions.indexOf(e);
         return fullRecord[indexOfDef];
       }).toList();
+
+      selectedRecord.add(selectedRecord.last);
     }
 
     return DataRecord(
@@ -352,22 +354,6 @@ class DataBook {
       selectedColumn: selectedColumn,
       treePath: treePath,
     );
-  }
-
-  /// Will return all available data from the column in the provided range
-  List<dynamic> getDataFromColumn({required String pColumnName, required int pFrom, int? pTo, String? pPageKey}) {
-    List<dynamic> data = [];
-    int indexOfColumn = metaData?.columnDefinitions.indexWhere((element) => element.name == pColumnName) ?? -1;
-
-    Map<int, List<dynamic>> dataMap = pPageKey != null ? (pageRecords[pPageKey] ?? HashMap()) : records;
-    pTo = min(pTo ?? dataMap.length, dataMap.length);
-    for (int i = pFrom; i < pTo; i++) {
-      var a = dataMap[i];
-      if (a != null && indexOfColumn >= 0 && indexOfColumn < a.length) {
-        data.add(a[indexOfColumn]);
-      }
-    }
-    return data;
   }
 
   /// Deletes all records in the specified range, even when they do not exist

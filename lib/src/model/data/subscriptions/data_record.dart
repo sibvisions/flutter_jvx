@@ -22,8 +22,8 @@ enum RecordStatus {
   UPDATED,
   NONE;
 
-  static parseRecordStatus(List<dynamic>? values) {
-    if (values == null || values.isEmpty || values.last == null) {
+  static parseRecordStatus(List<dynamic>? values, List<ColumnDefinition> columnDefinitions) {
+    if (values == null || values.length <= columnDefinitions.length || values.isEmpty || values.last == null) {
       return NONE;
     }
 
@@ -46,7 +46,7 @@ class DataRecord {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The record status of this row.
-  RecordStatus get recordStatus => RecordStatus.parseRecordStatus(values);
+  RecordStatus get recordStatus => RecordStatus.parseRecordStatus(values, columnDefinitions);
 
   /// Index of this row in the dataProvider
   final int index;
