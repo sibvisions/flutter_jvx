@@ -24,6 +24,7 @@ import 'package:rxdart/rxdart.dart';
 import '../../custom/custom_screen.dart';
 import '../../exceptions/error_view_exception.dart';
 import '../../flutter_ui.dart';
+import '../../model/command/api/activate_screen_command.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/command/api/open_screen_command.dart';
@@ -184,11 +185,17 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   void _init() {
     future = Future(() {
       // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
+      final model = this.model;
       if (model == null &&
           (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
         return ICommandService().sendCommand(OpenScreenCommand(
           screenLongName: item!.screenLongName,
           reason: "Screen was opened inside $runtimeType",
+        ));
+      } else if (model != null) {
+        return ICommandService().sendCommand(ActivateScreenCommand(
+          componentId: model.name,
+          reason: "Screen was activated inside $runtimeType",
         ));
       }
     }).catchError((e, stack) {

@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 
 import '../../custom/custom_screen.dart';
 import '../../flutter_ui.dart';
+import '../../model/command/api/activate_screen_command.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/command/base_command.dart';
@@ -149,7 +150,7 @@ abstract class Menu extends StatelessWidget {
     BaseCommand commandToSend;
     if (model != null) {
       // TODO activateScreenCommand
-      commandToSend = OpenScreenCommand(reason: "menu item clicked", screenLongName: item.screenLongName);
+      commandToSend = ActivateScreenCommand(reason: "menu item clicked", componentId: model.name);
     } else {
       commandToSend = OpenScreenCommand(reason: "menu item clicked", screenLongName: item.screenLongName);
     }

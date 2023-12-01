@@ -36,6 +36,7 @@ import '../../../../model/command/api/alive_command.dart';
 import '../../../../model/command/api/changes_command.dart';
 import '../../../../model/command/api/open_screen_command.dart';
 import '../../../../model/command/api/reload_menu_command.dart';
+import '../../../../model/request/api_activate_screen_request.dart';
 import '../../../../model/request/api_alive_request.dart';
 import '../../../../model/request/api_cancel_login_request.dart';
 import '../../../../model/request/api_change_password_request.dart';
@@ -146,6 +147,7 @@ class OnlineApiRepository extends IRepository {
     ApiDeviceStatusRequest: (_) => APIRoute.POST_DEVICE_STATUS,
     ApiOpenScreenRequest: (pRequest) =>
         (pRequest as ApiOpenScreenRequest).reopen ? APIRoute.POST_REOPEN_SCREEN : APIRoute.POST_OPEN_SCREEN,
+    ApiActivateScreenRequest: (_) => APIRoute.POST_ACTIVATE_SCREEN,
     ApiSetParameter: (_) => APIRoute.POST_SET_PARAMETER,
     ApiSetScreenParameter: (_) => APIRoute.POST_SET_SCREEN_PARAMETER,
     ApiOpenTabRequest: (_) => APIRoute.POST_SELECT_TAB,

@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../../../../model/command/api/activate_screen_command.dart';
 import '../../../../../model/command/api/alive_command.dart';
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/cancel_login_command.dart';
@@ -61,6 +62,7 @@ import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/api/upload_command.dart';
 import '../../i_command_processor.dart';
 import '../../i_command_processor_handler.dart';
+import 'activate_screen_command_processor.dart';
 import 'alive_command_processor.dart';
 import 'cancel_login_command_processor.dart';
 import 'change_password_command_processor.dart';
@@ -112,6 +114,7 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final LoginCommandProcessor _loginCommandProcessor = LoginCommandProcessor();
   final CancelLoginCommandProcessor _cancelLoginCommandProcessor = CancelLoginCommandProcessor();
   final OpenScreenCommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
+  final ActivateScreenCommandProcessor _activateScreenCommandProcessor = ActivateScreenCommandProcessor();
   final ReloadMenuCommandProcessor _reloadMenuCommandProcessor = ReloadMenuCommandProcessor();
   final DeviceStatusCommandProcessor _deviceStatusProcessor = DeviceStatusCommandProcessor();
   final PressButtonCommandProcessor _pressButtonProcessor = PressButtonCommandProcessor();
@@ -163,6 +166,8 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _cancelLoginCommandProcessor;
     } else if (command is OpenScreenCommand) {
       return _openScreenCommandProcessor;
+    } else if (command is ActivateScreenCommand) {
+      return _activateScreenCommandProcessor;
     } else if (command is ReloadMenuCommand) {
       return _reloadMenuCommandProcessor;
     } else if (command is DeviceStatusCommand) {
