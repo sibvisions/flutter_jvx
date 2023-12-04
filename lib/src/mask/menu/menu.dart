@@ -149,7 +149,6 @@ abstract class Menu extends StatelessWidget {
 
     BaseCommand commandToSend;
     if (model != null) {
-      // TODO activateScreenCommand
       commandToSend = ActivateScreenCommand(reason: "menu item clicked", componentId: model.name);
     } else {
       commandToSend = OpenScreenCommand(reason: "menu item clicked", screenLongName: item.screenLongName);

@@ -24,7 +24,6 @@ import 'package:rxdart/rxdart.dart';
 import '../../custom/custom_screen.dart';
 import '../../exceptions/error_view_exception.dart';
 import '../../flutter_ui.dart';
-import '../../model/command/api/activate_screen_command.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/command/api/open_screen_command.dart';
@@ -191,11 +190,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
         return ICommandService().sendCommand(OpenScreenCommand(
           screenLongName: item!.screenLongName,
           reason: "Screen was opened inside $runtimeType",
-        ));
-      } else if (model != null) {
-        return ICommandService().sendCommand(ActivateScreenCommand(
-          componentId: model.name,
-          reason: "Screen was activated inside $runtimeType",
         ));
       }
     }).catchError((e, stack) {
