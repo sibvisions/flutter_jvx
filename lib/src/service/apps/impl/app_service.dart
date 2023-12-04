@@ -143,13 +143,6 @@ class AppService implements IAppService {
   }
 
   @override
-  bool showAppsButton() {
-    return IConfigService().getAppConfig()!.customAppsAllowed! ||
-        !IConfigService().getAppConfig()!.predefinedConfigsLocked! ||
-        (IAppService().getAppIds().length > 1 && !IConfigService().getAppConfig()!.forceSingleAppMode!);
-  }
-
-  @override
   bool showSingleAppModeSwitch() {
     return IConfigService().getAppConfig()!.customAppsAllowed! && !IConfigService().getAppConfig()!.forceSingleAppMode!;
   }

@@ -29,6 +29,7 @@ import '../../mask/frame/frame.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/storage/i_storage_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../../util/i_types.dart';
 import '../../util/jvx_colors.dart';
 import '../../util/parse_util.dart';

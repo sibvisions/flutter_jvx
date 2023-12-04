@@ -21,7 +21,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../flutter_ui.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/api/i_api_service.dart';
-import '../../service/apps/i_app_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/jvx_colors.dart';
@@ -34,14 +33,12 @@ class DrawerMenu extends StatefulWidget {
   final void Function() onSettingsPressed;
   final void Function() onChangePasswordPressed;
   final void Function() onLogoutPressed;
-  final void Function() onAppChange;
 
   const DrawerMenu({
     super.key,
     required this.onSettingsPressed,
     required this.onChangePasswordPressed,
     required this.onLogoutPressed,
-    required this.onAppChange,
   });
 
   @override
@@ -248,12 +245,12 @@ class _DrawerMenuState extends State<DrawerMenu> {
         children.addAll([
           _buildFooterDivider(context),
           Expanded(
-            flex: IAppService().showAppsButton() ? 10 : 1,
+            flex: 10,
             child: _buildLogoutEntry(context, isNormalSize),
           ),
         ]);
       }
-      if (IAppService().showAppsButton()) {
+      if (IUiService().canRouteToAppOverview()) {
         children.addAll([
           if (children.isNotEmpty) _buildFooterVerticalDivider(context),
           Expanded(
@@ -276,7 +273,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       }
     } else {
       footerEntries.addAll([
-        if (IAppService().showAppsButton()) _buildAppsEntry(context, isNormalSize),
+        if (IUiService().canRouteToAppOverview()) _buildAppsEntry(context, isNormalSize),
         if (!isOffline) _buildLogoutEntry(context, isNormalSize),
       ]);
     }
@@ -292,7 +289,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       leadingIcon: AppOverviewPage.appsIcon,
       onTap: () {
         Navigator.pop(context);
-        widget.onAppChange();
+        IUiService().routeToAppOverview();
       },
       isNormalSize: isNormalSize,
     );

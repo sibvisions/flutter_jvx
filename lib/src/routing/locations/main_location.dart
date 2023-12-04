@@ -132,6 +132,8 @@ class MainLocation extends BeamLocation<BeamState> {
   void _handleRoutes(BuildContext context, Map<String, String> queryParameters) {
     ServerConfig? deepLinkConfig = ParseUtil.extractAppParameters(queryParameters);
 
+    // TODO find default app.
+    // TODO test with: IConfigService().getAppConfig()?.customAppsAllowed != false || IAppService().getAppIds().length != 1
     if (deepLinkConfig != null) {
       bool startedManually = bool.tryParse(queryParameters.remove("startedManually") ?? "") ?? false;
       IConfigService().setCustomStartupProperties(queryParameters);

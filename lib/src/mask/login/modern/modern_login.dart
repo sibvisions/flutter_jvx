@@ -25,7 +25,6 @@ import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../model/response/login_view_response.dart';
 import '../../../service/api/shared/api_object_property.dart';
-import '../../../service/apps/i_app_service.dart';
 import '../../../service/config/i_config_service.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../../../util/image/image_loader.dart';
@@ -73,7 +72,7 @@ class ModernLogin extends StatelessWidget implements Login {
       bottomColor = tempTop;
     }
 
-    bool replaceSettingsWithApps = IAppService().showAppsButton();
+    bool replaceSettingsWithApps = IUiService().canRouteToAppOverview();
 
     return Scaffold(
       body: LayoutBuilder(

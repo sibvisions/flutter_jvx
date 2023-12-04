@@ -35,8 +35,8 @@ class OpenServerErrorDialogCommand extends MessageViewCommand {
   /// The error object.
   final List<ServerException>? exceptions;
 
-  /// True if this error is probably caused and therefore fixable by the user (e.g. invalid application)
-  final bool userError;
+  /// True if this error is cause by invalid application.
+  final bool invalidApp;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -49,7 +49,7 @@ class OpenServerErrorDialogCommand extends MessageViewCommand {
     this.silentAbort = false,
     this.details,
     this.exceptions,
-    this.userError = false,
+    this.invalidApp = false,
     required super.reason,
   });
 
@@ -59,6 +59,6 @@ class OpenServerErrorDialogCommand extends MessageViewCommand {
 
   @override
   String toString() {
-    return "OpenErrorDialogCommand{componentId: $componentId, silentAbort: $silentAbort, details: $details, exceptions: $exceptions, canBeFixedInSettings: $userError, ${super.toString()}}";
+    return "OpenErrorDialogCommand{componentId: $componentId, silentAbort: $silentAbort, details: $details, exceptions: $exceptions, invalidApp: $invalidApp, ${super.toString()}}";
   }
 }

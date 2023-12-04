@@ -34,13 +34,10 @@ class ErrorDialog extends JVxDialog {
   final String message;
 
   /// True if this error is fixable by the user (e.g. invalid url/timeout)
-  final bool goToSettings;
+  final bool goToAppOverview;
 
   /// True if a retry is possible
   final bool retry;
-
-  /// True if a no action (OK) button should be displayed
-  final bool dismissibleViaButton;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -50,8 +47,7 @@ class ErrorDialog extends JVxDialog {
     super.key,
     required this.message,
     this.title,
-    this.goToSettings = false,
-    this.dismissibleViaButton = true,
+    this.goToAppOverview = false,
     this.retry = false,
     super.dismissible,
   });
@@ -91,7 +87,7 @@ class ErrorDialog extends JVxDialog {
       );
     }
 
-    if (goToSettings) {
+    if (goToAppOverview && IUiService().canRouteToAppOverview()) {
       actions.add(
         TextButton.icon(
           onPressed: () {

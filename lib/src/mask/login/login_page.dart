@@ -26,9 +26,9 @@ import '../../model/command/api/login_command.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../model/command/api/reset_password_command.dart';
 import '../../service/command/i_command_service.dart';
+import '../../service/ui/i_ui_service.dart';
 import '../../util/extensions/string_extensions.dart';
 import '../../util/widgets/jvx_webview.dart';
-import '../state/app_pop_aware.dart';
 import '../state/app_style.dart';
 import 'default/default_login.dart';
 import 'modern/modern_login.dart';
@@ -201,23 +201,30 @@ class LoginPage extends StatefulWidget {
       ));
 }
 
-class _LoginPageState extends State<LoginPage> with RouteAware, AppPopAware {
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return _buildLogin(context);
-  }
-
-  Widget _buildLogin(BuildContext context) {
     var customWidget = FlutterUI.of(context).widget.loginBuilder?.call(context, widget.loginMode);
     if (customWidget != null) return customWidget;
 
     var appStyle = AppStyle.of(context).applicationStyle;
     String? loginLayout = appStyle?['login.layout'];
 
+    Widget login;
     if (loginLayout == "modern") {
-      return ModernLogin(mode: widget.loginMode);
+      login = ModernLogin(mode: widget.loginMode);
     } else {
-      return DefaultLogin(mode: widget.loginMode);
+      login = DefaultLogin(mode: widget.loginMode);
     }
+
+    return WillPopScope(onWillPop: _onPopLogin, child: login);
+  }
+
+  Future<bool> _onPopLogin() async {
+    if (IUiService().canRouteToAppOverview()) {
+      unawaited(IUiService().routeToAppOverview());
+    }
+
+    return false;
   }
 }

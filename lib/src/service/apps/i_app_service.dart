@@ -95,9 +95,6 @@ abstract class IAppService implements Service {
   /// * [saveLocationAsReturnUri]
   Uri? getApplicableReturnUri(List<MenuEntryResponse> menuItems);
 
-  /// Determines whether the "Apps" button should be shown.
-  bool showAppsButton();
-
   /// Determines whether the single app mode switch should be shown.
   bool showSingleAppModeSwitch();
 

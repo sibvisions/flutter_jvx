@@ -85,10 +85,6 @@ abstract class Frame extends StatefulWidget {
     }
   }
 
-  void changeApp() {
-    IUiService().routeToAppOverview();
-  }
-
   factory Frame.getFrame(
     bool isWeb, {
     Key? key,

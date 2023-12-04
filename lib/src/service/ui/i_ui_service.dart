@@ -133,6 +133,8 @@ abstract class IUiService implements Service {
 
   Future<void> routeToAppOverview();
 
+  bool canRouteToAppOverview();
+
   /// Gets the current custom manager
   AppManager? getAppManager();
 

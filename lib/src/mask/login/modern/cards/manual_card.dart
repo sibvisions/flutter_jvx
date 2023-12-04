@@ -20,7 +20,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
-import '../../../../service/apps/i_app_service.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
@@ -28,6 +27,7 @@ import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../apps/app_overview_page.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
+
 import '../modern_login.dart';
 
 class ManualCard extends StatefulWidget {
@@ -69,7 +69,7 @@ class _ManualCardState extends State<ManualCard> {
 
   @override
   Widget build(BuildContext context) {
-    bool replaceSettingsWithApps = IAppService().showAppsButton();
+    bool replaceSettingsWithApps = IUiService().canRouteToAppOverview();
 
     return Card(
       color: Theme.of(context).colorScheme.surface.withOpacity(0.9),

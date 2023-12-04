@@ -618,13 +618,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (widget.onClosed != null) {
       widget.onClosed!();
-    } else {
-      var navigator = Navigator.of(context);
-      if (navigator.canPop()) {
-        navigator.pop();
-      } else if (context.canBeamBack) {
-        context.beamBack();
-      } else {
+    } else if (!context.beamBack()) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      } else if (IUiService().canRouteToAppOverview()) {
         await IUiService().routeToAppOverview();
       }
     }

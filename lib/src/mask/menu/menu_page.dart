@@ -38,7 +38,6 @@ import '../../util/parse_util.dart';
 import '../../util/search_mixin.dart';
 import '../frame/frame.dart';
 import '../frame/web_frame.dart';
-import '../state/app_pop_aware.dart';
 import '../state/app_style.dart';
 import '../work_screen/work_screen_page.dart';
 import 'menu.dart';
@@ -53,7 +52,7 @@ class MenuPage extends StatefulWidget {
   State<MenuPage> createState() => _MenuPageState();
 }
 
-class _MenuPageState extends State<MenuPage> with SearchMixin, RouteAware, AppPopAware {
+class _MenuPageState extends State<MenuPage> with SearchMixin {
   /// Debounce re-layouts
   final BehaviorSubject<Size> subject = BehaviorSubject<Size>();
 
@@ -69,138 +68,136 @@ class _MenuPageState extends State<MenuPage> with SearchMixin, RouteAware, AppPo
 
   @override
   Widget build(BuildContext context) {
-    return Frame.wrapWithFrame(
-      builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
-        valueListenable: IUiService().getMenuNotifier(),
-        builder: (context, _, child) => ValueListenableBuilder<FlComponentModel?>(
-          valueListenable: IStorageService().getDesktopPanelNotifier(),
-          builder: (context, desktopPanel, child) {
-            List<Widget> actions = [];
+    return WillPopScope(
+      onWillPop: _onPopMenu,
+      child: Frame.wrapWithFrame(
+        builder: (context, isOffline) => ValueListenableBuilder<MenuModel>(
+          valueListenable: IUiService().getMenuNotifier(),
+          builder: (context, _, child) => ValueListenableBuilder<FlComponentModel?>(
+            valueListenable: IStorageService().getDesktopPanelNotifier(),
+            builder: (context, desktopPanel, child) {
+              List<Widget> actions = [];
 
-            var menuModel = IUiService().getMenuModel();
+              var menuModel = IUiService().getMenuModel();
 
-            if (!isMenuSearchEnabled) {
-              if (menuModel.count >= 8) {
-                actions.add(
-                  IconButton(
-                    tooltip: FlutterUI.translate("Search"),
-                    splashRadius: kToolbarHeight / 2,
-                    onPressed: () {
-                      isMenuSearchEnabled = true;
-                      menuSearchController.clear();
-                      setState(() {});
-                    },
-                    icon: const FaIcon(
-                      FontAwesomeIcons.magnifyingGlass,
-                      size: 22,
-                    ),
-                  ),
-                );
-              }
-
-              if (isOffline) {
-                actions.add(
-                  IconButton(
-                    tooltip: FlutterUI.translate("Go Online"),
-                    splashRadius: kToolbarHeight / 2,
-                    onPressed: () {
-                      showSyncDialog().then(
-                        (value) async {
-                          switch (value) {
-                            case DialogResult.YES:
-                              unawaited(OfflineUtil.initOnline());
-                              break;
-                            case DialogResult.DISCARD_CHANGES:
-                              unawaited(OfflineUtil.initOnline(true));
-                              break;
-                            default:
-                          }
-                        },
-                      );
-                    },
-                    icon: const FaIcon(
-                      FontAwesomeIcons.towerBroadcast,
-                    ),
-                  ),
-                );
-              }
-            }
-
-            var appStyle = AppStyle.of(context).applicationStyle;
-            Color? backgroundColor = ParseUtil.parseHexColor(appStyle?['desktop.color']);
-            String? backgroundImage = appStyle?['desktop.icon'];
-
-            FrameState? frameState = Frame.maybeOf(context);
-            if (frameState != null) {
-              actions.addAll(frameState.getActions());
-            }
-
-            Widget? body;
-
-            if (frameState is WebFrameState && desktopPanel != null) {
-              Widget screen = ComponentsFactory.buildWidget(desktopPanel);
-
-              body = getScreen(screen);
-            }
-
-            body ??= Column(
-              children: [
-                if (isOffline) OfflineUtil.getOfflineBar(context),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      if (backgroundColor != null || backgroundImage != null)
-                        WorkScreenPage.buildBackground(backgroundColor, backgroundImage),
-                      _getMenu(
-                        key: const PageStorageKey('MainMenu'),
-                        appStyle: appStyle,
-                        applyMenuFilter(menuModel, (item) => item.label),
+              if (!isMenuSearchEnabled) {
+                if (menuModel.count >= 8) {
+                  actions.add(
+                    IconButton(
+                      tooltip: FlutterUI.translate("Search"),
+                      splashRadius: kToolbarHeight / 2,
+                      onPressed: () {
+                        isMenuSearchEnabled = true;
+                        menuSearchController.clear();
+                        setState(() {});
+                      },
+                      icon: const FaIcon(
+                        FontAwesomeIcons.magnifyingGlass,
+                        size: 22,
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            );
+                    ),
+                  );
+                }
 
-            return WillPopScope(
-              onWillPop: isMenuSearchEnabled
-                  ? () async {
-                      setState(() => isMenuSearchEnabled = false);
-                      return false;
-                    }
-                  : null,
-              child: Scaffold(
+                if (isOffline) {
+                  actions.add(
+                    IconButton(
+                      tooltip: FlutterUI.translate("Go Online"),
+                      splashRadius: kToolbarHeight / 2,
+                      onPressed: () {
+                        showSyncDialog().then(
+                          (value) async {
+                            switch (value) {
+                              case DialogResult.YES:
+                                unawaited(OfflineUtil.initOnline());
+                                break;
+                              case DialogResult.DISCARD_CHANGES:
+                                unawaited(OfflineUtil.initOnline(true));
+                                break;
+                              default:
+                            }
+                          },
+                        );
+                      },
+                      icon: const FaIcon(
+                        FontAwesomeIcons.towerBroadcast,
+                      ),
+                    ),
+                  );
+                }
+              }
+
+              var appStyle = AppStyle.of(context).applicationStyle;
+              Color? backgroundColor = ParseUtil.parseHexColor(appStyle?['desktop.color']);
+              String? backgroundImage = appStyle?['desktop.icon'];
+
+              FrameState? frameState = Frame.maybeOf(context);
+              if (frameState != null) {
+                actions.addAll(frameState.getActions());
+              }
+
+              Widget? body;
+
+              if (frameState is WebFrameState && desktopPanel != null) {
+                Widget screen = ComponentsFactory.buildWidget(desktopPanel);
+
+                body = getScreen(screen);
+              }
+
+              body ??= Column(
+                children: [
+                  if (isOffline) OfflineUtil.getOfflineBar(context),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        if (backgroundColor != null || backgroundImage != null)
+                          WorkScreenPage.buildBackground(backgroundColor, backgroundImage),
+                        _getMenu(
+                          key: const PageStorageKey('MainMenu'),
+                          appStyle: appStyle,
+                          applyMenuFilter(menuModel, (item) => item.label),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+
+              Widget? leading;
+              if (isMenuSearchEnabled) {
+                leading = IconButton(
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  splashRadius: kToolbarHeight / 2,
+                  onPressed: () => setState(() => isMenuSearchEnabled = false),
+                  icon: const FaIcon(FontAwesomeIcons.circleXmark),
+                );
+              } else if (IAppService().wasStartedManually() && IUiService().canRouteToAppOverview()) {
+                leading = IconButton(
+                  tooltip: FlutterUI.translate("Exit App"),
+                  splashRadius: kToolbarHeight / 2,
+                  icon: const BackButtonIcon(),
+                  onPressed: () => Navigator.maybePop(context),
+                );
+              }
+
+              return Scaffold(
                 drawerEnableOpenDragGesture: false,
                 endDrawerEnableOpenDragGesture: false,
                 drawer: frameState?.getDrawer(context),
                 endDrawer: frameState?.getEndDrawer(context),
                 appBar: frameState?.getAppBar(
-                  leading: isMenuSearchEnabled
-                      ? IconButton(
-                          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-                          splashRadius: kToolbarHeight / 2,
-                          onPressed: () => setState(() => isMenuSearchEnabled = false),
-                          icon: const FaIcon(FontAwesomeIcons.circleXmark),
-                        )
-                      : (IAppService().wasStartedManually()
-                          ? IconButton(
-                              tooltip: FlutterUI.translate("Exit App"),
-                              splashRadius: kToolbarHeight / 2,
-                              icon: const BackButtonIcon(),
-                              onPressed: () => Navigator.maybePop(context),
-                            )
-                          : null),
+                  leading: leading,
                   title: !isMenuSearchEnabled
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
-                  titleSpacing: isMenuSearchEnabled || IAppService().wasStartedManually() ? 0.0 : null,
+                  titleSpacing: leading != null ? 0.0 : null,
                   backgroundColor: isOffline ? Colors.grey.shade500 : null,
                   actions: actions,
                 ),
                 body: frameState?.wrapBody(body) ?? body,
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -413,5 +410,15 @@ class _MenuPageState extends State<MenuPage> with SearchMixin, RouteAware, AppPo
         ),
       ),
     );
+  }
+
+  Future<bool> _onPopMenu() async {
+    if (isMenuSearchEnabled) {
+      setState(() => isMenuSearchEnabled = false);
+    } else if (IUiService().canRouteToAppOverview()) {
+      unawaited(IUiService().routeToAppOverview());
+    }
+
+    return false;
   }
 }

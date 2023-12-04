@@ -162,6 +162,10 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    // if (!IUiService().canRouteToAppOverview()) {
+    //   return const SizedBox();
+    // }
+
     return PageStorage(
       bucket: FlutterUI.of(context).globalStorageBucket,
       child: Theme(

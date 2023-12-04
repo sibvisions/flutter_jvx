@@ -716,19 +716,21 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
               if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
                   (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
                 retrySplash() => IAppService().startApp();
-                splashReturnToApps() => IUiService().routeToAppOverview();
+
+                VoidCallback? returnToApps =
+                    IUiService().canRouteToAppOverview() ? IUiService().routeToAppOverview : null;
 
                 return _buildSplash(
                   future: IAppService().startupFuture.value!,
                   retry: retrySplash,
-                  returnToApps: splashReturnToApps,
+                  returnToApps: returnToApps,
                   childrenBuilder: (snapshot) => [
                     if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
                       _getStartupErrorDialog(
                         context,
                         snapshot,
                         retry: retrySplash,
-                        returnToApps: splashReturnToApps,
+                        returnToApps: returnToApps,
                       ),
                   ],
                 );
@@ -766,7 +768,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     Widget? child,
     List<Widget> Function(AsyncSnapshot snapshot)? childrenBuilder,
     required VoidCallback retry,
-    required VoidCallback returnToApps,
+    required VoidCallback? returnToApps,
   }) {
     return FutureNestedNavigator(
       theme: splashTheme,
@@ -779,22 +781,24 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             snapshot: snapshot,
             onReturn: returnToApps,
             splashBuilder: widget.splashBuilder ??
-                (context, snapshot) => JVxSplash(
-                      snapshot: snapshot,
-                      logo: SvgPicture.asset(
-                        ImageLoader.getAssetPath(FlutterUI.package, "assets/images/J.svg"),
-                        width: 138,
-                        height: 145,
-                      ),
-                      background: SvgPicture.asset(
-                        ImageLoader.getAssetPath(FlutterUI.package, "assets/images/JVx_Bg.svg"),
-                        fit: BoxFit.fill,
-                      ),
-                      branding: Image.asset(
-                        ImageLoader.getAssetPath(FlutterUI.package, "assets/images/logo.png"),
-                        width: 200,
-                      ),
+                (context, snapshot) {
+                  return JVxSplash(
+                    snapshot: snapshot,
+                    logo: SvgPicture.asset(
+                      ImageLoader.getAssetPath(FlutterUI.package, "assets/images/J.svg"),
+                      width: 138,
+                      height: 145,
                     ),
+                    background: SvgPicture.asset(
+                      ImageLoader.getAssetPath(FlutterUI.package, "assets/images/JVx_Bg.svg"),
+                      fit: BoxFit.fill,
+                    ),
+                    branding: Image.asset(
+                      ImageLoader.getAssetPath(FlutterUI.package, "assets/images/logo.png"),
+                      width: 200,
+                    ),
+                  );
+                },
           ),
           ...?childrenBuilder?.call(snapshot),
         ],
@@ -944,9 +948,28 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     BuildContext context,
     AsyncSnapshot<dynamic> snapshot, {
     required VoidCallback retry,
-    required VoidCallback returnToApps,
+    required VoidCallback? returnToApps,
   }) {
     ErrorViewException? errorView = snapshot.error is ErrorViewException ? snapshot.error as ErrorViewException : null;
+
+    var actions = [
+      if (returnToApps != null)
+        TextButton(
+          onPressed: returnToApps,
+          child: Text(
+            FlutterUI.translateLocal("Back"),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      if (errorView?.errorCommand.invalidApp != true)
+        TextButton(
+          onPressed: retry,
+          child: Text(
+            FlutterUI.translateLocal("Retry"),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+    ];
 
     return Stack(
       children: [
@@ -966,24 +989,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           content: Text(
             errorView?.errorCommand.message ?? FlutterUI.translateLocal(IUiService.getErrorMessage(snapshot.error!)),
           ),
-          actionsAlignment: MainAxisAlignment.spaceBetween,
-          actions: [
-            TextButton(
-              onPressed: returnToApps,
-              child: Text(
-                FlutterUI.translateLocal("Back"),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            if (!(errorView?.errorCommand.userError ?? false))
-              TextButton(
-                onPressed: retry,
-                child: Text(
-                  FlutterUI.translateLocal("Retry"),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-          ],
+          actionsAlignment: actions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+          actions: actions,
         ),
       ],
     );

@@ -28,13 +28,11 @@ class OpenErrorDialogCommand extends UiCommand {
   /// Message
   final String message;
 
+  /// The error
   final Object? error;
 
   /// True if this error is a timeout
   final bool isTimeout;
-
-  /// True if this error is caused and therefore fixable by the user (e.g. invalid url)
-  final bool canBeFixedInSettings;
 
   /// True if this dialog should be dismissible
   final bool dismissible;
@@ -44,11 +42,10 @@ class OpenErrorDialogCommand extends UiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   OpenErrorDialogCommand({
-    this.title,
     required this.message,
+    this.title,
     this.error,
     this.isTimeout = false,
-    this.canBeFixedInSettings = false,
     this.dismissible = true,
     required super.reason,
   });
@@ -59,6 +56,6 @@ class OpenErrorDialogCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'OpenErrorDialogCommand{title: $title, message: $message, error: $error, isTimeout: $isTimeout, canBeFixedInSettings: $canBeFixedInSettings, dismissible: $dismissible}';
+    return 'OpenErrorDialogCommand{title: $title, message: $message, error: $error, isTimeout: $isTimeout, dismissible: $dismissible}';
   }
 }

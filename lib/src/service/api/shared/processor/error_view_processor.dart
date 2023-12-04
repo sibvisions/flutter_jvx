@@ -30,13 +30,13 @@ class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
         title: pResponse.title,
         message: pResponse.message,
         silentAbort: pResponse.silentAbort,
-        userError: isUserError(pResponse.message),
+        invalidApp: isInvalidApp(pResponse.message),
       )
     ];
   }
 
   /// Dirty error message check
-  bool isUserError(String? message) {
+  bool isInvalidApp(String? message) {
     if (message != null && message.toLowerCase().startsWith("invalid application:")) {
       return true;
     }

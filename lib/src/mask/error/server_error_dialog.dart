@@ -32,7 +32,7 @@ class ServerErrorDialog extends JVxDialog {
   final OpenServerErrorDialogCommand command;
 
   /// True if this error is fixable by the user (e.g. invalid url/timeout)
-  final bool goToSettings;
+  final bool goToAppOverview;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -41,7 +41,7 @@ class ServerErrorDialog extends JVxDialog {
   const ServerErrorDialog({
     super.key,
     required this.command,
-    this.goToSettings = false,
+    this.goToAppOverview = false,
   }) : super(dismissible: true);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +65,7 @@ class ServerErrorDialog extends JVxDialog {
   List<Widget> _getButtons(BuildContext context) {
     List<Widget> actions = [];
 
-    if (goToSettings) {
+    if (goToAppOverview && IUiService().canRouteToAppOverview()) {
       actions.add(
         TextButton.icon(
           onPressed: () {

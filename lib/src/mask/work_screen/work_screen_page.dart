@@ -32,7 +32,6 @@ import '../../model/component/fl_component_model.dart';
 import '../../model/component/model_subscription.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/request/api_navigation_request.dart';
-import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
@@ -361,7 +360,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   }
 
   Widget? _buildLeading() {
-    if (noBack || (overviewBack && !canGoToOverview)) {
+    if (model?.isCloseAble == false) {
       return null;
     }
 
@@ -425,11 +424,6 @@ class WorkScreenPageState extends State<WorkScreenPage> {
               IUiService().handleAsyncError,
             );
         return false;
-      } else if (noBack || overviewBack) {
-        if (overviewBack && canGoToOverview) {
-          unawaited(IUiService().routeToAppOverview());
-        }
-        return false;
       }
       return !context.beamBack();
     } finally {
@@ -455,10 +449,4 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       )
     ];
   }
-
-  bool get noBack => model?.noBack == true;
-
-  bool get overviewBack => model?.overviewBack == true;
-
-  bool get canGoToOverview => !IConfigService().singleAppMode.value && IAppService().getAppIds().length > 1;
 }

@@ -178,4 +178,12 @@ class FlPanelModel extends FlComponentModel {
 
   // If the panel is a content.
   bool get isContent => contentClassName != null;
+
+  bool get isCloseAble {
+    if (overviewBack) {
+      return IUiService().canRouteToAppOverview();
+    }
+
+    return !noBack;
+  }
 }

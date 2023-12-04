@@ -16,7 +16,6 @@
 
 import 'dart:async';
 
-import 'package:beamer/beamer.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../../../../flutter_ui.dart';
@@ -31,14 +30,6 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
   Future<List<BaseCommand>> processCommand(OpenServerErrorDialogCommand command, BaseCommand? origin) async {
     // Will be displayed in Splash if context is null
     if (FlutterUI.getCurrentContext() != null && !command.silentAbort) {
-      bool goToSettings = command.userError;
-      // Don't show "Go to Settings" while in settings
-      if ((FlutterUI.getBeamerDelegate().currentBeamLocation.state as BeamState)
-          .pathPatternSegments
-          .contains("settings")) {
-        goToSettings = false;
-      }
-
       // Check if there isn't already another dialog with the same id
       if (command.componentId == null ||
           IUiService()
@@ -48,7 +39,7 @@ class OpenServerErrorDialogCommandProcessor extends ICommandProcessor<OpenServer
         IUiService().showJVxDialog(
           ServerErrorDialog(
             command: command,
-            goToSettings: goToSettings,
+            goToAppOverview: command.invalidApp,
           ),
         );
       }

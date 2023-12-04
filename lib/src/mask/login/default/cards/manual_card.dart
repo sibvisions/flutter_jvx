@@ -20,7 +20,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
-import '../../../../service/apps/i_app_service.dart';
 import '../../../../service/config/i_config_service.dart';
 import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
@@ -187,7 +186,7 @@ class _ManualCardState extends State<ManualCard> {
   }
 
   Widget _createBottomRow() {
-    bool replaceSettingsWithApps = IAppService().showAppsButton();
+    bool replaceSettingsWithApps = IUiService().canRouteToAppOverview();
     Widget textButton = TextButton.icon(
       onPressed: () => replaceSettingsWithApps ? IUiService().routeToAppOverview() : IUiService().routeToSettings(),
       icon: replaceSettingsWithApps ? const Icon(AppOverviewPage.appsIcon) : const FaIcon(FontAwesomeIcons.gear),

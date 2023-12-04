@@ -191,7 +191,7 @@ class UiService implements IUiService {
   }
 
   @override
-  handleAsyncError(Object error, StackTrace stackTrace) {
+  void handleAsyncError(Object error, StackTrace stackTrace) {
     FlutterUI.logUI.e("Error while handling async", error: error, stackTrace: stackTrace);
 
     if (error is! ErrorViewException && error is! SessionExpiredException) {
@@ -200,7 +200,7 @@ class UiService implements IUiService {
           .sendCommand(OpenErrorDialogCommand(
             message: FlutterUI.translate(IUiService.getErrorMessage(error)),
             error: error,
-            canBeFixedInSettings: isTimeout,
+            isTimeout: isTimeout,
             reason: "UIService async error",
           ))
           .catchError(
@@ -220,8 +220,6 @@ class UiService implements IUiService {
             .catchError((e, stack) => FlutterUI.logUI.e("Failed to send error to server", error: e, stackTrace: stack));
       }
     }
-
-    return null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -284,6 +282,10 @@ class UiService implements IUiService {
 
   @override
   Future<void> routeToAppOverview() async {
+    if (IAppService().exitFuture.value != null) {
+      return;
+    }
+
     // First fire the future, then route.
     // Otherwise, the BeamGuard routing check would fail.
     var stopApp = IAppService().stopApp();
@@ -292,6 +294,24 @@ class UiService implements IUiService {
     FlutterUI.getBeamerDelegate().beamToReplacementNamed("/");
 
     await stopApp;
+  }
+
+  @override
+  bool canRouteToAppOverview() {
+    if (IConfigService().getAppConfig()?.customAppsAllowed ?? true) {
+      return true;
+    }
+
+    if (IAppService().isSingleAppMode()) {
+      return false;
+    } else if (IAppService().getAppIds().length > 1) {
+      return true;
+    } else if (IConfigService().getAppConfig()?.predefinedConfigsLocked == true ||
+        IConfigService().getAppConfig()?.predefinedConfigsParametersHidden == true) {
+      return false;
+    }
+
+    return true;
   }
 
   @override

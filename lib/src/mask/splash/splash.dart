@@ -62,9 +62,11 @@ class _SplashState extends State<Splash> {
   Future<bool> _onBackPress() async {
     if ([null, ConnectionState.none, ConnectionState.done].contains(widget.snapshot?.connectionState)) {
       widget.onReturn?.call();
+      return widget.onReturn != null;
+    } else {
+      // Still connecting, ignore back presses while connecting.
+      return true;
     }
-    // We always handle it.
-    return true;
   }
 
   @override
