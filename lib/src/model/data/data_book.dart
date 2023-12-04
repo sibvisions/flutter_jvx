@@ -152,7 +152,7 @@ class DataBook {
       if (pCommand.requestFilter.isNotEmpty) {
         dataMap = pageRecords[pageKey]!;
       } else {
-        dataMap = records = pageRecords[pageKey]!;
+        dataMap = pageRecords[pageKey] = records;
       }
     }
 
