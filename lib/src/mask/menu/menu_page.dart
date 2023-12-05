@@ -415,7 +415,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
   Future<bool> _onPopMenu() async {
     if (isMenuSearchEnabled) {
       setState(() => isMenuSearchEnabled = false);
-    } else if (IUiService().canRouteToAppOverview()) {
+    } else if (IUiService().canRouteToAppOverview() && IAppService().wasStartedManually()) {
       unawaited(IUiService().routeToAppOverview());
     }
 

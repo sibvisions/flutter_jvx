@@ -25,6 +25,7 @@ import '../../model/command/api/cancel_login_command.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../model/command/api/reset_password_command.dart';
+import '../../service/apps/i_app_service.dart';
 import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/extensions/string_extensions.dart';
@@ -221,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<bool> _onPopLogin() async {
-    if (IUiService().canRouteToAppOverview()) {
+    if (IUiService().canRouteToAppOverview() && IAppService().wasStartedManually()) {
       unawaited(IUiService().routeToAppOverview());
     }
 
