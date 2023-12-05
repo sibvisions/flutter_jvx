@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:beamer/beamer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
@@ -24,6 +25,7 @@ import 'package:rxdart/rxdart.dart';
 import '../../custom/custom_screen.dart';
 import '../../exceptions/error_view_exception.dart';
 import '../../flutter_ui.dart';
+import '../../model/command/api/activate_screen_command.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/navigation_command.dart';
 import '../../model/command/api/open_screen_command.dart';
@@ -190,6 +192,13 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           screenLongName: item!.screenLongName,
           reason: "Screen was opened inside $runtimeType",
         ));
+      } else if (model != null && kIsWeb) {
+        return ICommandService().sendCommand(
+          ActivateScreenCommand(
+            componentId: model.name,
+            reason: "Screen was activated inside $runtimeType",
+          ),
+        );
       }
     }).catchError((e, stack) {
       FlutterUI.log.e("Open screen failed", error: e, stackTrace: stack);
@@ -201,8 +210,9 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           Future.delayed(const Duration(milliseconds: 350)).then((_) => _onBack());
         });
       }
-      throw e;
-    }).catchError(IUiService().handleAsyncError);
+
+      IUiService().handleAsyncError(e, stack);
+    });
   }
 
   void rebuild() {
