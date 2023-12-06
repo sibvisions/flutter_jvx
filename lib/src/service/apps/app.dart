@@ -265,7 +265,7 @@ class App {
     if (pDefault) {
       await IConfigService().updateDefaultApp(_id);
     } else if (isDefault) {
-      await IConfigService().updateDefaultApp(null);
+      await IConfigService().refreshDefaultApp(true);
     }
   }
 
@@ -417,23 +417,16 @@ class App {
   Future<void> delete() async {
     _checkId();
 
-    String appId = _id!;
-    if (!predefined) {
-      // Disables this object.
-      _id = null;
-    }
+    await IConfigService().getConfigHandler().removeAppKeys(id);
 
-    await IConfigService().getConfigHandler().removeAppKeys(appId);
+    await updateDefault(false);
 
-    if (IConfigService().defaultApp.value == appId) {
-      await IConfigService().updateDefaultApp(null);
-    }
-    if (IConfigService().lastApp.value == appId) {
+    if (IConfigService().lastApp.value == id) {
       await IConfigService().updateLastApp(null);
     }
 
-    await IConfigService().getFileManager().deleteIndependentDirectory([appId], recursive: true).catchError(
-        (e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", error: e, stackTrace: stack));
+    await IConfigService().getFileManager().deleteIndependentDirectory([id], recursive: true).catchError(
+        (e, stack) => FlutterUI.log.w("Failed to delete app directory ($id)", error: e, stackTrace: stack));
 
     await IAppService().refreshStoredApps();
   }
