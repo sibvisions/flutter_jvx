@@ -75,7 +75,7 @@ class App {
   // Helper
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static bool _isPredefined(String id) => id.startsWith(predefinedPrefix);
+  static bool isPredefined(String id) => id.startsWith(predefinedPrefix);
 
   static bool get forceSingleAppMode => IConfigService().getAppConfig()!.forceSingleAppMode!;
 
@@ -91,7 +91,7 @@ class App {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static Future<App?> getApp(String id, {bool forceIfMissing = false}) async {
-    if (_isPredefined(id)) {
+    if (isPredefined(id)) {
       // Predefined
       if (forceIfMissing || getPredefinedConfig(id) != null) {
         var app = App._(id);
@@ -109,20 +109,12 @@ class App {
     return null;
   }
 
-  static Future<List<App>> getAppsByIDs(Iterable<String> ids) async {
-    return (await Future.wait(ids.map((id) => App.getApp(id)).toList())).whereNotNull().toList();
-  }
-
-  static Future<List<App>> getApps() async {
-    return (await Future.wait(IAppService().getAppIds().map((id) => App.getApp(id)).toList())).whereNotNull().toList();
-  }
-
   static Future<App> createApp({required String name, required Uri baseUrl}) async {
     var app = App._(computeId(name, baseUrl.toString(), predefined: false)!);
     await app.loadValues();
     await app.updateName(name);
     await app.updateBaseUrl(baseUrl);
-    await IAppService().refreshStoredAppIds();
+    await IAppService().refreshStoredApps();
     return app;
   }
 
@@ -131,7 +123,7 @@ class App {
     var app = App._(computeIdFromConfig(config)!);
     await app.loadValues();
     await app.updateFromConfig(config);
-    await IAppService().refreshStoredAppIds();
+    await IAppService().refreshStoredApps();
     return app;
   }
 
@@ -162,7 +154,7 @@ class App {
     await updateIcon(config.icon);
     await updateUsername(config.username);
     await updatePassword(config.password);
-    await updateDefault(config.isDefault);
+    await updateDefault(config.isDefault ?? false);
   }
 
   /// {@template app.name}
@@ -268,14 +260,12 @@ class App {
   }
 
   /// Sets the default state of this app.
-  Future<void> updateDefault(bool? isDefault) async {
+  Future<void> updateDefault(bool pDefault) async {
     assert(!locked, "Locked apps cannot be updated.");
-    if (isDefault ?? false) {
+    if (pDefault) {
       await IConfigService().updateDefaultApp(_id);
-    } else {
-      if (this.isDefault) {
-        await IConfigService().updateDefaultApp(null);
-      }
+    } else if (isDefault) {
+      await IConfigService().updateDefaultApp(null);
     }
   }
 
@@ -379,7 +369,7 @@ class App {
           !parametersHidden);
 
   bool get predefined {
-    return _id == null ? false : _isPredefined(_id!);
+    return _id == null ? false : isPredefined(_id!);
   }
 
   /// Whether this config contains enough information to send a [ApiStartupRequest].
@@ -414,7 +404,7 @@ class App {
     await IConfigService().getFileManager().renameIndependentDirectory([oldAppId], newAppId).catchError(
         (e, stack) => FlutterUI.log.w("Failed to move app directory ($id)", error: e, stackTrace: stack));
 
-    await IAppService().refreshStoredAppIds();
+    await IAppService().refreshStoredApps();
 
     _id = newAppId;
   }
@@ -445,7 +435,7 @@ class App {
     await IConfigService().getFileManager().deleteIndependentDirectory([appId], recursive: true).catchError(
         (e, stack) => FlutterUI.log.w("Failed to delete app directory ($appId)", error: e, stackTrace: stack));
 
-    await IAppService().refreshStoredAppIds();
+    await IAppService().refreshStoredApps();
   }
 
   /// Deletes the data of this app.

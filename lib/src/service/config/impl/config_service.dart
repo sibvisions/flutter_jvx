@@ -121,8 +121,8 @@ class ConfigService implements IConfigService {
 
   ConfigService.create({
     required IFileManager fileManager,
-    required ConfigHandler configService,
-  })  : _configHandler = configService,
+    required ConfigHandler configHandler,
+  })  : _configHandler = configHandler,
         _fileManager = fileManager;
 
   @override
@@ -149,18 +149,6 @@ class ConfigService implements IConfigService {
               .whereNotNull(),
           (e) => App.getApp(e).then((app) => app?.delete()),
         );
-        // If there is a dev config, only one app in the dev config is allowed to be the default and reset if there is none.
-        var predefinedDefault = _appConfig!.serverConfigs!.firstWhereOrNull((element) => element.isDefault ?? false);
-        await updateDefaultApp(
-          App.computeId(predefinedDefault?.appName, predefinedDefault?.baseUrl?.toString(), predefined: true),
-        );
-      } else {
-        if (_defaultApp.value == null) {
-          var predefinedDefault = _appConfig!.serverConfigs!.firstWhereOrNull((element) => element.isDefault ?? false);
-          await updateDefaultApp(
-            App.computeId(predefinedDefault?.appName, predefinedDefault?.baseUrl?.toString(), predefined: true),
-          );
-        }
       }
     }
 
@@ -186,6 +174,26 @@ class ConfigService implements IConfigService {
 
     // Update native timezone
     _platformTimeZone = await FlutterTimezone.getLocalTimezone();
+  }
+
+  @override
+  Future<void> refreshDefaultApp([bool pOverride = false]) async {
+    App? app;
+
+    if (!pOverride && defaultApp.value != null) {
+      app = await App.getApp(defaultApp.value!);
+
+      if (app?.predefined == false && !_appConfig!.customAppsAllowed!) {
+        app = null;
+      }
+    }
+
+    if (app == null) {
+      var predefinedDefault = _appConfig!.serverConfigs?.firstWhereOrNull((element) => element.isDefault ?? false);
+      await updateDefaultApp(
+        App.computeId(predefinedDefault?.appName, predefinedDefault?.baseUrl?.toString(), predefined: true),
+      );
+    }
   }
 
   Future<void> _updateAppSpecificValues() async {
@@ -399,8 +407,10 @@ class ConfigService implements IConfigService {
 
   @override
   Future<void> updateDefaultApp(String? appId) async {
-    await _configHandler.updateDefaultApp(appId);
-    _defaultApp.value = appId;
+    if (appId != defaultApp.value) {
+      await _configHandler.updateDefaultApp(appId);
+      _defaultApp.value = appId;
+    }
   }
 
   @override

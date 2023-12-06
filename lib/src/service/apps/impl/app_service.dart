@@ -43,7 +43,9 @@ class AppService implements IAppService {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  late ValueNotifier<Set<String>> _storedAppIds;
+  final ValueNotifier<Set<String>> _storedAppIds = ValueNotifier({});
+
+  List<App> _apps = [];
 
   final ValueNotifier<Future<void>?> _startupFuture = ValueNotifier(null);
   final ValueNotifier<Future<void>?> _exitFuture = ValueNotifier(null);
@@ -70,11 +72,6 @@ class AppService implements IAppService {
   }
 
   @override
-  Future<void> loadConfig() async {
-    _storedAppIds = ValueNotifier(await IConfigService().getConfigHandler().getAppKeys());
-  }
-
-  @override
   ValueNotifier<Future<void>?> get startupFuture => _startupFuture;
 
   @override
@@ -95,8 +92,9 @@ class AppService implements IAppService {
   }
 
   @override
-  Future<void> refreshStoredAppIds() async {
+  Future<void> refreshStoredApps() async {
     _storedAppIds.value = await IConfigService().getConfigHandler().getAppKeys();
+    _apps = (await Future.wait(getAppIds().map((id) => App.getApp(id)))).whereNotNull().toList();
   }
 
   @override
@@ -111,6 +109,11 @@ class AppService implements IAppService {
       ..._storedAppIds.value,
       ...?externalConfigs,
     };
+  }
+
+  @override
+  List<App> getApps() {
+    return _apps;
   }
 
   @override
@@ -157,8 +160,8 @@ class AppService implements IAppService {
   @override
   Future<void> removeAllApps() async {
     await Future.forEach<App>(
-      await App.getAppsByIDs(getAppIds()),
-      (e) => e.delete(),
+      IAppService().getApps(),
+      (app) => app.delete(),
     );
     await IConfigService().updatePrivacyPolicy(null);
   }
@@ -171,7 +174,7 @@ class AppService implements IAppService {
 
   @override
   Future<void> removeObsoletePredefinedApps() async {
-    for (String id in _storedAppIds.value) {
+    for (String id in await IConfigService().getConfigHandler().getAppKeys()) {
       App? app = await App.getApp(id, forceIfMissing: true);
       if (app!.predefined && App.getPredefinedConfig(app.id) == null) {
         FlutterUI.log.i("Removing data from an now obsolete predefined app: ${app.id}");
@@ -181,21 +184,24 @@ class AppService implements IAppService {
   }
 
   @override
-  Future<void> startDefaultApp() {
-    return App.getAppsByIDs(getAppIds()).then((apps) {
-      AppConfig appConfig = IConfigService().getAppConfig()!;
-      bool showAppOverviewWithoutDefault = appConfig.showAppOverviewWithoutDefault!;
-      App? defaultApp = apps.firstWhereOrNull((e) {
-        return e.isDefault &&
-            (e.predefined || ((appConfig.customAppsAllowed ?? false) || (appConfig.forceSingleAppMode ?? false)));
-      });
-      if (defaultApp == null && apps.length == 1 && !showAppOverviewWithoutDefault) {
-        defaultApp = apps.firstOrNull;
-      }
-      if (defaultApp?.isStartable ?? false) {
-        startApp(appId: defaultApp!.id, autostart: true);
-      }
-    });
+  App? getStartupApp() {
+    AppConfig appConfig = IConfigService().getAppConfig()!;
+
+    List<App> apps = _apps;
+
+    if (!appConfig.customAppsAllowed!) {
+      apps = apps.where((e) => e.predefined).toList();
+    }
+
+    App? defaultApp = _apps.firstWhereOrNull((e) => e.isDefault && e.isStartable);
+
+    if (defaultApp != null) {
+      return defaultApp;
+    } else if (apps.length == 1 && apps.first.isStartable && !appConfig.showAppOverviewWithoutDefault!) {
+      return apps.first;
+    }
+
+    return null;
   }
 
   @override

@@ -322,4 +322,9 @@ abstract class IConfigService implements Service {
 
   /// Triggers all image callbacks.
   void imagesChanged();
+
+  /// Refreshes the default app if necessary.
+  ///
+  /// @param pOverride If true, the default app will be refreshed even if it is already set.
+  Future<void> refreshDefaultApp([bool pOverride = false]);
 }

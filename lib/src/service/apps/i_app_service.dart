@@ -40,9 +40,6 @@ abstract class IAppService implements Service {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Loads the initial configuration.
-  Future<void> loadConfig();
-
   ValueListenable<Future<void>?> get startupFuture;
 
   ValueListenable<Future<void>?> get exitFuture;
@@ -66,15 +63,23 @@ abstract class IAppService implements Service {
   ValueListenable<Set<String>> getStoredAppIds();
 
   /// Refreshes the currently stored app IDs.
-  Future<void> refreshStoredAppIds();
+  Future<void> refreshStoredApps();
 
   /// Returns all known app IDs.
   ///
-  /// Could be stale, use [refreshStoredAppIds] to update.
+  /// Could be stale, use [refreshStoredApps] to update.
   ///
   /// Attention: This list doesn't provide any information about the validity
   /// of these apps, they don't have to be "start-able" (meaning there is a name and a base url).
   Set<String> getAppIds();
+
+  /// Returns all known apps.
+  ///
+  /// Could be stale, use [refreshStoredApps] to update.
+  ///
+  /// Attention: This list doesn't provide any information about the validity
+  /// of these apps, they don't have to be "start-able" (meaning there is a name and a base url).
+  List<App> getApps();
 
   /// Saves the current screen location as the return URI (if applicable).
   ///
@@ -115,8 +120,8 @@ abstract class IAppService implements Service {
   /// of this app and are now no longer present, therefore we can clear their data.
   Future<void> removeObsoletePredefinedApps();
 
-  /// Retrieves all known apps and starts a default app, if applicable.
-  Future<void> startDefaultApp();
+  /// Returns the startup app.
+  App? getStartupApp();
 
   /// Creates an [App] from [customConfig] and starts it, if it isn't already running.
   ///

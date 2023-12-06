@@ -377,13 +377,11 @@ class FlutterUI extends StatefulWidget {
     services.registerSingleton(appService);
 
     // Config
-    IConfigService configController = ConfigService.create(
-      configService: SharedPrefsHandler.create(sharedPrefs: await SharedPreferences.getInstance()),
+    IConfigService configService = ConfigService.create(
+      configHandler: SharedPrefsHandler.create(sharedPrefs: await SharedPreferences.getInstance()),
       fileManager: await IFileManager.getFileManager(),
     );
-    services.registerSingleton(configController);
-
-    await appService.loadConfig();
+    services.registerSingleton(configService);
 
     // Load config files
     AppConfig? devConfig;
@@ -401,15 +399,19 @@ class FlutterUI extends StatefulWidget {
     Map<String, String> queryParameters = {...Uri.base.queryParameters};
     appConfig = appConfig.merge(_extractURIConfigParameters(queryParameters));
 
-    await configController.loadConfig(appConfig, devConfig != null);
+    await configService.loadConfig(appConfig, devConfig != null);
+
+    await appService.removeObsoletePredefinedApps();
+    await appService.refreshStoredApps();
+
+    // Devconfig always overrides default app
+    await configService.refreshDefaultApp(devConfig != null);
 
     _generalLogFilter.level = appConfig.logConfig?.levels?.general ?? _defaultLogLevel;
     _apiLogFilter.level = appConfig.logConfig?.levels?.api ?? _defaultLogLevel;
     _commandLogFilter.level = appConfig.logConfig?.levels?.command ?? _defaultLogLevel;
     _uiLogFilter.level = appConfig.logConfig?.levels?.ui ?? _defaultLogLevel;
     _layoutLogFilter.level = appConfig.logConfig?.levels?.layout ?? _defaultLogLevel;
-
-    await IAppService().removeObsoletePredefinedApps();
 
     // Layout
     ILayoutService layoutService = kIsWeb ? LayoutService.create() : await IsolateLayoutService.create();
@@ -458,7 +460,7 @@ class FlutterUI extends StatefulWidget {
 
     if (urlApp != null) {
       FlutterUIState.startupApp = urlApp;
-      IConfigService().setCustomStartupProperties(queryParameters);
+      configService.setCustomStartupProperties(queryParameters);
     } else if (!kIsWeb) {
       // Handle notification launching app from terminated state
       Map<String?, Object?>? data = await Push.instance.notificationTapWhichLaunchedAppFromTerminated;
@@ -489,6 +491,8 @@ class FlutterUI extends StatefulWidget {
         }
       }
     }
+
+    FlutterUIState.startupApp ??= IAppService().getStartupApp();
 
     runApp(pAppToRun);
   }
@@ -659,8 +663,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       // Init
       if (startupApp != null) {
         IAppService().startApp(appId: startupApp!.id, autostart: true);
-      } else {
-        IAppService().startDefaultApp();
       }
     });
   }

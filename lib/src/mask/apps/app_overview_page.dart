@@ -148,23 +148,21 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     _refreshApps();
   }
 
-  Future<void> _refreshApps() {
-    setState(() {
-      future = () async {
-        var retrievedApps = await App.getAppsByIDs(IAppService().getAppIds());
-        apps = [...retrievedApps.sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase())];
-        currentConfig = _getSingleConfig();
-      }()
-          .catchError(FlutterUI.createErrorHandler("Failed to init app list"));
-    });
-    return future!;
+  Future<void> _refreshApps() async {
+    try {
+      await IAppService().refreshStoredApps();
+      apps = [...IAppService().getApps().sortedBy<String>((app) => (app.effectiveTitle ?? "").toLowerCase())];
+      currentConfig = _getSingleConfig();
+      setState(() {});
+    } catch (e, stack) {
+      FlutterUI.createErrorHandler("Failed to init app list").call(e, stack);
+    }
   }
 
   bool get containsCustomApps => (apps?.where((app) => !app.predefined).isNotEmpty ?? false);
 
   @override
   Widget build(BuildContext context) {
-
     return ValueListenableBuilder(
       valueListenable: IConfigService().singleAppMode,
       builder: (context, value, child) {
@@ -522,7 +520,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
 
       if (changedUrl) {
         // All apps with the same host will be asked if they should be updated too.
-        final List<App> appsSameHost = (await App.getApps())
+        final List<App> appsSameHost = IAppService()
+            .getApps()
             .where((element) => element.id != app!.id && element.baseUrl != null && element.baseUrl!.host == oldHost)
             .toList();
 
