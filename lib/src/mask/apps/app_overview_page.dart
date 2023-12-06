@@ -361,16 +361,12 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
 
   /// Returns either the last started app, the default app or the first app that is not hidden.
   App? _getSingleConfig() {
-    App? selectedApp;
     Iterable<String?> appIds = [
       IConfigService().lastApp.value,
       IConfigService().defaultApp.value,
     ].whereNotNull();
-    if (appIds.isNotEmpty) {
-      selectedApp = apps?.firstWhereOrNull((e) => appIds.contains(e.id) && !e.parametersHidden);
-    }
-    selectedApp ??= apps?.firstWhereOrNull((e) => !e.parametersHidden);
-    return selectedApp;
+
+    return apps?.firstWhereOrNull((app) => appIds.contains(app.id) && !app.parametersHidden);
   }
 
   Material _buildMenuButton(BuildContext context, bool showAddOnFront) {
