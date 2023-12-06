@@ -282,7 +282,7 @@ class App {
     var prConfig = getPredefinedConfig(_id);
     return (predefined &&
             (_isPredefinedLocked ||
-                (prConfig != null && ((prConfig.locked ?? true) || (prConfig.parametersHidden ?? false))))) ||
+                (prConfig != null && ((prConfig.locked ?? true) || (prConfig.parametersHidden ?? true))))) ||
         (!predefined && !customAppsAllowed && !forceSingleAppMode);
   }
 
