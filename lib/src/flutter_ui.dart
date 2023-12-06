@@ -743,6 +743,12 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                 return _buildExitSplash(child: JVxOverlay(child: child), future: IAppService().exitFuture.value!);
               }
 
+              if (startupApp != null &&
+                  startupSnapshot.connectionState == ConnectionState.none &&
+                  exitSnapshot.connectionState == ConnectionState.none) {
+                return Container();
+              }
+
               return JVxOverlay(child: child);
             },
           ),
