@@ -151,7 +151,7 @@ class AppConfig {
           wsPingInterval: const Duration(seconds: 10),
           autoRestartOnSessionExpired: true,
           showAppOverviewWithoutDefault: false,
-          customAppsAllowed: true,
+          customAppsAllowed: false,
           forceSingleAppMode: false,
           predefinedConfigsLocked: true,
           predefinedConfigsParametersHidden: true,
