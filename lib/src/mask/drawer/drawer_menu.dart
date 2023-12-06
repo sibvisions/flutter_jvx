@@ -285,7 +285,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
   Widget _buildAppsEntry(BuildContext context, bool isNormalSize) {
     return _buildFooterEntry(
       context: context,
-      text: FlutterUI.translate("Apps"),
+      text: AppOverviewPage.TITLE,
       leadingIcon: AppOverviewPage.appsIcon,
       onTap: () {
         Navigator.pop(context);

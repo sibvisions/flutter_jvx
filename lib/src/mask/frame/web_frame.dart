@@ -249,7 +249,7 @@ class WebFrameState extends FrameState {
             padding: const EdgeInsets.only(right: spacing),
             child: Builder(
               builder: (context) => IconButton(
-                tooltip: FlutterUI.translate("Apps"),
+                tooltip: AppOverviewPage.TITLE,
                 icon: Icon(
                   AppOverviewPage.appsIcon,
                   color: iconColor,

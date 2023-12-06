@@ -75,7 +75,7 @@ class ServerErrorDialog extends JVxDialog {
           },
           icon: const Icon(AppOverviewPage.appsIcon),
           label: Text(
-            FlutterUI.translate("Apps"),
+            AppOverviewPage.TITLE,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),

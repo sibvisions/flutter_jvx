@@ -212,6 +212,8 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       }
 
       IUiService().handleAsyncError(e, stack);
+
+      return null;
     });
   }
 

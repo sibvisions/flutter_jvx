@@ -64,7 +64,7 @@ class MainLocation extends BeamLocation<BeamState> {
     if (state.pathPatternSegments.isEmpty || IAppService().wasStartedManually()) {
       pages.add(
         BeamPage(
-          title: FlutterUI.translate("Apps"),
+          title: AppOverviewPage.TITLE,
           key: const ValueKey("app_overview"),
           child: const AppOverviewPage(),
           type: beamPageType,

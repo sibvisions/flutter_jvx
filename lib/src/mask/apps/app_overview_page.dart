@@ -40,6 +40,8 @@ import 'select_item.dart';
 import 'single_app_view.dart';
 
 class AppOverviewPage extends StatefulWidget {
+  static String get TITLE => FlutterUI.translate(IAppService().isSingleAppMode() ? "App" : "Apps");
+
   const AppOverviewPage({super.key});
 
   static const IconData appsIcon = Icons.window;
