@@ -18,7 +18,7 @@ import 'package:flutter/foundation.dart';
 
 import 'config_command.dart';
 
-class SaveDownloadCommand extends ConfigCommand {
+class SaveOrShowFileCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,14 +32,18 @@ class SaveDownloadCommand extends ConfigCommand {
   /// Body of the response
   final Uint8List bodyBytes;
 
+  /// Whether to show the file after saving.
+  final bool showFile;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveDownloadCommand({
+  SaveOrShowFileCommand({
     required this.fileId,
     required this.fileName,
     required this.bodyBytes,
+    required this.showFile,
     required super.reason,
   });
 

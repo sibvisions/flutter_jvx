@@ -36,6 +36,9 @@ class ApiDownloadRequest extends DownloadRequest {
   /// The url
   final String url;
 
+  /// If the file should be saved as
+  final bool showFile;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,6 +47,7 @@ class ApiDownloadRequest extends DownloadRequest {
     required this.url,
     required this.fileName,
     required this.fileId,
+    required this.showFile,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

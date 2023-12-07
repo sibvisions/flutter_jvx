@@ -31,6 +31,9 @@ class DownloadActionCommand extends UiCommand {
   /// The url of where to download the file from.
   final String url;
 
+  /// Whether to save the file or show it.
+  final bool showFile;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +42,7 @@ class DownloadActionCommand extends UiCommand {
     required this.fileId,
     required this.fileName,
     required this.url,
+    required this.showFile,
     required super.reason,
   });
 
@@ -48,6 +52,6 @@ class DownloadActionCommand extends UiCommand {
 
   @override
   String toString() {
-    return "DownloadActionCommand{fileId: $fileId, fileName: $fileName, url: $url ${super.toString()}}";
+    return "DownloadActionCommand{fileId: $fileId, fileName: $fileName, url: $url, isSaveAs: $showFile, ${super.toString()}}";
   }
 }

@@ -23,13 +23,17 @@ import '../i_response_processor.dart';
 class DownloadActionProcessor implements IResponseProcessor<DownloadActionResponse> {
   @override
   List<BaseCommand> processResponse(DownloadActionResponse pResponse, ApiRequest? pRequest) {
-    String url = pResponse.url.split(";").first;
+    List<String> urlParamList = pResponse.url.split(";");
+
+    String url = urlParamList.first;
+    bool showFile = urlParamList.last != "SAVE_FILE";
 
     return [
       DownloadActionCommand(
         fileId: pResponse.fileId,
         fileName: pResponse.fileName,
         url: url,
+        showFile: showFile,
         reason: "Upload from server",
       )
     ];

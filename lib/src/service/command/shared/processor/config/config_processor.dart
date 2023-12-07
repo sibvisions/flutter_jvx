@@ -71,7 +71,7 @@ class ConfigProcessor implements ICommandProcessorHandler<ConfigCommand> {
       return _applicationTranslationCommandProcessor;
     } else if (command is SaveApplicationStyleCommand) {
       return _applicationStyleCommandProcessor;
-    } else if (command is SaveDownloadCommand) {
+    } else if (command is SaveOrShowFileCommand) {
       return _saveDownloadCommandProcessor;
     }
 

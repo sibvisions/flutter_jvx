@@ -26,10 +26,11 @@ class DownloadProcessor implements IResponseProcessor<DownloadResponse> {
   List<BaseCommand> processResponse(DownloadResponse pResponse, ApiRequest? pRequest) {
     if (pRequest is ApiDownloadRequest) {
       return [
-        SaveDownloadCommand(
+        SaveOrShowFileCommand(
           bodyBytes: pResponse.bodyBytes,
           fileId: pRequest.fileId,
           fileName: pRequest.fileName,
+          showFile: pRequest.showFile,
           reason: "Saving a file",
         )
       ];

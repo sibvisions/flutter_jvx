@@ -30,6 +30,7 @@ class DownloadActionCommandProcessor extends ICommandProcessor<DownloadActionCom
         url: command.url,
         fileId: command.fileId,
         fileName: command.fileName,
+        showFile: command.showFile,
       ),
     );
   }
