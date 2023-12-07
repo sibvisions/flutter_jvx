@@ -25,7 +25,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_download_command.dart';
 import '../../i_command_processor.dart';
 
-class SaveDownloadCommandProcessor extends ICommandProcessor<SaveOrShowFileCommand> {
+class SaveOrShowFileCommandProcessor extends ICommandProcessor<SaveOrShowFileCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveOrShowFileCommand command, BaseCommand? origin) async {
     String extension = path.extension(command.fileName);
@@ -33,7 +33,10 @@ class SaveDownloadCommandProcessor extends ICommandProcessor<SaveOrShowFileComma
       extension = extension.substring(1);
     }
 
-    if (kIsWeb || command.showFile) {
+    // Web should not download, web already launches the url directly.
+    // It is still here because that is how it was before.
+    // see in: {DownloadActionCommandProcessor}
+    if (command.showFile || kIsWeb) {
       // saveAs is not implemented for web.
       unawaited(
         FileSaver.instance
@@ -44,7 +47,7 @@ class SaveDownloadCommandProcessor extends ICommandProcessor<SaveOrShowFileComma
           mimeType: MimeType.other,
         )
             .then((String filePath) {
-          if (command.showFile) {
+          if (command.showFile && !kIsWeb) {
             OpenFilex.open(filePath);
           }
         }),

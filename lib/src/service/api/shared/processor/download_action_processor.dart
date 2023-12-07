@@ -26,7 +26,7 @@ class DownloadActionProcessor implements IResponseProcessor<DownloadActionRespon
     List<String> urlParamList = pResponse.url.split(";");
 
     String url = urlParamList.first;
-    bool showFile = urlParamList.last != "SAVE_FILE";
+    bool showFile = urlParamList.last == "SHOW_FILE";
 
     return [
       DownloadActionCommand(

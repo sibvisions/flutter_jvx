@@ -33,7 +33,7 @@ import 'save_application_settings_command_processor.dart';
 import 'save_application_style_command_processor.dart';
 import 'save_application_translation_command_processor.dart';
 import 'save_auth_key_command_processor.dart';
-import 'save_download_processor.dart';
+import 'save_or_show_file_command_processor.dart';
 import 'save_user_data_command_processor.dart';
 
 /// Handles the processors of [ConfigCommand].
@@ -51,7 +51,7 @@ class ConfigProcessor implements ICommandProcessorHandler<ConfigCommand> {
   final SaveApplicationTranslationCommandProcessor _applicationTranslationCommandProcessor =
       SaveApplicationTranslationCommandProcessor();
   final SaveApplicationStyleCommandProcessor _applicationStyleCommandProcessor = SaveApplicationStyleCommandProcessor();
-  final SaveDownloadCommandProcessor _saveDownloadCommandProcessor = SaveDownloadCommandProcessor();
+  final SaveOrShowFileCommandProcessor _saveDownloadCommandProcessor = SaveOrShowFileCommandProcessor();
 
   @override
   ICommandProcessor<ConfigCommand>? getProcessor(ConfigCommand command) {

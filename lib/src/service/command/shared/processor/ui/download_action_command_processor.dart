@@ -16,6 +16,9 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/download_action_command.dart';
 import '../../../../../model/request/api_download_request.dart';
@@ -25,13 +28,30 @@ import '../../i_command_processor.dart';
 class DownloadActionCommandProcessor extends ICommandProcessor<DownloadActionCommand> {
   @override
   Future<List<BaseCommand>> processCommand(DownloadActionCommand command, BaseCommand? origin) async {
-    return IApiService().sendRequest(
-      ApiDownloadRequest(
-        url: command.url,
-        fileId: command.fileId,
-        fileName: command.fileName,
-        showFile: command.showFile,
-      ),
-    );
+    // Web always launches the download url in a new tab
+    // The content disposition header is used to determine whether
+    // the file should be downloaded or opened in the browser
+    // (see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition)
+    // Inline is used to open the file in the browser
+    // Attachment is used to download the file
+    if (kIsWeb) {
+      unawaited(
+        launchUrlString(
+          command.url,
+          mode: LaunchMode.externalApplication,
+          webOnlyWindowName: "_blank",
+        ),
+      );
+      return [];
+    } else {
+      return IApiService().sendRequest(
+        ApiDownloadRequest(
+          url: command.url,
+          fileId: command.fileId,
+          fileName: command.fileName,
+          showFile: command.showFile,
+        ),
+      );
+    }
   }
 }
