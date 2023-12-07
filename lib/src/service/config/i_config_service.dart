@@ -101,6 +101,12 @@ abstract class IConfigService implements Service {
   /// Sets the last opened app.
   Future<void> updateSingleAppMode(bool? singleAppMode);
 
+  /// Determines whether the single app mode switch should be shown.
+  bool showSingleAppModeSwitch();
+
+  /// Checks if the app is in single app mode.
+  bool isSingleAppMode();
+
   /// Returns the default app.
   ValueListenable<String?> get defaultApp;
 

@@ -146,18 +146,6 @@ class AppService implements IAppService {
   }
 
   @override
-  bool showSingleAppModeSwitch() {
-    return IConfigService().getAppConfig()!.customAppsAllowed! && !IConfigService().getAppConfig()!.forceSingleAppMode!;
-  }
-
-  @override
-  bool isSingleAppMode() {
-    if (IConfigService().getAppConfig()!.forceSingleAppMode!) return true;
-    if (!IConfigService().getAppConfig()!.customAppsAllowed!) return false;
-    return IConfigService().singleAppMode.value;
-  }
-
-  @override
   Future<void> removeAllApps() async {
     await Future.forEach<App>(
       IAppService().getApps(),

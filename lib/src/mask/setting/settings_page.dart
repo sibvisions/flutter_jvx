@@ -354,7 +354,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildApplicationSettings(BuildContext context) {
     Widget? singleAppSetting;
-    if (IAppService().showSingleAppModeSwitch()) {
+    if (IConfigService().showSingleAppModeSwitch()) {
       singleAppSetting = SwitchListTile(
         contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
         secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),

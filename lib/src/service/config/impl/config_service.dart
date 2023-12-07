@@ -403,6 +403,18 @@ class ConfigService implements IConfigService {
   }
 
   @override
+  bool showSingleAppModeSwitch() {
+    return IConfigService().getAppConfig()!.customAppsAllowed! && !IConfigService().getAppConfig()!.forceSingleAppMode!;
+  }
+
+  @override
+  bool isSingleAppMode() {
+    if (IConfigService().getAppConfig()!.forceSingleAppMode!) return true;
+    if (!IConfigService().getAppConfig()!.customAppsAllowed!) return false;
+    return IConfigService().singleAppMode.value;
+  }
+
+  @override
   ValueListenable<String?> get defaultApp => _defaultApp;
 
   @override

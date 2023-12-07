@@ -302,7 +302,7 @@ class UiService implements IUiService {
       return true;
     }
 
-    if (IAppService().isSingleAppMode()) {
+    if (IConfigService().isSingleAppMode()) {
       return false;
     } else if (IAppService().getAppIds().length > 1) {
       return true;

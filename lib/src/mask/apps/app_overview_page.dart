@@ -40,7 +40,7 @@ import 'select_item.dart';
 import 'single_app_view.dart';
 
 class AppOverviewPage extends StatefulWidget {
-  static String get TITLE => FlutterUI.translate(IAppService().isSingleAppMode() ? "App" : "Apps");
+  static String get TITLE => FlutterUI.translate(IConfigService().isSingleAppMode() ? "App" : "Apps");
 
   const AppOverviewPage({super.key});
 
@@ -209,7 +209,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                         alignment: Alignment.centerLeft,
                                         child: Text(
                                           FlutterUI.translateLocal(
-                                              IAppService().isSingleAppMode() ? "Application" : "Applications"),
+                                              IConfigService().isSingleAppMode() ? "Application" : "Applications"),
                                           style: const TextStyle(
                                             color: JVxColors.LIGHTER_BLACK,
                                             fontWeight: FontWeight.bold,
@@ -236,7 +236,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                 right: 8.0,
                                 child: _buildMenuButton(
                                   context,
-                                  IAppService().isSingleAppMode() || showAddOnFront,
+                                  IConfigService().isSingleAppMode() || showAddOnFront,
                                 ),
                               ),
                             ],
@@ -247,7 +247,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                   ),
                 ],
               ),
-              floatingActionButton: IAppService().isSingleAppMode()
+              floatingActionButton: IConfigService().isSingleAppMode()
                   ? FloatingActionButton(
                       tooltip: FlutterUI.translateLocal("Scan QR Code"),
                       onPressed: () => AppOverviewPage.openQRScanner(
@@ -276,7 +276,7 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
     if (snapshot.hasError) {
       child = const FaIcon(FontAwesomeIcons.circleExclamation);
     } else {
-      if (IAppService().isSingleAppMode()) {
+      if (IConfigService().isSingleAppMode()) {
         child = SingleAppView(
           config: currentConfig,
           onStart: (config) async {

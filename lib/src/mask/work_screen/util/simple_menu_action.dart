@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutter_ui.dart';
-import '../../../service/apps/i_app_service.dart';
+import '../../../service/config/i_config_service.dart';
 import '../../../service/ui/i_ui_service.dart';
 import '../../apps/app_overview_page.dart';
 
@@ -18,7 +18,7 @@ class _SimpleMenuActionState extends State<SimpleMenuAction> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        if (IAppService().isSingleAppMode() || !IUiService().canRouteToAppOverview()) {
+        if (IConfigService().isSingleAppMode() || !IUiService().canRouteToAppOverview()) {
           IUiService().routeToSettings();
         } else {
           _showMenu(context);

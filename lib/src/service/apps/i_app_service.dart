@@ -100,12 +100,6 @@ abstract class IAppService implements Service {
   /// * [saveLocationAsReturnUri]
   Uri? getApplicableReturnUri(List<MenuEntryResponse> menuItems);
 
-  /// Determines whether the single app mode switch should be shown.
-  bool showSingleAppModeSwitch();
-
-  /// Checks if the app is in single app mode.
-  bool isSingleAppMode();
-
   /// Removes all apps and associated data.
   Future<void> removeAllApps();
 
