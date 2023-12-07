@@ -120,6 +120,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) async {
+    FlutterUI.logLayout.d("setScreenSize: $pScreenComponentId: $pSize");
     screenSizes[pScreenComponentId] = pSize;
 
     LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
