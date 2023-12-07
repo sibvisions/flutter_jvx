@@ -31,7 +31,7 @@ class DownloadProcessor implements IResponseProcessor<DownloadResponse> {
           fileId: pRequest.fileId,
           fileName: pRequest.fileName,
           showFile: pRequest.showFile,
-          reason: "Saving a file",
+          reason: "${pRequest.showFile ? "Showing" : "Saving"} a file",
         )
       ];
     } else {
