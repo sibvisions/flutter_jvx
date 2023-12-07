@@ -747,7 +747,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
               if (startupApp != null &&
                   startupSnapshot.connectionState == ConnectionState.none &&
                   exitSnapshot.connectionState == ConnectionState.none) {
-                return Container();
+                return Visibility.maintain(visible: false, child: JVxOverlay(child: child));
               }
 
               return JVxOverlay(child: child);
