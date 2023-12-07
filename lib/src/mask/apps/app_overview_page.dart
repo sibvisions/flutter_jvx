@@ -40,7 +40,7 @@ import 'select_item.dart';
 import 'single_app_view.dart';
 
 class AppOverviewPage extends StatefulWidget {
-  static String get TITLE => FlutterUI.translate(IConfigService().isSingleAppMode() ? "App" : "Apps");
+  static String get appsOrAppText => FlutterUI.translate(IConfigService().isSingleAppMode() ? "App" : "Apps");
 
   const AppOverviewPage({super.key});
 

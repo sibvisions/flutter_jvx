@@ -249,7 +249,7 @@ class WebFrameState extends FrameState {
             padding: const EdgeInsets.only(right: spacing),
             child: Builder(
               builder: (context) => IconButton(
-                tooltip: AppOverviewPage.TITLE,
+                tooltip: AppOverviewPage.appsOrAppText,
                 icon: Icon(
                   AppOverviewPage.appsIcon,
                   color: iconColor,

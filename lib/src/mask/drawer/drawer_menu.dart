@@ -287,7 +287,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       valueListenable: IConfigService().singleAppMode,
       builder: (BuildContext context, bool value, Widget? child) => _buildFooterEntry(
         context: context,
-        text: AppOverviewPage.TITLE,
+        text: AppOverviewPage.appsOrAppText,
         leadingIcon: AppOverviewPage.appsIcon,
         onTap: () {
           Navigator.pop(context);

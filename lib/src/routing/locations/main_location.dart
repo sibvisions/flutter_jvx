@@ -64,7 +64,7 @@ class MainLocation extends BeamLocation<BeamState> {
     if (state.pathPatternSegments.isEmpty || IAppService().wasStartedManually()) {
       pages.add(
         BeamPage(
-          title: AppOverviewPage.TITLE,
+          title: AppOverviewPage.appsOrAppText,
           key: const ValueKey("app_overview"),
           child: const AppOverviewPage(),
           type: beamPageType,

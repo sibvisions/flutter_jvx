@@ -96,7 +96,7 @@ class ErrorDialog extends JVxDialog {
           },
           icon: const Icon(AppOverviewPage.appsIcon),
           label: Text(
-            AppOverviewPage.TITLE,
+            AppOverviewPage.appsOrAppText,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ),
