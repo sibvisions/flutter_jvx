@@ -33,6 +33,10 @@ abstract class FilePickerDialog {
   static Future<XFile?> openFilePicker() {
     BuildContext context = FlutterUI.getCurrentContext()!;
 
+    if (kIsWeb) {
+      return pick(UploadType.FILE_SYSTEM);
+    }
+
     return showModalBottomSheet<XFile?>(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
