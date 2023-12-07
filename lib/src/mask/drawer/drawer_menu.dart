@@ -283,15 +283,18 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }
 
   Widget _buildAppsEntry(BuildContext context, bool isNormalSize) {
-    return _buildFooterEntry(
-      context: context,
-      text: AppOverviewPage.TITLE,
-      leadingIcon: AppOverviewPage.appsIcon,
-      onTap: () {
-        Navigator.pop(context);
-        IUiService().routeToAppOverview();
-      },
-      isNormalSize: isNormalSize,
+    return ValueListenableBuilder(
+      valueListenable: IConfigService().singleAppMode,
+      builder: (BuildContext context, bool value, Widget? child) => _buildFooterEntry(
+        context: context,
+        text: AppOverviewPage.TITLE,
+        leadingIcon: AppOverviewPage.appsIcon,
+        onTap: () {
+          Navigator.pop(context);
+          IUiService().routeToAppOverview();
+        },
+        isNormalSize: isNormalSize,
+      ),
     );
   }
 
