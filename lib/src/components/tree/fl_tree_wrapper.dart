@@ -379,10 +379,12 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         Node<NodeData> newNode = Node<NodeData>(
           key: nodeKey,
           children: oldNode?.children ?? [],
+          // If the node is not evaluated to be a parent, then it can not be expanded.
           expanded: (oldNode?.expanded ?? false) && (oldNode?.parent ?? false),
           data: NodeData(pPageKey, [...parentNode?.data!.treePath ?? [], rowIndex], rowIndex, rowFilter, pDataProvider,
               childFilter?.toPageKey()),
-          parent: isPotentialParent,
+          // If the node is not evaluated to be a parent, then it can be a parent.
+          parent: isPotentialParent && (oldNode?.parent ?? true),
           label: nodeLabel,
         );
 
