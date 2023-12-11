@@ -113,7 +113,7 @@ class LayoutService implements ILayoutService {
     if (parentData.hasPosition &&
         oldLayoutData?.layoutState == LayoutState.VALID &&
         oldLayoutData?.bestSize == pLayoutData.bestSize) {
-      FlutterUI.logLayout.d("${pLayoutData.id} same: ${pLayoutData.bestSize} is same as before");
+      FlutterUI.logLayout.d("${pLayoutData.id} size: ${pLayoutData.bestSize} is same as before");
       return commands;
     }
 
