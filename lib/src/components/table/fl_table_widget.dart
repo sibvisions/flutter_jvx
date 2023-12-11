@@ -151,7 +151,6 @@ class _FlTableWidgetState extends State<FlTableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("Building table, IC: $_itemCount, DC: ${widget.chunkData.data.length}");
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
     if (widget.showFloatingButton && widget.floatingOnPress != null) {
