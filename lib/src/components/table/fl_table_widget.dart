@@ -151,6 +151,7 @@ class _FlTableWidgetState extends State<FlTableWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("Building table, IC: $_itemCount, DC: ${widget.chunkData.data.length}");
     List<Widget> children = [LayoutBuilder(builder: createTableBuilder)];
 
     if (widget.showFloatingButton && widget.floatingOnPress != null) {
@@ -288,11 +289,15 @@ class _FlTableWidgetState extends State<FlTableWidget> {
   Widget tableListItemBuilder(BuildContext context, int pIndex, bool canScrollHorizontally) {
     int index = pIndex;
 
-    if (widget.model.tableHeaderVisible && !widget.model.stickyHeaders) {
+    if (_itemCount > widget.chunkData.data.length) {
       index--;
-      if (pIndex == 0) {
-        return createHeaderRow();
-      }
+    }
+
+    if (index < 0) {
+      return createHeaderRow();
+    } else if (index > widget.chunkData.data.length - 1) {
+      // When rebuilding the table, the item count can still be an old one while the data is already updated.
+      return const SizedBox(height: 0);
     }
 
     return FlTableRow(
