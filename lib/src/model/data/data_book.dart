@@ -152,7 +152,7 @@ class DataBook {
       if (pCommand.requestFilter.isNotEmpty) {
         dataMap = pageRecords[pageKey]!;
       } else {
-        dataMap = pageRecords[pageKey] = records;
+        dataMap = records;
       }
     }
 
@@ -170,6 +170,16 @@ class DataBook {
       dataMap.removeWhere((key, value) => key > pFetchResponse.to);
       if (pFetchResponse.records.isEmpty) {
         dataMap.remove(0);
+      }
+    }
+
+    if (pCommand.requestFilter.isEmpty && pageKey != null) {
+      if (pCommand.response.isAllFetched) {
+        pageRecords[pageKey] = dataMap;
+      } else {
+        for (int i = 0; i < pFetchResponse.records.length; i++) {
+          pageRecords[pageKey]![i + pFetchResponse.from] = pFetchResponse.records[i];
+        }
       }
     }
 
