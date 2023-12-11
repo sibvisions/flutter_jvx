@@ -367,6 +367,8 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
                 .putIfAbsent(childDataBook, () => HashMap())
                 .putIfAbsent(childPageKey, () => [])
                 .add(nodeKey);
+          } else {
+            childFilter = null;
           }
         }
 
@@ -395,6 +397,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
         if (model.detectEndNode &&
             newNode.children.isEmpty &&
             isPotentialParent &&
+            childFilter != null &&
             (isLevelZeroData || (parentNode?.expanded == true))) {
           // Create the filter for the child nodes.
 
