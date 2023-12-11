@@ -23,7 +23,7 @@ class FlTreeModel extends FlComponentModel {
 
   List<String> dataProviders = [];
 
-  bool detectEndNode = false;
+  bool detectEndNode = true;
 
   @override
   Size? get preferredSize {
