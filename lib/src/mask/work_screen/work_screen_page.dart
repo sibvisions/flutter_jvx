@@ -422,15 +422,11 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       if (item?.screenLongName == null || (model == null && customScreen == null)) {
         return !context.beamBack();
       } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
-        await await IUiService()
-            .saveAllEditors(
-          pReason: "Closing Screen",
-        )
-            .then((success) {
+        unawaited(IUiService().saveAllEditors(pReason: "Closing screen").then((success) {
           if (success) {
-            return ICommandService().sendCommand(_closeScreen());
+            unawaited(ICommandService().sendCommand(_closeScreen()));
           }
-        });
+        }));
         return false;
       }
       return !context.beamBack();
