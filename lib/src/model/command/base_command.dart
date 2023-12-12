@@ -30,10 +30,10 @@ abstract class BaseCommand {
   final String reason;
 
   /// If a loading progress should be displayed for this instance.
-  final bool showLoading;
+  bool showLoading;
 
   /// If the ui lock is delayed until the loading bar is shown.
-  final bool delayUILocking;
+  bool delayUILocking;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

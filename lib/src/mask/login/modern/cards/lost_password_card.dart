@@ -20,7 +20,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutter_ui.dart';
 import '../../../../model/command/api/login_command.dart';
-import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../state/loading_bar.dart';
@@ -202,9 +201,13 @@ class _LostPasswordCardState extends State<LostPasswordCard> {
 
     LoginPage.doResetPassword(
       identifier: identifierController.text,
-    ).catchError((error, stackTrace) {
-      HapticFeedback.heavyImpact();
-      return IUiService().handleAsyncError(error, stackTrace);
+    ).then((success) {
+      if (success) {
+        setState(() => progressButtonState = ButtonState.success);
+      } else {
+        HapticFeedback.heavyImpact();
+        setState(() => progressButtonState = ButtonState.fail);
+      }
     });
   }
 }

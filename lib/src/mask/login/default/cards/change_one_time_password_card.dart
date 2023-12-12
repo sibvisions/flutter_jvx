@@ -157,9 +157,10 @@ class _ChangeOneTimePasswordCardState extends State<ChangeOneTimePasswordCard> {
       username: userNameController.text,
       password: oneTimeController.text,
       newPassword: newPasswordController.text,
-    ).catchError((error, stackTrace) {
-      HapticFeedback.heavyImpact();
-      return IUiService().handleAsyncError(error, stackTrace);
+    ).then((success) {
+      if (!success) {
+        HapticFeedback.heavyImpact();
+      }
     });
   }
 }

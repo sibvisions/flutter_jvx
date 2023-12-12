@@ -25,6 +25,7 @@ import '../../model/command/api/rollback_command.dart';
 import '../../model/command/api/save_command.dart';
 import '../../model/response/device_status_response.dart';
 import '../../service/api/i_api_service.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -155,8 +156,9 @@ class WebFrameState extends FrameState {
                 FontAwesomeIcons.arrowRotateLeft,
                 color: iconColor,
               ),
-              onPressed:
-                  inWorkscreen ? (() => IUiService().sendCommand(RollbackCommand(reason: "Clicked in topbar"))) : null,
+              onPressed: inWorkscreen
+                  ? (() => ICommandService().sendCommand(RollbackCommand(reason: "Clicked in topbar")))
+                  : null,
             ),
           ),
         if (appStyle.applicationSettings.saveVisible)
@@ -169,7 +171,7 @@ class WebFrameState extends FrameState {
                 color: iconColor,
               ),
               onPressed:
-                  inWorkscreen ? (() => IUiService().sendCommand(SaveCommand(reason: "Clicked in topbar"))) : null,
+                  inWorkscreen ? (() => ICommandService().sendCommand(SaveCommand(reason: "Clicked in topbar"))) : null,
             ),
           ),
         if (appStyle.applicationSettings.reloadVisible)
@@ -181,8 +183,9 @@ class WebFrameState extends FrameState {
                 FontAwesomeIcons.arrowRotateRight,
                 color: iconColor,
               ),
-              onPressed:
-                  inWorkscreen ? (() => IUiService().sendCommand(ReloadCommand(reason: "Clicked in topbar"))) : null,
+              onPressed: inWorkscreen
+                  ? (() => ICommandService().sendCommand(ReloadCommand(reason: "Clicked in topbar")))
+                  : null,
             ),
           ),
         if (appStyle.applicationSettings.homeVisible)

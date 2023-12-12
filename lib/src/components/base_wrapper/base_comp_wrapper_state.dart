@@ -26,6 +26,7 @@ import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -351,13 +352,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sends the calc size to the [ILayoutService] and, if possible, triggers a layout cycle.
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
-    IUiService().sendCommand(PreferredSizeCommand(layoutData: pLayoutData, reason: pReason));
+    ICommandService().sendCommand(PreferredSizeCommand(layoutData: pLayoutData, reason: pReason));
   }
 
   /// Creates a save command.
   ///
   /// Will return null if there is nothing to save.
-  Future<BaseCommand?> createSaveCommand() async {
+  Future<BaseCommand?> createSaveCommand(String pReason) async {
     return null;
   }
 
@@ -383,11 +384,11 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Focuses this component.
   void focus() {
-    IUiService().sendCommand(SetFocusCommand(componentId: model.id, focus: true, reason: "Sending Focus"));
+    ICommandService().sendCommand(SetFocusCommand(componentId: model.id, focus: true, reason: "Sending Focus"));
   }
 
   /// Unfocuses this component.
   void unfocus() {
-    IUiService().sendCommand(SetFocusCommand(componentId: model.id, focus: false, reason: "Sending Focus"));
+    ICommandService().sendCommand(SetFocusCommand(componentId: model.id, focus: false, reason: "Sending Focus"));
   }
 }

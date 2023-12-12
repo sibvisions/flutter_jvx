@@ -34,8 +34,8 @@ import '../../../model/data/subscriptions/data_record.dart';
 import '../../../model/response/dal_data_provider_changed_response.dart';
 import '../../../model/response/dal_meta_data_response.dart';
 import '../../api/shared/api_object_property.dart';
+import '../../command/i_command_service.dart';
 import '../../service.dart';
-import '../../ui/i_ui_service.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
@@ -478,7 +478,7 @@ class DataService implements IDataService {
     var databook = getDataBook(linkReference.referencedDataBook);
     if (databookNeedsFetch(pFrom: 0, pDataProvider: linkReference.referencedDataBook, pTo: -1) ||
         (databook != null && databook.metaData == null)) {
-      IUiService().sendCommand(
+      ICommandService().sendCommand(
         FetchCommand(
           includeMetaData: true,
           fromRow: 0,

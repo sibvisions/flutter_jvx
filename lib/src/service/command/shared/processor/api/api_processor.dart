@@ -49,7 +49,6 @@ import '../../../../../model/command/api/reload_menu_command.dart';
 import '../../../../../model/command/api/reset_password_command.dart';
 import '../../../../../model/command/api/restore_data_command.dart';
 import '../../../../../model/command/api/rollback_command.dart';
-import '../../../../../model/command/api/save_all_editors.dart';
 import '../../../../../model/command/api/save_command.dart';
 import '../../../../../model/command/api/select_record_command.dart';
 import '../../../../../model/command/api/select_tree_command.dart';
@@ -96,7 +95,6 @@ import 'reload_menu_command_processor.dart';
 import 'reset_password_command_processor.dart';
 import 'restore_data_processor.dart';
 import 'rollback_command_processor.dart';
-import 'save_all_editors_command_processor.dart';
 import 'save_command_processor.dart';
 import 'select_record_command_processor.dart';
 import 'select_tree_command_processor.dart';
@@ -140,7 +138,6 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
   final CloseContentCommandProcessor _closeContentProcessor = CloseContentCommandProcessor();
   final UploadCommandProcessor _uploadProcessor = UploadCommandProcessor();
   final ChangesCommandProcessor _changesProcessor = ChangesCommandProcessor();
-  final SaveAllEditorsCommandProcessor _saveAllEditorsProcessor = SaveAllEditorsCommandProcessor();
   final MouseCommandProcessor _mouseProcessor = MouseCommandProcessor();
   final FocusGainedCommandProcessor _focusGainedProcessor = FocusGainedCommandProcessor();
   final FocusLostCommandProcessor _focusLostProcessor = FocusLostCommandProcessor();
@@ -216,8 +213,6 @@ class ApiProcessor implements ICommandProcessorHandler<ApiCommand> {
       return _uploadProcessor;
     } else if (command is ChangesCommand) {
       return _changesProcessor;
-    } else if (command is SaveAllEditorsCommand) {
-      return _saveAllEditorsProcessor;
     } else if (command is MouseCommand) {
       return _mouseProcessor;
     } else if (command is FocusGainedCommand) {

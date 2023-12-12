@@ -21,7 +21,6 @@ import '../../../model/command/api/set_value_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../service/command/i_command_service.dart';
-import '../../../service/ui/i_ui_service.dart';
 import '../../../util/parse_util.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
@@ -141,14 +140,17 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     if (!model.isReadOnly && lastSentValue != pValue) {
       ICommandService()
           .sendCommand(
-            SetValueCommand(
-              componentName: model.name,
-              value: pValue,
-              reason: "Editing has ended on ${model.id}",
-            ),
-          )
-          .then((value) => lastSentValue = pValue)
-          .catchError(IUiService().handleAsyncError);
+        SetValueCommand(
+          componentName: model.name,
+          value: pValue,
+          reason: "Editing has ended on ${model.id}",
+        ),
+      )
+          .then((success) {
+        if (success) {
+          lastSentValue = pValue;
+        }
+      });
 
       setState(() {});
     }
@@ -163,7 +165,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   @override
-  Future<BaseCommand?> createSaveCommand() async {
+  Future<BaseCommand?> createSaveCommand(String pReason) async {
     if (lastSentValue == textController.value.text) {
       return null;
     }
@@ -172,7 +174,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     return SetValueCommand(
       componentName: model.name,
       value: textController.value.text,
-      reason: "Editing has ended on ${model.id}",
+      reason: "$pReason; Editing has ended on ${model.id}",
     );
   }
 }

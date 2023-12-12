@@ -20,6 +20,7 @@ import 'package:flutter/widgets.dart';
 import '../../custom/custom_component.dart';
 import '../../model/command/layout/register_parent_command.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../components_factory.dart';
@@ -69,7 +70,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
       layoutData: layoutData.clone(),
       reason: "parent register",
     );
-    IUiService().sendCommand(registerParentCommand);
+    ICommandService().sendCommand(registerParentCommand);
   }
 
   /// Will contact [IStorageService] to get its children [FlComponentModel], will only call setState if

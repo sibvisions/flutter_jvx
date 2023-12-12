@@ -27,7 +27,6 @@ import 'package:universal_io/io.dart';
 
 import '../../../../config/api/api_route.dart';
 import '../../../../exceptions/invalid_server_response_exception.dart';
-import '../../../../exceptions/session_expired_exception.dart';
 import '../../../../exceptions/view_exception.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../mask/jvx_overlay.dart';
@@ -470,14 +469,14 @@ class OnlineApiRepository extends IRepository {
             } else if (command == "dyn:previewScreen" && className != null) {
               String? screenLongName = IUiService().getMenuModel().getMenuItemByClassName(className)?.screenLongName;
               if (screenLongName != null) {
-                IUiService().sendCommand(
+                ICommandService().sendCommand(
                   OpenScreenCommand(
                     screenClassName: className,
                     reason: "Open screen because server sent dyn:previewScreen",
                   ),
                 );
               } else {
-                IUiService().sendCommand(
+                ICommandService().sendCommand(
                   ReloadMenuCommand(
                     screenClassName: className,
                     reason: "Reload menu because server sent dyn:previewScreen and screen was unknown",
@@ -485,14 +484,14 @@ class OnlineApiRepository extends IRepository {
                 );
               }
             } else if (command == "api/menu") {
-              IUiService().sendCommand(
+              ICommandService().sendCommand(
                 ReloadMenuCommand(
                   reason: "Reload menu because server sent api/menu",
                 ),
               );
             } else if (command == "api/reopenScreen" && className != null) {
               if (IStorageService().getComponentByScreenClassName(pScreenClassName: className) != null) {
-                IUiService().sendCommand(
+                ICommandService().sendCommand(
                   OpenScreenCommand(
                     reopen: true,
                     screenClassName: className,
@@ -507,8 +506,7 @@ class OnlineApiRepository extends IRepository {
         }
 
         if (data == "api/changes") {
-          ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes")).catchError(
-              (e, stack) => FlutterUI.logUI.e("Failed to handle changes command", error: e, stackTrace: stack));
+          ICommandService().sendCommand(ChangesCommand(reason: "Server sent api/changes"), showDialogOnError: false);
         }
       },
       onConnectedChange: (connected) => setConnected(connected),
@@ -558,8 +556,8 @@ class OnlineApiRepository extends IRepository {
   /// Triggers a [ChangesCommand] for the case that changes have been dropped during reconnect.
   void askServerForChanges() {
     if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-      ICommandService().sendCommand(ChangesCommand(reason: "Check for changes after reconnect")).catchError(
-          (e, stack) => FlutterUI.logUI.w("Failed to handle reconnect changes command", error: e, stackTrace: stack));
+      ICommandService()
+          .sendCommand(ChangesCommand(reason: "Check for changes after reconnect"), showDialogOnError: false);
     }
   }
 
@@ -659,7 +657,7 @@ class OnlineApiRepository extends IRepository {
         } else if (response.statusCode == 404) {
           throw InvalidServerResponseException("Application not found (404)", response.statusCode);
         } else if (response.statusCode == 410) {
-          throw SessionExpiredException(response.statusCode);
+          return ApiInteraction(request: pRequest, responses: [SessionExpiredResponse()]);
         } else if (response.statusCode == 500) {
           throw InvalidServerResponseException("General Server Error (500)", response.statusCode);
         } else {

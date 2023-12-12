@@ -37,6 +37,7 @@ import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/shared/api_object_property.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/storage/i_storage_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/offline_util.dart';
@@ -92,10 +93,15 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
         onSlide: (controller) {
           controller.loading();
           sendButtonPressed()
-              .then((value) => controller.success())
+              .then((success) {
+                if (success) {
+                  controller.success();
+                } else {
+                  controller.failure();
+                }
+              })
               .catchError((Object error, StackTrace stackTrace) {
                 controller.failure();
-                IUiService().handleAsyncError(error, stackTrace);
               })
               .whenComplete(() => Future.delayed(const Duration(milliseconds: 1500)))
               .whenComplete(() {
@@ -167,14 +173,18 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  Future<void> sendButtonPressed([String? overwrittenButtonPressId]) {
-    return IUiService()
-        .saveAllEditors(
-      pId: model.id,
-      pFunction: () => _createButtonCommands(overwrittenButtonPressId),
-      pReason: "Button pressed",
-    )
-        .then((value) {
+  Future<bool> sendButtonPressed([String? overwrittenButtonPressId]) {
+    return IUiService().saveAllEditors(pId: model.id, pReason: "Button [${model.id} pressed").then((success) async {
+      if (!success) {
+        return false;
+      }
+
+      return ICommandService().sendCommands(await _createButtonCommands(overwrittenButtonPressId));
+    }).then((success) {
+      if (!success) {
+        return false;
+      }
+
       if (model.isHyperLink) {
         openUrl();
       } else if (!kIsWeb) {
@@ -187,7 +197,9 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
           callNumber();
         }
       }
-    }).catchError(IUiService().handleAsyncError);
+
+      return true;
+    });
   }
 
   Future<List<BaseCommand>> _createButtonCommands(String? pOverwrittenButtonPressId) async {
@@ -223,7 +235,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void sendScannerResult(List<Barcode> pBarcodes) {
     if (pBarcodes.isNotEmpty) {
-      IUiService().sendCommand(
+      ICommandService().sendCommand(
         SetValuesCommand(
           dataProvider: model.dataProvider,
           editorColumnName: model.columnName,

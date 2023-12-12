@@ -879,9 +879,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       if (lastState == AppLifecycleState.paused && state == AppLifecycleState.resumed) {
         // App was resumed from a paused state (Permission overlay is not paused)
         if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-          ICommandService()
-              .sendCommand(AliveCommand(reason: "App resumed from paused"))
-              .catchError((e, stack) => FlutterUI.logAPI.w("Resume Alive Request failed", error: e, stackTrace: stack));
+          ICommandService().sendCommand(AliveCommand(reason: "App resumed from paused"), showDialogOnError: false);
         }
       }
     }

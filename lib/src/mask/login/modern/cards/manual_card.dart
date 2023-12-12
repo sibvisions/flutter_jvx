@@ -27,7 +27,6 @@ import '../../../../util/widgets/progress/progress_button.dart';
 import '../../../apps/app_overview_page.dart';
 import '../../../state/loading_bar.dart';
 import '../../login_page.dart';
-
 import '../modern_login.dart';
 
 class ManualCard extends StatefulWidget {
@@ -332,10 +331,13 @@ class _ManualCardState extends State<ManualCard> {
       username: usernameController.text,
       password: passwordController.text,
       createAuthKey: showRememberMe && rememberMeChecked,
-    ).catchError((error, stackTrace) {
-      HapticFeedback.heavyImpact();
-      setState(() => progressButtonState = ButtonState.fail);
-      return IUiService().handleAsyncError(error, stackTrace);
+    ).then((success) {
+      if (success) {
+        setState(() => progressButtonState = ButtonState.success);
+      } else {
+        HapticFeedback.heavyImpact();
+        setState(() => progressButtonState = ButtonState.fail);
+      }
     });
   }
 }

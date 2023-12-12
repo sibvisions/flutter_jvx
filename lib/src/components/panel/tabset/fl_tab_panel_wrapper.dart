@@ -24,8 +24,8 @@ import '../../../model/command/api/close_tab_command.dart';
 import '../../../model/command/api/open_tab_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
+import '../../../service/command/i_command_service.dart';
 import '../../../service/storage/i_storage_service.dart';
-import '../../../service/ui/i_ui_service.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
@@ -318,7 +318,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     //   model.selectedIndex = pValue;
     // });
 
-    IUiService().sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
+    ICommandService().sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
   }
 
   double get widthOfTabPanel {
@@ -397,7 +397,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   void closeTab(int index) {
     FlutterUI.logUI.i("Closing tab $index");
     lastDeletedTab = index;
-    IUiService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
+    ICommandService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }
 }
 

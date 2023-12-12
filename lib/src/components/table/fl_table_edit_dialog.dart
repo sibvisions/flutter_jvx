@@ -6,7 +6,7 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/restore_data_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/column_definition.dart';
-import '../../service/ui/i_ui_service.dart';
+import '../../service/command/i_command_service.dart';
 import '../../util/parse_util.dart';
 import '../editor/cell_editor/fl_choice_cell_editor.dart';
 import '../editor/cell_editor/fl_image_cell_editor.dart';
@@ -323,7 +323,7 @@ class _FlTableEditDialogState extends State<FlTableEditDialog> {
   void _handleCancel([bool fromDispose = false]) {
     dismissedByButton = true;
     if (!isSingleColumnEdit) {
-      IUiService().sendCommand(RestoreDataCommand(
+      ICommandService().sendCommand(RestoreDataCommand(
         dataProvider: widget.model.dataProvider,
         reason: "Pressed cancel in table edit dialog",
       ));

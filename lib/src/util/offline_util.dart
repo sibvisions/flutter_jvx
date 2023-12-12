@@ -408,7 +408,7 @@ abstract class OfflineUtil {
         entry.key: entry.value
     };
 
-    return ICommandService().sendCommand(SetValuesCommand(
+    await ICommandService().sendCommand(SetValuesCommand(
       reason: "Re-sync: Insert",
       dataProvider: dataBook.dataProvider,
       columnNames: newColumns.keys.toList(growable: false),

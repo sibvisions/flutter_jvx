@@ -15,9 +15,10 @@
  */
 
 import 'ui_command.dart';
+import 'view/message/error_command.dart';
 
 /// This command will open a popup containing the provided message
-class OpenErrorDialogCommand extends UiCommand {
+class OpenErrorDialogCommand extends UiCommand implements ErrorCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,12 +32,17 @@ class OpenErrorDialogCommand extends UiCommand {
   /// The error
   final Object? error;
 
+  /// The stack trace
+  final StackTrace? stackTrace;
+
   /// True if this error is a timeout
   final bool isTimeout;
 
   /// True if this dialog should be dismissible
   final bool dismissible;
 
+  /// True if this dialog should be silently ignored.
+  final bool silentAbort;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,8 +51,10 @@ class OpenErrorDialogCommand extends UiCommand {
     required this.message,
     this.title,
     this.error,
+    this.stackTrace,
     this.isTimeout = false,
     this.dismissible = true,
+    this.silentAbort = false,
     required super.reason,
   });
 
@@ -56,6 +64,6 @@ class OpenErrorDialogCommand extends UiCommand {
 
   @override
   String toString() {
-    return 'OpenErrorDialogCommand{title: $title, message: $message, error: $error, isTimeout: $isTimeout, dismissible: $dismissible}';
+    return 'OpenErrorDialogCommand{title: $title, message: $message, error: $error, isTimeout: $isTimeout, dismissible: $dismissible, silentAbort: $silentAbort, reason: $reason}';
   }
 }

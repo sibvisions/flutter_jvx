@@ -346,7 +346,7 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (newPasswordController.text == confirmPasswordController.text) {
-      Future<void> loginFuture;
+      Future<bool> loginFuture;
       if (widget.useOTP) {
         loginFuture = LoginPage.doChangePasswordOTP(
           username: usernameController.text,
@@ -360,9 +360,10 @@ class _ChangePasswordCardState extends State<ChangePasswordCard> {
           newPassword: newPasswordController.text,
         );
       }
-      loginFuture.catchError((error, stackTrace) {
-        HapticFeedback.heavyImpact();
-        return IUiService().handleAsyncError(error, stackTrace);
+      loginFuture.then((success) {
+        if (!success) {
+          HapticFeedback.heavyImpact();
+        }
       });
     } else {
       HapticFeedback.heavyImpact();

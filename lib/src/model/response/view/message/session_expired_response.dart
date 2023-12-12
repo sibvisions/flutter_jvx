@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../../../service/api/shared/api_response_names.dart';
 import 'message_view.dart';
 
 class SessionExpiredResponse extends MessageView {
@@ -26,9 +27,9 @@ class SessionExpiredResponse extends MessageView {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   SessionExpiredResponse({
-    required super.title,
+    super.title,
     super.message,
-    required super.name,
+    super.name = ApiResponseNames.sessionExpired,
   });
 
   SessionExpiredResponse.fromJson(super.json) : super.fromJson();

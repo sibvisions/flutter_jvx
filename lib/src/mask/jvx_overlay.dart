@@ -225,16 +225,14 @@ class JVxOverlayState extends State<JVxOverlay> {
     subscription = _subject.debounceTime(const Duration(milliseconds: 50)).listen(
       (size) {
         if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-          ICommandService()
-              .sendCommand(
-                DeviceStatusCommand(
-                  screenWidth: size.width.toInt(),
-                  screenHeight: size.height.toInt(),
-                  reason: "Device Size changed",
-                ),
-              )
-              .catchError(
-                  (e, stack) => FlutterUI.logAPI.d("Failed to send device status", error: e, stackTrace: stack));
+          ICommandService().sendCommand(
+            DeviceStatusCommand(
+              screenWidth: size.width.toInt(),
+              screenHeight: size.height.toInt(),
+              reason: "Device Size changed",
+            ),
+            showDialogOnError: false,
+          );
         }
       },
     );
@@ -245,12 +243,13 @@ class JVxOverlayState extends State<JVxOverlay> {
     super.didChangeDependencies();
 
     if (IUiService().clientId.value != null && !IConfigService().offline.value) {
-      ICommandService()
-          .sendCommand(DeviceStatusCommand(
-            darkMode: Theme.of(context).brightness == Brightness.dark,
-            reason: "Platform Brightness changed",
-          ))
-          .catchError((e, stack) => FlutterUI.logAPI.w("Failed to send device status", error: e, stackTrace: stack));
+      ICommandService().sendCommand(
+        DeviceStatusCommand(
+          darkMode: Theme.of(context).brightness == Brightness.dark,
+          reason: "Platform Brightness changed",
+        ),
+        showDialogOnError: false,
+      );
     }
   }
 
@@ -365,9 +364,9 @@ class JVxOverlayState extends State<JVxOverlay> {
                       onClose: () => _removeStatusBanner(),
                       onTap: _connected == false
                           ? () {
-                              ICommandService()
-                                  .sendCommand(AliveCommand(reason: "User requested retry", retryRequest: false))
-                                  .catchError((_) {});
+                              ICommandService().sendCommand(
+                                  AliveCommand(reason: "User requested retry", retryRequest: false),
+                                  showDialogOnError: false);
                             }
                           : null,
                       dismissible: _connected != false,

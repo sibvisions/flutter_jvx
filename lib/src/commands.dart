@@ -84,6 +84,7 @@ export 'model/command/ui/save_menu_command.dart';
 export 'model/command/ui/ui_command.dart';
 export 'model/command/ui/update_components_command.dart';
 export 'model/command/ui/update_layout_position_command.dart';
+export 'model/command/ui/view/message/error_command.dart';
 export 'model/command/ui/view/message/open_message_dialog_command.dart';
 export 'model/command/ui/view/message/open_server_error_dialog_command.dart';
 export 'model/command/ui/view/message/open_session_expired_dialog_command.dart';

@@ -28,6 +28,7 @@ import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -100,40 +101,37 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     subscribe();
   }
 
-  Future<List<BaseCommand>> sendSignature() async {
+  Future<BaseCommand?> sendSignature() async {
     if (model.dataProvider != null && model.columnName != null) {
       Uint8List? pngBytes = await signatureController.toPngBytes();
 
       FlutterUI.logUI.i("Sending Signature");
 
-      return [
-        SetValuesCommand(
-            dataProvider: model.dataProvider!,
-            editorColumnName: model.columnName,
-            columnNames: [model.columnName!],
-            values: pngBytes != null ? [base64Encode(pngBytes)] : [null],
-            reason: "Drawing has ended on ${model.id}")
-      ];
+      return SetValuesCommand(
+          dataProvider: model.dataProvider!,
+          editorColumnName: model.columnName,
+          columnNames: [model.columnName!],
+          values: pngBytes != null ? [base64Encode(pngBytes)] : [null],
+          reason: "Drawing has ended on ${model.id}");
     }
-    return [];
+    return null;
   }
 
-  List<BaseCommand> deleteSignature() {
+  BaseCommand? deleteSignature() {
     signatureController.clear();
 
     if (model.dataProvider != null && model.columnName != null) {
       FlutterUI.logUI.i("Deleting Signature");
 
-      return [
-        SetValuesCommand(
-            dataProvider: model.dataProvider!,
-            editorColumnName: model.columnName,
-            columnNames: [model.columnName!],
-            values: [],
-            reason: "Drawing has ended on ${model.id}"),
-      ];
+      return SetValuesCommand(
+        dataProvider: model.dataProvider!,
+        editorColumnName: model.columnName,
+        columnNames: [model.columnName!],
+        values: [],
+        reason: "Drawing has ended on ${model.id}",
+      );
     }
-    return [];
+    return null;
   }
 
   @override
@@ -167,20 +165,32 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   void _handleClear() {
     IUiService()
         .saveAllEditors(
-          pId: model.id,
-          pFunction: () => deleteSignature(),
-          pReason: "Signature pad closed.",
-        )
-        .catchError(IUiService().handleAsyncError);
+      pId: model.id,
+      pReason: "Signature pad closed.",
+    )
+        .then((success) {
+      if (success) {
+        BaseCommand? command = deleteSignature();
+        if (command != null) {
+          ICommandService().sendCommand(command);
+        }
+      }
+    });
   }
 
   void _handleDone() {
     IUiService()
         .saveAllEditors(
-          pId: model.id,
-          pFunction: () => sendSignature(),
-          pReason: "Signature pad closed.",
-        )
-        .catchError(IUiService().handleAsyncError);
+      pId: model.id,
+      pReason: "Signature pad closed.",
+    )
+        .then((success) async {
+      if (success) {
+        BaseCommand? command = await sendSignature();
+        if (command != null) {
+          await ICommandService().sendCommand(command);
+        }
+      }
+    });
   }
 }

@@ -391,106 +391,111 @@ class DataBook {
   ///  This row index will be checked against the filter if it applies, otherwise checks every row until the filter applies.
   ///
   /// A column can be optionally selected.
-  static Future<void> selectRecord({
+  static Future<bool> selectRecord({
     required String pDataProvider,
     required Filter pFilter,
     int? pRowNumber,
     String? pColumn,
-    bool asyncErrorHandling = true,
+    bool showDialogOnError = true,
   }) {
-    var future = ICommandService().sendCommand(SelectRecordCommand.select(
-      reason: "Select record | DataBook selectRecord",
-      dataProvider: pDataProvider,
-      filter: pFilter,
-      rowNumber: pRowNumber,
-      selectedColumn: pColumn,
-    ));
-    return _handleCommandFuture(future, asyncErrorHandling);
+    return ICommandService().sendCommand(
+      SelectRecordCommand.select(
+        reason: "Select record | DataBook selectRecord",
+        dataProvider: pDataProvider,
+        filter: pFilter,
+        rowNumber: pRowNumber,
+        selectedColumn: pColumn,
+      ),
+      showDialogOnError: showDialogOnError,
+    );
   }
 
   /// Deselects the currently selected record.
-  static Future<void> deselectRecord({
+  static Future<bool> deselectRecord({
     required String pDataProvider,
-    bool asyncErrorHandling = true,
+    bool showDialogOnError = true,
   }) {
-    var future = ICommandService().sendCommand(SelectRecordCommand.deselect(
-      reason: "Select record | DataBook selectRecord",
-      dataProvider: pDataProvider,
-    ));
-    return _handleCommandFuture(future, asyncErrorHandling);
+    return ICommandService().sendCommand(
+      SelectRecordCommand.deselect(
+        reason: "Select record | DataBook selectRecord",
+        dataProvider: pDataProvider,
+      ),
+      showDialogOnError: showDialogOnError,
+    );
   }
 
   /// Filters the data book with the provided filter.
-  static Future<void> filterRecords({
+  static Future<bool> filterRecords({
     required String pDataProvider,
     Filter? pFilter,
     FilterCondition? pFilterCondition,
-    bool asyncErrorHandling = true,
+    bool showDialogOnError = true,
   }) {
-    var future = ICommandService().sendCommand(FilterCommand(
-      filter: pFilter,
-      filterCondition: pFilterCondition,
-      dataProvider: pDataProvider,
-      reason: "Filter record | DataBook filterRecords",
-    ));
-    return _handleCommandFuture(future, asyncErrorHandling);
+    return ICommandService().sendCommand(
+      FilterCommand(
+        filter: pFilter,
+        filterCondition: pFilterCondition,
+        dataProvider: pDataProvider,
+        reason: "Filter record | DataBook filterRecords",
+      ),
+      showDialogOnError: showDialogOnError,
+    );
   }
 
   /// Inserts a new record into the databook.
-  static Future<void> insertRecord({
+  static Future<bool> insertRecord({
     required String pDataProvider,
-    bool asyncErrorHandling = true,
+    bool showDialogOnError = true,
   }) {
-    var future = ICommandService().sendCommand(InsertRecordCommand(
-      dataProvider: pDataProvider,
-      reason: "Insert record | DataBook insertRecord",
-    ));
-    return _handleCommandFuture(future, asyncErrorHandling);
+    return ICommandService().sendCommand(
+      InsertRecordCommand(
+        dataProvider: pDataProvider,
+        reason: "Insert record | DataBook insertRecord",
+      ),
+      showDialogOnError: showDialogOnError,
+    );
   }
 
   /// Updates the record with the provided values.
   ///
   /// If no filter is provided, the currently selected record will be updated.
-  static Future<void> updateRecord({
+  static Future<bool> updateRecord({
     required String pDataProvider,
     required List<String> pColumnNames,
     required List<dynamic> pValues,
     Filter? pFilter,
-    bool asyncErrorHandling = true,
+    bool showDialogOnError = true,
   }) {
-    var future = ICommandService().sendCommand(SetValuesCommand(
-      dataProvider: pDataProvider,
-      columnNames: pColumnNames,
-      values: pValues,
-      filter: pFilter,
-      reason: "Update record | DataBook updateRecord",
-    ));
-    return _handleCommandFuture(future, asyncErrorHandling);
+    return ICommandService().sendCommand(
+      SetValuesCommand(
+        dataProvider: pDataProvider,
+        columnNames: pColumnNames,
+        values: pValues,
+        filter: pFilter,
+        reason: "Update record | DataBook updateRecord",
+      ),
+      showDialogOnError: showDialogOnError,
+    );
   }
 
   /// Deletes the record with the provided filter.
   ///
   /// If no filter is provided, the currently selected record will be deleted.
-  static Future<void> deleteRecord({
+  static Future<bool> deleteRecord({
     required String pDataProvider,
     Filter? pFilter,
     int? pRowIndex,
-    bool asyncErrorHandling = true,
+    bool showDialogOnError = true,
   }) {
-    var future = ICommandService().sendCommand(DeleteRecordCommand(
-      dataProvider: pDataProvider,
-      filter: pFilter,
-      rowNumber: pRowIndex,
-      reason: "Delete record | DataBook deleteRecord",
-    ));
-    return _handleCommandFuture(future, asyncErrorHandling);
-  }
-
-  static Future<T> _handleCommandFuture<T>(Future<T> future, bool asyncErrorHandling) {
-    if (asyncErrorHandling) {
-      return future.catchError((error, stackTrace) => IUiService().handleAsyncError(error, stackTrace));
-    }
-    return future;
+    return ICommandService().sendCommand(
+      DeleteRecordCommand(
+        dataProvider: pDataProvider,
+        filter: pFilter,
+        rowNumber: pRowIndex,
+        reason: "Delete record | DataBook deleteRecord",
+      ),
+      showDialogOnError: showDialogOnError,
+    );
   }
 
   static void subscribeToDataBook({

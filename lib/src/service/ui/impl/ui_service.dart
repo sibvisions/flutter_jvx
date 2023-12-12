@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math' hide log;
 
 import 'package:beamer/beamer.dart';
@@ -9,12 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../../commands.dart';
 import '../../../custom/app_manager.dart';
 import '../../../custom/custom_component.dart';
 import '../../../custom/custom_menu_item.dart';
 import '../../../custom/custom_screen.dart';
-import '../../../exceptions/error_view_exception.dart';
-import '../../../exceptions/session_expired_exception.dart';
 import '../../../flutter_ui.dart';
 import '../../../mask/error/message_dialog.dart';
 import '../../../mask/frame/frame.dart';
@@ -22,16 +20,7 @@ import '../../../mask/frame_dialog.dart';
 import '../../../mask/jvx_overlay.dart';
 import '../../../mask/work_screen/content.dart';
 import '../../../model/command/api/close_content_command.dart';
-import '../../../model/command/api/feedback_command.dart';
-import '../../../model/command/api/fetch_command.dart';
-import '../../../model/command/api/save_all_editors.dart';
-import '../../../model/command/base_command.dart';
-import '../../../model/command/data/get_data_chunk_command.dart';
-import '../../../model/command/data/get_meta_data_command.dart';
 import '../../../model/command/data/get_page_chunk_command.dart';
-import '../../../model/command/data/get_selected_data_command.dart';
-import '../../../model/command/ui/function_command.dart';
-import '../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/model_subscription.dart';
@@ -179,47 +168,6 @@ class UiService implements IUiService {
   @override
   void updateDesignModeElement(String? pId) {
     _designModeElement.value = pId;
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Communication with other services
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  Future<void> sendCommand(BaseCommand command) {
-    return ICommandService().sendCommand(command).catchError(handleAsyncError);
-  }
-
-  @override
-  void handleAsyncError(Object error, StackTrace stackTrace) {
-    FlutterUI.logUI.e("Error while handling async", error: error, stackTrace: stackTrace);
-
-    if (error is! ErrorViewException && error is! SessionExpiredException) {
-      bool isTimeout = error is TimeoutException || error is SocketException;
-      ICommandService()
-          .sendCommand(OpenErrorDialogCommand(
-            message: FlutterUI.translate(IUiService.getErrorMessage(error)),
-            error: error,
-            isTimeout: isTimeout,
-            reason: "UIService async error",
-          ))
-          .catchError(
-              (e, stack) => FlutterUI.logUI.e("Another error while handling async error", error: e, stackTrace: stack));
-
-      // If there is a current session and a "probably" working connection, report to the server.
-      if (!isTimeout && IUiService().clientId.value != null) {
-        ICommandService()
-            .sendCommand(FeedbackCommand(
-              type: FeedbackType.error,
-              properties: {
-                "message": IUiService.getErrorMessage(error),
-                "error": error,
-              },
-              reason: "UIService async error",
-            ))
-            .catchError((e, stack) => FlutterUI.logUI.e("Failed to send error to server", error: e, stackTrace: stack));
-      }
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -560,7 +508,7 @@ class UiService implements IUiService {
       if (needsToFetch || fetchMetaData) {
         int fromRow = databook?.records.keys.maxOrNull ?? pDataSubscription.from;
 
-        sendCommand(FetchCommand(
+        ICommandService().sendCommand(FetchCommand(
           dataProvider: pDataSubscription.dataProvider,
           fromRow: fromRow,
           rowCount: pDataSubscription.to != null
@@ -579,7 +527,7 @@ class UiService implements IUiService {
             subId: pDataSubscription.id,
             dataColumns: pDataSubscription.dataColumns,
           );
-          sendCommand(getDataChunkCommand);
+          ICommandService().sendCommand(getDataChunkCommand);
         }
 
         if (pDataSubscription.onSelectedRecord != null) {
@@ -589,7 +537,7 @@ class UiService implements IUiService {
             dataProvider: pDataSubscription.dataProvider,
             columnNames: pDataSubscription.dataColumns,
           );
-          sendCommand(getSelectedDataCommand);
+          ICommandService().sendCommand(getSelectedDataCommand);
         }
       }
 
@@ -603,7 +551,7 @@ class UiService implements IUiService {
             subId: pDataSubscription.id,
             pageKey: pageKey,
           );
-          sendCommand(getDataChunkCommand);
+          ICommandService().sendCommand(getDataChunkCommand);
         });
       }
 
@@ -613,7 +561,7 @@ class UiService implements IUiService {
           dataProvider: pDataSubscription.dataProvider,
           subId: pDataSubscription.id,
         );
-        sendCommand(getMetaDataCommand);
+        ICommandService().sendCommand(getMetaDataCommand);
       }
     }
   }
@@ -641,7 +589,7 @@ class UiService implements IUiService {
   }
 
   @override
-  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId) async {
+  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId, String pReason) async {
     // Copy list to avoid concurrent modification
     List<BaseCommand> saveCommands = [];
 
@@ -649,7 +597,7 @@ class UiService implements IUiService {
         List.of(_componentSubscriptions).where((element) => element.compId != pId).toList();
 
     for (var sub in listOfSubs) {
-      var command = await sub.saveCallback?.call();
+      var command = await sub.saveCallback?.call(pReason);
       if (command != null) {
         saveCommands.add(command);
       }
@@ -704,7 +652,7 @@ class UiService implements IUiService {
       // Check if selected data changed
       if (pUpdatedPage != null) {
         if (sub.onPage != null) {
-          sendCommand(GetPageChunkCommand(
+          ICommandService().sendCommand(GetPageChunkCommand(
             reason: "Notify data was called",
             dataProvider: pDataProvider,
             from: sub.from,
@@ -716,7 +664,7 @@ class UiService implements IUiService {
       }
       if (pUpdatedCurrentPage) {
         if (sub.onSelectedRecord != null) {
-          sendCommand(GetSelectedDataCommand(
+          ICommandService().sendCommand(GetSelectedDataCommand(
             subId: sub.id,
             reason: "Notify data was called with pFrom -1",
             dataProvider: sub.dataProvider,
@@ -724,7 +672,7 @@ class UiService implements IUiService {
           ));
         }
         if (sub.from != -1 && sub.onDataChunk != null) {
-          sendCommand(GetDataChunkCommand(
+          ICommandService().sendCommand(GetDataChunkCommand(
             reason: "Notify data was called",
             dataProvider: pDataProvider,
             from: sub.from,
@@ -753,7 +701,7 @@ class UiService implements IUiService {
   }) {
     _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
       if (sub.onSelectedRecord != null) {
-        sendCommand(GetSelectedDataCommand(
+        ICommandService().sendCommand(GetSelectedDataCommand(
           subId: sub.id,
           reason: "Notify data was called with pFrom -1",
           dataProvider: sub.dataProvider,
@@ -769,7 +717,7 @@ class UiService implements IUiService {
   }) {
     _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).toList().forEach((sub) {
       // Check if selected data changed
-      sendCommand(GetMetaDataCommand(
+      ICommandService().sendCommand(GetMetaDataCommand(
         subId: sub.id,
         reason: "Notify data was called with pFrom -1",
         dataProvider: sub.dataProvider,
@@ -937,13 +885,11 @@ class UiService implements IUiService {
   }
 
   @override
-  Future<void> saveAllEditors({String? pId, required String pReason, CommandCallback? pFunction}) {
-    return ICommandService().sendCommand(
-      SaveAllEditorsCommand(
-        componentId: pId,
-        reason: pReason,
-        pFunction: pFunction,
-      ),
+  Future<bool> saveAllEditors({String? pId, required String pReason}) async {
+    return ICommandService().sendCommands(
+      await collectAllEditorSaveCommands(pId, pReason),
+      showDialogOnError: false,
+      abortOnFirstError: false,
     );
   }
 
@@ -1070,9 +1016,41 @@ class UiService implements IUiService {
     }
 
     if (pSendClose) {
-      unawaited(IUiService().sendCommand(CloseContentCommand(componentName: pContentName, reason: "I got closed")));
+      unawaited(
+          ICommandService().sendCommand(CloseContentCommand(componentName: pContentName, reason: "I got closed")));
     }
     IStorageService().deleteScreen(screenName: pContentName);
     await ILayoutService().deleteScreen(pComponentId: panelModel.id);
+  }
+
+  @override
+  void showErrorDialog({
+    String? title,
+    String? message,
+    required Object error,
+    StackTrace? stackTrace,
+    bool sendFeedback = false,
+  }) {
+    ICommandService().sendCommand(
+      OpenErrorDialogCommand(
+        title: title,
+        message: FlutterUI.translate(IUiService.getErrorMessage(error)),
+        error: error,
+        isTimeout: false,
+        stackTrace: stackTrace,
+        reason: "UIService async error",
+      ),
+    );
+
+    if (sendFeedback && IUiService().clientId.value != null) {
+      ICommandService().sendCommand(FeedbackCommand(
+        type: FeedbackType.error,
+        properties: {
+          "message": IUiService.getErrorMessage(error),
+          "error": error,
+        },
+        reason: "UIService async error",
+      ));
+    }
   }
 }

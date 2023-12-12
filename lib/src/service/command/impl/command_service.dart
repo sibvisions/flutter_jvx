@@ -15,32 +15,14 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:queue/queue.dart';
 
-import '../../../exceptions/error_view_exception.dart';
-import '../../../exceptions/session_expired_exception.dart';
+import '../../../commands.dart';
 import '../../../flutter_ui.dart';
-import '../../../model/command/api/api_command.dart';
-import '../../../model/command/api/device_status_command.dart';
-import '../../../model/command/api/exit_command.dart';
 import '../../../model/command/api/session_command.dart';
-import '../../../model/command/base_command.dart';
-import '../../../model/command/config/config_command.dart';
-import '../../../model/command/data/data_command.dart';
-import '../../../model/command/layout/layout_command.dart';
-import '../../../model/command/queue_command.dart';
-import '../../../model/command/storage/delete_screen_command.dart';
-import '../../../model/command/storage/storage_command.dart';
-import '../../../model/command/ui/route/route_command.dart';
-import '../../../model/command/ui/route/route_to_command.dart';
-import '../../../model/command/ui/route/route_to_login_command.dart';
-import '../../../model/command/ui/route/route_to_menu_command.dart';
-import '../../../model/command/ui/route/route_to_work_command.dart';
-import '../../../model/command/ui/ui_command.dart';
-import '../../../model/command/ui/view/message/open_server_error_dialog_command.dart';
-import '../../../model/command/ui/view/message/open_session_expired_dialog_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/menu/menu_item_model.dart';
 import '../../../util/loading_handler/i_command_progress_handler.dart';
@@ -104,36 +86,91 @@ class CommandService implements ICommandService {
   }
 
   @override
-  Future<void> sendCommand(BaseCommand pCommand) {
+  Future<bool> sendCommand(
+    BaseCommand pCommand, {
+    bool showDialogOnError = true,
+    bool? delayUILocking,
+    bool? showLoading,
+  }) async {
     BaseCommand command = IUiService().getAppManager()?.interceptCommand(pCommand) ?? pCommand;
     // Only queue layout commands
     if (command is LayoutCommand) {
-      return _layoutCommandsQueue.add(() => _sendCommand(command));
+      return _layoutCommandsQueue.add(() => _initCommandProcessing(command, false, null, null));
     }
     // Only queue queue commands
     else if (command is QueueCommand) {
-      return _commandsQueue.add(() => _sendCommand(command));
+      return _commandsQueue.add(() => _initCommandProcessing(command, showDialogOnError, delayUILocking, showLoading));
     }
 
-    return _sendCommand(command);
+    return _initCommandProcessing(command, showDialogOnError, delayUILocking, showLoading);
   }
 
-  Future<void> _sendCommand(BaseCommand pCommand) async {
+  @override
+  Future<bool> sendCommands(
+    List<BaseCommand> commands, {
+    bool showDialogOnError = true,
+    bool abortOnFirstError = false,
+    bool? delayUILocking,
+    bool? showLoading,
+  }) async {
+    bool success = true;
+    bool first = true;
+
+    for (BaseCommand command in commands) {
+      success = await sendCommand(command,
+              showDialogOnError: showDialogOnError,
+              delayUILocking: first ? delayUILocking : null,
+              showLoading: first ? showLoading : null) &&
+          success;
+      first = false;
+      if (!success && abortOnFirstError) {
+        break;
+      }
+    }
+
+    return success;
+  }
+
+  Future<bool> _initCommandProcessing(
+      BaseCommand pCommand, bool showDialogOnError, bool? delayUILocking, bool? showLoading) async {
     try {
+      pCommand.delayUILocking = delayUILocking ?? pCommand.delayUILocking;
+      pCommand.showLoading = showLoading ?? pCommand.showLoading;
+
       progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
 
       // Discard SessionCommands which are sent from an older session (e.g. dispose sends an command).
       if (pCommand is SessionCommand && pCommand.clientId != IUiService().clientId.value) {
         FlutterUI.logCommand.d("${pCommand.runtimeType} uses old/invalid Client ID, discarding.");
-        return;
+        return false;
       }
 
       FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
-      await processCommand(pCommand, null);
+
+      List<BaseCommand>? followCommands = await processCommand(pCommand, null, showDialogOnError);
+
+      bool success = true;
+      while (followCommands != null) {
+        success = followCommands.none((element) => element is ErrorCommand) && success;
+
+        List<BaseCommand>? newFollowCommands;
+        for (BaseCommand followCommand in followCommands) {
+          List<BaseCommand>? newCommands = await processCommand(followCommand, pCommand, showDialogOnError);
+          if (newCommands != null) {
+            newFollowCommands ??= [];
+            newFollowCommands.addAll(newCommands);
+          }
+        }
+        followCommands = newFollowCommands;
+      }
+
+      await getProcessor(pCommand)?.onFinish(pCommand);
+
       FlutterUI.logCommand.d("Finished ${pCommand.runtimeType}-chain");
+      return success;
     } catch (error) {
       FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
-      rethrow;
+      return false;
     } finally {
       progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
     }
@@ -143,19 +180,72 @@ class CommandService implements ICommandService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Returns true when all provided commands have been executed
-  _waitTillFinished(List<BaseCommand> pCommands, {BaseCommand? origin}) async {
-    // Execute incoming commands
-    for (BaseCommand command in pCommands) {
-      await processCommand(command, origin);
-    }
-  }
-
-  Future<void> processCommand(BaseCommand pCommand, BaseCommand? origin) async {
+  Future<List<BaseCommand>?> processCommand(BaseCommand pCommand, BaseCommand? origin, bool showDialogOnError) async {
     if (pCommand is ApiCommand && pCommand is! DeviceStatusCommand) {
       FlutterUI.logCommand.i("Processing ${pCommand.runtimeType} (${pCommand.reason})");
     }
 
+    ICommandProcessor<BaseCommand>? processor = getProcessor(pCommand);
+
+    if (processor == null) {
+      FlutterUI.logCommand.e("Command (${pCommand.runtimeType}) without Processor found");
+      return null;
+    }
+
+    List<BaseCommand> commands;
+
+    try {
+      await processor.beforeProcessing(pCommand, origin);
+
+      commands = await processor.processCommand(pCommand, origin);
+
+      // Don't process ExitCommands
+      if (pCommand is ExitCommand) {
+        return null;
+      }
+
+      FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");
+      await processor.afterProcessing(pCommand, origin);
+
+      modifyCommands(commands, pCommand);
+      IUiService().getAppManager()?.modifyFollowUpCommands(pCommand, commands);
+
+      if (commands.isNotEmpty) {
+        FlutterUI.logCommand.d("$pCommand\n->\n\t$commands");
+      }
+    } catch (error, stackTrace) {
+      bool isTimeout = error is TimeoutException || error is SocketException;
+
+      commands = [
+        OpenErrorDialogCommand(
+          silentAbort: !showDialogOnError,
+          message: FlutterUI.translate(IUiService.getErrorMessage(error)),
+          error: error,
+          stackTrace: stackTrace,
+          isTimeout: isTimeout,
+          reason: "Failed processing ${pCommand.runtimeType}",
+        ),
+      ];
+
+      // If there is a current session and a "probably" working connection, report to the server.
+      if (!isTimeout && IUiService().clientId.value != null) {
+        commands.add(
+          FeedbackCommand(
+            type: FeedbackType.error,
+            properties: {
+              "message": IUiService.getErrorMessage(error),
+              "error": error,
+            },
+            reason: "UIService async error",
+          ),
+        );
+      }
+    }
+
+    return commands;
+  }
+
+  ICommandProcessor<BaseCommand>? getProcessor(BaseCommand pCommand) {
     ICommandProcessor? processor;
     if (pCommand is ApiCommand) {
       processor = _apiProcessor.getProcessor(pCommand);
@@ -170,92 +260,7 @@ class CommandService implements ICommandService {
     } else if (pCommand is DataCommand) {
       processor = _dataProcessor.getProcessor(pCommand);
     }
-
-    if (processor == null) {
-      FlutterUI.logCommand.w("Command (${pCommand.runtimeType}) without Processor found");
-      return;
-    }
-
-    await processor.beforeProcessing(pCommand, origin);
-
-    List<BaseCommand> commands = [];
-    try {
-      commands = await processor.processCommand(pCommand, origin);
-    } on SessionExpiredException catch (e) {
-      // Don't process ExitCommands
-      if (pCommand is ExitCommand) {
-        return;
-      }
-      FlutterUI.logCommand.w("Server sent HTTP ${e.statusCode}, session seems to be expired.");
-      commands.add(OpenSessionExpiredDialogCommand(
-        reason: "Server sent HTTP ${e.statusCode}",
-      ));
-    }
-
-    // Don't process ExitCommands
-    if (pCommand is ExitCommand) {
-      return;
-    }
-
-    FlutterUI.logCommand.d("After processing ${pCommand.runtimeType}");
-    await processor.afterProcessing(pCommand, origin);
-
-    modifyCommands(commands, pCommand);
-    IUiService().getAppManager()?.modifyFollowUpCommands(pCommand, commands);
-
-    if (commands.isNotEmpty) {
-      FlutterUI.logCommand.d("$pCommand\n->\n\t$commands");
-    }
-
-    // Executes Commands resulting from incoming command.
-    // Call routing commands last, all other actions must take priority.
-
-    // Isolate possible route commands
-    var routeCommands = commands.whereType<RouteCommand>().toList();
-
-    var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
-    // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));
-
-    try {
-      // When all commands are finished execute routing commands sorted by priority
-      await _waitTillFinished(nonRouteCommands, origin: pCommand);
-
-      // Don't route if there is a server error
-      if (!nonRouteCommands.any((element) => element is OpenServerErrorDialogCommand)) {
-        if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand), pCommand);
-        }
-        if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand), pCommand);
-        }
-        if (routeCommands.any((element) => element is RouteToWorkCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand), pCommand);
-        }
-        if (routeCommands.any((element) => element is RouteToCommand)) {
-          await processCommand(routeCommands.firstWhere((element) => element is RouteToCommand), pCommand);
-        }
-      }
-    } catch (error) {
-      FlutterUI.logCommand.e("Error processing follow-up ${pCommand.runtimeType}");
-      rethrow;
-    }
-
-    var errorCommand = nonRouteCommands.firstWhereOrNull((element) => element is OpenServerErrorDialogCommand)
-        as OpenServerErrorDialogCommand?;
-    if (errorCommand != null) {
-      throw ErrorViewException(errorCommand);
-    }
-
-    var sessionExpiredCommand = nonRouteCommands
-        .firstWhereOrNull((element) => element is OpenSessionExpiredDialogCommand) as OpenSessionExpiredDialogCommand?;
-    if (sessionExpiredCommand != null) {
-      throw SessionExpiredException();
-    }
-
-    // Only call it when the this is the origin command.
-    if (origin == null) {
-      await processor.onFinish(pCommand);
-    }
+    return processor;
   }
 
   void modifyCommands(List<BaseCommand> commands, BaseCommand origin) {

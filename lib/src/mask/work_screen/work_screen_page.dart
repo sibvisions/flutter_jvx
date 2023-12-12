@@ -23,7 +23,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../custom/custom_screen.dart';
-import '../../exceptions/error_view_exception.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/activate_screen_command.dart';
 import '../../model/command/api/close_screen_command.dart';
@@ -128,7 +127,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
   bool sentScreenSizeForLayout = false;
 
   MenuItemModel? item;
-  Future<void>? future;
+  Future<bool>? future;
 
   CustomScreen? customScreen;
 
@@ -179,39 +178,35 @@ class WorkScreenPageState extends State<WorkScreenPage> {
           pScreenComponentId: model!.id,
           pSize: size,
         )
-        .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
+        .then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
   }
 
   void _init() {
-    future = Future(() {
-      // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
-      final model = this.model;
-      if (model == null &&
-          (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
-        return ICommandService().sendCommand(OpenScreenCommand(
-          screenLongName: item!.screenLongName,
-          reason: "Screen was opened inside $runtimeType",
-        ));
-      } else if (model != null && kIsWeb) {
-        return ICommandService().sendCommand(
-          ActivateScreenCommand(
-            componentId: model.name,
-            reason: "Screen was activated inside $runtimeType",
-          ),
-        );
-      }
-    }).catchError((e, stack) {
-      FlutterUI.log.e("Open screen failed", error: e, stackTrace: stack);
-      if (e is ErrorViewException) {
-        // Server failed to open this screen, beam back to old location.
-        // Wait for popup menu close, mitigates navigator update bug:
-        // https://github.com/flutter/flutter/issues/82437
+    // Send only if model is missing (which it always is in a custom screen) and the possible custom screen has send = true.
+    final model = this.model;
+    if (model == null &&
+        (customScreen == null || (customScreen!.sendOpenScreenRequests && !IConfigService().offline.value))) {
+      future = ICommandService().sendCommand(OpenScreenCommand(
+        screenLongName: item!.screenLongName,
+        reason: "Screen was opened inside $runtimeType",
+      ));
+    } else if (model != null && kIsWeb) {
+      future = ICommandService().sendCommand(
+        ActivateScreenCommand(
+          componentId: model.name,
+          reason: "Screen was activated inside $runtimeType",
+        ),
+      );
+    }
+
+    future ??= Future.value(true);
+
+    future!.then((success) {
+      if (!success) {
         SchedulerBinding.instance.addPostFrameCallback((_) {
           Future.delayed(const Duration(milliseconds: 350)).then((_) => _onBack());
         });
       }
-
-      IUiService().handleAsyncError(e, stack);
 
       return null;
     });
@@ -256,7 +251,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
 
             Widget? body;
             Widget? title;
-            if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+            if (snapshot.connectionState == ConnectionState.done && snapshot.data == true) {
               // Has to called first as it initializes [screenTitle].
               body = _buildWorkScreen(context, isOffline);
 
@@ -335,7 +330,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     );
   }
 
-  Widget _buildDummyScreen(AsyncSnapshot<void> snapshot) {
+  Widget _buildDummyScreen(AsyncSnapshot<bool> snapshot) {
     Widget body;
     if (snapshot.connectionState == ConnectionState.none) {
       // Invalid screen name
@@ -345,7 +340,7 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     } else if (item?.screenLongName == null || (model == null && customScreen == null)) {
       // should route back on next frame; Don't visualize anything;
       body = const SizedBox.expand();
-    } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasError) {
+    } else if (snapshot.connectionState == ConnectionState.done && snapshot.data == false) {
       body = ErrorScreen(
         extra: snapshot.error?.toString(),
         retry: () {
@@ -427,14 +422,15 @@ class WorkScreenPageState extends State<WorkScreenPage> {
       if (item?.screenLongName == null || (model == null && customScreen == null)) {
         return !context.beamBack();
       } else if (!IUiService().usesNativeRouting(item!.screenLongName)) {
-        await IUiService()
+        await await IUiService()
             .saveAllEditors(
-              pReason: "Closing Screen",
-              pFunction: _closeScreen,
-            )
-            .catchError(
-              IUiService().handleAsyncError,
-            );
+          pReason: "Closing Screen",
+        )
+            .then((success) {
+          if (success) {
+            return ICommandService().sendCommand(_closeScreen());
+          }
+        });
         return false;
       }
       return !context.beamBack();
@@ -444,21 +440,17 @@ class WorkScreenPageState extends State<WorkScreenPage> {
     }
   }
 
-  List<BaseCommand> _closeScreen() {
+  BaseCommand _closeScreen() {
     if (isForced) {
-      return [
-        CloseScreenCommand(
-          reason: "Work screen back",
-          screenName: model!.name,
-        ),
-      ];
+      return CloseScreenCommand(
+        reason: "Work screen back",
+        screenName: model!.name,
+      );
     }
 
-    return [
-      NavigationCommand(
-        reason: "Back button pressed",
-        openScreen: model!.name,
-      )
-    ];
+    return NavigationCommand(
+      reason: "Back button pressed",
+      openScreen: model!.name,
+    );
   }
 }

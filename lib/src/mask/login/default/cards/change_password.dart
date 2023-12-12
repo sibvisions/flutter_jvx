@@ -198,19 +198,21 @@ class _ChangePasswordState extends State<ChangePassword> {
           username: usernameController.text,
           password: passwordController.text,
           newPassword: newPasswordController.text,
-        ).catchError(IUiService().handleAsyncError);
+        );
       } else {
         ICommandService()
             .sendCommand(ChangePasswordCommand(
-              username: usernameController.text,
-              password: passwordController.text,
-              newPassword: newPasswordController.text,
-              reason: "Change Password Request",
-            ))
-            .then((value) => Navigator.of(FlutterUI.getCurrentContext()!).pop())
-            .catchError((error, stackTrace) {
-          HapticFeedback.heavyImpact();
-          return IUiService().handleAsyncError(error, stackTrace);
+          username: usernameController.text,
+          password: passwordController.text,
+          newPassword: newPasswordController.text,
+          reason: "Change Password Request",
+        ))
+            .then((success) {
+          if (success) {
+            Navigator.of(FlutterUI.getCurrentContext()!).pop();
+          } else {
+            HapticFeedback.heavyImpact();
+          }
         });
       }
     } else {
