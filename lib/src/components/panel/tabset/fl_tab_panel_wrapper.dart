@@ -143,11 +143,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     tabContentList.sort((a, b) => a.model.indexOf - b.model.indexOf);
 
     tabController = FlTabController(
-        initialIndex: min(tabController.index, max(tabContentList.length - 1, 0)),
-        tabs: tabContentList,
-        vsync: this,
-        changedIndexTo: changedIndexTo,
-        lastController: tabController);
+      initialIndex: min(tabController.index, max(tabContentList.length - 1, 0)),
+      tabs: tabContentList,
+      vsync: this,
+      changedIndexTo: changedIndexTo,
+      lastController: tabController,
+    );
 
     for (int i = 0; i < tabContentList.length; i++) {
       tabHeaderList.add(createTab(tabContentList[i], i));
@@ -306,11 +307,11 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   void changedIndexTo(int pValue) {
-    // setState(() {
-    //   model.selectedIndex = pValue;
-    // });
-
-    ICommandService().sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
+    if (tabController.isAllowedToAnimate) {
+      ICommandService().sendCommand(
+        OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."),
+      );
+    }
   }
 
   double get widthOfTabPanel {
