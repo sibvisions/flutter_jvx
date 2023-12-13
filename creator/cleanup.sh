@@ -7,7 +7,7 @@ if [ ! -d $pubCache ]; then
   pubCache=~/.pub-cache
 fi
 
-rm -r $pubCache/hosted/pub.dev/wakelock-*
+rm -r $pubCache/hosted/pub.dev/wakelock_plus*
 rm -r $pubCache/hosted/pub.dev/mobile_scanner-*
 rm -r $pubCache/hosted/pub.dev/package_info_plus-*
 rm -r $pubCache/hosted/pub.dev/shared_preferences_foundation-*
@@ -20,7 +20,15 @@ rm -r $pubCache/hosted/pub.dev/sqflite-*
 rm -r $pubCache/hosted/pub.dev/flutter_keyboard_visibility-*
 rm -r $pubCache/hosted/pub.dev/geolocator-*
 rm -r $pubCache/hosted/pub.dev/geolocator_*
-rm -r $pubCache/hosted/pub.dev/connectivity_plus-*
+rm -r $pubCache/hosted/pub.dev/connectivity_plus*
 rm -r $pubCache/hosted/pub.dev/path_provider_foundation-*
-rm -r $pubCache/hosted/pub.dev/flutter_timezone-*
-rm -r $pubCache/git/fix_file_saver-*
+rm -r $pubCache/hosted/pub.dev/flutter_timezone*
+rm -r $pubCache/hosted/pub.dev/flutter_inappwebview*
+rm -r $pubCache/hosted/pub.dev/flutter_tts*
+rm -r $pubCache/hosted/pub.dev/speech_to_text*
+rm -r $pubCache/hosted/pub.dev/file_saver*
+rm -r $pubCache/hosted/pub.dev/html_editor_enhanced*
+rm -r $pubCache/hosted/pub.dev/push-*
+rm -r $pubCache/hosted/pub.dev/push_*
+rm -r $pubCache/hosted/pub.dev/flutter_local_notifications*
+rm -r $pubCache/hosted/pub.dev/screen_brightness*
