@@ -62,4 +62,10 @@ class OpenServerErrorDialogCommand extends MessageViewCommand implements ErrorCo
   String toString() {
     return "OpenErrorDialogCommand{componentId: $componentId, silentAbort: $silentAbort, details: $details, exceptions: $exceptions, invalidApp: $invalidApp, ${super.toString()}}";
   }
+
+  @override
+  Object? get error => exceptions?.firstOrNull;
+
+  @override
+  StackTrace? get stackTrace => null;
 }

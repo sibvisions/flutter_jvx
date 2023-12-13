@@ -31,6 +31,7 @@ class ErrorViewProcessor implements IResponseProcessor<ErrorViewResponse> {
         message: pResponse.message,
         silentAbort: pResponse.silentAbort,
         invalidApp: isInvalidApp(pResponse.message),
+        exceptions: pResponse.exceptions,
       )
     ];
   }

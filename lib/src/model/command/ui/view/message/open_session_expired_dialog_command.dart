@@ -14,6 +14,7 @@
  * the License.
  */
 
+import '../../../../../exceptions/session_expired_exception.dart';
 import 'error_command.dart';
 import 'message_view_command.dart';
 
@@ -41,4 +42,10 @@ class OpenSessionExpiredDialogCommand extends MessageViewCommand implements Erro
   String toString() {
     return "OpenSessionExpiredDialogCommand{${super.toString()}}";
   }
+
+  @override
+  Object? get error => SessionExpiredException();
+
+  @override
+  StackTrace? get stackTrace => null;
 }

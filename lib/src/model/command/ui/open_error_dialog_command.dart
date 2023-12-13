@@ -30,9 +30,11 @@ class OpenErrorDialogCommand extends UiCommand implements ErrorCommand {
   final String message;
 
   /// The error
+  @override
   final Object? error;
 
   /// The stack trace
+  @override
   final StackTrace? stackTrace;
 
   /// True if this error is a timeout
@@ -49,8 +51,8 @@ class OpenErrorDialogCommand extends UiCommand implements ErrorCommand {
 
   OpenErrorDialogCommand({
     required this.message,
-    this.title,
     this.error,
+    this.title,
     this.stackTrace,
     this.isTimeout = false,
     this.dismissible = true,

@@ -33,10 +33,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:universal_io/io.dart';
 
+import 'commands.dart';
 import 'config/app_config.dart';
 import 'config/server_config.dart';
 import 'custom/app_manager.dart';
-import 'exceptions/error_view_exception.dart';
 import 'mask/jvx_overlay.dart';
 import 'mask/login/login.dart';
 import 'mask/menu/menu.dart';
@@ -959,7 +959,13 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     required VoidCallback retry,
     required VoidCallback? returnToApps,
   }) {
-    ErrorViewException? errorView = snapshot.error is ErrorViewException ? snapshot.error as ErrorViewException : null;
+    OpenServerErrorDialogCommand? serverError =
+        snapshot.error is OpenServerErrorDialogCommand ? snapshot.error as OpenServerErrorDialogCommand : null;
+
+    Object? error = snapshot.error!;
+    if (error is ErrorCommand) {
+      error = error.error;
+    }
 
     var actions = [
       if (returnToApps != null)
@@ -970,7 +976,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-      if (errorView?.errorCommand.invalidApp != true)
+      if (serverError?.invalidApp != true)
         TextButton(
           onPressed: retry,
           child: Text(
@@ -991,12 +997,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         ),
         AlertDialog(
           title: Text(
-            errorView?.errorCommand.title?.isNotEmpty ?? false
-                ? errorView!.errorCommand.title!
-                : FlutterUI.translateLocal("Error"),
+            serverError?.title?.isNotEmpty ?? false ? serverError!.title! : FlutterUI.translateLocal("Error"),
           ),
           content: Text(
-            errorView?.errorCommand.message ?? FlutterUI.translateLocal(IUiService.getErrorMessage(snapshot.error!)),
+            serverError?.message ?? FlutterUI.translateLocal(IUiService.getErrorMessage(error)),
           ),
           actionsAlignment: actions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
           actions: actions,

@@ -89,20 +89,22 @@ class CommandService implements ICommandService {
   Future<bool> sendCommand(
     BaseCommand pCommand, {
     bool showDialogOnError = true,
+    bool throwFirstErrorCommand = false,
     bool? delayUILocking,
     bool? showLoading,
   }) async {
     BaseCommand command = IUiService().getAppManager()?.interceptCommand(pCommand) ?? pCommand;
     // Only queue layout commands
     if (command is LayoutCommand) {
-      return _layoutCommandsQueue.add(() => _initCommandProcessing(command, false, null, null));
+      return _layoutCommandsQueue.add(() => _initCommandProcessing(command, false));
     }
     // Only queue queue commands
     else if (command is QueueCommand) {
-      return _commandsQueue.add(() => _initCommandProcessing(command, showDialogOnError, delayUILocking, showLoading));
+      return _commandsQueue.add(() =>
+          _initCommandProcessing(command, showDialogOnError, throwFirstErrorCommand, delayUILocking, showLoading));
     }
 
-    return _initCommandProcessing(command, showDialogOnError, delayUILocking, showLoading);
+    return _initCommandProcessing(command, showDialogOnError, throwFirstErrorCommand, delayUILocking, showLoading);
   }
 
   @override
@@ -132,7 +134,12 @@ class CommandService implements ICommandService {
   }
 
   Future<bool> _initCommandProcessing(
-      BaseCommand pCommand, bool showDialogOnError, bool? delayUILocking, bool? showLoading) async {
+    BaseCommand pCommand,
+    bool showDialogOnError, [
+    bool throwFirstErrorCommand = false,
+    bool? delayUILocking,
+    bool? showLoading,
+  ]) async {
     try {
       pCommand.delayUILocking = delayUILocking ?? pCommand.delayUILocking;
       pCommand.showLoading = showLoading ?? pCommand.showLoading;
@@ -148,12 +155,13 @@ class CommandService implements ICommandService {
       FlutterUI.logCommand.d("Started ${pCommand.runtimeType}-chain");
 
       List<BaseCommand>? followCommands = await processCommand(pCommand, null, showDialogOnError);
+      ErrorCommand? firstErrorCommand;
 
-      bool success = true;
       while (followCommands != null) {
-        success = followCommands.none((element) => element is ErrorCommand) && success;
+        firstErrorCommand ??= followCommands.whereType<ErrorCommand>().firstOrNull;
 
         List<BaseCommand>? newFollowCommands;
+
         for (BaseCommand followCommand in followCommands) {
           List<BaseCommand>? newCommands = await processCommand(followCommand, pCommand, showDialogOnError);
           if (newCommands != null) {
@@ -161,16 +169,26 @@ class CommandService implements ICommandService {
             newFollowCommands.addAll(newCommands);
           }
         }
+
         followCommands = newFollowCommands;
       }
 
       await getProcessor(pCommand)?.onFinish(pCommand);
 
       FlutterUI.logCommand.d("Finished ${pCommand.runtimeType}-chain");
-      return success;
+
+      if (firstErrorCommand != null) {
+        throw firstErrorCommand;
+      }
+
+      return true;
     } catch (error) {
       FlutterUI.logCommand.e("Error processing ${pCommand.runtimeType}-chain");
-      return false;
+      if (throwFirstErrorCommand) {
+        rethrow;
+      } else {
+        return false;
+      }
     } finally {
       progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
     }

@@ -59,7 +59,7 @@ abstract class IUiService implements Service {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static String getErrorMessage(Object error) {
+  static String getErrorMessage(Object? error) {
     if (error is DioException) {
       if ([
         DioExceptionType.connectionTimeout,
@@ -74,7 +74,7 @@ abstract class IUiService implements Service {
         return "Connection to remote server timed out";
       }
       return "Could not connect to remote server";
-    } else {
+    } else if (error != null) {
       const String messageStart = "Exception: ";
 
       String message = error.toString();
@@ -82,6 +82,8 @@ abstract class IUiService implements Service {
         return message.substring(messageStart.length);
       }
       return message;
+    } else {
+      return "Unknown error";
     }
   }
 
