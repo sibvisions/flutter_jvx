@@ -16,7 +16,12 @@
 
 import 'package:collection/collection.dart';
 
-import '../../../../../flutter_jvx.dart';
+import '../../../../commands.dart';
+import '../../../../flutter_ui.dart';
+import '../../../../model/component/fl_component_model.dart';
+import '../../../../model/request/api_request.dart';
+import '../../../../model/response/generic_screen_view_response.dart';
+import '../../../config/i_config_service.dart';
 import '../i_response_processor.dart';
 
 /// Processes [GenericScreenViewResponse], will separate (and parse) new and changed components, can also open screens
