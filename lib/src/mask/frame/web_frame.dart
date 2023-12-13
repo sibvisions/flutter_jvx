@@ -114,7 +114,7 @@ class WebFrameState extends FrameState {
     bool inWorkscreen = IUiService().getCurrentWorkscreenName() != null;
 
     return AppBar(
-      titleSpacing: titleSpacing,
+      titleSpacing: 8,
       leading: Builder(
         builder: (context) => IconButton(
           tooltip: FlutterUI.translate("Toggle navigation menu"),
