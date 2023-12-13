@@ -191,7 +191,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   title: !isMenuSearchEnabled
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
-                  titleSpacing: leading != null ? 0.0 : null,
+                  titleSpacing: leading != null ? 0.0 : 8,
                   backgroundColor: isOffline ? Colors.grey.shade500 : null,
                   actions: actions,
                 ),
