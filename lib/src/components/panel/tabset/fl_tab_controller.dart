@@ -72,11 +72,11 @@ class FlTabController extends TabController {
   }
 
   @override
-  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease, bool pInternally = false}) {
+  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease, bool animate = false}) {
     duration ??= kTabScrollDuration;
     if (isTabEnabled(value) && isAllowedToAnimate) {
       widgetsSelectedOnce.add(value);
-      if (!pInternally) {
+      if (!animate) {
         changedIndexTo(value);
       } else {
         super.animateTo(value, duration: duration, curve: curve);

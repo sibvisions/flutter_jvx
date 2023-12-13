@@ -239,12 +239,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   @override
   void postFrameCallback(BuildContext context) {
     if (lastDeletedTab == -2 && model.selectedIndex > 0) {
-      tabController.animateTo(model.selectedIndex, pInternally: true);
+      tabController.animateTo(model.selectedIndex, animate: true);
     }
     lastDeletedTab = -1;
 
     if (model.selectedIndex >= 0 && tabController.index != model.selectedIndex) {
-      tabController.animateTo(model.selectedIndex, pInternally: true);
+      tabController.animateTo(model.selectedIndex, animate: true);
     }
 
     TabLayout layout = (layoutData.layout as TabLayout);
@@ -273,15 +273,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void swipeLeft(bool pInternally) {
-    _swipe(false, pInternally);
-  }
-
-  void swipeRigth(bool pInternally) {
-    _swipe(true, pInternally);
-  }
-
-  void _swipe(bool pRight, bool pInternally) {
+  void _swipe(bool pRight) {
     int index = tabController.index;
     bool hasSwiped = false;
     while (!hasSwiped) {
@@ -293,7 +285,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
       if (index >= 0 && index < tabContentList.length) {
         if (tabController.isTabEnabled(index)) {
-          tabController.animateTo(index, pInternally: pInternally);
+          tabController.animateTo(index);
           hasSwiped = true;
         }
       } else {
@@ -310,7 +302,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     // Bigger than 0 -> Swipe to the left;
     // Negative number -> swipe to the right;
-    _swipe(pDetails.velocity.pixelsPerSecond.dx < 0.0, false);
+    _swipe(pDetails.velocity.pixelsPerSecond.dx < 0.0);
   }
 
   void changedIndexTo(int pValue) {
