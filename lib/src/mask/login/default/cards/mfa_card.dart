@@ -17,7 +17,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_ui.dart';
-import '../../../../service/ui/i_ui_service.dart';
 import '../../login_page.dart';
 import '../default_login.dart';
 
@@ -62,15 +61,11 @@ class MFACard extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: TextButton(
-              onPressed: onCancel ?? _onCancelPressed,
+              onPressed: onCancel ?? LoginPage.cancelLogin,
               child: Text(FlutterUI.translate("Cancel")),
             ),
           ),
       ],
     );
-  }
-
-  void _onCancelPressed() {
-    LoginPage.cancelLogin().catchError(IUiService().handleAsyncError);
   }
 }

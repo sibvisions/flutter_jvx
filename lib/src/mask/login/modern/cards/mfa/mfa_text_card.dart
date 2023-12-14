@@ -19,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../flutter_ui.dart';
-import '../../../../../service/ui/i_ui_service.dart';
 import '../../../../../util/jvx_colors.dart';
 import '../../../../../util/widgets/progress/progress_button.dart';
 import '../../../../state/loading_bar.dart';
@@ -134,9 +133,13 @@ class _MFATextCardState extends State<MFATextCard> {
   }
 
   void _onCancelPressed() {
-    LoginPage.cancelLogin().catchError((error, stackTrace) {
-      setState(() => progressButtonState = ButtonState.fail);
-      return IUiService().handleAsyncError(error, stackTrace);
+    LoginPage.cancelLogin().then((success) {
+      if (success) {
+        setState(() => progressButtonState = ButtonState.success);
+      } else {
+        HapticFeedback.heavyImpact();
+        setState(() => progressButtonState = ButtonState.fail);
+      }
     });
   }
 
@@ -150,10 +153,13 @@ class _MFATextCardState extends State<MFATextCard> {
     LoginPage.doMFALogin(
       username: widget.username,
       confirmationCode: codeController.text,
-    ).catchError((error, stackTrace) {
-      HapticFeedback.heavyImpact();
-      setState(() => progressButtonState = ButtonState.fail);
-      return IUiService().handleAsyncError(error, stackTrace);
+    ).then((success) {
+      if (success) {
+        setState(() => progressButtonState = ButtonState.success);
+      } else {
+        HapticFeedback.heavyImpact();
+        setState(() => progressButtonState = ButtonState.fail);
+      }
     });
   }
 }

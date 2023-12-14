@@ -35,6 +35,7 @@ import '../../model/layout/layout_data.dart';
 import '../../model/layout/layout_position.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/api/shared/fl_component_classname.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -219,11 +220,16 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void _onValueChanged(dynamic pValue) {
     IUiService()
         .saveAllEditors(
-          pId: model.id,
-          pFunction: () => [_sendValueToServer(pValue)],
-          pReason: "Value of ${model.id} set to $pValue",
-        )
-        .catchError(IUiService().handleAsyncError);
+      pId: model.id,
+      pReason: "Value of ${model.id} set to $pValue",
+    )
+        .then((success) {
+      if (!success) {
+        return false;
+      }
+
+      ICommandService().sendCommand(_sendValueToServer(pValue));
+    });
 
     setState(() {});
   }
@@ -264,28 +270,31 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     await IUiService()
         .saveAllEditors(
-          pId: model.id,
-          pFunction: () {
-            List<BaseCommand> commands = [];
+      pId: model.id,
+      pReason: "Value of ${model.id} set to $pValue",
+    )
+        .then((success) {
+      if (!success) {
+        return false;
+      }
 
-            var oldFocus = IUiService().getFocus();
-            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+      List<BaseCommand> commands = [];
 
-            commands.add(_sendValueToServer(pValue));
+      var oldFocus = IUiService().getFocus();
+      commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
 
-            if (cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) {
-              SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus");
-            }
-            if (oldFocus != null) {
-              commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Value edit Focus"));
-            } else {
-              commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus"));
-            }
-            return commands;
-          },
-          pReason: "Value of ${model.id} set to $pValue",
-        )
-        .catchError(IUiService().handleAsyncError);
+      commands.add(_sendValueToServer(pValue));
+
+      if (cellEditor is FlDateCellEditor || cellEditor is FlLinkedCellEditor) {
+        SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus");
+      }
+      if (oldFocus != null) {
+        commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Value edit Focus"));
+      } else {
+        commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Value edit Focus"));
+      }
+      return ICommandService().sendCommands(commands);
+    });
 
     setState(() {});
   }
@@ -345,7 +354,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   @override
-  Future<BaseCommand?> createSaveCommand() async {
+  Future<BaseCommand?> createSaveCommand(String pReason) async {
     if (!model.isEnabled || metaData == null || !metaData!.updateEnabled) {
       return null;
     }
@@ -361,7 +370,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       editorColumnName: model.columnName,
       columnNames: [model.columnName],
       values: [value],
-      reason: "Value of ${model.id} set to $value",
+      reason: "$pReason; Value of ${model.id} set to $value",
     );
   }
 

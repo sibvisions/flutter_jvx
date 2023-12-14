@@ -20,6 +20,7 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../components/components_factory.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/parse_util.dart';
@@ -132,7 +133,7 @@ class ContentState extends State<Content> {
           pScreenComponentId: widget.model.id,
           pSize: size,
         )
-        .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
+        .then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
   }
 }
 

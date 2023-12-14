@@ -209,10 +209,13 @@ class _ManualCardState extends State<ManualCard> {
       username: usernameController.text,
       password: passwordController.text,
       createAuthKey: showRememberMe && rememberMeChecked,
-    ).catchError((error, stackTrace) {
-      HapticFeedback.heavyImpact();
-      setState(() => progressButtonState = ButtonState.fail);
-      return IUiService().handleAsyncError(error, stackTrace);
+    ).then((success) {
+      if (success) {
+        setState(() => progressButtonState = ButtonState.success);
+      } else {
+        HapticFeedback.heavyImpact();
+        setState(() => progressButtonState = ButtonState.fail);
+      }
     });
   }
 }

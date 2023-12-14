@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../../flutter_ui.dart';
-import '../../../../../service/ui/i_ui_service.dart';
 import '../../../login_page.dart';
 import '../mfa_card.dart';
 
@@ -80,7 +79,7 @@ class _MFATextCardState extends State<MFATextCard> {
     );
 
     Widget backButton = TextButton(
-      onPressed: _onCancelPressed,
+      onPressed: LoginPage.cancelLogin,
       child: Text(
         FlutterUI.translate("Cancel"),
         overflow: TextOverflow.ellipsis,
@@ -96,21 +95,16 @@ class _MFATextCardState extends State<MFATextCard> {
     );
   }
 
-  void _onCancelPressed() {
-    LoginPage.cancelLogin().catchError((error, stackTrace) {
-      return IUiService().handleAsyncError(error, stackTrace);
-    });
-  }
-
   void _onLoginPressed() {
     FocusManager.instance.primaryFocus?.unfocus();
 
     LoginPage.doMFALogin(
       username: widget.username,
       confirmationCode: codeController.text,
-    ).catchError((error, stackTrace) {
-      HapticFeedback.heavyImpact();
-      return IUiService().handleAsyncError(error, stackTrace);
+    ).then((success) {
+      if (!success) {
+        HapticFeedback.heavyImpact();
+      }
     });
   }
 }

@@ -28,6 +28,7 @@ import '../../flutter_ui.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../service/apps/i_app_service.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/layout/i_layout_service.dart';
 import '../../service/storage/i_storage_service.dart';
@@ -190,7 +191,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   title: !isMenuSearchEnabled
                       ? Text(FlutterUI.translate("Menu"))
                       : Builder(builder: (context) => _buildSearch(context)),
-                  titleSpacing: leading != null ? 0.0 : null,
+                  titleSpacing: leading != null ? 0.0 : 8,
                   backgroundColor: isOffline ? Colors.grey.shade500 : null,
                   actions: actions,
                 ),
@@ -360,7 +361,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
           pScreenComponentId: IStorageService().getDesktopPanelNotifier().value!.id,
           pSize: size,
         )
-        .then((value) => value.forEach((e) async => await IUiService().sendCommand(e)));
+        .then((value) => value.forEach((e) async => await ICommandService().sendCommand(e)));
   }
 
   Widget? getScreen(Widget screen) {

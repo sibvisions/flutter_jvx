@@ -36,6 +36,7 @@ import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/request/filter.dart';
 import '../../service/api/shared/api_object_property.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -375,58 +376,58 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
     lastIndex = pIndex;
     lastColumn = pColumn;
 
-    IUiService()
-        .saveAllEditors(
-          pId: model.id,
-          pFunction: () {
-            List<BaseCommand> commands = [];
+    IUiService().saveAllEditors(pId: model.id, pReason: "Chart [${model.id} record selected").then((success) {
+      if (!success) {
+        return false;
+      }
 
-            var oldFocus = IUiService().getFocus();
-            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Selected record in chart"));
+      ICommandService().sendCommands(createSelectRecordCommands(pIndex, pColumn));
+    });
+  }
 
-            if (pIndex != null) {
-              commands.add(
-                SelectRecordCommand.select(
-                  reason: "Selected record in chart",
-                  dataProvider: model.dataProvider,
-                  filter: Filter(
-                    columnNames: metaData!.primaryKeyColumns,
-                    values: metaData!.primaryKeyColumns
-                        .map((columnName) => dataChunk!.data[pIndex]![
-                            dataChunk!.columnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
-                        .toList(),
-                  ),
-                  rowNumber: pIndex,
-                  selectedColumn: pColumn,
-                ),
-              );
-            } else {
-              commands.add(
-                SelectRecordCommand.deselect(
-                  reason: "Deselected record in chart",
-                  dataProvider: model.dataProvider,
-                ),
-              );
-            }
+  List<BaseCommand> createSelectRecordCommands(int? pIndex, String? pColumn) {
+    List<BaseCommand> commands = [];
 
-            commands.addAll([
-              MousePressedCommand(reason: "Selected record in chart", componentName: model.name),
-              MouseReleasedCommand(reason: "Selected record in chart", componentName: model.name),
-              MouseClickedCommand(reason: "Selected record in chart", componentName: model.name)
-            ]);
+    var oldFocus = IUiService().getFocus();
+    commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Selected record in chart"));
 
-            if (oldFocus != null) {
-              commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Selected record in chart"));
-            } else {
-              commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Selected record in chart"));
-            }
+    if (pIndex != null) {
+      commands.add(
+        SelectRecordCommand.select(
+          reason: "Selected record in chart",
+          dataProvider: model.dataProvider,
+          filter: Filter(
+            columnNames: metaData!.primaryKeyColumns,
+            values: metaData!.primaryKeyColumns
+                .map((columnName) => dataChunk!
+                    .data[pIndex]![dataChunk!.columnDefinitions.indexWhere((colDef) => colDef.name == columnName)])
+                .toList(),
+          ),
+          rowNumber: pIndex,
+          selectedColumn: pColumn,
+        ),
+      );
+    } else {
+      commands.add(
+        SelectRecordCommand.deselect(
+          reason: "Deselected record in chart",
+          dataProvider: model.dataProvider,
+        ),
+      );
+    }
 
-            return commands;
-          },
-          pReason: "Selected record in chart",
-        )
-        .catchError(
-          IUiService().handleAsyncError,
-        );
+    commands.addAll([
+      MousePressedCommand(reason: "Selected record in chart", componentName: model.name),
+      MouseReleasedCommand(reason: "Selected record in chart", componentName: model.name),
+      MouseClickedCommand(reason: "Selected record in chart", componentName: model.name)
+    ]);
+
+    if (oldFocus != null) {
+      commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Selected record in chart"));
+    } else {
+      commands.add(SetFocusCommand(componentId: model.id, focus: false, reason: "Selected record in chart"));
+    }
+
+    return commands;
   }
 }

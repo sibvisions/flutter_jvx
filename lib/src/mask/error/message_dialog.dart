@@ -21,7 +21,7 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/close_frame_command.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/ui/view/message/open_message_dialog_command.dart';
-import '../../service/ui/i_ui_service.dart';
+import '../../service/command/i_command_service.dart';
 import '../../util/parse_util.dart';
 import '../frame_dialog.dart';
 
@@ -75,13 +75,13 @@ class MessageDialog extends JVxDialog {
   }
 
   void close() {
-    IUiService().sendCommand(
+    ICommandService().sendCommand(
       CloseFrameCommand(frameName: command.componentId, reason: "Message Dialog was dismissed"),
     );
   }
 
   void _pressButton(BuildContext context, String componentId) {
-    IUiService().sendCommand(PressButtonCommand(
+    ICommandService().sendCommand(PressButtonCommand(
       componentName: componentId,
       reason: "Button has been pressed",
     ));

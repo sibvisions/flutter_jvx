@@ -23,7 +23,7 @@ import '../../service/apps/i_app_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../frame_dialog.dart';
 
-class ServerSessionExpired extends JVxDialog {
+class ServerSessionExpiredDialog extends JVxDialog {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,7 +34,7 @@ class ServerSessionExpired extends JVxDialog {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const ServerSessionExpired({
+  const ServerSessionExpiredDialog({
     super.key,
     required this.command,
     super.dismissible,

@@ -63,7 +63,7 @@ class LoginPage extends StatefulWidget {
   /// ```dart
   /// .catchError(IUiService().handleAsyncError);
   /// ```
-  static Future<void> doLogin({
+  static Future<bool> doLogin({
     LoginMode mode = LoginMode.Manual,
     required String username,
     required String password,
@@ -87,20 +87,22 @@ class LoginPage extends StatefulWidget {
   /// ```dart
   /// .catchError(IUiService().handleAsyncError);
   /// ```
-  static Future<void> doMFALogin({
+  static Future<bool> doMFALogin({
     LoginMode mode = LoginMode.MFTextInput,
     String? username,
     String? password,
     String? confirmationCode,
     bool createAuthKey = false,
   }) =>
-      ICommandService().sendCommand(LoginCommand(
-        loginMode: mode,
-        username: username,
-        confirmationCode: confirmationCode,
-        createAuthKey: createAuthKey,
-        reason: "LoginButton",
-      ));
+      ICommandService().sendCommand(
+        LoginCommand(
+          loginMode: mode,
+          username: username,
+          confirmationCode: confirmationCode,
+          createAuthKey: createAuthKey,
+          reason: "LoginButton",
+        ),
+      );
 
   /// Sends a MFA [LoginCommand].
   ///
@@ -146,7 +148,7 @@ class LoginPage extends StatefulWidget {
   /// ```dart
   /// .catchError(IUiService().handleAsyncError);
   /// ```
-  static Future<void> cancelLogin() {
+  static Future<bool> cancelLogin() {
     return ICommandService().sendCommand(CancelLoginCommand(
       reason: "User canceled login",
     ));
@@ -159,7 +161,7 @@ class LoginPage extends StatefulWidget {
   /// Server responses:
   /// * If user logged in, sends message view
   /// * If user not logged in, sends new login view
-  static Future<void> doResetPassword({
+  static Future<bool> doResetPassword({
     required String identifier,
   }) =>
       ICommandService().sendCommand(ResetPasswordCommand(
@@ -172,7 +174,7 @@ class LoginPage extends StatefulWidget {
   /// Server responses:
   /// * If user logged in, sends message view
   /// * If user not logged in, continues login
-  static Future<void> doChangePassword({
+  static Future<bool> doChangePassword({
     required String username,
     required String password,
     required String newPassword,
@@ -188,7 +190,7 @@ class LoginPage extends StatefulWidget {
   /// Sends a [LoginCommand] with changed password and otp
   ///
   /// Normally the user is logged in after that
-  static Future<void> doChangePasswordOTP({
+  static Future<bool> doChangePasswordOTP({
     required String username,
     required String password,
     required String newPassword,

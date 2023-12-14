@@ -48,7 +48,7 @@ class FlTabController extends TabController {
       lastController.lastControllers.clear();
       widgetsSelectedOnce.addAll(lastController.widgetsSelectedOnce);
 
-      if (lastControllers.length > 3) {
+      if (lastControllers.length > 10) {
         FlTabController removedController = lastControllers.removeLast();
         removedController.dispose();
       }
@@ -56,27 +56,26 @@ class FlTabController extends TabController {
   }
 
   bool get isAllowedToAnimate {
-    for (FlTabController checkTabController in lastControllers) {
-      bool isAllowed = checkTabController.offset == 0.0 && !checkTabController.indexIsChanging;
+    return _isAllowedToAnimate(this) &&
+        lastControllers.every((FlTabController controller) => _isAllowedToAnimate(controller));
+  }
 
-      if (isAllowed && checkTabController.animation != null) {
-        isAllowed = (checkTabController.animation!.value - checkTabController.animation!.value.floor()) == 0;
-      }
+  _isAllowedToAnimate(FlTabController controller) {
+    bool isAllowed = controller.offset == 0.0 && !controller.indexIsChanging;
 
-      if (!isAllowed) {
-        return false;
-      }
+    if (isAllowed && animation != null) {
+      isAllowed = (controller.animation!.value - controller.animation!.value.floor()) == 0;
     }
 
-    return true;
+    return isAllowed;
   }
 
   @override
-  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease, bool pInternally = false}) {
+  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease, bool animate = false}) {
     duration ??= kTabScrollDuration;
     if (isTabEnabled(value) && isAllowedToAnimate) {
       widgetsSelectedOnce.add(value);
-      if (!pInternally) {
+      if (!animate) {
         changedIndexTo(value);
       } else {
         super.animateTo(value, duration: duration, curve: curve);

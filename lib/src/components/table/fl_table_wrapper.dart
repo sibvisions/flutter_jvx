@@ -361,7 +361,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   }
 
   int _onDataProviderReload() {
-    cancelSelect = true;
     int selectedRow = IDataService().getDataBook(model.dataProvider)?.selectedRow ?? -1;
     if (selectedRow >= 0) {
       pageCount = ((selectedRow + 1) / FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE).ceil();
@@ -515,7 +514,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   Future<void> _refresh() {
     IUiService().notifySubscriptionsOfReload(pDataprovider: model.dataProvider);
 
-    return IUiService().sendCommand(
+    return ICommandService().sendCommand(
       FetchCommand(
         fromRow: 0,
         reload: true,
@@ -660,38 +659,41 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _menuItemPressed(TableContextMenuItem val, int pRowIndex, String pColumnName, ICellEditor pCellEditor) {
     IUiService()
         .saveAllEditors(
-          pId: model.id,
-          pFunction: () {
-            List<BaseCommand> commands = [];
+      pId: model.id,
+      pReason: "Table menu item pressed",
+    )
+        .then((success) {
+      if (!success) {
+        return;
+      }
+      List<BaseCommand> commands = [];
 
-            if (val == TableContextMenuItem.INSERT) {
-              commands.add(_createInsertCommand());
-            } else if (val == TableContextMenuItem.DELETE) {
-              int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
-              BaseCommand? command = _createDeleteCommand(indexToDelete);
-              if (command != null) {
-                commands.add(command);
-              }
-            } else if (val == TableContextMenuItem.OFFLINE) {
-              _debugGoOffline();
-            } else if (val == TableContextMenuItem.FETCH) {
-              unawaited(_refresh());
-            } else if (val == TableContextMenuItem.SORT) {
-              BaseCommand? command = _createSortColumnCommand(pColumnName);
-              if (command != null) {
-                commands.add(command);
-              }
-            } else if (val == TableContextMenuItem.EDIT) {
-              _editRow(pRowIndex);
-            }
-            if (commands.isNotEmpty) {
-              commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
-            }
-            return commands;
-          },
-          pReason: "Table menu item pressed",
-        )
-        .catchError(IUiService().handleAsyncError);
+      if (val == TableContextMenuItem.INSERT) {
+        commands.add(_createInsertCommand());
+      } else if (val == TableContextMenuItem.DELETE) {
+        int indexToDelete = pRowIndex >= 0 ? pRowIndex : selectedRow;
+        BaseCommand? command = _createDeleteCommand(indexToDelete);
+        if (command != null) {
+          commands.add(command);
+        }
+      } else if (val == TableContextMenuItem.OFFLINE) {
+        _debugGoOffline();
+      } else if (val == TableContextMenuItem.FETCH) {
+        unawaited(_refresh());
+      } else if (val == TableContextMenuItem.SORT) {
+        BaseCommand? command = _createSortColumnCommand(pColumnName);
+        if (command != null) {
+          commands.add(command);
+        }
+      } else if (val == TableContextMenuItem.EDIT) {
+        _editRow(pRowIndex);
+      }
+      if (commands.isNotEmpty) {
+        commands.insert(0, SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+      }
+
+      ICommandService().sendCommands(commands);
+    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -782,53 +784,36 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
   /// Selects the record.
   Future<bool> _selectRecord(int pRowIndex, String? pColumnName, {CommandCallback? pAfterSelect}) async {
-    cancelSelect = false;
-
-    return ICommandService()
-        .sendCommand(QueuedFunctionCommand(
-          () async {
-            List<BaseCommand> commands = await IUiService().collectAllEditorSaveCommands(model.id);
-
-            if (cancelSelect) {
-              FlutterUI.logUI.i("Select canceled, server sent reload");
-              return commands;
-            }
-
-            if (pRowIndex >= dataChunk.data.length) {
-              FlutterUI.logUI.i("Row index out of range: $pRowIndex");
-              return commands;
-            }
-
-            Filter? filter = _createFilter(pRowIndex: pRowIndex);
-            if (filter == null) {
-              FlutterUI.logUI.w("Filter of table(${model.id}) null");
-              return commands;
-            }
-            commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
-
-            commands.add(
-              SelectRecordCommand(
-                dataProvider: model.dataProvider,
-                rowNumber: pRowIndex,
-                reason: "Tapped",
-                filter: filter,
-                selectedColumn: pColumnName,
-              ),
-            );
-            if (pAfterSelect != null) {
-              commands.add(FunctionCommand(pAfterSelect, reason: "After selected row"));
-            }
-
-            return commands;
-          },
-          reason: "Select row in table",
-          delayUILocking: true,
-        ))
-        .then((value) => true)
-        .catchError((error, stackTrace) {
-      IUiService().handleAsyncError(error, stackTrace);
+    if (pRowIndex >= dataChunk.data.length) {
+      FlutterUI.logUI.i("Row index out of range: $pRowIndex");
       return false;
-    });
+    }
+
+    Filter? filter = _createFilter(pRowIndex: pRowIndex);
+    if (filter == null) {
+      FlutterUI.logUI.w("Filter of table(${model.id}) null");
+      return false;
+    }
+
+    List<BaseCommand> commands = await IUiService().collectAllEditorSaveCommands(model.id, "Selecting row in table.");
+
+    commands.add(SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"));
+
+    commands.add(
+      SelectRecordCommand(
+        dataProvider: model.dataProvider,
+        rowNumber: pRowIndex,
+        reason: "Tapped",
+        filter: filter,
+        selectedColumn: pColumnName,
+      ),
+    );
+
+    if (pAfterSelect != null) {
+      commands.add(FunctionCommand(pAfterSelect, reason: "After selected row"));
+    }
+
+    return ICommandService().sendCommands(commands, delayUILocking: true);
   }
 
   /// Sends a [SetValuesCommand] for this row.
@@ -847,14 +832,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
   void _insertRecord() {
     IUiService()
         .saveAllEditors(
-          pReason: "Insert row in table",
-          pId: model.id,
-          pFunction: () => [
-            SetFocusCommand(componentId: model.id, focus: true, reason: "Insert on table"),
-            _createInsertCommand(),
-          ],
-        )
-        .catchError(IUiService().handleAsyncError);
+      pReason: "Insert row in table",
+      pId: model.id,
+    )
+        .then((success) {
+      if (!success) {
+        return;
+      }
+
+      ICommandService().sendCommands([
+        SetFocusCommand(componentId: model.id, focus: true, reason: "Insert on table"),
+        _createInsertCommand(),
+      ]);
+    });
   }
 
   InsertRecordCommand _createInsertCommand() {
@@ -1003,14 +993,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
 
     IUiService()
         .saveAllEditors(
-          pReason: "Select row in table",
-          pId: model.id,
-          pFunction: () => [
-            SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"),
-            sortCommand,
-          ],
-        )
-        .catchError(IUiService().handleAsyncError);
+      pReason: "Select row in table",
+      pId: model.id,
+    )
+        .then((success) {
+      if (!success) {
+        return;
+      }
+
+      ICommandService().sendCommands([
+        SetFocusCommand(componentId: model.id, focus: true, reason: "Value edit Focus"),
+        sortCommand,
+      ]);
+    });
   }
 
   void _editRow(int pRowIndex) {
@@ -1063,7 +1058,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> {
           onPressed: (context) {
             BaseCommand? deleteCommand = _createDeleteCommand(pRowIndex);
             if (deleteCommand != null) {
-              IUiService().sendCommand(deleteCommand);
+              ICommandService().sendCommand(deleteCommand);
             }
           },
           autoClose: true,

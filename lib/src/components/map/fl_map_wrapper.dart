@@ -23,6 +23,7 @@ import '../../model/command/api/set_values_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -182,7 +183,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> {
 
   void onPointSelection(LatLng latLng) {
     if (model.pointSelectionEnabled && model.pointsDataBook != null) {
-      IUiService().sendCommand(
+      ICommandService().sendCommand(
         SetValuesCommand(
           dataProvider: model.pointsDataBook!,
           columnNames: [model.latitudeColumnName, model.longitudeColumnName],

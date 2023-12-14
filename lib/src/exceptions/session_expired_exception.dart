@@ -15,12 +15,10 @@
  */
 
 class SessionExpiredException implements Exception {
-  final int? statusCode;
-
-  SessionExpiredException([this.statusCode]);
+  SessionExpiredException();
 
   @override
   String toString() {
-    return "SessionExpiredException${statusCode != null ? ": $statusCode" : ""}";
+    return "Exception: Session expired";
   }
 }

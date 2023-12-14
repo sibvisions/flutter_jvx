@@ -274,7 +274,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       pSubscriber: this,
     );
 
-    IUiService().sendCommand(
+    ICommandService().sendCommand(
       FilterCommand.none(
         dataProvider: widget.model.linkReference.referencedDataBook,
         reason: "Closed the linked cell picker",
@@ -373,7 +373,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
       return;
     }
 
-    selectRecord(pIndex).then((_) {
+    selectRecord(pIndex).then((success) {
+      if (!success) {
+        return;
+      }
+
       List<dynamic>? data = _chunkData!.data[pIndex];
       if (data == null) {
         return;
@@ -400,13 +404,13 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
         }
       }
       Navigator.of(context).pop(dataMap);
-    }).catchError(IUiService().handleAsyncError);
+    });
   }
 
   /// Selects the record.
-  Future<void> selectRecord(int pRowIndex) async {
+  Future<bool> selectRecord(int pRowIndex) async {
     if (_metaData == null && _chunkData == null) {
-      return;
+      return false;
     }
 
     List<String> listColumnNames = [];
@@ -463,7 +467,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   }
 
   void _onTextFieldValueChanged() {
-    IUiService()
+    ICommandService()
         .sendCommand(
           FilterCommand.byValue(
             editorComponentId: widget.name,
@@ -474,7 +478,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
           ),
         )
         .then(
-          (_) => _currentlyFiltering = false,
+          (success) => _currentlyFiltering = false,
         );
   }
 
@@ -501,7 +505,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> {
   Future<void> _refresh() {
     IUiService().notifySubscriptionsOfReload(pDataprovider: model.linkReference.referencedDataBook);
 
-    return IUiService().sendCommand(
+    return ICommandService().sendCommand(
       FetchCommand(
         fromRow: 0,
         reload: true,

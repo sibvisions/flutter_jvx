@@ -20,7 +20,7 @@ import '../../../../../model/command/api/upload_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/upload_action_command.dart';
 import '../../../../../util/widgets/file_picker_dialog.dart';
-import '../../../../ui/i_ui_service.dart';
+import '../../../i_command_service.dart';
 import '../../i_command_processor.dart';
 
 class UploadActionCommandProcessor extends ICommandProcessor<UploadActionCommand> {
@@ -28,7 +28,7 @@ class UploadActionCommandProcessor extends ICommandProcessor<UploadActionCommand
   Future<List<BaseCommand>> processCommand(UploadActionCommand command, BaseCommand? origin) async {
     unawaited(FilePickerDialog.openFilePicker().then((value) {
       if (value != null) {
-        IUiService().sendCommand(UploadCommand(fileId: command.fileId, file: value, reason: "Uploading file"));
+        ICommandService().sendCommand(UploadCommand(fileId: command.fileId, file: value, reason: "Uploading file"));
       }
     }));
 

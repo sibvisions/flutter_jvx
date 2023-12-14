@@ -33,6 +33,7 @@ import '../../model/data/subscriptions/data_chunk.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/request/filter.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/data/i_data_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -145,7 +146,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
       IUiService().registerDataSubscription(pDataSubscription: dataSubscription, pImmediatlyRetrieveData: false);
 
-      IUiService().sendCommand(
+      ICommandService().sendCommand(
         GetMetaDataCommand(dataProvider: dataProvider, subId: dataSubscription.id, reason: "Get all meta datas"),
       );
     }
@@ -194,7 +195,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
   }
 
   void _initTree() {
-    IUiService().sendCommand(
+    ICommandService().sendCommand(
       FetchCommand(
         fromRow: 0,
         rowCount: -1,
@@ -234,7 +235,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
       filters.add(null);
     }
 
-    IUiService().sendCommand(
+    ICommandService().sendCommand(
       SelectTreeCommand(
         componentName: model.name,
         dataProviders: dataProviders,
@@ -273,7 +274,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
 
     Filter childFilter = _createChildFilter(childMetaData, metaData, dataRow);
 
-    IUiService().sendCommand(
+    ICommandService().sendCommand(
       FetchCommand(
         fromRow: 0,
         rowCount: -1,
@@ -401,7 +402,7 @@ class _FlTreeWrapperState extends BaseCompWrapperState<FlTreeModel> {
             (isLevelZeroData || (parentNode?.expanded == true))) {
           // Create the filter for the child nodes.
 
-          IUiService().sendCommand(
+          ICommandService().sendCommand(
             FetchCommand(
               fromRow: 0,
               rowCount: -1,

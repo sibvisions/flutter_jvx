@@ -157,8 +157,9 @@ class GridLayout extends ILayout {
     for (LayoutData data in pChildren) {
       CellConstraint constraint = cellConstraints[data.id]!;
 
-      final num left = getPosition(xPositions, constraint.gridX, columnWidth, gaps.horizontalGap);
-      final num top = getPosition(yPositions, constraint.gridY, rowHeight, gaps.verticalGap);
+      final num left =
+          getPosition(xPositions, constraint.gridX, columnWidth, gaps.horizontalGap) + constraint.margins.left;
+      final num top = getPosition(yPositions, constraint.gridY, rowHeight, gaps.verticalGap) + constraint.margins.top;
       final num width =
           getPosition(xPositions, constraint.gridX + constraint.gridWidth, columnWidth, gaps.horizontalGap) -
               left -

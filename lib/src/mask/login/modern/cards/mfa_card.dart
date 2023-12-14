@@ -17,7 +17,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../flutter_ui.dart';
-import '../../../../service/ui/i_ui_service.dart';
 import '../../../../util/jvx_colors.dart';
 import '../../login_page.dart';
 import '../modern_login.dart';
@@ -95,7 +94,7 @@ class MFACard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: onCancel ?? _onCancelPressed,
+                      onPressed: onCancel ?? LoginPage.cancelLogin,
                       child: Text(FlutterUI.translate("Cancel")),
                     ),
                   ],
@@ -106,9 +105,5 @@ class MFACard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _onCancelPressed() {
-    LoginPage.cancelLogin().catchError(IUiService().handleAsyncError);
   }
 }

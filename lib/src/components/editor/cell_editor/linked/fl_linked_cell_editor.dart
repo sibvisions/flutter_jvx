@@ -224,38 +224,45 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
       isOpen = true;
 
       return ICommandService()
-          .sendCommand(FilterCommand.byValue(
-        dataProvider: model.linkReference.referencedDataBook,
-        editorComponentId: (lastWidgetModel?.name.isNotEmpty ?? false) ? lastWidgetModel!.name : name,
-        columnNames: [columnName],
-        // Same as React
-        value: "",
-        reason: "Opened the linked cell picker",
-      ))
-          .then((value) {
-        return IUiService().openDialog(
-            pBuilder: (_) => FlLinkedCellPicker(
-                  linkedCellEditor: this,
-                  model: model,
-                  name: name!,
-                  editorColumnDefinition: columnDefinition,
-                ),
-            pIsDismissible: true);
-      }).then((value) {
-        if (value != null) {
-          if (value == FlLinkedCellPicker.NULL_OBJECT) {
-            receiveNull();
-          } else {
-            onEndEditing(value);
-          }
+          .sendCommand(
+        FilterCommand.byValue(
+          dataProvider: model.linkReference.referencedDataBook,
+          editorComponentId: (lastWidgetModel?.name.isNotEmpty ?? false) ? lastWidgetModel!.name : name,
+          columnNames: [columnName],
+          // Same as React
+          value: "",
+          reason: "Opened the linked cell picker",
+        ),
+      )
+          .then((success) {
+        if (!success) {
+          return null;
         }
-      }).catchError((error, stacktrace) {
-        IUiService().handleAsyncError(error, stacktrace);
+        return IUiService()
+            .openDialog(
+          pBuilder: (_) => FlLinkedCellPicker(
+            linkedCellEditor: this,
+            model: model,
+            name: name!,
+            editorColumnDefinition: columnDefinition,
+          ),
+          pIsDismissible: true,
+        )
+            .then((value) {
+          if (value != null) {
+            if (value == FlLinkedCellPicker.NULL_OBJECT) {
+              receiveNull();
+            } else {
+              onEndEditing(value);
+            }
+          }
+        });
       }).whenComplete(() {
         isOpen = false;
         // The "onEndEditing" of the FlEditorWrapper handles the focus for the linked cell picker and date cell editor.
       });
     }
+
     return null;
   }
 
@@ -322,18 +329,17 @@ class FlLinkedCellEditor extends IFocusableCellEditor<FlLinkedEditorModel, FlLin
     }
 
     ICommandService()
-        .sendCommand(
-          SelectRecordCommand.deselect(
-            dataProvider: model.linkReference.referencedDataBook,
-            reason: "Tapped",
-          ),
-        )
+        .sendCommand(SelectRecordCommand.deselect(
+      dataProvider: model.linkReference.referencedDataBook,
+      reason: "Tapped",
+    ))
         .then(
-          (_) => onEndEditing(dataMap),
-        )
-        .catchError(
-          IUiService().handleAsyncError,
-        );
+      (success) {
+        if (success) {
+          onEndEditing(dataMap);
+        }
+      },
+    );
   }
 
   ReferenceDefinition get effectiveLinkReference {

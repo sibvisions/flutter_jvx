@@ -21,6 +21,7 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../service/api/i_api_service.dart';
 import '../../service/apps/i_app_service.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../jvx_overlay.dart';
@@ -81,7 +82,7 @@ abstract class Frame extends StatefulWidget {
     if (IApiService().getRepository().cancelledSessionExpired.value) {
       IAppService().startApp();
     } else {
-      IUiService().sendCommand(LogoutCommand(reason: "Drawer menu logout"));
+      ICommandService().sendCommand(LogoutCommand(reason: "Drawer menu logout"));
     }
   }
 
@@ -193,11 +194,4 @@ abstract class FrameState extends State<Frame> {
   });
 
   Widget wrapBody(Widget body) => body;
-}
-
-abstract class InheritedFrame extends InheritedWidget {
-  const InheritedFrame({
-    super.key,
-    required super.child,
-  });
 }

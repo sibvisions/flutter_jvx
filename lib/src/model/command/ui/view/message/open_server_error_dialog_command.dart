@@ -15,10 +15,11 @@
  */
 
 import '../../../../response/view/message/error_view_response.dart';
+import 'error_command.dart';
 import 'message_view_command.dart';
 
 /// This command will open a popup containing the provided message
-class OpenServerErrorDialogCommand extends MessageViewCommand {
+class OpenServerErrorDialogCommand extends MessageViewCommand implements ErrorCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,4 +62,10 @@ class OpenServerErrorDialogCommand extends MessageViewCommand {
   String toString() {
     return "OpenErrorDialogCommand{componentId: $componentId, silentAbort: $silentAbort, details: $details, exceptions: $exceptions, invalidApp: $invalidApp, ${super.toString()}}";
   }
+
+  @override
+  Object? get error => exceptions?.firstOrNull;
+
+  @override
+  StackTrace? get stackTrace => null;
 }

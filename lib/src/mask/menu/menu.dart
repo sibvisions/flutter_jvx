@@ -22,7 +22,6 @@ import '../../flutter_ui.dart';
 import '../../model/command/api/activate_screen_command.dart';
 import '../../model/command/api/close_screen_command.dart';
 import '../../model/command/api/open_screen_command.dart';
-import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../model/menu/menu_model.dart';
@@ -147,17 +146,21 @@ abstract class Menu extends StatelessWidget {
       return;
     }
 
-    BaseCommand commandToSend;
     if (model != null) {
-      commandToSend = ActivateScreenCommand(reason: "menu item clicked", componentId: model.name);
+      ICommandService()
+          .sendCommand(
+        ActivateScreenCommand(reason: "menu item clicked", componentId: model.name),
+      )
+          .then((success) {
+        if (success) {
+          IUiService().routeToWorkScreen(pScreenName: item.navigationName);
+        }
+      });
     } else {
-      commandToSend = OpenScreenCommand(reason: "menu item clicked", screenLongName: item.screenLongName);
+      ICommandService().sendCommand(
+        OpenScreenCommand(reason: "menu item clicked", screenLongName: item.screenLongName),
+      );
     }
-
-    ICommandService()
-        .sendCommand(commandToSend)
-        .then((value) => IUiService().routeToWorkScreen(pScreenName: item.navigationName))
-        .catchError(IUiService().handleAsyncError);
   }
 
   /// Returns the action function based on the [item] parameter.
@@ -170,14 +173,14 @@ abstract class Menu extends StatelessWidget {
 
         FlPanelModel? workscreenModel = IStorageService().getComponentByNavigationName(item.navigationName);
         if (workscreenModel != null) {
-          await IUiService()
+          await ICommandService()
               .sendCommand(
                 CloseScreenCommand(
                   screenName: workscreenModel.name,
                   reason: "User requested screen closing",
                 ),
               )
-              .then((value) => Frame.of(context).rebuild());
+              .then((success) => Frame.of(context).rebuild());
         }
       };
     }

@@ -24,8 +24,8 @@ import '../../../model/command/api/close_tab_command.dart';
 import '../../../model/command/api/open_tab_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/layout/alignments.dart';
+import '../../../service/command/i_command_service.dart';
 import '../../../service/storage/i_storage_service.dart';
-import '../../../service/ui/i_ui_service.dart';
 import '../../../util/image/image_loader.dart';
 import '../../../util/jvx_colors.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
@@ -143,11 +143,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     tabContentList.sort((a, b) => a.model.indexOf - b.model.indexOf);
 
     tabController = FlTabController(
-        initialIndex: min(tabController.index, max(tabContentList.length - 1, 0)),
-        tabs: tabContentList,
-        vsync: this,
-        changedIndexTo: changedIndexTo,
-        lastController: tabController);
+      initialIndex: min(tabController.index, max(tabContentList.length - 1, 0)),
+      tabs: tabContentList,
+      vsync: this,
+      changedIndexTo: changedIndexTo,
+      lastController: tabController,
+    );
 
     for (int i = 0; i < tabContentList.length; i++) {
       tabHeaderList.add(createTab(tabContentList[i], i));
@@ -239,12 +240,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   @override
   void postFrameCallback(BuildContext context) {
     if (lastDeletedTab == -2 && model.selectedIndex > 0) {
-      tabController.animateTo(model.selectedIndex, pInternally: true);
+      tabController.animateTo(model.selectedIndex, animate: true);
     }
     lastDeletedTab = -1;
 
     if (model.selectedIndex >= 0 && tabController.index != model.selectedIndex) {
-      tabController.animateTo(model.selectedIndex, pInternally: true);
+      tabController.animateTo(model.selectedIndex, animate: true);
     }
 
     TabLayout layout = (layoutData.layout as TabLayout);
@@ -273,15 +274,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void swipeLeft(bool pInternally) {
-    _swipe(false, pInternally);
-  }
-
-  void swipeRigth(bool pInternally) {
-    _swipe(true, pInternally);
-  }
-
-  void _swipe(bool pRight, bool pInternally) {
+  void _swipe(bool pRight) {
     int index = tabController.index;
     bool hasSwiped = false;
     while (!hasSwiped) {
@@ -293,7 +286,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
       if (index >= 0 && index < tabContentList.length) {
         if (tabController.isTabEnabled(index)) {
-          tabController.animateTo(index, pInternally: pInternally);
+          tabController.animateTo(index);
           hasSwiped = true;
         }
       } else {
@@ -310,15 +303,15 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     // Bigger than 0 -> Swipe to the left;
     // Negative number -> swipe to the right;
-    _swipe(pDetails.velocity.pixelsPerSecond.dx < 0.0, false);
+    _swipe(pDetails.velocity.pixelsPerSecond.dx < 0.0);
   }
 
   void changedIndexTo(int pValue) {
-    // setState(() {
-    //   model.selectedIndex = pValue;
-    // });
-
-    IUiService().sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
+    if (tabController.isAllowedToAnimate) {
+      ICommandService().sendCommand(
+        OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."),
+      );
+    }
   }
 
   double get widthOfTabPanel {
@@ -397,7 +390,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   void closeTab(int index) {
     FlutterUI.logUI.i("Closing tab $index");
     lastDeletedTab = index;
-    IUiService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
+    ICommandService().sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }
 }
 

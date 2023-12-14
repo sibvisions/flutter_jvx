@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../flutter_jvx.dart';
+import '../../flutter_ui.dart';
+import '../../service/apps/app.dart';
 
 class AppChangeUrlsDialog extends StatefulWidget {
   final String oldHost;

@@ -242,9 +242,12 @@ class AppService implements IAppService {
 
     if (!IConfigService().offline.value) {
       // Send startup to server
-      await ICommandService().sendCommand(StartupCommand(
-        reason: "InitApp",
-      ));
+      await ICommandService().sendCommand(
+        StartupCommand(
+          reason: "InitApp",
+        ),
+        throwFirstErrorCommand: true,
+      );
     } else {
       IUiService().routeToMenu(pReplaceRoute: true);
     }

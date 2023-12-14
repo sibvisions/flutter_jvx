@@ -27,7 +27,6 @@ import '../../custom/custom_screen.dart';
 import '../../mask/frame/frame.dart';
 import '../../mask/frame_dialog.dart';
 import '../../model/command/base_command.dart';
-import '../../model/command/ui/function_command.dart';
 import '../../model/component/component_subscription.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/model_subscription.dart';
@@ -44,7 +43,6 @@ import '../../model/response/application_meta_data_response.dart';
 import '../../model/response/application_parameters_response.dart';
 import '../../model/response/application_settings_response.dart';
 import '../../model/response/device_status_response.dart';
-import '../command/i_command_service.dart';
 import '../service.dart';
 
 /// Defines the base construct of a [IUiService]
@@ -61,7 +59,7 @@ abstract class IUiService implements Service {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static String getErrorMessage(Object error) {
+  static String getErrorMessage(Object? error) {
     if (error is DioException) {
       if ([
         DioExceptionType.connectionTimeout,
@@ -76,7 +74,7 @@ abstract class IUiService implements Service {
         return "Connection to remote server timed out";
       }
       return "Could not connect to remote server";
-    } else {
+    } else if (error != null) {
       const String messageStart = "Exception: ";
 
       String message = error.toString();
@@ -84,6 +82,8 @@ abstract class IUiService implements Service {
         return message.substring(messageStart.length);
       }
       return message;
+    } else {
+      return "Unknown error";
     }
   }
 
@@ -102,19 +102,6 @@ abstract class IUiService implements Service {
 
   /// Updates the design mode element.
   void updateDesignModeElement(String? pId);
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Communication with other services
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Sends [command] to [ICommandService].
-  ///
-  /// ## Do not use any future functions except await because errors are swallowed!
-  /// Alternatively use [ICommandService.sendCommand] to get an unmodified future.
-  Future<void> sendCommand(BaseCommand command);
-
-  /// Can be used to handle an async error
-  handleAsyncError(Object error, StackTrace stackTrace);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Routing
@@ -253,7 +240,7 @@ abstract class IUiService implements Service {
   void disposeDataSubscription({required Object pSubscriber, String? pDataProvider});
 
   /// Collects all commands to do to save all editors.
-  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId);
+  Future<List<BaseCommand>> collectAllEditorSaveCommands(String? pId, String pReason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves
@@ -338,6 +325,14 @@ abstract class IUiService implements Service {
   // Unsorted method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  void showErrorDialog({
+    String? title,
+    String? message,
+    required Object error,
+    StackTrace? stackTrace,
+    bool sendFeedback = false,
+  });
+
   void closeMessageDialog({required String componentId});
 
   List<JVxDialog> getJVxDialogs();
@@ -348,7 +343,7 @@ abstract class IUiService implements Service {
 
   void closeJVxDialogs();
 
-  Future<void> saveAllEditors({String? pId, required String pReason, CommandCallback? pFunction});
+  Future<bool> saveAllEditors({String? pId, required String pReason});
 
   void setFocus(String pComponentId);
 

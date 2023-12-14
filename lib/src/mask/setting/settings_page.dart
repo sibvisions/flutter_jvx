@@ -630,7 +630,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
       await routeBack();
     } catch (e, stackTrace) {
-      IUiService().handleAsyncError(e, stackTrace);
+      IUiService().showErrorDialog(error: e, stackTrace: stackTrace);
     }
   }
 

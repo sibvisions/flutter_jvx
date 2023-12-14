@@ -14,10 +14,12 @@
  * the License.
  */
 
+import '../../../../../exceptions/session_expired_exception.dart';
+import 'error_command.dart';
 import 'message_view_command.dart';
 
 /// Opens a dialog, telling the user that the session has expired
-class OpenSessionExpiredDialogCommand extends MessageViewCommand {
+class OpenSessionExpiredDialogCommand extends MessageViewCommand implements ErrorCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,4 +42,10 @@ class OpenSessionExpiredDialogCommand extends MessageViewCommand {
   String toString() {
     return "OpenSessionExpiredDialogCommand{${super.toString()}}";
   }
+
+  @override
+  Object? get error => SessionExpiredException();
+
+  @override
+  StackTrace? get stackTrace => null;
 }

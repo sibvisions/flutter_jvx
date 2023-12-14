@@ -25,6 +25,7 @@ import '../../model/command/api/rollback_command.dart';
 import '../../model/command/api/save_command.dart';
 import '../../model/response/device_status_response.dart';
 import '../../service/api/i_api_service.dart';
+import '../../service/command/i_command_service.dart';
 import '../../service/config/i_config_service.dart';
 import '../../service/ui/i_ui_service.dart';
 import '../../util/image/image_loader.dart';
@@ -96,12 +97,6 @@ class WebFrameState extends FrameState {
   }
 
   @override
-  Widget build(BuildContext context) => InheritedWebFrame(
-        showMenu: showWebMenu,
-        child: super.build(context),
-      );
-
-  @override
   PreferredSizeWidget getAppBar({
     Widget? leading,
     Widget? title,
@@ -119,7 +114,7 @@ class WebFrameState extends FrameState {
     bool inWorkscreen = IUiService().getCurrentWorkscreenName() != null;
 
     return AppBar(
-      titleSpacing: titleSpacing,
+      titleSpacing: 8,
       leading: Builder(
         builder: (context) => IconButton(
           tooltip: FlutterUI.translate("Toggle navigation menu"),
@@ -155,8 +150,9 @@ class WebFrameState extends FrameState {
                 FontAwesomeIcons.arrowRotateLeft,
                 color: iconColor,
               ),
-              onPressed:
-                  inWorkscreen ? (() => IUiService().sendCommand(RollbackCommand(reason: "Clicked in topbar"))) : null,
+              onPressed: inWorkscreen
+                  ? (() => ICommandService().sendCommand(RollbackCommand(reason: "Clicked in topbar")))
+                  : null,
             ),
           ),
         if (appStyle.applicationSettings.saveVisible)
@@ -169,7 +165,7 @@ class WebFrameState extends FrameState {
                 color: iconColor,
               ),
               onPressed:
-                  inWorkscreen ? (() => IUiService().sendCommand(SaveCommand(reason: "Clicked in topbar"))) : null,
+                  inWorkscreen ? (() => ICommandService().sendCommand(SaveCommand(reason: "Clicked in topbar"))) : null,
             ),
           ),
         if (appStyle.applicationSettings.reloadVisible)
@@ -181,8 +177,9 @@ class WebFrameState extends FrameState {
                 FontAwesomeIcons.arrowRotateRight,
                 color: iconColor,
               ),
-              onPressed:
-                  inWorkscreen ? (() => IUiService().sendCommand(ReloadCommand(reason: "Clicked in topbar"))) : null,
+              onPressed: inWorkscreen
+                  ? (() => ICommandService().sendCommand(ReloadCommand(reason: "Clicked in topbar")))
+                  : null,
             ),
           ),
         if (appStyle.applicationSettings.homeVisible)
@@ -300,16 +297,15 @@ class WebFrameState extends FrameState {
     return LoadingBar.wrapLoadingBar(ValueListenableBuilder<LayoutMode>(
       valueListenable: IUiService().layoutMode,
       builder: (context, value, child) {
-        bool showMenu = InheritedWebFrame.of(context).showMenu;
         return Stack(
           children: [
             Row(
               children: [
-                _buildWebMenu(context, value != LayoutMode.Mini && showMenu),
+                _buildWebMenu(context, value != LayoutMode.Mini && showWebMenu),
                 Expanded(flex: 1, child: body),
               ],
             ),
-            _buildWebMenu(context, value == LayoutMode.Mini && showMenu, inDrawer: true),
+            _buildWebMenu(context, value == LayoutMode.Mini && showWebMenu, inDrawer: true),
           ],
         );
       },
@@ -329,34 +325,4 @@ class WebFrameState extends FrameState {
           );
         },
       );
-}
-
-class InheritedWebFrame extends InheritedFrame {
-  final bool showMenu;
-
-  const InheritedWebFrame({
-    super.key,
-    required this.showMenu,
-    required super.child,
-  });
-
-  /// The closest instance of this class that encloses the given context.
-  static InheritedWebFrame of(BuildContext context) {
-    final InheritedWebFrame? result = maybeOf(context);
-    assert(result != null, "No InheritedWebFrame found in context");
-    return result!;
-  }
-
-  /// The closest instance of this class that encloses the given context.
-  ///
-  /// If no instance of this class encloses the given context, will return null.
-  /// To throw an exception instead, use [of] instead of this function.
-  static InheritedWebFrame? maybeOf(BuildContext? context) {
-    return context?.dependOnInheritedWidgetOfExactType<InheritedWebFrame>();
-  }
-
-  @override
-  bool updateShouldNotify(covariant InheritedWebFrame oldWidget) {
-    return showMenu != oldWidget.showMenu;
-  }
 }

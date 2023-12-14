@@ -62,14 +62,13 @@ abstract class PushUtil {
 
   static Future<void> sendPushData(Map<String, Object?> data) async {
     if (!IConfigService().offline.value && IUiService().clientId.value != null) {
-      await ICommandService()
-          .sendCommand(SetParameterCommand(
-        parameter: data,
-        reason: "Received new push data",
-      ))
-          .onError((error, stackTrace) {
-        FlutterUI.log.w("Failed to send push data to server", error: error, stackTrace: stackTrace);
-      });
+      await ICommandService().sendCommand(
+        SetParameterCommand(
+          parameter: data,
+          reason: "Received new push data",
+        ),
+        showDialogOnError: false,
+      );
     }
   }
 
