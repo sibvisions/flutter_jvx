@@ -88,7 +88,10 @@ abstract class ImageLoader {
           pColor: pWantedColor,
         );
         pImageStreamListener?.call(Size.square(faIcon.size ?? FlIconModel.DEFAULT_ICON_SIZE), true);
-        return faIcon;
+        return Align(
+          alignment: pAlignment,
+          child: faIcon,
+        );
       }
       if (MaterialIconUtil.checkMaterial(pImageString)) {
         Icon icon = MaterialIconUtil.getMaterialIcon(
@@ -97,7 +100,10 @@ abstract class ImageLoader {
           pColor: pWantedColor,
         );
         pImageStreamListener?.call(Size.square(icon.size ?? FlIconModel.DEFAULT_ICON_SIZE), true);
-        return icon;
+        return Align(
+          alignment: pAlignment,
+          child: icon,
+        );
       }
 
       imageProvider ??= ImageLoader.getImageProvider(pImageString, pImageStreamListener: pImageStreamListener);
@@ -119,7 +125,6 @@ abstract class ImageLoader {
           errorBuilder: createImageErrorBuilder(imageProvider),
           width: size?.width ?? pWidth,
           height: size?.height ?? pHeight,
-          color: pWantedColor,
           fit: pFit,
           alignment: pAlignment,
         );
