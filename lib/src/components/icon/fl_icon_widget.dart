@@ -148,7 +148,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
             child: ImageLoader.loadImage(
               model.image,
               imageProvider: imageProvider,
-              pWantedColor: model.isEnabled ? null : JVxColors.COMPONENT_DISABLED,
+              pWantedColor: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
               pFit: BoxFit.fill,
             ),
           ),
@@ -158,7 +158,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       return ImageLoader.loadImage(
         model.image,
         imageProvider: imageProvider,
-        pWantedColor: model.isEnabled ? null : JVxColors.COMPONENT_DISABLED,
+        pWantedColor: model.isEnabled ? model.foreground : JVxColors.COMPONENT_DISABLED,
         pFit: boxFit,
         pAlignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       );

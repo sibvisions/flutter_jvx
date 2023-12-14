@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/alignments.dart';
+import '../../util/font_awesome_util.dart';
 import '../../util/image/image_loader.dart';
 import '../../util/jvx_colors.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
@@ -67,11 +68,17 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   Widget? get image {
     if (model.image != null) {
+      Color? color;
+      if (FontAwesomeUtil.checkFontAwesome(model.image!)) {
+        if (!model.borderPainted || model.borderOnMouseEntered) {
+          color = JVxColors.LIGHTER_BLACK;
+        } else {
+          color = model.createTextStyle().color;
+        }
+      }
       return ImageLoader.loadImage(
         model.image!,
-        pWantedColor: (!model.borderPainted || model.borderOnMouseEntered)
-            ? JVxColors.LIGHTER_BLACK
-            : model.createTextStyle().color,
+        pWantedColor: color,
       );
     }
     return null;

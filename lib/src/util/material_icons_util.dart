@@ -27,29 +27,45 @@ abstract class MaterialIconUtil {
 
   static Icon getMaterialIcon({required String pText, double? pIconSize, Color? pColor}) {
     List<String> arr = pText.split(",");
+    // name;properties,width,height,dynamic
+    // we ignore dynamic, remove it.
 
-    String iconName = arr[0];
-    double? iconSize;
+    String iconName = arr.removeAt(0);
+
+    Color? iconColor = pColor;
 
     if (iconName.contains(";")) {
-      var nameAndSize = iconName.split(";");
+      Map<String, String> map = {};
+      List<String> iconNameArgs = iconName.split(";");
 
-      // Currently ignore "size=X" parameter;
-      iconName = nameAndSize[0];
+      iconName = iconNameArgs.removeAt(0);
+
+      for (String arg in iconNameArgs) {
+        List<String> argParts = arg.split("=");
+        if (argParts.length == 2) {
+          map[argParts[0]] = argParts[1];
+        }
+      }
+
+      if (map.containsKey("color")) {
+        iconColor = ParseUtil.parseHexColor(map["color"]);
+      }
     }
 
-    if (arr.length >= 2) {
-      iconSize = double.parse(arr[1]);
+    double? iconSize;
+    if (arr.isNotEmpty) {
+      iconSize = double.tryParse(arr.removeAt(0));
+
+      // If the width is not parseable, try height.
+      if (arr.isNotEmpty) {
+        String height = arr.removeAt(0);
+        iconSize ??= double.tryParse(height);
+      }
     }
 
-    Color? iconColor;
-
-    if (arr.length > 4) {
-      iconColor = ParseUtil.parseHexColor(arr[4]);
-    }
-
-    if (pColor != null) {
-      iconColor = pColor;
+    bool dynamic = false;
+    if (arr.isNotEmpty) {
+      dynamic = ParseUtil.parseBoolOrFalse(arr.removeAt(0));
     }
 
     if (pIconSize != null) {
