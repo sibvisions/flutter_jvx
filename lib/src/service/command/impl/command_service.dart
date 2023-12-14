@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 import 'package:queue/queue.dart';
 
 import '../../../commands.dart';
@@ -232,31 +233,35 @@ class CommandService implements ICommandService {
         FlutterUI.logCommand.d("$pCommand\n->\n\t$commands");
       }
     } catch (error, stackTrace) {
-      bool isTimeout = error is TimeoutException || error is SocketException;
+      bool isConnectionError = error is TimeoutException || error is SocketException || error is DioException;
 
-      commands = [
-        OpenErrorDialogCommand(
-          silentAbort: !showDialogOnError,
-          message: FlutterUI.translate(IUiService.getErrorMessage(error)),
-          error: error,
-          stackTrace: stackTrace,
-          isTimeout: isTimeout,
-          reason: "Failed processing ${pCommand.runtimeType}",
-        ),
-      ];
-
-      // If there is a current session and a "probably" working connection, report to the server.
-      if (!isTimeout && IUiService().clientId.value != null) {
-        commands.add(
-          FeedbackCommand(
-            type: FeedbackType.error,
-            properties: {
-              "message": IUiService.getErrorMessage(error),
-              "error": error,
-            },
-            reason: "UIService async error",
+      if (pCommand is! ErrorCommand && pCommand is! FeedbackCommand) {
+        commands = [
+          OpenErrorDialogCommand(
+            silentAbort: !showDialogOnError,
+            message: FlutterUI.translate(IUiService.getErrorMessage(error)),
+            error: error,
+            stackTrace: stackTrace,
+            isTimeout: isConnectionError,
+            reason: "Failed processing ${pCommand.runtimeType}",
           ),
-        );
+        ];
+
+        // If there is a current session and a "probably" working connection, report to the server.
+        if (!isConnectionError && IUiService().clientId.value != null) {
+          commands.add(
+            FeedbackCommand(
+              type: FeedbackType.error,
+              properties: {
+                "message": IUiService.getErrorMessage(error),
+                "error": error,
+              },
+              reason: "UIService async error",
+            ),
+          );
+        }
+      } else {
+        commands = [];
       }
     }
 
