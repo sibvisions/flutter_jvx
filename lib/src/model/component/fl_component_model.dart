@@ -203,6 +203,15 @@ abstract class FlComponentModel {
   /// If the component sends focus lost events.
   bool eventFocusLost = false;
 
+  /// If the component sends mouse entered events.
+  bool eventMousePressed = false;
+
+  /// If the component sends mouse exited events.
+  bool eventMouseReleased = false;
+
+  /// If the component sends mouse clicked events.
+  bool eventMouseClicked = false;
+
   /// The aria label.
   String ariaLabel = "";
 
@@ -405,6 +414,27 @@ abstract class FlComponentModel {
       pDefault: defaultModel.eventFocusLost,
       pConversion: (e) => ParseUtil.parseBool(e)!,
       pCurrent: eventFocusLost,
+    );
+    eventMousePressed = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.eventMousePressed,
+      pDefault: defaultModel.eventMousePressed,
+      pConversion: (e) => ParseUtil.parseBool(e)!,
+      pCurrent: eventMousePressed,
+    );
+    eventMouseReleased = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.eventMouseReleased,
+      pDefault: defaultModel.eventMouseReleased,
+      pConversion: (e) => ParseUtil.parseBool(e)!,
+      pCurrent: eventMouseReleased,
+    );
+    eventMouseClicked = getPropertyValue(
+      pJson: pJson,
+      pKey: ApiObjectProperty.eventMouseClicked,
+      pDefault: defaultModel.eventMouseClicked,
+      pConversion: (e) => ParseUtil.parseBool(e)!,
+      pCurrent: eventMouseClicked,
     );
     font = getPropertyValue(
       pJson: pJson,

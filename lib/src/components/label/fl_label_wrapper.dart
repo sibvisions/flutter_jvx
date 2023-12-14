@@ -16,12 +16,13 @@
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_jvx/src/model/command/api/mouse_clicked_command.dart';
+import 'package:flutter_jvx/src/model/command/api/mouse_pressed_command.dart';
+import 'package:flutter_jvx/src/model/command/api/mouse_released_command.dart';
 
-import '../../model/component/fl_component_model.dart';
-import '../../util/parse_util.dart';
+import '../../../flutter_jvx.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import 'fl_label_widget.dart';
 
 class FlLabelWrapper extends BaseCompWrapperWidget<FlLabelModel> {
   const FlLabelWrapper({super.key, required super.model});
@@ -42,7 +43,10 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
 
   @override
   Widget build(BuildContext context) {
-    final FlLabelWidget widget = FlLabelWidget(model: model);
+    final FlLabelWidget widget = FlLabelWidget(
+      model: model,
+      onPress: hasOnPress ? onPress : null,
+    );
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       postFrameCallback(context);
@@ -57,5 +61,24 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
       return const Size(400, 100);
     }
     return super.calculateSize(context);
+  }
+
+  bool get hasOnPress => model.eventMousePressed || model.eventMouseReleased || model.eventMouseClicked;
+
+  void onPress() {
+    if (model.eventMousePressed) {
+      ICommandService().sendCommand(
+          MousePressedCommand(reason: "Clicked on label ${model.id}:${model.text}", componentName: model.name));
+    }
+
+    if (model.eventMouseReleased) {
+      ICommandService().sendCommand(
+          MouseReleasedCommand(reason: "Clicked on label ${model.id}:${model.text}", componentName: model.name));
+    }
+
+    if (model.eventMouseClicked) {
+      ICommandService().sendCommand(
+          MouseClickedCommand(reason: "Clicked on label ${model.id}:${model.text}", componentName: model.name));
+    }
   }
 }
