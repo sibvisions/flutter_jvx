@@ -106,6 +106,9 @@ abstract class ApiObjectProperty {
   static const String defaultMenuItem = "defaultMenuItem";
   static const String eventFocusGained = "eventFocusGained";
   static const String eventFocusLost = "eventFocusLost";
+  static const String eventMousePressed = "eventMousePressed";
+  static const String eventMouseReleased = "eventMouseReleased";
+  static const String eventMouseClicked = "eventMouseClicked";
   static const String button = "button";
   static const String clickCount = "clickCount";
   static const String x = "x";

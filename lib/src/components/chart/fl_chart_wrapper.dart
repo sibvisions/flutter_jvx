@@ -416,11 +416,17 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> {
       );
     }
 
-    commands.addAll([
-      MousePressedCommand(reason: "Selected record in chart", componentName: model.name),
-      MouseReleasedCommand(reason: "Selected record in chart", componentName: model.name),
-      MouseClickedCommand(reason: "Selected record in chart", componentName: model.name)
-    ]);
+    if (model.eventMousePressed) {
+      commands.add(MousePressedCommand(reason: "Selected record in chart", componentName: model.name));
+    }
+
+    if (model.eventMouseReleased) {
+      commands.add(MouseReleasedCommand(reason: "Selected record in chart", componentName: model.name));
+    }
+
+    if (model.eventMouseClicked) {
+      commands.add(MouseClickedCommand(reason: "Selected record in chart", componentName: model.name));
+    }
 
     if (oldFocus != null) {
       commands.add(SetFocusCommand(componentId: oldFocus.id, focus: true, reason: "Selected record in chart"));
