@@ -185,8 +185,13 @@ class AppService implements IAppService {
 
     if (defaultApp != null) {
       return defaultApp;
-    } else if (apps.length == 1 && apps.first.isStartable && !appConfig.showAppOverviewWithoutDefault!) {
-      return apps.first;
+    } else if (apps.length == 1 && apps.first.isStartable) {
+      // If custom apps are allowed, we aren't really allowed to add another app, so just start it.
+      if (appConfig.forceSingleAppMode! && !appConfig.customAppsAllowed!) {
+        return apps.first;
+      } else if (!appConfig.showAppOverviewWithoutDefault!) {
+        return apps.first;
+      }
     }
 
     return null;
