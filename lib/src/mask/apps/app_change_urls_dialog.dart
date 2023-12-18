@@ -33,13 +33,14 @@ class _AppChangeUrlsDialogState extends State<AppChangeUrlsDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
             child: Text(
                 "${FlutterUI.translateLocal("Changes apps from")} '${widget.oldHost}' ${FlutterUI.translateLocal("to")} '${widget.newHost}'"),
           ),
           Flexible(
             child: SingleChildScrollView(
               child: ExpansionTile(
+                tilePadding: const EdgeInsets.only(left: 16, right: 16),
                 childrenPadding: const EdgeInsets.only(left: 8),
                 title: Text(FlutterUI.translateLocal("Affected apps")),
                 expandedCrossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +55,7 @@ class _AppChangeUrlsDialogState extends State<AppChangeUrlsDialog> {
         ],
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
-      actionsPadding: const EdgeInsets.only(left: 14.0, right: 14.0, bottom: 12.0),
+      actionsPadding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
