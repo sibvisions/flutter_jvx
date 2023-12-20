@@ -145,7 +145,11 @@ class CommandService implements ICommandService {
       pCommand.delayUILocking = delayUILocking ?? pCommand.delayUILocking;
       pCommand.showLoading = showLoading ?? pCommand.showLoading;
 
-      progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
+      try {
+        progressHandler.forEach((element) => element.notifyProgressStart(pCommand));
+      } catch (e) {
+        FlutterUI.logCommand.d("Error notifying progress start");
+      }
 
       // Discard SessionCommands which are sent from an older session (e.g. dispose sends an command).
       if (pCommand is SessionCommand && pCommand.clientId != IUiService().clientId.value) {
@@ -191,7 +195,11 @@ class CommandService implements ICommandService {
         return false;
       }
     } finally {
-      progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
+      try {
+        progressHandler.forEach((element) => element.notifyProgressEnd(pCommand));
+      } catch (e) {
+        FlutterUI.logCommand.d("Error notifying progress end");
+      }
     }
   }
 
