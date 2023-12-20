@@ -28,7 +28,7 @@ class OpenErrorDialogCommandProcessor extends ICommandProcessor<OpenErrorDialogC
   Future<List<BaseCommand>> processCommand(OpenErrorDialogCommand command, BaseCommand? origin) async {
     // Will be displayed in Splash if context is null
     FlutterUI.logUI.e(command.reason, error: command.error, stackTrace: command.stackTrace);
-    if (FlutterUI.getCurrentContext() != null && !command.silentAbort) {
+    if (FlutterUI.getCurrentContext() != null && FlutterUI.getCurrentContext()!.mounted && !command.silentAbort) {
       IUiService().showJVxDialog(
         ErrorDialog(
           title: command.title,
