@@ -16,11 +16,11 @@
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_jvx/src/model/command/api/mouse_clicked_command.dart';
-import 'package:flutter_jvx/src/model/command/api/mouse_pressed_command.dart';
-import 'package:flutter_jvx/src/model/command/api/mouse_released_command.dart';
 
 import '../../../flutter_jvx.dart';
+import '../../model/command/api/mouse_clicked_command.dart';
+import '../../model/command/api/mouse_pressed_command.dart';
+import '../../model/command/api/mouse_released_command.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 
