@@ -26,13 +26,6 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
   List<BaseCommand> processResponse(DalDataProviderChangedResponse pResponse, ApiRequest? pRequest) {
     List<BaseCommand> commands = [];
 
-    if (IDataService().updateMetaDataChangedResponse(pChangedResponse: pResponse)) {
-      IUiService().notifyMetaDataChange(pDataProvider: pResponse.dataProvider);
-    }
-
-    bool dataChanged = IDataService().updateDataChangedResponse(pChangedResponse: pResponse);
-    bool selectionChanged = IDataService().updateSelectionChangedResponse(pChangedResponse: pResponse);
-
     // If -1 then delete all saved data and re-fetch
     if (pResponse.reload == -1) {
       commands.add(DeleteProviderDataCommand(
@@ -52,21 +45,26 @@ class DalDataProviderChangedProcessor extends IResponseProcessor<DalDataProvider
           includeMetaData: true,
         ),
       );
-    } else if (pResponse.reload != null) {
-      // If reload not -1/null re-fetch only given row
-      FetchCommand fetchCommand = FetchCommand(
-        reason: "Data provider changed response was reload -1",
-        fromRow: pResponse.reload!,
-        rowCount: 1,
-        dataProvider: pResponse.dataProvider,
-      );
-      commands.add(fetchCommand);
     } else {
-      if (dataChanged) {
+      if (IDataService().updateMetaDataChangedResponse(pChangedResponse: pResponse)) {
+        IUiService().notifyMetaDataChange(pDataProvider: pResponse.dataProvider);
+      }
+      if (IDataService().updateDataChangedResponse(pChangedResponse: pResponse)) {
         IUiService().notifyDataChange(pDataProvider: pResponse.dataProvider);
       }
-      if (selectionChanged) {
+      if (IDataService().updateSelectionChangedResponse(pChangedResponse: pResponse)) {
         IUiService().notifySelectionChange(pDataProvider: pResponse.dataProvider);
+      }
+
+      if (pResponse.reload != null) {
+        // If reload not -1/null re-fetch only given row
+        FetchCommand fetchCommand = FetchCommand(
+          reason: "Data provider changed response was reload ${pResponse.reload!} row",
+          fromRow: pResponse.reload!,
+          rowCount: 1,
+          dataProvider: pResponse.dataProvider,
+        );
+        commands.add(fetchCommand);
       }
     }
 
