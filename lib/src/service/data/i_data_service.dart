@@ -102,13 +102,6 @@ abstract class IDataService implements Service {
     String? pNewSelectedColumn,
   });
 
-  /// Returns true when row selection was successful (dataProvider and dataRow exist)
-  bool deleteRow({
-    required String pDataProvider,
-    required int pDeletedRow,
-    required int pNewSelectedRow,
-  });
-
   /// Clears all the databooks of this workscreen
   void clearData(String pWorkscreen);
 

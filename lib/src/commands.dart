@@ -60,7 +60,6 @@ export 'model/command/config/save_auth_key_command.dart';
 export 'model/command/config/save_user_data_command.dart';
 export 'model/command/data/data_command.dart';
 export 'model/command/data/delete_provider_data_command.dart';
-export 'model/command/data/delete_row_command.dart';
 export 'model/command/data/get_data_chunk_command.dart';
 export 'model/command/data/get_meta_data_command.dart';
 export 'model/command/data/get_selected_data_command.dart';

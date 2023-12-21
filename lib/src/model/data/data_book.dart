@@ -262,6 +262,14 @@ class DataBook {
       changed = true;
     }
 
+    if (pChangedResponse.deletedRow != null && pChangedResponse.deletedRow! < records.length) {
+      for (int i = pChangedResponse.deletedRow!; i < records.length - 1; i++) {
+        records[i] = records[i + 1]!;
+      }
+      records.remove(records.length - 1);
+      changed = true;
+    }
+
     if (pChangedResponse.changedColumnNames == null ||
         pChangedResponse.changedValues == null ||
         pChangedResponse.selectedRow == null) {
