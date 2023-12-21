@@ -16,19 +16,16 @@
 
 import 'package:collection/collection.dart';
 
-import '../../../../../flutter_ui.dart';
 import '../../../../../model/command/api/fetch_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/data_command.dart';
 import '../../../../../model/command/data/delete_provider_data_command.dart';
-import '../../../../../model/command/data/delete_row_command.dart';
 import '../../../../../model/command/data/get_data_chunk_command.dart';
 import '../../../../../model/command/data/get_meta_data_command.dart';
 import '../../../../../model/command/data/get_page_chunk_command.dart';
 import '../../../../../model/command/data/get_selected_data_command.dart';
 import '../../../../../model/command/data/save_fetch_data_command.dart';
 import '../../../../../model/command/data/save_meta_data_command.dart';
-import '../../../../../model/command/ui/open_error_dialog_command.dart';
 import '../../../../../model/data/data_book.dart';
 import '../../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../../model/data/subscriptions/data_record.dart';
@@ -54,34 +51,8 @@ class DataCommandProcessor extends ICommandProcessor<DataCommand> {
       return _deleteDataProviderData(command);
     } else if (command is GetMetaDataCommand) {
       return _getMetaData(command);
-    } else if (command is DeleteRowCommand) {
-      return _deleteRow(command);
     }
 
-    return [];
-  }
-
-  Future<List<BaseCommand>> _deleteRow(DeleteRowCommand command) async {
-    // set selected row of databook
-    bool success = IDataService().deleteRow(
-      pDataProvider: command.dataProvider,
-      pDeletedRow: command.deletedRow,
-      pNewSelectedRow: command.newSelectedRow,
-    );
-
-    // Notify components that their selected row changed, if setting the row failed show error dialog.
-    if (success) {
-      IUiService().notifyDataChange(
-        pDataProvider: command.dataProvider,
-      );
-    } else {
-      return [
-        OpenErrorDialogCommand(
-          message: FlutterUI.translate("Deleting row failed"),
-          reason: "Could not delete the row locally",
-        )
-      ];
-    }
     return [];
   }
 
