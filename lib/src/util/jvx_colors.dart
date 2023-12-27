@@ -66,7 +66,7 @@ abstract class JVxColors {
       );
     }
 
-    var themeData = ThemeData.from(colorScheme: colorScheme);
+    var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: false);
     themeData = applyJVxTheme(themeData);
 
     return themeData;
