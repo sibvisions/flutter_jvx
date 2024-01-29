@@ -117,7 +117,7 @@ dependencies:
   html_editor_enhanced: ^2.5.0
 
   flutter_tts: ^3.7.0
-  speech_to_text: ^6.2.0
+  speech_to_text: ^6.5.1
 
   push: ^1.0.4
   flutter_local_notifications: ^15.1.0+1
