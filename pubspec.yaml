@@ -67,7 +67,7 @@ dependencies:
   # Managing different persistent classes
   get_it: ^7.2.0
   # QR Scanner
-  mobile_scanner: 3.5.5
+  mobile_scanner: ^4.0.0
   # Signature Pad
   signature: ^5.3.2
   # Saving files on system
