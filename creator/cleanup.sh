@@ -32,3 +32,4 @@ rm -r $pubCache/hosted/pub.dev/push-*
 rm -r $pubCache/hosted/pub.dev/push_*
 rm -r $pubCache/hosted/pub.dev/flutter_local_notifications*
 rm -r $pubCache/hosted/pub.dev/screen_brightness*
+rm -r $pubCache/hosted/pub.dev/open_filex*
