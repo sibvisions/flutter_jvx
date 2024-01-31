@@ -117,7 +117,7 @@ dependencies:
   html_editor_enhanced: ^2.5.0
 
   flutter_tts: ^3.7.0
-  speech_to_text: ^6.5.1
+  speech_to_text: ^6.6.0
 
   push: ^1.0.4
   flutter_local_notifications: ^15.1.0+1
@@ -131,10 +131,6 @@ dev_dependencies:
 dependency_overrides:
   # flutter_map
   http: ^1.0.0
-
-  #because of: https://github.com/csdcorp/speech_to_text/issues/478
-  speech_to_text_macos: 1.0.2
-  speech_to_text_platform_interface: 2.1.0
 
 flutter:
   uses-material-design: true
