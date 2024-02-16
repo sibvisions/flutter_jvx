@@ -703,19 +703,19 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     );
   }
 
-  Widget _routeBuilder(BuildContext context, Widget? child) {
+  Widget _routeBuilder(BuildContext contextA, Widget? child) {
     return ListenableBuilder(
       listenable: Listenable.merge([
         IAppService().startupFuture,
         IAppService().exitFuture,
       ]),
       child: child,
-      builder: (context, child) {
+      builder: (contextB, child) {
         Widget futureBuilder = FutureBuilder(
           future: IAppService().startupFuture.value,
-          builder: (context, startupSnapshot) => FutureBuilder(
+          builder: (contextC, startupSnapshot) => FutureBuilder(
             future: IAppService().exitFuture.value,
-            builder: (context, exitSnapshot) {
+            builder: (contextD, exitSnapshot) {
               if ([ConnectionState.active, ConnectionState.waiting].contains(startupSnapshot.connectionState) ||
                   (startupSnapshot.connectionState == ConnectionState.done && startupSnapshot.hasError)) {
                 retrySplash() => IAppService().startApp();
@@ -730,7 +730,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                   childrenBuilder: (snapshot) => [
                     if (snapshot.connectionState == ConnectionState.done && snapshot.hasError)
                       _getStartupErrorDialog(
-                        context,
+                        contextD,
                         snapshot,
                         retry: retrySplash,
                         returnToApps: returnToApps,
@@ -784,13 +784,13 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       future: future,
       transitionDelegate: transitionDelegate,
       navigatorKey: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
-      builder: (context, snapshot) => Stack(
+      builder: (contextA, snapshot) => Stack(
         children: [
           Splash(
             snapshot: snapshot,
             onReturn: returnToApps,
             splashBuilder: widget.splashBuilder ??
-                (context, snapshot) {
+                (contextB, snapshot) {
                   return JVxSplash(
                     snapshot: snapshot,
                     logo: SvgPicture.asset(
@@ -825,9 +825,9 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
       theme: splashTheme,
       future: Future.delayed(const Duration(milliseconds: 250)),
       transitionDelegate: transitionDelegate,
-      builder: (context, delayedSnapshot) => Splash(
+      builder: (contextA, delayedSnapshot) => Splash(
         snapshot: delayedSnapshot,
-        splashBuilder: (context, delayedSnapshot) => JVxExitSplash(snapshot: delayedSnapshot),
+        splashBuilder: (contextB, delayedSnapshot) => JVxExitSplash(snapshot: delayedSnapshot),
       ),
       child: child,
     );
@@ -988,7 +988,6 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ),
         ),
     ];
-
     return Stack(
       children: [
         const Opacity(
@@ -999,6 +998,10 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
           ),
         ),
         AlertDialog(
+          //this is important because the Theme is not correct in build of AlertDialog
+          shape: Theme.of(context).dialogTheme.shape,
+          surfaceTintColor: Theme.of(context).dialogTheme.surfaceTintColor,
+
           title: Text(
             serverError?.title?.isNotEmpty ?? false ? serverError!.title! : FlutterUI.translateLocal("Error"),
           ),

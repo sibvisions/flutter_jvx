@@ -94,7 +94,7 @@ abstract class JVxColors {
         backgroundColor: seedColor,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))));
 
-    var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: false);
+    var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: true);
 
     themeData = themeData.copyWith(
         appBarTheme: AppBarTheme(backgroundColor: isSelectedLight ? seedColor : colorScheme.background),
