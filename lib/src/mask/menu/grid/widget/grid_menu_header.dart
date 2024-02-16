@@ -35,6 +35,8 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
   /// Text style for inner widgets
   final TextStyle? textStyle;
 
+  final bool embedded;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,6 +46,7 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
     this.headerColor,
     required this.headerText,
     this.textStyle,
+    this.embedded = false,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,13 +72,13 @@ class GridMenuHeader extends SliverPersistentHeaderDelegate {
         child = Divider(
           color: headerColor ?? ListTileTheme.of(context).iconColor,
           height: constraints.maxHeight,
-          indent: 15,
-          endIndent: 15,
+          indent: embedded ? 15 : 12,
+          endIndent: embedded ? 15 : 12,
           thickness: 5,
         );
       } else {
         child = ListTile(
-          contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+          contentPadding: EdgeInsets.fromLTRB(embedded ? 15 : 12, 0, embedded ? 15 : 12, 0),
           textColor: headerColor,
           title: Text(
             headerText,

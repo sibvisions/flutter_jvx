@@ -59,7 +59,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return Opacity(
       opacity: double.parse(AppStyle.of(context).applicationStyle?['opacity.sidemenu'] ?? "1"),
       child: Drawer(
-        backgroundColor: Theme.of(context).brightness == Brightness.light
+        backgroundColor: JVxColors.isLightTheme(context)
             ? Theme.of(context).colorScheme.primary
             : JVxColors.darken(Theme.of(context).colorScheme.surface, 0.05),
         child: SafeArea(
@@ -111,13 +111,13 @@ class _DrawerMenuState extends State<DrawerMenu> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeaderText(
-                flex: 1,
+                flex: 2,
                 text: "${FlutterUI.translate("Logged in as")}:",
                 context: context,
               ),
               const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
               _buildHeaderText(
-                flex: 2,
+                flex: 3,
                 text: IConfigService().userInfo.value?.displayName ?? " ",
                 context: context,
                 fontWeight: FontWeight.bold,
@@ -192,7 +192,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         return Material(
           color: Theme.of(context).colorScheme.background,
           child: ListTileTheme.merge(
-            iconColor: Theme.of(context).colorScheme.primary,
+            iconColor: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Colors.white,
             style: ListTileStyle.drawer,
             dense: !isNormalSize,
             child: IconTheme(
@@ -206,6 +206,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 onClose: Menu.getCloseScreenAction,
                 useAlternativeLabel: true,
                 grouped: true,
+                embedded: true,
               ),
             ),
           ),
@@ -289,6 +290,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
         context: context,
         text: AppOverviewPage.appsOrAppText,
         leadingIcon: AppOverviewPage.appsIcon,
+        gap: 10,
         onTap: () {
           Navigator.pop(context);
           IUiService().routeToAppOverview();
@@ -378,12 +380,14 @@ class _DrawerMenuState extends State<DrawerMenu> {
     required IconData leadingIcon,
     required VoidCallback onTap,
     bool isNormalSize = true,
+    double? gap
   }) {
     if (isNormalSize) {
-      var isBrightnessLight = Theme.of(context).brightness == Brightness.light;
+      var isLight = JVxColors.isLightTheme(context);
       return ListTile(
-        textColor: isBrightnessLight ? Theme.of(context).colorScheme.onPrimary : null,
-        iconColor: isBrightnessLight ? Theme.of(context).colorScheme.onPrimary : null,
+        textColor: isLight ? Theme.of(context).colorScheme.onPrimary : null,
+        iconColor: isLight ? Theme.of(context).colorScheme.onPrimary : null,
+        horizontalTitleGap: gap,
         leading: Builder(
           builder: (context) => CircleAvatar(
             backgroundColor: Colors.transparent,

@@ -21,6 +21,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../flutter_jvx.dart';
 import '../flutter_ui.dart';
 import '../model/command/api/alive_command.dart';
 import '../model/command/api/device_status_command.dart';
@@ -357,10 +358,7 @@ class JVxOverlayState extends State<JVxOverlay> {
                           ? const Color(0xFF1A964A)
                           : Theme.of(context).snackBarTheme.backgroundColor,
                       color: _connected == true
-                          ? (Theme.of(context).colorScheme.brightness == Brightness.light
-                              ? const Color(0xFF141414)
-                              : Colors.white)
-                          : null,
+                          ? (JVxColors.isLightTheme(context) ? const Color(0xFF141414) : Colors.white) : null,
                       onClose: () => _removeStatusBanner(),
                       onTap: _connected == false
                           ? () {

@@ -115,7 +115,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
           child: ConstrainedBox(
             constraints: const BoxConstraints.tightFor(width: double.maxFinite),
             child: LayoutBuilder(builder: (context, constraints) {
-              var isThemeLight = parentTheme.brightness == Brightness.light;
+              var isThemeLight = JVxColors.isLight(parentTheme);
               bool showAppAvatar = constraints.maxHeight >= 450;
 
               return SingleChildScrollView(
@@ -332,6 +332,8 @@ class _AppEditDialogState extends State<AppEditDialog> {
                           message: FlutterUI.translateLocal("Provided"),
                           location: BannerLocation.topEnd,
                           color: parentTheme.colorScheme.primary,
+                          textStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 9.5,
+                              color: JVxColors.isLightTheme(context) ? Colors.white: JVxColors.LIGHTER_BLACK),
                         ),
                       ),
                   ],
@@ -390,7 +392,7 @@ class _AppEditDialogState extends State<AppEditDialog> {
               FlutterUI.translateLocal("Auto start"),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
-            Switch(
+            Switch.adaptive(
               inactiveThumbColor: onTap != null ? Theme.of(context).colorScheme.primary : null,
               inactiveTrackColor: onTap != null ? Theme.of(context).colorScheme.surface : null,
               value: value,

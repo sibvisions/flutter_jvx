@@ -44,6 +44,7 @@ class ListMenu extends Menu {
   final bool grouped;
   final bool sticky;
   final bool groupOnlyOnMultiple;
+  final bool embedded;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -62,6 +63,7 @@ class ListMenu extends Menu {
     required this.grouped,
     this.sticky = true,
     this.groupOnlyOnMultiple = false,
+    this.embedded = false,
   });
 
   @override
@@ -79,6 +81,7 @@ class ListMenu extends Menu {
                     headerColor: headerColor,
                     decreasedDensity: decreasedDensity,
                     useAlternativeLabel: useAlternativeLabel,
+                    embedded: embedded,
                   ))
               .toList()
           : [
@@ -92,6 +95,7 @@ class ListMenu extends Menu {
                             menuItemModel: e,
                             decreasedDensity: decreasedDensity,
                             useAlternativeLabel: useAlternativeLabel,
+                            embedded: embedded,
                           ))
                       .toList(),
                 ),

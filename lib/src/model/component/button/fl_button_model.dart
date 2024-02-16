@@ -153,7 +153,7 @@ class FlButtonModel extends FlComponentModel {
       if (Frame.isWebFrame()) {
         height = 32;
       }
-      return Size(130, height);
+      return Size(height, height);
     }
 
     return Size.square(FlTextFieldWidget.TEXT_FIELD_HEIGHT);

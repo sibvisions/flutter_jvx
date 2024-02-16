@@ -49,7 +49,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  static const double endIconSize = 20;
+
+  static const double linkIconSize = 18;
+  static const double arrowIconSize = 20;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -139,9 +141,7 @@ class _SettingsPageState extends State<SettingsPage> {
               iconTheme: Theme.of(context).primaryIconTheme,
             ),
             child: Material(
-              color: Theme.of(context).colorScheme.brightness == Brightness.light
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.surface,
+              color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
               child: SafeArea(
                 child: SizedBox(
                   height: bottomBarHeight,
@@ -220,8 +220,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildApplicationInfo() {
     if (IConfigService().privacyPolicy.value != null) {
       SettingItem privacyPolicy = SettingItem(
-        frontIcon: const FaIcon(FontAwesomeIcons.link),
-        endIcons: const [FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey)],
+        frontIcon: const FaIcon(FontAwesomeIcons.link, size: 19),
+        endIcons: const [FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: linkIconSize, color: Colors.grey)],
         title: FlutterUI.translateLocal("Privacy Policy"),
         onPressed: (context, value) => launchUrl(
           IConfigService().privacyPolicy.value!,
@@ -355,7 +355,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildApplicationSettings(BuildContext context) {
     Widget? singleAppSetting;
     if (IConfigService().showSingleAppModeSwitch()) {
-      singleAppSetting = SwitchListTile(
+      singleAppSetting = SwitchListTile.adaptive(
         contentPadding: const EdgeInsets.only(left: 21, right: 5, top: 5, bottom: 5),
         secondary: Icon(Icons.apps, color: Theme.of(context).colorScheme.primary),
         title: Text(FlutterUI.translateLocal("Manage single application")),
@@ -439,7 +439,7 @@ class _SettingsPageState extends State<SettingsPage> {
         frontIcon: FaIcon(frontIcon, color: Theme.of(context).colorScheme.primary),
         endIcons: [
           ...?endIcons,
-          const FaIcon(FontAwesomeIcons.circleChevronDown, size: endIconSize, color: Colors.grey),
+          const FaIcon(FontAwesomeIcons.circleChevronDown, size: arrowIconSize, color: Colors.grey),
         ],
         title: FlutterUI.translateLocal(title),
         value: value,
@@ -499,7 +499,7 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (context, snapshot) {
           return SettingItem(
             frontIcon: const FaIcon(FontAwesomeIcons.github),
-            endIcons: const [FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: endIconSize, color: Colors.grey)],
+            endIcons: const [FaIcon(FontAwesomeIcons.arrowUpRightFromSquare, size: linkIconSize, color: Colors.grey)],
             value: snapshot.data ?? FlutterUI.translateLocal("Loading..."),
             title: FlutterUI.translateLocal("App Version"),
             onPressed: (context, value) => showLicensePage(

@@ -42,6 +42,7 @@ class ListMenuItem extends StatelessWidget {
 
   final bool decreasedDensity;
   final bool useAlternativeLabel;
+  final bool embedded;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -55,6 +56,7 @@ class ListMenuItem extends StatelessWidget {
     this.textStyle,
     this.decreasedDensity = false,
     this.useAlternativeLabel = false,
+    this.embedded = false,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,9 +106,7 @@ class ListMenuItem extends StatelessWidget {
               ? IconButton(
                   splashRadius: kIsWeb ? 18 : 25,
                   icon: const Icon(Icons.close),
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? JVxColors.COMPONENT_DISABLED
-                      : JVxColors.COMPONENT_DISABLED_LIGHTER,
+                  color: JVxColors.isLightTheme(context) ? JVxColors.COMPONENT_DISABLED : JVxColors.COMPONENT_DISABLED_LIGHTER,
                   iconSize: 22,
                   onPressed: () => closeAction.call(context, item: menuItemModel),
                 )

@@ -368,7 +368,8 @@ class _FlTableCellState extends State<FlTableCell> {
 
     List<Widget> icons = [];
 
-    bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
+    bool isLight = JVxColors.isLightTheme();
+
     if (cellEditor.tableDeleteIcon &&
         cellEditor.allowedTableEdit &&
         !_isValueNullOrEmpty() &&

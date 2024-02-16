@@ -218,7 +218,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       textStyle = textStyle.copyWith(color: Colors.blue);
     } else if (!model.borderPainted || model.borderOnMouseEntered) {
       textStyle = textStyle.copyWith(
-        color: Theme.of(context).brightness == Brightness.light ? JVxColors.LIGHTER_BLACK : JVxColors.DARKER_WHITE,
+        color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : JVxColors.DARKER_WHITE,
       );
     }
 

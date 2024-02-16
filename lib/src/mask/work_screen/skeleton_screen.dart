@@ -17,6 +17,8 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
+
 class SkeletonScreen extends StatelessWidget {
   const SkeletonScreen({super.key});
 
@@ -24,7 +26,7 @@ class SkeletonScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const Duration animationDuration = Duration(milliseconds: 750 + 550);
     const Duration animationDurationTwo = Duration(milliseconds: 450 + 550);
-    final CardLoadingTheme cardLoadingTheme = Theme.of(context).brightness == Brightness.light
+    final CardLoadingTheme cardLoadingTheme = JVxColors.isLightTheme(context)
         ? CardLoadingTheme.defaultTheme
         : const CardLoadingTheme(
             colorOne: Color(0x40E5E5E5),

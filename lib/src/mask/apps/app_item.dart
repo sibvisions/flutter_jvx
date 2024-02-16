@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../flutter_ui.dart';
+import '../../../flutter_jvx.dart';
 import 'app_image.dart';
 
 class AppItem extends StatelessWidget {
@@ -53,6 +53,7 @@ class AppItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double borderRadius = 20;
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -90,9 +91,7 @@ class AppItem extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: Material(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.grey.shade200
-                            : Colors.grey.shade700,
+                        color: JVxColors.isLightTheme(context) ? Colors.grey.shade200 : Colors.grey.shade700,
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(borderRadius),
                           bottomRight: Radius.circular(borderRadius),
@@ -167,8 +166,10 @@ class AppItem extends StatelessWidget {
                       message: FlutterUI.translateLocal("Provided"),
                       location: BannerLocation.topEnd,
                       color: Theme.of(context).colorScheme.primary,
+                      textStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 9.5,
+                                      color: JVxColors.isLightTheme(context) ? Colors.white: JVxColors.LIGHTER_BLACK),
+                      ),
                     ),
-                  ),
               ],
             ),
           ),

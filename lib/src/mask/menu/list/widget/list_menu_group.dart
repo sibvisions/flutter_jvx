@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
+import '../../../../../flutter_jvx.dart';
 import '../../../../flutter_ui.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
@@ -50,6 +51,7 @@ class ListMenuGroup extends StatelessWidget {
   final bool useAlternativeLabel;
 
   final bool sticky;
+  final bool embedded;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -66,6 +68,7 @@ class ListMenuGroup extends StatelessWidget {
     this.headerColor,
     this.decreasedDensity = false,
     this.useAlternativeLabel = false,
+    this.embedded = false
   });
 
   @override
@@ -74,7 +77,8 @@ class ListMenuGroup extends StatelessWidget {
 
     for (int i = 0; i < menuGroupModel.items.length; i++) {
       if (i > 0) {
-        listGroupItems.add(const Divider(
+        listGroupItems.add(Divider(
+          color: JVxColors.dividerColor(Theme.of(context)),
           height: 1,
         ));
       }
@@ -86,6 +90,7 @@ class ListMenuGroup extends StatelessWidget {
         textStyle: textStyle,
         decreasedDensity: decreasedDensity,
         useAlternativeLabel: useAlternativeLabel,
+        embedded: embedded,
       ));
     }
 
@@ -99,6 +104,7 @@ class ListMenuGroup extends StatelessWidget {
             headerColor: headerColor,
             height: (ListTileTheme.of(context).dense ?? false) ? 40 : 48,
             textStyle: textStyle,
+            embedded: embedded,
           ),
         ),
         SliverList(

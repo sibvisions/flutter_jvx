@@ -14,7 +14,11 @@
  * the License.
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+import '../../flutter_jvx.dart';
 
 abstract class JVxColors {
   static const Color LIGHTER_BLACK = Color(0xFF424242);
@@ -30,7 +34,27 @@ abstract class JVxColors {
 
   /// Specifically requested color mix.
   static Color dividerColor(ThemeData theme) {
-    return lighten(theme.colorScheme.onPrimary, 0.2);
+    return theme.colorScheme.onPrimary.withOpacity(0.15);
+  }
+
+  /// Whether the theme of [context] is in light mode
+  static bool isLightTheme([BuildContext? context]) {
+    if (context != null) {
+      return isLight(Theme.of(context));
+    }
+    else{
+      return isLight(Theme.of(FlutterUI.getCurrentContext()!));
+    }
+  }
+
+  /// Whether the [theme] is in light mode
+  static bool isLight([ThemeData? theme]) {
+    if (theme != null) {
+      return theme.brightness == Brightness.light;
+    }
+    else {
+      return Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
+    }
   }
 
   /// Creates a JVx-conform theme.
@@ -43,30 +67,47 @@ abstract class JVxColors {
     bool useFixedPrimary = false,
   }) {
     ColorScheme colorScheme;
-    if (useFixedPrimary) {
-      bool isSeedLight = ThemeData.estimateBrightnessForColor(seedColor) == Brightness.light;
 
+    bool isSeedLight = ThemeData.estimateBrightnessForColor(seedColor) == Brightness.light;
+    bool isSelectedLight = selectedBrightness == Brightness.light;
+
+    if (useFixedPrimary) {
       colorScheme = ColorScheme.fromSeed(
         seedColor: seedColor,
-        primary: selectedBrightness == Brightness.light ? seedColor : null,
+        primary: isSelectedLight ? seedColor : null,
         onPrimary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
-        secondary: selectedBrightness == Brightness.light
-            ? JVxColors.darken(seedColor, 0.1)
-            : JVxColors.lighten(seedColor, 0.1),
+        secondary: isSelectedLight ? JVxColors.darken(seedColor, 0.1) : JVxColors.lighten(seedColor, 0.1),
         onSecondary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         onTertiary: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
         brightness: selectedBrightness,
-        background: selectedBrightness == Brightness.light ? Colors.grey.shade50 : Colors.grey.shade900,
+        background: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
       );
     } else {
       colorScheme = ColorScheme.fromSeed(
         seedColor: seedColor,
         brightness: selectedBrightness,
-        background: selectedBrightness == Brightness.light ? Colors.grey.shade50 : Colors.grey.shade900,
+        background: isSelectedLight ? Colors.grey.shade50 : Colors.grey.shade900,
       );
     }
 
+    ElevatedButtonThemeData evbTheme = ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: isSeedLight ? JVxColors.LIGHTER_BLACK : Colors.white,
+        backgroundColor: seedColor,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))));
+
     var themeData = ThemeData.from(colorScheme: colorScheme, useMaterial3: false);
+
+    themeData = themeData.copyWith(
+        appBarTheme: AppBarTheme(backgroundColor: isSelectedLight ? seedColor : colorScheme.background),
+        cardTheme: CardTheme(surfaceTintColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+        dividerTheme: DividerThemeData(color: dividerColor(themeData)),
+        dialogTheme: DialogTheme(surfaceTintColor: Colors.white, shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(shape: CircleBorder(side: BorderSide(width: 0, style: BorderStyle.none))),
+        elevatedButtonTheme: evbTheme,
+        typography: Typography.material2014()
+    );
+
     themeData = applyJVxTheme(themeData);
 
     return themeData;
@@ -140,18 +181,30 @@ abstract class JVxColors {
     assert(amount >= 0 && amount <= 1);
 
     final hsl = HSLColor.fromColor(color);
-    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
 
-    return hslDark.toColor();
+    if (hsl.lightness - amount >= 0) {
+      final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+
+      return hslDark.toColor();
+    }
+    else {
+      return color;
+    }
   }
 
   static Color lighten(Color color, [double amount = .1]) {
     assert(amount >= 0 && amount <= 1);
 
     final hsl = HSLColor.fromColor(color);
-    final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
 
-    return hslLight.toColor();
+    if (hsl.lightness + amount <= 1) {
+      final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 2.0));
+
+      return hslLight.toColor();
+    }
+    else {
+      return color;
+    }
   }
 
   static Color averageBetween(Color pSource, Color pTarget) {

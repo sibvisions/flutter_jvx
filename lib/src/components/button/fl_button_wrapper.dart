@@ -27,6 +27,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/press_button_command.dart';
 import '../../model/command/api/set_values_command.dart';
@@ -35,6 +36,7 @@ import '../../model/command/ui/set_focus_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
+import '../../model/layout/layout_data.dart';
 import '../../routing/locations/main_location.dart';
 import '../../service/api/shared/api_object_property.dart';
 import '../../service/command/i_command_service.dart';
@@ -154,8 +156,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   @override
   Size calculateSize(BuildContext context) {
     if (model.isSlideStyle) {
-      double textWidth = ParseUtil.getTextWidth(text: model.labelModel.text, style: model.labelModel.createTextStyle());
       Size minimumSize = model.minimumSize!;
+      double textWidth = ParseUtil.getTextWidth(text: model.labelModel.text, style: model.labelModel.createTextStyle());
 
       return Size(minimumSize.height + textWidth, minimumSize.height);
     }

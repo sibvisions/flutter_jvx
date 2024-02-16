@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../../flutter_jvx.dart';
 import '../../../../flutter_ui.dart';
 
 const Size _calendarPortraitDialogSize = Size(330.0, 518.0);
@@ -252,20 +253,19 @@ class _FlDatePickerDialogState extends State<FlDatePickerDialog> with Restoratio
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final Orientation orientation = MediaQuery.of(context).orientation;
-    final TextTheme textTheme = theme.textTheme;
+
     // Constrain the textScaleFactor to the largest supported value to prevent
     // layout issues.
     final double textScaleFactor = math.min(MediaQuery.of(context).textScaleFactor, 1.3);
 
     final String dateText = localizations.formatMediumDate(_selectedDate.value);
     final Color onPrimarySurface =
-        colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface;
+    JVxColors.isLightTheme(context) ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface;
     final TextStyle? dateStyle = orientation == Orientation.landscape
-        ? textTheme.headlineSmall?.copyWith(color: onPrimarySurface)
-        : textTheme.headlineMedium?.copyWith(color: onPrimarySurface);
+        ? theme.textTheme.headlineSmall?.copyWith(color: onPrimarySurface)
+        : theme.textTheme.headlineMedium?.copyWith(color: onPrimarySurface);
 
     final Widget actions = Container(
       alignment: AlignmentDirectional.centerEnd,

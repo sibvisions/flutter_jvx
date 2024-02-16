@@ -154,7 +154,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     if (fillColor == null && isMandatory) {
       ApplicationSettingsResponse applicationSettings = AppStyle.of(context).applicationSettings;
-      if (Theme.of(context).brightness == Brightness.light) {
+      if (JVxColors.isLightTheme(context)) {
         fillColor = applicationSettings.colors?.mandatoryBackground;
       } else {
         fillColor = applicationSettings.darkColors?.mandatoryBackground;
@@ -251,8 +251,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     Color iconColor = pColor ?? JVxColors.COMPONENT_DISABLED;
     Color iconColorDarkMode = pColorDarkMode ?? pColor ?? JVxColors.COMPONENT_DISABLED_LIGHTER;
 
-    bool isLight = Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light;
-
     return SizedBox(
       width: iconAreaSize,
       height: iconAreaSize,
@@ -260,7 +258,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         child: FaIcon(
           pIcon,
           size: iconSize,
-          color: isLight ? iconColor : iconColorDarkMode,
+          color: JVxColors.isLightTheme() ? iconColor : iconColorDarkMode,
         ),
       ),
     );
@@ -380,9 +378,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       Color? iconColorDarkMode =
           borderColorStrings.length >= 2 ? ParseUtil.parseServerColor(borderColorStrings[1]) : null;
 
-      return Theme.of(FlutterUI.getCurrentContext()!).brightness == Brightness.light
-          ? iconColor
-          : iconColorDarkMode ?? iconColor;
+      return JVxColors.isLightTheme(FlutterUI.getCurrentContext()!) ? iconColor : iconColorDarkMode ?? iconColor;
     }
   }
 
