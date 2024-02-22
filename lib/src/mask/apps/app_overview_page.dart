@@ -185,7 +185,9 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                     SvgPicture.asset(
                       ImageLoader.getAssetPath(
                         FlutterUI.package,
-                        "assets/images/JVx_Bg.svg",
+                        JVxColors.isLightTheme(context) ?
+                        "assets/images/JVx_Bg.svg" :
+                        "assets/images/JVx_Bg_dark.svg",
                       ),
                       fit: BoxFit.fill,
                     ),
@@ -210,8 +212,9 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                                         child: Text(
                                           FlutterUI.translateLocal(
                                               IConfigService().isSingleAppMode() ? "Application" : "Applications"),
-                                          style: const TextStyle(
-                                            color: JVxColors.LIGHTER_BLACK,
+                                          style: TextStyle(
+                                            color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK :
+                                                    Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 32,
                                           ),
@@ -377,7 +380,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
         child: showAddOnFront
             ? IconButton(
                 tooltip: FlutterUI.translateLocal("Settings"),
-                color: Theme.of(context).colorScheme.primary,
+                color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary :
+                                                         Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24,
                 style: IconButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -391,7 +395,8 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                 child: PopupMenuButton(
                   icon: FaIcon(
                     FontAwesomeIcons.ellipsisVertical,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary :
+                                                             Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24,
                   ),
                   onSelected: (selection) {
                     switch (selection) {
@@ -411,7 +416,9 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                       PopupMenuItem(
                         value: 0,
                         child: ListTile(
-                          leading: const Icon(Icons.add),
+                          leading: Icon(Icons.add,
+                                        color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary :
+                                                                                 Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24),
                           title: Text(FlutterUI.translateLocal("Add app")),
                           contentPadding: EdgeInsets.zero,
                         ),
@@ -420,7 +427,10 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                       PopupMenuItem(
                         value: 1,
                         child: ListTile(
-                          leading: Icon(containsCustomApps ? Icons.delete : Icons.history),
+                          leading: Icon(containsCustomApps ? Icons.delete : Icons.history,
+                                        color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary :
+                                                                                 Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24,
+                        ),
                           title: Text(FlutterUI.translateLocal("${containsCustomApps ? "Remove" : "Reset"} apps")),
                           contentPadding: EdgeInsets.zero,
                         ),
@@ -428,7 +438,10 @@ class _AppOverviewPageState extends State<AppOverviewPage> {
                     PopupMenuItem(
                       value: 2,
                       child: ListTile(
-                        leading: const FaIcon(FontAwesomeIcons.gear),
+                        leading: FaIcon(FontAwesomeIcons.gear,
+                                        color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary :
+                                                                                 Theme.of(context).textTheme.labelSmall?.color ?? Colors.white24,
+                        ),
                         title: Text(FlutterUI.translateLocal("Settings")),
                         contentPadding: EdgeInsets.zero,
                       ),

@@ -65,11 +65,12 @@ class ListMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool selected = _isSelected(context);
+    bool selected = embedded && _isSelected(context);
 
     var leading = MenuItemModel.getImage(
       context,
       pMenuItemModel: menuItemModel,
+      pColor: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
     );
 
     onTap() => onClick(context, item: menuItemModel);
@@ -90,9 +91,10 @@ class ListMenuItem extends StatelessWidget {
           );
         }
 
-        MenuItemCallback? closeAction = onClose?.call(menuItemModel);
+        MenuItemCallback? closeAction = embedded ? onClose?.call(menuItemModel) : null;
 
         return ListTile(
+          contentPadding: EdgeInsets.fromLTRB(embedded ? 15 : 12, 0, embedded ? 15 : 12, 0),
           selected: selected,
           visualDensity:
               decreasedDensity ? const VisualDensity(horizontal: 0, vertical: VisualDensity.minimumDensity) : null,
@@ -100,7 +102,9 @@ class ListMenuItem extends StatelessWidget {
           title: Text(
             (useAlternativeLabel ? menuItemModel.alternativeLabel : null) ?? menuItemModel.label,
             overflow: TextOverflow.ellipsis,
-            style: textStyle,
+            style: textStyle ?? TextStyle(
+              color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
+            ),
           ),
           trailing: closeAction != null
               ? IconButton(

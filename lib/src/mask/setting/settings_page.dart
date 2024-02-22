@@ -94,26 +94,26 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contextA) {
     Widget widget = Builder(
-      builder: (context) {
+      builder: (contextB) {
         Widget body = SingleChildScrollView(
           child: Column(
             children: [
               _buildApplicationInfo(),
               if (appName != null)
                 IconTheme.merge(
-                  data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-                  child: Builder(builder: (context) => _buildGeneralSettings(context)),
+                  data: IconThemeData(color: Theme.of(contextB).colorScheme.primary),
+                  child: Builder(builder: (contextC) => _buildGeneralSettings(contextC)),
                 ),
               IconTheme.merge(
-                data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-                child: Builder(builder: (context) => _buildApplicationSettings(context)),
+                data: IconThemeData(color: Theme.of(contextB).colorScheme.primary),
+                child: Builder(builder: (contextC) => _buildApplicationSettings(contextC)),
               ),
               _buildVersionInfo(),
               IconTheme.merge(
-                data: IconThemeData(color: Theme.of(context).colorScheme.primary),
-                child: Builder(builder: (context) => _buildStatus(context)),
+                data: IconThemeData(color: Theme.of(contextB).colorScheme.primary),
+                child: Builder(builder: (contextC) => _buildStatus(contextC)),
               ),
               const SizedBox(height: 5),
             ],
@@ -126,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
           appBar: AppBar(
             titleSpacing: 0,
             leading: IconButton(
-              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              tooltip: MaterialLocalizations.of(contextA).backButtonTooltip,
               splashRadius: kToolbarHeight / 2,
               icon: const BackButtonIcon(),
               onPressed: routeBack,
@@ -135,44 +135,45 @@ class _SettingsPageState extends State<SettingsPage> {
             elevation: 0,
           ),
           body: body,
-          bottomNavigationBar: Theme(
-            data: Theme.of(context).copyWith(
-              textTheme: Theme.of(context).primaryTextTheme,
-              iconTheme: Theme.of(context).primaryIconTheme,
-            ),
-            child: Material(
-              color: JVxColors.isLightTheme(context) ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
+          bottomNavigationBar: Material(
+              color: JVxColors.isLightTheme(contextA) ? (IConfigService().currentApp.value == null ? JVxColors.blue : Theme.of(contextA).colorScheme.primary) : Theme.of(contextA).colorScheme.surface,
+              textStyle: TextStyle(color: JVxColors.isLightTheme(contextA) ? Colors.white : Theme.of(contextA).textTheme.labelMedium!.color),
               child: SafeArea(
                 child: SizedBox(
                   height: bottomBarHeight,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      if (_changesPending()) Expanded(child: _createCancelButton(context)),
+                      if (_changesPending()) Expanded(child: _createCancelButton(contextA)),
                       if (_changesPending())
                         VerticalDivider(
-                          color: JVxColors.dividerColor(Theme.of(context)),
+                          color: JVxColors.dividerColor(Theme.of(contextA)),
                           width: 1,
                         ),
-                      Expanded(child: _createSaveButton(context)),
+                      Expanded(child: _createSaveButton(contextA)),
                     ],
                   ),
                 ),
               ),
             ),
-          ),
         );
       },
     );
 
     if (IConfigService().currentApp.value == null) {
       widget = Theme(
-        data: JVxColors.applyJVxTheme(ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            brightness: Theme.of(context).colorScheme.brightness,
-            seedColor: Colors.blue,
-          ),
-        )),
+        data: Theme.of(contextA).copyWith(
+          colorScheme: Theme.of(contextA).colorScheme.copyWith(primary: JVxColors.isLightTheme(contextA) ? JVxColors.blue : Colors.white),
+          appBarTheme: const AppBarTheme(backgroundColor: null),
+        ),
+        child: widget,
+      );
+    }
+    else{
+      widget = Theme(
+        data: Theme.of(contextA).copyWith(
+          colorScheme: Theme.of(contextA).colorScheme.copyWith(primary: JVxColors.isLightTheme(contextA) ? Theme.of(context).colorScheme.primary : Colors.white),
+        ),
         child: widget,
       );
     }

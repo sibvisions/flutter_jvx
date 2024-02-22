@@ -209,7 +209,7 @@ class _FlTableCellState extends State<FlTableCell> {
     if (widget.model.showVerticalLines && widget.cellIndex != 0) {
       Border verticalBorder = Border(
           left: BorderSide(
-        color: JVxColors.TABLE_VERTICAL_DIVICER,
+        color: JVxColors.TABLE_VERTICAL_DIVIDER,
         width: widget.cellDividerWidth,
       ));
 

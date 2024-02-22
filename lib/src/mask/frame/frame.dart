@@ -17,6 +17,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../flutter_ui.dart';
 import '../../model/command/api/logout_command.dart';
 import '../../service/api/i_api_service.dart';
@@ -171,7 +172,8 @@ abstract class FrameState extends State<Frame> {
               icon: Icon(
                 designMode ? Icons.design_services : Icons.design_services_outlined,
                 size: 26,
-              ),
+                color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
+            ),
             );
           },
         ),

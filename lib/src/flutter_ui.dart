@@ -668,7 +668,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contextA) {
     List<Locale> supportedLocales = {
       IConfigService().applicationLanguage.value,
       IConfigService().getPlatformLocale(),
@@ -681,7 +681,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
         IUiService().applicationParameters,
         IConfigService().applicationStyle,
       ]),
-      builder: (context, _) {
+      builder: (contextB, _) {
         String title = (kIsWeb ? IUiService().applicationParameters.value.applicationTitleWeb : null) ??
             widget.appConfig?.title ??
             FlutterUI.packageInfo.appName;
@@ -725,6 +725,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
 
                 return _buildSplash(
                   future: IAppService().startupFuture.value!,
+                  context: contextD,
                   retry: retrySplash,
                   returnToApps: returnToApps,
                   childrenBuilder: (snapshot) => [
@@ -774,13 +775,16 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
   /// Builds a widget to show when starting an app.
   Widget _buildSplash({
     required Future future,
+    BuildContext? context,
     Widget? child,
     List<Widget> Function(AsyncSnapshot snapshot)? childrenBuilder,
     required VoidCallback retry,
     required VoidCallback? returnToApps,
   }) {
     return FutureNestedNavigator(
-      theme: splashTheme,
+      theme: context != null ? Theme.of(context).copyWith(
+               colorScheme: ColorScheme.fromSeed(seedColor: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
+                                                 primary: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black)) : splashTheme,
       future: future,
       transitionDelegate: transitionDelegate,
       navigatorKey: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
@@ -794,12 +798,18 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                   return JVxSplash(
                     snapshot: snapshot,
                     logo: SvgPicture.asset(
-                      ImageLoader.getAssetPath(FlutterUI.package, "assets/images/J.svg"),
+                      ImageLoader.getAssetPath(FlutterUI.package,
+                          JVxColors.isLightTheme(context) ?
+                          "assets/images/J.svg" :
+                          "assets/images/J_dark.svg"),
                       width: 138,
                       height: 145,
                     ),
                     background: SvgPicture.asset(
-                      ImageLoader.getAssetPath(FlutterUI.package, "assets/images/JVx_Bg.svg"),
+                      ImageLoader.getAssetPath(FlutterUI.package,
+                          JVxColors.isLightTheme(context) ?
+                          "assets/images/JVx_Bg.svg" :
+                          "assets/images/JVx_Bg_dark.svg"),
                       fit: BoxFit.fill,
                     ),
                     branding: Image.asset(

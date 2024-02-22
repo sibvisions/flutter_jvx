@@ -21,10 +21,13 @@ import 'package:flutter/material.dart';
 import '../../flutter_jvx.dart';
 
 abstract class JVxColors {
+  static Color blue = ColorScheme.fromSeed(seedColor: Colors.blue).primary;
+  static const Color WHITE = Colors.white24;
+
   static const Color LIGHTER_BLACK = Color(0xFF424242);
   static const Color DARKER_WHITE = Color(0xFFFAFAFA);
 
-  static const Color TABLE_VERTICAL_DIVICER = Color(0xFFBDBDBD);
+  static const Color TABLE_VERTICAL_DIVIDER = Color(0xFFBDBDBD);
   static const Color TABLE_FOCUS_REACT = Color(0xFF666666);
   static const Color COMPONENT_BORDER = Color(0xFF999999);
   static const Color COMPONENT_DISABLED = Color(0xFFBDBDBD);
@@ -123,16 +126,19 @@ abstract class JVxColors {
   ///
   /// Basically this overrides every "known" theme color that is black with our [JVxColors.LIGHTER_BLACK].
   static ThemeData applyJVxTheme(ThemeData themeData) {
+
     if (_isBlack(themeData.canvasColor)) {
       themeData = themeData.copyWith(
         canvasColor: JVxColors.LIGHTER_BLACK,
       );
     }
+
     if (_isBlack(themeData.cardColor)) {
       themeData = themeData.copyWith(
         cardColor: JVxColors.LIGHTER_BLACK,
       );
     }
+
     if (_isBlack(themeData.textTheme.bodyLarge?.color)) {
       themeData = themeData.copyWith(
         textTheme: themeData.textTheme.apply(
@@ -141,6 +147,7 @@ abstract class JVxColors {
         ),
       );
     }
+
     if (_isBlack(themeData.primaryTextTheme.bodyLarge?.color)) {
       themeData = themeData.copyWith(
         primaryTextTheme: themeData.primaryTextTheme.apply(
@@ -149,6 +156,7 @@ abstract class JVxColors {
         ),
       );
     }
+
     if (_isBlack(themeData.iconTheme.color)) {
       themeData = themeData.copyWith(
         iconTheme: themeData.iconTheme.copyWith(
@@ -156,6 +164,7 @@ abstract class JVxColors {
         ),
       );
     }
+
     if (_isBlack(themeData.primaryIconTheme.color)) {
       themeData = themeData.copyWith(
         iconTheme: themeData.primaryIconTheme.copyWith(

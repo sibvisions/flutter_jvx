@@ -51,7 +51,7 @@ class GridMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Material(
-      color: (JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.colorScheme.background)
+      color: (JVxColors.isLight(theme) ? theme.colorScheme.primary : theme.colorScheme.onPrimary)
           .withOpacity(double.parse(AppStyle.of(context).applicationStyle?['opacity.menu'] ?? "1")),
       child: InkWell(
         onTap: () => onClick(context, item: menuItemModel),
@@ -69,9 +69,9 @@ class GridMenuItem extends StatelessWidget {
                   child: Center(
                     child: AutoSizeText(
                       menuItemModel.label,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white,
+                        color: JVxColors.isLightTheme(context) ? Colors.white : Colors.white70,
                       ),
                       maxLines: 1,
                       minFontSize: 16,
@@ -90,7 +90,7 @@ class GridMenuItem extends StatelessWidget {
                   context,
                   pMenuItemModel: menuItemModel,
                   pSize: 72,
-                  pColor: Colors.white,
+                  pColor: JVxColors.isLightTheme(context) ? Colors.white : Colors.white70,
                 ),
               ),
             )

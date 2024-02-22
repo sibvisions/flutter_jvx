@@ -22,6 +22,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:rxdart/transformers.dart';
 
+import '../../../flutter_jvx.dart';
 import '../../components/components_factory.dart';
 import '../../custom/app_manager.dart';
 import '../../flutter_ui.dart';
@@ -96,6 +97,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                         FontAwesomeIcons.magnifyingGlass,
                         size: 22,
                       ),
+                      color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
                     ),
                   );
                 }
@@ -123,6 +125,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                       icon: const FaIcon(
                         FontAwesomeIcons.towerBroadcast,
                       ),
+                      color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
                     ),
                   );
                 }
@@ -171,6 +174,7 @@ class _MenuPageState extends State<MenuPage> with SearchMixin {
                   splashRadius: kToolbarHeight / 2,
                   onPressed: () => setState(() => isMenuSearchEnabled = false),
                   icon: const FaIcon(FontAwesomeIcons.circleXmark),
+                  color: JVxColors.isLightTheme(context) ? JVxColors.LIGHTER_BLACK : Colors.white70,
                 );
               } else if (IAppService().wasStartedManually() && IUiService().canRouteToAppOverview()) {
                 leading = IconButton(
