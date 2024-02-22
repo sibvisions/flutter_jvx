@@ -24,6 +24,8 @@ class FlCheckBoxModel extends FlRadioButtonModel {
   /// The style to make the checkbox to a switch.
   static const String SWITCH_STYLE = "f_switch";
 
+  static const String CELL_SWITCH_STYLE = "ui-switch";
+
   /// The style to make the checkbox to a checkbox.
   ///
   /// This serves as an override to allow editors to override a switch style,
@@ -37,12 +39,13 @@ class FlCheckBoxModel extends FlRadioButtonModel {
 
   // Checkbox never draws a border.
   @override
-  bool get borderPainted => false;
+  bool get borderPainted => styles.contains("ui-button") || styles.contains("ui-togglebutton");
 
   @override
   FlCheckBoxModel get defaultModel => FlCheckBoxModel();
 
-  bool get isSwitch => styles.contains(SWITCH_STYLE) && !styles.contains(CHECKBOX_STYLE);
+  bool get isSwitch =>
+      (styles.contains(SWITCH_STYLE) || styles.contains(CELL_SWITCH_STYLE)) && !styles.contains(CHECKBOX_STYLE);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

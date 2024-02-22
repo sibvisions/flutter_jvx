@@ -16,10 +16,8 @@
 
 import 'package:flutter/cupertino.dart';
 
+import '../../../../flutter_jvx.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
-import '../../../model/component/fl_component_model.dart';
-import '../../../service/api/shared/api_object_property.dart';
-import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
 
 class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheckBoxCellEditorModel, dynamic> {
@@ -65,7 +63,7 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
   }
 
   @override
-  FlCheckBoxWidget createWidget(Map<String, dynamic>? pJson) {
+  Widget createWidget(Map<String, dynamic>? pJson) {
     FlCheckBoxModel widgetModel = createWidgetModel();
 
     applyEditorJson(widgetModel, pJson);
@@ -75,6 +73,27 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
     bool isEditable = true;
     if (pJson?.containsKey(ApiObjectProperty.cellEditorEditable) == true) {
       isEditable = pJson![ApiObjectProperty.cellEditorEditable];
+    }
+
+    if (model.styles.any((style) => style == 'ui-button')) {
+      return FlButtonWidget(
+        model: widgetModel,
+        focusNode: _buttonFocusNode,
+        onPress: isEditable ? _onPress : null,
+      );
+    } else if (model.styles.any((style) => style == 'ui-radiobutton')) {
+      return FlRadioButtonWidget(
+        model: widgetModel,
+        focusNode: _buttonFocusNode,
+        radioFocusNode: focusNode,
+        onPress: isEditable ? _onPress : null,
+      );
+    } else if (model.styles.any((style) => style == 'ui-togglebutton')) {
+      return FlToggleButtonWidget(
+        model: widgetModel,
+        focusNode: _buttonFocusNode,
+        onPress: isEditable ? _onPress : null,
+      );
     }
 
     return FlCheckBoxWidget(
@@ -136,7 +155,11 @@ class FlCheckBoxCellEditor extends IFocusableCellEditor<FlCheckBoxModel, FlCheck
 
   void _onPress() {
     if (_value == model.selectedValue) {
-      onEndEditing(model.deselectedValue);
+      if (model.styles.any((style) => style == 'ui-button')) {
+        onEndEditing(model.selectedValue);
+      } else {
+        onEndEditing(model.deselectedValue);
+      }
     } else {
       onEndEditing(model.selectedValue);
     }
