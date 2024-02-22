@@ -159,6 +159,7 @@ flutter_native_splash:
   # flutter pub run flutter_native_splash:remove
 
   background_image: assets/images/JVx_Bg.png
+  background_image_dark: assets/images/JVx_Bg_dark.png
 
   image: assets/images/J.png
 

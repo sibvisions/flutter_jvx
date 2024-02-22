@@ -784,7 +784,8 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
     return FutureNestedNavigator(
       theme: context != null ? Theme.of(context).copyWith(
                colorScheme: ColorScheme.fromSeed(seedColor: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
-                                                 primary: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black)) : splashTheme,
+                                                 primary: JVxColors.isLightTheme(context) ? JVxColors.blue : Colors.black,
+                                                 brightness: Theme.of(context).brightness)) : splashTheme,
       future: future,
       transitionDelegate: transitionDelegate,
       navigatorKey: splashNavigatorKey = GlobalObjectKey<NavigatorState>(future),
@@ -799,7 +800,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                     snapshot: snapshot,
                     logo: SvgPicture.asset(
                       ImageLoader.getAssetPath(FlutterUI.package,
-                          JVxColors.isLightTheme(context) ?
+                          JVxColors.isLightTheme(contextB) ?
                           "assets/images/J.svg" :
                           "assets/images/J_dark.svg"),
                       width: 138,
@@ -807,7 +808,7 @@ class FlutterUIState extends State<FlutterUI> with WidgetsBindingObserver {
                     ),
                     background: SvgPicture.asset(
                       ImageLoader.getAssetPath(FlutterUI.package,
-                          JVxColors.isLightTheme(context) ?
+                          JVxColors.isLightTheme(contextB) ?
                           "assets/images/JVx_Bg.svg" :
                           "assets/images/JVx_Bg_dark.svg"),
                       fit: BoxFit.fill,
