@@ -21,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../custom/login_handler.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../model/response/login_view_response.dart';
@@ -58,16 +59,26 @@ class ModernLogin extends StatelessWidget implements Login {
     String? loginLogo = appStyle.style(context, 'login.logo');
     String? loginTitle = appStyle.style(context, 'login.title');
 
-    bool inverseColor = ParseUtil.parseBool(appStyle.style(context, 'login.inverseColor')) ?? false;
-    bool colorGradient = ParseUtil.parseBool(appStyle.style(context, 'login.colorGradient')) ?? true;
+    LoginHandler? handler = FlutterUI.of(context).widget.loginHandler;
 
-    Color? topColor = ParseUtil.parseHexColor(appStyle.style(context, 'login.topColor')) ??
+    bool inverseColor = ParseUtil.parseBool(appStyle.style(context, 'login.inverseColor')) ?? false;
+
+    bool? colorGradient = handler?.colorGradient ??
+        ParseUtil.parseBool(appStyle.style(context, 'login.colorGradient')) ??
+        true;
+
+    Color? topColor = handler?.topColorBuilder?.call(context) ??
+        ParseUtil.parseHexColor(appStyle.style(context, 'login.topColor')) ??
+        handler?.backgroundColorBuilder?.call(context) ??
         ParseUtil.parseHexColor(appStyle.style(context, 'login.background')) ??
         Theme.of(context).colorScheme.primary;
-    Color? bottomColor = ParseUtil.parseHexColor(appStyle.style(context, 'login.bottomColor'));
+
+    Color? bottomColor = handler?.bottomColorBuilder?.call(context) ??
+        ParseUtil.parseHexColor(appStyle.style(context, 'login.bottomColor'));
 
     if (inverseColor) {
       var tempTop = topColor;
+
       topColor = bottomColor;
       bottomColor = tempTop;
     }

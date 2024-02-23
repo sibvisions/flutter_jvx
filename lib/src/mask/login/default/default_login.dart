@@ -19,6 +19,7 @@ import 'dart:math';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
+import '../../../custom/login_handler.dart';
 import '../../../flutter_ui.dart';
 import '../../../model/command/api/login_command.dart';
 import '../../../model/response/login_view_response.dart';
@@ -50,16 +51,26 @@ class DefaultLogin extends StatelessWidget implements Login {
     AppStyle appStyle = AppStyle.of(context);
     String? loginLogo = appStyle.style(context, 'login.logo');
 
-    bool inverseColor = ParseUtil.parseBool(appStyle.style(context, 'login.inverseColor')) ?? false;
-    bool colorGradient = ParseUtil.parseBool(appStyle.style(context, 'login.colorGradient')) ?? true;
+    LoginHandler? handler = FlutterUI.of(context).widget.loginHandler;
 
-    Color? topColor = ParseUtil.parseHexColor(appStyle.style(context, 'login.topColor')) ??
-        ParseUtil.parseHexColor(appStyle.style(context, 'login.background')) ??
-        Theme.of(context).colorScheme.primary;
-    Color? bottomColor = ParseUtil.parseHexColor(appStyle.style(context, 'login.bottomColor'));
+    bool inverseColor = ParseUtil.parseBool(appStyle.style(context, 'login.inverseColor')) ?? false;
+
+    bool? colorGradient = handler?.colorGradient ??
+                          ParseUtil.parseBool(appStyle.style(context, 'login.colorGradient')) ??
+                          true;
+
+    Color? topColor = handler?.topColorBuilder?.call(context) ??
+                      ParseUtil.parseHexColor(appStyle.style(context, 'login.topColor')) ??
+                      handler?.backgroundColorBuilder?.call(context) ??
+                      ParseUtil.parseHexColor(appStyle.style(context, 'login.background')) ??
+                      Theme.of(context).colorScheme.primary;
+
+    Color? bottomColor = handler?.bottomColorBuilder?.call(context) ??
+                         ParseUtil.parseHexColor(appStyle.style(context, 'login.bottomColor'));
 
     if (inverseColor) {
       var tempTop = topColor;
+
       topColor = bottomColor;
       bottomColor = tempTop;
     }
@@ -103,6 +114,8 @@ class DefaultLogin extends StatelessWidget implements Login {
     Color? bottomColor,
     bool colorGradient,
   ) {
+    Widget? logo = FlutterUI.of(context).widget.loginHandler?.logoBuilder?.call(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -128,20 +141,18 @@ class DefaultLogin extends StatelessWidget implements Login {
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints.loose(const Size.fromWidth(650)),
-                  child: loginLogo != null
-                      ? ImageLoader.loadImage(
-                          loginLogo,
-                          pFit: BoxFit.scaleDown,
-                        )
-                      : Image.asset(
-                          ImageLoader.getAssetPath(
-                            FlutterUI.package,
-                            JVxColors.isLightTheme(context) ?
-                            "assets/images/branding_sib_visions.png" :
-                            "assets/images/branding_sib_visions_dark.png"
-                          ),
-                          fit: BoxFit.scaleDown,
-                        ),
+                  child: logo ??
+                         (loginLogo != null ?
+                             ImageLoader.loadImage(loginLogo, pFit: BoxFit.scaleDown) :
+                             Image.asset(
+                                ImageLoader.getAssetPath(
+                                  FlutterUI.package,
+                                  JVxColors.isLightTheme(context) ?
+                                  "assets/images/branding_sib_visions.png" :
+                                  "assets/images/branding_sib_visions_dark.png"
+                                ),
+                                fit: BoxFit.scaleDown,
+                             )),
                 ),
               ),
             ),

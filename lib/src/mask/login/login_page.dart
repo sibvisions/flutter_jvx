@@ -207,7 +207,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    var customWidget = FlutterUI.of(context).widget.loginBuilder?.call(context, widget.loginMode);
+    var customWidget = FlutterUI.of(context).widget.loginHandler?.builder?.call(context, widget.loginMode);
     if (customWidget != null) return customWidget;
 
     AppStyle appStyle = AppStyle.of(context);
